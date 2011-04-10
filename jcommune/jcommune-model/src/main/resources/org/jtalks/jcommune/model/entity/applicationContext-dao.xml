@@ -4,12 +4,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
 
 
-    <bean id="exceptionTranslationInterceptor"
-          class="org.springframework.dao.support.PersistenceExceptionTranslationInterceptor"/>
-    <aop:config>
-        <aop:advisor advice-ref="exceptionTranslationInterceptor"
-                     pointcut="execution(* org.jtalks.jcommune.model.dao.Dao+.* (*))"/>
-    </aop:config>
 
     <bean id="abstractHibernateDao" class="org.jtalks.jcommune.model.dao.hibernate.AbstractHibernateDao" abstract="true">
         <property name="sessionFactory" ref="sessionFactory"/>
@@ -30,7 +24,7 @@
         </property>
         <property name="hibernateProperties">
             <props>
-                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
                 <prop key="hibernate.query.factory_class">org.hibernate.hql.ast.ASTQueryTranslatorFactory</prop>
                 <prop key="hibernate.dialect">${hibernate.dialect}</prop>
                 <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>

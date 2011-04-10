@@ -2,7 +2,7 @@ package org.jtalks.jcommune.model;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
+import org.hibernate.dialect.MySQL5InnoDBDialect;
 /**
  *
  * @author Temdegon

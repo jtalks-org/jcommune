@@ -42,7 +42,33 @@
                 <artifactId>hibernate-core</artifactId>
                 <version>${hibernateVersion}</version>
             </dependency>
-     
+            <dependency>
+                <groupId>javax.transaction</groupId>
+                <artifactId>jta</artifactId>
+                <version>1.1</version>
+            </dependency>     
+            <dependency>
+                <groupId>javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>3.12.1.GA</version>
+            </dependency>
+     <!-- JDBC -->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>5.1.15</version>
+            </dependency>
+      <!-- Logging -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.6.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>1.6.1</version>
+            </dependency>
       <!-- Spring -->
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -67,7 +93,12 @@
                 <artifactId>spring-beans</artifactId>
                 <version>${springVersion}</version>
             </dependency>
-     
+  <!-- AOP -->
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>1.6.10</version>
+            </dependency>
 
       <!-- TestNG & Mockito -->
             <dependency>
