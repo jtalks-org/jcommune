@@ -3,6 +3,12 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
 
+    <bean id="exceptionTranslationInterceptor"
+          class="org.springframework.dao.support.PersistenceExceptionTranslationInterceptor"/>
+    <aop:config>
+        <aop:advisor advice-ref="exceptionTranslationInterceptor"
+                     pointcut="execution(* org.jtalks.jcommune.model.dao.Dao+.* (*))"/>
+    </aop:config>
 
 
     <bean id="abstractHibernateDao" class="org.jtalks.jcommune.model.dao.hibernate.AbstractHibernateDao" abstract="true">
