@@ -4,9 +4,13 @@ package org.jtalks.jcommune.model.entity;
  *
  * @author Temdegon
  */
-public interface Persistent {
+public abstract class Persistent {
+    private long id;
+    public Long getId() {
+        return id;
+    }
 
-    Long getId();
-
-    void setId(Long id);
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

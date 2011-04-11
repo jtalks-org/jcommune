@@ -6,22 +6,10 @@ import java.util.Date;
  *
  * @author Pasha V
  */
-public class Post implements Persistent {
-
-    private long id;
+public class Post extends Persistent {
     private Date postDate;
     private User userCreated;
     private String postContent;
-
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     /**
      * @return the postDate

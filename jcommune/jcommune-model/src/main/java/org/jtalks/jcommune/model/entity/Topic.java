@@ -7,9 +7,8 @@ import java.util.List;
  *
  * @author Pasha V
  */
-public class Topic implements Persistent {
+public class Topic extends Persistent {
 
-    private long id;
     private Date creationDate;
     private User userCreated;
     private String topicName;
@@ -23,16 +22,6 @@ public class Topic implements Persistent {
         posts.remove(postToRemove);
     }
     
-    @Override
-    public Long getId() {
-        return this.id;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     /**
      * @return the creationDate
      */

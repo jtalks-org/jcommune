@@ -4,22 +4,11 @@ package org.jtalks.jcommune.model.entity;
  *
  * @author Pasha V
  */
-public class User implements Persistent {
+public class User extends Persistent {
 
-    private long id;
     private String lastName;
     private String firstName;
     private String nickName;
-
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     /**
      * @return the lastName
