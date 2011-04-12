@@ -25,7 +25,6 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import java.util.List;
 import org.hibernate.Query;
-import org.hibernate.Transaction;
 import org.jtalks.jcommune.model.entity.Persistent;
 import org.jtalks.jcommune.model.entity.User;
 

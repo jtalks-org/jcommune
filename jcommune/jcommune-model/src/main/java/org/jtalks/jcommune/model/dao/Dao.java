@@ -27,18 +27,39 @@ import java.util.List;
 import org.jtalks.jcommune.model.entity.Persistent;
 
 /**
- *
+ * Basic Data Access Object interface
  * @author Temdegon
  */
 public interface Dao<T extends Persistent> {
 
+    /**
+     * Save or update the persistable object
+     * @param persistent object to save
+     */
     void saveOrUpdate(T persistent);
 
+    /**
+     * Delete the object by it's id
+     * @param id the id
+     */
     void delete(Long id);
 
+    /**
+     * Delete the object from data storage
+     * @param persistent 
+     */
     void delete(T persistent);
 
+    /**
+     * Get the object by id
+     * @param id
+     * @return 
+     */
     T get(Long id);
 
+    /**
+     * Get the list of objects
+     * @return list of objects
+     */
     List<T> getAll();
 }
