@@ -21,7 +21,6 @@
  * The JTalks Project
  * http://www.jtalks.org
  */
-
 package org.jtalks.jcommune.model.entity;
 
 import java.util.Date;
@@ -31,6 +30,7 @@ import java.util.Date;
  * @author Temdegon
  */
 public class Post extends Persistent {
+
     private Date postDate;
     private User userCreated;
     private String postContent;

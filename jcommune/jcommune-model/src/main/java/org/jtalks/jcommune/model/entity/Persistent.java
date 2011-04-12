@@ -21,7 +21,6 @@
  * The JTalks Project
  * http://www.jtalks.org
  */
-
 package org.jtalks.jcommune.model.entity;
 
 /**
@@ -29,7 +28,9 @@ package org.jtalks.jcommune.model.entity;
  * @author Temdegon
  */
 public abstract class Persistent {
+
     private long id;
+
     public Long getId() {
         return id;
     }

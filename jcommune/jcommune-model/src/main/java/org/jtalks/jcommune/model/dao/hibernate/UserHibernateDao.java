@@ -21,7 +21,6 @@
  * The JTalks Project
  * http://www.jtalks.org
  */
-
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import java.util.List;
@@ -38,10 +37,7 @@ public class UserHibernateDao extends AbstractHibernateDao<Persistent> {
 
     @Override
     public void saveOrUpdate(Persistent user) {
-        Transaction tr = getSession().getTransaction();
-        tr.begin();
         getSession().save(user);
-        tr.commit();
     }
 
     @Override
@@ -52,18 +48,12 @@ public class UserHibernateDao extends AbstractHibernateDao<Persistent> {
     }
 
     @Override
-    public void delete(Persistent user) {
-        getSession().delete(user);
-    }
-
-    @Override
     public User get(Long id) {
-        return (User)getSession().load(User.class, id);
+        return (User) getSession().load(User.class, id);
     }
 
     @Override
     public List<Persistent> getAll() {
         return getSession().createQuery("from User").list();
     }
-    
 }

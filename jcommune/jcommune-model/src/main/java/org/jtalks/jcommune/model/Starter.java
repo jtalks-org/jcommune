@@ -21,12 +21,8 @@
  * The JTalks Project
  * http://www.jtalks.org
  */
-
 package org.jtalks.jcommune.model;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.jtalks.jcommune.model.dao.Dao;
 import org.jtalks.jcommune.model.entity.User;
 import org.springframework.context.ApplicationContext;
@@ -45,7 +41,7 @@ public class Starter {
         User user = new User();
         user.setNickName("TEmdegon");
 
-       uhd.saveOrUpdate(user);
+        uhd.saveOrUpdate(user);
 
     }
 }

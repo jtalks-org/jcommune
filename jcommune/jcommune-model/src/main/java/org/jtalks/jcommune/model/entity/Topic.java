@@ -21,7 +21,6 @@
  * The JTalks Project
  * http://www.jtalks.org
  */
-
 package org.jtalks.jcommune.model.entity;
 
 import java.util.Date;
@@ -41,11 +40,11 @@ public class Topic extends Persistent {
     public void addPost(Post newPost) {
         posts.add(newPost);
     }
-    
+
     public void removePost(Post postToRemove) {
         posts.remove(postToRemove);
     }
-    
+
     /**
      * @return the creationDate
      */

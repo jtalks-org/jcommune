@@ -21,7 +21,6 @@
  * The JTalks Project
  * http://www.jtalks.org
  */
-
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.SessionFactory;
@@ -34,7 +33,13 @@ import org.jtalks.jcommune.model.entity.Persistent;
  * @author Temdegon
  */
 public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<T> {
+
     private SessionFactory sessionFactory;
+
+    @Override
+    public void delete(Persistent persistent) {
+        getSession().delete(persistent);
+    }
 
     protected Session getSession() {
         return sessionFactory.getCurrentSession();

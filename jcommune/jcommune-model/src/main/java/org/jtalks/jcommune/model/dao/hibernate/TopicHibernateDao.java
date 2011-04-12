@@ -21,57 +21,37 @@
  * The JTalks Project
  * http://www.jtalks.org
  */
-package org.jtalks.jcommune.model.entity;
+package org.jtalks.jcommune.model.dao.hibernate;
+
+import java.util.List;
+import org.hibernate.Query;
+import org.jtalks.jcommune.model.entity.Topic;
 
 /**
  *
  * @author Temdegon
  */
-public class User extends Persistent {
+public class TopicHibernateDao extends AbstractHibernateDao<Topic> {
 
-    private String lastName;
-    private String firstName;
-    private String nickName;
-
-    /**
-     * @return the lastName
-     */
-    public String getLastName() {
-        return lastName;
+    @Override
+    public void saveOrUpdate(Topic topic) {
+        getSession().save(topic);
     }
 
-    /**
-     * @param lastName the lastName to set
-     */
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    @Override
+    public void delete(Long id) {
+        Query query = getSession().createQuery("delete Author where id= :topicId");
+        query.setLong("topicId", id);
+        query.executeUpdate();
     }
 
-    /**
-     * @return the firstName
-     */
-    public String getFirstName() {
-        return firstName;
+    @Override
+    public Topic get(Long id) {
+        return (Topic) getSession().load(Topic.class, id);
     }
 
-    /**
-     * @param firstName the firstName to set
-     */
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    /**
-     * @return the nickName
-     */
-    public String getNickName() {
-        return nickName;
-    }
-
-    /**
-     * @param nickName the nickName to set
-     */
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
+    @Override
+    public List<Topic> getAll() {
+        return getSession().createQuery("from Topic").list();
     }
 }
