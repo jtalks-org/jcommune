@@ -7,7 +7,7 @@
     <LINK href="css/main.css" type=text/css rel=stylesheet>
 </head>
 <body>
-<%@ include file="WEB-INF/jsp/template/header.jsp" %>
+<%@ include file="jsp/template/header.jsp" %>
 <table cellspacing=0 cellpadding=10 width="100%" border=0>      
     <tr>
         <td bgcolor="#ffffff">

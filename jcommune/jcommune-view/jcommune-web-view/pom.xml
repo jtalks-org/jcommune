@@ -10,12 +10,26 @@
   </parent>
   <artifactId>jcommune-web-view</artifactId>
   <packaging>war</packaging>
-  <name>${artifactId}</name>
+  <name>jcommune</name>
   <url>www.jtalks.org</url>
   <description>
     This module contains web resources (images, js, html, jsp, etc) and other
     web related resources, like web.xml.
   </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+      <version>3.0.5.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+      <version>3.0.5.RELEASE</version>
+    </dependency>
+  </dependencies>
+  
 
   <build>
     <plugins>
