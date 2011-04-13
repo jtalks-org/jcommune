@@ -28,7 +28,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
- *
+ * Represents the topic of the forum.
+ * Contains the list of related {@link Post}
  * @author Temdegon
  */
 public class Topic extends Persistent {

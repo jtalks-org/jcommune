@@ -33,7 +33,7 @@ import org.jtalks.jcommune.model.entity.Persistent;
 public interface Dao<T extends Persistent> {
 
     /**
-     * Save or update the persistable object
+     * Save or update the persistent object
      * @param persistent object to save
      */
     void saveOrUpdate(T persistent);

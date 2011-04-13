@@ -28,7 +28,8 @@ import org.hibernate.Query;
 import org.jtalks.jcommune.model.entity.Topic;
 
 /**
- *
+ * Data Access Object for {@link Topic} instances
+ * 
  * @author Temdegon
  */
 public class TopicHibernateDao extends AbstractHibernateDao<Topic> {

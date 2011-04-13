@@ -29,7 +29,8 @@ import org.jtalks.jcommune.model.entity.Persistent;
 import org.jtalks.jcommune.model.entity.User;
 
 /**
- *
+ * DAO for instances of {@link User}
+ * 
  * @author Temdegon
  */
 public class UserHibernateDao extends AbstractHibernateDao<Persistent> {

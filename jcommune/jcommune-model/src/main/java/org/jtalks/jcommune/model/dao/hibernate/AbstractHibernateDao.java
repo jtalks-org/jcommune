@@ -29,7 +29,9 @@ import org.jtalks.jcommune.model.dao.Dao;
 import org.jtalks.jcommune.model.entity.Persistent;
 
 /**
- *
+ * Basic class for access to the {@link Persistent} objects.
+ * Uses to load objects from database, save, update or delete them.
+ * 
  * @author Temdegon
  */
 public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<T> {

@@ -24,7 +24,8 @@
 package org.jtalks.jcommune.model.entity;
 
 /**
- *
+ * Stores information about the forum user
+ * 
  * @author Temdegon
  */
 public class User extends Persistent {

@@ -24,7 +24,8 @@
 package org.jtalks.jcommune.model.entity;
 
 /**
- *
+ * Basic class for persistent objects
+ * 
  * @author Temdegon
  */
 public abstract class Persistent {
