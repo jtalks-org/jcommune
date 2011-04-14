@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-        <class name="org.jtalks.jcommune.model.entity.User" table="user">
-        <id name="id" column="id">
+        <class name="org.jtalks.jcommune.model.entity.User" table="USER">
+        <id name="id" column="ID">
             <generator class="native"/>
         </id>
-        <property name="firstName"/>
-        <property name="lastName"/>
-        <property name="nickName"/>
+        <property name="firstName" column="FIRST_NAME"/>
+        <property name="lastName" column="LAST_NAME"/>
+        <property name="nickName" column="NICK_NAME"/>
     </class>
 </hibernate-mapping>

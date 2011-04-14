@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="org.jtalks.jcommune.model.entity.Topic" table="TOPIC">
+        <id name="id" column="ID">
+            <generator class="native"/>
+        </id>
+        <set name="posts">
+            <key column="TOPIC"/>
+            <one-to-many class="org.jtalks.jcommune.model.entity.Post"/>
+        </set>      
+        <many-to-one name="userCreated" class="org.jtalks.jcommune.model.entity.User" 
+            column="USER_CREATED"/>       
+        <property name="topicName" column="TOPIC_NAME"/>
+    </class>
+</hibernate-mapping>
