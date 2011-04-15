@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <html>
 <head>
     <title></title>
@@ -30,10 +29,3 @@ HELLOOOOOO
 
 </body>
 </html>
-=======
-<html>
-<body>
-<h2>Hello World!</h2>
-</body>
-</html>
->>>>>>> 61194b40b6d7eb91659527a6fb4a290ce098dbdf

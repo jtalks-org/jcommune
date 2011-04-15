@@ -4,8 +4,6 @@
          http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
 
-
-
   
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
@@ -13,3 +11,4 @@
 
 
 </web-app>
+
