@@ -35,6 +35,7 @@ public class Post extends Persistent {
     private Date postDate;
     private User userCreated;
     private String postContent;
+    private Topic post;
 
     /**
      * @return the postDate
@@ -107,5 +108,19 @@ public class Post extends Persistent {
         hash = 17 * hash + (this.userCreated != null ? this.userCreated.hashCode() : 0);
         hash = 17 * hash + (this.postContent != null ? this.postContent.hashCode() : 0);
         return hash;
+    }
+
+    /**
+     * @return the post
+     */
+    public Topic getPost() {
+        return post;
+    }
+
+    /**
+     * @param post the post to set
+     */
+    public void setPost(Topic post) {
+        this.post = post;
     }
 }

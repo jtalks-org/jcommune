@@ -1,4 +1,4 @@
-/* 
+/*
  * JTalks for uniting people
  * Copyright (C) 2011  JavaTalks Team
  * 
@@ -34,12 +34,12 @@ import org.jtalks.jcommune.model.entity.Persistent;
  * 
  * @author Temdegon
  */
-public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<T> {
+public abstract class AbstractHibernateDao <T extends Persistent> implements Dao <T> {
 
     private SessionFactory sessionFactory;
 
     @Override
-    public void delete(Persistent persistent) {
+    public void delete(T persistent) {
         getSession().delete(persistent);
     }
 
