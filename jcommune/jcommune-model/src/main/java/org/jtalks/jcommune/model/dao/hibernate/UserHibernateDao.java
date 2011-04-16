@@ -29,17 +29,23 @@ import org.jtalks.jcommune.model.entity.Persistent;
 import org.jtalks.jcommune.model.entity.User;
 
 /**
- * DAO for instances of {@link User}
+ * DAO for instances of {@link User}.
  * 
- * @author Temdegon
+ * @author Pavel Vervenko
  */
 public class UserHibernateDao extends AbstractHibernateDao<Persistent> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void saveOrUpdate(Persistent user) {
         getSession().save(user);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void delete(Long userId) {
         Query query = getSession().createQuery("delete Author where id= :authorId");
@@ -47,11 +53,17 @@ public class UserHibernateDao extends AbstractHibernateDao<Persistent> {
         query.executeUpdate();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public User get(Long id) {
         return (User) getSession().load(User.class, id);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Persistent> getAll() {
         return getSession().createQuery("from User").list();
