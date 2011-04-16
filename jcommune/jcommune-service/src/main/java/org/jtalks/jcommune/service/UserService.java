@@ -23,22 +23,12 @@
  */
 package org.jtalks.jcommune.service;
 
-import java.util.List;
-
-import org.jtalks.jcommune.model.entity.Persistent;
+import org.jtalks.jcommune.model.entity.User;
 
 /**
  * @author Snail
  *
  */
-public interface EntityService<T extends Persistent> {
-    void saveOrUpdate(T persistent);
+public interface UserService extends EntityService<User> {
 
-    void delete(Long id);
-
-    void delete(T persistent);
-
-    T get(Long id);
-
-    List<T> getAll();
 }
