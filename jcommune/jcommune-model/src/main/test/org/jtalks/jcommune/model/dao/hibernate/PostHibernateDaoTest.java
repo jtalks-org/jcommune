@@ -35,7 +35,11 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
-
+/**
+ * DAO tests for instance of {@link PostHibernateDao}
+ *
+ * @author Artem Mamchych
+ */
 public class PostHibernateDaoTest extends BaseTest {
 
     /** Hibernate Session Factory instance. */
@@ -84,7 +88,7 @@ public class PostHibernateDaoTest extends BaseTest {
 
     @Test
     public void testSave() throws Exception {
-        //Add 2 users to DB
+        //Add 2 Posts to DB
         dao.saveOrUpdate(entity);
         dao.saveOrUpdate(new Post());
 

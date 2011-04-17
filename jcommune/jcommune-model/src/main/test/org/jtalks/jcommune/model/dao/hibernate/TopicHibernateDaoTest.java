@@ -35,6 +35,11 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * DAO tests for instance of {@link TopicHibernateDao}
+ *
+ * @author Artem Mamchych
+ */
 public class TopicHibernateDaoTest extends BaseTest {
 
     /** Hibernate Session Factory instance. */
@@ -83,7 +88,7 @@ public class TopicHibernateDaoTest extends BaseTest {
 
     @Test
     public void testSave() throws Exception {
-        //Add 2 users to DB
+        //Add 2 Topics to DB
         dao.saveOrUpdate(entity);
         dao.saveOrUpdate(new Topic());
 
