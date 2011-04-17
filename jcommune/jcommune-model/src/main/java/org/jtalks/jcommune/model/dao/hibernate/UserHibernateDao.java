@@ -48,7 +48,7 @@ public class UserHibernateDao extends AbstractHibernateDao<Persistent> {
      */
     @Override
     public void delete(Long userId) {
-        Query query = getSession().createQuery("delete Author where id= :authorId");
+        Query query = getSession().createQuery("delete User where id= :authorId");
         query.setLong("authorId", userId);
         query.executeUpdate();
     }
