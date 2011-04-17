@@ -24,14 +24,14 @@
 
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.entity.Persistent;
 import org.jtalks.jcommune.model.entity.User;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.springframework.test.context.ContextConfiguration;
+import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -41,11 +41,10 @@ import java.util.List;
  *
  * @author Artem Mamchych
  */
+@ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
 public class UserHibernateDaoTest extends BaseTest {
 
-    /**
-     * Hibernate Session Factory instance.
-     */
+    /** Hibernate Session Factory instance. */
     @Resource(name = "sessionFactory")
     private SessionFactory sessionFactory;
 
@@ -53,22 +52,20 @@ public class UserHibernateDaoTest extends BaseTest {
     private User entity;
     private List<Persistent> listAll;
 
-    @Before
+    @BeforeMethod
     public void setUp() throws Exception {
         dao = new UserHibernateDao();
         dao.setSessionFactory(sessionFactory);
+        Assert.assertNotNull(sessionFactory, SESSION_FACTORY_IS_NULL);
         entity = new User();
         entity.setFirstName("FirstName");
         entity.setLastName("LastName");
         entity.setNickName("NickName");
 
-        //Clear DB table
-        Query query = sessionFactory.getCurrentSession().createQuery("delete "
-                + entity.getClass().getSimpleName());
-        query.executeUpdate();
+        clearDbTable(entity, sessionFactory);
     }
 
-    @After
+    @AfterMethod
     public void tearDown() throws Exception {
         entity = null;
     }
@@ -77,14 +74,14 @@ public class UserHibernateDaoTest extends BaseTest {
     public void testEntityState() throws Exception {
         testSave();
         listAll = dao.getAll();
-        Assert.assertTrue(PERSISTENCE_ERROR, entity.equals(listAll.get(0)));
-        Assert.assertFalse(PERSISTENCE_ERROR, entity.equals(listAll.get(1)));
+        Assert.assertTrue(entity.equals(listAll.get(0)), PERSISTENCE_ERROR);
+        Assert.assertFalse(entity.equals(listAll.get(1)), PERSISTENCE_ERROR);
     }
 
     @Test
     public void testDBEmpty() throws Exception {
         int sizeBefore = dao.getAll().size();
-        Assert.assertEquals(DB_TABLE_NOT_EMPTY, 0, sizeBefore);
+        Assert.assertEquals(0, sizeBefore, DB_TABLE_NOT_EMPTY);
     }
 
     @Test
@@ -94,7 +91,7 @@ public class UserHibernateDaoTest extends BaseTest {
         dao.saveOrUpdate(new User());
 
         int size = dao.getAll().size();
-        Assert.assertEquals(ENTITIES_IS_NOT_INCREASED_BY_2, 2, size);
+        Assert.assertEquals(2, size, ENTITIES_IS_NOT_INCREASED_BY_2);
     }
 
     @Test
@@ -102,7 +99,7 @@ public class UserHibernateDaoTest extends BaseTest {
         testSave();
         listAll = dao.getAll();
         int size = listAll.size();
-        Assert.assertEquals(DB_MUST_BE_NOT_EMPTY, 2, size);
+        Assert.assertEquals(2, size, DB_MUST_BE_NOT_EMPTY);
 
         for (Persistent p : listAll) {
             dao.delete(p);
@@ -115,7 +112,7 @@ public class UserHibernateDaoTest extends BaseTest {
         testSave();
         listAll = dao.getAll();
         int size = listAll.size();
-        Assert.assertEquals(DB_MUST_BE_NOT_EMPTY, 2, size);
+        Assert.assertEquals(2, size, DB_MUST_BE_NOT_EMPTY);
 
         for (Persistent p : listAll) {
             dao.delete(p.getId());
@@ -128,7 +125,7 @@ public class UserHibernateDaoTest extends BaseTest {
         testSave();
         listAll = dao.getAll();
         int size = listAll.size();
-        Assert.assertEquals(DB_MUST_BE_NOT_EMPTY, 2, size);
+        Assert.assertEquals(2, size, DB_MUST_BE_NOT_EMPTY);
 
         for (Persistent p : listAll) {
             dao.delete(dao.get(p.getId()));
@@ -141,7 +138,7 @@ public class UserHibernateDaoTest extends BaseTest {
         dao.saveOrUpdate(entity);
 
         int size = dao.getAll().size();
-        Assert.assertEquals(ENTITIES_IS_NOT_INCREASED_BY_1, 1, size);
+        Assert.assertEquals(1, size, ENTITIES_IS_NOT_INCREASED_BY_1);
     }
 
     @Test
@@ -151,6 +148,6 @@ public class UserHibernateDaoTest extends BaseTest {
         dao.saveOrUpdate(entity);
 
         int size = dao.getAll().size();
-        Assert.assertEquals(ENTITIES_IS_NOT_INCREASED_BY_1, 1, size);
+        Assert.assertEquals(1, size, ENTITIES_IS_NOT_INCREASED_BY_1);
     }
 }

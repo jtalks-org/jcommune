@@ -25,26 +25,18 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.jtalks.jcommune.model.dao.Dao;
 import org.jtalks.jcommune.model.entity.Persistent;
-import org.junit.Assert;
-import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.lang.reflect.Field;
+import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 
 /**
  * BaseTest for extension by unit test classes
  *
+ *
  * @author Artem Mamchych
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
-@Transactional
-public abstract class BaseTest {
+public abstract class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
 
     /** Assert fail messages definitions */
 
@@ -53,4 +45,16 @@ public abstract class BaseTest {
     public static final String ENTITIES_IS_NOT_INCREASED_BY_1 = "count of entities in DB is NOT increased by 1";
     public static final String ENTITIES_IS_NOT_INCREASED_BY_2 = "count of entities in DB is NOT increased by 2";
     public static final String DB_MUST_BE_NOT_EMPTY = "DB table must contain entities added by testSave()";
+    public static final String SESSION_FACTORY_IS_NULL = "session factory is null!";
+
+    /**
+     * Cleans database table from all records.
+     * @param entity instance of {@link Persistent} interface
+     * @param sessionFactory Hibernate Session Factory instance
+     */
+    protected void clearDbTable(Persistent entity, SessionFactory sessionFactory) {
+                Query query = sessionFactory.getCurrentSession().createQuery("delete "
+                + entity.getClass().getSimpleName());
+        query.executeUpdate();
+    }
 }

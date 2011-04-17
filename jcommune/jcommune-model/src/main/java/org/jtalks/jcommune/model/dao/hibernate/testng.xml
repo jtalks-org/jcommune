@@ -1,8 +1,0 @@
-<!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
-<suite name="Dao testsuite" verbose="1" >
-  <test name="Nopackage" >
-    <classes>
-       <class name="org.jtalks.jcommune.model.dao.hibernate.UserHibernateDaoTest" />
-    </classes>
-  </test>
-</suite>
