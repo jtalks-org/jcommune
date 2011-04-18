@@ -1,18 +1,20 @@
 <%--
   Created by IntelliJ IDEA.
   User: Christoph
-  Date: 13.04.2011
-  Time: 18:01:04
+  Date: 16.04.2011
+  Time: 23:18:02
   To change this template use File | Settings | File Templates.
 --%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
 <html>
 <head>
-    <title></title>
+    <title><decorator:title default="JCommune"/>></title>
     <meta name="keywords" content="">
     <meta name="description" content="">
     <META content="text/html; charset=windows-1251" http-equiv=Content-Type>
-    <LINK href="WEB-INF/css/main.css" type=text/css
+    <LINK href="css/main.css" type=text/css
           rel=stylesheet>
 </head>
 <body>
@@ -31,33 +33,25 @@
         </tr>
         <tr>
             <td class="background">
-                <a href="url">&nbsp&nbsp<span class="nav">Forum</span></a> |
+                <a href="forum.html">&nbsp&nbsp<span class="nav">Forum</span></a> |
                <span style="float: right">
-                <a href="url">En</a>
+                <a href="?lang=en">En</a>
                 |
-                <a href="url">Ru</a>
+                <a href="?lang=ru">Ru</a>
                 </span>
             </td>
         </tr>
         <tr>
             <td bgcolor="003366"></td>
+
         </tr>
+
     </table>
     &nbsp
-    <table cellspacing=0 cellpadding=0 width=100% border=0>
-        <tr>
-            <td width=120 class="background" valign="top">
-                <table cellspacing=0 cellpadding=0 width=125 border=0>
-                    <tr>
-                        <td bgcolor="#ffffff">
 
-                        </td>
-                    </tr>
-                </table>
-            </td>
-
-        </tr>
-    </table>
 </div>
+<decorator:body/>
+<hr width=100% size=2 color="#003366">
+<span class="text">Copyright 2011. JTalks</span> <br>
 </body>
 </html>
