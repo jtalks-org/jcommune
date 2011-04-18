@@ -12,6 +12,13 @@
         <context-artifact name="jcommune-web-view:war exploded" />
       </configuration>
     </facet>
+    <facet type="Spring" name="Spring">
+      <configuration>
+        <fileset id="fileset1" name="My Fileset" removed="false">
+          <file>file://$MODULE_DIR$/src/main/resources/application-servlet.xml</file>
+        </fileset>
+      </configuration>
+    </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_6" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/target/classes" />
@@ -33,6 +40,24 @@
     <orderEntry type="library" exported="" name="Maven: org.springframework:spring-expression:3.0.5.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.springframework:spring-webmvc:3.0.5.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.springframework:spring-context-support:3.0.5.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Maven: opensymphony:sitemesh:2.4.2" level="project" />
+    <orderEntry type="module" module-name="jcommune-web-controller" exported="" />
+    <orderEntry type="module" module-name="jcommune-model" exported="" />
+    <orderEntry type="library" exported="" name="Maven: org.springframework:spring-orm:3.0.5.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.springframework:spring-jdbc:3.0.5.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.springframework:spring-tx:3.0.5.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.hibernate:hibernate-core:3.3.2.GA" level="project" />
+    <orderEntry type="library" exported="" name="Maven: antlr:antlr:2.7.6" level="project" />
+    <orderEntry type="library" exported="" name="Maven: commons-collections:commons-collections:3.1" level="project" />
+    <orderEntry type="library" exported="" name="Maven: dom4j:dom4j:1.6.1" level="project" />
+    <orderEntry type="library" exported="" name="Maven: xml-apis:xml-apis:1.0.b2" level="project" />
+    <orderEntry type="library" exported="" name="Maven: javax.transaction:jta:1.1" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.slf4j:slf4j-api:1.6.1" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.aspectj:aspectjweaver:1.6.10" level="project" />
+    <orderEntry type="library" exported="" name="Maven: mysql:mysql-connector-java:5.1.15" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.slf4j:slf4j-simple:1.6.1" level="project" />
+    <orderEntry type="library" exported="" name="Maven: javassist:javassist:3.12.1.GA" level="project" />
+    <orderEntry type="library" exported="" name="Maven: javax.servlet:jstl:1.2" level="project" />
   </component>
 </module>
 
