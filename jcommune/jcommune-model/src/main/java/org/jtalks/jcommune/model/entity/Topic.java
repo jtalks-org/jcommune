@@ -24,6 +24,7 @@
 package org.jtalks.jcommune.model.entity;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -92,7 +93,7 @@ public class Topic extends Persistent {
     /**
      * @return the posts
      */
-    public List<Post> getPosts() {
+    public Collection<Post> getPosts() {
         return posts;
     }
 
