@@ -29,43 +29,25 @@ import java.util.List;
 
 /**
  * Represents the topic of the forum.
- * Contains the list of related {@link Post}.
- * @author Pavel Vervenko
+ * Contains the list of related {@link Post}
+ * @author Temdegon
  */
 public class Topic extends Persistent {
 
-    /**
-     * The creation date of the topic.
-     */
     private Date creationDate;
-    /**
-     * The user who create the topic
-     */
     private User userCreated;
     private String topicName;
-    /**
-     * The list of topic's posts
-     */
     private List<Post> posts = new ArrayList();
 
-    /**
-     * Add new {@link Post} to the topic.
-     * @param newPost 
-     */
     public void addPost(Post newPost) {
         posts.add(newPost);
     }
 
-    /**
-     * Remove the post from the topic.
-     * @param postToRemove 
-     */
     public void removePost(Post postToRemove) {
         posts.remove(postToRemove);
     }
 
     /**
-     * Get the post creation date.
      * @return the creationDate
      */
     public Date getCreationDate() {
@@ -73,7 +55,6 @@ public class Topic extends Persistent {
     }
 
     /**
-     * Set the post creation date.
      * @param creationDate the creationDate to set
      */
     public void setCreationDate(Date creationDate) {
@@ -81,7 +62,6 @@ public class Topic extends Persistent {
     }
 
     /**
-     * Get the user who created the post.
      * @return the userCreated
      */
     public User getUserCreated() {
@@ -89,15 +69,13 @@ public class Topic extends Persistent {
     }
 
     /**
-     * The the author of the post.
-     * @param userCreated the user who create the post
+     * @param userCreated the userCreated to set
      */
     public void setUserCreated(User userCreated) {
         this.userCreated = userCreated;
     }
 
     /**
-     * Get the topic name.
      * @return the topicName
      */
     public String getTopicName() {
@@ -105,7 +83,6 @@ public class Topic extends Persistent {
     }
 
     /**
-     * Set the topic name.
      * @param topicName the topicName to set
      */
     public void setTopicName(String topicName) {
@@ -113,15 +90,13 @@ public class Topic extends Persistent {
     }
 
     /**
-     * Get the list of the posts.
-     * @return the list of posts
+     * @return the posts
      */
     public List<Post> getPosts() {
         return posts;
     }
 
     /**
-     * Set the list of posts
      * @param posts the posts to set
      */
     public void setPosts(List<Post> posts) {
@@ -130,9 +105,7 @@ public class Topic extends Persistent {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
+        if (this == obj) return true;
         if (obj == null) {
             return false;
         }

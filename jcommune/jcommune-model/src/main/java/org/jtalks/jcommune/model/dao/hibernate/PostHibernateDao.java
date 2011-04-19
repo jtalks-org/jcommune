@@ -31,21 +31,15 @@ import org.jtalks.jcommune.model.entity.Post;
  * The class is responsible for loading {@link Post} objects from database, 
  * save, update and delete them.
  * 
- * @author Pavel Vervenko
+ * @author Temdegon
  */
 public class PostHibernateDao extends AbstractHibernateDao<Post> {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void saveOrUpdate(Post post) {
         getSession().save(post);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void delete(Long id) {
         Query query = getSession().createQuery("delete Post where id= :postId");
@@ -53,17 +47,11 @@ public class PostHibernateDao extends AbstractHibernateDao<Post> {
         query.executeUpdate();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Post get(Long id) {
         return (Post) getSession().load(Post.class, id);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<Post> getAll() {
         return getSession().createQuery("from Post").list();
