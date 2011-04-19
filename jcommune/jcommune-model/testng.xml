@@ -1,11 +1,10 @@
 <!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
 <suite name="jtalks.jcommune.model testsuite" >
-  <test name="dao.hibernate" verbose="1" >
-    <classes>
-       <class name="org.jtalks.jcommune.model.dao.hibernate.TopicHibernateDaoTest" />
-       <class name="org.jtalks.jcommune.model.dao.hibernate.PostHibernateDaoTest" />
-       <class name="org.jtalks.jcommune.model.dao.hibernate.UserHibernateDaoTest" />
-
-    </classes>
-  </test>
+    <test name="dao.hibernate" verbose="1" >
+        <classes>
+            <class name="org.jtalks.jcommune.model.dao.hibernate.PostHibernateDaoTest" />
+            <class name="org.jtalks.jcommune.model.dao.hibernate.UserHibernateDaoTest" />
+            <class name="org.jtalks.jcommune.model.dao.hibernate.TopicHibernateDaoTest" />
+        </classes>
+    </test>
 </suite>
