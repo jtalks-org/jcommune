@@ -22,4 +22,5 @@
     <module>jcommune-web-controller</module>
     <module>jcommune-web-view</module>
   </modules>
+
 </project>
