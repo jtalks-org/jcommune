@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>jcommune</artifactId>
+    <groupId>org.jtalks.jcommune</groupId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <groupId>org.jtalks.jcommune</groupId>
+  <artifactId>jcommune-service</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <name>jcommune-service</name>
+  <url>www.jtalks.org</url>
+  <description>
+        This is the module that contains all the business logic of the project, also - transactions
+        are implemented on this level. 
+  </description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  
+
+
+
+</project>
+
