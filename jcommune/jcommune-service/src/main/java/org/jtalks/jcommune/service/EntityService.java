@@ -1,4 +1,4 @@
-/*
+/* 
  * JTalks for uniting people
  * Copyright (C) 2011  JavaTalks Team
  * 
@@ -21,40 +21,24 @@
  * The JTalks Project
  * http://www.jtalks.org
  */
-package org.jtalks.jcommune.model.dao.hibernate;
+package org.jtalks.jcommune.service;
 
-import org.hibernate.SessionFactory;
-import org.hibernate.classic.Session;
-import org.jtalks.jcommune.model.dao.Dao;
+import java.util.List;
+
 import org.jtalks.jcommune.model.entity.Persistent;
 
 /**
- * Basic class for access to the {@link Persistent} objects.
- * Uses to load objects from database, save, update or delete them.
- * 
- * @author Pavel Vervenko
+ * @author Snail
+ *
  */
-public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<T> {
+public interface EntityService<T extends Persistent> {
+    void saveOrUpdate(T persistent);
 
-    private SessionFactory sessionFactory;
+    void delete(Long id);
 
-    @Override
-    public void delete(T persistent) {
-        getSession().delete(persistent);
-    }
+    void delete(T persistent);
 
-    /**
-     * Get the current session.
-     * @return current Session
-     */
-    protected Session getSession() {
-        return sessionFactory.getCurrentSession();
-    }
+    T get(Long id);
 
-    /**
-     * @param sessionFactory the sessionFactory to set
-     */
-    public void setSessionFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
+    List<T> getAll();
 }

@@ -24,18 +24,26 @@
 package org.jtalks.jcommune.model.entity;
 
 /**
- * Basic class for persistent objects
+ * Basic class for persistent objects.
  * 
- * @author Temdegon
+ * @author Pavel Vervenko
  */
 public abstract class Persistent {
 
     private long id;
 
+    /**
+     * Get the primary id of the persistent object.
+     * @return the id
+     */
     public long getId() {
         return id;
     }
 
+    /**
+     * Set the id for the persistent object.
+     * @param id id to set
+     */
     public void setId(long id) {
         this.id = id;
     }
