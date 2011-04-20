@@ -19,7 +19,7 @@
         </tr>
     </table>
 
-    <input type="submit" value="<spring:message code="label.addtopic"/>"/>
+     <input type="submit" value="<spring:message code="label.addtopic"/>"/>
 </form:form>
 </body>
 </html>
