@@ -74,7 +74,7 @@ public class TransactionalTopicService implements TopicService {
 	 */
 	@Override
 	public List<Topic> getAll() {
-		return topicDao.getAll();
+		throw new UnsupportedOperationException("This operation is't supported yet");
 	}
 
 }
