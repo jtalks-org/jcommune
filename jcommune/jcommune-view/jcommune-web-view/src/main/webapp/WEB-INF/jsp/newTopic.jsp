@@ -1,4 +1,5 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib prefix="spring" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%--
   Created by IntelliJ IDEA.
   User: Christoph
@@ -10,16 +11,20 @@
 <html>
 <head><title>Simple jsp page</title></head>
 <body>
-<form:form method="POST" modelAttribute="">
+<form action="/jcommune/createNewTopic.html" method="POST">
     <table border="2" width="100%">
         <tr>
-            <td width="80%"><spring:message code="label.topic"/></td>
-            <td width="10%"><spring:message code="label.author"/></td>
-            <td width="10%"><spring:message code="label.date"/></td>
+            <td width="30%">Topic: <input type="text" name="topic"/></td>
+        </tr>
+        <tr>
+            <td width="30%">Author: <input type="text" name="author"/></td>
+        </tr>
+        <tr>
+            <td height="200">Text: <input type="text" name="bodytext"/></td>
         </tr>
     </table>
 
-    <input type="submit" value="<spring:message code="label.addtopic"/>"/>
-</form:form>
+    <input type="submit" value="Submit new topic"/>
+</form>
 </body>
 </html>

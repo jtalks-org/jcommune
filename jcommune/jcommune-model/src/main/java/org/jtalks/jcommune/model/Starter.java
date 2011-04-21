@@ -30,7 +30,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  *
- * @author Pavel Vervenko
+ * @author Temdegon
  */
 public class Starter {
 
@@ -40,7 +40,7 @@ public class Starter {
 
         User user = new User();
         user.setNickName("TEmdegon");
-        
+
         //uhd.saveOrUpdate(user);
 
     }

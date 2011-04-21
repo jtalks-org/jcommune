@@ -26,9 +26,9 @@ package org.jtalks.jcommune.model.entity;
 import java.util.Date;
 
 /**
- * Represents the post of the forum.
+ * Represents the post of the forum
  * 
- * @author Pavel Vervenko
+ * @author Temdegon
  */
 public class Post extends Persistent {
 

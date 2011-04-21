@@ -28,41 +28,29 @@ import org.hibernate.Query;
 import org.jtalks.jcommune.model.entity.Topic;
 
 /**
- * Data Access Object for {@link Topic} instances.
+ * Data Access Object for {@link Topic} instances
  * 
- * @author Pavel Vervenko
+ * @author Temdegon
  */
 public class TopicHibernateDao extends AbstractHibernateDao<Topic> {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void saveOrUpdate(Topic topic) {
         getSession().save(topic);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void delete(Long id) {
-        Query query = getSession().createQuery("delete Topic where id= :topicId");
+        Query query = getSession().createQuery("delete Author where id= :topicId");
         query.setLong("topicId", id);
         query.executeUpdate();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Topic get(Long id) {
         return (Topic) getSession().load(Topic.class, id);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<Topic> getAll() {
         return getSession().createQuery("from Topic").list();

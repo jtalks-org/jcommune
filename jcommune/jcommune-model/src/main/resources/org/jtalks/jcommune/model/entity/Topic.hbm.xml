@@ -7,11 +7,10 @@
         <id name="id" column="ID">
             <generator class="native"/>
         </id>
-        <list name="posts">
+        <set name="posts">
             <key column="TOPIC"/>
-            <index column="IDX"/>
             <one-to-many class="org.jtalks.jcommune.model.entity.Post"/>
-        </list>      
+        </set>      
         <many-to-one name="userCreated" class="org.jtalks.jcommune.model.entity.User" 
             column="USER_CREATED"/>       
         <property name="topicName" column="TOPIC_NAME"/>

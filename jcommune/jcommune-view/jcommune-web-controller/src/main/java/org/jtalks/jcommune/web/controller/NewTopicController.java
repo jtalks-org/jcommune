@@ -1,12 +1,24 @@
-/* 
+package org.jtalks.jcommune.web.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+/**
+ * Created by IntelliJ IDEA.
+ * User: Christoph
+ * Date: 21.04.2011
+ * Time: 0:57:43
+ *
  * JTalks for uniting people
  * Copyright (C) 2011  JavaTalks Team
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
@@ -16,19 +28,15 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  * Also add information on how to contact you by electronic and paper mail.
- * 
- * This file creation date: Apr 12, 2011 / 8:05:19 PM
- * The JTalks Project
- * http://www.jtalks.org
  */
-package org.jtalks.jcommune.service;
+@Controller
+public class NewTopicController {
+    
+    @RequestMapping(value = "/createNewTopic", method = RequestMethod.POST)
+    public ModelAndView submitNewTopic(@RequestParam("topic") String topic,
+                                       @RequestParam("author") String author,
+                                       @RequestParam("bodytext") String bodyText){
 
-import org.jtalks.jcommune.model.entity.Post;
-
-/**
- * @author Snail
- *
- */
-public interface PostService extends EntityService<Post> {
-
+        return new ModelAndView("redirect:forum.html");
+    }
 }
