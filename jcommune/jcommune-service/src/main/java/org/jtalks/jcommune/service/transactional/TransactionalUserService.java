@@ -33,10 +33,10 @@ import org.jtalks.jcommune.service.UserService;
  * @author Snail
  *
  */
-public class TtransactionalUserService implements UserService {
+public class TransactionalUserService implements UserService {
 	private Dao<User> userDao;
 
-	public TtransactionalUserService(Dao<User> userDao) {
+	public TransactionalUserService(Dao<User> userDao) {
 		this.userDao = userDao;
 	}
 
@@ -77,7 +77,7 @@ public class TtransactionalUserService implements UserService {
 	 */
 	@Override
 	public List<User> getAll() {
-		return userDao.getAll();
+		throw new UnsupportedOperationException("This operation is't supported for this service");
 	}
 
 }

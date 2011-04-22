@@ -73,7 +73,7 @@ public class TransactionalPostService implements PostService {
 	 */
 	@Override
 	public List<Post> getAll() {
-		return postDao.getAll();
+		throw new UnsupportedOperationException("This operation is't supported for this service");
 	}
 
 }

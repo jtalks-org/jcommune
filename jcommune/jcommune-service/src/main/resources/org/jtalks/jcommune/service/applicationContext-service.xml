@@ -4,8 +4,6 @@
        xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-  
-
     <aop:config>
         <aop:pointcut id="defaultTxPointcut" expression="within(org.jtalks.jcommune.service.transactional..*)"/>
         <aop:advisor advice-ref="txAdvice" pointcut-ref="defaultTxPointcut"/>
@@ -19,16 +17,16 @@
         </tx:attributes>
     </tx:advice>
 
-    <bean id="userService" class="org.jtalks.jcommune.service.UserTrasactionlUserService">
+    <bean id="userService" class="org.jtalks.jcommune.service.TransactionalUserService">
         <constructor-arg ref="userDao"/>
     </bean>
     
-    <bean id="postService" class="org.jtalks.jcommune.service.UserTrasactionlPostService">
-        <constructor-arg ref="userDao"/>
+    <bean id="postService" class="org.jtalks.jcommune.service.TransactionalTopicService">
+        <constructor-arg ref="topicDao"/>
     </bean>
     
-    <bean id="topicService" class="org.jtalks.jcommune.service.UserTrasactionlTopicService">
-        <constructor-arg ref="userDao"/>
+    <bean id="topicService" class="org.jtalks.jcommune.service.TransactionalPostService">
+        <constructor-arg ref="postDao"/>
     </bean>
     
 </beans>
