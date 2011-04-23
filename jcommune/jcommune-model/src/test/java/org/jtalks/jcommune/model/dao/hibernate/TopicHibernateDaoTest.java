@@ -24,6 +24,8 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.SessionFactory;
+import org.jtalks.jcommune.model.entity.Persistent;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -43,6 +45,7 @@ public class TopicHibernateDaoTest extends BaseTest {
     /** Hibernate Session Factory instance. */
     @Resource(name = "sessionFactory")
     private SessionFactory sessionFactory;
+
     private TopicHibernateDao dao;
     private Topic entity;
     private List<Topic> listAll;

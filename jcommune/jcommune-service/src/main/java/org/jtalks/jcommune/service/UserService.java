@@ -26,7 +26,7 @@ package org.jtalks.jcommune.service;
 import org.jtalks.jcommune.model.entity.User;
 
 /**
- * @author Osadchuck Eugeny
+ * @author Snail
  *
  */
 public interface UserService extends EntityService<User> {

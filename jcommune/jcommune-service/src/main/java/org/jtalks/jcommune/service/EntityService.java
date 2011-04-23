@@ -28,11 +28,10 @@ import java.util.List;
 import org.jtalks.jcommune.model.entity.Persistent;
 
 /**
- * @author Osadchuck Eugeny
+ * @author Snail
  *
  */
 public interface EntityService<T extends Persistent> {
-	
     void saveOrUpdate(T persistent);
 
     void delete(Long id);
