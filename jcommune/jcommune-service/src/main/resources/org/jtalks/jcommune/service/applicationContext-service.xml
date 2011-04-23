@@ -17,15 +17,15 @@
         </tx:attributes>
     </tx:advice>
 
-    <bean id="userService" class="org.jtalks.jcommune.service.TransactionalUserService">
+    <bean id="userService" class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
         <constructor-arg ref="userDao"/>
     </bean>
     
-    <bean id="postService" class="org.jtalks.jcommune.service.TransactionalTopicService">
+    <bean id="postService" class="org.jtalks.jcommune.service.transactional.TransactionalTopicService">
         <constructor-arg ref="topicDao"/>
     </bean>
     
-    <bean id="topicService" class="org.jtalks.jcommune.service.TransactionalPostService">
+    <bean id="topicService" class="org.jtalks.jcommune.service.transactional.TransactionalPostService">
         <constructor-arg ref="postDao"/>
     </bean>
     
