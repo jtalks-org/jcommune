@@ -33,8 +33,9 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jtalks.jcommune</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>jcommune-web-controller</artifactId>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>
@@ -67,7 +68,7 @@
             <deployables>
               <deployable>
                 <groupId>org.jtalks.jcommune</groupId>
-                <artifactId>jcommune-web-view</artifactId>
+                <artifactId>jcommune</artifactId>
                 <type>war</type>
               </deployable>
             </deployables>

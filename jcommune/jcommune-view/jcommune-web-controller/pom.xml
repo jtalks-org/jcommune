@@ -14,17 +14,26 @@
         This module is responsible for event handling of the web-view module. 
   </description>
 
-<dependencies>
-  <dependency>
-    <groupId>org.jtalks.jcommune</groupId>
-    <artifactId>jcommune-model</artifactId>
-  </dependency>
+  <build>
+  	<plugins>
+  		<plugin>
+  			<groupId>org.maven.ide.eclipse</groupId>
+  			<artifactId>lifecycle-mapping</artifactId>
+  			<version>0.9.9-SNAPSHOT</version>
+  			<configuration><mappingId>generic</mappingId><configurators></configurators><mojoExecutions></mojoExecutions></configuration>
+  		</plugin>
+  	</plugins>
+  </build>
+  <dependencies>
 
-  <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-webmvc</artifactId>          
-      </dependency>
-</dependencies>
+  	<dependency>
+  		<groupId>org.springframework</groupId>
+  		<artifactId>spring-webmvc</artifactId>
+  		<version>3.0.5.RELEASE</version>
+  		<type>jar</type>
+  		<scope>compile</scope>
+  	</dependency>
+  </dependencies>
   
   
 </project>

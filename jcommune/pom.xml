@@ -6,11 +6,7 @@
   <artifactId>jcommune</artifactId>
   <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
-  
-
-
   <name>${artifactId}</name>
-
 
   <modules>
     <module>jcommune-model</module>
@@ -22,19 +18,19 @@
     <dependencies>
       <!--Child modules-->
       <dependency>
-        <groupId>org.jtalks.jcommune</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>jcommune-model</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.jtalks.jcommune</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>jcommune-service</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.jtalks.jcommune</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>jcommune-web-controller</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -82,17 +78,19 @@
 
       <!-- TestNG & Mockito -->
       <dependency>
-        <groupId>org.testng</groupId>
-        <artifactId>testng</artifactId>
-        <version>5.14.2</version>
-      </dependency>
-      <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
         <version>1.8.5</version>
       </dependency>
 
 
+      <dependency>
+      	<groupId>org.testng</groupId>
+      	<artifactId>testng</artifactId>
+      	<version>6.0.1</version>
+      	<type>jar</type>
+      	<scope>compile</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -107,15 +105,19 @@
           <source>1.6</source>
           <target>1.6</target>
         </configuration>
-      </plugin>         
-   
-   
+      </plugin>              
       <plugin>
         <groupId>org.codehaus.sonar</groupId>
         <artifactId>sonar-maven3-plugin</artifactId>
         <version>2.3</version>
       </plugin>        
     
+      <plugin>
+      	<groupId>org.maven.ide.eclipse</groupId>
+      	<artifactId>lifecycle-mapping</artifactId>
+      	<version>0.9.9-SNAPSHOT</version>
+      	<configuration><mappingId>customizable</mappingId><configurators></configurators><mojoExecutions></mojoExecutions></configuration>
+      </plugin>
     </plugins>
   </build>
 
