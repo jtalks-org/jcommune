@@ -37,7 +37,7 @@ public class Topic extends Persistent {
     private Date creationDate;
     private User userCreated;
     private String topicName;
-    private List<Post> posts = new ArrayList();
+    private List<Post> posts = new ArrayList<Post>();
 
     public void addPost(Post newPost) {
         posts.add(newPost);

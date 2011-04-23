@@ -26,7 +26,7 @@ package org.jtalks.jcommune.service;
 import org.jtalks.jcommune.model.entity.Topic;
 
 /**
- * @author Snail
+ * @author Osadchuck Eugeny
  *
  */
 public interface TopicService extends EntityService<Topic> {

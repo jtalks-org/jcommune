@@ -26,7 +26,7 @@ package org.jtalks.jcommune.service;
 import org.jtalks.jcommune.model.entity.Post;
 
 /**
- * @author Snail
+ * @author Osadchuck Eugeny
  *
  */
 public interface PostService extends EntityService<Post> {

@@ -68,7 +68,7 @@
             <deployables>
               <deployable>
                 <groupId>org.jtalks.jcommune</groupId>
-                <artifactId>jcommune</artifactId>
+                <artifactId>jcommune-web-view</artifactId>
                 <type>war</type>
               </deployable>
             </deployables>

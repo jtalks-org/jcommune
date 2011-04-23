@@ -35,6 +35,14 @@ import org.jtalks.jcommune.service.PostService;
  */
 public class TransactionalPostService implements PostService {
 	private Dao<Post> postDao;
+	
+	/**
+	 * 
+	 * @param postDao
+	 */
+	public TransactionalPostService(Dao<Post> postDao) {
+		this.postDao = postDao;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.jtalks.jcommune.service.EntityService#saveOrUpdate(org.jtalks.jcommune.model.entity.Persistent)
