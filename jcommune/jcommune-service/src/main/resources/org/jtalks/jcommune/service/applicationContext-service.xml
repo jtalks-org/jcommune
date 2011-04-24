@@ -2,7 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:aop="http://www.springframework.org/schema/aop"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd" >
 
     <aop:config>
         <aop:pointcut id="defaultTxPointcut" expression="within(org.jtalks.jcommune.service.transactional..*)"/>
@@ -17,16 +17,16 @@
         </tx:attributes>
     </tx:advice>
 
-    <bean id="userService" class="org.jtalks.jcommune.service.TransactionalUserService">
-        <constructor-arg ref="userDao"/>
+    <bean id="userService" class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
+        <constructor-arg index="0" ref="userDao"/>
     </bean>
     
-    <bean id="postService" class="org.jtalks.jcommune.service.TransactionalTopicService">
-        <constructor-arg ref="topicDao"/>
+    <bean id="postService" class="org.jtalks.jcommune.service.transactional.TransactionalTopicService">
+        <constructor-arg index="0" ref="topicDao"/>
     </bean>
     
-    <bean id="topicService" class="org.jtalks.jcommune.service.TransactionalPostService">
-        <constructor-arg ref="postDao"/>
+    <bean id="topicService" class="org.jtalks.jcommune.service.transactional.TransactionalPostService">
+        <constructor-arg index="0" ref="postDao"/>
     </bean>
     
 </beans>

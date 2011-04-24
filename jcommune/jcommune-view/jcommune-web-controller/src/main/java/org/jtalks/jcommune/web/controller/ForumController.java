@@ -1,10 +1,15 @@
 package org.jtalks.jcommune.web.controller;
 
 
+import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.TopicService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 
 /**
@@ -12,20 +17,20 @@ import org.springframework.web.servlet.ModelAndView;
  * User: Christoph
  * Date: 17.04.2011
  * Time: 11:01:39
- * 
+ * <p/>
  * JTalks for uniting people
  * Copyright (C) 2011  JavaTalks Team
- *
+ * <p/>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- *
+ * <p/>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -35,13 +40,18 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class ForumController {
 
-    @RequestMapping(value="/forum", method = RequestMethod.GET)
+    @Autowired
+    TopicService topicService;
+
+    @RequestMapping(value = "/forum", method = RequestMethod.GET)
     public ModelAndView registerPage() {
         ModelAndView mav = new ModelAndView("forum");
+        List<Topic> topics = topicService.getAll();
+        mav.addObject("topicsName", topics);
         return mav;
     }
 
-    @RequestMapping(value="/forum", method = RequestMethod.POST)
+    @RequestMapping(value = "/forum", method = RequestMethod.POST)
     public ModelAndView postPage() {
         return new ModelAndView("newTopic");
     }
