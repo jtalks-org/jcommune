@@ -30,12 +30,16 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicService;
 
 /**
- * @author Snail
+ * @author Osadchuck Eugeny
  *
  */
 public class TransactionalTopicService implements TopicService {
 	
 	private Dao<Topic> topicDao;
+
+	public TransactionalTopicService(Dao<Topic> topicDao) {
+		this.topicDao = topicDao;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.jtalks.jcommune.service.EntityService#saveOrUpdate(org.jtalks.jcommune.model.entity.Persistent)
