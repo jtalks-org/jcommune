@@ -3,7 +3,9 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
+import java.sql.Date;
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,6 +45,12 @@ public class NewTopicController {
 
     @Autowired
     TopicService topicService;
+
+    @Autowired
+    PostService postService;
+
+    @Autowired
+    UserService userService;
     
     @RequestMapping(value = "/createNewTopic", method = RequestMethod.POST)
     public ModelAndView submitNewTopic(@RequestParam("topic") String topicName,
@@ -51,10 +60,13 @@ public class NewTopicController {
         user.setFirstName(author);
         user.setLastName(author);
         user.setNickName(author);
+        userService.saveOrUpdate(user);
+
 
         Post post = new Post();
         post.setUserCreated(user);
         post.setPostContent(bodyText);
+        postService.saveOrUpdate(post);
 
         ArrayList<Post> posts = new ArrayList<Post>();
         posts.add(post);
@@ -62,7 +74,6 @@ public class NewTopicController {
         Topic topic = new Topic();
         topic.setTopicName(topicName);
         topic.setPosts(posts);
-
         topicService.saveOrUpdate(topic);       
 
 
