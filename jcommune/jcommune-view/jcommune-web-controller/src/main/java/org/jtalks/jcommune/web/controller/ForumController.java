@@ -40,14 +40,12 @@ import java.util.List;
 @Controller
 public class ForumController {
 
-    @Autowired
-    TopicService topicService;
+    private TopicService topicService;
 
     @RequestMapping(value = "/forum", method = RequestMethod.GET)
     public ModelAndView registerPage() {
-        ModelAndView mav = new ModelAndView("forum");
-        List<Topic> topics = topicService.getAll();
-        mav.addObject("topicsName", topics);
+        ModelAndView mav = new ModelAndView("forum");        
+
         return mav;
     }
 

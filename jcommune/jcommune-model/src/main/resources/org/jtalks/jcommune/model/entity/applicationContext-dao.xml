@@ -9,16 +9,26 @@
 
     <bean id="exceptionTranslationInterceptor"
           class="org.springframework.dao.support.PersistenceExceptionTranslationInterceptor"/>
+
+    <!--Declaration of AOP Config -->
     <aop:config>
         <aop:advisor advice-ref="exceptionTranslationInterceptor"
                      pointcut="execution(* org.jtalks.jcommune.model.dao.Dao+.* (*))"/>
     </aop:config>
 
+    <!--Declaration of DAO beans -->
+    <bean id="userDao" class="org.jtalks.jcommune.model.dao.hibernate.UserHibernateDao" parent="abstractHibernateDao"/>
+    <bean id="topicDao" class="org.jtalks.jcommune.model.dao.hibernate.TopicHibernateDao" parent="abstractHibernateDao"/>
+    <bean id="postDao" class="org.jtalks.jcommune.model.dao.hibernate.PostHibernateDao" parent="abstractHibernateDao"/>
 
+    <!--Injecting sessionFactory bean to class AbstractHibernateDao, this way resolves a problem of multiple DAO beans
+     definition -->
     <bean id="abstractHibernateDao" class="org.jtalks.jcommune.model.dao.hibernate.AbstractHibernateDao" abstract="true">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
-    <bean id="userDao" class="org.jtalks.jcommune.model.dao.hibernate.UserHibernateDao" parent="abstractHibernateDao"/>
+
+  <!--Declaration and setting up datasource, sessionFactory and transactionalManager beans -->
+
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="${jdbc.driverClassName}"/>
         <property name="url" value="${jdbc.url}"/>
@@ -37,7 +47,7 @@
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
-                <prop key="hibernate.query.factory_class">org.hibernate.hql.ast.ASTQueryTranslatorFactory</prop>
+                <prop key="hibernate.query.factory_class">org.hibernate.hql.ast.ASTQueryTranslatorFactory</prop>   
                 <prop key="hibernate.dialect">${hibernate.dialect}</prop>
                 <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
                 <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>

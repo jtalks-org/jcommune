@@ -7,6 +7,7 @@
         <id name="id" column="ID">
             <generator class="native"/>
         </id>
+      
         <set name="posts">
             <key column="TOPIC"/>
             <one-to-many class="org.jtalks.jcommune.model.entity.Post"/>

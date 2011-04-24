@@ -1,10 +1,18 @@
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.TopicService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.ArrayList;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Christoph
@@ -31,11 +39,33 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Controller
 public class NewTopicController {
+
+    @Autowired
+    TopicService topicService;
     
     @RequestMapping(value = "/createNewTopic", method = RequestMethod.POST)
-    public ModelAndView submitNewTopic(@RequestParam("topic") String topic,
+    public ModelAndView submitNewTopic(@RequestParam("topic") String topicName,
                                        @RequestParam("author") String author,
                                        @RequestParam("bodytext") String bodyText){
+        User user = new User();
+        user.setFirstName(author);
+        user.setLastName(author);
+        user.setNickName(author);
+
+        Post post = new Post();
+        post.setUserCreated(user);
+        post.setPostContent(bodyText);
+
+        ArrayList<Post> posts = new ArrayList<Post>();
+        posts.add(post);
+
+        Topic topic = new Topic();
+        topic.setTopicName(topicName);
+        topic.setPosts(posts);
+
+        topicService.saveOrUpdate(topic);       
+
+
 
         return new ModelAndView("redirect:forum.html");
     }
