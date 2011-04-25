@@ -47,7 +47,12 @@ public class Topic extends Persistent {
     /**
      * The list of topic's posts
      */
-    private List<Post> posts = new ArrayList();
+    private List<Post> posts;
+    
+    public Topic() {
+        posts = new ArrayList<Post>();
+        creationDate = new Date();
+    }
 
     /**
      * Add new {@link Post} to the topic.
@@ -55,6 +60,7 @@ public class Topic extends Persistent {
      */
     public void addPost(Post newPost) {
         posts.add(newPost);
+        newPost.setTopic(this);
     }
 
     /**
@@ -128,33 +134,4 @@ public class Topic extends Persistent {
     public void setPosts(List<Post> posts) {
         this.posts = posts;
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Topic other = (Topic) obj;
-        if (this.creationDate != other.creationDate && (this.creationDate == null || !this.creationDate.equals(other.creationDate))) {
-            return false;
-        }
-        if ((this.topicName == null) ? (other.topicName != null) : !this.topicName.equals(other.topicName)) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 67 * hash + (this.creationDate != null ? this.creationDate.hashCode() : 0);
-        hash = 67 * hash + (this.topicName != null ? this.topicName.hashCode() : 0);
-        return hash;
-    }
-}
+ }

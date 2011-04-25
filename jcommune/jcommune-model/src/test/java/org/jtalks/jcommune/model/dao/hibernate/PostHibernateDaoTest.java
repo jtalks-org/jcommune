@@ -32,7 +32,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.annotation.Resource;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -49,21 +48,14 @@ public class PostHibernateDaoTest extends BaseTest {
     private PostHibernateDao dao;
     private Post entity;
     private List<Post> listAll;
-    private Date dateNow;
 
     @BeforeMethod
     public void setUp() throws Exception {
-        dateNow = new Date(System.currentTimeMillis());
-
         dao = new PostHibernateDao();
         dao.setSessionFactory(sessionFactory);
         Assert.assertNotNull(sessionFactory, SESSION_FACTORY_IS_NULL);
         entity = new Post();
-        entity.setPost(null);
         entity.setPostContent("PostContent");
-        entity.setPostDate(dateNow);
-        entity.setUserCreated(null);
-
         clearDbTable(entity, sessionFactory);
     }
 

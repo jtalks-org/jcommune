@@ -39,7 +39,6 @@ import org.springframework.test.context.testng.AbstractTransactionalTestNGSpring
 public abstract class BaseTest extends AbstractTransactionalTestNGSpringContextTests {
 
     /** Assert fail messages definitions */
-
     public static final String PERSISTENCE_ERROR = "Not all fields of entity successfully saved/restored from DB!";
     public static final String DB_TABLE_NOT_EMPTY = "DB table is not empty";
     public static final String ENTITIES_IS_NOT_INCREASED_BY_1 = "count of entities in DB is NOT increased by 1";
@@ -53,7 +52,7 @@ public abstract class BaseTest extends AbstractTransactionalTestNGSpringContextT
      * @param sessionFactory Hibernate Session Factory instance
      */
     protected void clearDbTable(Persistent entity, SessionFactory sessionFactory) {
-                Query query = sessionFactory.getCurrentSession().createQuery("delete "
+        Query query = sessionFactory.getCurrentSession().createQuery("delete "
                 + entity.getClass().getSimpleName());
         query.executeUpdate();
     }

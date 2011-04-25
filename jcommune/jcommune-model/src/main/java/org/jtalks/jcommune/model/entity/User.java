@@ -75,36 +75,4 @@ public class User extends Persistent {
     public void setNickName(String nickName) {
         this.nickName = nickName;
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final User other = (User) obj;
-        if ((this.lastName == null) ? (other.lastName != null) : !this.lastName.equals(other.lastName)) {
-            return false;
-        }
-        if ((this.firstName == null) ? (other.firstName != null) : !this.firstName.equals(other.firstName)) {
-            return false;
-        }
-        if ((this.nickName == null) ? (other.nickName != null) : !this.nickName.equals(other.nickName)) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 23 * hash + (this.lastName != null ? this.lastName.hashCode() : 0);
-        hash = 23 * hash + (this.firstName != null ? this.firstName.hashCode() : 0);
-        hash = 23 * hash + (this.nickName != null ? this.nickName.hashCode() : 0);
-        return hash;
-    }
-
 }
