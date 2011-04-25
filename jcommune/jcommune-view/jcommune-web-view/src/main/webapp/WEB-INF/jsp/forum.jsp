@@ -19,7 +19,6 @@
         <td width="10%"><spring:message code="label.author"/></td>
         <td width="10%"><spring:message code="label.date"/></td>
     </tr>
-
     
     <c:forEach var="topics" items="${topicsList}">
       <tr>

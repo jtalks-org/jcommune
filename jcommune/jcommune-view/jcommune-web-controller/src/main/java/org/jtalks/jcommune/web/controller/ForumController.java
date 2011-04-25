@@ -1,16 +1,14 @@
 package org.jtalks.jcommune.web.controller;
 
 
-import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -49,7 +47,7 @@ public class ForumController {
     }
 
     @RequestMapping(value = "/forum", method = RequestMethod.GET)
-    public ModelAndView registerPage() {
+    public ModelAndView registerPage(Locale locale) {
         ModelAndView mav = new ModelAndView("forum");         
         return mav;
     }

@@ -20,7 +20,7 @@
             <td width="30%">Author: <input type="text" name="author"/></td>
         </tr>
         <tr>
-            <td height="200">Text: <input type="text" name="bodytext"/></td>
+            <td height="200">Text: <textarea name="bodytext"  cols="40" rows="10"></textarea></td>
         </tr>
 
     </table>
