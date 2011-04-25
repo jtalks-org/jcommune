@@ -77,7 +77,7 @@ public class TransactionalUserService implements UserService {
 	 */
 	@Override
 	public List<User> getAll() {
-		throw new UnsupportedOperationException("This operation is't supported for this service");
+       return userDao.getAll();   		
 	}
 
 }

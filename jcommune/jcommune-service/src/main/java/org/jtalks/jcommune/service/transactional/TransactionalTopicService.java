@@ -31,54 +31,58 @@ import org.jtalks.jcommune.service.TopicService;
 
 /**
  * @author Osadchuck Eugeny
- *
  */
 public class TransactionalTopicService implements TopicService {
-	
-	private Dao<Topic> topicDao;
 
-	public TransactionalTopicService(Dao<Topic> topicDao) {
-		this.topicDao = topicDao;
-	}
+    private Dao<Topic> topicDao;
 
-	/* (non-Javadoc)
-	 * @see org.jtalks.jcommune.service.EntityService#saveOrUpdate(org.jtalks.jcommune.model.entity.Persistent)
-	 */
-	@Override
-	public void saveOrUpdate(Topic persistent) {
-		topicDao.saveOrUpdate(persistent);
-	}
+    public TransactionalTopicService(Dao<Topic> topicDao) {
+        this.topicDao = topicDao;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.jtalks.jcommune.service.EntityService#delete(java.lang.Long)
-	 */
-	@Override
-	public void delete(Long id) {
-		topicDao.delete(id);
-	}
+    /* (non-Javadoc)
+      * @see org.jtalks.jcommune.service.EntityService#saveOrUpdate(org.jtalks.jcommune.model.entity.Persistent)
+      */
 
-	/* (non-Javadoc)
-	 * @see org.jtalks.jcommune.service.EntityService#delete(org.jtalks.jcommune.model.entity.Persistent)
-	 */
-	@Override
-	public void delete(Topic persistent) {
-		topicDao.delete(persistent);		
-	}
+    @Override
+    public void saveOrUpdate(Topic persistent) {
+        topicDao.saveOrUpdate(persistent);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.jtalks.jcommune.service.EntityService#get(java.lang.Long)
-	 */
-	@Override
-	public Topic get(Long id) {
-		return topicDao.get(id);
-	}
+    /* (non-Javadoc)
+      * @see org.jtalks.jcommune.service.EntityService#delete(java.lang.Long)
+      */
 
-	/* (non-Javadoc)
-	 * @see org.jtalks.jcommune.service.EntityService#getAll()
-	 */
-	@Override
-	public List<Topic> getAll() {
-		throw new UnsupportedOperationException("This operation is't supported yet");
-	}
+    @Override
+    public void delete(Long id) {
+        topicDao.delete(id);
+    }
+
+    /* (non-Javadoc)
+      * @see org.jtalks.jcommune.service.EntityService#delete(org.jtalks.jcommune.model.entity.Persistent)
+      */
+
+    @Override
+    public void delete(Topic persistent) {
+        topicDao.delete(persistent);
+    }
+
+    /* (non-Javadoc)
+      * @see org.jtalks.jcommune.service.EntityService#get(java.lang.Long)
+      */
+
+    @Override
+    public Topic get(Long id) {
+        return topicDao.get(id);
+    }
+
+    /* (non-Javadoc)
+      * @see org.jtalks.jcommune.service.EntityService#getAll()
+      */
+
+    @Override
+    public List<Topic> getAll() {
+        return topicDao.getAll();
+    }
 
 }

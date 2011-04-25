@@ -1,5 +1,6 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%--
   Created by IntelliJ IDEA.
   User: Christoph
@@ -18,6 +19,15 @@
         <td width="10%"><spring:message code="label.author"/></td>
         <td width="10%"><spring:message code="label.date"/></td>
     </tr>
+
+    
+    <c:forEach var="topics" items="${topicsList}">
+      <tr>
+        <td><c:out value="${topics.topicName}"/></td>
+        <td><c:out value="${topics.userCreated}"/> </td>  
+      </tr>
+    </c:forEach>
+
 </table>
 
     <input type="submit" value="<spring:message code="label.addtopic"/>"/>

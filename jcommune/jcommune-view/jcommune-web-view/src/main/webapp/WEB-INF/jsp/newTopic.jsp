@@ -14,7 +14,7 @@
 <form action="/jcommune/createNewTopic.html" method="POST">
     <table border="2" width="100%">
         <tr>
-            <td width="30%">Topic: <input type="text" name="topic"/></td>
+            <td width="30%">Topic: <input type="text" name="topic" /></td>
         </tr>
         <tr>
             <td width="30%">Author: <input type="text" name="author"/></td>
@@ -22,6 +22,7 @@
         <tr>
             <td height="200">Text: <input type="text" name="bodytext"/></td>
         </tr>
+
     </table>
 
     <input type="submit" value="Submit new topic"/>
