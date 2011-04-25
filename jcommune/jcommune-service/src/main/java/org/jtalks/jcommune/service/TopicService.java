@@ -26,7 +26,9 @@ package org.jtalks.jcommune.service;
 import org.jtalks.jcommune.model.entity.Topic;
 
 /**
- * @author Snail
+ * This interface should have methods which give us more abilities in manipulating Topic persistent entity.
+ * 
+ * @author Osadchuck Eugeny
  *
  */
 public interface TopicService extends EntityService<Topic> {

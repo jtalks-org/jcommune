@@ -23,58 +23,25 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import java.util.List;
 
 import org.jtalks.jcommune.model.dao.Dao;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicService;
 
 /**
- * @author Snail
+ * Topic service class. This class contains method needed to manipulate with Topic persistent entity.
+ * 
+ * @author Osadchuck Eugeny
  *
  */
-public class TransactionalTopicService implements TopicService {
+public class TransactionalTopicService extends AbstractTransactionlaEntityService<Topic> implements TopicService {
+
+	/**
+	 * Create an instance of User entity based service
+	 * @param dao - data access object, which should be able do all CRUD operations with topic entity. 
+	 */
+	public TransactionalTopicService(Dao<Topic> dao) {
+		super(dao);
+	}
 	
-	private Dao<Topic> topicDao;
-
-	/* (non-Javadoc)
-	 * @see org.jtalks.jcommune.service.EntityService#saveOrUpdate(org.jtalks.jcommune.model.entity.Persistent)
-	 */
-	@Override
-	public void saveOrUpdate(Topic persistent) {
-		topicDao.saveOrUpdate(persistent);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.jtalks.jcommune.service.EntityService#delete(java.lang.Long)
-	 */
-	@Override
-	public void delete(Long id) {
-		topicDao.delete(id);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.jtalks.jcommune.service.EntityService#delete(org.jtalks.jcommune.model.entity.Persistent)
-	 */
-	@Override
-	public void delete(Topic persistent) {
-		topicDao.delete(persistent);		
-	}
-
-	/* (non-Javadoc)
-	 * @see org.jtalks.jcommune.service.EntityService#get(java.lang.Long)
-	 */
-	@Override
-	public Topic get(Long id) {
-		return topicDao.get(id);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.jtalks.jcommune.service.EntityService#getAll()
-	 */
-	@Override
-	public List<Topic> getAll() {
-		throw new UnsupportedOperationException("This operation is't supported yet");
-	}
-
 }

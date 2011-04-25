@@ -15,7 +15,8 @@
        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd
        ">
 
-
+ 
+  
   <context:component-scan base-package="org.jtalks.jcommune.web.controller" use-default-filters="false">
     <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
   </context:component-scan>
@@ -35,7 +36,7 @@
   </bean>
 
   <bean id="localeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
-    
+          
       </bean>
 
    

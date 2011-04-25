@@ -1,10 +1,15 @@
 package org.jtalks.jcommune.web.controller;
 
 
+import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.TopicService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 
 /**
@@ -35,13 +40,16 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class ForumController {
 
-    @RequestMapping(value="/forum", method = RequestMethod.GET)
+    private TopicService topicService;
+
+    @RequestMapping(value = "/forum", method = RequestMethod.GET)
     public ModelAndView registerPage() {
-        ModelAndView mav = new ModelAndView("forum");
+        ModelAndView mav = new ModelAndView("forum");        
+
         return mav;
     }
 
-    @RequestMapping(value="/forum", method = RequestMethod.POST)
+    @RequestMapping(value = "/forum", method = RequestMethod.POST)
     public ModelAndView postPage() {
         return new ModelAndView("newTopic");
     }

@@ -4,14 +4,21 @@
          http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
 
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+      classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml
+      classpath:/org/jtalks/jcommune/service/applicationContext-service.xml
+    </param-value>
+  </context-param>
+
+  <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
   
-
-
   <welcome-file-list>
     <welcome-file>/WEB-INF/jsp/index.jsp</welcome-file>
   </welcome-file-list>
-
- 
 
 
   <servlet>
@@ -28,7 +35,6 @@
     <url-pattern>*.html</url-pattern>
   </servlet-mapping>
 
-   
 
   <filter>
     <filter-name>sitemesh</filter-name>
