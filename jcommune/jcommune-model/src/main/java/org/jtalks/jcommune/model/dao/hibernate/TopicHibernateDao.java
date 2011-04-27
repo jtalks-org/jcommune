@@ -67,4 +67,31 @@ public class TopicHibernateDao extends AbstractHibernateDao<Topic> {
     public List<Topic> getAll() {
         return getSession().createQuery("from Topic").list();
     }
+
+    /**
+     * Load the Topic with userCreated field initialized. The method doesn't load related posts.
+     * @param id Topic id
+     * @return the Topic or null if the appropriate topic wasn't found
+     */
+    public Topic getTopicWithUser(Long id) {
+        Query query = getSession().createQuery("from Topic as topic "
+                + "join fetch topic.userCreated "
+                + "WHERE topic.id = :topicId");
+        query.setLong("topicId", id);
+        return (Topic) query.uniqueResult();
+    }
+
+    /**
+     * Load the Topic with userCreated and related posts.
+     * @param id Topic id
+     * @return loaded Topic or null if the appropriate topic wasn't found
+     */
+    public Topic getTopicWithPosts(Long id) {
+        Query query = getSession().createQuery("from Topic as topic "
+                + "join fetch topic.userCreated "
+                + "join fetch topic.posts "
+                + "WHERE topic.id = :topicId");
+        query.setLong("topicId", id);
+        return (Topic) query.uniqueResult();
+    }
 }

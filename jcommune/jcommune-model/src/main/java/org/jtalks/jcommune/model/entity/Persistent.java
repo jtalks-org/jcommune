@@ -47,4 +47,26 @@ public abstract class Persistent {
     public void setId(long id) {
         this.id = id;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Persistent other = (Persistent) obj;
+        return id == other.id;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 53 * hash + (int) (this.id ^ (this.id >>> 32));
+        return hash;
+    }
 }
