@@ -11,9 +11,9 @@
             <key column="TOPIC"/>
             <index column="IDX"/>
             <one-to-many class="org.jtalks.jcommune.model.entity.Post"/>
-        </list>
-        <many-to-one name="userCreated" class="org.jtalks.jcommune.model.entity.User"
-            column="USER_CREATED"/>
+        </list>      
+        <many-to-one name="userCreated" class="org.jtalks.jcommune.model.entity.User" 
+            column="USER_CREATED"/>       
         <property name="topicName" column="TOPIC_NAME"/>
     </class>
 </hibernate-mapping>

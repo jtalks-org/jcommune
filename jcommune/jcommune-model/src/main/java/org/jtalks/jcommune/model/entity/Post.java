@@ -26,17 +26,20 @@ package org.jtalks.jcommune.model.entity;
 import java.util.Date;
 
 /**
- * Represents the post of the forum
+ * Represents the post of the forum.
  * 
- * @author Temdegon
+ * @author Pavel Vervenko
  */
 public class Post extends Persistent {
 
     private Date postDate;
     private User userCreated;
     private String postContent;
-    private Topic post;
+    private Topic topic;
 
+    public Post() {
+        postDate = new Date();
+    }
     /**
      * @return the postDate
      */
@@ -79,48 +82,17 @@ public class Post extends Persistent {
         this.postContent = postContent;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Post other = (Post) obj;
-        if (this.postDate != other.postDate && (this.postDate == null || !this.postDate.equals(other.postDate))) {
-            return false;
-        }
-        if (this.userCreated != other.userCreated && (this.userCreated == null || !this.userCreated.equals(other.userCreated))) {
-            return false;
-        }
-        if ((this.postContent == null) ? (other.postContent != null) : !this.postContent.equals(other.postContent)) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 17 * hash + (this.postDate != null ? this.postDate.hashCode() : 0);
-        hash = 17 * hash + (this.userCreated != null ? this.userCreated.hashCode() : 0);
-        hash = 17 * hash + (this.postContent != null ? this.postContent.hashCode() : 0);
-        return hash;
-    }
-
     /**
      * @return the post
      */
-    public Topic getPost() {
-        return post;
+    public Topic getTopic() {
+        return topic;
     }
 
     /**
      * @param post the post to set
      */
-    public void setPost(Topic post) {
-        this.post = post;
+    public void setTopic(Topic topic) {
+        this.topic = topic;
     }
 }

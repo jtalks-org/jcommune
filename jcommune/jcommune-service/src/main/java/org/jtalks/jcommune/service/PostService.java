@@ -26,7 +26,9 @@ package org.jtalks.jcommune.service;
 import org.jtalks.jcommune.model.entity.Post;
 
 /**
- * @author Snail
+ * This interface should have methods which give us more abilities in manipulating Post persistent entity.
+ * 
+ * @author Osadchuck Eugeny
  *
  */
 public interface PostService extends EntityService<Post> {

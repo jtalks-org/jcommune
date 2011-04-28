@@ -26,7 +26,9 @@ package org.jtalks.jcommune.service;
 import org.jtalks.jcommune.model.entity.User;
 
 /**
- * @author Snail
+ * This interface should have methods which give us more abilities in manipulating User persistent entity.   
+ * 
+ * @author Osadchuck Eugeny
  *
  */
 public interface UserService extends EntityService<User> {

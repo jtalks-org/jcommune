@@ -28,17 +28,41 @@ import java.util.List;
 import org.jtalks.jcommune.model.entity.Persistent;
 
 /**
- * @author Snail
- *
+ * This is generic interface for services which would interact with database entities via DAO object.
+ * This interface include all base method declaration which straightly based on database CRUD operations.         
+ * 
+ * @author Osadchuck Eugeny
  */
 public interface EntityService<T extends Persistent> {
+	
+	/**
+	 * Save new row in database table or update if row with current primary id has already existed in database.
+	 * @param persistent - persistent object T which would be saved or updated in database 
+	 */
     void saveOrUpdate(T persistent);
 
+    /**
+     * Delete row in database table corresponded to current primary id.
+     * @param id - primary id of database table row to delete
+     */
     void delete(Long id);
 
+    /**
+     * Delete row in database table corresponded to current persistent object primary id.
+     * @param persistent - persistent object T to delete.
+     */
     void delete(T persistent);
 
+    /**
+     * Get persistent object by id. Method is trying to find persistent object with current primary id and return it. 
+     * @param id - primary id of persistent object to find.
+     * @return - persistent object T or null if row with primary id = id is absent.
+     */
     T get(Long id);
 
+    /**
+     * Get list of all persistence objects T currently present in database.
+     * @return - list of persistence objects T.
+     */
     List<T> getAll();
 }

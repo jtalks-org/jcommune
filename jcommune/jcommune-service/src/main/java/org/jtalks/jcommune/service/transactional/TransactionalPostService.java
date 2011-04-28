@@ -23,61 +23,23 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import java.util.List;
-
 import org.jtalks.jcommune.model.dao.Dao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.PostService;
 
 /**
+ * Post service class. This class contains method needed to manipulate with Post persistent entity.
+ * 
  * @author Osadchuck Eugeny
  *
  */
-public class TransactionalPostService implements PostService {
-	private Dao<Post> postDao;
+public class TransactionalPostService extends AbstractTransactionlaEntityService<Post> implements PostService {
 	
-	public TransactionalPostService(Dao<Post> postDao) {
-		this.postDao = postDao;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.jtalks.jcommune.service.EntityService#saveOrUpdate(org.jtalks.jcommune.model.entity.Persistent)
+	/**
+	 * Create an instance of Post entity based service
+	 * @param dao - data access object, which should be able do all CRUD operations with post entity. 
 	 */
-	@Override
-	public void saveOrUpdate(Post persistent) {
-		postDao.saveOrUpdate(persistent);
+	public TransactionalPostService(Dao<Post> dao) {
+		super(dao);
 	}
-
-	/* (non-Javadoc)
-	 * @see org.jtalks.jcommune.service.EntityService#delete(java.lang.Long)
-	 */
-	@Override
-	public void delete(Long id) {
-		postDao.delete(id);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.jtalks.jcommune.service.EntityService#delete(org.jtalks.jcommune.model.entity.Persistent)
-	 */
-	@Override
-	public void delete(Post persistent) {
-		postDao.delete(persistent);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.jtalks.jcommune.service.EntityService#get(java.lang.Long)
-	 */
-	@Override
-	public Post get(Long id) {
-		return postDao.get(id);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.jtalks.jcommune.service.EntityService#getAll()
-	 */
-	@Override
-	public List<Post> getAll() {
-		throw new UnsupportedOperationException("This operation is't supported for this service");
-	}
-
 }

@@ -23,61 +23,24 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import java.util.List;
-
 import org.jtalks.jcommune.model.dao.Dao;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
 
 /**
- * @author Snail
+ * User service class. This class contains method needed to manipulate with User persistent entity.
+ *  
+ * @author Osadchuck Eugeny
  *
  */
-public class TransactionalUserService implements UserService {
-	private Dao<User> userDao;
+public class TransactionalUserService extends AbstractTransactionlaEntityService<User> implements UserService{
 
-	public TransactionalUserService(Dao<User> userDao) {
-		this.userDao = userDao;
-	}
-
-	/* (non-Javadoc)
-	 * @see main.java.org.jtalks.jcommune.service.EntityService#saveOrUpdate(org.jtalks.jcommune.model.entity.Persistent)
+	/**
+	 * Create an instance of User entity based service
+	 * @param dao - data access object, which should be able do all CRUD operations with user entity. 
 	 */
-	@Override
-	public void saveOrUpdate(User persistent) {
-		userDao.saveOrUpdate(persistent);
-	}
-
-	/* (non-Javadoc)
-	 * @see main.java.org.jtalks.jcommune.service.EntityService#delete(java.lang.Long)
-	 */
-	@Override
-	public void delete(Long id) {
-		userDao.delete(id);
-	}
-
-	/* (non-Javadoc)
-	 * @see main.java.org.jtalks.jcommune.service.EntityService#delete(org.jtalks.jcommune.model.entity.Persistent)
-	 */
-	@Override
-	public void delete(User persistent) {
-		userDao.delete(persistent);
-	}
-
-	/* (non-Javadoc)
-	 * @see main.java.org.jtalks.jcommune.service.EntityService#get(java.lang.Long)
-	 */
-	@Override
-	public User get(Long id) {
-		return userDao.get(id);
-	}
-
-	/* (non-Javadoc)
-	 * @see main.java.org.jtalks.jcommune.service.EntityService#getAll()
-	 */
-	@Override
-	public List<User> getAll() {
-       return userDao.getAll();   		
+	public TransactionalUserService(Dao<User> dao) {
+		super(dao);
 	}
 
 }
