@@ -35,7 +35,7 @@ import org.jtalks.jcommune.model.entity.Persistent;
  * @author Osadchuck Eugeny
  *
  */
-public class AbstractTransactionlaEntityService<T extends Persistent> implements EntityService<T> {
+public abstract class AbstractTransactionlaEntityService<T extends Persistent> implements EntityService<T> {
 	/**
 	 * Dao object implementation.
 	 */
