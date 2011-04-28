@@ -13,16 +13,7 @@
     <description>
         This module contains domain model of the project, and also - persistence layer.
     </description>
-    <build>
-    	<plugins>
-    		<plugin>
-    			<groupId>org.maven.ide.eclipse</groupId>
-    			<artifactId>lifecycle-mapping</artifactId>
-    			<version>0.9.9-SNAPSHOT</version>
-    			<configuration></configuration>
-    		</plugin>
-    	</plugins>
-    </build>
+    
     <dependencies>
         <dependency>
             <groupId>org.hsqldb</groupId>
