@@ -28,42 +28,26 @@
     </bean>
 
     <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-        <property name="basename" value="classpath:messages"/>
+        <property name="basename" value="classpath:/org/jtalks/jcommune/web/view/messages"/>
         <property name="defaultEncoding" value="UTF-8"/>
     </bean>
 
-    <bean id="localeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
-
-    </bean>
+    <bean id="localeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"/>
 
     <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
         <!--<property name="defaultLocale" value="ru"/>-->
     </bean>
 
-<<<<<<< .mine<<<<<<< HEAD
-  <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
-    <property name="defaultLocale" value="en"/>
-  </bean>
-=======    <bean id="handlerMapping"
-          class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
-        <property name="interceptors">
-            <ref bean="localeInterceptor"/>
-        </property>
-    </bean>
->>>>>>> .theirs=======
+
     <bean id="handlerMapping"
           class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
-        <property name="interceptors">
-            <ref bean="localeInterceptor"/>
-        </property>
+        <property name="interceptors" ref="localeInterceptor"/>
     </bean>
->>>>>>> Fixed locale
 
     <mvc:interceptors>
         <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
             <property name="paramName" value="lang"/>
         </bean>
 
-<<<<<<< .mine    </mvc:interceptors>
-=======    </mvc:interceptors>
->>>>>>> .theirs</beans>
+  </mvc:interceptors>
+</beans>

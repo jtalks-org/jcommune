@@ -37,6 +37,6 @@ public class ForumControllerTest {
     
    @Test
     public void init(){
-             
+       assertEquals(1,1);      
     }
 }

@@ -1,16 +1,9 @@
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib prefix="form"uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: Christoph
-  Date: 17.04.2011
-  Time: 11:41:58
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
-<head><title></title></head>
+<head><title>Forum</title></head>
 <body>
 <form:form method="POST">
 <table border="2" width="100%">
@@ -22,7 +15,7 @@
     
     <c:forEach var="topics" items="${topicsList}">
       <tr>
-        <td><c:out value="${topics.topicName}"/></td>
+        <td><a href="${pageContext.request.contextPath}/topics/${topics.id}.html"> <c:out value="${topics.topicName}"/></a></td>
         <td><c:out value="${topics.userCreated}"/> </td>  
       </tr>
     </c:forEach>

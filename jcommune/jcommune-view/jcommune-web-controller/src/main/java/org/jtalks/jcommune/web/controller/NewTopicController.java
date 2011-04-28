@@ -1,21 +1,3 @@
-package org.jtalks.jcommune.web.controller;
-
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.PostService;
-import org.jtalks.jcommune.service.TopicService;
-import org.jtalks.jcommune.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
-
-import java.util.ArrayList;
-import java.sql.Date;
-
 /**
  * Created by IntelliJ IDEA.
  * User: Christoph
@@ -34,11 +16,31 @@ import java.sql.Date;
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  * Also add information on how to contact you by electronic and paper mail.
+ */
+package org.jtalks.jcommune.web.controller;
+
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+
+import java.util.ArrayList;
+
+/**
+ * @author
  */
 @Controller
 public class NewTopicController {
@@ -51,7 +53,7 @@ public class NewTopicController {
 
     @Autowired
     UserService userService;
-    
+
     @RequestMapping(value = "/createNewTopic", method = RequestMethod.POST)
     public ModelAndView submitNewTopic(@RequestParam("topic") String topicName,
                                        @RequestParam("author") String author,
@@ -74,7 +76,7 @@ public class NewTopicController {
         Topic topic = new Topic();
         topic.setTopicName(topicName);
         topic.setUserCreated(user);
-        topic.setPosts(posts);            
+        topic.setPosts(posts);
 
         topicService.saveOrUpdate(topic);
 

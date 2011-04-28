@@ -1,11 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Christoph
-  Date: 16.04.2011
-  Time: 23:18:02
-  To change this template use File | Settings | File Templates.
---%>
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
 <html>
@@ -14,8 +6,8 @@
     <meta name="keywords" content="">
     <meta name="description" content="">
     <META content="text/html; charset=windows-1251" http-equiv=Content-Type>
-    <LINK href="css/main.css" type=text/css
-          rel=stylesheet>
+    <%--TODO: find out what is the name of the variable--%>
+    <LINK href="${pageContext.request.contextPath}/css/main.css" type=text/css rel=stylesheet>
 </head>
 <body>
 <div align="center">
@@ -33,6 +25,8 @@
         </tr>
         <tr>
             <td class="background">
+                <%--TODO: build proper url--%>
+                
                 <a href="forum.html">&nbsp&nbsp<span class="nav">Forum</span></a> |
                <span style="float: right">
                 <a href="?lang=en">En</a>
