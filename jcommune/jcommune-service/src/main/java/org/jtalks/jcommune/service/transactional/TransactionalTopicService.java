@@ -25,6 +25,7 @@ package org.jtalks.jcommune.service.transactional;
 
 
 import org.jtalks.jcommune.model.dao.Dao;
+import org.jtalks.jcommune.model.dao.hibernate.TopicHibernateDao;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicService;
 
@@ -43,5 +44,16 @@ public class TransactionalTopicService extends AbstractTransactionlaEntityServic
 	public TransactionalTopicService(Dao<Topic> dao) {
 		super(dao);
 	}
-	
+
+	@Override
+	public Topic getTopic(long id, boolean isLoadPosts) {
+		Topic topic = null;
+		TopicHibernateDao topicDao = (TopicHibernateDao) dao;
+		if(isLoadPosts){
+			topic = topicDao.getTopicWithPosts(id);
+		}else{
+			topic = topicDao.getTopicWithUser(id);
+		}
+		return topic;
+	}	
 }

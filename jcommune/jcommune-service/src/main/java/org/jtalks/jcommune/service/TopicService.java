@@ -32,5 +32,14 @@ import org.jtalks.jcommune.model.entity.Topic;
  *
  */
 public interface TopicService extends EntityService<Topic> {
-
+	
+	/**
+	 * Get topic with fetched topics fields(userCreated, posts).
+	 * By default method fetch only userCReated field. If you need fetch topic with posts you should set parameter isLoadPosts to true.
+	 * @param id - topic primary id.
+	 * @param isLoadPosts - set to true if you want fetch topic with posts, false fetch topic with userCreated field only
+	 * @return - <code>Topic<code> with fetched topic fields or null if no topic found by this primary id. 
+	 */
+	Topic getTopic(long id, boolean isLoadPosts);
+	
 }
