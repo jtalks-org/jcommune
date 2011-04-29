@@ -23,16 +23,17 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.entity.Topic;
 import java.util.List;
 import org.hibernate.Query;
-import org.jtalks.jcommune.model.entity.Topic;
 
 /**
  * Data Access Object for {@link Topic} instances.
  * 
  * @author Pavel Vervenko
  */
-public class TopicHibernateDao extends AbstractHibernateDao<Topic> {
+public class TopicHibernateDao extends AbstractHibernateDao<Topic> implements TopicDao {
 
     /**
      * {@inheritDoc}
@@ -57,7 +58,7 @@ public class TopicHibernateDao extends AbstractHibernateDao<Topic> {
      */
     @Override
     public Topic get(Long id) {
-        return (Topic) getSession().load(Topic.class, id);
+        return (Topic) getSession().get(Topic.class, id);
     }
 
     /**
@@ -69,28 +70,21 @@ public class TopicHibernateDao extends AbstractHibernateDao<Topic> {
     }
 
     /**
-     * Load the Topic with userCreated field initialized. The method doesn't load related posts.
-     * @param id Topic id
-     * @return the Topic or null if the appropriate topic wasn't found
+     * {@inheritDoc}
+     * @deprecated This method is not needed any more. Use {@link get(id)} instead,
+     * it returns Topic with User now.
      */
+    @Override
     public Topic getTopicWithUser(Long id) {
-        Query query = getSession().createQuery("from Topic as topic "
-                + "join fetch topic.userCreated "
-                + "WHERE topic.id = :topicId");
-        query.setLong("topicId", id);
-        return (Topic) query.uniqueResult();
+        return get(id);
     }
 
     /**
-     * Load the Topic with userCreated and related posts.
-     * @param id Topic id
-     * @return loaded Topic or null if the appropriate topic wasn't found
+     * {@inheritDoc}
      */
+    @Override
     public Topic getTopicWithPosts(Long id) {
-        Query query = getSession().createQuery("from Topic as topic "
-                + "join fetch topic.userCreated "
-                + "join fetch topic.posts "
-                + "WHERE topic.id = :topicId");
+        Query query = getSession().getNamedQuery("getTopicWithPosts");
         query.setLong("topicId", id);
         return (Topic) query.uniqueResult();
     }

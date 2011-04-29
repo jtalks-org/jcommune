@@ -25,6 +25,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import java.util.List;
 import org.hibernate.Query;
+import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.entity.Post;
 
 /**
@@ -33,7 +34,7 @@ import org.jtalks.jcommune.model.entity.Post;
  * 
  * @author Pavel Vervenko
  */
-public class PostHibernateDao extends AbstractHibernateDao<Post> {
+public class PostHibernateDao extends AbstractHibernateDao<Post> implements PostDao {
 
     /**
      * {@inheritDoc}

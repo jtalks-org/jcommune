@@ -24,7 +24,6 @@
 package org.jtalks.jcommune.model.entity;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -36,26 +35,36 @@ import java.util.List;
 public class Topic extends Persistent {
 
     /**
-     * The creation date of the topic.
+     * The creation date of the topic. 
      */
     private Date creationDate;
     /**
      * The user who create the topic
      */
-    private User userCreated;
-    private String topicName;
+    private User topicStarter;
+    private String title;
     /**
      * The list of topic's posts
      */
-    private List<Post> posts;
+    private List<Post> posts = new ArrayList<Post>();
     
     public Topic() {
-        posts = new ArrayList<Post>();
-        creationDate = new Date();
     }
-
+    
+    public Topic(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+    
+    /**
+     * Creates a new Topic with the creationDate initialized with current time.
+     * @return 
+     */
+    public static Topic createNewTopic() {
+        return new Topic(new Date());
+    }
     /**
      * Add new {@link Post} to the topic.
+     * The method sets Posts.topic field to this Topic.
      * @param newPost 
      */
     public void addPost(Post newPost) {
@@ -91,39 +100,39 @@ public class Topic extends Persistent {
      * Get the user who created the post.
      * @return the userCreated
      */
-    public User getUserCreated() {
-        return userCreated;
+    public User getTopicStarter() {
+        return topicStarter;
     }
 
     /**
      * The the author of the post.
      * @param userCreated the user who create the post
      */
-    public void setUserCreated(User userCreated) {
-        this.userCreated = userCreated;
+    public void setTopicStarter(User userCreated) {
+        this.topicStarter = userCreated;
     }
 
     /**
-     * Get the topic name.
+     * Gets the topic name.
      * @return the topicName
      */
-    public String getTopicName() {
-        return topicName;
+    public String getTitle() {
+        return title;
     }
 
     /**
-     * Set the topic name.
-     * @param topicName the topicName to set
+     * Sets the topic title.
+     * @param newTitle the title to set
      */
-    public void setTopicName(String topicName) {
-        this.topicName = topicName;
+    public void setTitle(String newTitle) {
+        this.title = newTitle;
     }
 
     /**
      * Get the list of the posts.
      * @return the list of posts
      */
-    public Collection<Post> getPosts() {
+    public List<Post> getPosts() {
         return posts;
     }
 

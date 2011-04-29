@@ -23,43 +23,26 @@
  */
 package org.jtalks.jcommune.model.dao;
 
-import org.jtalks.jcommune.model.entity.Persistent;
-import java.util.List;
+import org.jtalks.jcommune.model.entity.Topic;
 
 /**
- * Basic Data Access Object interface.
- * @author Pavel Vervenko
+ *
+ * @author Temdegon
  */
-public interface Dao<T extends Persistent> {
+public interface TopicDao extends Dao<Topic> {
 
     /**
-     * Save or update the persistent object.
-     * @param persistent object to save
+     * Load the Topic with userCreated and related posts.
+     * @param id Topic id
+     * @return loaded Topic or null if the appropriate topic wasn't found
      */
-    void saveOrUpdate(T persistent);
+    Topic getTopicWithPosts(Long id);
 
     /**
-     * Delete the object by it's id.
-     * @param id the id
+     * Load the Topic with userCreated field initialized. The method doesn't load related posts.
+     * @param id Topic id
+     * @return the Topic or null if the appropriate topic wasn't found
      */
-    void delete(Long id);
-
-    /**
-     * Delete the object from data storage.
-     * @param persistent 
-     */
-    void delete(T persistent);
-
-    /**
-     * Get the object by id.
-     * @param id
-     * @return 
-     */
-    T get(Long id);
-
-    /**
-     * Get the list of objects.
-     * @return list of objects
-     */
-    List<T> getAll();
+    Topic getTopicWithUser(Long id);
+    
 }

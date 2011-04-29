@@ -27,41 +27,39 @@ import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.entity.Persistent;
 import org.jtalks.jcommune.model.entity.Post;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import javax.annotation.Resource;
 import java.util.List;
+import org.jtalks.jcommune.model.dao.PostDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.testng.annotations.DataProvider;
 
 /**
  * DAO tests for instance of {@link PostHibernateDao}
  *
  * @author Artem Mamchych
  */
+@Test(groups = {"dao"})
 public class PostHibernateDaoTest extends BaseTest {
 
     /** Hibernate Session Factory instance. */
-    @Resource(name = "sessionFactory")
+    @Autowired
     private SessionFactory sessionFactory;
-
-    private PostHibernateDao dao;
+    @Autowired
+    private PostDao dao;
     private Post entity;
+
+    public void setDao(PostDao dao) {
+        this.dao = dao;
+    }
     private List<Post> listAll;
 
     @BeforeMethod
     public void setUp() throws Exception {
-        dao = new PostHibernateDao();
-        dao.setSessionFactory(sessionFactory);
-        Assert.assertNotNull(sessionFactory, SESSION_FACTORY_IS_NULL);
         entity = new Post();
         entity.setPostContent("PostContent");
         clearDbTable(entity, sessionFactory);
-    }
-
-    @AfterMethod
-    public void tearDown() throws Exception {
-        entity = null;
     }
 
     @Test
@@ -101,7 +99,7 @@ public class PostHibernateDaoTest extends BaseTest {
         testDBEmpty();
     }
 
-    @Test
+    @Test(dataProvider = "full-entity")
     public void testGetById() throws Exception {
         testSave();
         listAll = dao.getAll();
@@ -130,5 +128,10 @@ public class PostHibernateDaoTest extends BaseTest {
 
         int size = dao.getAll().size();
         Assert.assertEquals(1, size, ENTITIES_IS_NOT_INCREASED_BY_1);
+    }
+
+    @DataProvider(name = "full-entity")
+    public static Object[][] getTestEntity() {
+        return null;
     }
 }
