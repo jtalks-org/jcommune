@@ -3,7 +3,7 @@
   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
   <class name="Topic" table="TOPIC">
-    <id column="TOPIC_ID" name="id">
+    <id column="TOPIC_ID" name="id" unsaved-value="0">
       <generator class="native"/>
     </id>
     <list name="posts">
@@ -11,8 +11,10 @@
       <index column="LIST_INDEX"/>
       <one-to-many class="Post"/>
     </list>
-    <many-to-one class="User" lazy="false" column="TOPIC_STARTER" name="topicStarter" not-null="true"/>
+    <many-to-one class="User" lazy="false" column="TOPIC_STARTER" name="topicStarter" not-null="true" 
+      foreign-key="FK_USER"/>
     <property column="TITLE" name="title" not-null="true"/>
+    <property column="CREATION_DATE" name="creationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime" not-null="true" />
   </class>
   <query name="getTopicWithPosts">
         <![CDATA[from Topic as topic

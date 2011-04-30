@@ -26,6 +26,7 @@ package org.jtalks.jcommune.model.entity;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.joda.time.DateTime;
 
 /**
  * Represents the topic of the forum.
@@ -37,7 +38,7 @@ public class Topic extends Persistent {
     /**
      * The creation date of the topic. 
      */
-    private Date creationDate;
+    private DateTime creationDate;
     /**
      * The user who create the topic
      */
@@ -51,7 +52,7 @@ public class Topic extends Persistent {
     public Topic() {
     }
     
-    public Topic(Date creationDate) {
+    public Topic(DateTime creationDate) {
         this.creationDate = creationDate;
     }
     
@@ -60,7 +61,7 @@ public class Topic extends Persistent {
      * @return 
      */
     public static Topic createNewTopic() {
-        return new Topic(new Date());
+        return new Topic(new DateTime());
     }
     /**
      * Add new {@link Post} to the topic.
@@ -84,7 +85,7 @@ public class Topic extends Persistent {
      * Get the post creation date.
      * @return the creationDate
      */
-    public Date getCreationDate() {
+    public DateTime getCreationDate() {
         return creationDate;
     }
 
@@ -92,7 +93,7 @@ public class Topic extends Persistent {
      * Set the post creation date.
      * @param creationDate the creationDate to set
      */
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(DateTime creationDate) {
         this.creationDate = creationDate;
     }
 

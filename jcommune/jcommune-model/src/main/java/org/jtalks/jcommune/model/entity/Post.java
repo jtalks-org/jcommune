@@ -23,7 +23,7 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import java.util.Date;
+import org.joda.time.DateTime;
 
 /**
  * Represents the simple version of post of the forum
@@ -34,7 +34,7 @@ import java.util.Date;
  */
 public class Post extends Persistent {
 
-    private Date creationDate;
+    private DateTime creationDate;
     private User userCreated;
     private String postContent;
     private Topic topic;
@@ -42,7 +42,7 @@ public class Post extends Persistent {
     public Post() {
     }
 
-    public Post(Date creationDate) {
+    public Post(DateTime creationDate) {
         this.creationDate = creationDate;
     }
 
@@ -51,20 +51,20 @@ public class Post extends Persistent {
      * @return 
      */
     public static Post createNewPost() {
-        return new Post(new Date());
+        return new Post(new DateTime());
     }
 
     /**
      * @return the postDate
      */
-    public Date getCreationDate() {
+    public DateTime getCreationDate() {
         return creationDate;
     }
 
     /**
      * @param postDate the postDate to set
      */
-    public void setCreationDate(Date postDate) {
+    public void setCreationDate(DateTime postDate) {
         this.creationDate = postDate;
     }
 

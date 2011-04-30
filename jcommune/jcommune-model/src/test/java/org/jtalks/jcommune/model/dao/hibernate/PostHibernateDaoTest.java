@@ -32,6 +32,8 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 import org.jtalks.jcommune.model.dao.PostDao;
+import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.DataProvider;
 
@@ -48,6 +50,8 @@ public class PostHibernateDaoTest extends BaseTest {
     private SessionFactory sessionFactory;
     @Autowired
     private PostDao dao;
+    @Autowired
+    private UserDao userDao;
     private Post entity;
 
     public void setDao(PostDao dao) {
@@ -57,8 +61,11 @@ public class PostHibernateDaoTest extends BaseTest {
 
     @BeforeMethod
     public void setUp() throws Exception {
-        entity = new Post();
+        User user = new User();
+        userDao.saveOrUpdate(user);
+        entity = Post.createNewPost();
         entity.setPostContent("PostContent");
+        entity.setUserCreated(user);
         clearDbTable(entity, sessionFactory);
     }
 
@@ -67,7 +74,7 @@ public class PostHibernateDaoTest extends BaseTest {
         testSave();
         listAll = dao.getAll();
         Assert.assertTrue(entity.equals(listAll.get(0)), PERSISTENCE_ERROR);
-        Assert.assertFalse(entity.equals(listAll.get(1)), PERSISTENCE_ERROR);
+        
     }
 
     @Test
@@ -80,10 +87,8 @@ public class PostHibernateDaoTest extends BaseTest {
     public void testSave() throws Exception {
         //Add 2 Posts to DB
         dao.saveOrUpdate(entity);
-        dao.saveOrUpdate(new Post());
-
         int size = dao.getAll().size();
-        Assert.assertEquals(2, size, ENTITIES_IS_NOT_INCREASED_BY_2);
+        Assert.assertEquals(1, size, ENTITIES_IS_NOT_INCREASED_BY_2);
     }
 
     @Test
@@ -91,7 +96,7 @@ public class PostHibernateDaoTest extends BaseTest {
         testSave();
         listAll = dao.getAll();
         int size = listAll.size();
-        Assert.assertEquals(2, size, DB_MUST_BE_NOT_EMPTY);
+        Assert.assertEquals(1, size, DB_MUST_BE_NOT_EMPTY);
 
         for (Persistent p : listAll) {
             dao.delete(p.getId());

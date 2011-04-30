@@ -25,7 +25,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import java.util.List;
 import org.hibernate.Query;
-import org.jtalks.jcommune.model.entity.Persistent;
+import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
 
 /**
@@ -33,13 +33,13 @@ import org.jtalks.jcommune.model.entity.User;
  * 
  * @author Pavel Vervenko
  */
-public class UserHibernateDao extends AbstractHibernateDao<Persistent> {
+public class UserHibernateDao extends AbstractHibernateDao<User> implements UserDao {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void saveOrUpdate(Persistent user) {
+    public void saveOrUpdate(User user) {
         getSession().save(user);
     }
 
@@ -65,7 +65,7 @@ public class UserHibernateDao extends AbstractHibernateDao<Persistent> {
      * {@inheritDoc}
      */
     @Override
-    public List<Persistent> getAll() {
+    public List<User> getAll() {
         return getSession().createQuery("from User").list();
     }
 }

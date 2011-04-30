@@ -50,7 +50,7 @@ public class UserHibernateDaoTest extends BaseTest {
 
     private UserHibernateDao dao;
     private User entity;
-    private List<Persistent> listAll;
+    private List<User> listAll;
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -101,8 +101,8 @@ public class UserHibernateDaoTest extends BaseTest {
         int size = listAll.size();
         Assert.assertEquals(2, size, DB_MUST_BE_NOT_EMPTY);
 
-        for (Persistent p : listAll) {
-            dao.delete(p);
+        for (User user : listAll) {
+            dao.delete(user);
         }
         testDBEmpty();
     }

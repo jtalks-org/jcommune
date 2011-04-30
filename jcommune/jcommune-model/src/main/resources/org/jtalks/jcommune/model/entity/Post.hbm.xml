@@ -8,7 +8,7 @@
     </id>
     <many-to-one class="User" column="USER_CREATED" 
       fetch="join" foreign-key="FK_USER" lazy="false" name="userCreated" not-null="true"/>
-    <property column="POST_DATE" name="creationDate"/>
-    <property column="POST_CONTENT" name="postContent"/>
+    <property column="POST_DATE" name="creationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime" not-null="true"/>
+    <property column="POST_CONTENT" name="postContent" not-null="true"/>
   </class>
 </hibernate-mapping>
