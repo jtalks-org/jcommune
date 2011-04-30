@@ -73,7 +73,8 @@ public class TransactionalTopicService extends AbstractTransactionlaEntityServic
 
     @Override
     public List<Topic> getAllTopicsWithUsers() {
-        TopicHibernateDao topicHibernateDao = (TopicHibernateDao) topicDao;
+       TopicHibernateDao topicHibernateDao = (TopicHibernateDao) topicDao;
+        
         List<Topic> topicsWithOutUsers = topicHibernateDao.getAll();
         List<Topic> topicsWithUsers = new ArrayList<Topic>(topicsWithOutUsers.size());
         for (int i = 0; i <= topicsWithOutUsers.size(); i++) {

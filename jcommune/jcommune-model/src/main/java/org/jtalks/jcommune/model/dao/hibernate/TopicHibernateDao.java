@@ -32,8 +32,7 @@ import org.jtalks.jcommune.model.entity.Topic;
  * 
  * @author Pavel Vervenko
  */
-public class TopicHibernateDao extends AbstractHibernateDao<Topic> {
-
+public class TopicHibernateDao extends AbstractHibernateDao<Topic>{ 
     /**
      * {@inheritDoc}
      */
@@ -73,6 +72,7 @@ public class TopicHibernateDao extends AbstractHibernateDao<Topic> {
      * @param id Topic id
      * @return the Topic or null if the appropriate topic wasn't found
      */
+
     public Topic getTopicWithUser(Long id) {
         Query query = getSession().createQuery("from Topic as topic "
                 + "join fetch topic.userCreated "
@@ -86,6 +86,7 @@ public class TopicHibernateDao extends AbstractHibernateDao<Topic> {
      * @param id Topic id
      * @return loaded Topic or null if the appropriate topic wasn't found
      */
+    
     public Topic getTopicWithPosts(Long id) {
         Query query = getSession().createQuery("from Topic as topic "
                 + "join fetch topic.userCreated "
