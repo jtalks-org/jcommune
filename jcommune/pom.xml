@@ -58,17 +58,12 @@
         <artifactId>mysql-connector-java</artifactId>
         <version>5.1.15</version>
       </dependency>
-            <!-- Logging
-            <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>1.2.16</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>1.6.1</version>
-            </dependency>   -->
+      <!-- Logging
+      <dependency>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+          <version>1.2.16</version>
+      </dependency> -->
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
@@ -103,6 +98,11 @@
         <artifactId>spring-beans</artifactId>
         <version>${springVersion}</version>
       </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-aop</artifactId>
+        <version>${springVersion}</version>
+      </dependency>
   <!-- AOP -->
       <dependency>
         <groupId>org.aspectj</groupId>
@@ -117,26 +117,26 @@
       </dependency>
 
       <!-- TestNG & Mockito -->
-	        <dependency>
-	            <groupId>org.testng</groupId>
-	            <artifactId>testng</artifactId>
-	            <version>6.0</version>
-	            <scope>test</scope>
-	        </dependency>
+      <dependency>
+        <groupId>org.testng</groupId>
+        <artifactId>testng</artifactId>
+        <version>6.0</version>
+        <scope>test</scope>
+      </dependency>
 	
-	        <dependency>
-	            <groupId>org.hsqldb</groupId>
-	            <artifactId>hsqldb</artifactId>
-	            <version>1.8.0.10</version>
-	            <scope>test</scope>
-	        </dependency>
-	            <dependency>
-	        <groupId>javax.servlet</groupId>
-		        <artifactId>jstl</artifactId>
-		        <version>1.2</version>
-	      	</dependency>
+      <dependency>
+        <groupId>org.hsqldb</groupId>
+        <artifactId>hsqldb</artifactId>
+        <version>1.8.0.10</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>jstl</artifactId>
+        <version>1.2</version>
+      </dependency>
 	      	
-	      	<dependency>
+      <dependency>
         <groupId>opensymphony</groupId>
         <artifactId>sitemesh</artifactId>
         <version>2.4.2</version>
