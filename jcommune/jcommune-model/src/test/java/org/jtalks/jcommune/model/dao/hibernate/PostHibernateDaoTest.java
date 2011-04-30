@@ -27,41 +27,46 @@ import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.entity.Persistent;
 import org.jtalks.jcommune.model.entity.Post;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import javax.annotation.Resource;
 import java.util.List;
+import org.jtalks.jcommune.model.dao.PostDao;
+import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.testng.annotations.DataProvider;
 
 /**
  * DAO tests for instance of {@link PostHibernateDao}
  *
  * @author Artem Mamchych
  */
+@Test(groups = {"dao"})
 public class PostHibernateDaoTest extends BaseTest {
 
     /** Hibernate Session Factory instance. */
-    @Resource(name = "sessionFactory")
+    @Autowired
     private SessionFactory sessionFactory;
-
-    private PostHibernateDao dao;
+    @Autowired
+    private PostDao dao;
+    @Autowired
+    private UserDao userDao;
     private Post entity;
+
+    public void setDao(PostDao dao) {
+        this.dao = dao;
+    }
     private List<Post> listAll;
 
     @BeforeMethod
     public void setUp() throws Exception {
-        dao = new PostHibernateDao();
-        dao.setSessionFactory(sessionFactory);
-        Assert.assertNotNull(sessionFactory, SESSION_FACTORY_IS_NULL);
-        entity = new Post();
+        User user = new User();
+        userDao.saveOrUpdate(user);
+        entity = Post.createNewPost();
         entity.setPostContent("PostContent");
+        entity.setUserCreated(user);
         clearDbTable(entity, sessionFactory);
-    }
-
-    @AfterMethod
-    public void tearDown() throws Exception {
-        entity = null;
     }
 
     @Test
@@ -69,7 +74,7 @@ public class PostHibernateDaoTest extends BaseTest {
         testSave();
         listAll = dao.getAll();
         Assert.assertTrue(entity.equals(listAll.get(0)), PERSISTENCE_ERROR);
-        Assert.assertFalse(entity.equals(listAll.get(1)), PERSISTENCE_ERROR);
+        
     }
 
     @Test
@@ -82,10 +87,8 @@ public class PostHibernateDaoTest extends BaseTest {
     public void testSave() throws Exception {
         //Add 2 Posts to DB
         dao.saveOrUpdate(entity);
-        dao.saveOrUpdate(new Post());
-
         int size = dao.getAll().size();
-        Assert.assertEquals(2, size, ENTITIES_IS_NOT_INCREASED_BY_2);
+        Assert.assertEquals(1, size, ENTITIES_IS_NOT_INCREASED_BY_2);
     }
 
     @Test
@@ -93,7 +96,7 @@ public class PostHibernateDaoTest extends BaseTest {
         testSave();
         listAll = dao.getAll();
         int size = listAll.size();
-        Assert.assertEquals(2, size, DB_MUST_BE_NOT_EMPTY);
+        Assert.assertEquals(1, size, DB_MUST_BE_NOT_EMPTY);
 
         for (Persistent p : listAll) {
             dao.delete(p.getId());
@@ -101,7 +104,7 @@ public class PostHibernateDaoTest extends BaseTest {
         testDBEmpty();
     }
 
-    @Test
+    @Test(dataProvider = "full-entity")
     public void testGetById() throws Exception {
         testSave();
         listAll = dao.getAll();
@@ -130,5 +133,10 @@ public class PostHibernateDaoTest extends BaseTest {
 
         int size = dao.getAll().size();
         Assert.assertEquals(1, size, ENTITIES_IS_NOT_INCREASED_BY_1);
+    }
+
+    @DataProvider(name = "full-entity")
+    public static Object[][] getTestEntity() {
+        return null;
     }
 }

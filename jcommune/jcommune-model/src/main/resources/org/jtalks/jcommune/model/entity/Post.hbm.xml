@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC
-  "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping>
-    <class name="org.jtalks.jcommune.model.entity.Post" table="POST">
-        <id name="id" column="ID">
-            <generator class="native"/>
-        </id>
-        <many-to-one name="userCreated" class="org.jtalks.jcommune.model.entity.User" 
-            column="USER_CREATED"/>
-        <property name="postDate" column="POST_DATE"/>
-        <property name="postContent" column="POST_CONTENT"/>
-    </class>
+<hibernate-mapping package="org.jtalks.jcommune.model.entity">
+  <class name="Post" table="POST">
+    <id column="POST_ID" name="id" unsaved-value="0">
+      <generator class="native"/>
+    </id>
+    <many-to-one class="User" column="USER_CREATED" 
+      fetch="join" foreign-key="FK_USER" lazy="false" name="userCreated" not-null="true"/>
+    <property column="POST_DATE" name="creationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime" not-null="true"/>
+    <property column="POST_CONTENT" name="postContent" not-null="true"/>
+  </class>
 </hibernate-mapping>

@@ -21,27 +21,28 @@
  * The JTalks Project
  * http://www.jtalks.org
  */
-package org.jtalks.jcommune.model;
+package org.jtalks.jcommune.model.dao;
 
-import org.jtalks.jcommune.model.dao.Dao;
-import org.jtalks.jcommune.model.entity.User;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.jtalks.jcommune.model.entity.Topic;
 
 /**
  *
  * @author Temdegon
  */
-public class Starter {
+public interface TopicDao extends Dao<Topic> {
 
-    public static void main(String[] args) {
-        ApplicationContext context = new ClassPathXmlApplicationContext("/org/jtalks/jcommune/model/entity/applicationContext-dao.xml");
-        Dao<User> uhd = (Dao) context.getBean("userDao");
+    /**
+     * Load the Topic with userCreated and related posts.
+     * @param id Topic id
+     * @return loaded Topic or null if the appropriate topic wasn't found
+     */
+    Topic getTopicWithPosts(Long id);
 
-        User user = new User();
-        user.setNickName("TEmdegon");
-
-        //uhd.saveOrUpdate(user);
-
-    }
+    /**
+     * Load the Topic with userCreated field initialized. The method doesn't load related posts.
+     * @param id Topic id
+     * @return the Topic or null if the appropriate topic wasn't found
+     */
+    Topic getTopicWithUser(Long id);
+    
 }

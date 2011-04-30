@@ -23,8 +23,8 @@
  */
 package org.jtalks.jcommune.model.dao;
 
-import java.util.List;
 import org.jtalks.jcommune.model.entity.Persistent;
+import java.util.List;
 
 /**
  * Basic Data Access Object interface.

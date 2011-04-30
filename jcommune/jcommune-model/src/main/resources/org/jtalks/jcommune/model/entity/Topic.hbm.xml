@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC
-  "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping>
-    <class name="org.jtalks.jcommune.model.entity.Topic" table="TOPIC">
-        <id name="id" column="ID">
-            <generator class="native"/>
-        </id>
-        <list name="posts">
-            <key column="TOPIC"/>
-            <index column="IDX"/>
-            <one-to-many class="org.jtalks.jcommune.model.entity.Post"/>
-        </list>      
-        <many-to-one name="userCreated" class="org.jtalks.jcommune.model.entity.User" 
-            column="USER_CREATED"/>       
-        <property name="topicName" column="TOPIC_NAME"/>
-    </class>
+<hibernate-mapping package="org.jtalks.jcommune.model.entity">
+  <class name="Topic" table="TOPIC">
+    <id column="TOPIC_ID" name="id" unsaved-value="0">
+      <generator class="native"/>
+    </id>
+    <list name="posts">
+      <key column="TOPIC_ID"/>
+      <index column="LIST_INDEX"/>
+      <one-to-many class="Post"/>
+    </list>
+    <many-to-one class="User" lazy="false" column="TOPIC_STARTER" name="topicStarter" not-null="true" 
+      foreign-key="FK_USER"/>
+    <property column="TITLE" name="title" not-null="true"/>
+    <property column="CREATION_DATE" name="creationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime" not-null="true" />
+  </class>
+  <query name="getTopicWithPosts">
+        <![CDATA[from Topic as topic
+                      left join fetch topic.posts
+                 WHERE topic.id = :topicId]]>
+  </query>
 </hibernate-mapping>

@@ -48,6 +48,9 @@ public abstract class Persistent {
         this.id = id;
     }
 
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -63,6 +66,9 @@ public abstract class Persistent {
         return id == other.id;
     }
 
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public int hashCode() {
         int hash = 5;
