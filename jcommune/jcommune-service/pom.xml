@@ -7,15 +7,30 @@
     <groupId>org.jtalks.jcommune</groupId>
     <version>1.0-SNAPSHOT</version>
   </parent>
-  <groupId>org.jtalks.jcommune</groupId>
   <artifactId>jcommune-service</artifactId>
-  <version>1.0-SNAPSHOT</version>
   <name>jcommune-service</name>
   <url>www.jtalks.org</url>
   <description>
         This is the module that contains all the business logic of the project, also - transactions
         are implemented on this level. 
   </description>
+
+  <dependencies>
+  	<dependency>
+  		<groupId>${project.groupId}</groupId>
+  		<artifactId>jcommune-model</artifactId>
+  		<version>${project.version}</version>
+  		<type>jar</type>
+  		<scope>compile</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.springframework</groupId>
+  		<artifactId>spring-aop</artifactId>
+  		<version>3.0.5.RELEASE</version>
+  		<type>jar</type>
+  		<scope>compile</scope>
+  	</dependency>
+  </dependencies>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

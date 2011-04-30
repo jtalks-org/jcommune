@@ -18,8 +18,18 @@
         b) giving an opportunity to include event handling logic to other modules (e.g. for testing purposes)   
     </description> 
     
+  <dependencies>
+  	<dependency>
+  		<groupId>${project.groupId}</groupId>
+  		<artifactId>jcommune-service</artifactId>
+  		<version>${project.version}</version>
+  		<type>jar</type>
+  		<scope>compile</scope>
+  	</dependency>
+  </dependencies>
   <modules>
     <module>jcommune-web-controller</module>
     <module>jcommune-web-view</module>
   </modules>
+
 </project>
