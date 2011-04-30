@@ -24,6 +24,7 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.jcommune.model.dao.Dao;
+import org.jtalks.jcommune.model.dao.hibernate.PostHibernateDao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.PostService;
 
@@ -34,12 +35,18 @@ import org.jtalks.jcommune.service.PostService;
  *
  */
 public class TransactionalPostService extends AbstractTransactionlaEntityService<Post> implements PostService {
-	
+
+    private Dao<Post> postDao;
 	/**
 	 * Create an instance of Post entity based service
 	 * @param dao - data access object, which should be able do all CRUD operations with post entity. 
 	 */
 	public TransactionalPostService(Dao<Post> dao) {
-		super(dao);
+		postDao = dao;
 	}
+
+    @Override
+    protected Dao<Post> getDao() {
+        return postDao;
+    }
 }

@@ -47,7 +47,7 @@ public class TopicHibernateDao extends AbstractHibernateDao<Topic> {
      */
     @Override
     public void delete(Long id) {
-        Query query = getSession().createQuery("delete Topic where id= :topicId");
+       Query query = getSession().createQuery("delete Topic where id= :topicId");
         query.setLong("topicId", id);
         query.executeUpdate();
     }

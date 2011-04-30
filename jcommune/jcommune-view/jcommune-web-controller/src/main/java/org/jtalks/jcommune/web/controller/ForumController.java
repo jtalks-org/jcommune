@@ -41,23 +41,23 @@ import java.util.Locale;
 
 @Controller
 public class ForumController {
-    
+
     private TopicService topicService;
 
 
     @Autowired
     public ForumController(TopicService topicService) {
-        this.topicService = topicService;
+      this.topicService = topicService;
     }
 
 
     @ModelAttribute("topicsList")
     public List<Topic> populateForum() {
-        return topicService.getAll();
+        return topicService.getAllTopicsWithUsers();
     }
 
     @RequestMapping(value = "/forum", method = RequestMethod.GET)
-    public ModelAndView registerPage(Locale locale) {
+    public ModelAndView registerPage() {
        return new ModelAndView("forum");
     }
 

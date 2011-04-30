@@ -59,7 +59,9 @@
 	FONT-WEIGHT: bold
 }
 .navbutton {
-	BORDER-RIGHT: #003366 1px solid; PADDING-RIGHT: 1px; BORDER-TOP: #eaeff4 1px solid; PADDING-LEFT: 1px; FONT-WEIGHT: bold; FONT-SIZE: 10px; PADDING-BOTTOM: 1px; MARGIN: 2px; BORDER-LEFT: ##eaeff4 1px solid; COLOR: #036; PADDING-TOP: 1px; BORDER-BOTTOM: #036 1px solid; FONT-FAMILY: verdana, arial, sans-serif; BACKGROUND-COLOR: #eaeff4
+	BORDER-RIGHT: #003366 1px solid; PADDING-RIGHT: 1px; BORDER-TOP: #eaeff4 1px solid; PADDING-LEFT: 1px; FONT-WEIGHT:
+    bold; FONT-SIZE: 10px; PADDING-BOTTOM: 1px; MARGIN: 2px; BORDER-LEFT: #eaeff4 1px solid; COLOR: #036; PADDING-TOP:
+    1px; BORDER-BOTTOM: #036 1px solid; FONT-FAMILY: verdana, arial, sans-serif; BACKGROUND-COLOR: #eaeff4
 }
 .text {
 	FONT-FAMILY: arial, helvetica, sans-serif
@@ -90,3 +92,5 @@
 .content{
 	MARGIN: 2px 2px 10px; COLOR: #000;  BACKGROUND-COLOR: #fff; 
 }
+
+HR {color:#003366}

@@ -40,24 +40,26 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.ArrayList;
 
 /**
- * @author
+ * @author  Kravchenko Vitaliy
  */
 @Controller
 public class NewTopicController {
 
-    @Autowired
-    TopicService topicService;
+    private TopicService topicService;
+    private PostService postService;
+    private UserService userService;
 
     @Autowired
-    PostService postService;
-
-    @Autowired
-    UserService userService;
+    public NewTopicController(TopicService topicService, PostService postService, UserService userService) {
+        this.topicService = topicService;
+        this.postService = postService;
+        this.userService = userService;
+    }
 
     @RequestMapping(value = "/createNewTopic", method = RequestMethod.POST)
     public ModelAndView submitNewTopic(@RequestParam("topic") String topicName,
                                        @RequestParam("author") String author,
-                                       @RequestParam("bodytext") String bodyText){
+                                       @RequestParam("bodytext") String bodyText) {
         User user = new User();
         user.setFirstName(author);
         user.setLastName(author);
@@ -79,7 +81,6 @@ public class NewTopicController {
         topic.setPosts(posts);
 
         topicService.saveOrUpdate(topic);
-
 
 
         return new ModelAndView("redirect:forum.html");

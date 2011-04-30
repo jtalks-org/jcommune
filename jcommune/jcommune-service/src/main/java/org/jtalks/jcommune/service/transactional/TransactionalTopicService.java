@@ -29,31 +29,59 @@ import org.jtalks.jcommune.model.dao.hibernate.TopicHibernateDao;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Topic service class. This class contains method needed to manipulate with Topic persistent entity.
- * 
- * @author Osadchuck Eugeny
  *
+ * @author Osadchuck Eugeny
  */
 public class TransactionalTopicService extends AbstractTransactionlaEntityService<Topic> implements TopicService {
 
-	/**
-	 * Create an instance of User entity based service
-	 * @param dao - data access object, which should be able do all CRUD operations with topic entity. 
-	 */
-	public TransactionalTopicService(Dao<Topic> dao) {
-		super(dao);
-	}
+    private Dao<Topic> topicDao;
 
-	@Override
-	public Topic getTopic(long id, boolean isLoadPosts) {
-		Topic topic = null;
-		TopicHibernateDao topicDao = (TopicHibernateDao) dao;
-		if(isLoadPosts){
-			topic = topicDao.getTopicWithPosts(id);
-		}else{
-			topic = topicDao.getTopicWithUser(id);
-		}
-		return topic;
-	}	
+     private Topic topicWithUser;
+     private Topic topicWithOutUser;
+
+
+    /**
+     * Create an instance of User entity based service
+     *
+     * @param dao - data access object, which should be able do all CRUD operations with topic entity.
+     */
+    public TransactionalTopicService(Dao<Topic> dao) {
+        topicDao = dao;
+    }
+
+    @Override
+     protected Dao<Topic> getDao() {
+        return topicDao;
+    }
+
+    @Override
+    public Topic getTopic(long id, boolean isLoadPosts) {
+        TopicHibernateDao topicHibernateDao = (TopicHibernateDao) topicDao;
+        Topic topic;
+        if (isLoadPosts) {
+            topic =  topicHibernateDao.getTopicWithPosts(id);
+        } else {
+            topic = topicHibernateDao.getTopicWithUser(id);
+        }
+        return topic;
+    }
+
+    @Override
+    public List<Topic> getAllTopicsWithUsers() {
+        TopicHibernateDao topicHibernateDao = (TopicHibernateDao) topicDao;
+        List<Topic> topicsWithOutUsers = topicHibernateDao.getAll();
+        List<Topic> topicsWithUsers = new ArrayList<Topic>(topicsWithOutUsers.size());
+        for (int i = 0; i <= topicsWithOutUsers.size(); i++) {
+            topicWithOutUser = topicsWithOutUsers.get(i);
+            long topicID = topicWithOutUser.getId();
+            topicWithUser = topicHibernateDao.getTopicWithUser(topicID);
+            topicsWithUsers.add(topicWithUser);
+        }
+        return topicsWithUsers;
+    }
 }

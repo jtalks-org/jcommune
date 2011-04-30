@@ -8,13 +8,13 @@
   <form:form action="/jcommune/backToAllTopics.html" method="POST">
     <table border="2" width="100%">
         <tr>
-            <td width="30%"><spring:message code="label.topic"/> <input type="text" name="topic" /></td>
+            <td width="30%"><spring:message code="label.topic"/> <input type="text" name="topic" disabled="true"/></td>
         </tr>
         <tr>
-            <td width="30%"><spring:message code="label.author"/> <input type="text" name="author"/></td>
+            <td width="30%"><spring:message code="label.author"/> <input type="text" name="author" disabled="true"/></td>
         </tr>
         <tr>
-            <td height="200"><spring:message code="label.text"/> <textarea name="bodytext"  cols="40" rows="10"></textarea></td>
+            <td height="200"><spring:message code="label.text"/> <textarea name="bodytext"  cols="40" rows="10" disabled="true"></textarea></td>
         </tr>
 
     </table>

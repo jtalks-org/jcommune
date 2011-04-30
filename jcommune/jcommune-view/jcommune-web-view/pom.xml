@@ -10,7 +10,7 @@
   </parent>
   <artifactId>jcommune-web-view</artifactId>
   <packaging>war</packaging>
-  <name>jcommune</name>
+  <name>${project.artifactId}</name>
   <url>www.jtalks.org</url>
   <description>
     This module contains web resources (images, js, html, jsp, etc) and other

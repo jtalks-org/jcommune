@@ -16,7 +16,7 @@
     <c:forEach var="topics" items="${topicsList}">
       <tr>
         <td><a href="${pageContext.request.contextPath}/topics/${topics.id}.html"> <c:out value="${topics.topicName}"/></a></td>
-        <td><c:out value="${topics.userCreated}"/> </td>  
+        <td><c:out value="${topics.userCreated.nickName}"/> </td>  
       </tr>
     </c:forEach>
 

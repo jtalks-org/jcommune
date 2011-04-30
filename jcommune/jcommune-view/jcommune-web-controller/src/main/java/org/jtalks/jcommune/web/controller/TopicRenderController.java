@@ -14,7 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
  * User: Christoph
  * Date: 26.04.2011
  * Time: 19:43:55
- * 
+ *
  * JTalks for uniting people
  * Copyright (C) 2011  JavaTalks Team
  *
@@ -27,7 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -45,8 +45,6 @@ public class TopicRenderController {
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.GET)
     public ModelAndView showTopic(@PathVariable("topicId") long topicID) {
         Topic selectedTopic = topicService.get(topicID);
-//        ModelAndView mav = new ModelAndView("renderTopic");
-//        mav.addObject("selectedTopic", selectedTopic);
         return new ModelAndView("renderTopic", "selectedTopic", selectedTopic);
     }
 }
