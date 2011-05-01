@@ -67,7 +67,7 @@ public class NewTopicController {
         userService.saveOrUpdate(user);
 
 
-        Post post = new Post();
+        Post post = Post.createNewPost();
         post.setUserCreated(user);
         post.setPostContent(bodyText);
         postService.saveOrUpdate(post);
@@ -75,7 +75,7 @@ public class NewTopicController {
         ArrayList<Post> posts = new ArrayList<Post>();
         posts.add(post);
 
-        Topic topic = new Topic();
+        Topic topic = Topic.createNewTopic();
         topic.setTitle(topicName);
         topic.setTopicStarter(user);
         topic.setPosts(posts);
