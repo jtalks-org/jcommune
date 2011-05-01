@@ -46,29 +46,24 @@
         <groupId>javax.transaction</groupId>
         <artifactId>jta</artifactId>
         <version>1.1</version>
-      </dependency>
+      </dependency>     
       <dependency>
         <groupId>javassist</groupId>
         <artifactId>javassist</artifactId>
         <version>3.12.1.GA</version>
       </dependency>
-      <!-- JDBC -->
+     <!-- JDBC -->
       <dependency>
         <groupId>mysql</groupId>
         <artifactId>mysql-connector-java</artifactId>
         <version>5.1.15</version>
       </dependency>
       <!-- Logging
-            <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>1.2.16</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>1.6.1</version>
-            </dependency>   -->
+      <dependency>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+          <version>1.2.16</version>
+      </dependency> -->
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
@@ -103,28 +98,32 @@
         <artifactId>spring-beans</artifactId>
         <version>${springVersion}</version>
       </dependency>
-      <!-- AOP -->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-aop</artifactId>
+        <version>${springVersion}</version>
+      </dependency>
+  <!-- AOP -->
       <dependency>
         <groupId>org.aspectj</groupId>
         <artifactId>aspectjweaver</artifactId>
         <version>1.6.10</version>
+      </dependency>
+<!-- Joda Time -->
+      <dependency>
+        <groupId>joda-time</groupId>
+        <artifactId>joda-time</artifactId>
+        <version>1.6.2</version>
       </dependency>
 
       <!-- TestNG & Mockito -->
       <dependency>
         <groupId>org.testng</groupId>
         <artifactId>testng</artifactId>
-        <version>6.0.1</version>
+        <version>6.0</version>
         <scope>test</scope>
       </dependency>
-
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-all</artifactId>
-        <version>1.8.5</version>
-        <scope>test</scope>
-      </dependency>
-
+	
       <dependency>
         <groupId>org.hsqldb</groupId>
         <artifactId>hsqldb</artifactId>
@@ -136,14 +135,13 @@
         <artifactId>jstl</artifactId>
         <version>1.2</version>
       </dependency>
-
+	      	
       <dependency>
         <groupId>opensymphony</groupId>
         <artifactId>sitemesh</artifactId>
         <version>2.4.2</version>
       </dependency>
 
-      
       <dependency>
       	<groupId>org.springframework</groupId>
       	<artifactId>spring-test</artifactId>
@@ -151,15 +149,19 @@
       	<type>jar</type>
       	<scope>compile</scope>
       </dependency>
+      <dependency>
+      	<groupId>org.mockito</groupId>
+      	<artifactId>mockito-all</artifactId>
+      	<version>1.8.5</version>
+      	<type>jar</type>
+      	<scope>compile</scope>
+      </dependency>
     </dependencies>
-    
   </dependencyManagement>
 
   <build>
     <finalName>${project.name}</finalName>
-    <pluginManagement>
     <plugins>
-      <!-- Overriding default Compiler plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -168,19 +170,14 @@
           <source>1.6</source>
           <target>1.6</target>
         </configuration>
-      </plugin>    
-
-      
+      </plugin>
     </plugins>
-    </pluginManagement>
   </build>
-
-
 
   <properties>
     <hibernateVersion>3.3.2.GA</hibernateVersion>
     <springVersion>3.0.5.RELEASE</springVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-
+  
 </project>
