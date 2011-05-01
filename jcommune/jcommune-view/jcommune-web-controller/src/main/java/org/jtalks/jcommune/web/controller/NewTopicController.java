@@ -76,8 +76,8 @@ public class NewTopicController {
         posts.add(post);
 
         Topic topic = new Topic();
-        topic.setTopicName(topicName);
-        topic.setUserCreated(user);
+        topic.setTitle(topicName);
+        topic.setTopicStarter(user);
         topic.setPosts(posts);
 
         topicService.saveOrUpdate(topic);

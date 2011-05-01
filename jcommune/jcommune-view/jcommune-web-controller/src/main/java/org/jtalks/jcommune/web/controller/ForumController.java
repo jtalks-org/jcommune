@@ -53,7 +53,7 @@ public class ForumController {
 
     @ModelAttribute("topicsList")
     public List<Topic> populateForum() {
-        return topicService.getAllTopicsWithUsers();
+        return topicService.getAll();
     }
 
     @RequestMapping(value = "/forum", method = RequestMethod.GET)

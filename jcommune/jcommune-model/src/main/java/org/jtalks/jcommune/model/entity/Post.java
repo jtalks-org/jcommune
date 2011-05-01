@@ -23,35 +23,49 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import java.util.Date;
+import org.joda.time.DateTime;
 
 /**
- * Represents the post of the forum.
+ * Represents the simple version of post of the forum
+ * with String content.
+ * Contains in some {@link Topic}.
  * 
  * @author Pavel Vervenko
  */
 public class Post extends Persistent {
 
-    private Date postDate;
+    private DateTime creationDate;
     private User userCreated;
     private String postContent;
     private Topic topic;
 
     public Post() {
-        postDate = new Date();
     }
+
+    public Post(DateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    /**
+     * Creates the new instance with the creationDate initialized with current time.
+     * @return 
+     */
+    public static Post createNewPost() {
+        return new Post(new DateTime());
+    }
+
     /**
      * @return the postDate
      */
-    public Date getPostDate() {
-        return postDate;
+    public DateTime getCreationDate() {
+        return creationDate;
     }
 
     /**
      * @param postDate the postDate to set
      */
-    public void setPostDate(Date postDate) {
-        this.postDate = postDate;
+    public void setCreationDate(DateTime postDate) {
+        this.creationDate = postDate;
     }
 
     /**

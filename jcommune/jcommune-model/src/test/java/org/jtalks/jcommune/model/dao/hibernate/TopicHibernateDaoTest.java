@@ -62,8 +62,8 @@ public class TopicHibernateDaoTest extends BaseTest {
         dao.setSessionFactory(sessionFactory);
         Assert.assertNotNull(sessionFactory, SESSION_FACTORY_IS_NULL);
         entity = new Topic();
-        entity.setTopicName("TopicName");
-        entity.setUserCreated(null);
+        entity.setTitle("TopicName");
+        entity.setTopicStarter(null);
 
         clearDbTable(entity, sessionFactory);
     }
@@ -146,12 +146,12 @@ public class TopicHibernateDaoTest extends BaseTest {
         User user = new User();
         user.setNickName("NickName");
         getUserDao().saveOrUpdate(user);
-        entity.setUserCreated(user);
+        entity.setTopicStarter(user);
         dao.saveOrUpdate(entity);
         Long topicId = entity.getId();
         Topic loadedTopic = dao.getTopicWithUser(topicId);
-        Assert.assertNotNull(loadedTopic.getUserCreated(), USER_IS_NULL);
-        Assert.assertEquals(user, loadedTopic.getUserCreated(), LOADED_USER_ERROR);
+        Assert.assertNotNull(loadedTopic.getTopicStarter(), USER_IS_NULL);
+        Assert.assertEquals(user, loadedTopic.getTopicStarter(), LOADED_USER_ERROR);
     }
 
     @Test
@@ -168,7 +168,7 @@ public class TopicHibernateDaoTest extends BaseTest {
         entity.addPost(post1);
         entity.addPost(post2);
         Collection allPosts = entity.getPosts();
-        entity.setUserCreated(user);
+        entity.setTopicStarter(user);
         dao.saveOrUpdate(entity);
         Long topicId = entity.getId();
         Topic loadedTopic = dao.getTopicWithPosts(topicId);
