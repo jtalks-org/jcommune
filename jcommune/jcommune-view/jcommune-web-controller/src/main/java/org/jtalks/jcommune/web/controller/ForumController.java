@@ -1,25 +1,4 @@
-package org.jtalks.jcommune.web.controller;
-
-
-import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.TopicService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
-
-import java.util.List;
-import java.util.Locale;
-
-
 /**
- * Created by IntelliJ IDEA.
- * User: Christoph
- * Date: 17.04.2011
- * Time: 11:01:39
- * <p/>
  * JTalks for uniting people
  * Copyright (C) 2011  JavaTalks Team
  *
@@ -39,30 +18,67 @@ import java.util.Locale;
  * Also add information on how to contact you by electronic and paper mail.
  */
 
+package org.jtalks.jcommune.web.controller;
+
+
+import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.TopicService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
+
+/**
+ * ForumController class handles GET and POST request with URI - forum.html
+ * and populates forum with existing topics.
+ * Class methods throw no exceptions
+ * @author Kravchenko Vitaliy
+ */
+
+
 @Controller
 public class ForumController {
 
     private TopicService topicService;
 
-
+    /**
+     * ForumController class constructor
+     * @param topicService the object that provides retrieving  data or saving to database
+     * @see org.springframework.beans.factory.annotation.Autowired;
+     */
     @Autowired
     public ForumController(TopicService topicService) {
       this.topicService = topicService;
     }
 
-
+    /**
+     * Populates pages with topics
+     * @return the List of topics
+     */
     @ModelAttribute("topicsList")
     public List<Topic> populateForum() {
-        return topicService.getAllTopicsWithUsers();
+        return topicService.getAll();
     }
 
+    /**
+     * Method handles only GET requests with "/forum" URI
+     * and display JSP page with existing topics
+     * @return  the ModelAndView object, with "forum" as view name
+     */
     @RequestMapping(value = "/forum", method = RequestMethod.GET)
-    public ModelAndView registerPage() {
+    public ModelAndView showAllTopics() {
        return new ModelAndView("forum");
     }
 
-   
 
+    /**
+     * Method Handles POST requests always when the user pressing  "Create new topic" button
+     * @return  the JSP's view name
+     */
     @RequestMapping(value = "/forum", method = RequestMethod.POST)
     public ModelAndView postPage() {
         return new ModelAndView("newTopic");

@@ -25,46 +25,42 @@ package org.jtalks.jcommune.web.controller;
  * Also add information on how to contact you by electronic and paper mail.
  */
 
-import static org.mockito.Mockito.when;
+
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.UserService;
 
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.util.ReflectionTestUtils;
+
 import org.springframework.web.servlet.ModelAndView;
 
-import org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter;
-import org.testng.annotations.BeforeClass;
+
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 
-public class NewTopicControllerTest {
 
-    private final String TOPIC_PARAMETER = "topic";
-    private final String AUTHOR_PARAMETER = "author";
-    private final String BODY_TEXT_PARAMETER = "bodytext";
-
+public class NewTopicControllerTest {        
     private final String TOPIC_CONTENT = "Spring Questions";
     private final String BODY_TEXT_CONTENT = "Topic info goes here";
 
     private final String NICK_USER_NAME = "Christoph";
 
-    private NewTopicController newTopicController;
-    private MockHttpServletRequest request;
-    private MockHttpServletResponse response;
-    private AnnotationMethodHandlerAdapter adapter;
+    private NewTopicController newTopicController;        
+
 
     @Mock
     private TopicService topicService;
@@ -75,46 +71,49 @@ public class NewTopicControllerTest {
     @Mock
     private PostService postService;
 
-    @Mock
-    private User user;
-
-    @Mock
-    private Post post;
 
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
-        request = new MockHttpServletRequest();
-        response = new MockHttpServletResponse();
-        adapter = new AnnotationMethodHandlerAdapter();
-
     }
 
-    @Test
-    public void testControllerMapping() throws Exception {
-    }
 
     @Test
     public void testSubmitNewTopic() throws Exception {
-        // Initialization request
-        request.setMethod("POST");
-        request.addParameter(TOPIC_PARAMETER, TOPIC_CONTENT);
-        request.addParameter(AUTHOR_PARAMETER, NICK_USER_NAME);
-        request.addParameter(BODY_TEXT_PARAMETER, BODY_TEXT_CONTENT);
-        request.setRequestURI("/createNewTopic");
-
-        // Creating NewTopicController with appropriate services
         newTopicController = new NewTopicController(topicService, postService, userService);
-        adapter.handle(request, response, newTopicController);
+        ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
+        ArgumentCaptor<Post> postArgumentCaptor = ArgumentCaptor.forClass(Post.class);
+        ArgumentCaptor<Topic> topicArgumentCaptor = ArgumentCaptor.forClass(Topic.class);
 
-        assertEquals(TOPIC_CONTENT, request.getParameter(TOPIC_PARAMETER));
-        assertEquals(AUTHOR_PARAMETER,request.getParameter(NICK_USER_NAME));
-        assertEquals(BODY_TEXT_CONTENT, request.getParameter(BODY_TEXT_PARAMETER));
+        ModelAndView mav = newTopicController.submitNewTopic(TOPIC_CONTENT, NICK_USER_NAME, BODY_TEXT_CONTENT);
 
-        // Verify User and UserService
-        verify(newTopicController);
+        User user = new User();
+        user.setFirstName(NICK_USER_NAME);
+        user.setLastName(NICK_USER_NAME);
+        user.setNickName(NICK_USER_NAME);
 
+        verify(userService).saveOrUpdate(userArgumentCaptor.capture());
+        assertEquals(user, userArgumentCaptor.getValue());
 
-        verify(userService).saveOrUpdate(user);
+        Post post = new Post();
+        post.setUserCreated(user);
+        post.setPostContent(BODY_TEXT_CONTENT);
+
+        verify(postService).saveOrUpdate(postArgumentCaptor.capture());
+        assertEquals(post, postArgumentCaptor.getValue());
+
+        ArrayList<Post> posts = new ArrayList<Post>();
+        posts.add(post);
+
+        Topic topic = new Topic();
+        topic.setTitle(TOPIC_CONTENT);
+        topic.setTopicStarter(user);
+        topic.setPosts(posts);
+
+        verify(topicService).saveOrUpdate(topicArgumentCaptor.capture());
+        assertEquals(topic, topicArgumentCaptor.getValue());
+
+        assertViewName(mav, "redirect:forum.html");
+
     }
 }

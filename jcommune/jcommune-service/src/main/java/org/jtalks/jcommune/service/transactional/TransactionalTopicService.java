@@ -59,30 +59,5 @@ public class TransactionalTopicService extends AbstractTransactionlaEntityServic
         return topicDao;
     }
 
-    @Override
-    public Topic getTopic(long id, boolean isLoadPosts) {
-        TopicHibernateDao topicHibernateDao = (TopicHibernateDao) topicDao;
-        Topic topic;
-        if (isLoadPosts) {
-            topic =  topicHibernateDao.getTopicWithPosts(id);
-        } else {
-            topic = topicHibernateDao.getTopicWithUser(id);
-        }
-        return topic;
-    }
-
-    @Override
-    public List<Topic> getAllTopicsWithUsers() {
-       TopicHibernateDao topicHibernateDao = (TopicHibernateDao) topicDao;
-        
-        List<Topic> topicsWithOutUsers = topicHibernateDao.getAll();
-        List<Topic> topicsWithUsers = new ArrayList<Topic>(topicsWithOutUsers.size());
-        for (int i = 0; i <= topicsWithOutUsers.size(); i++) {
-            topicWithOutUser = topicsWithOutUsers.get(i);
-            long topicID = topicWithOutUser.getId();
-            topicWithUser = topicHibernateDao.getTopicWithUser(topicID);
-            topicsWithUsers.add(topicWithUser);
-        }
-        return topicsWithUsers;
-    }
+    
 }

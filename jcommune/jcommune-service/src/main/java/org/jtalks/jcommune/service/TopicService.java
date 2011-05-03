@@ -42,7 +42,7 @@ public interface TopicService extends EntityService<Topic> {
 	 * @param isLoadPosts - set to true if you want fetch topic with posts, false fetch topic with userCreated field only
 	 * @return - <code>Topic<code> with fetched topic fields or null if no topic found by this primary id. 
 	 */
-	Topic getTopic(long id, boolean isLoadPosts);
+	
 
-    List<Topic> getAllTopicsWithUsers();
+
 }

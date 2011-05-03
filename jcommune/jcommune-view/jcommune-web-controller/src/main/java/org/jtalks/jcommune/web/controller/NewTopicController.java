@@ -30,6 +30,7 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,7 +45,7 @@ import java.util.ArrayList;
  */
 @Controller
 public class NewTopicController {
-
+     
     private TopicService topicService;
     private PostService postService;
     private UserService userService;
@@ -76,8 +77,8 @@ public class NewTopicController {
         posts.add(post);
 
         Topic topic = new Topic();
-        topic.setTopicName(topicName);
-        topic.setUserCreated(user);
+        topic.setTitle(topicName);
+        topic.setTopicStarter(user);
         topic.setPosts(posts);
 
         topicService.saveOrUpdate(topic);

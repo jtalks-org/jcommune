@@ -89,6 +89,7 @@
                     <suiteXmlFiles>
                         <suiteXmlFile>testng.xml</suiteXmlFile>
                     </suiteXmlFiles>
+                  <skip>true</skip>
                 </configuration>
             </plugin>
         </plugins>
