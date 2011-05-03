@@ -25,9 +25,6 @@ package org.jtalks.jcommune.service.transactional;
 
 import java.util.List;
 
-import org.jtalks.jcommune.model.dao.hibernate.TopicHibernateDao;
-import org.jtalks.jcommune.model.dao.hibernate.UserHibernateDao;
-import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.EntityService;
 import org.jtalks.jcommune.model.dao.Dao;
 import org.jtalks.jcommune.model.entity.Persistent;
@@ -38,36 +35,43 @@ import org.jtalks.jcommune.model.entity.Persistent;
  * @author Osadchuck Eugeny
  *
  */
-public abstract class  AbstractTransactionlaEntityService<T extends Persistent> implements EntityService<T> {
+public abstract class AbstractTransactionlaEntityService<T extends Persistent> implements EntityService<T> {
 	/**
 	 * Dao object implementation.
 	 */
+	protected Dao<T> dao;
 
-    protected abstract Dao<T> getDao();
+	/**
+	 * Create an instance of entity based service
+	 * @param dao - data access object, which should be able do all CRUD operations. 
+	 */
+	public AbstractTransactionlaEntityService(Dao<T> dao) {
+		this.dao = dao;
+	}
 
 	@Override
 	public void saveOrUpdate(T persistent) {
-		getDao().saveOrUpdate(persistent);
+		dao.saveOrUpdate(persistent);
 	}
 
 	@Override
 	public void delete(Long id) {
-		getDao().delete(id);
+		dao.delete(id);
 	}
 
 	@Override
 	public void delete(T persistent) {
-		getDao().delete(persistent);
+		dao.delete(persistent);
 	}
 
 	@Override
 	public T get(Long id) {
-		return getDao().get(id);
+		return dao.get(id);
 	}
 
 	@Override
 	public List<T> getAll() {
-		return getDao().getAll();
+		return dao.getAll();
 	}
 
 }

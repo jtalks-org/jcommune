@@ -25,8 +25,6 @@ package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.Topic;
 
-import java.util.List;
-
 /**
  * This interface should have methods which give us more abilities in manipulating Topic persistent entity.
  * 
@@ -42,7 +40,6 @@ public interface TopicService extends EntityService<Topic> {
 	 * @param isLoadPosts - set to true if you want fetch topic with posts, false fetch topic with userCreated field only
 	 * @return - <code>Topic<code> with fetched topic fields or null if no topic found by this primary id. 
 	 */
+	Topic getTopic(long id, boolean isLoadPosts);
 	
-
-
 }

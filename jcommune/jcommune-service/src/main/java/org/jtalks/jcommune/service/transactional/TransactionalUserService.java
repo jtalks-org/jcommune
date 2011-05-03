@@ -24,8 +24,6 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.jcommune.model.dao.Dao;
-import org.jtalks.jcommune.model.dao.hibernate.TopicHibernateDao;
-import org.jtalks.jcommune.model.dao.hibernate.UserHibernateDao;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
 
@@ -37,18 +35,12 @@ import org.jtalks.jcommune.service.UserService;
  */
 public class TransactionalUserService extends AbstractTransactionlaEntityService<User> implements UserService{
 
-    private Dao<User> userDao;
-
 	/**
 	 * Create an instance of User entity based service
-	 * @param userDao - data access object, which should be able do all CRUD operations with user entity.
+	 * @param dao - data access object, which should be able do all CRUD operations with user entity. 
 	 */
-	public TransactionalUserService(Dao<User> userDao) {
-		this.userDao = userDao;
+	public TransactionalUserService(Dao<User> dao) {
+		super(dao);
 	}
 
-    @Override
-    protected Dao<User> getDao() {
-        return userDao;
-    }
 }

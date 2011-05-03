@@ -24,40 +24,38 @@
 package org.jtalks.jcommune.service.transactional;
 
 
+import java.util.List;
+
 import org.jtalks.jcommune.model.dao.Dao;
 import org.jtalks.jcommune.model.dao.hibernate.TopicHibernateDao;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicService;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Topic service class. This class contains method needed to manipulate with Topic persistent entity.
- *
+ * 
  * @author Osadchuck Eugeny
+ *
  */
 public class TransactionalTopicService extends AbstractTransactionlaEntityService<Topic> implements TopicService {
 
-    private Dao<Topic> topicDao;
+	/**
+	 * Create an instance of User entity based service
+	 * @param dao - data access object, which should be able do all CRUD operations with topic entity. 
+	 */
+	public TransactionalTopicService(Dao<Topic> dao) {
+		super(dao);
+	}
 
-     private Topic topicWithUser;
-     private Topic topicWithOutUser;
-
-
-    /**
-     * Create an instance of User entity based service
-     *
-     * @param dao - data access object, which should be able do all CRUD operations with topic entity.
-     */
-    public TransactionalTopicService(Dao<Topic> dao) {
-        topicDao = dao;
-    }
-
-    @Override
-     protected Dao<Topic> getDao() {
-        return topicDao;
-    }
-
-    
+	@Override
+	public Topic getTopic(long id, boolean isLoadPosts) {
+		Topic topic = null;
+		TopicHibernateDao topicDao = (TopicHibernateDao) dao;
+		if(isLoadPosts){
+			topic = topicDao.getTopicWithPosts(id);
+		}else{
+			topic = topicDao.getTopicWithUser(id);
+		}
+		return topic;
+	}
 }

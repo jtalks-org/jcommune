@@ -7,12 +7,12 @@
       <generator class="native"/>
     </id>
     <list name="posts">
-      <key column="TOPIC_ID"/>
+      <key column="TOPIC_ID" foreign-key="FK_TOPIC"/>
       <index column="LIST_INDEX"/>
       <one-to-many class="Post"/>
     </list>
     <many-to-one class="User" lazy="false" column="TOPIC_STARTER" name="topicStarter" not-null="true" 
-      foreign-key="FK_USER"/>
+      foreign-key="FK_TOPIC_STARTER"/>
     <property column="TITLE" name="title" not-null="true"/>
     <property column="CREATION_DATE" name="creationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime" not-null="true" />
   </class>
