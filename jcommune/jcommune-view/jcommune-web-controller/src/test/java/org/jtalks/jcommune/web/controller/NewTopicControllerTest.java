@@ -1,11 +1,4 @@
-package org.jtalks.jcommune.web.controller;
-
 /**
- * Created by IntelliJ IDEA.
- * User: Christoph
- * Date: 29.04.2011
- * Time: 18:24:35
- *
  * JTalks for uniting people
  * Copyright (C) 2011  JavaTalks Team
  *
@@ -24,7 +17,7 @@ package org.jtalks.jcommune.web.controller;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  * Also add information on how to contact you by electronic and paper mail.
  */
-
+package org.jtalks.jcommune.web.controller;
 
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
@@ -41,8 +34,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
 
 import org.springframework.web.servlet.ModelAndView;
 
@@ -53,21 +44,15 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 
 
-public class NewTopicControllerTest {        
+public class NewTopicControllerTest {
     private final String TOPIC_CONTENT = "Spring Questions";
     private final String BODY_TEXT_CONTENT = "Topic info goes here";
-
     private final String NICK_USER_NAME = "Christoph";
-
-    private NewTopicController newTopicController;        
-
-
+    private NewTopicController newTopicController;
     @Mock
     private TopicService topicService;
-
     @Mock
     private UserService userService;
-
     @Mock
     private PostService postService;
 
@@ -95,25 +80,21 @@ public class NewTopicControllerTest {
         verify(userService).saveOrUpdate(userArgumentCaptor.capture());
         assertEquals(user, userArgumentCaptor.getValue());
 
-        Post post = new Post();
+        Post post = Post.createNewPost();
         post.setUserCreated(user);
         post.setPostContent(BODY_TEXT_CONTENT);
 
         verify(postService).saveOrUpdate(postArgumentCaptor.capture());
         assertEquals(post, postArgumentCaptor.getValue());
 
-        ArrayList<Post> posts = new ArrayList<Post>();
-        posts.add(post);
-
         Topic topic = new Topic();
         topic.setTitle(TOPIC_CONTENT);
         topic.setTopicStarter(user);
-        topic.setPosts(posts);
+        topic.addPost(post);
 
         verify(topicService).saveOrUpdate(topicArgumentCaptor.capture());
         assertEquals(topic, topicArgumentCaptor.getValue());
 
         assertViewName(mav, "redirect:forum.html");
-
     }
 }

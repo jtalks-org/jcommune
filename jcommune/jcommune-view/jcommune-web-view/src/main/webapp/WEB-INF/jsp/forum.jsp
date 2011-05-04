@@ -12,11 +12,13 @@
         <td width="10%"><spring:message code="label.author"/></td>
         <td width="10%"><spring:message code="label.date"/></td>
     </tr>
+
     
     <c:forEach var="topics" items="${topicsList}">
       <tr>
         <td><a href="${pageContext.request.contextPath}/topics/${topics.id}.html"> <c:out value="${topics.title}"/></a></td>
-        <td><c:out value="${topics.topicStarter.nickName}"/> </td>  
+        <td><c:out value="${topics.topicStarter.nickName}"/> </td>
+        <td><c:out value="${topics.creationDate}"/> </td>
       </tr>
     </c:forEach>
 

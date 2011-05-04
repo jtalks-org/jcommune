@@ -27,11 +27,11 @@
         <constructor-arg index="0" ref="userDao"/>
     </bean>
     
-    <bean id="postService" class="org.jtalks.jcommune.service.transactional.TransactionalTopicService">
+    <bean id="postService" class="org.jtalks.jcommune.service.transactional.TransactionalPostService">
         <constructor-arg index="0" ref="postDao"/>
     </bean>
     
-    <bean id="topicService" class="org.jtalks.jcommune.service.transactional.TransactionalPostService">
+    <bean id="topicService" class="org.jtalks.jcommune.service.transactional.TransactionalTopicService">
         <constructor-arg index="0" ref="topicDao"/>
     </bean>
     

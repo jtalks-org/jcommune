@@ -20,7 +20,6 @@
 
 package org.jtalks.jcommune.web.controller;
 
-
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,16 +38,17 @@ import java.util.List;
  * @author Kravchenko Vitaliy
  */
 
-
 @Controller
-public class ForumController {
+public final class ForumController {
 
     private TopicService topicService;
 
     /**
-     * ForumController class constructor
+     * Class constructor which creates MVC controller with specifying TopicService
+     * object injected via autowiring 
      * @param topicService the object that provides retrieving  data or saving to database
      * @see org.springframework.beans.factory.annotation.Autowired;
+     * @see TopicService
      */
     @Autowired
     public ForumController(TopicService topicService) {
@@ -56,7 +56,7 @@ public class ForumController {
     }
 
     /**
-     * Populates pages with topics
+     * Method returns list of created topics via TopicService and used to populate JSP page
      * @return the List of topics
      */
     @ModelAttribute("topicsList")
@@ -74,10 +74,10 @@ public class ForumController {
        return new ModelAndView("forum");
     }
 
-
     /**
-     * Method Handles POST requests always when the user pressing  "Create new topic" button
-     * @return  the JSP's view name
+     * Method handles POST requests with "/forum" URI
+     * or when the user pressing  "Create new topic" button
+     * @return  the ModelAndView object with constant view name - newTopic
      */
     @RequestMapping(value = "/forum", method = RequestMethod.POST)
     public ModelAndView postPage() {

@@ -38,18 +38,34 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
 
 /**
+ * NewTopicController handles only POST request with /createNewTopic URI
+ * and save Topic entity to database. Controller thrown no exceptions
+ * @see Topic
  * @author  Kravchenko Vitaliy
  */
 @Controller
-public class NewTopicController {
+public final class NewTopicController {
      
     private TopicService topicService;
     private PostService postService;
     private UserService userService;
 
+
+    /**
+     * Constructor creates MVC controller with specifying TopicService,PostService,UserService
+     * objects injected via autowiring
+     * @param topicService the object which provides actions on Topic entity
+     * @param postService  the object which provides action on Post entity
+     * @param userService  the object which provides action on User entity
+     * @see TopicService
+     * @see PostService
+     * @see UserService
+     * @see Topic
+     * @see Post
+     * @See User
+     */
     @Autowired
     public NewTopicController(TopicService topicService, PostService postService, UserService userService) {
         this.topicService = topicService;
@@ -57,6 +73,13 @@ public class NewTopicController {
         this.userService = userService;
     }
 
+    /**
+     * This method handles POST requests, it will be always activated when the user pressing "Submit topic"
+     * @param topicName  input value from form which represents topic's name
+     * @param author     input value from form which represents author name
+     * @param bodyText   input value from form which represents topic's context
+     * @return ModelAndView object which will be redirect to forum.html 
+     */
     @RequestMapping(value = "/createNewTopic", method = RequestMethod.POST)
     public ModelAndView submitNewTopic(@RequestParam("topic") String topicName,
                                        @RequestParam("author") String author,
@@ -67,22 +90,17 @@ public class NewTopicController {
         user.setNickName(author);
         userService.saveOrUpdate(user);
 
-
-        Post post = new Post();
+        Post post = Post.createNewPost();
         post.setUserCreated(user);
         post.setPostContent(bodyText);
         postService.saveOrUpdate(post);
 
-        ArrayList<Post> posts = new ArrayList<Post>();
-        posts.add(post);
-
-        Topic topic = new Topic();
+        Topic topic = Topic.createNewTopic();
         topic.setTitle(topicName);
         topic.setTopicStarter(user);
-        topic.setPosts(posts);
+        topic.addPost(post);
 
         topicService.saveOrUpdate(topic);
-
 
         return new ModelAndView("redirect:forum.html");
     }

@@ -1,25 +1,23 @@
+<%@ page import="org.jtalks.jcommune.model.entity.Topic" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
-  <head></head>
-  <body>
-  <form:form action="/jcommune/backToAllTopics.html" method="POST">
+<head></head>
+<body>
+<form:form action="" method="POST">
     <table border="2" width="100%">
-        <tr>
-            <td width="30%"><spring:message code="label.topic"/> </td>
-        </tr>
-        <tr>
-            <td width="30%"><spring:message code="label.author"/> </td>
-        </tr>
-        <tr>
-            <td height="200"><spring:message code="label.text"/> </textarea></td>
-        </tr>
-
+        <h2><spring:message code="label.topic"/>:<c:out value="${selectedTopic.title}"/></h2>  <br>
+        <c:forEach var="posts" items="${selectedTopic.posts}">
+            <tr>
+                <td width="20%"><spring:message code="label.author"/>:<c:out value="${posts.userCreated.nickName}"/></td>
+                <td width="80%"><spring:message code="label.text"/>:<c:out value="${posts.postContent}"/></td>
+            </tr>
+        </c:forEach>
     </table>
-
-    <input type="submit" value="<spring:message code="label.addtopic"/>"/>
+    <input type="submit" value="<spring:message code="label.back"/>"/>
 </form:form>
-  </body>
+</body>
 </html>
