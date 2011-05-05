@@ -20,5 +20,6 @@
         <![CDATA[from Topic as topic
                       left join fetch topic.posts
                  WHERE topic.id = :topicId]]>
+                 
   </query>
 </hibernate-mapping>
