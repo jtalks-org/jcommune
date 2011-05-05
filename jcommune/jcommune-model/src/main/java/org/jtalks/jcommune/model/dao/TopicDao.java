@@ -23,11 +23,14 @@
  */
 package org.jtalks.jcommune.model.dao;
 
+import org.jtalks.jcommune.model.dao.hibernate.TopicHibernateDao;
 import org.jtalks.jcommune.model.entity.Topic;
 
 /**
- *
- * @author Temdegon
+ * DAO for the {@link Topic} objects.
+ * Besides the basic CRUD methods it provides a method to load any Topics with associated Posts.
+ * @see TopicHibernateDao 
+ * @author Pavel Vervenko
  */
 public interface TopicDao extends Dao<Topic> {
 
@@ -40,9 +43,11 @@ public interface TopicDao extends Dao<Topic> {
 
     /**
      * Load the Topic with userCreated field initialized. The method doesn't load related posts.
+     * @deprecated This method is not needed any more. Use {@link get(id)} instead,
+     * it returns Topic with associated User now.
      * @param id Topic id
      * @return the Topic or null if the appropriate topic wasn't found
+    
      */
     Topic getTopicWithUser(Long id);
-    
 }

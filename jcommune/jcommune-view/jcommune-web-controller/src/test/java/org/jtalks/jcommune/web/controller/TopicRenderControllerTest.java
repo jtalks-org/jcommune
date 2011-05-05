@@ -1,6 +1,7 @@
 /**
  * JTalks for uniting people
- * Copyright (C) 2011  JavaTalks Team     *
+ * Copyright (C) 2011  JavaTalks Team
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -20,65 +21,43 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicService;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
-import static org.testng.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeValues;
 
-
-public class ForumControllerTest {
+public class TopicRenderControllerTest {
     private TopicService topicService;
-    private ForumController forumController;
+    private TopicRenderController topicRenderController;
 
     @BeforeMethod
     public void init() {
         topicService = mock(TopicService.class);
-        forumController = new ForumController(topicService);
+        topicRenderController = new TopicRenderController(topicService);
     }
 
     @Test
-    public void testShowAllTopics() {
-        ModelAndView mav = forumController.showAllTopics();
-        assertViewName(mav, "forum");
-    }
+    public void testShowTopic() {
+        Topic topic = Topic.createNewTopic();
+        topic.setId(1l);
+        topic.setTitle("Simple Title");
 
-    @Test
-    public void testPostPage() {
-        ModelAndView mav = forumController.postPage();
-        assertViewName(mav, "newTopic");
-    }
+        Map<String, Object> topicMap = new HashMap<String, Object>();
+        topicMap.put("selectedTopic", topic);
 
-    @Test
-    public void testPopulateForm() {
-        forumController = new ForumController(topicService);
+        when(topicService.getTopic(1l, true)).thenReturn(topic);
+        ModelAndView mav = topicRenderController.showTopic(1l);
+        verify(topicService).getTopic(1l, true);
 
-        Topic firstTopic = new Topic();
-        firstTopic.setTitle("1");
-
-        Topic secondTopic = new Topic();
-        secondTopic.setTitle("2");
-
-        List<Topic> topics = new ArrayList<Topic>();
-        topics.add(firstTopic);
-        topics.add(secondTopic);
-
-        when(topicService.getAll()).thenReturn(topics);
-
-        List<Topic> returnedList = forumController.populateForum();
-        verify(topicService).getAll();
-
-        assertEquals(topics.get(0), returnedList.get(0));
-        assertEquals(topics.get(1), returnedList.get(1));
-
+        assertModelAttributeValues(mav, topicMap);
+        assertViewName(mav, "renderTopic");
     }
 }

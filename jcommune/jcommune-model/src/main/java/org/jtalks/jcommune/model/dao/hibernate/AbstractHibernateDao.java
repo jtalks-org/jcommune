@@ -31,11 +31,15 @@ import org.jtalks.jcommune.model.entity.Persistent;
 /**
  * Basic class for access to the {@link Persistent} objects.
  * Uses to load objects from database, save, update or delete them.
+ * The implementation is based on the Hibernate.
+ * Has the implementation of some commonly used methods.
  * 
  * @author Pavel Vervenko
  */
 public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<T> {
-
+    /**
+     * Hibernate SessionFactory
+     */
     private SessionFactory sessionFactory;
 
     @Override
@@ -44,7 +48,7 @@ public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<
     }
 
     /**
-     * Get the current session.
+     * Get the current Hibernate session.
      * @return current Session
      */
     protected Session getSession() {
@@ -52,6 +56,7 @@ public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<
     }
 
     /**
+     * Setter for Hibernate SessionFactory.
      * @param sessionFactory the sessionFactory to set
      */
     public void setSessionFactory(SessionFactory sessionFactory) {

@@ -32,10 +32,13 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import javax.annotation.Resource;
 import java.util.List;
+import org.jtalks.jcommune.model.dao.PostDao;
+import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * DAO tests for instance of {@link TopicHibernateDao}
@@ -43,29 +46,37 @@ import org.jtalks.jcommune.model.entity.User;
  * @author Artem Mamchych
  */
 public class TopicHibernateDaoTest extends BaseTest {
+
     public static final String LOADED_USER_ERROR = "Loaded user is not the same as it was saved";
     public static final String TOPIC_POSTS_ERROR = "Topic contains wrong collection of posts";
     public static final String USER_IS_NULL = "Topic.userCreated is null";
-
     /** Hibernate Session Factory instance. */
-    @Resource(name = "sessionFactory")
+    @Autowired
     private SessionFactory sessionFactory;
-    private TopicHibernateDao dao;
+    @Autowired
+    private TopicDao dao;
+    @Autowired
+    private UserDao userDao;
+    @Autowired
+    private PostDao postDao;
     private Topic entity;
+    private Post testPost;
+    private User testUser;
     private List<Topic> listAll;
-    private UserHibernateDao userHibernateDao;
-    private PostHibernateDao postHibernateDao;
 
     @BeforeMethod
     public void setUp() throws Exception {
-        dao = new TopicHibernateDao();
-        dao.setSessionFactory(sessionFactory);
-        Assert.assertNotNull(sessionFactory, SESSION_FACTORY_IS_NULL);
-        entity = new Topic();
-        entity.setTitle("TopicName");
-        entity.setTopicStarter(null);
-
+        entity = Topic.createNewTopic();
         clearDbTable(entity, sessionFactory);
+
+        initUser();
+        initPost();
+        Assert.assertNotNull(testPost);
+        entity.setTitle("TopicName");
+        entity.addPost(testPost);
+        entity.setTopicStarter(testUser);
+
+
     }
 
     @AfterMethod
@@ -78,7 +89,6 @@ public class TopicHibernateDaoTest extends BaseTest {
         testSave();
         listAll = dao.getAll();
         Assert.assertTrue(entity.equals(listAll.get(0)), PERSISTENCE_ERROR);
-        Assert.assertFalse(entity.equals(listAll.get(1)), PERSISTENCE_ERROR);
     }
 
     @Test
@@ -91,10 +101,8 @@ public class TopicHibernateDaoTest extends BaseTest {
     public void testSave() throws Exception {
         //Add 2 Topics to DB
         dao.saveOrUpdate(entity);
-        dao.saveOrUpdate(new Topic());
-
         int size = dao.getAll().size();
-        Assert.assertEquals(2, size, ENTITIES_IS_NOT_INCREASED_BY_2);
+        Assert.assertEquals(1, size, ENTITIES_IS_NOT_INCREASED_BY_2);
     }
 
     @Test
@@ -102,7 +110,7 @@ public class TopicHibernateDaoTest extends BaseTest {
         testSave();
         listAll = dao.getAll();
         int size = listAll.size();
-        Assert.assertEquals(2, size, DB_MUST_BE_NOT_EMPTY);
+        Assert.assertEquals(1, size, DB_MUST_BE_NOT_EMPTY);
 
         for (Persistent p : listAll) {
             dao.delete(p.getId());
@@ -115,7 +123,7 @@ public class TopicHibernateDaoTest extends BaseTest {
         testSave();
         listAll = dao.getAll();
         int size = listAll.size();
-        Assert.assertEquals(2, size, DB_MUST_BE_NOT_EMPTY);
+        Assert.assertEquals(1, size, DB_MUST_BE_NOT_EMPTY);
 
         for (Persistent p : listAll) {
             dao.delete(dao.get(p.getId()));
@@ -142,52 +150,27 @@ public class TopicHibernateDaoTest extends BaseTest {
     }
 
     @Test
-    public void testGetTopicWithUser() throws Exception {
-        User user = new User();
-        user.setNickName("NickName");
-        getUserDao().saveOrUpdate(user);
-        entity.setTopicStarter(user);
-        dao.saveOrUpdate(entity);
-        Long topicId = entity.getId();
-        Topic loadedTopic = dao.getTopicWithUser(topicId);
-        Assert.assertNotNull(loadedTopic.getTopicStarter(), USER_IS_NULL);
-        Assert.assertEquals(user, loadedTopic.getTopicStarter(), LOADED_USER_ERROR);
-    }
-
-    @Test
     public void testGetTopicWithPosts() throws Exception {
+        testSave();
+        Topic topic = dao.getTopicWithPosts(entity.getId());
+        List postst = topic.getPosts();
+        Assert.assertEquals(postst.size(), 1);
+    }
+
+    private void initPost() {
+        Post post = Post.createNewPost();
+        post.setUserCreated(testUser);
+        post.setPostContent("Test content");
+        postDao.saveOrUpdate(post);
+        this.testPost = post;
+    }
+
+    private void initUser() {
         User user = new User();
-        user.setNickName("TestNickName");
-        getUserDao().saveOrUpdate(user);
-        Post post1 = new Post();
-        post1.setPostContent("content1");
-        Post post2 = new Post();
-        post2.setPostContent("content2");
-        getPostDao().saveOrUpdate(post1);
-        getPostDao().saveOrUpdate(post2);
-        entity.addPost(post1);
-        entity.addPost(post2);
-        Collection allPosts = entity.getPosts();
-        entity.setTopicStarter(user);
-        dao.saveOrUpdate(entity);
-        Long topicId = entity.getId();
-        Topic loadedTopic = dao.getTopicWithPosts(topicId);
-        Assert.assertEquals(allPosts, loadedTopic.getPosts(), TOPIC_POSTS_ERROR);
-    }
-
-    private UserHibernateDao getUserDao() {
-        if (userHibernateDao == null) {
-            userHibernateDao = new UserHibernateDao();
-            userHibernateDao.setSessionFactory(sessionFactory);
-        }
-        return userHibernateDao;
-    }
-
-    private PostHibernateDao getPostDao() {
-        if (postHibernateDao == null) {
-            postHibernateDao = new PostHibernateDao();
-            postHibernateDao.setSessionFactory(sessionFactory);
-        }
-        return postHibernateDao;
+        user.setFirstName("FNM");
+        user.setLastName("LNM");
+        user.setNickName("TestNickname");
+        userDao.saveOrUpdate(user);
+        this.testUser = user;
     }
 }

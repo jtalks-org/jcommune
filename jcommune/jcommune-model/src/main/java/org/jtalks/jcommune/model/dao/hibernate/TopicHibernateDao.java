@@ -29,14 +29,16 @@ import java.util.List;
 import org.hibernate.Query;
 
 /**
- * Data Access Object for {@link Topic} instances.
+ * Hibernate DAO implementation from the {@link Topic}.
  * 
  * @author Pavel Vervenko
  */
 public class TopicHibernateDao extends AbstractHibernateDao<Topic> implements TopicDao {
 
     /**
-     * {@inheritDoc}
+     * Save or update the Topic to the database. 
+     * The operation apples cascadely to the associated Posts.
+     * @param topic Topic to save
      */
     @Override
     public void saveOrUpdate(Topic topic) {
@@ -44,7 +46,9 @@ public class TopicHibernateDao extends AbstractHibernateDao<Topic> implements To
     }
 
     /**
-     * {@inheritDoc}
+     * Delete the Topic from the database. 
+     * Associated Posts will be also deleted cascadely.
+     * @param id The id of the Topic
      */
     @Override
     public void delete(Long id) {
@@ -54,7 +58,9 @@ public class TopicHibernateDao extends AbstractHibernateDao<Topic> implements To
     }
 
     /**
-     * {@inheritDoc}
+     * Load the topic form the DB by it's id.
+     * The associated User created the topic will be loaded too.
+     * @param id The id of the Topic
      */
     @Override
     public Topic get(Long id) {
@@ -62,7 +68,9 @@ public class TopicHibernateDao extends AbstractHibernateDao<Topic> implements To
     }
 
     /**
-     * {@inheritDoc}
+     * Load the full list of Topics. 
+     * The topicStarter field will be populated, but related posts will not be loaded.
+     * @return the list of Topics
      */
     @Override
     public List<Topic> getAll() {

@@ -23,11 +23,14 @@
  */
 package org.jtalks.jcommune.model.dao;
 
+import org.jtalks.jcommune.model.dao.hibernate.UserHibernateDao;
 import org.jtalks.jcommune.model.entity.User;
 
 /**
- *
- * @author Temdegon
+ *  This interface provides persistence operations for 
+ * {@link User} objects. Now it has no specific methods, it has only methods inherited from {@link Dao} interface.
+ * @see UserHibernateDao
+ * @author Pavel Vervenko
  */
 public interface UserDao extends Dao<User> {
     

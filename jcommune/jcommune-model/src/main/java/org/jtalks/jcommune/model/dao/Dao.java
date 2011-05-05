@@ -25,6 +25,7 @@ package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.jcommune.model.entity.Persistent;
 import java.util.List;
+import org.jtalks.jcommune.model.dao.hibernate.AbstractHibernateDao;
 
 /**
  * Basic Data Access Object interface.
