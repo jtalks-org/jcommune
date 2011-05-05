@@ -3,10 +3,10 @@
 <hibernate-mapping>
   <class name="org.jtalks.jcommune.model.entity.User" table="USER">
     <id column="ID" name="id" unsaved-value="0">
-      <generator class="native"/>
+      <generator class="native" />
     </id>
-    <property column="FIRST_NAME" name="firstName"/>
-    <property column="LAST_NAME" name="lastName"/>
-    <property column="NICK_NAME" name="nickName"/>
+    <property column="FIRST_NAME" name="firstName" />
+    <property column="LAST_NAME" name="lastName" />
+    <property column="NICK_NAME" name="nickName" />
   </class>
 </hibernate-mapping>

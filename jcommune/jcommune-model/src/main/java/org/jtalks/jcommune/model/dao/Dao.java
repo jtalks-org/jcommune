@@ -28,6 +28,11 @@ import java.util.List;
 
 /**
  * Basic Data Access Object interface.
+ * Provides CRUD operations with {@link Persistent} objects.
+ * @see PostDao
+ * @see TopicDao
+ * @see UserDao
+ * @see AbstractHibernateDao
  * @author Pavel Vervenko
  */
 public interface Dao<T extends Persistent> {

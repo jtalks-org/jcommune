@@ -4,11 +4,14 @@
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
   <class name="Post" table="POST">
     <id column="POST_ID" name="id" unsaved-value="0">
-      <generator class="native"/>
+      <generator class="native" />
     </id>
-    <many-to-one class="User" column="USER_CREATED" 
-      fetch="join" foreign-key="FK_USER" lazy="false" name="userCreated" not-null="true"/>
-    <property column="POST_DATE" name="creationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime" not-null="true"/>
-    <property column="POST_CONTENT" name="postContent" not-null="true"/>
+    <many-to-one class="User" column="USER_CREATED" fetch="join"
+      foreign-key="FK_USER" lazy="false" name="userCreated" not-null="true" />
+    <property column="POST_DATE" name="creationDate"
+      type="org.joda.time.contrib.hibernate.PersistentDateTime"
+      not-null="true" />
+    <property column="POST_CONTENT" name="postContent"
+      not-null="true" />
   </class>
 </hibernate-mapping>
