@@ -4,7 +4,7 @@
 <html>
 <head></head>
 <body>
-<form:form action="/jcommune/createNewTopic.html" method="POST">
+<form:form action="/jcommune/createNewTopic.html"  method="POST">
     <table border="2" width="100%">
         <tr>
             <td width="30%"><spring:message code="label.topic"/> <input type="text" name="topic" /></td>
