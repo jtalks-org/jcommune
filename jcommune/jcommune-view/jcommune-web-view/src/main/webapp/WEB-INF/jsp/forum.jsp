@@ -6,13 +6,12 @@
 <head><title>Forum</title></head>
 <body>
 <form:form method="POST">
-<table border="2" width="100%">
+<table border="1" width="100%">
     <tr>
         <td width="80%"><spring:message code="label.topic"/></td>
         <td width="10%"><spring:message code="label.author"/></td>
         <td width="10%"><spring:message code="label.date"/></td>
     </tr>
-
     
     <c:forEach var="topics" items="${topicsList}">
       <tr>
@@ -21,9 +20,7 @@
         <td><c:out value="${topics.creationDate}"/> </td>
       </tr>
     </c:forEach>
-
-</table>
-
+</table><br>
     <input type="submit" value="<spring:message code="label.addtopic"/>"/>
 </form:form>
 </body>

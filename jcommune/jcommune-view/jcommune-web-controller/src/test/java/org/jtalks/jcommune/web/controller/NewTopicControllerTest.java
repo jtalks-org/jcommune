@@ -26,7 +26,6 @@ import static org.testng.Assert.assertEquals;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.UserService;
 
@@ -34,15 +33,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-
 import org.springframework.web.servlet.ModelAndView;
-
-
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-
 
 public class NewTopicControllerTest {
     private final String TOPIC_CONTENT = "Spring Questions";
@@ -53,19 +46,16 @@ public class NewTopicControllerTest {
     private TopicService topicService;
     @Mock
     private UserService userService;
-    @Mock
-    private PostService postService;
-
 
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
+        newTopicController = new NewTopicController(topicService, userService);
     }
 
 
     @Test
     public void testSubmitNewTopic() throws Exception {
-        newTopicController = new NewTopicController(topicService, postService, userService);
         ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
         ArgumentCaptor<Post> postArgumentCaptor = ArgumentCaptor.forClass(Post.class);
         ArgumentCaptor<Topic> topicArgumentCaptor = ArgumentCaptor.forClass(Topic.class);
@@ -83,9 +73,6 @@ public class NewTopicControllerTest {
         Post post = Post.createNewPost();
         post.setUserCreated(user);
         post.setPostContent(BODY_TEXT_CONTENT);
-
-        verify(postService).saveOrUpdate(postArgumentCaptor.capture());
-        assertEquals(post, postArgumentCaptor.getValue());
 
         Topic topic = new Topic();
         topic.setTitle(TOPIC_CONTENT);

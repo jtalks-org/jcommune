@@ -37,28 +37,30 @@ import java.util.List;
  * ForumController class handles GET and POST request with URI - forum.html
  * and populates forum with existing topics.
  * Class methods throw no exceptions
+ *
  * @author Kravchenko Vitaliy
  */
 
 @Controller
 public final class ForumController {
-
     private TopicService topicService;
 
     /**
      * Class constructor which creates MVC controller with specifying TopicService
-     * object injected via autowiring 
+     * object injected via autowiring
+     *
      * @param topicService the object that provides retrieving  data or saving to database
      * @see org.springframework.beans.factory.annotation.Autowired;
      * @see TopicService
      */
     @Autowired
     public ForumController(TopicService topicService) {
-      this.topicService = topicService;
+        this.topicService = topicService;
     }
 
     /**
      * Method returns list of created topics via TopicService and used to populate JSP page
+     *
      * @return the List of topics
      */
     @ModelAttribute("topicsList")
@@ -69,17 +71,19 @@ public final class ForumController {
     /**
      * Method handles only GET requests with "/forum" URI
      * and display JSP page with existing topics
-     * @return  the ModelAndView object, with "forum" as view name
+     *
+     * @return the ModelAndView object, with "forum" as view name
      */
     @RequestMapping(value = "/forum", method = RequestMethod.GET)
     public ModelAndView showAllTopics() {
-       return new ModelAndView("forum");
+        return new ModelAndView("forum");
     }
 
     /**
      * Method handles POST requests with "/forum" URI
      * or when the user pressing  "Create new topic" button
-     * @return  the ModelAndView object with constant view name - newTopic
+     *
+     * @return the ModelAndView object with constant view name - newTopic
      */
     @RequestMapping(value = "/forum", method = RequestMethod.POST)
     public ModelAndView postPage() {

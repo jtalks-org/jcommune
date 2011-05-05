@@ -42,43 +42,43 @@ import org.springframework.web.servlet.ModelAndView;
 /**
  * NewTopicController handles only POST request with /createNewTopic URI
  * and save Topic entity to database. Controller thrown no exceptions
+ *
+ * @author Kravchenko Vitaliy
  * @see Topic
- * @author  Kravchenko Vitaliy
  */
 @Controller
 public final class NewTopicController {
-     
+
     private TopicService topicService;
-    private PostService postService;
     private UserService userService;
 
 
     /**
-     * Constructor creates MVC controller with specifying TopicService,PostService,UserService
+     * Constructor creates MVC controller with specifying TopicService,UserService
      * objects injected via autowiring
-     * @param topicService the object which provides actions on Topic entity
-     * @param postService  the object which provides action on Post entity
+     *
+     * @param topicService the object which provides actions on Topic entity          
      * @param userService  the object which provides action on User entity
+     * @see User
      * @see TopicService
      * @see PostService
      * @see UserService
      * @see Topic
      * @see Post
-     * @See User
      */
     @Autowired
-    public NewTopicController(TopicService topicService, PostService postService, UserService userService) {
+    public NewTopicController(TopicService topicService, UserService userService) {
         this.topicService = topicService;
-        this.postService = postService;
         this.userService = userService;
     }
 
     /**
      * This method handles POST requests, it will be always activated when the user pressing "Submit topic"
-     * @param topicName  input value from form which represents topic's name
-     * @param author     input value from form which represents author name
-     * @param bodyText   input value from form which represents topic's context
-     * @return ModelAndView object which will be redirect to forum.html 
+     *
+     * @param topicName input value from form which represents topic's name
+     * @param author    input value from form which represents author name
+     * @param bodyText  input value from form which represents topic's context
+     * @return ModelAndView object which will be redirect to forum.html
      */
     @RequestMapping(value = "/createNewTopic", method = RequestMethod.POST)
     public ModelAndView submitNewTopic(@RequestParam("topic") String topicName,
@@ -93,7 +93,6 @@ public final class NewTopicController {
         Post post = Post.createNewPost();
         post.setUserCreated(user);
         post.setPostContent(bodyText);
-        postService.saveOrUpdate(post);
 
         Topic topic = Topic.createNewTopic();
         topic.setTitle(topicName);

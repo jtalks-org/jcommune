@@ -23,42 +23,40 @@ import org.jtalks.jcommune.service.TopicService;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.servlet.ModelAndView;
-import org.testng.annotations.*;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 
 
 public class ForumControllerTest {
-
-    @Mock
     private TopicService topicService;
-
     private ForumController forumController;
 
     @BeforeMethod
     public void init() {
-        MockitoAnnotations.initMocks(this);
+        topicService = mock(TopicService.class);
+        forumController = new ForumController(topicService);
     }
 
     @Test
     public void testShowAllTopics() {
-        forumController = new ForumController(topicService);
         ModelAndView mav = forumController.showAllTopics();
         assertViewName(mav, "forum");
     }
 
     @Test
     public void testPostPage() {
-        forumController = new ForumController(topicService);
         ModelAndView mav = forumController.postPage();
         assertViewName(mav, "newTopic");
     }
-
 
     @Test
     public void testPopulateForm() {

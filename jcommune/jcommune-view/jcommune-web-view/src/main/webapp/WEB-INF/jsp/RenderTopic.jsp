@@ -7,16 +7,16 @@
 <html>
 <head></head>
 <body>
-<form:form action="" method="POST">
-    <table border="2" width="100%">
+<form:form action="${pageContext.request.contextPath}/forum.html" method="GET">
+    <table border="0" width="100%">
         <h2><spring:message code="label.topic"/>:<c:out value="${selectedTopic.title}"/></h2>  <br>
         <c:forEach var="posts" items="${selectedTopic.posts}">
             <tr>
-                <td width="20%"><spring:message code="label.author"/>:<c:out value="${posts.userCreated.nickName}"/></td>
-                <td width="80%"><spring:message code="label.text"/>:<c:out value="${posts.postContent}"/></td>
+                <td width="20%"><spring:message code="label.author"/>: <c:out value="${posts.userCreated.nickName}"/></td>
+                <td width="80%"><spring:message code="label.text"/>: <c:out value="${posts.postContent}"/></td>
             </tr>
         </c:forEach>
-    </table>
+    </table>  <br>
     <input type="submit" value="<spring:message code="label.back"/>"/>
 </form:form>
 </body>

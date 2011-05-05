@@ -33,17 +33,19 @@ import org.springframework.web.servlet.ModelAndView;
  * TopicRenderController handles GET and POST request with /topics/{topicId} Uri,
  * where topicId could be from 1 to infinity. Controller displays selected topic.
  * Class throws no exceptions
+ *
  * @author Kravchenko Vitaliy
  */
 
 @Controller
 public final class TopicRenderController {
-    
+
     private final TopicService topicService;
 
     /**
      * Constructor creates MVC controller with specifying TopicService,
      * parameter passed via autowiring
+     *
      * @param topicService the objects that represents work Topic entity
      * @see TopicService
      * @see Topic
@@ -56,24 +58,15 @@ public final class TopicRenderController {
     /**
      * Method handles GET requests with URI - /topics/{topicId},
      * where {topicId} could be an integer value from 1 to infinity
-     * @param topicID  the Id os selected Topic
+     *
+     * @param topicID the Id os selected Topic
      * @return ModelAndView object which has "renderTopic" as view name and object that represent selected Topic
      */
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.GET)
     public ModelAndView showTopic(@PathVariable("topicId") long topicID) {
-        Topic selectedTopic = topicService.getTopic(topicID,true);
+        Topic selectedTopic = topicService.getTopic(topicID, true);
         ModelAndView mav = new ModelAndView("renderTopic");
         mav.addObject("selectedTopic", selectedTopic);
         return mav;
     }
-
-    /**
-     * Method handles POST requests, and redirects to main page
-     * @return ModelAndView objects which has a view name as a redirection to forum.html
-     */
-    @RequestMapping(value = "/topics{topicId}", method = RequestMethod.POST)
-    public ModelAndView redirectToMainPage(){
-        return new ModelAndView("redirect:forum.html");
-    }
-
 }
