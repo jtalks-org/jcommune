@@ -35,6 +35,7 @@ public class User extends Persistent {
     private String nickName;
 
     /**
+     * Get the user's Last Name.
      * @return the lastName
      */
     public String getLastName() {

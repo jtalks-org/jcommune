@@ -23,11 +23,17 @@
  */
 package org.jtalks.jcommune.model.dao;
 
+import org.jtalks.jcommune.model.dao.hibernate.PostHibernateDao;
 import org.jtalks.jcommune.model.entity.Post;
 
 /**
- *
- * @author Temdegon
+ * Interface allows to make basic CRUD operations with the 
+ * {@link Post} objects. 
+ * At the current moment it doesn't provides any additional methods over the basic {@link Dao} interface
+ * but some specific methods will be added soon.
+ * @see PostHibernateDao
+ * 
+ * @author Pavel Vervenko
  */
 public interface PostDao extends Dao<Post> {
     

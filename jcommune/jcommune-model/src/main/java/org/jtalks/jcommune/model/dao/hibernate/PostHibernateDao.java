@@ -29,6 +29,7 @@ import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.entity.Post;
 
 /**
+ * The implementation of PostDao based on Hibernate.
  * The class is responsible for loading {@link Post} objects from database, 
  * save, update and delete them.
  * 

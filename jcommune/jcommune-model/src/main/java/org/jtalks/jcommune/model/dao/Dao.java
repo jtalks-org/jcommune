@@ -25,9 +25,15 @@ package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.jcommune.model.entity.Persistent;
 import java.util.List;
+import org.jtalks.jcommune.model.dao.hibernate.AbstractHibernateDao;
 
 /**
  * Basic Data Access Object interface.
+ * Provides CRUD operations with {@link Persistent} objects.
+ * @see PostDao
+ * @see TopicDao
+ * @see UserDao
+ * @see AbstractHibernateDao
  * @author Pavel Vervenko
  */
 public interface Dao<T extends Persistent> {

@@ -74,7 +74,7 @@ public class PostHibernateDaoTest extends BaseTest {
         testSave();
         listAll = dao.getAll();
         Assert.assertTrue(entity.equals(listAll.get(0)), PERSISTENCE_ERROR);
-        
+
     }
 
     @Test

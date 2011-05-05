@@ -27,13 +27,18 @@ import org.joda.time.DateTime;
 
 /**
  * Represents the simple version of post of the forum
- * with String content.
- * Contains in some {@link Topic}.
- * 
+ * with String content.<br>
+ * Contains in some {@link Topic}. <br>
+ * All fields of this object are required and can't be null.<br>
+ * The topic field will be updated automatically when called Topic.addPost(Post). <br>
+ * The Post deletes automatically if the parent Topic deleted.
+ * Use the static method Post.createNewPost() to create new post with current creationDate.
  * @author Pavel Vervenko
  */
 public class Post extends Persistent {
-
+    /**
+     * Creation date and time
+     */
     private DateTime creationDate;
     private User userCreated;
     private String postContent;
@@ -76,6 +81,7 @@ public class Post extends Persistent {
     }
 
     /**
+     * Set the User who create this post.
      * @param userCreated the userCreated to set
      */
     public void setUserCreated(User userCreated) {

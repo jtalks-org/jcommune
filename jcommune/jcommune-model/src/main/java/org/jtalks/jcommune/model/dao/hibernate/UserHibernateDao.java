@@ -29,7 +29,7 @@ import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
 
 /**
- * DAO for instances of {@link User}.
+ * Hibernate implementation of UserDao.
  * 
  * @author Pavel Vervenko
  */
