@@ -21,7 +21,6 @@
  * The JTalks Project
  * http://www.jtalks.org
  */
-
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.SessionFactory;
@@ -47,7 +46,6 @@ public class UserHibernateDaoTest extends BaseTest {
     /** Hibernate Session Factory instance. */
     @Resource(name = "sessionFactory")
     private SessionFactory sessionFactory;
-
     private UserHibernateDao dao;
     private User entity;
     private List<User> listAll;
