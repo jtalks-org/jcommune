@@ -24,13 +24,14 @@
 package org.jtalks.jcommune.model.entity;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import org.joda.time.DateTime;
 
 /**
  * Represents the topic of the forum.
  * Contains the list of related {@link Post}.
+ * All Posts will be cascade deleted with the associated Topic.
+ * The fields creationDate, topicStarter and Title are required and can't be <code>null</code>
  * @author Pavel Vervenko
  */
 public class Topic extends Persistent {

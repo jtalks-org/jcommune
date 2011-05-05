@@ -6,7 +6,7 @@
     <id column="TOPIC_ID" name="id" unsaved-value="0">
       <generator class="native"/>
     </id>
-    <list name="posts">
+    <list name="posts" cascade="all-delete-orphan">
       <key column="TOPIC_ID" foreign-key="FK_TOPIC"/>
       <index column="LIST_INDEX"/>
       <one-to-many class="Post"/>
