@@ -39,14 +39,31 @@ public abstract class AbstractTransactionlaEntityService<T extends Persistent> i
 	/**
 	 * Dao object implementation.
 	 */
-	protected Dao<T> dao;
+	private Dao<T> dao;
 
-	/**
+
+    /**
 	 * Create an instance of entity based service
 	 * @param dao - data access object, which should be able do all CRUD operations. 
 	 */
 	public AbstractTransactionlaEntityService(Dao<T> dao) {
 		this.dao = dao;
+	}
+	
+	/**
+	 * Get data access object which implements data manipulation for entity T.   
+	 * @return - data access object which implements data manipulation for entity T.
+	 */
+	public Dao<T> getDao() {
+	    return dao;
+	}
+	
+	/**
+	 * Set data access object, which implements data manipulation for entity T
+	 * @param dao - data access object which implements data manipulation for entity T.
+	 */
+	public void setDao(Dao<T> dao) {
+	    this.dao = dao;
 	}
 
 	@Override
