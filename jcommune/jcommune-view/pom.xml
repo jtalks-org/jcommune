@@ -27,12 +27,12 @@
 
   <build>
     <plugins>
-        <plugin>
+      <plugin>
         <groupId>org.codehaus.sonar</groupId>
         <artifactId>sonar-maven3-plugin</artifactId>
         <version>2.3</version>
-      </plugin>      
-      </plugins>
+      </plugin>
+    </plugins>
   </build>
 
 </project>
