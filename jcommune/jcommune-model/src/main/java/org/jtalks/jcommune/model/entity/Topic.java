@@ -1,25 +1,19 @@
-/* 
- * JTalks for uniting people
- * Copyright (C) 2011  JavaTalks Team
- * 
+/**
+ * Copyright (C) 2011  jtalks.org Team
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  * Also add information on how to contact you by electronic and paper mail.
- * 
- * This file creation date: Apr 12, 2011 / 8:05:19 PM
- * The JTalks Project
- * http://www.jtalks.org
+ * Creation date: Apr 12, 2011 / 8:05:19 PM
+ * The jtalks.org Project
  */
 package org.jtalks.jcommune.model.entity;
 
@@ -49,21 +43,29 @@ public class Topic extends Persistent {
      * The list of topic's posts
      */
     private List<Post> posts = new ArrayList<Post>();
-    
+
+    /**
+     * Creates the Topic instance. All fields values are null.
+     */
     public Topic() {
     }
-    
+
+    /**
+     * Creates the Topic with the specified creation date.
+     * @param creationDate the topic's creation date
+     */
     public Topic(DateTime creationDate) {
         this.creationDate = creationDate;
     }
-    
+
     /**
      * Creates a new Topic with the creationDate initialized with current time.
-     * @return 
+     * @return newly created Topic
      */
     public static Topic createNewTopic() {
         return new Topic(new DateTime());
     }
+
     /**
      * Add new {@link Post} to the topic.
      * The method sets Posts.topic field to this Topic.
@@ -145,4 +147,4 @@ public class Topic extends Persistent {
     public void setPosts(List<Post> posts) {
         this.posts = posts;
     }
- }
+}
