@@ -35,7 +35,7 @@ import org.jtalks.jcommune.service.UserService;
  */
 public class TransactionalUserService extends AbstractTransactionlaEntityService<User> implements UserService{
 
-	/**
+    /**
 	 * Create an instance of User entity based service
 	 * @param dao - data access object, which should be able do all CRUD operations with user entity. 
 	 */
