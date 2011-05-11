@@ -19,20 +19,9 @@
         b) giving an opportunity to include event handling logic to other modules (e.g. for testing purposes)   
     </description>
 
-
   <modules>
     <module>jcommune-web-controller</module>
     <module>jcommune-web-view</module>
   </modules>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.sonar</groupId>
-        <artifactId>sonar-maven3-plugin</artifactId>
-        <version>2.3</version>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>
