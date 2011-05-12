@@ -56,6 +56,7 @@ public class TopicHibernateDaoTest extends BaseTest {
     private Post testPost;
     private User testUser;
     private List<Topic> listAll;
+    private User dummyUser;
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -68,7 +69,6 @@ public class TopicHibernateDaoTest extends BaseTest {
         entity.setTitle("TopicName");
         entity.addPost(testPost);
         entity.setTopicStarter(testUser);
-
 
     }
 
@@ -111,6 +111,47 @@ public class TopicHibernateDaoTest extends BaseTest {
         testDBEmpty();
     }
 
+    @Test
+    public void testAddSomePosts() throws Exception {
+        Topic topic = getNewTopic();
+        Post firstPost = createDummyPost();
+        topic.addPost(firstPost);
+        dao.saveOrUpdate(topic);
+        Assert.assertEquals(topic.getPosts().size(), 1, "More than 1 posts in the topic! " + topic.getPosts().size());
+        Assert.assertEquals(topic.getPosts().get(0), firstPost, "The first post of the topic loaded or saved incorrectly");
+        Assert.assertEquals(dao.getAll().size(), 1, "More than 1 Topic in the DB! " + dao.getAll().size());
+        Post secondPost = createDummyPost();
+        Topic loadedTopic = dao.get(topic.getId());
+        loadedTopic.addPost(secondPost);
+        dao.saveOrUpdate(topic);
+        loadedTopic = dao.get(loadedTopic.getId());
+        List loadedPosts = loadedTopic.getPosts();
+        int postsNumber = loadedPosts.size();
+        int topicsNumber = dao.getAll().size();
+        Assert.assertEquals(postsNumber, 2, "The Topic should contains 2 posts but there are " + postsNumber);
+        Assert.assertEquals(loadedPosts.get(0), firstPost, "The first post of the topic loaded or saved incorrectly");
+        Assert.assertEquals(loadedPosts.get(1), secondPost, "The second post of the topic loaded or saved incorrectly");
+        Assert.assertEquals(topicsNumber, 1, "More than 1 Topic in the DB! " + topicsNumber);        
+    }
+
+    public Post createDummyPost() {
+        Post post = Post.createNewPost();
+        post.setUserCreated(getDummyUser());
+        post.setPostContent("Post content " + post.getCreationDate());
+        return post;
+    }
+    
+    public User getDummyUser() {
+        if (this.dummyUser == null) {
+            dummyUser = new User();
+            dummyUser.setFirstName("Dummy FNM");
+            dummyUser.setLastName("Dummy LNM");
+            dummyUser.setNickName("Dummy Nick");
+            userDao.saveOrUpdate(dummyUser);
+        }
+        return this.dummyUser;
+    }
+    
     @Test
     public void testGetById() throws Exception {
         testSave();
@@ -165,5 +206,12 @@ public class TopicHibernateDaoTest extends BaseTest {
         user.setNickName("TestNickname");
         userDao.saveOrUpdate(user);
         this.testUser = user;
+    }
+
+    private Topic getNewTopic() {
+        Topic topic = Topic.createNewTopic();
+        topic.setTitle("Topic Title");
+        topic.setTopicStarter(getDummyUser());
+        return topic;
     }
 }

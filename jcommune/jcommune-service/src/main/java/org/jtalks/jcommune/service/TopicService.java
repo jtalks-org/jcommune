@@ -17,13 +17,14 @@
  */
 package org.jtalks.jcommune.service;
 
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 
 /**
  * This interface should have methods which give us more abilities in manipulating Topic persistent entity.
  * 
  * @author Osadchuck Eugeny
- *
+ * @author Vervenko Pavel
  */
 public interface TopicService extends EntityService<Topic> {
 
@@ -36,4 +37,10 @@ public interface TopicService extends EntityService<Topic> {
      */
     Topic getTopic(long id, boolean isLoadPosts);
 
+    /**
+     * Add the answer to the topic. Add the specified Post to the target topic and save. The Post entity can be unsaved, because it saves in cascade.
+     * @param topicId target topic primary id.
+     * @param answer the post to add to the topic as a reply
+     */
+    void addAnswer(long topicId, Post answer);
 }
