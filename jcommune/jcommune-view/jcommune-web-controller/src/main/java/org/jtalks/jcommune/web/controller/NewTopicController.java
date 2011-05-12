@@ -80,7 +80,7 @@ public final class NewTopicController {
         User user = new User();
         user.setFirstName(author);
         user.setLastName(author);
-        user.setNickName(author);
+        user.setUsername(author);
         userService.saveOrUpdate(user);
 
         Post post = Post.createNewPost();
