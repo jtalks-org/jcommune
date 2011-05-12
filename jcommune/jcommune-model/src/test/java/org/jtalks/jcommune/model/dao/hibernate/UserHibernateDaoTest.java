@@ -54,6 +54,7 @@ public class UserHibernateDaoTest extends BaseTest {
         entity.setLastName("LastName");
         entity.setUsername("NickName");
         entity.setEmail("mail@mail.com");
+        entity.setPassword("password");
 
         clearDbTable(entity, sessionFactory);
     }
