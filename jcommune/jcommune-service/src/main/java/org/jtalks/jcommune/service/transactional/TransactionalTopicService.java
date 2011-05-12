@@ -20,6 +20,7 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.jcommune.model.dao.Dao;
 import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicService;
 
@@ -27,7 +28,7 @@ import org.jtalks.jcommune.service.TopicService;
  * Topic service class. This class contains method needed to manipulate with Topic persistent entity.
  * 
  * @author Osadchuck Eugeny
- *
+ * @author Vervenko Pavel
  */
 public class TransactionalTopicService extends AbstractTransactionlaEntityService<Topic> implements TopicService {
 
@@ -50,4 +51,12 @@ public class TransactionalTopicService extends AbstractTransactionlaEntityServic
         }
         return topic;
     }
+
+    @Override
+    public void addAnswer(long topicId, Post answer) {
+        Topic topic = getDao().get(topicId);
+        topic.addPost(answer);
+        getDao().saveOrUpdate(topic);
+    }
+    
 }
