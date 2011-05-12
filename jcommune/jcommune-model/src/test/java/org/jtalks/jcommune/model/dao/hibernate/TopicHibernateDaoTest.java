@@ -146,7 +146,7 @@ public class TopicHibernateDaoTest extends BaseTest {
             dummyUser = new User();
             dummyUser.setFirstName("Dummy FNM");
             dummyUser.setLastName("Dummy LNM");
-            dummyUser.setNickName("Dummy Nick");
+            dummyUser.setUsername("Dummy Nick");
             userDao.saveOrUpdate(dummyUser);
         }
         return this.dummyUser;
@@ -203,7 +203,7 @@ public class TopicHibernateDaoTest extends BaseTest {
         User user = new User();
         user.setFirstName("FNM");
         user.setLastName("LNM");
-        user.setNickName("TestNickname");
+        user.setUsername("TestNickname");
         userDao.saveOrUpdate(user);
         this.testUser = user;
     }
