@@ -17,16 +17,37 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
 /**
  * Stores information about the forum user.
  * 
- * @author Pavel Vervenko
+ * @author Pavel Vervenko, Kirill Afonin
  */
-public class User extends Persistent {
+public class User extends Persistent implements UserDetails {
+
+    // temp user role to use before authorization by role not implemented
+    private static GrantedAuthority roleUser = new GrantedAuthority() {
+        @Override
+        public String getAuthority() {
+            return "ROLE_USER";
+        }
+    };
+    // list of user roles. used by spring security
+    private static Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+    static {
+        authorities.add(roleUser);
+    }
 
     private String lastName;
     private String firstName;
-    private String nickName;
+    private String username;
+    private String email;
+    private String password;
 
     /**
      * Get the user's Last Name.
@@ -58,16 +79,78 @@ public class User extends Persistent {
     }
 
     /**
-     * @return the nickName
+     * @return the email
      */
-    public String getNickName() {
-        return nickName;
+    public String getEmail() {
+        return email;
     }
 
     /**
-     * @param nickName the nickName to set
+     * @param email the email to set
      */
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
+     * @return the username
+     */
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     * @param username the username to set
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     * @return collection of user roles
+     */
+    @Override
+    public Collection<GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
+    /**
+     * @return password
+     */
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * @param password the password to set
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    //methods from UserDetails inteface, indicating that
+    //user can or can't authenticate.
+    //now we dont need this functional, users always enabled
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
