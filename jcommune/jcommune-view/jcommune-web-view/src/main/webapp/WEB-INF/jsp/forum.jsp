@@ -25,7 +25,7 @@
 							<c:out value="${topics.title}" />
 					</a>
 					</td>
-					<td><c:out value="${topics.topicStarter.nickName}" /></td>
+					<td><c:out value="${topics.topicStarter.username}" /></td>
 					<td><c:out value="${topics.creationDate}" /></td>
 				</tr>
 			</c:forEach>
