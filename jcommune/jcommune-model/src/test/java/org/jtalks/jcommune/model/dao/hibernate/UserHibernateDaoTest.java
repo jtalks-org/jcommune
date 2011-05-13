@@ -144,4 +144,20 @@ public class UserHibernateDaoTest extends BaseTest {
         int size = dao.getAll().size();
         Assert.assertEquals(1, size, ENTITIES_IS_NOT_INCREASED_BY_1);
     }
+
+    @Test
+    public void testGetByUsername() throws Exception {
+        dao.saveOrUpdate(entity);
+
+        User user = dao.getByUsername("NickName");
+        Assert.assertEquals("NickName", user.getUsername(), "Username not match");
+    }
+
+    @Test
+    public void testGetByUsernameNotExist() throws Exception {
+        dao.saveOrUpdate(entity);
+
+        User user = dao.getByUsername("Name");
+        Assert.assertNull(user);
+    }
 }
