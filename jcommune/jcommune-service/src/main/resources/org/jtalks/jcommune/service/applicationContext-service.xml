@@ -41,4 +41,9 @@
     <constructor-arg index="0" ref="topicDao" />
   </bean>
 
+  <bean id="securityService"
+    class="org.jtalks.jcommune.service.nontransactional.SecurityServiceImpl">
+    <property name="userService" ref="userService" />
+  </bean>
+
 </beans>
