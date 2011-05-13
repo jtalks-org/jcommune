@@ -18,6 +18,7 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.jcommune.model.dao.Dao;
+import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
 
@@ -37,4 +38,8 @@ public class TransactionalUserService extends AbstractTransactionlaEntityService
         super(dao);
     }
 
+    @Override
+    public User getByUsername(String username) {
+        return ((UserDao) dao).getByUsername(username);
+    }
 }
