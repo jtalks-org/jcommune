@@ -24,7 +24,15 @@ import org.jtalks.jcommune.model.entity.User;
  * {@link User} objects. Now it has no specific methods, it has only methods inherited from {@link Dao} interface.
  * @see UserHibernateDao
  * @author Pavel Vervenko
+ * @author Kirill Afonin
  */
 public interface UserDao extends Dao<User> {
-    
+
+    /**
+     * Get {@link User} with corresponding username.
+     * @param username name of requested user.
+     * @return {@link User} with given username.
+     * @see User
+     */
+    User getByUsername(String username);
 }
