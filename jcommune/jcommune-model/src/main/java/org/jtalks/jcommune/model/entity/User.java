@@ -26,7 +26,8 @@ import java.util.Collection;
 /**
  * Stores information about the forum user.
  * 
- * @author Pavel Vervenko, Kirill Afonin
+ * @author Pavel Vervenko
+ * @author Kirill Afonin
  */
 public class User extends Persistent implements UserDetails {
 
@@ -132,7 +133,7 @@ public class User extends Persistent implements UserDetails {
 
     //methods from UserDetails inteface, indicating that
     //user can or can't authenticate.
-    //now we dont need this functional, users always enabled
+    //we dont need this functional now and users always enabled
 
     @Override
     public boolean isAccountNonExpired() {
