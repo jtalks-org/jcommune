@@ -17,14 +17,15 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import java.util.List;
 import org.hibernate.Query;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
 
+import java.util.List;
+
 /**
  * Hibernate implementation of UserDao.
- * 
+ *
  * @author Pavel Vervenko
  */
 public class UserHibernateDao extends AbstractHibernateDao<User> implements UserDao {
@@ -61,5 +62,16 @@ public class UserHibernateDao extends AbstractHibernateDao<User> implements User
     @Override
     public List<User> getAll() {
         return getSession().createQuery("from User").list();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public User getByUsername(String username) {
+        return (User) getSession()
+                .createQuery("from User u where u.username = ?")
+                .setString(0, username)
+                .uniqueResult();
     }
 }
