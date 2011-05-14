@@ -36,8 +36,10 @@ import java.util.List;
  */
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
 public class UserHibernateDaoTest extends BaseTest {
-
-    /** Hibernate Session Factory instance. */
+    private static final String USERNAME = "NickName";
+    /**
+     * Hibernate Session Factory instance.
+     */
     @Resource(name = "sessionFactory")
     private SessionFactory sessionFactory;
     private UserHibernateDao dao;
@@ -52,7 +54,7 @@ public class UserHibernateDaoTest extends BaseTest {
         entity = new User();
         entity.setFirstName("FirstName");
         entity.setLastName("LastName");
-        entity.setUsername("NickName");
+        entity.setUsername(USERNAME);
         entity.setEmail("mail@mail.com");
         entity.setPassword("password");
 
@@ -149,8 +151,8 @@ public class UserHibernateDaoTest extends BaseTest {
     public void testGetByUsername() throws Exception {
         dao.saveOrUpdate(entity);
 
-        User user = dao.getByUsername("NickName");
-        Assert.assertEquals("NickName", user.getUsername(), "Username not match");
+        User user = dao.getByUsername(USERNAME);
+        Assert.assertEquals(USERNAME, user.getUsername(), "Username not match");
     }
 
     @Test
@@ -159,5 +161,53 @@ public class UserHibernateDaoTest extends BaseTest {
 
         User user = dao.getByUsername("Name");
         Assert.assertNull(user);
+    }
+
+    @Test
+    public void testIsUserWithEmailExist() throws Exception {
+        dao.saveOrUpdate(entity);
+        User entity2 = new User();
+        entity2.setEmail("email@dddd.co.uk");
+        dao.saveOrUpdate(entity2);
+
+        boolean result = dao.isUserWithEmailExist("mail@mail.com");
+
+        Assert.assertTrue(result, "User not exist");
+    }
+
+    @Test
+    public void testIsUserWithEmailExist_NotExist() throws Exception {
+        dao.saveOrUpdate(entity);
+        User entity2 = new User();
+        entity2.setEmail("email@dddd.co.uk");
+        dao.saveOrUpdate(entity2);
+
+        boolean result = dao.isUserWithEmailExist("dick@head.com");
+
+        Assert.assertFalse(result, "User exist");
+    }
+
+    @Test
+    public void testIsUserWithUsernameExist() throws Exception {
+        dao.saveOrUpdate(entity);
+        User entity2 = new User();
+        entity2.setUsername("namename");
+        dao.saveOrUpdate(entity2);
+
+        boolean result = dao.isUserWithUsernameExist(USERNAME);
+
+        Assert.assertTrue(result, "User not exist");
+    }
+
+    @Test
+    public void testIsUserWithUsernameExist_NotExist() throws Exception {
+        dao.saveOrUpdate(entity);
+        User entity2 = new User();
+        entity2.setUsername("namename");
+        dao.saveOrUpdate(entity2);
+
+        boolean result = dao.isUserWithUsernameExist("Nonono");
+
+        Assert.assertFalse(result, "User exist");
     }
 }
