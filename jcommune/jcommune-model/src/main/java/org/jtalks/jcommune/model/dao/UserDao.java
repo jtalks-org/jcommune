@@ -20,19 +20,39 @@ package org.jtalks.jcommune.model.dao;
 import org.jtalks.jcommune.model.entity.User;
 
 /**
- *  This interface provides persistence operations for 
+ * This interface provides persistence operations for
  * {@link User} objects. Now it has no specific methods, it has only methods inherited from {@link Dao} interface.
- * @see UserHibernateDao
+ *
  * @author Pavel Vervenko
  * @author Kirill Afonin
+ * @see UserHibernateDao
  */
 public interface UserDao extends Dao<User> {
 
     /**
      * Get {@link User} with corresponding username.
+     *
      * @param username name of requested user.
      * @return {@link User} with given username.
      * @see User
      */
     User getByUsername(String username);
+
+    /**
+     * Check if {@link User} with given username exist.
+     *
+     * @param username username
+     * @return <code>true</code> if {@link User} with given username exist or
+     *         <code>false</code>
+     */
+    boolean isUserWithUsernameExist(String username);
+
+    /**
+     * Check if {@link User} with given email exist.
+     *
+     * @param email email
+     * @return <code>true</code> if {@link User} with given email exist or
+     *         <code>false</code>
+     */
+    boolean isUserWithEmailExist(String email);
 }
