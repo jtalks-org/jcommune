@@ -20,7 +20,7 @@ package org.jtalks.jcommune.service;
 import org.springframework.security.core.context.SecurityContext;
 
 /**
- * Abstract away SecurityContextHolder singleton.
+ * Replacement for SecurityContextHolder singleton.
  *
  * @author Kirill Afonin
  */
