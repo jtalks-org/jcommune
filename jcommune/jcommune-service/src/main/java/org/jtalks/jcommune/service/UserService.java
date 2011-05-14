@@ -18,6 +18,7 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.exceptions.DuplicateException;
 
 /**
  * This interface should have methods which give us more abilities in manipulating User persistent entity.
@@ -34,4 +35,17 @@ public interface UserService extends EntityService<User> {
      * @see User
      */
     User getByUsername(String username);
+
+    /**
+     * Register {@link User} with given features.
+     *
+     * @param username  username
+     * @param email     email
+     * @param firstName first name
+     * @param lastName  last name
+     * @param password  password
+     * @throws DuplicateException if user with username or email already exist.
+     */
+    void registerUser(String username, String email, String firstName,
+                      String lastName, String password) throws DuplicateException;
 }
