@@ -33,14 +33,17 @@ public class DuplicateException extends Exception {
     }
 
     /**
-     * {@link Exception}
+     *
+     * @param message exception message
      */
     public DuplicateException(String message) {
         super(message);
     }
 
     /**
-     * {@link Exception}
+     *
+     * @param e parent exception
+     * @see Exception
      */
     public DuplicateException(Exception e) {
         super(e);

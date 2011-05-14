@@ -67,12 +67,23 @@ public class TransactionalUserService extends AbstractTransactionlaEntityService
         dao.saveOrUpdate(user);
     }
 
-    // Return true if user with given username or email exist.
+    /**
+     * Check user with given username and email existance.
+     *
+     * @param username username
+     * @param email    email
+     * @return true if user with given username or email exist.
+     */
     private boolean isUserExist(String username, String email) {
         return getUserDao().isUserWithUsernameExist(username) ||
                 getUserDao().isUserWithEmailExist(email);
     }
 
+    /**
+     * Cast dao to UserDao
+     *
+     * @return dao casted to {@link UserDao}
+     */
     private UserDao getUserDao() {
         return (UserDao) dao;
     }
