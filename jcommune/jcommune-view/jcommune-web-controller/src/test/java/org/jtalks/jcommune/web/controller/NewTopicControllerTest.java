@@ -63,7 +63,7 @@ public class NewTopicControllerTest {
         User user = new User();
         user.setFirstName(NICK_USER_NAME);
         user.setLastName(NICK_USER_NAME);
-        user.setNickName(NICK_USER_NAME);
+        user.setUsername(NICK_USER_NAME);
 
         verify(userService).saveOrUpdate(userArgumentCaptor.capture());
         assertEquals(user, userArgumentCaptor.getValue());

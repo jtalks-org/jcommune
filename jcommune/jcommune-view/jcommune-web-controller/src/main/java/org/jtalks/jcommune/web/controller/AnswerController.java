@@ -4,12 +4,8 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +63,7 @@ public class AnswerController {
         User user = new User();
         user.setFirstName(nickName);
         user.setLastName(nickName);
-        user.setNickName(nickName);
+        user.setUsername(nickName);
         userService.saveOrUpdate(user);
         return user;
     }

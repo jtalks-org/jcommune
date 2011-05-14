@@ -33,7 +33,7 @@ public abstract class AbstractTransactionlaEntityService<T extends Persistent> i
     /**
      * Dao object implementation.
      */
-    private Dao<T> dao;
+    protected Dao<T> dao;
 
 
     /**
