@@ -22,6 +22,7 @@
 				<td width="80%"><spring:message code="label.text" />: <c:out
 						value="${posts.postContent}" />
 				</td>
+				
 			</tr>
 		</c:forEach>
 	</table>

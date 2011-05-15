@@ -18,6 +18,8 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
@@ -28,18 +30,27 @@ import java.util.Map;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeValues;
 
 public class TopicRenderControllerTest {
     private TopicService topicService;
+    private SecurityService securitySecvice;
     private TopicRenderController topicRenderController;
 
     @BeforeMethod
     public void init() {
         topicService = mock(TopicService.class);
-        topicRenderController = new TopicRenderController(topicService);
+        securitySecvice = mock(SecurityService.class);
+        topicRenderController = new TopicRenderController(topicService,securitySecvice);
+    }
+    
+    private User getUser(){
+        User user = new User();
+        user.setUsername("username");
+        return user;
     }
 
     @Test
@@ -47,14 +58,18 @@ public class TopicRenderControllerTest {
         Topic topic = Topic.createNewTopic();
         topic.setId(1l);
         topic.setTitle("Simple Title");
-
+        
         Map<String, Object> topicMap = new HashMap<String, Object>();
         topicMap.put("selectedTopic", topic);
-
+        topicMap.put("currentUser", getUser());
+        
         when(topicService.getTopicWithPosts(1l)).thenReturn(topic);
+        when(securitySecvice.getCurrentUser()).thenReturn(getUser());
+        
         ModelAndView mav = topicRenderController.showTopic(1l);
         verify(topicService).getTopicWithPosts(1l);
-
+        verify(securitySecvice.getCurrentUser(),times(1));
+        
         assertModelAttributeValues(mav, topicMap);
         assertViewName(mav, "renderTopic");
     }

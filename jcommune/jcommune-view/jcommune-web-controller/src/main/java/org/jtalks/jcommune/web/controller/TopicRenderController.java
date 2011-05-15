@@ -18,6 +18,8 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,6 +40,7 @@ import org.springframework.web.servlet.ModelAndView;
 public final class TopicRenderController {
 
     private final TopicService topicService;
+    private final SecurityService securityService; 
 
     /**
      * Constructor creates MVC controller with specifying TopicService,
@@ -48,8 +51,9 @@ public final class TopicRenderController {
      * @see Topic
      */
     @Autowired
-    public TopicRenderController(TopicService topicService) {
+    public TopicRenderController(TopicService topicService, SecurityService securityService) {
         this.topicService = topicService;
+        this.securityService = securityService;
     }
 
     /**
@@ -62,8 +66,10 @@ public final class TopicRenderController {
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.GET)
     public ModelAndView showTopic(@PathVariable("topicId") long topicID) {
         Topic selectedTopic = topicService.getTopicWithPosts(topicID);
+        User currentUser = securityService.getCurrentUser();
         ModelAndView mav = new ModelAndView("renderTopic");
         mav.addObject("selectedTopic", selectedTopic);
+        mav.addObject("currentUser", currentUser);
         return mav;
     }
 }
