@@ -12,8 +12,8 @@
   <name>jcommune-service</name>
   <url>www.jtalks.org</url>
   <description>
-        This is the module that contains all the business logic of the project, also - transactions
-        are implemented on this level. 
+    This is the module that contains all the business logic of the project, also - transactions
+    are implemented on this level.
   </description>
 
   <dependencies>
@@ -21,7 +21,6 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>jcommune-model</artifactId>
       <type>jar</type>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -31,25 +30,21 @@
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
       <type>jar</type>
-      <scope>compile</scope>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
       <type>jar</type>
-      <scope>compile</scope>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-core</artifactId>
-      <version>${springVersion}</version>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-config</artifactId>
-      <version>${springVersion}</version>
-      <scope>compile</scope>
     </dependency>
   </dependencies>
 
