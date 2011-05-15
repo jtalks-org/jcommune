@@ -17,9 +17,11 @@
 		<c:forEach var="posts" items="${selectedTopic.posts}">
 			<tr>
 				<td width="20%"><spring:message code="label.author" />: <c:out
-						value="${posts.userCreated.username}" /></td>
+						value="${posts.userCreated.username}" />
+				</td>
 				<td width="80%"><spring:message code="label.text" />: <c:out
-						value="${posts.postContent}" /></td>
+						value="${posts.postContent}" />
+				</td>
 			</tr>
 		</c:forEach>
 	</table>
@@ -28,13 +30,15 @@
 			<td><form:form
 					action="${pageContext.request.contextPath}/forum.html" method="GET">
 					<input type="submit" value="<spring:message code="label.back"/>" />
-				</form:form></td>
+				</form:form>
+			</td>
 			<td><form:form
 					action="${pageContext.request.contextPath}/answer.html"
 					method="POST">
 					<input name="topicId" type="hidden" value="${selectedTopic.id}" />
 					<input type="submit" value="<spring:message code="label.answer"/>" />
-				</form:form></td>
+				</form:form>
+			</td>
 		</tr>
 	</table>
 

@@ -10,20 +10,22 @@
 	<form:form method="POST">
 		<table border="1" width="100%">
 			<tr>
-				<td width="80%"><spring:message code="label.topic" /></td>
-				<td width="10%"><spring:message code="label.author" /></td>
-				<td width="10%"><spring:message code="label.date" /></td>
+				<td width="80%"><spring:message code="label.topic" />
+				</td>
+				<td width="10%"><spring:message code="label.author" />
+				</td>
+				<td width="10%"><spring:message code="label.date" />
+				</td>
 			</tr>
 
 			<c:forEach var="topics" items="${topicsList}">
 				<tr>
 					<td><a
 						href="${pageContext.request.contextPath}/topics/${topics.id}.html">
-							<c:out value="${topics.title}" /> </a></td>
-					<td><c:out value="${topics.topicStarter.username}" />
+							<c:out value="${topics.title}" /> </a>
 					</td>
-					<td><c:out value="${topics.creationDate}" />
-					</td>
+					<td><c:out value="${topics.topicStarter.username}" /></td>
+					<td><c:out value="${topics.creationDate}" /></td>
 				</tr>
 			</c:forEach>
 		</table>

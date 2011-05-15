@@ -90,24 +90,36 @@
         <artifactId>spring-aop</artifactId>
         <version>${springVersion}</version>
       </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>${springVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-expression</artifactId>
+        <version>${springVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-tx</artifactId>
+        <version>${springVersion}</version>
+      </dependency>
       <!-- Spring Security -->
       <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-core</artifactId>
         <version>${springVersion}</version>
-        <scope>compile</scope>
       </dependency>
       <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-config</artifactId>
         <version>${springVersion}</version>
-        <scope>compile</scope>
       </dependency>
       <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-web</artifactId>
         <version>${springVersion}</version>
-        <scope>compile</scope>
       </dependency>
       <!-- AOP -->
       <dependency>
@@ -138,6 +150,11 @@
         <groupId>javax.servlet</groupId>
         <artifactId>jstl</artifactId>
         <version>1.2</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+        <version>2.5</version>
       </dependency>
       <dependency>
         <groupId>opensymphony</groupId>
