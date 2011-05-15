@@ -59,16 +59,26 @@ public class TransactionalUserService extends AbstractTransactionlaEntityService
                              String lastName, String password) throws DuplicateException {
 
         if (isUserExist(username, email)) {
-            throw new DuplicateException("User already exist!");
+            final String msg = "User " + username + " already exist!";
+            logger.warn(msg);
+            throw new DuplicateException(msg);
         }
 
+        User user = populateUser(username, email, firstName, lastName, password);
+        dao.saveOrUpdate(user);
+
+        logger.info("User registered: " + username);
+    }
+
+    private User populateUser(String username, String email, String firstName,
+                              String lastName, String password) {
         User user = new User();
         user.setUsername(username);
         user.setEmail(email);
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setPassword(password);
-        dao.saveOrUpdate(user);
+        return user;
     }
 
     /**
