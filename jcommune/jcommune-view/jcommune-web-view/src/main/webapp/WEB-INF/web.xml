@@ -10,6 +10,7 @@
     <param-value>
       classpath:org/jtalks/jcommune/model/entity/applicationContext-dao.xml
       classpath:org/jtalks/jcommune/service/applicationContext-service.xml
+      classpath:org/jtalks/jcommune/service/security-service-context.xml
       /WEB-INF/security-context.xml
     </param-value>
   </context-param>

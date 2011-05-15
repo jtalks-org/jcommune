@@ -22,6 +22,8 @@ import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * User service class. This class contains method needed to manipulate with User persistent entity.
@@ -29,6 +31,8 @@ import org.jtalks.jcommune.service.exceptions.DuplicateException;
  * @author Osadchuck Eugeny
  */
 public class TransactionalUserService extends AbstractTransactionlaEntityService<User> implements UserService {
+
+    final Logger logger = LoggerFactory.getLogger(TransactionalUserService.class);
 
     /**
      * Create an instance of User entity based service
