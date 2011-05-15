@@ -37,11 +37,11 @@ public interface TopicService extends EntityService<Topic> {
     Topic getTopicWithPosts(long id);
 
     /**
-     * Add the answer to the topic. Add the specified Post to the target topic and save.
+     * Add the answer to the topic. Add the specified message to the target topic and save.
      * The Post entity can be unsaved, because it saves in cascade.
      *
      * @param topicId target topic primary id.
-     * @param answer  the post to add to the topic as a reply
+     * @param answerBody the text of the answer
      */
-    void addAnswer(long topicId, Post answer);
+    void addAnswer(long topicId, String answerBody);
 }

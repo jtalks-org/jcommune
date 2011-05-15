@@ -30,6 +30,7 @@ import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.mockito.Matchers;
 import org.testng.Assert;
@@ -47,12 +48,14 @@ public class TransactionalTopicServiceTest {
     final DateTime TOPIC_CREATION_DATE = new DateTime();
 
     private TopicService topicService;
+    private SecurityService securityService;
     private TopicDao topicDao;
 
     @BeforeMethod
     public void setUp() throws Exception {
         topicDao = mock(TopicDao.class);
-        topicService = new TransactionalTopicService(topicDao);
+        securityService = mock(SecurityService.class);
+        topicService = new TransactionalTopicService(topicDao, securityService);
     }
     
     
