@@ -22,8 +22,7 @@
 				<tr>
 					<td><a
 						href="${pageContext.request.contextPath}/topics/${topics.id}.html">
-							<c:out value="${topics.title}" />
-					</a>
+							<c:out value="${topics.title}" /> </a>
 					</td>
 					<td><c:out value="${topics.topicStarter.username}" /></td>
 					<td><c:out value="${topics.creationDate}" /></td>

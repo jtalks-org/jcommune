@@ -39,19 +39,20 @@ public class TransactionalTopicService extends AbstractTransactionlaEntityServic
     public TransactionalTopicService(Dao<Topic> dao) {
         super(dao);
     }
-
+    
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Topic getTopic(long id, boolean isLoadPosts) {
-        Topic topic = null;
+    public Topic getTopicWithPosts(long id) {
         TopicDao topicDao = (TopicDao) getDao();
-        if(isLoadPosts){
-            topic = topicDao.getTopicWithPosts(id);
-        }else{
-            topic = topicDao.get(id);
-        }
+        Topic topic = topicDao.getTopicWithPosts(id);       
         return topic;
     }
-
+    
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addAnswer(long topicId, Post answer) {
         Topic topic = getDao().get(topicId);

@@ -1,5 +1,8 @@
 package org.jtalks.jcommune.service.transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
@@ -9,10 +12,14 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 
 /**
  * @author Kirill Afonin
+ * @author Osadchuck Eugeny
  */
 public class TransactionalUserServiceTest {
     final String USERNAME = "username";
@@ -20,6 +27,7 @@ public class TransactionalUserServiceTest {
     final String PASSWORD = "password";
     final String FIRST_NAME = "first name";
     final String LAST_NAME = "last name";
+    final Long USER_ID = new Long(999);
 
 
     private UserService userService;
@@ -73,5 +81,56 @@ public class TransactionalUserServiceTest {
 
         userService.registerUser(USERNAME, EMAIL, FIRST_NAME, LAST_NAME,
                 PASSWORD);
+    }
+    
+    @Test
+    public void saveOrUpdateTest(){
+        User user = getUser();        
+        userService.saveOrUpdate(user);
+        
+        verify(userDao, times(1)).saveOrUpdate(Matchers.<User>any());
+    }
+    
+    @Test
+    public void deleteByIdTest(){
+        userService.delete(USER_ID);        
+        verify(userDao, times(1)).delete(Matchers.anyLong());
+    }
+    
+    @Test
+    public void deleteTest(){
+        User user = getUser();
+        userService.delete(user);        
+        verify(userDao, times(1)).delete(Matchers.<User>any());
+    }
+    
+    @Test
+    public void getByIdTest(){
+        when(userDao.get(USER_ID)).thenReturn(getUser());        
+        User user = userService.get(USER_ID);        
+        Assert.assertEquals(user, getUser(), "Users aren't equals");        
+        verify(userDao, times(1)).get(Matchers.anyLong());
+    }
+    
+    @Test
+    public void getAllTest(){
+        List<User> expectedUserList = new ArrayList<User>();
+        expectedUserList.add(getUser());
+        when(userDao.getAll()).thenReturn(expectedUserList);        
+        List<User> actualUserList = userService.getAll();          
+        Assert.assertEquals(actualUserList, expectedUserList, "User lists aren't equals");        
+        verify(userDao, times(1)).getAll();
+    }
+    
+    private User getUser() {
+        User user = new User();
+        user.setId(USER_ID);
+        user.setUsername(USERNAME);
+        user.setPassword(PASSWORD);
+        user.setEmail(EMAIL);
+        user.setFirstName(FIRST_NAME);
+        user.setLastName(LAST_NAME);
+        
+        return user;
     }
 }
