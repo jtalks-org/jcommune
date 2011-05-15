@@ -15,24 +15,37 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-package org.jtalks.jcommune.service;
-
-import org.springframework.security.core.context.SecurityContext;
+package org.jtalks.jcommune.service.exceptions;
 
 /**
- * Replacement for SecurityContextHolder singleton.
+ * Exception for cases when something already exists in system
+ * and not allowed to have duplicate.
  *
- * @author Kirill Afonin
+ * @author KirillAfonin
+ * @see Exception
  */
-public interface SecurityContextFacade {
+public class DuplicateException extends Exception {
 
     /**
-     * @return <code>SecurityContext</code>
+     * {@link Exception}
      */
-    SecurityContext getContext();
+    public DuplicateException() {
+    }
 
     /**
-     * @param securityContext <code>SecurityContext</code> to set.
+     *
+     * @param message exception message
      */
-    void setContext(SecurityContext securityContext);
+    public DuplicateException(String message) {
+        super(message);
+    }
+
+    /**
+     *
+     * @param e parent exception
+     * @see Exception
+     */
+    public DuplicateException(Exception e) {
+        super(e);
+    }
 }

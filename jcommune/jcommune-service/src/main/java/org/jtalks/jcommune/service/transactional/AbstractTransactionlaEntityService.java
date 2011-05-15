@@ -17,19 +17,21 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import java.util.List;
-
-import org.jtalks.jcommune.service.EntityService;
 import org.jtalks.jcommune.model.dao.Dao;
 import org.jtalks.jcommune.model.entity.Persistent;
+import org.jtalks.jcommune.service.EntityService;
+
+import java.util.List;
 
 /**
  * Generic implementation of all entity based services.
- * Most of the implementations of the methods are basing on straightforward calls of the same named method from DAO interface.
- * @author Osadchuck Eugeny
+ * Most of the implementations of the methods are basing on straightforward calls
+ * of the same named method from DAO interface.
  *
+ * @author Osadchuck Eugeny
  */
-public abstract class AbstractTransactionlaEntityService<T extends Persistent> implements EntityService<T> {
+public abstract class AbstractTransactionlaEntityService<T extends Persistent>
+        implements EntityService<T> {
     /**
      * Dao object implementation.
      */
@@ -38,14 +40,16 @@ public abstract class AbstractTransactionlaEntityService<T extends Persistent> i
 
     /**
      * Create an instance of entity based service
-     * @param dao - data access object, which should be able do all CRUD operations. 
+     *
+     * @param dao - data access object, which should be able do all CRUD operations.
      */
     public AbstractTransactionlaEntityService(Dao<T> dao) {
         this.dao = dao;
     }
 
     /**
-     * Get data access object which implements data manipulation for entity T.   
+     * Get data access object which implements data manipulation for entity T.
+     *
      * @return - data access object which implements data manipulation for entity T.
      */
     public Dao<T> getDao() {
@@ -54,6 +58,7 @@ public abstract class AbstractTransactionlaEntityService<T extends Persistent> i
 
     /**
      * Set data access object, which implements data manipulation for entity T
+     *
      * @param dao - data access object which implements data manipulation for entity T.
      */
     public void setDao(Dao<T> dao) {

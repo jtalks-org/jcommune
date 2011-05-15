@@ -18,11 +18,7 @@
 
   <tx:advice id="txAdvice">
     <tx:attributes>
-      <tx:method name="get*" rollback-for="java.lang.Exception"
-        read-only="true" />
-      <tx:method name="save*" rollback-for="java.lang.Exception" />
-      <tx:method name="delete*" rollback-for="java.lang.Exception" />
-      <tx:method name="add*" rollback-for="java.lang.Exception" />
+      <tx:method name="*" rollback-for="java.lang.Exception" />
     </tx:attributes>
   </tx:advice>
 

@@ -30,7 +30,8 @@ public interface SecurityService extends UserDetailsService {
     /**
      * Get current authenticated {@link User}.
      *
-     * @return current authenticated {@link User} or <code>null</code> if there is no authenticated {@link User}.
+     * @return current authenticated {@link User} or <code>null</code> if there is
+     * no authenticated {@link User}.
      * @see User
      */
     User getCurrentUser();
@@ -38,7 +39,8 @@ public interface SecurityService extends UserDetailsService {
     /**
      * Get current authenticated {@link User} username.
      *
-     * @return current authenticated {@link User} username or <code>null</code> if there is no authenticated {@link User}.
+     * @return current authenticated {@link User} username or <code>null</code> if there is
+     * no authenticated {@link User}.
      */
     String getCurrentUserUsername();
 

@@ -42,7 +42,7 @@ public class SecurityServiceImplTest {
         securityService = new SecurityServiceImpl();
         securityService.setUserService(userService);
         securityService.setSecurityContextFacade(securityContextFacade);
-        stub(securityContextFacade.getContext()).toReturn(securityContext);
+        when(securityContextFacade.getContext()).thenReturn(securityContext);
     }
 
     @Test
