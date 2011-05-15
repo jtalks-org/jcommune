@@ -23,33 +23,38 @@ import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Topic service class. This class contains method needed to manipulate with Topic persistent entity.
- * 
+ *
  * @author Osadchuck Eugeny
  * @author Vervenko Pavel
  */
 public class TransactionalTopicService extends AbstractTransactionlaEntityService<Topic> implements TopicService {
 
+    final Logger logger = LoggerFactory.getLogger(TransactionalTopicService.class);
+
     /**
      * Create an instance of User entity based service
-     * @param dao - data access object, which should be able do all CRUD operations with topic entity. 
+     *
+     * @param dao - data access object, which should be able do all CRUD operations with topic entity.
      */
     public TransactionalTopicService(Dao<Topic> dao) {
         super(dao);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public Topic getTopicWithPosts(long id) {
         TopicDao topicDao = (TopicDao) getDao();
-        Topic topic = topicDao.getTopicWithPosts(id);       
+        Topic topic = topicDao.getTopicWithPosts(id);
         return topic;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -59,5 +64,5 @@ public class TransactionalTopicService extends AbstractTransactionlaEntityServic
         topic.addPost(answer);
         getDao().saveOrUpdate(topic);
     }
-    
+
 }

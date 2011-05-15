@@ -20,19 +20,23 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.jcommune.model.dao.Dao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.PostService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Post service class. This class contains method needed to manipulate with Post persistent entity.
- * 
- * @author Osadchuck Eugeny
  *
+ * @author Osadchuck Eugeny
  */
 public class TransactionalPostService extends AbstractTransactionlaEntityService<Post> implements PostService {
 
+    final Logger logger = LoggerFactory.getLogger(TransactionalPostService.class);
+
     /**
      * Create an instance of Post entity based service
-     * @param dao - data access object, which should be able do all CRUD operations with post entity. 
-    */
+     *
+     * @param dao - data access object, which should be able do all CRUD operations with post entity.
+     */
     public TransactionalPostService(Dao<Post> dao) {
         super(dao);
     }
