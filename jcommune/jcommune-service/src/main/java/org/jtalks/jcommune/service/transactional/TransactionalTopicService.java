@@ -17,7 +17,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-
 import org.jtalks.jcommune.model.dao.Dao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Post;
@@ -34,6 +33,7 @@ import org.jtalks.jcommune.service.exceptions.UserNotLoggedInException;
  * @author Vervenko Pavel
  */
 public class TransactionalTopicService extends AbstractTransactionlaEntityService<Topic> implements TopicService {
+
     private final SecurityService securityService;
 
     /**
@@ -44,33 +44,32 @@ public class TransactionalTopicService extends AbstractTransactionlaEntityServic
         super(dao);
         this.securityService = securityService;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public Topic getTopicWithPosts(long id) {
         TopicDao topicDao = (TopicDao) getDao();
-        Topic topic = topicDao.getTopicWithPosts(id);       
+        Topic topic = topicDao.getTopicWithPosts(id);
         return topic;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void addAnswer(long topicId, String answerBody) {
-        Topic topic = getDao().get(topicId);
-        Post answer = Post.createNewPost();
-        answer.setPostContent(answerBody);
         User currentUser = securityService.getCurrentUser();
         // Check if the user is authenticated
         if (currentUser == null) {
             throw new UserNotLoggedInException("User should log in to post answers.");
         }
+        Topic topic = getDao().get(topicId);
+        Post answer = Post.createNewPost();
+        answer.setPostContent(answerBody);
         answer.setUserCreated(currentUser);
         topic.addPost(answer);
         getDao().saveOrUpdate(topic);
     }
-    
 }
