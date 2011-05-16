@@ -33,8 +33,9 @@
   </bean>
 
   <bean id="topicService"
-        class="org.jtalks.jcommune.service.transactional.TransactionalTopicService">
-    <constructor-arg index="0" ref="topicDao"/>
+    class="org.jtalks.jcommune.service.transactional.TransactionalTopicService">
+    <constructor-arg index="0" ref="topicDao" />
+    <constructor-arg index="1" ref="securityService" />
   </bean>
 
   <bean id="securityContextFacade"

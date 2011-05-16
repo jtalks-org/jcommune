@@ -30,7 +30,9 @@ import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.exceptions.UserNotLoggedInException;
 import org.mockito.Matchers;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -41,22 +43,23 @@ import org.testng.annotations.Test;
  *
  */
 public class TransactionalTopicServiceTest {
-    
+
     final Long TOPIC_ID = new Long(999);
     final String TOPIC_TITLE = "topic title";
+    final String ANSWER_BODY = "Test Answer Body";
     final DateTime TOPIC_CREATION_DATE = new DateTime();
-
     private TopicService topicService;
+    private SecurityService securityService;
     private TopicDao topicDao;
 
     @BeforeMethod
     public void setUp() throws Exception {
         topicDao = mock(TopicDao.class);
-        topicService = new TransactionalTopicService(topicDao);
+        securityService = mock(SecurityService.class);
+        topicService = new TransactionalTopicService(topicDao, securityService);
     }
-    
-    
-    private Topic getTopic(){
+
+    private Topic getTopic() {
         User topicStarter = new User();
         topicStarter.setId(new Long(333));
         topicStarter.setUsername("username");
@@ -65,70 +68,102 @@ public class TransactionalTopicServiceTest {
         topic.setId(TOPIC_ID);
         topic.setTitle(TOPIC_TITLE);
         topic.setTopicStarter(topicStarter);
-   
+
         return topic;
     }
-    
+
     @Test
-    public void saveOrUpdateTest(){
-        Topic topic = getTopic();        
+    public void saveOrUpdateTest() {
+        Topic topic = getTopic();
         topicService.saveOrUpdate(topic);
-        
+
         verify(topicDao, times(1)).saveOrUpdate(Matchers.<Topic>any());
     }
-    
+
     @Test
-    public void deleteByIdTest(){
+    public void deleteByIdTest() {
         topicService.delete(TOPIC_ID);
-        
+
         verify(topicDao, times(1)).delete(Matchers.anyLong());
     }
-    
+
     @Test
-    public void deleteTest(){
-        Topic topic = getTopic();        
+    public void deleteTest() {
+        Topic topic = getTopic();
         topicService.delete(topic);
-        
+
         verify(topicDao, times(1)).delete(Matchers.<Topic>any());
     }
-    
+
     @Test
-    public void getByIdTest(){
+    public void getByIdTest() {
         when(topicDao.get(TOPIC_ID)).thenReturn(getTopic());
-        
+
         Topic topic = topicService.get(TOPIC_ID);
-        
+
         Assert.assertEquals(topic, getTopic(), "Topics aren't equals");
-        
+
         verify(topicDao, times(1)).get(Matchers.anyLong());
     }
-    
+
     @Test
-    public void getAllTest(){
+    public void getAllTest() {
         List<Topic> expectedUserList = new ArrayList<Topic>();
         expectedUserList.add(getTopic());
         when(topicDao.getAll()).thenReturn(expectedUserList);
-        
-        List<Topic> actualUserList = topicService.getAll();  
-        
+
+        List<Topic> actualUserList = topicService.getAll();
+
         Assert.assertEquals(actualUserList, expectedUserList, "Topics lists aren't equals");
-        
+
         verify(topicDao, times(1)).getAll();
     }
-    
+
     @Test
-    public void getTopicWithPostsTest(){
+    public void getTopicWithPostsTest() {
         Topic topic = getTopic();
         List<Post> posts = new ArrayList<Post>();
         topic.setPosts(posts);
         when(topicDao.getTopicWithPosts(TOPIC_ID)).thenReturn(topic);
         when(topicService.getTopicWithPosts(TOPIC_ID)).thenReturn(getTopic());
-        
-        Topic actualTopic = topicService.getTopicWithPosts(TOPIC_ID);        
-        
-        Assert.assertNotNull(actualTopic.getPosts(), "Posts is null");
-        
-        verify(topicDao, times(1)).getTopicWithPosts(Matchers.anyLong());        
-    }    
 
+        Topic actualTopic = topicService.getTopicWithPosts(TOPIC_ID);
+
+        Assert.assertNotNull(actualTopic.getPosts(), "Posts is null");
+
+        verify(topicDao, times(1)).getTopicWithPosts(Matchers.anyLong());
+    }
+
+    @Test
+    public void addAnswerTest() {
+        Topic topic = getTopic();
+        List<Post> posts = new ArrayList<Post>();
+        topic.setPosts(posts);
+        int postsNumberBefore = topic.getPosts().size();
+        User currentUser = getCurrentUser();
+        when(topicService.get(TOPIC_ID)).thenReturn(topic);
+        when(securityService.getCurrentUser()).thenReturn(currentUser);
+        topicService.addAnswer(TOPIC_ID, ANSWER_BODY);
+        int postsNumberAfter = topic.getPosts().size();
+        Assert.assertEquals(postsNumberBefore + 1, postsNumberAfter, "Posts number didn't increased by 1");
+        Post newPost = topic.getPosts().get(postsNumberAfter - 1);
+        Assert.assertNotNull(newPost, "New post is null");
+        Assert.assertEquals(newPost.getPostContent(), ANSWER_BODY, "Answer body isn't the same");
+        Assert.assertEquals(newPost.getUserCreated(), currentUser, "User isn't the same");
+    }
+
+    @Test(expectedExceptions = UserNotLoggedInException.class)
+    public void addAnswerExceptionTest() {
+        Topic topic = getTopic();
+        when(securityService.getCurrentUser()).thenReturn(null);
+        when(topicService.get(TOPIC_ID)).thenReturn(topic);
+        topicService.addAnswer(TOPIC_ID, ANSWER_BODY);
+    }
+    
+    private User getCurrentUser() {
+        User currentUser = new User();
+        currentUser.setId(100500);
+        currentUser.setUsername("Test");
+        return currentUser;
+    }
 }
