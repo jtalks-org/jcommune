@@ -60,9 +60,7 @@ public class TransactionalTopicServiceTest {
     }
 
     private Topic getTopic() {
-        User topicStarter = new User();
-        topicStarter.setId(new Long(333));
-        topicStarter.setUsername("username");
+        User topicStarter = getUser();
         Topic topic = new Topic();
         topic.setCreationDate(TOPIC_CREATION_DATE);
         topic.setId(TOPIC_ID);
@@ -134,33 +132,49 @@ public class TransactionalTopicServiceTest {
         verify(topicDao, times(1)).getTopicWithPosts(Matchers.anyLong());
     }
 
+    /**
+     * Check for the answering logic works correctly.
+     */
     @Test
     public void addAnswerTest() {
         Topic topic = getTopic();
-        List<Post> posts = new ArrayList<Post>();
-        topic.setPosts(posts);
         int postsNumberBefore = topic.getPosts().size();
-        User currentUser = getCurrentUser();
+        User currentUser = getUser();
+        
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
         when(securityService.getCurrentUser()).thenReturn(currentUser);
+        
         topicService.addAnswer(TOPIC_ID, ANSWER_BODY);
         int postsNumberAfter = topic.getPosts().size();
-        Assert.assertEquals(postsNumberBefore + 1, postsNumberAfter, "Posts number didn't increased by 1");
         Post newPost = topic.getPosts().get(postsNumberAfter - 1);
-        Assert.assertNotNull(newPost, "New post is null");
+        
+        Assert.assertEquals(postsNumberBefore + 1, postsNumberAfter, "Posts number didn't increased by 1");
         Assert.assertEquals(newPost.getPostContent(), ANSWER_BODY, "Answer body isn't the same");
         Assert.assertEquals(newPost.getUserCreated(), currentUser, "User isn't the same");
+        
+        verify(securityService, times(1)).getCurrentUser();
+        verify(topicDao, times(1)).saveOrUpdate(topic);
+        verify(topicDao, times(1)).get(TOPIC_ID);
     }
 
+    /**
+     * Check for throwing exception when the user isn't logged in.
+     */
     @Test(expectedExceptions = UserNotLoggedInException.class)
     public void addAnswerExceptionTest() {
         Topic topic = getTopic();
+        
         when(securityService.getCurrentUser()).thenReturn(null);
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
+        
         topicService.addAnswer(TOPIC_ID, ANSWER_BODY);
     }
     
-    private User getCurrentUser() {
+    /**
+     * Create new dummy User with username "Test".
+     * @return the user
+     */
+    private User getUser() {
         User currentUser = new User();
         currentUser.setId(100500);
         currentUser.setUsername("Test");
