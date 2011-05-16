@@ -45,13 +45,6 @@ public interface SecurityService extends UserDetailsService {
     String getCurrentUserUsername();
 
     /**
-     * Authenticate {@link User}.
-     *
-     * @param user {@link User} which must be authenticated.
-     */
-    void authenticateUser(User user);
-
-    /**
      * {@link UserService} setter for DI.
      *
      * @param userService {@link UserService} to be injected.
