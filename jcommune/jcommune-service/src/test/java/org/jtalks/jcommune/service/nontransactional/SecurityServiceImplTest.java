@@ -4,10 +4,10 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityContextFacade;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -15,12 +15,14 @@ import org.testng.annotations.Test;
 import static org.mockito.Mockito.*;
 
 /**
+ * Test for {@link SecurityServiceImpl}.
+ *
  * @author Kirill Afonin
  */
 public class SecurityServiceImplTest {
 
-    final String USERNAME = "username";
-    final String PASSWORD = "password";
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
 
     private UserService userService;
     private SecurityService securityService;
@@ -59,7 +61,17 @@ public class SecurityServiceImplTest {
         verify(userService, times(1)).getByUsername(USERNAME);
         verify(auth, times(1)).getPrincipal();
         verify(securityContext, times(1)).getAuthentication();
-        verify(userService, times(1)).getByUsername(USERNAME);
+    }
+
+    @Test
+    public void testGetCurrentUser_NotFound() throws Exception {
+        when(securityContext.getAuthentication()).thenReturn(null);
+
+        User result = securityService.getCurrentUser();
+
+        Assert.assertNull(result, "User not null");
+        verify(securityContext, times(1)).getAuthentication();
+        verify(userService, never()).getByUsername(USERNAME);
     }
 
     @Test
@@ -87,19 +99,6 @@ public class SecurityServiceImplTest {
     }
 
     @Test
-    public void testAuthenticateUser() throws Exception {
-        User user = getUser();
-        Authentication auth = new UsernamePasswordAuthenticationToken(
-                user.getUsername(),
-                user.getPassword(),
-                user.getAuthorities());
-
-        securityService.authenticateUser(user);
-
-        verify(securityContext).setAuthentication(auth);
-    }
-
-    @Test
     public void testLoadUserByUsername() throws Exception {
         User user = getUser();
 
@@ -109,5 +108,12 @@ public class SecurityServiceImplTest {
 
         Assert.assertEquals(USERNAME, result.getUsername(), "Username not equals");
         verify(userService, times(1)).getByUsername(USERNAME);
+    }
+
+    @Test(expectedExceptions = UsernameNotFoundException.class)
+    public void testLoadUserByUsername_NotFound() throws Exception {
+        when(userService.getByUsername(USERNAME)).thenThrow(new UsernameNotFoundException(""));
+
+        UserDetails result = securityService.loadUserByUsername(USERNAME);
     }
 }
