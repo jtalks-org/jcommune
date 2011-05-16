@@ -32,9 +32,7 @@
                     class="nav">Forum</span> </a> | <span style="float: right">
                 <sec:authorize access="isAuthenticated()">
                     <sec:authentication property="principal.username"/>&nbsp
-                    <form action="${pageContext.request.contextPath}/logout.html" style="display: inline;">
-                        <input type="submit" value="Logout"/>
-                    </form>
+                    <a href="${pageContext.request.contextPath}/logout.html">Logout</a>
                 </sec:authorize>
                 &nbsp
                 <sec:authorize access="isAnonymous()">
