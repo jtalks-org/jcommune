@@ -48,7 +48,7 @@ public class NewTopicControllerTest {
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
-        newTopicController = new NewTopicController(topicService, userService);
+        //newTopicController = new NewTopicController(topicService, userService);
     }
 
 

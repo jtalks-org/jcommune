@@ -22,17 +22,14 @@
 				<td width="80%"><spring:message code="label.text" />: <c:out
 						value="${posts.postContent}" />
 				</td>
-			     <c:if test="${currentUser.id==posts.userCreated.id}">
-			     
-				    <td><form:form action="${pageContext.request.contextPath}/forum.html" method="GET">
-                        <input type="submit" value="<spring:message code="label.back"/>" />
+			     <c:if test="${currentUser.id==posts.userCreated.id}">			     
+				    <td>
+				        <form:form action="${pageContext.request.contextPath}/forum.html" method="POST">
+                            <input type="submit" value="<spring:message code="label.delete"/>" />
                         </form:form>
-                    </td>
-			     
-			     </c:if>
-			                 	
-			</tr>
-			
+                    </td>			     
+			     </c:if>			                 	
+			</tr>			
 		</c:forEach>
 	</table>
 	<table>

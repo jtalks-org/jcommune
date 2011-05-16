@@ -18,7 +18,7 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotBlank;
+//import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.web.validation.Matches;
 
 import javax.validation.constraints.Size;
@@ -32,18 +32,18 @@ import javax.validation.constraints.Size;
  */
 @Matches(field = "password", verifyField = "passwordConfirm", message = "Password not matches!")
 public class UserDTO {
-    @NotBlank
+    //@NotBlank
     @Size(min = 3, max = 20)
     private String username;
-    @NotBlank
+   // @NotBlank
     @Email
     private String email;
     private String firstName;
     private String lastName;
-    @NotBlank
+    //@NotBlank
     @Size(min = 4)
     private String password;
-    @NotBlank
+   // @NotBlank
     private String passwordConfirm;
 
     /**
