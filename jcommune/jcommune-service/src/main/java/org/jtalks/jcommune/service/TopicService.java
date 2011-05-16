@@ -17,7 +17,6 @@
  */
 package org.jtalks.jcommune.service;
 
-import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 
 /**
@@ -38,10 +37,10 @@ public interface TopicService extends EntityService<Topic> {
 
     /**
      * Add the answer to the topic. Add the specified message to the target topic and save.
-     * The Post entity can be unsaved, because it saves in cascade.
-     *
+     * User should be authorized to answer to the topic. Otherwise {@link UserNotLoggedInException} will be thrown.
      * @param topicId target topic primary id.
      * @param answerBody the text of the answer
+     * @exception UserNotLoggedInException if the user is not authorized
      */
     void addAnswer(long topicId, String answerBody);
 }

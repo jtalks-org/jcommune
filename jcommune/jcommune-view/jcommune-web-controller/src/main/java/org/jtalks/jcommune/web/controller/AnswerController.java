@@ -17,11 +17,9 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
-import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.exceptions.UserNotLoggedInException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +30,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- *
- * @author Temdegon
+ * Controller for Topic answer related actions.
+ * 
+ * @author Pavel Vervenko
  */
 @Controller
 public class AnswerController {
@@ -42,12 +41,24 @@ public class AnswerController {
     private final Logger logger = LoggerFactory.getLogger(AnswerController.class);
     private final SecurityService securityService;
 
+    /**
+     * Constructor creates MVC controller with specifying TopicService, SecurityService.
+     * 
+     * @param topicService {@link TopicService} to be injected
+     * @param securityService {@link SecurityService} to be injected
+     */
     @Autowired
     public AnswerController(TopicService topicService, SecurityService securityService) {
         this.topicService = topicService;
         this.securityService = securityService;
     }
-
+    
+    /**
+     * Creates the answering page with empty answer form.
+     * If the user isn't logged in he will be redirected to the login page.
+     * @param topicId the id of the topic for the answer
+     * @return answering <code>ModelAndView</code> or redirect to the login page
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/answer")
     public ModelAndView answer(@RequestParam("topicId") Long topicId) {
         logger.info("Answering to the topic " + topicId);
@@ -57,13 +68,32 @@ public class AnswerController {
             return mav;
         } else {
             logger.info("User doesn't logged in. Redirect to the login page");
-            return new ModelAndView("redirect:/login.html");
+            return getLoginPageRedirect();
         }
     }
 
+    /**
+     * Process the answer form. Adds new post to the specified topic and redirects to the topic view page.
+     * @param topicId the id of the answered topic
+     * @param bodyText the content of the answer
+     * @return redirect to the topic view
+     */
     @RequestMapping(method = RequestMethod.POST, value = "/answer")
     public ModelAndView answer(@RequestParam("topicId") Long topicId, @RequestParam("bodytext") String bodyText) {
-        topicService.addAnswer(topicId, bodyText);
+        try {
+            topicService.addAnswer(topicId, bodyText);
+        } catch (UserNotLoggedInException e) {
+            logger.warn("The answer is posted but current user wan't found. Redirecting to login page.");
+            return getLoginPageRedirect();
+        }
         return new ModelAndView("redirect:/topics/" + topicId + ".html");
+    }
+    
+    /**
+     * Creates the redirect to the login page.
+     * @return redirect to the login page
+     */
+    private ModelAndView getLoginPageRedirect() {
+        return new ModelAndView("redirect:/login.html");
     }
 }
