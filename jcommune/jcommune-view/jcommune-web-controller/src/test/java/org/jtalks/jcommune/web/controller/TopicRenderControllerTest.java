@@ -61,14 +61,14 @@ public class TopicRenderControllerTest {
         
         Map<String, Object> topicMap = new HashMap<String, Object>();
         topicMap.put("selectedTopic", topic);
-        topicMap.put("currentUser", getUser());
+       // topicMap.put("currentUser", getUser());
         
         when(topicService.getTopicWithPosts(1l)).thenReturn(topic);
-        when(securitySecvice.getCurrentUser()).thenReturn(getUser());
+       // when(securitySecvice.getCurrentUser()).thenReturn(getUser());
         
         ModelAndView mav = topicRenderController.showTopic(1l);
         verify(topicService).getTopicWithPosts(1l);
-        verify(securitySecvice.getCurrentUser(),times(1));
+        //verify(securitySecvice.getCurrentUser(),times(1));
         
         assertModelAttributeValues(mav, topicMap);
         assertViewName(mav, "renderTopic");

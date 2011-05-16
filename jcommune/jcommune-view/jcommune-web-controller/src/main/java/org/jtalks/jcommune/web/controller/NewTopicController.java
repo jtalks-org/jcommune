@@ -21,6 +21,7 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.UserService;
 
@@ -44,6 +45,7 @@ public final class NewTopicController {
 
     private TopicService topicService;
     private UserService userService;
+    private SecurityService securityService;  
 
 
     /**
@@ -60,9 +62,10 @@ public final class NewTopicController {
      * @see Post
      */
     @Autowired
-    public NewTopicController(TopicService topicService, UserService userService) {
+    public NewTopicController(TopicService topicService, UserService userService, SecurityService securityService) {
         this.topicService = topicService;
         this.userService = userService;
+        this.securityService = securityService;
     }
 
     /**
@@ -77,12 +80,8 @@ public final class NewTopicController {
     public ModelAndView submitNewTopic(@RequestParam("topic") String topicName,
                                        @RequestParam("author") String author,
                                        @RequestParam("bodytext") String bodyText) {
-        User user = new User();
-        user.setFirstName(author);
-        user.setLastName(author);
-        user.setUsername(author);
-        userService.saveOrUpdate(user);
-
+        
+        User user = securityService.getCurrentUser();
         Post post = Post.createNewPost();
         post.setUserCreated(user);
         post.setPostContent(bodyText);

@@ -13,7 +13,7 @@
 			:
 			<c:out value="${selectedTopic.title}" />
 		</h2>
-		<br>
+
 		<c:forEach var="posts" items="${selectedTopic.posts}">
 			<tr>
 				<td width="20%"><spring:message code="label.author" />: <c:out
@@ -22,8 +22,17 @@
 				<td width="80%"><spring:message code="label.text" />: <c:out
 						value="${posts.postContent}" />
 				</td>
-				
+			     <c:if test="${currentUser.id==posts.userCreated.id}">
+			     
+				    <td><form:form action="${pageContext.request.contextPath}/forum.html" method="GET">
+                        <input type="submit" value="<spring:message code="label.back"/>" />
+                        </form:form>
+                    </td>
+			     
+			     </c:if>
+			                 	
 			</tr>
+			
 		</c:forEach>
 	</table>
 	<table>
