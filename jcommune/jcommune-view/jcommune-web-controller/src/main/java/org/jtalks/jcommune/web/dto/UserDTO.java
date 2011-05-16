@@ -21,7 +21,6 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.web.validation.Matches;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
 /**
@@ -42,7 +41,7 @@ public class UserDTO {
     private String firstName;
     private String lastName;
     @NotBlank
-    @Min(4)
+    @Size(min = 4)
     private String password;
     @NotBlank
     private String passwordConfirm;
