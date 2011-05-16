@@ -46,6 +46,17 @@
         <artifactId>javassist</artifactId>
         <version>3.12.1.GA</version>
       </dependency>
+      <!-- Validator -->
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-validator</artifactId>
+        <version>4.1.0.Final</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.validation</groupId>
+        <artifactId>validation-api</artifactId>
+        <version>1.0.0.GA</version>
+      </dependency>
       <!-- JDBC -->
       <dependency>
         <groupId>mysql</groupId>
@@ -195,7 +206,11 @@
         <artifactId>joda-time-hibernate</artifactId>
         <version>1.2</version>
       </dependency>
-
+      <dependency>
+        <groupId>commons-beanutils</groupId>
+        <artifactId>commons-beanutils</artifactId>
+        <version>1.6.1</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
