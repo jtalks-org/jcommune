@@ -16,37 +16,42 @@
   </description>
 
   <dependencies>
-
     <dependency>
       <groupId>org.jtalks.jcommune</groupId>
       <artifactId>jcommune-service</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.jtalks.jcommune</groupId>
       <artifactId>jcommune-model</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
     </dependency>
-
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.validation</groupId>
+      <artifactId>validation-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+    </dependency>
   </dependencies>
 
 </project>
