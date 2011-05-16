@@ -21,37 +21,38 @@
             <span class="small">Must be 3-20 characters</span>
         </form:label>
         <form:input path="username" type="text" size="20"/>
-        <form:errors path="username"/>
+        <br/>
+        <form:errors path="username" cssClass="error"/>
 
         <form:label path="email">Email
             <span class="small">Enter valid email</span>
         </form:label>
         <form:input path="email" type="text" size="25"/>
-        <form:errors path="email"/>
+        <form:errors path="email" cssClass="error"/>
 
         <form:label path="firstName">First Name
             <span class="small">Your first name</span>
         </form:label>
         <form:input path="firstName" type="text" size="25"/>
-        <form:errors path="firstName"/>
+        <form:errors path="firstName" cssClass="error"/>
 
         <form:label path="lastName">Last Name
             <span class="small">Your last name</span>
         </form:label>
         <form:input path="lastName" type="text" size="25"/>
-        <form:errors path="lastName"/>
+        <form:errors path="lastName" cssClass="error"/>
 
         <form:label path="password"><spring:message code="label.password"/>
             <span class="small">Must be more than 4 characters</span>
         </form:label>
         <form:input path="password" type="password" size="20"/>
-        <form:errors path="password"/>
+        <form:errors path="password" cssClass="error"/>
 
         <form:label path="passwordConfirm">Confirm password
             <span class="small">Repeat password</span>
         </form:label>
         <form:input path="passwordConfirm" type="password" size="20"/>
-        <form:errors path="passwordConfirm"/>
+        <form:errors path="passwordConfirm" cssClass="error"/>
 
         <button type="submit">Sign-up</button>
         <div class="spacer"></div>
