@@ -28,10 +28,15 @@ import javax.validation.ValidatorFactory;
 import java.util.Set;
 
 /**
+ * Test for {@link Matches} annotation constraint and {@link MatchesValidator}
+ * implementation.
+ *
  * @author Kirill Afonin
  */
 public class MatchesValidatorTest {
-
+    /**
+     * Object for testing constraint.
+     */
     @Matches(field = "value", verifyField = "value2", message = "Values not matches")
     public class TestObject {
         String value;
