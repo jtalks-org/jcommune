@@ -49,8 +49,10 @@
       <artifactId>validation-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>commons-beanutils</groupId>
-      <artifactId>commons-beanutils</artifactId>
+    	<groupId>commons-beanutils</groupId>
+    	<artifactId>commons-beanutils</artifactId>
+    	<type>jar</type>
+    	<scope>compile</scope>
     </dependency>
   </dependencies>
 

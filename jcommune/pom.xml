@@ -48,11 +48,6 @@
       </dependency>
       <!-- Validator -->
       <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-validator</artifactId>
-        <version>4.1.0.Final</version>
-      </dependency>
-      <dependency>
         <groupId>javax.validation</groupId>
         <artifactId>validation-api</artifactId>
         <version>1.0.0.GA</version>
@@ -207,9 +202,18 @@
         <version>1.2</version>
       </dependency>
       <dependency>
-        <groupId>commons-beanutils</groupId>
-        <artifactId>commons-beanutils</artifactId>
-        <version>1.6.1</version>
+      	<groupId>org.hibernate</groupId>
+      	<artifactId>hibernate-validator</artifactId>
+      	<version>4.0.2.GA</version>
+      	<type>jar</type>
+      	<scope>compile</scope>
+      </dependency>
+      <dependency>
+      	<groupId>commons-beanutils</groupId>
+      	<artifactId>commons-beanutils</artifactId>
+      	<version>1.8.3</version>
+      	<type>jar</type>
+      	<scope>compile</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
