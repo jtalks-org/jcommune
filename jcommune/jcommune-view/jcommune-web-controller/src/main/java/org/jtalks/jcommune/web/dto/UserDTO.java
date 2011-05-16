@@ -17,6 +17,13 @@
  */
 package org.jtalks.jcommune.web.dto;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
+import org.jtalks.jcommune.web.validation.Matches;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
+
 /**
  * DTO for {@link User} object. Required for validation and binding
  * errors to form.
@@ -24,12 +31,20 @@ package org.jtalks.jcommune.web.dto;
  * @author Kirill Afonin
  * @see User
  */
+@Matches(field = "password", verifyField = "passwordConfirm", message = "Password not matches!")
 public class UserDTO {
+    @NotBlank
+    @Size(min = 3, max = 20)
     private String username;
+    @NotBlank
+    @Email
     private String email;
     private String firstName;
     private String lastName;
+    @NotBlank
+    @Min(4)
     private String password;
+    @NotBlank
     private String passwordConfirm;
 
     /**
