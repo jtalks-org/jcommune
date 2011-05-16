@@ -189,6 +189,7 @@ p, h1, form, button {
     text-align: right;
     width: 140px;
     float: left;
+    clear:both;
 }
 
 #stylized .small {
@@ -198,6 +199,16 @@ p, h1, form, button {
     font-weight: normal;
     text-align: right;
     width: 140px;
+}
+
+#stylized .error {
+    color: #e43131;
+    font-size: 12px;
+    font-weight: normal;
+    text-align: right;
+    width: 200px;
+    float:right;
+    margin: -16px 50px 5px 0;
 }
 
 #stylized input {
