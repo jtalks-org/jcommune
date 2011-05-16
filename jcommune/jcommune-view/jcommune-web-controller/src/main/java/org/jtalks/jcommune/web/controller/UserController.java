@@ -22,10 +22,13 @@ import org.jtalks.jcommune.service.exceptions.DuplicateException;
 import org.jtalks.jcommune.web.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.validation.Valid;
 
 /**
  * Controller for User related actions.
@@ -61,16 +64,26 @@ public class UserController {
      * Register {@link User} from populated in form {@link UserDTO}.
      *
      * @param userDto {@link UserDTO} populated in form.
+     * @param result  result of validation.
      * @return redirect to /
-     * @throws DuplicateException !!will be removed from throws!!
      */
     @RequestMapping(value = "/user", method = RequestMethod.POST)
-    public String registerUser(@ModelAttribute("newUser") UserDTO userDto)
-            throws DuplicateException {
+    public ModelAndView registerUser(@Valid @ModelAttribute("newUser") UserDTO userDto,
+                                     BindingResult result) {
 
-        userService.registerUser(userDto.getUsername(), userDto.getEmail(),
-                userDto.getFirstName(), userDto.getLastName(), userDto.getPassword());
+        if (result.hasErrors()) {
+            return new ModelAndView("registration");
+        }
 
-        return "redirect:/";
+        try {
+            userService.registerUser(userDto.getUsername(), userDto.getEmail(),
+                    userDto.getFirstName(), userDto.getLastName(), userDto.getPassword());
+        } catch (DuplicateException e) {
+            result.rejectValue("username", "validation.duplicateuser",
+                    "User already exist!");
+            return new ModelAndView("registration");
+        }
+
+        return new ModelAndView("redirect:/");
     }
 }
