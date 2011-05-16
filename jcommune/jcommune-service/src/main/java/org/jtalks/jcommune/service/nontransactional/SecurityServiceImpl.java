@@ -22,7 +22,6 @@ import org.jtalks.jcommune.service.SecurityContextFacade;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.springframework.dao.DataAccessException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -67,18 +66,6 @@ public class SecurityServiceImpl implements SecurityService {
         }
 
         return username;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void authenticateUser(User user) {
-        securityContextFacade.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(
-                        user.getUsername(),
-                        user.getPassword(),
-                        user.getAuthorities()));
     }
 
     /**

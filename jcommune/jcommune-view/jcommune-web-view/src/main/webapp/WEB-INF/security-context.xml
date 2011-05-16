@@ -6,10 +6,10 @@
        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd
        ">
   <!-- Http Security -->
-  <security:http auto-config="true">
-    <security:form-login login-page="/login" login-processing-url="/j_spring_security_check"
+  <security:http auto-config="true" use-expressions="true">
+    <security:form-login login-page="/login.html" login-processing-url="/j_spring_security_check"
                          authentication-failure-url="/login.html?login_error=1" default-target-url="/"/>
-    <security:logout logout-url="/j_spring_security_logout" logout-success-url="/"/>
+    <security:logout logout-url="/logout.html" logout-success-url="/"/>
     <security:remember-me user-service-ref="securityService" key="JTalks"/>
   </security:http>
 </beans>

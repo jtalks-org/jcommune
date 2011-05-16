@@ -44,7 +44,7 @@
 			</td>
 			<td><form:form
 					action="${pageContext.request.contextPath}/answer.html"
-					method="POST">
+					method="GET">
 					<input name="topicId" type="hidden" value="${selectedTopic.id}" />
 					<input type="submit" value="<spring:message code="label.answer"/>" />
 				</form:form>

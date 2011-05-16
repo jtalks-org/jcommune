@@ -1,58 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
-  xmlns:aop="http://www.springframework.org/schema/aop" xmlns:security="http://www.springframework.org/schema/security"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
-       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
-       http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd" >
 
 
   <!-- Declaration AOP configs -->
   <aop:config>
     <aop:pointcut id="defaultTxPointcut"
-      expression="within(org.jtalks.jcommune.service.transactional..*)" />
-    <aop:advisor advice-ref="txAdvice" pointcut-ref="defaultTxPointcut" />
+                  expression="within(org.jtalks.jcommune.service.transactional..*)"/>
+    <aop:advisor advice-ref="txAdvice" pointcut-ref="defaultTxPointcut"/>
   </aop:config>
 
   <tx:advice id="txAdvice">
     <tx:attributes>
-      <tx:method name="*" rollback-for="java.lang.Exception" />
+      <tx:method name="*" rollback-for="java.lang.Exception"/>
     </tx:attributes>
   </tx:advice>
 
   <!--Decalaration services bean -->
 
   <bean id="userService"
-    class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
-    <constructor-arg index="0" ref="userDao" />
+        class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
+    <constructor-arg index="0" ref="userDao"/>
   </bean>
 
   <bean id="postService"
-    class="org.jtalks.jcommune.service.transactional.TransactionalPostService">
-    <constructor-arg index="0" ref="postDao" />
+        class="org.jtalks.jcommune.service.transactional.TransactionalPostService">
+    <constructor-arg index="0" ref="postDao"/>
   </bean>
 
   <bean id="topicService"
     class="org.jtalks.jcommune.service.transactional.TransactionalTopicService">
     <constructor-arg index="0" ref="topicDao" />
+    <constructor-arg index="1" ref="securityService" />
   </bean>
 
   <bean id="securityContextFacade"
-    class="org.jtalks.jcommune.service.nontransactional.SecurityContextHolderFacade" />
+        class="org.jtalks.jcommune.service.nontransactional.SecurityContextHolderFacade"/>
 
   <bean id="securityService"
-    class="org.jtalks.jcommune.service.nontransactional.SecurityServiceImpl">
-    <property name="userService" ref="userService" />
-    <property name="securityContextFacade" ref="securityContextFacade" />
+        class="org.jtalks.jcommune.service.nontransactional.SecurityServiceImpl">
+    <property name="userService" ref="userService"/>
+    <property name="securityContextFacade" ref="securityContextFacade"/>
   </bean>
-
-
-  <!-- Spring Security authentication manager -->
-  <security:authentication-manager
-    alias="authenticationManager">
-    <security:authentication-provider
-      user-service-ref="securityService" />
-  </security:authentication-manager>
-
 </beans>

@@ -22,6 +22,9 @@ import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 /**
  * User service class. This class contains method needed to manipulate with User persistent entity.
@@ -29,6 +32,8 @@ import org.jtalks.jcommune.service.exceptions.DuplicateException;
  * @author Osadchuck Eugeny
  */
 public class TransactionalUserService extends AbstractTransactionlaEntityService<User> implements UserService {
+
+    final Logger logger = LoggerFactory.getLogger(TransactionalUserService.class);
 
     /**
      * Create an instance of User entity based service
@@ -44,7 +49,13 @@ public class TransactionalUserService extends AbstractTransactionlaEntityService
      */
     @Override
     public User getByUsername(String username) {
-        return getUserDao().getByUsername(username);
+        User user = getUserDao().getByUsername(username);
+        if (user == null) {
+            final String msg = "User " + username + " not found.";
+            logger.info(msg);
+            throw new UsernameNotFoundException(msg);
+        }
+        return user;
     }
 
     /**
@@ -55,16 +66,26 @@ public class TransactionalUserService extends AbstractTransactionlaEntityService
                              String lastName, String password) throws DuplicateException {
 
         if (isUserExist(username, email)) {
-            throw new DuplicateException("User already exist!");
+            final String msg = "User " + username + " already exist!";
+            logger.info(msg);
+            throw new DuplicateException(msg);
         }
 
+        User user = populateUser(username, email, firstName, lastName, password);
+        dao.saveOrUpdate(user);
+
+        logger.info("User registered: " + username);
+    }
+
+    private User populateUser(String username, String email, String firstName,
+                              String lastName, String password) {
         User user = new User();
         user.setUsername(username);
         user.setEmail(email);
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setPassword(password);
-        dao.saveOrUpdate(user);
+        return user;
     }
 
     /**

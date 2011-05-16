@@ -17,12 +17,14 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-
 import org.jtalks.jcommune.model.dao.Dao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.exceptions.UserNotLoggedInException;
 
 /**
  * Topic service class. This class contains method needed to manipulate with Topic persistent entity.
@@ -32,32 +34,42 @@ import org.jtalks.jcommune.service.TopicService;
  */
 public class TransactionalTopicService extends AbstractTransactionlaEntityService<Topic> implements TopicService {
 
+    private final SecurityService securityService;
+
     /**
      * Create an instance of User entity based service
      * @param dao - data access object, which should be able do all CRUD operations with topic entity. 
      */
-    public TransactionalTopicService(Dao<Topic> dao) {
+    public TransactionalTopicService(Dao<Topic> dao, SecurityService securityService) {
         super(dao);
+        this.securityService = securityService;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public Topic getTopicWithPosts(long id) {
         TopicDao topicDao = (TopicDao) getDao();
-        Topic topic = topicDao.getTopicWithPosts(id);       
+        Topic topic = topicDao.getTopicWithPosts(id);
         return topic;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public void addAnswer(long topicId, Post answer) {
+    public void addAnswer(long topicId, String answerBody) {
+        User currentUser = securityService.getCurrentUser();
+        // Check if the user is authenticated
+        if (currentUser == null) {
+            throw new UserNotLoggedInException("User should log in to post answers.");
+        }
         Topic topic = getDao().get(topicId);
+        Post answer = Post.createNewPost();
+        answer.setPostContent(answerBody);
+        answer.setUserCreated(currentUser);
         topic.addPost(answer);
         getDao().saveOrUpdate(topic);
     }
-    
 }

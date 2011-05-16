@@ -10,6 +10,7 @@
     <param-value>
       classpath:org/jtalks/jcommune/model/entity/applicationContext-dao.xml
       classpath:org/jtalks/jcommune/service/applicationContext-service.xml
+      classpath:org/jtalks/jcommune/service/security-service-context.xml
       /WEB-INF/security-context.xml
     </param-value>
   </context-param>
@@ -39,15 +40,6 @@
   </filter-mapping>
 
   <filter>
-    <filter-name>sitemesh</filter-name>
-    <filter-class>com.opensymphony.sitemesh.webapp.SiteMeshFilter</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>sitemesh</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-
-  <filter>
     <filter-name>encoding-filter</filter-name>
     <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
     <init-param>
@@ -59,6 +51,16 @@
     <filter-name>encoding-filter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+
+  <filter>
+    <filter-name>sitemesh</filter-name>
+    <filter-class>com.opensymphony.sitemesh.webapp.SiteMeshFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>sitemesh</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
 
   <!-- Listeners -->
   <listener>
