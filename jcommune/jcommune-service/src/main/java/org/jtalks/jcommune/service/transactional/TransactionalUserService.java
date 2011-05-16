@@ -24,6 +24,7 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 /**
  * User service class. This class contains method needed to manipulate with User persistent entity.
@@ -48,7 +49,13 @@ public class TransactionalUserService extends AbstractTransactionlaEntityService
      */
     @Override
     public User getByUsername(String username) {
-        return getUserDao().getByUsername(username);
+        User user = getUserDao().getByUsername(username);
+        if (user == null) {
+            final String msg = "User " + username + " not found.";
+            logger.info(msg);
+            throw new UsernameNotFoundException(msg);
+        }
+        return user;
     }
 
     /**
@@ -60,7 +67,7 @@ public class TransactionalUserService extends AbstractTransactionlaEntityService
 
         if (isUserExist(username, email)) {
             final String msg = "User " + username + " already exist!";
-            logger.warn(msg);
+            logger.info(msg);
             throw new DuplicateException(msg);
         }
 
