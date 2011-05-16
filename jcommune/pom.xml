@@ -131,6 +131,11 @@
         <artifactId>spring-security-web</artifactId>
         <version>${springVersion}</version>
       </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-taglibs</artifactId>
+        <version>${springVersion}</version>
+      </dependency>
       <!-- AOP -->
       <dependency>
         <groupId>org.aspectj</groupId>
