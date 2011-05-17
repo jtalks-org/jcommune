@@ -17,67 +17,53 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
-import org.jtalks.jcommune.service.UserService;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
-import static org.testng.Assert.assertEquals;
 
 public class NewTopicControllerTest {
-    private final String TOPIC_CONTENT = "Spring Questions";
-    private final String BODY_TEXT_CONTENT = "Topic info goes here";
-    private final String NICK_USER_NAME = "Christoph";
-    private NewTopicController newTopicController;
+    private final String TOPIC_CONTENT = "content here";
+    private final String TOPIC_THEME = "Topic theme";
+    private NewTopicController controller;
     @Mock
     private TopicService topicService;
     @Mock
-    private UserService userService;
+    private SecurityService securityService;
 
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
-        //newTopicController = new NewTopicController(topicService, userService);
+        controller = new NewTopicController(topicService, securityService);
     }
 
 
-    @Test(enabled = false)
+    @Test
     public void testSubmitNewTopic() throws Exception {
-        ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
-        ArgumentCaptor<Post> postArgumentCaptor = ArgumentCaptor.forClass(Post.class);
-        ArgumentCaptor<Topic> topicArgumentCaptor = ArgumentCaptor.forClass(Topic.class);
+        when(securityService.getCurrentUser()).thenReturn(new User());
 
-        ModelAndView mav = newTopicController.submitNewTopic(TOPIC_CONTENT, NICK_USER_NAME, BODY_TEXT_CONTENT);
-
-        User user = new User();
-        user.setFirstName(NICK_USER_NAME);
-        user.setLastName(NICK_USER_NAME);
-        user.setUsername(NICK_USER_NAME);
-
-        verify(userService).saveOrUpdate(userArgumentCaptor.capture());
-        assertEquals(user, userArgumentCaptor.getValue());
-
-        Post post = Post.createNewPost();
-        post.setUserCreated(user);
-        post.setPostContent(BODY_TEXT_CONTENT);
-
-        Topic topic = new Topic();
-        topic.setTitle(TOPIC_CONTENT);
-        topic.setTopicStarter(user);
-        topic.addPost(post);
-
-        verify(topicService).saveOrUpdate(topicArgumentCaptor.capture());
-        assertEquals(topic, topicArgumentCaptor.getValue());
+        ModelAndView mav = controller.submitNewTopic(TOPIC_THEME, TOPIC_CONTENT);
 
         assertViewName(mav, "redirect:forum.html");
+        verify(securityService, times(1)).getCurrentUser();
+        verify(topicService, times(1)).createTopicAsCurrentUser(TOPIC_THEME, TOPIC_CONTENT);
+    }
+
+    @Test
+    public void testSubmitNewTopic_UserNotLoggedIn() throws Exception {
+        when(securityService.getCurrentUser()).thenReturn(null);
+
+        ModelAndView mav = controller.submitNewTopic(TOPIC_THEME, TOPIC_CONTENT);
+
+        assertViewName(mav, "redirect:/login.html");
+        verify(securityService, times(1)).getCurrentUser();
+        verify(topicService, never()).createTopicAsCurrentUser(TOPIC_THEME, TOPIC_CONTENT);
     }
 }
