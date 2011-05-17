@@ -28,9 +28,10 @@ import org.jtalks.jcommune.service.exceptions.UserNotLoggedInException;
 
 /**
  * Topic service class. This class contains method needed to manipulate with Topic persistent entity.
- * 
+ *
  * @author Osadchuck Eugeny
  * @author Vervenko Pavel
+ * @author Kirill Afonin
  */
 public class TransactionalTopicService extends AbstractTransactionlaEntityService<Topic> implements TopicService {
 
@@ -38,7 +39,8 @@ public class TransactionalTopicService extends AbstractTransactionlaEntityServic
 
     /**
      * Create an instance of User entity based service
-     * @param dao - data access object, which should be able do all CRUD operations with topic entity. 
+     *
+     * @param dao - data access object, which should be able do all CRUD operations with topic entity.
      */
     public TransactionalTopicService(Dao<Topic> dao, SecurityService securityService) {
         super(dao);
@@ -72,4 +74,26 @@ public class TransactionalTopicService extends AbstractTransactionlaEntityServic
         topic.addPost(answer);
         getDao().saveOrUpdate(topic);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void createTopicAsCurrentUser(String topicName, String bodyText) {
+        User currentUser = securityService.getCurrentUser();
+        if (currentUser == null) {
+            throw new UserNotLoggedInException("User should log in to post topic.");
+        }
+
+        Post post = Post.createNewPost();
+        post.setUserCreated(currentUser);
+        post.setPostContent(bodyText);
+
+        Topic topic = Topic.createNewTopic();
+        topic.setTitle(topicName);
+        topic.setTopicStarter(currentUser);
+        topic.addPost(post);
+
+        dao.saveOrUpdate(topic);
+    }
+
 }
