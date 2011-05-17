@@ -17,14 +17,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Post;
@@ -37,6 +29,11 @@ import org.mockito.Matchers;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.Mockito.*;
 
 /**
  * @author Osadchuck Eugeny
@@ -71,26 +68,10 @@ public class TransactionalTopicServiceTest {
     }
 
     @Test
-    public void saveOrUpdateTest() {
-        Topic topic = getTopic();
-        topicService.saveOrUpdate(topic);
-
-        verify(topicDao, times(1)).saveOrUpdate(Matchers.<Topic>any());
-    }
-
-    @Test
     public void deleteByIdTest() {
         topicService.delete(TOPIC_ID);
 
         verify(topicDao, times(1)).delete(Matchers.anyLong());
-    }
-
-    @Test
-    public void deleteTest() {
-        Topic topic = getTopic();
-        topicService.delete(topic);
-
-        verify(topicDao, times(1)).delete(Matchers.<Topic>any());
     }
 
     @Test
@@ -169,7 +150,24 @@ public class TransactionalTopicServiceTest {
         
         topicService.addAnswer(TOPIC_ID, ANSWER_BODY);
     }
-    
+
+    @Test
+    public void testCreateTopicAsCurrentUser() {
+        when(securityService.getCurrentUser()).thenReturn(getUser());
+
+        topicService.createTopicAsCurrentUser(TOPIC_TITLE, ANSWER_BODY);
+
+        verify(securityService, times(1)).getCurrentUser();
+        verify(topicDao, times(1)).saveOrUpdate(Matchers.<Topic>anyObject());
+    }
+
+    @Test(expectedExceptions = UserNotLoggedInException.class)
+    public void testCreateTopicAsCurrentUser_NotLoggedInUser() {
+        when(securityService.getCurrentUser()).thenReturn(null);
+
+        topicService.createTopicAsCurrentUser(TOPIC_TITLE, ANSWER_BODY);
+    }
+
     /**
      * Create new dummy User with username "Test".
      * @return the user
