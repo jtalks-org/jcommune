@@ -39,27 +39,37 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 public @interface Matches {
     /**
-     * @return message
+     * Message for display when validation fails.
+     *
+     * @return diplayed message
      */
     String message() default "{validation.matches}";
 
     /**
+     * Groups
+     *
      * @return groups
      */
     Class<?>[] groups() default {};
 
     /**
+     * Payload
+     *
      * @return payload
      */
     Class<? extends Payload>[] payload() default {};
 
     /**
-     * @return first field name
+     * First proerty name for check equality.
+     *
+     * @return first property name
      */
     String field();
 
     /**
-     * @return second field name
+     * Second property name for check equality.
+     *
+     * @return second property name
      */
     String verifyField();
 }
