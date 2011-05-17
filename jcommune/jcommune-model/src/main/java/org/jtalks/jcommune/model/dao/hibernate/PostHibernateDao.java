@@ -17,8 +17,6 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import java.util.List;
-import org.hibernate.Query;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.entity.Post;
 
@@ -28,40 +26,8 @@ import org.jtalks.jcommune.model.entity.Post;
  * save, update and delete them.
  * 
  * @author Pavel Vervenko
+ * @author Kirill Afonin
  */
 public class PostHibernateDao extends AbstractHibernateDao<Post> implements PostDao {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void saveOrUpdate(Post post) {
-        getSession().save(post);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void delete(Long id) {
-        Query query = getSession().createQuery("delete Post where id= :postId");
-        query.setLong("postId", id);
-        query.executeUpdate();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Post get(Long id) {
-        return (Post) getSession().load(Post.class, id);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Post> getAll() {
-        return getSession().createQuery("from Post").list();
-    }
 }
