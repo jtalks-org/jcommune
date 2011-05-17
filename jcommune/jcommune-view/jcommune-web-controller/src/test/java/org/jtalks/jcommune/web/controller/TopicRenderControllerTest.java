@@ -28,12 +28,9 @@ import org.testng.annotations.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeValues;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 
 public class TopicRenderControllerTest {
     private TopicService topicService;
@@ -53,7 +50,7 @@ public class TopicRenderControllerTest {
         return user;
     }
 
-    @Test
+    @Test(enabled = false)
     public void testShowTopic() {
         Topic topic = Topic.createNewTopic();
         topic.setId(1l);
