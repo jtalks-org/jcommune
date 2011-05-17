@@ -52,6 +52,13 @@
         <artifactId>validation-api</artifactId>
         <version>1.0.0.GA</version>
       </dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-validator</artifactId>
+        <version>4.0.2.GA</version>
+        <type>jar</type>
+        <scope>compile</scope>
+      </dependency>
       <!-- JDBC -->
       <dependency>
         <groupId>mysql</groupId>
@@ -69,7 +76,6 @@
         <artifactId>apache-log4j-extras</artifactId>
         <version>1.0</version>
       </dependency>
-
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
@@ -202,18 +208,11 @@
         <version>1.2</version>
       </dependency>
       <dependency>
-      	<groupId>org.hibernate</groupId>
-      	<artifactId>hibernate-validator</artifactId>
-      	<version>4.0.2.GA</version>
-      	<type>jar</type>
-      	<scope>compile</scope>
-      </dependency>
-      <dependency>
-      	<groupId>commons-beanutils</groupId>
-      	<artifactId>commons-beanutils</artifactId>
-      	<version>1.8.3</version>
-      	<type>jar</type>
-      	<scope>compile</scope>
+        <groupId>commons-beanutils</groupId>
+        <artifactId>commons-beanutils</artifactId>
+        <version>1.8.3</version>
+        <type>jar</type>
+        <scope>compile</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
