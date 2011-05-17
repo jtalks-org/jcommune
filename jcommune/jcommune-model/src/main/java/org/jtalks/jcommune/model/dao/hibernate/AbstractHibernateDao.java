@@ -17,18 +17,23 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
 import org.jtalks.jcommune.model.dao.Dao;
 import org.jtalks.jcommune.model.entity.Persistent;
+
+import java.lang.reflect.ParameterizedType;
+import java.util.List;
 
 /**
  * Basic class for access to the {@link Persistent} objects.
  * Uses to load objects from database, save, update or delete them.
  * The implementation is based on the Hibernate.
  * Has the implementation of some commonly used methods.
- * 
+ *
  * @author Pavel Vervenko
+ * @author Kirill Afonin
  */
 public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<T> {
 
@@ -36,14 +41,22 @@ public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<
      * Hibernate SessionFactory
      */
     private SessionFactory sessionFactory;
+    /**
+     * Type of entity
+     */
+    private Class<T> type;
 
-    @Override
-    public void delete(T persistent) {
-        getSession().delete(persistent);
+    /**
+     * Get parametrized type
+     */
+    protected AbstractHibernateDao() {
+        this.type = (Class<T>) ((ParameterizedType) getClass()
+                .getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
     /**
      * Get the current Hibernate session.
+     *
      * @return current Session
      */
     protected Session getSession() {
@@ -52,9 +65,54 @@ public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<
 
     /**
      * Setter for Hibernate SessionFactory.
+     *
      * @param sessionFactory the sessionFactory to set
      */
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void delete(T persistent) {
+        getSession().delete(persistent);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void saveOrUpdate(T entity) {
+        getSession().save(entity);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void delete(Long id) {
+        Query query = getSession()
+                .createQuery("delete " + type.getSimpleName() + " where id= :id");
+        query.setLong("id", id);
+        query.executeUpdate();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public T get(Long id) {
+        return (T) getSession().load(type, id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<T> getAll() {
+        return getSession()
+                .createQuery("from " + type.getSimpleName()).list();
     }
 }
