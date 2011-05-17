@@ -17,70 +17,17 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import org.hibernate.Query;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Topic;
-import java.util.List;
-import org.hibernate.Query;
 
 /**
  * Hibernate DAO implementation from the {@link Topic}.
  * 
  * @author Pavel Vervenko
+ * @author Kirill Afonin
  */
 public class TopicHibernateDao extends AbstractHibernateDao<Topic> implements TopicDao {
-
-    /**
-     * Save or update the Topic to the database. 
-     * The operation apples cascadely to the associated Posts.
-     * @param topic Topic to save
-     */
-    @Override
-    public void saveOrUpdate(Topic topic) {
-        getSession().save(topic);
-    }
-
-    /**
-     * Delete the Topic from the database. 
-     * Associated Posts will be also deleted cascadely.
-     * @param id The id of the Topic
-     */
-    @Override
-    public void delete(Long id) {
-        Query query = getSession().createQuery("delete Topic where id= :topicId");
-        query.setLong("topicId", id);
-        query.executeUpdate();
-    }
-
-    /**
-     * Load the topic form the DB by it's id.
-     * The associated User created the topic will be loaded too.
-     * @param id The id of the Topic
-     * @return loaded Topic
-     */
-    @Override
-    public Topic get(Long id) {
-        return (Topic) getSession().get(Topic.class, id);
-    }
-
-    /**
-     * Load the full list of Topics. 
-     * The topicStarter field will be populated, but related posts will not be loaded.
-     * @return the list of Topics
-     */
-    @Override
-    public List<Topic> getAll() {
-        return getSession().createQuery("from Topic").list();
-    }
-
-    /**
-     * {@inheritDoc}
-     * @deprecated This method is not needed any more. Use {@link get(id)} instead,
-     * it returns Topic with User now.
-     */
-    @Override
-    public Topic getTopicWithUser(Long id) {
-        return get(id);
-    }
 
     /**
      * {@inheritDoc}
