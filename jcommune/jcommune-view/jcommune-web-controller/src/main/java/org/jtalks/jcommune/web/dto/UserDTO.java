@@ -18,7 +18,7 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.Email;
-//import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.jtalks.jcommune.web.validation.Matches;
 
 import javax.validation.constraints.Size;
@@ -32,22 +32,21 @@ import javax.validation.constraints.Size;
  */
 @Matches(field = "password", verifyField = "passwordConfirm", message = "Password not matches!")
 public class UserDTO {
-    //@NotBlank
+    @NotEmpty
     @Size(min = 3, max = 20)
     private String username;
-   // @NotBlank
+    @NotEmpty
     @Email
     private String email;
     private String firstName;
     private String lastName;
-    //@NotBlank
+    @NotEmpty
     @Size(min = 4)
     private String password;
-   // @NotBlank
+    @NotEmpty
     private String passwordConfirm;
 
     /**
-     *
      * @return username
      */
     public String getUsername() {
@@ -55,7 +54,6 @@ public class UserDTO {
     }
 
     /**
-     *
      * @param username username
      */
     public void setUsername(String username) {
@@ -63,7 +61,6 @@ public class UserDTO {
     }
 
     /**
-     *
      * @return email
      */
     public String getEmail() {
@@ -71,7 +68,6 @@ public class UserDTO {
     }
 
     /**
-     *
      * @param email email
      */
     public void setEmail(String email) {
@@ -79,7 +75,6 @@ public class UserDTO {
     }
 
     /**
-     *
      * @return first name
      */
     public String getFirstName() {
@@ -87,15 +82,13 @@ public class UserDTO {
     }
 
     /**
-     *
-     * @param firstName  first name
+     * @param firstName first name
      */
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
     /**
-     *
      * @return last name
      */
     public String getLastName() {
@@ -103,7 +96,6 @@ public class UserDTO {
     }
 
     /**
-     *
      * @param lastName last name
      */
     public void setLastName(String lastName) {
@@ -111,7 +103,6 @@ public class UserDTO {
     }
 
     /**
-     *
      * @return password
      */
     public String getPassword() {
@@ -119,7 +110,6 @@ public class UserDTO {
     }
 
     /**
-     *
      * @param password password
      */
     public void setPassword(String password) {
@@ -127,7 +117,6 @@ public class UserDTO {
     }
 
     /**
-     *
      * @return password confirmation
      */
     public String getPasswordConfirm() {
@@ -135,8 +124,7 @@ public class UserDTO {
     }
 
     /**
-     *
-     * @param passwordConfirm  password confirmation
+     * @param passwordConfirm password confirmation
      */
     public void setPasswordConfirm(String passwordConfirm) {
         this.passwordConfirm = passwordConfirm;
