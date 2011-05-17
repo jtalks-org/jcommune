@@ -2,7 +2,7 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateException;
-import org.jtalks.jcommune.web.dto.UserDTO;
+import org.jtalks.jcommune.web.dto.UserDto;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
@@ -32,7 +32,7 @@ public class UserControllerTest {
         ModelAndView mav = controller.registrationPage();
 
         assertViewName(mav, "registration");
-        UserDTO dto = assertAndReturnModelAttributeOfType(mav, "newUser", UserDTO.class);
+        UserDto dto = assertAndReturnModelAttributeOfType(mav, "newUser", UserDto.class);
         Assert.assertNull(dto.getEmail());
         Assert.assertNull(dto.getUsername());
         Assert.assertNull(dto.getPassword());
@@ -43,7 +43,7 @@ public class UserControllerTest {
 
     @Test
     public void testRegisterUser() throws Exception {
-        UserDTO dto = getUserDTO();
+        UserDto dto = getUserDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
 
         ModelAndView mav = controller.registerUser(dto, bindingResult);
@@ -55,7 +55,7 @@ public class UserControllerTest {
 
     @Test
     public void testRegisterUser_Duplicate() throws Exception {
-        UserDTO dto = getUserDTO();
+        UserDto dto = getUserDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
         doThrow(new DuplicateException()).when(userService)
                 .registerUser(anyString(), anyString(),
@@ -68,8 +68,8 @@ public class UserControllerTest {
                 anyString(), anyString(), anyString());
     }
 
-    private UserDTO getUserDTO() {
-        UserDTO dto = new UserDTO();
+    private UserDto getUserDto() {
+        UserDto dto = new UserDto();
         dto.setUsername("username");
         dto.setEmail("mail@mail.com");
         dto.setPassword("password");
