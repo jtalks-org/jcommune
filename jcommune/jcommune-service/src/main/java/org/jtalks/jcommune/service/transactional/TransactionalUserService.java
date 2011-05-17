@@ -77,6 +77,16 @@ public class TransactionalUserService extends AbstractTransactionlaEntityService
         logger.info("User registered: " + username);
     }
 
+    /**
+     * Populate {@link User} object from strings.
+     *
+     * @param username  username
+     * @param email     email
+     * @param firstName first name
+     * @param lastName  last name
+     * @param password  password
+     * @return populated {@link User} object
+     */
     private User populateUser(String username, String email, String firstName,
                               String lastName, String password) {
         User user = new User();
