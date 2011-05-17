@@ -49,7 +49,7 @@ public interface Dao<T extends Persistent> {
     /**
      * Delete the object from data storage.
      *
-     * @param persistent
+     * @param persistent entity object
      */
     void delete(T persistent);
 

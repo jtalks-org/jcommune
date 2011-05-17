@@ -43,7 +43,6 @@ public interface TopicService extends EntityService<Topic> {
      *
      * @param topicId    target topic primary id.
      * @param answerBody the text of the answer
-     * @throws UserNotLoggedInException if the user is not authorized
      */
     void addAnswer(long topicId, String answerBody);
 
@@ -53,7 +52,6 @@ public interface TopicService extends EntityService<Topic> {
      *
      * @param topicName name of topic
      * @param bodyText  body of topic
-     * @throws UserNotLoggedInException if the user is not authorized
      */
     void createTopicAsCurrentUser(String topicName, String bodyText);
 }

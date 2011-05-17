@@ -32,7 +32,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
  */
 public class TransactionalUserService extends AbstractTransactionlaEntityService<User> implements UserService {
 
-    final Logger logger = LoggerFactory.getLogger(TransactionalUserService.class);
+    private final Logger logger = LoggerFactory.getLogger(TransactionalUserService.class);
     private UserDao userDao;
 
     /**
@@ -73,7 +73,7 @@ public class TransactionalUserService extends AbstractTransactionlaEntityService
         }
 
         User user = populateUser(username, email, firstName, lastName, password);
-        dao.saveOrUpdate(user);
+        userDao.saveOrUpdate(user);
 
         logger.info("User registered: " + username);
     }

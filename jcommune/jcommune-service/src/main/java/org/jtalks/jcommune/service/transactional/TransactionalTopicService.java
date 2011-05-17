@@ -93,7 +93,7 @@ public class TransactionalTopicService extends AbstractTransactionlaEntityServic
         topic.setTopicStarter(currentUser);
         topic.addPost(post);
 
-        dao.saveOrUpdate(topic);
+        topicDao.saveOrUpdate(topic);
     }
 
 }
