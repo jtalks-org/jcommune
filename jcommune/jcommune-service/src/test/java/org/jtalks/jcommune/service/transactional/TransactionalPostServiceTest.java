@@ -17,14 +17,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.entity.Post;
@@ -36,13 +28,18 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.Mockito.*;
+
 /**
  * @author Osadchuck Eugeny
  *
  */
 public class TransactionalPostServiceTest {
     
-    final Long POST_ID = new Long(999);
+    final Long POST_ID = (long) 999;
     final String POST_CONTENT = "post content";
     final DateTime POST_CREATION_DATE = new DateTime();
 
@@ -57,7 +54,7 @@ public class TransactionalPostServiceTest {
         
     private Post getPost(){
         User topicStarter = new User();
-        topicStarter.setId(new Long(333));
+        topicStarter.setId((long) 333);
         topicStarter.setUsername("username");
         Topic topic = new Topic();
         topic.setId(333);
@@ -70,30 +67,14 @@ public class TransactionalPostServiceTest {
         post.setTopic(topic);
         return post;
     }
-    
-    @Test
-    public void saveOrUpdateTest(){
-        Post post = getPost();        
-        postService.saveOrUpdate(post);
-        
-        verify(postDao, times(1)).saveOrUpdate(Matchers.<Post>any());
-    }
-    
+
     @Test
     public void deleteByIdTest(){
         postService.delete(POST_ID);
         
         verify(postDao, times(1)).delete(Matchers.anyLong());
     }
-    
-    @Test
-    public void deleteTest(){
-        Post post = getPost();        
-        postService.delete(post);
-        
-        verify(postDao, times(1)).delete(Matchers.<Post>any());
-    }
-    
+
     @Test
     public void getByIdTest(){
         when(postDao.get(POST_ID)).thenReturn(getPost());

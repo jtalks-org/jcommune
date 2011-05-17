@@ -89,24 +89,9 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void saveOrUpdateTest() {
-        User user = getUser();
-        userService.saveOrUpdate(user);
-
-        verify(userDao, times(1)).saveOrUpdate(Matchers.<User>any());
-    }
-
-    @Test
     public void deleteByIdTest() {
         userService.delete(USER_ID);
         verify(userDao, times(1)).delete(Matchers.anyLong());
-    }
-
-    @Test
-    public void deleteTest() {
-        User user = getUser();
-        userService.delete(user);
-        verify(userDao, times(1)).delete(Matchers.<User>any());
     }
 
     @Test
