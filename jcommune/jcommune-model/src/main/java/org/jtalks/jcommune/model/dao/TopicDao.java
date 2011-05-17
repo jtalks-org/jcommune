@@ -22,25 +22,18 @@ import org.jtalks.jcommune.model.entity.Topic;
 /**
  * DAO for the {@link Topic} objects.
  * Besides the basic CRUD methods it provides a method to load any Topics with associated Posts.
- * @see TopicHibernateDao 
+ *
  * @author Pavel Vervenko
+ * @author Kirill Afonin
+ * @see TopicHibernateDao
  */
 public interface TopicDao extends Dao<Topic> {
 
     /**
      * Load the Topic with userCreated and related posts.
+     *
      * @param id Topic id
      * @return loaded Topic or null if the appropriate topic wasn't found
      */
     Topic getTopicWithPosts(Long id);
-
-    /**
-     * Load the Topic with userCreated field initialized. The method doesn't load related posts.
-     * @deprecated This method is not needed any more. Use {@link get(id)} instead,
-     * it returns Topic with associated User now.
-     * @param id Topic id
-     * @return the Topic or null if the appropriate topic wasn't found
-    
-     */
-    Topic getTopicWithUser(Long id);
 }
