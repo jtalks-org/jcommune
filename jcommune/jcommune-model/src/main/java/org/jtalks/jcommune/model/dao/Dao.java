@@ -18,38 +18,44 @@
 package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.jcommune.model.entity.Persistent;
+
 import java.util.List;
 
 /**
  * Basic Data Access Object interface.
  * Provides CRUD operations with {@link Persistent} objects.
+ *
+ * @author Pavel Vervenko
  * @see PostDao
  * @see TopicDao
  * @see UserDao
- * @author Pavel Vervenko
  */
 public interface Dao<T extends Persistent> {
 
     /**
      * Save or update the persistent object.
+     *
      * @param persistent object to save
      */
     void saveOrUpdate(T persistent);
 
     /**
      * Delete the object by it's id.
+     *
      * @param id the id
      */
     void delete(Long id);
 
     /**
      * Delete the object from data storage.
-     * @param persistent 
+     *
+     * @param persistent
      */
     void delete(T persistent);
 
     /**
      * Get the object by id.
+     *
      * @param id the id
      * @return loaded Persistence instance
      */
@@ -57,6 +63,7 @@ public interface Dao<T extends Persistent> {
 
     /**
      * Get the list of objects.
+     *
      * @return list of objects
      */
     List<T> getAll();
