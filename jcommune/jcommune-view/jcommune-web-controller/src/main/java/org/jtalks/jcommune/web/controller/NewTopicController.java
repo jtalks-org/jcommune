@@ -48,7 +48,7 @@ public final class NewTopicController {
      * objects injected via autowiring
      *
      * @param topicService    the object which provides actions on Topic entity
-     * @param securityService
+     * @param securityService {@link SecurityService}
      * @see TopicService
      * @see Topic
      * @see Post
