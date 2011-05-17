@@ -29,6 +29,7 @@ import java.util.List;
  * of the same named method from DAO interface.
  *
  * @author Osadchuck Eugeny
+ * @author Kirill Afonin
  */
 public abstract class AbstractTransactionlaEntityService<T extends Persistent>
         implements EntityService<T> {
@@ -66,18 +67,8 @@ public abstract class AbstractTransactionlaEntityService<T extends Persistent>
     }
 
     @Override
-    public void saveOrUpdate(T persistent) {
-        dao.saveOrUpdate(persistent);
-    }
-
-    @Override
     public void delete(Long id) {
         dao.delete(id);
-    }
-
-    @Override
-    public void delete(T persistent) {
-        dao.delete(persistent);
     }
 
     @Override
