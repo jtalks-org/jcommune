@@ -17,53 +17,16 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.hibernate.Query;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
-
-import java.util.List;
 
 /**
  * Hibernate implementation of UserDao.
  *
  * @author Pavel Vervenko
+ * @author Kirill Afonin
  */
 public class UserHibernateDao extends AbstractHibernateDao<User> implements UserDao {
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void saveOrUpdate(User user) {
-        getSession().save(user);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void delete(Long userId) {
-        Query query = getSession().createQuery("delete User where id= :authorId");
-        query.setLong("authorId", userId);
-        query.executeUpdate();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public User get(Long id) {
-        return (User) getSession().load(User.class, id);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<User> getAll() {
-        return getSession().createQuery("from User").list();
-    }
-
     /**
      * {@inheritDoc}
      */
