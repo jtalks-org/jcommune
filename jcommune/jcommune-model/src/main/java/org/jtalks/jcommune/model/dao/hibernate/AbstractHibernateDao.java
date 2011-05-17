@@ -47,7 +47,8 @@ public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<
     private Class<T> type;
 
     /**
-     * Get parametrized type
+     * Default constructor.
+     * Retrieves parameterized type of entity using reflection.
      */
     protected AbstractHibernateDao() {
         this.type = (Class<T>) ((ParameterizedType) getClass()
@@ -115,4 +116,5 @@ public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<
         return getSession()
                 .createQuery("from " + type.getSimpleName()).list();
     }
+
 }
