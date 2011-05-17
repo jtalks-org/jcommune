@@ -66,16 +66,25 @@ public abstract class AbstractTransactionlaEntityService<T extends Persistent>
         this.dao = dao;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void delete(Long id) {
         dao.delete(id);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public T get(Long id) {
         return dao.get(id);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<T> getAll() {
         return dao.getAll();

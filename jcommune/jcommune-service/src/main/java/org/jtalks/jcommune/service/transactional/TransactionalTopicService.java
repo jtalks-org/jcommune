@@ -17,7 +17,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.jcommune.model.dao.Dao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -36,15 +35,18 @@ import org.jtalks.jcommune.service.exceptions.UserNotLoggedInException;
 public class TransactionalTopicService extends AbstractTransactionlaEntityService<Topic> implements TopicService {
 
     private final SecurityService securityService;
+    private TopicDao topicDao;
 
     /**
      * Create an instance of User entity based service
      *
-     * @param dao - data access object, which should be able do all CRUD operations with topic entity.
+     * @param dao             - data access object, which should be able do all CRUD operations with topic entity.
+     * @param securityService {@link SecurityService} for retrieving current user.
      */
-    public TransactionalTopicService(Dao<Topic> dao, SecurityService securityService) {
+    public TransactionalTopicService(TopicDao dao, SecurityService securityService) {
         super(dao);
         this.securityService = securityService;
+        this.topicDao = dao;
     }
 
     /**
@@ -52,9 +54,7 @@ public class TransactionalTopicService extends AbstractTransactionlaEntityServic
      */
     @Override
     public Topic getTopicWithPosts(long id) {
-        TopicDao topicDao = (TopicDao) getDao();
-        Topic topic = topicDao.getTopicWithPosts(id);
-        return topic;
+        return topicDao.getTopicWithPosts(id);
     }
 
     /**
@@ -67,12 +67,12 @@ public class TransactionalTopicService extends AbstractTransactionlaEntityServic
         if (currentUser == null) {
             throw new UserNotLoggedInException("User should log in to post answers.");
         }
-        Topic topic = getDao().get(topicId);
+        Topic topic = topicDao.get(topicId);
         Post answer = Post.createNewPost();
         answer.setPostContent(answerBody);
         answer.setUserCreated(currentUser);
         topic.addPost(answer);
-        getDao().saveOrUpdate(topic);
+        topicDao.saveOrUpdate(topic);
     }
 
     /**

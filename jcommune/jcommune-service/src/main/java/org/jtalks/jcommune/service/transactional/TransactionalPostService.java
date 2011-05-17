@@ -17,7 +17,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.jcommune.model.dao.Dao;
+import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.PostService;
 import org.slf4j.Logger;
@@ -31,13 +31,15 @@ import org.slf4j.LoggerFactory;
 public class TransactionalPostService extends AbstractTransactionlaEntityService<Post> implements PostService {
 
     final Logger logger = LoggerFactory.getLogger(TransactionalPostService.class);
+    private PostDao postDao;
 
     /**
      * Create an instance of Post entity based service
      *
      * @param dao - data access object, which should be able do all CRUD operations with post entity.
      */
-    public TransactionalPostService(Dao<Post> dao) {
+    public TransactionalPostService(PostDao dao) {
         super(dao);
+        this.postDao = dao;
     }
 }

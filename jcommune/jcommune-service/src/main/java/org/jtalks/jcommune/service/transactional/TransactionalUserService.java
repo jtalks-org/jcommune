@@ -17,7 +17,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.jcommune.model.dao.Dao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
@@ -34,14 +33,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 public class TransactionalUserService extends AbstractTransactionlaEntityService<User> implements UserService {
 
     final Logger logger = LoggerFactory.getLogger(TransactionalUserService.class);
+    private UserDao userDao;
 
     /**
      * Create an instance of User entity based service
      *
      * @param dao - data access object, which should be able do all CRUD operations with user entity.
      */
-    public TransactionalUserService(Dao<User> dao) {
+    public TransactionalUserService(UserDao dao) {
         super(dao);
+        this.userDao = dao;
     }
 
     /**
@@ -49,7 +50,7 @@ public class TransactionalUserService extends AbstractTransactionlaEntityService
      */
     @Override
     public User getByUsername(String username) {
-        User user = getUserDao().getByUsername(username);
+        User user = userDao.getByUsername(username);
         if (user == null) {
             final String msg = "User " + username + " not found.";
             logger.info(msg);
@@ -106,16 +107,7 @@ public class TransactionalUserService extends AbstractTransactionlaEntityService
      * @return true if user with given username or email exist.
      */
     private boolean isUserExist(String username, String email) {
-        return getUserDao().isUserWithUsernameExist(username) ||
-                getUserDao().isUserWithEmailExist(email);
-    }
-
-    /**
-     * Cast dao to UserDao
-     *
-     * @return dao casted to {@link UserDao}
-     */
-    private UserDao getUserDao() {
-        return (UserDao) dao;
+        return userDao.isUserWithUsernameExist(username) ||
+                userDao.isUserWithEmailExist(email);
     }
 }
