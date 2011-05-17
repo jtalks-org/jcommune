@@ -116,4 +116,5 @@ public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<
         return getSession()
                 .createQuery("from " + type.getSimpleName()).list();
     }
+
 }
