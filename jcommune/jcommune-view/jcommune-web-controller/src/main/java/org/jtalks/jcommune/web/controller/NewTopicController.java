@@ -19,12 +19,8 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
-import org.jtalks.jcommune.service.UserService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,33 +34,29 @@ import org.springframework.web.servlet.ModelAndView;
  * and save Topic entity to database. Controller thrown no exceptions
  *
  * @author Kravchenko Vitaliy
+ * @author Kirill Afonin
  * @see Topic
  */
 @Controller
 public final class NewTopicController {
 
     private TopicService topicService;
-    private UserService userService;
-    private SecurityService securityService;  
-
+    private SecurityService securityService;
 
     /**
-     * Constructor creates MVC controller with specifying TopicService,UserService
+     * Constructor creates MVC controller with specifying TopicService
      * objects injected via autowiring
      *
-     * @param topicService the object which provides actions on Topic entity          
-     * @param userService  the object which provides action on User entity
-     * @see User
+     * @param topicService    the object which provides actions on Topic entity
+     * @param securityService
      * @see TopicService
-     * @see PostService
-     * @see UserService
      * @see Topic
      * @see Post
      */
     @Autowired
-    public NewTopicController(TopicService topicService, UserService userService, SecurityService securityService) {
+    public NewTopicController(TopicService topicService,
+                              SecurityService securityService) {
         this.topicService = topicService;
-        this.userService = userService;
         this.securityService = securityService;
     }
 
@@ -72,27 +64,19 @@ public final class NewTopicController {
      * This method handles POST requests, it will be always activated when the user pressing "Submit topic"
      *
      * @param topicName input value from form which represents topic's name
-     * @param author    input value from form which represents author name
-     * @param bodyText  input value from form which represents topic's context
+     * @param bodyText  input value from form which represents topic's body
      * @return ModelAndView object which will be redirect to forum.html
      */
     @RequestMapping(value = "/createNewTopic", method = RequestMethod.POST)
     public ModelAndView submitNewTopic(@RequestParam("topic") String topicName,
-                                       @RequestParam("author") String author,
                                        @RequestParam("bodytext") String bodyText) {
-        
-        User user = securityService.getCurrentUser();
-        Post post = Post.createNewPost();
-        post.setUserCreated(user);
-        post.setPostContent(bodyText);
 
-        Topic topic = Topic.createNewTopic();
-        topic.setTitle(topicName);
-        topic.setTopicStarter(user);
-        topic.addPost(post);
-
-        topicService.saveOrUpdate(topic);
-
-        return new ModelAndView("redirect:forum.html");
+        if (securityService.getCurrentUser() != null) {
+            topicService.createTopicAsCurrentUser(topicName, bodyText);
+            return new ModelAndView("redirect:forum.html");
+        } else {
+            return new ModelAndView("redirect:/login.html");
+        }
     }
+
 }
