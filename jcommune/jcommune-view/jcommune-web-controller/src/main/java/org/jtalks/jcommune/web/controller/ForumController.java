@@ -18,14 +18,15 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.TopicBranch;
+import org.jtalks.jcommune.service.TopicBranchService;
 import org.jtalks.jcommune.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-
 
 import java.util.List;
 
@@ -41,6 +42,7 @@ import java.util.List;
 @Controller
 public final class ForumController {
     private TopicService topicService;
+    private TopicBranchService topicBranchService;
 
     /**
      * Class constructor which creates MVC controller with specifying TopicService
@@ -51,18 +53,9 @@ public final class ForumController {
      * @see TopicService
      */
     @Autowired
-    public ForumController(TopicService topicService) {
+    public ForumController(TopicService topicService, TopicBranchService topicBranchService) {
         this.topicService = topicService;
-    }
-
-    /**
-     * Method returns list of created topics via TopicService and used to populate JSP page
-     *
-     * @return the List of topics
-     */
-    @ModelAttribute("topicsList")
-    public List<Topic> populateForum() {
-        return topicService.getAll();
+        this.topicBranchService = topicBranchService;
     }
 
     /**
@@ -71,19 +64,12 @@ public final class ForumController {
      *
      * @return the ModelAndView object, with "forum" as view name
      */
-    @RequestMapping(value = "/forum", method = RequestMethod.GET)
-    public ModelAndView showAllTopics() {
-        return new ModelAndView("forum");
+    @RequestMapping(value = "/branches/{branchId}", method = RequestMethod.GET)
+    public ModelAndView showAllTopics(@PathVariable("branchId") long branchId) {
+        List<Topic> topics = topicService.getAllTopicsAccordingToBranch(branchId);
+        TopicBranch topicBranch = topicBranchService.get(branchId);
+        return new ModelAndView("forum", "topicsList", topics).addObject("branchId", topicBranch.getId());
     }
 
-    /**
-     * Method handles POST requests with "/forum" URI
-     * or when the user pressing  "Create new topic" button
-     *
-     * @return the ModelAndView object with constant view name - newTopic
-     */
-    @RequestMapping(value = "/forum", method = RequestMethod.POST)
-    public ModelAndView postPage() {
-        return new ModelAndView("newTopic");
-    }
+
 }

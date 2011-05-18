@@ -1,27 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
-  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
   <class name="Topic" table="TOPIC">
     <id column="TOPIC_ID" name="id" unsaved-value="0">
-      <generator class="native" />
+      <generator class="native"/>
     </id>
     <list name="posts" cascade="all-delete-orphan">
-      <key column="TOPIC_ID" foreign-key="FK_TOPIC" />
-      <index column="LIST_INDEX" />
-      <one-to-many class="Post" />
+      <key column="TOPIC_ID" foreign-key="FK_TOPIC"/>
+      <index column="LIST_INDEX"/>
+      <one-to-many class="Post"/>
     </list>
     <many-to-one class="User" lazy="false" column="TOPIC_STARTER"
-      name="topicStarter" not-null="true" foreign-key="FK_TOPIC_STARTER" />
-    <property column="TITLE" name="title" not-null="true" />
+                 name="topicStarter" not-null="true" foreign-key="FK_TOPIC_STARTER"/>
+    <property column="TITLE" name="title" not-null="true"/>
     <property column="CREATION_DATE" name="creationDate"
-      type="org.joda.time.contrib.hibernate.PersistentDateTime"
-      not-null="true" />
+              type="org.joda.time.contrib.hibernate.PersistentDateTime"
+              not-null="true"/>
+    <many-to-one name="branch" class="org.jtalks.jcommune.model.entity.TopicBranch" column="TOPIC_BRANCH"
+                 not-null="true"
+                 foreign-key="FK_TOPIC_BRANCH"/>
   </class>
   <query name="getTopicWithPosts">
-        <![CDATA[from Topic as topic
+    <![CDATA[from Topic as topic
                       left join fetch topic.posts
                  WHERE topic.id = :topicId]]>
 
   </query>
+  <query name="getAllTopicsAccordingToBranch">
+    <![CDATA[from Topic as topic
+                        WHERE topic.branch.id = :branchId]]>
+  </query>
+
 </hibernate-mapping>

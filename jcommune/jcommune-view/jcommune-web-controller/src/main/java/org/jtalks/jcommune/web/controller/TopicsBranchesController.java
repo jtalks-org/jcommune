@@ -12,44 +12,41 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  * Also add information on how to contact you by electronic and paper mail.
- * Creation date: Apr 12, 2011 / 8:05:19 PM
- * The jtalks.org Project
  */
+
+
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.TopicBranch;
 import org.jtalks.jcommune.service.TopicBranchService;
-import org.jtalks.jcommune.service.TopicService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import java.util.List;
 
 
-public class ForumControllerTest {
-    private TopicService topicService;
-    private TopicBranchService branchService;
-    private ForumController forumController;
+@Controller
+public class TopicsBranchesController {
 
-    @BeforeMethod
-    public void init() {
-        topicService = mock(TopicService.class);
-        branchService = mock(TopicBranchService.class);
-        forumController = new ForumController(topicService, branchService);
+    private TopicBranchService topicBranchService;
+
+    @Autowired
+    public TopicsBranchesController(TopicBranchService topicBranchService) {
+        this.topicBranchService = topicBranchService;
     }
 
-    @Test
-    public void testShowAllTopics() {
-        TopicBranch topicBranch = new TopicBranch();
-        topicBranch.setId(1l);
-        when(branchService.get(1l)).thenReturn(topicBranch);
+    @ModelAttribute("topicsBranchList")
+    public List<TopicBranch> populateFormWithBranches() {
+        return topicBranchService.getAll();
+    }
 
-        ModelAndView mav = forumController.showAllTopics(1l);
-
-        assertViewName(mav, "forum");
-        verify(branchService, times(1)).get(1l);
+    @RequestMapping(value = "/main", method = RequestMethod.GET)
+    public ModelAndView displayAllTopicsBranches() {
+        return new ModelAndView("renderAllBranches");
     }
 
 }

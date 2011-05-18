@@ -12,42 +12,36 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  * Also add information on how to contact you by electronic and paper mail.
- * Creation date: Apr 12, 2011 / 8:05:19 PM
- * The jtalks.org Project
  */
+
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Query;
-import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.dao.TopicBranchDao;
+import org.jtalks.jcommune.model.entity.TopicBranch;
 
 import java.util.List;
 
-/**
- * Hibernate DAO implementation from the {@link Topic}.
- *
- * @author Pavel Vervenko
- * @author Kirill Afonin
- */
-public class TopicHibernateDao extends AbstractHibernateDao<Topic> implements TopicDao {
-
-    /**
-     * {@inheritDoc}
-     */
+public class TopicBranchHibernateDao extends AbstractHibernateDao<TopicBranch> implements TopicBranchDao {
     @Override
-    public List<Topic> getAllTopicsAccordingToBranch(Long id) {
-        Query query = getSession().getNamedQuery("getAllTopicsAccordingToBranch");
-        query.setLong("branchId", id);
-        return query.list();
+    public void saveOrUpdate(TopicBranch persistent) {
+        getSession().save(persistent);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public Topic getTopicWithPosts(Long id) {
-        Query query = getSession().getNamedQuery("getTopicWithPosts");
-        query.setLong("topicId", id);
-        return (Topic) query.uniqueResult();
+    public void delete(Long topicsBranchId) {
+        Query query = getSession().createQuery("delete TopicBranch where id= :topicsBranchId");
+        query.setLong("topicsBranchId", topicsBranchId);
+        query.executeUpdate();
+    }
+
+    @Override
+    public TopicBranch get(Long id) {
+        return (TopicBranch) getSession().get(TopicBranch.class, id);
+    }
+
+    @Override
+    public List<TopicBranch> getAll() {
+        return getSession().createQuery("from TopicBranch").list();
     }
 }
