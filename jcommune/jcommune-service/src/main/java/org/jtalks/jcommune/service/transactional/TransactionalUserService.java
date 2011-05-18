@@ -71,7 +71,7 @@ public class TransactionalUserService extends AbstractTransactionlaEntityService
         }
 
         User user = populateUser(username, email, firstName, lastName, password);
-        userDao.saveOrUpdate(user);
+        dao.saveOrUpdate(user);
 
         logger.info("User registered: " + username);
     }
