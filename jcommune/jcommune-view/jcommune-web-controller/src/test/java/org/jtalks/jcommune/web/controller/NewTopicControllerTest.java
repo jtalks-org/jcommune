@@ -57,7 +57,7 @@ public class NewTopicControllerTest {
     }
 
     @Test
-    public void testSubmitNewTopic_UserNotLoggedIn() throws Exception {
+    public void testSubmitNewTopicUserNotLoggedIn() throws Exception {
         when(securityService.getCurrentUser()).thenReturn(null);
 
         ModelAndView mav = controller.submitNewTopic(TOPIC_THEME, TOPIC_CONTENT);
