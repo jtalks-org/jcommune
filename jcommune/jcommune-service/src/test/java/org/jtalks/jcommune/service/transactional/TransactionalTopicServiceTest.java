@@ -162,7 +162,7 @@ public class TransactionalTopicServiceTest {
     }
 
     @Test(expectedExceptions = UserNotLoggedInException.class)
-    public void testCreateTopicAsCurrentUser_NotLoggedInUser() {
+    public void testCreateTopicAsCurrentUserNotLoggedInUser() {
         when(securityService.getCurrentUser()).thenReturn(null);
 
         topicService.createTopicAsCurrentUser(TOPIC_TITLE, ANSWER_BODY);
