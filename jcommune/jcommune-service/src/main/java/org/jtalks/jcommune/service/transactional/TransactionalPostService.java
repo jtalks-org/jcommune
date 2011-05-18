@@ -28,10 +28,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author Osadchuck Eugeny
  */
-public class TransactionalPostService extends AbstractTransactionlaEntityService<Post> implements PostService {
+public class TransactionalPostService extends AbstractTransactionlaEntityService<Post, PostDao> implements PostService {
 
-    final Logger logger = LoggerFactory.getLogger(TransactionalPostService.class);
-    private PostDao postDao;
+    private final Logger logger = LoggerFactory.getLogger(TransactionalPostService.class);
 
     /**
      * Create an instance of Post entity based service
@@ -39,7 +38,6 @@ public class TransactionalPostService extends AbstractTransactionlaEntityService
      * @param dao - data access object, which should be able do all CRUD operations with post entity.
      */
     public TransactionalPostService(PostDao dao) {
-        super(dao);
-        this.postDao = dao;
+        this.dao = dao;
     }
 }

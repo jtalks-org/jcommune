@@ -32,10 +32,9 @@ import org.jtalks.jcommune.service.exceptions.UserNotLoggedInException;
  * @author Vervenko Pavel
  * @author Kirill Afonin
  */
-public class TransactionalTopicService extends AbstractTransactionlaEntityService<Topic> implements TopicService {
+public class TransactionalTopicService extends AbstractTransactionlaEntityService<Topic, TopicDao> implements TopicService {
 
     private final SecurityService securityService;
-    private TopicDao topicDao;
 
     /**
      * Create an instance of User entity based service
@@ -44,9 +43,8 @@ public class TransactionalTopicService extends AbstractTransactionlaEntityServic
      * @param securityService {@link SecurityService} for retrieving current user.
      */
     public TransactionalTopicService(TopicDao dao, SecurityService securityService) {
-        super(dao);
         this.securityService = securityService;
-        this.topicDao = dao;
+        this.dao = dao;
     }
 
     /**
@@ -54,7 +52,7 @@ public class TransactionalTopicService extends AbstractTransactionlaEntityServic
      */
     @Override
     public Topic getTopicWithPosts(long id) {
-        return topicDao.getTopicWithPosts(id);
+        return dao.getTopicWithPosts(id);
     }
 
     /**
@@ -67,12 +65,12 @@ public class TransactionalTopicService extends AbstractTransactionlaEntityServic
         if (currentUser == null) {
             throw new UserNotLoggedInException("User should log in to post answers.");
         }
-        Topic topic = topicDao.get(topicId);
+        Topic topic = dao.get(topicId);
         Post answer = Post.createNewPost();
         answer.setPostContent(answerBody);
         answer.setUserCreated(currentUser);
         topic.addPost(answer);
-        topicDao.saveOrUpdate(topic);
+        dao.saveOrUpdate(topic);
     }
 
     /**
