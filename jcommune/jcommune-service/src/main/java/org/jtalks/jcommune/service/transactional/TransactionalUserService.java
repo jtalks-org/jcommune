@@ -68,7 +68,7 @@ public class TransactionalUserService extends AbstractTransactionlaEntityService
 
         if (isUserExist(username, email)) {
             final String msg = "User " + username + " already exist!";
-            logger.info(msg);
+            logger.warn(msg);
             throw new DuplicateException(msg);
         }
 
