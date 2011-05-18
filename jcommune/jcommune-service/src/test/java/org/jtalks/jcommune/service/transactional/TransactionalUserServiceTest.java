@@ -80,7 +80,7 @@ public class TransactionalUserServiceTest {
     }
 
     @Test(expectedExceptions = {DuplicateException.class})
-    public void testRegisterUser_EmailExist() throws Exception {
+    public void testRegisterUserEmailExist() throws Exception {
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(true);
         when(userDao.isUserWithUsernameExist(USERNAME)).thenReturn(false);
 
