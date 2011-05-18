@@ -29,6 +29,10 @@ import org.testng.annotations.Test;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 
+/**
+ * Tests for {@link NewTopicController} actions.
+ * @author Kirill Afonin
+ */
 public class NewTopicControllerTest {
     private final String TOPIC_CONTENT = "content here";
     private final String TOPIC_THEME = "Topic theme";
@@ -53,7 +57,7 @@ public class NewTopicControllerTest {
 
         assertViewName(mav, "redirect:forum.html");
         verify(securityService, times(1)).getCurrentUser();
-        verify(topicService, times(1)).createTopicAsCurrentUser(TOPIC_THEME, TOPIC_CONTENT);
+        verify(topicService, times(1)).createTopic(TOPIC_THEME, TOPIC_CONTENT);
     }
 
     @Test
@@ -64,6 +68,6 @@ public class NewTopicControllerTest {
 
         assertViewName(mav, "redirect:/login.html");
         verify(securityService, times(1)).getCurrentUser();
-        verify(topicService, never()).createTopicAsCurrentUser(TOPIC_THEME, TOPIC_CONTENT);
+        verify(topicService, never()).createTopic(TOPIC_THEME, TOPIC_CONTENT);
     }
 }

@@ -76,7 +76,7 @@ public class TransactionalTopicService extends AbstractTransactionlaEntityServic
     /**
      * {@inheritDoc}
      */
-    public void createTopicAsCurrentUser(String topicName, String bodyText) {
+    public void createTopic(String topicName, String bodyText) {
         User currentUser = securityService.getCurrentUser();
         if (currentUser == null) {
             throw new UserNotLoggedInException("User should log in to post topic.");
