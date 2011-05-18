@@ -64,7 +64,7 @@ public class SecurityServiceImplTest {
     }
 
     @Test
-    public void testGetCurrentUser_NotFound() throws Exception {
+    public void testGetCurrentUserNotFound() throws Exception {
         when(securityContext.getAuthentication()).thenReturn(null);
 
         User result = securityService.getCurrentUser();
@@ -89,7 +89,7 @@ public class SecurityServiceImplTest {
     }
 
     @Test
-    public void testGetCurrentUserUsername_NotAuthenticated() throws Exception {
+    public void testGetCurrentUserUsernameNotAuthenticated() throws Exception {
         when(securityContext.getAuthentication()).thenReturn(null);
 
         String username = securityService.getCurrentUserUsername();
@@ -114,6 +114,6 @@ public class SecurityServiceImplTest {
     public void testLoadUserByUsername_NotFound() throws Exception {
         when(userService.getByUsername(USERNAME)).thenThrow(new UsernameNotFoundException(""));
 
-        UserDetails result = securityService.loadUserByUsername(USERNAME);
+        securityService.loadUserByUsername(USERNAME);
     }
 }
