@@ -25,13 +25,14 @@ import java.util.Collection;
 
 /**
  * Stores information about the forum user.
- * 
+ * Used as <code>UserDetails</code> in spring security for user authentication, authorization.
+ *
  * @author Pavel Vervenko
  * @author Kirill Afonin
  */
 public class User extends Persistent implements UserDetails {
 
-    // temp user role to use before authorization by role not implemented
+    // temp user role to be used until authorization by role is not implemented
     private static GrantedAuthority roleUser = new GrantedAuthority() {
         @Override
         public String getAuthority() {
@@ -40,6 +41,7 @@ public class User extends Persistent implements UserDetails {
     };
     // list of user roles. used by spring security
     private static Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+
     static {
         authorities.add(roleUser);
     }
@@ -52,6 +54,7 @@ public class User extends Persistent implements UserDetails {
 
     /**
      * Get the user's Last Name.
+     *
      * @return the lastName
      */
     public String getLastName() {

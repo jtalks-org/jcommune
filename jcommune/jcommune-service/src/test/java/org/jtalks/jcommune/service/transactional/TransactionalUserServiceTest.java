@@ -51,7 +51,7 @@ public class TransactionalUserServiceTest {
     }
 
     @Test(expectedExceptions = UsernameNotFoundException.class)
-    public void testGetByUsername_NotFound() throws Exception {
+    public void testGetByUsernameNotFound() throws Exception {
         when(userDao.getByUsername(USERNAME)).thenReturn(null);
 
         userService.getByUsername(USERNAME);
@@ -71,7 +71,7 @@ public class TransactionalUserServiceTest {
     }
 
     @Test(expectedExceptions = {DuplicateException.class})
-    public void testRegisterUser_UsernameExist() throws Exception {
+    public void testRegisterUserUsernameExist() throws Exception {
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
         when(userDao.isUserWithUsernameExist(USERNAME)).thenReturn(true);
 
@@ -80,7 +80,7 @@ public class TransactionalUserServiceTest {
     }
 
     @Test(expectedExceptions = {DuplicateException.class})
-    public void testRegisterUser_EmailExist() throws Exception {
+    public void testRegisterUserEmailExist() throws Exception {
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(true);
         when(userDao.isUserWithUsernameExist(USERNAME)).thenReturn(false);
 

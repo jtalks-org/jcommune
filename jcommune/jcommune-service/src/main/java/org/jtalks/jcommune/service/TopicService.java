@@ -21,7 +21,7 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.exceptions.UserNotLoggedInException;
 
 /**
- * This interface should have methods which give us more abilities in manipulating Topic persistent entity.
+ * This interface contains methods related to forum topic.
  *
  * @author Osadchuck Eugeny
  * @author Vervenko Pavel
@@ -53,5 +53,5 @@ public interface TopicService extends EntityService<Topic> {
      * @param topicName name of topic
      * @param bodyText  body of topic
      */
-    void createTopicAsCurrentUser(String topicName, String bodyText);
+    void createTopic(String topicName, String bodyText);
 }

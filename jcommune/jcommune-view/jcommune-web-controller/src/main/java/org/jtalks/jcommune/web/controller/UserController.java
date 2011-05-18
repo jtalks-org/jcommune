@@ -57,7 +57,7 @@ public class UserController {
      */
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
     public ModelAndView registrationPage() {
-        return new ModelAndView("registration").addObject("newUser", new UserDto());
+        return new ModelAndView("registration").addObject("newUser", new org.jtalks.jcommune.web.dto.UserDto());
     }
 
     /**

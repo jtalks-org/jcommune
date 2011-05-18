@@ -72,7 +72,7 @@ public final class NewTopicController {
                                        @RequestParam("bodytext") String bodyText) {
 
         if (securityService.getCurrentUser() != null) {
-            topicService.createTopicAsCurrentUser(topicName, bodyText);
+            topicService.createTopic(topicName, bodyText);
             return new ModelAndView("redirect:forum.html");
         } else {
             return new ModelAndView("redirect:/login.html");

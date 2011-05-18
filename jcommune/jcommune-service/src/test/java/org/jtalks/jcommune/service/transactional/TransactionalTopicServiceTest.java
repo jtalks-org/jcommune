@@ -155,17 +155,17 @@ public class TransactionalTopicServiceTest {
     public void testCreateTopicAsCurrentUser() {
         when(securityService.getCurrentUser()).thenReturn(getUser());
 
-        topicService.createTopicAsCurrentUser(TOPIC_TITLE, ANSWER_BODY);
+        topicService.createTopic(TOPIC_TITLE, ANSWER_BODY);
 
         verify(securityService, times(1)).getCurrentUser();
         verify(topicDao, times(1)).saveOrUpdate(Matchers.<Topic>anyObject());
     }
 
     @Test(expectedExceptions = UserNotLoggedInException.class)
-    public void testCreateTopicAsCurrentUser_NotLoggedInUser() {
+    public void testCreateTopicAsCurrentUserNotLoggedInUser() {
         when(securityService.getCurrentUser()).thenReturn(null);
 
-        topicService.createTopicAsCurrentUser(TOPIC_TITLE, ANSWER_BODY);
+        topicService.createTopic(TOPIC_TITLE, ANSWER_BODY);
     }
 
     /**
