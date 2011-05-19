@@ -24,6 +24,8 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.UserNotLoggedInException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Topic service class. This class contains method needed to manipulate with Topic persistent entity.
@@ -33,7 +35,7 @@ import org.jtalks.jcommune.service.exceptions.UserNotLoggedInException;
  * @author Kirill Afonin
  */
 public class TransactionalTopicService extends AbstractTransactionlaEntityService<Topic> implements TopicService {
-
+    final Logger logger = LoggerFactory.getLogger(TransactionalTopicService.class);
     private final SecurityService securityService;
     private TopicDao topicDao;
 

@@ -1,6 +1,7 @@
 <%@ page import="org.jtalks.jcommune.model.entity.Topic"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
@@ -12,6 +13,13 @@
 			<spring:message code="label.topic" />
 			:
 			<c:out value="${selectedTopic.title}" />
+			<sec:authentication property="principal.id"/>
+			<%-- c:if test="${currentUser.id==selectedTopic.topicStarter.id}">--%>
+			<c:if test="${currentUser.id==selectedTopic.topicStarter.id}">    
+				<form:form action="${pageContext.request.contextPath}/delete.html" method="POST">
+	                <input type="submit" value="<spring:message code="label.delete"/>" />
+	            </form:form>
+            </c:if>
 		</h2>
 
 		<c:forEach var="posts" items="${selectedTopic.posts}">
@@ -22,9 +30,10 @@
 				<td width="80%"><spring:message code="label.text" />: <c:out
 						value="${posts.postContent}" />
 				</td>
+			      
 			     <c:if test="${currentUser.id==posts.userCreated.id}">			     
 				    <td>
-				        <form:form action="${pageContext.request.contextPath}/forum.html" method="POST">
+				        <form:form action="${pageContext.request.contextPath}/delete.html" method="POST">
                             <input type="submit" value="<spring:message code="label.delete"/>" />
                         </form:form>
                     </td>			     
