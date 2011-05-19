@@ -20,6 +20,8 @@ package org.jtalks.jcommune.service;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.exceptions.UserNotLoggedInException;
 
+import java.util.List;
+
 /**
  * This interface should have methods which give us more abilities in manipulating Topic persistent entity.
  *
@@ -43,17 +45,21 @@ public interface TopicService extends EntityService<Topic> {
      *
      * @param topicId    target topic primary id.
      * @param answerBody the text of the answer
-     * @throws UserNotLoggedInException if the user is not authorized
      */
     void addAnswer(long topicId, String answerBody);
 
+
+    List<Topic> getAllTopicsAccordingToBranch(Long id);
+
     /**
+     * /**
      * Add new topic with given title and body.
      * Author is current user.
      *
      * @param topicName name of topic
      * @param bodyText  body of topic
-     * @throws UserNotLoggedInException if the user is not authorized
+     * @param branchId
      */
-    void createTopicAsCurrentUser(String topicName, String bodyText);
+    void createTopic(String topicName, String bodyText, long branchId);
+
 }

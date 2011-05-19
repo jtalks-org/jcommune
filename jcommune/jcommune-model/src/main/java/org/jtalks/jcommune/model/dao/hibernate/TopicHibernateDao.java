@@ -21,13 +21,25 @@ import org.hibernate.Query;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Topic;
 
+import java.util.List;
+
 /**
  * Hibernate DAO implementation from the {@link Topic}.
- * 
+ *
  * @author Pavel Vervenko
  * @author Kirill Afonin
  */
 public class TopicHibernateDao extends AbstractHibernateDao<Topic> implements TopicDao {
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Topic> getAllTopicsAccordingToBranch(Long id) {
+        Query query = getSession().getNamedQuery("getAllTopicsAccordingToBranch");
+        query.setLong("branchId", id);
+        return query.list();
+    }
 
     /**
      * {@inheritDoc}

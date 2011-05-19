@@ -22,10 +22,11 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
+import org.jtalks.jcommune.service.TopicBranchService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.UserNotLoggedInException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * Topic service class. This class contains method needed to manipulate with Topic persistent entity.
@@ -34,10 +35,10 @@ import org.slf4j.LoggerFactory;
  * @author Vervenko Pavel
  * @author Kirill Afonin
  */
-public class TransactionalTopicService extends AbstractTransactionlaEntityService<Topic> implements TopicService {
-    final Logger logger = LoggerFactory.getLogger(TransactionalTopicService.class);
+public class TransactionalTopicService extends AbstractTransactionalEntityService<Topic, TopicDao> implements TopicService {
+
     private final SecurityService securityService;
-    private TopicDao topicDao;
+    private TopicBranchService topicBranchService;
 
     /**
      * Create an instance of User entity based service
@@ -45,10 +46,11 @@ public class TransactionalTopicService extends AbstractTransactionlaEntityServic
      * @param dao             - data access object, which should be able do all CRUD operations with topic entity.
      * @param securityService {@link SecurityService} for retrieving current user.
      */
-    public TransactionalTopicService(TopicDao dao, SecurityService securityService) {
-        super(dao);
+    public TransactionalTopicService(TopicDao dao, SecurityService securityService,
+                                     TopicBranchService topicBranchService) {
         this.securityService = securityService;
-        this.topicDao = dao;
+        this.dao = dao;
+        this.topicBranchService = topicBranchService;
     }
 
     /**
@@ -56,7 +58,7 @@ public class TransactionalTopicService extends AbstractTransactionlaEntityServic
      */
     @Override
     public Topic getTopicWithPosts(long id) {
-        return topicDao.getTopicWithPosts(id);
+        return dao.getTopicWithPosts(id);
     }
 
     /**
@@ -69,22 +71,20 @@ public class TransactionalTopicService extends AbstractTransactionlaEntityServic
         if (currentUser == null) {
             throw new UserNotLoggedInException("User should log in to post answers.");
         }
-        Topic topic = topicDao.get(topicId);
+        Topic topic = dao.get(topicId);
         Post answer = Post.createNewPost();
         answer.setPostContent(answerBody);
         answer.setUserCreated(currentUser);
         topic.addPost(answer);
-        topicDao.saveOrUpdate(topic);
+        dao.saveOrUpdate(topic);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void createTopicAsCurrentUser(String topicName, String bodyText) {
+    @Override
+    public void createTopic(String topicName, String bodyText, long branchId) {
         User currentUser = securityService.getCurrentUser();
-        if (currentUser == null) {
-            throw new UserNotLoggedInException("User should log in to post topic.");
-        }
 
         Post post = Post.createNewPost();
         post.setUserCreated(currentUser);
@@ -94,8 +94,14 @@ public class TransactionalTopicService extends AbstractTransactionlaEntityServic
         topic.setTitle(topicName);
         topic.setTopicStarter(currentUser);
         topic.addPost(post);
+        topic.setBranch(topicBranchService.get(branchId));
 
         dao.saveOrUpdate(topic);
+    }
+
+    @Override
+    public List<Topic> getAllTopicsAccordingToBranch(Long id) {
+        return dao.getAllTopicsAccordingToBranch(id);
     }
 
 }

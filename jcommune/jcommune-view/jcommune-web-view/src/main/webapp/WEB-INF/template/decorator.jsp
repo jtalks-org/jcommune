@@ -28,7 +28,7 @@
         </tr>
         <tr>
             <td class="background"><a
-                    href="${pageContext.request.contextPath}/forum.html">&nbsp&nbsp<span
+                    href="${pageContext.request.contextPath}/main.html">&nbsp&nbsp<span
                     class="nav">Forum</span> </a> | <span style="float: right">
                 <sec:authorize access="isAuthenticated()">
                     <sec:authentication property="principal.username"/>&nbsp

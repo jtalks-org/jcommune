@@ -30,10 +30,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
  *
  * @author Osadchuck Eugeny
  */
-public class TransactionalUserService extends AbstractTransactionlaEntityService<User> implements UserService {
+public class TransactionalUserService extends AbstractTransactionalEntityService<User, UserDao> implements UserService {
 
-    final Logger logger = LoggerFactory.getLogger(TransactionalUserService.class);
-    private UserDao userDao;
+    private final Logger logger = LoggerFactory.getLogger(TransactionalUserService.class);
 
     /**
      * Create an instance of User entity based service
@@ -41,8 +40,7 @@ public class TransactionalUserService extends AbstractTransactionlaEntityService
      * @param dao - data access object, which should be able do all CRUD operations with user entity.
      */
     public TransactionalUserService(UserDao dao) {
-        super(dao);
-        this.userDao = dao;
+        this.dao = dao;
     }
 
     /**
@@ -50,7 +48,7 @@ public class TransactionalUserService extends AbstractTransactionlaEntityService
      */
     @Override
     public User getByUsername(String username) {
-        User user = userDao.getByUsername(username);
+        User user = dao.getByUsername(username);
         if (user == null) {
             final String msg = "User " + username + " not found.";
             logger.info(msg);
@@ -68,7 +66,7 @@ public class TransactionalUserService extends AbstractTransactionlaEntityService
 
         if (isUserExist(username, email)) {
             final String msg = "User " + username + " already exist!";
-            logger.info(msg);
+            logger.warn(msg);
             throw new DuplicateException(msg);
         }
 
@@ -107,7 +105,7 @@ public class TransactionalUserService extends AbstractTransactionlaEntityService
      * @return true if user with given username or email exist.
      */
     private boolean isUserExist(String username, String email) {
-        return userDao.isUserWithUsernameExist(username) ||
-                userDao.isUserWithEmailExist(email);
+        return dao.isUserWithUsernameExist(username) ||
+                dao.isUserWithEmailExist(email);
     }
 }

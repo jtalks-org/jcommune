@@ -21,8 +21,10 @@ import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.TopicBranch;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
+import org.jtalks.jcommune.service.TopicBranchService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.UserNotLoggedInException;
 import org.mockito.Matchers;
@@ -37,7 +39,6 @@ import static org.mockito.Mockito.*;
 
 /**
  * @author Osadchuck Eugeny
- *
  */
 public class TransactionalTopicServiceTest {
 
@@ -47,13 +48,15 @@ public class TransactionalTopicServiceTest {
     final DateTime TOPIC_CREATION_DATE = new DateTime();
     private TopicService topicService;
     private SecurityService securityService;
+    private TopicBranchService branchService;
     private TopicDao topicDao;
 
     @BeforeMethod
     public void setUp() throws Exception {
         topicDao = mock(TopicDao.class);
+        branchService = mock(TopicBranchService.class);
         securityService = mock(SecurityService.class);
-        topicService = new TransactionalTopicService(topicDao, securityService);
+        topicService = new TransactionalTopicService(topicDao, securityService, branchService);
     }
 
     private Topic getTopic() {
@@ -121,18 +124,18 @@ public class TransactionalTopicServiceTest {
         Topic topic = getTopic();
         int postsNumberBefore = topic.getPosts().size();
         User currentUser = getUser();
-        
+
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
         when(securityService.getCurrentUser()).thenReturn(currentUser);
-        
+
         topicService.addAnswer(TOPIC_ID, ANSWER_BODY);
         int postsNumberAfter = topic.getPosts().size();
         Post newPost = topic.getPosts().get(postsNumberAfter - 1);
-        
+
         Assert.assertEquals(postsNumberBefore + 1, postsNumberAfter, "Posts number didn't increased by 1");
         Assert.assertEquals(newPost.getPostContent(), ANSWER_BODY, "Answer body isn't the same");
         Assert.assertEquals(newPost.getUserCreated(), currentUser, "User isn't the same");
-        
+
         verify(securityService, times(1)).getCurrentUser();
         verify(topicDao, times(1)).saveOrUpdate(topic);
         verify(topicDao, times(1)).get(TOPIC_ID);
@@ -144,32 +147,28 @@ public class TransactionalTopicServiceTest {
     @Test(expectedExceptions = UserNotLoggedInException.class)
     public void addAnswerExceptionTest() {
         Topic topic = getTopic();
-        
+
         when(securityService.getCurrentUser()).thenReturn(null);
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
-        
+
         topicService.addAnswer(TOPIC_ID, ANSWER_BODY);
     }
 
     @Test
-    public void testCreateTopicAsCurrentUser() {
+    public void testCreateTopic() {
         when(securityService.getCurrentUser()).thenReturn(getUser());
+        when(branchService.get(1l)).thenReturn(new TopicBranch());
 
-        topicService.createTopicAsCurrentUser(TOPIC_TITLE, ANSWER_BODY);
+        topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, 1l);
 
         verify(securityService, times(1)).getCurrentUser();
         verify(topicDao, times(1)).saveOrUpdate(Matchers.<Topic>anyObject());
-    }
-
-    @Test(expectedExceptions = UserNotLoggedInException.class)
-    public void testCreateTopicAsCurrentUser_NotLoggedInUser() {
-        when(securityService.getCurrentUser()).thenReturn(null);
-
-        topicService.createTopicAsCurrentUser(TOPIC_TITLE, ANSWER_BODY);
+        verify(branchService, times(1)).get(1l);
     }
 
     /**
      * Create new dummy User with username "Test".
+     *
      * @return the user
      */
     private User getUser() {

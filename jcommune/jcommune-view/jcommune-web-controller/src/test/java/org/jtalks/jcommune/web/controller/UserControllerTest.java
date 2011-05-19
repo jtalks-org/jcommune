@@ -54,7 +54,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testRegisterUser_Duplicate() throws Exception {
+    public void testRegisterDuplicateUser() throws Exception {
         UserDto dto = getUserDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
         doThrow(new DuplicateException()).when(userService)

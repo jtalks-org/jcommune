@@ -21,12 +21,17 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.web.dto.TopicDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.validation.Valid;
 
 
 /**
@@ -48,7 +53,7 @@ public final class NewTopicController {
      * objects injected via autowiring
      *
      * @param topicService    the object which provides actions on Topic entity
-     * @param securityService {@link SecurityService}
+     * @param securityService {@link org.jtalks.jcommune.service.SecurityService}
      * @see TopicService
      * @see Topic
      * @see Post
@@ -60,23 +65,30 @@ public final class NewTopicController {
         this.securityService = securityService;
     }
 
+    @RequestMapping(value = "/newTopic", method = RequestMethod.GET)
+    public ModelAndView getNewTopicPage(@RequestParam("branchId") long branchId) {
+        ModelAndView mav = new ModelAndView("newTopic");
+        mav.addObject("topicDto", new TopicDto());
+        mav.addObject("branchId", branchId);
+        return mav;
+    }
+
     /**
      * This method handles POST requests, it will be always activated when the user pressing "Submit topic"
      *
-     * @param topicName input value from form which represents topic's name
-     * @param bodyText  input value from form which represents topic's body
+     * @param topicDto
+     * @param result
+     * @param branchId
      * @return ModelAndView object which will be redirect to forum.html
      */
     @RequestMapping(value = "/createNewTopic", method = RequestMethod.POST)
-    public ModelAndView submitNewTopic(@RequestParam("topic") String topicName,
-                                       @RequestParam("bodytext") String bodyText) {
-
-        if (securityService.getCurrentUser() != null) {
-            topicService.createTopicAsCurrentUser(topicName, bodyText);
-            return new ModelAndView("redirect:forum.html");
-        } else {
-            return new ModelAndView("redirect:/login.html");
-        }
+    public ModelAndView submitNewTopic(@Valid @ModelAttribute TopicDto topicDto,
+                                       BindingResult result,
+                                       @RequestParam("branchId") long branchId) {
+        // this method will be secured by url
+        topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(),
+                branchId);
+        return new ModelAndView("redirect:branches/" + branchId + ".html");
     }
 
 }

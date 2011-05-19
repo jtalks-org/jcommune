@@ -176,7 +176,7 @@ public class UserHibernateDaoTest extends BaseTest {
     }
 
     @Test
-    public void testIsUserWithEmailExist_NotExist() throws Exception {
+    public void testIsUserWithEmailNotExist() throws Exception {
         dao.saveOrUpdate(entity);
         User entity2 = new User();
         entity2.setEmail("email@dddd.co.uk");
@@ -200,7 +200,7 @@ public class UserHibernateDaoTest extends BaseTest {
     }
 
     @Test
-    public void testIsUserWithUsernameExist_NotExist() throws Exception {
+    public void testIsUserWithUsernameNotExist() throws Exception {
         dao.saveOrUpdate(entity);
         User entity2 = new User();
         entity2.setUsername("namename");

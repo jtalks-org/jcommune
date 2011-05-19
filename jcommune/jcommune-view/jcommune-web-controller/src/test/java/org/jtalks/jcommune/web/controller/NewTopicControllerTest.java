@@ -17,18 +17,28 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.web.dto.TopicDto;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
+import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 
+/**
+ * Tests for {@link NewTopicController} actions.
+ *
+ * @author Kirill Afonin
+ */
 public class NewTopicControllerTest {
     private final String TOPIC_CONTENT = "content here";
     private final String TOPIC_THEME = "Topic theme";
@@ -47,23 +57,30 @@ public class NewTopicControllerTest {
 
     @Test
     public void testSubmitNewTopic() throws Exception {
-        when(securityService.getCurrentUser()).thenReturn(new User());
+        TopicDto dto = getDto();
+        BindingResult result = new BeanPropertyBindingResult(dto, "topicDto");
 
-        ModelAndView mav = controller.submitNewTopic(TOPIC_THEME, TOPIC_CONTENT);
+        ModelAndView mav = controller.submitNewTopic(dto, result, 1l);
 
-        assertViewName(mav, "redirect:forum.html");
-        verify(securityService, times(1)).getCurrentUser();
-        verify(topicService, times(1)).createTopicAsCurrentUser(TOPIC_THEME, TOPIC_CONTENT);
+        assertViewName(mav, "redirect:branches/1.html");
+        verify(topicService, times(1)).createTopic(TOPIC_THEME, TOPIC_CONTENT, 1l);
     }
 
     @Test
-    public void testSubmitNewTopic_UserNotLoggedIn() throws Exception {
-        when(securityService.getCurrentUser()).thenReturn(null);
+    public void testGetNewTopicPage() {
 
-        ModelAndView mav = controller.submitNewTopic(TOPIC_THEME, TOPIC_CONTENT);
+        ModelAndView mav = controller.getNewTopicPage(1l);
 
-        assertViewName(mav, "redirect:/login.html");
-        verify(securityService, times(1)).getCurrentUser();
-        verify(topicService, never()).createTopicAsCurrentUser(TOPIC_THEME, TOPIC_CONTENT);
+        assertAndReturnModelAttributeOfType(mav, "topicDto", TopicDto.class);
+        Long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
+        Assert.assertEquals(branchId, new Long(1));
+        assertViewName(mav, "newTopic");
+    }
+
+    private TopicDto getDto() {
+        TopicDto dto = new TopicDto();
+        dto.setBodyText(TOPIC_CONTENT);
+        dto.setTopicName(TOPIC_THEME);
+        return dto;
     }
 }
