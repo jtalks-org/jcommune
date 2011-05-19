@@ -85,14 +85,10 @@ public final class NewTopicController {
     public ModelAndView submitNewTopic(@Valid @ModelAttribute TopicDto topicDto,
                                        BindingResult result,
                                        @RequestParam("branchId") long branchId) {
-
-        if (securityService.getCurrentUser() != null) {
-            topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(),
-                    branchId);
-            return new ModelAndView("redirect:branches/" + branchId + ".html");
-        } else {
-            return new ModelAndView("redirect:/login.html");
-        }
+        // this method will be secured by url
+        topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(),
+                branchId);
+        return new ModelAndView("redirect:branches/" + branchId + ".html");
     }
 
 }
