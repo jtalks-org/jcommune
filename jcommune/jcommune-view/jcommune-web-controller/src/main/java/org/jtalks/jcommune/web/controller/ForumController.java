@@ -48,9 +48,7 @@ public final class ForumController {
      * Class constructor which creates MVC controller with specifying TopicService
      * object injected via autowiring
      *
-     * @param topicService the object that provides retrieving  data or saving to database
-     * @see org.springframework.beans.factory.annotation.Autowired;
-     * @see TopicService
+     * @param topicService {@link TopicService}the object that provides retrieving  data or saving to database
      */
     @Autowired
     public ForumController(TopicService topicService, TopicBranchService topicBranchService) {
@@ -61,9 +59,10 @@ public final class ForumController {
     /**
      * Method handles only GET requests with "/forum" URI
      * and display JSP page with existing topics
-     *
+     * @param branchId  branch id which recieved from the url pattern
      * @return the ModelAndView object, with "forum" as view name
      */
+
     @RequestMapping(value = "/branches/{branchId}", method = RequestMethod.GET)
     public ModelAndView showAllTopics(@PathVariable("branchId") long branchId) {
         List<Topic> topics = topicService.getAllTopicsAccordingToBranch(branchId);

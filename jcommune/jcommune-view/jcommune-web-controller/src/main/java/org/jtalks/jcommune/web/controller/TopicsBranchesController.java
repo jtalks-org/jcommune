@@ -12,6 +12,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  * Also add information on how to contact you by electronic and paper mail.
+ * Creation date: Apr 12, 2011 / 8:05:19 PM
+ * The jtalks.org Project
  */
 
 
@@ -28,22 +30,39 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
+/** This controller displays all topic's branches and populates page with them
+ * @author Vitaliy kravchenko
+ */
 
 @Controller
 public class TopicsBranchesController {
 
     private TopicBranchService topicBranchService;
 
+    /**
+     * Constructor creates MVC controller with specified TopicBranchService
+     * @param topicBranchService {@link org.jtalks.jcommune.service.TopicBranchService} autowired object from Spring
+     * Context
+     */
     @Autowired
     public TopicsBranchesController(TopicBranchService topicBranchService) {
         this.topicBranchService = topicBranchService;
     }
 
+    /**
+     * Populates page with a list of existing branches
+     * @return list of {@link org.jtalks.jcommune.model.entity.TopicBranch}, if no branches created it will return
+     * empty list
+     */
     @ModelAttribute("topicsBranchList")
     public List<TopicBranch> populateFormWithBranches() {
         return topicBranchService.getAll();
     }
 
+    /**
+     * This method handles GET request and produces JSP page with all topic branches
+     * @return {@link ModelAndView} with view name as renderAllBranches
+     */
     @RequestMapping(value = "/main", method = RequestMethod.GET)
     public ModelAndView displayAllTopicsBranches() {
         return new ModelAndView("renderAllBranches");

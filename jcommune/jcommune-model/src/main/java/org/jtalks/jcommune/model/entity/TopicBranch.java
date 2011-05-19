@@ -20,6 +20,10 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+/**
+ * @author Vitaliy Kravchenko
+ */
+
 public class TopicBranch extends Persistent {
 
     private String name;
