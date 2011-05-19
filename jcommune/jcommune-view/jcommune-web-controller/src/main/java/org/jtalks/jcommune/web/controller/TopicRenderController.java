@@ -46,9 +46,7 @@ public final class TopicRenderController {
      * Constructor creates MVC controller with specifying TopicService,
      * parameter passed via autowiring
      *
-     * @param topicService the objects that represents work Topic entity
-     * @see TopicService
-     * @see Topic
+     * @param topicService {@link TopicService} the objects that represents work Topic entity       
      */
     @Autowired
     public TopicRenderController(TopicService topicService, SecurityService securityService) {
@@ -59,7 +57,6 @@ public final class TopicRenderController {
     /**
      * Method handles GET requests with URI - /topics/{topicId},
      * where {topicId} could be an integer value from 1 to infinity
-     *
      * @param topicID the Id os selected Topic
      * @return ModelAndView object which has "renderTopic" as view name and object that represent selected Topic
      */

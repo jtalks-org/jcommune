@@ -12,6 +12,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  * Also add information on how to contact you by electronic and paper mail.
+ * Creation date: Apr 12, 2011 / 8:05:19 PM
+ * The jtalks.org Project
  */
 
 package org.jtalks.jcommune.model.dao.hibernate;
@@ -19,6 +21,9 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.jtalks.jcommune.model.dao.TopicBranchDao;
 import org.jtalks.jcommune.model.entity.TopicBranch;
 
+/**
+ * @author Vitaliy Kravchenko
+ */
 public class TopicBranchHibernateDao extends AbstractHibernateDao<TopicBranch> implements TopicBranchDao {
 
 }

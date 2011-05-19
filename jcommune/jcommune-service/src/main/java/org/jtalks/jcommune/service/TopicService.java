@@ -28,6 +28,7 @@ import java.util.List;
  * @author Osadchuck Eugeny
  * @author Vervenko Pavel
  * @author Kirill Afonin
+ * @author Vitaliy Kravchenko
  */
 public interface TopicService extends EntityService<Topic> {
 
@@ -48,7 +49,11 @@ public interface TopicService extends EntityService<Topic> {
      */
     void addAnswer(long topicId, String answerBody);
 
-
+    /**
+     * Get all topics according to branch Id
+     * @param id Topic Branch id
+     * @return  List of Topics, if no corresponding Topics it will return empty List
+     */
     List<Topic> getAllTopicsAccordingToBranch(Long id);
 
     /**

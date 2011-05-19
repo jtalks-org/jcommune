@@ -52,11 +52,8 @@ public final class NewTopicController {
      * Constructor creates MVC controller with specifying TopicService
      * objects injected via autowiring
      *
-     * @param topicService    the object which provides actions on Topic entity
+     * @param topicService {@link TopicService}   the object which provides actions on Topic entity
      * @param securityService {@link org.jtalks.jcommune.service.SecurityService}
-     * @see TopicService
-     * @see Topic
-     * @see Post
      */
     @Autowired
     public NewTopicController(TopicService topicService,
@@ -65,6 +62,12 @@ public final class NewTopicController {
         this.securityService = securityService;
     }
 
+    /**
+     * Method handles newTopic.html GET request and display page for creation new topic
+     * @param branchId  {@link org.jtalks.jcommune.model.entity.TopicBranch} id which we have recived from the hidden
+     * field of previous JSP page
+     * @return
+     */
     @RequestMapping(value = "/newTopic", method = RequestMethod.GET)
     public ModelAndView getNewTopicPage(@RequestParam("branchId") long branchId) {
         ModelAndView mav = new ModelAndView("newTopic");

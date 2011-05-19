@@ -28,6 +28,7 @@ import java.util.List;
  *
  * @author Pavel Vervenko
  * @author Kirill Afonin
+ * @author Vitaliy Kravchenko
  */
 public class TopicHibernateDao extends AbstractHibernateDao<Topic> implements TopicDao {
 

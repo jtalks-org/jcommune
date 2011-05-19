@@ -27,7 +27,8 @@ import java.util.List;
  *
  * @author Pavel Vervenko
  * @author Kirill Afonin
- * @see TopicHibernateDao
+ * @author Vitaliy Kravchenko
+ * @see org.jtalks.jcommune.model.dao.hibernate.TopicHibernateDao
  */
 public interface TopicDao extends Dao<Topic> {
 
@@ -39,5 +40,10 @@ public interface TopicDao extends Dao<Topic> {
      */
     Topic getTopicWithPosts(Long id);
 
+    /**
+     * Load all topics according to branch Id
+     * @param id Branch id
+     * @return List of topics or null if the appropriate topic wasn't found
+     */
     List<Topic> getAllTopicsAccordingToBranch(Long id);
 }

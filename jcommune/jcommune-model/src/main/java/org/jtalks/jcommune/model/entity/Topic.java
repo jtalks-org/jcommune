@@ -29,6 +29,7 @@ import java.util.List;
  * The fields creationDate, topicStarter and Title are required and can't be <code>null</code>
  *
  * @author Pavel Vervenko
+ * @author Vitaliy Kravchenko
  */
 public class Topic extends Persistent {
 
