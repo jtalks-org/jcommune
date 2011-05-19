@@ -4,7 +4,7 @@
        xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
-       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd" >
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
 
   <!-- Declaration AOP configs -->
@@ -32,10 +32,16 @@
     <constructor-arg index="0" ref="postDao"/>
   </bean>
 
+  <bean id="topicBranchService"
+        class="org.jtalks.jcommune.service.transactional.TransactionalTopicBranchService">
+    <constructor-arg index="0" ref="topicBranchDao"/>
+  </bean>
+
   <bean id="topicService"
-    class="org.jtalks.jcommune.service.transactional.TransactionalTopicService">
-    <constructor-arg index="0" ref="topicDao" />
-    <constructor-arg index="1" ref="securityService" />
+        class="org.jtalks.jcommune.service.transactional.TransactionalTopicService">
+    <constructor-arg index="0" ref="topicDao"/>
+    <constructor-arg index="1" ref="securityService"/>
+    <constructor-arg index="2" ref="topicBranchService"/>
   </bean>
 
   <bean id="securityContextFacade"

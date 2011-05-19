@@ -18,20 +18,18 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.SessionFactory;
-import org.jtalks.jcommune.model.entity.Persistent;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.dao.PostDao;
+import org.jtalks.jcommune.model.dao.TopicBranchDao;
+import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.entity.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.List;
-import org.jtalks.jcommune.model.dao.PostDao;
-import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.dao.UserDao;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.User;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * DAO tests for instance of {@link TopicHibernateDao}
@@ -43,7 +41,9 @@ public class TopicHibernateDaoTest extends BaseTest {
     public static final String LOADED_USER_ERROR = "Loaded user is not the same as it was saved";
     public static final String TOPIC_POSTS_ERROR = "Topic contains wrong collection of posts";
     public static final String USER_IS_NULL = "Topic.userCreated is null";
-    /** Hibernate Session Factory instance. */
+    /**
+     * Hibernate Session Factory instance.
+     */
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
@@ -52,6 +52,8 @@ public class TopicHibernateDaoTest extends BaseTest {
     private UserDao userDao;
     @Autowired
     private PostDao postDao;
+    @Autowired
+    private TopicBranchDao topicBranchDao;
     private Topic entity;
     private Post testPost;
     private User testUser;
@@ -69,6 +71,9 @@ public class TopicHibernateDaoTest extends BaseTest {
         entity.setTitle("TopicName");
         entity.addPost(testPost);
         entity.setTopicStarter(testUser);
+        TopicBranch topicBranch = new TopicBranch();
+        topicBranchDao.saveOrUpdate(topicBranch);
+        entity.setBranch(topicBranch);
 
     }
 
@@ -131,7 +136,7 @@ public class TopicHibernateDaoTest extends BaseTest {
         Assert.assertEquals(postsNumber, 2, "The Topic should contains 2 posts but there are " + postsNumber);
         Assert.assertEquals(loadedPosts.get(0), firstPost, "The first post of the topic loaded or saved incorrectly");
         Assert.assertEquals(loadedPosts.get(1), secondPost, "The second post of the topic loaded or saved incorrectly");
-        Assert.assertEquals(topicsNumber, 1, "More than 1 Topic in the DB! " + topicsNumber);        
+        Assert.assertEquals(topicsNumber, 1, "More than 1 Topic in the DB! " + topicsNumber);
     }
 
     public Post createDummyPost() {
@@ -140,7 +145,7 @@ public class TopicHibernateDaoTest extends BaseTest {
         post.setPostContent("Post content " + post.getCreationDate());
         return post;
     }
-    
+
     public User getDummyUser() {
         if (this.dummyUser == null) {
             dummyUser = new User();
@@ -151,10 +156,10 @@ public class TopicHibernateDaoTest extends BaseTest {
         }
         return this.dummyUser;
     }
-    
+
     @Test
     public void testGetById() throws Exception {
-        testSave();
+        testSave();// one test in another test...may be skip test toogle? ) nono its not solution/// may be set up a test configure hete
         listAll = dao.getAll();
         int size = listAll.size();
         Assert.assertEquals(1, size, DB_MUST_BE_NOT_EMPTY);
@@ -181,7 +186,7 @@ public class TopicHibernateDaoTest extends BaseTest {
 
         int size = dao.getAll().size();
         Assert.assertEquals(1, size, ENTITIES_IS_NOT_INCREASED_BY_1);
-    }
+    }                   //
 
     @Test
     public void testGetTopicWithPosts() throws Exception {
@@ -212,6 +217,9 @@ public class TopicHibernateDaoTest extends BaseTest {
         Topic topic = Topic.createNewTopic();
         topic.setTitle("Topic Title");
         topic.setTopicStarter(getDummyUser());
+        TopicBranch topicBranch = new TopicBranch();
+        topicBranchDao.saveOrUpdate(topicBranch);
+        topic.setBranch(topicBranch);
         return topic;
     }
-}
+}              

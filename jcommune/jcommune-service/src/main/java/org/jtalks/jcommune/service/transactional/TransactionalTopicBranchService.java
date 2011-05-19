@@ -12,32 +12,23 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  * Also add information on how to contact you by electronic and paper mail.
- * Creation date: Apr 12, 2011 / 8:05:19 PM
- * The jtalks.org Project
  */
+
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.jcommune.model.dao.PostDao;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.service.PostService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jtalks.jcommune.model.dao.TopicBranchDao;
+import org.jtalks.jcommune.model.entity.TopicBranch;
+import org.jtalks.jcommune.service.TopicBranchService;
 
-/**
- * Post service class. This class contains method needed to manipulate with Post persistent entity.
- *
- * @author Osadchuck Eugeny
- */
-public class TransactionalPostService extends AbstractTransactionalEntityService<Post, PostDao> implements PostService {
+public class TransactionalTopicBranchService extends AbstractTransactionalEntityService<TopicBranch, TopicBranchDao> implements TopicBranchService {
 
-    private final Logger logger = LoggerFactory.getLogger(TransactionalPostService.class);
 
     /**
-     * Create an instance of Post entity based service
+     * Create an instance of entity based service
      *
-     * @param dao - data access object, which should be able do all CRUD operations with post entity.
+     * @param topicBranchDao - data access object, which should be able do all CRUD operations.
      */
-    public TransactionalPostService(PostDao dao) {
-        this.dao = dao;
+    public TransactionalTopicBranchService(TopicBranchDao topicBranchDao) {
+        this.dao = topicBranchDao;
     }
 }

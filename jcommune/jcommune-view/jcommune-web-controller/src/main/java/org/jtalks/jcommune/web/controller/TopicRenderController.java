@@ -40,7 +40,7 @@ import org.springframework.web.servlet.ModelAndView;
 public final class TopicRenderController {
 
     private final TopicService topicService;
-    private final SecurityService securityService; 
+    private final SecurityService securityService;
 
     /**
      * Constructor creates MVC controller with specifying TopicService,

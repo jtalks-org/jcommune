@@ -20,8 +20,11 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.web.dto.TopicDto;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -31,6 +34,7 @@ import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 
 /**
  * Tests for {@link NewTopicController} actions.
+ *
  * @author Kirill Afonin
  */
 public class NewTopicControllerTest {
@@ -51,23 +55,35 @@ public class NewTopicControllerTest {
 
     @Test
     public void testSubmitNewTopic() throws Exception {
+        TopicDto dto = getDto();
+        BindingResult result = new BeanPropertyBindingResult(dto, "topicDto");
         when(securityService.getCurrentUser()).thenReturn(new User());
 
-        ModelAndView mav = controller.submitNewTopic(TOPIC_THEME, TOPIC_CONTENT);
+        ModelAndView mav = controller.submitNewTopic(dto, result, 1l);
 
-        assertViewName(mav, "redirect:forum.html");
+        assertViewName(mav, "redirect:branches/1.html");
         verify(securityService, times(1)).getCurrentUser();
-        verify(topicService, times(1)).createTopic(TOPIC_THEME, TOPIC_CONTENT);
+        verify(topicService, times(1)).createTopic(TOPIC_THEME, TOPIC_CONTENT, 1l);
     }
+    // can you wait for launch application and push changes? sec
 
     @Test
     public void testSubmitNewTopicUserNotLoggedIn() throws Exception {
+        TopicDto dto = getDto();
+        BindingResult result = new BeanPropertyBindingResult(dto, "topicDto");
         when(securityService.getCurrentUser()).thenReturn(null);
 
-        ModelAndView mav = controller.submitNewTopic(TOPIC_THEME, TOPIC_CONTENT);
+        ModelAndView mav = controller.submitNewTopic(dto, result, 1l);
 
         assertViewName(mav, "redirect:/login.html");
         verify(securityService, times(1)).getCurrentUser();
-        verify(topicService, never()).createTopic(TOPIC_THEME, TOPIC_CONTENT);
+        verify(topicService, never()).createTopic(TOPIC_THEME, TOPIC_CONTENT, 1l);
+    }
+
+    private TopicDto getDto() {
+        TopicDto dto = new TopicDto();
+        dto.setBodyText(TOPIC_CONTENT);
+        dto.setTopicName(TOPIC_THEME);
+        return dto;
     }
 }
