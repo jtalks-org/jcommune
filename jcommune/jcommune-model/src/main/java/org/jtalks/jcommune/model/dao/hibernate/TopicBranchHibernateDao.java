@@ -16,32 +16,9 @@
 
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.hibernate.Query;
 import org.jtalks.jcommune.model.dao.TopicBranchDao;
 import org.jtalks.jcommune.model.entity.TopicBranch;
 
-import java.util.List;
-
 public class TopicBranchHibernateDao extends AbstractHibernateDao<TopicBranch> implements TopicBranchDao {
-    @Override
-    public void saveOrUpdate(TopicBranch persistent) {
-        getSession().save(persistent);
-    }
 
-    @Override
-    public void delete(Long topicsBranchId) {
-        Query query = getSession().createQuery("delete TopicBranch where id= :topicsBranchId");
-        query.setLong("topicsBranchId", topicsBranchId);
-        query.executeUpdate();
-    }
-
-    @Override
-    public TopicBranch get(Long id) {
-        return (TopicBranch) getSession().get(TopicBranch.class, id);
-    }
-
-    @Override
-    public List<TopicBranch> getAll() {
-        return getSession().createQuery("from TopicBranch").list();
-    }
 }

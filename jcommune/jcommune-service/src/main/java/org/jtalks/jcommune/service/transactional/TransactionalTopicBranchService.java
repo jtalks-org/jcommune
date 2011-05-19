@@ -20,9 +20,8 @@ import org.jtalks.jcommune.model.dao.TopicBranchDao;
 import org.jtalks.jcommune.model.entity.TopicBranch;
 import org.jtalks.jcommune.service.TopicBranchService;
 
-public class TransactionalTopicBranchService extends AbstractTransactionlaEntityService<TopicBranch, TopicBranchDao> implements TopicBranchService {
+public class TransactionalTopicBranchService extends AbstractTransactionalEntityService<TopicBranch, TopicBranchDao> implements TopicBranchService {
 
-    private TopicBranchDao topicBranchDao;
 
     /**
      * Create an instance of entity based service
@@ -30,6 +29,6 @@ public class TransactionalTopicBranchService extends AbstractTransactionlaEntity
      * @param topicBranchDao - data access object, which should be able do all CRUD operations.
      */
     public TransactionalTopicBranchService(TopicBranchDao topicBranchDao) {
-        this.topicBranchDao = topicBranchDao;
+        this.dao = topicBranchDao;
     }
 }

@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Osadchuck Eugeny
  */
-public class TransactionalPostService extends AbstractTransactionlaEntityService<Post, PostDao> implements PostService {
+public class TransactionalPostService extends AbstractTransactionalEntityService<Post, PostDao> implements PostService {
 
     private final Logger logger = LoggerFactory.getLogger(TransactionalPostService.class);
 

@@ -35,7 +35,7 @@ import java.util.List;
  * @author Vervenko Pavel
  * @author Kirill Afonin
  */
-public class TransactionalTopicService extends AbstractTransactionlaEntityService<Topic, TopicDao> implements TopicService {
+public class TransactionalTopicService extends AbstractTransactionalEntityService<Topic, TopicDao> implements TopicService {
 
     private final SecurityService securityService;
     private TopicBranchService topicBranchService;

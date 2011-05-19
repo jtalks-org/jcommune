@@ -31,7 +31,7 @@ import java.util.List;
  * @author Osadchuck Eugeny
  * @author Kirill Afonin
  */
-public abstract class AbstractTransactionlaEntityService<T extends Persistent, Y extends Dao>
+public abstract class AbstractTransactionalEntityService<T extends Persistent, Y extends Dao>
         implements EntityService<T> {
     /**
      * Dao object implementation.
