@@ -60,7 +60,7 @@
       <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-validator</artifactId>
-        <version>4.1.0.Final</version>
+        <version>4.0.2.GA</version>
         <type>jar</type>
         <scope>compile</scope>
       </dependency>
