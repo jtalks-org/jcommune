@@ -7,7 +7,7 @@
     </id>
     <property column="FIRST_NAME" name="firstName" />
     <property column="LAST_NAME" name="lastName" />
-    <property column="USERNAME" name="username" />
+    <property column="USERNAME" name="username" unique="true"/>
     <property column="EMAIL" name="email" />
     <property column="PASSWORD" name="password" />
   </class>
