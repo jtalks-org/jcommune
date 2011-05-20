@@ -24,7 +24,6 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicBranchService;
 import org.jtalks.jcommune.service.TopicService;
-import org.jtalks.jcommune.service.exceptions.UserNotLoggedInException;
 
 import java.util.List;
 
@@ -70,7 +69,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         User currentUser = securityService.getCurrentUser();
         // Check if the user is authenticated
         if (currentUser == null) {
-            throw new UserNotLoggedInException("User should log in to post answers.");
+            throw new IllegalStateException("User should log in to post answers.");
         }
         Topic topic = dao.get(topicId);
         Post answer = Post.createNewPost();

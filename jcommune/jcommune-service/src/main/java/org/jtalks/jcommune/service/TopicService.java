@@ -18,7 +18,6 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.exceptions.UserNotLoggedInException;
 
 import java.util.List;
 
@@ -42,7 +41,7 @@ public interface TopicService extends EntityService<Topic> {
 
     /**
      * Add the answer to the topic. Add the specified message to the target topic and save.
-     * User should be authorized to answer to the topic. Otherwise {@link UserNotLoggedInException} will be thrown.
+     * User should be authorized to answer to the topic. Otherwise {@link IllegalStateException} will be thrown.
      *
      * @param topicId    target topic primary id.
      * @param answerBody the text of the answer

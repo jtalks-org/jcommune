@@ -38,6 +38,7 @@
             <input type="submit" value="<spring:message code="label.back"/>"/>
         </form:form>
         </td>
+        <sec:authorize access="isAuthenticated()">
         <td><form:form
                 action="${pageContext.request.contextPath}/answer.html"
                 method="GET">
@@ -45,6 +46,7 @@
             <input type="submit" value="<spring:message code="label.answer"/>"/>
         </form:form>
         </td>
+        </sec:authorize>
     </tr>
 </table>
 
