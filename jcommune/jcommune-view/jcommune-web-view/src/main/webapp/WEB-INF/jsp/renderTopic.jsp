@@ -2,7 +2,6 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <html>
@@ -27,6 +26,7 @@
             <c:if test="${user.username==posts.userCreated.username}">
                 <td>
                     <form:form action="${pageContext.request.contextPath}/deletePost.html" method="GET">
+                        <input name="topicId" type="hidden" value="${selectedTopic.id}"/>
                         <input name="postId" type="hidden" value="${posts.id}"/>
                         <input type="submit" value="<spring:message code="label.delete"/>"/>
                     </form:form>
@@ -38,16 +38,18 @@
 <table>
     <tr>
         <td>
-            <form:form action="${pageContext.request.contextPath}/main.html" method="GET">
-                <input type="submit" value="<spring:message code="label.back"/>"/>
-            </form:form>
+          <form:form action="${pageContext.request.contextPath}/main.html" method="GET">
+            <input type="submit" value="<spring:message code="label.back"/>"/>
+          </form:form>
         </td>
-        <td>
-            <form:form action="${pageContext.request.contextPath}/answer.html" method="GET">
-                <input name="topicId" type="hidden" value="${selectedTopic.id}"/>
-                <input type="submit" value="<spring:message code="label.answer"/>"/>
+        <sec:authorize access="isAuthenticated()">
+          <td>
+            <form:form action="${pageContext.request.contextPath}/newAnswer.html" method="GET">
+              <input name="topicId" type="hidden" value="${selectedTopic.id}"/>
+              <input type="submit" value="<spring:message code="label.answer"/>"/>
             </form:form>
-        </td>
+          </td>
+        </sec:authorize>
     </tr>
 </table>
 

@@ -37,11 +37,6 @@
         <version>${hibernateVersion}</version>
       </dependency>
       <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-validator</artifactId>
-        <version>4.0.2.GA</version>
-      </dependency>
-      <dependency>
         <groupId>javax.transaction</groupId>
         <artifactId>jta</artifactId>
         <version>1.1</version>
@@ -60,7 +55,7 @@
       <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-validator</artifactId>
-        <version>4.1.0.Final</version>
+        <version>4.0.2.GA</version>
         <type>jar</type>
         <scope>compile</scope>
       </dependency>
@@ -216,6 +211,11 @@
         <groupId>joda-time</groupId>
         <artifactId>joda-time-hibernate</artifactId>
         <version>1.2</version>
+      </dependency>
+      <dependency>
+        <groupId>joda-time</groupId>
+        <artifactId>joda-time-jsptags</artifactId>
+        <version>1.0.2</version>
       </dependency>
       <dependency>
         <groupId>commons-beanutils</groupId>

@@ -7,7 +7,7 @@
       <generator class="native"/>
     </id>
     <list name="posts" cascade="all-delete-orphan">
-      <key column="TOPIC_ID" foreign-key="FK_TOPIC"/>
+      <key column="TOPIC_ID" foreign-key="FK_TOPIC" on-delete="cascade"/>
       <index column="LIST_INDEX"/>
       <one-to-many class="Post"/>
     </list>
@@ -23,7 +23,7 @@
   </class>
   <query name="getTopicWithPosts">
     <![CDATA[from Topic as topic
-                      left join fetch topic.posts
+                      inner join fetch topic.posts
                  WHERE topic.id = :topicId]]>
 
   </query>

@@ -26,7 +26,6 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicBranchService;
 import org.jtalks.jcommune.service.TopicService;
-import org.jtalks.jcommune.service.exceptions.UserNotLoggedInException;
 import org.mockito.Matchers;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -144,7 +143,7 @@ public class TransactionalTopicServiceTest {
     /**
      * Check for throwing exception when the user isn't logged in.
      */
-    @Test(expectedExceptions = UserNotLoggedInException.class)
+    @Test(expectedExceptions = IllegalStateException.class)
     public void addAnswerExceptionTest() {
         Topic topic = getTopic();
 
