@@ -46,7 +46,7 @@
         </td>
         <sec:authorize access="isAuthenticated()">
           <td>
-            <form:form action="${pageContext.request.contextPath}/newAnswer.html" method="GET">
+            <form:form action="${pageContext.request.contextPath}/answer.html" method="GET">
               <input name="topicId" type="hidden" value="${selectedTopic.id}"/>
               <input type="submit" value="<spring:message code="label.answer"/>"/>
             </form:form>

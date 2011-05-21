@@ -13,8 +13,11 @@
       <h1 style="margin:10px">
         <spring:message code="label.answer_to" />: <c:out value="${topic.title}"/>
       </h1>
-      <form:form action="${pageContext.request.contextPath}/addAnswer.html" method="POST">
+      <form:form action="${pageContext.request.contextPath}/answer.html" method="POST">
         <input type="hidden" name="topicId" value="${topic.id}" />
+        <c:if test="${validationError==true}">
+          <div style="margin: 10px; color: #e43131"><spring:message code="label.answer_error"/></div>
+        </c:if>
         <textarea style="margin:10px" name="bodytext" cols="40" rows="10"></textarea>
         <br>
         <input type="submit" value="<spring:message code="label.answer"/>" />
