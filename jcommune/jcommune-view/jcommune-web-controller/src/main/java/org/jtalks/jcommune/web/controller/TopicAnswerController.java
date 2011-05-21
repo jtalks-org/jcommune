@@ -36,6 +36,7 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Controller
 public class TopicAnswerController {
+    public static final int MIN_ANSWER_LENGTH = 2;
 
     private TopicService topicService;
     private final Logger logger = LoggerFactory.getLogger(TopicAnswerController.class);
@@ -55,13 +56,18 @@ public class TopicAnswerController {
      * Creates the answering page with empty answer form.
      * If the user isn't logged in he will be redirected to the login page.
      * @param topicId the id of the topic for the answer
+     * @param validationError is true when post length is less then 2
      * @return answering <code>ModelAndView</code> or redirect to the login page
      */
     @RequestMapping(method = RequestMethod.GET, value = "/newAnswer")
-    public ModelAndView getAnswerPage(@RequestParam("topicId") Long topicId) {
+    public ModelAndView getAnswerPage(@RequestParam("topicId") Long topicId, 
+                                      @RequestParam(value="validationError", required = false) Boolean validationError) {
         ModelAndView mav = new ModelAndView("answer");
         Topic answeringTopic = topicService.get(topicId);
         mav.addObject("topic", answeringTopic);
+        if (validationError != null && validationError == true) {
+            mav.addObject("validationError", validationError);
+        }
         return mav;
     }
 
@@ -73,7 +79,12 @@ public class TopicAnswerController {
      */
     @RequestMapping(method = RequestMethod.POST, value = "/addAnswer")
     public ModelAndView submitAnswer(@RequestParam("topicId") Long topicId, @RequestParam("bodytext") String bodyText) {
-        topicService.addAnswer(topicId, bodyText);
-        return new ModelAndView("redirect:/topics/" + topicId + ".html");
+        if (bodyText.trim().length() < MIN_ANSWER_LENGTH) {
+            return getAnswerPage(topicId, true);
+        } else {
+            topicService.addAnswer(topicId, bodyText);
+            return new ModelAndView("redirect:/topics/" + topicId + ".html");
+        }
+        
     }
 }

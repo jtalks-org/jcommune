@@ -36,6 +36,7 @@ import static org.mockito.Mockito.*;
 public class TopicAnswerControllerTest {
 
     public static final String ANSWER_BODY = "Body Text";
+    public static final String SHORT_ANSWER_BODY = " a  ";
     public static final long TOPIC_ID = 1L;
     private TopicAnswerController controller;
     @Mock
@@ -50,7 +51,7 @@ public class TopicAnswerControllerTest {
 
     @Test
     public void testGetAnswerPage() {
-        ModelAndView mav = controller.getAnswerPage(TOPIC_ID);
+        ModelAndView mav = controller.getAnswerPage(TOPIC_ID, false);
 
         assertAndReturnModelAttributeOfType(mav, "topic", Topic.class);
         assertViewName(mav, "answer");
@@ -65,5 +66,15 @@ public class TopicAnswerControllerTest {
         assertViewName(mav, "redirect:/topics/" + TOPIC_ID + ".html");
 
         verify(topicService, times(1)).addAnswer(TOPIC_ID, ANSWER_BODY);
+    }
+    
+    @Test
+    public void testSubmitShortAnswer() {
+        ModelAndView mav = controller.submitAnswer(TOPIC_ID, SHORT_ANSWER_BODY);
+
+        assertAndReturnModelAttributeOfType(mav, "validationError", Boolean.class);   
+        assertViewName(mav, "answer");
+        
+        verify(topicService, times(0)).addAnswer(anyLong(), anyString());
     }
 }
