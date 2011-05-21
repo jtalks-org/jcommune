@@ -34,20 +34,12 @@ import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 
 public class TopicRenderControllerTest {
     private TopicService topicService;
-    private SecurityService securitySecvice;
     private TopicRenderController topicRenderController;
 
     @BeforeMethod
     public void init() {
         topicService = mock(TopicService.class);
-        securitySecvice = mock(SecurityService.class);
-        topicRenderController = new TopicRenderController(topicService,securitySecvice);
-    }
-    
-    private User getUser(){
-        User user = new User();
-        user.setUsername("username");
-        return user;
+        topicRenderController = new TopicRenderController(topicService);
     }
 
     @Test(enabled = false)
@@ -58,14 +50,11 @@ public class TopicRenderControllerTest {
         
         Map<String, Object> topicMap = new HashMap<String, Object>();
         topicMap.put("selectedTopic", topic);
-       // topicMap.put("currentUser", getUser());
         
         when(topicService.getTopicWithPosts(1l)).thenReturn(topic);
-       // when(securitySecvice.getCurrentUser()).thenReturn(getUser());
         
         ModelAndView mav = topicRenderController.showTopic(1l);
         verify(topicService).getTopicWithPosts(1l);
-        //verify(securitySecvice.getCurrentUser(),times(1));
         
         assertModelAttributeValues(mav, topicMap);
         assertViewName(mav, "renderTopic");

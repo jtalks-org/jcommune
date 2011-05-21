@@ -40,7 +40,6 @@ import org.springframework.web.servlet.ModelAndView;
 public final class TopicRenderController {
 
     private final TopicService topicService;
-    private final SecurityService securityService;
 
     /**
      * Constructor creates MVC controller with specifying TopicService,
@@ -49,9 +48,8 @@ public final class TopicRenderController {
      * @param topicService {@link TopicService} the objects that represents work Topic entity       
      */
     @Autowired
-    public TopicRenderController(TopicService topicService, SecurityService securityService) {
+    public TopicRenderController(TopicService topicService) {
         this.topicService = topicService;
-        this.securityService = securityService;
     }
 
     /**
@@ -63,10 +61,8 @@ public final class TopicRenderController {
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.GET)
     public ModelAndView showTopic(@PathVariable("topicId") long topicID) {
         Topic selectedTopic = topicService.getTopicWithPosts(topicID);
-        User currentUser = securityService.getCurrentUser();
         ModelAndView mav = new ModelAndView("renderTopic");
         mav.addObject("selectedTopic", selectedTopic);
-        mav.addObject("currentUser", currentUser);
         return mav;
     }
 }
