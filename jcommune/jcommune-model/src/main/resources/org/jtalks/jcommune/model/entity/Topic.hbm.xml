@@ -6,11 +6,11 @@
     <id column="TOPIC_ID" name="id" unsaved-value="0">
       <generator class="native"/>
     </id>
-    <list name="posts" cascade="all-delete-orphan">
-      <key column="TOPIC_ID" foreign-key="FK_TOPIC" on-delete="cascade"/>
-      <index column="LIST_INDEX"/>
-      <one-to-many class="Post"/>
-    </list>
+    <bag name="posts" cascade="all-delete-orphan" order-by="POST_DATE asc">
+        <key column="TOPIC_ID" foreign-key="FK_TOPIC"/>  
+        <one-to-many class="Post"/>
+    </bag>
+    
     <many-to-one class="User" lazy="false" column="TOPIC_STARTER"
                  name="topicStarter" not-null="true" foreign-key="FK_TOPIC_STARTER"/>
     <property column="TITLE" name="title" not-null="true"/>

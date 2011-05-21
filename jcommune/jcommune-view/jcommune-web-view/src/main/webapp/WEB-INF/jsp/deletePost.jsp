@@ -13,6 +13,7 @@
 	<div>
         <c:out value="Are you sure you want to delete Post ?"/>
 		<form:form action='${pageContext.request.contextPath}/deletePost.html' method="DELETE">
+		    <input name="topicId" type="hidden" value="${topicId}"/>
             <input name="postId" type="hidden" value="${postId}"/>
 		    <input type="submit" value="<spring:message code="label.yes"/>"/>
 		</form:form>

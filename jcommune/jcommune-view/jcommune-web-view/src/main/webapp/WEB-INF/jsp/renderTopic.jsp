@@ -7,8 +7,9 @@
 <html>
 <head></head>
 <body>
-<table border="1" width="100%">
-    <sec:authentication property="principal" var="user" scope="request"/>    
+<table border="1" width="100%">    
+
+    <sec:authentication property="name" var="username" scope="request"/>    
     
     <h2>
         <spring:message code="label.topic"/>
@@ -23,7 +24,8 @@
             <td width="80%"><spring:message code="label.text"/>: <c:out
                     value="${posts.postContent}"/>
             </td>
-            <c:if test="${user.username==posts.userCreated.username}">
+            
+            <c:if test="${username==posts.userCreated.username}">
                 <td>
                     <form:form action="${pageContext.request.contextPath}/deletePost.html" method="GET">
                         <input name="topicId" type="hidden" value="${selectedTopic.id}"/>

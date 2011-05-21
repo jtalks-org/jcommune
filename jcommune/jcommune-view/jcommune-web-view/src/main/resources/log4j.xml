@@ -32,7 +32,7 @@
 
   <!-- Loggers -->
   <logger name="org.jtalks">
-    <level value="INFO"/>
+    <level value="DEBUG"/>
     <appender-ref ref="APPLICATION"/>
   </logger>
 
@@ -42,7 +42,7 @@
   </logger>
 
   <logger name="org.hibernate" additivity="false">
-    <level value="WARN"/>
+    <level value="DEBUG"/>
     <appender-ref ref="CONSOLE"/>
   </logger>
 

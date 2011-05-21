@@ -6,8 +6,8 @@
         name="org.jtalks.jcommune.model.dao.hibernate.PostHibernateDaoTest" />
       <class
         name="org.jtalks.jcommune.model.dao.hibernate.UserHibernateDaoTest" />
-      <class
-        name="org.jtalks.jcommune.model.dao.hibernate.TopicHibernateDaoTest" />
+       <class
+        name="org.jtalks.jcommune.model.dao.hibernate.TopicHibernateDaoTest" /> 
     </classes>
   </test>
 </suite>
