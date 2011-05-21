@@ -32,6 +32,7 @@ import org.springframework.web.servlet.ModelAndView;
  * @author Pavel Vervenko
  */
 @Controller
+@RequestMapping(value = "/answer")
 public class TopicAnswerController {
 
     public static final int MIN_ANSWER_LENGTH = 1;
@@ -54,7 +55,7 @@ public class TopicAnswerController {
      * @param validationError is true when post length is less then 2
      * @return answering <code>ModelAndView</code> or redirect to the login page
      */
-    @RequestMapping(method = RequestMethod.GET, value = "/answer")
+    @RequestMapping(method = RequestMethod.GET)
     public ModelAndView getAnswerPage(@RequestParam("topicId") Long topicId,
             @RequestParam(value = "validationError", required = false) Boolean validationError) {
         ModelAndView mav = new ModelAndView("answer");
@@ -72,7 +73,7 @@ public class TopicAnswerController {
      * @param bodyText the content of the answer
      * @return redirect to the topic view
      */
-    @RequestMapping(method = RequestMethod.POST, value = "/answer")
+    @RequestMapping(method = RequestMethod.POST)
     public ModelAndView submitAnswer(@RequestParam("topicId") Long topicId,
             @RequestParam("bodytext") String bodyText) {
         if (isValidAnswer(bodyText)) {
