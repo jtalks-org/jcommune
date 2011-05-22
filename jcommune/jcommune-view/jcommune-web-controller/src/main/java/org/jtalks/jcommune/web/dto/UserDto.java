@@ -19,6 +19,7 @@ package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.web.validation.Matches;
 
 import javax.validation.constraints.Size;
@@ -54,6 +55,8 @@ public class UserDto {
     }
 
     /**
+     * Set username.
+     *
      * @param username username
      */
     public void setUsername(String username) {
@@ -61,6 +64,8 @@ public class UserDto {
     }
 
     /**
+     * Get email.
+     *
      * @return email
      */
     public String getEmail() {
@@ -68,6 +73,8 @@ public class UserDto {
     }
 
     /**
+     * Set email.
+     *
      * @param email email
      */
     public void setEmail(String email) {
@@ -75,6 +82,8 @@ public class UserDto {
     }
 
     /**
+     * Get first name.
+     *
      * @return first name
      */
     public String getFirstName() {
@@ -82,6 +91,8 @@ public class UserDto {
     }
 
     /**
+     * Set first name.
+     *
      * @param firstName first name
      */
     public void setFirstName(String firstName) {
@@ -89,6 +100,8 @@ public class UserDto {
     }
 
     /**
+     * Get last name.
+     *
      * @return last name
      */
     public String getLastName() {
@@ -96,6 +109,8 @@ public class UserDto {
     }
 
     /**
+     * Set last name.
+     *
      * @param lastName last name
      */
     public void setLastName(String lastName) {
@@ -103,6 +118,8 @@ public class UserDto {
     }
 
     /**
+     * Get password.
+     *
      * @return password
      */
     public String getPassword() {
@@ -110,6 +127,8 @@ public class UserDto {
     }
 
     /**
+     * Set password.
+     *
      * @param password password
      */
     public void setPassword(String password) {
@@ -117,6 +136,8 @@ public class UserDto {
     }
 
     /**
+     * Get password confirmation.
+     *
      * @return password confirmation
      */
     public String getPasswordConfirm() {
@@ -124,9 +145,26 @@ public class UserDto {
     }
 
     /**
+     * Set password confirmation.
+     *
      * @param passwordConfirm password confirmation
      */
     public void setPasswordConfirm(String passwordConfirm) {
         this.passwordConfirm = passwordConfirm;
+    }
+
+    /**
+     * Populate {@link User} from fields.
+     *
+     * @return populated {@link User} object
+     */
+    public User createUser() {
+        User newUser = new User();
+        newUser.setEmail(email);
+        newUser.setFirstName(firstName);
+        newUser.setLastName(lastName);
+        newUser.setUsername(username);
+        newUser.setPassword(password);
+        return newUser;
     }
 }
