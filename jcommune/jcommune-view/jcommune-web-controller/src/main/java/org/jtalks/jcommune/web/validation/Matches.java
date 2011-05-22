@@ -28,7 +28,30 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Constraint for checking that two properties are equals.
+ * Constraint for checking that two properties are equal.
+ * This constraint for use with JSR-303 validator.
+ *
+ * You must annotate your class with {@link Matches} annotation
+ * You must fill in the parameters <code>field</code> and <code>verifyField</code>
+ * field names to test for equality. Fields must have getters.
+ * Constraint can be used with any field types that have correct
+ * </code>equals()</code> method.
+ *
+ * Example:
+ * Validate that <code>field1</code> and <code>field2</code> are equals.
+ * {@code
+ *     &#064;Matches(field = "field1", verifyField = "field2")
+ *     class Test {
+ *      private String field1;
+ *      private String field2;
+ *      public String getField1() {
+ *          return field1;
+ *      }
+ *      public String getField2() {
+ *          return field2;
+ *      }
+ *     }
+ * }
  *
  * @author Kirill Afonin
  * @see MatchesValidator
