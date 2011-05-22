@@ -56,13 +56,15 @@ public class SecurityServiceImpl implements SecurityService {
             return null;
         }
 
-        Object obj = auth.getPrincipal();
+        Object principal = auth.getPrincipal();
         String username = "";
 
-        if (obj instanceof UserDetails) {
-            username = ((UserDetails) obj).getUsername();
+        // if principal is spring security user, cast it and get username
+        // else it is javax.security principal with toString() that return username
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
         } else {
-            username = obj.toString();
+            username = principal.toString();
         }
 
         return username;
