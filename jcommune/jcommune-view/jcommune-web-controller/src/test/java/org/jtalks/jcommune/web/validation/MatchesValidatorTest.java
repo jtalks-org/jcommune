@@ -37,7 +37,7 @@ public class MatchesValidatorTest {
     /**
      * Class for testing constraint.
      */
-    @Matches(field = "value", verifyField = "value2", message = "Values not matches")
+    @Matches(field = "value", verifyField = "value2", message = "Values dont match")
     public class TestObject {
         String value;
         String value2;
