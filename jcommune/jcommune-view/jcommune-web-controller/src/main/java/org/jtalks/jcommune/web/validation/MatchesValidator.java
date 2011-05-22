@@ -53,6 +53,7 @@ public class MatchesValidator implements ConstraintValidator<Matches, Object> {
      *
      * @param value object with {@link Matches} annotation.
      * @param context validation context.
+     * @throws IllegalStateException if property not found or doesnt have getter.
      * @return <code>true</code> if validation successfull.
      */
     @Override
@@ -61,13 +62,13 @@ public class MatchesValidator implements ConstraintValidator<Matches, Object> {
         try {
             fieldObj = BeanUtils.getProperty(value, field);
         } catch (Exception e) {
-            return false;
+            throw new IllegalStateException(e);
         }
         Object verifyFieldObj;
         try {
             verifyFieldObj = BeanUtils.getProperty(value, verifyField);
         } catch (Exception e) {
-            return false;
+            throw new IllegalStateException(e);
         }
 
         boolean neitherSet = (fieldObj == null) && (verifyFieldObj == null);
