@@ -31,21 +31,17 @@ public interface UserService extends EntityService<User> {
      * Get {@link User} by username.
      *
      * @param username username of User
-     * @return {@link User} with given username.
+     * @return {@link User} with given username
      * @see User
      */
     User getByUsername(String username);
 
     /**
-     * Register {@link User} with given features.
+     * Try to register {@link User} with given features.
      *
-     * @param username  username
-     * @param email     email
-     * @param firstName first name
-     * @param lastName  last name
-     * @param password  password
-     * @throws DuplicateException if user with username or email already exist.
+     * @param user user for register
+     * @throws DuplicateException if user with username or email already exist
+     * @see User
      */
-    void registerUser(String username, String email, String firstName,
-                      String lastName, String password) throws DuplicateException;
+    void registerUser(User user) throws DuplicateException;
 }

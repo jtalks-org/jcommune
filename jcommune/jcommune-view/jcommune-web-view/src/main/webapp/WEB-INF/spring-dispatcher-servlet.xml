@@ -8,54 +8,40 @@
        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
        ">
 
-  <context:component-scan base-package="org.jtalks.jcommune.web.controller"
-                          use-default-filters="false">
-    <context:include-filter type="annotation"
-                            expression="org.springframework.stereotype.Controller"/>
+  <context:component-scan base-package="org.jtalks.jcommune.web.controller" use-default-filters="false">
+    <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
   </context:component-scan>
 
   <mvc:annotation-driven/>
 
   <!-- Beans -->
-  <bean id="viewResolver"
-        class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-    <property name="viewClass"
-              value="org.springframework.web.servlet.view.JstlView"/>
+  <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
     <property name="prefix" value="/WEB-INF/jsp/"/>
     <property name="suffix" value=".jsp"/>
   </bean>
 
-  <bean id="messageSource"
-        class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-    <property name="basename"
-              value="classpath:/org/jtalks/jcommune/web/view/messages"/>
+  <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+    <property name="basename" value="classpath:/org/jtalks/jcommune/web/view/messages"/>
     <property name="defaultEncoding" value="UTF-8"/>
   </bean>
 
-  <bean id="localeInterceptor"
-        class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"/>
+  <bean id="localeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"/>
 
-  <bean id="localeResolver"
-        class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
-    <!--<property name="defaultLocale" value="ru"/> -->
-  </bean>
+  <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver" />
 
-  <bean id="handlerMapping"
-        class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+  <bean id="handlerMapping" class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
     <property name="interceptors" ref="localeInterceptor"/>
   </bean>
 
   <!-- Interceptors -->
   <mvc:interceptors>
-    <bean id="localeChangeInterceptor"
-          class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+    <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
       <property name="paramName" value="lang"/>
     </bean>
   </mvc:interceptors>
 
   <!-- simple render login.jsp page -->
   <mvc:view-controller path="/login.html" view-name="login" />
-
-
 
 </beans>

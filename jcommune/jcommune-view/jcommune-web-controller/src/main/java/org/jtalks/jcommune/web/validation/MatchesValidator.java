@@ -24,49 +24,49 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 /**
- * Validator for {@link Matches}. Check equality of two properties.
+ * Validator for {@link Matches}. Checks equality of two properties.
  *
  * @author Kirill Afonin
  * @see Matches
  */
 public class MatchesValidator implements ConstraintValidator<Matches, Object> {
 
-    private String field;
-    private String verifyField;
-    private String msg;
+    private String firstPropertyName;
+    private String secondPropertyName;
+    private String failMessage;
 
     /**
-     * Initialize from annotation.
+     * Initialize validator fields from annotation instance.
      *
-     * @param constraintAnnotation {@link Matches} annotation from class.
+     * @param constraintAnnotation {@link Matches} annotation from class
      * @see Matches
      */
     @Override
     public void initialize(Matches constraintAnnotation) {
-        this.field = constraintAnnotation.field();
-        this.verifyField = constraintAnnotation.verifyField();
-        this.msg = constraintAnnotation.message();
+        this.firstPropertyName = constraintAnnotation.field();
+        this.secondPropertyName = constraintAnnotation.verifyField();
+        this.failMessage = constraintAnnotation.message();
     }
 
     /**
      * Validate object with {@link Matches} annotation.
      *
-     * @param value object with {@link Matches} annotation.
-     * @param context validation context.
-     * @throws IllegalStateException if property not found or doesnt have getter.
-     * @return <code>true</code> if validation successfull.
+     * @param value   object with {@link Matches} annotation
+     * @param context validation context
+     * @return {@code true}if validation successfull or false if fails
+     * @throws IllegalStateException if property not found or doesnt have getter
      */
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
         Object fieldObj;
         try {
-            fieldObj = BeanUtils.getProperty(value, field);
+            fieldObj = BeanUtils.getProperty(value, firstPropertyName);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
         Object verifyFieldObj;
         try {
-            verifyFieldObj = BeanUtils.getProperty(value, verifyField);
+            verifyFieldObj = BeanUtils.getProperty(value, secondPropertyName);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -81,8 +81,8 @@ public class MatchesValidator implements ConstraintValidator<Matches, Object> {
 
         if (!matches) {
             context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate(msg)
-                    .addNode(verifyField)
+            context.buildConstraintViolationWithTemplate(failMessage)
+                    .addNode(secondPropertyName)
                     .addConstraintViolation();
         }
 

@@ -59,15 +59,15 @@ public class TransactionalUserServiceTest {
 
     @Test
     public void testRegisterUser() throws Exception {
+        User user = getUser();
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
         when(userDao.isUserWithUsernameExist(USERNAME)).thenReturn(false);
 
-        userService.registerUser(USERNAME, EMAIL, FIRST_NAME, LAST_NAME,
-                PASSWORD);
+        userService.registerUser(user);
 
         verify(userDao, times(1)).isUserWithEmailExist(EMAIL);
         verify(userDao, times(1)).isUserWithUsernameExist(USERNAME);
-        verify(userDao, times(1)).saveOrUpdate(Matchers.<User>any());
+        verify(userDao, times(1)).saveOrUpdate(user);
     }
 
     @Test(expectedExceptions = {DuplicateException.class})
@@ -75,8 +75,7 @@ public class TransactionalUserServiceTest {
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
         when(userDao.isUserWithUsernameExist(USERNAME)).thenReturn(true);
 
-        userService.registerUser(USERNAME, EMAIL, FIRST_NAME, LAST_NAME,
-                PASSWORD);
+        userService.registerUser(getUser());
     }
 
     @Test(expectedExceptions = {DuplicateException.class})
@@ -84,8 +83,7 @@ public class TransactionalUserServiceTest {
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(true);
         when(userDao.isUserWithUsernameExist(USERNAME)).thenReturn(false);
 
-        userService.registerUser(USERNAME, EMAIL, FIRST_NAME, LAST_NAME,
-                PASSWORD);
+        userService.registerUser(getUser());
     }
 
     @Test(expectedExceptions = {DuplicateException.class})
@@ -93,8 +91,7 @@ public class TransactionalUserServiceTest {
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(true);
         when(userDao.isUserWithUsernameExist(USERNAME)).thenReturn(true);
 
-        userService.registerUser(USERNAME, EMAIL, FIRST_NAME, LAST_NAME,
-                PASSWORD);
+        userService.registerUser(getUser());
     }
 
     @Test

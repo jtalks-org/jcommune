@@ -29,15 +29,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
  * User service class. This class contains method needed to manipulate with User persistent entity.
  *
  * @author Osadchuck Eugeny
+ * @author Kirill Afonin
  */
 public class TransactionalUserService extends AbstractTransactionalEntityService<User, UserDao> implements UserService {
 
-    private final Logger logger = LoggerFactory.getLogger(TransactionalUserService.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * Create an instance of User entity based service
      *
-     * @param dao - data access object, which should be able do all CRUD operations with user entity.
+     * @param dao - data access object, which should be able do all CRUD operations with user entity
      */
     public TransactionalUserService(UserDao dao) {
         this.dao = dao;
@@ -50,7 +51,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     public User getByUsername(String username) {
         User user = dao.getByUsername(username);
         if (user == null) {
-            final String msg = "User " + username + " not found.";
+            String msg = "User " + username + " not found.";
             logger.info(msg);
             throw new UsernameNotFoundException(msg);
         }
@@ -61,51 +62,26 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public void registerUser(String username, String email, String firstName,
-                             String lastName, String password) throws DuplicateException {
-
-        if (isUserExist(username, email)) {
-            final String msg = "User " + username + " already exist!";
+    public void registerUser(User user) throws DuplicateException {
+        if (isUserExist(user)) {
+            String msg = "User " + user.getUsername() + " already exist!";
             logger.warn(msg);
             throw new DuplicateException(msg);
         }
 
-        User user = populateUser(username, email, firstName, lastName, password);
         dao.saveOrUpdate(user);
 
-        logger.info("User registered: " + username);
+        logger.info("User registered: " + user.getUsername());
     }
 
     /**
-     * Populate {@link User} object from strings.
+     * Check user for existance.
      *
-     * @param username  username
-     * @param email     email
-     * @param firstName first name
-     * @param lastName  last name
-     * @param password  password
-     * @return populated {@link User} object
+     * @param user user for check existance
+     * @return {@code true} if user with given username or email exist
      */
-    private User populateUser(String username, String email, String firstName,
-                              String lastName, String password) {
-        User user = new User();
-        user.setUsername(username);
-        user.setEmail(email);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setPassword(password);
-        return user;
-    }
-
-    /**
-     * Check user with given username and email existance.
-     *
-     * @param username username
-     * @param email    email
-     * @return true if user with given username or email exist.
-     */
-    private boolean isUserExist(String username, String email) {
-        return dao.isUserWithUsernameExist(username) ||
-                dao.isUserWithEmailExist(email);
+    private boolean isUserExist(User user) {
+        return dao.isUserWithUsernameExist(user.getUsername()) ||
+                dao.isUserWithEmailExist(user.getEmail());
     }
 }

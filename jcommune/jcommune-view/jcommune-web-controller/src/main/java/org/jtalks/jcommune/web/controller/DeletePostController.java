@@ -17,7 +17,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 
 import org.slf4j.Logger;
@@ -37,12 +36,11 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class DeletePostController {
     private final Logger logger = LoggerFactory.getLogger(DeletePostController.class);
-    
-    PostService postSercice;
+    TopicService topicService;
 
     @Autowired
-    public DeletePostController(PostService postSercice) {
-        this.postSercice = postSercice;
+    public DeletePostController(TopicService topicService) {
+        this.topicService = topicService;
     }
     
     @RequestMapping(method = RequestMethod.GET, value = "/deletePost")
@@ -56,7 +54,7 @@ public class DeletePostController {
     @RequestMapping(method = RequestMethod.DELETE, value = "/deletePost")
     public ModelAndView delete(@RequestParam("topicId") Long topicId, @RequestParam("postId") Long postId){
         logger.debug("User confirm post removing postId = " + postId);
-        postSercice.delete(postId);
+        topicService.deletePost(topicId, postId);
         return new ModelAndView("redirect:/topics/" + topicId + ".html");
     }
 }
