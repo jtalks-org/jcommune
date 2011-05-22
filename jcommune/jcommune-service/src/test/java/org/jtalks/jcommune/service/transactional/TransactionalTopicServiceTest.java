@@ -37,11 +37,12 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 
 /**
+ * This test cover {@code TransactionalTopicService} logic validation.
  * @author Osadchuck Eugeny
  */
 public class TransactionalTopicServiceTest {
 
-    final Long TOPIC_ID = new Long(999);
+    final long TOPIC_ID = 999;
     final String TOPIC_TITLE = "topic title";
     final String ANSWER_BODY = "Test Answer Body";
     final DateTime TOPIC_CREATION_DATE = new DateTime();
@@ -49,6 +50,7 @@ public class TransactionalTopicServiceTest {
     private SecurityService securityService;
     private TopicBranchService branchService;
     private TopicDao topicDao;
+    final long POST_ID = 333;
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -56,17 +58,6 @@ public class TransactionalTopicServiceTest {
         branchService = mock(TopicBranchService.class);
         securityService = mock(SecurityService.class);
         topicService = new TransactionalTopicService(topicDao, securityService, branchService);
-    }
-
-    private Topic getTopic() {
-        User topicStarter = getUser();
-        Topic topic = new Topic();
-        topic.setCreationDate(TOPIC_CREATION_DATE);
-        topic.setId(TOPIC_ID);
-        topic.setTitle(TOPIC_TITLE);
-        topic.setTopicStarter(topicStarter);
-
-        return topic;
     }
 
     @Test
@@ -78,11 +69,11 @@ public class TransactionalTopicServiceTest {
 
     @Test
     public void getByIdTest() {
-        when(topicDao.get(TOPIC_ID)).thenReturn(getTopic());
+        when(topicDao.get(TOPIC_ID)).thenReturn(getTopic(false));
 
         Topic topic = topicService.get(TOPIC_ID);
 
-        Assert.assertEquals(topic, getTopic(), "Topics aren't equals");
+        Assert.assertEquals(topic, getTopic(false), "Topics aren't equals");
 
         verify(topicDao, times(1)).get(Matchers.anyLong());
     }
@@ -90,7 +81,7 @@ public class TransactionalTopicServiceTest {
     @Test
     public void getAllTest() {
         List<Topic> expectedUserList = new ArrayList<Topic>();
-        expectedUserList.add(getTopic());
+        expectedUserList.add(getTopic(false));
         when(topicDao.getAll()).thenReturn(expectedUserList);
 
         List<Topic> actualUserList = topicService.getAll();
@@ -102,11 +93,11 @@ public class TransactionalTopicServiceTest {
 
     @Test
     public void getTopicWithPostsTest() {
-        Topic topic = getTopic();
+        Topic topic = getTopic(false);
         List<Post> posts = new ArrayList<Post>();
         topic.setPosts(posts);
         when(topicDao.getTopicWithPosts(TOPIC_ID)).thenReturn(topic);
-        when(topicService.getTopicWithPosts(TOPIC_ID)).thenReturn(getTopic());
+        when(topicService.getTopicWithPosts(TOPIC_ID)).thenReturn(getTopic(false));
 
         Topic actualTopic = topicService.getTopicWithPosts(TOPIC_ID);
 
@@ -120,7 +111,7 @@ public class TransactionalTopicServiceTest {
      */
     @Test
     public void addAnswerTest() {
-        Topic topic = getTopic();
+        Topic topic = getTopic(false);
         int postsNumberBefore = topic.getPosts().size();
         User currentUser = getUser();
 
@@ -145,7 +136,7 @@ public class TransactionalTopicServiceTest {
      */
     @Test(expectedExceptions = IllegalStateException.class)
     public void addAnswerExceptionTest() {
-        Topic topic = getTopic();
+        Topic topic = getTopic(false);
 
         when(securityService.getCurrentUser()).thenReturn(null);
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
@@ -164,6 +155,18 @@ public class TransactionalTopicServiceTest {
         verify(topicDao, times(1)).saveOrUpdate(Matchers.<Topic>anyObject());
         verify(branchService, times(1)).get(1l);
     }
+    
+    @Test
+    public void deletePostTest(){
+        Topic topic = getTopic(true);
+        int expectedPostCount = topic.getPosts().size();
+        when(topicDao.getTopicWithPosts(anyLong())).thenReturn(topic);
+        topicService.deletePost(TOPIC_ID, POST_ID);
+        int actualPostCount = topic.getPosts().size();
+        Assert.assertTrue(actualPostCount == 0 || actualPostCount < expectedPostCount, "Post was not deleted");        
+        verify(topicDao, times(1)).getTopicWithPosts(anyLong());
+        verify(topicDao, times(1)).saveOrUpdate(Matchers.any(Topic.class));
+    }
 
     /**
      * Create new dummy User with username "Test".
@@ -175,5 +178,28 @@ public class TransactionalTopicServiceTest {
         currentUser.setId(100500);
         currentUser.setUsername("Test");
         return currentUser;
+    }
+    
+    /**
+     * Get dummy topic.
+     * @param withPosts - set to true if you want add collection of 10 posts to topic
+     * @return - dummy topic with topicId=TOPIC_ID,topictitle= TOPIC_TITLE,
+     * topic_creationDate=TOPIC_CREATION_DATE and posts. Posts ids started from POST_ID to POST_ID plus 10.
+     */
+    private Topic getTopic(boolean withPosts) {
+        User topicStarter = getUser();
+        Topic topic = new Topic();
+        topic.setCreationDate(TOPIC_CREATION_DATE);
+        topic.setId(TOPIC_ID);
+        topic.setTitle(TOPIC_TITLE);
+        topic.setTopicStarter(topicStarter);
+        if(withPosts){
+            for (long i = POST_ID; i <= POST_ID + 10; i++) {
+                Post post = Post.createNewPost();
+                post.setId(i);
+                topic.addPost(post);
+            }
+        }
+        return topic;
     }
 }

@@ -39,9 +39,11 @@ import static org.mockito.Mockito.*;
  */
 public class TransactionalPostServiceTest {
     
-    final Long POST_ID = (long) 999;
+    final long POST_ID = 999;
     final String POST_CONTENT = "post content";
     final DateTime POST_CREATION_DATE = new DateTime();
+    
+    final long TOPIC_ID = 333;
 
     private PostService postService;
     private PostDao postDao;
@@ -54,7 +56,7 @@ public class TransactionalPostServiceTest {
         
     private Post getPost(){
         User topicStarter = new User();
-        topicStarter.setId((long) 333);
+        topicStarter.setId(TOPIC_ID);
         topicStarter.setUsername("username");
         Topic topic = new Topic();
         topic.setId(333);
@@ -77,12 +79,9 @@ public class TransactionalPostServiceTest {
 
     @Test
     public void getByIdTest(){
-        when(postDao.get(POST_ID)).thenReturn(getPost());
-        
-        Post post = postService.get(POST_ID);
-        
-        Assert.assertEquals(post, getPost(), "Posts aren't equals");
-        
+        when(postDao.get(POST_ID)).thenReturn(getPost());        
+        Post post = postService.get(POST_ID);        
+        Assert.assertEquals(post, getPost(), "Posts aren't equals");        
         verify(postDao, times(1)).get(Matchers.anyLong());
     }
     
@@ -90,12 +89,9 @@ public class TransactionalPostServiceTest {
     public void getAllTest(){
         List<Post> expectedUserList = new ArrayList<Post>();
         expectedUserList.add(getPost());
-        when(postDao.getAll()).thenReturn(expectedUserList);
-        
-        List<Post> actualUserList = postService.getAll();  
-        
-        Assert.assertEquals(actualUserList, expectedUserList, "Posts lists aren't equals");
-        
+        when(postDao.getAll()).thenReturn(expectedUserList);        
+        List<Post> actualUserList = postService.getAll();          
+        Assert.assertEquals(actualUserList, expectedUserList, "Posts lists aren't equals");        
         verify(postDao, times(1)).getAll();
     }
 
