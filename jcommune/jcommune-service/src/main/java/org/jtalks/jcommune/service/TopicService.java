@@ -56,7 +56,6 @@ public interface TopicService extends EntityService<Topic> {
     List<Topic> getAllTopicsAccordingToBranch(Long id);
 
     /**
-     * /**
      * Add new topic with given title and body.
      * Author is current user.
      *
@@ -65,5 +64,12 @@ public interface TopicService extends EntityService<Topic> {
      * @param branchId
      */
     void createTopic(String topicName, String bodyText, long branchId);
+    
+    /**
+     * Delete post from topic.
+     * @param topicId - topic id.
+     * @param postId - post id.
+     */
+    void deletePost(long topicId, long postId);
 
 }

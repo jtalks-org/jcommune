@@ -90,7 +90,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         post.setUserCreated(currentUser);
         post.setPostContent(bodyText);
 
-        Topic topic = Topic.createNewTopic();
+        Topic topic = Topic.createNewTopic();        
         topic.setTitle(topicName);
         topic.setTopicStarter(currentUser);
         topic.addPost(post);
@@ -102,6 +102,22 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @Override
     public List<Topic> getAllTopicsAccordingToBranch(Long id) {
         return dao.getAllTopicsAccordingToBranch(id);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deletePost(long topicId, long postId) {
+        Topic topic = dao.getTopicWithPosts(topicId);
+        List<Post> posts = topic.getPosts();
+        for(Post post: posts){
+            if(post.getId() == postId){
+                posts.remove(post);
+                dao.saveOrUpdate(topic);
+                break;
+            }
+        }
     }
 
 }
