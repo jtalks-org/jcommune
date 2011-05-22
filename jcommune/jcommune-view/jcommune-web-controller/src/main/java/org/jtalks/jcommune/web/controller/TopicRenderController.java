@@ -26,6 +26,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -55,14 +56,16 @@ public final class TopicRenderController {
     /**
      * Method handles GET requests with URI - /topics/{topicId},
      * where {topicId} could be an integer value from 1 to infinity
-     * @param topicID the Id os selected Topic
+     * @param topicId the Id os selected Topic
      * @return ModelAndView object which has "renderTopic" as view name and object that represent selected Topic
      */
-    @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.GET)
-    public ModelAndView showTopic(@PathVariable("topicId") long topicID) {
-        Topic selectedTopic = topicService.getTopicWithPosts(topicID);
+    @RequestMapping(value = "/branches/{branchId}/topics/{topicId}", method = RequestMethod.GET)
+    public ModelAndView showTopic(@PathVariable("topicId") long topicId,
+                                  @PathVariable("branchId") long branchId) {
+        Topic selectedTopic = topicService.getTopicWithPosts(topicId);
         ModelAndView mav = new ModelAndView("renderTopic");
         mav.addObject("selectedTopic", selectedTopic);
+        mav.addObject("branchId",branchId);
         return mav;
     }
 }

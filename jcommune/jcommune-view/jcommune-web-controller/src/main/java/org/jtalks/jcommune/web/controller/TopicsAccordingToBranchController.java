@@ -32,7 +32,7 @@ import java.util.List;
 
 
 /**
- * ForumController class handles GET and POST request with URI - forum.html
+ * TopicsAccordingToBranchController class handles GET and POST request with URI - forum.html
  * and populates forum with existing topics.
  * Class methods throw no exceptions
  *
@@ -40,7 +40,7 @@ import java.util.List;
  */
 
 @Controller
-public final class ForumController {
+public final class TopicsAccordingToBranchController {
     private TopicService topicService;
     private TopicBranchService topicBranchService;
 
@@ -51,7 +51,7 @@ public final class ForumController {
      * @param topicService {@link TopicService}the object that provides retrieving  data or saving to database
      */
     @Autowired
-    public ForumController(TopicService topicService, TopicBranchService topicBranchService) {
+    public TopicsAccordingToBranchController(TopicService topicService, TopicBranchService topicBranchService) {
         this.topicService = topicService;
         this.topicBranchService = topicBranchService;
     }
@@ -67,7 +67,7 @@ public final class ForumController {
     public ModelAndView showAllTopics(@PathVariable("branchId") long branchId) {
         List<Topic> topics = topicService.getAllTopicsAccordingToBranch(branchId);
         TopicBranch topicBranch = topicBranchService.get(branchId);
-        return new ModelAndView("forum", "topicsList", topics).addObject("branchId", topicBranch.getId());
+        return new ModelAndView("topicsBranch", "topicsList", topics).addObject("branchId", topicBranch.getId());
     }
 
 

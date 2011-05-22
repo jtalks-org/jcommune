@@ -18,7 +18,7 @@
 
         <c:forEach var="topics" items="${topicsList}">
             <tr>
-                <td><a href="${pageContext.request.contextPath}/topics/${topics.id}.html"> <c:out
+                <td><a href="${pageContext.request.contextPath}/branches/${branchId}/topics/${topics.id}.html"> <c:out
                         value="${topics.title}"/></a></td>
                 <td><c:out value="${topics.topicStarter.username}"/></td>
                 <td><joda:format value="${topics.creationDate}"

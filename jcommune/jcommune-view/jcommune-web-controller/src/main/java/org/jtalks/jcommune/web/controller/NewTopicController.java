@@ -70,6 +70,7 @@ public final class NewTopicController {
      */
     @RequestMapping(value = "/newTopic", method = RequestMethod.GET)
     public ModelAndView getNewTopicPage(@RequestParam("branchId") long branchId) {
+        securityService.getCurrentUser();
         ModelAndView mav = new ModelAndView("newTopic");
         mav.addObject("topicDto", new TopicDto());
         mav.addObject("branchId", branchId);
@@ -84,7 +85,7 @@ public final class NewTopicController {
      * @param branchId
      * @return ModelAndView object which will be redirect to forum.html
      */
-    @RequestMapping(value = "/createNewTopic", method = RequestMethod.POST)
+    @RequestMapping(value = "/newTopic", method = RequestMethod.POST)
     public ModelAndView submitNewTopic(@Valid @ModelAttribute TopicDto topicDto,
                                        BindingResult result,
                                        @RequestParam("branchId") long branchId) {

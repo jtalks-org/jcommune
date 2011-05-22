@@ -4,7 +4,7 @@
 <html>
 <head></head>
 <body>
-<form:form action="${pageContext.request.contextPath}/createNewTopic.html" modelAttribute="topicDto" method="POST">
+<form:form action="${pageContext.request.contextPath}/newTopic.html" modelAttribute="topicDto" method="POST">
     <table border="2" width="100%">
         <tr>
             <td width="30%">

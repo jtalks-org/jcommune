@@ -40,8 +40,8 @@
 <table>
     <tr>
         <td>
-          <form:form action="${pageContext.request.contextPath}/main.html" method="GET">
-            <input type="submit" value="<spring:message code="label.back"/>"/>
+          <form:form action="${pageContext.request.contextPath}/branches/${branchId}.html" method="GET">
+            <input type="submit" value="<spring:message code="label.back"/>"/>             
           </form:form>
         </td>
         <sec:authorize access="isAuthenticated()">

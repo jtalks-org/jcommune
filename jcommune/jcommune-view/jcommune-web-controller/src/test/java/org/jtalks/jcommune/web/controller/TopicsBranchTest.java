@@ -28,16 +28,16 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 
 
-public class ForumControllerTest {
+public class TopicsBranchTest {
     private TopicService topicService;
     private TopicBranchService branchService;
-    private ForumController forumController;
+    private TopicsAccordingToBranchController topicsAccordingToBranchController;
 
     @BeforeMethod
     public void init() {
         topicService = mock(TopicService.class);
         branchService = mock(TopicBranchService.class);
-        forumController = new ForumController(topicService, branchService);
+        topicsAccordingToBranchController = new TopicsAccordingToBranchController(topicService, branchService);
     }
 
     @Test
@@ -46,9 +46,9 @@ public class ForumControllerTest {
         topicBranch.setId(1l);
         when(branchService.get(1l)).thenReturn(topicBranch);
 
-        ModelAndView mav = forumController.showAllTopics(1l);
+        ModelAndView mav = topicsAccordingToBranchController.showAllTopics(1l);
 
-        assertViewName(mav, "forum");
+        assertViewName(mav, "topicsBranch");
         verify(branchService, times(1)).get(1l);
     }
 

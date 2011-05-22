@@ -53,7 +53,7 @@ public class TopicRenderControllerTest {
         
         when(topicService.getTopicWithPosts(1l)).thenReturn(topic);
         
-        ModelAndView mav = topicRenderController.showTopic(1l);
+        ModelAndView mav = topicRenderController.showTopic(1l,1L);
         verify(topicService).getTopicWithPosts(1l);
         
         assertModelAttributeValues(mav, topicMap);
