@@ -35,7 +35,7 @@ import java.util.Set;
  */
 public class MatchesValidatorTest {
     /**
-     * Object for testing constraint.
+     * Class for testing constraint.
      */
     @Matches(field = "value", verifyField = "value2", message = "Values not matches")
     public class TestObject {
@@ -70,7 +70,7 @@ public class MatchesValidatorTest {
         Set<ConstraintViolation<TestObject>> constraintViolations =
                 validator.validate(new TestObject("value", "value"));
 
-        Assert.assertEquals(constraintViolations.size(), 0);
+        Assert.assertEquals(constraintViolations.size(), 0, "Validation errors");
     }
 
     @Test
@@ -78,8 +78,8 @@ public class MatchesValidatorTest {
         Set<ConstraintViolation<TestObject>> constraintViolations =
                 validator.validate(new TestObject("value", "not"));
 
-        Assert.assertEquals(constraintViolations.size(), 1);
-        Assert.assertEquals(constraintViolations.iterator().next().getMessage(), "Values not matches");
+        Assert.assertEquals(constraintViolations.size(), 1, "Validation without errors");
+        Assert.assertEquals(constraintViolations.iterator().next().getMessage(), "Values dont match");
     }
 
 }
