@@ -41,22 +41,27 @@ public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<
      * Hibernate SessionFactory
      */
     private SessionFactory sessionFactory;
+
     /**
      * Type of entity
      */
-    private Class<T> type;
+    private final Class<T> type = getType();
 
     /**
-     * Default constructor.
      * Retrieves parametrized type of entity using reflection.
+     *
+     * @return type of entity
      */
-    protected AbstractHibernateDao() {
-        this.type = (Class<T>) ((ParameterizedType) getClass()
+    private Class<T> getType() {
+        return (Class<T>) ((ParameterizedType) getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
+    private String DELETE = "delete " + type.getSimpleName() + " e where e.id= :id";
+    private String GET_ALL = "from " + type.getSimpleName();
+
     /**
-     * Get the current Hibernate session.
+     * Get current Hibernate session.
      *
      * @return current Session
      */
@@ -94,8 +99,7 @@ public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<
      */
     @Override
     public void delete(Long id) {
-        Query query = getSession()
-                .createQuery("delete " + type.getSimpleName() + " e where e.id= :id");
+        Query query = getSession().createQuery(DELETE);
         query.setLong("id", id);
         query.executeUpdate();
     }
@@ -113,8 +117,7 @@ public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<
      */
     @Override
     public List<T> getAll() {
-        return getSession()
-                .createQuery("from " + type.getSimpleName() + " e").list();
+        return getSession().createQuery(GET_ALL).list();
     }
 
 }

@@ -31,7 +31,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.validation.Valid;
 
 /**
- * Controller for User related actions.
+ * Controller for User related actions: registration.
  *
  * @author Kirill Afonin
  */
@@ -41,7 +41,9 @@ public class UserController {
     private UserService userService;
 
     /**
-     * @param userService {@link UserService} to be injected.
+     * Assign {@link UserService} to field.
+     *
+     * @param userService {@link UserService} to be injected
      * @see UserService
      */
     @Autowired
@@ -52,35 +54,32 @@ public class UserController {
     /**
      * Render registration page with binded object to form.
      *
-     * @return <code>ModelAndView</code> with "registration" view and empty
-     *         {@link UserDto} with name "newUser.
+     * @return {@code ModelAndView} with "registration" view and empty
+     *         {@link UserDto} with name "newUser
      */
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
     public ModelAndView registrationPage() {
-        return new ModelAndView("registration").addObject("newUser", new org.jtalks.jcommune.web.dto.UserDto());
+        return new ModelAndView("registration").addObject("newUser", new UserDto());
     }
 
     /**
      * Register {@link User} from populated in form {@link UserDto}.
      *
-     * @param userDto {@link UserDto} populated in form.
-     * @param result  result of validation.
-     * @return redirect to /
+     * @param userDto {@link UserDto} populated in form
+     * @param result  result of {@link UserDto} validation
+     * @return redirect to / if registration successfull or back to "/registration" if failed
      */
     @RequestMapping(value = "/user", method = RequestMethod.POST)
-    public ModelAndView registerUser(@Valid @ModelAttribute("newUser") UserDto userDto,
-                                     BindingResult result) {
+    public ModelAndView registerUser(@Valid @ModelAttribute("newUser") UserDto userDto, BindingResult result) {
 
         if (result.hasErrors()) {
             return new ModelAndView("registration");
         }
 
         try {
-            userService.registerUser(userDto.getUsername(), userDto.getEmail(),
-                    userDto.getFirstName(), userDto.getLastName(), userDto.getPassword());
+            userService.registerUser(userDto.createUser());
         } catch (DuplicateException e) {
-            result.rejectValue("username", "validation.duplicateuser",
-                    "User already exist!");
+            result.rejectValue("username", "validation.duplicateuser", "User already exist!");
             return new ModelAndView("registration");
         }
 

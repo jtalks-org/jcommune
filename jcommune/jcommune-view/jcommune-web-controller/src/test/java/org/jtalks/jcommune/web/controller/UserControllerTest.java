@@ -1,5 +1,6 @@
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateException;
 import org.jtalks.jcommune.web.dto.UserDto;
@@ -22,7 +23,7 @@ public class UserControllerTest {
     private UserController controller;
 
     @BeforeMethod
-    public void setUp() throws Exception {
+    public void setUp() {
         userService = mock(UserService.class);
         controller = new UserController(userService);
     }
@@ -33,6 +34,10 @@ public class UserControllerTest {
 
         assertViewName(mav, "registration");
         UserDto dto = assertAndReturnModelAttributeOfType(mav, "newUser", UserDto.class);
+        assertNullFields(dto);
+    }
+
+    private void assertNullFields(UserDto dto) {
         Assert.assertNull(dto.getEmail());
         Assert.assertNull(dto.getUsername());
         Assert.assertNull(dto.getPassword());
@@ -44,30 +49,32 @@ public class UserControllerTest {
     @Test
     public void testRegisterUser() throws Exception {
         UserDto dto = getUserDto();
+        User user = dto.createUser();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
 
         ModelAndView mav = controller.registerUser(dto, bindingResult);
 
         assertViewName(mav, "redirect:/");
-        verify(userService, times(1)).registerUser("username", "mail@mail.com",
-                null, null, "password");
+        verify(userService, times(1)).registerUser(user);
     }
 
     @Test
     public void testRegisterDuplicateUser() throws Exception {
         UserDto dto = getUserDto();
+        User user = dto.createUser();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
-        doThrow(new DuplicateException()).when(userService)
-                .registerUser(anyString(), anyString(),
-                        anyString(), anyString(), anyString());
+        doThrow(new DuplicateException()).when(userService).registerUser(user);
 
         ModelAndView mav = controller.registerUser(dto, bindingResult);
 
         assertViewName(mav, "registration");
-        verify(userService, times(1)).registerUser(anyString(), anyString(),
-                anyString(), anyString(), anyString());
+        Assert.assertEquals(1, bindingResult.getErrorCount(), "Result without errors");
+        verify(userService, times(1)).registerUser(user);
     }
 
+    /**
+     * @return UserDto with default field values
+     */
     private UserDto getUserDto() {
         UserDto dto = new UserDto();
         dto.setUsername("username");

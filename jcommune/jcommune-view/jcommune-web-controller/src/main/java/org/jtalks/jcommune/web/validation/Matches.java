@@ -30,27 +30,27 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 /**
  * Constraint for checking that two properties are equal.
  * This constraint for use with JSR-303 validator.
- *
+ * <p/>
  * You must annotate your class with {@link Matches} annotation
  * You must fill in the parameters <code>field</code> and <code>verifyField</code>
  * field names to test for equality. Fields must have getters.
  * Constraint can be used with any field types that have correct
  * </code>equals()</code> method.
- *
+ * <p/>
  * Example:
  * Validate that <code>field1</code> and <code>field2</code> are equals.
  * {@code
- *     &#064;Matches(field = "field1", verifyField = "field2")
- *     class Test {
- *      private String field1;
- *      private String field2;
- *      public String getField1() {
- *          return field1;
- *      }
- *      public String getField2() {
- *          return field2;
- *      }
- *     }
+ * &#064;Matches(field = "field1", verifyField = "field2")
+ * class Test {
+ * private String field1;
+ * private String field2;
+ * public String getField1() {
+ * return field1;
+ * }
+ * public String getField2() {
+ * return field2;
+ * }
+ * }
  * }
  *
  * @author Kirill Afonin
@@ -64,30 +64,37 @@ public @interface Matches {
     /**
      * Message for display when validation fails.
      *
+     * @return message when validation fails.
      */
     String message() default "{validation.matches}";
 
     /**
-     * Groups
+     * Groups element that specifies the processing groups with which the
+     * constraint declaration is associated.
      *
+     * @return array of groups
      */
     Class<?>[] groups() default {};
 
     /**
-     * Payload
+     * Payload element that specifies the payload with which the the
+     * constraint declaration is associated.
      *
+     * @return payload
      */
     Class<? extends Payload>[] payload() default {};
 
     /**
-     * First proerty name for check equality.
+     * First property name for check equality.
      *
+     * @return first property name
      */
     String field();
 
     /**
      * Second property name for check equality.
      *
+     * @return second property name
      */
     String verifyField();
 }
