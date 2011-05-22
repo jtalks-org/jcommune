@@ -17,7 +17,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.Post;
+
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
