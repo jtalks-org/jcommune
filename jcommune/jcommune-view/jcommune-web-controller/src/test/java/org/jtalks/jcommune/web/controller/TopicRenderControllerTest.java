@@ -18,8 +18,6 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;

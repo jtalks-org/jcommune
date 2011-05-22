@@ -29,7 +29,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- * Delete post controller.
+ * Delete post controller. This controller handle delete post user actions.
+ * Before user could delete some post he should pass though delete confirmation.
+ * After user confirm delete action post would be removed by {@code TopicService} 
  * @author Osadchuck Eugeny
  *
  */
@@ -43,6 +45,12 @@ public class DeletePostController {
         this.topicService = topicService;
     }
     
+    /**
+     * Redirect user to confirmation page.
+     * @param topicId - topic id, this in topic which contains post which shoulb be deleted
+     * @param postId - post id to delete
+     * @return - return ModelAndView with to parameter topicId and postId
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/deletePost")
     public ModelAndView confirm(@RequestParam("topicId") Long topicId, @RequestParam("postId") Long postId){
         ModelAndView mav = new ModelAndView("deletePost");
@@ -51,6 +59,13 @@ public class DeletePostController {
         return mav;
     }
     
+    /**
+     * Handle delete action. User confirm post deletion.
+     * @param topicId - topic id, this in topic which contains post which shoulb be deleted
+     * also used for redirection back to topic.
+     * @param postId - post
+     * @return - redirect to /topics/topicId. 
+     */
     @RequestMapping(method = RequestMethod.DELETE, value = "/deletePost")
     public ModelAndView delete(@RequestParam("topicId") Long topicId, @RequestParam("postId") Long postId){
         logger.debug("User confirm post removing postId = " + postId);
