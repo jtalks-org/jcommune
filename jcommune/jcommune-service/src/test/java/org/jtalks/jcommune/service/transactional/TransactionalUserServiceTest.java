@@ -88,6 +88,15 @@ public class TransactionalUserServiceTest {
                 PASSWORD);
     }
 
+    @Test(expectedExceptions = {DuplicateException.class})
+    public void testRegisterUserBothExist() throws Exception {
+        when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(true);
+        when(userDao.isUserWithUsernameExist(USERNAME)).thenReturn(true);
+
+        userService.registerUser(USERNAME, EMAIL, FIRST_NAME, LAST_NAME,
+                PASSWORD);
+    }
+
     @Test
     public void deleteByIdTest() {
         userService.delete(USER_ID);
