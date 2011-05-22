@@ -21,6 +21,7 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,9 +31,10 @@ import org.springframework.web.servlet.ModelAndView;
  * Controller for Topic answer related actions.
  * 
  * @author Pavel Vervenko
+ * @author Kravchenko Vitaliy
  */
 @Controller
-@RequestMapping(value = "/answer")
+@RequestMapping(value = "/branch/{branchId}/topic/{topicId}/answer")
 public class TopicAnswerController {
 
     public static final int MIN_ANSWER_LENGTH = 1;
@@ -57,10 +59,13 @@ public class TopicAnswerController {
      */
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView getAnswerPage(@RequestParam("topicId") Long topicId,
-            @RequestParam(value = "validationError", required = false) Boolean validationError) {
+            @RequestParam(value = "validationError", required = false) Boolean validationError,
+            @PathVariable("branchId") long branchId) {
         ModelAndView mav = new ModelAndView("answer");
         Topic answeringTopic = topicService.get(topicId);
         mav.addObject("topic", answeringTopic);
+        mav.addObject("branchId", branchId);
+        mav.addObject("topicId", topicId);
         if (validationError != null && validationError) {
             mav.addObject("validationError", validationError);
         }
@@ -75,12 +80,13 @@ public class TopicAnswerController {
      */
     @RequestMapping(method = RequestMethod.POST)
     public ModelAndView submitAnswer(@RequestParam("topicId") Long topicId,
-            @RequestParam("bodytext") String bodyText) {
+            @RequestParam("bodytext") String bodyText,
+            @PathVariable("branchId") long branchId) {
         if (isValidAnswer(bodyText)) {
             topicService.addAnswer(topicId, bodyText);
-            return new ModelAndView("redirect:/topics/" + topicId + ".html");            
+            return new ModelAndView("redirect:/branch/"+branchId+"/topic/" + topicId + ".html");
         } else {
-            return getAnswerPage(topicId, true);
+            return getAnswerPage(topicId, true, branchId);
         }
 
     }

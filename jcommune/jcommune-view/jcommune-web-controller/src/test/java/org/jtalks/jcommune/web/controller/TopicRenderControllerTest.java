@@ -18,8 +18,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.SecurityService;
+import org.jtalks.jcommune.model.entity.TopicBranch;
 import org.jtalks.jcommune.service.TopicService;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
@@ -42,14 +41,15 @@ public class TopicRenderControllerTest {
         topicRenderController = new TopicRenderController(topicService);
     }
 
-    @Test(enabled = false)
+    @Test
     public void testShowTopic() {
         Topic topic = Topic.createNewTopic();
         topic.setId(1l);
         topic.setTitle("Simple Title");
-        
+
         Map<String, Object> topicMap = new HashMap<String, Object>();
         topicMap.put("selectedTopic", topic);
+        topicMap.put("branchId",1l);
         
         when(topicService.getTopicWithPosts(1l)).thenReturn(topic);
         

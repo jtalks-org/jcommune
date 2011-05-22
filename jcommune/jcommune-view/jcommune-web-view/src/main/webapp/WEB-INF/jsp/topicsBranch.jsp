@@ -8,7 +8,7 @@
     <title>Forum</title>
 </head>
 <body>
-<form:form action="${pageContext.request.contextPath}/newTopic.html" method="GET">
+<form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/newTopic.html" method="GET">
     <table border="1" width="100%">
         <tr>
             <td width="80%"><spring:message code="label.topic"/></td>
@@ -18,7 +18,7 @@
 
         <c:forEach var="topics" items="${topicsList}">
             <tr>
-                <td><a href="${pageContext.request.contextPath}/branches/${branchId}/topics/${topics.id}.html"> <c:out
+                <td><a href="${pageContext.request.contextPath}/branch/${branchId}/topic/${topics.id}.html"> <c:out
                         value="${topics.title}"/></a></td>
                 <td><c:out value="${topics.topicStarter.username}"/></td>
                 <td><joda:format value="${topics.creationDate}"

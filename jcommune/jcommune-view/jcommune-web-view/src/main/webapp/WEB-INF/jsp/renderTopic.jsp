@@ -27,7 +27,8 @@
             
             <c:if test="${username==posts.userCreated.username}">
                 <td>
-                    <form:form action="${pageContext.request.contextPath}/deletePost.html" method="GET">
+                    <form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${selectedTopic.id}/deletePost.html" 
+                               method="GET">
                         <input name="topicId" type="hidden" value="${selectedTopic.id}"/>
                         <input name="postId" type="hidden" value="${posts.id}"/>
                         <input type="submit" value="<spring:message code="label.delete"/>"/>
@@ -40,13 +41,13 @@
 <table>
     <tr>
         <td>
-          <form:form action="${pageContext.request.contextPath}/branches/${branchId}.html" method="GET">
+          <form:form action="${pageContext.request.contextPath}/branch/${branchId}.html" method="GET">
             <input type="submit" value="<spring:message code="label.back"/>"/>             
           </form:form>
         </td>
         <sec:authorize access="isAuthenticated()">
           <td>
-            <form:form action="${pageContext.request.contextPath}/answer.html" method="GET">
+            <form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${selectedTopic.id}/answer.html" method="GET">
               <input name="topicId" type="hidden" value="${selectedTopic.id}"/>
               <input type="submit" value="<spring:message code="label.answer"/>"/>
             </form:form>

@@ -63,7 +63,7 @@ public final class TopicsAccordingToBranchController {
      * @return the ModelAndView object, with "forum" as view name
      */
 
-    @RequestMapping(value = "/branches/{branchId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/branch/{branchId}", method = RequestMethod.GET)
     public ModelAndView showAllTopics(@PathVariable("branchId") long branchId) {
         List<Topic> topics = topicService.getAllTopicsAccordingToBranch(branchId);
         TopicBranch topicBranch = topicBranchService.get(branchId);

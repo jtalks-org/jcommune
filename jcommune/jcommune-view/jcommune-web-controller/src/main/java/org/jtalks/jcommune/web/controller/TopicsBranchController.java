@@ -35,7 +35,7 @@ import java.util.List;
  */
 
 @Controller
-public class TopicsBranchesController {
+public class TopicsBranchController {
 
     private TopicBranchService topicBranchService;
 
@@ -45,7 +45,7 @@ public class TopicsBranchesController {
      * Context
      */
     @Autowired
-    public TopicsBranchesController(TopicBranchService topicBranchService) {
+    public TopicsBranchController(TopicBranchService topicBranchService) {
         this.topicBranchService = topicBranchService;
     }
 

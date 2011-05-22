@@ -68,7 +68,7 @@ public final class NewTopicController {
      * field of previous JSP page
      * @return
      */
-    @RequestMapping(value = "/newTopic", method = RequestMethod.GET)
+    @RequestMapping(value = "/branch/{branchId}/topic/newTopic", method = RequestMethod.GET)
     public ModelAndView getNewTopicPage(@RequestParam("branchId") long branchId) {
         securityService.getCurrentUser();
         ModelAndView mav = new ModelAndView("newTopic");
@@ -80,19 +80,19 @@ public final class NewTopicController {
     /**
      * This method handles POST requests, it will be always activated when the user pressing "Submit topic"
      *
-     * @param topicDto
-     * @param result
-     * @param branchId
+     * @param topicDto the object that provides communication between spring form and controller
+     * @param result  {@link BindingResult} object for spring validation
+     * @param branchId hold the current branchId
      * @return ModelAndView object which will be redirect to forum.html
      */
-    @RequestMapping(value = "/newTopic", method = RequestMethod.POST)
+    @RequestMapping(value = "/branch/{branchId}/topic/newTopic", method = RequestMethod.POST)
     public ModelAndView submitNewTopic(@Valid @ModelAttribute TopicDto topicDto,
                                        BindingResult result,
                                        @RequestParam("branchId") long branchId) {
         // this method will be secured by url
         topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(),
                 branchId);
-        return new ModelAndView("redirect:branches/" + branchId + ".html");
+        return new ModelAndView("redirect:/branch/" + branchId + ".html");
     }
 
 }

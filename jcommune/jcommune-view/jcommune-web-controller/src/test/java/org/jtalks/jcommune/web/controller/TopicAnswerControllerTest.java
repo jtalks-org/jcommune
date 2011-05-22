@@ -38,6 +38,7 @@ public class TopicAnswerControllerTest {
     public static final String ANSWER_BODY = "Body Text";
     public static final String SHORT_ANSWER_BODY = " a  ";
     public static final long TOPIC_ID = 1L;
+    private static final long BRANCH_ID = 1L;
     private TopicAnswerController controller;
     @Mock
     private TopicService topicService;
@@ -51,7 +52,7 @@ public class TopicAnswerControllerTest {
 
     @Test
     public void testGetAnswerPage() {
-        ModelAndView mav = controller.getAnswerPage(TOPIC_ID, false);
+        ModelAndView mav = controller.getAnswerPage(TOPIC_ID, false,BRANCH_ID);
 
         assertAndReturnModelAttributeOfType(mav, "topic", Topic.class);
         assertViewName(mav, "answer");
@@ -61,16 +62,16 @@ public class TopicAnswerControllerTest {
 
     @Test
     public void testSubmitAnswer() {
-        ModelAndView mav = controller.submitAnswer(TOPIC_ID, ANSWER_BODY);
+        ModelAndView mav = controller.submitAnswer(TOPIC_ID, ANSWER_BODY,BRANCH_ID);
 
-        assertViewName(mav, "redirect:/topics/" + TOPIC_ID + ".html");
+        assertViewName(mav, "redirect:/branch/" + BRANCH_ID+"/topic/" + TOPIC_ID + ".html");
 
         verify(topicService, times(1)).addAnswer(TOPIC_ID, ANSWER_BODY);
     }
     
     @Test
     public void testSubmitShortAnswer() {
-        ModelAndView mav = controller.submitAnswer(TOPIC_ID, SHORT_ANSWER_BODY);
+        ModelAndView mav = controller.submitAnswer(TOPIC_ID, SHORT_ANSWER_BODY,BRANCH_ID);
 
         assertAndReturnModelAttributeOfType(mav, "validationError", Boolean.class);   
         assertViewName(mav, "answer");

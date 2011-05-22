@@ -62,7 +62,7 @@ public class NewTopicControllerTest {
 
         ModelAndView mav = controller.submitNewTopic(dto, result, 1l);
 
-        assertViewName(mav, "redirect:branches/1.html");
+        assertViewName(mav, "redirect:/branch/1.html");
         verify(topicService, times(1)).createTopic(TOPIC_THEME, TOPIC_CONTENT, 1l);
     }
 

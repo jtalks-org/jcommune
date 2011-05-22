@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,7 +32,7 @@ import org.springframework.web.servlet.ModelAndView;
 /**
  * Delete post controller.
  * @author Osadchuck Eugeny
- *
+ * @author Kravchenko Vitaliy
  */
 @Controller
 public class DeletePostController {
@@ -43,18 +44,21 @@ public class DeletePostController {
         this.topicService = topicService;
     }
     
-    @RequestMapping(method = RequestMethod.GET, value = "/deletePost")
-    public ModelAndView confirm(@RequestParam("topicId") Long topicId, @RequestParam("postId") Long postId){
+    @RequestMapping(method = RequestMethod.GET, value = "/branch/{branchId}/topic/{topicId}/deletePost")
+    public ModelAndView confirm(@RequestParam("topicId") Long topicId, @RequestParam("postId") Long postId,
+                                @PathVariable("branchId") long branchId){
         ModelAndView mav = new ModelAndView("deletePost");
         mav.addObject("topicId", topicId);
         mav.addObject("postId", postId);
+        mav.addObject("branchId", branchId);
         return mav;
     }
     
-    @RequestMapping(method = RequestMethod.DELETE, value = "/deletePost")
-    public ModelAndView delete(@RequestParam("topicId") Long topicId, @RequestParam("postId") Long postId){
+    @RequestMapping(method = RequestMethod.DELETE, value = "/branch/{branchId}/topic/{topicId}/deletePost")
+    public ModelAndView delete(@RequestParam("topicId") Long topicId, @RequestParam("postId") Long postId,
+                               @PathVariable("branchId") long branchId){
         logger.debug("User confirm post removing postId = " + postId);
         topicService.deletePost(topicId, postId);
-        return new ModelAndView("redirect:/topics/" + topicId + ".html");
+        return new ModelAndView("redirect:/branch/"+ branchId + "/topic/" + topicId + ".html");
     }
 }
