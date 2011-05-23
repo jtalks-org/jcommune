@@ -99,6 +99,10 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         dao.saveOrUpdate(topic);
     }
 
+    /**
+     * @{inheritDoc}
+     */
+
     @Override
     public List<Topic> getAllTopicsAccordingToBranch(Long id) {
         return dao.getAllTopicsAccordingToBranch(id);
