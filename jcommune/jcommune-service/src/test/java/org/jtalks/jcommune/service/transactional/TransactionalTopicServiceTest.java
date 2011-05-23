@@ -39,6 +39,7 @@ import static org.mockito.Mockito.*;
 /**
  * This test cover {@code TransactionalTopicService} logic validation.
  * @author Osadchuck Eugeny
+ * @author Kravchenko Vitaliy
  */
 public class TransactionalTopicServiceTest {
 
@@ -148,7 +149,6 @@ public class TransactionalTopicServiceTest {
     public void testCreateTopic() {
         when(securityService.getCurrentUser()).thenReturn(getUser());
         when(branchService.get(1l)).thenReturn(new TopicBranch());
-
         topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, 1l);
 
         verify(securityService, times(1)).getCurrentUser();
@@ -166,6 +166,19 @@ public class TransactionalTopicServiceTest {
         Assert.assertTrue(actualPostCount == 0 || actualPostCount < expectedPostCount, "Post was not deleted");        
         verify(topicDao, times(1)).getTopicWithPosts(anyLong());
         verify(topicDao, times(1)).saveOrUpdate(Matchers.any(Topic.class));
+    }
+
+    @Test
+    public void getAllTopicsAccordingToBranchTest(){
+        List<Topic> topics = new ArrayList<Topic>();
+        topics.add(getTopic(false));
+        when(topicDao.getAllTopicsAccordingToBranch(1L)).thenReturn(topics);
+
+        List<Topic> actualTopics = topicService.getAllTopicsAccordingToBranch(1L);
+
+        verify(topicDao,times(1)).getAllTopicsAccordingToBranch(1L);
+        Assert.assertTrue(topics.size()==actualTopics.size());
+
     }
 
     /**

@@ -52,7 +52,7 @@ public final class NewTopicController {
      * Constructor creates MVC controller with specifying TopicService
      * objects injected via autowiring
      *
-     * @param topicService {@link TopicService}   the object which provides actions on Topic entity
+     * @param topicService    {@link TopicService}   the object which provides actions on Topic entity
      * @param securityService {@link org.jtalks.jcommune.service.SecurityService}
      */
     @Autowired
@@ -64,8 +64,9 @@ public final class NewTopicController {
 
     /**
      * Method handles newTopic.html GET request and display page for creation new topic
-     * @param branchId  {@link org.jtalks.jcommune.model.entity.TopicBranch} id which we have recived from the hidden
-     * field of previous JSP page
+     *
+     * @param branchId {@link org.jtalks.jcommune.model.entity.TopicBranch} id which we have recived from the hidden
+     *                 field of previous JSP page
      * @return
      */
     @RequestMapping(value = "/branch/{branchId}/topic/newTopic", method = RequestMethod.GET)
@@ -81,7 +82,7 @@ public final class NewTopicController {
      * This method handles POST requests, it will be always activated when the user pressing "Submit topic"
      *
      * @param topicDto the object that provides communication between spring form and controller
-     * @param result  {@link BindingResult} object for spring validation
+     * @param result   {@link BindingResult} object for spring validation
      * @param branchId hold the current branchId
      * @return ModelAndView object which will be redirect to forum.html
      */
@@ -90,9 +91,13 @@ public final class NewTopicController {
                                        BindingResult result,
                                        @RequestParam("branchId") long branchId) {
         // this method will be secured by url
-        topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(),
-                branchId);
-        return new ModelAndView("redirect:/branch/" + branchId + ".html");
+        if (result.hasErrors()) {
+            return new ModelAndView("newTopic");
+        } else {
+            topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(),
+                    branchId);
+            return new ModelAndView("redirect:/branch/" + branchId + ".html");
+        }
     }
 
 }

@@ -35,7 +35,7 @@ import java.util.List;
  */
 
 @Controller
-public class TopicsBranchController {
+public final class TopicsBranchController {
 
     private TopicBranchService topicBranchService;
 
