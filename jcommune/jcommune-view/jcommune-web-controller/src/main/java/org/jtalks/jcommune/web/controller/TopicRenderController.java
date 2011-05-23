@@ -53,7 +53,8 @@ public final class TopicRenderController {
     /**
      * Method handles GET requests with URI - /topics/{topicId},
      * where {topicId} could be an integer value from 1 to infinity
-     * @param topicId the Id os selected Topic
+     * @param topicId the id of selected Topic
+     * @param branchId the id of selected topic branch
      * @return ModelAndView object which has "renderTopic" as view name and object that represent selected Topic
      */
     @RequestMapping(value = "/branch/{branchId}/topic/{topicId}", method = RequestMethod.GET)

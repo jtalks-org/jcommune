@@ -67,7 +67,7 @@ public final class NewTopicController {
      *
      * @param branchId {@link org.jtalks.jcommune.model.entity.TopicBranch} id which we have recived from the hidden
      *                 field of previous JSP page
-     * @return
+     * @return  view name - newTopic
      */
     @RequestMapping(value = "/branch/{branchId}/topic/newTopic", method = RequestMethod.GET)
     public ModelAndView getNewTopicPage(@RequestParam("branchId") long branchId) {

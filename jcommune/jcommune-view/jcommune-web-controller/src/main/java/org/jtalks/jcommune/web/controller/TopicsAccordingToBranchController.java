@@ -49,6 +49,8 @@ public final class TopicsAccordingToBranchController {
      * object injected via autowiring
      *
      * @param topicService {@link TopicService}the object that provides retrieving  data or saving to database
+     * @param topicBranchService {@link TopicBranchService} the object that provides retrieving data or saving to
+     * database
      */
     @Autowired
     public TopicsAccordingToBranchController(TopicService topicService, TopicBranchService topicBranchService) {
