@@ -59,6 +59,11 @@ public class SecurityServiceImplTest {
         User result = securityService.getCurrentUser();
 
         Assert.assertEquals(result.getUsername(), USERNAME, "Username not equals");
+        Assert.assertEquals(result.getAuthorities().iterator().next().getAuthority(), "ROLE_USER");
+        Assert.assertTrue(result.isAccountNonExpired());
+        Assert.assertTrue(result.isAccountNonLocked());
+        Assert.assertTrue(result.isEnabled());
+        Assert.assertTrue(result.isCredentialsNonExpired());
         verify(userService, times(1)).getByUsername(USERNAME);
         verify(auth, times(1)).getPrincipal();
         verify(securityContext, times(1)).getAuthentication();
