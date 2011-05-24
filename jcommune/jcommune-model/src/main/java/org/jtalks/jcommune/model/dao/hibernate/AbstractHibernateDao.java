@@ -57,8 +57,8 @@ public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<
                 .getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
-    private final String DELETE = "delete " + type.getSimpleName() + " e where e.id= :id";
-    private final String GETALL = "from " + type.getSimpleName();
+    private final String deleteQuery = "delete " + type.getSimpleName() + " e where e.id= :id";
+    private final String getallQuery = "from " + type.getSimpleName();
 
     /**
      * Get current Hibernate session.
@@ -99,7 +99,7 @@ public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<
      */
     @Override
     public void delete(Long id) {
-        Query query = getSession().createQuery(DELETE);
+        Query query = getSession().createQuery(deleteQuery);
         query.setLong("id", id);
         query.executeUpdate();
     }
@@ -117,7 +117,7 @@ public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<
      */
     @Override
     public List<T> getAll() {
-        return getSession().createQuery(GETALL).list();
+        return getSession().createQuery(getallQuery).list();
     }
 
 }
