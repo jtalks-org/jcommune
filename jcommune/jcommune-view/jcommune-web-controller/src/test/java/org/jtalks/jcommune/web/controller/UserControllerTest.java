@@ -81,6 +81,8 @@ public class UserControllerTest {
         dto.setEmail("mail@mail.com");
         dto.setPassword("password");
         dto.setPasswordConfirm("password");
+        dto.setFirstName("first name");
+        dto.setLastName("last name");
         return dto;
     }
 }
