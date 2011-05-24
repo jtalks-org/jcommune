@@ -41,9 +41,7 @@ public class SecurityServiceImplTest {
         userService = mock(UserService.class);
         securityContextFacade = mock(SecurityContextFacade.class);
         securityContext = mock(SecurityContext.class);
-        securityService = new SecurityServiceImpl();
-        securityService.setUserService(userService);
-        securityService.setSecurityContextFacade(securityContextFacade);
+        securityService = new SecurityServiceImpl(userService, securityContextFacade);
         when(securityContextFacade.getContext()).thenReturn(securityContext);
     }
 
