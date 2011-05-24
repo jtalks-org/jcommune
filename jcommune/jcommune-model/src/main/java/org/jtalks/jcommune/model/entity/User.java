@@ -169,4 +169,6 @@ public class User extends Persistent implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    private static final long serialVersionUID = 19981017L;
 }
