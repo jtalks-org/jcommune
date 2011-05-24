@@ -12,6 +12,8 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.security.Principal;
+
 import static org.mockito.Mockito.*;
 
 /**
@@ -75,6 +77,25 @@ public class SecurityServiceImplTest {
     @Test
     public void testGetCurrentUserUsername() throws Exception {
         User user = getUser();
+        Authentication auth = mock(Authentication.class);
+        when(auth.getPrincipal()).thenReturn(user);
+        when(securityContext.getAuthentication()).thenReturn(auth);
+
+        String username = securityService.getCurrentUserUsername();
+
+        Assert.assertEquals(USERNAME, username, "Username not equals");
+        verify(auth, times(1)).getPrincipal();
+        verify(securityContext, times(1)).getAuthentication();
+    }
+
+    @Test
+    public void testGetCurrentUserUsernamePrincipal() throws Exception {
+        Principal user = new Principal() {
+            @Override
+            public String getName() {
+                return USERNAME;
+            }
+        };
         Authentication auth = mock(Authentication.class);
         when(auth.getPrincipal()).thenReturn(user);
         when(securityContext.getAuthentication()).thenReturn(auth);
