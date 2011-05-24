@@ -38,16 +38,6 @@ public abstract class AbstractTransactionalEntityService<T extends Persistent, Y
      */
     protected Y dao;
 
-
-    /**
-     * Set data access object, which implements data manipulation for entity T
-     *
-     * @param dao - data access object which implements data manipulation for entity T.
-     */
-    public void setDao(Y dao) {
-        this.dao = dao;
-    }
-
     /**
      * {@inheritDoc}
      */
