@@ -25,7 +25,7 @@ import java.util.Collection;
 
 /**
  * Stores information about the forum user.
- * Used as <code>UserDetails</code> in spring security for user authentication, authorization.
+ * Used as {@code UserDetails} in spring security for user authentication, authorization.
  *
  * @author Pavel Vervenko
  * @author Kirill Afonin
@@ -138,21 +138,33 @@ public class User extends Persistent implements UserDetails {
     //user can or can't authenticate.
     //we dont need this functional now and users always enabled
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isEnabled() {
         return true;
