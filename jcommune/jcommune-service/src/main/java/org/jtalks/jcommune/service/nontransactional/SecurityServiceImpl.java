@@ -21,10 +21,8 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityContextFacade;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
-import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 /**
  * Abstract layer for Spring Security.
@@ -74,24 +72,18 @@ public class SecurityServiceImpl implements SecurityService {
      * {@inheritDoc}
      */
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException,
-            DataAccessException {
+    public UserDetails loadUserByUsername(String username) {
         return userService.getByUsername(username);
     }
 
     /**
-     * {@inheritDoc}
+     * Constructor creates an instance of service.
+     *
+     * @param userService {@link UserService} to be injected
+     * @param securityContextFacade {@link SecurityContextFacade} to be injected
      */
-    @Override
-    public void setUserService(UserService userService) {
+    public SecurityServiceImpl(UserService userService, SecurityContextFacade securityContextFacade) {
         this.userService = userService;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setSecurityContextFacade(SecurityContextFacade securityContextFacade) {
         this.securityContextFacade = securityContextFacade;
     }
 }
