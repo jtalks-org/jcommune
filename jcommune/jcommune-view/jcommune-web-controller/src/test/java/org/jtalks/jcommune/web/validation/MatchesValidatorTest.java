@@ -21,10 +21,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import javax.validation.*;
 import java.util.Set;
 
 /**
@@ -57,6 +54,20 @@ public class MatchesValidatorTest {
         }
     }
 
+    /**
+     * Class for testing constraint with non existing properties.
+     */
+    @Matches(field = "aaa", verifyField = "bcv")
+    public class TestObjectBadProperties {
+        String value;
+        String value2;
+
+        public TestObjectBadProperties(String value, String value2) {
+            this.value = value;
+            this.value2 = value2;
+        }
+    }
+
     private static Validator validator;
 
     @BeforeClass
@@ -80,6 +91,21 @@ public class MatchesValidatorTest {
 
         Assert.assertEquals(constraintViolations.size(), 1, "Validation without errors");
         Assert.assertEquals(constraintViolations.iterator().next().getMessage(), "Values dont match");
+    }
+
+    @Test
+    public void testNullFields() {
+        Set<ConstraintViolation<TestObject>> constraintViolations =
+                validator.validate(new TestObject(null, null));
+
+        Assert.assertEquals(constraintViolations.size(), 0, "Validation errors");
+    }
+
+    @Test(expectedExceptions = ValidationException.class)
+    public void testPropertiesNotExist() {
+        Set<ConstraintViolation<TestObjectBadProperties>> constraintViolations =
+                validator.validate(new TestObjectBadProperties("1", "2"));
+
     }
 
 }
