@@ -43,19 +43,4 @@ public interface SecurityService extends UserDetailsService {
      * no authenticated {@link User}.
      */
     String getCurrentUserUsername();
-
-    /**
-     * {@link UserService} setter for DI.
-     *
-     * @param userService {@link UserService} to be injected.
-     * @see UserService
-     */
-    void setUserService(UserService userService);
-
-    /**
-     * {@link SecurityContextFacade} setter for DI.
-     *
-     * @param securityContextFacade {@link SecurityContextFacade} to be injected.
-     */
-    void setSecurityContextFacade(SecurityContextFacade securityContextFacade);
 }
