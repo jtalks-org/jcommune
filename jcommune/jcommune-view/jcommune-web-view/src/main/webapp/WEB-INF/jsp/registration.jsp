@@ -4,7 +4,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title><spring:message code="label.register"/></title>
+    <title><spring:message code="label.signup"/></title>
     <link href="${pageContext.request.contextPath}/css/main.css"
           type=text/css rel=stylesheet>
 </head>
@@ -13,9 +13,9 @@
 <div id="stylized" class="registration">
     <form:form id="form" name="form" action='${pageContext.request.contextPath}/user.html'
                modelAttribute="newUser" method="POST">
-        <h1>Sign-up</h1>
+        <h1><spring:message code="label.signup"/></h1>
 
-        <p>Please fill this form for sign-up</p>
+        <p><spring:message code="label.fillmessage"/></p>
 
         <form:label path="username"><spring:message code="label.username"/>
             <span class="small"><spring:message code="label.tip.username"/></span>
