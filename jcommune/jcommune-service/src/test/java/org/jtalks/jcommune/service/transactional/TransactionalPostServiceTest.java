@@ -34,8 +34,9 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 
 /**
+ * This test cover {@code TransactionalPostService} logic validation.
+ * Logic validation cover update/get/error cases by this class.
  * @author Osadchuck Eugeny
- *
  */
 public class TransactionalPostServiceTest {
     
@@ -43,7 +44,7 @@ public class TransactionalPostServiceTest {
     final String POST_CONTENT = "post content";
     final DateTime POST_CREATION_DATE = new DateTime();
     
-    final long TOPIC_ID = 333;
+    final long USER_ID = 333;
 
     private PostService postService;
     private PostDao postDao;
@@ -56,7 +57,7 @@ public class TransactionalPostServiceTest {
         
     private Post getPost(){
         User topicStarter = new User();
-        topicStarter.setId(TOPIC_ID);
+        topicStarter.setId(USER_ID);
         topicStarter.setUsername("username");
         Topic topic = new Topic();
         topic.setId(333);
@@ -76,6 +77,12 @@ public class TransactionalPostServiceTest {
         
         verify(postDao, times(1)).delete(Matchers.anyLong());
     }
+    
+    @Test(expectedExceptions = {IllegalArgumentException.class})
+    public void deleteByNagativeIdTest(){
+        postService.delete(-1l);
+        verify(postDao, never()).delete(Matchers.anyLong());
+    }
 
     @Test
     public void getByIdTest(){
@@ -83,6 +90,12 @@ public class TransactionalPostServiceTest {
         Post post = postService.get(POST_ID);        
         Assert.assertEquals(post, getPost(), "Posts aren't equals");        
         verify(postDao, times(1)).get(Matchers.anyLong());
+    }
+    
+    @Test(expectedExceptions = {IllegalArgumentException.class})
+    public void getByNagativeIdTest(){
+        postService.get(-1l);
+        verify(postDao, never()).get(Matchers.anyLong());
     }
     
     @Test

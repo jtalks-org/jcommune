@@ -43,6 +43,9 @@ public abstract class AbstractTransactionalEntityService<T extends Persistent, Y
      */
     @Override
     public void delete(Long id) {
+        if(id < 0){
+            throw new IllegalArgumentException("Persistent object id could not be nagative");
+        }
         dao.delete(id);
     }
 
@@ -51,6 +54,9 @@ public abstract class AbstractTransactionalEntityService<T extends Persistent, Y
      */
     @Override
     public T get(Long id) {
+        if(id < 0){
+            throw new IllegalArgumentException("Persistent object id could not be nagative");
+        }
         return (T) dao.get(id);
     }
 

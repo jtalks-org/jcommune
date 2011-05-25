@@ -31,13 +31,15 @@ public interface EntityService<T extends Persistent> {
 
     /**
      * Delete row in database table corresponded to current primary id.
-     * @param id - primary id of database table row to delete
+     * @param id - primary id of database table row to delete, id could not be negative. 
+     * If negative id value will be put IllegalAgrumentEception will be thrown. 
      */
     void delete(Long id);
 
     /**
      * Get persistent object by id. Method is trying to find persistent object with current primary id and return it. 
-     * @param id - primary id of persistent object to find.
+     * @param id - primary id of persistent object to find, id could not be negative. 
+     * If negative id value will be put IllegalAgrumentEception will be thrown.  
      * @return - persistent object T or null if row with primary id = id is absent.
      */
     T get(Long id);
