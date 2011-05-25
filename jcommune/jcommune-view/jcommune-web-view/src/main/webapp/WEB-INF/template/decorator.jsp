@@ -36,8 +36,8 @@
                 </sec:authorize>
                 &nbsp
                 <sec:authorize access="isAnonymous()">
-                    <a href="${pageContext.request.contextPath}/login.html"><spring:message code="label.signin"/></a>
-                    <a href="${pageContext.request.contextPath}/registration.html"><spring:message code="label.signup"/></a>
+                    <a href="${pageContext.request.contextPath}/login.html">Sign In</a>
+                    <a href="${pageContext.request.contextPath}/registration.html">Sign Up</a>
                 </sec:authorize>
                 &nbsp
                 <a href="?lang=en">En</a> | <a href="?lang=ru">Ru</a> </span></td>
