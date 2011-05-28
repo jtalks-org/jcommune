@@ -38,6 +38,7 @@ import static org.mockito.Mockito.*;
 
 /**
  * This test cover {@code TransactionalTopicService} logic validation.
+ * Logic validation cover update/get/error cases by this class.
  * @author Osadchuck Eugeny
  * @author Kravchenko Vitaliy
  */
@@ -60,12 +61,18 @@ public class TransactionalTopicServiceTest {
         securityService = mock(SecurityService.class);
         topicService = new TransactionalTopicService(topicDao, securityService, branchService);
     }
-
+    
     @Test
-    public void deleteByIdTest() {
-        topicService.delete(TOPIC_ID);
-
+    public void deleteByIdTest(){
+        topicService.delete(POST_ID);
+        
         verify(topicDao, times(1)).delete(Matchers.anyLong());
+    }
+
+    @Test(expectedExceptions = {IllegalArgumentException.class})
+    public void deleteByNagativeIdTest(){
+        topicService.delete(-1l);
+        verify(topicDao, never()).delete(Matchers.anyLong());
     }
 
     @Test
@@ -79,6 +86,12 @@ public class TransactionalTopicServiceTest {
         verify(topicDao, times(1)).get(Matchers.anyLong());
     }
 
+    @Test(expectedExceptions = {IllegalArgumentException.class})
+    public void getByNagativeIdTest(){
+        topicService.get(-1l);
+        verify(topicDao, never()).get(Matchers.anyLong());
+    }
+    
     @Test
     public void getAllTest() {
         List<Topic> expectedUserList = new ArrayList<Topic>();
@@ -182,7 +195,7 @@ public class TransactionalTopicServiceTest {
     }
 
     /**
-     * Create new dummy User with username "Test".
+     * Create new dummy User with username "Test" and user.id  equal to 100500.
      *
      * @return the user
      */

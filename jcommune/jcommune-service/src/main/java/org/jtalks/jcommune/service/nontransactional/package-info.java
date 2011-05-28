@@ -15,32 +15,10 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-package org.jtalks.jcommune.service;
-
-import org.jtalks.jcommune.model.entity.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
- * This interface declare methods for authentication and authorization.
  *
- * @author Kirill Afonin
+ * Package for non-transactional service implementations.
+ *
  */
-public interface SecurityService extends UserDetailsService {
-
-    /**
-     * Get current authenticated {@link User}.
-     *
-     * @return current authenticated {@link User} or <code>null</code> if there is
-     * no authenticated {@link User}.
-     * @see User
-     */
-    User getCurrentUser();
-
-    /**
-     * Get current authenticated {@link User} username.
-     *
-     * @return current authenticated {@link User} username or <code>null</code> if there is
-     * no authenticated {@link User}.
-     */
-    String getCurrentUserUsername();
-}
+package org.jtalks.jcommune.service.nontransactional;

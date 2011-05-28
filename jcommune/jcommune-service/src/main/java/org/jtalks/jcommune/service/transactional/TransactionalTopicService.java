@@ -17,6 +17,8 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -35,8 +37,9 @@ import java.util.List;
  * @author Kirill Afonin
  * @author Vitaliy Kravchenko
  */
-public class TransactionalTopicService extends AbstractTransactionalEntityService<Topic, TopicDao> implements TopicService {
-
+public class TransactionalTopicService extends AbstractTransactionalEntityService<Topic, TopicDao>
+        implements TopicService {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final SecurityService securityService;
     private TopicBranchService topicBranchService;
 
@@ -113,6 +116,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      */
     @Override
     public void deletePost(long topicId, long postId) {
+        logger.debug("User confirm post removing postId = " + postId);
         Topic topic = dao.getTopicWithPosts(topicId);
         List<Post> posts = topic.getPosts();
         for(Post post: posts){

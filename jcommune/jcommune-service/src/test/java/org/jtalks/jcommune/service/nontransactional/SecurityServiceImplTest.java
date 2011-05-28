@@ -11,6 +11,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import sun.security.acl.PrincipalImpl;
+
+import java.security.Principal;
 
 import static org.mockito.Mockito.*;
 
@@ -41,9 +44,7 @@ public class SecurityServiceImplTest {
         userService = mock(UserService.class);
         securityContextFacade = mock(SecurityContextFacade.class);
         securityContext = mock(SecurityContext.class);
-        securityService = new SecurityServiceImpl();
-        securityService.setUserService(userService);
-        securityService.setSecurityContextFacade(securityContextFacade);
+        securityService = new SecurityServiceImpl(userService, securityContextFacade);
         when(securityContextFacade.getContext()).thenReturn(securityContext);
     }
 
@@ -57,7 +58,12 @@ public class SecurityServiceImplTest {
 
         User result = securityService.getCurrentUser();
 
-        Assert.assertEquals(USERNAME, result.getUsername(), "Username not equals");
+        Assert.assertEquals(result.getUsername(), USERNAME, "Username not equals");
+        Assert.assertEquals(result.getAuthorities().iterator().next().getAuthority(), "ROLE_USER");
+        Assert.assertTrue(result.isAccountNonExpired());
+        Assert.assertTrue(result.isAccountNonLocked());
+        Assert.assertTrue(result.isEnabled());
+        Assert.assertTrue(result.isCredentialsNonExpired());
         verify(userService, times(1)).getByUsername(USERNAME);
         verify(auth, times(1)).getPrincipal();
         verify(securityContext, times(1)).getAuthentication();
@@ -83,7 +89,21 @@ public class SecurityServiceImplTest {
 
         String username = securityService.getCurrentUserUsername();
 
-        Assert.assertEquals(USERNAME, username, "Username not equals");
+        Assert.assertEquals(username, USERNAME, "Username not equals");
+        verify(auth, times(1)).getPrincipal();
+        verify(securityContext, times(1)).getAuthentication();
+    }
+
+    @Test
+    public void testGetCurrentUserUsernamePrincipal() throws Exception {
+        Principal user = new PrincipalImpl(USERNAME);
+        Authentication auth = mock(Authentication.class);
+        when(auth.getPrincipal()).thenReturn(user);
+        when(securityContext.getAuthentication()).thenReturn(auth);
+
+        String username = securityService.getCurrentUserUsername();
+
+        Assert.assertEquals(username, USERNAME, "Username not equals");
         verify(auth, times(1)).getPrincipal();
         verify(securityContext, times(1)).getAuthentication();
     }
@@ -106,7 +126,7 @@ public class SecurityServiceImplTest {
 
         UserDetails result = securityService.loadUserByUsername(USERNAME);
 
-        Assert.assertEquals(USERNAME, result.getUsername(), "Username not equals");
+        Assert.assertEquals(result.getUsername(), USERNAME, "Username not equals");
         verify(userService, times(1)).getByUsername(USERNAME);
     }
 

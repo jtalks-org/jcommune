@@ -42,7 +42,7 @@
   </logger>
 
   <logger name="org.hibernate" additivity="false">
-    <level value="DEBUG"/>
+    <level value="WARN"/>
     <appender-ref ref="CONSOLE"/>
   </logger>
 

@@ -26,7 +26,8 @@ import org.jtalks.jcommune.service.TopicBranchService;
  * @author Vitaliy Kravchenko
  */
 
-public class TransactionalTopicBranchService extends AbstractTransactionalEntityService<TopicBranch, TopicBranchDao> implements TopicBranchService {
+public class TransactionalTopicBranchService extends AbstractTransactionalEntityService<TopicBranch, TopicBranchDao>
+        implements TopicBranchService {
 
 
     /**

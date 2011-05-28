@@ -66,7 +66,7 @@ public @interface Matches {
      *
      * @return message when validation fails.
      */
-    String message() default "{validation.matches}";
+    String message() default "{org.jtalks.jcommune.web.validation.Matches.message}";
 
     /**
      * Groups element that specifies the processing groups with which the

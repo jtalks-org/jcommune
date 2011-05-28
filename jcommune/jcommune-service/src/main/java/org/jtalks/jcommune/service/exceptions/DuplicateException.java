@@ -27,25 +27,19 @@ package org.jtalks.jcommune.service.exceptions;
 public class DuplicateException extends Exception {
 
     /**
+     * Default constructor.
+     *
      * {@link Exception}
      */
     public DuplicateException() {
     }
 
     /**
+     * Create exception with specific message.
      *
      * @param message exception message
      */
     public DuplicateException(String message) {
         super(message);
-    }
-
-    /**
-     *
-     * @param e parent exception
-     * @see Exception
-     */
-    public DuplicateException(Exception e) {
-        super(e);
     }
 }
