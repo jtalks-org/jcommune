@@ -25,11 +25,6 @@
                  column="TOPIC_BRANCH" not-null="true" foreign-key="FK_TOPIC_BRANCH"/>
   </class>
 
-  <query name="getTopicWithPosts">
-    <![CDATA[from Topic as topic
-                      inner join fetch topic.posts
-                 WHERE topic.id = :topicId]]>
-  </query>
   <query name="getAllTopicsAccordingToBranch">
     <![CDATA[from Topic as topic
                         WHERE topic.branch.id = :branchId]]>

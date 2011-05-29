@@ -17,8 +17,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -26,6 +24,8 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicBranchService;
 import org.jtalks.jcommune.service.TopicService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -61,7 +61,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      */
     @Override
     public Topic getTopicWithPosts(long id) {
-        return dao.getTopicWithPosts(id);
+        return dao.get(id);
     }
 
     /**
@@ -117,15 +117,16 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @Override
     public void deletePost(long topicId, long postId) {
         logger.debug("User confirm post removing postId = " + postId);
-        Topic topic = dao.getTopicWithPosts(topicId);
+        Topic topic = dao.get(topicId);
         List<Post> posts = topic.getPosts();
+
         for(Post post: posts){
-            if(post.getId() == postId){
+            if(post.getId() == postId) {
                 posts.remove(post);
-                dao.saveOrUpdate(topic);
                 break;
             }
         }
+        dao.saveOrUpdate(topic);
     }
 
 }
