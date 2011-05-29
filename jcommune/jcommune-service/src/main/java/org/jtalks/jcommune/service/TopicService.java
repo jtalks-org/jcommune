@@ -34,8 +34,8 @@ public interface TopicService extends EntityService<Topic> {
     /**
      * Get topic with fetched topics fields(userCreated, posts).
      *
-     * @param id - topic primary id.
-     * @return - <code>Topic<code> with fetched topic fields or null if no topic found by this primary id.
+     * @param id topic primary id.
+     * @return {@code Topic} with fetched topic fields or null if no topic found by this primary id.
      */
     Topic getTopicWithPosts(long id);
 
@@ -50,8 +50,9 @@ public interface TopicService extends EntityService<Topic> {
 
     /**
      * Get all topics according to branch Id
+     *
      * @param id Topic Branch id
-     * @return  List of Topics, if no corresponding Topics it will return empty List
+     * @return List of Topics, if no corresponding Topics it will return empty List
      */
     List<Topic> getAllTopicsAccordingToBranch(Long id);
 
@@ -61,14 +62,15 @@ public interface TopicService extends EntityService<Topic> {
      *
      * @param topicName name of topic
      * @param bodyText  body of topic
-     * @param branchId
+     * @param branchId  branch containing topic
      */
     void createTopic(String topicName, String bodyText, long branchId);
-    
+
     /**
      * Delete post from topic.
-     * @param topicId - topic id.
-     * @param postId - post id.
+     *
+     * @param topicId topic id.
+     * @param postId  post id.
      */
     void deletePost(long topicId, long postId);
 

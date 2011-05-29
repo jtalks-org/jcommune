@@ -19,26 +19,47 @@
 package org.jtalks.jcommune.model.entity;
 
 /**
+ * Forum branch that contains topics related to branch theme.
+ *
  * @author Vitaliy Kravchenko
  */
-
 public class TopicBranch extends Persistent {
 
     private String name;
     private String description;
 
+    /**
+     * Set branch name which briefly describes the topics contained in it.
+     *
+     * @return branch name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Get branch name.
+     *
+     * @param name branch name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Get branch description.
+     *
+     * @return branch description
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Set branch description which contains additional information about the branch.
+     *
+     * @param description branch description
+     */
     public void setDescription(String description) {
         this.description = description;
     }

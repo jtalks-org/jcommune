@@ -77,7 +77,7 @@ public class Topic extends Persistent {
      * Add new {@link Post} to the topic.
      * The method sets Posts.topic field to this Topic.
      *
-     * @param newPost
+     * @param newPost post to add
      */
     public void addPost(Post newPost) {
         posts.add(newPost);
@@ -87,7 +87,7 @@ public class Topic extends Persistent {
     /**
      * Remove the post from the topic.
      *
-     * @param postToRemove
+     * @param postToRemove post to remove
      */
     public void removePost(Post postToRemove) {
         posts.remove(postToRemove);
@@ -165,10 +165,20 @@ public class Topic extends Persistent {
         this.posts = posts;
     }
 
+    /**
+     * Get branch that contains the message
+     *
+     * @return branch that contains the topic
+     */
     public TopicBranch getBranch() {
         return branch;
     }
 
+    /**
+     * Set branch that contains the message
+     *
+     * @param branch branch that contains the topic
+     */
     public void setBranch(TopicBranch branch) {
         this.branch = branch;
     }

@@ -22,6 +22,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
+ * DTO for {@link Topic} objects. Used for validation and binding to form.
+ *
  * @author Vitaliy Kravchenko
  */
 public class TopicDto {
@@ -34,18 +36,38 @@ public class TopicDto {
     @Size(min = 2, max = 1000)
     private String bodyText;
 
+    /**
+     * Get topic title.
+     *
+     * @return topic title
+     */
     public String getTopicName() {
         return topicName;
     }
 
+    /**
+     * Set topic title.
+     *
+     * @param topicName name of topic
+     */
     public void setTopicName(String topicName) {
         this.topicName = topicName;
     }
 
+    /**
+     * Get first post content.
+     *
+     * @return first post content
+     */
     public String getBodyText() {
         return bodyText;
     }
 
+    /**
+     * Set first post content.
+     *
+     * @param bodyText content of first post in topic
+     */
     public void setBodyText(String bodyText) {
         this.bodyText = bodyText;
     }

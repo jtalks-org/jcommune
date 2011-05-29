@@ -46,8 +46,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     /**
      * Create an instance of User entity based service
      *
-     * @param dao             - data access object, which should be able do all CRUD operations with topic entity.
-     * @param securityService {@link SecurityService} for retrieving current user.
+     * @param dao                data access object, which should be able do all CRUD operations with topic entity
+     * @param securityService    {@link SecurityService} for retrieving current user
+     * @param topicBranchService {@link TopicBranchService} instance to be injected
      */
     public TransactionalTopicService(TopicDao dao, SecurityService securityService,
                                      TopicBranchService topicBranchService) {
@@ -93,7 +94,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         post.setUserCreated(currentUser);
         post.setPostContent(bodyText);
 
-        Topic topic = Topic.createNewTopic();        
+        Topic topic = Topic.createNewTopic();
         topic.setTitle(topicName);
         topic.setTopicStarter(currentUser);
         topic.addPost(post);
@@ -103,14 +104,13 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     }
 
     /**
-     * @{inheritDoc}
+     * {@inheritDoc}
      */
-
     @Override
     public List<Topic> getAllTopicsAccordingToBranch(Long id) {
         return dao.getAllTopicsAccordingToBranch(id);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -120,8 +120,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         Topic topic = dao.get(topicId);
         List<Post> posts = topic.getPosts();
 
-        for(Post post: posts){
-            if(post.getId() == postId) {
+        for (Post post : posts) {
+            if (post.getId() == postId) {
                 posts.remove(post);
                 break;
             }
