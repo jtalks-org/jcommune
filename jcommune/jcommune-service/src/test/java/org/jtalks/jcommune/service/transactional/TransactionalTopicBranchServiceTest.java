@@ -32,6 +32,8 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 
 /**
+ * This test class is intended to test all topic-related forum branch facilities
+ * 
  * @author Kravchenko Vitaliy
  */
 public class TransactionalTopicBranchServiceTest {
