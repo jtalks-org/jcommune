@@ -19,9 +19,8 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jtalks.jcommune.model.dao.PostDao;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.dao.TopicBranchDao;
+import org.jtalks.jcommune.model.entity.TopicBranch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -42,16 +41,16 @@ import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEqua
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
-public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
+public class TopicBranchHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
 
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
-    private PostDao dao;
+    private TopicBranchDao dao;
     private Session session;
 
     @BeforeMethod
-    public void setUp() {
+    public void setUp() throws Exception {
         session = sessionFactory.getCurrentSession();
         ObjectsFactory.setSession(session);
     }
@@ -60,76 +59,77 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
     @Test
     public void testSave() {
-        Post post = ObjectsFactory.getDefaultPost();
+        TopicBranch branch = ObjectsFactory.getDefaultTopicBranch();
 
-        dao.saveOrUpdate(post);
+        dao.saveOrUpdate(branch);
 
-        assertNotSame(post.getId(), 0, "Id not created");
+        assertNotSame(branch.getId(), 0, "Id not created");
 
-        session.evict(post);
-        Post result = (Post) session.get(Post.class, post.getId());
+        session.evict(branch);
+        TopicBranch result = (TopicBranch) session.get(TopicBranch.class, branch.getId());
 
-        assertReflectionEquals(post, result);
+        assertReflectionEquals(branch, result);
     }
 
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void testSavePostWithDateNotNullViolation() {
-        Post post = new Post();
 
-        dao.saveOrUpdate(post);
+    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    public void testSaveBranchWithNameNotNullViolation() {
+        TopicBranch branch = new TopicBranch();
+
+        dao.saveOrUpdate(branch);
     }
 
     @Test
     public void testGet() {
-        Post post = ObjectsFactory.getDefaultPost();
-        session.save(post);
+        TopicBranch branch = ObjectsFactory.getDefaultTopicBranch();
+        session.save(branch);
 
-        Post result = dao.get(post.getId());
+        TopicBranch result = dao.get(branch.getId());
 
         assertNotNull(result);
-        assertEquals(result.getId(), post.getId());
+        assertEquals(result.getId(), branch.getId());
     }
 
     @Test
     public void testGetInvalidId() {
-        Post result = dao.get(-567890L);
+        TopicBranch result = dao.get(-567890L);
 
         assertNull(result);
     }
 
     @Test
     public void testUpdate() {
-        String newContent = "new content";
-        Post post = ObjectsFactory.getDefaultPost();
-        session.save(post);
-        post.setPostContent(newContent);
+        String newName = "new name";
+        TopicBranch branch = ObjectsFactory.getDefaultTopicBranch();
+        session.save(branch);
+        branch.setName(newName);
 
-        dao.saveOrUpdate(post);
-        session.evict(post);
-        Post result = (Post) session.get(Post.class, post.getId());
+        dao.saveOrUpdate(branch);
+        session.evict(branch);
+        TopicBranch result = (TopicBranch) session.get(TopicBranch.class, branch.getId());
 
-        assertEquals(result.getPostContent(), newContent);
+        assertEquals(result.getName(), newName);
     }
 
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void testUpdateNotNullViolation() {
-        Post post = ObjectsFactory.getDefaultPost();
-        session.save(post);
-        post.setUserCreated(null);
+        TopicBranch branch = ObjectsFactory.getDefaultTopicBranch();
+        session.save(branch);
+        branch.setName(null);
 
-        dao.saveOrUpdate(post);
+        dao.saveOrUpdate(branch);
     }
 
     @Test
     public void testDelete() {
-        Post post = ObjectsFactory.getDefaultPost();
-        session.save(post);
+        TopicBranch branch = ObjectsFactory.getDefaultTopicBranch();
+        session.save(branch);
 
-        boolean result = dao.delete(post.getId());
-        int postCount = getCount();
+        boolean result = dao.delete(branch.getId());
+        int branchCount = getCount();
 
         assertTrue(result, "Entity is not deleted");
-        assertEquals(postCount, 0);
+        assertEquals(branchCount, 0);
     }
 
     @Test
@@ -141,27 +141,24 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
     @Test
     public void testGetAll() {
-        Post post1 = ObjectsFactory.getDefaultPost();
-        session.save(post1);
-        User post2Author = ObjectsFactory.getUser("user2", "user2@mail.com");
-        session.save(post2Author);
-        Post post2 = ObjectsFactory.getPost(post2Author);
-        session.save(post2);
+        TopicBranch branch1 = ObjectsFactory.getDefaultTopicBranch();
+        session.save(branch1);
+        TopicBranch branch2 = ObjectsFactory.getDefaultTopicBranch();
+        session.save(branch2);
 
-        List<Post> posts = dao.getAll();
+        List<TopicBranch> branches = dao.getAll();
 
-        assertEquals(posts.size(), 2);
+        assertEquals(branches.size(), 2);
     }
 
     @Test
     public void testGetAllWithEmptyTable() {
-        List<Post> posts = dao.getAll();
+        List<TopicBranch> branches = dao.getAll();
 
-        assertTrue(posts.isEmpty());
+        assertTrue(branches.isEmpty());
     }
 
     private int getCount() {
-        return ((Number) session.createQuery("select count(*) from Post").uniqueResult()).intValue();
+        return ((Number) session.createQuery("select count(*) from TopicBranch").uniqueResult()).intValue();
     }
-
 }

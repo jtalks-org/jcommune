@@ -179,6 +179,58 @@
         <scope>test</scope>
       </dependency>
       <dependency>
+        <groupId>org.unitils</groupId>
+        <artifactId>unitils-core</artifactId>
+        <version>3.1</version>
+        <scope>test</scope>
+      </dependency>
+      <!--<dependency>-->
+        <!--<groupId>org.unitils</groupId>-->
+        <!--<artifactId>unitils-testng</artifactId>-->
+        <!--<version>3.1</version>-->
+        <!--<scope>test</scope>-->
+      <!--</dependency>      <dependency>-->
+        <!--<groupId>org.unitils</groupId>-->
+        <!--<artifactId>unitils-database</artifactId>-->
+        <!--<version>3.1</version>-->
+        <!--<scope>test</scope>-->
+      <!--</dependency>-->
+      <!--<dependency>-->
+        <!--<groupId>org.unitils</groupId>-->
+        <!--<artifactId>unitils-dbunit</artifactId>-->
+        <!--<version>3.1</version>-->
+        <!--<scope>test</scope>-->
+      <!--</dependency>-->
+      <!--<dependency>-->
+        <!--<groupId>org.unitils</groupId>-->
+        <!--<artifactId>unitils-mock</artifactId>-->
+        <!--<version>3.1</version>-->
+        <!--<scope>test</scope>-->
+      <!--</dependency>      <dependency>-->
+        <!--<groupId>org.unitils</groupId>-->
+        <!--<artifactId>unitils-orm</artifactId>-->
+        <!--<version>3.1</version>-->
+        <!--<scope>test</scope>-->
+      <!--</dependency>-->
+      <!--<dependency>-->
+        <!--<groupId>org.unitils</groupId>-->
+        <!--<artifactId>unitils-spring</artifactId>-->
+        <!--<version>3.1</version>-->
+        <!--<scope>test</scope>-->
+      <!--</dependency>-->
+      <!--<dependency>-->
+        <!--<groupId>org.unitils</groupId>-->
+        <!--<artifactId>unitils-test</artifactId>-->
+        <!--<version>3.1</version>-->
+        <!--<scope>test</scope>-->
+      <!--</dependency>-->
+      <!--<dependency>-->
+        <!--<groupId>org.unitils</groupId>-->
+        <!--<artifactId>unitils-dbmaintainer</artifactId>-->
+        <!--<version>3.1</version>-->
+        <!--<scope>test</scope>-->
+      <!--</dependency>-->
+      <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>jstl</artifactId>
         <version>1.2</version>

@@ -7,8 +7,8 @@
     </id>
     <property column="FIRST_NAME" name="firstName" />
     <property column="LAST_NAME" name="lastName" />
-    <property column="USERNAME" name="username" unique="true"/>
-    <property column="EMAIL" name="email" unique="true"/>
-    <property column="PASSWORD" name="password" />
+    <property column="USERNAME" name="username" unique="true" not-null="true"/>
+    <property column="EMAIL" name="email" unique="true" not-null="true"/>
+    <property column="PASSWORD" name="password" not-null="true"/>
   </class>
 </hibernate-mapping>

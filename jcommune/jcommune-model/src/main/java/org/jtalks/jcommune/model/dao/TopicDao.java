@@ -33,14 +33,6 @@ import java.util.List;
 public interface TopicDao extends Dao<Topic> {
 
     /**
-     * Load the Topic with userCreated and related posts.
-     *
-     * @param id Topic id
-     * @return loaded Topic or null if the appropriate topic wasn't found
-     */
-    Topic getTopicWithPosts(Long id);
-
-    /**
      * Load all topics according to branch Id
      * @param id Branch id
      * @return List of topics or null if the appropriate topic wasn't found

@@ -105,21 +105,6 @@ public class TransactionalTopicServiceTest {
         verify(topicDao, times(1)).getAll();
     }
 
-    @Test
-    public void getTopicWithPostsTest() {
-        Topic topic = getTopic(false);
-        List<Post> posts = new ArrayList<Post>();
-        topic.setPosts(posts);
-        when(topicDao.getTopicWithPosts(TOPIC_ID)).thenReturn(topic);
-        when(topicService.getTopicWithPosts(TOPIC_ID)).thenReturn(getTopic(false));
-
-        Topic actualTopic = topicService.getTopicWithPosts(TOPIC_ID);
-
-        Assert.assertNotNull(actualTopic.getPosts(), "Posts is null");
-
-        verify(topicDao, times(1)).getTopicWithPosts(Matchers.anyLong());
-    }
-
     /**
      * Check for the answering logic works correctly.
      */
@@ -173,11 +158,11 @@ public class TransactionalTopicServiceTest {
     public void deletePostTest(){
         Topic topic = getTopic(true);
         int expectedPostCount = topic.getPosts().size();
-        when(topicDao.getTopicWithPosts(anyLong())).thenReturn(topic);
+        when(topicDao.get(anyLong())).thenReturn(topic);
         topicService.deletePost(TOPIC_ID, POST_ID);
         int actualPostCount = topic.getPosts().size();
         Assert.assertTrue(actualPostCount == 0 || actualPostCount < expectedPostCount, "Post was not deleted");        
-        verify(topicDao, times(1)).getTopicWithPosts(anyLong());
+        verify(topicDao, times(1)).get(anyLong());
         verify(topicDao, times(1)).saveOrUpdate(Matchers.any(Topic.class));
     }
 

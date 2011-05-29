@@ -17,7 +17,6 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
 import org.jtalks.jcommune.model.dao.Dao;
@@ -52,13 +51,14 @@ public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<
      *
      * @return type of entity
      */
+    @SuppressWarnings("unchecked")
     private Class<T> getType() {
         return (Class<T>) ((ParameterizedType) getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
     private final String deleteQuery = "delete " + type.getSimpleName() + " e where e.id= :id";
-    private final String getallQuery = "from " + type.getSimpleName();
+    private final String getAllQuery = "from " + type.getSimpleName();
 
     /**
      * Get current Hibernate session.
@@ -82,42 +82,38 @@ public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<
      * {@inheritDoc}
      */
     @Override
-    public void delete(T persistent) {
-        getSession().delete(persistent);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void saveOrUpdate(T entity) {
-        getSession().save(entity);
+        Session session = getSession();
+        session.saveOrUpdate(entity);
+        session.flush();   //TODO: WOW, this shouldn't be here, it's related only to tests,
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void delete(Long id) {
-        Query query = getSession().createQuery(deleteQuery);
-        query.setLong("id", id);
-        query.executeUpdate();
+    public boolean delete(Long id) {
+        return getSession().createQuery(deleteQuery)
+                .setLong("id", id)
+                .executeUpdate() != 0;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public T get(Long id) {
-        return (T) getSession().load(type, id);
+        return (T) getSession().get(type, id);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public List<T> getAll() {
-        return getSession().createQuery(getallQuery).list();
+        return getSession().createQuery(getAllQuery).list();
     }
 
 }
