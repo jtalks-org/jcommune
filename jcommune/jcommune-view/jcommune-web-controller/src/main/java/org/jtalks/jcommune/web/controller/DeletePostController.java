@@ -45,7 +45,7 @@ public class DeletePostController {
     
     /**
      * Redirect user to confirmation page.
-     * @param topicId - topic id, this in topic which contains post which shoulb be deleted
+     * @param topicId - topic id, this in topic which contains post which should be deleted
      * @param postId - post id to delete
      * @return - return ModelAndView with to parameter topicId and postId
      */
@@ -61,7 +61,7 @@ public class DeletePostController {
     
     /**
      * Handle delete action. User confirm post deletion.
-     * @param topicId - topic id, this in topic which contains post which shoulb be deleted
+     * @param topicId - topic id, this in topic which contains post which should be deleted
      * also used for redirection back to topic.
      * @param postId - post
      * @return - redirect to /topics/topicId. 
