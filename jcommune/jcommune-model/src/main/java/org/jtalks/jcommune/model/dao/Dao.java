@@ -43,15 +43,9 @@ public interface Dao<T extends Persistent> {
      * Delete the object by it's id.
      *
      * @param id the id
+     * @return {@code true} if entity deleted successfull
      */
-    void delete(Long id);
-
-    /**
-     * Delete the object from data storage.
-     *
-     * @param persistent entity object
-     */
-    void delete(T persistent);
+    boolean delete(Long id);
 
     /**
      * Get the object by id.

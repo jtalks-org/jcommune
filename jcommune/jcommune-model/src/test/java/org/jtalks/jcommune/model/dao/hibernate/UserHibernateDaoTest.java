@@ -17,197 +17,211 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jtalks.jcommune.model.entity.Persistent;
+import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
-import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
+import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import javax.annotation.Resource;
 import java.util.List;
 
+import static org.testng.Assert.*;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
+
 /**
- * DAO tests for instance of {@link UserHibernateDao}
- *
- * @author Artem Mamchych
+ * @author Kirill Afonin
  */
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
-public class UserHibernateDaoTest extends BaseTest {
-    private static final String USERNAME = "NickName";
-    /**
-     * Hibernate Session Factory instance.
-     */
-    @Resource(name = "sessionFactory")
+@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
+@Transactional
+public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
+    @Autowired
+    private UserDao dao;
+    @Autowired
     private SessionFactory sessionFactory;
-    private UserHibernateDao dao;
-    private User entity;
-    private List<User> listAll;
+    private Session session;
 
     @BeforeMethod
     public void setUp() throws Exception {
-        dao = new UserHibernateDao();
-        dao.setSessionFactory(sessionFactory);
-        Assert.assertNotNull(sessionFactory, SESSION_FACTORY_IS_NULL);
-        entity = new User();
-        entity.setFirstName("FirstName");
-        entity.setLastName("LastName");
-        entity.setUsername(USERNAME);
-        entity.setEmail("mail@mail.com");
-        entity.setPassword("password");
-
-        clearDbTable(entity, sessionFactory);
+        session = sessionFactory.getCurrentSession();
+        ObjectsFactory.setSession(session);
     }
 
-    @AfterMethod
-    public void tearDown() throws Exception {
-        entity = null;
+    /*===== Common methods =====*/
+
+    @Test
+    public void testSave() {
+        User user = ObjectsFactory.getDefaultUser();
+
+        dao.saveOrUpdate(user);
+
+        assertNotSame(user.getId(), 0, "Id not created");
+
+        session.evict(user);
+        User result = (User) session.get(User.class, user.getId());
+
+        assertReflectionEquals(user, result);
+    }
+
+    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    public void testSaveUserWithUniqueViolation() {
+        User user = ObjectsFactory.getDefaultUser();
+        User user2 = ObjectsFactory.getDefaultUser();
+
+        dao.saveOrUpdate(user);
+        dao.saveOrUpdate(user2);
     }
 
     @Test
-    public void testEntityState() throws Exception {
-        testSave();
-        listAll = dao.getAll();
-        Assert.assertTrue(entity.equals(listAll.get(0)), PERSISTENCE_ERROR);
-        Assert.assertFalse(entity.equals(listAll.get(1)), PERSISTENCE_ERROR);
+    public void testGet() {
+        User user = ObjectsFactory.getDefaultUser();
+        session.save(user);
+
+        User result = dao.get(user.getId());
+
+        assertNotNull(result);
+        assertEquals(result.getId(), user.getId());
     }
 
     @Test
-    public void testDBEmpty() throws Exception {
-        int sizeBefore = dao.getAll().size();
-        Assert.assertEquals(0, sizeBefore, DB_TABLE_NOT_EMPTY);
+    public void testGetInvalidId() {
+        User result = dao.get(-567890L);
+
+        assertNull(result);
     }
 
     @Test
-    public void testSave() throws Exception {
-        //Add 2 users to DB
-        dao.saveOrUpdate(entity);
-        dao.saveOrUpdate(new User());
+    public void testUpdate() {
+        String newName = "new name";
+        User user = ObjectsFactory.getDefaultUser();
+        session.save(user);
+        user.setFirstName(newName);
 
-        int size = dao.getAll().size();
-        Assert.assertEquals(2, size, ENTITIES_IS_NOT_INCREASED_BY_2);
+        dao.saveOrUpdate(user);
+        session.evict(user);
+        User result = (User) session.get(User.class, user.getId());//!
+
+        assertEquals(result.getFirstName(), newName);
+    }
+
+    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    public void testUpdateNotNullViolation() {
+        User user = ObjectsFactory.getDefaultUser();
+        session.save(user);
+        user.setUsername(null);
+
+        dao.saveOrUpdate(user);
     }
 
     @Test
-    public void testDelete() throws Exception {
-        testSave();
-        listAll = dao.getAll();
-        int size = listAll.size();
-        Assert.assertEquals(2, size, DB_MUST_BE_NOT_EMPTY);
+    public void testDelete() {
+        User user = ObjectsFactory.getDefaultUser();
+        session.save(user);
 
-        for (User user : listAll) {
-            dao.delete(user);
-        }
-        testDBEmpty();
+        boolean result = dao.delete(user.getId());
+        int userCount = getCount();
+
+        assertTrue(result, "Entity is not deleted");
+        assertEquals(userCount, 0);
     }
 
     @Test
-    public void testDeleteById() throws Exception {
-        testSave();
-        listAll = dao.getAll();
-        int size = listAll.size();
-        Assert.assertEquals(2, size, DB_MUST_BE_NOT_EMPTY);
+    public void testDeleteInvalidId() {
+        boolean result = dao.delete(-100500L);
 
-        for (Persistent p : listAll) {
-            dao.delete(p.getId());
-        }
-        testDBEmpty();
+        assertFalse(result, "Entity deleted");
     }
 
     @Test
-    public void testGetById() throws Exception {
-        testSave();
-        listAll = dao.getAll();
-        int size = listAll.size();
-        Assert.assertEquals(2, size, DB_MUST_BE_NOT_EMPTY);
+    public void testGetAll() {
+        User user1 = ObjectsFactory.getDefaultUser();
+        session.save(user1);
+        User user2 = ObjectsFactory.getUser("user2", "user2@mail.com");
+        session.save(user2);
 
-        for (Persistent p : listAll) {
-            dao.delete(dao.get(p.getId()));
-        }
-        testDBEmpty();
+        List<User> users = dao.getAll();
+
+        assertEquals(users.size(), 2);
     }
 
     @Test
-    public void testGetAll() throws Exception {
-        dao.saveOrUpdate(entity);
+    public void testGetAllWithEmptyTable() {
+        List<User> users = dao.getAll();
 
-        int size = dao.getAll().size();
-        Assert.assertEquals(1, size, ENTITIES_IS_NOT_INCREASED_BY_1);
+        assertTrue(users.isEmpty());
+    }
+
+    /*===== UserDao specific methods =====*/
+
+    @Test
+    public void testGetByUsername() {
+        User user = ObjectsFactory.getDefaultUser();
+        session.save(user);
+
+        User result = dao.getByUsername(user.getUsername());
+
+        assertNotNull(result);
+        assertReflectionEquals(user, result);
     }
 
     @Test
-    public void testUpdate() throws Exception {
-        dao.saveOrUpdate(entity);
-        dao.saveOrUpdate(entity);
-        dao.saveOrUpdate(entity);
+    public void testGetByUsernameNotExist() {
+        User user = ObjectsFactory.getDefaultUser();
+        session.save(user);
 
-        int size = dao.getAll().size();
-        Assert.assertEquals(1, size, ENTITIES_IS_NOT_INCREASED_BY_1);
+        User result = dao.getByUsername("Name");
+
+        assertNull(result);
     }
 
     @Test
-    public void testGetByUsername() throws Exception {
-        dao.saveOrUpdate(entity);
+    public void testIsUserWithEmailExist() {
+        User user = ObjectsFactory.getDefaultUser();
+        session.save(user);
 
-        User user = dao.getByUsername(USERNAME);
-        Assert.assertEquals(USERNAME, user.getUsername(), "Username not match");
+        boolean result = dao.isUserWithEmailExist(user.getEmail());
+
+        assertTrue(result, "User not exist");
     }
 
     @Test
-    public void testGetByUsernameNotExist() throws Exception {
-        dao.saveOrUpdate(entity);
-
-        User user = dao.getByUsername("Name");
-        Assert.assertNull(user);
-    }
-
-    @Test
-    public void testIsUserWithEmailExist() throws Exception {
-        dao.saveOrUpdate(entity);
-        User entity2 = new User();
-        entity2.setEmail("email@dddd.co.uk");
-        dao.saveOrUpdate(entity2);
-
-        boolean result = dao.isUserWithEmailExist("mail@mail.com");
-
-        Assert.assertTrue(result, "User not exist");
-    }
-
-    @Test
-    public void testIsUserWithEmailNotExist() throws Exception {
-        dao.saveOrUpdate(entity);
-        User entity2 = new User();
-        entity2.setEmail("email@dddd.co.uk");
-        dao.saveOrUpdate(entity2);
+    public void testIsUserWithEmailNotExist() {
+        User user = ObjectsFactory.getDefaultUser();
+        session.save(user);
 
         boolean result = dao.isUserWithEmailExist("dick@head.com");
 
-        Assert.assertFalse(result, "User exist");
+        assertFalse(result, "User exist");
     }
 
     @Test
-    public void testIsUserWithUsernameExist() throws Exception {
-        dao.saveOrUpdate(entity);
-        User entity2 = new User();
-        entity2.setUsername("namename");
-        dao.saveOrUpdate(entity2);
+    public void testIsUserWithUsernameExist() {
+        User user = ObjectsFactory.getDefaultUser();
+        session.save(user);
 
-        boolean result = dao.isUserWithUsernameExist(USERNAME);
+        boolean result = dao.isUserWithUsernameExist(user.getUsername());
 
-        Assert.assertTrue(result, "User not exist");
+        assertTrue(result, "User not exist");
     }
 
     @Test
-    public void testIsUserWithUsernameNotExist() throws Exception {
-        dao.saveOrUpdate(entity);
-        User entity2 = new User();
-        entity2.setUsername("namename");
-        dao.saveOrUpdate(entity2);
+    public void testIsUserWithUsernameNotExist() {
+        User user = ObjectsFactory.getDefaultUser();
+        session.save(user);
 
-        boolean result = dao.isUserWithUsernameExist("Nonono");
+        boolean result = dao.isUserWithUsernameExist("qwertyuio");
 
-        Assert.assertFalse(result, "User exist");
+        assertFalse(result, "User exist");
+    }
+
+    private int getCount() {
+        return ((Number) session.createQuery("select count(*) from User").uniqueResult()).intValue();
     }
 }

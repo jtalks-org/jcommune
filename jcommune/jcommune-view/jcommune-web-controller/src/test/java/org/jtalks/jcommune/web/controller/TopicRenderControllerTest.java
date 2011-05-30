@@ -18,7 +18,6 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.TopicBranch;
 import org.jtalks.jcommune.service.TopicService;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
@@ -51,10 +50,10 @@ public class TopicRenderControllerTest {
         topicMap.put("selectedTopic", topic);
         topicMap.put("branchId",1l);
         
-        when(topicService.getTopicWithPosts(1l)).thenReturn(topic);
+        when(topicService.get(1l)).thenReturn(topic);
         
         ModelAndView mav = topicRenderController.showTopic(1l,1L);
-        verify(topicService).getTopicWithPosts(1l);
+        verify(topicService).get(1l);
         
         assertModelAttributeValues(mav, topicMap);
         assertViewName(mav, "renderTopic");

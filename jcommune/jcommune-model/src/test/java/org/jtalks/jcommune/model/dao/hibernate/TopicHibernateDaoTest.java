@@ -17,209 +17,186 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jtalks.jcommune.model.dao.PostDao;
-import org.jtalks.jcommune.model.dao.TopicBranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.dao.UserDao;
-import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.TopicBranch;
+import org.jtalks.jcommune.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.List;
 
-/**
- * DAO tests for instance of {@link TopicHibernateDao}
- *
- * @author Artem Mamchych
- */
-public class TopicHibernateDaoTest extends BaseTest {
+import static org.testng.Assert.*;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
-    public static final String LOADED_USER_ERROR = "Loaded user is not the same as it was saved";
-    public static final String TOPIC_POSTS_ERROR = "Topic contains wrong collection of posts";
-    public static final String USER_IS_NULL = "Topic.userCreated is null";
-    /**
-     * Hibernate Session Factory instance.
-     */
+/**
+ * @author Kirill Afonin
+ */
+@ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
+@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
+@Transactional
+public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
     private TopicDao dao;
-    @Autowired
-    private UserDao userDao;
-    @Autowired
-    private PostDao postDao;
-    @Autowired
-    private TopicBranchDao topicBranchDao;
-    private Topic entity;
-    private Post testPost;
-    private User testUser;
-    private List<Topic> listAll;
-    private User dummyUser;
+    private Session session;
 
     @BeforeMethod
     public void setUp() throws Exception {
-        entity = Topic.createNewTopic();
-        clearDbTable(entity, sessionFactory);
-
-        initUser();
-        initPost();
-        Assert.assertNotNull(testPost);
-        entity.setTitle("TopicName");
-        entity.addPost(testPost);
-        entity.setTopicStarter(testUser);
-        TopicBranch topicBranch = new TopicBranch();
-        topicBranchDao.saveOrUpdate(topicBranch);
-        entity.setBranch(topicBranch);
-
+        session = sessionFactory.getCurrentSession();
+        ObjectsFactory.setSession(session);
     }
 
-    @AfterMethod
-    public void tearDown() throws Exception {
-        entity = null;
-    }
+    /*===== Common methods =====*/
 
     @Test
-    public void testEntityState() throws Exception {
-        testSave();
-        listAll = dao.getAll();
-        Assert.assertTrue(entity.equals(listAll.get(0)), PERSISTENCE_ERROR);
-    }
+    public void testSave() {
+        Topic topic = ObjectsFactory.getDefaultTopic();
 
-    @Test
-    public void testDBEmpty() throws Exception {
-        int sizeBefore = dao.getAll().size();
-        Assert.assertEquals(0, sizeBefore, DB_TABLE_NOT_EMPTY);
-    }
-
-    @Test
-    public void testSave() throws Exception {
-        //Add 2 Topics to DB
-        dao.saveOrUpdate(entity);
-        int size = dao.getAll().size();
-        Assert.assertEquals(1, size, ENTITIES_IS_NOT_INCREASED_BY_2);
-    }
-
-    @Test
-    public void testDeleteById() throws Exception {
-        testSave();
-        listAll = dao.getAll();
-        int size = listAll.size();
-        Assert.assertEquals(1, size, DB_MUST_BE_NOT_EMPTY);
-
-        for (Persistent p : listAll) {
-            dao.delete(p.getId());
-        }
-        testDBEmpty();
-    }
-
-    @Test
-    public void testAddSomePosts() throws Exception {
-        Topic topic = getNewTopic();
-        Post firstPost = createDummyPost();
-        topic.addPost(firstPost);
         dao.saveOrUpdate(topic);
-        Assert.assertEquals(topic.getPosts().size(), 1, "More than 1 posts in the topic! " + topic.getPosts().size());
-        Assert.assertEquals(topic.getPosts().get(0), firstPost, "The first post of the topic loaded or saved incorrectly");
-        Assert.assertEquals(dao.getAll().size(), 1, "More than 1 Topic in the DB! " + dao.getAll().size());
-        Post secondPost = createDummyPost();
-        Topic loadedTopic = dao.get(topic.getId());
-        loadedTopic.addPost(secondPost);
+
+        assertNotSame(topic.getId(), 0, "Id not created");
+
+        session.evict(topic);
+        Topic result = (Topic) session.get(Topic.class, topic.getId());
+
+        assertReflectionEquals(topic, result);
+    }
+
+    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    public void testSavePostWithDateNotNullViolation() {
+        Topic topic = new Topic();
+
         dao.saveOrUpdate(topic);
-        loadedTopic = dao.get(loadedTopic.getId());
-        List loadedPosts = loadedTopic.getPosts();
-        int postsNumber = loadedPosts.size();
-        int topicsNumber = dao.getAll().size();
-        Assert.assertEquals(postsNumber, 2, "The Topic should contains 2 posts but there are " + postsNumber);
-        Assert.assertEquals(loadedPosts.get(0), firstPost, "The first post of the topic loaded or saved incorrectly");
-        Assert.assertEquals(loadedPosts.get(1), secondPost, "The second post of the topic loaded or saved incorrectly");
-        Assert.assertEquals(topicsNumber, 1, "More than 1 Topic in the DB! " + topicsNumber);
-    }
-
-    public Post createDummyPost() {
-        Post post = Post.createNewPost();
-        post.setUserCreated(getDummyUser());
-        post.setPostContent("Post content " + post.getCreationDate());
-        return post;
-    }
-
-    public User getDummyUser() {
-        if (this.dummyUser == null) {
-            dummyUser = new User();
-            dummyUser.setFirstName("Dummy FNM");
-            dummyUser.setLastName("Dummy LNM");
-            dummyUser.setUsername("Dummy Nick");
-            userDao.saveOrUpdate(dummyUser);
-        }
-        return this.dummyUser;
     }
 
     @Test
-    public void testGetById() throws Exception {
-        testSave();// one test in another test...may be skip test toogle? ) nono its not solution/// may be set up a test configure hete
-        listAll = dao.getAll();
-        int size = listAll.size();
-        Assert.assertEquals(1, size, DB_MUST_BE_NOT_EMPTY);
+    public void testGet() {
+        Topic topic = ObjectsFactory.getDefaultTopic();
+        session.save(topic);
 
-        for (Persistent p : listAll) {
-            dao.delete(dao.get(p.getId()));
-        }
-        testDBEmpty();
+        Topic result = dao.get(topic.getId());
+
+        assertNotNull(result);
+        assertEquals(result.getId(), topic.getId());
+    }
+
+
+    @Test
+    public void testGetInvalidId() {
+        Topic result = dao.get(-567890L);
+
+        assertNull(result);
     }
 
     @Test
-    public void testGetAll() throws Exception {
-        dao.saveOrUpdate(entity);
+    public void testUpdate() {
+        String newTitle = "new title";
+        Topic topic = ObjectsFactory.getDefaultTopic();
+        session.save(topic);
+        topic.setTitle(newTitle);
 
-        int size = dao.getAll().size();
-        Assert.assertEquals(1, size, ENTITIES_IS_NOT_INCREASED_BY_1);
+        dao.saveOrUpdate(topic);
+        session.evict(topic);
+        Topic result = (Topic) session.get(Topic.class, topic.getId());
+
+        assertEquals(result.getTitle(), newTitle);
+    }
+
+    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    public void testUpdateNotNullViolation() {
+        Topic post = ObjectsFactory.getDefaultTopic();
+        session.save(post);
+        post.setBranch(null);
+
+        dao.saveOrUpdate(post);
     }
 
     @Test
-    public void testUpdate() throws Exception {
-        dao.saveOrUpdate(entity);
-        dao.saveOrUpdate(entity);
-        dao.saveOrUpdate(entity);
+    public void testDelete() {
+        Topic post = ObjectsFactory.getDefaultTopic();
+        session.save(post);
 
-        int size = dao.getAll().size();
-        Assert.assertEquals(1, size, ENTITIES_IS_NOT_INCREASED_BY_1);
-    }                   //
+        boolean result = dao.delete(post.getId());
+        int postCount = getCount();
+
+        assertTrue(result, "Entity is not deleted");
+        assertEquals(postCount, 0);
+    }
 
     @Test
-    public void testGetTopicWithPosts() throws Exception {
-        testSave();
-        Topic topic = dao.getTopicWithPosts(entity.getId());
-        List postst = topic.getPosts();
-        Assert.assertEquals(postst.size(), 1);
+    public void testDeleteInvalidId() {
+        boolean result = dao.delete(-100500L);
+
+        assertFalse(result, "Entity deleted");
     }
 
-    private void initPost() {
-        Post post = Post.createNewPost();
-        post.setUserCreated(testUser);
-        post.setPostContent("Test content");
-        postDao.saveOrUpdate(post);
-        this.testPost = post;
+    @Test
+    public void testGetAll() {
+        Topic topic = ObjectsFactory.getDefaultTopic();
+        session.save(topic);
+        User topic2Author = ObjectsFactory.getUser("user2", "user2@mail.com");
+        session.save(topic2Author);
+        Topic topic2 = ObjectsFactory.getTopic(topic2Author);
+        session.save(topic2);
+
+        List<Topic> posts = dao.getAll();
+
+        assertEquals(posts.size(), 2);
     }
 
-    private void initUser() {
-        User user = new User();
-        user.setFirstName("FNM");
-        user.setLastName("LNM");
-        user.setUsername("TestNickname");
-        userDao.saveOrUpdate(user);
-        this.testUser = user;
+    @Test
+    public void testGetAllWithEmptyTable() {
+        List<Topic> posts = dao.getAll();
+
+        assertTrue(posts.isEmpty());
     }
 
-    private Topic getNewTopic() {
-        Topic topic = Topic.createNewTopic();
-        topic.setTitle("Topic Title");
-        topic.setTopicStarter(getDummyUser());
-        TopicBranch topicBranch = new TopicBranch();
-        topicBranchDao.saveOrUpdate(topicBranch);
-        topic.setBranch(topicBranch);
-        return topic;
+    /*===== TopicDao specific methods =====*/
+
+    @Test
+    public void testGetAllTopicsInBranch() {
+        TopicBranch branch = ObjectsFactory.getDefaultTopicBranch();
+        User topicsAuthor = ObjectsFactory.getDefaultUser();
+        Topic topic1 = Topic.createNewTopic();
+        Topic topic2 = Topic.createNewTopic();
+        topic1.setBranch(branch);
+        topic2.setBranch(branch);
+        topic1.setTitle("title1");
+        topic2.setTitle("title2");
+        topic1.setTopicStarter(topicsAuthor);
+        topic2.setTopicStarter(topicsAuthor);
+        session.save(branch);
+        session.save(topicsAuthor);
+        session.save(topic1);
+        session.save(topic2);
+
+        List<Topic> topics = dao.getAllTopicsAccordingToBranch(branch.getId());
+
+        assertEquals(topics.size(), 2);
     }
-}              
+
+
+    @Test
+    public void testGetAllTopicsInBranchEmptyBranch() {
+        TopicBranch branch = ObjectsFactory.getDefaultTopicBranch();
+        session.save(branch);
+
+        List<Topic> topics = dao.getAllTopicsAccordingToBranch(branch.getId());
+
+        assertEquals(topics.size(), 0);
+    }
+
+    private int getCount() {
+        return ((Number) session.createQuery("select count(*) from Topic").uniqueResult()).intValue();
+    }
+}

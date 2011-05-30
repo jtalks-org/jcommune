@@ -17,8 +17,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -26,6 +24,8 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicBranchService;
 import org.jtalks.jcommune.service.TopicService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -46,8 +46,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     /**
      * Create an instance of User entity based service
      *
-     * @param dao             - data access object, which should be able do all CRUD operations with topic entity.
-     * @param securityService {@link SecurityService} for retrieving current user.
+     * @param dao                data access object, which should be able do all CRUD operations with topic entity
+     * @param securityService    {@link SecurityService} for retrieving current user
+     * @param topicBranchService {@link TopicBranchService} instance to be injected
      */
     public TransactionalTopicService(TopicDao dao, SecurityService securityService,
                                      TopicBranchService topicBranchService) {
@@ -61,7 +62,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      */
     @Override
     public Topic getTopicWithPosts(long id) {
-        return dao.getTopicWithPosts(id);
+        return dao.get(id);
     }
 
     /**
@@ -93,7 +94,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         post.setUserCreated(currentUser);
         post.setPostContent(bodyText);
 
-        Topic topic = Topic.createNewTopic();        
+        Topic topic = Topic.createNewTopic();
         topic.setTitle(topicName);
         topic.setTopicStarter(currentUser);
         topic.addPost(post);
@@ -103,29 +104,29 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     }
 
     /**
-     * @{inheritDoc}
+     * {@inheritDoc}
      */
-
     @Override
     public List<Topic> getAllTopicsAccordingToBranch(Long id) {
         return dao.getAllTopicsAccordingToBranch(id);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void deletePost(long topicId, long postId) {
         logger.debug("User confirm post removing postId = " + postId);
-        Topic topic = dao.getTopicWithPosts(topicId);
+        Topic topic = dao.get(topicId);
         List<Post> posts = topic.getPosts();
-        for(Post post: posts){
-            if(post.getId() == postId){
+
+        for (Post post : posts) {
+            if (post.getId() == postId) {
                 posts.remove(post);
-                dao.saveOrUpdate(topic);
                 break;
             }
         }
+        dao.saveOrUpdate(topic);
     }
 
 }

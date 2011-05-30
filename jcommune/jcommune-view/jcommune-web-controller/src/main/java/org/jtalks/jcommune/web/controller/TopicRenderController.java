@@ -60,7 +60,7 @@ public final class TopicRenderController {
     @RequestMapping(value = "/branch/{branchId}/topic/{topicId}", method = RequestMethod.GET)
     public ModelAndView showTopic(@PathVariable("topicId") long topicId,
                                   @PathVariable("branchId") long branchId) {
-        Topic selectedTopic = topicService.getTopicWithPosts(topicId);
+        Topic selectedTopic = topicService.get(topicId);
         ModelAndView mav = new ModelAndView("renderTopic");
         mav.addObject("selectedTopic", selectedTopic);
         mav.addObject("branchId",branchId);

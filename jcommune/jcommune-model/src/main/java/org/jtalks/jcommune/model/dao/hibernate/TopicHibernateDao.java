@@ -42,13 +42,4 @@ public class TopicHibernateDao extends AbstractHibernateDao<Topic> implements To
         return query.list();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Topic getTopicWithPosts(Long id) {
-        Query query = getSession().getNamedQuery("getTopicWithPosts");
-        query.setLong("topicId", id);
-        return (Topic) query.uniqueResult();
-    }
 }
