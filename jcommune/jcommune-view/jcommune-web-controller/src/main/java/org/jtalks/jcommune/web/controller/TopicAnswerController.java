@@ -61,7 +61,8 @@ public class TopicAnswerController {
      */
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView getAnswerPage(@PathVariable("topicId") Long topicId,
-                                      @RequestParam(value = "validationError", required = false) Boolean validationError,
+                                      @RequestParam(value = "validationError", required = false)
+                                      Boolean validationError,
                                       @PathVariable("branchId") long branchId) {
         ModelAndView mav = new ModelAndView("answer");
         Topic answeringTopic = topicService.get(topicId);
@@ -75,7 +76,8 @@ public class TopicAnswerController {
     }
 
     /**
-     * Process the answer form. Adds new post to the specified topic and redirects to the topic view page.
+     * Process the answer form. Adds new post to the specified topic and redirects to the
+     * topic view page.
      *
      * @param topicId  the id of the answered topic
      * @param bodyText the content of the answer

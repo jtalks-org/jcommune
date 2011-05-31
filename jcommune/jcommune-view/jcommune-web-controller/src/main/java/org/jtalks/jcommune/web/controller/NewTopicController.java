@@ -19,7 +19,6 @@ package org.jtalks.jcommune.web.controller;
 
 
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,20 +45,16 @@ import javax.validation.Valid;
 public final class NewTopicController {
 
     private TopicService topicService;
-    private SecurityService securityService;
 
     /**
      * Constructor creates MVC controller with specifying TopicService
      * objects injected via autowiring
      *
      * @param topicService    {@link TopicService}   the object which provides actions on Topic entity
-     * @param securityService {@link org.jtalks.jcommune.service.SecurityService}
      */
     @Autowired
-    public NewTopicController(TopicService topicService,
-                              SecurityService securityService) {
+    public NewTopicController(TopicService topicService) {
         this.topicService = topicService;
-        this.securityService = securityService;
     }
 
     /**

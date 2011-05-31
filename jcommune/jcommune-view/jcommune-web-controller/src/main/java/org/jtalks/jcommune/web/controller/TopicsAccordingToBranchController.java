@@ -48,9 +48,11 @@ public final class TopicsAccordingToBranchController {
      * Class constructor which creates MVC controller with specifying TopicService
      * object injected via autowiring
      *
-     * @param topicService {@link TopicService}the object that provides retrieving  data or saving to database
-     * @param branchService {@link org.jtalks.jcommune.service.BranchService} the object that provides retrieving data or saving to
-     * database
+     * @param topicService  {@link TopicService}the object that provides retrieving
+     *                      data or saving to database
+     * @param branchService {@link org.jtalks.jcommune.service.BranchService} the object
+     *                      that provides retrieving data or saving to
+     *                      database
      */
     @Autowired
     public TopicsAccordingToBranchController(TopicService topicService, BranchService branchService) {
@@ -61,7 +63,8 @@ public final class TopicsAccordingToBranchController {
     /**
      * Method handles only GET requests with "/forum" URI
      * and display JSP page with existing topics
-     * @param branchId  branch id which recieved from the url pattern
+     *
+     * @param branchId branch id which recieved from the url pattern
      * @return the ModelAndView object, with "forum" as view name
      */
 
