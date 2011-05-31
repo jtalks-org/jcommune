@@ -17,7 +17,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.mockito.Mock;
@@ -45,13 +44,11 @@ public class NewTopicControllerTest {
     private NewTopicController controller;
     @Mock
     private TopicService topicService;
-    @Mock
-    private SecurityService securityService;
 
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
-        controller = new NewTopicController(topicService, securityService);
+        controller = new NewTopicController(topicService);
     }
 
 
