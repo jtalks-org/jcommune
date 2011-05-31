@@ -6,11 +6,11 @@
            prefix="decorator" %>
 <html>
 <head>
-    <title><decorator:title default="JCommune"/>></title>
+    <title><decorator:title default="JCommune"/></title>
     <meta name="keywords" content="">
     <meta name="description" content="">
     <meta http-equiv="Content-type" value="text/html; charset=utf-8" content="">
-    <LINK href="${pageContext.request.contextPath}/css/main.css"
+    <link href="${pageContext.request.contextPath}/css/main.css"
           type=text/css rel=stylesheet>
 </head>
 <body>
