@@ -318,51 +318,7 @@
     </plugins>
   </build>
 
-  <distributionManagement>
- <!-- Publish the versioned releases here -->
- <repository>
-  <id>jtalks-nexus</id>
-  <name>jtalks nexus</name>
-  <url>dav:http://repo.jtalks.org/content/repositories/releases</url>
- </repository>
 
- <!-- Publish the versioned releases here -->
- <snapshotRepository>
-    <id>snapshots</id>
-    <url>http://repo.jtalks.org/content/repositories/snapshots</url>
-  </snapshotRepository>
-</distributionManagement>
-
-<!-- download artifacts from this repo -->
-<repositories>
- <repository>
-  <id>jtalks-nexus</id>
-  <name>jtalks</name>
-  <url>http://repo.jtalks.org/content/groups/public</url>
-  <releases>
-   <enabled>true</enabled>
-  </releases>
-
-  <snapshots>
-   <enabled>true</enabled>
-  </snapshots>
- </repository>
-</repositories>
-
-<!-- download plugins from this repo -->
-<pluginRepositories>
- <pluginRepository>
-  <id>jtalks-nexus</id>
-  <name>jtalks</name>
-  <url>http://repo.jtalks.org/content/groups/public</url>
-  <releases>
-   <enabled>true</enabled>
-  </releases>
-  <snapshots>
-   <enabled>true</enabled>
-  </snapshots>
- </pluginRepository>
-</pluginRepositories>
 
   <properties>
     <hibernateVersion>3.3.2.GA</hibernateVersion>
