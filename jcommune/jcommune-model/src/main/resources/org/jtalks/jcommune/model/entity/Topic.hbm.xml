@@ -21,8 +21,8 @@
     <property name="creationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
               column="CREATION_DATE" not-null="true"/>
 
-    <many-to-one name="branch" class="org.jtalks.jcommune.model.entity.TopicBranch"
-                 column="TOPIC_BRANCH" not-null="true" foreign-key="FK_TOPIC_BRANCH"/>
+    <many-to-one name="branch" class="Branch"
+                 column="BRANCH" not-null="true" foreign-key="FK_BRANCH"/>
   </class>
 
   <query name="getAllTopicsAccordingToBranch">

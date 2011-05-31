@@ -2,8 +2,8 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
-  <class name="org.jtalks.jcommune.model.entity.TopicBranch" table="TOPICS_BRANCH">
-    <id column="TOPIC_BRANCH_ID" name="id" unsaved-value="0">
+  <class name="Branch" table="BRANCH">
+    <id column="BRANCH_ID" name="id" unsaved-value="0">
       <generator class="native"/>
     </id>
     <property name="name" column="NAME" not-null="true"/>

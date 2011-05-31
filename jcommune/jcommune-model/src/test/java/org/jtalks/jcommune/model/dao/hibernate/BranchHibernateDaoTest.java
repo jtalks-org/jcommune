@@ -19,8 +19,8 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jtalks.jcommune.model.dao.TopicBranchDao;
-import org.jtalks.jcommune.model.entity.TopicBranch;
+import org.jtalks.jcommune.model.dao.BranchDao;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -41,12 +41,12 @@ import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEqua
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
-public class TopicBranchHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
+public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
 
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
-    private TopicBranchDao dao;
+    private BranchDao dao;
     private Session session;
 
     @BeforeMethod
@@ -59,14 +59,14 @@ public class TopicBranchHibernateDaoTest extends AbstractTransactionalTestNGSpri
 
     @Test
     public void testSave() {
-        TopicBranch branch = ObjectsFactory.getDefaultTopicBranch();
+        Branch branch = ObjectsFactory.getDefaultTopicBranch();
 
         dao.saveOrUpdate(branch);
 
         assertNotSame(branch.getId(), 0, "Id not created");
 
         session.evict(branch);
-        TopicBranch result = (TopicBranch) session.get(TopicBranch.class, branch.getId());
+        Branch result = (Branch) session.get(Branch.class, branch.getId());
 
         assertReflectionEquals(branch, result);
     }
@@ -74,17 +74,17 @@ public class TopicBranchHibernateDaoTest extends AbstractTransactionalTestNGSpri
 
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void testSaveBranchWithNameNotNullViolation() {
-        TopicBranch branch = new TopicBranch();
+        Branch branch = new Branch();
 
         dao.saveOrUpdate(branch);
     }
 
     @Test
     public void testGet() {
-        TopicBranch branch = ObjectsFactory.getDefaultTopicBranch();
+        Branch branch = ObjectsFactory.getDefaultTopicBranch();
         session.save(branch);
 
-        TopicBranch result = dao.get(branch.getId());
+        Branch result = dao.get(branch.getId());
 
         assertNotNull(result);
         assertEquals(result.getId(), branch.getId());
@@ -92,7 +92,7 @@ public class TopicBranchHibernateDaoTest extends AbstractTransactionalTestNGSpri
 
     @Test
     public void testGetInvalidId() {
-        TopicBranch result = dao.get(-567890L);
+        Branch result = dao.get(-567890L);
 
         assertNull(result);
     }
@@ -100,20 +100,20 @@ public class TopicBranchHibernateDaoTest extends AbstractTransactionalTestNGSpri
     @Test
     public void testUpdate() {
         String newName = "new name";
-        TopicBranch branch = ObjectsFactory.getDefaultTopicBranch();
+        Branch branch = ObjectsFactory.getDefaultTopicBranch();
         session.save(branch);
         branch.setName(newName);
 
         dao.saveOrUpdate(branch);
         session.evict(branch);
-        TopicBranch result = (TopicBranch) session.get(TopicBranch.class, branch.getId());
+        Branch result = (Branch) session.get(Branch.class, branch.getId());
 
         assertEquals(result.getName(), newName);
     }
 
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void testUpdateNotNullViolation() {
-        TopicBranch branch = ObjectsFactory.getDefaultTopicBranch();
+        Branch branch = ObjectsFactory.getDefaultTopicBranch();
         session.save(branch);
         branch.setName(null);
 
@@ -122,7 +122,7 @@ public class TopicBranchHibernateDaoTest extends AbstractTransactionalTestNGSpri
 
     @Test
     public void testDelete() {
-        TopicBranch branch = ObjectsFactory.getDefaultTopicBranch();
+        Branch branch = ObjectsFactory.getDefaultTopicBranch();
         session.save(branch);
 
         boolean result = dao.delete(branch.getId());
@@ -141,24 +141,24 @@ public class TopicBranchHibernateDaoTest extends AbstractTransactionalTestNGSpri
 
     @Test
     public void testGetAll() {
-        TopicBranch branch1 = ObjectsFactory.getDefaultTopicBranch();
+        Branch branch1 = ObjectsFactory.getDefaultTopicBranch();
         session.save(branch1);
-        TopicBranch branch2 = ObjectsFactory.getDefaultTopicBranch();
+        Branch branch2 = ObjectsFactory.getDefaultTopicBranch();
         session.save(branch2);
 
-        List<TopicBranch> branches = dao.getAll();
+        List<Branch> branches = dao.getAll();
 
         assertEquals(branches.size(), 2);
     }
 
     @Test
     public void testGetAllWithEmptyTable() {
-        List<TopicBranch> branches = dao.getAll();
+        List<Branch> branches = dao.getAll();
 
         assertTrue(branches.isEmpty());
     }
 
     private int getCount() {
-        return ((Number) session.createQuery("select count(*) from TopicBranch").uniqueResult()).intValue();
+        return ((Number) session.createQuery("select count(*) from Branch").uniqueResult()).intValue();
     }
 }

@@ -33,7 +33,7 @@
   </bean>
 
   <bean id="topicBranchService"
-        class="org.jtalks.jcommune.service.transactional.TransactionalTopicBranchService">
+        class="org.jtalks.jcommune.service.transactional.TransactionalBranchService">
     <constructor-arg index="0" ref="topicBranchDao"/>
   </bean>
 

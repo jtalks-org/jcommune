@@ -17,9 +17,9 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.TopicBranch;
-import org.jtalks.jcommune.service.TopicBranchService;
+import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -42,34 +42,37 @@ import java.util.List;
 @Controller
 public final class TopicsAccordingToBranchController {
     private TopicService topicService;
-    private TopicBranchService topicBranchService;
+    private BranchService branchService;
 
     /**
      * Class constructor which creates MVC controller with specifying TopicService
      * object injected via autowiring
      *
-     * @param topicService {@link TopicService}the object that provides retrieving  data or saving to database
-     * @param topicBranchService {@link TopicBranchService} the object that provides retrieving data or saving to
-     * database
+     * @param topicService  {@link TopicService}the object that provides retrieving
+     *                      data or saving to database
+     * @param branchService {@link org.jtalks.jcommune.service.BranchService} the object
+     *                      that provides retrieving data or saving to
+     *                      database
      */
     @Autowired
-    public TopicsAccordingToBranchController(TopicService topicService, TopicBranchService topicBranchService) {
+    public TopicsAccordingToBranchController(TopicService topicService, BranchService branchService) {
         this.topicService = topicService;
-        this.topicBranchService = topicBranchService;
+        this.branchService = branchService;
     }
 
     /**
      * Method handles only GET requests with "/forum" URI
      * and display JSP page with existing topics
-     * @param branchId  branch id which recieved from the url pattern
+     *
+     * @param branchId branch id which recieved from the url pattern
      * @return the ModelAndView object, with "forum" as view name
      */
 
     @RequestMapping(value = "/branch/{branchId}", method = RequestMethod.GET)
     public ModelAndView showAllTopics(@PathVariable("branchId") long branchId) {
         List<Topic> topics = topicService.getAllTopicsAccordingToBranch(branchId);
-        TopicBranch topicBranch = topicBranchService.get(branchId);
-        return new ModelAndView("topicsBranch", "topicsList", topics).addObject("branchId", topicBranch.getId());
+        Branch branch = branchService.get(branchId);
+        return new ModelAndView("topicsBranch", "topicsList", topics).addObject("branchId", branch.getId());
     }
 
 

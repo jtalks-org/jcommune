@@ -16,26 +16,15 @@
  * The jtalks.org Project
  */
 
-package org.jtalks.jcommune.service.transactional;
+package org.jtalks.jcommune.model.dao;
 
-import org.jtalks.jcommune.model.dao.TopicBranchDao;
-import org.jtalks.jcommune.model.entity.TopicBranch;
-import org.jtalks.jcommune.service.TopicBranchService;
+import org.jtalks.jcommune.model.entity.Branch;
 
 /**
  * @author Vitaliy Kravchenko
  */
 
-public class TransactionalTopicBranchService extends AbstractTransactionalEntityService<TopicBranch, TopicBranchDao>
-        implements TopicBranchService {
+public interface BranchDao extends Dao<Branch> {
 
 
-    /**
-     * Create an instance of entity based service
-     *
-     * @param topicBranchDao - data access object, which should be able do all CRUD operations.
-     */
-    public TransactionalTopicBranchService(TopicBranchDao topicBranchDao) {
-        this.dao = topicBranchDao;
-    }
 }

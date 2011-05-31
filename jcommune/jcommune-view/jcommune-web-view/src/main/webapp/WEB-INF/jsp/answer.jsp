@@ -2,6 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
+
 <html>
   <head>
     <title><spring:message code="label.answer_to"/>: <c:out value="${topic.title}"/></title>
@@ -14,7 +15,6 @@
         <spring:message code="label.answer_to" />: <c:out value="${topic.title}"/>
       </h1>
       <form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/answer.html" method="POST">
-        <input type="hidden" name="topicId" value="${topic.id}" />
         <c:if test="${validationError==true}">
           <div style="margin: 10px; color: #e43131"><spring:message code="label.answer_error"/></div>
         </c:if>

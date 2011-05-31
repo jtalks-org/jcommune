@@ -20,8 +20,8 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.TopicBranch;
 import org.jtalks.jcommune.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -165,7 +165,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
     @Test
     public void testGetAllTopicsInBranch() {
-        TopicBranch branch = ObjectsFactory.getDefaultTopicBranch();
+        Branch branch = ObjectsFactory.getDefaultTopicBranch();
         User topicsAuthor = ObjectsFactory.getDefaultUser();
         Topic topic1 = Topic.createNewTopic();
         Topic topic2 = Topic.createNewTopic();
@@ -188,7 +188,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
     @Test
     public void testGetAllTopicsInBranchEmptyBranch() {
-        TopicBranch branch = ObjectsFactory.getDefaultTopicBranch();
+        Branch branch = ObjectsFactory.getDefaultTopicBranch();
         session.save(branch);
 
         List<Topic> topics = dao.getAllTopicsAccordingToBranch(branch.getId());

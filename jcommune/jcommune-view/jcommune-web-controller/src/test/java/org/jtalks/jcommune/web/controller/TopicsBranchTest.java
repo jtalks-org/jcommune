@@ -17,8 +17,8 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.TopicBranch;
-import org.jtalks.jcommune.service.TopicBranchService;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicService;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
@@ -30,21 +30,21 @@ import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 
 public class TopicsBranchTest {
     private TopicService topicService;
-    private TopicBranchService branchService;
+    private BranchService branchService;
     private TopicsAccordingToBranchController topicsAccordingToBranchController;
 
     @BeforeMethod
     public void init() {
         topicService = mock(TopicService.class);
-        branchService = mock(TopicBranchService.class);
+        branchService = mock(BranchService.class);
         topicsAccordingToBranchController = new TopicsAccordingToBranchController(topicService, branchService);
     }
 
     @Test
     public void testShowAllTopics() {
-        TopicBranch topicBranch = new TopicBranch();
-        topicBranch.setId(1l);
-        when(branchService.get(1l)).thenReturn(topicBranch);
+        Branch branch = new Branch();
+        branch.setId(1l);
+        when(branchService.get(1l)).thenReturn(branch);
 
         ModelAndView mav = topicsAccordingToBranchController.showAllTopics(1l);
 

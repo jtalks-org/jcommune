@@ -64,6 +64,7 @@ public final class TopicRenderController {
         ModelAndView mav = new ModelAndView("renderTopic");
         mav.addObject("selectedTopic", selectedTopic);
         mav.addObject("branchId",branchId);
+        mav.addObject("topicId",topicId);
         return mav;
     }
 }

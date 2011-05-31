@@ -18,9 +18,9 @@
 
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.jcommune.model.dao.TopicBranchDao;
-import org.jtalks.jcommune.model.entity.TopicBranch;
-import org.jtalks.jcommune.service.TopicBranchService;
+import org.jtalks.jcommune.model.dao.BranchDao;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.service.BranchService;
 import org.mockito.Matchers;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -39,45 +39,45 @@ import static org.mockito.Mockito.*;
 public class TransactionalTopicBranchServiceTest {
     private long BRANCH_ID = 1;
 
-    private TopicBranchDao topicBranchDao;
-    private TopicBranchService topicBranchService;
+    private BranchDao branchDao;
+    private BranchService branchService;
 
     @BeforeMethod
     public void setUp() throws Exception {
-        topicBranchDao = mock(TopicBranchDao.class);
-        topicBranchService = new TransactionalTopicBranchService(topicBranchDao);
+        branchDao = mock(BranchDao.class);
+        branchService = new TransactionalBranchService(branchDao);
     }
 
     @Test
     public void deleteByIdTest(){
-        topicBranchService.delete(BRANCH_ID);
+        branchService.delete(BRANCH_ID);
 
-        verify(topicBranchDao, times(1)).delete(Matchers.anyLong());
+        verify(branchDao, times(1)).delete(Matchers.anyLong());
     }
 
     @Test
     public void getByIdTest(){
-        when(topicBranchDao.get(BRANCH_ID)).thenReturn(getTopicBranch());
-        TopicBranch post = topicBranchService.get(BRANCH_ID);
+        when(branchDao.get(BRANCH_ID)).thenReturn(getTopicBranch());
+        Branch post = branchService.get(BRANCH_ID);
         Assert.assertEquals(post, getTopicBranch());
-        verify(topicBranchDao, times(1)).get(Matchers.anyLong());
+        verify(branchDao, times(1)).get(Matchers.anyLong());
     }
 
     @Test
     public void getAllTest(){
-        List<TopicBranch> expectedTopicBranchList = new ArrayList<TopicBranch>();
-        expectedTopicBranchList.add(getTopicBranch());
-        when(topicBranchDao.getAll()).thenReturn(expectedTopicBranchList);
-        List<TopicBranch> actualTopicBranchList = topicBranchService.getAll();
-        Assert.assertEquals(actualTopicBranchList, expectedTopicBranchList);
-        verify(topicBranchDao, times(1)).getAll();
+        List<Branch> expectedBranchList = new ArrayList<Branch>();
+        expectedBranchList.add(getTopicBranch());
+        when(branchDao.getAll()).thenReturn(expectedBranchList);
+        List<Branch> actualBranchList = branchService.getAll();
+        Assert.assertEquals(actualBranchList, expectedBranchList);
+        verify(branchDao, times(1)).getAll();
     }
 
-    private TopicBranch getTopicBranch(){
-        TopicBranch topicBranch = new TopicBranch();
-        topicBranch.setId(BRANCH_ID);
-        topicBranch.setDescription("some info");
-        topicBranch.setName("Java Core");
-        return topicBranch;
+    private Branch getTopicBranch(){
+        Branch branch = new Branch();
+        branch.setId(BRANCH_ID);
+        branch.setDescription("some info");
+        branch.setName("Java Core");
+        return branch;
     }
 }

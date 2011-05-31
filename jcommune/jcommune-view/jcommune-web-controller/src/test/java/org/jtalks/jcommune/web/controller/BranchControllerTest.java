@@ -18,8 +18,8 @@
 
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.TopicBranch;
-import org.jtalks.jcommune.service.TopicBranchService;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.service.BranchService;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -27,40 +27,38 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
 
 
 /**
  * @author Kravchenko Vitaliy
  */
-public class TopicBranchControllerTest {
-    private TopicBranchService topicBranchService;
-    private TopicsBranchController topicsBranchController;
+public class BranchControllerTest {
+    private BranchService branchService;
+    private BranchController topicsBranchController;
 
     @BeforeMethod
     public void init() {
-        topicBranchService = mock(TopicBranchService.class);
-        topicsBranchController = new TopicsBranchController(topicBranchService);
+        branchService = mock(BranchService.class);
+        topicsBranchController = new BranchController(branchService);
     }
 
     @Test
     public void testPopulateFormWithBranches(){
-        List<TopicBranch> topicBranches = new ArrayList<TopicBranch>();
-        TopicBranch firstTopicBranch = new TopicBranch();
-        firstTopicBranch.setId(1L);
-        TopicBranch secondTopicBranch = new TopicBranch();
-        secondTopicBranch.setId(2L);
-        topicBranches.add(firstTopicBranch);
-        topicBranches.add(secondTopicBranch);
+        List<Branch> branches = new ArrayList<Branch>();
+        Branch firstBranch = new Branch();
+        firstBranch.setId(1L);
+        Branch secondBranch = new Branch();
+        secondBranch.setId(2L);
+        branches.add(firstBranch);
+        branches.add(secondBranch);
         
-        when(topicBranchService.getAll()).thenReturn(topicBranches);
-        assertEquals(topicBranches.size(),topicsBranchController.populateFormWithBranches().size());
+        when(branchService.getAll()).thenReturn(branches);
+        assertEquals(branches.size(),topicsBranchController.populateFormWithBranches().size());
 
-        verify(topicBranchService).getAll();
+        verify(branchService).getAll();
     }
 
     @Test

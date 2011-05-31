@@ -25,7 +25,7 @@
   <bean id="postDao"
         class="org.jtalks.jcommune.model.dao.hibernate.PostHibernateDao"
         parent="abstractHibernateDao"/>
-  <bean id="topicBranchDao" class="org.jtalks.jcommune.model.dao.hibernate.TopicBranchHibernateDao"
+  <bean id="topicBranchDao" class="org.jtalks.jcommune.model.dao.hibernate.BranchHibernateDao"
         parent="abstractHibernateDao"/>
 
   <!--Injecting sessionFactory bean to class AbstractHibernateDao, this way
@@ -52,7 +52,7 @@
         <value>/org/jtalks/jcommune/model/entity/User.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/Post.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/Topic.hbm.xml</value>
-        <value>/org/jtalks/jcommune/model/entity/TopicsBranch.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/Branch.hbm.xml</value>
       </list>
     </property>
     <property name="hibernateProperties">

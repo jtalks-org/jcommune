@@ -18,9 +18,9 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Session;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.TopicBranch;
 import org.jtalks.jcommune.model.entity.User;
 
 /**
@@ -78,8 +78,8 @@ public final class ObjectsFactory {
         return newTopic;
     }
 
-    public static TopicBranch getDefaultTopicBranch() {
-        TopicBranch newBranch = new TopicBranch();
+    public static Branch getDefaultTopicBranch() {
+        Branch newBranch = new Branch();
         newBranch.setName("branch name");
         newBranch.setDescription("branch description");
         return newBranch;

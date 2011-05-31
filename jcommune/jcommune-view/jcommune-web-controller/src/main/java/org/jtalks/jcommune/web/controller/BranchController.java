@@ -19,8 +19,8 @@
 
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.TopicBranch;
-import org.jtalks.jcommune.service.TopicBranchService;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.service.BranchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -35,28 +35,28 @@ import java.util.List;
  */
 
 @Controller
-public final class TopicsBranchController {
+public final class BranchController {
 
-    private TopicBranchService topicBranchService;
+    private BranchService branchService;
 
     /**
-     * Constructor creates MVC controller with specified TopicBranchService
-     * @param topicBranchService {@link org.jtalks.jcommune.service.TopicBranchService} autowired object from Spring
+     * Constructor creates MVC controller with specified BranchService
+     * @param branchService {@link org.jtalks.jcommune.service.BranchService} autowired object from Spring
      * Context
      */
     @Autowired
-    public TopicsBranchController(TopicBranchService topicBranchService) {
-        this.topicBranchService = topicBranchService;
+    public BranchController(BranchService branchService) {
+        this.branchService = branchService;
     }
 
     /**
      * Populates page with a list of existing branches
-     * @return list of {@link org.jtalks.jcommune.model.entity.TopicBranch}, if no branches created it will return
+     * @return list of {@link org.jtalks.jcommune.model.entity.Branch}, if no branches created it will return
      * empty list
      */
     @ModelAttribute("topicsBranchList")
-    public List<TopicBranch> populateFormWithBranches() {
-        return topicBranchService.getAll();
+    public List<Branch> populateFormWithBranches() {
+        return branchService.getAll();
     }
 
     /**

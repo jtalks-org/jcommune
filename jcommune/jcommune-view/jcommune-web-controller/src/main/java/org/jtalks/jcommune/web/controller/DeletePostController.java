@@ -23,7 +23,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -51,13 +50,13 @@ public class DeletePostController {
     /**
      * Redirect user to confirmation page.
      *
-     * @param topicId  - topic id, this in topic which contains post which shoulb be deleted
-     * @param postId   - post id to delete
-     * @param branchId - branch containing topic
-     * @return - return ModelAndView with to parameter topicId and postId
+     * @param topicId  topic id, this in topic which contains post which shoulb be deleted
+     * @param postId   post id to delete
+     * @param branchId branch containing topic
+     * @return {@code ModelAndView} with to parameter topicId and postId
      */
-    @RequestMapping(method = RequestMethod.GET, value = "/branch/{branchId}/topic/{topicId}/deletePost")
-    public ModelAndView confirm(@RequestParam("topicId") Long topicId, @RequestParam("postId") Long postId,
+    @RequestMapping(method = RequestMethod.GET, value = "/branch/{branchId}/topic/{topicId}/post/{postId}/delete")
+    public ModelAndView confirm(@PathVariable("topicId") Long topicId, @PathVariable("postId") Long postId,
                                 @PathVariable("branchId") long branchId) {
         ModelAndView mav = new ModelAndView("deletePost");
         mav.addObject("topicId", topicId);
@@ -69,14 +68,14 @@ public class DeletePostController {
     /**
      * Handle delete action. User confirm post deletion.
      *
-     * @param topicId  - topic id, this in topic which contains post which shoulb be deleted
+     * @param topicId  topic id, this in topic which contains post which shoulb be deleted
      *                 also used for redirection back to topic.
-     * @param postId   - post
-     * @param branchId - branch containing topic
-     * @return - redirect to /topics/topicId.
+     * @param postId   post
+     * @param branchId branch containing topic
+     * @return redirect to topic page
      */
-    @RequestMapping(method = RequestMethod.DELETE, value = "/branch/{branchId}/topic/{topicId}/deletePost")
-    public ModelAndView delete(@RequestParam("topicId") Long topicId, @RequestParam("postId") Long postId,
+    @RequestMapping(method = RequestMethod.DELETE, value = "/branch/{branchId}/topic/{topicId}/post/{postId}")
+    public ModelAndView delete(@PathVariable("topicId") Long topicId, @PathVariable("postId") Long postId,
                                @PathVariable("branchId") long branchId) {
         topicService.deletePost(topicId, postId);
         return new ModelAndView("redirect:/branch/" + branchId + "/topic/" + topicId + ".html");

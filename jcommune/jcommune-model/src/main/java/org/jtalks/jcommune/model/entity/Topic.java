@@ -47,7 +47,7 @@ public class Topic extends Persistent {
      */
     private List<Post> posts = new ArrayList<Post>();
 
-    private TopicBranch branch;
+    private Branch branch;
 
     /**
      * Creates the Topic instance. All fields values are null.
@@ -170,7 +170,7 @@ public class Topic extends Persistent {
      *
      * @return branch that contains the topic
      */
-    public TopicBranch getBranch() {
+    public Branch getBranch() {
         return branch;
     }
 
@@ -179,7 +179,7 @@ public class Topic extends Persistent {
      *
      * @param branch branch that contains the topic
      */
-    public void setBranch(TopicBranch branch) {
+    public void setBranch(Branch branch) {
         this.branch = branch;
     }
 }
