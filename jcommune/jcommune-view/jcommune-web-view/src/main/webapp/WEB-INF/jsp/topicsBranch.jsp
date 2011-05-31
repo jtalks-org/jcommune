@@ -2,6 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@taglib prefix="joda" uri="http://www.joda.org/joda/time/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -28,7 +29,9 @@
         </c:forEach>
     </table>
     <br>
-    <input type="submit" value="<spring:message code="label.addtopic"/>"/>
+    <sec:authorize access="isAuthenticated()">
+        <input type="submit" value="<spring:message code="label.addtopic"/>"/>
+    </sec:authorize>
     <input name="branchId" type="hidden" value="${branchId}">
 </form:form>
 </body>
