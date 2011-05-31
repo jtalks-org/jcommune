@@ -7,6 +7,10 @@
        ">
   <!-- Http Security -->
   <security:http auto-config="true" use-expressions="true">
+    <security:intercept-url pattern="/branch/**/topic/newTopic" access="isAuthenticated" />
+    <security:intercept-url pattern="/branch/**/topic/{topicId}/deletePost" access="isAuthenticated" />
+    <security:intercept-url pattern="/branch/**/topic/**/answer" access="isAuthenticated" />
+    <security:intercept-url pattern="*" access="permitAll" />
     <security:form-login login-page="/login.html" login-processing-url="/j_spring_security_check"
                          authentication-failure-url="/login.html?login_error=1" default-target-url="/"/>
     <security:logout logout-url="/logout.html" logout-success-url="/"/>
