@@ -16,14 +16,13 @@
  * The jtalks.org Project
  */
 
-package org.jtalks.jcommune.model.dao.hibernate;
+package org.jtalks.jcommune.service;
 
-import org.jtalks.jcommune.model.dao.TopicBranchDao;
-import org.jtalks.jcommune.model.entity.TopicBranch;
+import org.jtalks.jcommune.model.entity.Branch;
 
 /**
  * @author Vitaliy Kravchenko
  */
-public class TopicBranchHibernateDao extends AbstractHibernateDao<TopicBranch> implements TopicBranchDao {
 
+public interface BranchService extends EntityService<Branch> {
 }

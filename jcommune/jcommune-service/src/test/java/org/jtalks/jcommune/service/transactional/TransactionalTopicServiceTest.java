@@ -19,12 +19,12 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.TopicBranch;
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SecurityService;
-import org.jtalks.jcommune.service.TopicBranchService;
 import org.jtalks.jcommune.service.TopicService;
 import org.mockito.Matchers;
 import org.testng.Assert;
@@ -50,14 +50,14 @@ public class TransactionalTopicServiceTest {
     final DateTime TOPIC_CREATION_DATE = new DateTime();
     private TopicService topicService;
     private SecurityService securityService;
-    private TopicBranchService branchService;
+    private BranchService branchService;
     private TopicDao topicDao;
     final long POST_ID = 333;
 
     @BeforeMethod
     public void setUp() throws Exception {
         topicDao = mock(TopicDao.class);
-        branchService = mock(TopicBranchService.class);
+        branchService = mock(BranchService.class);
         securityService = mock(SecurityService.class);
         topicService = new TransactionalTopicService(topicDao, securityService, branchService);
     }
@@ -146,7 +146,7 @@ public class TransactionalTopicServiceTest {
     @Test
     public void testCreateTopic() {
         when(securityService.getCurrentUser()).thenReturn(getUser());
-        when(branchService.get(1l)).thenReturn(new TopicBranch());
+        when(branchService.get(1l)).thenReturn(new Branch());
         topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, 1l);
 
         verify(securityService, times(1)).getCurrentUser();

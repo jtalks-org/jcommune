@@ -21,8 +21,8 @@ import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SecurityService;
-import org.jtalks.jcommune.service.TopicBranchService;
 import org.jtalks.jcommune.service.TopicService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,20 +41,20 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         implements TopicService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final SecurityService securityService;
-    private TopicBranchService topicBranchService;
+    private BranchService branchService;
 
     /**
      * Create an instance of User entity based service
      *
      * @param dao                data access object, which should be able do all CRUD operations with topic entity
      * @param securityService    {@link SecurityService} for retrieving current user
-     * @param topicBranchService {@link TopicBranchService} instance to be injected
+     * @param branchService {@link org.jtalks.jcommune.service.BranchService} instance to be injected
      */
     public TransactionalTopicService(TopicDao dao, SecurityService securityService,
-                                     TopicBranchService topicBranchService) {
+                                     BranchService branchService) {
         this.securityService = securityService;
         this.dao = dao;
-        this.topicBranchService = topicBranchService;
+        this.branchService = branchService;
     }
 
     /**
@@ -98,7 +98,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         topic.setTitle(topicName);
         topic.setTopicStarter(currentUser);
         topic.addPost(post);
-        topic.setBranch(topicBranchService.get(branchId));
+        topic.setBranch(branchService.get(branchId));
 
         dao.saveOrUpdate(topic);
     }

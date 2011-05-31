@@ -65,7 +65,7 @@ public final class NewTopicController {
     /**
      * Method handles newTopic.html GET request and display page for creation new topic
      *
-     * @param branchId {@link org.jtalks.jcommune.model.entity.TopicBranch} id which we have recived from the hidden
+     * @param branchId {@link org.jtalks.jcommune.model.entity.Branch} id which we have recived from the hidden
      *                 field of previous JSP page
      * @return  view name - newTopic
      */

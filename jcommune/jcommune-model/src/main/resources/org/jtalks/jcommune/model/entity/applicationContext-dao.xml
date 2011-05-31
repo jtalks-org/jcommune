@@ -25,7 +25,7 @@
   <bean id="postDao"
         class="org.jtalks.jcommune.model.dao.hibernate.PostHibernateDao"
         parent="abstractHibernateDao"/>
-  <bean id="topicBranchDao" class="org.jtalks.jcommune.model.dao.hibernate.TopicBranchHibernateDao"
+  <bean id="topicBranchDao" class="org.jtalks.jcommune.model.dao.hibernate.BranchHibernateDao"
         parent="abstractHibernateDao"/>
 
   <!--Injecting sessionFactory bean to class AbstractHibernateDao, this way
