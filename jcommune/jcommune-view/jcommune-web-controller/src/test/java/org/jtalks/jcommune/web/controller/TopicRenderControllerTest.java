@@ -49,7 +49,8 @@ public class TopicRenderControllerTest {
         Map<String, Object> topicMap = new HashMap<String, Object>();
         topicMap.put("selectedTopic", topic);
         topicMap.put("branchId",1l);
-        
+        topicMap.put("topicId",1l);
+
         when(topicService.get(1l)).thenReturn(topic);
         
         ModelAndView mav = topicRenderController.showTopic(1l,1L);

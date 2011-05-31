@@ -4,7 +4,7 @@
 <html>
 <head></head>
 <body>
-<form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/newTopic.html" modelAttribute="topicDto" method="POST">
+<form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic.html" modelAttribute="topicDto" method="POST">
     <table border="2" width="100%">
         <tr>
             <td width="30%">
@@ -22,7 +22,6 @@
         </tr>
     </table>
     <input type="submit" value="<spring:message code="label.addtopic"/>"/>
-    <input name="branchId" type="hidden" value="${branchId}">
 </form:form>
 </body>
 </html>

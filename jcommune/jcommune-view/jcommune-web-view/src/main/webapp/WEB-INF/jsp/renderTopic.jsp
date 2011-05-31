@@ -27,10 +27,8 @@
             
             <c:if test="${username==posts.userCreated.username}">
                 <td>
-                    <form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${selectedTopic.id}/deletePost.html" 
+                    <form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${selectedTopic.id}/post/${posts.id}/delete.html"
                                method="GET">
-                        <input name="topicId" type="hidden" value="${selectedTopic.id}"/>
-                        <input name="postId" type="hidden" value="${posts.id}"/>
                         <input type="submit" value="<spring:message code="label.delete"/>"/>
                     </form:form>
                 </td>
@@ -48,7 +46,6 @@
         <sec:authorize access="isAuthenticated()">
           <td>
             <form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${selectedTopic.id}/answer.html" method="GET">
-              <input name="topicId" type="hidden" value="${selectedTopic.id}"/>
               <input type="submit" value="<spring:message code="label.answer"/>"/>
             </form:form>
           </td>

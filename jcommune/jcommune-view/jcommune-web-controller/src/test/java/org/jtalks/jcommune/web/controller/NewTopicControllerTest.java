@@ -25,7 +25,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
-import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -33,6 +32,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.testng.Assert.assertEquals;
 
 /**
  * Tests for {@link NewTopicController} actions.
@@ -60,9 +60,9 @@ public class NewTopicControllerTest {
         TopicDto dto = getDto();
         BindingResult result = new BeanPropertyBindingResult(dto, "topicDto");
 
-        ModelAndView mav = controller.submitNewTopic(dto, result, 1l);
+        String view = controller.submitNewTopic(dto, result, 1l);
 
-        assertViewName(mav, "redirect:/branch/1.html");
+        assertEquals(view, "redirect:/branch/1.html");
         verify(topicService, times(1)).createTopic(TOPIC_THEME, TOPIC_CONTENT, 1l);
     }
 
@@ -73,7 +73,7 @@ public class NewTopicControllerTest {
 
         assertAndReturnModelAttributeOfType(mav, "topicDto", TopicDto.class);
         Long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
-        Assert.assertEquals(branchId, new Long(1));
+        assertEquals(branchId, new Long(1));
         assertViewName(mav, "newTopic");
     }
 

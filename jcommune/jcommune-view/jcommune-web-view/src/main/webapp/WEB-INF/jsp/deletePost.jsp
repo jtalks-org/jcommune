@@ -12,9 +12,7 @@
 	<div>
         
         <spring:message code="label.deletePostConfirmation"/>
-		<form:form action='${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/deletePost.html' method="DELETE">
-		    <input name="topicId" type="hidden" value="${topicId}"/>
-            <input name="postId" type="hidden" value="${postId}"/>
+		<form:form action='${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/post/${postId}.html' method="DELETE">
 		    <input type="submit" value="<spring:message code="label.yes"/>"/>
 		</form:form>
 		<form:form action='${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}.html' method="GET">

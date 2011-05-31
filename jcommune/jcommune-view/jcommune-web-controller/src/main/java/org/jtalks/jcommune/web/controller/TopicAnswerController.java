@@ -29,7 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Controller for Topic answer related actions.
- * 
+ *
  * @author Pavel Vervenko
  * @author Kravchenko Vitaliy
  */
@@ -42,7 +42,7 @@ public class TopicAnswerController {
 
     /**
      * Constructor creates MVC controller with specifying TopicService, SecurityService.
-     * 
+     *
      * @param topicService {@link TopicService} to be injected
      */
     @Autowired
@@ -53,14 +53,16 @@ public class TopicAnswerController {
     /**
      * Creates the answering page with empty answer form.
      * If the user isn't logged in he will be redirected to the login page.
-     * @param topicId the id of the topic for the answer
+     *
+     * @param topicId         the id of the topic for the answer
      * @param validationError is true when post length is less then 2
+     * @param branchId        branch
      * @return answering <code>ModelAndView</code> or redirect to the login page
      */
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView getAnswerPage(@RequestParam("topicId") Long topicId,
-            @RequestParam(value = "validationError", required = false) Boolean validationError,
-            @PathVariable("branchId") long branchId) {
+    public ModelAndView getAnswerPage(@PathVariable("topicId") Long topicId,
+                                      @RequestParam(value = "validationError", required = false) Boolean validationError,
+                                      @PathVariable("branchId") long branchId) {
         ModelAndView mav = new ModelAndView("answer");
         Topic answeringTopic = topicService.get(topicId);
         mav.addObject("topic", answeringTopic);
@@ -74,25 +76,28 @@ public class TopicAnswerController {
 
     /**
      * Process the answer form. Adds new post to the specified topic and redirects to the topic view page.
-     * @param topicId the id of the answered topic
+     *
+     * @param topicId  the id of the answered topic
      * @param bodyText the content of the answer
+     * @param branchId branch
      * @return redirect to the topic view
      */
     @RequestMapping(method = RequestMethod.POST)
-    public ModelAndView submitAnswer(@RequestParam("topicId") Long topicId,
-            @RequestParam("bodytext") String bodyText,
-            @PathVariable("branchId") long branchId) {
+    public ModelAndView submitAnswer(@PathVariable("topicId") Long topicId,
+                                     @RequestParam("bodytext") String bodyText,
+                                     @PathVariable("branchId") long branchId) {
         if (isValidAnswer(bodyText)) {
             topicService.addAnswer(topicId, bodyText);
-            return new ModelAndView("redirect:/branch/"+branchId+"/topic/" + topicId + ".html");
+            return new ModelAndView("redirect:/branch/" + branchId + "/topic/" + topicId + ".html");
         } else {
             return getAnswerPage(topicId, true, branchId);
         }
 
     }
-    
+
     /**
      * Check the answer length.
+     *
      * @param bodyText answer content
      * @return true if answer is valid
      */

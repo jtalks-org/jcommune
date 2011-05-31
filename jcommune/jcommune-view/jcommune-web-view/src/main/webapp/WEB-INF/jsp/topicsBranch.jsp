@@ -4,12 +4,13 @@
 <%@taglib prefix="joda" uri="http://www.joda.org/joda/time/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <html>
 <head>
     <title>Forum</title>
 </head>
 <body>
-<form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/newTopic.html" method="GET">
+<form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/create.html" method="GET">
     <table border="1" width="100%">
         <tr>
             <td width="80%"><spring:message code="label.topic"/></td>
@@ -32,7 +33,6 @@
     <sec:authorize access="isAuthenticated()">
         <input type="submit" value="<spring:message code="label.addtopic"/>"/>
     </sec:authorize>
-    <input name="branchId" type="hidden" value="${branchId}">
 </form:form>
 </body>
 </html>
