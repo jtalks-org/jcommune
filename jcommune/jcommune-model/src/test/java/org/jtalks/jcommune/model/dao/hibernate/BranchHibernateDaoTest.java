@@ -41,7 +41,7 @@ import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEqua
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
-public class TopicBranchHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
+public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -159,6 +159,6 @@ public class TopicBranchHibernateDaoTest extends AbstractTransactionalTestNGSpri
     }
 
     private int getCount() {
-        return ((Number) session.createQuery("select count(*) from TopicBranch").uniqueResult()).intValue();
+        return ((Number) session.createQuery("select count(*) from Branch").uniqueResult()).intValue();
     }
 }

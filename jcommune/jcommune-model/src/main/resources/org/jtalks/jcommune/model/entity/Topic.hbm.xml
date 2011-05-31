@@ -22,7 +22,7 @@
               column="CREATION_DATE" not-null="true"/>
 
     <many-to-one name="branch" class="Branch"
-                 column="TOPIC_BRANCH" not-null="true" foreign-key="FK_TOPIC_BRANCH"/>
+                 column="BRANCH" not-null="true" foreign-key="FK_BRANCH"/>
   </class>
 
   <query name="getAllTopicsAccordingToBranch">
