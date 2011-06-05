@@ -1,9 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="decorator" uri="http://www.opensymphony.com/sitemesh/decorator"%>
+<%@ taglib prefix="page" uri="http://www.opensymphony.com/sitemesh/page"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator"
-           prefix="decorator" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<fmt:setBundle basename="org.jtalks.jcommune.web.view.messages" />
+<fmt:setLocale value="en"/>
 <html>
 <head>
     <title><decorator:title default="JCommune"/></title>
@@ -29,15 +32,15 @@
         <tr>
             <td class="background"><a
                     href="${pageContext.request.contextPath}/main.html">&nbsp&nbsp<span
-                    class="nav">Forum</span> </a> | <span style="float: right">
+                    class="nav"><fmt:message key="label.forum"/> </span> </a> | <span style="float: right">
                 <sec:authorize access="isAuthenticated()">
                     <sec:authentication property="principal.username"/>&nbsp
-                    <a href="${pageContext.request.contextPath}/logout.html">Logout</a>
+                    <a href="${pageContext.request.contextPath}/logout.html"><fmt:message key="label.logout"/></a>
                 </sec:authorize>
                 &nbsp
                 <sec:authorize access="isAnonymous()">
-                    <a href="${pageContext.request.contextPath}/login.html">Sign In</a>
-                    <a href="${pageContext.request.contextPath}/registration.html">Sign Up</a>
+                    <a href="${pageContext.request.contextPath}/login.html"><fmt:message key="label.signin"/></a>
+                    <a href="${pageContext.request.contextPath}/registration.html"><fmt:message key="label.signup"/></a>
                 </sec:authorize>
                 &nbsp
                 <a href="?lang=en">En</a> | <a href="?lang=ru">Ru</a> </span></td>
