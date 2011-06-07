@@ -27,7 +27,7 @@
 
   <query name="getAllTopicsAccordingToBranch">
     <![CDATA[from Topic as topic
-                        WHERE topic.branch.id = :branchId]]>
+                        WHERE topic.branch.id = :branchId ORDER BY topic.creationDate DESC]]>
   </query>
 
 </hibernate-mapping>
