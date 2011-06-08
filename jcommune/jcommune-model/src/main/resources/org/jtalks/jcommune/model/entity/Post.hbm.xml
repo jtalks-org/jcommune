@@ -6,6 +6,7 @@
     <id column="POST_ID" name="id" unsaved-value="0">
       <generator class="native"/>
     </id>
+    <property column="UUID" name="uuid" unique="true" not-null="true"/>
     <many-to-one name="userCreated" class="User" column="USER_CREATED" fetch="join"
                  foreign-key="FK_USER" lazy="false" not-null="true"/>
     <property name="creationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
