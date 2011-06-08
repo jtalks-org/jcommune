@@ -202,6 +202,7 @@ public class TransactionalTopicServiceTest {
         Topic topic = new Topic();
         topic.setCreationDate(TOPIC_CREATION_DATE);
         topic.setId(TOPIC_ID);
+        topic.setUuid("xxxxx123");
         topic.setTitle(TOPIC_TITLE);
         topic.setTopicStarter(topicStarter);
         if(withPosts){

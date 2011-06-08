@@ -41,11 +41,15 @@ import static org.mockito.Mockito.*;
 public class TransactionalPostServiceTest {
     
     final long POST_ID = 999;
+    final String POST_UUID = "z1f2";
     final String POST_CONTENT = "post content";
     final DateTime POST_CREATION_DATE = new DateTime();
     
     final long USER_ID = 333;
-
+    final String USER_UUID = "aaba";
+    
+    final String TOPIC_UUID = "adfadsfd";
+    
     private PostService postService;
     private PostDao postDao;
 
@@ -58,13 +62,16 @@ public class TransactionalPostServiceTest {
     private Post getPost(){
         User topicStarter = new User();
         topicStarter.setId(USER_ID);
+        topicStarter.setUuid(USER_UUID);
         topicStarter.setUsername("username");
         Topic topic = new Topic();
         topic.setId(333);
+        topic.setUuid(TOPIC_UUID);
         topic.setTopicStarter(topicStarter);
         
         Post post = new Post();
         post.setId(POST_ID);
+        post.setUuid(POST_UUID);
         post.setPostContent(POST_CONTENT);
         post.setCreationDate(POST_CREATION_DATE);
         post.setTopic(topic);

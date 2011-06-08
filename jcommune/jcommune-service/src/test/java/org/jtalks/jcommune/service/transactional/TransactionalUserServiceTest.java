@@ -26,7 +26,7 @@ public class TransactionalUserServiceTest {
     private static final String FIRST_NAME = "first name";
     private static final String LAST_NAME = "last name";
     private static final Long USER_ID = 999L;
-
+    private static final String USER_UUID = "zzzzzz3243";
 
     private UserService userService;
     private UserDao userDao;
@@ -121,6 +121,7 @@ public class TransactionalUserServiceTest {
     private User getUser() {
         User user = new User();
         user.setId(USER_ID);
+        user.setUuid(USER_UUID);
         user.setUsername(USERNAME);
         user.setPassword(PASSWORD);
         user.setEmail(EMAIL);
