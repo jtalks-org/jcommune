@@ -36,6 +36,7 @@ import java.util.List;
  * @author Vervenko Pavel
  * @author Kirill Afonin
  * @author Vitaliy Kravchenko
+ * @author Max Malakhov
  */
 public class TransactionalTopicService extends AbstractTransactionalEntityService<Topic, TopicDao>
         implements TopicService {
@@ -122,10 +123,10 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
 
         for (Post post : posts) {
             if (post.getId() == postId) {
-                posts.remove(post);
+                topic.removePost(post);           
                 break;
             }
-        }
+        }       
         dao.saveOrUpdate(topic);
     }
 

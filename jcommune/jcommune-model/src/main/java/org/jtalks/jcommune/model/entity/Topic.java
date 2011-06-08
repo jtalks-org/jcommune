@@ -30,6 +30,7 @@ import java.util.List;
  *
  * @author Pavel Vervenko
  * @author Vitaliy Kravchenko
+ * @author Max Malakhov
  */
 public class Topic extends Persistent {
 
@@ -48,7 +49,12 @@ public class Topic extends Persistent {
     private List<Post> posts = new ArrayList<Post>();
 
     private Branch branch;
-
+    
+    /**
+     * The modification date of the topic.
+     */
+    private DateTime modificationDate;    
+    
     /**
      * Creates the Topic instance. All fields values are null.
      */
@@ -62,6 +68,8 @@ public class Topic extends Persistent {
      */
     public Topic(DateTime creationDate) {
         this.creationDate = creationDate;
+        
+        updateModificationDate();
     }
 
     /**
@@ -82,6 +90,8 @@ public class Topic extends Persistent {
     public void addPost(Post newPost) {
         posts.add(newPost);
         newPost.setTopic(this);
+        
+        updateModificationDate();
     }
 
     /**
@@ -91,6 +101,8 @@ public class Topic extends Persistent {
      */
     public void removePost(Post postToRemove) {
         posts.remove(postToRemove);
+        
+        updateModificationDate();
     }
 
     /**
@@ -182,4 +194,33 @@ public class Topic extends Persistent {
     public void setBranch(Branch branch) {
         this.branch = branch;
     }
+
+
+    /**
+     * Set the topic modification date.
+     *
+     * @param modificationDate the modificationDate to set
+     */
+	public void setModificationDate(DateTime modificationDate) {
+		this.modificationDate = modificationDate;
+	}    
+    
+	
+    /**
+     * Get the topic modification date.
+     *
+     * @param modificationDate the modificationDate to get
+     */
+	public DateTime getModificationDate() {
+		return modificationDate;
+	}
+	
+    /**
+     * Update the topic modification date.
+     *
+     * @param modificationDate the modificationDate to update
+     */    
+	protected void updateModificationDate() {
+		this.modificationDate = new DateTime();
+	}	
 }
