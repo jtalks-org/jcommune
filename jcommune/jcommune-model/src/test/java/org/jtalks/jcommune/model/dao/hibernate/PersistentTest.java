@@ -10,8 +10,12 @@ import static org.testng.Assert.*;
  */
 public class PersistentTest {
     private class PersistentObject extends Persistent {
-        public PersistentObject(long id) {
-            this.setId(id);
+        public PersistentObject(String uuid) {
+            this.setUuid(uuid);
+        }
+        
+        public PersistentObject() {
+            this.setUuid(java.util.UUID.randomUUID().toString());
         }
     }
 
@@ -21,8 +25,10 @@ public class PersistentTest {
 
     @Test
     public void testEqualsSymmetry() {
-        first = new PersistentObject(1L);
-        second = new PersistentObject(1L);
+        String uuid = java.util.UUID.randomUUID().toString();
+        
+        first = new PersistentObject(uuid);
+        second = new PersistentObject(uuid);
 
         assertTrue(first.equals(second));
         assertTrue(second.equals(first));
@@ -30,23 +36,25 @@ public class PersistentTest {
 
     @Test
     public void testEqualsReflexivity() {
-        first = new PersistentObject(1L);
+        first = new PersistentObject();
 
         assertTrue(first.equals(first));
     }
 
     @Test
     public void testEqualsNull() {
-        first = new PersistentObject(1L);
+        first = new PersistentObject();
 
         assertFalse(first.equals(null));
     }
 
     @Test
     public void testEqualsTransitivity() {
-        first = new PersistentObject(1L);
-        second = new PersistentObject(1L);
-        third = new PersistentObject(1L);
+        String uuid = java.util.UUID.randomUUID().toString();
+        
+        first = new PersistentObject(uuid);
+        second = new PersistentObject(uuid);
+        third = new PersistentObject(uuid);
 
         assertTrue(first.equals(second));
         assertTrue(second.equals(third));
@@ -55,8 +63,8 @@ public class PersistentTest {
 
     @Test
     public void testEqualsWhenDifferentId() {
-        first = new PersistentObject(1L);
-        second = new PersistentObject(3L);
+        first = new PersistentObject("id1");
+        second = new PersistentObject("id2");
 
         assertFalse(first.equals(second));
         assertFalse(second.equals(first));
@@ -64,18 +72,19 @@ public class PersistentTest {
 
     @Test
     public void testEqualsWhenDifferentClasses() {
-        first = new PersistentObject(1L);
+        String id = "id";
+        first = new PersistentObject(id);
         second = new Persistent() {
         };
-        second.setId(1L);
+        second.setUuid(id);
 
         assertFalse(first.equals(second));
     }
 
     @Test
     public void testHashCode() {
-        first = new PersistentObject(1L);
-        second = new PersistentObject(1L);
+        first = new PersistentObject("uid1");
+        second = new PersistentObject("uid2");
 
         assertEquals(first.hashCode(), second.hashCode());
     }
