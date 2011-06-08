@@ -29,7 +29,7 @@
   </class>
 
   <query name="getAllTopicsAccordingToBranch">
-    <![CDATA[from Topic as topic
+    <![CDATA[FROM Topic as topic
                         WHERE topic.branch.id = :branchId ORDER BY topic.modificationDate DESC]]>
   </query>
 

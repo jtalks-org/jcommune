@@ -126,7 +126,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
                 topic.removePost(post);           
                 break;
             }
-        }       
+        }
         dao.saveOrUpdate(topic);
     }
 

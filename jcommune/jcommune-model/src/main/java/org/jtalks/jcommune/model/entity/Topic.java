@@ -220,7 +220,7 @@ public class Topic extends Persistent {
      *
      * @param modificationDate the modificationDate to update
      */    
-	protected void updateModificationDate() {
+	private void updateModificationDate() {
 		this.modificationDate = new DateTime();
 	}	
 }
