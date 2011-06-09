@@ -84,7 +84,7 @@ public class PersistentTest {
     @Test
     public void testHashCode() {
         first = new PersistentObject("uid1");
-        second = new PersistentObject("uid2");
+        second = new PersistentObject("uid1");
 
         assertEquals(first.hashCode(), second.hashCode());
     }

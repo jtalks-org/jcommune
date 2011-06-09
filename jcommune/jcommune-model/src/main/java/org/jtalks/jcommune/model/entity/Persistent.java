@@ -83,8 +83,6 @@ public abstract class Persistent {
      */
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 53 * hash + (int) (this.id ^ (this.id >>> 32));
-        return hash;
+        return uuid.hashCode();
     }
 }

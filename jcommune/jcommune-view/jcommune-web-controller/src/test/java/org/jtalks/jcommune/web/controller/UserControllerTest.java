@@ -55,7 +55,7 @@ public class UserControllerTest {
         ModelAndView mav = controller.registerUser(dto, bindingResult);
 
         assertViewName(mav, "redirect:/");
-        verify(userService, times(1)).registerUser(user);
+        verify(userService, times(1)).registerUser(any(User.class));
     }
 
     @Test
@@ -63,13 +63,13 @@ public class UserControllerTest {
         UserDto dto = getUserDto();
         User user = dto.createUser();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
-        doThrow(new DuplicateException()).when(userService).registerUser(user);
+        doThrow(new DuplicateException()).when(userService).registerUser(any(User.class));
 
         ModelAndView mav = controller.registerUser(dto, bindingResult);
 
         assertViewName(mav, "registration");
         Assert.assertEquals(1, bindingResult.getErrorCount(), "Result without errors");
-        verify(userService, times(1)).registerUser(user);
+        verify(userService, times(1)).registerUser(any(User.class));
     }
 
     /**
