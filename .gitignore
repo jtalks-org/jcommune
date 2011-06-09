@@ -8,3 +8,10 @@
 /jcommune/jcommune-model/catalog.xml
 /jcommune/jcommune.ipr
 /jcommune/jcommune.iws
+
+/jcommune/jcommune-model/logs/
+/jcommune/jcommune-service/logs/
+/jcommune/jcommune-service/target/
+/jcommune/jcommune-view/jcommune-web-controller/logs/
+/jcommune/jcommune-view/jcommune-web-controller/target/
+/jcommune/jcommune-view/jcommune-web-view/target/
