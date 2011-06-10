@@ -37,6 +37,12 @@
 
 <div id="pagination">
     <c:if test="${maxPages > 1}">
+        <c:if test="${page > 1}">
+            <c:url value="/branch/${branchId}.html" var="prev">
+                <c:param name="page" value="${page - 1}"/>
+            </c:url>
+            <a href='<c:out value="${prev}" />' class="pn next">Prev</a>
+        </c:if>
         <c:forEach begin="1" end="${maxPages}" step="1" varStatus="i">
             <c:choose>
                 <c:when test="${page == i.index}">
@@ -50,10 +56,11 @@
                 </c:otherwise>
             </c:choose>
         </c:forEach>
-        <c:url value="/branch/${branchId}.html" var="next">
-            <c:param name="page" value="${page + 1}"/>
-        </c:url>
+
         <c:if test="${page + 1 < maxPages+1}">
+            <c:url value="/branch/${branchId}.html" var="next">
+                <c:param name="page" value="${page + 1}"/>
+            </c:url>
             <a href='<c:out value="${next}" />' class="pn next">Next</a>
         </c:if>
     </c:if>
