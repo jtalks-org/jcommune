@@ -36,10 +36,32 @@ public class TopicHibernateDao extends AbstractHibernateDao<Topic> implements To
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public List<Topic> getAllTopicsAccordingToBranch(Long id) {
-        Query query = getSession().getNamedQuery("getAllTopicsAccordingToBranch");
-        query.setLong("branchId", id);
-        return query.list();
+        return getSession().getNamedQuery("getAllTopicsInBranch")
+                .setLong("branchId", id).list();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Topic> getTopicRangeInBranch(Long branchId, int start, int max) {
+        return getSession().getNamedQuery("getAllTopicsInBranch")
+                .setLong("branchId", branchId)
+                .setFirstResult(start)
+                .setMaxResults(max)
+                .list();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getTopicsInBranchCount(long branchId) {
+        return ((Number) getSession().createQuery("select count(*) from Topic t where t.branch = ?")
+                .setLong(0, branchId).uniqueResult()).intValue();
     }
 
 }

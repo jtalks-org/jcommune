@@ -38,4 +38,7 @@ public interface TopicDao extends Dao<Topic> {
      * @return List of topics or null if the appropriate topic wasn't found
      */
     List<Topic> getAllTopicsAccordingToBranch(Long id);
+    List<Topic> getTopicRangeInBranch(Long branchId, int start, int max);
+
+    int getTopicsInBranchCount(long branchId);
 }

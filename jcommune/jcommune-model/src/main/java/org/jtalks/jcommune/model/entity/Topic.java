@@ -49,16 +49,32 @@ public class Topic extends Persistent {
     private List<Post> posts = new ArrayList<Post>();
 
     private Branch branch;
-    
+
     /**
      * The modification date of the topic.
      */
-    private DateTime modificationDate;    
-    
+    private DateTime modificationDate;
+
     /**
      * Creates the Topic instance. All fields values are null.
      */
     public Topic() {
+    }
+
+    /**
+     * Creates the Topic instance with required fields.
+     * Creation and modification date is set to now.
+     *
+     * @param branch       branch that contains topic
+     * @param topicStarter user who create the topic
+     * @param title        topic title
+     */
+    public Topic(Branch branch, User topicStarter, String title) {
+        this.branch = branch;
+        this.topicStarter = topicStarter;
+        this.title = title;
+        this.creationDate = new DateTime();
+        updateModificationDate();
     }
 
     /**
@@ -68,7 +84,7 @@ public class Topic extends Persistent {
      */
     public Topic(DateTime creationDate) {
         this.creationDate = creationDate;
-        
+
         updateModificationDate();
     }
 
@@ -90,7 +106,7 @@ public class Topic extends Persistent {
     public void addPost(Post newPost) {
         posts.add(newPost);
         newPost.setTopic(this);
-        
+
         updateModificationDate();
     }
 
@@ -101,7 +117,7 @@ public class Topic extends Persistent {
      */
     public void removePost(Post postToRemove) {
         posts.remove(postToRemove);
-        
+
         updateModificationDate();
     }
 
@@ -178,7 +194,7 @@ public class Topic extends Persistent {
     }
 
     /**
-     * Get branch that contains the message
+     * Get branch that contains topic
      *
      * @return branch that contains the topic
      */
@@ -187,7 +203,7 @@ public class Topic extends Persistent {
     }
 
     /**
-     * Set branch that contains the message
+     * Set branch that contains topic
      *
      * @param branch branch that contains the topic
      */
@@ -201,26 +217,26 @@ public class Topic extends Persistent {
      *
      * @param modificationDate the modificationDate to set
      */
-	public void setModificationDate(DateTime modificationDate) {
-		this.modificationDate = modificationDate;
-	}    
-    
-	
+    public void setModificationDate(DateTime modificationDate) {
+        this.modificationDate = modificationDate;
+    }
+
+
     /**
      * Get the topic modification date.
      *
      * @param modificationDate the modificationDate to get
      */
-	public DateTime getModificationDate() {
-		return modificationDate;
-	}
-	
+    public DateTime getModificationDate() {
+        return modificationDate;
+    }
+
     /**
      * Update the topic modification date.
      *
      * @param modificationDate the modificationDate to update
-     */    
-	private void updateModificationDate() {
-		this.modificationDate = new DateTime();
-	}	
+     */
+    private void updateModificationDate() {
+        this.modificationDate = new DateTime();
+    }
 }

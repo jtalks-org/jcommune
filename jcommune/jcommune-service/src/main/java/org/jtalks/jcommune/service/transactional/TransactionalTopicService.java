@@ -47,9 +47,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     /**
      * Create an instance of User entity based service
      *
-     * @param dao                data access object, which should be able do all CRUD operations with topic entity
-     * @param securityService    {@link SecurityService} for retrieving current user
-     * @param branchService {@link org.jtalks.jcommune.service.BranchService} instance to be injected
+     * @param dao             data access object, which should be able do all CRUD operations with topic entity
+     * @param securityService {@link SecurityService} for retrieving current user
+     * @param branchService   {@link org.jtalks.jcommune.service.BranchService} instance to be injected
      */
     public TransactionalTopicService(TopicDao dao, SecurityService securityService,
                                      BranchService branchService) {
@@ -123,11 +123,27 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
 
         for (Post post : posts) {
             if (post.getId() == postId) {
-                topic.removePost(post);           
+                topic.removePost(post);
                 break;
             }
         }
         dao.saveOrUpdate(topic);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Topic> getTopicRangeInBranch(long branchId, int start, int max) {
+        return dao.getTopicRangeInBranch(branchId, start, max);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getTopicsInBranchCount(long branchId) {
+        return dao.getTopicsInBranchCount(branchId);
     }
 
 }

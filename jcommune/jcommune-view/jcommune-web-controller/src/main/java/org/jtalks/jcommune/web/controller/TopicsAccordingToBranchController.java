@@ -21,11 +21,13 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.web.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -37,12 +39,11 @@ import java.util.List;
  * Class methods throw no exceptions
  *
  * @author Kravchenko Vitaliy
+ * @author Kirill Afonin
  */
-
 @Controller
 public final class TopicsAccordingToBranchController {
     private TopicService topicService;
-    private BranchService branchService;
 
     /**
      * Class constructor which creates MVC controller with specifying TopicService
@@ -50,30 +51,33 @@ public final class TopicsAccordingToBranchController {
      *
      * @param topicService  {@link TopicService}the object that provides retrieving
      *                      data or saving to database
-     * @param branchService {@link org.jtalks.jcommune.service.BranchService} the object
-     *                      that provides retrieving data or saving to
-     *                      database
      */
     @Autowired
-    public TopicsAccordingToBranchController(TopicService topicService, BranchService branchService) {
+    public TopicsAccordingToBranchController(TopicService topicService) {
         this.topicService = topicService;
-        this.branchService = branchService;
     }
 
     /**
-     * Method handles only GET requests with "/forum" URI
-     * and display JSP page with existing topics
      *
-     * @param branchId branch id which recieved from the url pattern
-     * @return the ModelAndView object, with "forum" as view name
+     * @param branchId
+     * @param page
+     * @param size
+     * @return
      */
-
     @RequestMapping(value = "/branch/{branchId}", method = RequestMethod.GET)
-    public ModelAndView showAllTopics(@PathVariable("branchId") long branchId) {
-        List<Topic> topics = topicService.getAllTopicsAccordingToBranch(branchId);
-        Branch branch = branchService.get(branchId);
-        return new ModelAndView("topicsBranch", "topicsList", topics).addObject("branchId", branch.getId());
+    public ModelAndView topicsInBranch(@PathVariable("branchId") long branchId,
+                                       @RequestParam(value = "page", required = false) Integer page,
+                                       @RequestParam(value = "size", required = false) Integer size) {
+        float topicsCount = topicService.getTopicsInBranchCount(branchId);
+        Pagination pag = new Pagination(page, size, topicsCount);
+
+        List<Topic> topics = topicService.getTopicRangeInBranch(branchId, pag.getStart(), pag.getPageSize());
+
+        ModelAndView mav = new ModelAndView("topicList");
+        mav.addObject("branchId", branchId);
+        mav.addObject("topics", topics);
+        mav.addObject("maxPages", pag.getMaxPages());
+        mav.addObject("page", pag.getPage());
+        return mav;
     }
-
-
 }
