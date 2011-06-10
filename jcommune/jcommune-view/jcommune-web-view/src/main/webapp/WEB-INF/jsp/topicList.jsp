@@ -43,14 +43,14 @@
                     <span>${i.index}</span>
                 </c:when>
                 <c:otherwise>
-                    <c:url value="${pageContext.request.contextPath}/branch/${branchId}.html" var="url">
+                    <c:url value="/branch/${branchId}.html" var="url">
                         <c:param name="page" value="${i.index}"/>
                     </c:url>
                     <a href='<c:out value="${url}" />'>${i.index}</a>
                 </c:otherwise>
             </c:choose>
         </c:forEach>
-        <c:url value="${pageContext.request.contextPath}/branch/${branchId}.html" var="next">
+        <c:url value="/branch/${branchId}.html" var="next">
             <c:param name="page" value="${page + 1}"/>
         </c:url>
         <c:if test="${page + 1 < maxPages+1}">
