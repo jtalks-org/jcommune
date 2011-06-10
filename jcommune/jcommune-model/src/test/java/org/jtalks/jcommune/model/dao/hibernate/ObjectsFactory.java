@@ -66,7 +66,7 @@ public final class ObjectsFactory {
         Topic newTopic = Topic.createNewTopic();
         newTopic.setTitle("topic title");
         newTopic.setTopicStarter(persist(getDefaultUser()));
-        newTopic.setBranch(persist(getDefaultTopicBranch()));
+        newTopic.setBranch(persist(getDefaultBranch()));
         return newTopic;
     }
 
@@ -74,11 +74,11 @@ public final class ObjectsFactory {
         Topic newTopic = Topic.createNewTopic();
         newTopic.setTitle("topic title");
         newTopic.setTopicStarter(author);
-        newTopic.setBranch(persist(getDefaultTopicBranch()));
+        newTopic.setBranch(persist(getDefaultBranch()));
         return newTopic;
     }
 
-    public static Branch getDefaultTopicBranch() {
+    public static Branch getDefaultBranch() {
         Branch newBranch = new Branch();
         newBranch.setName("branch name");
         newBranch.setDescription("branch description");

@@ -59,7 +59,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
 
     @Test
     public void testSave() {
-        Branch branch = ObjectsFactory.getDefaultTopicBranch();
+        Branch branch = ObjectsFactory.getDefaultBranch();
 
         dao.saveOrUpdate(branch);
 
@@ -81,7 +81,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
 
     @Test
     public void testGet() {
-        Branch branch = ObjectsFactory.getDefaultTopicBranch();
+        Branch branch = ObjectsFactory.getDefaultBranch();
         session.save(branch);
 
         Branch result = dao.get(branch.getId());
@@ -100,7 +100,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     @Test
     public void testUpdate() {
         String newName = "new name";
-        Branch branch = ObjectsFactory.getDefaultTopicBranch();
+        Branch branch = ObjectsFactory.getDefaultBranch();
         session.save(branch);
         branch.setName(newName);
 
@@ -113,7 +113,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
 
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void testUpdateNotNullViolation() {
-        Branch branch = ObjectsFactory.getDefaultTopicBranch();
+        Branch branch = ObjectsFactory.getDefaultBranch();
         session.save(branch);
         branch.setName(null);
 
@@ -122,7 +122,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
 
     @Test
     public void testDelete() {
-        Branch branch = ObjectsFactory.getDefaultTopicBranch();
+        Branch branch = ObjectsFactory.getDefaultBranch();
         session.save(branch);
 
         boolean result = dao.delete(branch.getId());
@@ -141,9 +141,9 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
 
     @Test
     public void testGetAll() {
-        Branch branch1 = ObjectsFactory.getDefaultTopicBranch();
+        Branch branch1 = ObjectsFactory.getDefaultBranch();
         session.save(branch1);
-        Branch branch2 = ObjectsFactory.getDefaultTopicBranch();
+        Branch branch2 = ObjectsFactory.getDefaultBranch();
         session.save(branch2);
 
         List<Branch> branches = dao.getAll();
