@@ -18,6 +18,7 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import java.util.List;
+import org.hibernate.HibernateException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -57,8 +58,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
 
     @Test
     public void testSave() {
-        PrivateMessage pm = ObjectsFactory.getDefaultPrivateMessage();
-        dao.saveOrUpdate(pm);
+        PrivateMessage pm = getSavedPm();
         assertNotSame(pm.getId(), 0, "Id not created");
 
         session.evict(pm);
@@ -75,8 +75,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
 
     @Test
     public void testGet() {
-        PrivateMessage pm = ObjectsFactory.getDefaultPrivateMessage();
-        session.save(pm);
+        PrivateMessage pm = getSavedPm();
 
         PrivateMessage result = dao.get(pm.getId());
 
@@ -94,8 +93,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
     @Test
     public void testUpdate() {
         String newBody = "new content";
-        PrivateMessage pm = ObjectsFactory.getDefaultPrivateMessage();
-        session.saveOrUpdate(pm);
+        PrivateMessage pm = getSavedPm();
         pm.setBody(newBody);
 
         dao.saveOrUpdate(pm);
@@ -107,8 +105,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
     
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void testUpdateNotNullViolation() {
-        PrivateMessage pm = ObjectsFactory.getDefaultPrivateMessage();
-        session.save(pm);
+        PrivateMessage pm = getSavedPm();
         pm.setUserFrom(null);
 
         dao.saveOrUpdate(pm);
@@ -116,8 +113,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
     
      @Test
     public void testDelete() {
-        PrivateMessage pm = ObjectsFactory.getDefaultPrivateMessage();
-        session.save(pm);
+        PrivateMessage pm = getSavedPm();
 
         boolean result = dao.delete(pm.getId());
         int pmCount = getCount();
@@ -135,8 +131,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
     
     @Test
     public void testGetAll() {
-        PrivateMessage pm1 = ObjectsFactory.getDefaultPrivateMessage();
-        session.save(pm1);       
+        PrivateMessage pm1 = getSavedPm();
         PrivateMessage pm2 = PrivateMessage.createNewPrivateMessage();
         pm2.setUserFrom(pm1.getUserFrom());
         pm2.setUserTo(pm1.getUserTo());
@@ -158,8 +153,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
 
     @Test
     public void testgetAllFromUser() {
-        PrivateMessage pm = ObjectsFactory.getDefaultPrivateMessage();
-        session.save(pm);
+        PrivateMessage pm = getSavedPm();
         
         List<PrivateMessage> listFrom = dao.getAllFromUser(pm.getUserFrom());
         
@@ -169,8 +163,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
     
     @Test
     public void testgetAllToUser() {
-        PrivateMessage pm = ObjectsFactory.getDefaultPrivateMessage();
-        session.save(pm);
+        PrivateMessage pm = getSavedPm();
         
         List<PrivateMessage> listFrom = dao.getAllToUser(pm.getUserTo());
         
@@ -180,5 +173,11 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
     
     private int getCount() {
         return ((Number) session.createQuery("select count(*) from PrivateMessage").uniqueResult()).intValue();
+    }
+    
+    private PrivateMessage getSavedPm() throws HibernateException {
+        PrivateMessage pm = ObjectsFactory.getDefaultPrivateMessage();
+        session.saveOrUpdate(pm);
+        return pm;
     }
 }
