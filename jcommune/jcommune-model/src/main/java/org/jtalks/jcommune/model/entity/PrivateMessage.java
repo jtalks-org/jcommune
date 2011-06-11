@@ -38,8 +38,8 @@ public class PrivateMessage extends Persistent {
         this.creationDate = creationDate;
     }
 
-    public static Post createNewPost() {
-        return new Post(new DateTime());
+    public static PrivateMessage createNewPrivateMessage() {
+        return new PrivateMessage(new DateTime());
     }
 
     public String getBody() {
