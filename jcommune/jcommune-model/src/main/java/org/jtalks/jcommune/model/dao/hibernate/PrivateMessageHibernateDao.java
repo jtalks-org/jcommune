@@ -24,11 +24,15 @@ import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.User;
 
 /**
- *
+ * Hibernate implementation of PrivateMessageDao
+ * 
  * @author Pavel Vervenko
  */
 public class PrivateMessageHibernateDao extends AbstractHibernateDao<PrivateMessage> implements PrivateMessageDao {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<PrivateMessage> getAllFromUser(User userFrom) {
         Query query = getSession().createQuery("FROM PrivateMessage as pm "
@@ -38,6 +42,9 @@ public class PrivateMessageHibernateDao extends AbstractHibernateDao<PrivateMess
         return query.list();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<PrivateMessage> getAllToUser(User userTo) {
         Query query = getSession().createQuery("FROM PrivateMessage as pm "
@@ -46,5 +53,4 @@ public class PrivateMessageHibernateDao extends AbstractHibernateDao<PrivateMess
         query.setEntity("user", userTo);
         return query.list();
     }
-    
 }

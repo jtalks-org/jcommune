@@ -171,10 +171,19 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         assertEquals(pm, listFrom.get(0));
     }   
     
+    /**
+     * Count the number of PrivateMessage in the db.
+     * @return 
+     */
     private int getCount() {
         return ((Number) session.createQuery("select count(*) from PrivateMessage").uniqueResult()).intValue();
     }
     
+    /**
+     * Create new PrivateMessage with filled fields and save it.
+     * @return saved object
+     * @throws HibernateException 
+     */
     private PrivateMessage getSavedPm() throws HibernateException {
         PrivateMessage pm = ObjectsFactory.getDefaultPrivateMessage();
         session.saveOrUpdate(pm);

@@ -86,6 +86,10 @@ public final class ObjectsFactory {
         return newBranch;
     }
 
+    /**
+     * Create the PrivateMessage with filled required fields.
+     * @return ready to save instance
+     */
     public static PrivateMessage getDefaultPrivateMessage() {
         PrivateMessage pm = PrivateMessage.createNewPrivateMessage();
         pm.setUserFrom(persist(getUser("UserFrom", "mail1")));
