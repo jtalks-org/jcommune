@@ -35,6 +35,7 @@
                     class="nav"><fmt:message key="label.forum"/> </span> </a> | <span style="float: right">
                 <sec:authorize access="isAuthenticated()">
                     <sec:authentication property="principal.username"/>&nbsp
+                    <a href="${pageContext.request.contextPath}/inbox.html"><fmt:message key="label.pm"/></a>
                     <a href="${pageContext.request.contextPath}/logout.html"><fmt:message key="label.logout"/></a>
                 </sec:authorize>
                 &nbsp
