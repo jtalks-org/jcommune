@@ -30,18 +30,21 @@ import org.jtalks.jcommune.model.entity.User;
 public class PrivateMessageHibernateDao extends AbstractHibernateDao<PrivateMessage> implements PrivateMessageDao {
 
     @Override
-    public List<PrivateMessage> getAllFromUser(User user) {
+    public List<PrivateMessage> getAllFromUser(User userFrom) {
         Query query = getSession().createQuery("FROM PrivateMessage as pm "
                 + "WHERE pm.userFrom = :user "
                 + "ORDER BY pm.creationDate DESC");
-        query.setEntity("user", user);
-        return null;
-                
+        query.setEntity("user", userFrom);
+        return query.list();
     }
 
     @Override
-    public List<PrivateMessage> getAllForUser(User user) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public List<PrivateMessage> getAllToUser(User userTo) {
+        Query query = getSession().createQuery("FROM PrivateMessage as pm "
+                + "WHERE pm.userTo = :user "
+                + "ORDER BY pm.creationDate DESC");
+        query.setEntity("user", userTo);
+        return query.list();
     }
     
 }

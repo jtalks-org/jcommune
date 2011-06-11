@@ -27,8 +27,8 @@ import org.jtalks.jcommune.model.entity.User;
  */
 public interface PrivateMessageDao extends Dao<PrivateMessage> {
     
-    List<PrivateMessage> getAllFromUser(User user);
+    List<PrivateMessage> getAllFromUser(User userFrom);
     
-    List<PrivateMessage> getAllForUser(User user);
+    List<PrivateMessage> getAllToUser(User userTo);
     
 }
