@@ -29,18 +29,16 @@ import org.jtalks.jcommune.model.entity.User;
 public interface PrivateMessageService extends EntityService<PrivateMessage> {
 
     /**
-     * Get all inbox messages for the user.
-     * @param user the user
+     * Get all inbox messages for the current user.
      * @return the list of messages
      */
-    List<PrivateMessage> getInbox(User user);
+    List<PrivateMessage> getInboxForCurrentUser();
 
     /**
-     * Get all outgoing messages from the user.
-     * @param user the user
+     * Get all outgoing messages from the current user.
      * @return the list of messages
      */
-    List<PrivateMessage> getOutbox(User user);
+    List<PrivateMessage> getOutboxForCurrentUser();
 
     /**
      * Save the message.

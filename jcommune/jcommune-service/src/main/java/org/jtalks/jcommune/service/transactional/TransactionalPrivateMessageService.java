@@ -22,6 +22,7 @@ import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PrivateMessageService;
+import org.jtalks.jcommune.service.SecurityService;
 
 /**
  * The implementation of PrivateMessageServices.
@@ -31,30 +32,34 @@ import org.jtalks.jcommune.service.PrivateMessageService;
 public class TransactionalPrivateMessageService
         extends AbstractTransactionalEntityService<PrivateMessage, PrivateMessageDao> implements PrivateMessageService {
 
-    private final PrivateMessageDao pmDao;
+        private final SecurityService securityService;
 
     /**
      * Creates the instance of service.
      * @param pmDao PrivateMessageDao
+     * @param securityService for retrieving current user
      */
-    public TransactionalPrivateMessageService(PrivateMessageDao pmDao) {
-        this.pmDao = pmDao;
+    public TransactionalPrivateMessageService(PrivateMessageDao pmDao, SecurityService securityService) {
+        this.dao = pmDao;
+        this.securityService = securityService;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<PrivateMessage> getInbox(User user) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public List<PrivateMessage> getInboxForCurrentUser() {
+        User currentUser = securityService.getCurrentUser();
+        return dao.getAllToUser(currentUser);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<PrivateMessage> getOutbox(User user) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public List<PrivateMessage> getOutboxForCurrentUser() {
+        User currentUser = securityService.getCurrentUser();
+        return dao.getAllFromUser(currentUser);
     }
 
     /**
@@ -62,6 +67,6 @@ public class TransactionalPrivateMessageService
      */
     @Override
     public void sendMessage(PrivateMessage pm) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        dao.saveOrUpdate(pm);
     }
 }
