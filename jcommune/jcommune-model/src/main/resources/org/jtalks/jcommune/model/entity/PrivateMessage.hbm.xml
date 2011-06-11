@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.jtalks.jcommune.model.entity">
+  <class name="PrivateMessage" table="PRIVATE_MESSAGE">
+    <id column="PM_ID" name="id" unsaved-value="0">
+      <generator class="native"/>
+    </id>
+    <property column="UUID" name="uuid" unique="true" not-null="true"/>
+    <many-to-one name="userFrom" class="User" column="USER_FROM" fetch="join"
+                 foreign-key="FK_USER_FROM" lazy="true" not-null="true"/>
+    <many-to-one name="userTo" class="User" column="USER_TO" fetch="join"
+                 foreign-key="FK_USER_TO" lazy="true" not-null="true"/>                 
+    <property name="creationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
+              column="PM_DATE" not-null="true"/>
+    <property name="title" column="TITLE" not-null="true"/>
+    <property name="body" column="BODY" not-null="true"/>
+  </class>
+</hibernate-mapping>
