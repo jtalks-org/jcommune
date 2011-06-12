@@ -80,16 +80,18 @@ public final class NewTopicController {
      * @return {@code ModelAndView} object which will be redirect to forum.html
      */
     @RequestMapping(value = "/branch/{branchId}/topic", method = RequestMethod.POST)
-    public String submitNewTopic(@Valid @ModelAttribute TopicDto topicDto,
+    public ModelAndView submitNewTopic(@Valid @ModelAttribute TopicDto topicDto,
                                  BindingResult result,
                                  @PathVariable("branchId") long branchId) {
         if (result.hasErrors()) {
-            return "newTopic";
+		    ModelAndView mav = new ModelAndView("newTopic");
+			mav.addObject("branchId", branchId);
+            return mav;
         } else {
             topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(),
                     branchId);
             //TODO: redirect to created topic
-            return "redirect:/branch/" + branchId + ".html";
+            return new ModelAndView("redirect:/branch/" + branchId + ".html");
         }
     }
 
