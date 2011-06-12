@@ -67,6 +67,7 @@ public class TransactionalPrivateMessageService
      */
     @Override
     public void sendMessage(PrivateMessage pm) {
+        pm.setUserFrom(securityService.getCurrentUser());
         dao.saveOrUpdate(pm);
     }
 }
