@@ -17,11 +17,19 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import javax.validation.Valid;
+import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PrivateMessageService;
+import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.web.dto.PrivateMessageDto;
+import org.jtalks.jcommune.web.dto.TopicDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -32,9 +40,12 @@ import org.springframework.web.servlet.ModelAndView;
 public class PrivateMessageController {
     
     private final PrivateMessageService pmService;
+    private final UserService userService;
 
-    public PrivateMessageController(PrivateMessageService pmService) {
+    @Autowired
+    public PrivateMessageController(PrivateMessageService pmService, UserService userService) {
         this.pmService = pmService;
+        this.userService = userService;
     }
     
     @RequestMapping(value = "/inbox", method = RequestMethod.GET)
@@ -49,13 +60,25 @@ public class PrivateMessageController {
 
     @RequestMapping(value = "/new_pm", method = RequestMethod.GET)
     public ModelAndView displayNewPMPage() {
-        return new ModelAndView("newPm");
+        ModelAndView mav = new ModelAndView("newPm");
+        mav.addObject("privateMessageDto", new PrivateMessageDto());
+        return mav;
     }
 
     @RequestMapping(value = "/new_pm", method = RequestMethod.POST)
-    public ModelAndView submitNewPM(@RequestParam("title") String title,
-                                    @RequestParam("body") String body,
-                                    @RequestParam("recipient") String recipient) {
+    public ModelAndView submitNewPM(@Valid @ModelAttribute PrivateMessageDto pmDto,  BindingResult result) {
+        
+        if (result.hasErrors()) {
+            return new ModelAndView("newPm");
+        }
+
+        PrivateMessage newPm = PrivateMessage.createNewPrivateMessage();
+        newPm.setBody(pmDto.getBody());
+        newPm.setTitle(pmDto.getTitle());
+        User userTo = userService.getByUsername(pmDto.getRecipient());
+        newPm.setUserTo(userTo);
+        pmService.sendMessage(newPm);
+        
         return new ModelAndView("redirect:/outbox.html");
     }
 }

@@ -18,10 +18,20 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.service.PrivateMessageService;
+import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.testng.Assert.assertEquals;
+
 
 /**
  *
@@ -31,11 +41,13 @@ public class PrivateMessageControllerTest {
     private PrivateMessageController controller;
     @Mock
     private PrivateMessageService pmService;
-
+    @Mock
+    private UserService userService;
+    
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
-        controller = new PrivateMessageController(pmService);
+        controller = new PrivateMessageController(pmService, userService);
     }
 
     
@@ -51,7 +63,10 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void displayNewPMPageTest() {
-        
+        ModelAndView mav = controller.displayNewPMPage();
+
+        assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
+        assertViewName(mav, "newPm");
     }
 
     @Test
