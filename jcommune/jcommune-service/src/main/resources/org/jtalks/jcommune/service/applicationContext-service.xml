@@ -37,6 +37,12 @@
     <constructor-arg index="0" ref="topicBranchDao"/>
   </bean>
 
+  <bean id="pmService"
+        class="org.jtalks.jcommune.service.transactional.TransactionalPrivateMessageService">
+    <constructor-arg index="0" ref="privateMessageDao"/>
+    <constructor-arg index="1" ref="securityService"/>
+  </bean>
+
   <bean id="topicService"
         class="org.jtalks.jcommune.service.transactional.TransactionalTopicService">
     <constructor-arg index="0" ref="topicDao"/>

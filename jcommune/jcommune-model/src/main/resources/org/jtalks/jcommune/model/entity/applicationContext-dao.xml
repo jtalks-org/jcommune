@@ -27,7 +27,8 @@
         parent="abstractHibernateDao"/>
   <bean id="topicBranchDao" class="org.jtalks.jcommune.model.dao.hibernate.BranchHibernateDao"
         parent="abstractHibernateDao"/>
-
+  <bean id="privateMessageDao" class="org.jtalks.jcommune.model.dao.hibernate.PrivateMessageHibernateDao"
+        parent="abstractHibernateDao"/>
   <!--Injecting sessionFactory bean to class AbstractHibernateDao, this way
     resolves a problem of multiple DAO beans definition -->
   <bean id="abstractHibernateDao"
@@ -53,6 +54,7 @@
         <value>/org/jtalks/jcommune/model/entity/Post.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/Topic.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/Branch.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/PrivateMessage.hbm.xml</value>
       </list>
     </property>
     <property name="hibernateProperties">

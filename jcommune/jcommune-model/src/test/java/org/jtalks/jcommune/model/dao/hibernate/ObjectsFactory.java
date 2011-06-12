@@ -20,6 +20,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.hibernate.Session;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 
@@ -85,6 +86,19 @@ public final class ObjectsFactory {
         return newBranch;
     }
 
+    /**
+     * Create the PrivateMessage with filled required fields.
+     * @return ready to save instance
+     */
+    public static PrivateMessage getDefaultPrivateMessage() {
+        PrivateMessage pm = PrivateMessage.createNewPrivateMessage();
+        pm.setUserFrom(persist(getUser("UserFrom", "mail1")));
+        pm.setUserTo(persist(getUser("UserTo", "mail2")));
+        pm.setBody("Private message body");
+        pm.setTitle("Message title");
+        return pm;
+    }
+    
     private static <T> T persist(T entity) {
         session.save(entity);
         return entity;
