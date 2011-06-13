@@ -31,7 +31,7 @@
 
   <query name="getAllTopicsInBranch">
     <![CDATA[FROM Topic as topic
-                        WHERE topic.branch.id = :branchId ORDER BY topic.lastModificationDate DESC]]>
+                        WHERE topic.branch = :branchId ORDER BY topic.lastModificationDate DESC]]>
   </query>
 
 </hibernate-mapping>
