@@ -75,13 +75,20 @@ public interface TopicService extends EntityService<Topic> {
     void deletePost(long topicId, long postId);
 
     /**
+     * Get posts range from branch.
      *
-     * @param branchId
-     * @param start
-     * @param max
-     * @return
+     * @param branchId branch id from which we obtain topics
+     * @param start    start index of topic
+     * @param max      number of topics
+     * @return list of {@code Topic} objects with size {@code max}
      */
     List<Topic> getTopicRangeInBranch(long branchId, int start, int max);
 
+    /**
+     * Get number of topics in branch.
+     *
+     * @param branchId branch id where you have to count topics
+     * @return number of topics in branch
+     */
     int getTopicsInBranchCount(long branchId);
 }

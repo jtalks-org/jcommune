@@ -34,11 +34,27 @@ public interface TopicDao extends Dao<Topic> {
 
     /**
      * Load all topics according to branch Id
+     *
      * @param id Branch id
      * @return List of topics or null if the appropriate topic wasn't found
      */
     List<Topic> getAllTopicsAccordingToBranch(Long id);
+
+    /**
+     * Get posts range from branch.
+     *
+     * @param branchId branch id from which we obtain topics
+     * @param start    start index of topic
+     * @param max      number of topics
+     * @return list of {@code Topic} objects with size {@code max}
+     */
     List<Topic> getTopicRangeInBranch(Long branchId, int start, int max);
 
+    /**
+     * Get number of topics in branch.
+     *
+     * @param branchId branch id where you have to count topics
+     * @return number of topics in branch
+     */
     int getTopicsInBranchCount(long branchId);
 }
