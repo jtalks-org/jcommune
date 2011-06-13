@@ -32,14 +32,6 @@ import java.util.List;
 public interface TopicService extends EntityService<Topic> {
 
     /**
-     * Get topic with fetched topics fields(userCreated, posts).
-     *
-     * @param id topic primary id.
-     * @return {@code Topic} with fetched topic fields or null if no topic found by this primary id.
-     */
-    Topic getTopicWithPosts(long id);
-
-    /**
      * Add the answer to the topic. Add the specified message to the target topic and save.
      * User should be authorized to answer to the topic. Otherwise {@link IllegalStateException} will be thrown.
      *
@@ -47,14 +39,6 @@ public interface TopicService extends EntityService<Topic> {
      * @param answerBody the text of the answer
      */
     void addAnswer(long topicId, String answerBody);
-
-    /**
-     * Get all topics according to branch Id
-     *
-     * @param id Topic Branch id
-     * @return List of Topics, if no corresponding Topics it will return empty List
-     */
-    List<Topic> getAllTopicsAccordingToBranch(Long id);
 
     /**
      * Add new topic with given title and body.

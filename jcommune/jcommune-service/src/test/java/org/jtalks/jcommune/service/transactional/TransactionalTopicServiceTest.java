@@ -169,18 +169,6 @@ public class TransactionalTopicServiceTest {
     }
 
     @Test
-    public void getAllTopicsAccordingToBranchTest(){
-        List<Topic> topics = new ArrayList<Topic>();
-        topics.add(getTopic(false));
-        when(topicDao.getAllTopicsAccordingToBranch(1L)).thenReturn(topics);
-
-        List<Topic> actualTopics = topicService.getAllTopicsAccordingToBranch(1L);
-
-        verify(topicDao,times(1)).getAllTopicsAccordingToBranch(1L);
-        assertTrue(topics.size() == actualTopics.size());
-    }
-
-    @Test
     public void testGetTopicsRangeInBranch() {
         int start = 1;
         int max = 2;

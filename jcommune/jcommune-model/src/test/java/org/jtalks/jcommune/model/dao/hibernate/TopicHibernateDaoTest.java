@@ -175,28 +175,6 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     /*===== TopicDao specific methods =====*/
 
     @Test
-    public void testGetAllTopicsInBranch() {
-        List<Topic> persistedTopics = createAndSaveTopicList(2);
-        long branchId = persistedTopics.get(0).getBranch().getId();
-
-        List<Topic> topics = dao.getAllTopicsAccordingToBranch(branchId);
-
-        assertEquals(2, topics.size());
-        assertEquals(branchId, topics.get(0).getBranch().getId());
-    }
-
-
-    @Test
-    public void testGetAllTopicsInBranchEmptyBranch() {
-        Branch branch = ObjectsFactory.getDefaultBranch();
-        session.save(branch);
-
-        List<Topic> topics = dao.getAllTopicsAccordingToBranch(branch.getId());
-
-        assertEquals(topics.size(), 0);
-    }
-
-    @Test
     public void testGetTopicRangeInBranch() {
         int start = 1;
         int max = 2;

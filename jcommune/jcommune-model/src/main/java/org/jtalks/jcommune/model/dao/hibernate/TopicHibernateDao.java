@@ -17,7 +17,6 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.hibernate.Query;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Topic;
 
@@ -31,16 +30,6 @@ import java.util.List;
  * @author Vitaliy Kravchenko
  */
 public class TopicHibernateDao extends AbstractHibernateDao<Topic> implements TopicDao {
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<Topic> getAllTopicsAccordingToBranch(Long id) {
-        return getSession().getNamedQuery("getAllTopicsInBranch")
-                .setLong("branchId", id).list();
-    }
 
     /**
      * {@inheritDoc}

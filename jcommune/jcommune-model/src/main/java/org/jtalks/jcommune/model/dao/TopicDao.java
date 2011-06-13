@@ -33,14 +33,6 @@ import java.util.List;
 public interface TopicDao extends Dao<Topic> {
 
     /**
-     * Load all topics according to branch Id
-     *
-     * @param id Branch id
-     * @return List of topics or null if the appropriate topic wasn't found
-     */
-    List<Topic> getAllTopicsAccordingToBranch(Long id);
-
-    /**
      * Get posts range from branch.
      *
      * @param branchId branch id from which we obtain topics

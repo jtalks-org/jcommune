@@ -62,14 +62,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    public Topic getTopicWithPosts(long id) {
-        return dao.get(id);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void addAnswer(long topicId, String answerBody) {
         User currentUser = securityService.getCurrentUser();
         // Check if the user is authenticated
@@ -102,14 +94,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         topic.setBranch(branchService.get(branchId));
 
         dao.saveOrUpdate(topic);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Topic> getAllTopicsAccordingToBranch(Long id) {
-        return dao.getAllTopicsAccordingToBranch(id);
     }
 
     /**
