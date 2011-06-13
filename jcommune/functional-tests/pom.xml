@@ -106,9 +106,12 @@
         <artifactId>apache-mime4j</artifactId>
         <version>0.6</version>
       </dependency>
+      <dependency>
+        <groupId>org.testng</groupId>
+        <artifactId>testng</artifactId>
+      </dependency>
 
     </dependencies>
-
 
 
 </project>
