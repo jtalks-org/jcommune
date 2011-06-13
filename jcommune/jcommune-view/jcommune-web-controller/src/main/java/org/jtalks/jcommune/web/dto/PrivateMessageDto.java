@@ -17,6 +17,7 @@
  */
 package org.jtalks.jcommune.web.dto;
 
+import java.awt.Label;
 import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
@@ -27,15 +28,13 @@ import org.jtalks.jcommune.model.entity.PrivateMessage;
  * @author Pavel Vervenko
  */
 public class PrivateMessageDto {
-    @NotEmpty
-    @Size(min = 2, max = 22)
+    @Size(min = 2, max = 22, message="{title.length}")
     private String title;
 
-    @NotEmpty
-    @Size(min = 2, max = 1000)
+    @Size(min = 2, message="{body.length}")
     private String body; 
     
-    @NotEmpty
+    @NotEmpty(message="{not_empty}")
     private String recipient;
 
     public String getBody() {
