@@ -17,6 +17,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import java.util.List;
 import javax.validation.Valid;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.User;
@@ -50,12 +51,18 @@ public class PrivateMessageController {
     
     @RequestMapping(value = "/inbox", method = RequestMethod.GET)
     public ModelAndView displayInboxPage() {
-        return new ModelAndView("inbox");
+        List<PrivateMessage> inboxForCurrentUser = pmService.getInboxForCurrentUser();
+        ModelAndView modelAndView = new ModelAndView("inbox");
+        modelAndView.addObject("pmList", inboxForCurrentUser);
+        return modelAndView;
     }
 
     @RequestMapping(value = "/outbox", method = RequestMethod.GET)
     public ModelAndView displayOutboxPage() {
-        return new ModelAndView("outbox");
+        List<PrivateMessage> outboxForCurrentUser = pmService.getOutboxForCurrentUser();
+        ModelAndView modelAndView = new ModelAndView("outbox");
+        modelAndView.addObject("pmList", outboxForCurrentUser);
+        return modelAndView;
     }
 
     @RequestMapping(value = "/new_pm", method = RequestMethod.GET)
