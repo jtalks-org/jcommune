@@ -19,6 +19,8 @@ package org.jtalks.jcommune.web;
  */
 
 /**
+ * Class for pagination.
+ *
  * @author Kirill Afonin
  */
 public class Pagination {
@@ -35,8 +37,8 @@ public class Pagination {
      * @param itemsCount total number of items
      */
     public Pagination(Integer page, Integer pageSize, float itemsCount) {
-        this.page = page == null ? new Integer(1) : page;
-        this.pageSize = pageSize == null ? new Integer(DEFAULT_PAGE_SIZE) : pageSize;
+        this.page = page == null ? Integer.valueOf(1) : page;
+        this.pageSize = pageSize == null ? Integer.valueOf(DEFAULT_PAGE_SIZE) : pageSize;
         this.itemsCount = itemsCount;
     }
 
