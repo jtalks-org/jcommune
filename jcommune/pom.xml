@@ -11,6 +11,7 @@
     <module>jcommune-model</module>
     <module>jcommune-service</module>
     <module>jcommune-view</module>
+    <module>functional-tests</module>
   </modules>
   <dependencyManagement>
     <dependencies>
