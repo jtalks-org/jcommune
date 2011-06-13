@@ -51,9 +51,9 @@ public class Topic extends Persistent {
     private Branch branch;
 
     /**
-     * The modification date of the topic.
+     * The last modification date of the topic.
      */
-    private DateTime modificationDate;
+    private DateTime lastModificationDate;
 
     /**
      * Creates the Topic instance. All fields values are null.
@@ -74,7 +74,8 @@ public class Topic extends Persistent {
         this.topicStarter = topicStarter;
         this.title = title;
         this.creationDate = new DateTime();
-        updateModificationDate();
+
+        updateLastModificationDate();
     }
 
     /**
@@ -85,7 +86,7 @@ public class Topic extends Persistent {
     public Topic(DateTime creationDate) {
         this.creationDate = creationDate;
 
-        updateModificationDate();
+        updateLastModificationDate();
     }
 
     /**
@@ -107,7 +108,7 @@ public class Topic extends Persistent {
         posts.add(newPost);
         newPost.setTopic(this);
 
-        updateModificationDate();
+        updateLastModificationDate();
     }
 
     /**
@@ -118,7 +119,7 @@ public class Topic extends Persistent {
     public void removePost(Post postToRemove) {
         posts.remove(postToRemove);
 
-        updateModificationDate();
+        updateLastModificationDate();
     }
 
     /**
@@ -211,32 +212,28 @@ public class Topic extends Persistent {
         this.branch = branch;
     }
 
-
     /**
-     * Set the topic modification date.
+     * Set the topic last modification date.
      *
-     * @param modificationDate the modificationDate to set
+     * @param lastModificationDate the lastModificationDate to set
      */
-    public void setModificationDate(DateTime modificationDate) {
-        this.modificationDate = modificationDate;
-    }
-
-
-    /**
-     * Get the topic modification date.
-     *
-     * @param modificationDate the modificationDate to get
-     */
-    public DateTime getModificationDate() {
-        return modificationDate;
+    public void setLastModificationDate(DateTime lastModificationDate) {
+        this.lastModificationDate = lastModificationDate;
     }
 
     /**
-     * Update the topic modification date.
+     * Get the topic last modification date.
      *
-     * @param modificationDate the modificationDate to update
+     * @return the lastModificationDate
      */
-    private void updateModificationDate() {
-        this.modificationDate = new DateTime();
+    public DateTime getLastModificationDate() {
+        return lastModificationDate;
+    }
+
+    /**
+     * Set the topic last modification date for current DateTime.
+     */
+    private void updateLastModificationDate() {
+        this.lastModificationDate = new DateTime();
     }
 }
