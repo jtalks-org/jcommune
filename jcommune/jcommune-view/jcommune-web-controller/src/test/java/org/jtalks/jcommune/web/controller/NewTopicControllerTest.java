@@ -57,9 +57,9 @@ public class NewTopicControllerTest {
         TopicDto dto = getDto();
         BindingResult result = new BeanPropertyBindingResult(dto, "topicDto");
 
-        String view = controller.submitNewTopic(dto, result, 1l);
+        ModelAndView view = controller.submitNewTopic(dto, result, 1l);
 
-        assertEquals(view, "redirect:/branch/1.html");
+        assertEquals(view.getViewName(), "redirect:/branch/1.html");
         verify(topicService, times(1)).createTopic(TOPIC_THEME, TOPIC_CONTENT, 1l);
     }
 

@@ -22,8 +22,8 @@
     <property name="creationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
               column="CREATION_DATE" not-null="true"/>
 
-    <property name="modificationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
-              column="MODIFICATION_DATE" not-null="false"/>
+    <property name="lastModificationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
+              column="LAST_MODIFICATION_DATE" not-null="false"/>
 
     <many-to-one name="branch" class="Branch"
                  column="BRANCH" not-null="true" foreign-key="FK_BRANCH"/>
@@ -31,7 +31,7 @@
 
   <query name="getAllTopicsInBranch">
     <![CDATA[FROM Topic as topic
-                        WHERE topic.branch.id = :branchId ORDER BY topic.modificationDate DESC]]>
+                        WHERE topic.branch.id = :branchId ORDER BY topic.lastModificationDate DESC]]>
   </query>
 
 </hibernate-mapping>
