@@ -41,7 +41,7 @@
             <c:url value="/branch/${branchId}.html" var="prev">
                 <c:param name="page" value="${page - 1}"/>
             </c:url>
-            <a href='<c:out value="${prev}" />' class="pn next">Prev</a>
+            <a href='<c:out value="${prev}" />' class="pn next"><spring:message code="pagination.prev"/></a>
         </c:if>
         <c:forEach begin="1" end="${maxPages}" step="1" varStatus="i">
             <c:choose>
@@ -61,7 +61,7 @@
             <c:url value="/branch/${branchId}.html" var="next">
                 <c:param name="page" value="${page + 1}"/>
             </c:url>
-            <a href='<c:out value="${next}" />' class="pn next">Next</a>
+            <a href='<c:out value="${next}" />' class="pn next"><spring:message code="pagination.next"/></a>
         </c:if>
     </c:if>
 </div>
