@@ -27,7 +27,9 @@ import org.joda.time.DateTime;
  * The topic field will be updated automatically when called Topic.addPost(Post). <br>
  * The Post deletes automatically if the parent Topic deleted.
  * Use the static method Post.createNewPost() to create new post with current creationDate.
+ *
  * @author Pavel Vervenko
+ * @author Kirill Afonin
  */
 public class Post extends Persistent {
     /**
@@ -37,6 +39,7 @@ public class Post extends Persistent {
     private User userCreated;
     private String postContent;
     private Topic topic;
+
     /**
      * Constructs the instance with initialised fields.
      */
@@ -45,6 +48,7 @@ public class Post extends Persistent {
 
     /**
      * Construct the instance with the specified creation date.
+     *
      * @param creationDate the creation date of the post
      */
     public Post(DateTime creationDate) {
@@ -52,7 +56,23 @@ public class Post extends Persistent {
     }
 
     /**
+     * Creates the Post instance with required fields.
+     * Creation date is set to now.
+     *
+     * @param topic       topic that contains post
+     * @param userCreated user who create the post
+     * @param postContent content of the post
+     */
+    public Post(Topic topic, User userCreated, String postContent) {
+        this.creationDate = new DateTime();
+        this.userCreated = userCreated;
+        this.postContent = postContent;
+        this.topic = topic;
+    }
+
+    /**
      * Creates the new instance with the creationDate initialized with current time.
+     *
      * @return new Post instance
      */
     public static Post createNewPost() {
@@ -82,6 +102,7 @@ public class Post extends Persistent {
 
     /**
      * Set the User who create this post.
+     *
      * @param userCreated the userCreated to set
      */
     public void setUserCreated(User userCreated) {

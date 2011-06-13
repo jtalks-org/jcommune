@@ -17,46 +17,67 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
 import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeValues;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.testng.Assert.assertEquals;
 
 public class TopicRenderControllerTest {
+    private PostService postService;
     private TopicService topicService;
-    private TopicRenderController topicRenderController;
+    private TopicRenderController controller;
 
     @BeforeMethod
     public void init() {
+        postService = mock(PostService.class);
         topicService = mock(TopicService.class);
-        topicRenderController = new TopicRenderController(topicService);
+        controller = new TopicRenderController(postService, topicService);
     }
 
     @Test
-    public void testShowTopic() {
+    public void testTopicsInBranch() {
+        long topicId = 1L;
+        long branchId = 1L;
+        int page = 2;
+        int size = 5;
+        int start = page * size - size;
         Topic topic = Topic.createNewTopic();
-        topic.setId(1l);
-        topic.setTitle("Simple Title");
+        topic.setTitle("title");
+        when(postService.getPostRangeInTopic(topicId, start, size)).thenReturn(new ArrayList<Post>());
+        when(postService.getPostsInTopicCount(topicId)).thenReturn(10);
+        when(topicService.get(topicId)).thenReturn(topic);
 
-        Map<String, Object> topicMap = new HashMap<String, Object>();
-        topicMap.put("selectedTopic", topic);
-        topicMap.put("branchId",1l);
-        topicMap.put("topicId",1l);
+        ModelAndView mav = controller.showTopic(branchId, topicId, page, size);
 
-        when(topicService.get(1l)).thenReturn(topic);
-        
-        ModelAndView mav = topicRenderController.showTopic(1l,1L);
-        verify(topicService).get(1l);
-        
-        assertModelAttributeValues(mav, topicMap);
-        assertViewName(mav, "renderTopic");
+        assertViewName(mav, "postList");
+        assertAndReturnModelAttributeOfType(mav, "posts", List.class);
+        String title = assertAndReturnModelAttributeOfType(mav, "topicTitle", String.class);
+        assertEquals(title, "title");
+        Long _topic = assertAndReturnModelAttributeOfType(mav, "topicId", Long.class);
+        assertEquals((long) _topic, topicId);
+        Long _branch = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
+        assertEquals((long) _branch, branchId);
+        Integer _maxPages = assertAndReturnModelAttributeOfType(mav, "maxPages", Integer.class);
+        Integer _page = assertAndReturnModelAttributeOfType(mav, "page", Integer.class);
+        assertEquals((int) _maxPages, 2);
+        assertEquals((int) _page, page);
+        verify(postService, times(1)).getPostRangeInTopic(topicId, start, size);
+        verify(postService, times(1)).getPostsInTopicCount(topicId);
+        verify(topicService, times(1)).get(topicId);
     }
+
 }

@@ -32,24 +32,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 /**
  * This test cover {@code TransactionalPostService} logic validation.
  * Logic validation cover update/get/error cases by this class.
+ *
  * @author Osadchuck Eugeny
+ * @author Kirill Afonin
  */
 public class TransactionalPostServiceTest {
-    
+
     final long POST_ID = 999;
     final String POST_UUID = "z1f2";
     final String POST_CONTENT = "post content";
     final DateTime POST_CREATION_DATE = new DateTime();
-    
+
     final long USER_ID = 333;
     final String USER_UUID = "aaba";
-    
+
     final String TOPIC_UUID = "adfadsfd";
-    
+
     private PostService postService;
     private PostDao postDao;
 
@@ -58,8 +62,8 @@ public class TransactionalPostServiceTest {
         postDao = mock(PostDao.class);
         postService = new TransactionalPostService(postDao);
     }
-        
-    private Post getPost(){
+
+    private Post getPost() {
         User topicStarter = new User();
         topicStarter.setId(USER_ID);
         topicStarter.setUuid(USER_UUID);
@@ -68,7 +72,7 @@ public class TransactionalPostServiceTest {
         topic.setId(333);
         topic.setUuid(TOPIC_UUID);
         topic.setTopicStarter(topicStarter);
-        
+
         Post post = new Post();
         post.setId(POST_ID);
         post.setUuid(POST_UUID);
@@ -79,40 +83,68 @@ public class TransactionalPostServiceTest {
     }
 
     @Test
-    public void deleteByIdTest(){
+    public void deleteByIdTest() {
         postService.delete(POST_ID);
-        
+
         verify(postDao, times(1)).delete(Matchers.anyLong());
     }
-    
+
     @Test(expectedExceptions = {IllegalArgumentException.class})
-    public void deleteByNagativeIdTest(){
+    public void deleteByNagativeIdTest() {
         postService.delete(-1l);
         verify(postDao, never()).delete(Matchers.anyLong());
     }
 
     @Test
-    public void getByIdTest(){
-        when(postDao.get(POST_ID)).thenReturn(getPost());        
-        Post post = postService.get(POST_ID);        
-        Assert.assertEquals(post, getPost(), "Posts aren't equals");        
+    public void getByIdTest() {
+        when(postDao.get(POST_ID)).thenReturn(getPost());
+        Post post = postService.get(POST_ID);
+        Assert.assertEquals(post, getPost(), "Posts aren't equals");
         verify(postDao, times(1)).get(Matchers.anyLong());
     }
-    
+
     @Test(expectedExceptions = {IllegalArgumentException.class})
-    public void getByNagativeIdTest(){
+    public void getByNagativeIdTest() {
         postService.get(-1l);
         verify(postDao, never()).get(Matchers.anyLong());
     }
-    
+
     @Test
-    public void getAllTest(){
+    public void getAllTest() {
         List<Post> expectedUserList = new ArrayList<Post>();
         expectedUserList.add(getPost());
-        when(postDao.getAll()).thenReturn(expectedUserList);        
-        List<Post> actualUserList = postService.getAll();          
-        Assert.assertEquals(actualUserList, expectedUserList, "Posts lists aren't equals");        
+        when(postDao.getAll()).thenReturn(expectedUserList);
+        List<Post> actualUserList = postService.getAll();
+        Assert.assertEquals(actualUserList, expectedUserList, "Posts lists aren't equals");
         verify(postDao, times(1)).getAll();
+    }
+
+    @Test
+    public void testGetTopicsRangeInBranch() {
+        int start = 1;
+        int max = 2;
+        long topicId = 1L;
+        List<Post> list = new ArrayList<Post>();
+        list.add(Post.createNewPost());
+        list.add(Post.createNewPost());
+        when(postDao.getPostRangeInTopic(topicId, start, max)).thenReturn(list);
+
+        List<Post> posts = postService.getPostRangeInTopic(topicId, start, max);
+
+        assertNotNull(posts);
+        assertEquals(max, posts.size(), "Unexpected list size");
+        verify(postDao, times(1)).getPostRangeInTopic(topicId, start, max);
+    }
+
+    @Test
+    public void testGetTopicsInBranchCount() {
+        long topicId = 1L;
+        when(postDao.getPostsInTopicCount(topicId)).thenReturn(10);
+
+        int count = postService.getPostsInTopicCount(topicId);
+
+        assertEquals(count, 10);
+        verify(postDao, times(1)).getPostsInTopicCount(topicId);
     }
 
 }
