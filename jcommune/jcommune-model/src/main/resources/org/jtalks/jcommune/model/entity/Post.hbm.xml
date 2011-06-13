@@ -12,5 +12,11 @@
     <property name="creationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
               column="POST_DATE" not-null="true"/>
     <property name="postContent" column="POST_CONTENT" not-null="true"/>
+    <many-to-one name="topic" column="TOPIC_ID" not-null="false"/>
   </class>
+
+    <query name="getAllPostsInTopic">
+    <![CDATA[FROM Post as post
+                        WHERE post.topic = :topicId ORDER BY post.creationDate DESC]]>
+  </query>
 </hibernate-mapping>

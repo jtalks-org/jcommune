@@ -23,6 +23,8 @@ import org.jtalks.jcommune.service.PostService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 /**
  * Post service class. This class contains method needed to manipulate with Post persistent entity.
  *
@@ -39,5 +41,21 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      */
     public TransactionalPostService(PostDao dao) {
         this.dao = dao;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Post> getPostRangeInTopic(long topicId, int start, int max) {
+        return dao.getPostRangeInTopic(topicId, start, max);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getPostsInTopicCount(long topicId) {
+        return dao.getPostsInTopicCount(topicId);
     }
 }

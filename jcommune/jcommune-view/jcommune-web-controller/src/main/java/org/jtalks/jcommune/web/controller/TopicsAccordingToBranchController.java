@@ -17,9 +17,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.web.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,8 +47,8 @@ public final class TopicsAccordingToBranchController {
      * Class constructor which creates MVC controller with specifying TopicService
      * object injected via autowiring
      *
-     * @param topicService  {@link TopicService}the object that provides retrieving
-     *                      data or saving to database
+     * @param topicService {@link TopicService}the object that provides retrieving
+     *                     data or saving to database
      */
     @Autowired
     public TopicsAccordingToBranchController(TopicService topicService) {
@@ -58,11 +56,12 @@ public final class TopicsAccordingToBranchController {
     }
 
     /**
+     * Displays to user a list of topic from the chosen branch with pagination.
      *
-     * @param branchId
-     * @param page
-     * @param size
-     * @return
+     * @param branchId branch for display
+     * @param page     page
+     * @param size     number of posts on the page
+     * @return {@code ModelAndView}
      */
     @RequestMapping(value = "/branch/{branchId}", method = RequestMethod.GET)
     public ModelAndView topicsInBranch(@PathVariable("branchId") long branchId,

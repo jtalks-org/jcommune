@@ -202,10 +202,10 @@ public class TransactionalTopicServiceTest {
         long branchId = 1L;
         when(topicDao.getTopicsInBranchCount(branchId)).thenReturn(10);
 
-        int count = topicService.getTopicsInBranchCount(1L);
+        int count = topicService.getTopicsInBranchCount(branchId);
 
         assertEquals(count, 10);
-        verify(topicDao, times(1)).getTopicsInBranchCount(1L);
+        verify(topicDao, times(1)).getTopicsInBranchCount(branchId);
     }
 
     /**

@@ -197,7 +197,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     }
 
     @Test
-    public void testGetRange() {
+    public void testGetTopicRangeInBranch() {
         int start = 1;
         int max = 2;
         List<Topic> persistedTopics = createAndSaveTopicList(5);

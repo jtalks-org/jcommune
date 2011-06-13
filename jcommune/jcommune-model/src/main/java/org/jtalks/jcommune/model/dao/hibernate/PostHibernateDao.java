@@ -20,14 +20,37 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.entity.Post;
 
+import java.util.List;
+
 /**
  * The implementation of PostDao based on Hibernate.
- * The class is responsible for loading {@link Post} objects from database, 
+ * The class is responsible for loading {@link Post} objects from database,
  * save, update and delete them.
- * 
+ *
  * @author Pavel Vervenko
  * @author Kirill Afonin
  */
 public class PostHibernateDao extends AbstractHibernateDao<Post> implements PostDao {
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Post> getPostRangeInTopic(long topicId, int start, int max) {
+        return getSession().getNamedQuery("getAllPostsInTopic")
+                .setLong("topicId", topicId)
+                .setFirstResult(start)
+                .setMaxResults(max)
+                .list();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getPostsInTopicCount(long topicId) {
+        return ((Number) getSession().createQuery("select count(*) from Post p where p.topic = ?")
+                .setLong(0, topicId).uniqueResult()).intValue();
+    }
 }

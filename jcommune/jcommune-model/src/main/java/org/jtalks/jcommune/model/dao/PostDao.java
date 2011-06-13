@@ -19,6 +19,8 @@ package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.jcommune.model.entity.Post;
 
+import java.util.List;
+
 /**
  * Interface allows to make basic CRUD operations with the 
  * {@link Post} objects. 
@@ -29,5 +31,20 @@ import org.jtalks.jcommune.model.entity.Post;
  * @author Pavel Vervenko
  */
 public interface PostDao extends Dao<Post> {
-    
+
+    /**
+     *
+     * @param topicId
+     * @param start
+     * @param max
+     * @return
+     */
+    List<Post> getPostRangeInTopic(long topicId, int start, int max);
+
+    /**
+     *
+     * @param topicId
+     * @return
+     */
+    int getPostsInTopicCount(long topicId);
 }

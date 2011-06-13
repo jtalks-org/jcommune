@@ -19,7 +19,7 @@ package org.jtalks.jcommune.web;
  */
 
 /**
- *
+ * @author Kirill Afonin
  */
 public class Pagination {
     private Integer page;
@@ -28,10 +28,11 @@ public class Pagination {
     public static final int DEFAULT_PAGE_SIZE = 5;
 
     /**
+     * Create instance.
      *
-     * @param page
-     * @param pageSize
-     * @param itemsCount
+     * @param page       page (default 1)
+     * @param pageSize   number of items on the page (default 5)
+     * @param itemsCount total number of items
      */
     public Pagination(Integer page, Integer pageSize, float itemsCount) {
         this.page = page == null ? new Integer(1) : page;
@@ -40,43 +41,38 @@ public class Pagination {
     }
 
     /**
-     *
-     * @return
+     * @return page
      */
     public Integer getPage() {
         return page;
     }
 
     /**
-     *
-     * @return
+     * @return number of items on the page
      */
     public int getPageSize() {
         return pageSize;
     }
 
     /**
-     *
-     * @return
+     * @return index with which a page starts
      */
     public int getStart() {
         return (getPage() - 1) * getPageSize();
     }
 
     /**
-     *
-     * @return
+     * @return not rounded page count
      */
     private float getPageCount() {
         return itemsCount / pageSize;
     }
 
     /**
-     *
-     * @return
+     * @return number of pages
      */
     public int getMaxPages() {
-        float pc = getPageCount();
-        return (int) ((pc > (int) pc || pc == 0.0) ? pc + 1 : pc);
+        float pageCount = getPageCount();
+        return (int) ((pageCount > (int) pageCount || pageCount == 0.0) ? pageCount + 1 : pageCount);
     }
 }
