@@ -1,5 +1,3 @@
-package org.jtalks.jcommune.web;
-
 /**
  * Copyright (C) 2011  jtalks.org Team
  * This library is free software; you can redistribute it and/or
@@ -17,6 +15,7 @@ package org.jtalks.jcommune.web;
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
+package org.jtalks.jcommune.web;
 
 /**
  * Class for pagination.
