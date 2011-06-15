@@ -19,7 +19,6 @@ package org.jtalks.jcommune.service;
 
 import java.util.List;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
-import org.jtalks.jcommune.model.entity.User;
 
 /**
  * The interface to manipulate with private messages.
