@@ -24,8 +24,8 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
-import org.jtalks.jcommune.web.dto.TopicDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -34,21 +34,34 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- *
+ * MVC controller for Private Messaging. Handles request for inbox, outbox and new private messages.
+ * 
  * @author Pavel Vervenko
  */
 @Controller
 public class PrivateMessageController {
-    
+
     private final PrivateMessageService pmService;
     private final UserService userService;
 
+    /**
+     * Requires {@link PrivateMessageService} for manipulations with messages and {@link UserService} to find the 
+     * recipient by username.
+     * 
+     * @param pmService the PrivateMessageService instance
+     * @param userService the UserService instance
+     */
     @Autowired
     public PrivateMessageController(PrivateMessageService pmService, UserService userService) {
         this.pmService = pmService;
         this.userService = userService;
     }
-    
+
+    /**
+     * Render the PM inbox page with the list of incoming messages for the /inbox URI.
+     * 
+     * @return ModelAndView with added list of inbox messages
+     */
     @RequestMapping(value = "/inbox", method = RequestMethod.GET)
     public ModelAndView displayInboxPage() {
         List<PrivateMessage> inboxForCurrentUser = pmService.getInboxForCurrentUser();
@@ -57,6 +70,11 @@ public class PrivateMessageController {
         return modelAndView;
     }
 
+    /**
+     * Render the PM outbox page with the list of sent messages for the /outbox URI.
+     * 
+     * @return ModelAndView with added list of outbox messages 
+     */
     @RequestMapping(value = "/outbox", method = RequestMethod.GET)
     public ModelAndView displayOutboxPage() {
         List<PrivateMessage> outboxForCurrentUser = pmService.getOutboxForCurrentUser();
@@ -65,6 +83,11 @@ public class PrivateMessageController {
         return modelAndView;
     }
 
+    /**
+     * Render the page with a form for creation new Private Message with empty binded {@link PrivateMessageDto}.
+     * 
+     * @return ModelAndView with the form
+     */
     @RequestMapping(value = "/new_pm", method = RequestMethod.GET)
     public ModelAndView displayNewPMPage() {
         ModelAndView mav = new ModelAndView("newPm");
@@ -72,20 +95,39 @@ public class PrivateMessageController {
         return mav;
     }
 
+    /**
+     * Save the PrivateMessage for the filled in PrivateMessageDto.
+     * 
+     * @param pmDto {@link PrivateMessageDto} populated in form
+     * @param result result of {@link PrivateMessageDto} validation
+     * @return redirect to /inbox on success or back to "/new_pm" on validation errors
+     */
     @RequestMapping(value = "/new_pm", method = RequestMethod.POST)
-    public ModelAndView submitNewPM(@Valid @ModelAttribute PrivateMessageDto pmDto,  BindingResult result) {
-        
+    public ModelAndView submitNewPM(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
         if (result.hasErrors()) {
             return new ModelAndView("newPm");
         }
-
         PrivateMessage newPm = PrivateMessage.createNewPrivateMessage();
         newPm.setBody(pmDto.getBody());
         newPm.setTitle(pmDto.getTitle());
-        User userTo = userService.getByUsername(pmDto.getRecipient());
-        newPm.setUserTo(userTo);
+        try {
+            User userTo = userService.getByUsername(pmDto.getRecipient());
+            newPm.setUserTo(userTo);
+        } catch (UsernameNotFoundException unfe) {
+            return getFormWithError();
+        }
         pmService.sendMessage(newPm);
-        
         return new ModelAndView("redirect:/outbox.html");
+    }
+
+    /**
+     * Return newPm page with the flag of wrong username.
+     * 
+     * @return ModelAndView with error flag
+     */
+    private ModelAndView getFormWithError() {
+        ModelAndView modelAndView = new ModelAndView("newPm");
+        modelAndView.addObject("wongUser", true);
+        return modelAndView;
     }
 }

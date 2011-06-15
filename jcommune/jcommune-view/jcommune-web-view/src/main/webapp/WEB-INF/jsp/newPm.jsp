@@ -19,11 +19,14 @@
           <form:form action="new_pm.html" modelAttribute="privateMessageDto" method="POST" 
                      onsubmit="this.getAttribute('submitted')"> <!--Block multiple form submissions-->
             <table border="1" width="100%">
-            <tr>
+              <tr>
                 <td width="30%">
                   <form:label path="recipient"><spring:message code="label.recipient"/></form:label>
                   <form:input path="recipient"/>
                   <form:errors path="recipient"/>
+                  <c:if test="${wongUser==true}">
+                    <div style="margin: 10px; color: #e43131"><spring:message code="label.worg_recipient"/></div>
+                  </c:if>                  
                 </td>
               </tr>
               <tr>
