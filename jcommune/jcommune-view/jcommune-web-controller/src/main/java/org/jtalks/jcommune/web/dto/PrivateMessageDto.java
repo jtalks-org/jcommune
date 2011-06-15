@@ -17,7 +17,6 @@
  */
 package org.jtalks.jcommune.web.dto;
 
-import java.awt.Label;
 import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
@@ -28,37 +27,59 @@ import org.jtalks.jcommune.model.entity.PrivateMessage;
  * @author Pavel Vervenko
  */
 public class PrivateMessageDto {
-    @Size(min = 2, max = 22, message="{title.length}")
-    private String title;
 
-    @Size(min = 2, message="{body.length}")
-    private String body; 
-    
-    @NotEmpty(message="{not_empty}")
+    @Size(min = 2, max = 22, message = "{title.length}")
+    private String title;
+    @Size(min = 2, message = "{body.length}")
+    private String body;
+    @NotEmpty(message = "{not_empty}")
     private String recipient;
 
+    /**
+     * @return message body
+     */
     public String getBody() {
         return body;
     }
 
+    /**
+     * Set body.
+     *
+     * @param body message body
+     */
     public void setBody(String body) {
         this.body = body;
     }
 
+    /**
+     * @return recipient
+     */
     public String getRecipient() {
         return recipient;
     }
 
+    /**
+     * Set the recipient's username.
+     *
+     * @param recipient recipient username
+     */
     public void setRecipient(String recipient) {
         this.recipient = recipient;
     }
 
+    /**
+     * @return title
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Set the message title.
+     *
+     * @param title message's title
+     */
     public void setTitle(String title) {
         this.title = title;
     }
-
 }
