@@ -19,7 +19,6 @@ package org.jtalks.jcommune.web.dto;
 
 import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.jtalks.jcommune.model.entity.PrivateMessage;
 
 /**
  * DTO for {@link PrivateMessage} objects. Used for validation and binding to the form.

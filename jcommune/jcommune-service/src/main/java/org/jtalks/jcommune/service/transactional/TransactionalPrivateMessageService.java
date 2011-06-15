@@ -32,7 +32,7 @@ import org.jtalks.jcommune.service.SecurityService;
 public class TransactionalPrivateMessageService
         extends AbstractTransactionalEntityService<PrivateMessage, PrivateMessageDao> implements PrivateMessageService {
 
-        private final SecurityService securityService;
+    private final SecurityService securityService;
 
     /**
      * Creates the instance of service.
