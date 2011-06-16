@@ -14,7 +14,8 @@
         <%--<c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}"/>.--%>
     </span>
 </c:if>
-<form action='<c:url value="/j_spring_security_check"/>' method="POST">
+
+<form action='<c:url value="/j_spring_security_check"/>' name="login_form" method="POST">
     <p>
         <label for="j_username"><spring:message code="label.username"/></label>
         <input class="textbox" id="j_username" type='text' name='j_username'/>
@@ -24,7 +25,7 @@
         <br/>
         <a href='<c:url value="/registration.html" />'><spring:message code="label.register"/></a><br/>
         <br/>
-        <input type="submit" value="<spring:message code="label.signin"/>"/>
+        <input type="submit" name="submit_button" value="<spring:message code="label.signin"/>"/>
     </p>
 </form>
 </body>

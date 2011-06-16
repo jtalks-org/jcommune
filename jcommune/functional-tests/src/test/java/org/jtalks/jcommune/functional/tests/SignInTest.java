@@ -42,14 +42,13 @@ public class SignInTest {
     private HtmlPasswordInput passwordTextField;
 
 
-
-
     @BeforeClass
     public void init() throws IOException {
         webClient = new WebClient();
-        loginPage = webClient.getPage("http://deploy.jtalks.org/jcommune/login.html");
-        loginForm = loginPage.getFormByName("");
-        submitButton = loginForm.getInputByName("");
+        loginPage = webClient.getPage("http://localhost:8080/jcommune/login.html");
+        //loginPage = webClient.getPage("http://deploy.jtalks.org/jcommune/login.html");
+        loginForm = loginPage.getFormByName("login_form");
+        submitButton = loginForm.getInputByName("submit_button");
         usernameTextField = loginForm.getInputByName("j_username");
         passwordTextField = loginForm.getInputByName("j_password");
     }
