@@ -57,7 +57,7 @@
     <c:if test="${maxPages > 1}">
 
         <c:if test="${page > 2}">
-            <c:url value="/branch/${branchId}.html" var="first">
+            <c:url value="/branch/${branchId}/topic/${topicId}.html" var="first">
                 <c:param name="page" value="1"/>
             </c:url>
             <a href='<c:out value="${first}" />' class="pn next"><spring:message code="pagination.first"/></a>...
@@ -86,7 +86,7 @@
                     <span>${i.index}</span>
                 </c:when>
                 <c:otherwise>
-                    <c:url value="/branch/${branchId}.html" var="url">
+                    <c:url value="/branch/${branchId}/topic/${topicId}.html" var="url">
                         <c:param name="page" value="${i.index}"/>
                     </c:url>
                     <a href='<c:out value="${url}" />'>${i.index}</a>
@@ -95,7 +95,7 @@
         </c:forEach>
 
         <c:if test="${page + 2 < maxPages+1}">
-            <c:url value="/branch/${branchId}.html" var="last">
+            <c:url value="/branch/${branchId}/topic/${topicId}.html" var="last">
                 <c:param name="page" value="${maxPages}"/>
             </c:url>
             ...<a href='<c:out value="${last}" />' class="pn next"><spring:message code="pagination.last"/></a>
