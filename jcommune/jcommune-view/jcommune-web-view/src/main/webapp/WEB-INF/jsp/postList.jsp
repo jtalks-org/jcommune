@@ -55,19 +55,38 @@
 
 <div id="pagination">
     <c:if test="${maxPages > 1}">
-        <c:if test="${page > 1}">
-            <c:url value="/branch/${branchId}/topic/${topicId}.html" var="prev">
-                <c:param name="page" value="${page - 1}"/>
+
+        <c:if test="${page > 2}">
+            <c:url value="/branch/${branchId}.html" var="first">
+                <c:param name="page" value="1"/>
             </c:url>
-            <a href='<c:out value="${prev}" />' class="pn next"><spring:message code="pagination.prev"/></a>
+            <a href='<c:out value="${first}" />' class="pn next"><spring:message code="pagination.first"/></a>...
         </c:if>
-        <c:forEach begin="1" end="${maxPages}" step="1" varStatus="i">
+
+        <c:choose>
+            <c:when test="${page > 1}">
+                <c:set var="begin" value="${page - 1}"/>
+            </c:when>
+            <c:otherwise>
+                <c:set var="begin" value="1"/>
+            </c:otherwise>
+        </c:choose>
+        <c:choose>
+            <c:when test="${page + 1 < maxPages}">
+                <c:set var="end" value="${page + 1}"/>
+            </c:when>
+            <c:otherwise>
+                <c:set var="end" value="${maxPages}"/>
+            </c:otherwise>
+        </c:choose>
+
+        <c:forEach begin="${begin}" end="${end}" step="1" varStatus="i">
             <c:choose>
                 <c:when test="${page == i.index}">
                     <span>${i.index}</span>
                 </c:when>
                 <c:otherwise>
-                    <c:url value="/branch/${branchId}/topic/${topicId}.html" var="url">
+                    <c:url value="/branch/${branchId}.html" var="url">
                         <c:param name="page" value="${i.index}"/>
                     </c:url>
                     <a href='<c:out value="${url}" />'>${i.index}</a>
@@ -75,12 +94,13 @@
             </c:choose>
         </c:forEach>
 
-        <c:if test="${page + 1 < maxPages+1}">
-            <c:url value="/branch/${branchId}/topic/${topicId}.html" var="next">
-                <c:param name="page" value="${page + 1}"/>
+        <c:if test="${page + 2 < maxPages+1}">
+            <c:url value="/branch/${branchId}.html" var="last">
+                <c:param name="page" value="${maxPages}"/>
             </c:url>
-            <a href='<c:out value="${next}" />' class="pn next"><spring:message code="pagination.next"/></a>
+            ...<a href='<c:out value="${last}" />' class="pn next"><spring:message code="pagination.last"/></a>
         </c:if>
+
     </c:if>
 </div>
 
