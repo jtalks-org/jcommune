@@ -12,6 +12,7 @@ import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 import static org.mockito.Mockito.*;
 
@@ -50,7 +51,7 @@ public class TransactionalUserServiceTest {
         verify(userDao, times(1)).getByUsername(USERNAME);
     }
 
-    @Test(expectedExceptions = UsernameNotFoundException.class)
+    @Test(expectedExceptions = NotFoundException.class)
     public void testGetByUsernameNotFound() throws Exception {
         when(userDao.getByUsername(USERNAME)).thenReturn(null);
 

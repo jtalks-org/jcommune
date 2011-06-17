@@ -15,35 +15,25 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-package org.jtalks.jcommune.service;
-
-import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.exceptions.DuplicateException;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+package org.jtalks.jcommune.service.exceptions;
 
 /**
- * This interface should have methods which give us more abilities in manipulating User persistent entity.
- *
- * @author Osadchuck Eugeny
- * @author Kirill Afonin
+ * The exception for case when searching item not found.
+ * 
+ * @author Pavel Vervenko
  */
-public interface UserService extends EntityService<User> {
-    /**
-     * Get {@link User} by username.
-     *
-     * @param username username of User
-     * @return {@link User} with given username
-     * @see User
-     * @throws NotFoundException if the User not found
-     */
-    User getByUsername(String username);
+public class NotFoundException extends RuntimeException {
 
     /**
-     * Try to register {@link User} with given features.
-     *
-     * @param user user for register
-     * @throws DuplicateException if user with username or email already exist
-     * @see User
+     * {@inheritDoc}
      */
-    void registerUser(User user) throws DuplicateException;
+    public NotFoundException(String message) {
+        super(message);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public NotFoundException() {
+    }
 }

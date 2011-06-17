@@ -23,9 +23,11 @@ import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -43,6 +45,7 @@ public class PrivateMessageController {
 
     private final PrivateMessageService pmService;
     private final UserService userService;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * Requires {@link PrivateMessageService} for manipulations with messages and {@link UserService} to find the 
@@ -113,7 +116,8 @@ public class PrivateMessageController {
         try {
             User userTo = userService.getByUsername(pmDto.getRecipient());
             newPm.setUserTo(userTo);
-        } catch (UsernameNotFoundException unfe) {
+        } catch (NotFoundException nfe) {
+            logger.info("User not found: {} ", pmDto.getRecipient());
             return getFormWithError();
         }
         pmService.sendMessage(newPm);
