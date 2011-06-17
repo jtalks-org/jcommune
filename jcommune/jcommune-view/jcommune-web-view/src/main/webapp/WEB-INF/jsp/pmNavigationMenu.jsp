@@ -12,7 +12,7 @@
         <a href="outbox.html"><spring:message code="label.outbox"/></a>
       </td></tr>
     <tr><td>
-        <a href="new_pm.html"><spring:message code="label.new_pm"/></a>
+        <a href="new.html"><spring:message code="label.new_pm"/></a>
       </td></tr>
   </table>
 </html>

@@ -16,7 +16,7 @@
         </td>
         <td>
           <h1><spring:message code="label.new_pm"/></h1>
-          <form:form action="new_pm.html" modelAttribute="privateMessageDto" method="POST" 
+          <form:form action="new.html" modelAttribute="privateMessageDto" method="POST" 
                      onsubmit="this.getAttribute('submitted')"> <!--Block multiple form submissions-->
             <table border="1" width="100%">
               <tr>

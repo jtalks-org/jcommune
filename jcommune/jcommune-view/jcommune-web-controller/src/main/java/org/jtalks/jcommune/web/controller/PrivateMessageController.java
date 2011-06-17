@@ -65,7 +65,7 @@ public class PrivateMessageController {
      * 
      * @return ModelAndView with added list of inbox messages
      */
-    @RequestMapping(value = "/inbox", method = RequestMethod.GET)
+    @RequestMapping(value = "/pm/inbox", method = RequestMethod.GET)
     public ModelAndView displayInboxPage() {
         List<PrivateMessage> inboxForCurrentUser = pmService.getInboxForCurrentUser();
         ModelAndView modelAndView = new ModelAndView("inbox");
@@ -78,7 +78,7 @@ public class PrivateMessageController {
      * 
      * @return ModelAndView with added list of outbox messages 
      */
-    @RequestMapping(value = "/outbox", method = RequestMethod.GET)
+    @RequestMapping(value = "/pm/outbox", method = RequestMethod.GET)
     public ModelAndView displayOutboxPage() {
         List<PrivateMessage> outboxForCurrentUser = pmService.getOutboxForCurrentUser();
         ModelAndView modelAndView = new ModelAndView("outbox");
@@ -91,7 +91,7 @@ public class PrivateMessageController {
      * 
      * @return ModelAndView with the form
      */
-    @RequestMapping(value = "/new_pm", method = RequestMethod.GET)
+    @RequestMapping(value = "/pm/new", method = RequestMethod.GET)
     public ModelAndView displayNewPMPage() {
         ModelAndView mav = new ModelAndView("newPm");
         mav.addObject("privateMessageDto", new PrivateMessageDto());
@@ -105,7 +105,7 @@ public class PrivateMessageController {
      * @param result result of {@link PrivateMessageDto} validation
      * @return redirect to /inbox on success or back to "/new_pm" on validation errors
      */
-    @RequestMapping(value = "/new_pm", method = RequestMethod.POST)
+    @RequestMapping(value = "/pm/new", method = RequestMethod.POST)
     public ModelAndView submitNewPM(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
         if (result.hasErrors()) {
             return new ModelAndView("newPm");
@@ -121,7 +121,7 @@ public class PrivateMessageController {
             return getFormWithError();
         }
         pmService.sendMessage(newPm);
-        return new ModelAndView("redirect:/outbox.html");
+        return new ModelAndView("redirect:/pm/outbox.html");
     }
 
     /**
