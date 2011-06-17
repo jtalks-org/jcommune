@@ -17,8 +17,13 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
+import java.util.List;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -26,39 +31,46 @@ import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
-import static org.testng.Assert.assertEquals;
-
+import static org.mockito.Mockito.*;
 
 /**
  *
  * @author Pavel Vervenko
  */
 public class PrivateMessageControllerTest {
+
     private PrivateMessageController controller;
     @Mock
     private PrivateMessageService pmService;
     @Mock
     private UserService userService;
-    
+
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
         controller = new PrivateMessageController(pmService, userService);
     }
 
-    
     @Test
     public void displayInboxPageTest() {
-        
+        ModelAndView mav = controller.displayInboxPage();
+
+        assertViewName(mav, "inbox");
+        assertAndReturnModelAttributeOfType(mav, "pmList", List.class);
+
+        verify(pmService, times(1)).getInboxForCurrentUser();
     }
 
     @Test
     public void displayOutboxPageTest() {
-        
+        ModelAndView mav = controller.displayOutboxPage();
+
+        assertViewName(mav, "outbox");
+        assertAndReturnModelAttributeOfType(mav, "pmList", List.class);
+
+        verify(pmService, times(1)).getOutboxForCurrentUser();
     }
 
     @Test
@@ -71,7 +83,33 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void submitNewPMTest() {
-        
+        PrivateMessageDto dto = getUserDto();
+        BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
+
+        ModelAndView mav = controller.submitNewPM(dto, bindingResult);
+
+        assertViewName(mav, "redirect:/pm/outbox.html");
+        verify(pmService, times(1)).sendMessage(any(PrivateMessage.class));
+    }
+
+    @Test
+    public void submitWithWrongUser() {
+        PrivateMessageDto dto = getUserDto();
+        when(userService.getByUsername("Recipient")).thenThrow(new NotFoundException());
+        BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
+
+        ModelAndView mav = controller.submitNewPM(dto, bindingResult);
+
+        assertViewName(mav, "newPm");
+        verify(userService, times(1)).getByUsername(anyString());
+        verify(pmService, times(0)).sendMessage(any(PrivateMessage.class));
     }
     
+    private PrivateMessageDto getUserDto() {
+        PrivateMessageDto dto = new PrivateMessageDto();
+        dto.setBody("body");
+        dto.setTitle("title");
+        dto.setRecipient("Recipient");
+        return dto;
+    }
 }
