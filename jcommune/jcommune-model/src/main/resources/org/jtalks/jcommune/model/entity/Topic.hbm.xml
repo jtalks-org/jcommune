@@ -7,31 +7,27 @@
       <generator class="native"/>
     </id>
     <property column="UUID" name="uuid" unique="true" not-null="true"/>
-    
+    <property column="TITLE" name="title" not-null="true"/>
+    <property name="creationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
+              column="CREATION_DATE" not-null="true"/>
     <list name="posts" cascade="all-delete-orphan">
       <key column="TOPIC_ID" foreign-key="FK_TOPIC"/>
       <index column="LIST_INDEX"/>
       <one-to-many class="Post"/>
     </list>
-
-    <many-to-one class="User" lazy="false" column="TOPIC_STARTER"
-                 name="topicStarter" not-null="true" foreign-key="FK_TOPIC_STARTER"/>
-
-    <property column="TITLE" name="title" not-null="true"/>
-
-    <property name="creationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
-              column="CREATION_DATE" not-null="true"/>
-
-    <property name="lastModificationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
-              column="LAST_MODIFICATION_DATE" not-null="false"/>
-
-    <many-to-one name="branch" class="Branch"
-                 column="BRANCH" not-null="true" foreign-key="FK_BRANCH"/>
+    <many-to-one name="lastPost" column="LAST_POST" class="Post"
+                 unique="true" lazy="false" cascade="all" fetch="select"/>
+    <many-to-one name="topicStarter" column="TOPIC_STARTER" class="User" lazy="false"
+                 not-null="true" foreign-key="FK_TOPIC_STARTER"/>
+    <many-to-one name="branch" column="BRANCH" class="Branch"
+                 not-null="true" foreign-key="FK_BRANCH"/>
   </class>
-
-  <query name="getAllTopicsInBranch">
-    <![CDATA[FROM Topic as topic
-                        WHERE topic.branch = :branchId ORDER BY topic.lastModificationDate DESC]]>
-  </query>
+  <sql-query name="getAllTopicsInBranch">
+    <return alias="TOPIC" class="Topic"/>
+    <![CDATA[SELECT topic.* FROM TOPIC as topic 
+             LEFT JOIN POST as post ON post.post_id = topic.last_post
+             WHERE topic.branch = :branchId
+             ORDER BY post.post_date DESC]]>
+  </sql-query>
 
 </hibernate-mapping>
