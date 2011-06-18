@@ -57,7 +57,7 @@ public class PrivateMessageControllerTest {
     public void displayInboxPageTest() {
         ModelAndView mav = controller.displayInboxPage();
 
-        assertViewName(mav, "inbox");
+        assertViewName(mav, "pm/inbox");
         assertAndReturnModelAttributeOfType(mav, "pmList", List.class);
 
         verify(pmService, times(1)).getInboxForCurrentUser();
@@ -67,7 +67,7 @@ public class PrivateMessageControllerTest {
     public void displayOutboxPageTest() {
         ModelAndView mav = controller.displayOutboxPage();
 
-        assertViewName(mav, "outbox");
+        assertViewName(mav, "pm/outbox");
         assertAndReturnModelAttributeOfType(mav, "pmList", List.class);
 
         verify(pmService, times(1)).getOutboxForCurrentUser();
@@ -78,7 +78,7 @@ public class PrivateMessageControllerTest {
         ModelAndView mav = controller.displayNewPMPage();
 
         assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
-        assertViewName(mav, "newPm");
+        assertViewName(mav, "pm/newPm");
     }
 
     @Test
@@ -100,7 +100,7 @@ public class PrivateMessageControllerTest {
 
         ModelAndView mav = controller.submitNewPM(dto, bindingResult);
 
-        assertViewName(mav, "newPm");
+        assertViewName(mav, "pm/newPm");
         verify(userService, times(1)).getByUsername(anyString());
         verify(pmService, times(0)).sendMessage(any(PrivateMessage.class));
     }

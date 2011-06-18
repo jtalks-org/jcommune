@@ -68,7 +68,7 @@ public class PrivateMessageController {
     @RequestMapping(value = "/pm/inbox", method = RequestMethod.GET)
     public ModelAndView displayInboxPage() {
         List<PrivateMessage> inboxForCurrentUser = pmService.getInboxForCurrentUser();
-        ModelAndView modelAndView = new ModelAndView("inbox");
+        ModelAndView modelAndView = new ModelAndView("pm/inbox");
         modelAndView.addObject("pmList", inboxForCurrentUser);
         return modelAndView;
     }
@@ -81,7 +81,7 @@ public class PrivateMessageController {
     @RequestMapping(value = "/pm/outbox", method = RequestMethod.GET)
     public ModelAndView displayOutboxPage() {
         List<PrivateMessage> outboxForCurrentUser = pmService.getOutboxForCurrentUser();
-        ModelAndView modelAndView = new ModelAndView("outbox");
+        ModelAndView modelAndView = new ModelAndView("pm/outbox");
         modelAndView.addObject("pmList", outboxForCurrentUser);
         return modelAndView;
     }
@@ -93,7 +93,7 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/pm/new", method = RequestMethod.GET)
     public ModelAndView displayNewPMPage() {
-        ModelAndView mav = new ModelAndView("newPm");
+        ModelAndView mav = new ModelAndView("pm/newPm");
         mav.addObject("privateMessageDto", new PrivateMessageDto());
         return mav;
     }
@@ -108,7 +108,7 @@ public class PrivateMessageController {
     @RequestMapping(value = "/pm/new", method = RequestMethod.POST)
     public ModelAndView submitNewPM(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
         if (result.hasErrors()) {
-            return new ModelAndView("newPm");
+            return new ModelAndView("pm/newPm");
         }
         PrivateMessage newPm = PrivateMessage.createNewPrivateMessage();
         newPm.setBody(pmDto.getBody());
@@ -130,7 +130,7 @@ public class PrivateMessageController {
      * @return ModelAndView with error flag
      */
     private ModelAndView getFormWithError() {
-        ModelAndView modelAndView = new ModelAndView("newPm");
+        ModelAndView modelAndView = new ModelAndView("pm/newPm");
         modelAndView.addObject("wongUser", true);
         return modelAndView;
     }
