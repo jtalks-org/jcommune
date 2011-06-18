@@ -42,7 +42,7 @@ public class PrivateMessageHibernateDao extends AbstractHibernateDao<PrivateMess
      * {@inheritDoc}
      */
     @Override
-    public List<PrivateMessage> getAllToUser(User userTo) {
+    public List<PrivateMessage> getAllForUser(User userTo) {
         return getSession().getNamedQuery("getAllToUser").setEntity("user", userTo).list();
     }
 }

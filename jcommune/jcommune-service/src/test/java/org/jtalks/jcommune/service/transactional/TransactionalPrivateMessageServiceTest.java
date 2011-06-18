@@ -17,9 +17,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import java.util.List;
 import java.util.ArrayList;
-import org.mockito.Matchers;
 import org.testng.Assert;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.User;
@@ -70,12 +68,13 @@ public class TransactionalPrivateMessageServiceTest {
     @Test
     public void getInboxForCurrentUserTest() {
         User user = getUser("User");
-        when(pmDao.getAllToUser(user)).thenReturn(new ArrayList());
+        when(pmDao.getAllForUser(user)).thenReturn(new ArrayList());
         when(securityService.getCurrentUser()).thenReturn(user);
         
         pmService.getInboxForCurrentUser();
         
-        verify(pmDao, times(1)).getAllToUser(user);
+        verify(pmDao, times(1)).getAllForUser(user);
+        verify(securityService, times(1)).getCurrentUser();
     }
     
     @Test
@@ -87,7 +86,7 @@ public class TransactionalPrivateMessageServiceTest {
         pmService.getOutboxForCurrentUser();
         
         verify(pmDao, times(1)).getAllFromUser(user);        
-        
+        verify(securityService, times(1)).getCurrentUser();
     }
     
     @Test
@@ -97,6 +96,7 @@ public class TransactionalPrivateMessageServiceTest {
         pmService.sendMessage(pm);
         
         verify(pmDao, times(1)).saveOrUpdate(pm);
+        verify(securityService, times(1)).getCurrentUser();
     }
     
     private PrivateMessage getPrivateMessage() {

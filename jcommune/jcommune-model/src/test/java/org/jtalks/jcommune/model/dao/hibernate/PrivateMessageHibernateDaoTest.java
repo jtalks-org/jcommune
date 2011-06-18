@@ -150,7 +150,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
     public void testGetAllToUser() {
         PrivateMessage pm = getSavedPm();
         
-        List<PrivateMessage> listFrom = dao.getAllToUser(pm.getUserTo());
+        List<PrivateMessage> listFrom = dao.getAllForUser(pm.getUserTo());
         
         assertEquals(listFrom.size(), 1);
         assertEquals(pm, listFrom.get(0));
