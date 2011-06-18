@@ -51,9 +51,9 @@ public class Topic extends Persistent {
     private Branch branch;
 
     /**
-     * The last modification date of the topic.
+     * The last post in the topic.
      */
-    private DateTime lastModificationDate;
+    private Post lastPost;
 
     /**
      * Creates the Topic instance. All fields values are null.
@@ -74,8 +74,6 @@ public class Topic extends Persistent {
         this.topicStarter = topicStarter;
         this.title = title;
         this.creationDate = new DateTime();
-
-        updateLastModificationDate();
     }
 
     /**
@@ -85,8 +83,6 @@ public class Topic extends Persistent {
      */
     public Topic(DateTime creationDate) {
         this.creationDate = creationDate;
-
-        updateLastModificationDate();
     }
 
     /**
@@ -107,8 +103,7 @@ public class Topic extends Persistent {
     public void addPost(Post newPost) {
         posts.add(newPost);
         newPost.setTopic(this);
-
-        updateLastModificationDate();
+        this.lastPost = newPost;
     }
 
     /**
@@ -118,8 +113,7 @@ public class Topic extends Persistent {
      */
     public void removePost(Post postToRemove) {
         posts.remove(postToRemove);
-
-        updateLastModificationDate();
+        updateLastPost(postToRemove);
     }
 
     /**
@@ -213,27 +207,31 @@ public class Topic extends Persistent {
     }
 
     /**
-     * Set the topic last modification date.
-     *
-     * @param lastModificationDate the lastModificationDate to set
+     * Set the topic last post.
+     * 
+     * @param lastPost the lastPost to set
      */
-    public void setLastModificationDate(DateTime lastModificationDate) {
-        this.lastModificationDate = lastModificationDate;
+    public void setLastPost(Post lastPost) {
+        this.lastPost = lastPost;
     }
 
     /**
-     * Get the topic last modification date.
+     * Get the topic last post.
      *
-     * @return the lastModificationDate
+     * @return the lastPost
      */
-    public DateTime getLastModificationDate() {
-        return lastModificationDate;
+    public Post getLastPost() {
+        return lastPost;
     }
 
-    /**
-     * Set the topic last modification date for current DateTime.
+    /*
+     * Set the topic last post when it was removed.
      */
-    private void updateLastModificationDate() {
-        this.lastModificationDate = new DateTime();
+    private void updateLastPost(Post removedPost) {
+        if (this.lastPost.getId() == removedPost.getId()) {
+            if (!this.posts.isEmpty()) {
+                this.lastPost = this.posts.get(this.posts.size()-1);
+            }
+        }
     }
 }

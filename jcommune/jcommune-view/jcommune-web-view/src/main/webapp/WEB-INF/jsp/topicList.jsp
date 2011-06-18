@@ -23,7 +23,7 @@
                 <td><a href="${pageContext.request.contextPath}/branch/${branchId}/topic/${topic.id}.html"> <c:out
                         value="${topic.title}"/></a></td>
                 <td><c:out value="${topic.topicStarter.username}"/></td>
-                <td><joda:format value="${topic.lastModificationDate}"
+                <td><joda:format value="${topic.lastPost.creationDate}"
                                  locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
                                  pattern="dd MMM yyyy HH:mm"/></td>
             </tr>
