@@ -39,6 +39,7 @@ public class Post extends Persistent {
     private User userCreated;
     private String postContent;
     private Topic topic;
+    private int listIndex;
 
     /**
      * Constructs the instance with initialised fields.

@@ -7,7 +7,7 @@
       <generator class="native"/>
     </id>
     <property name="uuid" column="UUID" unique="true" not-null="true"/>
-    <property name="creationDate" column="POST_DATE" 
+    <property name="creationDate" column="POST_DATE"
               type="org.joda.time.contrib.hibernate.PersistentDateTime"
               not-null="true"/>
     <property name="postContent" column="POST_CONTENT" not-null="true"/>
