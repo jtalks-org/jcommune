@@ -57,14 +57,14 @@ public class TransactionalPrivateMessageServiceTest {
         PrivateMessage pm = pmService.get(PM_ID);
         
         Assert.assertEquals(pm, getPrivateMessage());
-        verify(pmDao, times(1)).get(Matchers.anyLong());        
+        verify(pmDao, times(1)).get(PM_ID);        
     }
 
     @Test
     public void deleteByIdTest(){
         pmService.delete(PM_ID);
         
-        verify(pmDao, times(1)).delete(Matchers.anyLong());
+        verify(pmDao, times(1)).delete(PM_ID);
     }
     
     @Test
