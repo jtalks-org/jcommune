@@ -51,6 +51,12 @@ public interface TopicService extends EntityService<Topic> {
     void createTopic(String topicName, String bodyText, long branchId);
 
     /**
+     * Delete the topic
+     * @param topicId
+     */
+    void deleteTopic(long topicId);
+
+    /**
      * Delete post from topic.
      *
      * @param topicId topic id.
