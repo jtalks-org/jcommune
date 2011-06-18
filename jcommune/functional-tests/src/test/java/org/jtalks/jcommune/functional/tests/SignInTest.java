@@ -35,18 +35,22 @@ import static org.testng.Assert.assertTrue;
 public class SignInTest {
 
     private WebClient webClient;
+    private HtmlPage mainPage;
     private HtmlPage loginPage;
     private HtmlForm loginForm;
     private HtmlSubmitInput submitButton;
     private HtmlTextInput usernameTextField;
     private HtmlPasswordInput passwordTextField;
+    private final String MAIN_PAGE_URL = "http://localhost:8080/jcommune";
+    //private final String MAIN_PAGE_URL = "http://deploy.jtalks.org/jcommune";
 
 
     @BeforeClass
     public void init() throws IOException {
         webClient = new WebClient();
-        loginPage = webClient.getPage("http://localhost:8080/jcommune/login.html");
-        //loginPage = webClient.getPage("http://deploy.jtalks.org/jcommune/login.html");
+        mainPage = webClient.getPage(MAIN_PAGE_URL);
+        HtmlAnchor signInLink = mainPage.getAnchorByText("Sign in");
+        loginPage=(HtmlPage)signInLink.click();
         loginForm = loginPage.getFormByName("login_form");
         submitButton = loginForm.getInputByName("submit_button");
         usernameTextField = loginForm.getInputByName("j_username");
