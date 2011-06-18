@@ -100,6 +100,15 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
+    public void deleteTopic(long topicId) {
+        logger.debug("Delete the topic, topic ID = " + topicId);
+        dao.delete(topicId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void deletePost(long topicId, long postId) {
         logger.debug("User confirm post removing postId = " + postId);
         Topic topic = dao.get(topicId);

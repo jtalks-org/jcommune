@@ -155,6 +155,14 @@ public class TransactionalTopicServiceTest {
         verify(topicDao, times(1)).saveOrUpdate(Matchers.<Topic>anyObject());
         verify(branchService, times(1)).get(1l);
     }
+
+    @Test
+    public void deleteTopicTest() {
+        Topic topic = getTopic(false);
+        topicDao.saveOrUpdate(topic);
+        topicService.deleteTopic(topic.getId());
+        verify(topicDao, times(1)).delete(topic.getId());
+    }
     
     @Test
     public void deletePostTest(){
