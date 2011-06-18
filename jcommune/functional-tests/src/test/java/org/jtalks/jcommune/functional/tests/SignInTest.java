@@ -52,7 +52,7 @@ public class SignInTest {
         passwordTextField = loginForm.getInputByName("j_password");
     }
 
-    @Test
+    @Test(enabled=false)
     public void signInWithEmptyDataEn() throws IOException {
         usernameTextField.setValueAttribute("");
         passwordTextField.setValueAttribute("");
@@ -62,7 +62,7 @@ public class SignInTest {
     }
 
 
-    @Test
+    @Test(enabled=false)
     public void signInSuccess() throws IOException {
         usernameTextField.setValueAttribute("testuser");
         passwordTextField.setValueAttribute("userpass");
@@ -73,7 +73,7 @@ public class SignInTest {
 
     @AfterTest
     public void closeAllWindows() {
-        webClient.closeAllWindows();
+        //webClient.closeAllWindows();
     }
 }
 
