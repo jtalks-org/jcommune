@@ -17,7 +17,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import java.util.List;
 import javax.validation.Valid;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.User;
@@ -67,10 +66,7 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/pm/inbox", method = RequestMethod.GET)
     public ModelAndView displayInboxPage() {
-        List<PrivateMessage> inboxForCurrentUser = pmService.getInboxForCurrentUser();
-        ModelAndView modelAndView = new ModelAndView("pm/inbox");
-        modelAndView.addObject("pmList", inboxForCurrentUser);
-        return modelAndView;
+        return new ModelAndView("pm/inbox", "pmList", pmService.getInboxForCurrentUser());
     }
 
     /**
@@ -80,10 +76,7 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/pm/outbox", method = RequestMethod.GET)
     public ModelAndView displayOutboxPage() {
-        List<PrivateMessage> outboxForCurrentUser = pmService.getOutboxForCurrentUser();
-        ModelAndView modelAndView = new ModelAndView("pm/outbox");
-        modelAndView.addObject("pmList", outboxForCurrentUser);
-        return modelAndView;
+        return new ModelAndView("pm/outbox", "pmList", pmService.getOutboxForCurrentUser());
     }
 
     /**
@@ -93,9 +86,7 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/pm/new", method = RequestMethod.GET)
     public ModelAndView displayNewPMPage() {
-        ModelAndView mav = new ModelAndView("pm/newPm");
-        mav.addObject("privateMessageDto", new PrivateMessageDto());
-        return mav;
+        return new ModelAndView("pm/newPm", "privateMessageDto", new PrivateMessageDto());
     }
 
     /**
@@ -118,20 +109,11 @@ public class PrivateMessageController {
             newPm.setUserTo(userTo);
         } catch (NotFoundException nfe) {
             logger.info("User not found: {} ", pmDto.getRecipient());
-            return getFormWithError();
+            result.rejectValue("recipient", "label.worg_recipient");
+            return new ModelAndView("pm/newPm");
         }
         pmService.sendMessage(newPm);
         return new ModelAndView("redirect:/pm/outbox.html");
     }
 
-    /**
-     * Return newPm page with the flag of wrong username.
-     * 
-     * @return ModelAndView with error flag
-     */
-    private ModelAndView getFormWithError() {
-        ModelAndView modelAndView = new ModelAndView("pm/newPm");
-        modelAndView.addObject("wongUser", true);
-        return modelAndView;
-    }
-}
+ }
