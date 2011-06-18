@@ -16,4 +16,14 @@
     <property name="title" column="TITLE" not-null="true"/>
     <property name="body" column="BODY" not-null="true"/>
   </class>
+  <query name="getAllFromUser">
+    <![CDATA[FROM PrivateMessage as pm 
+             WHERE pm.userFrom = :user 
+             ORDER BY pm.creationDate DESC]]>
+  </query>
+  <query name="getAllToUser">
+    <![CDATA[FROM PrivateMessage as pm 
+             WHERE pm.userTo = :user 
+             ORDER BY pm.creationDate DESC]]>
+  </query>  
 </hibernate-mapping>
