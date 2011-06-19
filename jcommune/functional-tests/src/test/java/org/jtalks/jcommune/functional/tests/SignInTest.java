@@ -20,65 +20,76 @@ package org.jtalks.jcommune.functional.tests;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.*;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
-import java.io.IOException;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeTest;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
 /**
  * @author Eugeny Batov
  */
-public class SignInTest {
+public abstract class SignInTest {
 
-    private WebClient webClient;
-    private HtmlPage mainPage;
+    protected WebClient webClient;
+    protected HtmlPage mainPage;
+    protected HtmlAnchor signInLink;
+    protected final String MAIN_PAGE_URL = "http://localhost:8080/jcommune";
+    //private final String MAIN_PAGE_URL = "http://deploy.jtalks.org/jcommune";
+
     private HtmlPage loginPage;
     private HtmlForm loginForm;
     private HtmlSubmitInput submitButton;
     private HtmlTextInput usernameTextField;
     private HtmlPasswordInput passwordTextField;
-    private final String MAIN_PAGE_URL = "http://localhost:8080/jcommune";
-    //private final String MAIN_PAGE_URL = "http://deploy.jtalks.org/jcommune";
 
 
-    @BeforeClass
-    public void init() throws IOException {
+    @BeforeTest
+    public void init() throws Exception {
         webClient = new WebClient();
         mainPage = webClient.getPage(MAIN_PAGE_URL);
-        HtmlAnchor signInLink = mainPage.getAnchorByText("Sign in");
-        loginPage=(HtmlPage)signInLink.click();
+        switchLocale();
+        signInLinkInit();
+        loginPageInit();
+    }
+
+    public abstract void switchLocale() throws Exception;
+
+    public abstract void signInLinkInit() throws Exception;
+
+    public final void runSignInWithEmptyDataTest() throws Exception {
+        submitEmptyData();
+    }
+
+    public final void runSignInSuccessTest() throws Exception {
+        submitValidData();
+        assertEquals(mainPage.getTitleText(), "JCommune");
+    }
+
+    @AfterClass
+    public void closeAllWindows() {
+        webClient.closeAllWindows();
+    }
+
+    public void loginPageInit() throws Exception {
+        loginPage = (HtmlPage) signInLink.click();
         loginForm = loginPage.getFormByName("login_form");
         submitButton = loginForm.getInputByName("submit_button");
         usernameTextField = loginForm.getInputByName("j_username");
         passwordTextField = loginForm.getInputByName("j_password");
     }
 
-    @Test
-    public void signInWithEmptyDataEn() throws IOException {
+    public void submitEmptyData() throws Exception {
         usernameTextField.setValueAttribute("");
         passwordTextField.setValueAttribute("");
-        HtmlPage homePage = submitButton.click();
-        assertEquals(homePage.getTitleText(), "Sign in");
-        assertTrue(homePage.asText().contains("Your login attempt was not successful, try again."));
+        mainPage = submitButton.click();
     }
 
-
-    @Test
-    public void signInSuccess() throws IOException {
+    public void submitValidData() throws Exception {
         usernameTextField.setValueAttribute("testuser");
         passwordTextField.setValueAttribute("userpass");
-        HtmlPage homePage = submitButton.click();
-        assertEquals(homePage.getTitleText(), "JCommune");
+        mainPage = submitButton.click();
     }
 
 
-    @AfterTest
-    public void closeAllWindows() {
-        webClient.closeAllWindows();
-    }
 }
 
