@@ -69,7 +69,7 @@ public class TopicDeleteController {
      * @param branchId branch containing the first topic
      * @return redirect to branch page
      */
-    @RequestMapping(method = RequestMethod.DELETE, value = "/branch/{branchId}/topic/{topicId}/post/{postId}")
+    @RequestMapping(method = RequestMethod.DELETE, value = "/branch/{branchId}/topic/{topicId}")
     public ModelAndView delete(@PathVariable("topicId") Long topicId, @PathVariable("branchId") long branchId) {
         topicService.deleteTopic(topicId);
         return new ModelAndView("redirect:/branch/" + branchId + ".html");
