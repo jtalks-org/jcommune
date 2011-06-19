@@ -21,7 +21,7 @@ package org.jtalks.jcommune.functional.tests;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.*;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 
 import static org.testng.Assert.assertEquals;
 
@@ -43,7 +43,7 @@ public abstract class SignInTest {
     private HtmlPasswordInput passwordTextField;
 
 
-    @BeforeTest
+    @BeforeClass
     public void init() throws Exception {
         webClient = new WebClient();
         mainPage = webClient.getPage(MAIN_PAGE_URL);
