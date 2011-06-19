@@ -22,6 +22,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Parameters;
 
 import static org.testng.Assert.assertEquals;
 
@@ -33,8 +34,7 @@ public abstract class SignInTest {
     protected WebClient webClient;
     protected HtmlPage mainPage;
     protected HtmlAnchor signInLink;
-    protected final String MAIN_PAGE_URL = "http://localhost:8080/jcommune";
-    //private final String MAIN_PAGE_URL = "http://deploy.jtalks.org/jcommune";
+
 
     private HtmlPage loginPage;
     private HtmlForm loginForm;
@@ -42,19 +42,17 @@ public abstract class SignInTest {
     private HtmlTextInput usernameTextField;
     private HtmlPasswordInput passwordTextField;
 
-
+    @Parameters({"mainPageUrl"})
     @BeforeClass
-    public void init() throws Exception {
+    public void init(String mainPageUrl) throws Exception {
         webClient = new WebClient();
-        mainPage = webClient.getPage(MAIN_PAGE_URL);
+        mainPage = webClient.getPage(mainPageUrl);
         switchLocale();
-        signInLinkInit();
         loginPageInit();
     }
 
     public abstract void switchLocale() throws Exception;
 
-    public abstract void signInLinkInit() throws Exception;
 
     public final void runSignInWithEmptyDataTest() throws Exception {
         submitEmptyData();
@@ -71,6 +69,7 @@ public abstract class SignInTest {
     }
 
     public void loginPageInit() throws Exception {
+        signInLink = mainPage.getAnchorByName("signIn");
         loginPage = (HtmlPage) signInLink.click();
         loginForm = loginPage.getFormByName("login_form");
         submitButton = loginForm.getInputByName("submit_button");

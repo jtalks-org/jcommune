@@ -40,8 +40,8 @@
                 </sec:authorize>
                 &nbsp
                 <sec:authorize access="isAnonymous()">
-                    <a href="${pageContext.request.contextPath}/login.html"><fmt:message key="label.signin"/></a>
-                    <a href="${pageContext.request.contextPath}/registration.html"><fmt:message key="label.signup"/></a>
+                    <a href="${pageContext.request.contextPath}/login.html" name="signIn"><fmt:message key="label.signin"/></a>
+                    <a href="${pageContext.request.contextPath}/registration.html" name="signUp"><fmt:message key="label.signup"/></a>
                 </sec:authorize>
                 &nbsp
                 <a href="?lang=en">En</a> | <a href="?lang=ru">Ru</a> </span></td>

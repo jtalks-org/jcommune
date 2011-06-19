@@ -31,14 +31,12 @@ import static org.testng.Assert.assertTrue;
 public class SignInRuLocaleTest extends SignInTest {
 
     private final String RU_LOCALE_LINK = "Ru";
-    private final String SIGN_IN_LINK = "Войти";
-
 
     @Test(description = "Entered empty login data.")
     public void signInWithEmptyData() throws Exception {
         runSignInWithEmptyDataTest();
-        assertEquals(mainPage.getTitleText(), "Войти");
-        assertTrue(mainPage.asText().contains("Ваша попытка войти не удалась, попробуйте снова"));
+        assertEquals(mainPage.getTitleText(), "Р’РѕР№С‚Рё");
+        assertTrue(mainPage.asText().contains("Р’Р°С€Р° РїРѕРїС‹С‚РєР° РІРѕР№С‚Рё РЅРµ СѓРґР°Р»Р°СЃСЊ, РїРѕРїСЂРѕР±СѓР№С‚Рµ СЃРЅРѕРІР°"));
     }
 
 
@@ -54,9 +52,4 @@ public class SignInRuLocaleTest extends SignInTest {
         mainPage = (HtmlPage) ruLocaleLink.click();
     }
 
-
-    @Override
-    public void signInLinkInit() throws Exception {
-        signInLink = mainPage.getAnchorByText(SIGN_IN_LINK);
-    }
 }

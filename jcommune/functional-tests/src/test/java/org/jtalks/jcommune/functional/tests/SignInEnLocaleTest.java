@@ -31,8 +31,6 @@ import static org.testng.Assert.assertTrue;
 public class SignInEnLocaleTest extends SignInTest {
 
     private final String EN_LOCALE_LINK = "En";
-    private final String SIGN_IN_LINK = "Sign in";
-
 
     @Test(description = "Entered empty login data.")
     public void signInWithEmptyData() throws Exception {
@@ -55,9 +53,5 @@ public class SignInEnLocaleTest extends SignInTest {
     }
 
 
-    @Override
-    public void signInLinkInit() throws Exception {
-        signInLink = mainPage.getAnchorByText(SIGN_IN_LINK);
-    }
 
 }
