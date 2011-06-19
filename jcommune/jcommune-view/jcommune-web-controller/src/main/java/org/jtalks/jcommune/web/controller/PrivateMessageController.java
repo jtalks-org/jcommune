@@ -115,5 +115,4 @@ public class PrivateMessageController {
         pmService.sendMessage(newPm);
         return new ModelAndView("redirect:/pm/outbox.html");
     }
-
- }
+}

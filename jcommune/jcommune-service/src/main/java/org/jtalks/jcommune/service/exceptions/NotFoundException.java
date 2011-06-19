@@ -25,14 +25,18 @@ package org.jtalks.jcommune.service.exceptions;
 public class NotFoundException extends RuntimeException {
 
     /**
-     * {@inheritDoc}
+     * Default constructor.
+     *
+     * {@link Exception}
      */
     public NotFoundException(String message) {
         super(message);
     }
 
     /**
-     * {@inheritDoc}
+     * Create exception with specific message.
+     *
+     * @param message exception message
      */
     public NotFoundException() {
     }

@@ -18,7 +18,6 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import java.util.List;
-import org.hibernate.Query;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.User;
