@@ -7,13 +7,23 @@
       <generator class="native"/>
     </id>
     <property column="UUID" name="uuid" unique="true" not-null="true"/>
-    <many-to-one name="userFrom" class="User" column="USER_FROM" fetch="join"
+    <many-to-one name="userFrom" class="User" column="USER_FROM"
                  foreign-key="FK_USER_FROM" not-null="true"/>
-    <many-to-one name="userTo" class="User" column="USER_TO" fetch="join"
+    <many-to-one name="userTo" class="User" column="USER_TO"
                  foreign-key="FK_USER_TO" not-null="true"/>                 
     <property name="creationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
-              column="PM_DATE" not-null="true"/>
+              column="CREATION_DATE" not-null="true"/>
     <property name="title" column="TITLE" not-null="true"/>
     <property name="body" column="BODY" not-null="true"/>
   </class>
+  <query name="getAllFromUser">
+    <![CDATA[FROM PrivateMessage as pm 
+             WHERE pm.userFrom = :user 
+             ORDER BY pm.creationDate DESC]]>
+  </query>
+  <query name="getAllToUser">
+    <![CDATA[FROM PrivateMessage as pm 
+             WHERE pm.userTo = :user 
+             ORDER BY pm.creationDate DESC]]>
+  </query>  
 </hibernate-mapping>

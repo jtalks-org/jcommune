@@ -50,7 +50,7 @@ public class TransactionalPrivateMessageService
     @Override
     public List<PrivateMessage> getInboxForCurrentUser() {
         User currentUser = securityService.getCurrentUser();
-        return dao.getAllToUser(currentUser);
+        return dao.getAllForUser(currentUser);
     }
 
     /**

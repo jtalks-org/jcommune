@@ -4,7 +4,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <html>
   <head>
-    <title><spring:message code="label.new_pm"/></title>
+    <title><spring:message code="label.pm_title"/></title>
     <link href="${pageContext.request.contextPath}/css/main.css"
           type=text/css rel=stylesheet>
   </head>
@@ -23,10 +23,7 @@
                 <td width="30%">
                   <form:label path="recipient"><spring:message code="label.recipient"/></form:label>
                   <form:input path="recipient"/>
-                  <form:errors path="recipient"/>
-                  <c:if test="${wongUser==true}">
-                    <div style="margin: 10px; color: #e43131"><spring:message code="label.worg_recipient"/></div>
-                  </c:if>                  
+                  <form:errors path="recipient"/>          
                 </td>
               </tr>
               <tr>
