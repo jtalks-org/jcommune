@@ -67,6 +67,12 @@
       <version>3.1.0</version>
     </dependency>
 
+      <dependency>
+        <groupId>net.sf.ehcache</groupId>
+        <artifactId>ehcache-core</artifactId>
+        <version>2.3.1</version>
+    </dependency>
+
   </dependencies>
 
 
@@ -85,7 +91,7 @@
           </container>
           <configuration>
             <type>existing</type>
-            <home>${env.CATALINA_HOME}</home>
+            <home>${env.CATALINA_BASE}</home>
           </configuration>
           <deployer>
             <type>installed</type>
