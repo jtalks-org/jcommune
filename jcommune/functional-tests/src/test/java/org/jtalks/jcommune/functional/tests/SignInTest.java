@@ -20,22 +20,19 @@ package org.jtalks.jcommune.functional.tests;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.*;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Parameters;
+import org.testng.annotations.*;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Eugeny Batov
  */
-public abstract class SignInTest {
+public class SignInTest {
 
-    protected WebClient webClient;
-    protected HtmlPage mainPage;
-    protected HtmlAnchor signInLink;
-
-
+    private WebClient webClient;
+    private HtmlPage mainPage;
+    private HtmlAnchor signInLink;
     private HtmlPage loginPage;
     private HtmlForm loginForm;
     private HtmlSubmitInput submitButton;
@@ -43,38 +40,47 @@ public abstract class SignInTest {
     private HtmlPasswordInput passwordTextField;
 
     @Parameters({"mainPageUrl"})
-    @BeforeClass
+    @BeforeTest
     public void init(String mainPageUrl) throws Exception {
         webClient = new WebClient();
         mainPage = webClient.getPage(mainPageUrl);
-        switchLocale();
-        loginPageInit();
-    }
-
-    public abstract void switchLocale() throws Exception;
-
-
-    public final void runSignInWithEmptyDataTest() throws Exception {
-        submitEmptyData();
-    }
-
-    public final void runSignInSuccessTest() throws Exception {
-        submitValidData();
-        assertEquals(mainPage.getTitleText(), "JCommune");
-    }
-
-    @AfterClass
-    public void closeAllWindows() {
-        webClient.closeAllWindows();
-    }
-
-    public void loginPageInit() throws Exception {
         signInLink = mainPage.getAnchorByName("signIn");
         loginPage = (HtmlPage) signInLink.click();
         loginForm = loginPage.getFormByName("login_form");
         submitButton = loginForm.getInputByName("submit_button");
         usernameTextField = loginForm.getInputByName("j_username");
         passwordTextField = loginForm.getInputByName("j_password");
+    }
+
+    @Test(description = "Entered empty login data", dataProvider = "localeData")
+    public void signInWithEmptyData(String locale, String validationMessage, String pageTitle) throws Exception {
+        HtmlAnchor localeLink = mainPage.getAnchorByText(locale);
+        mainPage = (HtmlPage) localeLink.click();
+        submitEmptyData();
+        assertEquals(mainPage.getTitleText(), pageTitle);
+        assertTrue(mainPage.asText().contains(validationMessage));
+    }
+
+
+    @Test(description = "Entered valid login data", dataProvider = "localeData")
+    public void signInSuccess(String locale, String validationMessage, String pageTitle) throws Exception {
+        HtmlAnchor localeLink = mainPage.getAnchorByText(locale);
+        mainPage = (HtmlPage) localeLink.click();
+        submitValidData();
+        assertEquals(mainPage.getTitleText(), "JCommune");
+    }
+
+    @AfterTest
+    public void closeAllWindows() {
+        webClient.closeAllWindows();
+    }
+
+    @DataProvider
+    public Object[][] localeData() {
+        return new Object[][]{
+                {"En", "Your login attempt was not successful, try again.", "Sign in"},
+                {"Ru", "Ваша попытка войти не удалась, попробуйте снова", "Войти"}
+        };
     }
 
     public void submitEmptyData() throws Exception {
