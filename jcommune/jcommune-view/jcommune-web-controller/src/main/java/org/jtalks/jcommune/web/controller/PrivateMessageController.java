@@ -43,7 +43,6 @@ import org.springframework.web.servlet.ModelAndView;
 public class PrivateMessageController {
 
     private final PrivateMessageService pmService;
-    private final UserService userService;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
@@ -54,9 +53,8 @@ public class PrivateMessageController {
      * @param userService the UserService instance
      */
     @Autowired
-    public PrivateMessageController(PrivateMessageService pmService, UserService userService) {
+    public PrivateMessageController(PrivateMessageService pmService) {
         this.pmService = pmService;
-        this.userService = userService;
     }
 
     /**
@@ -101,18 +99,13 @@ public class PrivateMessageController {
         if (result.hasErrors()) {
             return new ModelAndView("pm/newPm");
         }
-        PrivateMessage newPm = PrivateMessage.createNewPrivateMessage();
-        newPm.setBody(pmDto.getBody());
-        newPm.setTitle(pmDto.getTitle());
         try {
-            User userTo = userService.getByUsername(pmDto.getRecipient());
-            newPm.setUserTo(userTo);
+            pmService.sendMessage(pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
         } catch (NotFoundException nfe) {
             logger.info("User not found: {} ", pmDto.getRecipient());
             result.rejectValue("recipient", "label.worg_recipient");
             return new ModelAndView("pm/newPm");
         }
-        pmService.sendMessage(newPm);
         return new ModelAndView("redirect:/pm/outbox.html");
     }
 }

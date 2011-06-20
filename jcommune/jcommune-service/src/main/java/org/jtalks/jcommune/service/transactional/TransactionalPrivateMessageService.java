@@ -23,6 +23,8 @@ import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.SecurityService;
+import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 /**
  * The implementation of PrivateMessageServices.
@@ -33,15 +35,18 @@ public class TransactionalPrivateMessageService
         extends AbstractTransactionalEntityService<PrivateMessage, PrivateMessageDao> implements PrivateMessageService {
 
     private final SecurityService securityService;
+    private final UserService userService;
 
     /**
      * Creates the instance of service.
      * @param pmDao PrivateMessageDao
      * @param securityService for retrieving current user
      */
-    public TransactionalPrivateMessageService(PrivateMessageDao pmDao, SecurityService securityService) {
+    public TransactionalPrivateMessageService(PrivateMessageDao pmDao,
+            SecurityService securityService, UserService userService) {
         this.dao = pmDao;
         this.securityService = securityService;
+        this.userService = userService;
     }
 
     /**
@@ -62,12 +67,17 @@ public class TransactionalPrivateMessageService
         return dao.getAllFromUser(currentUser);
     }
 
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public void sendMessage(PrivateMessage pm) {
+    public void sendMessage(String title, String body, String recipient) throws NotFoundException {
+        PrivateMessage pm = PrivateMessage.createNewPrivateMessage();
+        pm.setTitle(title);
+        pm.setBody(body);
         pm.setUserFrom(securityService.getCurrentUser());
+        pm.setUserTo(userService.getByUsername(recipient));
         dao.saveOrUpdate(pm);
     }
 }
