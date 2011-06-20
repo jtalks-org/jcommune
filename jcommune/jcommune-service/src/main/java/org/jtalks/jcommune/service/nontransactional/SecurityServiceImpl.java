@@ -21,8 +21,10 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityContextFacade;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 /**
  * Abstract layer for Spring Security.
@@ -40,7 +42,11 @@ public class SecurityServiceImpl implements SecurityService {
      */
     @Override
     public User getCurrentUser() {
-        return userService.getByUsername(getCurrentUserUsername());
+        try {
+            return userService.getByUsername(getCurrentUserUsername());
+        } catch (NotFoundException ex) {
+            return null;
+        }
     }
 
     /**
@@ -73,7 +79,11 @@ public class SecurityServiceImpl implements SecurityService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) {
-        return userService.getByUsername(username);
+        try {
+            return userService.getByUsername(username);
+        } catch (NotFoundException ex) {
+            throw new UsernameNotFoundException(ex.getMessage());
+        }
     }
 
     /**

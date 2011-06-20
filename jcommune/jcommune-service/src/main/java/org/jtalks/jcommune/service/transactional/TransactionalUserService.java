@@ -48,7 +48,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public User getByUsername(String username) {
+    public User getByUsername(String username) throws NotFoundException {
         User user = dao.getByUsername(username);
         if (user == null) {
             String msg = "User " + username + " not found.";

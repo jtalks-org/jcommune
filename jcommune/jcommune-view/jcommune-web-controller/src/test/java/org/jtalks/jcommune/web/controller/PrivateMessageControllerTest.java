@@ -93,7 +93,7 @@ public class PrivateMessageControllerTest {
     }
 
     @Test
-    public void submitWithWrongUser() {
+    public void submitWithWrongUser() throws NotFoundException {
         PrivateMessageDto dto = getUserDto();
         when(userService.getByUsername("Recipient")).thenThrow(new NotFoundException());
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
