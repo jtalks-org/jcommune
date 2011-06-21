@@ -35,12 +35,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
+import static org.testng.Assert.*;
 
 /**
  * This test cover {@code TransactionalTopicService} logic validation.
  * Logic validation cover update/get/error cases by this class.
  * @author Osadchuck Eugeny
  * @author Kravchenko Vitaliy
+ * @author Kirill Afonin
  */
 public class TransactionalTopicServiceTest {
 
@@ -81,7 +83,7 @@ public class TransactionalTopicServiceTest {
 
         Topic topic = topicService.get(TOPIC_ID);
 
-        Assert.assertEquals(topic, getTopic(false), "Topics aren't equals");
+        assertEquals(topic, getTopic(false), "Topics aren't equals");
 
         verify(topicDao, times(1)).get(Matchers.anyLong());
     }
@@ -90,19 +92,6 @@ public class TransactionalTopicServiceTest {
     public void getByNagativeIdTest(){
         topicService.get(-1l);
         verify(topicDao, never()).get(Matchers.anyLong());
-    }
-    
-    @Test
-    public void getAllTest() {
-        List<Topic> expectedUserList = new ArrayList<Topic>();
-        expectedUserList.add(getTopic(false));
-        when(topicDao.getAll()).thenReturn(expectedUserList);
-
-        List<Topic> actualUserList = topicService.getAll();
-
-        Assert.assertEquals(actualUserList, expectedUserList, "Topics lists aren't equals");
-
-        verify(topicDao, times(1)).getAll();
     }
 
     /**
@@ -121,9 +110,9 @@ public class TransactionalTopicServiceTest {
         int postsNumberAfter = topic.getPosts().size();
         Post newPost = topic.getPosts().get(postsNumberAfter - 1);
 
-        Assert.assertEquals(postsNumberBefore + 1, postsNumberAfter, "Posts number didn't increased by 1");
-        Assert.assertEquals(newPost.getPostContent(), ANSWER_BODY, "Answer body isn't the same");
-        Assert.assertEquals(newPost.getUserCreated(), currentUser, "User isn't the same");
+        assertEquals(postsNumberBefore + 1, postsNumberAfter, "Posts number didn't increased by 1");
+        assertEquals(newPost.getPostContent(), ANSWER_BODY, "Answer body isn't the same");
+        assertEquals(newPost.getUserCreated(), currentUser, "User isn't the same");
 
         verify(securityService, times(1)).getCurrentUser();
         verify(topicDao, times(1)).saveOrUpdate(topic);
@@ -153,6 +142,14 @@ public class TransactionalTopicServiceTest {
         verify(topicDao, times(1)).saveOrUpdate(Matchers.<Topic>anyObject());
         verify(branchService, times(1)).get(1l);
     }
+
+    @Test
+    public void deleteTopicTest() {
+        Topic topic = getTopic(false);
+        topicDao.saveOrUpdate(topic);
+        topicService.deleteTopic(topic.getId());
+        verify(topicDao, times(1)).delete(topic.getId());
+    }
     
     @Test
     public void deletePostTest(){
@@ -161,22 +158,37 @@ public class TransactionalTopicServiceTest {
         when(topicDao.get(anyLong())).thenReturn(topic);
         topicService.deletePost(TOPIC_ID, POST_ID);
         int actualPostCount = topic.getPosts().size();
-        Assert.assertTrue(actualPostCount == 0 || actualPostCount < expectedPostCount, "Post was not deleted");        
+        assertTrue(actualPostCount == 0 || actualPostCount < expectedPostCount, "Post was not deleted");
         verify(topicDao, times(1)).get(anyLong());
         verify(topicDao, times(1)).saveOrUpdate(Matchers.any(Topic.class));
     }
 
     @Test
-    public void getAllTopicsAccordingToBranchTest(){
-        List<Topic> topics = new ArrayList<Topic>();
-        topics.add(getTopic(false));
-        when(topicDao.getAllTopicsAccordingToBranch(1L)).thenReturn(topics);
+    public void testGetTopicsRangeInBranch() {
+        int start = 1;
+        int max = 2;
+        long branchId = 1L;
+        List<Topic> list = new ArrayList<Topic>();
+        list.add(Topic.createNewTopic());
+        list.add(Topic.createNewTopic());
+        when(topicDao.getTopicRangeInBranch(branchId, start, max)).thenReturn(list);
 
-        List<Topic> actualTopics = topicService.getAllTopicsAccordingToBranch(1L);
+        List<Topic> topics = topicService.getTopicRangeInBranch(branchId, start, max);
 
-        verify(topicDao,times(1)).getAllTopicsAccordingToBranch(1L);
-        Assert.assertTrue(topics.size()==actualTopics.size());
+        assertNotNull(topics);
+        assertEquals(max, topics.size(), "Unexpected list size");
+        verify(topicDao, times(1)).getTopicRangeInBranch(branchId, start, max);
+    }
 
+    @Test
+    public void testGetTopicsInBranchCount() {
+        long branchId = 1L;
+        when(topicDao.getTopicsInBranchCount(branchId)).thenReturn(10);
+
+        int count = topicService.getTopicsInBranchCount(branchId);
+
+        assertEquals(count, 10);
+        verify(topicDao, times(1)).getTopicsInBranchCount(branchId);
     }
 
     /**
@@ -202,6 +214,7 @@ public class TransactionalTopicServiceTest {
         Topic topic = new Topic();
         topic.setCreationDate(TOPIC_CREATION_DATE);
         topic.setId(TOPIC_ID);
+        topic.setUuid("xxxxx123");
         topic.setTitle(TOPIC_TITLE);
         topic.setTopicStarter(topicStarter);
         if(withPosts){

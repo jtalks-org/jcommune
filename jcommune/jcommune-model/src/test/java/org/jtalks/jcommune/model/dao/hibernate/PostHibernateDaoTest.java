@@ -21,6 +21,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -31,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.testng.Assert.*;
@@ -139,25 +141,42 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         assertFalse(result, "Entity deleted");
     }
 
+    private List<Post> createAndSavePostList(int size) {
+        List<Post> posts = new ArrayList<Post>();
+        Topic topic = ObjectsFactory.getDefaultTopic();
+        session.save(topic);
+        User author = topic.getTopicStarter();
+        for (int i = 0; i < size; i++) {
+            Post newPost = new Post(topic, author, "content " + i);
+            session.save(newPost);
+            posts.add(newPost);
+        }
+        return posts;
+    }
+
+    /* PostDao specific methods */
+
     @Test
-    public void testGetAll() {
-        Post post1 = ObjectsFactory.getDefaultPost();
-        session.save(post1);
-        User post2Author = ObjectsFactory.getUser("user2", "user2@mail.com");
-        session.save(post2Author);
-        Post post2 = ObjectsFactory.getPost(post2Author);
-        session.save(post2);
+    public void testGetPostRangeInTopic() {
+        int start = 1;
+        int max = 2;
+        List<Post> persistedPosts = createAndSavePostList(5);
+        long topicId = persistedPosts.get(0).getTopic().getId();
 
-        List<Post> posts = dao.getAll();
+        List<Post> posts = dao.getPostRangeInTopic(topicId, start, max);
 
-        assertEquals(posts.size(), 2);
+        assertEquals(max, posts.size(), "Unexpected list size");
+        assertEquals(topicId, posts.get(0).getTopic().getId(), "Incorrect topic");
     }
 
     @Test
-    public void testGetAllWithEmptyTable() {
-        List<Post> posts = dao.getAll();
+    public void testGetTopicsInBranchCount() {
+        List<Post> persistedPosts = createAndSavePostList(5);
+        long topicId = persistedPosts.get(0).getTopic().getId();
 
-        assertTrue(posts.isEmpty());
+        int count = dao.getPostsInTopicCount(topicId);
+
+        assertEquals(count, 5);
     }
 
     private int getCount() {

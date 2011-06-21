@@ -32,7 +32,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import static org.testng.Assert.*;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
@@ -140,60 +142,43 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         assertFalse(result, "Entity deleted");
     }
 
-    @Test
-    public void testGetAll() {
-        Topic topic = ObjectsFactory.getDefaultTopic();
-        session.save(topic);
-        User topic2Author = ObjectsFactory.getUser("user2", "user2@mail.com");
-        session.save(topic2Author);
-        Topic topic2 = ObjectsFactory.getTopic(topic2Author);
-        session.save(topic2);
-
-        List<Topic> posts = dao.getAll();
-
-        assertEquals(posts.size(), 2);
-    }
-
-    @Test
-    public void testGetAllWithEmptyTable() {
-        List<Topic> posts = dao.getAll();
-
-        assertTrue(posts.isEmpty());
+    private List<Topic> createAndSaveTopicList(int size) {
+        List<Topic> topics = new ArrayList<Topic>();
+        User author = ObjectsFactory.getDefaultUser();
+        session.save(author);
+        Branch branch = ObjectsFactory.getDefaultBranch();
+        session.save(branch);
+        for (int i = 0; i < size; i++) {
+            Topic newTopic = new Topic(branch, author, "title" + i);
+            session.save(newTopic);
+            topics.add(newTopic);
+        }
+        return topics;
     }
 
     /*===== TopicDao specific methods =====*/
 
     @Test
-    public void testGetAllTopicsInBranch() {
-        Branch branch = ObjectsFactory.getDefaultTopicBranch();
-        User topicsAuthor = ObjectsFactory.getDefaultUser();
-        Topic topic1 = Topic.createNewTopic();
-        Topic topic2 = Topic.createNewTopic();
-        topic1.setBranch(branch);
-        topic2.setBranch(branch);
-        topic1.setTitle("title1");
-        topic2.setTitle("title2");
-        topic1.setTopicStarter(topicsAuthor);
-        topic2.setTopicStarter(topicsAuthor);
-        session.save(branch);
-        session.save(topicsAuthor);
-        session.save(topic1);
-        session.save(topic2);
+    public void testGetTopicRangeInBranch() {
+        int start = 1;
+        int max = 2;
+        List<Topic> persistedTopics = createAndSaveTopicList(5);
+        long branchId = persistedTopics.get(0).getBranch().getId();
 
-        List<Topic> topics = dao.getAllTopicsAccordingToBranch(branch.getId());
+        List<Topic> topics = dao.getTopicRangeInBranch(branchId, start, max);
 
-        assertEquals(topics.size(), 2);
+        assertEquals(max, topics.size(), "Unexpected list size");
+        assertEquals(branchId, topics.get(0).getBranch().getId(), "Incorrect branch");
     }
 
-
     @Test
-    public void testGetAllTopicsInBranchEmptyBranch() {
-        Branch branch = ObjectsFactory.getDefaultTopicBranch();
-        session.save(branch);
+    public void testGetTopicsInBranchCount() {
+        List<Topic> persistedTopics = createAndSaveTopicList(5);
+        long branchId = persistedTopics.get(0).getBranch().getId();
 
-        List<Topic> topics = dao.getAllTopicsAccordingToBranch(branch.getId());
+        int count = dao.getTopicsInBranchCount(branchId);
 
-        assertEquals(topics.size(), 0);
+        assertEquals(count, 5);
     }
 
     private int getCount() {

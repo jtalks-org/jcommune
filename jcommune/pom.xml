@@ -11,6 +11,7 @@
     <module>jcommune-model</module>
     <module>jcommune-service</module>
     <module>jcommune-view</module>
+    <module>functional-tests</module>
   </modules>
   <dependencyManagement>
     <dependencies>
@@ -153,6 +154,11 @@
         <artifactId>spring-security-taglibs</artifactId>
         <version>${springVersion}</version>
       </dependency>
+     <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-acl</artifactId>
+        <version>${springVersion}</version>
+     </dependency>
       <!-- AOP -->
       <dependency>
         <groupId>org.aspectj</groupId>
@@ -165,6 +171,12 @@
         <artifactId>joda-time</artifactId>
         <version>1.5</version>
       </dependency>
+      <!-- EhCache -->
+      <dependency>
+        <groupId>net.sf.ehcache</groupId>
+        <artifactId>ehcache-core</artifactId>
+        <version>2.3.1</version>
+     </dependency>      
       <!-- TestNG & Mockito -->
       <dependency>
         <groupId>org.testng</groupId>

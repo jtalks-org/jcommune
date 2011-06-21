@@ -36,6 +36,7 @@ import java.util.List;
  * @author Vervenko Pavel
  * @author Kirill Afonin
  * @author Vitaliy Kravchenko
+ * @author Max Malakhov
  */
 public class TransactionalTopicService extends AbstractTransactionalEntityService<Topic, TopicDao>
         implements TopicService {
@@ -46,23 +47,15 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     /**
      * Create an instance of User entity based service
      *
-     * @param dao                data access object, which should be able do all CRUD operations with topic entity
-     * @param securityService    {@link SecurityService} for retrieving current user
-     * @param branchService {@link org.jtalks.jcommune.service.BranchService} instance to be injected
+     * @param dao             data access object, which should be able do all CRUD operations with topic entity
+     * @param securityService {@link SecurityService} for retrieving current user
+     * @param branchService   {@link org.jtalks.jcommune.service.BranchService} instance to be injected
      */
     public TransactionalTopicService(TopicDao dao, SecurityService securityService,
                                      BranchService branchService) {
         this.securityService = securityService;
         this.dao = dao;
         this.branchService = branchService;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Topic getTopicWithPosts(long id) {
-        return dao.get(id);
     }
 
     /**
@@ -107,8 +100,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    public List<Topic> getAllTopicsAccordingToBranch(Long id) {
-        return dao.getAllTopicsAccordingToBranch(id);
+    public void deleteTopic(long topicId) {
+        logger.debug("Delete the topic, topic ID = " + topicId);
+        dao.delete(topicId);
     }
 
     /**
@@ -122,11 +116,27 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
 
         for (Post post : posts) {
             if (post.getId() == postId) {
-                posts.remove(post);
+                topic.removePost(post);
                 break;
             }
         }
         dao.saveOrUpdate(topic);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Topic> getTopicRangeInBranch(long branchId, int start, int max) {
+        return dao.getTopicRangeInBranch(branchId, start, max);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getTopicsInBranchCount(long branchId) {
+        return dao.getTopicsInBranchCount(branchId);
     }
 
 }

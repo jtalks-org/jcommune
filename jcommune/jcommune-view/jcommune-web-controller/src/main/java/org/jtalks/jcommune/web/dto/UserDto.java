@@ -31,7 +31,7 @@ import javax.validation.constraints.Size;
  * @author Kirill Afonin
  * @see User
  */
-@Matches(field = "password", verifyField = "passwordConfirm")
+@Matches(field = "password", verifyField = "passwordConfirm", message = "{password_not_matches}")
 public class UserDto {
     @NotEmpty
     @Size(min = 3, max = 20)

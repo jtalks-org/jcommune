@@ -30,6 +30,7 @@ import java.util.List;
  *
  * @author Pavel Vervenko
  * @author Vitaliy Kravchenko
+ * @author Max Malakhov
  */
 public class Topic extends Persistent {
 
@@ -50,9 +51,29 @@ public class Topic extends Persistent {
     private Branch branch;
 
     /**
+     * The last post in the topic.
+     */
+    private Post lastPost;
+
+    /**
      * Creates the Topic instance. All fields values are null.
      */
     public Topic() {
+    }
+
+    /**
+     * Creates the Topic instance with required fields.
+     * Creation and modification date is set to now.
+     *
+     * @param branch       branch that contains topic
+     * @param topicStarter user who create the topic
+     * @param title        topic title
+     */
+    public Topic(Branch branch, User topicStarter, String title) {
+        this.branch = branch;
+        this.topicStarter = topicStarter;
+        this.title = title;
+        this.creationDate = new DateTime();
     }
 
     /**
@@ -82,6 +103,7 @@ public class Topic extends Persistent {
     public void addPost(Post newPost) {
         posts.add(newPost);
         newPost.setTopic(this);
+        this.lastPost = newPost;
     }
 
     /**
@@ -91,6 +113,7 @@ public class Topic extends Persistent {
      */
     public void removePost(Post postToRemove) {
         posts.remove(postToRemove);
+        updateLastPost(postToRemove);
     }
 
     /**
@@ -166,7 +189,7 @@ public class Topic extends Persistent {
     }
 
     /**
-     * Get branch that contains the message
+     * Get branch that contains topic
      *
      * @return branch that contains the topic
      */
@@ -175,11 +198,40 @@ public class Topic extends Persistent {
     }
 
     /**
-     * Set branch that contains the message
+     * Set branch that contains topic
      *
      * @param branch branch that contains the topic
      */
     public void setBranch(Branch branch) {
         this.branch = branch;
+    }
+
+    /**
+     * Set the topic last post.
+     * 
+     * @param lastPost the lastPost to set
+     */
+    public void setLastPost(Post lastPost) {
+        this.lastPost = lastPost;
+    }
+
+    /**
+     * Get the topic last post.
+     *
+     * @return the lastPost
+     */
+    public Post getLastPost() {
+        return lastPost;
+    }
+
+    /*
+     * Set the topic last post when it was removed.
+     */
+    private void updateLastPost(Post removedPost) {
+        if (this.lastPost.getId() == removedPost.getId()) {
+            if (!this.posts.isEmpty()) {
+                this.lastPost = this.posts.get(this.posts.size()-1);
+            }
+        }
     }
 }

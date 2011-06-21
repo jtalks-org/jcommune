@@ -21,9 +21,9 @@ import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateException;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 /**
  * User service class. This class contains method needed to manipulate with User persistent entity.
@@ -48,12 +48,12 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public User getByUsername(String username) {
+    public User getByUsername(String username) throws NotFoundException {
         User user = dao.getByUsername(username);
         if (user == null) {
             String msg = "User " + username + " not found.";
             logger.info(msg);
-            throw new UsernameNotFoundException(msg);
+            throw new NotFoundException(msg);
         }
         return user;
     }

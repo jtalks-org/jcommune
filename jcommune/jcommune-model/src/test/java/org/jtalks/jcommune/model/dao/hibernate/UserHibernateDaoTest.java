@@ -139,25 +139,6 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         assertFalse(result, "Entity deleted");
     }
 
-    @Test
-    public void testGetAll() {
-        User user1 = ObjectsFactory.getDefaultUser();
-        session.save(user1);
-        User user2 = ObjectsFactory.getUser("user2", "user2@mail.com");
-        session.save(user2);
-
-        List<User> users = dao.getAll();
-
-        assertEquals(users.size(), 2);
-    }
-
-    @Test
-    public void testGetAllWithEmptyTable() {
-        List<User> users = dao.getAll();
-
-        assertTrue(users.isEmpty());
-    }
-
     /*===== UserDao specific methods =====*/
 
     @Test

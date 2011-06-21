@@ -76,6 +76,7 @@ public class TransactionalTopicBranchServiceTest {
     private Branch getTopicBranch(){
         Branch branch = new Branch();
         branch.setId(BRANCH_ID);
+        branch.setUuid("xxx");
         branch.setDescription("some info");
         branch.setName("Java Core");
         return branch;

@@ -19,15 +19,35 @@ package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.jcommune.model.entity.Post;
 
+import java.util.List;
+
 /**
- * Interface allows to make basic CRUD operations with the 
- * {@link Post} objects. 
+ * Interface allows to make basic CRUD operations with the
+ * {@link Post} objects.
  * At the current moment it doesn't provides any additional methods over the basic {@link Dao} interface
  * but some specific methods will be added soon.
- * @see PostHibernateDao
- * 
+ *
  * @author Pavel Vervenko
+ * @author Kirill Afonin
+ * @see PostHibernateDao
  */
 public interface PostDao extends Dao<Post> {
-    
+
+    /**
+     * Get posts range from topic.
+     *
+     * @param topicId topic id from which we obtain posts
+     * @param start   start index of post
+     * @param max     number of posts
+     * @return list of {@code Topic} objects with size {@code max}
+     */
+    List<Post> getPostRangeInTopic(long topicId, int start, int max);
+
+    /**
+     * Get number of posts in topic.
+     *
+     * @param topicId topic id where you have to count posts
+     * @return number of posts in topic
+     */
+    int getPostsInTopicCount(long topicId);
 }

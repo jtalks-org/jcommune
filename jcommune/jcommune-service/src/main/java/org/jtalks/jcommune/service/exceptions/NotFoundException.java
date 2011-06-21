@@ -15,19 +15,29 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
+package org.jtalks.jcommune.service.exceptions;
 
-package org.jtalks.jcommune.web.controller;
+/**
+ * The exception for case when searching item not found.
+ * 
+ * @author Pavel Vervenko
+ */
+public class NotFoundException extends Exception {
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
+    /**
+     * Default constructor.
+     *
+     * {@link Exception}
+     */
+    public NotFoundException(String message) {
+        super(message);
+    }
 
-@Controller
-public class WelcomePageController {
-
-    @RequestMapping(value = "/index", method = RequestMethod.GET)
-    public ModelAndView displayWelcomePage() {
-        return new ModelAndView("index");
+    /**
+     * Create exception with specific message.
+     *
+     * @param message exception message
+     */
+    public NotFoundException() {
     }
 }

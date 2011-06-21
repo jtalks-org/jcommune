@@ -19,7 +19,9 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.TopicService;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -28,6 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 
@@ -37,34 +41,49 @@ import static org.testng.Assert.assertEquals;
  */
 public class BranchControllerTest {
     private BranchService branchService;
-    private BranchController topicsBranchController;
+    private TopicService topicService;
+    private BranchController controller;
 
     @BeforeMethod
     public void init() {
         branchService = mock(BranchService.class);
-        topicsBranchController = new BranchController(branchService);
+        topicService = mock(TopicService.class);
+        controller = new BranchController(branchService, topicService);
     }
 
     @Test
-    public void testPopulateFormWithBranches(){
-        List<Branch> branches = new ArrayList<Branch>();
-        Branch firstBranch = new Branch();
-        firstBranch.setId(1L);
-        Branch secondBranch = new Branch();
-        secondBranch.setId(2L);
-        branches.add(firstBranch);
-        branches.add(secondBranch);
-        
-        when(branchService.getAll()).thenReturn(branches);
-        assertEquals(branches.size(),topicsBranchController.populateFormWithBranches().size());
+    public void testDisplayAllBranches() {
+        when(branchService.getAll()).thenReturn(new ArrayList<Branch>());
 
+        ModelAndView mav = controller.branchesList();
+
+        assertViewName(mav, "branchesList");
+        assertModelAttributeAvailable(mav, "topicsBranchList");
         verify(branchService).getAll();
     }
 
     @Test
-    public void testDisplayAllBranches(){
-        ModelAndView mav = topicsBranchController.displayAllTopicsBranches();
+    public void testTopicsInBranch() {
+        long branchId = 1L;
+        int page = 2;
+        int size = 5;
+        int start = page * size - size;
+        when(topicService.getTopicRangeInBranch(branchId, start, size)).thenReturn(new ArrayList<Topic>());
+        when(topicService.getTopicsInBranchCount(branchId)).thenReturn(10);
 
-        assertViewName(mav, "renderAllBranches");
+        ModelAndView mav = controller.show(branchId, page, size);
+
+        assertViewName(mav, "topicList");
+        assertAndReturnModelAttributeOfType(mav, "topics", List.class);
+        Long _branch = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
+        assertEquals((long) _branch, branchId);
+        Integer _maxPages = assertAndReturnModelAttributeOfType(mav, "maxPages", Integer.class);
+        Integer _page = assertAndReturnModelAttributeOfType(mav, "page", Integer.class);
+        assertEquals((int) _maxPages, 2);
+        assertEquals((int) _page, page);
+        verify(topicService, times(1)).getTopicRangeInBranch(branchId, start, size);
+        verify(topicService, times(1)).getTopicsInBranchCount(branchId);
     }
+
+
 }

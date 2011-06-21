@@ -3,13 +3,20 @@
   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
   <class name="Post" table="POST">
-    <id column="POST_ID" name="id" unsaved-value="0">
+    <id name="id" column="POST_ID" unsaved-value="0">
       <generator class="native"/>
     </id>
-    <many-to-one name="userCreated" class="User" column="USER_CREATED" fetch="join"
-                 foreign-key="FK_USER" lazy="false" not-null="true"/>
-    <property name="creationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
-              column="POST_DATE" not-null="true"/>
+    <property name="uuid" column="UUID" unique="true" not-null="true"/>
+    <property name="creationDate" column="POST_DATE"
+              type="org.joda.time.contrib.hibernate.PersistentDateTime"
+              not-null="true"/>
     <property name="postContent" column="POST_CONTENT" not-null="true"/>
+    <many-to-one name="userCreated" column="USER_CREATED" class="User" fetch="join"
+                 foreign-key="FK_USER" lazy="false" not-null="true"/>
+    <many-to-one name="topic" column="TOPIC_ID" not-null="false"/>
   </class>
+  <query name="getAllPostsInTopic">
+    <![CDATA[FROM Post as post
+             WHERE post.topic = :topicId ORDER BY post.creationDate DESC]]>
+  </query>
 </hibernate-mapping>

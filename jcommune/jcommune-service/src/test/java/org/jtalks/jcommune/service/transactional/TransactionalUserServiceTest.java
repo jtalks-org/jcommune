@@ -12,6 +12,7 @@ import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 import static org.mockito.Mockito.*;
 
@@ -26,7 +27,7 @@ public class TransactionalUserServiceTest {
     private static final String FIRST_NAME = "first name";
     private static final String LAST_NAME = "last name";
     private static final Long USER_ID = 999L;
-
+    private static final String USER_UUID = "zzzzzz3243";
 
     private UserService userService;
     private UserDao userDao;
@@ -50,7 +51,7 @@ public class TransactionalUserServiceTest {
         verify(userDao, times(1)).getByUsername(USERNAME);
     }
 
-    @Test(expectedExceptions = UsernameNotFoundException.class)
+    @Test(expectedExceptions = NotFoundException.class)
     public void testGetByUsernameNotFound() throws Exception {
         when(userDao.getByUsername(USERNAME)).thenReturn(null);
 
@@ -108,19 +109,10 @@ public class TransactionalUserServiceTest {
         verify(userDao, times(1)).get(Matchers.anyLong());
     }
 
-    @Test
-    public void getAllTest() {
-        List<User> expectedUserList = new ArrayList<User>();
-        expectedUserList.add(getUser());
-        when(userDao.getAll()).thenReturn(expectedUserList);
-        List<User> actualUserList = userService.getAll();
-        Assert.assertEquals(actualUserList, expectedUserList, "User lists aren't equals");
-        verify(userDao, times(1)).getAll();
-    }
-
     private User getUser() {
         User user = new User();
         user.setId(USER_ID);
+        user.setUuid(USER_UUID);
         user.setUsername(USERNAME);
         user.setPassword(PASSWORD);
         user.setEmail(EMAIL);

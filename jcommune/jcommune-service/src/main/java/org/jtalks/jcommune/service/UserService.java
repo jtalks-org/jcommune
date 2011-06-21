@@ -19,6 +19,7 @@ package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.exceptions.DuplicateException;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 /**
  * This interface should have methods which give us more abilities in manipulating User persistent entity.
@@ -33,8 +34,9 @@ public interface UserService extends EntityService<User> {
      * @param username username of User
      * @return {@link User} with given username
      * @see User
+     * @throws NotFoundException if the User not found
      */
-    User getByUsername(String username);
+    User getByUsername(String username) throws NotFoundException;
 
     /**
      * Try to register {@link User} with given features.

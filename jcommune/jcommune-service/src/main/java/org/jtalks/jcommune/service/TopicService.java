@@ -32,14 +32,6 @@ import java.util.List;
 public interface TopicService extends EntityService<Topic> {
 
     /**
-     * Get topic with fetched topics fields(userCreated, posts).
-     *
-     * @param id topic primary id.
-     * @return {@code Topic} with fetched topic fields or null if no topic found by this primary id.
-     */
-    Topic getTopicWithPosts(long id);
-
-    /**
      * Add the answer to the topic. Add the specified message to the target topic and save.
      * User should be authorized to answer to the topic. Otherwise {@link IllegalStateException} will be thrown.
      *
@@ -47,14 +39,6 @@ public interface TopicService extends EntityService<Topic> {
      * @param answerBody the text of the answer
      */
     void addAnswer(long topicId, String answerBody);
-
-    /**
-     * Get all topics according to branch Id
-     *
-     * @param id Topic Branch id
-     * @return List of Topics, if no corresponding Topics it will return empty List
-     */
-    List<Topic> getAllTopicsAccordingToBranch(Long id);
 
     /**
      * Add new topic with given title and body.
@@ -67,6 +51,12 @@ public interface TopicService extends EntityService<Topic> {
     void createTopic(String topicName, String bodyText, long branchId);
 
     /**
+     * Delete the topic
+     * @param topicId
+     */
+    void deleteTopic(long topicId);
+
+    /**
      * Delete post from topic.
      *
      * @param topicId topic id.
@@ -74,4 +64,21 @@ public interface TopicService extends EntityService<Topic> {
      */
     void deletePost(long topicId, long postId);
 
+    /**
+     * Get posts range from branch.
+     *
+     * @param branchId branch id from which we obtain topics
+     * @param start    start index of topic
+     * @param max      number of topics
+     * @return list of {@code Topic} objects with size {@code max}
+     */
+    List<Topic> getTopicRangeInBranch(long branchId, int start, int max);
+
+    /**
+     * Get number of topics in branch.
+     *
+     * @param branchId branch id where you have to count topics
+     * @return number of topics in branch
+     */
+    int getTopicsInBranchCount(long branchId);
 }

@@ -19,12 +19,30 @@ package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.Post;
 
+import java.util.List;
+
 /**
  * This interface should have methods which give us more abilities in manipulating Post persistent entity.
- * 
- * @author Osadchuck Eugeny
  *
+ * @author Osadchuck Eugeny
+ * @author Kirill Afonin
  */
 public interface PostService extends EntityService<Post> {
+    /**
+     * Get posts range from topic.
+     *
+     * @param topicId topic id from which we obtain posts
+     * @param start   start index of post
+     * @param max     number of posts
+     * @return list of {@code Topic} objects with size {@code max}
+     */
+    List<Post> getPostRangeInTopic(long topicId, int start, int max);
 
+    /**
+     * Get number of posts in topic.
+     *
+     * @param topicId topic id where you have to count posts
+     * @return number of posts in topic
+     */
+    int getPostsInTopicCount(long topicId);
 }
