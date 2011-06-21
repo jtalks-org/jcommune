@@ -50,7 +50,6 @@ public class PrivateMessageController {
      * recipient by username.
      * 
      * @param pmService the PrivateMessageService instance
-     * @param userService the UserService instance
      */
     @Autowired
     public PrivateMessageController(PrivateMessageService pmService) {

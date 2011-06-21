@@ -61,7 +61,6 @@ public class UserControllerTest {
     @Test
     public void testRegisterDuplicateUser() throws Exception {
         UserDto dto = getUserDto();
-        User user = dto.createUser();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
         doThrow(new DuplicateException()).when(userService).registerUser(any(User.class));
 
@@ -70,6 +69,17 @@ public class UserControllerTest {
         assertViewName(mav, "registration");
         Assert.assertEquals(1, bindingResult.getErrorCount(), "Result without errors");
         verify(userService, times(1)).registerUser(any(User.class));
+    }
+
+    @Test
+    public void testRegisterValidationFail() {
+        UserDto dto = getUserDto();
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        ModelAndView mav = controller.registerUser(dto, bindingResult);
+
+        assertViewName(mav, "registration");
     }
 
     /**

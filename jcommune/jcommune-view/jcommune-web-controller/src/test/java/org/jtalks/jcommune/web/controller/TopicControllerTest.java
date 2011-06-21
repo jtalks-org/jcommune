@@ -17,39 +17,77 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.PostService;
-import org.jtalks.jcommune.service.TopicService;
-import org.springframework.web.servlet.ModelAndView;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.web.dto.TopicDto;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.ModelAndView;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeValues;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeValues;
 import static org.testng.Assert.assertEquals;
 
-public class TopicRenderControllerTest {
-    private PostService postService;
+/**
+ * @author Teterin Alexandre
+ * @author Kirill Afonin
+ */
+public class TopicControllerTest {
+    private final String TOPIC_CONTENT = "content here";
+    private final String TOPIC_THEME = "Topic theme";
+
     private TopicService topicService;
-    private TopicRenderController controller;
+    private PostService postService;
+    private TopicController controller;
 
     @BeforeMethod
     public void init() {
-        postService = mock(PostService.class);
         topicService = mock(TopicService.class);
-        controller = new TopicRenderController(postService, topicService);
+        postService = mock(PostService.class);
+        controller = new TopicController(topicService, postService);
+    }
+
+
+    @Test
+    public void testDeleteConfirmPage() {
+        long topicId = 1;
+
+        ModelAndView actualMav = controller.deleteConfirmPage(topicId, 1L);
+
+        assertViewName(actualMav, "deleteTopic");
+        Map<String, Object> expectedModel = new HashMap<String, Object>();
+        expectedModel.put("topicId", topicId);
+        expectedModel.put("branchId", 1L);
+        assertModelAttributeValues(actualMav, expectedModel);
+
     }
 
     @Test
-    public void testTopicsInBranch() {
+    public void testDelete() {
+        long topicId = 1L;
+        long branchId = 1L;
+
+        ModelAndView actualMav = controller.delete(topicId, branchId);
+
+        assertViewName(actualMav, "redirect:/branch/" + branchId + ".html");
+        verify(topicService, times(1)).deleteTopic(topicId);
+    }
+
+    @Test
+    public void testShow() {
         long topicId = 1L;
         long branchId = 1L;
         int page = 2;
@@ -61,7 +99,7 @@ public class TopicRenderControllerTest {
         when(postService.getPostsInTopicCount(topicId)).thenReturn(10);
         when(topicService.get(topicId)).thenReturn(topic);
 
-        ModelAndView mav = controller.showTopic(branchId, topicId, page, size);
+        ModelAndView mav = controller.show(branchId, topicId, page, size);
 
         assertViewName(mav, "postList");
         assertAndReturnModelAttributeOfType(mav, "posts", List.class);
@@ -80,4 +118,44 @@ public class TopicRenderControllerTest {
         verify(topicService, times(1)).get(topicId);
     }
 
+    @Test
+    public void testCreate() throws Exception {
+        TopicDto dto = getDto();
+        BindingResult result = new BeanPropertyBindingResult(dto, "topicDto");
+
+        ModelAndView view = controller.create(dto, result, 1L);
+
+        assertEquals(view.getViewName(), "redirect:/branch/1.html");
+        verify(topicService, times(1)).createTopic(TOPIC_THEME, TOPIC_CONTENT, 1l);
+    }
+
+    @Test
+    public void testCreateValidationFail() throws Exception {
+        Long expectedBranchId = 1L;
+        BindingResult result = mock(BindingResult.class);
+        when(result.hasErrors()).thenReturn(true);
+
+        ModelAndView mav = controller.create(getDto(), result, expectedBranchId);
+
+        assertViewName(mav, "newTopic");
+        Long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
+        assertEquals(branchId, expectedBranchId);
+    }
+
+    @Test
+    public void testCreatePage() {
+        ModelAndView mav = controller.createPage(1L);
+
+        assertAndReturnModelAttributeOfType(mav, "topicDto", TopicDto.class);
+        Long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
+        assertEquals(branchId, new Long(1));
+        assertViewName(mav, "newTopic");
+    }
+
+    private TopicDto getDto() {
+        TopicDto dto = new TopicDto();
+        dto.setBodyText(TOPIC_CONTENT);
+        dto.setTopicName(TOPIC_THEME);
+        return dto;
+    }
 }
