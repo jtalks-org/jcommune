@@ -34,6 +34,8 @@ public class MatchesValidator implements ConstraintValidator<Matches, Object> {
     private String firstPropertyName;
     private String secondPropertyName;
     private String failMessage;
+    private Object fieldValue1;
+    private Object fieldValue2;
 
     /**
      * Initialize validator fields from annotation instance.
@@ -58,30 +60,57 @@ public class MatchesValidator implements ConstraintValidator<Matches, Object> {
      */
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
-        Object fieldObj;
-        Object verifyFieldObj;
-        try {
-            fieldObj = BeanUtils.getProperty(value, firstPropertyName);
-            verifyFieldObj = BeanUtils.getProperty(value, secondPropertyName);
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
+        getComparableFields(value);
 
-        boolean neitherSet = (fieldObj == null) && (verifyFieldObj == null);
-
-        if (neitherSet) {
+        if (isNeitherSetted()) {
             return true;
         }
 
-        boolean matches = (fieldObj != null) && fieldObj.equals(verifyFieldObj);
-
+        boolean matches = isFieldsMatches();
         if (!matches) {
-            context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate(failMessage)
-                    .addNode(secondPropertyName)
-                    .addConstraintViolation();
+            constraintViolated(context);
         }
-
         return matches;
+    }
+
+    /**
+     * Put constraint violation into context.
+     *
+     * @param context validator context
+     */
+    private void constraintViolated(ConstraintValidatorContext context) {
+        context.disableDefaultConstraintViolation();
+        context.buildConstraintViolationWithTemplate(failMessage)
+                .addNode(secondPropertyName)
+                .addConstraintViolation();
+    }
+
+    /**
+     * @return {@code true} if field values are equals
+     */
+    private boolean isFieldsMatches() {
+        return (fieldValue2 != null) && fieldValue2.equals(fieldValue1);
+    }
+
+    /**
+     * @return {@code true} if neither fields are {@code null}
+     */
+    private boolean isNeitherSetted() {
+        return (fieldValue2 == null) && (fieldValue1 == null);
+    }
+
+    /**
+     * Retrieving comparable fields from object.
+     * Throws {@code IllegalStateException} if field not found.
+     *
+     * @param value object from which we take values ​​of fields
+     */
+    private void getComparableFields(Object value) {
+        try {
+            fieldValue2 = BeanUtils.getProperty(value, firstPropertyName);
+            fieldValue1 = BeanUtils.getProperty(value, secondPropertyName);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
     }
 }
