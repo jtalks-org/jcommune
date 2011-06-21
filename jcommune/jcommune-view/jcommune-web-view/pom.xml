@@ -91,7 +91,7 @@
           </container>
           <configuration>
             <type>existing</type>
-            <home>${env.CATALINA_BASE}</home>
+            <home>${env.CATALINA_HOME}</home>
           </configuration>
           <deployer>
             <type>installed</type>
