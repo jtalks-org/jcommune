@@ -22,6 +22,7 @@ import java.util.Map;
 
 
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -69,7 +70,7 @@ public class PostControllerTest {
     }
 
     @Test
-    public void deleteTest() {
+    public void deleteTest() throws NotFoundException {
         long topicId = 1;
         long postId = 5;
         long branchId = 1;
@@ -77,6 +78,6 @@ public class PostControllerTest {
         ModelAndView actualMav = controller.delete(topicId, postId, branchId);
 
         assertViewName(actualMav, "redirect:/branch/1/topic/" + topicId + ".html");
-        verify(topicService, times(1)).deletePost(anyLong(), anyLong());
+        verify(topicService, times(1)).deletePost(topicId, postId);
     }
 }

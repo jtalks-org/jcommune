@@ -19,6 +19,7 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.servlet.ModelAndView;
@@ -44,14 +45,14 @@ public class TopicAnswerControllerTest {
     private TopicService topicService;
 
     @BeforeMethod
-    public void init() {
+    public void init() throws NotFoundException {
         MockitoAnnotations.initMocks(this);
         controller = new TopicAnswerController(topicService);
         when(topicService.get(TOPIC_ID)).thenReturn(new Topic());
     }
 
     @Test
-    public void testGetAnswerPage() {
+    public void testGetAnswerPage() throws NotFoundException {
         ModelAndView mav = controller.getAnswerPage(TOPIC_ID, false,BRANCH_ID);
 
         assertAndReturnModelAttributeOfType(mav, "topic", Topic.class);
@@ -61,7 +62,7 @@ public class TopicAnswerControllerTest {
     }
 
     @Test
-    public void testSubmitAnswer() {
+    public void testSubmitAnswer() throws NotFoundException {
         ModelAndView mav = controller.submitAnswer(TOPIC_ID, ANSWER_BODY,BRANCH_ID);
 
         assertViewName(mav, "redirect:/branch/" + BRANCH_ID+"/topic/" + TOPIC_ID + ".html");
@@ -70,12 +71,12 @@ public class TopicAnswerControllerTest {
     }
     
     @Test
-    public void testSubmitShortAnswer() {
+    public void testSubmitShortAnswer() throws NotFoundException {
         ModelAndView mav = controller.submitAnswer(TOPIC_ID, SHORT_ANSWER_BODY,BRANCH_ID);
 
         assertAndReturnModelAttributeOfType(mav, "validationError", Boolean.class);   
         assertViewName(mav, "answer");
         
-        verify(topicService, times(0)).addAnswer(anyLong(), anyString());
+        verify(topicService, times(0)).addAnswer(TOPIC_ID, SHORT_ANSWER_BODY);
     }
 }

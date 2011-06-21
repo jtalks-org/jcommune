@@ -27,6 +27,7 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
@@ -46,6 +47,7 @@ import static org.testng.Assert.assertEquals;
  * @author Kirill Afonin
  */
 public class TopicControllerTest {
+    public static final long BRANCH_ID = 1L;
     private final String TOPIC_CONTENT = "content here";
     private final String TOPIC_THEME = "Topic theme";
 
@@ -76,7 +78,7 @@ public class TopicControllerTest {
     }
 
     @Test
-    public void testDelete() {
+    public void testDelete() throws NotFoundException {
         long topicId = 1L;
         long branchId = 1L;
 
@@ -87,7 +89,7 @@ public class TopicControllerTest {
     }
 
     @Test
-    public void testShow() {
+    public void testShow() throws NotFoundException {
         long topicId = 1L;
         long branchId = 1L;
         int page = 2;
@@ -120,13 +122,16 @@ public class TopicControllerTest {
 
     @Test
     public void testCreate() throws Exception {
+        Topic topic = Topic.createNewTopic();
+        topic.setId(1L);
+        when(topicService.createTopic(TOPIC_THEME, TOPIC_CONTENT, BRANCH_ID)).thenReturn(topic);
         TopicDto dto = getDto();
-        BindingResult result = new BeanPropertyBindingResult(dto, "topicDto");
+        BindingResult result = mock(BindingResult.class);
 
-        ModelAndView view = controller.create(dto, result, 1L);
+        ModelAndView view = controller.create(dto, result, BRANCH_ID);
 
-        assertEquals(view.getViewName(), "redirect:/branch/1.html");
-        verify(topicService, times(1)).createTopic(TOPIC_THEME, TOPIC_CONTENT, 1l);
+        assertEquals(view.getViewName(), "redirect:/branch/1/topic/1.html");
+        verify(topicService, times(1)).createTopic(TOPIC_THEME, TOPIC_CONTENT, BRANCH_ID);
     }
 
     @Test
