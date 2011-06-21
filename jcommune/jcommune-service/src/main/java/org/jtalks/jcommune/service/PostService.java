@@ -18,6 +18,7 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 import java.util.List;
 
@@ -35,14 +36,18 @@ public interface PostService extends EntityService<Post> {
      * @param start   start index of post
      * @param max     number of posts
      * @return list of {@code Topic} objects with size {@code max}
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when topic not found
      */
-    List<Post> getPostRangeInTopic(long topicId, int start, int max);
+    List<Post> getPostRangeInTopic(long topicId, int start, int max) throws NotFoundException;
 
     /**
      * Get number of posts in topic.
      *
      * @param topicId topic id where you have to count posts
      * @return number of posts in topic
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when topic not found
      */
-    int getPostsInTopicCount(long topicId);
+    int getPostsInTopicCount(long topicId) throws NotFoundException;
 }

@@ -18,6 +18,7 @@
 package org.jtalks.jcommune.service.transactional;
 
 import java.util.ArrayList;
+
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.testng.Assert;
@@ -31,7 +32,6 @@ import org.testng.annotations.BeforeMethod;
 import static org.mockito.Mockito.*;
 
 /**
- *
  * @author Pavel Vervenko
  */
 public class TransactionalPrivateMessageServiceTest {
@@ -52,26 +52,45 @@ public class TransactionalPrivateMessageServiceTest {
     }
 
     @Test
-    public void getByIdTest() {
+    public void testGet() throws NotFoundException {
+        when(pmDao.isExist(PM_ID)).thenReturn(true);
         when(pmDao.get(PM_ID)).thenReturn(getPrivateMessage());
 
         PrivateMessage pm = pmService.get(PM_ID);
 
         Assert.assertEquals(pm, getPrivateMessage());
+        verify(pmDao).isExist(PM_ID);
         verify(pmDao, times(1)).get(PM_ID);
     }
 
     @Test
-    public void deleteByIdTest() {
+    public void testDelete() throws NotFoundException {
+        when(pmDao.isExist(PM_ID)).thenReturn(true);
+
         pmService.delete(PM_ID);
 
+        verify(pmDao).isExist(PM_ID);
         verify(pmDao).delete(PM_ID);
     }
 
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testGetIncorrectId() throws NotFoundException {
+        when(pmDao.isExist(PM_ID)).thenReturn(false);
+
+        pmService.get(PM_ID);
+    }
+
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testDeleteIncorrectId() throws NotFoundException {
+        when(pmDao.isExist(PM_ID)).thenReturn(false);
+
+        pmService.delete(PM_ID);
+    }
+
     @Test
-    public void getInboxForCurrentUserTest() {
+    public void testGetInboxForCurrentUser() {
         User user = getUser("User");
-        when(pmDao.getAllForUser(user)).thenReturn(new ArrayList());
+        when(pmDao.getAllForUser(user)).thenReturn(new ArrayList<PrivateMessage>());
         when(securityService.getCurrentUser()).thenReturn(user);
 
         pmService.getInboxForCurrentUser();
@@ -81,9 +100,9 @@ public class TransactionalPrivateMessageServiceTest {
     }
 
     @Test
-    public void getOutboxForCurrentUserTest() {
+    public void testGetOutboxForCurrentUser() {
         User user = getUser("User");
-        when(pmDao.getAllFromUser(user)).thenReturn(new ArrayList());
+        when(pmDao.getAllFromUser(user)).thenReturn(new ArrayList<PrivateMessage>());
         when(securityService.getCurrentUser()).thenReturn(user);
 
         pmService.getOutboxForCurrentUser();
@@ -93,7 +112,7 @@ public class TransactionalPrivateMessageServiceTest {
     }
 
     @Test
-    public void sendMessageTest() throws NotFoundException {
+    public void testSendMessage() throws NotFoundException {
         String userTo = "UserTo";
 
         pmService.sendMessage("body", "title", userTo);
@@ -103,17 +122,17 @@ public class TransactionalPrivateMessageServiceTest {
         verify(pmDao).saveOrUpdate(any(PrivateMessage.class));
     }
 
-    @Test(expectedExceptions=NotFoundException.class)
-    public void sendMessageToWrongUserTest() throws NotFoundException {
+    @Test(expectedExceptions = NotFoundException.class)
+    public void testSendMessageToWrongUser() throws NotFoundException {
         String wrongUsername = "wrong";
         when(userService.getByUsername(wrongUsername)).thenThrow(new NotFoundException());
-        
+
         pmService.sendMessage("body", "title", wrongUsername);
-        
+
         verify(pmDao, never()).saveOrUpdate(any(PrivateMessage.class));
         verify(userService).getByUsername(wrongUsername);
     }
-    
+
     private PrivateMessage getPrivateMessage() {
         PrivateMessage pm = PrivateMessage.createNewPrivateMessage();
         pm.setId(PM_ID);

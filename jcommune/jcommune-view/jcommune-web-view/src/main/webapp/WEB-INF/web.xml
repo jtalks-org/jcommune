@@ -109,5 +109,10 @@ can be a valid integer (0 denotes check every time,
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
 
+  <error-page>
+    <exception-type>org.jtalks.jcommune.service.exceptions.NotFoundException</exception-type>
+    <location>/WEB-INF/jsp/404.jsp</location>
+  </error-page>
+
 </web-app>
 

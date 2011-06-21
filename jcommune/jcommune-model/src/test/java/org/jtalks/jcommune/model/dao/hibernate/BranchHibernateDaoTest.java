@@ -158,6 +158,19 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         assertTrue(branches.isEmpty());
     }
 
+    @Test
+    public void testIsExist() {
+        Branch branch = ObjectsFactory.getDefaultBranch();
+        session.save(branch);
+
+        assertTrue(dao.isExist(branch.getId()));
+    }
+
+    @Test
+    public void testIsNotExist() {
+     assertFalse(dao.isExist(99999L));
+    }
+
     private int getCount() {
         return ((Number) session.createQuery("select count(*) from Branch").uniqueResult()).intValue();
     }

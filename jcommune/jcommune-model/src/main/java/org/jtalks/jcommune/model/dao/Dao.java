@@ -54,4 +54,12 @@ public interface Dao<T extends Persistent> {
      * @return loaded Persistence instance
      */
     T get(Long id);
+
+    /**
+     * Check entity existance by id.
+     *
+     * @param id entity id
+     * @return {@code true} if entity exist
+     */
+    boolean isExist(Long id);
 }

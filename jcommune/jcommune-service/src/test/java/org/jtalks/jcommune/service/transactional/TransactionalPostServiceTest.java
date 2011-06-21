@@ -19,10 +19,12 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.PostDao;
+import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.Matchers;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -56,61 +58,54 @@ public class TransactionalPostServiceTest {
 
     private PostService postService;
     private PostDao postDao;
+    private TopicDao topicDao;
 
     @BeforeMethod
     public void setUp() throws Exception {
         postDao = mock(PostDao.class);
-        postService = new TransactionalPostService(postDao);
-    }
-
-    private Post getPost() {
-        User topicStarter = new User();
-        topicStarter.setId(USER_ID);
-        topicStarter.setUuid(USER_UUID);
-        topicStarter.setUsername("username");
-        Topic topic = new Topic();
-        topic.setId(333);
-        topic.setUuid(TOPIC_UUID);
-        topic.setTopicStarter(topicStarter);
-
-        Post post = new Post();
-        post.setId(POST_ID);
-        post.setUuid(POST_UUID);
-        post.setPostContent(POST_CONTENT);
-        post.setCreationDate(POST_CREATION_DATE);
-        post.setTopic(topic);
-        return post;
+        topicDao = mock(TopicDao.class);
+        postService = new TransactionalPostService(postDao, topicDao);
     }
 
     @Test
-    public void deleteByIdTest() {
+    public void testDelete() throws NotFoundException {
+        when(postDao.isExist(POST_ID)).thenReturn(true);
+
         postService.delete(POST_ID);
 
-        verify(postDao, times(1)).delete(Matchers.anyLong());
-    }
-
-    @Test(expectedExceptions = {IllegalArgumentException.class})
-    public void deleteByNagativeIdTest() {
-        postService.delete(-1l);
-        verify(postDao, never()).delete(Matchers.anyLong());
+        verify(postDao).isExist(POST_ID);
+        verify(postDao).delete(POST_ID);
     }
 
     @Test
-    public void getByIdTest() {
-        when(postDao.get(POST_ID)).thenReturn(getPost());
-        Post post = postService.get(POST_ID);
-        Assert.assertEquals(post, getPost(), "Posts aren't equals");
-        verify(postDao, times(1)).get(Matchers.anyLong());
+    public void testGet() throws NotFoundException {
+        Post post = Post.createNewPost();
+        when(postDao.isExist(POST_ID)).thenReturn(true);
+        when(postDao.get(POST_ID)).thenReturn(post);
+
+        Post actualPost = postService.get(POST_ID);
+
+        Assert.assertEquals(actualPost, post, "Posts aren't equals");
+        verify(postDao).isExist(POST_ID);
+        verify(postDao).get(POST_ID);
     }
 
-    @Test(expectedExceptions = {IllegalArgumentException.class})
-    public void getByNagativeIdTest() {
-        postService.get(-1l);
-        verify(postDao, never()).get(Matchers.anyLong());
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testGetIncorrectId() throws NotFoundException {
+        when(postDao.isExist(POST_ID)).thenReturn(false);
+
+        postService.get(POST_ID);
+    }
+
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testDeleteIncorrectId() throws NotFoundException {
+        when(postDao.isExist(POST_ID)).thenReturn(false);
+
+        postService.delete(POST_ID);
     }
 
     @Test
-    public void testGetTopicsRangeInBranch() {
+    public void testGetPostRangeInTopic() throws NotFoundException {
         int start = 1;
         int max = 2;
         long topicId = 1L;
@@ -118,23 +113,42 @@ public class TransactionalPostServiceTest {
         list.add(Post.createNewPost());
         list.add(Post.createNewPost());
         when(postDao.getPostRangeInTopic(topicId, start, max)).thenReturn(list);
+        when(topicDao.isExist(topicId)).thenReturn(true);
 
         List<Post> posts = postService.getPostRangeInTopic(topicId, start, max);
 
         assertNotNull(posts);
         assertEquals(max, posts.size(), "Unexpected list size");
-        verify(postDao, times(1)).getPostRangeInTopic(topicId, start, max);
+        verify(postDao).getPostRangeInTopic(topicId, start, max);
+        verify(topicDao).isExist(topicId);
+    }
+
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testGetPostsRangeInNonExistentTopic() throws NotFoundException {
+        long topicId = 1L;
+        when(topicDao.isExist(topicId)).thenReturn(false);
+
+        postService.getPostRangeInTopic(topicId, 1, 5);
     }
 
     @Test
-    public void testGetTopicsInBranchCount() {
+    public void testGetPostsInTopicCount() throws NotFoundException {
         long topicId = 1L;
         when(postDao.getPostsInTopicCount(topicId)).thenReturn(10);
+        when(topicDao.isExist(topicId)).thenReturn(true);
 
         int count = postService.getPostsInTopicCount(topicId);
 
         assertEquals(count, 10);
-        verify(postDao, times(1)).getPostsInTopicCount(topicId);
+        verify(postDao).getPostsInTopicCount(topicId);
+        verify(topicDao).isExist(topicId);
     }
 
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testGetPostsCountInNonExistentTopic() throws NotFoundException {
+        long topicId = 1L;
+        when(topicDao.isExist(topicId)).thenReturn(false);
+
+        postService.getPostsInTopicCount(topicId);
+    }
 }

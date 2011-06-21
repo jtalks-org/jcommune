@@ -18,6 +18,7 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 import java.util.List;
 
@@ -37,32 +38,34 @@ public interface TopicService extends EntityService<Topic> {
      *
      * @param topicId    target topic primary id.
      * @param answerBody the text of the answer
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when topic not found
      */
-    void addAnswer(long topicId, String answerBody);
+    void addAnswer(long topicId, String answerBody) throws NotFoundException;
 
     /**
      * Add new topic with given title and body.
      * Author is current user.
      *
+     *
      * @param topicName name of topic
      * @param bodyText  body of topic
      * @param branchId  branch containing topic
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when branch not found
+     * @return created topic
      */
-    void createTopic(String topicName, String bodyText, long branchId);
-
-    /**
-     * Delete the topic
-     * @param topicId
-     */
-    void deleteTopic(long topicId);
+    Topic createTopic(String topicName, String bodyText, long branchId) throws NotFoundException;
 
     /**
      * Delete post from topic.
      *
      * @param topicId topic id.
      * @param postId  post id.
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when topic or post not found
      */
-    void deletePost(long topicId, long postId);
+    void deletePost(long topicId, long postId) throws NotFoundException;
 
     /**
      * Get posts range from branch.

@@ -18,6 +18,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -70,11 +71,12 @@ public class PostController {
      * @param postId   post
      * @param branchId branch containing topic
      * @return redirect to topic page
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException when topic or post not found
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/branch/{branchId}/topic/{topicId}/post/{postId}")
     public ModelAndView delete(@PathVariable("topicId") Long topicId,
                                @PathVariable("postId") Long postId,
-                               @PathVariable("branchId") Long branchId) {
+                               @PathVariable("branchId") Long branchId) throws NotFoundException {
         topicService.deletePost(topicId, postId);
         return new ModelAndView(new StringBuilder()
                 .append("redirect:/branch/")

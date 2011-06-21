@@ -30,6 +30,7 @@
   <bean id="postService"
         class="org.jtalks.jcommune.service.transactional.TransactionalPostService">
     <constructor-arg index="0" ref="postDao"/>
+    <constructor-arg index="1" ref="topicDao"/>
   </bean>
 
   <bean id="topicBranchService"

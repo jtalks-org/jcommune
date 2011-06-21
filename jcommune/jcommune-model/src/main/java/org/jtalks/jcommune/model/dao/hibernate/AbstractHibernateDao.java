@@ -105,4 +105,12 @@ public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<
     public T get(Long id) {
         return (T) getSession().get(type, id);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isExist(Long id) {
+        return get(id) != null;
+    }
 }

@@ -12,6 +12,7 @@ import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 import static org.mockito.Mockito.*;
@@ -96,17 +97,25 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void deleteByIdTest() {
+    public void testDelete() throws NotFoundException {
+        when(userDao.isExist(USER_ID)).thenReturn(true);
+
         userService.delete(USER_ID);
-        verify(userDao, times(1)).delete(Matchers.anyLong());
+
+        verify(userDao).isExist(USER_ID);
+        verify(userDao, times(1)).delete(USER_ID);
     }
 
     @Test
-    public void getByIdTest() {
+    public void testGet() throws NotFoundException {
         when(userDao.get(USER_ID)).thenReturn(getUser());
+        when(userDao.isExist(USER_ID)).thenReturn(true);
+
         User user = userService.get(USER_ID);
+
         Assert.assertEquals(user, getUser(), "Users aren't equals");
-        verify(userDao, times(1)).get(Matchers.anyLong());
+        verify(userDao).isExist(USER_ID);
+        verify(userDao, times(1)).get(USER_ID);
     }
 
     private User getUser() {

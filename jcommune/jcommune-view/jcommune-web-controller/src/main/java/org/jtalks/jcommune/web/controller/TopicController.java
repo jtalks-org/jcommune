@@ -22,6 +22,7 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.Pagination;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,18 +79,20 @@ public final class TopicController {
      * @param result   {@link BindingResult} object for spring validation
      * @param branchId hold the current branchId
      * @return {@code ModelAndView} object which will be redirect to forum.html
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when branch not found
      */
     @RequestMapping(value = "/branch/{branchId}/topic", method = RequestMethod.POST)
     public ModelAndView create(@Valid @ModelAttribute TopicDto topicDto,
                                BindingResult result,
-                               @PathVariable("branchId") Long branchId) {
+                               @PathVariable("branchId") Long branchId) throws NotFoundException {
         if (result.hasErrors()) {
             return new ModelAndView("newTopic").addObject("branchId", branchId);
         } else {
-            topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(),
+            Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(),
                     branchId);
-            //TODO: redirect to created topic
-            return new ModelAndView("redirect:/branch/" + branchId + ".html");
+            return new ModelAndView("redirect:/branch/" + branchId + "/topic/"
+                    + createdTopic.getId() + ".html");
         }
     }
 
@@ -103,7 +106,7 @@ public final class TopicController {
     @RequestMapping(method = RequestMethod.GET, value = "/branch/{branchId}/topic/{topicId}/delete")
     public ModelAndView deleteConfirmPage(@PathVariable("topicId") Long topicId,
                                           @PathVariable("branchId") Long branchId) {
-        return new ModelAndView("deleteTopic")
+        return new ModelAndView("delete")
                 .addObject("topicId", topicId)
                 .addObject("branchId", branchId);
     }
@@ -114,11 +117,13 @@ public final class TopicController {
      * @param topicId  topic id, this is the topic which contains the first post which should be deleted
      * @param branchId branch containing the first topic
      * @return redirect to branch page
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when topic not found
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/branch/{branchId}/topic/{topicId}")
     public ModelAndView delete(@PathVariable("topicId") Long topicId,
-                               @PathVariable("branchId") Long branchId) {
-        topicService.deleteTopic(topicId);
+                               @PathVariable("branchId") Long branchId) throws NotFoundException {
+        topicService.delete(topicId);
         return new ModelAndView("redirect:/branch/" + branchId + ".html");
     }
 
@@ -131,12 +136,14 @@ public final class TopicController {
      * @param size     number of posts on the page
      * @param branchId the id of selected topic branch
      * @return {@code ModelAndView}
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when topic or branch not found
      */
     @RequestMapping(value = "/branch/{branchId}/topic/{topicId}", method = RequestMethod.GET)
     public ModelAndView show(@PathVariable("branchId") Long branchId,
                              @PathVariable("topicId") Long topicId,
                              @RequestParam(value = "page", required = false) Integer page,
-                             @RequestParam(value = "size", required = false) Integer size) {
+                             @RequestParam(value = "size", required = false) Integer size) throws NotFoundException {
 
         int postsCount = postService.getPostsInTopicCount(topicId);
         Pagination pag = new Pagination(page, size, postsCount);

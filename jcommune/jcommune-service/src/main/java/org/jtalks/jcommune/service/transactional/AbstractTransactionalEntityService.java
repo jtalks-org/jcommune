@@ -20,6 +20,7 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.jcommune.model.dao.Dao;
 import org.jtalks.jcommune.model.entity.Persistent;
 import org.jtalks.jcommune.service.EntityService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 import java.util.List;
 
@@ -42,9 +43,9 @@ public abstract class AbstractTransactionalEntityService<T extends Persistent, Y
      * {@inheritDoc}
      */
     @Override
-    public void delete(Long id) {
-        if (id < 0) {
-            throw new IllegalArgumentException("Persistent object id could not be negative");
+    public void delete(Long id) throws NotFoundException {
+        if (!dao.isExist(id)) {
+            throw new NotFoundException("Entity with id: " + id + " not found");
         }
         dao.delete(id);
     }
@@ -53,9 +54,9 @@ public abstract class AbstractTransactionalEntityService<T extends Persistent, Y
      * {@inheritDoc}
      */
     @Override
-    public T get(Long id) {
-        if (id < 0) {
-            throw new IllegalArgumentException("Persistent object id could not be negative");
+    public T get(Long id) throws NotFoundException {
+        if (!dao.isExist(id)) {
+            throw new NotFoundException("Entity with id: " + id + " not found");
         }
         return (T) dao.get(id);
     }

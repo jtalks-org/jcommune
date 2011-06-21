@@ -24,6 +24,7 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,65 +63,86 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    public void addAnswer(long topicId, String answerBody) {
+    public void addAnswer(long topicId, String answerBody) throws NotFoundException {
         User currentUser = securityService.getCurrentUser();
         // Check if the user is authenticated
         if (currentUser == null) {
             throw new IllegalStateException("User should log in to post answers.");
         }
+
         Topic topic = dao.get(topicId);
+        if (topic == null) {
+            throw new NotFoundException("Topic with id: " + topicId + " not found");
+        }
+
+        addAnswerToTopic(answerBody, currentUser, topic);
+        dao.saveOrUpdate(topic);
+    }
+
+    private void addAnswerToTopic(String answerBody, User currentUser, Topic topic) {
         Post answer = Post.createNewPost();
         answer.setPostContent(answerBody);
         answer.setUserCreated(currentUser);
         topic.addPost(answer);
-        dao.saveOrUpdate(topic);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void createTopic(String topicName, String bodyText, long branchId) {
+    public Topic createTopic(String topicName, String bodyText, long branchId) throws NotFoundException {
         User currentUser = securityService.getCurrentUser();
+        if (currentUser == null) {
+            throw new IllegalStateException("User should log in to post answers.");
+        }
 
-        Post post = Post.createNewPost();
-        post.setUserCreated(currentUser);
-        post.setPostContent(bodyText);
+        Post post = newPost(bodyText, currentUser);
+        Topic topic = newTopic(topicName, branchId, currentUser);
+        topic.addPost(post);
 
+        dao.saveOrUpdate(topic);
+        return topic;
+    }
+
+    private Topic newTopic(String topicName, long branchId, User currentUser) throws NotFoundException {
         Topic topic = Topic.createNewTopic();
         topic.setTitle(topicName);
         topic.setTopicStarter(currentUser);
-        topic.addPost(post);
         topic.setBranch(branchService.get(branchId));
+        return topic;
+    }
+
+    private Post newPost(String bodyText, User currentUser) {
+        Post post = Post.createNewPost();
+        post.setUserCreated(currentUser);
+        post.setPostContent(bodyText);
+        return post;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deletePost(long topicId, long postId) throws NotFoundException {
+        Topic topic = dao.get(topicId);
+        if (topic == null) {
+            throw new NotFoundException("Topic with id: " + topicId + " not found");
+        }
+        deletePostFromTopic(postId, topic);
 
         dao.saveOrUpdate(topic);
+        logger.debug("Deleted post with id: " + postId);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void deleteTopic(long topicId) {
-        logger.debug("Delete the topic, topic ID = " + topicId);
-        dao.delete(topicId);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void deletePost(long topicId, long postId) {
-        logger.debug("User confirm post removing postId = " + postId);
-        Topic topic = dao.get(topicId);
+    private void deletePostFromTopic(long postId, Topic topic) throws NotFoundException {
         List<Post> posts = topic.getPosts();
-
         for (Post post : posts) {
             if (post.getId() == postId) {
                 topic.removePost(post);
-                break;
+                return;
             }
         }
-        dao.saveOrUpdate(topic);
+        throw new NotFoundException("Post with id: " + postId + " not found");
     }
 
     /**
