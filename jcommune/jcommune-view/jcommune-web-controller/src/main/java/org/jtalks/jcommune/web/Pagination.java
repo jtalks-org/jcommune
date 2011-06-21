@@ -25,7 +25,7 @@ package org.jtalks.jcommune.web;
 public class Pagination {
     private Integer page;
     private int pageSize;
-    private float itemsCount;
+    private int itemsCount;
     public static final int DEFAULT_PAGE_SIZE = 5;
 
     /**
@@ -35,7 +35,7 @@ public class Pagination {
      * @param pageSize   number of items on the page (default 5)
      * @param itemsCount total number of items
      */
-    public Pagination(Integer page, Integer pageSize, float itemsCount) {
+    public Pagination(Integer page, Integer pageSize, int itemsCount) {
         this.page = page == null ? Integer.valueOf(1) : page;
         this.pageSize = pageSize == null ? Integer.valueOf(DEFAULT_PAGE_SIZE) : pageSize;
         this.itemsCount = itemsCount;
@@ -63,17 +63,23 @@ public class Pagination {
     }
 
     /**
-     * @return not rounded page count
+     * @return page count
      */
-    private float getPageCount() {
+    private int getPageCount() {
         return itemsCount / pageSize;
     }
 
     /**
-     * @return number of pages
+     * @return total number of pages
      */
     public int getMaxPages() {
-        float pageCount = getPageCount();
-        return (int) ((pageCount > (int) pageCount || pageCount == 0.0) ? pageCount + 1 : pageCount);
+        return isRounded() ? getPageCount() : getPageCount() + 1;
+    }
+
+    /**
+     * @return {@code true} if number of pages rounded else {@code false}
+     */
+    private boolean isRounded() {
+        return (itemsCount % pageSize) == 0;
     }
 }

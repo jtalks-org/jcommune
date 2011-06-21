@@ -75,7 +75,7 @@ public final class TopicRenderController {
                                   @RequestParam(value = "page", required = false) Integer page,
                                   @RequestParam(value = "size", required = false) Integer size) {
 
-        float postsCount = postService.getPostsInTopicCount(topicId);
+        int postsCount = postService.getPostsInTopicCount(topicId);
         Pagination pag = new Pagination(page, size, postsCount);
 
         List<Post> posts = postService.getPostRangeInTopic(topicId, pag.getStart(), pag.getPageSize());
