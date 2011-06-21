@@ -22,7 +22,7 @@ package org.jtalks.jcommune.service.exceptions;
  * 
  * @author Pavel Vervenko
  */
-public class NotFoundException extends RuntimeException {
+public class NotFoundException extends Exception {
 
     /**
      * Default constructor.

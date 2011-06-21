@@ -41,6 +41,7 @@
         class="org.jtalks.jcommune.service.transactional.TransactionalPrivateMessageService">
     <constructor-arg index="0" ref="privateMessageDao"/>
     <constructor-arg index="1" ref="securityService"/>
+    <constructor-arg index="2" ref="userService"/>
   </bean>
 
   <bean id="topicService"

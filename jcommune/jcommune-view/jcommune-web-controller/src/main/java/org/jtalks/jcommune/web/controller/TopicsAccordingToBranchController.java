@@ -67,7 +67,7 @@ public final class TopicsAccordingToBranchController {
     public ModelAndView topicsInBranch(@PathVariable("branchId") long branchId,
                                        @RequestParam(value = "page", required = false) Integer page,
                                        @RequestParam(value = "size", required = false) Integer size) {
-        float topicsCount = topicService.getTopicsInBranchCount(branchId);
+        int topicsCount = topicService.getTopicsInBranchCount(branchId);
         Pagination pag = new Pagination(page, size, topicsCount);
 
         List<Topic> topics = topicService.getTopicRangeInBranch(branchId, pag.getStart(), pag.getPageSize());
