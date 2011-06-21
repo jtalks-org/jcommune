@@ -54,11 +54,4 @@ public interface Dao<T extends Persistent> {
      * @return loaded Persistence instance
      */
     T get(Long id);
-
-    /**
-     * Get the list of objects.
-     *
-     * @return list of objects
-     */
-    List<T> getAll();
 }

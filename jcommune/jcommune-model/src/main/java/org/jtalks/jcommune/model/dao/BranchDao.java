@@ -20,11 +20,18 @@ package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.jcommune.model.entity.Branch;
 
+import java.util.List;
+
 /**
  * @author Vitaliy Kravchenko
  */
 
 public interface BranchDao extends Dao<Branch> {
 
-
+    /**
+     * Get the list of all branches.
+     *
+     * @return list of branches
+     */
+    List<Branch> getAll();
 }

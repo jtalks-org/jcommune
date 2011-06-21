@@ -109,16 +109,6 @@ public class TransactionalUserServiceTest {
         verify(userDao, times(1)).get(Matchers.anyLong());
     }
 
-    @Test
-    public void getAllTest() {
-        List<User> expectedUserList = new ArrayList<User>();
-        expectedUserList.add(getUser());
-        when(userDao.getAll()).thenReturn(expectedUserList);
-        List<User> actualUserList = userService.getAll();
-        Assert.assertEquals(actualUserList, expectedUserList, "User lists aren't equals");
-        verify(userDao, times(1)).getAll();
-    }
-
     private User getUser() {
         User user = new User();
         user.setId(USER_ID);

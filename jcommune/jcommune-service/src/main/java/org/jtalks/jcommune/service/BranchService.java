@@ -20,9 +20,18 @@ package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.Branch;
 
+import java.util.List;
+
 /**
  * @author Vitaliy Kravchenko
+ * @author Kirill Afonin
  */
 
 public interface BranchService extends EntityService<Branch> {
+    /**
+     * Get list of all persistence objects T currently present in database.
+     *
+     * @return - list of persistence objects T.
+     */
+    List<Branch> getAll();
 }

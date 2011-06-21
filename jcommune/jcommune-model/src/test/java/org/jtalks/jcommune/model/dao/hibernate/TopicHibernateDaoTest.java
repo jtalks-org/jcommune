@@ -142,22 +142,6 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         assertFalse(result, "Entity deleted");
     }
 
-    @Test
-    public void testGetAll() {
-        createAndSaveTopicList(2);
-
-        List<Topic> posts = dao.getAll();
-
-        assertEquals(posts.size(), 2);
-    }
-
-    @Test
-    public void testGetAllWithEmptyTable() {
-        List<Topic> posts = dao.getAll();
-
-        assertTrue(posts.isEmpty());
-    }
-
     private List<Topic> createAndSaveTopicList(int size) {
         List<Topic> topics = new ArrayList<Topic>();
         User author = ObjectsFactory.getDefaultUser();

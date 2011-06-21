@@ -43,7 +43,7 @@ public abstract class AbstractTransactionalEntityService<T extends Persistent, Y
      */
     @Override
     public void delete(Long id) {
-        if(id < 0){
+        if (id < 0) {
             throw new IllegalArgumentException("Persistent object id could not be negative");
         }
         dao.delete(id);
@@ -54,18 +54,9 @@ public abstract class AbstractTransactionalEntityService<T extends Persistent, Y
      */
     @Override
     public T get(Long id) {
-        if(id < 0){
+        if (id < 0) {
             throw new IllegalArgumentException("Persistent object id could not be negative");
         }
         return (T) dao.get(id);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<T> getAll() {
-        return dao.getAll();
-    }
-
 }

@@ -93,19 +93,6 @@ public class TransactionalTopicServiceTest {
         topicService.get(-1l);
         verify(topicDao, never()).get(Matchers.anyLong());
     }
-    
-    @Test
-    public void getAllTest() {
-        List<Topic> expectedUserList = new ArrayList<Topic>();
-        expectedUserList.add(getTopic(false));
-        when(topicDao.getAll()).thenReturn(expectedUserList);
-
-        List<Topic> actualUserList = topicService.getAll();
-
-        assertEquals(actualUserList, expectedUserList, "Topics lists aren't equals");
-
-        verify(topicDao, times(1)).getAll();
-    }
 
     /**
      * Check for the answering logic works correctly.

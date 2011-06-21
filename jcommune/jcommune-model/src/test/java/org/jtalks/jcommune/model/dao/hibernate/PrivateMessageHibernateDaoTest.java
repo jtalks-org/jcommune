@@ -128,13 +128,6 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
 
         assertFalse(result, "Entity deleted");
     }   
-    
-    @Test
-    public void testGetAllWithEmptyTable() {
-        List<PrivateMessage> posts = dao.getAll();
-
-        assertTrue(posts.isEmpty());
-    }
 
     @Test
     public void testGetAllFromUser() {

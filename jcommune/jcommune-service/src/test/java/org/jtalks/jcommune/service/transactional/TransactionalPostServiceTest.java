@@ -110,16 +110,6 @@ public class TransactionalPostServiceTest {
     }
 
     @Test
-    public void getAllTest() {
-        List<Post> expectedUserList = new ArrayList<Post>();
-        expectedUserList.add(getPost());
-        when(postDao.getAll()).thenReturn(expectedUserList);
-        List<Post> actualUserList = postService.getAll();
-        Assert.assertEquals(actualUserList, expectedUserList, "Posts lists aren't equals");
-        verify(postDao, times(1)).getAll();
-    }
-
-    @Test
     public void testGetTopicsRangeInBranch() {
         int start = 1;
         int max = 2;
