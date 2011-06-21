@@ -65,7 +65,7 @@ public class TransactionalPrivateMessageServiceTest {
     public void deleteByIdTest() {
         pmService.delete(PM_ID);
 
-        verify(pmDao, times(1)).delete(PM_ID);
+        verify(pmDao).delete(PM_ID);
     }
 
     @Test
@@ -76,8 +76,8 @@ public class TransactionalPrivateMessageServiceTest {
 
         pmService.getInboxForCurrentUser();
 
-        verify(pmDao, times(1)).getAllForUser(user);
-        verify(securityService, times(1)).getCurrentUser();
+        verify(pmDao).getAllForUser(user);
+        verify(securityService).getCurrentUser();
     }
 
     @Test
@@ -88,8 +88,8 @@ public class TransactionalPrivateMessageServiceTest {
 
         pmService.getOutboxForCurrentUser();
 
-        verify(pmDao, times(1)).getAllFromUser(user);
-        verify(securityService, times(1)).getCurrentUser();
+        verify(pmDao).getAllFromUser(user);
+        verify(securityService).getCurrentUser();
     }
 
     @Test
@@ -98,9 +98,9 @@ public class TransactionalPrivateMessageServiceTest {
 
         pmService.sendMessage("body", "title", userTo);
 
-        verify(securityService, times(1)).getCurrentUser();
-        verify(userService, times(1)).getByUsername(userTo);
-        verify(pmDao, times(1)).saveOrUpdate(any(PrivateMessage.class));
+        verify(securityService).getCurrentUser();
+        verify(userService).getByUsername(userTo);
+        verify(pmDao).saveOrUpdate(any(PrivateMessage.class));
     }
 
     @Test(expectedExceptions=NotFoundException.class)
@@ -110,8 +110,8 @@ public class TransactionalPrivateMessageServiceTest {
         
         pmService.sendMessage("body", "title", wrongUsername);
         
-        verify(pmDao, times(0)).saveOrUpdate(any(PrivateMessage.class));
-        verify(userService, times(1)).getByUsername(wrongUsername);
+        verify(pmDao, never()).saveOrUpdate(any(PrivateMessage.class));
+        verify(userService).getByUsername(wrongUsername);
     }
     
     private PrivateMessage getPrivateMessage() {
