@@ -18,6 +18,7 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
+import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
@@ -58,13 +59,15 @@ public class TransactionalTopicServiceTest {
     private SecurityService securityService;
     private BranchService branchService;
     private TopicDao topicDao;
+    private BranchDao branchDao;
 
     @BeforeMethod
     public void setUp() throws Exception {
         topicDao = mock(TopicDao.class);
         branchService = mock(BranchService.class);
         securityService = mock(SecurityService.class);
-        topicService = new TransactionalTopicService(topicDao, securityService, branchService);
+        branchDao = mock(BranchDao.class);
+        topicService = new TransactionalTopicService(topicDao, securityService, branchService, branchDao);
     }
 
     @Test
@@ -86,14 +89,15 @@ public class TransactionalTopicServiceTest {
 
     @Test
     public void testGet() throws NotFoundException {
+        Topic topic = Topic.createNewTopic();
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
-        when(topicDao.get(TOPIC_ID)).thenReturn(getTopic(false));
+        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
 
-        Topic topic = topicService.get(TOPIC_ID);
+        Topic actualTopic = topicService.get(TOPIC_ID);
 
-        assertEquals(topic, getTopic(false), "Topics aren't equals");
+        assertEquals(actualTopic, topic, "Topics aren't equals");
         verify(topicDao).isExist(TOPIC_ID);
-        verify(topicDao, times(1)).get(TOPIC_ID);
+        verify(topicDao).get(TOPIC_ID);
     }
 
     @Test(expectedExceptions = {NotFoundException.class})
@@ -177,31 +181,51 @@ public class TransactionalTopicServiceTest {
     }
 
     @Test
-    public void testGetTopicsRangeInBranch() {
+    public void testGetTopicsRangeInBranch() throws NotFoundException {
         int start = 1;
         int max = 2;
         long branchId = 1L;
         List<Topic> list = new ArrayList<Topic>();
         list.add(Topic.createNewTopic());
         list.add(Topic.createNewTopic());
+        when(branchDao.isExist(branchId)).thenReturn(true);
         when(topicDao.getTopicRangeInBranch(branchId, start, max)).thenReturn(list);
 
         List<Topic> topics = topicService.getTopicRangeInBranch(branchId, start, max);
 
         assertNotNull(topics);
         assertEquals(max, topics.size(), "Unexpected list size");
-        verify(topicDao, times(1)).getTopicRangeInBranch(branchId, start, max);
+        verify(topicDao).getTopicRangeInBranch(branchId, start, max);
+        verify(branchDao).isExist(branchId);
+    }
+
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testGetTopicsRangeInNonExistentBranch() throws NotFoundException {
+        long branchId = 1L;
+        when(branchDao.isExist(branchId)).thenReturn(false);
+
+        topicService.getTopicRangeInBranch(branchId, 1, 5);
     }
 
     @Test
-    public void testGetTopicsInBranchCount() {
+    public void testGetTopicsInBranchCount() throws NotFoundException {
         long branchId = 1L;
+        when(branchDao.isExist(branchId)).thenReturn(true);
         when(topicDao.getTopicsInBranchCount(branchId)).thenReturn(10);
 
         int count = topicService.getTopicsInBranchCount(branchId);
 
         assertEquals(count, 10);
-        verify(topicDao, times(1)).getTopicsInBranchCount(branchId);
+        verify(topicDao).getTopicsInBranchCount(branchId);
+        verify(branchDao).isExist(branchId);
+    }
+
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testGetTopicsCountInNonExistentBranch() throws NotFoundException {
+        long branchId = 1L;
+        when(branchDao.isExist(branchId)).thenReturn(false);
+
+        topicService.getTopicsInBranchCount(branchId);
     }
 
     /**

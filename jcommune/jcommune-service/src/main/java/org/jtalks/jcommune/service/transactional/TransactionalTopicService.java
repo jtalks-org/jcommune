@@ -17,6 +17,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -44,6 +45,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final SecurityService securityService;
     private BranchService branchService;
+    private BranchDao branchDao;
 
     /**
      * Create an instance of User entity based service
@@ -51,12 +53,14 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * @param dao             data access object, which should be able do all CRUD operations with topic entity
      * @param securityService {@link SecurityService} for retrieving current user
      * @param branchService   {@link org.jtalks.jcommune.service.BranchService} instance to be injected
+     * @param branchDao       used for checking branch existance
      */
     public TransactionalTopicService(TopicDao dao, SecurityService securityService,
-                                     BranchService branchService) {
+                                     BranchService branchService, BranchDao branchDao) {
         this.securityService = securityService;
         this.dao = dao;
         this.branchService = branchService;
+        this.branchDao = branchDao;
     }
 
     /**
@@ -149,7 +153,10 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    public List<Topic> getTopicRangeInBranch(long branchId, int start, int max) {
+    public List<Topic> getTopicRangeInBranch(long branchId, int start, int max) throws NotFoundException {
+        if (!branchDao.isExist(branchId)) {
+            throw new NotFoundException("Branch with id: " + branchId + " not found");
+        }
         return dao.getTopicRangeInBranch(branchId, start, max);
     }
 
@@ -157,7 +164,10 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    public int getTopicsInBranchCount(long branchId) {
+    public int getTopicsInBranchCount(long branchId) throws NotFoundException {
+        if (!branchDao.isExist(branchId)) {
+            throw new NotFoundException("Branch with id: " + branchId + " not found");
+        }
         return dao.getTopicsInBranchCount(branchId);
     }
 

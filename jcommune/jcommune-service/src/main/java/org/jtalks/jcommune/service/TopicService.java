@@ -47,13 +47,12 @@ public interface TopicService extends EntityService<Topic> {
      * Add new topic with given title and body.
      * Author is current user.
      *
-     *
      * @param topicName name of topic
      * @param bodyText  body of topic
      * @param branchId  branch containing topic
+     * @return created topic
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
-     * @return created topic
      */
     Topic createTopic(String topicName, String bodyText, long branchId) throws NotFoundException;
 
@@ -74,14 +73,18 @@ public interface TopicService extends EntityService<Topic> {
      * @param start    start index of topic
      * @param max      number of topics
      * @return list of {@code Topic} objects with size {@code max}
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when branch not found
      */
-    List<Topic> getTopicRangeInBranch(long branchId, int start, int max);
+    List<Topic> getTopicRangeInBranch(long branchId, int start, int max) throws NotFoundException;
 
     /**
      * Get number of topics in branch.
      *
      * @param branchId branch id where you have to count topics
      * @return number of topics in branch
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when branch not found
      */
-    int getTopicsInBranchCount(long branchId);
+    int getTopicsInBranchCount(long branchId) throws NotFoundException;
 }

@@ -22,6 +22,7 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -63,7 +64,7 @@ public class BranchControllerTest {
     }
 
     @Test
-    public void testTopicsInBranch() {
+    public void testTopicsInBranch() throws NotFoundException {
         long branchId = 1L;
         int page = 2;
         int size = 5;

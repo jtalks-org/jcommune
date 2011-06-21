@@ -22,6 +22,7 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -71,11 +72,12 @@ public final class BranchController {
      * @param page     page
      * @param size     number of posts on the page
      * @return {@code ModelAndView} with topics list and vars for pagination
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException when branch not found
      */
     @RequestMapping(value = "/branch/{branchId}", method = RequestMethod.GET)
     public ModelAndView show(@PathVariable("branchId") long branchId,
                              @RequestParam(value = "page", required = false) Integer page,
-                             @RequestParam(value = "size", required = false) Integer size) {
+                             @RequestParam(value = "size", required = false) Integer size) throws NotFoundException {
         int topicsCount = topicService.getTopicsInBranchCount(branchId);
         Pagination pag = new Pagination(page, size, topicsCount);
 
