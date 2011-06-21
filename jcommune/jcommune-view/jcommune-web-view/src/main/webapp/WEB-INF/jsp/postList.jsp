@@ -27,7 +27,7 @@
 
             <c:if test="${username==post.userCreated.username}">
                 <c:choose>
-                    <c:when test="${page == 1 && i == 0}">
+                    <c:when test="${page == 1 && i.index == 0}">
                         <td>
                             <form:form
                                     action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/delete.html"
