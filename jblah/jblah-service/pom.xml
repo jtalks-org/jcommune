@@ -9,7 +9,7 @@
   </parent>  
   <artifactId>jblah-service</artifactId> 
   <name>${artifactId}</name>
-  <url>www.jtals.org</url>
+  <url>www.jtalks.org</url>
   <description>
         This is the module that contains all the business logic of the project, also - transactions
         are implemented on this level. 
