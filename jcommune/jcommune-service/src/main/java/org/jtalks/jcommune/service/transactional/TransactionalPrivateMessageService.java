@@ -72,12 +72,13 @@ public class TransactionalPrivateMessageService
      * {@inheritDoc}
      */
     @Override
-    public void sendMessage(String title, String body, String recipient) throws NotFoundException {
+    public PrivateMessage sendMessage(String title, String body, String recipient) throws NotFoundException {
         PrivateMessage pm = PrivateMessage.createNewPrivateMessage();
         pm.setTitle(title);
         pm.setBody(body);
         pm.setUserFrom(securityService.getCurrentUser());
         pm.setUserTo(userService.getByUsername(recipient));
         dao.saveOrUpdate(pm);
+        return pm;
     }
 }

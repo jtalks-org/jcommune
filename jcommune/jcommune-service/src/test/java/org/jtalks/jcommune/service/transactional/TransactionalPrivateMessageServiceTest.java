@@ -52,44 +52,8 @@ public class TransactionalPrivateMessageServiceTest {
     }
 
     @Test
-    public void testGet() throws NotFoundException {
-        when(pmDao.isExist(PM_ID)).thenReturn(true);
-        when(pmDao.get(PM_ID)).thenReturn(getPrivateMessage());
-
-        PrivateMessage pm = pmService.get(PM_ID);
-
-        Assert.assertEquals(pm, getPrivateMessage());
-        verify(pmDao).isExist(PM_ID);
-        verify(pmDao, times(1)).get(PM_ID);
-    }
-
-    @Test
-    public void testDelete() throws NotFoundException {
-        when(pmDao.isExist(PM_ID)).thenReturn(true);
-
-        pmService.delete(PM_ID);
-
-        verify(pmDao).isExist(PM_ID);
-        verify(pmDao).delete(PM_ID);
-    }
-
-    @Test(expectedExceptions = {NotFoundException.class})
-    public void testGetIncorrectId() throws NotFoundException {
-        when(pmDao.isExist(PM_ID)).thenReturn(false);
-
-        pmService.get(PM_ID);
-    }
-
-    @Test(expectedExceptions = {NotFoundException.class})
-    public void testDeleteIncorrectId() throws NotFoundException {
-        when(pmDao.isExist(PM_ID)).thenReturn(false);
-
-        pmService.delete(PM_ID);
-    }
-
-    @Test
     public void testGetInboxForCurrentUser() {
-        User user = getUser("User");
+        User user = new User();
         when(pmDao.getAllForUser(user)).thenReturn(new ArrayList<PrivateMessage>());
         when(securityService.getCurrentUser()).thenReturn(user);
 
@@ -101,7 +65,7 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testGetOutboxForCurrentUser() {
-        User user = getUser("User");
+        User user = new User();
         when(pmDao.getAllFromUser(user)).thenReturn(new ArrayList<PrivateMessage>());
         when(securityService.getCurrentUser()).thenReturn(user);
 
@@ -115,11 +79,11 @@ public class TransactionalPrivateMessageServiceTest {
     public void testSendMessage() throws NotFoundException {
         String userTo = "UserTo";
 
-        pmService.sendMessage("body", "title", userTo);
+        PrivateMessage pm = pmService.sendMessage("body", "title", userTo);
 
         verify(securityService).getCurrentUser();
         verify(userService).getByUsername(userTo);
-        verify(pmDao).saveOrUpdate(any(PrivateMessage.class));
+        verify(pmDao).saveOrUpdate(pm);
     }
 
     @Test(expectedExceptions = NotFoundException.class)
@@ -127,9 +91,9 @@ public class TransactionalPrivateMessageServiceTest {
         String wrongUsername = "wrong";
         when(userService.getByUsername(wrongUsername)).thenThrow(new NotFoundException());
 
-        pmService.sendMessage("body", "title", wrongUsername);
+        PrivateMessage pm = pmService.sendMessage("body", "title", wrongUsername);
 
-        verify(pmDao, never()).saveOrUpdate(any(PrivateMessage.class));
+        verify(pmDao, never()).saveOrUpdate(pm);
         verify(userService).getByUsername(wrongUsername);
     }
 
