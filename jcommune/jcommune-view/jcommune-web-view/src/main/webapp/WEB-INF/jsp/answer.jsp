@@ -15,7 +15,7 @@
         <spring:message code="label.answer_to" />: <c:out value="${topic.title}"/>
       </h1>
       <form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/answer.html" method="POST" 
-		onsubmit="this.getAttribute('submitted')"> <!--Block multiple form submissions-->
+		onsubmit="if (this.getAttribute('submitted')) return false; this.setAttribute('submitted','true');"> <!--Block multiple form submissions-->
         <c:if test="${validationError==true}">
           <div style="margin: 10px; color: #e43131"><spring:message code="label.answer_error"/></div>
         </c:if>
