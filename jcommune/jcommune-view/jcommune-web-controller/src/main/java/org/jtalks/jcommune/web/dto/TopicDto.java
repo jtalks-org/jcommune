@@ -28,11 +28,11 @@ import javax.validation.constraints.Size;
  */
 public class TopicDto {
 
-    @NotNull(message = "Length should be bigger then 5 and less then 255")
+    @NotNull(message = "Length should be bigger than 5 and less than 255")
     @Size(min = 5, max = 255)
     private String topicName;
 
-    @NotNull(message = "Length should be bigger then 2 and less then 1000")
+    @NotNull(message = "Length should be bigger than 2 and less than 1000")
     @Size(min = 2, max = 1000)
     private String bodyText;
 

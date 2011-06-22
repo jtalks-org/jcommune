@@ -56,7 +56,7 @@ public class TopicAnswerController {
      * If the user isn't logged in he will be redirected to the login page.
      *
      * @param topicId         the id of the topic for the answer
-     * @param validationError is true when post length is less then 2
+     * @param validationError is true when post length is less than 2
      * @param branchId        branch
      * @return answering {@code ModelAndView} or redirect to the login page
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
