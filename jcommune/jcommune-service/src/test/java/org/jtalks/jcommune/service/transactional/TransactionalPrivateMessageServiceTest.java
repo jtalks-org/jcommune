@@ -96,21 +96,4 @@ public class TransactionalPrivateMessageServiceTest {
         verify(pmDao, never()).saveOrUpdate(pm);
         verify(userService).getByUsername(wrongUsername);
     }
-
-    private PrivateMessage getPrivateMessage() {
-        PrivateMessage pm = PrivateMessage.createNewPrivateMessage();
-        pm.setId(PM_ID);
-        pm.setUuid(PM_UUID);
-        pm.setBody("body");
-        pm.setTitle("title");
-        pm.setUserFrom(getUser("UserFrom"));
-        pm.setUserTo(getUser("UserTo"));
-        return pm;
-    }
-
-    private User getUser(String username) {
-        User user = new User();
-        user.setUsername(username);
-        return user;
-    }
 }
