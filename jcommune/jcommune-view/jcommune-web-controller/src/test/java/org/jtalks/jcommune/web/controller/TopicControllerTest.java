@@ -17,29 +17,23 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.TopicDto;
-import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeValues;
+import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -54,6 +48,7 @@ public class TopicControllerTest {
     private TopicService topicService;
     private PostService postService;
     private TopicController controller;
+    public static final long TOPIC_ID = 1;
 
     @BeforeMethod
     public void init() {
@@ -65,65 +60,59 @@ public class TopicControllerTest {
 
     @Test
     public void testDeleteConfirmPage() {
-        long topicId = 1;
 
-        ModelAndView actualMav = controller.deleteConfirmPage(topicId, 1L);
+        ModelAndView actualMav = controller.deleteConfirmPage(TOPIC_ID, BRANCH_ID);
 
         assertViewName(actualMav, "delete");
         Map<String, Object> expectedModel = new HashMap<String, Object>();
-        expectedModel.put("topicId", topicId);
-        expectedModel.put("branchId", 1L);
+        expectedModel.put("topicId", TOPIC_ID);
+        expectedModel.put("branchId", BRANCH_ID);
         assertModelAttributeValues(actualMav, expectedModel);
 
     }
 
     @Test
     public void testDelete() throws NotFoundException {
-        long topicId = 1L;
-        long branchId = 1L;
+        ModelAndView actualMav = controller.delete(TOPIC_ID, BRANCH_ID);
 
-        ModelAndView actualMav = controller.delete(topicId, branchId);
-
-        assertViewName(actualMav, "redirect:/branch/" + branchId + ".html");
-        verify(topicService, times(1)).delete(topicId);
+        assertViewName(actualMav, "redirect:/branch/" + BRANCH_ID + ".html");
+        verify(topicService).delete(TOPIC_ID);
     }
 
     @Test
     public void testShow() throws NotFoundException {
-        long topicId = 1L;
-        long branchId = 1L;
         int page = 2;
-        int size = 5;
-        int start = page * size - size;
+        int pageSize = 5;
+        int startIndex = page * pageSize - pageSize;
         Topic topic = Topic.createNewTopic();
         topic.setTitle("title");
-        when(postService.getPostRangeInTopic(topicId, start, size)).thenReturn(new ArrayList<Post>());
-        when(postService.getPostsInTopicCount(topicId)).thenReturn(10);
-        when(topicService.get(topicId)).thenReturn(topic);
+        when(postService.getPostRangeInTopic(TOPIC_ID, startIndex, pageSize)).thenReturn(new ArrayList<Post>());
+        when(postService.getPostsInTopicCount(TOPIC_ID)).thenReturn(10);
+        when(topicService.get(TOPIC_ID)).thenReturn(topic);
 
-        ModelAndView mav = controller.show(branchId, topicId, page, size);
+        ModelAndView mav = controller.show(BRANCH_ID, TOPIC_ID, page, pageSize);
 
         assertViewName(mav, "postList");
-        assertAndReturnModelAttributeOfType(mav, "posts", List.class);
-        String title = assertAndReturnModelAttributeOfType(mav, "topicTitle", String.class);
-        assertEquals(title, "title");
-        Long _topic = assertAndReturnModelAttributeOfType(mav, "topicId", Long.class);
-        assertEquals((long) _topic, topicId);
-        Long _branch = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
-        assertEquals((long) _branch, branchId);
-        Integer _maxPages = assertAndReturnModelAttributeOfType(mav, "maxPages", Integer.class);
-        Integer _page = assertAndReturnModelAttributeOfType(mav, "page", Integer.class);
-        assertEquals((int) _maxPages, 2);
-        assertEquals((int) _page, page);
-        verify(postService, times(1)).getPostRangeInTopic(topicId, start, size);
-        verify(postService, times(1)).getPostsInTopicCount(topicId);
-        verify(topicService, times(1)).get(topicId);
+        assertModelAttributeAvailable(mav, "posts");
+        String actualTitle = assertAndReturnModelAttributeOfType(mav, "topicTitle", String.class);
+        Long actualTopic = assertAndReturnModelAttributeOfType(mav, "topicId", Long.class);
+        Long actualBranch = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
+        Integer actualMaxPages = assertAndReturnModelAttributeOfType(mav, "maxPages", Integer.class);
+        Integer actualPage = assertAndReturnModelAttributeOfType(mav, "page", Integer.class);
+        assertEquals(actualTitle, "title");
+        assertEquals((long) actualTopic, TOPIC_ID);
+        assertEquals((long) actualBranch, TOPIC_ID);
+        assertEquals((int) actualMaxPages, 2);
+        assertEquals((int) actualPage, page);
+        verify(postService).getPostRangeInTopic(TOPIC_ID, startIndex, pageSize);
+        verify(postService).getPostsInTopicCount(TOPIC_ID);
+        verify(topicService).get(TOPIC_ID);
     }
 
     @Test
     public void testCreate() throws Exception {
         Topic topic = Topic.createNewTopic();
-        topic.setId(1L);
+        topic.setId(TOPIC_ID);
         when(topicService.createTopic(TOPIC_THEME, TOPIC_CONTENT, BRANCH_ID)).thenReturn(topic);
         TopicDto dto = getDto();
         BindingResult result = mock(BindingResult.class);
@@ -131,30 +120,29 @@ public class TopicControllerTest {
         ModelAndView view = controller.create(dto, result, BRANCH_ID);
 
         assertEquals(view.getViewName(), "redirect:/branch/1/topic/1.html");
-        verify(topicService, times(1)).createTopic(TOPIC_THEME, TOPIC_CONTENT, BRANCH_ID);
+        verify(topicService).createTopic(TOPIC_THEME, TOPIC_CONTENT, BRANCH_ID);
     }
 
     @Test
     public void testCreateValidationFail() throws Exception {
-        Long expectedBranchId = 1L;
         BindingResult result = mock(BindingResult.class);
         when(result.hasErrors()).thenReturn(true);
 
-        ModelAndView mav = controller.create(getDto(), result, expectedBranchId);
+        ModelAndView mav = controller.create(getDto(), result, BRANCH_ID);
 
         assertViewName(mav, "newTopic");
-        Long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
-        assertEquals(branchId, expectedBranchId);
+        long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
+        assertEquals(branchId, BRANCH_ID);
     }
 
     @Test
     public void testCreatePage() {
-        ModelAndView mav = controller.createPage(1L);
+        ModelAndView mav = controller.createPage(BRANCH_ID);
 
-        assertAndReturnModelAttributeOfType(mav, "topicDto", TopicDto.class);
-        Long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
-        assertEquals(branchId, new Long(1));
         assertViewName(mav, "newTopic");
+        assertModelAttributeAvailable(mav, "topicDto");
+        long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
+        assertEquals(branchId, BRANCH_ID);
     }
 
     private TopicDto getDto() {

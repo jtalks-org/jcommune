@@ -17,7 +17,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import javax.validation.Valid;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -31,6 +30,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.validation.Valid;
 
 /**
  * MVC controller for Private Messaging. Handles request for inbox, outbox and new private messages.
@@ -92,7 +93,7 @@ public class PrivateMessageController {
      * @return redirect to /inbox on success or back to "/new_pm" on validation errors
      */
     @RequestMapping(value = "/pm/new", method = RequestMethod.POST)
-    public ModelAndView submitNewPM(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
+    public ModelAndView submitNewPm(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
         if (result.hasErrors()) {
             return new ModelAndView("pm/newPm");
         }

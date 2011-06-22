@@ -17,21 +17,22 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindingResult;
-import java.util.List;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.List;
+
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
-import static org.mockito.Mockito.*;
 
 /**
  *
@@ -81,7 +82,7 @@ public class PrivateMessageControllerTest {
     public void submitNewPMTest() throws NotFoundException {
         PrivateMessageDto dto = getPrivateMessageDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
-        ModelAndView mav = controller.submitNewPM(dto, bindingResult);
+        ModelAndView mav = controller.submitNewPm(dto, bindingResult);
 
         assertViewName(mav, "redirect:/pm/outbox.html");
         verify(pmService).sendMessage(dto.getTitle(), dto.getBody(), dto.getRecipient());
@@ -93,7 +94,7 @@ public class PrivateMessageControllerTest {
         BeanPropertyBindingResult resultWithErrors = mock(BeanPropertyBindingResult.class);
         when(resultWithErrors.hasErrors()).thenReturn(Boolean.TRUE);
         
-        ModelAndView mav = controller.submitNewPM(dto, resultWithErrors);
+        ModelAndView mav = controller.submitNewPm(dto, resultWithErrors);
         
         assertViewName(mav, "pm/newPm");
     }
@@ -104,7 +105,7 @@ public class PrivateMessageControllerTest {
         doThrow(new NotFoundException()).when(pmService).sendMessage(dto.getTitle(), dto.getBody(), dto.getRecipient());
         
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
-        ModelAndView mav = controller.submitNewPM(dto, bindingResult);
+        ModelAndView mav = controller.submitNewPm(dto, bindingResult);
 
         assertViewName(mav, "pm/newPm");
         verify(pmService).sendMessage(dto.getTitle(), dto.getBody(), dto.getRecipient());

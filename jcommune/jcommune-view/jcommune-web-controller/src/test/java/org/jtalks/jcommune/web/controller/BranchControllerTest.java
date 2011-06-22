@@ -31,9 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
 
 
@@ -67,23 +65,23 @@ public class BranchControllerTest {
     public void testTopicsInBranch() throws NotFoundException {
         long branchId = 1L;
         int page = 2;
-        int size = 5;
-        int start = page * size - size;
-        when(topicService.getTopicRangeInBranch(branchId, start, size)).thenReturn(new ArrayList<Topic>());
+        int pageSize = 5;
+        int startIndex = page * pageSize - pageSize;
+        when(topicService.getTopicRangeInBranch(branchId, startIndex, pageSize)).thenReturn(new ArrayList<Topic>());
         when(topicService.getTopicsInBranchCount(branchId)).thenReturn(10);
 
-        ModelAndView mav = controller.show(branchId, page, size);
+        ModelAndView mav = controller.show(branchId, page, pageSize);
 
         assertViewName(mav, "topicList");
         assertAndReturnModelAttributeOfType(mav, "topics", List.class);
-        Long _branch = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
-        assertEquals((long) _branch, branchId);
-        Integer _maxPages = assertAndReturnModelAttributeOfType(mav, "maxPages", Integer.class);
-        Integer _page = assertAndReturnModelAttributeOfType(mav, "page", Integer.class);
-        assertEquals((int) _maxPages, 2);
-        assertEquals((int) _page, page);
-        verify(topicService, times(1)).getTopicRangeInBranch(branchId, start, size);
-        verify(topicService, times(1)).getTopicsInBranchCount(branchId);
+        Long actualBranch = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
+        Integer actualMaxPages = assertAndReturnModelAttributeOfType(mav, "maxPages", Integer.class);
+        Integer actualPage = assertAndReturnModelAttributeOfType(mav, "page", Integer.class);
+        assertEquals((long) actualBranch, branchId);
+        assertEquals((int) actualMaxPages, 2);
+        assertEquals((int) actualPage, page);
+        verify(topicService).getTopicRangeInBranch(branchId, startIndex, pageSize);
+        verify(topicService).getTopicsInBranchCount(branchId);
     }
 
 
