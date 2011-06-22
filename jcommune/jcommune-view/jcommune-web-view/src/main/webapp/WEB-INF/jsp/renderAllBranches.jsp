@@ -6,7 +6,7 @@
 <html>
 <head><title>Simple jsp page</title></head>
 <body>
-<form:form method="POST">
+<form:form name="branchesForm" method="POST">
     <table border="1" width="100%">
         <c:forEach var="branch" items="${topicsBranchList}">
             <tr>

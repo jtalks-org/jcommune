@@ -7,7 +7,7 @@
 <html>
 <head></head>
 <body>
-<table border="1" width="100%">    
+<table border="1" width="100%" name="messagesTable">
 
     <sec:authentication property="name" var="username" scope="request"/>    
     

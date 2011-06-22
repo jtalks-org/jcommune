@@ -31,7 +31,7 @@
         </tr>
         <tr>
             <td class="background"><a
-                    href="${pageContext.request.contextPath}/main.html">&nbsp&nbsp<span
+                    href="${pageContext.request.contextPath}/main.html" name="forumLink">&nbsp&nbsp<span
                     class="nav"><fmt:message key="label.forum"/> </span> </a> | <span style="float: right">
                 <sec:authorize access="isAuthenticated()">
                     <sec:authentication property="principal.username"/>&nbsp

@@ -5,7 +5,7 @@
 <head></head>
 <body>
 <form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic.html" modelAttribute="topicDto" method="POST" 
-	onsubmit="this.getAttribute('submitted')"> <!--Block multiple form submissions-->
+	onsubmit="this.getAttribute('submitted')" name="newTopicForm"> <!--Block multiple form submissions-->
     <table border="2" width="100%">
         <tr>
             <td width="30%">
@@ -22,7 +22,7 @@
             </td>
         </tr>
     </table>
-    <input type="submit" value="<spring:message code="label.addtopic"/>"/>
+    <input type="submit" name="newTopicButton" value="<spring:message code="label.addtopic" />"/>
 </form:form>
 </body>
 </html>
