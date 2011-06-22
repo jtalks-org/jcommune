@@ -33,8 +33,8 @@ public interface UserService extends EntityService<User> {
      *
      * @param username username of User
      * @return {@link User} with given username
-     * @see User
      * @throws NotFoundException if the User not found
+     * @see User
      */
     User getByUsername(String username) throws NotFoundException;
 
@@ -42,8 +42,9 @@ public interface UserService extends EntityService<User> {
      * Try to register {@link User} with given features.
      *
      * @param user user for register
+     * @return registered {@link User}
      * @throws DuplicateException if user with username or email already exist
      * @see User
      */
-    void registerUser(User user) throws DuplicateException;
+    User registerUser(User user) throws DuplicateException;
 }
