@@ -28,7 +28,6 @@ import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.mockito.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -48,9 +47,9 @@ import static org.testng.Assert.*;
  */
 public class TransactionalTopicServiceTest {
 
-    final long TOPIC_ID = 999;
+    final long TOPIC_ID = 999L;
     final long BRANCH_ID = 1L;
-    final long POST_ID = 333;
+    final long POST_ID = 333L;
     final String TOPIC_TITLE = "topic title";
     final String ANSWER_BODY = "Test Answer Body";
     final DateTime TOPIC_CREATION_DATE = new DateTime();
@@ -77,7 +76,7 @@ public class TransactionalTopicServiceTest {
         topicService.delete(POST_ID);
 
         verify(topicDao).isExist(POST_ID);
-        verify(topicDao, times(1)).delete(POST_ID);
+        verify(topicDao).delete(POST_ID);
     }
 
     @Test(expectedExceptions = {NotFoundException.class})
@@ -89,13 +88,13 @@ public class TransactionalTopicServiceTest {
 
     @Test
     public void testGet() throws NotFoundException {
-        Topic topic = Topic.createNewTopic();
+        Topic expectedTopic = Topic.createNewTopic();
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
-        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
+        when(topicDao.get(TOPIC_ID)).thenReturn(expectedTopic);
 
         Topic actualTopic = topicService.get(TOPIC_ID);
 
-        assertEquals(actualTopic, topic, "Topics aren't equals");
+        assertEquals(actualTopic, expectedTopic, "Topics aren't equals");
         verify(topicDao).isExist(TOPIC_ID);
         verify(topicDao).get(TOPIC_ID);
     }
@@ -109,19 +108,19 @@ public class TransactionalTopicServiceTest {
 
     @Test
     public void testAddAnswer() throws NotFoundException {
-        Topic topic = Topic.createNewTopic();
+        Topic answeredTopic = Topic.createNewTopic();
         User author = new User();
         when(securityService.getCurrentUser()).thenReturn(author);
-        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
+        when(topicDao.get(TOPIC_ID)).thenReturn(answeredTopic);
 
         topicService.addAnswer(TOPIC_ID, ANSWER_BODY);
 
-        Post createdPost = topic.getPosts().get(0);
+        Post createdPost = answeredTopic.getPosts().get(0);
         assertEquals(createdPost.getPostContent(), ANSWER_BODY);
         assertEquals(createdPost.getUserCreated(), author);
         verify(securityService).getCurrentUser();
         verify(topicDao).get(TOPIC_ID);
-        verify(topicDao).saveOrUpdate(topic);
+        verify(topicDao).saveOrUpdate(answeredTopic);
     }
 
     @Test(expectedExceptions = {IllegalStateException.class})
@@ -167,101 +166,86 @@ public class TransactionalTopicServiceTest {
     }
 
     @Test
-    public void deletePostTest() throws NotFoundException {
-        Topic topic = getTopic(true);
-        int expectedPostCount = topic.getPosts().size();
+    public void testDeletePost() throws NotFoundException {
+        Topic topic = Topic.createNewTopic();
+        Post post1 = Post.createNewPost();
+        post1.setId(1L);
+        Post postForDelete = Post.createNewPost();
+        postForDelete.setId(POST_ID);
+        topic.addPost(post1);
+        topic.addPost(postForDelete);
         when(topicDao.get(TOPIC_ID)).thenReturn(topic);
 
         topicService.deletePost(TOPIC_ID, POST_ID);
 
-        int actualPostCount = topic.getPosts().size();
-        assertTrue(actualPostCount == 0 || actualPostCount < expectedPostCount, "Post was not deleted");
-        verify(topicDao, times(1)).get(TOPIC_ID);
-        verify(topicDao, times(1)).saveOrUpdate(Matchers.any(Topic.class));
+        assertFalse(topic.getPosts().contains(postForDelete), "Post not deleted from list");
+        verify(topicDao).get(TOPIC_ID);
+        verify(topicDao).saveOrUpdate(topic);
+    }
+
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testDeletePostFromNonExistentTopic() throws NotFoundException {
+        when(topicDao.get(TOPIC_ID)).thenReturn(null);
+
+        topicService.deletePost(TOPIC_ID, POST_ID);
+    }
+
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testDeleteNonExistentPost() throws NotFoundException {
+        Topic topic = Topic.createNewTopic();
+        Post post1 = Post.createNewPost();
+        post1.setId(1L);
+        Post post2 = Post.createNewPost();
+        post2.setId(2L);
+        topic.addPost(post1);
+        topic.addPost(post2);
+        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
+
+        topicService.deletePost(TOPIC_ID, POST_ID);
     }
 
     @Test
     public void testGetTopicsRangeInBranch() throws NotFoundException {
         int start = 1;
         int max = 2;
-        long branchId = 1L;
-        List<Topic> list = new ArrayList<Topic>();
-        list.add(Topic.createNewTopic());
-        list.add(Topic.createNewTopic());
-        when(branchDao.isExist(branchId)).thenReturn(true);
-        when(topicDao.getTopicRangeInBranch(branchId, start, max)).thenReturn(list);
+        List<Topic> expectedList = new ArrayList<Topic>();
+        expectedList.add(Topic.createNewTopic());
+        expectedList.add(Topic.createNewTopic());
+        when(branchDao.isExist(BRANCH_ID)).thenReturn(true);
+        when(topicDao.getTopicRangeInBranch(BRANCH_ID, start, max)).thenReturn(expectedList);
 
-        List<Topic> topics = topicService.getTopicRangeInBranch(branchId, start, max);
+        List<Topic> topics = topicService.getTopicRangeInBranch(BRANCH_ID, start, max);
 
         assertNotNull(topics);
-        assertEquals(max, topics.size(), "Unexpected list size");
-        verify(topicDao).getTopicRangeInBranch(branchId, start, max);
-        verify(branchDao).isExist(branchId);
+        assertEquals(topics.size(), max, "Unexpected list size");
+        verify(topicDao).getTopicRangeInBranch(BRANCH_ID, start, max);
+        verify(branchDao).isExist(BRANCH_ID);
     }
 
     @Test(expectedExceptions = {NotFoundException.class})
     public void testGetTopicsRangeInNonExistentBranch() throws NotFoundException {
-        long branchId = 1L;
-        when(branchDao.isExist(branchId)).thenReturn(false);
+        when(branchDao.isExist(BRANCH_ID)).thenReturn(false);
 
-        topicService.getTopicRangeInBranch(branchId, 1, 5);
+        topicService.getTopicRangeInBranch(BRANCH_ID, 1, 5);
     }
 
     @Test
     public void testGetTopicsInBranchCount() throws NotFoundException {
-        long branchId = 1L;
-        when(branchDao.isExist(branchId)).thenReturn(true);
-        when(topicDao.getTopicsInBranchCount(branchId)).thenReturn(10);
+        int expectedCount = 10;
+        when(branchDao.isExist(BRANCH_ID)).thenReturn(true);
+        when(topicDao.getTopicsInBranchCount(BRANCH_ID)).thenReturn(expectedCount);
 
-        int count = topicService.getTopicsInBranchCount(branchId);
+        int count = topicService.getTopicsInBranchCount(BRANCH_ID);
 
-        assertEquals(count, 10);
-        verify(topicDao).getTopicsInBranchCount(branchId);
-        verify(branchDao).isExist(branchId);
+        assertEquals(count, expectedCount);
+        verify(topicDao).getTopicsInBranchCount(BRANCH_ID);
+        verify(branchDao).isExist(BRANCH_ID);
     }
 
     @Test(expectedExceptions = {NotFoundException.class})
     public void testGetTopicsCountInNonExistentBranch() throws NotFoundException {
-        long branchId = 1L;
-        when(branchDao.isExist(branchId)).thenReturn(false);
+        when(branchDao.isExist(BRANCH_ID)).thenReturn(false);
 
-        topicService.getTopicsInBranchCount(branchId);
-    }
-
-    /**
-     * Create new dummy User with username "Test" and user.id  equal to 100500.
-     *
-     * @return the user
-     */
-    private User getUser() {
-        User currentUser = new User();
-        currentUser.setId(100500);
-        currentUser.setUsername("Test");
-        return currentUser;
-    }
-
-    /**
-     * Get dummy topic.
-     *
-     * @param withPosts - set to true if you want add collection of 10 posts to topic
-     * @return - dummy topic with topicId=TOPIC_ID,topictitle= TOPIC_TITLE,
-     *         topic_creationDate=TOPIC_CREATION_DATE and posts. Posts ids started from POST_ID to POST_ID plus 10.
-     */
-    private Topic getTopic(boolean withPosts) {
-        User topicStarter = getUser();
-        Topic topic = new Topic();
-        topic.setCreationDate(TOPIC_CREATION_DATE);
-        topic.setId(TOPIC_ID);
-        topic.setUuid("xxxxx123");
-        topic.setTitle(TOPIC_TITLE);
-        topic.setTopicStarter(topicStarter);
-        if (withPosts) {
-            for (long i = POST_ID; i <= POST_ID + 10; i++) {
-                Post post = Post.createNewPost();
-                post.setId(i);
-                topic.addPost(post);
-            }
-        }
-        return topic;
+        topicService.getTopicsInBranchCount(BRANCH_ID);
     }
 }

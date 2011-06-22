@@ -62,7 +62,7 @@ public class UserControllerTest {
     public void testRegisterDuplicateUser() throws Exception {
         UserDto dto = getUserDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
-        doThrow(new DuplicateException()).when(userService).registerUser(any(User.class));
+        doThrow(new DuplicateException("")).when(userService).registerUser(any(User.class));
 
         ModelAndView mav = controller.registerUser(dto, bindingResult);
 

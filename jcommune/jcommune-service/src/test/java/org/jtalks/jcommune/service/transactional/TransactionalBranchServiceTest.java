@@ -22,8 +22,6 @@ import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.mockito.Matchers;
-import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -31,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
+import static org.testng.Assert.assertEquals;
 
 /**
  * This test class is intended to test all topic-related forum branch facilities
@@ -39,7 +38,7 @@ import static org.mockito.Mockito.*;
  * @author Kirill Afonin
  */
 public class TransactionalBranchServiceTest {
-    private long BRANCH_ID = 1;
+    private long BRANCH_ID = 1L;
 
     private BranchDao branchDao;
     private BranchService branchService;
@@ -62,12 +61,13 @@ public class TransactionalBranchServiceTest {
 
     @Test
     public void testGet() throws NotFoundException {
+        Branch expectedBranch = new Branch();
         when(branchDao.isExist(BRANCH_ID)).thenReturn(true);
-        when(branchDao.get(BRANCH_ID)).thenReturn(getBranch());
+        when(branchDao.get(BRANCH_ID)).thenReturn(expectedBranch);
 
         Branch branch = branchService.get(BRANCH_ID);
 
-        Assert.assertEquals(branch, getBranch(), "Posts aren't equals");
+        assertEquals(branch, expectedBranch, "Posts aren't equals");
         verify(branchDao).isExist(BRANCH_ID);
         verify(branchDao).get(BRANCH_ID);
     }
@@ -89,21 +89,12 @@ public class TransactionalBranchServiceTest {
     @Test
     public void getAllTest() {
         List<Branch> expectedBranchList = new ArrayList<Branch>();
-        expectedBranchList.add(getBranch());
+        expectedBranchList.add(new Branch());
         when(branchDao.getAll()).thenReturn(expectedBranchList);
 
         List<Branch> actualBranchList = branchService.getAll();
 
-        Assert.assertEquals(actualBranchList, expectedBranchList);
-        verify(branchDao, times(1)).getAll();
-    }
-
-    private Branch getBranch() {
-        Branch branch = new Branch();
-        branch.setId(BRANCH_ID);
-        branch.setUuid("xxx");
-        branch.setDescription("some info");
-        branch.setName("Java Core");
-        return branch;
+        assertEquals(actualBranchList, expectedBranchList);
+        verify(branchDao).getAll();
     }
 }

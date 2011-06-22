@@ -17,15 +17,11 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.mockito.Matchers;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -46,15 +42,8 @@ import static org.testng.Assert.assertNotNull;
  */
 public class TransactionalPostServiceTest {
 
-    final long POST_ID = 999;
-    final String POST_UUID = "z1f2";
-    final String POST_CONTENT = "post content";
-    final DateTime POST_CREATION_DATE = new DateTime();
-
-    final long USER_ID = 333;
-    final String USER_UUID = "aaba";
-
-    final String TOPIC_UUID = "adfadsfd";
+    final long POST_ID = 9L;
+    final long TOPIC_ID = 1L;
 
     private PostService postService;
     private PostDao postDao;
@@ -108,47 +97,44 @@ public class TransactionalPostServiceTest {
     public void testGetPostRangeInTopic() throws NotFoundException {
         int start = 1;
         int max = 2;
-        long topicId = 1L;
-        List<Post> list = new ArrayList<Post>();
-        list.add(Post.createNewPost());
-        list.add(Post.createNewPost());
-        when(postDao.getPostRangeInTopic(topicId, start, max)).thenReturn(list);
-        when(topicDao.isExist(topicId)).thenReturn(true);
+        List<Post> expectedList = new ArrayList<Post>();
+        expectedList.add(Post.createNewPost());
+        expectedList.add(Post.createNewPost());
+        when(postDao.getPostRangeInTopic(TOPIC_ID, start, max)).thenReturn(expectedList);
+        when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
 
-        List<Post> posts = postService.getPostRangeInTopic(topicId, start, max);
+        List<Post> posts = postService.getPostRangeInTopic(TOPIC_ID, start, max);
 
         assertNotNull(posts);
-        assertEquals(max, posts.size(), "Unexpected list size");
-        verify(postDao).getPostRangeInTopic(topicId, start, max);
-        verify(topicDao).isExist(topicId);
+        assertEquals(posts, expectedList, "Unexpected list size");
+        verify(postDao).getPostRangeInTopic(TOPIC_ID, start, max);
+        verify(topicDao).isExist(TOPIC_ID);
     }
 
     @Test(expectedExceptions = {NotFoundException.class})
     public void testGetPostsRangeInNonExistentTopic() throws NotFoundException {
-        long topicId = 1L;
-        when(topicDao.isExist(topicId)).thenReturn(false);
+         when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
-        postService.getPostRangeInTopic(topicId, 1, 5);
+        postService.getPostRangeInTopic(TOPIC_ID, 1, 5);
     }
 
     @Test
     public void testGetPostsInTopicCount() throws NotFoundException {
-        long topicId = 1L;
-        when(postDao.getPostsInTopicCount(topicId)).thenReturn(10);
-        when(topicDao.isExist(topicId)).thenReturn(true);
+        int expectedCount = 10;
+        when(postDao.getPostsInTopicCount(TOPIC_ID)).thenReturn(expectedCount);
+        when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
 
-        int count = postService.getPostsInTopicCount(topicId);
+        int count = postService.getPostsInTopicCount(TOPIC_ID);
 
-        assertEquals(count, 10);
-        verify(postDao).getPostsInTopicCount(topicId);
-        verify(topicDao).isExist(topicId);
+        assertEquals(count, expectedCount);
+        verify(postDao).getPostsInTopicCount(TOPIC_ID);
+        verify(topicDao).isExist(TOPIC_ID);
     }
 
     @Test(expectedExceptions = {NotFoundException.class})
     public void testGetPostsCountInNonExistentTopic() throws NotFoundException {
-        long topicId = 1L;
-        when(topicDao.isExist(topicId)).thenReturn(false);
+        when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
-        postService.getPostsInTopicCount(topicId);
+        postService.getPostsInTopicCount(TOPIC_ID);
     }
 }

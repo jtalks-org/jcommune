@@ -4,11 +4,11 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityContextFacade;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import sun.security.acl.PrincipalImpl;
@@ -16,6 +16,7 @@ import sun.security.acl.PrincipalImpl;
 import java.security.Principal;
 
 import static org.mockito.Mockito.*;
+import static org.testng.Assert.*;
 
 /**
  * Test for {@link SecurityServiceImpl}.
@@ -58,15 +59,15 @@ public class SecurityServiceImplTest {
 
         User result = securityService.getCurrentUser();
 
-        Assert.assertEquals(result.getUsername(), USERNAME, "Username not equals");
-        Assert.assertEquals(result.getAuthorities().iterator().next().getAuthority(), "ROLE_USER");
-        Assert.assertTrue(result.isAccountNonExpired());
-        Assert.assertTrue(result.isAccountNonLocked());
-        Assert.assertTrue(result.isEnabled());
-        Assert.assertTrue(result.isCredentialsNonExpired());
-        verify(userService, times(1)).getByUsername(USERNAME);
-        verify(auth, times(1)).getPrincipal();
-        verify(securityContext, times(1)).getAuthentication();
+        assertEquals(result.getUsername(), USERNAME, "Username not equals");
+        assertEquals(result.getAuthorities().iterator().next().getAuthority(), "ROLE_USER");
+        assertTrue(result.isAccountNonExpired());
+        assertTrue(result.isAccountNonLocked());
+        assertTrue(result.isEnabled());
+        assertTrue(result.isCredentialsNonExpired());
+        verify(userService).getByUsername(USERNAME);
+        verify(auth).getPrincipal();
+        verify(securityContext).getAuthentication();
     }
 
     @Test
@@ -75,8 +76,8 @@ public class SecurityServiceImplTest {
 
         User result = securityService.getCurrentUser();
 
-        Assert.assertNull(result, "User not null");
-        verify(securityContext, times(1)).getAuthentication();
+        assertNull(result, "User not null");
+        verify(securityContext).getAuthentication();
         verify(userService, never()).getByUsername(USERNAME);
     }
 
@@ -89,9 +90,9 @@ public class SecurityServiceImplTest {
 
         String username = securityService.getCurrentUserUsername();
 
-        Assert.assertEquals(username, USERNAME, "Username not equals");
-        verify(auth, times(1)).getPrincipal();
-        verify(securityContext, times(1)).getAuthentication();
+        assertEquals(username, USERNAME, "Username not equals");
+        verify(auth).getPrincipal();
+        verify(securityContext).getAuthentication();
     }
 
     @Test
@@ -103,9 +104,9 @@ public class SecurityServiceImplTest {
 
         String username = securityService.getCurrentUserUsername();
 
-        Assert.assertEquals(username, USERNAME, "Username not equals");
-        verify(auth, times(1)).getPrincipal();
-        verify(securityContext, times(1)).getAuthentication();
+        assertEquals(username, USERNAME, "Username not equals");
+        verify(auth).getPrincipal();
+        verify(securityContext).getAuthentication();
     }
 
     @Test
@@ -114,8 +115,8 @@ public class SecurityServiceImplTest {
 
         String username = securityService.getCurrentUserUsername();
 
-        Assert.assertNull(username, "Username not null");
-        verify(securityContext, times(1)).getAuthentication();
+        assertNull(username, "Username not null");
+        verify(securityContext).getAuthentication();
     }
 
     @Test
@@ -126,13 +127,13 @@ public class SecurityServiceImplTest {
 
         UserDetails result = securityService.loadUserByUsername(USERNAME);
 
-        Assert.assertEquals(result.getUsername(), USERNAME, "Username not equals");
-        verify(userService, times(1)).getByUsername(USERNAME);
+        assertEquals(result.getUsername(), USERNAME, "Username not equals");
+        verify(userService).getByUsername(USERNAME);
     }
 
     @Test(expectedExceptions = UsernameNotFoundException.class)
-    public void testLoadUserByUsername_NotFound() throws Exception {
-        when(userService.getByUsername(USERNAME)).thenThrow(new UsernameNotFoundException(""));
+    public void testLoadUserByUsernameNotFound() throws Exception {
+        when(userService.getByUsername(USERNAME)).thenThrow(new NotFoundException(""));
 
         securityService.loadUserByUsername(USERNAME);
     }

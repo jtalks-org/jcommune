@@ -62,7 +62,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public void registerUser(User user) throws DuplicateException {
+    public User registerUser(User user) throws DuplicateException {
         if (isUserExist(user)) {
             String msg = "User " + user.getUsername() + " already exist!";
             logger.warn(msg);
@@ -72,6 +72,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         dao.saveOrUpdate(user);
 
         logger.info("User registered: " + user.getUsername());
+        return user;
     }
 
     /**
