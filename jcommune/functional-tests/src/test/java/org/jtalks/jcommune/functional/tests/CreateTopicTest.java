@@ -27,6 +27,7 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Eugeny Batov
@@ -52,6 +53,7 @@ public class CreateTopicTest {
     private final String PASSWORD = "userpass";
     private final String TOPIC_TITLE = "topic_title";
     private final String MESSAGE = "message";
+    private final String EN_LOCALE_TIME_PATTERN="\\d{2}\\s[a-zA-Z]{3}\\s\\d{4}\\s\\d{2}:\\d{2}";
 
     @Parameters({"mainPageUrl"})
     @BeforeClass
@@ -104,6 +106,8 @@ public class CreateTopicTest {
         HtmlTable topicsTable = createTopicPage.getElementByName("topicsTable");
         assertEquals(topicsTable.getCellAt(1, 0).asText(), TOPIC_TITLE);
         assertEquals(topicsTable.getCellAt(1, 1).asText(), USERNAME);
+        assertTrue(topicsTable.getCellAt(1, 2).asText().matches(EN_LOCALE_TIME_PATTERN));
+
     }
 
 
@@ -111,6 +115,7 @@ public class CreateTopicTest {
     public void clickOnCreatedTopicTitle() throws Exception {
         HtmlPage messagesPage = topicLink.click();
         HtmlTable messagesTable = messagesPage.getElementByName("messagesTable");
+        //assertTrue(messagesPage.asText().contains("Topic : "+TOPIC_TITLE));
         assertEquals(messagesTable.getCellAt(0, 0).asText(), "Author: " + USERNAME);
         assertEquals(messagesTable.getCellAt(0, 1).asText(), "Message: " + MESSAGE);
 
