@@ -100,7 +100,8 @@ public class CreateTopicTest {
         assertEquals(topicsTable.getCellAt(1, 0).asText(), TOPIC_TITLE);
         assertEquals(topicsTable.getCellAt(1, 1).asText(), USERNAME);
         assertTrue(topicsTable.getCellAt(1, 2).asText().matches(TIME_PATTERN));
-        assertTrue(DateUtil.stringToMillis(topicsTable.getCellAt(1, 2).asText(), Locale.ENGLISH) - DateUtil.getCurrentTimeMillis() < 1000 * 60);
+        assertTrue(DateUtil.stringToMillis(topicsTable.getCellAt(1, 2).asText(), Locale.ENGLISH)
+                - DateUtil.getCurrentTimeMillis() < 1000 * 60);
     }
 
 
