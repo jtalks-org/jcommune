@@ -19,12 +19,14 @@ package org.jtalks.jcommune.functional.tests;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.*;
+import org.jtalks.jcommune.functional.tests.util.DateUtil;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -36,15 +38,6 @@ public class CreateTopicTest {
 
     private WebClient webClient;
     private HtmlPage mainPage;
-    private HtmlPage loginPage;
-    private HtmlForm loginForm;
-    private HtmlAnchor signInLink;
-    private HtmlSubmitInput submitButton;
-    private HtmlTextInput usernameTextField;
-    private HtmlPasswordInput passwordTextField;
-    private HtmlPage branchesPage;
-    private HtmlForm branchesForm;
-    private HtmlPage topicListPage;
     private HtmlForm topicListForm;
     private HtmlForm createTopicForm;
     private HtmlPage createTopicPage;
@@ -53,19 +46,19 @@ public class CreateTopicTest {
     private final String PASSWORD = "userpass";
     private final String TOPIC_TITLE = "topic_title";
     private final String MESSAGE = "message";
-    private final String EN_LOCALE_TIME_PATTERN="\\d{2}\\s[a-zA-Z]{3}\\s\\d{4}\\s\\d{2}:\\d{2}";
+    private final String TIME_PATTERN = "\\d{2}\\s[a-zA-Zа-яА-Я]{3}\\s\\d{4}\\s\\d{2}:\\d{2}";
 
     @Parameters({"mainPageUrl"})
     @BeforeClass
     public void logIn(String mainPageUrl) throws IOException {
         webClient = new WebClient();
         mainPage = webClient.getPage(mainPageUrl);
-        signInLink = mainPage.getAnchorByName("signIn");
-        loginPage = (HtmlPage) signInLink.click();
-        loginForm = loginPage.getFormByName("login_form");
-        submitButton = loginForm.getInputByName("submit_button");
-        usernameTextField = loginForm.getInputByName("j_username");
-        passwordTextField = loginForm.getInputByName("j_password");
+        HtmlAnchor signInLink = mainPage.getAnchorByName("signIn");
+        HtmlPage loginPage = (HtmlPage) signInLink.click();
+        HtmlForm loginForm = loginPage.getFormByName("login_form");
+        HtmlSubmitInput submitButton = loginForm.getInputByName("submit_button");
+        HtmlTextInput usernameTextField = loginForm.getInputByName("j_username");
+        HtmlPasswordInput passwordTextField = loginForm.getInputByName("j_password");
         usernameTextField.setValueAttribute(USERNAME);
         passwordTextField.setValueAttribute(PASSWORD);
         mainPage = submitButton.click();
@@ -75,13 +68,13 @@ public class CreateTopicTest {
     public void forumLinkClick() throws Exception {
         HtmlAnchor forumLink = mainPage.getAnchorByName("forumLink");
         mainPage = (HtmlPage) forumLink.click();
-        branchesForm = mainPage.getFormByName("branchesForm");
+        HtmlForm branchesForm = mainPage.getFormByName("branchesForm");
     }
 
     @Test(priority = 1)
     public void branchLinkClick() throws Exception {
         HtmlAnchor branchLink = mainPage.getAnchorByHref("/jcommune/branch/1.html");
-        topicListPage = (HtmlPage) branchLink.click();
+        HtmlPage topicListPage = (HtmlPage) branchLink.click();
         topicListForm = topicListPage.getFormByName("topicListForm");
     }
 
@@ -93,7 +86,7 @@ public class CreateTopicTest {
     }
 
     @Test(priority = 3)
-    public void fillCreateTopicForm() throws Exception {
+    public void fillCreatedTopicForm() throws Exception {
         HtmlInput topicNameInput = createTopicForm.getInputByName("topicName");
         HtmlTextArea bodyTextArea = createTopicForm.getTextAreaByName("bodyText");
         HtmlSubmitInput newTopicButton = createTopicForm.getInputByName("newTopicButton");
@@ -106,8 +99,8 @@ public class CreateTopicTest {
         HtmlTable topicsTable = createTopicPage.getElementByName("topicsTable");
         assertEquals(topicsTable.getCellAt(1, 0).asText(), TOPIC_TITLE);
         assertEquals(topicsTable.getCellAt(1, 1).asText(), USERNAME);
-        assertTrue(topicsTable.getCellAt(1, 2).asText().matches(EN_LOCALE_TIME_PATTERN));
-
+        assertTrue(topicsTable.getCellAt(1, 2).asText().matches(TIME_PATTERN));
+        assertTrue(DateUtil.stringToMillis(topicsTable.getCellAt(1, 2).asText(), Locale.ENGLISH) - DateUtil.getCurrentTimeMillis() < 1000 * 60);
     }
 
 
@@ -115,9 +108,9 @@ public class CreateTopicTest {
     public void clickOnCreatedTopicTitle() throws Exception {
         HtmlPage messagesPage = topicLink.click();
         HtmlTable messagesTable = messagesPage.getElementByName("messagesTable");
-        //assertTrue(messagesPage.asText().contains("Topic : "+TOPIC_TITLE));
-        assertEquals(messagesTable.getCellAt(0, 0).asText(), "Author: " + USERNAME);
-        assertEquals(messagesTable.getCellAt(0, 1).asText(), "Message: " + MESSAGE);
+        //assertTrue(messagesPage.asText().contains(TOPIC_TITLE));
+        assertTrue(messagesTable.getCellAt(0, 0).asText().contains(USERNAME));
+        assertTrue(messagesTable.getCellAt(0, 1).asText().contains(MESSAGE));
 
 
     }
