@@ -17,6 +17,6 @@
   </class>
   <query name="getAllPostsInTopic">
     <![CDATA[FROM Post as post
-             WHERE post.topic = :topicId ORDER BY post.creationDate DESC]]>
+             WHERE post.topic = :topicId ORDER BY post.creationDate]]>
   </query>
 </hibernate-mapping>
