@@ -27,7 +27,7 @@ public class NotFoundException extends Exception {
     /**
      * Default constructor.
      *
-     * {@link Exception}
+     * @param message exception message
      */
     public NotFoundException(String message) {
         super(message);
@@ -35,8 +35,8 @@ public class NotFoundException extends Exception {
 
     /**
      * Create exception with specific message.
-     *
-     * @param message exception message
+     * 
+     * {@link Exception}
      */
     public NotFoundException() {
     }

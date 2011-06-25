@@ -41,6 +41,7 @@ public class TransactionalPrivateMessageService
      * Creates the instance of service.
      * @param pmDao PrivateMessageDao
      * @param securityService for retrieving current user
+     * @param userService for getting user by name
      */
     public TransactionalPrivateMessageService(PrivateMessageDao pmDao,
             SecurityService securityService, UserService userService) {
