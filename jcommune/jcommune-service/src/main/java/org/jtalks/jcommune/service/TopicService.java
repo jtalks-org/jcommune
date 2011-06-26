@@ -17,6 +17,7 @@
  */
 package org.jtalks.jcommune.service;
 
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
@@ -40,8 +41,9 @@ public interface TopicService extends EntityService<Topic> {
      * @param answerBody the text of the answer
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic not found
+     * @return created {@link Post}
      */
-    void addAnswer(long topicId, String answerBody) throws NotFoundException;
+    Post addAnswer(long topicId, String answerBody) throws NotFoundException;
 
     /**
      * Add new topic with given title and body.

@@ -1,10 +1,10 @@
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityContextFacade;
 import org.jtalks.jcommune.service.SecurityService;
-import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,10 +28,11 @@ public class SecurityServiceImplTest {
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
 
-    private UserService userService;
+    private UserDao userDao;
     private SecurityService securityService;
     private SecurityContextFacade securityContextFacade;
     private SecurityContext securityContext;
+    private MutableAclService mutableAclService;
 
     private User getUser() {
         User user = new User();
@@ -42,10 +43,11 @@ public class SecurityServiceImplTest {
 
     @BeforeMethod
     public void setUp() throws Exception {
-        userService = mock(UserService.class);
+        userDao = mock(UserDao.class);
         securityContextFacade = mock(SecurityContextFacade.class);
         securityContext = mock(SecurityContext.class);
-        securityService = new SecurityServiceImpl(userService, securityContextFacade);
+        mutableAclService = mock(MutableAclService.class);
+        securityService = new SecurityServiceImpl(userDao, securityContextFacade, mutableAclService);
         when(securityContextFacade.getContext()).thenReturn(securityContext);
     }
 
@@ -55,7 +57,7 @@ public class SecurityServiceImplTest {
         Authentication auth = mock(Authentication.class);
         when(auth.getPrincipal()).thenReturn(user);
         when(securityContext.getAuthentication()).thenReturn(auth);
-        when(userService.getByUsername(USERNAME)).thenReturn(user);
+        when(userDao.getByUsername(USERNAME)).thenReturn(user);
 
         User result = securityService.getCurrentUser();
 
@@ -65,7 +67,7 @@ public class SecurityServiceImplTest {
         assertTrue(result.isAccountNonLocked());
         assertTrue(result.isEnabled());
         assertTrue(result.isCredentialsNonExpired());
-        verify(userService).getByUsername(USERNAME);
+        verify(userDao).getByUsername(USERNAME);
         verify(auth).getPrincipal();
         verify(securityContext).getAuthentication();
     }
@@ -78,7 +80,7 @@ public class SecurityServiceImplTest {
 
         assertNull(result, "User not null");
         verify(securityContext).getAuthentication();
-        verify(userService, never()).getByUsername(USERNAME);
+        verify(userDao, never()).getByUsername(USERNAME);
     }
 
     @Test
@@ -123,18 +125,19 @@ public class SecurityServiceImplTest {
     public void testLoadUserByUsername() throws Exception {
         User user = getUser();
 
-        when(userService.getByUsername(USERNAME)).thenReturn(user);
+        when(userDao.getByUsername(USERNAME)).thenReturn(user);
 
         UserDetails result = securityService.loadUserByUsername(USERNAME);
 
         assertEquals(result.getUsername(), USERNAME, "Username not equals");
-        verify(userService).getByUsername(USERNAME);
+        verify(userDao).getByUsername(USERNAME);
     }
 
     @Test(expectedExceptions = UsernameNotFoundException.class)
     public void testLoadUserByUsernameNotFound() throws Exception {
-        when(userService.getByUsername(USERNAME)).thenThrow(new NotFoundException(""));
+        when(userDao.getByUsername(USERNAME)).thenReturn(null);
 
         securityService.loadUserByUsername(USERNAME);
     }
+
 }
