@@ -54,14 +54,6 @@ public class User extends Persistent implements UserDetails {
     private String password;
     private String role = "ROLE_USER";
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
     /**
      * Get the user's Last Name.
      *
@@ -120,6 +112,21 @@ public class User extends Persistent implements UserDetails {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    /**
+     * @return user role in security system
+     */
+    public String getRole() {
+        return role;
+    }
+
+    /**
+     * @param role role
+     */
+    public void setRole(String role) {
+        this.role = role;
+    }
+
 
     /**
      * @return collection of user roles
