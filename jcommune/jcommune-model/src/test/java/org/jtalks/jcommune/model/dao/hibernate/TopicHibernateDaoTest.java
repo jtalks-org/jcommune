@@ -21,6 +21,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,6 @@ import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 import static org.testng.Assert.*;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
@@ -116,23 +116,29 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void testUpdateNotNullViolation() {
-        Topic post = ObjectsFactory.getDefaultTopic();
-        session.save(post);
-        post.setBranch(null);
+        Topic topic = ObjectsFactory.getDefaultTopic();
+        session.save(topic);
+        topic.setBranch(null);
 
-        dao.saveOrUpdate(post);
+        dao.saveOrUpdate(topic);
     }
 
     @Test
     public void testDelete() {
-        Topic post = ObjectsFactory.getDefaultTopic();
-        session.save(post);
+        Topic topic = ObjectsFactory.getDefaultTopic();
+        Post post = ObjectsFactory.getPost(topic.getTopicStarter());
+        topic.setLastPost(post);
+        topic.addPost(post);
+        topic.addPost(ObjectsFactory.getPost(topic.getTopicStarter()));
+        session.save(topic);
+        session.flush();
 
-        boolean result = dao.delete(post.getId());
-        int postCount = getCount();
+        session.evict(topic);
+        boolean deleted = dao.delete(topic.getId());
+        int topicCount = getCount();
 
-        assertTrue(result, "Entity is not deleted");
-        assertEquals(postCount, 0);
+        assertTrue(deleted);
+        assertEquals(topicCount, 0);
     }
 
     @Test
