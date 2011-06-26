@@ -58,6 +58,7 @@ public class TopicHibernateDao extends AbstractHibernateDao<Topic> implements To
      */
     @Override
     public boolean delete(Long id) {
+        //TODO: not efficient solution
         Topic topic = get(id);
         if (topic == null)
             return false;
