@@ -70,23 +70,6 @@ public class TransactionalTopicServiceTest {
     }
 
     @Test
-    public void testDelete() throws NotFoundException {
-        when(topicDao.isExist(POST_ID)).thenReturn(true);
-
-        topicService.delete(POST_ID);
-
-        verify(topicDao).isExist(POST_ID);
-        verify(topicDao).delete(POST_ID);
-    }
-
-    @Test(expectedExceptions = {NotFoundException.class})
-    public void testDeleteIncorrectId() throws NotFoundException {
-        when(topicDao.isExist(POST_ID)).thenReturn(false);
-
-        topicService.delete(POST_ID);
-    }
-
-    @Test
     public void testGet() throws NotFoundException {
         Topic expectedTopic = Topic.createNewTopic();
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
@@ -113,14 +96,14 @@ public class TransactionalTopicServiceTest {
         when(securityService.getCurrentUser()).thenReturn(author);
         when(topicDao.get(TOPIC_ID)).thenReturn(answeredTopic);
 
-        topicService.addAnswer(TOPIC_ID, ANSWER_BODY);
+        Post createdPost = topicService.addAnswer(TOPIC_ID, ANSWER_BODY);
 
-        Post createdPost = answeredTopic.getPosts().get(0);
         assertEquals(createdPost.getPostContent(), ANSWER_BODY);
         assertEquals(createdPost.getUserCreated(), author);
         verify(securityService).getCurrentUser();
         verify(topicDao).get(TOPIC_ID);
         verify(topicDao).saveOrUpdate(answeredTopic);
+        verify(securityService).grantAdminPermissionsToCreatorAndAdmins(createdPost);
     }
 
     @Test(expectedExceptions = {IllegalStateException.class})
@@ -156,6 +139,8 @@ public class TransactionalTopicServiceTest {
         verify(securityService).getCurrentUser();
         verify(topicDao).saveOrUpdate(createdTopic);
         verify(branchService).get(BRANCH_ID);
+        verify(securityService).grantAdminPermissionsToCreatorAndAdmins(createdPost);
+        verify(securityService).grantAdminPermissionsToCreatorAndAdmins(createdTopic);
     }
 
     @Test(expectedExceptions = {IllegalStateException.class})
@@ -181,6 +166,7 @@ public class TransactionalTopicServiceTest {
         assertFalse(topic.getPosts().contains(postForDelete), "Post not deleted from list");
         verify(topicDao).get(TOPIC_ID);
         verify(topicDao).saveOrUpdate(topic);
+        verify(securityService).deleteFromAcl(postForDelete);
     }
 
     @Test(expectedExceptions = {NotFoundException.class})

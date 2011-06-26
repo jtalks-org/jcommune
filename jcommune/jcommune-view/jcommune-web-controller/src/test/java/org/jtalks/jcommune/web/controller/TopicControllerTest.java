@@ -63,7 +63,7 @@ public class TopicControllerTest {
 
         ModelAndView actualMav = controller.deleteConfirmPage(TOPIC_ID, BRANCH_ID);
 
-        assertViewName(actualMav, "delete");
+        assertViewName(actualMav, "deleteTopic");
         Map<String, Object> expectedModel = new HashMap<String, Object>();
         expectedModel.put("topicId", TOPIC_ID);
         expectedModel.put("branchId", BRANCH_ID);
@@ -76,7 +76,7 @@ public class TopicControllerTest {
         ModelAndView actualMav = controller.delete(TOPIC_ID, BRANCH_ID);
 
         assertViewName(actualMav, "redirect:/branch/" + BRANCH_ID + ".html");
-        verify(topicService).delete(TOPIC_ID);
+        verify(topicService).deleteTopic(TOPIC_ID);
     }
 
     @Test

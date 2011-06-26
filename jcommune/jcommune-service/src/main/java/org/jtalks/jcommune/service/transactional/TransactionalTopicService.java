@@ -28,6 +28,7 @@ import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -67,7 +68,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    public void addAnswer(long topicId, String answerBody) throws NotFoundException {
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    public Post addAnswer(long topicId, String answerBody) throws NotFoundException {
         User currentUser = securityService.getCurrentUser();
         // Check if the user is authenticated
         if (currentUser == null) {
@@ -79,21 +81,27 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
             throw new NotFoundException("Topic with id: " + topicId + " not found");
         }
 
-        addAnswerToTopic(answerBody, currentUser, topic);
+        Post newAnswer = addAnswerToTopic(answerBody, currentUser, topic);
         dao.saveOrUpdate(topic);
+        logger.info("Added answer to topic " + topicId);
+
+        securityService.grantAdminPermissionsToCreatorAndAdmins(newAnswer);
+        return newAnswer;
     }
 
-    private void addAnswerToTopic(String answerBody, User currentUser, Topic topic) {
+    private Post addAnswerToTopic(String answerBody, User currentUser, Topic topic) {
         Post answer = Post.createNewPost();
         answer.setPostContent(answerBody);
         answer.setUserCreated(currentUser);
         topic.addPost(answer);
+        return answer;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     public Topic createTopic(String topicName, String bodyText, long branchId) throws NotFoundException {
         User currentUser = securityService.getCurrentUser();
         if (currentUser == null) {
@@ -105,6 +113,13 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         topic.addPost(post);
 
         dao.saveOrUpdate(topic);
+        logger.info("Created new topic " + topic.getId());
+
+        securityService.grantAdminPermissionsToCreatorAndAdmins(topic);
+        logger.debug("Permissions granted on topic: " + topic.getId());
+        securityService.grantAdminPermissionsToCreatorAndAdmins(post);
+        logger.debug("Permissions granted on post: " + post.getId());
+
         return topic;
     }
 
@@ -127,13 +142,14 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
+    @PreAuthorize("hasPermission(#postId, 'org.jtalks.jcommune.model.entity.Post', admin) or " +
+            "hasPermission(#postId, 'org.jtalks.jcommune.model.entity.Post', delete)")
     public void deletePost(long topicId, long postId) throws NotFoundException {
         Topic topic = dao.get(topicId);
         if (topic == null) {
             throw new NotFoundException("Topic with id: " + topicId + " not found");
         }
         deletePostFromTopic(postId, topic);
-
         dao.saveOrUpdate(topic);
         logger.debug("Deleted post with id: " + postId);
     }
@@ -143,6 +159,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         for (Post post : posts) {
             if (post.getId() == postId) {
                 topic.removePost(post);
+                securityService.deleteFromAcl(post);
                 return;
             }
         }
@@ -169,6 +186,20 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
             throw new NotFoundException("Branch with id: " + branchId + " not found");
         }
         return dao.getTopicsInBranchCount(branchId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', admin) or " +
+            "hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', delete)")
+    public void deleteTopic(long topicId) throws NotFoundException {
+        if (!dao.isExist(topicId)) {
+            throw new NotFoundException("Topic with id: " + topicId + " not found");
+        }
+        dao.delete(topicId);
+        securityService.deleteFromAcl(Topic.class, topicId);
     }
 
 }

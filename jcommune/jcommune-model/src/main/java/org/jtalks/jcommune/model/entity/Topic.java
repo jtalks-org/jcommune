@@ -208,7 +208,7 @@ public class Topic extends Persistent {
 
     /**
      * Set the topic last post.
-     * 
+     *
      * @param lastPost the lastPost to set
      */
     public void setLastPost(Post lastPost) {
@@ -224,13 +224,15 @@ public class Topic extends Persistent {
         return lastPost;
     }
 
-    /*
+    /**
      * Set the topic last post when it was removed.
+     *
+     * @param removedPost post for delete
      */
     private void updateLastPost(Post removedPost) {
         if (this.lastPost.getId() == removedPost.getId()) {
             if (!this.posts.isEmpty()) {
-                this.lastPost = this.posts.get(this.posts.size()-1);
+                this.lastPost = this.posts.get(this.posts.size() - 1);
             }
         }
     }

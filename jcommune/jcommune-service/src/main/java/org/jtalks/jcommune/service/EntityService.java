@@ -20,8 +20,6 @@ package org.jtalks.jcommune.service;
 import org.jtalks.jcommune.model.entity.Persistent;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
-import java.util.List;
-
 /**
  * This is generic interface for services which would interact with database entities via DAO object.
  * This interface include all base method declaration which straightly based on database CRUD operations.
@@ -32,22 +30,13 @@ import java.util.List;
 public interface EntityService<T extends Persistent> {
 
     /**
-     * Delete row in database table corresponded to current primary id.
-     *
-     * @param id primary id of database table row to delete, id could not be negative.
-     *           If negative id value will be put IllegalAgrumentEception will be thrown.
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException when entity not found
-     *
-     */
-    void delete(Long id) throws NotFoundException;
-
-    /**
      * Get persistent object by id. Method is trying to find persistent object with current primary id and return it.
      *
      * @param id primary id of persistent object to find, id could not be negative.
      *           If negative id value will be put IllegalAgrumentEception will be thrown.
      * @return persistent object T or null if row with primary id = id is absent.
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException when entity not found
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when entity not found
      */
     T get(Long id) throws NotFoundException;
 

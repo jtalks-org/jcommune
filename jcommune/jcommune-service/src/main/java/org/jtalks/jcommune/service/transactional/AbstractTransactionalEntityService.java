@@ -22,8 +22,6 @@ import org.jtalks.jcommune.model.entity.Persistent;
 import org.jtalks.jcommune.service.EntityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
-import java.util.List;
-
 /**
  * Generic implementation of all entity based services.
  * Most of the implementations of the methods are basing on straightforward calls
@@ -38,17 +36,6 @@ public abstract class AbstractTransactionalEntityService<T extends Persistent, Y
      * Dao object implementation.
      */
     protected Y dao;
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void delete(Long id) throws NotFoundException {
-        if (!dao.isExist(id)) {
-            throw new NotFoundException("Entity with id: " + id + " not found");
-        }
-        dao.delete(id);
-    }
 
     /**
      * {@inheritDoc}

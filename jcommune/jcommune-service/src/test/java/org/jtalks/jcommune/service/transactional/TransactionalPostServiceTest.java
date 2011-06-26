@@ -57,16 +57,6 @@ public class TransactionalPostServiceTest {
     }
 
     @Test
-    public void testDelete() throws NotFoundException {
-        when(postDao.isExist(POST_ID)).thenReturn(true);
-
-        postService.delete(POST_ID);
-
-        verify(postDao).isExist(POST_ID);
-        verify(postDao).delete(POST_ID);
-    }
-
-    @Test
     public void testGet() throws NotFoundException {
         Post post = Post.createNewPost();
         when(postDao.isExist(POST_ID)).thenReturn(true);
@@ -84,13 +74,6 @@ public class TransactionalPostServiceTest {
         when(postDao.isExist(POST_ID)).thenReturn(false);
 
         postService.get(POST_ID);
-    }
-
-    @Test(expectedExceptions = {NotFoundException.class})
-    public void testDeleteIncorrectId() throws NotFoundException {
-        when(postDao.isExist(POST_ID)).thenReturn(false);
-
-        postService.delete(POST_ID);
     }
 
     @Test

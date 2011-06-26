@@ -9,8 +9,6 @@
 <body>
 <table border="1" width="100%">
 
-    <sec:authentication property="name" var="username" scope="request"/>
-
     <h2>
         <spring:message code="label.topic"/>
         :
@@ -24,8 +22,7 @@
             <td width="80%"><spring:message code="label.text"/>: <c:out
                     value="${post.postContent}"/>
             </td>
-
-            <c:if test="${username==post.userCreated.username}">
+            <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
                 <c:choose>
                     <c:when test="${page == 1 && i.index == 0}">
                         <td>
@@ -47,7 +44,7 @@
                         </td>
                     </c:otherwise>
                 </c:choose>
-            </c:if>
+            </sec:accesscontrollist>
         </tr>
     </c:forEach>
 </table>
@@ -58,7 +55,7 @@
                 <input type="submit" value="<spring:message code="label.back"/>"/>
             </form:form>
         </td>
-        <sec:authorize access="isAuthenticated()">
+        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
             <td>
                 <form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/answer.html"
                            method="GET">

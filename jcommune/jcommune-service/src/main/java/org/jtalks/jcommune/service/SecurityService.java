@@ -17,6 +17,7 @@
  */
 package org.jtalks.jcommune.service;
 
+import org.jtalks.jcommune.model.entity.Persistent;
 import org.jtalks.jcommune.model.entity.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -24,6 +25,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
  * This interface declare methods for authentication and authorization.
  *
  * @author Kirill Afonin
+ * @author Max Malakhov
  */
 public interface SecurityService extends UserDetailsService {
 
@@ -31,7 +33,7 @@ public interface SecurityService extends UserDetailsService {
      * Get current authenticated {@link User}.
      *
      * @return current authenticated {@link User} or <code>null</code> if there is
-     * no authenticated {@link User}.
+     *         no authenticated {@link User}.
      * @see User
      */
     User getCurrentUser();
@@ -40,7 +42,29 @@ public interface SecurityService extends UserDetailsService {
      * Get current authenticated {@link User} username.
      *
      * @return current authenticated {@link User} username or <code>null</code> if there is
-     * no authenticated {@link User}.
+     *         no authenticated {@link User}.
      */
     String getCurrentUserUsername();
+
+    /**
+     * Add administrator permissions to current user and administrators.
+     *
+     * @param securedObject a new secured object.
+     */
+    public void grantAdminPermissionsToCreatorAndAdmins(Persistent securedObject);
+
+    /**
+     * Delete object from acl. All permissions will be removed.
+     *
+     * @param securedObject a removed secured object.
+     */
+    public void deleteFromAcl(Persistent securedObject);
+
+    /**
+     * Delete object from acl. All permissions will be removed.
+     *
+     * @param clazz object {@code Class}
+     * @param id    object id
+     */
+    public void deleteFromAcl(Class clazz, long id);
 }

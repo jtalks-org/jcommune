@@ -11,5 +11,6 @@
     <property column="USERNAME" name="username" unique="true" not-null="true"/>
     <property column="EMAIL" name="email" unique="true" not-null="true"/>
     <property column="PASSWORD" name="password" not-null="true"/>
+    <property column="ROLE" name="role"/>
   </class>
 </hibernate-mapping>

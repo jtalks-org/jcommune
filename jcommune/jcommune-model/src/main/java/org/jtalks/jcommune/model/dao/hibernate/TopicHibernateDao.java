@@ -53,4 +53,18 @@ public class TopicHibernateDao extends AbstractHibernateDao<Topic> implements To
                 .setLong(0, branchId).uniqueResult()).intValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean delete(Long id) {
+        //TODO: not efficient solution. See more info on the next link http://bit.ly/m85eLs
+        Topic topic = get(id);
+        if (topic == null) {
+            return false;
+        }
+        getSession().delete(topic);
+        return true;
+    }
+
 }
