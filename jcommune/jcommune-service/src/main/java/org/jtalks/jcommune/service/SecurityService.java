@@ -19,8 +19,6 @@ package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.Persistent;
 import org.jtalks.jcommune.model.entity.User;
-import org.springframework.security.acls.model.Permission;
-import org.springframework.security.acls.model.Sid;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
@@ -47,11 +45,7 @@ public interface SecurityService extends UserDetailsService {
      */
     String getCurrentUserUsername();
 
-    public void addPermissionToCurrentUser(Persistent securedObject, Permission permission);
+    public void grantAdminPermissionsToCreatorAndAdmins(Persistent securedObject);
 
-    public void addPermission(Persistent securedObject, Sid recipient, Permission permission);
-
-    public void deletePermission(Persistent securedObject, Sid recipient, Permission permission);
-
-    public void addPermissionsForAdmins(Persistent securedObject);
+    public void deleteFromAcl(Persistent securedObject);
 }
