@@ -106,7 +106,7 @@ public final class TopicController {
     @RequestMapping(method = RequestMethod.GET, value = "/branch/{branchId}/topic/{topicId}/delete")
     public ModelAndView deleteConfirmPage(@PathVariable("topicId") Long topicId,
                                           @PathVariable("branchId") Long branchId) {
-        return new ModelAndView("delete")
+        return new ModelAndView("deleteTopic")
                 .addObject("topicId", topicId)
                 .addObject("branchId", branchId);
     }
