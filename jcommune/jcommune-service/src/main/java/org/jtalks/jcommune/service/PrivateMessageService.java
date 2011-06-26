@@ -48,5 +48,5 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
      * @return sent message
      * @throws NotFoundException if the receiver not exists
      */
-    public PrivateMessage sendMessage(String title, String body, String recipient) throws NotFoundException;
+    PrivateMessage sendMessage(String title, String body, String recipient) throws NotFoundException;
 }

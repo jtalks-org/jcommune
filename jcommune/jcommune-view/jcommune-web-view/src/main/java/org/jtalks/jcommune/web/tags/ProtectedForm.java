@@ -15,29 +15,24 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-package org.jtalks.jcommune.service.exceptions;
+package org.jtalks.jcommune.web.tags;
+
+import org.springframework.web.servlet.tags.form.FormTag;
 
 /**
- * The exception for case when searching item not found.
+ * Extension of Spring form tag. This tag automatically put necessary JavaScript to prevent form's multiposting.
  * 
  * @author Pavel Vervenko
  */
-public class NotFoundException extends Exception {
+public class ProtectedForm extends FormTag {
+
+    private final String MULTIPOST_BLOCKING_JS = "if (this.getAttribute('submitted')) return false; "
+            + "this.setAttribute('submitted','true');";
 
     /**
-     * Default constructor.
-     *
-     * @param message exception message
+     * Default tag constructor.
      */
-    public NotFoundException(String message) {
-        super(message);
-    }
-
-    /**
-     * Create exception with specific message.
-     * 
-     * {@link Exception}
-     */
-    public NotFoundException() {
+    public ProtectedForm() {
+        setOnsubmit(MULTIPOST_BLOCKING_JS);
     }
 }
