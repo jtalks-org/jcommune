@@ -69,7 +69,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      */
     @Override
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-    public void addAnswer(long topicId, String answerBody) throws NotFoundException {
+    public Post addAnswer(long topicId, String answerBody) throws NotFoundException {
         User currentUser = securityService.getCurrentUser();
         // Check if the user is authenticated
         if (currentUser == null) {
@@ -86,6 +86,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         logger.info("Added answer to topic " + topicId);
 
         securityService.grantAdminPermissionsToCreatorAndAdmins(newAnswer);
+        return newAnswer;
     }
 
     private Post addAnswerToTopic(String answerBody, User currentUser, Topic topic) {
