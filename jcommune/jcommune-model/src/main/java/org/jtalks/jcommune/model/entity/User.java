@@ -18,6 +18,7 @@
 package org.jtalks.jcommune.model.entity;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
@@ -32,25 +33,34 @@ import java.util.Collection;
  */
 public class User extends Persistent implements UserDetails {
 
-    // temp user role to be used until authorization by role is not implemented
-    private static GrantedAuthority roleUser = new GrantedAuthority() {
-        @Override
-        public String getAuthority() {
-            return "ROLE_USER";
-        }
-    };
-    // list of user roles. used by spring security
-    private static Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-
-    static {
-        authorities.add(roleUser);
-    }
+//    // temp user role to be used until authorization by role is not implemented
+//    private static GrantedAuthority roleUser = new GrantedAuthority() {
+//        @Override
+//        public String getAuthority() {
+//            return "ROLE_USER";
+//        }
+//    };
+//    // list of user roles. used by spring security
+//    private static Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+//
+//    static {
+//        authorities.add(roleUser);
+//    }
 
     private String lastName;
     private String firstName;
     private String username;
     private String email;
     private String password;
+    private String role = "ROLE_USER";
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 
     /**
      * Get the user's Last Name.
@@ -116,6 +126,8 @@ public class User extends Persistent implements UserDetails {
      */
     @Override
     public Collection<GrantedAuthority> getAuthorities() {
+        Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+        authorities.add(new GrantedAuthorityImpl(role));
         return authorities;
     }
 
