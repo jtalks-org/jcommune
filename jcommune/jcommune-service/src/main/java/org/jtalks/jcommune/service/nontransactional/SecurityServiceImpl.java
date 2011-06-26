@@ -55,9 +55,10 @@ public class SecurityServiceImpl implements SecurityService {
      *
      * @param userDao               {@link org.jtalks.jcommune.model.dao.UserDao} to be injected
      * @param securityContextFacade {@link org.jtalks.jcommune.service.SecurityContextFacade} to be injected
-     * @param mutableAclService
+     * @param mutableAclService     service for actions with ACLs
      */
-    public SecurityServiceImpl(UserDao userDao, SecurityContextFacade securityContextFacade, MutableAclService mutableAclService) {
+    public SecurityServiceImpl(UserDao userDao, SecurityContextFacade securityContextFacade,
+                               MutableAclService mutableAclService) {
         this.userDao = userDao;
         this.securityContextFacade = securityContextFacade;
         this.mutableAclService = mutableAclService;
@@ -96,14 +97,30 @@ public class SecurityServiceImpl implements SecurityService {
         return username;
     }
 
-    private void addPermissionToCurrentUser(Persistent securedObject, Permission permission) {
+    /**
+     * Grant {@code permisison} to current user on {@code securedObject}
+     *
+     * @param securedObject object for authorization
+     * @param permission    granted permission
+     */
+    private void addPermissionToCurrentUser(Persistent securedObject,
+                                            Permission permission) {
         addPermission(securedObject, new PrincipalSid(getCurrentUserUsername()), permission);
     }
 
-    private void addPermission(Persistent securedObject, Sid recipient, Permission permission) {
+    /**
+     * Grant permission  {@code permision} to {@code recipient} on {@code securedObject}
+     *
+     * @param securedObject object for authorization
+     * @param recipient     sid to whom  the permission granted
+     * @param permission    granted permission
+     */
+    private void addPermission(Persistent securedObject, Sid recipient,
+                               Permission permission) {
         MutableAcl acl;
         // create identity for securedObject
-        ObjectIdentity oid = new ObjectIdentityImpl(securedObject.getClass().getCanonicalName(), securedObject.getId());
+        ObjectIdentity oid = new ObjectIdentityImpl(securedObject.getClass().getCanonicalName(),
+                securedObject.getId());
 
         try {
             acl = (MutableAcl) mutableAclService.readAclById(oid);
@@ -116,20 +133,32 @@ public class SecurityServiceImpl implements SecurityService {
         mutableAclService.updateAcl(acl);
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Added permission " + permission + " for Sid " + recipient + " securedObject " + securedObject);
+            logger.debug("Added permission " + permission + " for Sid " + recipient +
+                    " securedObject " + securedObject);
         }
     }
 
-    private void deletePermission(Persistent securedObject, Sid recipient, Permission permission) {
+    /**
+     * Delete {@code permission} from {@code recipient} on {@code securedObject}
+     *
+     * @param securedObject object for authorization with existent Acl
+     * @param recipient     sid from which will permission be removed
+     * @param permission    granted permission
+     */
+    private void deletePermission(Persistent securedObject, Sid recipient,
+                                  Permission permission) {
         // create identity for securedObject
-        ObjectIdentity oid = new ObjectIdentityImpl(securedObject.getClass().getCanonicalName(), securedObject.getId());
+        ObjectIdentity oid = new ObjectIdentityImpl(securedObject.getClass().getCanonicalName(),
+                securedObject.getId());
         MutableAcl acl = (MutableAcl) mutableAclService.readAclById(oid);
 
-        // Remove all permissions associated with this particular recipient (string equality used to keep things simple)
+        // Remove all permissions associated with this particular recipient
+        // (string equality used to keep things simple)
         List<AccessControlEntry> entries = acl.getEntries();
 
         for (int i = 0; i < entries.size(); i++) {
-            if (entries.get(i).getSid().equals(recipient) && entries.get(i).getPermission().equals(permission)) {
+            if (entries.get(i).getSid().equals(recipient) &&
+                    entries.get(i).getPermission().equals(permission)) {
                 acl.deleteAce(i);
             }
         }
@@ -137,12 +166,20 @@ public class SecurityServiceImpl implements SecurityService {
         mutableAclService.updateAcl(acl);
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Deleted securedObject " + securedObject + " ACL permissions for recipient " + recipient);
+            logger.debug("Deleted securedObject " + securedObject +
+                    " ACL permissions for recipient " + recipient);
         }
     }
 
+    /**
+     * Grant administration permission to admins.
+     * Currently admins include ROLE_ADMIN.
+     *
+     * @param securedObject object for authorization
+     */
     private void addPermissionsForAdmins(Persistent securedObject) {
-        addPermission(securedObject, new GrantedAuthoritySid("ROLE_ADMIN"), BasePermission.ADMINISTRATION);
+        addPermission(securedObject, new GrantedAuthoritySid("ROLE_ADMIN"),
+                BasePermission.ADMINISTRATION);
     }
 
     /**
