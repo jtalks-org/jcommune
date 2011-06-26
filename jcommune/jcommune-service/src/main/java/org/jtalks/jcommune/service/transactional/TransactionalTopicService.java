@@ -29,7 +29,6 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.acls.domain.BasePermission;
 
 import java.util.List;
 
@@ -69,6 +68,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN)")
     public void addAnswer(long topicId, String answerBody) throws NotFoundException {
         User currentUser = securityService.getCurrentUser();
         // Check if the user is authenticated
@@ -84,9 +84,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         Post newAnswer = addAnswerToTopic(answerBody, currentUser, topic);
         dao.saveOrUpdate(topic);
         logger.info("Added answer to topic " + topicId);
-        securityService.addPermissionToCurrentUser(newAnswer, BasePermission.ADMINISTRATION);
-        securityService.addPermissionsForAdmins(newAnswer);
-        logger.debug("Permissions granted on post: " + newAnswer.getId());
+
+        securityService.grantAdminPermissionsToCreatorAndAdmins(newAnswer);
     }
 
     private Post addAnswerToTopic(String answerBody, User currentUser, Topic topic) {
@@ -101,6 +100,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN)")
     public Topic createTopic(String topicName, String bodyText, long branchId) throws NotFoundException {
         User currentUser = securityService.getCurrentUser();
         if (currentUser == null) {
@@ -113,11 +113,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
 
         dao.saveOrUpdate(topic);
         logger.info("Created new topic " + topic.getId());
-        securityService.addPermissionToCurrentUser(topic, BasePermission.ADMINISTRATION);
-        securityService.addPermissionsForAdmins(topic);
+        securityService.grantAdminPermissionsToCreatorAndAdmins(topic);
         logger.debug("Permissions granted on topic: " + topic.getId());
-        securityService.addPermissionToCurrentUser(post, BasePermission.ADMINISTRATION);
-        securityService.addPermissionsForAdmins(post);
+        securityService.grantAdminPermissionsToCreatorAndAdmins(post);
         logger.debug("Permissions granted on post: " + post.getId());
         return topic;
     }
@@ -141,7 +139,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#postId, 'org.jtalks.jcommune.model.entity.Post', 'delete')")
+    @PreAuthorize("hasPermission(#postId, 'org.jtalks.jcommune.model.entity.Post', admin) or " +
+            "hasPermission(#postId, 'org.jtalks.jcommune.model.entity.Post', delete)")
     public void deletePost(long topicId, long postId) throws NotFoundException {
         Topic topic = dao.get(topicId);
         if (topic == null) {
@@ -157,6 +156,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         for (Post post : posts) {
             if (post.getId() == postId) {
                 topic.removePost(post);
+                securityService.deleteFromAcl(post);
                 return;
             }
         }
