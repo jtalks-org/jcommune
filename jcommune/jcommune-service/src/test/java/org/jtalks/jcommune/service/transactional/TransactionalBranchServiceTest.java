@@ -50,16 +50,6 @@ public class TransactionalBranchServiceTest {
     }
 
     @Test
-    public void testDelete() throws NotFoundException {
-        when(branchDao.isExist(BRANCH_ID)).thenReturn(true);
-
-        branchService.delete(BRANCH_ID);
-
-        verify(branchDao).isExist(BRANCH_ID);
-        verify(branchDao).delete(BRANCH_ID);
-    }
-
-    @Test
     public void testGet() throws NotFoundException {
         Branch expectedBranch = new Branch();
         when(branchDao.isExist(BRANCH_ID)).thenReturn(true);
@@ -77,13 +67,6 @@ public class TransactionalBranchServiceTest {
         when(branchDao.isExist(BRANCH_ID)).thenReturn(false);
 
         branchService.get(BRANCH_ID);
-    }
-
-    @Test(expectedExceptions = {NotFoundException.class})
-    public void testDeleteIncorrectId() throws NotFoundException {
-        when(branchDao.isExist(BRANCH_ID)).thenReturn(false);
-
-        branchService.delete(BRANCH_ID);
     }
 
     @Test

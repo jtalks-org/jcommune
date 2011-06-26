@@ -100,16 +100,6 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void testDelete() throws NotFoundException {
-        when(userDao.isExist(USER_ID)).thenReturn(true);
-
-        userService.delete(USER_ID);
-
-        verify(userDao).isExist(USER_ID);
-        verify(userDao).delete(USER_ID);
-    }
-
-    @Test
     public void testGet() throws NotFoundException {
         User expectedUser = new User();
         when(userDao.get(USER_ID)).thenReturn(expectedUser);

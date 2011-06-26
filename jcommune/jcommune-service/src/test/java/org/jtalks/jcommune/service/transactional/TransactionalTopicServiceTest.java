@@ -70,23 +70,6 @@ public class TransactionalTopicServiceTest {
     }
 
     @Test
-    public void testDelete() throws NotFoundException {
-        when(topicDao.isExist(POST_ID)).thenReturn(true);
-
-        topicService.delete(POST_ID);
-
-        verify(topicDao).isExist(POST_ID);
-        verify(topicDao).delete(POST_ID);
-    }
-
-    @Test(expectedExceptions = {NotFoundException.class})
-    public void testDeleteIncorrectId() throws NotFoundException {
-        when(topicDao.isExist(POST_ID)).thenReturn(false);
-
-        topicService.delete(POST_ID);
-    }
-
-    @Test
     public void testGet() throws NotFoundException {
         Topic expectedTopic = Topic.createNewTopic();
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);

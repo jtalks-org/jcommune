@@ -123,7 +123,7 @@ public final class TopicController {
     @RequestMapping(method = RequestMethod.DELETE, value = "/branch/{branchId}/topic/{topicId}")
     public ModelAndView delete(@PathVariable("topicId") Long topicId,
                                @PathVariable("branchId") Long branchId) throws NotFoundException {
-        topicService.delete(topicId);
+        topicService.deleteTopic(topicId);
         return new ModelAndView("redirect:/branch/" + branchId + ".html");
     }
 
