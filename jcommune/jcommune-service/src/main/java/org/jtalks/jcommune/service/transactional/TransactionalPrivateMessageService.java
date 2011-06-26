@@ -17,7 +17,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import java.util.List;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.User;
@@ -25,10 +24,13 @@ import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.List;
 
 /**
  * The implementation of PrivateMessageServices.
- * 
+ *
  * @author Pavel Vervenko
  */
 public class TransactionalPrivateMessageService
@@ -39,11 +41,12 @@ public class TransactionalPrivateMessageService
 
     /**
      * Creates the instance of service.
-     * @param pmDao PrivateMessageDao
+     *
+     * @param pmDao           PrivateMessageDao
      * @param securityService for retrieving current user
      */
     public TransactionalPrivateMessageService(PrivateMessageDao pmDao,
-            SecurityService securityService, UserService userService) {
+                                              SecurityService securityService, UserService userService) {
         this.dao = pmDao;
         this.securityService = securityService;
         this.userService = userService;
@@ -72,6 +75,7 @@ public class TransactionalPrivateMessageService
      * {@inheritDoc}
      */
     @Override
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     public PrivateMessage sendMessage(String title, String body, String recipient) throws NotFoundException {
         PrivateMessage pm = PrivateMessage.createNewPrivateMessage();
         pm.setTitle(title);
