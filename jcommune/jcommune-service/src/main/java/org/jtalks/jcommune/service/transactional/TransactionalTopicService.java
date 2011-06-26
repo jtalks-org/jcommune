@@ -188,4 +188,18 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         return dao.getTopicsInBranchCount(branchId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', admin) or " +
+            "hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', delete)")
+    public void deleteTopic(long topicId) throws NotFoundException {
+        if (!dao.isExist(topicId)) {
+            throw new NotFoundException("Topic with id: " + topicId + " not found");
+        }
+        dao.delete(topicId);
+        securityService.deleteFromAcl(Topic.class, topicId);
+    }
+
 }
