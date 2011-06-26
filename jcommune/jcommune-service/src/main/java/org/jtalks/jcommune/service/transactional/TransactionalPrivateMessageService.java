@@ -44,6 +44,7 @@ public class TransactionalPrivateMessageService
      *
      * @param pmDao           PrivateMessageDao
      * @param securityService for retrieving current user
+     * @param userService for getting user by name
      */
     public TransactionalPrivateMessageService(PrivateMessageDao pmDao,
                                               SecurityService securityService, UserService userService) {

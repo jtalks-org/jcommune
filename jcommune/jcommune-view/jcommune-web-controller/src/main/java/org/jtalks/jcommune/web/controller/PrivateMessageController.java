@@ -18,7 +18,6 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.service.PrivateMessageService;
-import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 import org.slf4j.Logger;
@@ -45,8 +44,7 @@ public class PrivateMessageController {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
-     * Requires {@link PrivateMessageService} for manipulations with messages and {@link UserService} to find the 
-     * recipient by username.
+     * Requires {@link PrivateMessageService} for manipulations with messages.
      * 
      * @param pmService the PrivateMessageService instance
      */
