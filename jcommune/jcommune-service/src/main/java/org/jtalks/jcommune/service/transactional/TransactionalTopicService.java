@@ -68,7 +68,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN)")
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     public void addAnswer(long topicId, String answerBody) throws NotFoundException {
         User currentUser = securityService.getCurrentUser();
         // Check if the user is authenticated
@@ -100,7 +100,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN)")
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     public Topic createTopic(String topicName, String bodyText, long branchId) throws NotFoundException {
         User currentUser = securityService.getCurrentUser();
         if (currentUser == null) {
@@ -113,10 +113,12 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
 
         dao.saveOrUpdate(topic);
         logger.info("Created new topic " + topic.getId());
+
         securityService.grantAdminPermissionsToCreatorAndAdmins(topic);
         logger.debug("Permissions granted on topic: " + topic.getId());
         securityService.grantAdminPermissionsToCreatorAndAdmins(post);
         logger.debug("Permissions granted on post: " + post.getId());
+
         return topic;
     }
 
