@@ -159,11 +159,19 @@ public class SecurityServiceImpl implements SecurityService {
      */
     @Override
     public void deleteFromAcl(Persistent securedObject) {
-        ObjectIdentity oid = new ObjectIdentityImpl(securedObject.getClass().getCanonicalName(), securedObject.getId());
+        deleteFromAcl(securedObject.getClass(), securedObject.getId());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteFromAcl(Class clazz, long id) {
+        ObjectIdentity oid = new ObjectIdentityImpl(clazz.getCanonicalName(), id);
         mutableAclService.deleteAcl(oid, true);
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Deleted securedObject " + securedObject);
+            logger.debug("Deleted securedObject " + clazz + " with id: " + id);
         }
     }
 

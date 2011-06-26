@@ -47,16 +47,24 @@ public interface SecurityService extends UserDetailsService {
     String getCurrentUserUsername();
 
     /**
-     * Add administrator permissions to the creator and administrators.
-     * 
+     * Add administrator permissions to current user and administrators.
+     *
      * @param securedObject a new secured object.
      */
     public void grantAdminPermissionsToCreatorAndAdmins(Persistent securedObject);
 
     /**
-     * Delete granted permissions from removed object;
-     * 
+     * Delete object from acl. All permissions will be removed.
+     *
      * @param securedObject a removed secured object.
      */
     public void deleteFromAcl(Persistent securedObject);
+
+    /**
+     * Delete object from acl. All permissions will be removed.
+     *
+     * @param clazz object {@code Class}
+     * @param id    object id
+     */
+    public void deleteFromAcl(Class clazz, long id);
 }
