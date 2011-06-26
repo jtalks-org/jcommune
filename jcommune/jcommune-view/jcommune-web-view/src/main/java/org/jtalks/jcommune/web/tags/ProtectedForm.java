@@ -26,7 +26,7 @@ import org.springframework.web.servlet.tags.form.FormTag;
  */
 public class ProtectedForm extends FormTag {
 
-    private static final String mULTIPOST_BLOCKING_JS = "if (this.getAttribute('submitted')) return false; "
+    private static final String MULTIPOST_BLOCKING_JS = "if (this.getAttribute('submitted')) return false; "
             + "this.setAttribute('submitted','true');";
 
     /**
