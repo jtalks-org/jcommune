@@ -170,12 +170,6 @@
 		</attribute>
 		<attribute>
 			<description>HTML Event Attribute</description>
-			<name>onsubmit</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<description>HTML Event Attribute</description>
 			<name>onreset</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
