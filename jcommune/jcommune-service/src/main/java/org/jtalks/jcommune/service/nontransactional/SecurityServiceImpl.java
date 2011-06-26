@@ -95,19 +95,12 @@ public class SecurityServiceImpl implements SecurityService {
         return username;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void addPermissionToCurrentUser(Persistent securedObject, Permission permission) {
+    private void addPermissionToCurrentUser(Persistent securedObject, Permission permission) {
         addPermission(securedObject, new PrincipalSid(getCurrentUserUsername()), permission);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void addPermission(Persistent securedObject, Sid recipient, Permission permission) {
+
+    private void addPermission(Persistent securedObject, Sid recipient, Permission permission) {
         MutableAcl acl;
         // create identity for securedObject
         ObjectIdentity oid = new ObjectIdentityImpl(securedObject.getClass().getCanonicalName(), securedObject.getId());
@@ -127,11 +120,7 @@ public class SecurityServiceImpl implements SecurityService {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void deletePermission(Persistent securedObject, Sid recipient, Permission permission) {
+    private void deletePermission(Persistent securedObject, Sid recipient, Permission permission) {
         // create identity for securedObject
         ObjectIdentity oid = new ObjectIdentityImpl(securedObject.getClass().getCanonicalName(), securedObject.getId());
         MutableAcl acl = (MutableAcl) mutableAclService.readAclById(oid);
@@ -152,9 +141,24 @@ public class SecurityServiceImpl implements SecurityService {
         }
     }
 
-    @Override
-    public void addPermissionsForAdmins(Persistent securedObject) {
+    private void addPermissionsForAdmins(Persistent securedObject) {
         addPermission(securedObject, new GrantedAuthoritySid("ROLE_ADMIN"), BasePermission.ADMINISTRATION);
+    }
+
+    @Override
+    public void grantAdminPermissionsToCreatorAndAdmins(Persistent securedObject) {
+        addPermissionsForAdmins(securedObject);
+        addPermissionToCurrentUser(securedObject, BasePermission.ADMINISTRATION);
+    }
+
+    @Override
+    public void deleteFromAcl(Persistent securedObject) {
+        ObjectIdentity oid = new ObjectIdentityImpl(securedObject.getClass().getCanonicalName(), securedObject.getId());
+        mutableAclService.deleteAcl(oid, true);
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Deleted securedObject " + securedObject);
+        }
     }
 
     /**
