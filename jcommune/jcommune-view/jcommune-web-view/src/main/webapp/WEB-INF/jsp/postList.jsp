@@ -25,7 +25,7 @@
                     value="${post.postContent}"/>
             </td>
 
-            <c:if test="${username==post.userCreated.username}">
+            <%--<c:if test="${username==post.userCreated.username}">--%>
                 <c:choose>
                     <c:when test="${page == 1 && i.index == 0}">
                         <td>
@@ -47,7 +47,7 @@
                         </td>
                     </c:otherwise>
                 </c:choose>
-            </c:if>
+            <%--</c:if>--%>
         </tr>
     </c:forEach>
 </table>
