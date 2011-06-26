@@ -25,6 +25,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
  * This interface declare methods for authentication and authorization.
  *
  * @author Kirill Afonin
+ * @author Max Malakhov
  */
 public interface SecurityService extends UserDetailsService {
 
@@ -46,12 +47,16 @@ public interface SecurityService extends UserDetailsService {
     String getCurrentUserUsername();
 
     /**
-     * @param securedObject
+     * Add administrator permissions to the creator and administrators.
+     * 
+     * @param securedObject a new secured object.
      */
     public void grantAdminPermissionsToCreatorAndAdmins(Persistent securedObject);
 
     /**
-     * @param securedObject
+     * Delete granted permissions from removed object;
+     * 
+     * @param securedObject a removed secured object.
      */
     public void deleteFromAcl(Persistent securedObject);
 }

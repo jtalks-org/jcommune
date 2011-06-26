@@ -10,7 +10,6 @@
     <security:authentication-provider user-service-ref="securityService"/>
   </security:authentication-manager>
 
-
   <!-- Enable security annotations using specified expression handler -->
   <security:global-method-security pre-post-annotations="enabled">
     <security:expression-handler ref="securityExpressionHandler"/>

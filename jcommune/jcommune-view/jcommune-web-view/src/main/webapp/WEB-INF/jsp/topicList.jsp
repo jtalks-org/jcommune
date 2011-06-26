@@ -30,7 +30,7 @@
         </c:forEach>
     </table>
     <br>
-    <sec:authorize access="isAuthenticated()">
+    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
         <input type="submit" value="<spring:message code="label.addtopic"/>"/>
     </sec:authorize>
 </form:form>

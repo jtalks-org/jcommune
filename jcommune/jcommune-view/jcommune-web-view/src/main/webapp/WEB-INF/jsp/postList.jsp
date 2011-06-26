@@ -55,7 +55,7 @@
                 <input type="submit" value="<spring:message code="label.back"/>"/>
             </form:form>
         </td>
-        <sec:authorize access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')">
+        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
             <td>
                 <form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/answer.html"
                            method="GET">

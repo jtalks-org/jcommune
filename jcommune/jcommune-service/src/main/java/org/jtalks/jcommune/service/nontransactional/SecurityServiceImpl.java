@@ -41,6 +41,7 @@ import java.util.List;
  * Contains methods for authentication and authorization.
  *
  * @author Kirill Afonin
+ * @author Max Malakhov
  */
 public class SecurityServiceImpl implements SecurityService {
 
@@ -99,7 +100,6 @@ public class SecurityServiceImpl implements SecurityService {
         addPermission(securedObject, new PrincipalSid(getCurrentUserUsername()), permission);
     }
 
-
     private void addPermission(Persistent securedObject, Sid recipient, Permission permission) {
         MutableAcl acl;
         // create identity for securedObject
@@ -145,12 +145,18 @@ public class SecurityServiceImpl implements SecurityService {
         addPermission(securedObject, new GrantedAuthoritySid("ROLE_ADMIN"), BasePermission.ADMINISTRATION);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void grantAdminPermissionsToCreatorAndAdmins(Persistent securedObject) {
         addPermissionsForAdmins(securedObject);
         addPermissionToCurrentUser(securedObject, BasePermission.ADMINISTRATION);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteFromAcl(Persistent securedObject) {
         ObjectIdentity oid = new ObjectIdentityImpl(securedObject.getClass().getCanonicalName(), securedObject.getId());
@@ -172,6 +178,5 @@ public class SecurityServiceImpl implements SecurityService {
         }
         return user;
     }
-
 
 }

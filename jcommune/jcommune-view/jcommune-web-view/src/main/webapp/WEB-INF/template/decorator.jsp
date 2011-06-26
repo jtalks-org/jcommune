@@ -33,13 +33,13 @@
             <td class="background"><a
                     href="${pageContext.request.contextPath}/main.html">&nbsp&nbsp<span
                     class="nav"><fmt:message key="label.forum"/> </span> </a> | <span style="float: right">
-                <sec:authorize access="isAuthenticated()">
+                <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
                     <sec:authentication property="principal.username"/>&nbsp
                     <a href="${pageContext.request.contextPath}/pm/inbox.html"><fmt:message key="label.pm"/></a>
                     <a href="${pageContext.request.contextPath}/logout.html"><fmt:message key="label.logout"/></a>
                 </sec:authorize>
                 &nbsp
-                <sec:authorize access="isAnonymous()">
+                <sec:authorize access="hasRole('ROLE_ANONYMOUS')">
                     <a href="${pageContext.request.contextPath}/login.html"><fmt:message key="label.signin"/></a>
                     <a href="${pageContext.request.contextPath}/registration.html"><fmt:message key="label.signup"/></a>
                 </sec:authorize>
