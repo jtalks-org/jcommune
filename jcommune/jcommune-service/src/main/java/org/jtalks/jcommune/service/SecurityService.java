@@ -45,7 +45,13 @@ public interface SecurityService extends UserDetailsService {
      */
     String getCurrentUserUsername();
 
+    /**
+     * @param securedObject
+     */
     public void grantAdminPermissionsToCreatorAndAdmins(Persistent securedObject);
 
+    /**
+     * @param securedObject
+     */
     public void deleteFromAcl(Persistent securedObject);
 }
