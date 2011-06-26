@@ -18,11 +18,7 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Session;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.PrivateMessage;
-import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.*;
 
 /**
  * @author Kirill Afonin
@@ -66,8 +62,10 @@ public final class ObjectsFactory {
     public static Topic getDefaultTopic() {
         Topic newTopic = Topic.createNewTopic();
         newTopic.setTitle("topic title");
-        newTopic.setTopicStarter(persist(getDefaultUser()));
+        User user = persist(getDefaultUser());
+        newTopic.setTopicStarter(user);
         newTopic.setBranch(persist(getDefaultBranch()));
+        newTopic.setLastPost(getPost(user));
         return newTopic;
     }
 
