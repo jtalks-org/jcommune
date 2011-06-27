@@ -62,6 +62,33 @@ public class SignInTest {
     }
 
 
+    @Test(description = "Entered username in wrong case", dataProvider = "localeData")
+    public void signInWithWrongUsernameCase(String locale, String validationMessage, String pageTitle) throws Exception {
+        HtmlAnchor localeLink = mainPage.getAnchorByText(locale);
+        mainPage = (HtmlPage) localeLink.click();
+        submitWrongUsernameCaseData();
+        assertEquals(mainPage.getTitleText(), pageTitle);
+        assertTrue(mainPage.asText().contains(validationMessage));
+    }
+
+    @Test(description = "Entered password in wrong case", dataProvider = "localeData")
+    public void signInWithWrongPasswordCase(String locale, String validationMessage, String pageTitle) throws Exception {
+        HtmlAnchor localeLink = mainPage.getAnchorByText(locale);
+        mainPage = (HtmlPage) localeLink.click();
+        submitWrongPasswordCaseData();
+        assertEquals(mainPage.getTitleText(), pageTitle);
+        assertTrue(mainPage.asText().contains(validationMessage));
+    }
+
+    @Test(description = "Entered the non-registered username", dataProvider = "localeData")
+    public void signInWithWrongUsername(String locale, String validationMessage, String pageTitle) throws Exception {
+        HtmlAnchor localeLink = mainPage.getAnchorByText(locale);
+        mainPage = (HtmlPage) localeLink.click();
+        submitWrongUsernameData();
+        assertEquals(mainPage.getTitleText(), pageTitle);
+        assertTrue(mainPage.asText().contains(validationMessage));
+    }
+
     @Test(description = "Entered valid login data", dataProvider = "localeData")
     public void signInSuccess(String locale, String validationMessage, String pageTitle) throws Exception {
         HtmlAnchor localeLink = mainPage.getAnchorByText(locale);
@@ -86,6 +113,24 @@ public class SignInTest {
     public void submitEmptyData() throws Exception {
         usernameTextField.setValueAttribute("");
         passwordTextField.setValueAttribute("");
+        mainPage = submitButton.click();
+    }
+
+    public void submitWrongUsernameCaseData() throws Exception {
+        usernameTextField.setValueAttribute("TestUser");
+        passwordTextField.setValueAttribute("userpass");
+        mainPage = submitButton.click();
+    }
+
+    public void submitWrongPasswordCaseData() throws Exception {
+        usernameTextField.setValueAttribute("testuser");
+        passwordTextField.setValueAttribute("UserPass");
+        mainPage = submitButton.click();
+    }
+
+    public void submitWrongUsernameData() throws Exception {
+        usernameTextField.setValueAttribute("incorrectuser");
+        passwordTextField.setValueAttribute("userpass");
         mainPage = submitButton.click();
     }
 
