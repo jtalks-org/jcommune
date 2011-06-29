@@ -102,7 +102,6 @@ public class Topic extends Persistent {
      */
     public void addPost(Post newPost) {
         posts.add(newPost);
-        newPost.setTopic(this);
         this.lastPost = newPost;
     }
 

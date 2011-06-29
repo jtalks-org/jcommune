@@ -71,7 +71,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     public Post addAnswer(long topicId, String answerBody) throws NotFoundException {
         User currentUser = securityService.getCurrentUser();
-        // Check if the user is authenticated
         if (currentUser == null) {
             throw new IllegalStateException("User should log in to post answers.");
         }
@@ -81,19 +80,13 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
             throw new NotFoundException("Topic with id: " + topicId + " not found");
         }
 
-        Post newAnswer = addAnswerToTopic(answerBody, currentUser, topic);
+        Post answer = new Post(topic, currentUser, answerBody);
+        topic.addPost(answer);
+
         dao.saveOrUpdate(topic);
         logger.info("Added answer to topic " + topicId);
 
-        securityService.grantAdminPermissionsToCreatorAndAdmins(newAnswer);
-        return newAnswer;
-    }
-
-    private Post addAnswerToTopic(String answerBody, User currentUser, Topic topic) {
-        Post answer = Post.createNewPost();
-        answer.setPostContent(answerBody);
-        answer.setUserCreated(currentUser);
-        topic.addPost(answer);
+        securityService.grantAdminPermissionsToCreatorAndAdmins(answer);
         return answer;
     }
 
@@ -108,8 +101,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
             throw new IllegalStateException("User should log in to post answers.");
         }
 
-        Post post = newPost(bodyText, currentUser);
-        Topic topic = newTopic(topicName, branchId, currentUser);
+        Topic topic = new Topic(branchService.get(branchId), currentUser, topicName);
+        Post post = new Post(topic, currentUser, bodyText);
         topic.addPost(post);
 
         dao.saveOrUpdate(topic);
@@ -121,21 +114,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         logger.debug("Permissions granted on post: " + post.getId());
 
         return topic;
-    }
-
-    private Topic newTopic(String topicName, long branchId, User currentUser) throws NotFoundException {
-        Topic topic = Topic.createNewTopic();
-        topic.setTitle(topicName);
-        topic.setTopicStarter(currentUser);
-        topic.setBranch(branchService.get(branchId));
-        return topic;
-    }
-
-    private Post newPost(String bodyText, User currentUser) {
-        Post post = Post.createNewPost();
-        post.setUserCreated(currentUser);
-        post.setPostContent(bodyText);
-        return post;
     }
 
     /**
