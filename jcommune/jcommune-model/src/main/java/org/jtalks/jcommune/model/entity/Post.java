@@ -41,7 +41,7 @@ public class Post extends Persistent {
     private Topic topic;
 
     /**
-     * Constructs the instance with initialised fields.
+     * Constructs the instance with initialized fields.
      */
     public Post() {
     }
