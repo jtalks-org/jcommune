@@ -9,12 +9,14 @@
 <fmt:setLocale value="en"/>
 <html>
 <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" content=""/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0"/>
+    <meta http-equiv="Expires" content="-1"/>
+
     <title><decorator:title default="JCommune"/></title>
-    <meta name="keywords" content="">
-    <meta name="description" content="">
-    <meta http-equiv="Content-type" value="text/html; charset=utf-8" content="">
     <link href="${pageContext.request.contextPath}/css/main.css"
-          type=text/css rel=stylesheet>
+          type=text/css rel=stylesheet />
 </head>
 <body>
 <div align="center">
@@ -30,9 +32,9 @@
             <td bgcolor="#003366"></td>
         </tr>
         <tr>
-            <td class="background"><a
-                    href="${pageContext.request.contextPath}/main.html">&nbsp&nbsp<span
-                    class="nav"><fmt:message key="label.forum"/> </span> </a> | <span style="float: right">
+            <td class="background">
+                <a href="${pageContext.request.contextPath}/main.html">&nbsp&nbsp
+                    <span class="nav"><fmt:message key="label.forum"/> </span> </a> | <span style="float: right">
                 <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
                     <sec:authentication property="principal.username"/>&nbsp
                     <a href="${pageContext.request.contextPath}/pm/inbox.html"><fmt:message key="label.pm"/></a>

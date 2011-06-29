@@ -28,7 +28,7 @@
 
   <bean id="localeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"/>
 
-  <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver" />
+  <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver"/>
 
   <bean id="handlerMapping" class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
     <property name="interceptors" ref="localeInterceptor"/>
@@ -39,10 +39,17 @@
     <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
       <property name="paramName" value="lang"/>
     </bean>
+    <bean id="webContentInterceptor"
+          class="org.springframework.web.servlet.mvc.WebContentInterceptor">
+      <property name="cacheSeconds" value="0"/>
+      <property name="useExpiresHeader" value="true"/>
+      <property name="useCacheControlHeader" value="true"/>
+      <property name="useCacheControlNoStore" value="true"/>
+    </bean>
   </mvc:interceptors>
 
   <!-- simple pages -->
-  <mvc:view-controller path="/login.html" view-name="login" />
-  <mvc:view-controller path="/index.html" view-name="index" />
+  <mvc:view-controller path="/login.html" view-name="login"/>
+  <mvc:view-controller path="/index.html" view-name="index"/>
 
 </beans>
