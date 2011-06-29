@@ -21,10 +21,10 @@ import org.joda.time.DateTime;
 
 /**
  * Represents the simple version of post of the forum
- * with String content.<br>
- * Contains in some {@link Topic}. <br>
- * All fields of this object are required and can't be null.<br>
- * The topic field will be updated automatically when called Topic.addPost(Post). <br>
+ * with String content.<br/>
+ * Contains in some {@link Topic}. <br/>
+ * All fields of this object are required and can't be null.<br/>
+ * The topic field will be updated automatically when called Topic.addPost(Post). <br/>
  * The Post deletes automatically if the parent Topic deleted.
  * Use the static method Post.createNewPost() to create new post with current creationDate.
  *

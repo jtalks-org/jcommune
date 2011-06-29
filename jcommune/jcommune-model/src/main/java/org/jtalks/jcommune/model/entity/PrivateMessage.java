@@ -20,7 +20,7 @@ package org.jtalks.jcommune.model.entity;
 import org.joda.time.DateTime;
 
 /**
- * Text message to send from one user to another. <br>
+ * Text message to send from one user to another. <br/>
  * All fields are required. 
  * Use the static method PrivateMessage.createNewPrivateMessage() 
  * to create new PrivateMessage with current creationDate.
