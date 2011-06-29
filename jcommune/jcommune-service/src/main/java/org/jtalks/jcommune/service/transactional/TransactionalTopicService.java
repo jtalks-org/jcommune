@@ -84,7 +84,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         topic.addPost(answer);
 
         dao.saveOrUpdate(topic);
-        logger.info("Added answer to topic " + topicId);
+        logger.debug("Added answer to topic {}", topicId);
 
         securityService.grantAdminPermissionsToCreatorAndAdmins(answer);
         return answer;
@@ -106,12 +106,12 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         topic.addPost(post);
 
         dao.saveOrUpdate(topic);
-        logger.info("Created new topic " + topic.getId());
+        logger.debug("Created new topic {}" , topic.getId());
 
         securityService.grantAdminPermissionsToCreatorAndAdmins(topic);
-        logger.debug("Permissions granted on topic: " + topic.getId());
+        logger.debug("Permissions granted on topic: {}", topic.getId());
         securityService.grantAdminPermissionsToCreatorAndAdmins(post);
-        logger.debug("Permissions granted on post: " + post.getId());
+        logger.debug("Permissions granted on post: {}", post.getId());
 
         return topic;
     }
@@ -129,7 +129,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         }
         deletePostFromTopic(postId, topic);
         dao.saveOrUpdate(topic);
-        logger.debug("Deleted post with id: " + postId);
+        logger.debug("Deleted post with id: {}", postId);
     }
 
     private void deletePostFromTopic(long postId, Topic topic) throws NotFoundException {

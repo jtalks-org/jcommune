@@ -71,7 +71,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
 
         dao.saveOrUpdate(user);
 
-        logger.info("User registered: " + user.getUsername());
+        logger.info("User registered: {}", user.getUsername());
         return user;
     }
 
