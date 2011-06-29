@@ -87,11 +87,6 @@
         <artifactId>slf4j-log4j12</artifactId>
         <version>1.6.1</version>
       </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
-        <version>1.5.11</version>
-      </dependency>
       <!-- Spring -->
       <dependency>
         <groupId>org.springframework</groupId>
@@ -133,6 +128,13 @@
         <artifactId>spring-tx</artifactId>
         <version>${springVersion}</version>
       </dependency>
+	  <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-test</artifactId>
+        <version>${springVersion}</version>
+        <type>jar</type>
+        <scope>compile</scope>
+      </dependency>
       <!-- Spring Security -->
       <dependency>
         <groupId>org.springframework.security</groupId>
@@ -171,6 +173,16 @@
         <artifactId>joda-time</artifactId>
         <version>1.5</version>
       </dependency>
+	  <dependency>
+        <groupId>joda-time</groupId>
+        <artifactId>joda-time-jsptags</artifactId>
+        <version>1.0.2</version>
+      </dependency>
+	  <dependency>
+        <groupId>joda-time</groupId>
+        <artifactId>joda-time-hibernate</artifactId>
+        <version>1.2</version>
+      </dependency>
       <!-- EhCache -->
       <dependency>
         <groupId>net.sf.ehcache</groupId>
@@ -184,18 +196,20 @@
         <version>6.0</version>
         <scope>test</scope>
       </dependency>
+	  <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-all</artifactId>
+        <version>1.8.5</version>
+        <type>jar</type>
+        <scope>compile</scope>
+      </dependency>
       <dependency>
         <groupId>org.hsqldb</groupId>
         <artifactId>hsqldb</artifactId>
         <version>1.8.0.10</version>
         <scope>test</scope>
       </dependency>
-      <dependency>
-        <groupId>org.unitils</groupId>
-        <artifactId>unitils-core</artifactId>
-        <version>3.1</version>
-        <scope>test</scope>
-      </dependency>
+	  <!--Servlet & JSP-->
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>jstl</artifactId>
@@ -204,6 +218,7 @@
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>servlet-api</artifactId>
+		<scope>provided</scope>
         <version>2.5</version>
       </dependency>
       <dependency>
@@ -211,35 +226,18 @@
         <artifactId>jsp-api</artifactId>
         <scope>provided</scope>
         <version>2.0</version>
-      </dependency>      
+      </dependency>   
+	  <!--Others-->
       <dependency>
         <groupId>opensymphony</groupId>
         <artifactId>sitemesh</artifactId>
         <version>2.4.2</version>
       </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-test</artifactId>
-        <version>${springVersion}</version>
-        <type>jar</type>
-        <scope>compile</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-all</artifactId>
-        <version>1.8.5</version>
-        <type>jar</type>
-        <scope>compile</scope>
-      </dependency>
-      <dependency>
-        <groupId>joda-time</groupId>
-        <artifactId>joda-time-hibernate</artifactId>
-        <version>1.2</version>
-      </dependency>
-      <dependency>
-        <groupId>joda-time</groupId>
-        <artifactId>joda-time-jsptags</artifactId>
-        <version>1.0.2</version>
+	  <dependency>
+        <groupId>org.unitils</groupId>
+        <artifactId>unitils-core</artifactId>
+        <version>3.1</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>commons-beanutils</groupId>
