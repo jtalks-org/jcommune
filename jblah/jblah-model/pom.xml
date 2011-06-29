@@ -22,10 +22,14 @@
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
 		<resources>
-			<resource>src/main/resources</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
 		</resources>
 		<testResources>
-			<testResource>src/test/resources</testResource>
+			<testResource>
+				<directory>src/test/resources</directory>
+			</testResource>
 		</testResources>
 	</build>
 
