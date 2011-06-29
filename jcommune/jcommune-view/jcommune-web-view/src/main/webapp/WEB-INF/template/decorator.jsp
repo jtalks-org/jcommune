@@ -22,30 +22,30 @@
 <div align="center">
     <table cellspacing=0 cellpadding=0 width=100% border=0>
         <tr>
-            <td><span class="textlogo1"><b>JTalks Developers</b>&nbsp</span>
+            <td><span class="textlogo1"><b>JTalks Developers</b>&nbsp;</span>
             </td>
         </tr>
     </table>
-    &nbsp
+    &nbsp;
     <table cellspacing=0 cellpadding=5 width=100% border=0>
         <tr>
             <td bgcolor="#003366"></td>
         </tr>
         <tr>
             <td class="background">
-                <a href="${pageContext.request.contextPath}/main.html">&nbsp&nbsp
+                <a href="${pageContext.request.contextPath}/main.html">&nbsp;&nbsp;
                     <span class="nav"><fmt:message key="label.forum"/> </span> </a> | <span style="float: right">
                 <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                    <sec:authentication property="principal.username"/>&nbsp
+                    <sec:authentication property="principal.username"/>&nbsp;
                     <a href="${pageContext.request.contextPath}/pm/inbox.html"><fmt:message key="label.pm"/></a>
                     <a href="${pageContext.request.contextPath}/logout.html"><fmt:message key="label.logout"/></a>
                 </sec:authorize>
-                &nbsp
+                &nbsp;
                 <sec:authorize access="hasRole('ROLE_ANONYMOUS')">
                     <a href="${pageContext.request.contextPath}/login.html"><fmt:message key="label.signin"/></a>
                     <a href="${pageContext.request.contextPath}/registration.html"><fmt:message key="label.signup"/></a>
                 </sec:authorize>
-                &nbsp
+                &nbsp;
                 <a href="?lang=en">En</a> | <a href="?lang=ru">Ru</a> </span></td>
         </tr>
         <tr>
@@ -54,7 +54,7 @@
         </tr>
 
     </table>
-    &nbsp
+    &nbsp;
 
 </div>
 <decorator:body/>
