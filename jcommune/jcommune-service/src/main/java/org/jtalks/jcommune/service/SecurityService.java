@@ -51,7 +51,7 @@ public interface SecurityService extends UserDetailsService {
      *
      * @param securedObject a new secured object.
      */
-    public void grantAdminPermissionsToCreatorAndAdmins(Persistent securedObject);
+    public void grantAdminPermissionToCurrentUserAndAdmins(Persistent securedObject);
 
     /**
      * Delete object from acl. All permissions will be removed.

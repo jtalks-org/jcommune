@@ -103,7 +103,7 @@ public class TransactionalTopicServiceTest {
         verify(securityService).getCurrentUser();
         verify(topicDao).get(TOPIC_ID);
         verify(topicDao).saveOrUpdate(answeredTopic);
-        verify(securityService).grantAdminPermissionsToCreatorAndAdmins(createdPost);
+        verify(securityService).grantAdminPermissionToCurrentUserAndAdmins(createdPost);
     }
 
     @Test(expectedExceptions = {IllegalStateException.class})
@@ -139,8 +139,8 @@ public class TransactionalTopicServiceTest {
         verify(securityService).getCurrentUser();
         verify(topicDao).saveOrUpdate(createdTopic);
         verify(branchService).get(BRANCH_ID);
-        verify(securityService).grantAdminPermissionsToCreatorAndAdmins(createdPost);
-        verify(securityService).grantAdminPermissionsToCreatorAndAdmins(createdTopic);
+        verify(securityService).grantAdminPermissionToCurrentUserAndAdmins(createdPost);
+        verify(securityService).grantAdminPermissionToCurrentUserAndAdmins(createdTopic);
     }
 
     @Test(expectedExceptions = {IllegalStateException.class})

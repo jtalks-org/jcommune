@@ -86,7 +86,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         dao.saveOrUpdate(topic);
         logger.debug("Added answer to topic {}", topicId);
 
-        securityService.grantAdminPermissionsToCreatorAndAdmins(answer);
+        securityService.grantAdminPermissionToCurrentUserAndAdmins(answer);
         return answer;
     }
 
@@ -108,9 +108,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         dao.saveOrUpdate(topic);
         logger.debug("Created new topic {}" , topic.getId());
 
-        securityService.grantAdminPermissionsToCreatorAndAdmins(topic);
+        securityService.grantAdminPermissionToCurrentUserAndAdmins(topic);
         logger.debug("Permissions granted on topic: {}", topic.getId());
-        securityService.grantAdminPermissionsToCreatorAndAdmins(post);
+        securityService.grantAdminPermissionToCurrentUserAndAdmins(post);
         logger.debug("Permissions granted on post: {}", post.getId());
 
         return topic;
