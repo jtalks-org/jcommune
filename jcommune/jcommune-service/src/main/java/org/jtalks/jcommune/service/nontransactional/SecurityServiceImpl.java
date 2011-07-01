@@ -119,8 +119,7 @@ public class SecurityServiceImpl implements SecurityService {
                                Permission permission) {
         MutableAcl acl;
         // create identity for securedObject
-        ObjectIdentity oid = new ObjectIdentityImpl(securedObject.getClass().getCanonicalName(),
-                securedObject.getId());
+        ObjectIdentity oid = createIdentityFor(securedObject);
 
         try {
             acl = (MutableAcl) mutableAclService.readAclById(oid);
@@ -128,10 +127,25 @@ public class SecurityServiceImpl implements SecurityService {
             // create new Acl if not exist
             acl = mutableAclService.createAcl(oid);
         }
+
         // add permission to acl for recipient
         acl.insertAce(acl.getEntries().size(), permission, recipient, true);
         mutableAclService.updateAcl(acl);
         logger.debug("Added permission {} for Sid {} securedObject {}", new Object[]{permission, recipient, securedObject});
+    }
+
+    /**
+     * Creates {@code ObjectIdentity} for {@code securedObject}
+     *
+     * @param securedObject object
+     * @return identity with {@code securedObject} class name and id
+     */
+    private ObjectIdentity createIdentityFor(Persistent securedObject) {
+        if (securedObject.getId() <= 0) {
+            throw new IllegalStateException("Object id must be assigned before creating acl.");
+        }
+        return new ObjectIdentityImpl(securedObject.getClass().getCanonicalName(),
+                securedObject.getId());
     }
 
     /**
@@ -144,8 +158,7 @@ public class SecurityServiceImpl implements SecurityService {
     private void deletePermission(Persistent securedObject, Sid recipient,
                                   Permission permission) {
         // create identity for securedObject
-        ObjectIdentity oid = new ObjectIdentityImpl(securedObject.getClass().getCanonicalName(),
-                securedObject.getId());
+        ObjectIdentity oid = createIdentityFor(securedObject);
         MutableAcl acl = (MutableAcl) mutableAclService.readAclById(oid);
 
         // Remove all permissions associated with this particular recipient
@@ -158,8 +171,8 @@ public class SecurityServiceImpl implements SecurityService {
                 acl.deleteAce(i);
             }
         }
-        mutableAclService.updateAcl(acl);        
-        logger.debug("Deleted securedObject {} ACL permissions for recipient {}" ,securedObject, recipient);
+        mutableAclService.updateAcl(acl);
+        logger.debug("Deleted securedObject {} ACL permissions for recipient {}", securedObject, recipient);
     }
 
     /**
@@ -177,7 +190,7 @@ public class SecurityServiceImpl implements SecurityService {
      * {@inheritDoc}
      */
     @Override
-    public void grantAdminPermissionsToCreatorAndAdmins(Persistent securedObject) {
+    public void grantAdminPermissionToCurrentUserAndAdmins(Persistent securedObject) {
         addPermissionsForAdmins(securedObject);
         addPermissionToCurrentUser(securedObject, BasePermission.ADMINISTRATION);
     }
@@ -195,6 +208,9 @@ public class SecurityServiceImpl implements SecurityService {
      */
     @Override
     public void deleteFromAcl(Class clazz, long id) {
+        if (id <= 0) {
+            throw new IllegalStateException("Object id must be greater then 0.");
+        }
         ObjectIdentity oid = new ObjectIdentityImpl(clazz.getCanonicalName(), id);
         mutableAclService.deleteAcl(oid, true);
         logger.debug("Deleted securedObject {} with id: {}", clazz, id);
