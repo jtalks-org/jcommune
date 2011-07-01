@@ -1,10 +1,12 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityContextFacade;
 import org.jtalks.jcommune.service.SecurityService;
-import org.springframework.security.acls.model.MutableAclService;
+import org.springframework.security.acls.domain.*;
+import org.springframework.security.acls.model.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +16,8 @@ import org.testng.annotations.Test;
 import sun.security.acl.PrincipalImpl;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
@@ -138,6 +142,57 @@ public class SecurityServiceImplTest {
         when(userDao.getByUsername(USERNAME)).thenReturn(null);
 
         securityService.loadUserByUsername(USERNAME);
+    }
+
+    @Test
+    public void testGrantAdminPermissionsToCurrentUserAndAdmins() throws Exception {
+        mockCurrentUserPrincipal();
+        Post object = Post.createNewPost();
+        object.setId(1L);
+        ObjectIdentity objectIdentity = new ObjectIdentityImpl(Post.class.getCanonicalName(), object.getId());
+        MutableAcl objectAcl = new AclImpl(objectIdentity, 2L, mock(AclAuthorizationStrategy.class),
+                mock(AuditLogger.class));
+        when(mutableAclService.readAclById(objectIdentity))
+                .thenThrow(new NotFoundException(""))
+                .thenReturn(objectAcl);
+        when(mutableAclService.createAcl(objectIdentity)).thenReturn(objectAcl);
+
+        securityService.grantAdminPermissionToCurrentUserAndAdmins(object);
+
+        assertGranted(objectAcl, new PrincipalSid(USERNAME),
+                BasePermission.ADMINISTRATION, "Permission to current user not granted");
+        assertGranted(objectAcl, new GrantedAuthoritySid("ROLE_ADMIN"),
+                BasePermission.ADMINISTRATION, "Permission to ROLE_ADMIN not granted");
+        verify(mutableAclService, times(2)).readAclById(objectIdentity);
+        verify(mutableAclService).createAcl(objectIdentity);
+        verify(mutableAclService, times(2)).updateAcl(objectAcl);
+    }
+
+    @Test(expectedExceptions = {IllegalStateException.class})
+    public void testGrantAdminPermissionsToCurrentUserAndAdminsWithZeroId() {
+        mockCurrentUserPrincipal();
+        Post object = Post.createNewPost();
+
+        securityService.grantAdminPermissionToCurrentUserAndAdmins(object);
+    }
+
+    private void assertGranted(MutableAcl acl, Sid sid, Permission permission, String message) {
+        List<Permission> expectedPermission = new ArrayList<Permission>();
+        expectedPermission.add(permission);
+        List<Sid> expectedSid = new ArrayList<Sid>();
+        expectedSid.add(sid);
+        try {
+            assertTrue(acl.isGranted(expectedPermission, expectedSid, true), message);
+        } catch (NotFoundException e) {
+            fail(message);
+        }
+    }
+
+    private void mockCurrentUserPrincipal() {
+        Principal user = new PrincipalImpl(USERNAME);
+        Authentication auth = mock(Authentication.class);
+        when(auth.getPrincipal()).thenReturn(user);
+        when(securityContext.getAuthentication()).thenReturn(auth);
     }
 
 }
