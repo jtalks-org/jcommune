@@ -131,7 +131,9 @@ public class SecurityServiceImpl implements SecurityService {
         // add permission to acl for recipient
         acl.insertAce(acl.getEntries().size(), permission, recipient, true);
         mutableAclService.updateAcl(acl);
-        logger.debug("Added permission {} for Sid {} securedObject {}", new Object[]{permission, recipient, securedObject});
+        logger.debug("Added permission mask {} for Sid {} securedObject {} id {}", 
+                new Object[]{permission.getMask(), recipient, securedObject.getClass().getSimpleName(), 
+                securedObject.getId()});
     }
 
     /**
@@ -149,13 +151,10 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     /**
-     * Delete {@code permission} from {@code recipient} on {@code securedObject}
-     *
-     * @param securedObject object for authorization with existent Acl
-     * @param recipient     sid from which will permission be removed
-     * @param permission    granted permission
+     * {@inheritDoc}
      */
-    private void deletePermission(Persistent securedObject, Sid recipient,
+    @Override
+    public void deletePermission(Persistent securedObject, Sid recipient,
                                   Permission permission) {
         // create identity for securedObject
         ObjectIdentity oid = createIdentityFor(securedObject);
@@ -171,8 +170,11 @@ public class SecurityServiceImpl implements SecurityService {
                 acl.deleteAce(i);
             }
         }
+        
         mutableAclService.updateAcl(acl);
-        logger.debug("Deleted securedObject {} ACL permissions for recipient {}", securedObject, recipient);
+        logger.debug("Deleted securedObject {} id {} ACL permissions for recipient {}", 
+                new Object[]{securedObject.getClass().getSimpleName(), securedObject.getId(), 
+                recipient});
     }
 
     /**
@@ -213,7 +215,7 @@ public class SecurityServiceImpl implements SecurityService {
         }
         ObjectIdentity oid = new ObjectIdentityImpl(clazz.getCanonicalName(), id);
         mutableAclService.deleteAcl(oid, true);
-        logger.debug("Deleted securedObject {} with id: {}", clazz, id);
+        logger.debug("Deleted securedObject {} with id: {}", clazz.getSimpleName(), id);
     }
 
     /**

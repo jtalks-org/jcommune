@@ -195,4 +195,67 @@ public class SecurityServiceImplTest {
         when(securityContext.getAuthentication()).thenReturn(auth);
     }
 
+    @Test
+    public void testDeleteFromAcl() throws Exception {
+        Post object = Post.createNewPost();
+        object.setId(1L);
+        ObjectIdentity objectIdentity = new ObjectIdentityImpl(Post.class.getCanonicalName(), object.getId());
+
+        securityService.deleteFromAcl(object);
+
+        verify(mutableAclService).deleteAcl(objectIdentity, true);
+    }
+
+    @Test(expectedExceptions = {IllegalStateException.class})
+    public void testDeleteFromAclWithZeroId() throws Exception {
+        Post object = Post.createNewPost();
+
+        securityService.deleteFromAcl(object);
+    }
+
+    @Test
+    public void testDeletePermission(){
+        mockCurrentUserPrincipal();
+        Post object = Post.createNewPost();
+        object.setId(1L);
+        ObjectIdentity objectIdentity = new ObjectIdentityImpl(Post.class.getCanonicalName(), object.getId());
+        MutableAcl objectAcl = new AclImpl(objectIdentity, 2L, mock(AclAuthorizationStrategy.class),
+                mock(AuditLogger.class));
+        when(mutableAclService.readAclById(objectIdentity))
+                .thenThrow(new NotFoundException(""))
+                .thenReturn(objectAcl);
+        when(mutableAclService.createAcl(objectIdentity)).thenReturn(objectAcl);
+
+        securityService.grantAdminPermissionToCurrentUserAndAdmins(object);
+
+        securityService.deletePermission(object, new PrincipalSid(USERNAME), 
+                BasePermission.ADMINISTRATION);
+
+        assertTookAwayGrant(objectAcl, new PrincipalSid(USERNAME),
+                BasePermission.ADMINISTRATION, "Permission from current user wasn't taken away");        
+
+        securityService.deletePermission(object, new GrantedAuthoritySid("ROLE_ADMIN"), 
+                BasePermission.ADMINISTRATION);        
+
+        assertTookAwayGrant(objectAcl, new GrantedAuthoritySid("ROLE_ADMIN"),
+                BasePermission.ADMINISTRATION, "Permission from ROLE_ADMIN wasn't taken away");
+
+        verify(mutableAclService, times(4)).readAclById(objectIdentity);
+        verify(mutableAclService, times(4)).updateAcl(objectAcl);
+    }
+
+    private void assertTookAwayGrant(MutableAcl acl, Sid sid, Permission permission, String message) {
+        List<Permission> expectedPermission = new ArrayList<Permission>();
+        expectedPermission.add(permission);
+        List<Sid> expectedSid = new ArrayList<Sid>();
+        expectedSid.add(sid);
+        boolean granted = true;
+        try {
+            acl.isGranted(expectedPermission, expectedSid, true);
+        } catch (NotFoundException e) {
+        	granted = false;
+        }
+        assertFalse(granted, message);
+    }
+
 }

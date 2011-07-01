@@ -19,6 +19,8 @@ package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.Persistent;
 import org.jtalks.jcommune.model.entity.User;
+import org.springframework.security.acls.model.Permission;
+import org.springframework.security.acls.model.Sid;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
@@ -67,4 +69,14 @@ public interface SecurityService extends UserDetailsService {
      * @param id    object id
      */
     public void deleteFromAcl(Class clazz, long id);
+    
+    /**
+     * Delete {@code permission} from {@code recipient} on {@code securedObject}
+     *
+     * @param securedObject object for authorization with existent Acl
+     * @param recipient     sid from which will permission be removed
+     * @param permission    granted permission
+     */
+    public void deletePermission(Persistent securedObject, Sid recipient,
+            Permission permission);
 }
