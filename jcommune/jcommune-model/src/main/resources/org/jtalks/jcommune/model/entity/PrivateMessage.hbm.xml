@@ -25,12 +25,20 @@
   </class>
   <query name="getAllFromUser">
     <![CDATA[FROM PrivateMessage as pm 
-             WHERE pm.userFrom = :user 
+             WHERE pm.userFrom = :user
+             and pm.status != :status
              ORDER BY pm.creationDate DESC]]>
   </query>
   <query name="getAllToUser">
     <![CDATA[FROM PrivateMessage as pm 
-             WHERE pm.userTo = :user 
+             WHERE pm.userTo = :user
+             and pm.status != :status
+             ORDER BY pm.creationDate DESC]]>
+  </query>
+  <query name="getDraftsFromUser">
+    <![CDATA[FROM PrivateMessage as pm
+             WHERE pm.userFrom = :user
+             and pm.status = :status
              ORDER BY pm.creationDate DESC]]>
   </query>
 </hibernate-mapping>
