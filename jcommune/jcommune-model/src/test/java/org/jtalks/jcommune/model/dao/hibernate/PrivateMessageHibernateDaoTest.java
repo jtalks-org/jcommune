@@ -17,14 +17,15 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import java.util.List;
 import org.hibernate.HibernateException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
+import org.jtalks.jcommune.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -32,11 +33,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.List;
+
 import static org.testng.Assert.*;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
- *
  * @author Pavel Vervenko
  */
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
@@ -102,7 +104,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
 
         assertEquals(result.getBody(), newBody);
     }
-    
+
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void testUpdateNotNullViolation() {
         PrivateMessage pm = getSavedPm();
@@ -110,8 +112,8 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
 
         dao.saveOrUpdate(pm);
     }
-    
-     @Test
+
+    @Test
     public void testDelete() {
         PrivateMessage pm = getSavedPm();
 
@@ -127,40 +129,88 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         boolean result = dao.delete(-100500L);
 
         assertFalse(result, "Entity deleted");
-    }   
+    }
 
     @Test
     public void testGetAllFromUser() {
-        PrivateMessage pm = getSavedPm();
-        
-        List<PrivateMessage> listFrom = dao.getAllFromUser(pm.getUserFrom());
-        
-        assertEquals(listFrom.size(), 1);
-        assertEquals(pm, listFrom.get(0));
+        User author = ObjectsFactory.getUser("author", "author@aaa.com");
+        User recipient = ObjectsFactory.getUser("recipient", "recipient@aaa.com");
+        session.saveOrUpdate(author);
+        session.saveOrUpdate(recipient);
+        // saving messages with different statuses
+        PrivateMessage notReadedPm = ObjectsFactory.getPrivateMessage(recipient, author);
+        PrivateMessage readedPm = ObjectsFactory.getPrivateMessage(recipient, author);
+        readedPm.setStatus(PrivateMessageStatus.READED);
+        PrivateMessage draftPm = ObjectsFactory.getPrivateMessage(recipient, author);
+        draftPm.setStatus(PrivateMessageStatus.DRAFT);
+        session.save(notReadedPm);
+        session.save(readedPm);
+        session.save(draftPm);
+
+        List<PrivateMessage> listFrom = dao.getAllFromUser(author);
+
+        assertEquals(listFrom.size(), 2);
+        assertFalse(listFrom.contains(draftPm));
     }
-    
+
     @Test
     public void testGetAllToUser() {
-        PrivateMessage pm = getSavedPm();
-        
-        List<PrivateMessage> listFrom = dao.getAllForUser(pm.getUserTo());
-        
-        assertEquals(listFrom.size(), 1);
-        assertEquals(pm, listFrom.get(0));
-    }   
-    
+        User author = ObjectsFactory.getUser("author", "author@aaa.com");
+        User recipient = ObjectsFactory.getUser("recipient", "recipient@aaa.com");
+        session.saveOrUpdate(author);
+        session.saveOrUpdate(recipient);
+        // saving messages with different statuses
+        PrivateMessage notReadedPm = ObjectsFactory.getPrivateMessage(recipient, author);
+        PrivateMessage readedPm = ObjectsFactory.getPrivateMessage(recipient, author);
+        readedPm.setStatus(PrivateMessageStatus.READED);
+        PrivateMessage draftPm = ObjectsFactory.getPrivateMessage(recipient, author);
+        draftPm.setStatus(PrivateMessageStatus.DRAFT);
+        session.save(notReadedPm);
+        session.save(readedPm);
+        session.save(draftPm);
+
+        List<PrivateMessage> listFrom = dao.getAllForUser(recipient);
+
+        assertEquals(listFrom.size(), 2);
+        assertFalse(listFrom.contains(draftPm));
+    }
+
+    @Test
+    public void testGetDraftsFromUser() {
+        User author = ObjectsFactory.getUser("author", "author@aaa.com");
+        User recipient = ObjectsFactory.getUser("recipient", "recipient@aaa.com");
+        session.saveOrUpdate(author);
+        session.saveOrUpdate(recipient);
+        // saving messages with different statuses
+        PrivateMessage notReadedPm = ObjectsFactory.getPrivateMessage(recipient, author);
+        PrivateMessage readedPm = ObjectsFactory.getPrivateMessage(recipient, author);
+        readedPm.setStatus(PrivateMessageStatus.READED);
+        PrivateMessage draftPm = ObjectsFactory.getPrivateMessage(recipient, author);
+        draftPm.setStatus(PrivateMessageStatus.DRAFT);
+        session.save(notReadedPm);
+        session.save(readedPm);
+        session.save(draftPm);
+
+        List<PrivateMessage> list = dao.getDraftsFromUser(author);
+
+        assertEquals(list.size(), 1);
+        assertEquals(list.get(0), draftPm);
+    }
+
     /**
      * Count the number of PrivateMessage in the db.
-     * @return 
+     *
+     * @return
      */
     private int getCount() {
         return ((Number) session.createQuery("select count(*) from PrivateMessage").uniqueResult()).intValue();
     }
-    
+
     /**
      * Create new PrivateMessage with filled fields and save it.
+     *
      * @return saved object
-     * @throws HibernateException 
+     * @throws HibernateException
      */
     private PrivateMessage getSavedPm() throws HibernateException {
         PrivateMessage pm = ObjectsFactory.getDefaultPrivateMessage();
