@@ -23,7 +23,6 @@ import org.jtalks.jcommune.model.dao.Dao;
 import org.jtalks.jcommune.model.entity.Persistent;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.List;
 
 /**
  * Basic class for access to the {@link Persistent} objects.
