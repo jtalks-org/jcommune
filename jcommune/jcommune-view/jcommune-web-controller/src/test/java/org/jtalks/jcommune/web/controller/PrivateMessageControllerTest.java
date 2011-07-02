@@ -17,6 +17,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
@@ -35,7 +36,6 @@ import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnMod
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 
 /**
- *
  * @author Pavel Vervenko
  */
 public class PrivateMessageControllerTest {
@@ -93,24 +93,36 @@ public class PrivateMessageControllerTest {
         PrivateMessageDto dto = getPrivateMessageDto();
         BeanPropertyBindingResult resultWithErrors = mock(BeanPropertyBindingResult.class);
         when(resultWithErrors.hasErrors()).thenReturn(Boolean.TRUE);
-        
+
         ModelAndView mav = controller.submitNewPm(dto, resultWithErrors);
-        
+
         assertViewName(mav, "pm/newPm");
     }
-    
+
     @Test
     public void submitWithWrongUser() throws NotFoundException {
         PrivateMessageDto dto = getPrivateMessageDto();
         doThrow(new NotFoundException()).when(pmService).sendMessage(dto.getTitle(), dto.getBody(), dto.getRecipient());
-        
+
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
         ModelAndView mav = controller.submitNewPm(dto, bindingResult);
 
         assertViewName(mav, "pm/newPm");
         verify(pmService).sendMessage(dto.getTitle(), dto.getBody(), dto.getRecipient());
     }
-    
+
+    @Test
+    public void testShow() throws NotFoundException {
+        long pmId = 2L;
+        PrivateMessage pm = new PrivateMessage();
+        when(pmService.get(pmId)).thenReturn(pm);
+
+        controller.show(pmId);
+
+        verify(pmService).get(pmId);
+        verify(pmService).markAsReaded(pm);
+    }
+
     private PrivateMessageDto getPrivateMessageDto() {
         PrivateMessageDto dto = new PrivateMessageDto();
         dto.setBody("body");
