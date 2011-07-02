@@ -24,6 +24,7 @@
                     <td><spring:message code="label.sending_date"/></td>
                 </tr>
                 <c:forEach var="pm" items="${pmList}">
+                <tr>
                     <c:choose>
                         <c:when test="${pm.readed}">
                             <tr>
@@ -43,7 +44,7 @@
                                      locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
                                      pattern="dd MMM yyyy HH:mm"/>
                     </td>
-                    </tr>
+                </tr>
                 </c:forEach>
             </table>
         </td>
