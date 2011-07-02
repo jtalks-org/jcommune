@@ -25,11 +25,11 @@
                 </tr>
                 <c:forEach var="pm" items="${pmList}">
                     <c:choose>
-                        <c:when test="${pm.readed}">
+                        <c:when test="${pm.read}">
                             <tr>
                         </c:when>
                         <c:otherwise>
-                            <tr bgcolor="#32cd32">
+                            <tr bgcolor="#b0c4de">
                         </c:otherwise>
                     </c:choose>
                     <td>
