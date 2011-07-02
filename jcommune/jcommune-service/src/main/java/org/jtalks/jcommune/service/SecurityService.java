@@ -53,14 +53,14 @@ public interface SecurityService extends UserDetailsService {
      *
      * @param securedObject a new secured object.
      */
-    public void grantAdminPermissionToCurrentUserAndAdmins(Persistent securedObject);
+    void grantAdminPermissionToCurrentUserAndAdmins(Persistent securedObject);
 
     /**
      * Delete object from acl. All permissions will be removed.
      *
      * @param securedObject a removed secured object.
      */
-    public void deleteFromAcl(Persistent securedObject);
+    void deleteFromAcl(Persistent securedObject);
 
     /**
      * Delete object from acl. All permissions will be removed.
@@ -68,7 +68,7 @@ public interface SecurityService extends UserDetailsService {
      * @param clazz object {@code Class}
      * @param id    object id
      */
-    public void deleteFromAcl(Class clazz, long id);
+    void deleteFromAcl(Class clazz, long id);
 
     /**
      * Delete {@code permission} from {@code recipient} on {@code securedObject}
@@ -77,6 +77,6 @@ public interface SecurityService extends UserDetailsService {
      * @param recipient     sid from which will permission be removed
      * @param permission    granted permission
      */
-    public void deletePermission(Persistent securedObject, Sid recipient,
-                                 Permission permission);
+    void deletePermission(Persistent securedObject, Sid recipient,
+                          Permission permission);
 }
