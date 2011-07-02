@@ -17,19 +17,19 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import java.util.ArrayList;
-
-import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.testng.Assert;
+import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.User;
-import org.testng.annotations.Test;
-import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.service.SecurityService;
+import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import java.util.ArrayList;
 
 import static org.mockito.Mockito.*;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Pavel Vervenko
@@ -40,8 +40,8 @@ public class TransactionalPrivateMessageServiceTest {
     private SecurityService securityService;
     private TransactionalPrivateMessageService pmService;
     private UserService userService;
-    private static final long PM_ID = 100L;
-    private static final String PM_UUID = "xxxx1";
+    private static final Long PM_ID = 1L;
+
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -95,5 +95,15 @@ public class TransactionalPrivateMessageServiceTest {
 
         verify(pmDao, never()).saveOrUpdate(pm);
         verify(userService).getByUsername(wrongUsername);
+    }
+
+    @Test
+    public void testMarkAsReaded() {
+        PrivateMessage pm = new PrivateMessage();
+
+        pmService.markAsReaded(pm);
+
+        assertTrue(pm.isReaded());
+        verify(pmDao).saveOrUpdate(pm);
     }
 }
