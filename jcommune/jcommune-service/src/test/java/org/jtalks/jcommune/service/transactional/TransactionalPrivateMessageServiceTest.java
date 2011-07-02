@@ -29,10 +29,12 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 
 import static org.mockito.Mockito.*;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 /**
  * @author Pavel Vervenko
+ * @author Kirill Afonin
  */
 public class TransactionalPrivateMessageServiceTest {
 
@@ -40,7 +42,7 @@ public class TransactionalPrivateMessageServiceTest {
     private SecurityService securityService;
     private TransactionalPrivateMessageService pmService;
     private UserService userService;
-    private static final Long PM_ID = 1L;
+    private static final long PM_ID = 1L;
 
 
     @BeforeMethod
@@ -104,6 +106,30 @@ public class TransactionalPrivateMessageServiceTest {
         pmService.markAsReaded(pm);
 
         assertTrue(pm.isReaded());
+        verify(pmDao).saveOrUpdate(pm);
+    }
+
+    @Test
+    public void testGetDraftsFromCurrentUser() {
+        User user = new User();
+        when(pmDao.getDraftsFromUser(user)).thenReturn(new ArrayList<PrivateMessage>());
+        when(securityService.getCurrentUser()).thenReturn(user);
+
+        pmService.getDraftsFromCurrentUser();
+
+        verify(pmDao).getDraftsFromUser(user);
+        verify(securityService).getCurrentUser();
+    }
+
+    @Test
+    public void testSaveDraft() throws NotFoundException {
+        String recipient = "recipient";
+
+        PrivateMessage pm = pmService.saveDraft(PM_ID, "body", "title", recipient);
+
+        assertEquals(pm.getId(), PM_ID);
+        verify(securityService).getCurrentUser();
+        verify(userService).getByUsername(recipient);
         verify(pmDao).saveOrUpdate(pm);
     }
 }

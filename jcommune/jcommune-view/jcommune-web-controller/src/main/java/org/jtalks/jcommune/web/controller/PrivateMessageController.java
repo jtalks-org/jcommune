@@ -36,9 +36,10 @@ import javax.validation.Valid;
 
 /**
  * MVC controller for Private Messaging. Handles request for inbox, outbox and new private messages.
- * 
+ *
  * @author Pavel Vervenko
  * @author Max Malakhov
+ * @author Kirill Afonin
  */
 @Controller
 public class PrivateMessageController {
@@ -48,7 +49,7 @@ public class PrivateMessageController {
 
     /**
      * Requires {@link PrivateMessageService} for manipulations with messages.
-     * 
+     *
      * @param pmService the PrivateMessageService instance
      */
     @Autowired
@@ -58,8 +59,8 @@ public class PrivateMessageController {
 
     /**
      * Render the PM inbox page with the list of incoming messages for the /inbox URI.
-     * 
-     * @return ModelAndView with added list of inbox messages
+     *
+     * @return {@code ModelAndView} with added list of inbox messages
      */
     @RequestMapping(value = "/pm/inbox", method = RequestMethod.GET)
     public ModelAndView displayInboxPage() {
@@ -68,8 +69,8 @@ public class PrivateMessageController {
 
     /**
      * Render the PM outbox page with the list of sent messages for the /outbox URI.
-     * 
-     * @return ModelAndView with added list of outbox messages 
+     *
+     * @return {@code ModelAndView} with added list of outbox messages
      */
     @RequestMapping(value = "/pm/outbox", method = RequestMethod.GET)
     public ModelAndView displayOutboxPage() {
@@ -78,36 +79,41 @@ public class PrivateMessageController {
 
     /**
      * Render the page with a form for creation new Private Message with empty binded {@link PrivateMessageDto}.
-     * 
-     * @return ModelAndView with the form
+     *
+     * @return {@code ModelAndView} with the form
      */
     @RequestMapping(value = "/pm/new", method = RequestMethod.GET)
     public ModelAndView displayNewPMPage() {
-        return new ModelAndView("pm/newPm", "privateMessageDto", new PrivateMessageDto());
+        return new ModelAndView("pm/pmForm", "privateMessageDto", new PrivateMessageDto());
     }
 
     /**
      * Save the PrivateMessage for the filled in PrivateMessageDto.
-     * 
-     * @param pmDto {@link PrivateMessageDto} populated in form
+     *
+     * @param pmDto  {@link PrivateMessageDto} populated in form
      * @param result result of {@link PrivateMessageDto} validation
      * @return redirect to /inbox on success or back to "/new_pm" on validation errors
      */
     @RequestMapping(value = "/pm/new", method = RequestMethod.POST)
     public ModelAndView submitNewPm(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
         if (result.hasErrors()) {
-            return new ModelAndView("pm/newPm");
+            return new ModelAndView("pm/pmForm");
         }
         try {
             pmService.sendMessage(pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
         } catch (NotFoundException nfe) {
             logger.info("User not found: {} ", pmDto.getRecipient());
             result.rejectValue("recipient", "label.worg_recipient");
-            return new ModelAndView("pm/newPm");
+            return new ModelAndView("pm/pmForm");
         }
         return new ModelAndView("redirect:/pm/outbox.html");
     }
 
+    /**
+     * Get a private message.
+     *
+     * @return {@code ModelAndView} with a message
+     */
     @RequestMapping(value="/pm/{box}/{pmId}", method = RequestMethod.GET)
     public ModelAndView show(@PathVariable("box") String box,
                              @PathVariable("pmId") Long pmId) throws NotFoundException {
@@ -121,4 +127,34 @@ public class PrivateMessageController {
                 .addObject("pm", pm);
     }
 
+    /**
+     * Get list of current user's list of draft messages.
+     *
+     * @return {@code ModelAndView} with list of messages
+     */
+    @RequestMapping(value = "/pm/drafts", method = RequestMethod.GET)
+    public ModelAndView displayDraftsPage() {
+        return new ModelAndView("pm/drafts", "pmList", pmService.getDraftsFromCurrentUser());
+    }
+
+    @RequestMapping(value = "/pm/{pmId}/edit", method = RequestMethod.GET)
+    public ModelAndView edit(@PathVariable("pmId") Long pmId) throws NotFoundException {
+        PrivateMessage pm = pmService.get(pmId);
+        return new ModelAndView("pm/pmForm", "privateMessageDto", PrivateMessageDto.getDtoFor(pm));
+    }
+
+    @RequestMapping(value = "/pm/save", method = RequestMethod.POST)
+    public ModelAndView save(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
+        if (result.hasErrors()) {
+            return new ModelAndView("pm/pmForm");
+        }
+        try {
+            pmService.saveDraft(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
+        } catch (NotFoundException nfe) {
+            logger.info("User not found: {} ", pmDto.getRecipient());
+            result.rejectValue("recipient", "label.worg_recipient");
+            return new ModelAndView("pm/pmForm");
+        }
+        return new ModelAndView("redirect:/pm/drafts.html");
+    }
 }

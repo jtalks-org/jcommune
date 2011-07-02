@@ -17,15 +17,18 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import java.util.List;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.model.entity.User;
+
+import java.util.List;
 
 /**
  * Hibernate implementation of PrivateMessageDao
- * 
+ *
  * @author Pavel Vervenko
+ * @author Kirill Afonin
  */
 public class PrivateMessageHibernateDao extends AbstractHibernateDao<PrivateMessage> implements PrivateMessageDao {
 
@@ -33,15 +36,32 @@ public class PrivateMessageHibernateDao extends AbstractHibernateDao<PrivateMess
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public List<PrivateMessage> getAllFromUser(User userFrom) {
-        return getSession().getNamedQuery("getAllFromUser").setEntity("user", userFrom).list();
+        return getSession().getNamedQuery("getAllFromUser")
+                .setParameter("status", PrivateMessageStatus.DRAFT)
+                .setEntity("user", userFrom).list();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public List<PrivateMessage> getAllForUser(User userTo) {
-        return getSession().getNamedQuery("getAllToUser").setEntity("user", userTo).list();
+        return getSession().getNamedQuery("getAllToUser")
+                .setParameter("status", PrivateMessageStatus.DRAFT)
+                .setEntity("user", userTo).list();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<PrivateMessage> getDraftsFromUser(User userFrom) {
+        return getSession().getNamedQuery("getDraftsFromUser")
+                .setParameter("status", PrivateMessageStatus.DRAFT)
+                .setEntity("user", userFrom).list();
     }
 }

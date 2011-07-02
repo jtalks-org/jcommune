@@ -29,7 +29,7 @@
                             <tr>
                         </c:when>
                         <c:otherwise>
-                            <tr bgcolor="#32cd32">
+                            <tr bgcolor="#b0c4de">
                         </c:otherwise>
                     </c:choose>
                     <td>

@@ -32,6 +32,7 @@ import java.util.List;
  * The implementation of PrivateMessageServices.
  *
  * @author Pavel Vervenko
+ * @author Kirill Afonin
  */
 public class TransactionalPrivateMessageService
         extends AbstractTransactionalEntityService<PrivateMessage, PrivateMessageDao> implements PrivateMessageService {
@@ -78,12 +79,18 @@ public class TransactionalPrivateMessageService
     @Override
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     public PrivateMessage sendMessage(String title, String body, String recipient) throws NotFoundException {
+        PrivateMessage pm = populateMessage(title, body, recipient);
+        dao.saveOrUpdate(pm);
+        return pm;
+    }
+
+    private PrivateMessage populateMessage(String title, String body,
+                                           String recipient) throws NotFoundException {
         PrivateMessage pm = PrivateMessage.createNewPrivateMessage();
         pm.setTitle(title);
         pm.setBody(body);
         pm.setUserFrom(securityService.getCurrentUser());
         pm.setUserTo(userService.getByUsername(recipient));
-        dao.saveOrUpdate(pm);
         return pm;
     }
 
@@ -93,5 +100,29 @@ public class TransactionalPrivateMessageService
     public void markAsReaded(PrivateMessage pm) {
         pm.markAsReaded();
         dao.saveOrUpdate(pm);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<PrivateMessage> getDraftsFromCurrentUser() {
+        User currentUser = securityService.getCurrentUser();
+        return dao.getDraftsFromUser(currentUser);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    public PrivateMessage saveDraft(long id, String title, String body, String recipient)
+            throws NotFoundException {
+
+        PrivateMessage pm = populateMessage(title, body, recipient);
+        pm.setId(id);
+        pm.markAsDraft();
+        dao.saveOrUpdate(pm);
+        return pm;
     }
 }

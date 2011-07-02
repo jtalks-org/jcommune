@@ -18,6 +18,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
@@ -58,7 +59,6 @@ public class PrivateMessageControllerTest {
 
         assertViewName(mav, "pm/inbox");
         assertAndReturnModelAttributeOfType(mav, "pmList", List.class);
-
         verify(pmService).getInboxForCurrentUser();
     }
 
@@ -68,7 +68,6 @@ public class PrivateMessageControllerTest {
 
         assertViewName(mav, "pm/outbox");
         assertAndReturnModelAttributeOfType(mav, "pmList", List.class);
-
         verify(pmService).getOutboxForCurrentUser();
     }
 
@@ -77,7 +76,7 @@ public class PrivateMessageControllerTest {
         ModelAndView mav = controller.displayNewPMPage();
 
         assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
-        assertViewName(mav, "pm/newPm");
+        assertViewName(mav, "pm/pmForm");
     }
 
     @Test
@@ -98,7 +97,7 @@ public class PrivateMessageControllerTest {
 
         ModelAndView mav = controller.submitNewPm(dto, resultWithErrors);
 
-        assertViewName(mav, "pm/newPm");
+        assertViewName(mav, "pm/pmForm");
     }
 
     @Test
@@ -109,7 +108,7 @@ public class PrivateMessageControllerTest {
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
         ModelAndView mav = controller.submitNewPm(dto, bindingResult);
 
-        assertViewName(mav, "pm/newPm");
+        assertViewName(mav, "pm/pmForm");
         verify(pmService).sendMessage(dto.getTitle(), dto.getBody(), dto.getRecipient());
     }
 
@@ -142,7 +141,31 @@ public class PrivateMessageControllerTest {
         assertViewName(mav, "pm/showPm");
         PrivateMessage actualPm = assertAndReturnModelAttributeOfType(mav, "pm", PrivateMessage.class);
         assertEquals(actualPm, pm);
-        
+        verify(pmService).get(pmId);
+    }
+
+    public void testDisplayDraftsPage() {
+        ModelAndView mav = controller.displayDraftsPage();
+
+        assertViewName(mav, "pm/drafts");
+        assertAndReturnModelAttributeOfType(mav, "pmList", List.class);
+        verify(pmService).getDraftsFromCurrentUser();
+    }
+
+
+    @Test
+    public void testEdit() throws NotFoundException {
+        long pmId = 2L;
+        PrivateMessage pm = PrivateMessage.createNewPrivateMessage();
+        pm.setId(pmId);
+        pm.setUserTo(new User());
+        when(pmService.get(pmId)).thenReturn(pm);
+
+        ModelAndView mav = controller.edit(pmId);
+
+        assertViewName(mav, "pm/pmForm");
+        PrivateMessageDto dto = assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
+        assertEquals(dto.getId(), pmId);
         verify(pmService).get(pmId);
     }
 

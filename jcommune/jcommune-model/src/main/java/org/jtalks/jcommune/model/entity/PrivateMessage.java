@@ -184,4 +184,11 @@ public class PrivateMessage extends Persistent {
     public boolean isReaded() {
         return this.status == PrivateMessageStatus.READED;
     }
+
+    /**
+     * Mark message as draft.
+     */
+    public void markAsDraft() {
+        this.status = PrivateMessageStatus.DRAFT;
+    }
 }

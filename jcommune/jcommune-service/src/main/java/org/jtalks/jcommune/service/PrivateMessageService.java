@@ -26,6 +26,7 @@ import java.util.List;
  * The interface to manipulate with private messages.
  *
  * @author Pavel Vervenko
+ * @author Kirill Afonin
  */
 public interface PrivateMessageService extends EntityService<PrivateMessage> {
 
@@ -60,4 +61,23 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
      * @param pm readed private message
      */
     void markAsReaded(PrivateMessage pm);
+
+    /**
+     * Get current user's drafts
+     *
+     * @return list of draft messages
+     */
+    List<PrivateMessage> getDraftsFromCurrentUser();
+
+    /**
+     * Save message as draft. If message exist it will be updated.
+     *
+     * @param id        message id
+     * @param title     the title of the message
+     * @param body      the body of the message
+     * @param recipient username of receiver
+     * @return saved message
+     * @throws NotFoundException if the receiver not exists
+     */
+    PrivateMessage saveDraft(long id, String title, String body, String recipient) throws NotFoundException;
 }
