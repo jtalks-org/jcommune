@@ -181,7 +181,7 @@ public class PrivateMessage extends Persistent {
     /**
      * @return {@code true} if message is readed
      */
-    public boolean isReaded() {
+    public boolean isRead() {
         return this.status == PrivateMessageStatus.READED;
     }
 }
