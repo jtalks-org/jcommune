@@ -17,12 +17,15 @@
  */
 package org.jtalks.jcommune.web.dto;
 
-import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.jtalks.jcommune.model.entity.PrivateMessage;
+
+import javax.validation.constraints.Size;
 
 /**
  * DTO for {@link PrivateMessage} objects. Used for validation and binding to the form.
  * Holds message's title, body and username of the recipient.
+ *
  * @author Pavel Vervenko
  */
 public class PrivateMessageDto {
@@ -38,7 +41,26 @@ public class PrivateMessageDto {
     private String recipient;
 
     /**
+     * @return pm id
+     */
+    public long getId() {
+        return id;
+    }
+
+    /**
+     * Set pm id.
+     *
+     * @param id id
+     */
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    private long id;
+
+    /**
      * Get the text content of the message's body.
+     *
      * @return message body
      */
     public String getBody() {
@@ -47,6 +69,7 @@ public class PrivateMessageDto {
 
     /**
      * Set the message content.
+     *
      * @param body message body
      */
     public void setBody(String body) {
@@ -55,6 +78,7 @@ public class PrivateMessageDto {
 
     /**
      * Get the username of message's receiver.
+     *
      * @return recipient
      */
     public String getRecipient() {
@@ -63,6 +87,7 @@ public class PrivateMessageDto {
 
     /**
      * Set the recipient's username.
+     *
      * @param recipient recipient username
      */
     public void setRecipient(String recipient) {
@@ -71,6 +96,7 @@ public class PrivateMessageDto {
 
     /**
      * Get the text title of the message.
+     *
      * @return title
      */
     public String getTitle() {
@@ -79,9 +105,25 @@ public class PrivateMessageDto {
 
     /**
      * Set the message title.
+     *
      * @param title message's title
      */
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    /**
+     * Create dto from {@link PrivateMessage}
+     *
+     * @param pm private message for conversion
+     * @return dto for private message
+     */
+    public static PrivateMessageDto getDtoFor(PrivateMessage pm) {
+        PrivateMessageDto dto = new PrivateMessageDto();
+        dto.setBody(pm.getBody());
+        dto.setTitle(pm.getTitle());
+        dto.setRecipient(pm.getUserTo().getUsername());
+        dto.setId(pm.getId());
+        return dto;
     }
 }
