@@ -86,6 +86,7 @@ public final class ObjectsFactory {
 
     /**
      * Create the PrivateMessage with filled required fields.
+     *
      * @return ready to save instance
      */
     public static PrivateMessage getDefaultPrivateMessage() {
@@ -96,7 +97,16 @@ public final class ObjectsFactory {
         pm.setTitle("Message title");
         return pm;
     }
-    
+
+    public static PrivateMessage getPrivateMessage(User to, User from) {
+        PrivateMessage pm = PrivateMessage.createNewPrivateMessage();
+        pm.setUserFrom(from);
+        pm.setUserTo(to);
+        pm.setBody("Private message body");
+        pm.setTitle("Message title");
+        return pm;
+    }
+
     private static <T> T persist(T entity) {
         session.save(entity);
         return entity;
