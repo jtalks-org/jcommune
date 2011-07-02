@@ -30,7 +30,7 @@
                             <c:out value="${pm.userTo.username}"/>
                         </td>
                         <td>
-                            <a href="${pageContext.request.contextPath}/pm/${pm.id}.html"><c:out
+                            <a href="${pageContext.request.contextPath}/pm/drafts/${pm.id}.html"><c:out
                                     value="${pm.title}"/></a>
                         </td>
                         <td>
