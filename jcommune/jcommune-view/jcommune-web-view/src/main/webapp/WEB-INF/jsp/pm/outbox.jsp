@@ -25,7 +25,7 @@
                 </tr>
                 <c:forEach var="pm" items="${pmList}">
                     <c:choose>
-                        <c:when test="${pm.read}">
+                        <c:when test="${pm.readed}">
                             <tr>
                         </c:when>
                         <c:otherwise>
