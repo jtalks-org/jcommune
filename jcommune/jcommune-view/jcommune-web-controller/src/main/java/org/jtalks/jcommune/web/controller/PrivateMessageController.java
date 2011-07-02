@@ -83,7 +83,7 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/pm/new", method = RequestMethod.GET)
     public ModelAndView displayNewPMPage() {
-        return new ModelAndView("pm/newPm", "privateMessageDto", new PrivateMessageDto());
+        return new ModelAndView("pm/pmForm", "privateMessageDto", new PrivateMessageDto());
     }
 
     /**
@@ -96,14 +96,14 @@ public class PrivateMessageController {
     @RequestMapping(value = "/pm/new", method = RequestMethod.POST)
     public ModelAndView submitNewPm(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
         if (result.hasErrors()) {
-            return new ModelAndView("pm/newPm");
+            return new ModelAndView("pm/pmForm");
         }
         try {
             pmService.sendMessage(pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
         } catch (NotFoundException nfe) {
             logger.info("User not found: {} ", pmDto.getRecipient());
             result.rejectValue("recipient", "label.worg_recipient");
-            return new ModelAndView("pm/newPm");
+            return new ModelAndView("pm/pmForm");
         }
         return new ModelAndView("redirect:/pm/outbox.html");
     }
@@ -122,5 +122,26 @@ public class PrivateMessageController {
     @RequestMapping(value = "/pm/drafts", method = RequestMethod.GET)
     public ModelAndView displayDraftsPage() {
         return new ModelAndView("pm/drafts", "pmList", pmService.getDraftsFromCurrentUser());
+    }
+
+    @RequestMapping(value = "/pm/{pmId}/edit", method = RequestMethod.GET)
+    public ModelAndView edit(@PathVariable("pmId") Long pmId) throws NotFoundException {
+        PrivateMessage pm = pmService.get(pmId);
+        return new ModelAndView("pm/pmForm", "privateMessageDto", PrivateMessageDto.getDtoFor(pm));
+    }
+
+    @RequestMapping(value = "/pm/save", method = RequestMethod.POST)
+    public ModelAndView save(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
+        if (result.hasErrors()) {
+            return new ModelAndView("pm/pmForm");
+        }
+        try {
+            pmService.saveDraft(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
+        } catch (NotFoundException nfe) {
+            logger.info("User not found: {} ", pmDto.getRecipient());
+            result.rejectValue("recipient", "label.worg_recipient");
+            return new ModelAndView("pm/pmForm");
+        }
+        return new ModelAndView("redirect:/pm/drafts.html");
     }
 }
