@@ -18,9 +18,13 @@
 package org.jtalks.jcommune.functional.tests;
 
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
-import com.gargoylesoftware.htmlunit.html.*;
+import com.gargoylesoftware.htmlunit.html.HtmlForm;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import com.gargoylesoftware.htmlunit.html.HtmlTable;
 import org.jtalks.jcommune.functional.tests.util.TestUtil;
 import org.jtalks.jcommune.functional.tests.util.UserEnum;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
@@ -32,13 +36,12 @@ import static org.testng.Assert.assertTrue;
  */
 public class AddPostTest {
 
-    private HtmlAnchor topicLink;
     private HtmlPage topicListPage;
     private HtmlPage postListPage;
     private HtmlPage answerPage;
     private HtmlPage mainPage;
     private static final String TOPIC_TITLE = "AddPostTest";
-    private static final String MESSAGE = "Topic for add post functional testing";
+    private static final String POST = "Topic for add post functional testing";
     private static final String FIRST_ANSWER = "First answer";
     private static final String SECOND_ANSWER = "Second answer";
     private static final String UPPER_BRANCH = "1";
@@ -50,8 +53,7 @@ public class AddPostTest {
         mainPage = TestUtil.logIn(mainPageUrl, UserEnum.MAIN_USER.getUsername(), UserEnum.MAIN_USER.getPassword());
         mainPage = TestUtil.forumLinkClick();
         topicListPage = TestUtil.branchLinkClick(UPPER_BRANCH);
-        topicListPage = TestUtil.createTopic(topicListPage, TOPIC_TITLE, MESSAGE);
-        postListPage = TestUtil.topicLinkClick(topicListPage);
+        postListPage = TestUtil.createTopic(topicListPage, TOPIC_TITLE, POST);
     }
 
     @Test(priority = 0)
@@ -64,9 +66,10 @@ public class AddPostTest {
     @Test(priority = 1)
     public void addPost() throws Exception {
         postListPage = TestUtil.addPost(answerPage, FIRST_ANSWER);
-        HtmlTable messagesTable = postListPage.getElementByName("messagesTable");
-        assertTrue(messagesTable.getCellAt(0, 0).asText().contains(UserEnum.MAIN_USER.getUsername()));
-        assertTrue(messagesTable.getCellAt(0, 1).asText().contains(FIRST_ANSWER));
+        System.out.println(postListPage.asText());
+        HtmlTable postsTable = postListPage.getElementByName("postsTable");
+        assertTrue(postsTable.getCellAt(1, 0).asText().contains(UserEnum.MAIN_USER.getUsername()));
+        assertTrue(postsTable.getCellAt(1, 1).asText().contains(FIRST_ANSWER));
     }
 
     @Test(priority = 2)
@@ -82,7 +85,14 @@ public class AddPostTest {
         HtmlSubmitInput addAnswerButton = answerButtonForm.getInputByName("addAnswerButton");
         answerPage = addAnswerButton.click();
         postListPage = TestUtil.addPost(answerPage, SECOND_ANSWER);
-        System.out.println(postListPage.asText());
+        HtmlTable postsTable = postListPage.getElementByName("postsTable");
+
+        assertTrue(postsTable.getCellAt(0, 0).asText().contains(UserEnum.MAIN_USER.getUsername()));
+        assertTrue(postsTable.getCellAt(0, 1).asText().contains(POST));
+        assertTrue(postsTable.getCellAt(1, 0).asText().contains(UserEnum.MAIN_USER.getUsername()));
+        assertTrue(postsTable.getCellAt(1, 1).asText().contains(FIRST_ANSWER));
+        assertTrue(postsTable.getCellAt(2, 0).asText().contains(UserEnum.ALTERNATIVE_USER.getUsername()));
+        assertTrue(postsTable.getCellAt(2, 1).asText().contains(SECOND_ANSWER));
     }
 
     @Test(priority = 3, expectedExceptions = ElementNotFoundException.class)
@@ -92,6 +102,11 @@ public class AddPostTest {
         topicListPage = TestUtil.branchLinkClick(UPPER_BRANCH);
         postListPage = TestUtil.topicLinkClick(topicListPage);
         HtmlForm answerButtonForm = postListPage.getFormByName("answerButtonForm");
+    }
+
+    @AfterClass
+    public void closeAllWindows() {
+        TestUtil.closeAllWindows();
     }
 }
 

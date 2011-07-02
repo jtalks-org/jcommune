@@ -47,7 +47,7 @@ public class TestUtil {
     }
 
 
-    public static HtmlPage createTopic(HtmlPage topicList, String topicTitle, String message) throws Exception {
+    public static HtmlPage createTopic(HtmlPage topicList, String topicTitle, String post) throws Exception {
         HtmlForm topicListForm = topicList.getFormByName("topicListForm");
         HtmlSubmitInput newTopicButton = topicListForm.getInputByName("newTopicButton");
         HtmlPage createTopicPage = newTopicButton.click();
@@ -56,16 +56,24 @@ public class TestUtil {
         HtmlTextArea bodyTextArea = createTopicForm.getTextAreaByName("bodyText");
         newTopicButton = createTopicForm.getInputByName("newTopicButton");
         topicNameInput.setValueAttribute(topicTitle);
-        bodyTextArea.setText(message);
-        createTopicPage = newTopicButton.click();
-        return createTopicPage;
+        bodyTextArea.setText(post);
+        HtmlPage postPage = newTopicButton.click();
+        return postPage;
     }
 
-    public static HtmlPage addPost(HtmlPage answerPage, String message) throws Exception {
+    public static HtmlPage backToTopicList(HtmlPage postPage) throws Exception {
+        HtmlForm backButtonForm = postPage.getFormByName("backButtonForm");
+        HtmlSubmitInput backButton = backButtonForm.getInputByName("backButton");
+        HtmlPage topicPage = backButton.click();
+        return topicPage;
+    }
+
+
+    public static HtmlPage addPost(HtmlPage answerPage, String post) throws Exception {
         HtmlForm answerForm = answerPage.getFormByName("answerForm");
         HtmlSubmitInput answerButton = answerForm.getInputByName("answerButton");
-        HtmlTextArea messageArea = answerForm.getTextAreaByName("bodytext");
-        messageArea.setText(message);
+        HtmlTextArea postArea = answerForm.getTextAreaByName("bodytext");
+        postArea.setText(post);
         return answerButton.click();
     }
 
@@ -73,6 +81,10 @@ public class TestUtil {
     public static HtmlPage logOut(HtmlPage main) throws Exception {
         HtmlAnchor logOutLink = main.getAnchorByName("logout");
         return logOutLink.click();
+    }
+
+    public static void closeAllWindows(){
+        webClient.closeAllWindows();
     }
 
 }

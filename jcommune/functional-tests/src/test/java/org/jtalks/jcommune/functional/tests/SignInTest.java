@@ -20,6 +20,7 @@ package org.jtalks.jcommune.functional.tests;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.*;
+import org.jtalks.jcommune.functional.tests.util.UserEnum;
 import org.testng.annotations.*;
 
 import static org.testng.Assert.assertEquals;
@@ -38,6 +39,14 @@ public class SignInTest {
     private HtmlSubmitInput submitButton;
     private HtmlTextInput usernameTextField;
     private HtmlPasswordInput passwordTextField;
+
+    private static final String MAIN_USER_NAME = UserEnum.MAIN_USER.getUsername();
+    private static final String MAIN_USER_PASSWORD = UserEnum.MAIN_USER.getPassword();
+    private static final String INCORRECT_USER_NAME = UserEnum.INCORRECT_USER.getUsername();
+    private static final String INCORRECT_USER_PASSWORD = UserEnum.INCORRECT_USER.getPassword();
+    private static final String WRONG_CASE_USERNAME = "TestUser";
+    private static final String WRONG_CASE_PASSWORD = "UserPass";
+
 
     @Parameters({"mainPageUrl"})
     @BeforeTest
@@ -61,8 +70,8 @@ public class SignInTest {
         assertTrue(mainPage.asText().contains(validationMessage));
     }
 
-     //TODO: remove "enabled=false" after updated files
-    @Test(description = "Entered username in wrong case", dataProvider = "localeData", enabled=false)
+    //TODO: remove "enabled=false" after updated files
+    @Test(description = "Entered username in wrong case", dataProvider = "localeData", enabled = false)
     public void signInWithWrongUsernameCase(String locale, String validationMessage, String pageTitle) throws Exception {
         HtmlAnchor localeLink = mainPage.getAnchorByText(locale);
         mainPage = (HtmlPage) localeLink.click();
@@ -117,26 +126,26 @@ public class SignInTest {
     }
 
     public void submitWrongUsernameCaseData() throws Exception {
-        usernameTextField.setValueAttribute("TestUser");
-        passwordTextField.setValueAttribute("userpass");
+        usernameTextField.setValueAttribute(WRONG_CASE_USERNAME);
+        passwordTextField.setValueAttribute(MAIN_USER_PASSWORD);
         mainPage = submitButton.click();
     }
 
     public void submitWrongPasswordCaseData() throws Exception {
-        usernameTextField.setValueAttribute("testuser");
-        passwordTextField.setValueAttribute("UserPass");
+        usernameTextField.setValueAttribute(MAIN_USER_NAME);
+        passwordTextField.setValueAttribute(WRONG_CASE_PASSWORD);
         mainPage = submitButton.click();
     }
 
     public void submitWrongUsernameData() throws Exception {
-        usernameTextField.setValueAttribute("incorrectuser");
-        passwordTextField.setValueAttribute("userpass");
+        usernameTextField.setValueAttribute(INCORRECT_USER_NAME);
+        passwordTextField.setValueAttribute(INCORRECT_USER_PASSWORD);
         mainPage = submitButton.click();
     }
 
     public void submitValidData() throws Exception {
-        usernameTextField.setValueAttribute("testuser");
-        passwordTextField.setValueAttribute("userpass");
+        usernameTextField.setValueAttribute(MAIN_USER_NAME);
+        passwordTextField.setValueAttribute(MAIN_USER_PASSWORD);
         mainPage = submitButton.click();
     }
 

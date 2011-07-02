@@ -17,15 +17,15 @@
  */
 package org.jtalks.jcommune.functional.tests;
 
-import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.*;
 import org.jtalks.jcommune.functional.tests.util.DateUtil;
+import org.jtalks.jcommune.functional.tests.util.TestUtil;
+import org.jtalks.jcommune.functional.tests.util.UserEnum;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
@@ -37,98 +37,76 @@ import static org.testng.Assert.assertTrue;
  */
 public class CreateTopicTest {
 
-    private WebClient webClient;
     private HtmlPage mainPage;
     private HtmlForm topicListForm;
     private HtmlForm createTopicForm;
     private HtmlPage createTopicPage;
+    private HtmlPage postListPage;
     private HtmlAnchor topicLink;
-    private final String USERNAME = "testuser";
-    private final String PASSWORD = "userpass";
-    private final String TOPIC_TITLE = "CreateTopicTest";
-    private final String MESSAGE = "message";
-    private final String TIME_PATTERN = "\\d{2}\\s[a-zA-Zа-яА-Я]{3}\\s\\d{4}\\s\\d{2}:\\d{2}";
+    private static final String USERNAME = UserEnum.MAIN_USER.getUsername();
+    private static final String PASSWORD = UserEnum.MAIN_USER.getPassword();
+    private static final String TOPIC_TITLE = "CreateTopicTest";
+    private static final String POST = "message";
+    private static final String UPPER_BRANCH = "1";
+
 
     @Parameters({"mainPageUrl"})
     @BeforeClass
-    public void logIn(String mainPageUrl) throws IOException {
-        webClient = new WebClient();
-        mainPage = webClient.getPage(mainPageUrl);
-        HtmlAnchor signInLink = mainPage.getAnchorByName("signIn");
-        HtmlPage loginPage = signInLink.click();
-        HtmlForm loginForm = loginPage.getFormByName("login_form");
-        HtmlSubmitInput submitButton = loginForm.getInputByName("submit_button");
-        HtmlTextInput usernameTextField = loginForm.getInputByName("j_username");
-        HtmlPasswordInput passwordTextField = loginForm.getInputByName("j_password");
-        usernameTextField.setValueAttribute(USERNAME);
-        passwordTextField.setValueAttribute(PASSWORD);
-        mainPage = submitButton.click();
-    }
-
-    @Test(priority = 0)
-    public void forumLinkClick() throws Exception {
-        HtmlAnchor forumLink = mainPage.getAnchorByName("forumLink");
-        mainPage = forumLink.click();
+    public void init(String mainPageUrl) throws Exception {
+        mainPage = TestUtil.logIn(mainPageUrl, USERNAME, PASSWORD);
+        mainPage = TestUtil.forumLinkClick();
         HtmlForm branchesForm = mainPage.getFormByName("branchesForm");
-    }
-
-    @Test(priority = 1)
-    public void branchLinkClick() throws Exception {
-        HtmlAnchor branchLink = mainPage.getAnchorByHref("/jcommune/branch/1.html");
-        HtmlPage topicListPage = branchLink.click();
+        HtmlPage topicListPage = TestUtil.branchLinkClick(UPPER_BRANCH);
         topicListForm = topicListPage.getFormByName("topicListForm");
     }
 
-    @Test(priority = 2)
+    @Test(priority = 0)
     public void newTopicButtonClick() throws Exception {
         HtmlSubmitInput newTopicButton = topicListForm.getInputByName("newTopicButton");
         createTopicPage = newTopicButton.click();
         createTopicForm = createTopicPage.getFormByName("newTopicForm");
     }
 
-    @Test(priority = 3)
+    @Test(priority = 1)
     public void fillCreatedTopicForm() throws Exception {
         HtmlInput topicNameInput = createTopicForm.getInputByName("topicName");
         HtmlTextArea bodyTextArea = createTopicForm.getTextAreaByName("bodyText");
         HtmlSubmitInput newTopicButton = createTopicForm.getInputByName("newTopicButton");
         topicNameInput.setValueAttribute(TOPIC_TITLE);
-        bodyTextArea.setText(MESSAGE);
-        createTopicPage = newTopicButton.click();
-
-        createTopicForm = createTopicPage.getFormByName("topicListForm");
-        topicLink = createTopicPage.getAnchorByText(TOPIC_TITLE);
-        HtmlTable topicsTable = createTopicPage.getElementByName("topicsTable");
+        bodyTextArea.setText(POST);
+        postListPage = newTopicButton.click();
+        HtmlPage topicPage = TestUtil.backToTopicList(postListPage);
+        topicListForm = topicPage.getFormByName("topicListForm");
+        topicLink = topicPage.getAnchorByText(TOPIC_TITLE);
+        HtmlTable topicsTable = topicPage.getElementByName("topicsTable");
         List<HtmlTableRow> tableRowList = topicsTable.getRows();
-        boolean flag=false;
+        boolean flag = false;
         for (HtmlTableRow row : tableRowList) {
             if (row.getCell(0).asText().equals(TOPIC_TITLE)) {
                 assertEquals(row.getCell(0).asText(), TOPIC_TITLE);
                 assertEquals(row.getCell(1).asText(), USERNAME);
-                assertTrue(row.getCell(2).asText().matches(TIME_PATTERN));
                 assertTrue(DateUtil.stringToMillis(row.getCell(2).asText(), Locale.ENGLISH)
                         - DateUtil.getCurrentTimeMillis() < 1000 * 60);
-                flag=true;
+                flag = true;
                 break;
             }
         }
-        assertTrue(flag,"Topic not found");
+        assertTrue(flag, "Topic not found");
     }
 
 
-    @Test(priority = 4)
+    @Test(priority = 2)
     public void clickOnCreatedTopicTitle() throws Exception {
         HtmlPage messagesPage = topicLink.click();
-        HtmlTable messagesTable = messagesPage.getElementByName("messagesTable");
+        HtmlTable postsTable = messagesPage.getElementByName("postsTable");
         //assertTrue(messagesPage.asText().contains(TOPIC_TITLE));
-        assertTrue(messagesTable.getCellAt(0, 0).asText().contains(USERNAME));
-        assertTrue(messagesTable.getCellAt(0, 1).asText().contains(MESSAGE));
-
-
+        assertTrue(postsTable.getCellAt(0, 0).asText().contains(USERNAME));
+        assertTrue(postsTable.getCellAt(0, 1).asText().contains(POST));
     }
 
     @AfterClass
     public void closeAllWindows() {
-        webClient.closeAllWindows();
+        TestUtil.closeAllWindows();
     }
 }
 

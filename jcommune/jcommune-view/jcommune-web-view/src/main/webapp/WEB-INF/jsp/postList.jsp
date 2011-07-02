@@ -7,7 +7,7 @@
 <html>
 <head></head>
 <body>
-<table border="1" width="100%" name="messagesTable">
+<table border="1" width="100%" name="postsTable">
     <h2>
         <spring:message code="label.topic"/>
         :
@@ -50,8 +50,8 @@
 <table>
     <tr>
         <td>
-            <form:form action="${pageContext.request.contextPath}/branch/${branchId}.html" method="GET">
-                <input type="submit" value="<spring:message code="label.back"/>"/>
+            <form:form action="${pageContext.request.contextPath}/branch/${branchId}.html" name="backButtonForm" method="GET">
+                <input type="submit" name="backButton" value="<spring:message code="label.back"/>"/>
             </form:form>
         </td>
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
