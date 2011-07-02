@@ -6,13 +6,16 @@
 <html>
   <table>
     <tr><td>
-        <a href="inbox.html"><spring:message code="label.inbox"/></a>
+        <a href="${pageContext.request.contextPath}/pm/inbox.html">
+            <spring:message code="label.inbox"/></a>
       </td></tr>
     <tr><td>
-        <a href="outbox.html"><spring:message code="label.outbox"/></a>
+        <a href="${pageContext.request.contextPath}/pm/outbox.html">
+            <spring:message code="label.outbox"/></a>
       </td></tr>
     <tr><td>
-        <a href="new.html"><spring:message code="label.new_pm"/></a>
+        <a href="${pageContext.request.contextPath}/pm/new.html">
+            <spring:message code="label.new_pm"/></a>
       </td></tr>
   </table>
 </html>

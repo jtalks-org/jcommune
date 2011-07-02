@@ -38,6 +38,7 @@ import javax.validation.Valid;
  * MVC controller for Private Messaging. Handles request for inbox, outbox and new private messages.
  * 
  * @author Pavel Vervenko
+ * @author Max Malakhov
  */
 @Controller
 public class PrivateMessageController {
@@ -107,9 +108,17 @@ public class PrivateMessageController {
         return new ModelAndView("redirect:/pm/outbox.html");
     }
 
-    @RequestMapping(value="/pm/{pmId}", method = RequestMethod.GET)
-    public void show(@PathVariable("pmId") Long pmId) throws NotFoundException {
+    @RequestMapping(value="/pm/{box}/{pmId}", method = RequestMethod.GET)
+    public ModelAndView show(@PathVariable("box") String box,
+                             @PathVariable("pmId") Long pmId) throws NotFoundException {
+
         PrivateMessage pm = pmService.get(pmId);
-        pmService.markAsReaded(pm);
+        if ("inbox".equals(box)) {
+            pmService.markAsReaded(pm);
+        }
+
+        return new ModelAndView("pm/showPm")
+                .addObject("pm", pm);
     }
+
 }

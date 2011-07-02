@@ -34,9 +34,11 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.testng.Assert.assertEquals;
 
 /**
  * @author Pavel Vervenko
+ * @author Max Malakhov
  */
 public class PrivateMessageControllerTest {
 
@@ -112,15 +114,36 @@ public class PrivateMessageControllerTest {
     }
 
     @Test
-    public void testShow() throws NotFoundException {
+    public void testShowInbox() throws NotFoundException {
         long pmId = 2L;
+        String box = "inbox";
         PrivateMessage pm = new PrivateMessage();
         when(pmService.get(pmId)).thenReturn(pm);
 
-        controller.show(pmId);
+        ModelAndView mav = controller.show(box, pmId);
 
+        assertViewName(mav, "pm/showPm");
+        PrivateMessage actualPm = assertAndReturnModelAttributeOfType(mav, "pm", PrivateMessage.class);
+        assertEquals(actualPm, pm);
+        
         verify(pmService).get(pmId);
         verify(pmService).markAsReaded(pm);
+    }
+
+    @Test
+    public void testShowOutbox() throws NotFoundException {
+        long pmId = 2L;
+        String box = "outbox";
+        PrivateMessage pm = new PrivateMessage();
+        when(pmService.get(pmId)).thenReturn(pm);
+
+        ModelAndView mav = controller.show(box, pmId);
+
+        assertViewName(mav, "pm/showPm");
+        PrivateMessage actualPm = assertAndReturnModelAttributeOfType(mav, "pm", PrivateMessage.class);
+        assertEquals(actualPm, pm);
+        
+        verify(pmService).get(pmId);
     }
 
     private PrivateMessageDto getPrivateMessageDto() {

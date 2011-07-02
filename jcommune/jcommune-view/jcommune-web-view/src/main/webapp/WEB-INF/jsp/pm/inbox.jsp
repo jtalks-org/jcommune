@@ -36,7 +36,7 @@
                         <c:out value="${pm.userFrom.username}"/>
                     </td>
                     <td>
-                        <a href="${pageContext.request.contextPath}/pm/${pm.id}.html"><c:out value="${pm.title}"/></a>
+                        <a href="${pageContext.request.contextPath}/pm/inbox/${pm.id}.html"><c:out value="${pm.title}"/></a>
                     </td>
                     <td>
                         <joda:format value="${pm.creationDate}"

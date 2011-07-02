@@ -29,7 +29,7 @@
             <c:out value="${pm.userTo.username}"/>
           </td>
           <td>
-            <c:out value="${pm.title}"/>
+            <a href="${pageContext.request.contextPath}/pm/outbox/${pm.id}.html"><c:out value="${pm.title}"/></a>
           </td>
           <td>
             <joda:format value="${pm.creationDate}"
