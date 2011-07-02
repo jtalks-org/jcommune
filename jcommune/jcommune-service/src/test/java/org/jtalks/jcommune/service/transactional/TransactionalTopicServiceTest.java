@@ -17,7 +17,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -52,7 +51,6 @@ public class TransactionalTopicServiceTest {
     final long POST_ID = 333L;
     final String TOPIC_TITLE = "topic title";
     final String ANSWER_BODY = "Test Answer Body";
-    final DateTime TOPIC_CREATION_DATE = new DateTime();
 
     private TopicService topicService;
     private SecurityService securityService;
@@ -233,5 +231,22 @@ public class TransactionalTopicServiceTest {
         when(branchDao.isExist(BRANCH_ID)).thenReturn(false);
 
         topicService.getTopicsInBranchCount(BRANCH_ID);
+    }
+
+    @Test
+    public void testDeleteTopic() throws NotFoundException {
+        when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
+
+        topicService.deleteTopic(TOPIC_ID);
+
+        verify(topicDao).delete(TOPIC_ID);
+        verify(securityService).deleteFromAcl(Topic.class, TOPIC_ID);
+    }
+
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testDeleteNonExistentTopic() throws NotFoundException {
+        when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
+
+        topicService.deleteTopic(TOPIC_ID);
     }
 }
