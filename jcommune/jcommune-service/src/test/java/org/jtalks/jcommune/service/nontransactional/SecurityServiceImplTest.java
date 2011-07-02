@@ -176,24 +176,6 @@ public class SecurityServiceImplTest {
         securityService.grantAdminPermissionToCurrentUserAndAdmins(object);
     }
 
-    private void assertGranted(MutableAcl acl, Sid sid, Permission permission, String message) {
-        List<Permission> expectedPermission = new ArrayList<Permission>();
-        expectedPermission.add(permission);
-        List<Sid> expectedSid = new ArrayList<Sid>();
-        expectedSid.add(sid);
-        try {
-            assertTrue(acl.isGranted(expectedPermission, expectedSid, true), message);
-        } catch (NotFoundException e) {
-            fail(message);
-        }
-    }
-
-    private void mockCurrentUserPrincipal() {
-        Principal user = new PrincipalImpl(USERNAME);
-        Authentication auth = mock(Authentication.class);
-        when(auth.getPrincipal()).thenReturn(user);
-        when(securityContext.getAuthentication()).thenReturn(auth);
-    }
 
     @Test
     public void testDeleteFromAcl() throws Exception {
@@ -214,48 +196,59 @@ public class SecurityServiceImplTest {
     }
 
     @Test
-    public void testDeletePermission(){
+    public void testDeletePermission() {
         mockCurrentUserPrincipal();
         Post object = Post.createNewPost();
         object.setId(1L);
         ObjectIdentity objectIdentity = new ObjectIdentityImpl(Post.class.getCanonicalName(), object.getId());
         MutableAcl objectAcl = new AclImpl(objectIdentity, 2L, mock(AclAuthorizationStrategy.class),
                 mock(AuditLogger.class));
-        when(mutableAclService.readAclById(objectIdentity))
-                .thenThrow(new NotFoundException(""))
-                .thenReturn(objectAcl);
-        when(mutableAclService.createAcl(objectIdentity)).thenReturn(objectAcl);
+        objectAcl.insertAce(objectAcl.getEntries().size(), BasePermission.ADMINISTRATION,
+                new PrincipalSid(USERNAME), true);
+        objectAcl.insertAce(objectAcl.getEntries().size(), BasePermission.READ,
+                new PrincipalSid(USERNAME), true);
+        when(mutableAclService.readAclById(objectIdentity)).thenReturn(objectAcl);
 
-        securityService.grantAdminPermissionToCurrentUserAndAdmins(object);
 
-        securityService.deletePermission(object, new PrincipalSid(USERNAME), 
+        securityService.deletePermission(object, new PrincipalSid(USERNAME),
                 BasePermission.ADMINISTRATION);
 
-        assertTookAwayGrant(objectAcl, new PrincipalSid(USERNAME),
-                BasePermission.ADMINISTRATION, "Permission from current user wasn't taken away");        
-
-        securityService.deletePermission(object, new GrantedAuthoritySid("ROLE_ADMIN"), 
-                BasePermission.ADMINISTRATION);        
-
-        assertTookAwayGrant(objectAcl, new GrantedAuthoritySid("ROLE_ADMIN"),
-                BasePermission.ADMINISTRATION, "Permission from ROLE_ADMIN wasn't taken away");
-
-        verify(mutableAclService, times(4)).readAclById(objectIdentity);
-        verify(mutableAclService, times(4)).updateAcl(objectAcl);
+        assertNotGranted(objectAcl, new PrincipalSid(USERNAME),
+                BasePermission.ADMINISTRATION, "Permission from current user wasn't taken away");
+        verify(mutableAclService, times(1)).readAclById(objectIdentity);
+        verify(mutableAclService, times(1)).updateAcl(objectAcl);
     }
 
-    private void assertTookAwayGrant(MutableAcl acl, Sid sid, Permission permission, String message) {
+    private void assertNotGranted(MutableAcl acl, Sid sid, Permission permission, String message) {
         List<Permission> expectedPermission = new ArrayList<Permission>();
         expectedPermission.add(permission);
         List<Sid> expectedSid = new ArrayList<Sid>();
         expectedSid.add(sid);
-        boolean granted = true;
         try {
             acl.isGranted(expectedPermission, expectedSid, true);
+            fail(message);
         } catch (NotFoundException e) {
-        	granted = false;
         }
-        assertFalse(granted, message);
+    }
+
+
+    private void assertGranted(MutableAcl acl, Sid sid, Permission permission, String message) {
+        List<Permission> expectedPermission = new ArrayList<Permission>();
+        expectedPermission.add(permission);
+        List<Sid> expectedSid = new ArrayList<Sid>();
+        expectedSid.add(sid);
+        try {
+            assertTrue(acl.isGranted(expectedPermission, expectedSid, true), message);
+        } catch (NotFoundException e) {
+            fail(message);
+        }
+    }
+
+    private void mockCurrentUserPrincipal() {
+        Principal user = new PrincipalImpl(USERNAME);
+        Authentication auth = mock(Authentication.class);
+        when(auth.getPrincipal()).thenReturn(user);
+        when(securityContext.getAuthentication()).thenReturn(auth);
     }
 
 }

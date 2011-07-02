@@ -131,9 +131,9 @@ public class SecurityServiceImpl implements SecurityService {
         // add permission to acl for recipient
         acl.insertAce(acl.getEntries().size(), permission, recipient, true);
         mutableAclService.updateAcl(acl);
-        logger.debug("Added permission mask {} for Sid {} securedObject {} id {}", 
-                new Object[]{permission.getMask(), recipient, securedObject.getClass().getSimpleName(), 
-                securedObject.getId()});
+        logger.debug("Added permission mask {} for Sid {} securedObject {} id {}",
+                new Object[]{permission.getMask(), recipient, securedObject.getClass().getSimpleName(),
+                        securedObject.getId()});
     }
 
     /**
@@ -155,7 +155,7 @@ public class SecurityServiceImpl implements SecurityService {
      */
     @Override
     public void deletePermission(Persistent securedObject, Sid recipient,
-                                  Permission permission) {
+                                 Permission permission) {
         // create identity for securedObject
         ObjectIdentity oid = createIdentityFor(securedObject);
         MutableAcl acl = (MutableAcl) mutableAclService.readAclById(oid);
@@ -170,11 +170,11 @@ public class SecurityServiceImpl implements SecurityService {
                 acl.deleteAce(i);
             }
         }
-        
+
         mutableAclService.updateAcl(acl);
-        logger.debug("Deleted securedObject {} id {} ACL permissions for recipient {}", 
-                new Object[]{securedObject.getClass().getSimpleName(), securedObject.getId(), 
-                recipient});
+        logger.debug("Deleted securedObject {} id {} ACL permissions for recipient {}",
+                new Object[]{securedObject.getClass().getSimpleName(), securedObject.getId(),
+                        recipient});
     }
 
     /**

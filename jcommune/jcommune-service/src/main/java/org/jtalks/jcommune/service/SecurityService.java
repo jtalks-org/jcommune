@@ -34,7 +34,7 @@ public interface SecurityService extends UserDetailsService {
     /**
      * Get current authenticated {@link User}.
      *
-     * @return current authenticated {@link User} or <code>null</code> if there is
+     * @return current authenticated {@link User} or {@code null} if there is
      *         no authenticated {@link User}.
      * @see User
      */
@@ -43,7 +43,7 @@ public interface SecurityService extends UserDetailsService {
     /**
      * Get current authenticated {@link User} username.
      *
-     * @return current authenticated {@link User} username or <code>null</code> if there is
+     * @return current authenticated {@link User} username or {@code null} if there is
      *         no authenticated {@link User}.
      */
     String getCurrentUserUsername();
@@ -69,7 +69,7 @@ public interface SecurityService extends UserDetailsService {
      * @param id    object id
      */
     public void deleteFromAcl(Class clazz, long id);
-    
+
     /**
      * Delete {@code permission} from {@code recipient} on {@code securedObject}
      *
@@ -78,5 +78,5 @@ public interface SecurityService extends UserDetailsService {
      * @param permission    granted permission
      */
     public void deletePermission(Persistent securedObject, Sid recipient,
-            Permission permission);
+                                 Permission permission);
 }
