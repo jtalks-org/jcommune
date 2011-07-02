@@ -26,6 +26,7 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 import static org.testng.Assert.assertEquals;
@@ -44,7 +45,7 @@ public class CreateTopicTest {
     private HtmlAnchor topicLink;
     private final String USERNAME = "testuser";
     private final String PASSWORD = "userpass";
-    private final String TOPIC_TITLE = "topic_title";
+    private final String TOPIC_TITLE = "CreateTopicTest";
     private final String MESSAGE = "message";
     private final String TIME_PATTERN = "\\d{2}\\s[a-zA-Zа-яА-Я]{3}\\s\\d{4}\\s\\d{2}:\\d{2}";
 
@@ -54,7 +55,7 @@ public class CreateTopicTest {
         webClient = new WebClient();
         mainPage = webClient.getPage(mainPageUrl);
         HtmlAnchor signInLink = mainPage.getAnchorByName("signIn");
-        HtmlPage loginPage = (HtmlPage) signInLink.click();
+        HtmlPage loginPage = signInLink.click();
         HtmlForm loginForm = loginPage.getFormByName("login_form");
         HtmlSubmitInput submitButton = loginForm.getInputByName("submit_button");
         HtmlTextInput usernameTextField = loginForm.getInputByName("j_username");
@@ -67,14 +68,14 @@ public class CreateTopicTest {
     @Test(priority = 0)
     public void forumLinkClick() throws Exception {
         HtmlAnchor forumLink = mainPage.getAnchorByName("forumLink");
-        mainPage = (HtmlPage) forumLink.click();
+        mainPage = forumLink.click();
         HtmlForm branchesForm = mainPage.getFormByName("branchesForm");
     }
 
     @Test(priority = 1)
     public void branchLinkClick() throws Exception {
         HtmlAnchor branchLink = mainPage.getAnchorByHref("/jcommune/branch/1.html");
-        HtmlPage topicListPage = (HtmlPage) branchLink.click();
+        HtmlPage topicListPage = branchLink.click();
         topicListForm = topicListPage.getFormByName("topicListForm");
     }
 
@@ -97,11 +98,20 @@ public class CreateTopicTest {
         createTopicForm = createTopicPage.getFormByName("topicListForm");
         topicLink = createTopicPage.getAnchorByText(TOPIC_TITLE);
         HtmlTable topicsTable = createTopicPage.getElementByName("topicsTable");
-        assertEquals(topicsTable.getCellAt(1, 0).asText(), TOPIC_TITLE);
-        assertEquals(topicsTable.getCellAt(1, 1).asText(), USERNAME);
-        assertTrue(topicsTable.getCellAt(1, 2).asText().matches(TIME_PATTERN));
-        assertTrue(DateUtil.stringToMillis(topicsTable.getCellAt(1, 2).asText(), Locale.ENGLISH)
-                - DateUtil.getCurrentTimeMillis() < 1000 * 60);
+        List<HtmlTableRow> tableRowList = topicsTable.getRows();
+        boolean flag=false;
+        for (HtmlTableRow row : tableRowList) {
+            if (row.getCell(0).asText().equals(TOPIC_TITLE)) {
+                assertEquals(row.getCell(0).asText(), TOPIC_TITLE);
+                assertEquals(row.getCell(1).asText(), USERNAME);
+                assertTrue(row.getCell(2).asText().matches(TIME_PATTERN));
+                assertTrue(DateUtil.stringToMillis(row.getCell(2).asText(), Locale.ENGLISH)
+                        - DateUtil.getCurrentTimeMillis() < 1000 * 60);
+                flag=true;
+                break;
+            }
+        }
+        assertTrue(flag,"Topic not found");
     }
 
 

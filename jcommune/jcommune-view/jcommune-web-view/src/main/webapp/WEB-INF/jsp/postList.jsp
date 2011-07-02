@@ -45,8 +45,8 @@
         </td>
         <sec:authorize access="isAuthenticated()">
           <td>
-            <form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/answer.html" method="GET">
-              <input type="submit" value="<spring:message code="label.answer"/>"/>
+            <form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/answer.html" name="answerButtonForm" method="GET">
+              <input type="submit" name="addAnswerButton" value="<spring:message code="label.answer"/>"/>
             </form:form>
           </td>
         </sec:authorize>

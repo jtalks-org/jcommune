@@ -15,13 +15,13 @@
         <spring:message code="label.answer_to" />: <c:out value="${topic.title}"/>
       </h1>
       <form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/answer.html" method="POST" 
-		onsubmit="this.getAttribute('submitted')"> <!--Block multiple form submissions-->
+		onsubmit="this.getAttribute('submitted')" name="answerForm"> <!--Block multiple form submissions-->
         <c:if test="${validationError==true}">
           <div style="margin: 10px; color: #e43131"><spring:message code="label.answer_error"/></div>
         </c:if>
         <textarea style="margin:10px" name="bodytext" cols="40" rows="10"></textarea>
         <br>
-        <input type="submit" value="<spring:message code="label.answer"/>" />
+        <input type="submit" name="answerButton" value="<spring:message code="label.answer"/>" />
         <div class="spacer"></div>
       </form:form>
     </div>
