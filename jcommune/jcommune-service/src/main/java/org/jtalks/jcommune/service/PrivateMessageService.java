@@ -17,31 +17,47 @@
  */
 package org.jtalks.jcommune.service;
 
-import java.util.List;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+
+import java.util.List;
 
 /**
  * The interface to manipulate with private messages.
- * 
+ *
  * @author Pavel Vervenko
  */
 public interface PrivateMessageService extends EntityService<PrivateMessage> {
 
     /**
      * Get all inbox messages for the current user.
+     *
      * @return the list of messages
      */
     List<PrivateMessage> getInboxForCurrentUser();
 
     /**
      * Get all outgoing messages from the current user.
+     *
      * @return the list of messages
      */
     List<PrivateMessage> getOutboxForCurrentUser();
 
     /**
-     * Save the message.
-     * @param pm the message to save.
+     * Send the private message to the user.
+     *
+     * @param title     the title of the message
+     * @param body      the body of the message
+     * @param recipient username of receiver
+     * @return sent message
+     * @throws NotFoundException if the receiver not exists
      */
-    void sendMessage(PrivateMessage pm);
+    PrivateMessage sendMessage(String title, String body, String recipient) throws NotFoundException;
+
+    /**
+     * Marks private message as readed.
+     *
+     * @param pm readed private message
+     */
+    void markAsReaded(PrivateMessage pm);
 }

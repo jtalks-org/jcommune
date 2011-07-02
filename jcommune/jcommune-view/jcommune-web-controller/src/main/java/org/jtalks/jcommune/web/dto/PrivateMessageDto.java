@@ -22,11 +22,14 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * DTO for {@link PrivateMessage} objects. Used for validation and binding to the form.
- * 
+ * Holds message's title, body and username of the recipient.
  * @author Pavel Vervenko
  */
 public class PrivateMessageDto {
 
+    /**
+     * Message's title. Must be 2-22 chars
+     */
     @Size(min = 2, max = 22, message = "{title.length}")
     private String title;
     @Size(min = 2, message = "{body.length}")
@@ -35,6 +38,7 @@ public class PrivateMessageDto {
     private String recipient;
 
     /**
+     * Get the text content of the message's body.
      * @return message body
      */
     public String getBody() {
@@ -42,8 +46,7 @@ public class PrivateMessageDto {
     }
 
     /**
-     * Set body.
-     *
+     * Set the message content.
      * @param body message body
      */
     public void setBody(String body) {
@@ -51,6 +54,7 @@ public class PrivateMessageDto {
     }
 
     /**
+     * Get the username of message's receiver.
      * @return recipient
      */
     public String getRecipient() {
@@ -59,7 +63,6 @@ public class PrivateMessageDto {
 
     /**
      * Set the recipient's username.
-     *
      * @param recipient recipient username
      */
     public void setRecipient(String recipient) {
@@ -67,6 +70,7 @@ public class PrivateMessageDto {
     }
 
     /**
+     * Get the text title of the message.
      * @return title
      */
     public String getTitle() {
@@ -75,7 +79,6 @@ public class PrivateMessageDto {
 
     /**
      * Set the message title.
-     *
      * @param title message's title
      */
     public void setTitle(String title) {

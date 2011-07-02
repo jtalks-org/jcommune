@@ -17,7 +17,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.joda.time.DateTime;
+import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
@@ -26,8 +26,7 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
-import org.mockito.Matchers;
-import org.testng.Assert;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -40,195 +39,214 @@ import static org.testng.Assert.*;
 /**
  * This test cover {@code TransactionalTopicService} logic validation.
  * Logic validation cover update/get/error cases by this class.
+ *
  * @author Osadchuck Eugeny
  * @author Kravchenko Vitaliy
  * @author Kirill Afonin
  */
 public class TransactionalTopicServiceTest {
 
-    final long TOPIC_ID = 999;
+    final long TOPIC_ID = 999L;
+    final long BRANCH_ID = 1L;
+    final long POST_ID = 333L;
     final String TOPIC_TITLE = "topic title";
     final String ANSWER_BODY = "Test Answer Body";
-    final DateTime TOPIC_CREATION_DATE = new DateTime();
+
     private TopicService topicService;
     private SecurityService securityService;
     private BranchService branchService;
     private TopicDao topicDao;
-    final long POST_ID = 333;
+    private BranchDao branchDao;
 
     @BeforeMethod
     public void setUp() throws Exception {
         topicDao = mock(TopicDao.class);
         branchService = mock(BranchService.class);
         securityService = mock(SecurityService.class);
-        topicService = new TransactionalTopicService(topicDao, securityService, branchService);
-    }
-    
-    @Test
-    public void deleteByIdTest(){
-        topicService.delete(POST_ID);
-        
-        verify(topicDao, times(1)).delete(Matchers.anyLong());
-    }
-
-    @Test(expectedExceptions = {IllegalArgumentException.class})
-    public void deleteByNagativeIdTest(){
-        topicService.delete(-1l);
-        verify(topicDao, never()).delete(Matchers.anyLong());
+        branchDao = mock(BranchDao.class);
+        topicService = new TransactionalTopicService(topicDao, securityService, branchService, branchDao);
     }
 
     @Test
-    public void getByIdTest() {
-        when(topicDao.get(TOPIC_ID)).thenReturn(getTopic(false));
+    public void testGet() throws NotFoundException {
+        Topic expectedTopic = Topic.createNewTopic();
+        when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
+        when(topicDao.get(TOPIC_ID)).thenReturn(expectedTopic);
 
-        Topic topic = topicService.get(TOPIC_ID);
+        Topic actualTopic = topicService.get(TOPIC_ID);
 
-        assertEquals(topic, getTopic(false), "Topics aren't equals");
-
-        verify(topicDao, times(1)).get(Matchers.anyLong());
+        assertEquals(actualTopic, expectedTopic, "Topics aren't equals");
+        verify(topicDao).isExist(TOPIC_ID);
+        verify(topicDao).get(TOPIC_ID);
     }
 
-    @Test(expectedExceptions = {IllegalArgumentException.class})
-    public void getByNagativeIdTest(){
-        topicService.get(-1l);
-        verify(topicDao, never()).get(Matchers.anyLong());
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testGetIncorrectId() throws NotFoundException {
+        when(topicDao.isExist(POST_ID)).thenReturn(false);
+
+        topicService.get(POST_ID);
     }
-    
+
     @Test
-    public void getAllTest() {
-        List<Topic> expectedUserList = new ArrayList<Topic>();
-        expectedUserList.add(getTopic(false));
-        when(topicDao.getAll()).thenReturn(expectedUserList);
+    public void testAddAnswer() throws NotFoundException {
+        Topic answeredTopic = Topic.createNewTopic();
+        User author = new User();
+        when(securityService.getCurrentUser()).thenReturn(author);
+        when(topicDao.get(TOPIC_ID)).thenReturn(answeredTopic);
 
-        List<Topic> actualUserList = topicService.getAll();
+        Post createdPost = topicService.addAnswer(TOPIC_ID, ANSWER_BODY);
 
-        assertEquals(actualUserList, expectedUserList, "Topics lists aren't equals");
-
-        verify(topicDao, times(1)).getAll();
+        assertEquals(createdPost.getPostContent(), ANSWER_BODY);
+        assertEquals(createdPost.getUserCreated(), author);
+        verify(securityService).getCurrentUser();
+        verify(topicDao).get(TOPIC_ID);
+        verify(topicDao).saveOrUpdate(answeredTopic);
+        verify(securityService).grantAdminPermissionToCurrentUserAndAdmins(createdPost);
     }
 
-    /**
-     * Check for the answering logic works correctly.
-     */
-    @Test
-    public void addAnswerTest() {
-        Topic topic = getTopic(false);
-        int postsNumberBefore = topic.getPosts().size();
-        User currentUser = getUser();
-
-        when(topicService.get(TOPIC_ID)).thenReturn(topic);
-        when(securityService.getCurrentUser()).thenReturn(currentUser);
-
-        topicService.addAnswer(TOPIC_ID, ANSWER_BODY);
-        int postsNumberAfter = topic.getPosts().size();
-        Post newPost = topic.getPosts().get(postsNumberAfter - 1);
-
-        assertEquals(postsNumberBefore + 1, postsNumberAfter, "Posts number didn't increased by 1");
-        assertEquals(newPost.getPostContent(), ANSWER_BODY, "Answer body isn't the same");
-        assertEquals(newPost.getUserCreated(), currentUser, "User isn't the same");
-
-        verify(securityService, times(1)).getCurrentUser();
-        verify(topicDao, times(1)).saveOrUpdate(topic);
-        verify(topicDao, times(1)).get(TOPIC_ID);
-    }
-
-    /**
-     * Check for throwing exception when the user isn't logged in.
-     */
-    @Test(expectedExceptions = IllegalStateException.class)
-    public void addAnswerExceptionTest() {
-        Topic topic = getTopic(false);
-
+    @Test(expectedExceptions = {IllegalStateException.class})
+    public void testAddAnswerWithoutCurrentUser() throws NotFoundException {
         when(securityService.getCurrentUser()).thenReturn(null);
-        when(topicService.get(TOPIC_ID)).thenReturn(topic);
+
+        topicService.addAnswer(TOPIC_ID, ANSWER_BODY);
+    }
+
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testAddAnswerWhenTopicNotExist() throws NotFoundException {
+        when(securityService.getCurrentUser()).thenReturn(new User());
+        when(topicDao.get(TOPIC_ID)).thenReturn(null);
 
         topicService.addAnswer(TOPIC_ID, ANSWER_BODY);
     }
 
     @Test
-    public void testCreateTopic() {
-        when(securityService.getCurrentUser()).thenReturn(getUser());
-        when(branchService.get(1l)).thenReturn(new Branch());
-        topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, 1l);
+    public void testCreateTopic() throws NotFoundException {
+        User author = new User();
+        Branch branch = new Branch();
+        when(securityService.getCurrentUser()).thenReturn(author);
+        when(branchService.get(BRANCH_ID)).thenReturn(branch);
 
-        verify(securityService, times(1)).getCurrentUser();
-        verify(topicDao, times(1)).saveOrUpdate(Matchers.<Topic>anyObject());
-        verify(branchService, times(1)).get(1l);
+        Topic createdTopic = topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, BRANCH_ID);
+
+        Post createdPost = createdTopic.getPosts().get(0);
+        assertEquals(createdTopic.getTitle(), TOPIC_TITLE);
+        assertEquals(createdTopic.getTopicStarter(), author);
+        assertEquals(createdTopic.getBranch(), branch);
+        assertEquals(createdPost.getUserCreated(), author);
+        assertEquals(createdPost.getPostContent(), ANSWER_BODY);
+        verify(securityService).getCurrentUser();
+        verify(topicDao).saveOrUpdate(createdTopic);
+        verify(branchService).get(BRANCH_ID);
+        verify(securityService).grantAdminPermissionToCurrentUserAndAdmins(createdPost);
+        verify(securityService).grantAdminPermissionToCurrentUserAndAdmins(createdTopic);
     }
-    
+
+    @Test(expectedExceptions = {IllegalStateException.class})
+    public void testCreateTopicWithoutCurrentUser() throws NotFoundException {
+        when(securityService.getCurrentUser()).thenReturn(null);
+
+        topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, 1L);
+    }
+
     @Test
-    public void deletePostTest(){
-        Topic topic = getTopic(true);
-        int expectedPostCount = topic.getPosts().size();
-        when(topicDao.get(anyLong())).thenReturn(topic);
+    public void testDeletePost() throws NotFoundException {
+        Topic topic = Topic.createNewTopic();
+        Post post1 = Post.createNewPost();
+        post1.setId(1L);
+        Post postForDelete = Post.createNewPost();
+        postForDelete.setId(POST_ID);
+        topic.addPost(post1);
+        topic.addPost(postForDelete);
+        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
+
         topicService.deletePost(TOPIC_ID, POST_ID);
-        int actualPostCount = topic.getPosts().size();
-        assertTrue(actualPostCount == 0 || actualPostCount < expectedPostCount, "Post was not deleted");
-        verify(topicDao, times(1)).get(anyLong());
-        verify(topicDao, times(1)).saveOrUpdate(Matchers.any(Topic.class));
+
+        assertFalse(topic.getPosts().contains(postForDelete), "Post not deleted from list");
+        verify(topicDao).get(TOPIC_ID);
+        verify(topicDao).saveOrUpdate(topic);
+        verify(securityService).deleteFromAcl(postForDelete);
+    }
+
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testDeletePostFromNonExistentTopic() throws NotFoundException {
+        when(topicDao.get(TOPIC_ID)).thenReturn(null);
+
+        topicService.deletePost(TOPIC_ID, POST_ID);
+    }
+
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testDeleteNonExistentPost() throws NotFoundException {
+        Topic topic = Topic.createNewTopic();
+        Post post1 = Post.createNewPost();
+        post1.setId(1L);
+        Post post2 = Post.createNewPost();
+        post2.setId(2L);
+        topic.addPost(post1);
+        topic.addPost(post2);
+        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
+
+        topicService.deletePost(TOPIC_ID, POST_ID);
     }
 
     @Test
-    public void testGetTopicsRangeInBranch() {
+    public void testGetTopicsRangeInBranch() throws NotFoundException {
         int start = 1;
         int max = 2;
-        long branchId = 1L;
-        List<Topic> list = new ArrayList<Topic>();
-        list.add(Topic.createNewTopic());
-        list.add(Topic.createNewTopic());
-        when(topicDao.getTopicRangeInBranch(branchId, start, max)).thenReturn(list);
+        List<Topic> expectedList = new ArrayList<Topic>();
+        expectedList.add(Topic.createNewTopic());
+        expectedList.add(Topic.createNewTopic());
+        when(branchDao.isExist(BRANCH_ID)).thenReturn(true);
+        when(topicDao.getTopicRangeInBranch(BRANCH_ID, start, max)).thenReturn(expectedList);
 
-        List<Topic> topics = topicService.getTopicRangeInBranch(branchId, start, max);
+        List<Topic> topics = topicService.getTopicRangeInBranch(BRANCH_ID, start, max);
 
         assertNotNull(topics);
-        assertEquals(max, topics.size(), "Unexpected list size");
-        verify(topicDao, times(1)).getTopicRangeInBranch(branchId, start, max);
+        assertEquals(topics.size(), max, "Unexpected list size");
+        verify(topicDao).getTopicRangeInBranch(BRANCH_ID, start, max);
+        verify(branchDao).isExist(BRANCH_ID);
+    }
+
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testGetTopicsRangeInNonExistentBranch() throws NotFoundException {
+        when(branchDao.isExist(BRANCH_ID)).thenReturn(false);
+
+        topicService.getTopicRangeInBranch(BRANCH_ID, 1, 5);
     }
 
     @Test
-    public void testGetTopicsInBranchCount() {
-        long branchId = 1L;
-        when(topicDao.getTopicsInBranchCount(branchId)).thenReturn(10);
+    public void testGetTopicsInBranchCount() throws NotFoundException {
+        int expectedCount = 10;
+        when(branchDao.isExist(BRANCH_ID)).thenReturn(true);
+        when(topicDao.getTopicsInBranchCount(BRANCH_ID)).thenReturn(expectedCount);
 
-        int count = topicService.getTopicsInBranchCount(branchId);
+        int count = topicService.getTopicsInBranchCount(BRANCH_ID);
 
-        assertEquals(count, 10);
-        verify(topicDao, times(1)).getTopicsInBranchCount(branchId);
+        assertEquals(count, expectedCount);
+        verify(topicDao).getTopicsInBranchCount(BRANCH_ID);
+        verify(branchDao).isExist(BRANCH_ID);
     }
 
-    /**
-     * Create new dummy User with username "Test" and user.id  equal to 100500.
-     *
-     * @return the user
-     */
-    private User getUser() {
-        User currentUser = new User();
-        currentUser.setId(100500);
-        currentUser.setUsername("Test");
-        return currentUser;
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testGetTopicsCountInNonExistentBranch() throws NotFoundException {
+        when(branchDao.isExist(BRANCH_ID)).thenReturn(false);
+
+        topicService.getTopicsInBranchCount(BRANCH_ID);
     }
-    
-    /**
-     * Get dummy topic.
-     * @param withPosts - set to true if you want add collection of 10 posts to topic
-     * @return - dummy topic with topicId=TOPIC_ID,topictitle= TOPIC_TITLE,
-     * topic_creationDate=TOPIC_CREATION_DATE and posts. Posts ids started from POST_ID to POST_ID plus 10.
-     */
-    private Topic getTopic(boolean withPosts) {
-        User topicStarter = getUser();
-        Topic topic = new Topic();
-        topic.setCreationDate(TOPIC_CREATION_DATE);
-        topic.setId(TOPIC_ID);
-        topic.setUuid("xxxxx123");
-        topic.setTitle(TOPIC_TITLE);
-        topic.setTopicStarter(topicStarter);
-        if(withPosts){
-            for (long i = POST_ID; i <= POST_ID + 10; i++) {
-                Post post = Post.createNewPost();
-                post.setId(i);
-                topic.addPost(post);
-            }
-        }
-        return topic;
+
+    @Test
+    public void testDeleteTopic() throws NotFoundException {
+        when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
+
+        topicService.deleteTopic(TOPIC_ID);
+
+        verify(topicDao).delete(TOPIC_ID);
+        verify(securityService).deleteFromAcl(Topic.class, TOPIC_ID);
+    }
+
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testDeleteNonExistentTopic() throws NotFoundException {
+        when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
+
+        topicService.deleteTopic(TOPIC_ID);
     }
 }

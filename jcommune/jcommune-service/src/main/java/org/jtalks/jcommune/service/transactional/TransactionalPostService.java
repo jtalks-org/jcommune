@@ -18,10 +18,10 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.jcommune.model.dao.PostDao;
+import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.PostService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 import java.util.List;
 
@@ -32,22 +32,27 @@ import java.util.List;
  */
 public class TransactionalPostService extends AbstractTransactionalEntityService<Post, PostDao> implements PostService {
 
-    private final Logger logger = LoggerFactory.getLogger(TransactionalPostService.class);
+    private TopicDao topicDao;
 
     /**
      * Create an instance of Post entity based service
      *
-     * @param dao - data access object, which should be able do all CRUD operations with post entity.
+     * @param dao      data access object, which should be able do all CRUD operations with post entity.
+     * @param topicDao this dao used for checking branch existance
      */
-    public TransactionalPostService(PostDao dao) {
+    public TransactionalPostService(PostDao dao, TopicDao topicDao) {
         this.dao = dao;
+        this.topicDao = topicDao;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<Post> getPostRangeInTopic(long topicId, int start, int max) {
+    public List<Post> getPostRangeInTopic(long topicId, int start, int max) throws NotFoundException {
+        if (!topicDao.isExist(topicId)) {
+            throw new NotFoundException("Topic with id: " + topicId + " not found");
+        }
         return dao.getPostRangeInTopic(topicId, start, max);
     }
 
@@ -55,7 +60,10 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public int getPostsInTopicCount(long topicId) {
+    public int getPostsInTopicCount(long topicId) throws NotFoundException {
+        if (!topicDao.isExist(topicId)) {
+            throw new NotFoundException("Topic with id: " + topicId + " not found");
+        }
         return dao.getPostsInTopicCount(topicId);
     }
 }

@@ -22,6 +22,8 @@ import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.service.BranchService;
 
+import java.util.List;
+
 /**
  * @author Vitaliy Kravchenko
  */
@@ -37,5 +39,13 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
      */
     public TransactionalBranchService(BranchDao branchDao) {
         this.dao = branchDao;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Branch> getAll() {
+        return dao.getAll();
     }
 }

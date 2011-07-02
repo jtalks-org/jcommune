@@ -8,15 +8,12 @@
 <head></head>
 <body>
 <table border="1" width="100%" name="messagesTable">
-
-    <sec:authentication property="name" var="username" scope="request"/>    
-    
     <h2>
         <spring:message code="label.topic"/>
         :
         <c:out value="${topicTitle}"/>
-    </h2>    
-    <c:forEach var="post" items="${posts}">
+    </h2>
+    <c:forEach var="post" items="${posts}" varStatus="i">
         <tr>
             <td width="20%"><spring:message code="label.author"/>: <c:out
                     value="${post.userCreated.username}"/>
@@ -24,44 +21,78 @@
             <td width="80%"><spring:message code="label.text"/>: <c:out
                     value="${post.postContent}"/>
             </td>
-            
-            <c:if test="${username==post.userCreated.username}">
-                <td>
-                    <form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/post/${post.id}/delete.html"
-                               method="GET">
-                        <input type="submit" value="<spring:message code="label.delete"/>"/>
-                    </form:form>
-                </td>
-            </c:if>
+            <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
+                <c:choose>
+                    <c:when test="${page == 1 && i.index == 0}">
+                        <td>
+                            <form:form
+                                    action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/delete.html"
+                                    method="GET">
+                                <input type="submit" value="<spring:message code="label.delete"/>"/>
+                            </form:form>
+                        </td>
+                    </c:when>
+
+                    <c:otherwise>
+                        <td>
+                            <form:form
+                                    action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/post/${post.id}/delete.html"
+                                    method="GET">
+                                <input type="submit" value="<spring:message code="label.delete"/>"/>
+                            </form:form>
+                        </td>
+                    </c:otherwise>
+                </c:choose>
+            </sec:accesscontrollist>
         </tr>
     </c:forEach>
 </table>
 <table>
     <tr>
         <td>
-          <form:form action="${pageContext.request.contextPath}/branch/${branchId}.html" method="GET">
-            <input type="submit" value="<spring:message code="label.back"/>"/>             
-          </form:form>
-        </td>
-        <sec:authorize access="isAuthenticated()">
-          <td>
-            <form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/answer.html" name="answerButtonForm" method="GET">
-              <input type="submit" name="addAnswerButton" value="<spring:message code="label.answer"/>"/>
+            <form:form action="${pageContext.request.contextPath}/branch/${branchId}.html" method="GET">
+                <input type="submit" value="<spring:message code="label.back"/>"/>
             </form:form>
-          </td>
+        </td>
+        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+            <td>
+                <form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/answer.html"
+                       name="answerButtonForm" method="GET">
+                    <input type="submit" name="addAnswerButton" value="<spring:message code="label.answer"/>"/>
+                </form:form>
+            </td>
         </sec:authorize>
     </tr>
 </table>
 
 <div id="pagination">
     <c:if test="${maxPages > 1}">
-        <c:if test="${page > 1}">
-            <c:url value="/branch/${branchId}/topic/${topicId}.html" var="prev">
-                <c:param name="page" value="${page - 1}"/>
+
+        <c:if test="${page > 2}">
+            <c:url value="/branch/${branchId}/topic/${topicId}.html" var="first">
+                <c:param name="page" value="1"/>
             </c:url>
-            <a href='<c:out value="${prev}" />' class="pn next"><spring:message code="pagination.prev"/></a>
+            <a href='<c:out value="${first}" />' class="pn next"><spring:message code="pagination.first"/></a>...
         </c:if>
-        <c:forEach begin="1" end="${maxPages}" step="1" varStatus="i">
+
+        <c:choose>
+            <c:when test="${page > 1}">
+                <c:set var="begin" value="${page - 1}"/>
+            </c:when>
+            <c:otherwise>
+                <c:set var="begin" value="1"/>
+            </c:otherwise>
+        </c:choose>
+        <c:choose>
+            <c:when test="${page + 1 < maxPages}">
+                <c:set var="end" value="${page + 1}"/>
+            </c:when>
+            <c:otherwise>
+                <c:set var="end" value="${maxPages}"/>
+            </c:otherwise>
+        </c:choose>
+
+        <c:forEach begin="${begin}" end="${end}" step="1" varStatus="i">
             <c:choose>
                 <c:when test="${page == i.index}">
                     <span>${i.index}</span>
@@ -75,12 +106,13 @@
             </c:choose>
         </c:forEach>
 
-        <c:if test="${page + 1 < maxPages+1}">
-            <c:url value="/branch/${branchId}/topic/${topicId}.html" var="next">
-                <c:param name="page" value="${page + 1}"/>
+        <c:if test="${page + 2 < maxPages+1}">
+            <c:url value="/branch/${branchId}/topic/${topicId}.html" var="last">
+                <c:param name="page" value="${maxPages}"/>
             </c:url>
-            <a href='<c:out value="${next}" />' class="pn next"><spring:message code="pagination.next"/></a>
+            ...<a href='<c:out value="${last}"/>' class="pn next"><spring:message code="pagination.last"/></a>
         </c:if>
+
     </c:if>
 </div>
 

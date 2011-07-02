@@ -18,7 +18,6 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import java.util.List;
-import org.hibernate.Query;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.User;
@@ -35,22 +34,14 @@ public class PrivateMessageHibernateDao extends AbstractHibernateDao<PrivateMess
      */
     @Override
     public List<PrivateMessage> getAllFromUser(User userFrom) {
-        Query query = getSession().createQuery("FROM PrivateMessage as pm "
-                + "WHERE pm.userFrom = :user "
-                + "ORDER BY pm.creationDate DESC");
-        query.setEntity("user", userFrom);
-        return query.list();
+        return getSession().getNamedQuery("getAllFromUser").setEntity("user", userFrom).list();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<PrivateMessage> getAllToUser(User userTo) {
-        Query query = getSession().createQuery("FROM PrivateMessage as pm "
-                + "WHERE pm.userTo = :user "
-                + "ORDER BY pm.creationDate DESC");
-        query.setEntity("user", userTo);
-        return query.list();
+    public List<PrivateMessage> getAllForUser(User userTo) {
+        return getSession().getNamedQuery("getAllToUser").setEntity("user", userTo).list();
     }
 }

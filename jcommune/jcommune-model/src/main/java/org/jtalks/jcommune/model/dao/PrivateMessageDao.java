@@ -41,6 +41,6 @@ public interface PrivateMessageDao extends Dao<PrivateMessage> {
      * @param userTo the recipient of the messages
      * @return the list of messages
      */
-    List<PrivateMessage> getAllToUser(User userTo);
+    List<PrivateMessage> getAllForUser(User userTo);
     
 }

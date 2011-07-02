@@ -17,30 +17,65 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.entity.Persistent;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityContextFacade;
 import org.jtalks.jcommune.service.SecurityService;
-import org.jtalks.jcommune.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.domain.GrantedAuthoritySid;
+import org.springframework.security.acls.domain.ObjectIdentityImpl;
+import org.springframework.security.acls.domain.PrincipalSid;
+import org.springframework.security.acls.model.AccessControlEntry;
+import org.springframework.security.acls.model.MutableAcl;
+import org.springframework.security.acls.model.MutableAclService;
+import org.springframework.security.acls.model.NotFoundException;
+import org.springframework.security.acls.model.ObjectIdentity;
+import org.springframework.security.acls.model.Permission;
+import org.springframework.security.acls.model.Sid;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import java.util.List;
+
 
 /**
  * Abstract layer for Spring Security.
  * Contains methods for authentication and authorization.
  *
  * @author Kirill Afonin
+ * @author Max Malakhov
  */
 public class SecurityServiceImpl implements SecurityService {
 
-    private UserService userService;
+    private UserDao userDao;
+    private MutableAclService mutableAclService;
     private SecurityContextFacade securityContextFacade;
+    private final Logger logger = LoggerFactory.getLogger(SecurityServiceImpl.class);
+
+    /**
+     * Constructor creates an instance of service.
+     *
+     * @param userDao               {@link org.jtalks.jcommune.model.dao.UserDao} to be injected
+     * @param securityContextFacade {@link org.jtalks.jcommune.service.SecurityContextFacade} to be injected
+     * @param mutableAclService     service for actions with ACLs
+     */
+    public SecurityServiceImpl(UserDao userDao, SecurityContextFacade securityContextFacade,
+                               MutableAclService mutableAclService) {
+        this.userDao = userDao;
+        this.securityContextFacade = securityContextFacade;
+        this.mutableAclService = mutableAclService;
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public User getCurrentUser() {
-        return userService.getByUsername(getCurrentUserUsername());
+        return userDao.getByUsername(getCurrentUserUsername());
     }
 
     /**
@@ -69,21 +104,136 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     /**
+     * Grant {@code permisison} to current user on {@code securedObject}
+     *
+     * @param securedObject object for authorization
+     * @param permission    granted permission
+     */
+    private void addPermissionToCurrentUser(Persistent securedObject,
+                                            Permission permission) {
+        addPermission(securedObject, new PrincipalSid(getCurrentUserUsername()), permission);
+    }
+
+    /**
+     * Grant permission  {@code permision} to {@code recipient} on {@code securedObject}
+     *
+     * @param securedObject object for authorization
+     * @param recipient     sid to whom  the permission granted
+     * @param permission    granted permission
+     */
+    private void addPermission(Persistent securedObject, Sid recipient,
+                               Permission permission) {
+        MutableAcl acl;
+        // create identity for securedObject
+        ObjectIdentity oid = createIdentityFor(securedObject);
+
+        try {
+            acl = (MutableAcl) mutableAclService.readAclById(oid);
+        } catch (NotFoundException nfe) {
+            // create new Acl if not exist
+            acl = mutableAclService.createAcl(oid);
+        }
+
+        // add permission to acl for recipient
+        acl.insertAce(acl.getEntries().size(), permission, recipient, true);
+        mutableAclService.updateAcl(acl);
+        logger.debug("Added permission mask {} for Sid {} securedObject {} id {}",
+                new Object[]{permission.getMask(), recipient, securedObject.getClass().getSimpleName(),
+                        securedObject.getId()});
+    }
+
+    /**
+     * Creates {@code ObjectIdentity} for {@code securedObject}
+     *
+     * @param securedObject object
+     * @return identity with {@code securedObject} class name and id
+     */
+    private ObjectIdentity createIdentityFor(Persistent securedObject) {
+        if (securedObject.getId() <= 0) {
+            throw new IllegalStateException("Object id must be assigned before creating acl.");
+        }
+        return new ObjectIdentityImpl(securedObject.getClass().getCanonicalName(),
+                securedObject.getId());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deletePermission(Persistent securedObject, Sid recipient,
+                                 Permission permission) {
+        // create identity for securedObject
+        ObjectIdentity oid = createIdentityFor(securedObject);
+        MutableAcl acl = (MutableAcl) mutableAclService.readAclById(oid);
+
+        // Remove all permissions associated with this particular recipient
+        // (string equality used to keep things simple)
+        List<AccessControlEntry> entries = acl.getEntries();
+
+        for (int i = 0; i < entries.size(); i++) {
+            if (entries.get(i).getSid().equals(recipient) &&
+                    entries.get(i).getPermission().equals(permission)) {
+                acl.deleteAce(i);
+            }
+        }
+
+        mutableAclService.updateAcl(acl);
+        logger.debug("Deleted securedObject {} id {} ACL permissions for recipient {}",
+                new Object[]{securedObject.getClass().getSimpleName(), securedObject.getId(),
+                        recipient});
+    }
+
+    /**
+     * Grant administration permission to admins.
+     * Currently admins include ROLE_ADMIN.
+     *
+     * @param securedObject object for authorization
+     */
+    private void addPermissionsForAdmins(Persistent securedObject) {
+        addPermission(securedObject, new GrantedAuthoritySid("ROLE_ADMIN"),
+                BasePermission.ADMINISTRATION);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void grantAdminPermissionToCurrentUserAndAdmins(Persistent securedObject) {
+        addPermissionsForAdmins(securedObject);
+        addPermissionToCurrentUser(securedObject, BasePermission.ADMINISTRATION);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteFromAcl(Persistent securedObject) {
+        deleteFromAcl(securedObject.getClass(), securedObject.getId());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteFromAcl(Class clazz, long id) {
+        if (id <= 0) {
+            throw new IllegalStateException("Object id must be greater then 0.");
+        }
+        ObjectIdentity oid = new ObjectIdentityImpl(clazz.getCanonicalName(), id);
+        mutableAclService.deleteAcl(oid, true);
+        logger.debug("Deleted securedObject {} with id: {}", clazz.getSimpleName(), id);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     public UserDetails loadUserByUsername(String username) {
-        return userService.getByUsername(username);
+        User user = userDao.getByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found: " + username);
+        }
+        return user;
     }
 
-    /**
-     * Constructor creates an instance of service.
-     *
-     * @param userService {@link UserService} to be injected
-     * @param securityContextFacade {@link SecurityContextFacade} to be injected
-     */
-    public SecurityServiceImpl(UserService userService, SecurityContextFacade securityContextFacade) {
-        this.userService = userService;
-        this.securityContextFacade = securityContextFacade;
-    }
 }

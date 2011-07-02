@@ -19,53 +19,78 @@
 
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
-/** This controller displays all topic's branches and populates page with them
+/**
  * @author Vitaliy kravchenko
+ * @author Kirill Afonin
  */
 
 @Controller
 public final class BranchController {
 
     private BranchService branchService;
+    private TopicService topicService;
 
     /**
      * Constructor creates MVC controller with specified BranchService
-     * @param branchService {@link org.jtalks.jcommune.service.BranchService} autowired object from Spring
-     * Context
+     *
+     * @param branchService autowired object from Spring Context
+     * @param topicService  autowired object from Spring Context
      */
     @Autowired
-    public BranchController(BranchService branchService) {
+    public BranchController(BranchService branchService, TopicService topicService) {
         this.branchService = branchService;
+        this.topicService = topicService;
     }
 
-    /**
-     * Populates page with a list of existing branches
-     * @return list of {@link org.jtalks.jcommune.model.entity.Branch}, if no branches created it will return
-     * empty list
-     */
-    @ModelAttribute("topicsBranchList")
-    public List<Branch> populateFormWithBranches() {
-        return branchService.getAll();
-    }
 
     /**
      * This method handles GET request and produces JSP page with all topic branches
+     *
      * @return {@link ModelAndView} with view name as renderAllBranches
      */
     @RequestMapping(value = "/main", method = RequestMethod.GET)
-    public ModelAndView displayAllTopicsBranches() {
-        return new ModelAndView("renderAllBranches");
+    public ModelAndView branchesList() {
+        return new ModelAndView("branchesList", "topicsBranchList", branchService.getAll());
+    }
+
+    /**
+     * Displays to user a list of topic from the chosen branch with pagination.
+     *
+     * @param branchId branch for display
+     * @param page     page
+     * @param size     number of posts on the page
+     * @return {@code ModelAndView} with topics list and vars for pagination
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException when branch not found
+     */
+    @RequestMapping(value = "/branch/{branchId}", method = RequestMethod.GET)
+    public ModelAndView show(@PathVariable("branchId") long branchId,
+                             @RequestParam(value = "page", required = false) Integer page,
+                             @RequestParam(value = "size", required = false) Integer size) throws NotFoundException {
+        int topicsCount = topicService.getTopicsInBranchCount(branchId);
+        Pagination pag = new Pagination(page, size, topicsCount);
+
+        List<Topic> topics = topicService.getTopicRangeInBranch(branchId, pag.getStart(), pag.getPageSize());
+
+        return new ModelAndView("topicList")
+                .addObject("branchId", branchId)
+                .addObject("topics", topics)
+                .addObject("maxPages", pag.getMaxPages())
+                .addObject("page", pag.getPage());
     }
 
 }

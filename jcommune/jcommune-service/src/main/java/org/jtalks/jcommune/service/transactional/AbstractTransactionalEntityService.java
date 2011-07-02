@@ -20,8 +20,7 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.jcommune.model.dao.Dao;
 import org.jtalks.jcommune.model.entity.Persistent;
 import org.jtalks.jcommune.service.EntityService;
-
-import java.util.List;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 /**
  * Generic implementation of all entity based services.
@@ -42,30 +41,10 @@ public abstract class AbstractTransactionalEntityService<T extends Persistent, Y
      * {@inheritDoc}
      */
     @Override
-    public void delete(Long id) {
-        if(id < 0){
-            throw new IllegalArgumentException("Persistent object id could not be nagative");
-        }
-        dao.delete(id);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public T get(Long id) {
-        if(id < 0){
-            throw new IllegalArgumentException("Persistent object id could not be nagative");
+    public T get(Long id) throws NotFoundException {
+        if (!dao.isExist(id)) {
+            throw new NotFoundException("Entity with id: " + id + " not found");
         }
         return (T) dao.get(id);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<T> getAll() {
-        return dao.getAll();
-    }
-
 }

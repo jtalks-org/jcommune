@@ -69,7 +69,7 @@ public class UserController {
      * @param result  result of {@link UserDto} validation
      * @return redirect to / if registration successfull or back to "/registration" if failed
      */
-    @RequestMapping(value = "/user", method = RequestMethod.POST)
+    @RequestMapping(value = "/user", method = {RequestMethod.POST, RequestMethod.GET})
     public ModelAndView registerUser(@Valid @ModelAttribute("newUser") UserDto userDto, BindingResult result) {
 
         if (result.hasErrors()) {

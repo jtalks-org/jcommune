@@ -4,8 +4,8 @@
 <html>
 <head></head>
 <body>
-<form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic.html" modelAttribute="topicDto" method="POST" 
-	onsubmit="this.getAttribute('submitted')" name="newTopicForm"> <!--Block multiple form submissions-->
+<form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic.html" modelAttribute="topicDto" method="POST"
+	onsubmit="if (this.getAttribute('submitted')) return false; this.setAttribute('submitted','true');" name="newTopicForm"> <!--Block multiple form submissions-->
     <table border="2" width="100%">
         <tr>
             <td width="30%">

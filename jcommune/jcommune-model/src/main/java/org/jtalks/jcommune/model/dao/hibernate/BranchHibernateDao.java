@@ -21,9 +21,18 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.entity.Branch;
 
+import java.util.List;
+
 /**
  * @author Vitaliy Kravchenko
  */
 public class BranchHibernateDao extends AbstractHibernateDao<Branch> implements BranchDao {
-
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Branch> getAll() {
+        return getSession().createQuery("from Branch").list();
+    }
 }

@@ -78,38 +78,6 @@
       <groupId>org.unitils</groupId>
       <artifactId>unitils-core</artifactId>
     </dependency>
-    <!--<dependency>-->
-    <!--<groupId>org.unitils</groupId>-->
-    <!--<artifactId>unitils-testng</artifactId>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-    <!--<groupId>org.unitils</groupId>-->
-    <!--<artifactId>unitils-database</artifactId>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-    <!--<groupId>org.unitils</groupId>-->
-    <!--<artifactId>unitils-dbunit</artifactId>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-    <!--<groupId>org.unitils</groupId>-->
-    <!--<artifactId>unitils-mock</artifactId>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-    <!--<groupId>org.unitils</groupId>-->
-    <!--<artifactId>unitils-orm</artifactId>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-    <!--<groupId>org.unitils</groupId>-->
-    <!--<artifactId>unitils-spring</artifactId>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-    <!--<groupId>org.unitils</groupId>-->
-    <!--<artifactId>unitils-test</artifactId>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-    <!--<groupId>org.unitils</groupId>-->
-    <!--<artifactId>unitils-dbmaintainer</artifactId>-->
-    <!--</dependency>-->
   </dependencies>
 
   <build>

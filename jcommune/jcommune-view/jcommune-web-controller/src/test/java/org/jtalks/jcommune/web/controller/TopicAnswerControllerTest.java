@@ -19,18 +19,20 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 
 /**
  * Tests for {@link TopicAnswerController} actions.
- * 
+ *
  * @author Pavel Vervenko
  */
 public class TopicAnswerControllerTest {
@@ -44,38 +46,37 @@ public class TopicAnswerControllerTest {
     private TopicService topicService;
 
     @BeforeMethod
-    public void init() {
+    public void init() throws NotFoundException {
         MockitoAnnotations.initMocks(this);
         controller = new TopicAnswerController(topicService);
-        when(topicService.get(TOPIC_ID)).thenReturn(new Topic());
     }
 
     @Test
-    public void testGetAnswerPage() {
-        ModelAndView mav = controller.getAnswerPage(TOPIC_ID, false,BRANCH_ID);
+    public void testGetAnswerPage() throws NotFoundException {
+        boolean isValid = false;
+        when(topicService.get(TOPIC_ID)).thenReturn(new Topic());
+
+        ModelAndView mav = controller.getAnswerPage(TOPIC_ID, isValid, BRANCH_ID);
 
         assertAndReturnModelAttributeOfType(mav, "topic", Topic.class);
         assertViewName(mav, "answer");
-
-        verify(topicService, times(1)).get(TOPIC_ID);
+        verify(topicService).get(TOPIC_ID);
     }
 
     @Test
-    public void testSubmitAnswer() {
-        ModelAndView mav = controller.submitAnswer(TOPIC_ID, ANSWER_BODY,BRANCH_ID);
+    public void testSubmitAnswer() throws NotFoundException {
+        ModelAndView mav = controller.submitAnswer(TOPIC_ID, ANSWER_BODY, BRANCH_ID);
 
-        assertViewName(mav, "redirect:/branch/" + BRANCH_ID+"/topic/" + TOPIC_ID + ".html");
-
-        verify(topicService, times(1)).addAnswer(TOPIC_ID, ANSWER_BODY);
+        assertViewName(mav, "redirect:/branch/" + BRANCH_ID + "/topic/" + TOPIC_ID + ".html");
+        verify(topicService).addAnswer(TOPIC_ID, ANSWER_BODY);
     }
-    
-    @Test
-    public void testSubmitShortAnswer() {
-        ModelAndView mav = controller.submitAnswer(TOPIC_ID, SHORT_ANSWER_BODY,BRANCH_ID);
 
-        assertAndReturnModelAttributeOfType(mav, "validationError", Boolean.class);   
+    @Test
+    public void testSubmitShortAnswer() throws NotFoundException {
+        ModelAndView mav = controller.submitAnswer(TOPIC_ID, SHORT_ANSWER_BODY, BRANCH_ID);
+
         assertViewName(mav, "answer");
-        
-        verify(topicService, times(0)).addAnswer(anyLong(), anyString());
+        assertAndReturnModelAttributeOfType(mav, "validationError", Boolean.class);
+        verify(topicService, never()).addAnswer(TOPIC_ID, SHORT_ANSWER_BODY);
     }
 }

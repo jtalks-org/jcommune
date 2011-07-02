@@ -17,21 +17,22 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import java.util.List;
-import javax.validation.Valid;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
-import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PrivateMessageService;
-import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.validation.Valid;
 
 /**
  * MVC controller for Private Messaging. Handles request for inbox, outbox and new private messages.
@@ -42,19 +43,16 @@ import org.springframework.web.servlet.ModelAndView;
 public class PrivateMessageController {
 
     private final PrivateMessageService pmService;
-    private final UserService userService;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
-     * Requires {@link PrivateMessageService} for manipulations with messages and {@link UserService} to find the 
-     * recipient by username.
+     * Requires {@link PrivateMessageService} for manipulations with messages.
      * 
      * @param pmService the PrivateMessageService instance
-     * @param userService the UserService instance
      */
     @Autowired
-    public PrivateMessageController(PrivateMessageService pmService, UserService userService) {
+    public PrivateMessageController(PrivateMessageService pmService) {
         this.pmService = pmService;
-        this.userService = userService;
     }
 
     /**
@@ -62,12 +60,9 @@ public class PrivateMessageController {
      * 
      * @return ModelAndView with added list of inbox messages
      */
-    @RequestMapping(value = "/inbox", method = RequestMethod.GET)
+    @RequestMapping(value = "/pm/inbox", method = RequestMethod.GET)
     public ModelAndView displayInboxPage() {
-        List<PrivateMessage> inboxForCurrentUser = pmService.getInboxForCurrentUser();
-        ModelAndView modelAndView = new ModelAndView("inbox");
-        modelAndView.addObject("pmList", inboxForCurrentUser);
-        return modelAndView;
+        return new ModelAndView("pm/inbox", "pmList", pmService.getInboxForCurrentUser());
     }
 
     /**
@@ -75,12 +70,9 @@ public class PrivateMessageController {
      * 
      * @return ModelAndView with added list of outbox messages 
      */
-    @RequestMapping(value = "/outbox", method = RequestMethod.GET)
+    @RequestMapping(value = "/pm/outbox", method = RequestMethod.GET)
     public ModelAndView displayOutboxPage() {
-        List<PrivateMessage> outboxForCurrentUser = pmService.getOutboxForCurrentUser();
-        ModelAndView modelAndView = new ModelAndView("outbox");
-        modelAndView.addObject("pmList", outboxForCurrentUser);
-        return modelAndView;
+        return new ModelAndView("pm/outbox", "pmList", pmService.getOutboxForCurrentUser());
     }
 
     /**
@@ -88,11 +80,9 @@ public class PrivateMessageController {
      * 
      * @return ModelAndView with the form
      */
-    @RequestMapping(value = "/new_pm", method = RequestMethod.GET)
+    @RequestMapping(value = "/pm/new", method = RequestMethod.GET)
     public ModelAndView displayNewPMPage() {
-        ModelAndView mav = new ModelAndView("newPm");
-        mav.addObject("privateMessageDto", new PrivateMessageDto());
-        return mav;
+        return new ModelAndView("pm/newPm", "privateMessageDto", new PrivateMessageDto());
     }
 
     /**
@@ -102,32 +92,24 @@ public class PrivateMessageController {
      * @param result result of {@link PrivateMessageDto} validation
      * @return redirect to /inbox on success or back to "/new_pm" on validation errors
      */
-    @RequestMapping(value = "/new_pm", method = RequestMethod.POST)
-    public ModelAndView submitNewPM(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
+    @RequestMapping(value = "/pm/new", method = RequestMethod.POST)
+    public ModelAndView submitNewPm(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
         if (result.hasErrors()) {
-            return new ModelAndView("newPm");
+            return new ModelAndView("pm/newPm");
         }
-        PrivateMessage newPm = PrivateMessage.createNewPrivateMessage();
-        newPm.setBody(pmDto.getBody());
-        newPm.setTitle(pmDto.getTitle());
         try {
-            User userTo = userService.getByUsername(pmDto.getRecipient());
-            newPm.setUserTo(userTo);
-        } catch (UsernameNotFoundException unfe) {
-            return getFormWithError();
+            pmService.sendMessage(pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
+        } catch (NotFoundException nfe) {
+            logger.info("User not found: {} ", pmDto.getRecipient());
+            result.rejectValue("recipient", "label.worg_recipient");
+            return new ModelAndView("pm/newPm");
         }
-        pmService.sendMessage(newPm);
-        return new ModelAndView("redirect:/outbox.html");
+        return new ModelAndView("redirect:/pm/outbox.html");
     }
 
-    /**
-     * Return newPm page with the flag of wrong username.
-     * 
-     * @return ModelAndView with error flag
-     */
-    private ModelAndView getFormWithError() {
-        ModelAndView modelAndView = new ModelAndView("newPm");
-        modelAndView.addObject("wongUser", true);
-        return modelAndView;
+    @RequestMapping(value="/pm/{pmId}", method = RequestMethod.GET)
+    public void show(@PathVariable("pmId") Long pmId) throws NotFoundException {
+        PrivateMessage pm = pmService.get(pmId);
+        pmService.markAsReaded(pm);
     }
 }

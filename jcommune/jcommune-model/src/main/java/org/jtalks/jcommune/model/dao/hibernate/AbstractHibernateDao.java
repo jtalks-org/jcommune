@@ -23,7 +23,6 @@ import org.jtalks.jcommune.model.dao.Dao;
 import org.jtalks.jcommune.model.entity.Persistent;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.List;
 
 /**
  * Basic class for access to the {@link Persistent} objects.
@@ -58,7 +57,6 @@ public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<
     }
 
     private final String deleteQuery = "delete " + type.getSimpleName() + " e where e.id= :id";
-    private final String getAllQuery = "from " + type.getSimpleName();
 
     /**
      * Get current Hibernate session.
@@ -111,9 +109,7 @@ public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<
      * {@inheritDoc}
      */
     @Override
-    @SuppressWarnings("unchecked")
-    public List<T> getAll() {
-        return getSession().createQuery(getAllQuery).list();
+    public boolean isExist(Long id) {
+        return get(id) != null;
     }
-
 }

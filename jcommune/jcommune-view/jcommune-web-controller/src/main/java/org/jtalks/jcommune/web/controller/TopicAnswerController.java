@@ -19,6 +19,7 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,15 +56,17 @@ public class TopicAnswerController {
      * If the user isn't logged in he will be redirected to the login page.
      *
      * @param topicId         the id of the topic for the answer
-     * @param validationError is true when post length is less then 2
+     * @param validationError is true when post length is less than 2
      * @param branchId        branch
-     * @return answering <code>ModelAndView</code> or redirect to the login page
+     * @return answering {@code ModelAndView} or redirect to the login page
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when topic not found
      */
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView getAnswerPage(@PathVariable("topicId") Long topicId,
                                       @RequestParam(value = "validationError", required = false)
                                       Boolean validationError,
-                                      @PathVariable("branchId") long branchId) {
+                                      @PathVariable("branchId") long branchId) throws NotFoundException {
         ModelAndView mav = new ModelAndView("answer");
         Topic answeringTopic = topicService.get(topicId);
         mav.addObject("topic", answeringTopic);
@@ -83,11 +86,13 @@ public class TopicAnswerController {
      * @param bodyText the content of the answer
      * @param branchId branch
      * @return redirect to the topic view
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when topic or branch not found
      */
     @RequestMapping(method = RequestMethod.POST)
     public ModelAndView submitAnswer(@PathVariable("topicId") Long topicId,
                                      @RequestParam("bodytext") String bodyText,
-                                     @PathVariable("branchId") long branchId) {
+                                     @PathVariable("branchId") long branchId) throws NotFoundException {
         if (isValidAnswer(bodyText)) {
             topicService.addAnswer(topicId, bodyText);
             return new ModelAndView("redirect:/branch/" + branchId + "/topic/" + topicId + ".html");

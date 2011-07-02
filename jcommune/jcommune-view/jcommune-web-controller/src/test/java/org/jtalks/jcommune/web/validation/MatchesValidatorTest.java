@@ -34,7 +34,7 @@ public class MatchesValidatorTest {
     /**
      * Class for testing constraint.
      */
-    @Matches(field = "value", verifyField = "value2", message = "Values dont match")
+    @Matches(field = "value", verifyField = "value2", message = "Values don't match")
     public class TestObject {
         String value;
         String value2;
@@ -90,7 +90,7 @@ public class MatchesValidatorTest {
                 validator.validate(new TestObject("value", "not"));
 
         Assert.assertEquals(constraintViolations.size(), 1, "Validation without errors");
-        Assert.assertEquals(constraintViolations.iterator().next().getMessage(), "Values dont match");
+        Assert.assertEquals(constraintViolations.iterator().next().getMessage(), "Values don't match");
     }
 
     @Test

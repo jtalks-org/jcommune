@@ -4,7 +4,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <html>
   <head>
-    <title><spring:message code="label.new_pm"/></title>
+    <title><spring:message code="label.pm_title"/></title>
     <link href="${pageContext.request.contextPath}/css/main.css"
           type=text/css rel=stylesheet>
   </head>
@@ -16,17 +16,14 @@
         </td>
         <td>
           <h1><spring:message code="label.new_pm"/></h1>
-          <form:form action="new_pm.html" modelAttribute="privateMessageDto" method="POST" 
+          <form:form action="new.html" modelAttribute="privateMessageDto" method="POST" 
                      onsubmit="this.getAttribute('submitted')"> <!--Block multiple form submissions-->
             <table border="1" width="100%">
               <tr>
                 <td width="30%">
                   <form:label path="recipient"><spring:message code="label.recipient"/></form:label>
                   <form:input path="recipient"/>
-                  <form:errors path="recipient"/>
-                  <c:if test="${wongUser==true}">
-                    <div style="margin: 10px; color: #e43131"><spring:message code="label.worg_recipient"/></div>
-                  </c:if>                  
+                  <form:errors path="recipient"/>          
                 </td>
               </tr>
               <tr>

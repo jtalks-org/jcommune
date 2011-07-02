@@ -19,7 +19,6 @@ package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.jcommune.model.entity.Persistent;
 
-import java.util.List;
 
 /**
  * Basic Data Access Object interface.
@@ -43,7 +42,7 @@ public interface Dao<T extends Persistent> {
      * Delete the object by it's id.
      *
      * @param id the id
-     * @return {@code true} if entity deleted successfull
+     * @return {@code true} if entity deleted successfully
      */
     boolean delete(Long id);
 
@@ -56,9 +55,10 @@ public interface Dao<T extends Persistent> {
     T get(Long id);
 
     /**
-     * Get the list of objects.
+     * Check entity existance by id.
      *
-     * @return list of objects
+     * @param id entity id
+     * @return {@code true} if entity exist
      */
-    List<T> getAll();
+    boolean isExist(Long id);
 }

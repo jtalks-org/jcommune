@@ -9,41 +9,44 @@
 <fmt:setLocale value="en"/>
 <html>
 <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" content=""/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0"/>
+    <meta http-equiv="Expires" content="-1"/>
+
     <title><decorator:title default="JCommune"/></title>
-    <meta name="keywords" content="">
-    <meta name="description" content="">
-    <meta http-equiv="Content-type" value="text/html; charset=utf-8" content="">
     <link href="${pageContext.request.contextPath}/css/main.css"
-          type=text/css rel=stylesheet>
+          type=text/css rel=stylesheet />
 </head>
 <body>
 <div align="center">
     <table cellspacing=0 cellpadding=0 width=100% border=0>
         <tr>
-            <td><span class="textlogo1"><b>JTalks Developers</b>&nbsp</span>
+            <td><span class="textlogo1"><b>JTalks Developers</b>&nbsp;</span>
             </td>
         </tr>
     </table>
-    &nbsp
+    &nbsp;
     <table cellspacing=0 cellpadding=5 width=100% border=0>
         <tr>
             <td bgcolor="#003366"></td>
         </tr>
         <tr>
-            <td class="background"><a
-                    href="${pageContext.request.contextPath}/main.html" name="forumLink">&nbsp&nbsp<span
-                    class="nav"><fmt:message key="label.forum"/> </span> </a> | <span style="float: right">
-                <sec:authorize access="isAuthenticated()">
-                    <sec:authentication property="principal.username"/>&nbsp
-                    <a href="${pageContext.request.contextPath}/inbox.html"><fmt:message key="label.pm"/></a>
+            <td class="background">
+                <a href="${pageContext.request.contextPath}/main.html" name="forumLink">&nbsp;&nbsp;
+                    <span class="nav"><fmt:message key="label.forum"/> </span> </a> | <span style="float: right">
+                <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                    <sec:authentication property="principal.username"/>&nbsp;
+                    <a href="${pageContext.request.contextPath}/pm/inbox.html"><fmt:message key="label.pm"/></a>
                     <a href="${pageContext.request.contextPath}/logout.html" name="logout"><fmt:message key="label.logout"/></a>
                 </sec:authorize>
-                &nbsp
-                <sec:authorize access="isAnonymous()">
+                &nbsp;
+                <sec:authorize access="hasRole('ROLE_ANONYMOUS')">
                     <a href="${pageContext.request.contextPath}/login.html" name="signIn"><fmt:message key="label.signin"/></a>
                     <a href="${pageContext.request.contextPath}/registration.html" name="signUp"><fmt:message key="label.signup"/></a>
+
                 </sec:authorize>
-                &nbsp
+                &nbsp;
                 <a href="?lang=en">En</a> | <a href="?lang=ru">Ru</a> </span></td>
         </tr>
         <tr>
@@ -52,7 +55,7 @@
         </tr>
 
     </table>
-    &nbsp
+    &nbsp;
 
 </div>
 <decorator:body/>

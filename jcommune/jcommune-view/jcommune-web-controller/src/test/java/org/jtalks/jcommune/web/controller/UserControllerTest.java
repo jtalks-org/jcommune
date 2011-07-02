@@ -7,13 +7,14 @@ import org.jtalks.jcommune.web.dto.UserDto;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
-import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 
 /**
  * @author Kirill Afonin
@@ -38,12 +39,12 @@ public class UserControllerTest {
     }
 
     private void assertNullFields(UserDto dto) {
-        Assert.assertNull(dto.getEmail());
-        Assert.assertNull(dto.getUsername());
-        Assert.assertNull(dto.getPassword());
-        Assert.assertNull(dto.getPasswordConfirm());
-        Assert.assertNull(dto.getLastName());
-        Assert.assertNull(dto.getFirstName());
+        assertNull(dto.getEmail());
+        assertNull(dto.getUsername());
+        assertNull(dto.getPassword());
+        assertNull(dto.getPasswordConfirm());
+        assertNull(dto.getLastName());
+        assertNull(dto.getFirstName());
     }
 
     @Test
@@ -55,21 +56,31 @@ public class UserControllerTest {
         ModelAndView mav = controller.registerUser(dto, bindingResult);
 
         assertViewName(mav, "redirect:/");
-        verify(userService, times(1)).registerUser(any(User.class));
+        verify(userService).registerUser(any(User.class));
     }
 
     @Test
     public void testRegisterDuplicateUser() throws Exception {
         UserDto dto = getUserDto();
-        User user = dto.createUser();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
-        doThrow(new DuplicateException()).when(userService).registerUser(any(User.class));
+        doThrow(new DuplicateException("")).when(userService).registerUser(any(User.class));
 
         ModelAndView mav = controller.registerUser(dto, bindingResult);
 
         assertViewName(mav, "registration");
-        Assert.assertEquals(1, bindingResult.getErrorCount(), "Result without errors");
-        verify(userService, times(1)).registerUser(any(User.class));
+        assertEquals(bindingResult.getErrorCount(), 1 , "Result without errors");
+        verify(userService).registerUser(any(User.class));
+    }
+
+    @Test
+    public void testRegisterValidationFail() {
+        UserDto dto = getUserDto();
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        ModelAndView mav = controller.registerUser(dto, bindingResult);
+
+        assertViewName(mav, "registration");
     }
 
     /**

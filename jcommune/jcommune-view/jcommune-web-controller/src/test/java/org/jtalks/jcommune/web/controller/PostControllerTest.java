@@ -22,6 +22,7 @@ import java.util.Map;
 
 
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -35,44 +36,48 @@ import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeValues;
 
 /**
- * This is test for <code>DeletePostController<code> class.
+ * This is test for <code>PostController<code> class.
  * Test should cover view resolution and logic validation.
- * @author Osadchuck Eugeny
  *
+ * @author Osadchuck Eugeny
  */
-public class DeletePostControllerTest {
+public class PostControllerTest {
     private TopicService topicService;
-    private DeletePostController deletePostController;
-    
+    private PostController controller;
+
     @BeforeMethod
-    public void init(){
+    public void init() {
         topicService = mock(TopicService.class);
-        deletePostController = new DeletePostController(topicService);
+        controller = new PostController(topicService);
     }
-    
-    
+
+
     @Test
-    public void confirmTest(){     
+    public void confirmTest() {
         long topicId = 1;
+        long branchId = 1;
         long postId = 5;
-        ModelAndView actualMav = deletePostController.confirm(topicId, postId,1L);
+
+        ModelAndView actualMav = controller.deleteConfirmPage(topicId, postId, branchId);
+
         assertViewName(actualMav, "deletePost");
-        
         Map<String, Object> expectedModel = new HashMap<String, Object>();
         expectedModel.put("topicId", topicId);
         expectedModel.put("postId", postId);
-        expectedModel.put("branchId",1L);
+        expectedModel.put("branchId", branchId);
         assertModelAttributeValues(actualMav, expectedModel);
-        
+
     }
-    
+
     @Test
-    public void deleteTest(){
+    public void deleteTest() throws NotFoundException {
         long topicId = 1;
         long postId = 5;
-        ModelAndView actualMav = deletePostController.delete(topicId, postId,1L);
+        long branchId = 1;
+
+        ModelAndView actualMav = controller.delete(topicId, postId, branchId);
+
         assertViewName(actualMav, "redirect:/branch/1/topic/" + topicId + ".html");
-        
-        verify(topicService, times(1)).deletePost(anyLong(), anyLong());
+        verify(topicService, times(1)).deletePost(topicId, postId);
     }
 }

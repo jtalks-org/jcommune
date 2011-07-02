@@ -17,7 +17,9 @@
  */
 package org.jtalks.jcommune.service;
 
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 import java.util.List;
 
@@ -37,8 +39,11 @@ public interface TopicService extends EntityService<Topic> {
      *
      * @param topicId    target topic primary id.
      * @param answerBody the text of the answer
+     * @return created {@link Post}
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when topic not found
      */
-    void addAnswer(long topicId, String answerBody);
+    Post addAnswer(long topicId, String answerBody) throws NotFoundException;
 
     /**
      * Add new topic with given title and body.
@@ -47,16 +52,21 @@ public interface TopicService extends EntityService<Topic> {
      * @param topicName name of topic
      * @param bodyText  body of topic
      * @param branchId  branch containing topic
+     * @return created topic
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when branch not found
      */
-    void createTopic(String topicName, String bodyText, long branchId);
+    Topic createTopic(String topicName, String bodyText, long branchId) throws NotFoundException;
 
     /**
      * Delete post from topic.
      *
-     * @param topicId topic id.
-     * @param postId  post id.
+     * @param topicId topic id
+     * @param postId  post id
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when topic or post not found
      */
-    void deletePost(long topicId, long postId);
+    void deletePost(long topicId, long postId) throws NotFoundException;
 
     /**
      * Get posts range from branch.
@@ -65,14 +75,26 @@ public interface TopicService extends EntityService<Topic> {
      * @param start    start index of topic
      * @param max      number of topics
      * @return list of {@code Topic} objects with size {@code max}
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when branch not found
      */
-    List<Topic> getTopicRangeInBranch(long branchId, int start, int max);
+    List<Topic> getTopicRangeInBranch(long branchId, int start, int max) throws NotFoundException;
 
     /**
      * Get number of topics in branch.
      *
      * @param branchId branch id where you have to count topics
      * @return number of topics in branch
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when branch not found
      */
-    int getTopicsInBranchCount(long branchId);
+    int getTopicsInBranchCount(long branchId) throws NotFoundException;
+
+    /**
+     * Delete topic by id.
+     *
+     * @param topicId topic id
+     * @throws NotFoundException when topic not found
+     */
+    void deleteTopic(long topicId) throws NotFoundException;
 }

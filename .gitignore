@@ -1,3 +1,7 @@
+.settings
+.classpath
+.project
+
 *.iml
 \jcommune\jcommune-service\target\
 \jcommune\jcommune-model\target\

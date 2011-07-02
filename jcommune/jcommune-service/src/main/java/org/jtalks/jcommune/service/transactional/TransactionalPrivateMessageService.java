@@ -17,31 +17,40 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import java.util.List;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.SecurityService;
+import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.List;
 
 /**
  * The implementation of PrivateMessageServices.
- * 
+ *
  * @author Pavel Vervenko
  */
 public class TransactionalPrivateMessageService
         extends AbstractTransactionalEntityService<PrivateMessage, PrivateMessageDao> implements PrivateMessageService {
 
     private final SecurityService securityService;
+    private final UserService userService;
 
     /**
      * Creates the instance of service.
-     * @param pmDao PrivateMessageDao
+     *
+     * @param pmDao           PrivateMessageDao
      * @param securityService for retrieving current user
+     * @param userService     for getting user by name
      */
-    public TransactionalPrivateMessageService(PrivateMessageDao pmDao, SecurityService securityService) {
+    public TransactionalPrivateMessageService(PrivateMessageDao pmDao,
+                                              SecurityService securityService, UserService userService) {
         this.dao = pmDao;
         this.securityService = securityService;
+        this.userService = userService;
     }
 
     /**
@@ -50,7 +59,7 @@ public class TransactionalPrivateMessageService
     @Override
     public List<PrivateMessage> getInboxForCurrentUser() {
         User currentUser = securityService.getCurrentUser();
-        return dao.getAllToUser(currentUser);
+        return dao.getAllForUser(currentUser);
     }
 
     /**
@@ -62,12 +71,27 @@ public class TransactionalPrivateMessageService
         return dao.getAllFromUser(currentUser);
     }
 
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public void sendMessage(PrivateMessage pm) {
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    public PrivateMessage sendMessage(String title, String body, String recipient) throws NotFoundException {
+        PrivateMessage pm = PrivateMessage.createNewPrivateMessage();
+        pm.setTitle(title);
+        pm.setBody(body);
         pm.setUserFrom(securityService.getCurrentUser());
+        pm.setUserTo(userService.getByUsername(recipient));
+        dao.saveOrUpdate(pm);
+        return pm;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void markAsReaded(PrivateMessage pm) {
+        pm.markAsReaded();
         dao.saveOrUpdate(pm);
     }
 }

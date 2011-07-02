@@ -17,21 +17,25 @@
  */
 package org.jtalks.jcommune.service;
 
+import org.jtalks.jcommune.model.entity.Persistent;
 import org.jtalks.jcommune.model.entity.User;
+import org.springframework.security.acls.model.Permission;
+import org.springframework.security.acls.model.Sid;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
  * This interface declare methods for authentication and authorization.
  *
  * @author Kirill Afonin
+ * @author Max Malakhov
  */
 public interface SecurityService extends UserDetailsService {
 
     /**
      * Get current authenticated {@link User}.
      *
-     * @return current authenticated {@link User} or <code>null</code> if there is
-     * no authenticated {@link User}.
+     * @return current authenticated {@link User} or {@code null} if there is
+     *         no authenticated {@link User}.
      * @see User
      */
     User getCurrentUser();
@@ -39,8 +43,40 @@ public interface SecurityService extends UserDetailsService {
     /**
      * Get current authenticated {@link User} username.
      *
-     * @return current authenticated {@link User} username or <code>null</code> if there is
-     * no authenticated {@link User}.
+     * @return current authenticated {@link User} username or {@code null} if there is
+     *         no authenticated {@link User}.
      */
     String getCurrentUserUsername();
+
+    /**
+     * Add administrator permissions to current user and administrators.
+     *
+     * @param securedObject a new secured object.
+     */
+    void grantAdminPermissionToCurrentUserAndAdmins(Persistent securedObject);
+
+    /**
+     * Delete object from acl. All permissions will be removed.
+     *
+     * @param securedObject a removed secured object.
+     */
+    void deleteFromAcl(Persistent securedObject);
+
+    /**
+     * Delete object from acl. All permissions will be removed.
+     *
+     * @param clazz object {@code Class}
+     * @param id    object id
+     */
+    void deleteFromAcl(Class clazz, long id);
+
+    /**
+     * Delete {@code permission} from {@code recipient} on {@code securedObject}
+     *
+     * @param securedObject object for authorization with existent Acl
+     * @param recipient     sid from which will permission be removed
+     * @param permission    granted permission
+     */
+    void deletePermission(Persistent securedObject, Sid recipient,
+                          Permission permission);
 }

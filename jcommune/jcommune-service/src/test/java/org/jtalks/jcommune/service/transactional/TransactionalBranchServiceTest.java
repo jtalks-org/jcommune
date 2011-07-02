@@ -21,8 +21,7 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.service.BranchService;
-import org.mockito.Matchers;
-import org.testng.Assert;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -30,14 +29,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
+import static org.testng.Assert.assertEquals;
 
 /**
  * This test class is intended to test all topic-related forum branch facilities
- * 
+ *
  * @author Kravchenko Vitaliy
+ * @author Kirill Afonin
  */
-public class TransactionalTopicBranchServiceTest {
-    private long BRANCH_ID = 1;
+public class TransactionalBranchServiceTest {
+    private long BRANCH_ID = 1L;
 
     private BranchDao branchDao;
     private BranchService branchService;
@@ -49,36 +50,34 @@ public class TransactionalTopicBranchServiceTest {
     }
 
     @Test
-    public void deleteByIdTest(){
-        branchService.delete(BRANCH_ID);
+    public void testGet() throws NotFoundException {
+        Branch expectedBranch = new Branch();
+        when(branchDao.isExist(BRANCH_ID)).thenReturn(true);
+        when(branchDao.get(BRANCH_ID)).thenReturn(expectedBranch);
 
-        verify(branchDao, times(1)).delete(Matchers.anyLong());
+        Branch branch = branchService.get(BRANCH_ID);
+
+        assertEquals(branch, expectedBranch, "Posts aren't equals");
+        verify(branchDao).isExist(BRANCH_ID);
+        verify(branchDao).get(BRANCH_ID);
+    }
+
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testGetIncorrectId() throws NotFoundException {
+        when(branchDao.isExist(BRANCH_ID)).thenReturn(false);
+
+        branchService.get(BRANCH_ID);
     }
 
     @Test
-    public void getByIdTest(){
-        when(branchDao.get(BRANCH_ID)).thenReturn(getTopicBranch());
-        Branch post = branchService.get(BRANCH_ID);
-        Assert.assertEquals(post, getTopicBranch());
-        verify(branchDao, times(1)).get(Matchers.anyLong());
-    }
-
-    @Test
-    public void getAllTest(){
+    public void getAllTest() {
         List<Branch> expectedBranchList = new ArrayList<Branch>();
-        expectedBranchList.add(getTopicBranch());
+        expectedBranchList.add(new Branch());
         when(branchDao.getAll()).thenReturn(expectedBranchList);
-        List<Branch> actualBranchList = branchService.getAll();
-        Assert.assertEquals(actualBranchList, expectedBranchList);
-        verify(branchDao, times(1)).getAll();
-    }
 
-    private Branch getTopicBranch(){
-        Branch branch = new Branch();
-        branch.setId(BRANCH_ID);
-        branch.setUuid("xxx");
-        branch.setDescription("some info");
-        branch.setName("Java Core");
-        return branch;
+        List<Branch> actualBranchList = branchService.getAll();
+
+        assertEquals(actualBranchList, expectedBranchList);
+        verify(branchDao).getAll();
     }
 }

@@ -20,10 +20,11 @@ package org.jtalks.jcommune.model.entity;
 import org.joda.time.DateTime;
 
 /**
- * Text message to send from one user to another. <br>
- * All fields are required. 
- * Use the static method PrivateMessage.createNewPrivateMessage() 
+ * Text message to send from one user to another. <br/>
+ * All fields are required.
+ * Use the static method PrivateMessage.createNewPrivateMessage()
  * to create new PrivateMessage with current creationDate.
+ *
  * @author Pavel Vervenko
  */
 public class PrivateMessage extends Persistent {
@@ -33,6 +34,8 @@ public class PrivateMessage extends Persistent {
     private User userTo;
     private String title;
     private String body;
+
+    private PrivateMessageStatus status = PrivateMessageStatus.NOT_READED;
 
     /**
      * Creates the PrivateMessage instance. All fields values are null.
@@ -48,7 +51,7 @@ public class PrivateMessage extends Persistent {
     public PrivateMessage(DateTime creationDate) {
         this.creationDate = creationDate;
     }
-    
+
     /**
      * Creates a new PrivateMessage with the creationDate initialized with current time.
      *
@@ -60,6 +63,7 @@ public class PrivateMessage extends Persistent {
 
     /**
      * Get the content of the message.
+     *
      * @return message's body
      */
     public String getBody() {
@@ -68,6 +72,7 @@ public class PrivateMessage extends Persistent {
 
     /**
      * Set the message's body.
+     *
      * @param body content to set
      */
     public void setBody(String body) {
@@ -76,6 +81,7 @@ public class PrivateMessage extends Persistent {
 
     /**
      * Get the creation timestamp of the message.
+     *
      * @return creation date
      */
     public DateTime getCreationDate() {
@@ -84,6 +90,7 @@ public class PrivateMessage extends Persistent {
 
     /**
      * Set the creation date and time of the message.
+     *
      * @param creationDate datetime to set
      */
     public void setCreationDate(DateTime creationDate) {
@@ -92,14 +99,16 @@ public class PrivateMessage extends Persistent {
 
     /**
      * Get the title of the private message.
+     *
      * @return message's title
      */
     public String getTitle() {
         return title;
     }
-    
+
     /**
      * Set the title to the message.
+     *
      * @param title title to set
      */
     public void setTitle(String title) {
@@ -108,6 +117,7 @@ public class PrivateMessage extends Persistent {
 
     /**
      * Get the User who send the message.
+     *
      * @return sender
      */
     public User getUserFrom() {
@@ -116,6 +126,7 @@ public class PrivateMessage extends Persistent {
 
     /**
      * Set the User who send the message.
+     *
      * @param userFrom sender
      */
     public void setUserFrom(User userFrom) {
@@ -124,6 +135,7 @@ public class PrivateMessage extends Persistent {
 
     /**
      * Get the recipient of the message.
+     *
      * @return recipient
      */
     public User getUserTo() {
@@ -132,9 +144,44 @@ public class PrivateMessage extends Persistent {
 
     /**
      * Set the recipient of the message.
+     *
      * @param userTo recipient of the message
      */
     public void setUserTo(User userTo) {
         this.userTo = userTo;
+    }
+
+    /**
+     * Get message status
+     *
+     * @return message status
+     * @see PrivateMessageStatus
+     */
+    public PrivateMessageStatus getStatus() {
+        return status;
+    }
+
+    /**
+     * Set message status.
+     *
+     * @param status message status
+     * @see PrivateMessageStatus
+     */
+    public void setStatus(PrivateMessageStatus status) {
+        this.status = status;
+    }
+
+    /**
+     * Mark message as readed.
+     */
+    public void markAsReaded() {
+        this.status = PrivateMessageStatus.READED;
+    }
+
+    /**
+     * @return {@code true} if message is readed
+     */
+    public boolean isReaded() {
+        return this.status == PrivateMessageStatus.READED;
     }
 }

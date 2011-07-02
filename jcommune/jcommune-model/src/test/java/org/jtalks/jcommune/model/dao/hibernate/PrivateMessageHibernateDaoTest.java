@@ -128,31 +128,9 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
 
         assertFalse(result, "Entity deleted");
     }   
-    
-    @Test
-    public void testGetAll() {
-        PrivateMessage pm1 = getSavedPm();
-        PrivateMessage pm2 = PrivateMessage.createNewPrivateMessage();
-        pm2.setUserFrom(pm1.getUserFrom());
-        pm2.setUserTo(pm1.getUserTo());
-        pm2.setBody("body");
-        pm2.setTitle("title");
-        session.save(pm2);
-        
-        List<PrivateMessage> posts = dao.getAll();
-
-        assertEquals(posts.size(), 2);
-    }
 
     @Test
-    public void testGetAllWithEmptyTable() {
-        List<PrivateMessage> posts = dao.getAll();
-
-        assertTrue(posts.isEmpty());
-    }
-
-    @Test
-    public void testgetAllFromUser() {
+    public void testGetAllFromUser() {
         PrivateMessage pm = getSavedPm();
         
         List<PrivateMessage> listFrom = dao.getAllFromUser(pm.getUserFrom());
@@ -162,10 +140,10 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
     }
     
     @Test
-    public void testgetAllToUser() {
+    public void testGetAllToUser() {
         PrivateMessage pm = getSavedPm();
         
-        List<PrivateMessage> listFrom = dao.getAllToUser(pm.getUserTo());
+        List<PrivateMessage> listFrom = dao.getAllForUser(pm.getUserTo());
         
         assertEquals(listFrom.size(), 1);
         assertEquals(pm, listFrom.get(0));

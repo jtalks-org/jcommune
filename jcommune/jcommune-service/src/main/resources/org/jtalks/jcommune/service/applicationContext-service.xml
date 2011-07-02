@@ -30,6 +30,7 @@
   <bean id="postService"
         class="org.jtalks.jcommune.service.transactional.TransactionalPostService">
     <constructor-arg index="0" ref="postDao"/>
+    <constructor-arg index="1" ref="topicDao"/>
   </bean>
 
   <bean id="topicBranchService"
@@ -41,6 +42,7 @@
         class="org.jtalks.jcommune.service.transactional.TransactionalPrivateMessageService">
     <constructor-arg index="0" ref="privateMessageDao"/>
     <constructor-arg index="1" ref="securityService"/>
+    <constructor-arg index="2" ref="userService"/>
   </bean>
 
   <bean id="topicService"
@@ -48,6 +50,7 @@
     <constructor-arg index="0" ref="topicDao"/>
     <constructor-arg index="1" ref="securityService"/>
     <constructor-arg index="2" ref="topicBranchService"/>
+    <constructor-arg index="3" ref="topicBranchDao"/>
   </bean>
 
   <bean id="securityContextFacade"
@@ -55,7 +58,8 @@
 
   <bean id="securityService"
         class="org.jtalks.jcommune.service.nontransactional.SecurityServiceImpl">
-    <constructor-arg index="0" ref="userService"/>
+    <constructor-arg index="0" ref="userDao"/>
     <constructor-arg index="1" ref="securityContextFacade"/>
+    <constructor-arg index="2" ref="aclService"/>
   </bean>
 </beans>

@@ -141,27 +141,6 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         assertFalse(result, "Entity deleted");
     }
 
-    @Test
-    public void testGetAll() {
-        Post post1 = ObjectsFactory.getDefaultPost();
-        session.save(post1);
-        User post2Author = ObjectsFactory.getUser("user2", "user2@mail.com");
-        session.save(post2Author);
-        Post post2 = ObjectsFactory.getPost(post2Author);
-        session.save(post2);
-
-        List<Post> posts = dao.getAll();
-
-        assertEquals(posts.size(), 2);
-    }
-
-    @Test
-    public void testGetAllWithEmptyTable() {
-        List<Post> posts = dao.getAll();
-
-        assertTrue(posts.isEmpty());
-    }
-
     private List<Post> createAndSavePostList(int size) {
         List<Post> posts = new ArrayList<Post>();
         Topic topic = ObjectsFactory.getDefaultTopic();
