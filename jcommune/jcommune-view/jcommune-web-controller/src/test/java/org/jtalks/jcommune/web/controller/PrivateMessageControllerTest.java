@@ -144,6 +144,7 @@ public class PrivateMessageControllerTest {
         verify(pmService).get(pmId);
     }
 
+    @Test
     public void testDisplayDraftsPage() {
         ModelAndView mav = controller.displayDraftsPage();
 
@@ -151,7 +152,6 @@ public class PrivateMessageControllerTest {
         assertAndReturnModelAttributeOfType(mav, "pmList", List.class);
         verify(pmService).getDraftsFromCurrentUser();
     }
-
 
     @Test
     public void testEdit() throws NotFoundException {
