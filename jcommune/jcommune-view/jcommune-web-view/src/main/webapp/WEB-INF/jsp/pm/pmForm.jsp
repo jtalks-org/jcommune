@@ -16,14 +16,15 @@
         </td>
         <td>
           <h1><spring:message code="label.new_pm"/></h1>
-          <form:form action="new.html" modelAttribute="privateMessageDto" method="POST" 
-                     onsubmit="this.getAttribute('submitted')"> <!--Block multiple form submissions-->
+          <form:form action="${pageContext.request.contextPath}/pm/new.html" modelAttribute="privateMessageDto" method="POST"
+                     onsubmit="this.getAttribute('submitted')" name="editForm"> <!--Block multiple form submissions-->
+            <form:hidden path="id"/>
             <table border="1" width="100%">
               <tr>
                 <td width="30%">
                   <form:label path="recipient"><spring:message code="label.recipient"/></form:label>
                   <form:input path="recipient"/>
-                  <form:errors path="recipient"/>          
+                  <form:errors path="recipient"/>
                 </td>
               </tr>
               <tr>
@@ -41,7 +42,10 @@
                 </td>
               </tr>
             </table>
-            <input type="submit" value="<spring:message code="label.send"/>"/>
+            <input type="submit" value="<spring:message code="label.send"/>"
+                   onclick="document.editForm.action='${pageContext.request.contextPath}/pm/new.html'"/>
+            <input type="submit" value="<spring:message code="label.save"/>"
+                   onclick="document.editForm.action='${pageContext.request.contextPath}/pm/save.html'"/>
           </form:form>
         </td>
       </tr>
