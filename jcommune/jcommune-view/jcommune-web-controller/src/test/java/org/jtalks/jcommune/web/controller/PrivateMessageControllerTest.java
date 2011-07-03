@@ -43,6 +43,7 @@ import static org.testng.Assert.assertEquals;
  */
 public class PrivateMessageControllerTest {
 
+    public static final long PM_ID = 2L;
     private PrivateMessageController controller;
     @Mock
     private PrivateMessageService pmService;
@@ -80,68 +81,67 @@ public class PrivateMessageControllerTest {
     }
 
     @Test
-    public void submitNewPMTest() throws NotFoundException {
+    public void testSend() throws NotFoundException {
         PrivateMessageDto dto = getPrivateMessageDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
-        ModelAndView mav = controller.submitNewPm(dto, bindingResult);
 
-        assertViewName(mav, "redirect:/pm/outbox.html");
+        String view = controller.send(dto, bindingResult);
+
+        assertEquals(view, "redirect:/pm/outbox.html");
         verify(pmService).sendMessage(dto.getTitle(), dto.getBody(), dto.getRecipient());
     }
 
     @Test
-    public void submitWithErrors() {
+    public void testSendWithErrors() {
         PrivateMessageDto dto = getPrivateMessageDto();
         BeanPropertyBindingResult resultWithErrors = mock(BeanPropertyBindingResult.class);
-        when(resultWithErrors.hasErrors()).thenReturn(Boolean.TRUE);
+        when(resultWithErrors.hasErrors()).thenReturn(true);
 
-        ModelAndView mav = controller.submitNewPm(dto, resultWithErrors);
+        String view = controller.send(dto, resultWithErrors);
 
-        assertViewName(mav, "pm/pmForm");
+        assertEquals(view, "pm/pmForm");
     }
 
     @Test
-    public void submitWithWrongUser() throws NotFoundException {
+    public void testSendWithWrongUser() throws NotFoundException {
         PrivateMessageDto dto = getPrivateMessageDto();
         doThrow(new NotFoundException()).when(pmService).sendMessage(dto.getTitle(), dto.getBody(), dto.getRecipient());
-
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
-        ModelAndView mav = controller.submitNewPm(dto, bindingResult);
 
-        assertViewName(mav, "pm/pmForm");
+        String view = controller.send(dto, bindingResult);
+
+        assertEquals(view, "pm/pmForm");
         verify(pmService).sendMessage(dto.getTitle(), dto.getBody(), dto.getRecipient());
     }
 
     @Test
     public void testShowInbox() throws NotFoundException {
-        long pmId = 2L;
         String box = "inbox";
         PrivateMessage pm = new PrivateMessage();
-        when(pmService.get(pmId)).thenReturn(pm);
+        when(pmService.get(PM_ID)).thenReturn(pm);
 
-        ModelAndView mav = controller.show(box, pmId);
+        ModelAndView mav = controller.show(box, PM_ID);
 
         assertViewName(mav, "pm/showPm");
         PrivateMessage actualPm = assertAndReturnModelAttributeOfType(mav, "pm", PrivateMessage.class);
         assertEquals(actualPm, pm);
-        
-        verify(pmService).get(pmId);
+
+        verify(pmService).get(PM_ID);
         verify(pmService).markAsReaded(pm);
     }
 
     @Test
     public void testShowOutbox() throws NotFoundException {
-        long pmId = 2L;
         String box = "outbox";
         PrivateMessage pm = new PrivateMessage();
-        when(pmService.get(pmId)).thenReturn(pm);
+        when(pmService.get(PM_ID)).thenReturn(pm);
 
-        ModelAndView mav = controller.show(box, pmId);
+        ModelAndView mav = controller.show(box, PM_ID);
 
         assertViewName(mav, "pm/showPm");
         PrivateMessage actualPm = assertAndReturnModelAttributeOfType(mav, "pm", PrivateMessage.class);
         assertEquals(actualPm, pm);
-        verify(pmService).get(pmId);
+        verify(pmService).get(PM_ID);
     }
 
     @Test
@@ -155,23 +155,58 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void testEdit() throws NotFoundException {
-        long pmId = 2L;
         PrivateMessage pm = PrivateMessage.createNewPrivateMessage();
-        pm.setId(pmId);
+        pm.setId(PM_ID);
         pm.setUserTo(new User());
-        when(pmService.get(pmId)).thenReturn(pm);
+        when(pmService.get(PM_ID)).thenReturn(pm);
 
-        ModelAndView mav = controller.edit(pmId);
+        ModelAndView mav = controller.edit(PM_ID);
 
         assertViewName(mav, "pm/pmForm");
         PrivateMessageDto dto = assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
-        assertEquals(dto.getId(), pmId);
-        verify(pmService).get(pmId);
+        assertEquals(dto.getId(), PM_ID);
+        verify(pmService).get(PM_ID);
+    }
+
+    @Test
+    public void testSave() throws NotFoundException {
+        PrivateMessageDto dto = getPrivateMessageDto();
+        BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
+
+        String view = controller.save(dto, bindingResult);
+
+        assertEquals(view, "redirect:/pm/drafts.html");
+        verify(pmService).saveDraft(dto.getId(), dto.getTitle(), dto.getBody(), dto.getRecipient());
+    }
+
+    @Test
+    public void testSaveWithErrors() throws NotFoundException {
+        PrivateMessageDto dto = getPrivateMessageDto();
+        BeanPropertyBindingResult resultWithErrors = mock(BeanPropertyBindingResult.class);
+        when(resultWithErrors.hasErrors()).thenReturn(true);
+
+        String view = controller.save(dto, resultWithErrors);
+
+        assertEquals(view, "pm/pmForm");
+        verify(pmService, never()).saveDraft(anyLong(), anyString(), anyString(), anyString());
+    }
+
+    @Test
+    public void testSaveWithWrongUser() throws NotFoundException {
+        PrivateMessageDto dto = getPrivateMessageDto();
+        doThrow(new NotFoundException()).when(pmService).sendMessage(dto.getTitle(), dto.getBody(), dto.getRecipient());
+        BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
+
+        String view = controller.save(dto, bindingResult);
+
+        assertEquals(view, "pm/pmForm");
+        verify(pmService).saveDraft(dto.getId(), dto.getTitle(), dto.getBody(), dto.getRecipient());
     }
 
     private PrivateMessageDto getPrivateMessageDto() {
         PrivateMessageDto dto = new PrivateMessageDto();
         dto.setBody("body");
+        dto.setId(PM_ID);
         dto.setTitle("title");
         dto.setRecipient("Recipient");
         return dto;
