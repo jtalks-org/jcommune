@@ -41,4 +41,9 @@
              and pm.status = :status
              ORDER BY pm.creationDate DESC]]>
   </query>
+  <query name="getNewMessagesCountFor">
+    <![CDATA[SELECT count(*) FROM PrivateMessage as pm
+             WHERE pm.userTo.username = :username
+             and pm.status = :status]]>
+  </query>
 </hibernate-mapping>
