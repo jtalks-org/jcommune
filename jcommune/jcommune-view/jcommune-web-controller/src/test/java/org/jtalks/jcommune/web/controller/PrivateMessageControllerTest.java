@@ -194,12 +194,14 @@ public class PrivateMessageControllerTest {
     @Test
     public void testSaveWithWrongUser() throws NotFoundException {
         PrivateMessageDto dto = getPrivateMessageDto();
-        doThrow(new NotFoundException()).when(pmService).sendMessage(dto.getTitle(), dto.getBody(), dto.getRecipient());
+        doThrow(new NotFoundException()).when(pmService)
+                .saveDraft(dto.getId(), dto.getTitle(), dto.getBody(), dto.getRecipient());
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
 
         String view = controller.save(dto, bindingResult);
 
         assertEquals(view, "pm/pmForm");
+        assertEquals(bindingResult.getErrorCount(), 1);
         verify(pmService).saveDraft(dto.getId(), dto.getTitle(), dto.getBody(), dto.getRecipient());
     }
 
