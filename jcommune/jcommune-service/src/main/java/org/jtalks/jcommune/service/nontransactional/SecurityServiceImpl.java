@@ -78,7 +78,6 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public String getCurrentUserUsername() {
         Authentication auth = securityContextFacade.getContext().getAuthentication();
-        // user not authenticated
         if (auth == null) {
             return null;
         }
