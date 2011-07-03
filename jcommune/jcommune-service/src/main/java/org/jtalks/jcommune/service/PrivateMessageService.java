@@ -80,4 +80,11 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
      * @throws NotFoundException if the receiver not exists
      */
     PrivateMessage saveDraft(long id, String title, String body, String recipient) throws NotFoundException;
+
+    /**
+     * Get count of new messages for current user.
+     *
+     * @return count of new messages
+     */
+    int currentUserNewPmCount();
 }
