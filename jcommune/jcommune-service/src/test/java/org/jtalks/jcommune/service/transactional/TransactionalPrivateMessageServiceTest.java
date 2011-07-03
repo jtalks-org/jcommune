@@ -19,6 +19,7 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
@@ -83,6 +84,7 @@ public class TransactionalPrivateMessageServiceTest {
 
         PrivateMessage pm = pmService.sendMessage("body", "title", userTo);
 
+        assertEquals(pm.getStatus(), PrivateMessageStatus.NOT_READED);
         verify(securityService).getCurrentUser();
         verify(userService).getByUsername(userTo);
         verify(pmDao).saveOrUpdate(pm);
@@ -131,5 +133,29 @@ public class TransactionalPrivateMessageServiceTest {
         verify(securityService).getCurrentUser();
         verify(userService).getByUsername(recipient);
         verify(pmDao).saveOrUpdate(pm);
+    }
+
+    @Test
+    public void testCurrentUserNewPmCount() {
+        String username = "username";
+        int expectedPmCount = 2;
+        when(securityService.getCurrentUserUsername()).thenReturn(username);
+        when(pmDao.getNewMessagesCountFor(username)).thenReturn(expectedPmCount);
+
+        int newPmCount = pmService.currentUserNewPmCount();
+
+        assertEquals(newPmCount, expectedPmCount);
+        verify(securityService).getCurrentUserUsername();
+        verify(pmDao).getNewMessagesCountFor(username);
+    }
+
+    @Test
+    public void testCurrentUserNewPmCountWithoutUser() {
+        when(securityService.getCurrentUserUsername()).thenReturn(null);
+
+        int newPmCount = pmService.currentUserNewPmCount();
+
+        assertEquals(newPmCount, 0);
+        verify(securityService).getCurrentUserUsername();
     }
 }
