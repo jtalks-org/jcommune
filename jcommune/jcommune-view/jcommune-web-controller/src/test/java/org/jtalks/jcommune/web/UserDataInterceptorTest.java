@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
 /**
  * @author Kirill Afonin
@@ -48,12 +47,11 @@ public class UserDataInterceptorTest {
     }
 
     @Test
-    public void testPreHandle() throws Exception {
+    public void testPostHandle() throws Exception {
         when(service.currentUserNewPmCount()).thenReturn(2);
 
-        boolean res = interceptor.preHandle(request, response, null);
+        interceptor.postHandle(request, response, null, null);
 
-        assertTrue(res);
         assertEquals(request.getAttribute("newPmCount"), 2);
         verify(service).currentUserNewPmCount();
     }

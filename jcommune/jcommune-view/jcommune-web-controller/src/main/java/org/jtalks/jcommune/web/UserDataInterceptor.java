@@ -19,6 +19,7 @@ package org.jtalks.jcommune.web;
 
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,19 +44,21 @@ public class UserDataInterceptor extends HandlerInterceptorAdapter {
     }
 
     /**
-     * Add attributes to request.
+     * Can expose additional objects to the view.
+     * Called after HandlerAdapter actually invoked the handler, but before the
+     * DispatcherServlet renders the view.
      *
-     * @param request  current HTTP request
-     * @param response current HTTP response
-     * @param handler  chosen handler to execute, for type and/or instance evaluation
-     * @return {@code true}
+     * @param request      current HTTP request
+     * @param response     current HTTP response
+     * @param handler      chosen handler to execute, for type and/or instance examination
+     * @param modelAndView the <code>ModelAndView</code> that the handler returned
+     *                     (can also be <code>null</code>)
      * @throws Exception in case of errors
      */
     @Override
-    public boolean preHandle(HttpServletRequest request,
-                             HttpServletResponse response, Object handler) throws Exception {
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+                           ModelAndView modelAndView) throws Exception {
         int newPmCount = service.currentUserNewPmCount();
         request.setAttribute("newPmCount", newPmCount);
-        return true;
     }
 }
