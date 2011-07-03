@@ -47,13 +47,14 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
     /**
      * Send the private message to the user.
      *
+     * @param id        message id, can be not 0 only if message is draft
      * @param title     the title of the message
      * @param body      the body of the message
      * @param recipient username of receiver
      * @return sent message
      * @throws NotFoundException if the receiver not exists
      */
-    PrivateMessage sendMessage(String title, String body, String recipient) throws NotFoundException;
+    PrivateMessage sendMessage(long id, String title, String body, String recipient) throws NotFoundException;
 
     /**
      * Marks private message as readed.

@@ -79,16 +79,27 @@ public class TransactionalPrivateMessageService
      */
     @Override
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-    public PrivateMessage sendMessage(String title, String body, String recipient) throws NotFoundException {
-        PrivateMessage pm = populateMessage(title, body, recipient);
+    public PrivateMessage sendMessage(long id, String title, String body, String recipient) throws NotFoundException {
+        PrivateMessage pm = populateMessage(id, title, body, recipient);
         pm.setStatus(PrivateMessageStatus.NOT_READED);
         dao.saveOrUpdate(pm);
         return pm;
     }
 
-    private PrivateMessage populateMessage(String title, String body,
+    /**
+     * Populate   {@link PrivateMessage} from values.
+     *
+     * @param id        id
+     * @param title     title
+     * @param body      message content
+     * @param recipient message recipient
+     * @return created {@link PrivateMessage}
+     * @throws NotFoundException if current user of recipient not found
+     */
+    private PrivateMessage populateMessage(long id, String title, String body,
                                            String recipient) throws NotFoundException {
         PrivateMessage pm = PrivateMessage.createNewPrivateMessage();
+        pm.setId(id);
         pm.setTitle(title);
         pm.setBody(body);
         pm.setUserFrom(securityService.getCurrentUser());
@@ -121,8 +132,7 @@ public class TransactionalPrivateMessageService
     public PrivateMessage saveDraft(long id, String title, String body, String recipient)
             throws NotFoundException {
 
-        PrivateMessage pm = populateMessage(title, body, recipient);
-        pm.setId(id);
+        PrivateMessage pm = populateMessage(id, title, body, recipient);
         pm.markAsDraft();
         dao.saveOrUpdate(pm);
         return pm;

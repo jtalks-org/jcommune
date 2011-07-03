@@ -100,7 +100,7 @@ public class PrivateMessageController {
             return "pm/pmForm";
         }
         try {
-            pmService.sendMessage(pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
+            pmService.sendMessage(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
         } catch (NotFoundException nfe) {
             logger.info("User not found: {} ", pmDto.getRecipient());
             result.rejectValue("recipient", "label.wrong_recipient");
