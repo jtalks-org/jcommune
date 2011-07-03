@@ -83,6 +83,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      */
     private boolean isUserExist(User user) {
         return dao.isUserWithUsernameExist(user.getUsername()) ||
-                dao.isUserWithEmailExist(user.getEmail());
+                dao.isUserWithEmailExist(user.getEmail()) || user.getUsername().equals("anonymousUser");
     }
 }
