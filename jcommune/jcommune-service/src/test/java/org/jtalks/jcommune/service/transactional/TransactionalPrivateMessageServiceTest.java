@@ -82,7 +82,7 @@ public class TransactionalPrivateMessageServiceTest {
     public void testSendMessage() throws NotFoundException {
         String userTo = "UserTo";
 
-        PrivateMessage pm = pmService.sendMessage(0, "body", "title", userTo);
+        PrivateMessage pm = pmService.sendMessage("body", "title", userTo);
 
         assertEquals(pm.getStatus(), PrivateMessageStatus.NOT_READED);
         verify(securityService).getCurrentUser();
@@ -95,7 +95,7 @@ public class TransactionalPrivateMessageServiceTest {
         String wrongUsername = "wrong";
         when(userService.getByUsername(wrongUsername)).thenThrow(new NotFoundException());
 
-        PrivateMessage pm = pmService.sendMessage(0, "body", "title", wrongUsername);
+        PrivateMessage pm = pmService.sendMessage("body", "title", wrongUsername);
 
         verify(pmDao, never()).saveOrUpdate(pm);
         verify(userService).getByUsername(wrongUsername);
@@ -157,5 +157,17 @@ public class TransactionalPrivateMessageServiceTest {
 
         assertEquals(newPmCount, 0);
         verify(securityService).getCurrentUserUsername();
+    }
+
+    @Test
+    public void testSendDraft() throws NotFoundException {
+        String userTo = "UserTo";
+
+        PrivateMessage pm = pmService.sendDraft(1L, "body", "title", userTo);
+
+        assertEquals(pm.getStatus(), PrivateMessageStatus.NOT_READED);
+        verify(securityService).getCurrentUser();
+        verify(userService).getByUsername(userTo);
+        verify(pmDao).saveOrUpdate(pm);
     }
 }

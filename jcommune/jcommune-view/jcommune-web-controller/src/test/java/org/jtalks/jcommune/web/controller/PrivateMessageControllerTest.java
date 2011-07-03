@@ -88,7 +88,19 @@ public class PrivateMessageControllerTest {
         String view = controller.send(dto, bindingResult);
 
         assertEquals(view, "redirect:/pm/outbox.html");
-        verify(pmService).sendMessage(PM_ID, dto.getTitle(), dto.getBody(), dto.getRecipient());
+        verify(pmService).sendMessage(dto.getTitle(), dto.getBody(), dto.getRecipient());
+    }
+
+    @Test
+    public void testSendDraft() throws NotFoundException {
+        PrivateMessageDto dto = getPrivateMessageDto();
+        dto.setId(4);
+        BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
+
+        String view = controller.send(dto, bindingResult);
+
+        assertEquals(view, "redirect:/pm/outbox.html");
+        verify(pmService).sendDraft(dto.getId(), dto.getTitle(), dto.getBody(), dto.getRecipient());
     }
 
     @Test
@@ -105,13 +117,13 @@ public class PrivateMessageControllerTest {
     @Test
     public void testSendWithWrongUser() throws NotFoundException {
         PrivateMessageDto dto = getPrivateMessageDto();
-        doThrow(new NotFoundException()).when(pmService).sendMessage(PM_ID, dto.getTitle(), dto.getBody(), dto.getRecipient());
+        doThrow(new NotFoundException()).when(pmService).sendMessage(dto.getTitle(), dto.getBody(), dto.getRecipient());
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
 
         String view = controller.send(dto, bindingResult);
 
         assertEquals(view, "pm/pmForm");
-        verify(pmService).sendMessage(PM_ID, dto.getTitle(), dto.getBody(), dto.getRecipient());
+        verify(pmService).sendMessage(dto.getTitle(), dto.getBody(), dto.getRecipient());
     }
 
     @Test
@@ -219,7 +231,6 @@ public class PrivateMessageControllerTest {
     private PrivateMessageDto getPrivateMessageDto() {
         PrivateMessageDto dto = new PrivateMessageDto();
         dto.setBody("body");
-        dto.setId(PM_ID);
         dto.setTitle("title");
         dto.setRecipient("Recipient");
         return dto;
