@@ -64,4 +64,15 @@ public class PrivateMessageHibernateDao extends AbstractHibernateDao<PrivateMess
                 .setParameter("status", PrivateMessageStatus.DRAFT)
                 .setEntity("user", userFrom).list();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public int getNewMessagesCountFor(String username) {
+        return ((Number) getSession().getNamedQuery("getNewMessagesCountFor")
+                .setParameter("status", PrivateMessageStatus.NOT_READED)
+                .setString("username", username).uniqueResult()).intValue();
+    }
 }
