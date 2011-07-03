@@ -95,7 +95,7 @@ public class PrivateMessageController {
      * @return redirect to /inbox on success or back to "/new_pm" on validation errors
      */
     @RequestMapping(value = "/pm/new", method = RequestMethod.POST)
-    public String submitNewPm(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
+    public String send(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
         if (result.hasErrors()) {
             return "pm/pmForm";
         }
