@@ -17,6 +17,8 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
@@ -40,6 +42,7 @@ public class TransactionalPrivateMessageService
 
     private final SecurityService securityService;
     private final UserService userService;
+    private final Ehcache userDataCache;
 
     /**
      * Creates the instance of service.
@@ -47,12 +50,16 @@ public class TransactionalPrivateMessageService
      * @param pmDao           PrivateMessageDao
      * @param securityService for retrieving current user
      * @param userService     for getting user by name
+     * @param userDataCache   cache for user data
      */
     public TransactionalPrivateMessageService(PrivateMessageDao pmDao,
-                                              SecurityService securityService, UserService userService) {
+                                              SecurityService securityService,
+                                              UserService userService,
+                                              Ehcache userDataCache) {
         this.dao = pmDao;
         this.securityService = securityService;
         this.userService = userService;
+        this.userDataCache = userDataCache;
     }
 
     /**
@@ -79,10 +86,12 @@ public class TransactionalPrivateMessageService
      */
     @Override
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-    public PrivateMessage sendMessage(String title, String body, String recipient) throws NotFoundException {
+    public PrivateMessage sendMessage(String title, String body, String recipientUsername) throws NotFoundException {
+        User recipient = userService.getByUsername(recipientUsername);
         PrivateMessage pm = populateMessage(title, body, recipient);
         pm.setStatus(PrivateMessageStatus.NOT_READED);
         dao.saveOrUpdate(pm);
+        incrementNewMessageCountInCacheFor(recipientUsername);
         return pm;
     }
 
@@ -96,12 +105,12 @@ public class TransactionalPrivateMessageService
      * @throws NotFoundException if current user of recipient not found
      */
     private PrivateMessage populateMessage(String title, String body,
-                                           String recipient) throws NotFoundException {
+                                           User recipient) throws NotFoundException {
         PrivateMessage pm = PrivateMessage.createNewPrivateMessage();
         pm.setTitle(title);
         pm.setBody(body);
         pm.setUserFrom(securityService.getCurrentUser());
-        pm.setUserTo(userService.getByUsername(recipient));
+        pm.setUserTo(recipient);
         return pm;
     }
 
@@ -111,6 +120,7 @@ public class TransactionalPrivateMessageService
     public void markAsReaded(PrivateMessage pm) {
         pm.markAsReaded();
         dao.saveOrUpdate(pm);
+        decrementNewMessageCountInCacheFor(pm.getUserTo().getUsername());
     }
 
     /**
@@ -127,9 +137,9 @@ public class TransactionalPrivateMessageService
      */
     @Override
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-    public PrivateMessage saveDraft(long id, String title, String body, String recipient)
+    public PrivateMessage saveDraft(long id, String title, String body, String recipientUsername)
             throws NotFoundException {
-
+        User recipient = userService.getByUsername(recipientUsername);
         PrivateMessage pm = populateMessage(title, body, recipient);
         pm.setId(id);
         pm.markAsDraft();
@@ -143,22 +153,60 @@ public class TransactionalPrivateMessageService
     @Override
     public int currentUserNewPmCount() {
         String username = securityService.getCurrentUserUsername();
-        if (username == null) {
+        if (username == null || username.equals("anonymousUser")) {
             return 0;
         }
-        return dao.getNewMessagesCountFor(username);
+
+        if (userDataCache.isKeyInCache(username)) {
+            return (Integer) userDataCache.get(username).getValue();
+        }
+        int count = dao.getNewMessagesCountFor(username);
+        userDataCache.put(new Element(username, count));
+        return count;
     }
+
 
     /**
      * {@inheritDoc}
      */
     //@PreAuthorize("hasPermission(#id, 'org.jtalks.jcommune.model.entity.PrivateMessage', admin)")
     @Override
-    public PrivateMessage sendDraft(long id, String title, String body, String recipient) throws NotFoundException {
+    public PrivateMessage sendDraft(long id, String title, String body,
+                                    String recipientUsername) throws NotFoundException {
+        User recipient = userService.getByUsername(recipientUsername);
         PrivateMessage pm = populateMessage(title, body, recipient);
         pm.setId(id);
         pm.setStatus(PrivateMessageStatus.NOT_READED);
         dao.saveOrUpdate(pm);
+        incrementNewMessageCountInCacheFor(recipientUsername);
         return pm;
+    }
+
+    /**
+     * Increment new private messages count for user in cache.
+     * Only if user in cache.
+     *
+     * @param username username (cache key)
+     */
+    private void incrementNewMessageCountInCacheFor(String username) {
+        if (userDataCache.isKeyInCache(username)) {
+            int count = (Integer) userDataCache.get(username).getValue();
+            count++;
+            userDataCache.put(new Element(username, count));
+        }
+    }
+
+    /**
+     * Decrement new private messages count for user in cache.
+     * Only if user in cache.
+     *
+     * @param username username  (cache key)
+     */
+    private void decrementNewMessageCountInCacheFor(String username) {
+        if (userDataCache.isKeyInCache(username)) {
+            int count = (Integer) userDataCache.get(username).getValue();
+            count--;
+            userDataCache.put(new Element(username, count));
+        }
     }
 }

@@ -43,6 +43,7 @@
     <constructor-arg index="0" ref="privateMessageDao"/>
     <constructor-arg index="1" ref="securityService"/>
     <constructor-arg index="2" ref="userService"/>
+    <constructor-arg index="3" ref="userDataCache"/>
   </bean>
 
   <bean id="topicService"
@@ -62,4 +63,17 @@
     <constructor-arg index="1" ref="securityContextFacade"/>
     <constructor-arg index="2" ref="aclService"/>
   </bean>
+
+  <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+    <property name="configLocation" value="classpath:/org/jtalks/jcommune/service/ehcache.xml"/>
+  </bean>
+  <!--
+  Cache for user related data.
+  Now used for storing new private messages count.
+  -->
+  <bean id="userDataCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+    <property name="cacheManager" ref="cacheManager"/>
+    <property name="cacheName" value="cuserDataCache"/>
+  </bean>
+
 </beans>

@@ -17,6 +17,8 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
@@ -43,6 +45,7 @@ public class TransactionalPrivateMessageServiceTest {
     private SecurityService securityService;
     private TransactionalPrivateMessageService pmService;
     private UserService userService;
+    private Ehcache userDataCache;
     private static final long PM_ID = 1L;
 
 
@@ -51,7 +54,8 @@ public class TransactionalPrivateMessageServiceTest {
         pmDao = mock(PrivateMessageDao.class);
         securityService = mock(SecurityService.class);
         userService = mock(UserService.class);
-        pmService = new TransactionalPrivateMessageService(pmDao, securityService, userService);
+        userDataCache = mock(Ehcache.class);
+        pmService = new TransactionalPrivateMessageService(pmDao, securityService, userService, userDataCache);
     }
 
     @Test
@@ -81,12 +85,18 @@ public class TransactionalPrivateMessageServiceTest {
     @Test
     public void testSendMessage() throws NotFoundException {
         String userTo = "UserTo";
+        Element cacheElement = new Element(userTo, 1);
+        when(userDataCache.isKeyInCache(userTo)).thenReturn(true);
+        when(userDataCache.get(userTo)).thenReturn(cacheElement);
 
         PrivateMessage pm = pmService.sendMessage("body", "title", userTo);
 
         assertEquals(pm.getStatus(), PrivateMessageStatus.NOT_READED);
         verify(securityService).getCurrentUser();
         verify(userService).getByUsername(userTo);
+        verify(userDataCache).isKeyInCache(userTo);
+        verify(userDataCache).get(userTo);
+        verify(userDataCache).put(new Element(userTo, 2));
         verify(pmDao).saveOrUpdate(pm);
     }
 
@@ -104,11 +114,21 @@ public class TransactionalPrivateMessageServiceTest {
     @Test
     public void testMarkAsReaded() {
         PrivateMessage pm = new PrivateMessage();
+        String username = "username";
+        User userTo = new User();
+        userTo.setUsername(username);
+        pm.setUserTo(userTo);
+        Element cacheElement = new Element(username, 2);
+        when(userDataCache.isKeyInCache(username)).thenReturn(true);
+        when(userDataCache.get(username)).thenReturn(cacheElement);
 
         pmService.markAsReaded(pm);
 
         assertTrue(pm.isReaded());
         verify(pmDao).saveOrUpdate(pm);
+        verify(userDataCache).isKeyInCache(username);
+        verify(userDataCache).get(username);
+        verify(userDataCache).put(new Element(username, 1));
     }
 
     @Test
@@ -141,12 +161,29 @@ public class TransactionalPrivateMessageServiceTest {
         int expectedPmCount = 2;
         when(securityService.getCurrentUserUsername()).thenReturn(username);
         when(pmDao.getNewMessagesCountFor(username)).thenReturn(expectedPmCount);
+        when(userDataCache.isKeyInCache(username)).thenReturn(false);
 
         int newPmCount = pmService.currentUserNewPmCount();
 
         assertEquals(newPmCount, expectedPmCount);
         verify(securityService).getCurrentUserUsername();
         verify(pmDao).getNewMessagesCountFor(username);
+        verify(userDataCache).isKeyInCache(username);
+        verify(userDataCache).put(new Element(username, newPmCount));
+    }
+
+    @Test
+    public void testCurrentUserNewPmCountCached() {
+        String username = "username";
+        int expectedPmCount = 2;
+        when(securityService.getCurrentUserUsername()).thenReturn(username);
+        when(userDataCache.isKeyInCache(username)).thenReturn(true);
+        when(userDataCache.get(username)).thenReturn(new Element(username, 2));
+
+        int newPmCount = pmService.currentUserNewPmCount();
+
+        assertEquals(newPmCount, expectedPmCount);
+        verify(pmDao, never()).getNewMessagesCountFor(anyString());
     }
 
     @Test
@@ -162,12 +199,18 @@ public class TransactionalPrivateMessageServiceTest {
     @Test
     public void testSendDraft() throws NotFoundException {
         String userTo = "UserTo";
+        Element cacheElement = new Element(userTo, 1);
+        when(userDataCache.isKeyInCache(userTo)).thenReturn(true);
+        when(userDataCache.get(userTo)).thenReturn(cacheElement);
 
         PrivateMessage pm = pmService.sendDraft(1L, "body", "title", userTo);
 
         assertEquals(pm.getStatus(), PrivateMessageStatus.NOT_READED);
         verify(securityService).getCurrentUser();
         verify(userService).getByUsername(userTo);
+        verify(userDataCache).isKeyInCache(userTo);
+        verify(userDataCache).get(userTo);
+        verify(userDataCache).put(new Element(userTo, 2));
         verify(pmDao).saveOrUpdate(pm);
     }
 }
