@@ -10,45 +10,35 @@
           type=text/css rel=stylesheet>
 </head>
 <body>
-<table>
-    <tr>
-        <td>
-            <jsp:include page="pmNavigationMenu.jsp"/>
-        </td>
-        <td>
-          <h1><spring:message code="label.outbox"/></h1>
-          <table>
+<div align="left">
+    <jsp:include page="pmNavigationMenu.jsp"/>
+    <div>
+        <h1><spring:message code="label.outbox"/></h1>
+        <table>
             <tr>
-              <td><spring:message code="label.recipient"/></td>
-              <td><spring:message code="label.title"/></td>
-              <td><spring:message code="label.sending_date"/></td>
+                <td><spring:message code="label.recipient"/></td>
+                <td><spring:message code="label.title"/></td>
+                <td><spring:message code="label.sending_date"/></td>
             </tr>
-          <c:forEach var="pm" items="${pmList}">
-            <c:choose>
-              <c:when test="${pm.readed}">
-                 <tr>
-              </c:when>
-               <c:otherwise>
-                 <tr bgcolor="#b0c4de">
-               </c:otherwise>
-              </c:choose>
+            <c:forEach var="pm" items="${pmList}">
+                <c:choose>
+                    <c:when test="${pm.readed}">
             <tr>
-          <td>
-            <c:out value="${pm.userTo.username}"/>
-          </td>
-          <td>
-            <a href="${pageContext.request.contextPath}/pm/outbox/${pm.id}.html"><c:out value="${pm.title}"/></a>
-          </td>
-          <td>
-            <joda:format value="${pm.creationDate}"
+                    </c:when>
+                    <c:otherwise>
+            <tr bgcolor="#b0c4de">
+                    </c:otherwise>
+                </c:choose>
+                <td><c:out value="${pm.userTo.username}"/></td>
+                <td><a href="${pageContext.request.contextPath}/pm/outbox/${pm.id}.html">
+                        <c:out value="${pm.title}"/></a></td>
+                <td><joda:format value="${pm.creationDate}"
                                  locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
-                                 pattern="dd MMM yyyy HH:mm"/>
-          </td>
-        </tr>
-      </c:forEach>
-          </table>
-    </td>
-  </tr>
-</table>
+                                 pattern="dd MMM yyyy HH:mm"/></td>
+            </tr>
+            </c:forEach>
+        </table>
+    </div>
+</div>
 </body>
 </html>
