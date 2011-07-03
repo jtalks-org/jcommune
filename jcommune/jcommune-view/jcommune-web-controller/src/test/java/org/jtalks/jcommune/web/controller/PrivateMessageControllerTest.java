@@ -88,7 +88,7 @@ public class PrivateMessageControllerTest {
         String view = controller.send(dto, bindingResult);
 
         assertEquals(view, "redirect:/pm/outbox.html");
-        verify(pmService).sendMessage(0, dto.getTitle(), dto.getBody(), dto.getRecipient());
+        verify(pmService).sendMessage(PM_ID, dto.getTitle(), dto.getBody(), dto.getRecipient());
     }
 
     @Test
@@ -105,13 +105,13 @@ public class PrivateMessageControllerTest {
     @Test
     public void testSendWithWrongUser() throws NotFoundException {
         PrivateMessageDto dto = getPrivateMessageDto();
-        doThrow(new NotFoundException()).when(pmService).sendMessage(0, dto.getTitle(), dto.getBody(), dto.getRecipient());
+        doThrow(new NotFoundException()).when(pmService).sendMessage(PM_ID, dto.getTitle(), dto.getBody(), dto.getRecipient());
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
 
         String view = controller.send(dto, bindingResult);
 
         assertEquals(view, "pm/pmForm");
-        verify(pmService).sendMessage(0, dto.getTitle(), dto.getBody(), dto.getRecipient());
+        verify(pmService).sendMessage(PM_ID, dto.getTitle(), dto.getBody(), dto.getRecipient());
     }
 
     @Test
