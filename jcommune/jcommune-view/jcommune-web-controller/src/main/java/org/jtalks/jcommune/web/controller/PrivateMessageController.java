@@ -103,7 +103,7 @@ public class PrivateMessageController {
             pmService.sendMessage(pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
         } catch (NotFoundException nfe) {
             logger.info("User not found: {} ", pmDto.getRecipient());
-            result.rejectValue("recipient", "label.worg_recipient");
+            result.rejectValue("recipient", "label.wrong_recipient");
             return new ModelAndView("pm/pmForm");
         }
         return new ModelAndView("redirect:/pm/outbox.html");
@@ -112,7 +112,10 @@ public class PrivateMessageController {
     /**
      * Get a private message.
      *
+     * @param box
+     * @param pmId
      * @return {@code ModelAndView} with a message
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      */
     @RequestMapping(value="/pm/{box}/{pmId}", method = RequestMethod.GET)
     public ModelAndView show(@PathVariable("box") String box,
@@ -123,8 +126,7 @@ public class PrivateMessageController {
             pmService.markAsReaded(pm);
         }
 
-        return new ModelAndView("pm/showPm")
-                .addObject("pm", pm);
+        return new ModelAndView("pm/showPm", "pm", pm);
     }
 
     /**
@@ -137,12 +139,24 @@ public class PrivateMessageController {
         return new ModelAndView("pm/drafts", "pmList", pmService.getDraftsFromCurrentUser());
     }
 
+    /**
+     *
+     * @param pmId
+     * @return
+     * @throws NotFoundException
+     */
     @RequestMapping(value = "/pm/{pmId}/edit", method = RequestMethod.GET)
     public ModelAndView edit(@PathVariable("pmId") Long pmId) throws NotFoundException {
         PrivateMessage pm = pmService.get(pmId);
         return new ModelAndView("pm/pmForm", "privateMessageDto", PrivateMessageDto.getDtoFor(pm));
     }
 
+    /**
+     *
+     * @param pmDto
+     * @param result
+     * @return
+     */
     @RequestMapping(value = "/pm/save", method = RequestMethod.POST)
     public ModelAndView save(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
         if (result.hasErrors()) {
