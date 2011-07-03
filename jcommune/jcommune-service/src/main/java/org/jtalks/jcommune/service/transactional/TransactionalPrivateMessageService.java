@@ -19,6 +19,7 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.SecurityService;
@@ -80,6 +81,7 @@ public class TransactionalPrivateMessageService
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     public PrivateMessage sendMessage(String title, String body, String recipient) throws NotFoundException {
         PrivateMessage pm = populateMessage(title, body, recipient);
+        pm.setStatus(PrivateMessageStatus.NOT_READED);
         dao.saveOrUpdate(pm);
         return pm;
     }
@@ -124,5 +126,17 @@ public class TransactionalPrivateMessageService
         pm.markAsDraft();
         dao.saveOrUpdate(pm);
         return pm;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int currentUserNewPmCount() {
+        String username = securityService.getCurrentUserUsername();
+        if (username == null) {
+            return 0;
+        }
+        return dao.getNewMessagesCountFor(username);
     }
 }
