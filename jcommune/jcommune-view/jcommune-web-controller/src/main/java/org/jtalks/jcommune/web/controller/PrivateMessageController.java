@@ -95,36 +95,39 @@ public class PrivateMessageController {
      * @return redirect to /inbox on success or back to "/new_pm" on validation errors
      */
     @RequestMapping(value = "/pm/new", method = RequestMethod.POST)
-    public ModelAndView submitNewPm(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
+    public String send(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
         if (result.hasErrors()) {
-            return new ModelAndView("pm/pmForm");
+            return "pm/pmForm";
         }
         try {
             pmService.sendMessage(pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
         } catch (NotFoundException nfe) {
             logger.info("User not found: {} ", pmDto.getRecipient());
-            result.rejectValue("recipient", "label.worg_recipient");
-            return new ModelAndView("pm/pmForm");
+            result.rejectValue("recipient", "label.wrong_recipient");
+            return "pm/pmForm";
         }
-        return new ModelAndView("redirect:/pm/outbox.html");
+        return "redirect:/pm/outbox.html";
     }
 
     /**
-     * Get a private message.
+     * Show page with private message details.
      *
+     * @param folder message folder (inbox/outbox/drafts)
+     * @param pmId   {@link PrivateMessage} id
      * @return {@code ModelAndView} with a message
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when message not found
      */
-    @RequestMapping(value="/pm/{box}/{pmId}", method = RequestMethod.GET)
-    public ModelAndView show(@PathVariable("box") String box,
+    @RequestMapping(value = "/pm/{folder}/{pmId}", method = RequestMethod.GET)
+    public ModelAndView show(@PathVariable("folder") String folder,
                              @PathVariable("pmId") Long pmId) throws NotFoundException {
 
         PrivateMessage pm = pmService.get(pmId);
-        if ("inbox".equals(box)) {
+        if ("inbox".equals(folder)) {
             pmService.markAsReaded(pm);
         }
 
-        return new ModelAndView("pm/showPm")
-                .addObject("pm", pm);
+        return new ModelAndView("pm/showPm", "pm", pm);
     }
 
     /**
@@ -137,24 +140,36 @@ public class PrivateMessageController {
         return new ModelAndView("pm/drafts", "pmList", pmService.getDraftsFromCurrentUser());
     }
 
+    /**
+     * @param pmId {@link PrivateMessage} id
+     * @return private messsage form view and populated form dto
+     * @throws NotFoundException when message not found
+     */
     @RequestMapping(value = "/pm/{pmId}/edit", method = RequestMethod.GET)
     public ModelAndView edit(@PathVariable("pmId") Long pmId) throws NotFoundException {
         PrivateMessage pm = pmService.get(pmId);
         return new ModelAndView("pm/pmForm", "privateMessageDto", PrivateMessageDto.getDtoFor(pm));
     }
 
+    /**
+     * Save private message as draft.
+     *
+     * @param pmDto  Dto populated in form
+     * @param result validation result
+     * @return redirect to "drafts" folder if saved successfully or show form with error message
+     */
     @RequestMapping(value = "/pm/save", method = RequestMethod.POST)
-    public ModelAndView save(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
+    public String save(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
         if (result.hasErrors()) {
-            return new ModelAndView("pm/pmForm");
+            return "pm/pmForm";
         }
         try {
             pmService.saveDraft(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
         } catch (NotFoundException nfe) {
             logger.info("User not found: {} ", pmDto.getRecipient());
-            result.rejectValue("recipient", "label.worg_recipient");
-            return new ModelAndView("pm/pmForm");
+            result.rejectValue("recipient", "label.wrong_recipient");
+            return "pm/pmForm";
         }
-        return new ModelAndView("redirect:/pm/drafts.html");
+        return "redirect:/pm/drafts.html";
     }
 }
