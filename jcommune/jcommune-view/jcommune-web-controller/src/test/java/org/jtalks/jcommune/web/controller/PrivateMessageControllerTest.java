@@ -157,6 +157,7 @@ public class PrivateMessageControllerTest {
     public void testEdit() throws NotFoundException {
         PrivateMessage pm = PrivateMessage.createNewPrivateMessage();
         pm.setId(PM_ID);
+        pm.markAsDraft();
         pm.setUserTo(new User());
         when(pmService.get(PM_ID)).thenReturn(pm);
 
@@ -166,6 +167,16 @@ public class PrivateMessageControllerTest {
         PrivateMessageDto dto = assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
         assertEquals(dto.getId(), PM_ID);
         verify(pmService).get(PM_ID);
+    }
+
+    @Test
+    public void testEditNotDraft() throws NotFoundException {
+        PrivateMessage pm = PrivateMessage.createNewPrivateMessage();
+        when(pmService.get(PM_ID)).thenReturn(pm);
+
+        ModelAndView mav = controller.edit(PM_ID);
+
+        assertViewName(mav, "pm/inbox");
     }
 
     @Test
