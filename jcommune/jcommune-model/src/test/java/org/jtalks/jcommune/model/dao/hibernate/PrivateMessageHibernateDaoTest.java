@@ -51,6 +51,11 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
     @Autowired
     private PrivateMessageDao dao;
     private Session session;
+    private PrivateMessage notReadedPm;
+    private PrivateMessage readedPm;
+    private PrivateMessage draftPm;
+    private User author;
+    private User recipient;
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -133,19 +138,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
 
     @Test
     public void testGetAllFromUser() {
-        User author = ObjectsFactory.getUser("author", "author@aaa.com");
-        User recipient = ObjectsFactory.getUser("recipient", "recipient@aaa.com");
-        session.saveOrUpdate(author);
-        session.saveOrUpdate(recipient);
-        // saving messages with different statuses
-        PrivateMessage notReadedPm = ObjectsFactory.getPrivateMessage(recipient, author);
-        PrivateMessage readedPm = ObjectsFactory.getPrivateMessage(recipient, author);
-        readedPm.setStatus(PrivateMessageStatus.READED);
-        PrivateMessage draftPm = ObjectsFactory.getPrivateMessage(recipient, author);
-        draftPm.setStatus(PrivateMessageStatus.DRAFT);
-        session.save(notReadedPm);
-        session.save(readedPm);
-        session.save(draftPm);
+        saveMessagesWithDifferentStatus();
 
         List<PrivateMessage> listFrom = dao.getAllFromUser(author);
 
@@ -155,19 +148,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
 
     @Test
     public void testGetAllToUser() {
-        User author = ObjectsFactory.getUser("author", "author@aaa.com");
-        User recipient = ObjectsFactory.getUser("recipient", "recipient@aaa.com");
-        session.saveOrUpdate(author);
-        session.saveOrUpdate(recipient);
-        // saving messages with different statuses
-        PrivateMessage notReadedPm = ObjectsFactory.getPrivateMessage(recipient, author);
-        PrivateMessage readedPm = ObjectsFactory.getPrivateMessage(recipient, author);
-        readedPm.setStatus(PrivateMessageStatus.READED);
-        PrivateMessage draftPm = ObjectsFactory.getPrivateMessage(recipient, author);
-        draftPm.setStatus(PrivateMessageStatus.DRAFT);
-        session.save(notReadedPm);
-        session.save(readedPm);
-        session.save(draftPm);
+        saveMessagesWithDifferentStatus();
 
         List<PrivateMessage> listFrom = dao.getAllForUser(recipient);
 
@@ -177,19 +158,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
 
     @Test
     public void testGetDraftsFromUser() {
-        User author = ObjectsFactory.getUser("author", "author@aaa.com");
-        User recipient = ObjectsFactory.getUser("recipient", "recipient@aaa.com");
-        session.saveOrUpdate(author);
-        session.saveOrUpdate(recipient);
-        // saving messages with different statuses
-        PrivateMessage notReadedPm = ObjectsFactory.getPrivateMessage(recipient, author);
-        PrivateMessage readedPm = ObjectsFactory.getPrivateMessage(recipient, author);
-        readedPm.setStatus(PrivateMessageStatus.READED);
-        PrivateMessage draftPm = ObjectsFactory.getPrivateMessage(recipient, author);
-        draftPm.setStatus(PrivateMessageStatus.DRAFT);
-        session.save(notReadedPm);
-        session.save(readedPm);
-        session.save(draftPm);
+        saveMessagesWithDifferentStatus();
 
         List<PrivateMessage> list = dao.getDraftsFromUser(author);
 
@@ -197,10 +166,33 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         assertEquals(list.get(0), draftPm);
     }
 
+    @Test
+    public void testGetNewMessagesCountFor() {
+        saveMessagesWithDifferentStatus();
+
+        int count = dao.getNewMessagesCountFor(recipient.getUsername());
+
+        assertEquals(count, 1);
+    }
+
+    private void saveMessagesWithDifferentStatus() {
+        author = ObjectsFactory.getUser("author", "author@aaa.com");
+        recipient = ObjectsFactory.getUser("recipient", "recipient@aaa.com");
+        session.saveOrUpdate(author);
+        session.saveOrUpdate(recipient);
+        // creating messages with different statuses
+        notReadedPm = ObjectsFactory.getPrivateMessage(recipient, author);
+        readedPm = ObjectsFactory.getPrivateMessage(recipient, author);
+        readedPm.setStatus(PrivateMessageStatus.READED);
+        draftPm = ObjectsFactory.getPrivateMessage(recipient, author);
+        draftPm.setStatus(PrivateMessageStatus.DRAFT);
+        session.save(notReadedPm);
+        session.save(readedPm);
+        session.save(draftPm);
+    }
+
     /**
      * Count the number of PrivateMessage in the db.
-     *
-     * @return
      */
     private int getCount() {
         return ((Number) session.createQuery("select count(*) from PrivateMessage").uniqueResult()).intValue();
