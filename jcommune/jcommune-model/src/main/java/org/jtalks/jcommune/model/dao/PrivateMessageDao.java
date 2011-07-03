@@ -55,4 +55,12 @@ public interface PrivateMessageDao extends Dao<PrivateMessage> {
      * @return list of draft messages
      */
     List<PrivateMessage> getDraftsFromUser(User user);
+
+    /**
+     * Get count of new (unread) messages for user.
+     *
+     * @param username username
+     * @return count of new messages
+     */
+    int getNewMessagesCountFor(String username);
 }
