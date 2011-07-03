@@ -148,6 +148,9 @@ public class PrivateMessageController {
     @RequestMapping(value = "/pm/{pmId}/edit", method = RequestMethod.GET)
     public ModelAndView edit(@PathVariable("pmId") Long pmId) throws NotFoundException {
         PrivateMessage pm = pmService.get(pmId);
+        if (!pm.isDraft()) {
+            return new ModelAndView("pm/inbox");
+        }
         return new ModelAndView("pm/pmForm", "privateMessageDto", PrivateMessageDto.getDtoFor(pm));
     }
 
