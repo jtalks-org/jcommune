@@ -123,7 +123,7 @@ public class GenericEnumUserType implements UserType, ParameterizedType {
     /**
      * {@inheritDoc}
      */
-    public Object nullSafeGet(ResultSet rs, String[] names, Object owner) throws HibernateException, SQLException {
+    public Object nullSafeGet(ResultSet rs, String[] names, Object owner) throws SQLException {
         Object identifier = type.get(rs, names[0]);
         if (rs.wasNull()) {
             return null;
@@ -139,7 +139,7 @@ public class GenericEnumUserType implements UserType, ParameterizedType {
     /**
      * {@inheritDoc}
      */
-    public void nullSafeSet(PreparedStatement st, Object value, int index) throws HibernateException, SQLException {
+    public void nullSafeSet(PreparedStatement st, Object value, int index) throws SQLException {
         try {
             if (value == null) {
                 st.setNull(index, type.sqlType());
@@ -170,35 +170,35 @@ public class GenericEnumUserType implements UserType, ParameterizedType {
     /**
      * {@inheritDoc}
      */
-    public Object assemble(Serializable cached, Object owner) throws HibernateException {
+    public Object assemble(Serializable cached, Object owner) {
         return cached;
     }
 
     /**
      * {@inheritDoc}
      */
-    public Object deepCopy(Object value) throws HibernateException {
+    public Object deepCopy(Object value) {
         return value;
     }
 
     /**
      * {@inheritDoc}
      */
-    public Serializable disassemble(Object value) throws HibernateException {
+    public Serializable disassemble(Object value) {
         return (Serializable) value;
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean equals(Object x, Object y) throws HibernateException {
+    public boolean equals(Object x, Object y) {
         return x.equals(y);
     }
 
     /**
      * {@inheritDoc}
      */
-    public int hashCode(Object x) throws HibernateException {
+    public int hashCode(Object x) {
         return x.hashCode();
     }
 
@@ -212,7 +212,7 @@ public class GenericEnumUserType implements UserType, ParameterizedType {
     /**
      * {@inheritDoc}
      */
-    public Object replace(Object original, Object target, Object owner) throws HibernateException {
+    public Object replace(Object original, Object target, Object owner) {
         return original;
     }
 }
