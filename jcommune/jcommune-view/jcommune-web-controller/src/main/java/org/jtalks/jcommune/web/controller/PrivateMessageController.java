@@ -167,7 +167,7 @@ public class PrivateMessageController {
             pmService.saveDraft(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
         } catch (NotFoundException nfe) {
             logger.info("User not found: {} ", pmDto.getRecipient());
-            result.rejectValue("recipient", "label.worg_recipient");
+            result.rejectValue("recipient", "label.wrong_recipient");
             return "pm/pmForm";
         }
         return "redirect:/pm/drafts.html";
