@@ -58,6 +58,7 @@
 
 </div>
 <decorator:body/>
+<div style="clear:both;"></div>
 <hr width=100% size=2>
 <span class="text">Copyright 2011. JTalks</span>
 <br>
