@@ -35,6 +35,7 @@ import java.util.List;
  *
  * @author Pavel Vervenko
  * @author Kirill Afonin
+ * @author Max Malakhov
  */
 public class TransactionalPrivateMessageService
         extends AbstractTransactionalEntityService<PrivateMessage, PrivateMessageDao> implements PrivateMessageService {
@@ -143,6 +144,9 @@ public class TransactionalPrivateMessageService
         pm.setId(id);
         pm.markAsDraft();
         dao.saveOrUpdate(pm);
+
+        securityService.grantAdminPermissionToCurrentUser(pm);
+
         return pm;
     }
 
@@ -169,8 +173,8 @@ public class TransactionalPrivateMessageService
     /**
      * {@inheritDoc}
      */
-    //@PreAuthorize("hasPermission(#id, 'org.jtalks.jcommune.model.entity.PrivateMessage', admin)")
     @Override
+    @PreAuthorize("hasPermission(#id, 'org.jtalks.jcommune.model.entity.PrivateMessage', admin)")
     public PrivateMessage sendDraft(long id, String title, String body,
                                     String recipientUsername) throws NotFoundException {
         User recipient = userService.getByUsername(recipientUsername);

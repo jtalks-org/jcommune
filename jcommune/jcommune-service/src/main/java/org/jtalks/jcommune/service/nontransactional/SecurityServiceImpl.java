@@ -138,7 +138,7 @@ public class SecurityServiceImpl implements SecurityService {
      * @param recipient     sid to whom  the permission granted
      * @param permission    granted permission
      */
-    private void addPermission(Persistent securedObject, Sid recipient,
+    public void addPermission(Persistent securedObject, Sid recipient,
                                Permission permission) {
         MutableAcl acl;
         // create identity for securedObject
@@ -251,6 +251,30 @@ public class SecurityServiceImpl implements SecurityService {
             throw new UsernameNotFoundException("User not found: " + username);
         }
         return user;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void grantReadPermissionToUser(Persistent securedObject, String username) {
+        addPermission(securedObject, new PrincipalSid(username), BasePermission.READ);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void grantReadPermissionToCurrentUser(Persistent securedObject) {
+    	addPermissionToCurrentUser(securedObject, BasePermission.READ);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void grantAdminPermissionToCurrentUser(Persistent securedObject) {
+    	addPermissionToCurrentUser(securedObject, BasePermission.ADMINISTRATION);
     }
 
 }
