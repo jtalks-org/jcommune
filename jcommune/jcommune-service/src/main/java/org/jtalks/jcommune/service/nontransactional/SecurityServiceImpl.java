@@ -51,6 +51,7 @@ import java.util.List;
  */
 public class SecurityServiceImpl implements SecurityService {
 
+    public static final String ANONYMOUS_USER = "anonymousUser";
     private UserDao userDao;
     private MutableAclService mutableAclService;
     private SecurityContextFacade securityContextFacade;
@@ -99,6 +100,9 @@ public class SecurityServiceImpl implements SecurityService {
             username = principal.toString();
         }
 
+        if (username.equals(ANONYMOUS_USER)) {
+            return null;
+        }
         return username;
     }
 

@@ -5,8 +5,19 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityContextFacade;
 import org.jtalks.jcommune.service.SecurityService;
-import org.springframework.security.acls.domain.*;
-import org.springframework.security.acls.model.*;
+import org.springframework.security.acls.domain.AclAuthorizationStrategy;
+import org.springframework.security.acls.domain.AclImpl;
+import org.springframework.security.acls.domain.AuditLogger;
+import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.domain.GrantedAuthoritySid;
+import org.springframework.security.acls.domain.ObjectIdentityImpl;
+import org.springframework.security.acls.domain.PrincipalSid;
+import org.springframework.security.acls.model.MutableAcl;
+import org.springframework.security.acls.model.MutableAclService;
+import org.springframework.security.acls.model.NotFoundException;
+import org.springframework.security.acls.model.ObjectIdentity;
+import org.springframework.security.acls.model.Permission;
+import org.springframework.security.acls.model.Sid;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,8 +30,15 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 /**
  * Test for {@link SecurityServiceImpl}.
@@ -116,12 +134,26 @@ public class SecurityServiceImplTest {
     }
 
     @Test
-    public void testGetCurrentUserUsernameNotAuthenticated() throws Exception {
+    public void testGetCurrentUserUsernameWithoutAuthentication() throws Exception {
         when(securityContext.getAuthentication()).thenReturn(null);
 
         String username = securityService.getCurrentUserUsername();
 
         assertNull(username, "Username not null");
+        verify(securityContext).getAuthentication();
+    }
+
+    @Test
+    public void testGetCurrentUserUsernameAnonymousUser() throws Exception {
+        Principal user = new PrincipalImpl(SecurityServiceImpl.ANONYMOUS_USER);
+        Authentication auth = mock(Authentication.class);
+        when(auth.getPrincipal()).thenReturn(user);
+        when(securityContext.getAuthentication()).thenReturn(auth);
+
+        String username = securityService.getCurrentUserUsername();
+
+        assertNull(username, "Username not null");
+        verify(auth).getPrincipal();
         verify(securityContext).getAuthentication();
     }
 
