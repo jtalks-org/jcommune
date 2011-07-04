@@ -88,22 +88,36 @@ public class SecurityServiceImpl implements SecurityService {
         if (auth == null) {
             return null;
         }
-
         Object principal = auth.getPrincipal();
-        String username = "";
+        String username = extractUsername(principal);
 
-        // if principal is spring security user, cast it and get username
-        // else it is javax.security principal with toString() that return username
-        if (principal instanceof UserDetails) {
-            username = ((UserDetails) principal).getUsername();
-        } else {
-            username = principal.toString();
-        }
-
-        if (username.equals(ANONYMOUS_USER)) {
+        if (isAnonymous(username)) {
             return null;
         }
         return username;
+    }
+
+    /**
+     * Get username from principal.
+     *
+     * @param principal principal
+     * @return username
+     */
+    private String extractUsername(Object principal) {
+        // if principal is spring security user, cast it and get username
+        // else it is javax.security principal with toString() that return username
+        if (principal instanceof UserDetails) {
+            return ((UserDetails) principal).getUsername();
+        }
+        return principal.toString();
+    }
+
+    /**
+     * @param username username
+     * @return {@code true} if user is anonymous
+     */
+    private boolean isAnonymous(String username) {
+        return username.equals(ANONYMOUS_USER);
     }
 
     /**
