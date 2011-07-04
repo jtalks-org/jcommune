@@ -79,4 +79,27 @@ public interface SecurityService extends UserDetailsService {
      */
     void deletePermission(Persistent securedObject, Sid recipient,
                           Permission permission);
+
+    /**
+     * Add reader permissions to user.
+     *
+     * @param securedObject a new secured object.
+     * @param username      username user to which will permission be added
+     */
+    void grantReadPermissionToUser(Persistent securedObject, String username);
+
+    /**
+     * Add reader permissions to current user.
+     *
+     * @param securedObject a new secured object.
+     */
+
+    void grantReadPermissionToCurrentUser(Persistent securedObject);
+
+    /**
+     * Add administrator permissions to current user.
+     *
+     * @param securedObject a new secured object.
+     */
+    void grantAdminPermissionToCurrentUser(Persistent securedObject);   
 }

@@ -36,6 +36,7 @@ import java.util.List;
  *
  * @author Pavel Vervenko
  * @author Kirill Afonin
+ * @author Max Malakhov
  */
 public class TransactionalPrivateMessageService
         extends AbstractTransactionalEntityService<PrivateMessage, PrivateMessageDao> implements PrivateMessageService {
@@ -92,6 +93,10 @@ public class TransactionalPrivateMessageService
         pm.setStatus(PrivateMessageStatus.NOT_READED);
         dao.saveOrUpdate(pm);
         incrementNewMessageCountInCacheFor(recipientUsername);
+
+        securityService.grantReadPermissionToCurrentUser(pm);
+        securityService.grantReadPermissionToUser(pm, recipient.getUsername());
+
         return pm;
     }
 
@@ -144,6 +149,9 @@ public class TransactionalPrivateMessageService
         pm.setId(id);
         pm.markAsDraft();
         dao.saveOrUpdate(pm);
+
+        securityService.grantAdminPermissionToCurrentUser(pm);
+
         return pm;
     }
 
@@ -169,8 +177,8 @@ public class TransactionalPrivateMessageService
     /**
      * {@inheritDoc}
      */
-    //@PreAuthorize("hasPermission(#id, 'org.jtalks.jcommune.model.entity.PrivateMessage', admin)")
     @Override
+    @PreAuthorize("hasPermission(#id, 'org.jtalks.jcommune.model.entity.PrivateMessage', admin)")
     public PrivateMessage sendDraft(long id, String title, String body,
                                     String recipientUsername) throws NotFoundException {
         User recipient = userService.getByUsername(recipientUsername);
@@ -179,6 +187,11 @@ public class TransactionalPrivateMessageService
         pm.setStatus(PrivateMessageStatus.NOT_READED);
         dao.saveOrUpdate(pm);
         incrementNewMessageCountInCacheFor(recipientUsername);
+
+        securityService.deleteFromAcl(pm);
+        securityService.grantReadPermissionToCurrentUser(pm);
+        securityService.grantReadPermissionToUser(pm, recipient.getUsername());
+
         return pm;
     }
 
@@ -208,5 +221,15 @@ public class TransactionalPrivateMessageService
             count--;
             userDataCache.put(new Element(username, count));
         }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */    
+    @Override
+    @PreAuthorize("hasPermission(#id, 'org.jtalks.jcommune.model.entity.PrivateMessage', admin) or " +
+            "hasPermission(#id, 'org.jtalks.jcommune.model.entity.PrivateMessage', read)")
+    public PrivateMessage get(Long id) throws NotFoundException {
+        return super.get(id);
     }
 }
