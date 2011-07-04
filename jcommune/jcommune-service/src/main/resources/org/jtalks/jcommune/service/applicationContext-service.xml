@@ -43,7 +43,7 @@
     <constructor-arg index="0" ref="privateMessageDao"/>
     <constructor-arg index="1" ref="securityService"/>
     <constructor-arg index="2" ref="userService"/>
-    <constructor-arg index="3" ref="userDataCache"/>
+    <constructor-arg index="3" ref="userDataCacheService"/>
   </bean>
 
   <bean id="topicService"
@@ -74,6 +74,11 @@
   <bean id="userDataCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
     <property name="cacheManager" ref="cacheManager"/>
     <property name="cacheName" value="cuserDataCache"/>
+  </bean>
+
+  <bean id="userDataCacheService"
+        class="org.jtalks.jcommune.service.nontransactional.UserDataCacheServiceImpl">
+    <constructor-arg name="userDataCache" ref="userDataCache"/>
   </bean>
 
 </beans>

@@ -17,14 +17,13 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.SecurityService;
+import org.jtalks.jcommune.service.UserDataCacheService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -42,7 +41,7 @@ public class TransactionalPrivateMessageService
 
     private final SecurityService securityService;
     private final UserService userService;
-    private final Ehcache userDataCache;
+    private final UserDataCacheService userDataCache;
 
     /**
      * Creates the instance of service.
@@ -50,12 +49,12 @@ public class TransactionalPrivateMessageService
      * @param pmDao           PrivateMessageDao
      * @param securityService for retrieving current user
      * @param userService     for getting user by name
-     * @param userDataCache   cache for user data
+     * @param userDataCache   service for cache for user data
      */
     public TransactionalPrivateMessageService(PrivateMessageDao pmDao,
                                               SecurityService securityService,
                                               UserService userService,
-                                              Ehcache userDataCache) {
+                                              UserDataCacheService userDataCache) {
         this.dao = pmDao;
         this.securityService = securityService;
         this.userService = userService;
@@ -91,7 +90,7 @@ public class TransactionalPrivateMessageService
         PrivateMessage pm = populateMessage(title, body, recipient);
         pm.setStatus(PrivateMessageStatus.NOT_READED);
         dao.saveOrUpdate(pm);
-        incrementNewMessageCountInCacheFor(recipientUsername);
+        userDataCache.incrementNewMessageCountFor(recipientUsername);
         return pm;
     }
 
@@ -120,7 +119,7 @@ public class TransactionalPrivateMessageService
     public void markAsReaded(PrivateMessage pm) {
         pm.markAsReaded();
         dao.saveOrUpdate(pm);
-        decrementNewMessageCountInCacheFor(pm.getUserTo().getUsername());
+        userDataCache.decrementNewMessageCountFor(pm.getUserTo().getUsername());
     }
 
     /**
@@ -153,15 +152,16 @@ public class TransactionalPrivateMessageService
     @Override
     public int currentUserNewPmCount() {
         String username = securityService.getCurrentUserUsername();
-        if (username == null || username.equals("anonymousUser")) {
+        if (username == null) {
             return 0;
         }
 
-        if (userDataCache.isKeyInCache(username)) {
-            return (Integer) userDataCache.get(username).getValue();
+        Integer count = userDataCache.getNewPmCountFor(username);
+        if (count != null) {
+            return count;
         }
-        int count = dao.getNewMessagesCountFor(username);
-        userDataCache.put(new Element(username, count));
+        count = dao.getNewMessagesCountFor(username);
+        userDataCache.putNewPmCount(username, count);
         return count;
     }
 
@@ -178,35 +178,7 @@ public class TransactionalPrivateMessageService
         pm.setId(id);
         pm.setStatus(PrivateMessageStatus.NOT_READED);
         dao.saveOrUpdate(pm);
-        incrementNewMessageCountInCacheFor(recipientUsername);
+        userDataCache.incrementNewMessageCountFor(recipientUsername);
         return pm;
-    }
-
-    /**
-     * Increment new private messages count for user in cache.
-     * Only if user in cache.
-     *
-     * @param username username (cache key)
-     */
-    private void incrementNewMessageCountInCacheFor(String username) {
-        if (userDataCache.isKeyInCache(username)) {
-            int count = (Integer) userDataCache.get(username).getValue();
-            count++;
-            userDataCache.put(new Element(username, count));
-        }
-    }
-
-    /**
-     * Decrement new private messages count for user in cache.
-     * Only if user in cache.
-     *
-     * @param username username  (cache key)
-     */
-    private void decrementNewMessageCountInCacheFor(String username) {
-        if (userDataCache.isKeyInCache(username)) {
-            int count = (Integer) userDataCache.get(username).getValue();
-            count--;
-            userDataCache.put(new Element(username, count));
-        }
     }
 }
