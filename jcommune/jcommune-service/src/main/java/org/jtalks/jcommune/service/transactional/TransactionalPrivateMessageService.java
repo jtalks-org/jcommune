@@ -92,6 +92,10 @@ public class TransactionalPrivateMessageService
         pm.setStatus(PrivateMessageStatus.NOT_READED);
         dao.saveOrUpdate(pm);
         userDataCache.incrementNewMessageCountFor(recipientUsername);
+
+        securityService.grantReadPermissionToCurrentUser(pm);
+        securityService.grantReadPermissionToUser(pm, recipientUsername);
+
         return pm;
     }
 
@@ -183,6 +187,21 @@ public class TransactionalPrivateMessageService
         pm.setStatus(PrivateMessageStatus.NOT_READED);
         dao.saveOrUpdate(pm);
         userDataCache.incrementNewMessageCountFor(recipientUsername);
+
+        securityService.deleteFromAcl(pm);
+        securityService.grantReadPermissionToCurrentUser(pm);
+        securityService.grantReadPermissionToUser(pm, recipientUsername);
+
         return pm;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @PreAuthorize("hasPermission(#id, 'org.jtalks.jcommune.model.entity.PrivateMessage', admin) or " +
+            "hasPermission(#id, 'org.jtalks.jcommune.model.entity.PrivateMessage', read)")
+    public PrivateMessage get(Long id) throws NotFoundException {
+        return super.get(id);
     }
 }
