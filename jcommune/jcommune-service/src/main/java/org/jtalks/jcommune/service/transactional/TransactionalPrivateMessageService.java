@@ -95,7 +95,7 @@ public class TransactionalPrivateMessageService
         incrementNewMessageCountInCacheFor(recipientUsername);
 
         securityService.grantReadPermissionToCurrentUser(pm);
-        securityService.grantReadPermissionToUser(pm, recipient.getUsername());
+        securityService.grantReadPermissionToUser(pm, recipientUsername);
 
         return pm;
     }
@@ -190,7 +190,7 @@ public class TransactionalPrivateMessageService
 
         securityService.deleteFromAcl(pm);
         securityService.grantReadPermissionToCurrentUser(pm);
-        securityService.grantReadPermissionToUser(pm, recipient.getUsername());
+        securityService.grantReadPermissionToUser(pm, recipientUsername);
 
         return pm;
     }

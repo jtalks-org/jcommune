@@ -38,6 +38,7 @@ import static org.testng.Assert.assertTrue;
 /**
  * @author Pavel Vervenko
  * @author Kirill Afonin
+ * @author Max Malakhov
  */
 public class TransactionalPrivateMessageServiceTest {
 
@@ -98,6 +99,8 @@ public class TransactionalPrivateMessageServiceTest {
         verify(userDataCache).get(userTo);
         verify(userDataCache).put(new Element(userTo, 2));
         verify(pmDao).saveOrUpdate(pm);
+        verify(securityService).grantReadPermissionToCurrentUser(pm);
+        verify(securityService).grantReadPermissionToUser(pm, userTo); 
     }
 
     @Test(expectedExceptions = NotFoundException.class)
@@ -153,6 +156,7 @@ public class TransactionalPrivateMessageServiceTest {
         verify(securityService).getCurrentUser();
         verify(userService).getByUsername(recipient);
         verify(pmDao).saveOrUpdate(pm);
+        verify(securityService).grantAdminPermissionToCurrentUser(pm);
     }
 
     @Test
@@ -212,5 +216,8 @@ public class TransactionalPrivateMessageServiceTest {
         verify(userDataCache).get(userTo);
         verify(userDataCache).put(new Element(userTo, 2));
         verify(pmDao).saveOrUpdate(pm);
+        verify(securityService).deleteFromAcl(pm);
+        verify(securityService).grantReadPermissionToCurrentUser(pm);
+        verify(securityService).grantReadPermissionToUser(pm, userTo);        
     }
 }
