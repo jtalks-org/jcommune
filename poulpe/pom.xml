@@ -107,6 +107,11 @@
         <version>${springVersion}</version>
       </dependency>
       <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-test</artifactId>
+        <version>${springVersion}</version>
+      </dependency>      
+      <dependency>
         <groupId>javassist</groupId>
         <artifactId>javassist</artifactId>
         <version>3.12.1.GA</version>
@@ -148,6 +153,12 @@
         <artifactId>joda-time-hibernate</artifactId>
         <version>1.2</version>
       </dependency>
+      <dependency>
+        <groupId>org.unitils</groupId>
+        <artifactId>unitils-core</artifactId>
+        <version>3.1</version>
+        <scope>test</scope>
+      </dependency>      
       <!-- Other -->
       <dependency>
         <groupId>javax.servlet</groupId>
