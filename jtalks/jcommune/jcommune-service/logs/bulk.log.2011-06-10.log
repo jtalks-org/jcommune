@@ -1,6 +1,0 @@
-2011-06-10 23:42:17,832 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
-2011-06-10 23:42:17,883 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
-2011-06-10 23:42:17,885 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
-2011-06-10 23:42:17,888 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
-2011-06-10 23:42:17,890 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
-2011-06-10 23:42:17,892 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
