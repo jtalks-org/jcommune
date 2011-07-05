@@ -4,20 +4,20 @@
 .metadata
 
 *.iml
-\jcommune\jcommune-service\target\
-\jcommune\jcommune-model\target\
-\jcommune\jcommune-view\jcommune-web-view\target\
-\jcommune\jcommune-view\jcommune-web-controller\target\
-!/jcommune/jcommune-model/src/main/java/
-/jcommune/jcommune-model/target/
-/jcommune/jcommune-model/catalog.xml
-/jcommune/jcommune.ipr
-/jcommune/jcommune.iws
+/jtalks\jcommune\jcommune-service\target\
+/jtalks\jcommune\jcommune-model\target\
+/jtalks\jcommune\jcommune-view\jcommune-web-view\target\
+/jtalks\jcommune\jcommune-view\jcommune-web-controller\target\
+/jtalks!/jcommune/jcommune-model/src/main/java/
+/jtalks/jcommune/jcommune-model/target/
+/jtalks/jcommune/jcommune-model/catalog.xml
+/jtalks/jcommune/jcommune.ipr
+/jtalks/jcommune/jcommune.iws
 
-/jcommune/jcommune-model/logs/
-/jcommune/jcommune-service/logs/
-/jcommune/jcommune-service/target/
-/jcommune/jcommune-view/jcommune-web-controller/logs/
-/jcommune/jcommune-view/jcommune-web-controller/target/
-/jcommune/jcommune-view/jcommune-web-view/target/
-/jcommune/functional-tests/target/
+/jtalks/jcommune/jcommune-model/logs/
+/jtalks/jcommune/jcommune-service/logs/
+/jtalks/jcommune/jcommune-service/target/
+/jtalks/jcommune/jcommune-view/jcommune-web-controller/logs/
+/jtalks/jcommune/jcommune-view/jcommune-web-controller/target/
+/jtalks/jcommune/jcommune-view/jcommune-web-view/target/
+/jtalks/jcommune/functional-tests/target/
