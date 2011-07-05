@@ -21,4 +21,4 @@
  * Package for interfaces between model and view. Contains coarse-grained interfaces to data access objects.  
  *
  */
-package org.jtalks.jcommune.service;
+package org.jtalks.poulpe.service;

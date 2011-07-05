@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<zk>
+  <window title="Branch Editor" width="640px" border="normal">
+    <listbox id="list" multiple="true" rows="12" 
+      model="@{branchMAV.branches}"
+      selectedItem="@{branchMAV.selectedBranch}">
+      <listhead>
+        <listheader label="Name" />
+        <listheader label="Description"/>
+      </listhead>
+      <listitem self="@{each=branch}">
+        <listcell label="@{branch.name}"/>
+        <listcell label="@{branch.description}"/>
+      </listitem>
+    </listbox>
+  </window>
+</zk>

@@ -35,7 +35,7 @@ public interface EntityService<T extends Persistent> {
      * @param id primary id of persistent object to find, id could not be negative.
      *           If negative id value will be put IllegalAgrumentEception will be thrown.
      * @return persistent object T or null if row with primary id = id is absent.
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     * @throws org.jtalks.poulpe.service.exceptions.NotFoundException
      *          when entity not found
      */
     T get(Long id) throws NotFoundException;

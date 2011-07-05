@@ -48,4 +48,14 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
     public List<Branch> getAll() {
         return dao.getAll();
     }
+
+    @Override
+    public void deleteBranch(Branch selectedBranch) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void saveBranch(Branch selectedBranch) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

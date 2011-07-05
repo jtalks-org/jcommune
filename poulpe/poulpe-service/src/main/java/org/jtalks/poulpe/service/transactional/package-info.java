@@ -21,4 +21,4 @@
  * Package for transactional service implementations.
  *
  */
-package org.jtalks.jcommune.service.transactional;
+package org.jtalks.poulpe.service.transactional;

@@ -34,4 +34,8 @@ public interface BranchService extends EntityService<Branch> {
      * @return - list of persistence objects T.
      */
     List<Branch> getAll();
+
+    public void deleteBranch(Branch selectedBranch);
+
+    public void saveBranch(Branch selectedBranch);
 }

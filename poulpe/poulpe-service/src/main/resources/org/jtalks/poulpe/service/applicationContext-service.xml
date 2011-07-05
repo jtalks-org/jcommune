@@ -23,6 +23,6 @@
   <!--Decalaration services bean -->
   <bean id="topicBranchService"
         class="org.jtalks.poulpe.service.transactional.TransactionalBranchService">
-    <constructor-arg index="0" ref="topicBranchDao"/>
+    <constructor-arg index="0" ref="branchDao"/>
   </bean>
 </beans>
