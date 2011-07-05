@@ -1,0 +1,255 @@
+2011-05-18 20:37:23,382 [INFO ][main            ][ org.hibernate.cfg.Environment] - Hibernate 3.3.2.GA
+2011-05-18 20:37:23,385 [INFO ][main            ][ org.hibernate.cfg.Environment] - hibernate.properties not found
+2011-05-18 20:37:23,390 [INFO ][main            ][ org.hibernate.cfg.Environment] - Bytecode provider name : javassist
+2011-05-18 20:37:23,396 [INFO ][main            ][ org.hibernate.cfg.Environment] - using JDK 1.4 java.sql.Timestamp handling
+2011-05-18 20:37:23,690 [INFO ][main            ][   org.hibernate.cfg.HbmBinder] - Mapping class: org.jtalks.jcommune.model.entity.User -> USER
+2011-05-18 20:37:23,750 [INFO ][main            ][   org.hibernate.cfg.HbmBinder] - Mapping class: org.jtalks.jcommune.model.entity.Post -> POST
+2011-05-18 20:37:23,860 [INFO ][main            ][   org.hibernate.cfg.HbmBinder] - Mapping class: org.jtalks.jcommune.model.entity.Topic -> TOPIC
+2011-05-18 20:37:23,873 [INFO ][main            ][   org.hibernate.cfg.HbmBinder] - Mapping class: org.jtalks.jcommune.model.entity.TopicBranch -> TOPICS_BRANCH
+2011-05-18 20:37:23,875 [INFO ][main            ][   org.hibernate.cfg.HbmBinder] - Mapping collection: org.jtalks.jcommune.model.entity.Topic.posts -> POST
+2011-05-18 20:37:23,890 [INFO ][main            ][org.hibernate.connection.ConnectionProviderFactory] - Initializing connection provider: org.springframework.orm.hibernate3.LocalDataSourceConnectionProvider
+2011-05-18 20:37:24,236 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - RDBMS: MySQL, version: 5.0.67-community-nt
+2011-05-18 20:37:24,237 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - JDBC driver: MySQL-AB JDBC Driver, version: mysql-connector-java-5.1.15 ( Revision: ${bzr.revision-id} )
+2011-05-18 20:37:24,286 [INFO ][main            ][ org.hibernate.dialect.Dialect] - Using dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+2011-05-18 20:37:24,292 [INFO ][main            ][org.hibernate.transaction.TransactionFactoryFactory] - Transaction strategy: org.springframework.orm.hibernate3.SpringTransactionFactory
+2011-05-18 20:37:24,295 [INFO ][main            ][org.hibernate.transaction.TransactionManagerLookupFactory] - No TransactionManagerLookup configured (in JTA environment, use of read-write or transactional second-level cache is not recommended)
+2011-05-18 20:37:24,295 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Automatic flush during beforeCompletion(): disabled
+2011-05-18 20:37:24,295 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Automatic session close at end of transaction: disabled
+2011-05-18 20:37:24,295 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - JDBC batch size: 15
+2011-05-18 20:37:24,295 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - JDBC batch updates for versioned data: disabled
+2011-05-18 20:37:24,296 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Scrollable result sets: enabled
+2011-05-18 20:37:24,296 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - JDBC3 getGeneratedKeys(): enabled
+2011-05-18 20:37:24,296 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Connection release mode: auto
+2011-05-18 20:37:24,297 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Maximum outer join fetch depth: 2
+2011-05-18 20:37:24,297 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Default batch fetch size: 1
+2011-05-18 20:37:24,298 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Generate SQL with comments: disabled
+2011-05-18 20:37:24,298 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Order SQL updates by primary key: disabled
+2011-05-18 20:37:24,298 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Order SQL inserts for batching: disabled
+2011-05-18 20:37:24,298 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Query translator: org.hibernate.hql.ast.ASTQueryTranslatorFactory
+2011-05-18 20:37:24,301 [INFO ][main            ][org.hibernate.hql.ast.ASTQueryTranslatorFactory] - Using ASTQueryTranslatorFactory
+2011-05-18 20:37:24,301 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Query language substitutions: {}
+2011-05-18 20:37:24,301 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - JPA-QL strict compliance: disabled
+2011-05-18 20:37:24,301 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Second-level cache: enabled
+2011-05-18 20:37:24,301 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Query cache: disabled
+2011-05-18 20:37:24,302 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Cache region factory : org.hibernate.cache.impl.NoCachingRegionFactory
+2011-05-18 20:37:24,302 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Optimize cache for minimal puts: disabled
+2011-05-18 20:37:24,302 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Structured second-level cache entries: disabled
+2011-05-18 20:37:24,310 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Statistics: disabled
+2011-05-18 20:37:24,310 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Deleted entity synthetic identifier rollback: disabled
+2011-05-18 20:37:24,311 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Default entity-mode: pojo
+2011-05-18 20:37:24,311 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Named query checking : enabled
+2011-05-18 20:37:24,367 [INFO ][main            ][org.hibernate.impl.SessionFactoryImpl] - building session factory
+2011-05-18 20:37:24,736 [INFO ][main            ][org.hibernate.impl.SessionFactoryObjectFactory] - Not binding factory to JNDI, no JNDI name configured
+2011-05-18 20:37:24,748 [INFO ][main            ][org.hibernate.tool.hbm2ddl.SchemaUpdate] - Running hbm2ddl schema update
+2011-05-18 20:37:24,749 [INFO ][main            ][org.hibernate.tool.hbm2ddl.SchemaUpdate] - fetching database metadata
+2011-05-18 20:37:24,766 [INFO ][main            ][org.hibernate.tool.hbm2ddl.SchemaUpdate] - updating schema
+2011-05-18 20:37:24,801 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - table found: jtalks.post
+2011-05-18 20:37:24,801 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - columns: [list_index, topic_id, post_id, post_content, post_date, user_created]
+2011-05-18 20:37:24,801 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - foreign keys: [fk_topic, fk_user]
+2011-05-18 20:37:24,801 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - indexes: [fk_topic, primary, fk_user]
+2011-05-18 20:37:24,816 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - table found: jtalks.topic
+2011-05-18 20:37:24,816 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - columns: [creation_date, title, topic_starter, topic_id, topic_branch]
+2011-05-18 20:37:24,816 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - foreign keys: [fk_topic_branch, fk_topic_starter]
+2011-05-18 20:37:24,816 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - indexes: [primary, fk_topic_branch, fk_topic_starter]
+2011-05-18 20:37:24,832 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - table found: jtalks.topics_branch
+2011-05-18 20:37:24,832 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - columns: [description, name, topic_branch_id]
+2011-05-18 20:37:24,832 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - foreign keys: []
+2011-05-18 20:37:24,832 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - indexes: [primary]
+2011-05-18 20:37:24,848 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - table found: jtalks.user
+2011-05-18 20:37:24,848 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - columns: [nick_name, id, first_name, username, email, last_name, password]
+2011-05-18 20:37:24,848 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - foreign keys: []
+2011-05-18 20:37:24,848 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - indexes: [primary]
+2011-05-18 20:37:24,849 [INFO ][main            ][org.hibernate.tool.hbm2ddl.SchemaUpdate] - schema update complete
+2011-05-18 20:37:26,262 [INFO ][main            ][org.hibernate.validator.util.Version] - Hibernate Validator 4.0.2.GA
+2011-05-18 20:37:29,774 [INFO ][Thread-1        ][org.hibernate.impl.SessionFactoryImpl] - closing
+2011-05-18 20:38:30,241 [INFO ][main            ][ org.hibernate.cfg.Environment] - Hibernate 3.3.2.GA
+2011-05-18 20:38:30,244 [INFO ][main            ][ org.hibernate.cfg.Environment] - hibernate.properties not found
+2011-05-18 20:38:30,249 [INFO ][main            ][ org.hibernate.cfg.Environment] - Bytecode provider name : javassist
+2011-05-18 20:38:30,257 [INFO ][main            ][ org.hibernate.cfg.Environment] - using JDK 1.4 java.sql.Timestamp handling
+2011-05-18 20:38:30,533 [INFO ][main            ][   org.hibernate.cfg.HbmBinder] - Mapping class: org.jtalks.jcommune.model.entity.User -> USER
+2011-05-18 20:38:30,594 [INFO ][main            ][   org.hibernate.cfg.HbmBinder] - Mapping class: org.jtalks.jcommune.model.entity.Post -> POST
+2011-05-18 20:38:30,714 [INFO ][main            ][   org.hibernate.cfg.HbmBinder] - Mapping class: org.jtalks.jcommune.model.entity.Topic -> TOPIC
+2011-05-18 20:38:30,728 [INFO ][main            ][   org.hibernate.cfg.HbmBinder] - Mapping class: org.jtalks.jcommune.model.entity.TopicBranch -> TOPICS_BRANCH
+2011-05-18 20:38:30,730 [INFO ][main            ][   org.hibernate.cfg.HbmBinder] - Mapping collection: org.jtalks.jcommune.model.entity.Topic.posts -> POST
+2011-05-18 20:38:30,752 [INFO ][main            ][org.hibernate.connection.ConnectionProviderFactory] - Initializing connection provider: org.springframework.orm.hibernate3.LocalDataSourceConnectionProvider
+2011-05-18 20:38:31,068 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - RDBMS: MySQL, version: 5.0.67-community-nt
+2011-05-18 20:38:31,069 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - JDBC driver: MySQL-AB JDBC Driver, version: mysql-connector-java-5.1.15 ( Revision: ${bzr.revision-id} )
+2011-05-18 20:38:31,116 [INFO ][main            ][ org.hibernate.dialect.Dialect] - Using dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+2011-05-18 20:38:31,122 [INFO ][main            ][org.hibernate.transaction.TransactionFactoryFactory] - Transaction strategy: org.springframework.orm.hibernate3.SpringTransactionFactory
+2011-05-18 20:38:31,125 [INFO ][main            ][org.hibernate.transaction.TransactionManagerLookupFactory] - No TransactionManagerLookup configured (in JTA environment, use of read-write or transactional second-level cache is not recommended)
+2011-05-18 20:38:31,125 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Automatic flush during beforeCompletion(): disabled
+2011-05-18 20:38:31,125 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Automatic session close at end of transaction: disabled
+2011-05-18 20:38:31,125 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - JDBC batch size: 15
+2011-05-18 20:38:31,125 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - JDBC batch updates for versioned data: disabled
+2011-05-18 20:38:31,126 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Scrollable result sets: enabled
+2011-05-18 20:38:31,126 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - JDBC3 getGeneratedKeys(): enabled
+2011-05-18 20:38:31,126 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Connection release mode: auto
+2011-05-18 20:38:31,128 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Maximum outer join fetch depth: 2
+2011-05-18 20:38:31,128 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Default batch fetch size: 1
+2011-05-18 20:38:31,128 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Generate SQL with comments: disabled
+2011-05-18 20:38:31,128 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Order SQL updates by primary key: disabled
+2011-05-18 20:38:31,128 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Order SQL inserts for batching: disabled
+2011-05-18 20:38:31,128 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Query translator: org.hibernate.hql.ast.ASTQueryTranslatorFactory
+2011-05-18 20:38:31,131 [INFO ][main            ][org.hibernate.hql.ast.ASTQueryTranslatorFactory] - Using ASTQueryTranslatorFactory
+2011-05-18 20:38:31,131 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Query language substitutions: {}
+2011-05-18 20:38:31,131 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - JPA-QL strict compliance: disabled
+2011-05-18 20:38:31,132 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Second-level cache: enabled
+2011-05-18 20:38:31,132 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Query cache: disabled
+2011-05-18 20:38:31,132 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Cache region factory : org.hibernate.cache.impl.NoCachingRegionFactory
+2011-05-18 20:38:31,132 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Optimize cache for minimal puts: disabled
+2011-05-18 20:38:31,132 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Structured second-level cache entries: disabled
+2011-05-18 20:38:31,140 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Statistics: disabled
+2011-05-18 20:38:31,140 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Deleted entity synthetic identifier rollback: disabled
+2011-05-18 20:38:31,141 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Default entity-mode: pojo
+2011-05-18 20:38:31,141 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Named query checking : enabled
+2011-05-18 20:38:31,193 [INFO ][main            ][org.hibernate.impl.SessionFactoryImpl] - building session factory
+2011-05-18 20:38:31,544 [INFO ][main            ][org.hibernate.impl.SessionFactoryObjectFactory] - Not binding factory to JNDI, no JNDI name configured
+2011-05-18 20:38:31,554 [INFO ][main            ][org.hibernate.tool.hbm2ddl.SchemaUpdate] - Running hbm2ddl schema update
+2011-05-18 20:38:31,554 [INFO ][main            ][org.hibernate.tool.hbm2ddl.SchemaUpdate] - fetching database metadata
+2011-05-18 20:38:31,566 [INFO ][main            ][org.hibernate.tool.hbm2ddl.SchemaUpdate] - updating schema
+2011-05-18 20:38:31,604 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - table found: jtalks.post
+2011-05-18 20:38:31,604 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - columns: [list_index, topic_id, post_id, post_content, post_date, user_created]
+2011-05-18 20:38:31,604 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - foreign keys: [fk_topic, fk_user]
+2011-05-18 20:38:31,604 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - indexes: [fk_topic, primary, fk_user]
+2011-05-18 20:38:31,618 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - table found: jtalks.topic
+2011-05-18 20:38:31,619 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - columns: [creation_date, title, topic_starter, topic_id, topic_branch]
+2011-05-18 20:38:31,619 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - foreign keys: [fk_topic_branch, fk_topic_starter]
+2011-05-18 20:38:31,619 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - indexes: [primary, fk_topic_branch, fk_topic_starter]
+2011-05-18 20:38:31,634 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - table found: jtalks.topics_branch
+2011-05-18 20:38:31,634 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - columns: [description, name, topic_branch_id]
+2011-05-18 20:38:31,634 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - foreign keys: []
+2011-05-18 20:38:31,634 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - indexes: [primary]
+2011-05-18 20:38:31,647 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - table found: jtalks.user
+2011-05-18 20:38:31,648 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - columns: [nick_name, id, first_name, username, email, last_name, password]
+2011-05-18 20:38:31,648 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - foreign keys: []
+2011-05-18 20:38:31,648 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - indexes: [primary]
+2011-05-18 20:38:31,648 [INFO ][main            ][org.hibernate.tool.hbm2ddl.SchemaUpdate] - schema update complete
+2011-05-18 20:38:32,938 [INFO ][main            ][org.hibernate.validator.util.Version] - Hibernate Validator 4.0.2.GA
+2011-05-18 20:42:34,544 [INFO ][ngine[Catalina]]][org.hibernate.impl.SessionFactoryImpl] - closing
+2011-05-18 20:42:36,996 [INFO ][ngine[Catalina]]][ org.hibernate.cfg.Environment] - Hibernate 3.3.2.GA
+2011-05-18 20:42:36,999 [INFO ][ngine[Catalina]]][ org.hibernate.cfg.Environment] - hibernate.properties not found
+2011-05-18 20:42:37,003 [INFO ][ngine[Catalina]]][ org.hibernate.cfg.Environment] - Bytecode provider name : javassist
+2011-05-18 20:42:37,009 [INFO ][ngine[Catalina]]][ org.hibernate.cfg.Environment] - using JDK 1.4 java.sql.Timestamp handling
+2011-05-18 20:42:37,254 [INFO ][ngine[Catalina]]][   org.hibernate.cfg.HbmBinder] - Mapping class: org.jtalks.jcommune.model.entity.User -> USER
+2011-05-18 20:42:37,290 [INFO ][ngine[Catalina]]][   org.hibernate.cfg.HbmBinder] - Mapping class: org.jtalks.jcommune.model.entity.Post -> POST
+2011-05-18 20:42:37,393 [INFO ][ngine[Catalina]]][   org.hibernate.cfg.HbmBinder] - Mapping class: org.jtalks.jcommune.model.entity.Topic -> TOPIC
+2011-05-18 20:42:37,404 [INFO ][ngine[Catalina]]][   org.hibernate.cfg.HbmBinder] - Mapping class: org.jtalks.jcommune.model.entity.TopicBranch -> TOPICS_BRANCH
+2011-05-18 20:42:37,405 [INFO ][ngine[Catalina]]][   org.hibernate.cfg.HbmBinder] - Mapping collection: org.jtalks.jcommune.model.entity.Topic.posts -> POST
+2011-05-18 20:42:37,420 [INFO ][ngine[Catalina]]][org.hibernate.connection.ConnectionProviderFactory] - Initializing connection provider: org.springframework.orm.hibernate3.LocalDataSourceConnectionProvider
+2011-05-18 20:42:37,694 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - RDBMS: MySQL, version: 5.0.67-community-nt
+2011-05-18 20:42:37,694 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - JDBC driver: MySQL-AB JDBC Driver, version: mysql-connector-java-5.1.15 ( Revision: ${bzr.revision-id} )
+2011-05-18 20:42:37,731 [INFO ][ngine[Catalina]]][ org.hibernate.dialect.Dialect] - Using dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+2011-05-18 20:42:37,738 [INFO ][ngine[Catalina]]][org.hibernate.transaction.TransactionFactoryFactory] - Transaction strategy: org.springframework.orm.hibernate3.SpringTransactionFactory
+2011-05-18 20:42:37,740 [INFO ][ngine[Catalina]]][org.hibernate.transaction.TransactionManagerLookupFactory] - No TransactionManagerLookup configured (in JTA environment, use of read-write or transactional second-level cache is not recommended)
+2011-05-18 20:42:37,740 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - Automatic flush during beforeCompletion(): disabled
+2011-05-18 20:42:37,740 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - Automatic session close at end of transaction: disabled
+2011-05-18 20:42:37,740 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - JDBC batch size: 15
+2011-05-18 20:42:37,740 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - JDBC batch updates for versioned data: disabled
+2011-05-18 20:42:37,742 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - Scrollable result sets: enabled
+2011-05-18 20:42:37,742 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - JDBC3 getGeneratedKeys(): enabled
+2011-05-18 20:42:37,742 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - Connection release mode: auto
+2011-05-18 20:42:37,744 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - Maximum outer join fetch depth: 2
+2011-05-18 20:42:37,744 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - Default batch fetch size: 1
+2011-05-18 20:42:37,744 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - Generate SQL with comments: disabled
+2011-05-18 20:42:37,744 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - Order SQL updates by primary key: disabled
+2011-05-18 20:42:37,744 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - Order SQL inserts for batching: disabled
+2011-05-18 20:42:37,744 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - Query translator: org.hibernate.hql.ast.ASTQueryTranslatorFactory
+2011-05-18 20:42:37,747 [INFO ][ngine[Catalina]]][org.hibernate.hql.ast.ASTQueryTranslatorFactory] - Using ASTQueryTranslatorFactory
+2011-05-18 20:42:37,747 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - Query language substitutions: {}
+2011-05-18 20:42:37,748 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - JPA-QL strict compliance: disabled
+2011-05-18 20:42:37,748 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - Second-level cache: enabled
+2011-05-18 20:42:37,748 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - Query cache: disabled
+2011-05-18 20:42:37,748 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - Cache region factory : org.hibernate.cache.impl.NoCachingRegionFactory
+2011-05-18 20:42:37,748 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - Optimize cache for minimal puts: disabled
+2011-05-18 20:42:37,748 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - Structured second-level cache entries: disabled
+2011-05-18 20:42:37,756 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - Statistics: disabled
+2011-05-18 20:42:37,756 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - Deleted entity synthetic identifier rollback: disabled
+2011-05-18 20:42:37,756 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - Default entity-mode: pojo
+2011-05-18 20:42:37,756 [INFO ][ngine[Catalina]]][org.hibernate.cfg.SettingsFactory] - Named query checking : enabled
+2011-05-18 20:42:37,804 [INFO ][ngine[Catalina]]][org.hibernate.impl.SessionFactoryImpl] - building session factory
+2011-05-18 20:42:38,118 [INFO ][ngine[Catalina]]][org.hibernate.impl.SessionFactoryObjectFactory] - Not binding factory to JNDI, no JNDI name configured
+2011-05-18 20:42:38,128 [INFO ][ngine[Catalina]]][org.hibernate.tool.hbm2ddl.SchemaUpdate] - Running hbm2ddl schema update
+2011-05-18 20:42:38,128 [INFO ][ngine[Catalina]]][org.hibernate.tool.hbm2ddl.SchemaUpdate] - fetching database metadata
+2011-05-18 20:42:38,139 [INFO ][ngine[Catalina]]][org.hibernate.tool.hbm2ddl.SchemaUpdate] - updating schema
+2011-05-18 20:42:38,172 [INFO ][ngine[Catalina]]][org.hibernate.tool.hbm2ddl.TableMetadata] - table found: jtalks.post
+2011-05-18 20:42:38,172 [INFO ][ngine[Catalina]]][org.hibernate.tool.hbm2ddl.TableMetadata] - columns: [list_index, topic_id, post_id, post_content, post_date, user_created]
+2011-05-18 20:42:38,172 [INFO ][ngine[Catalina]]][org.hibernate.tool.hbm2ddl.TableMetadata] - foreign keys: [fk_topic, fk_user]
+2011-05-18 20:42:38,172 [INFO ][ngine[Catalina]]][org.hibernate.tool.hbm2ddl.TableMetadata] - indexes: [fk_topic, primary, fk_user]
+2011-05-18 20:42:38,187 [INFO ][ngine[Catalina]]][org.hibernate.tool.hbm2ddl.TableMetadata] - table found: jtalks.topic
+2011-05-18 20:42:38,187 [INFO ][ngine[Catalina]]][org.hibernate.tool.hbm2ddl.TableMetadata] - columns: [creation_date, title, topic_starter, topic_id, topic_branch]
+2011-05-18 20:42:38,187 [INFO ][ngine[Catalina]]][org.hibernate.tool.hbm2ddl.TableMetadata] - foreign keys: [fk_topic_branch, fk_topic_starter]
+2011-05-18 20:42:38,187 [INFO ][ngine[Catalina]]][org.hibernate.tool.hbm2ddl.TableMetadata] - indexes: [primary, fk_topic_branch, fk_topic_starter]
+2011-05-18 20:42:38,202 [INFO ][ngine[Catalina]]][org.hibernate.tool.hbm2ddl.TableMetadata] - table found: jtalks.topics_branch
+2011-05-18 20:42:38,202 [INFO ][ngine[Catalina]]][org.hibernate.tool.hbm2ddl.TableMetadata] - columns: [description, name, topic_branch_id]
+2011-05-18 20:42:38,202 [INFO ][ngine[Catalina]]][org.hibernate.tool.hbm2ddl.TableMetadata] - foreign keys: []
+2011-05-18 20:42:38,202 [INFO ][ngine[Catalina]]][org.hibernate.tool.hbm2ddl.TableMetadata] - indexes: [primary]
+2011-05-18 20:42:38,216 [INFO ][ngine[Catalina]]][org.hibernate.tool.hbm2ddl.TableMetadata] - table found: jtalks.user
+2011-05-18 20:42:38,216 [INFO ][ngine[Catalina]]][org.hibernate.tool.hbm2ddl.TableMetadata] - columns: [nick_name, id, first_name, username, email, last_name, password]
+2011-05-18 20:42:38,216 [INFO ][ngine[Catalina]]][org.hibernate.tool.hbm2ddl.TableMetadata] - foreign keys: []
+2011-05-18 20:42:38,217 [INFO ][ngine[Catalina]]][org.hibernate.tool.hbm2ddl.TableMetadata] - indexes: [primary]
+2011-05-18 20:42:38,217 [INFO ][ngine[Catalina]]][org.hibernate.tool.hbm2ddl.SchemaUpdate] - schema update complete
+2011-05-18 20:42:39,343 [INFO ][ngine[Catalina]]][org.hibernate.validator.util.Version] - Hibernate Validator 4.0.2.GA
+2011-05-18 20:45:55,549 [INFO ][main            ][ org.hibernate.cfg.Environment] - Hibernate 3.3.2.GA
+2011-05-18 20:45:55,553 [INFO ][main            ][ org.hibernate.cfg.Environment] - hibernate.properties not found
+2011-05-18 20:45:55,557 [INFO ][main            ][ org.hibernate.cfg.Environment] - Bytecode provider name : javassist
+2011-05-18 20:45:55,564 [INFO ][main            ][ org.hibernate.cfg.Environment] - using JDK 1.4 java.sql.Timestamp handling
+2011-05-18 20:45:55,857 [INFO ][main            ][   org.hibernate.cfg.HbmBinder] - Mapping class: org.jtalks.jcommune.model.entity.User -> USER
+2011-05-18 20:45:55,916 [INFO ][main            ][   org.hibernate.cfg.HbmBinder] - Mapping class: org.jtalks.jcommune.model.entity.Post -> POST
+2011-05-18 20:45:56,028 [INFO ][main            ][   org.hibernate.cfg.HbmBinder] - Mapping class: org.jtalks.jcommune.model.entity.Topic -> TOPIC
+2011-05-18 20:45:56,044 [INFO ][main            ][   org.hibernate.cfg.HbmBinder] - Mapping class: org.jtalks.jcommune.model.entity.TopicBranch -> TOPICS_BRANCH
+2011-05-18 20:45:56,045 [INFO ][main            ][   org.hibernate.cfg.HbmBinder] - Mapping collection: org.jtalks.jcommune.model.entity.Topic.posts -> POST
+2011-05-18 20:45:56,061 [INFO ][main            ][org.hibernate.connection.ConnectionProviderFactory] - Initializing connection provider: org.springframework.orm.hibernate3.LocalDataSourceConnectionProvider
+2011-05-18 20:45:56,363 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - RDBMS: MySQL, version: 5.0.67-community-nt
+2011-05-18 20:45:56,363 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - JDBC driver: MySQL-AB JDBC Driver, version: mysql-connector-java-5.1.15 ( Revision: ${bzr.revision-id} )
+2011-05-18 20:45:56,410 [INFO ][main            ][ org.hibernate.dialect.Dialect] - Using dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+2011-05-18 20:45:56,420 [INFO ][main            ][org.hibernate.transaction.TransactionFactoryFactory] - Transaction strategy: org.springframework.orm.hibernate3.SpringTransactionFactory
+2011-05-18 20:45:56,423 [INFO ][main            ][org.hibernate.transaction.TransactionManagerLookupFactory] - No TransactionManagerLookup configured (in JTA environment, use of read-write or transactional second-level cache is not recommended)
+2011-05-18 20:45:56,424 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Automatic flush during beforeCompletion(): disabled
+2011-05-18 20:45:56,424 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Automatic session close at end of transaction: disabled
+2011-05-18 20:45:56,424 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - JDBC batch size: 15
+2011-05-18 20:45:56,424 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - JDBC batch updates for versioned data: disabled
+2011-05-18 20:45:56,425 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Scrollable result sets: enabled
+2011-05-18 20:45:56,426 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - JDBC3 getGeneratedKeys(): enabled
+2011-05-18 20:45:56,426 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Connection release mode: auto
+2011-05-18 20:45:56,427 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Maximum outer join fetch depth: 2
+2011-05-18 20:45:56,427 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Default batch fetch size: 1
+2011-05-18 20:45:56,427 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Generate SQL with comments: disabled
+2011-05-18 20:45:56,427 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Order SQL updates by primary key: disabled
+2011-05-18 20:45:56,427 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Order SQL inserts for batching: disabled
+2011-05-18 20:45:56,427 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Query translator: org.hibernate.hql.ast.ASTQueryTranslatorFactory
+2011-05-18 20:45:56,432 [INFO ][main            ][org.hibernate.hql.ast.ASTQueryTranslatorFactory] - Using ASTQueryTranslatorFactory
+2011-05-18 20:45:56,432 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Query language substitutions: {}
+2011-05-18 20:45:56,432 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - JPA-QL strict compliance: disabled
+2011-05-18 20:45:56,432 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Second-level cache: enabled
+2011-05-18 20:45:56,432 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Query cache: disabled
+2011-05-18 20:45:56,432 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Cache region factory : org.hibernate.cache.impl.NoCachingRegionFactory
+2011-05-18 20:45:56,433 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Optimize cache for minimal puts: disabled
+2011-05-18 20:45:56,433 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Structured second-level cache entries: disabled
+2011-05-18 20:45:56,444 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Statistics: disabled
+2011-05-18 20:45:56,444 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Deleted entity synthetic identifier rollback: disabled
+2011-05-18 20:45:56,444 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Default entity-mode: pojo
+2011-05-18 20:45:56,444 [INFO ][main            ][org.hibernate.cfg.SettingsFactory] - Named query checking : enabled
+2011-05-18 20:45:56,506 [INFO ][main            ][org.hibernate.impl.SessionFactoryImpl] - building session factory
+2011-05-18 20:45:56,886 [INFO ][main            ][org.hibernate.impl.SessionFactoryObjectFactory] - Not binding factory to JNDI, no JNDI name configured
+2011-05-18 20:45:56,900 [INFO ][main            ][org.hibernate.tool.hbm2ddl.SchemaUpdate] - Running hbm2ddl schema update
+2011-05-18 20:45:56,900 [INFO ][main            ][org.hibernate.tool.hbm2ddl.SchemaUpdate] - fetching database metadata
+2011-05-18 20:45:56,914 [INFO ][main            ][org.hibernate.tool.hbm2ddl.SchemaUpdate] - updating schema
+2011-05-18 20:45:56,950 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - table found: jtalks.post
+2011-05-18 20:45:56,951 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - columns: [list_index, topic_id, post_id, post_content, post_date, user_created]
+2011-05-18 20:45:56,951 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - foreign keys: [fk_topic, fk_user]
+2011-05-18 20:45:56,951 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - indexes: [fk_topic, primary, fk_user]
+2011-05-18 20:45:56,967 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - table found: jtalks.topic
+2011-05-18 20:45:56,967 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - columns: [creation_date, title, topic_starter, topic_id, topic_branch]
+2011-05-18 20:45:56,968 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - foreign keys: [fk_topic_branch, fk_topic_starter]
+2011-05-18 20:45:56,968 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - indexes: [primary, fk_topic_branch, fk_topic_starter]
+2011-05-18 20:45:56,986 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - table found: jtalks.topics_branch
+2011-05-18 20:45:56,986 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - columns: [description, name, topic_branch_id]
+2011-05-18 20:45:56,986 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - foreign keys: []
+2011-05-18 20:45:56,986 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - indexes: [primary]
+2011-05-18 20:45:57,000 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - table found: jtalks.user
+2011-05-18 20:45:57,000 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - columns: [nick_name, id, first_name, username, email, last_name, password]
+2011-05-18 20:45:57,000 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - foreign keys: []
+2011-05-18 20:45:57,000 [INFO ][main            ][org.hibernate.tool.hbm2ddl.TableMetadata] - indexes: [primary]
+2011-05-18 20:45:57,001 [INFO ][main            ][org.hibernate.tool.hbm2ddl.SchemaUpdate] - schema update complete
+2011-05-18 20:45:58,348 [INFO ][main            ][org.hibernate.validator.util.Version] - Hibernate Validator 4.0.2.GA
+2011-05-18 20:46:00,972 [INFO ][Thread-1        ][org.hibernate.impl.SessionFactoryImpl] - closing

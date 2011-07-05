@@ -1,0 +1,264 @@
+2011-06-05 12:47:50,708 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 12:47:50,795 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 12:47:50,797 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 12:47:50,804 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 12:47:50,812 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 12:47:50,814 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 13:09:51,112 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 13:09:51,136 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 13:09:51,138 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 13:09:51,142 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 13:09:51,143 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 13:09:51,145 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 13:17:57,351 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 13:17:57,375 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 13:17:57,377 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 13:17:57,381 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 13:17:57,383 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 13:17:57,385 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 13:34:44,409 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 13:34:44,431 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 13:34:44,434 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 13:34:44,437 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 13:34:44,439 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 13:34:44,440 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 13:41:59,641 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 13:41:59,671 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 13:41:59,673 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 13:41:59,677 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 13:41:59,679 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 13:41:59,680 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 13:43:21,834 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 13:43:21,859 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 13:43:21,861 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 13:43:21,864 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 13:43:21,866 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 13:43:21,868 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 14:20:14,790 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 14:20:14,814 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 14:20:14,815 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 14:20:14,819 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 14:20:14,821 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 14:20:14,823 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 14:21:55,925 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 14:21:55,948 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 14:21:55,949 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 14:21:55,953 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 14:21:55,955 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 14:21:55,957 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 14:27:58,553 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 14:27:58,575 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 14:27:58,578 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 14:27:58,582 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 14:27:58,584 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 14:27:58,586 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 14:32:14,552 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 14:32:14,575 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 14:32:14,577 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 14:32:14,580 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 14:32:14,582 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 14:32:14,583 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 14:38:00,069 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 14:38:00,092 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 14:38:00,094 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 14:38:00,097 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 14:38:00,099 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 14:38:00,101 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 14:41:43,360 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 14:41:43,386 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 14:41:43,389 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 14:41:43,393 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 14:41:43,395 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 14:41:43,396 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 16:15:09,993 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 16:15:10,017 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 16:15:10,020 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 16:15:10,023 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 16:15:10,025 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 16:15:10,027 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 16:26:46,544 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 16:26:46,568 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 16:26:46,570 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 16:26:46,574 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 16:26:46,575 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 16:26:46,577 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 16:43:00,883 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 16:43:00,930 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 16:43:00,932 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 16:43:00,936 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 16:43:00,937 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 16:43:00,939 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 16:58:54,285 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 16:58:54,308 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 16:58:54,310 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 16:58:54,314 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 16:58:54,315 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 16:58:54,317 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 17:19:42,418 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 17:19:42,442 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 17:19:42,444 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 17:19:42,448 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 17:19:42,450 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 17:19:42,451 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 17:22:49,318 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 17:22:49,342 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 17:22:49,344 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 17:22:49,348 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 17:22:49,351 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 17:22:49,353 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 17:28:15,273 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 17:28:15,313 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 17:28:15,321 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 17:28:15,327 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 17:28:15,329 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 17:28:15,331 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 17:32:58,748 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 17:32:58,771 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 17:32:58,772 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 17:32:58,776 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 17:32:58,778 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 17:32:58,780 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 17:34:25,712 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 17:34:25,736 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 17:34:25,739 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 17:34:25,742 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 17:34:25,744 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 17:34:25,746 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 17:39:15,277 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 17:39:15,299 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 17:39:15,301 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 17:39:15,305 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 17:39:15,307 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 17:39:15,308 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 17:43:45,313 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 17:43:45,338 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 17:43:45,340 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 17:43:45,344 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 17:43:45,346 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 17:43:45,348 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 17:55:44,285 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 17:55:44,308 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 17:55:44,311 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 17:55:44,315 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 17:55:44,317 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 17:55:44,319 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 18:03:43,753 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 18:03:43,776 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 18:03:43,778 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 18:03:43,782 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 18:03:43,783 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 18:03:43,785 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 18:09:18,638 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 18:09:18,692 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 18:09:18,694 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 18:09:18,699 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 18:09:18,701 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 18:09:18,703 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 18:22:42,740 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 18:22:42,763 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 18:22:42,766 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 18:22:42,770 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 18:22:42,772 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 18:22:42,773 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 18:39:11,282 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 18:39:11,304 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 18:39:11,306 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 18:39:11,310 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 18:39:11,311 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 18:39:11,313 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 18:42:51,154 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 18:42:51,179 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 18:42:51,181 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 18:42:51,184 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 18:42:51,186 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 18:42:51,188 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 18:46:05,910 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 18:46:05,932 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 18:46:05,934 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 18:46:05,938 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 18:46:05,940 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 18:46:05,942 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 18:52:07,596 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 18:52:07,622 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 18:52:07,624 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 18:52:07,628 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 18:52:07,630 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 18:52:07,633 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 19:12:09,149 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 19:12:09,179 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 19:12:09,181 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 19:12:09,185 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 19:12:09,189 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 19:12:09,191 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 19:13:47,325 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 19:13:47,347 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 19:13:47,349 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 19:13:47,353 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 19:13:47,354 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 19:13:47,356 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 19:27:14,606 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 19:27:14,629 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 19:27:14,631 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 19:27:14,635 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 19:27:14,637 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 19:27:14,639 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 19:28:44,334 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 19:28:44,357 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 19:28:44,359 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 19:28:44,363 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 19:28:44,365 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 19:28:44,366 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 19:29:21,920 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 19:29:21,943 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 19:29:21,944 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 19:29:21,948 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 19:29:21,950 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 19:29:21,951 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 20:05:32,585 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 20:05:32,608 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 20:05:32,610 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 20:05:32,614 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 20:05:32,616 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 20:05:32,617 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 20:21:05,309 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 20:21:05,333 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 20:21:05,334 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 20:21:05,338 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 20:21:05,340 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 20:21:05,341 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 20:22:58,232 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 20:22:58,254 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 20:22:58,256 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 20:22:58,259 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 20:22:58,261 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 20:22:58,262 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 20:27:03,519 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 20:27:03,542 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 20:27:03,543 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 20:27:03,547 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 20:27:03,549 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 20:27:03,551 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 20:35:21,182 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 20:35:21,205 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 20:35:21,206 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 20:35:21,210 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 20:35:21,212 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 20:35:21,214 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 20:40:35,303 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 20:40:35,325 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 20:40:35,327 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 20:40:35,330 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 20:40:35,332 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 20:40:35,334 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 20:55:34,029 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 20:55:34,052 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 20:55:34,054 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 20:55:34,058 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 20:55:34,059 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 20:55:34,061 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 23:58:06,193 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - User confirm post removing postId = 333
+2011-06-05 23:58:06,242 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-06-05 23:58:06,244 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-06-05 23:58:06,248 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 23:58:06,251 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-06-05 23:58:06,252 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!

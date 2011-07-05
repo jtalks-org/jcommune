@@ -1,0 +1,42 @@
+2011-07-05 13:05:37,820 [DEBUG][main            ][org.jtalks.jcommune.service.nontransactional.SecurityServiceImpl] - Deleted securedObject Post with id: 1
+2011-07-05 13:05:37,879 [DEBUG][main            ][org.jtalks.jcommune.service.nontransactional.SecurityServiceImpl] - Deleted securedObject Post id 1 ACL permissions for recipient PrincipalSid[username]
+2011-07-05 13:05:37,904 [DEBUG][main            ][org.jtalks.jcommune.service.nontransactional.SecurityServiceImpl] - Added permission mask 16 for Sid GrantedAuthoritySid[ROLE_ADMIN] securedObject Post id 1
+2011-07-05 13:05:37,905 [DEBUG][main            ][org.jtalks.jcommune.service.nontransactional.SecurityServiceImpl] - Added permission mask 16 for Sid PrincipalSid[username] securedObject Post id 1
+2011-07-05 13:05:38,123 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - Added answer to topic 999
+2011-07-05 13:05:38,128 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - Created new topic 0
+2011-07-05 13:05:38,129 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - Permissions granted on topic: 0
+2011-07-05 13:05:38,130 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - Permissions granted on post: 0
+2011-07-05 13:05:38,140 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - Deleted post with id: 333
+2011-07-05 13:05:38,158 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-07-05 13:05:38,159 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-07-05 13:05:38,163 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-07-05 13:05:38,164 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-07-05 13:05:38,166 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-07-05 13:47:37,150 [DEBUG][main            ][org.jtalks.jcommune.service.nontransactional.SecurityServiceImpl] - Deleted securedObject Post with id: 1
+2011-07-05 13:47:37,194 [DEBUG][main            ][org.jtalks.jcommune.service.nontransactional.SecurityServiceImpl] - Deleted securedObject Post id 1 ACL permissions for recipient PrincipalSid[username]
+2011-07-05 13:47:37,223 [DEBUG][main            ][org.jtalks.jcommune.service.nontransactional.SecurityServiceImpl] - Added permission mask 16 for Sid GrantedAuthoritySid[ROLE_ADMIN] securedObject Post id 1
+2011-07-05 13:47:37,224 [DEBUG][main            ][org.jtalks.jcommune.service.nontransactional.SecurityServiceImpl] - Added permission mask 16 for Sid PrincipalSid[username] securedObject Post id 1
+2011-07-05 13:47:37,414 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - Added answer to topic 999
+2011-07-05 13:47:37,420 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - Created new topic 0
+2011-07-05 13:47:37,420 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - Permissions granted on topic: 0
+2011-07-05 13:47:37,420 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - Permissions granted on post: 0
+2011-07-05 13:47:37,427 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - Deleted post with id: 333
+2011-07-05 13:47:37,447 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-07-05 13:47:37,449 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-07-05 13:47:37,452 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-07-05 13:47:37,453 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-07-05 13:47:37,455 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-07-05 13:58:43,267 [DEBUG][main            ][org.jtalks.jcommune.service.nontransactional.SecurityServiceImpl] - Deleted securedObject Post with id: 1
+2011-07-05 13:58:43,310 [DEBUG][main            ][org.jtalks.jcommune.service.nontransactional.SecurityServiceImpl] - Deleted securedObject Post id 1 ACL permissions for recipient PrincipalSid[username]
+2011-07-05 13:58:43,337 [DEBUG][main            ][org.jtalks.jcommune.service.nontransactional.SecurityServiceImpl] - Added permission mask 16 for Sid GrantedAuthoritySid[ROLE_ADMIN] securedObject Post id 1
+2011-07-05 13:58:43,338 [DEBUG][main            ][org.jtalks.jcommune.service.nontransactional.SecurityServiceImpl] - Added permission mask 16 for Sid PrincipalSid[username] securedObject Post id 1
+2011-07-05 13:58:43,509 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - Added answer to topic 999
+2011-07-05 13:58:43,515 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - Created new topic 0
+2011-07-05 13:58:43,515 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - Permissions granted on topic: 0
+2011-07-05 13:58:43,516 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - Permissions granted on post: 0
+2011-07-05 13:58:43,522 [DEBUG][main            ][org.jtalks.jcommune.service.transactional.TransactionalTopicService] - Deleted post with id: 333
+2011-07-05 13:58:43,542 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username not found.
+2011-07-05 13:58:43,544 [INFO ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User registered: username
+2011-07-05 13:58:43,547 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-07-05 13:58:43,548 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
+2011-07-05 13:58:43,550 [WARN ][main            ][org.jtalks.jcommune.service.transactional.TransactionalUserService] - User username already exist!
