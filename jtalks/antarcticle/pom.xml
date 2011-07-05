@@ -19,4 +19,25 @@
     <module>antarcticle-service</module>
     <module>antarcticle-view</module>
   </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <!--Child modules -->
+      <dependency>
+        <groupId>org.jtalks.antarcticle</groupId>
+        <artifactId>antarcticle-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jtalks.antarcticle</groupId>
+        <artifactId>antarcticle-service</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jtalks.antarcticle</groupId>
+        <artifactId>antarcticle-web-controller</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 </project>
