@@ -139,7 +139,7 @@ public class PrivateMessageControllerTest {
         assertEquals(actualPm, pm);
 
         verify(pmService).get(PM_ID);
-        verify(pmService).markAsReaded(pm);
+        verify(pmService).markAsRead(pm);
     }
 
     @Test

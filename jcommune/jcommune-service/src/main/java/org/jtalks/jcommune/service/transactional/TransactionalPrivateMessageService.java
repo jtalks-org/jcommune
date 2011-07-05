@@ -89,7 +89,7 @@ public class TransactionalPrivateMessageService
     public PrivateMessage sendMessage(String title, String body, String recipientUsername) throws NotFoundException {
         User recipient = userService.getByUsername(recipientUsername);
         PrivateMessage pm = populateMessage(title, body, recipient);
-        pm.setStatus(PrivateMessageStatus.NOT_READED);
+        pm.setStatus(PrivateMessageStatus.NOT_READ);
         dao.saveOrUpdate(pm);
         userDataCache.incrementNewMessageCountFor(recipientUsername);
 
@@ -121,8 +121,8 @@ public class TransactionalPrivateMessageService
     /**
      * {@inheritDoc}
      */
-    public void markAsReaded(PrivateMessage pm) {
-        pm.markAsReaded();
+    public void markAsRead(PrivateMessage pm) {
+        pm.markAsRead();
         dao.saveOrUpdate(pm);
         userDataCache.decrementNewMessageCountFor(pm.getUserTo().getUsername());
     }
@@ -184,7 +184,7 @@ public class TransactionalPrivateMessageService
         User recipient = userService.getByUsername(recipientUsername);
         PrivateMessage pm = populateMessage(title, body, recipient);
         pm.setId(id);
-        pm.setStatus(PrivateMessageStatus.NOT_READED);
+        pm.setStatus(PrivateMessageStatus.NOT_READ);
         dao.saveOrUpdate(pm);
         userDataCache.incrementNewMessageCountFor(recipientUsername);
 

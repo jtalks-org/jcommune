@@ -91,7 +91,7 @@ public class TransactionalPrivateMessageServiceTest {
 
         PrivateMessage pm = pmService.sendMessage("body", "title", USERNAME);
 
-        assertEquals(pm.getStatus(), PrivateMessageStatus.NOT_READED);
+        assertEquals(pm.getStatus(), PrivateMessageStatus.NOT_READ);
         verify(securityService).getCurrentUser();
         verify(userService).getByUsername(USERNAME);
         verify(userDataCache).incrementNewMessageCountFor(USERNAME);
@@ -111,15 +111,15 @@ public class TransactionalPrivateMessageServiceTest {
     }
 
     @Test
-    public void testMarkAsReaded() {
+    public void testMarkAsRead() {
         PrivateMessage pm = new PrivateMessage();
         User userTo = new User();
         userTo.setUsername(USERNAME);
         pm.setUserTo(userTo);
 
-        pmService.markAsReaded(pm);
+        pmService.markAsRead(pm);
 
-        assertTrue(pm.isReaded());
+        assertTrue(pm.isRead());
         verify(pmDao).saveOrUpdate(pm);
         verify(userDataCache).decrementNewMessageCountFor(USERNAME);
     }
@@ -191,7 +191,7 @@ public class TransactionalPrivateMessageServiceTest {
 
         PrivateMessage pm = pmService.sendDraft(1L, "body", "title", USERNAME);
 
-        assertEquals(pm.getStatus(), PrivateMessageStatus.NOT_READED);
+        assertEquals(pm.getStatus(), PrivateMessageStatus.NOT_READ);
         verify(securityService).getCurrentUser();
         verify(userService).getByUsername(USERNAME);
         verify(userDataCache).incrementNewMessageCountFor(USERNAME);

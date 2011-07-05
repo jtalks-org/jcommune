@@ -35,7 +35,7 @@ public class PrivateMessage extends Persistent {
     private String title;
     private String body;
 
-    private PrivateMessageStatus status = PrivateMessageStatus.NOT_READED;
+    private PrivateMessageStatus status = PrivateMessageStatus.NOT_READ;
 
     /**
      * Creates the PrivateMessage instance. All fields values are null.
@@ -172,17 +172,17 @@ public class PrivateMessage extends Persistent {
     }
 
     /**
-     * Mark message as readed.
+     * Mark message as read.
      */
-    public void markAsReaded() {
-        this.status = PrivateMessageStatus.READED;
+    public void markAsRead() {
+        this.status = PrivateMessageStatus.READ;
     }
 
     /**
-     * @return {@code true} if message is readed
+     * @return {@code true} if message is read
      */
-    public boolean isReaded() {
-        return this.status == PrivateMessageStatus.READED;
+    public boolean isRead() {
+        return this.status == PrivateMessageStatus.READ;
     }
 
     /**
