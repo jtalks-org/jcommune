@@ -88,6 +88,54 @@ public class PrivateMessageController {
     }
 
     /**
+     * Render the page with the form for the reply to original message.
+     * The form has the next filled fields: recipient, title
+     * @param pmId {@link PrivateMessage} id
+     * @return {@code ModelAndView} with the message having filled recipient, title fields
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when message not found
+     */
+    @RequestMapping(value = "/pm/{pmId}/reply", method = RequestMethod.GET)
+    public ModelAndView displayReplyPMPage(@PathVariable("pmId") Long pmId) throws NotFoundException {
+        PrivateMessage pm = pmService.get(pmId);
+        PrivateMessageDto pmDto = new PrivateMessageDto();
+        String pmTitle = pm.getTitle();
+        //check the 'Re: ' in the  title of original message and modifying it.
+        if (pmTitle.contains("Re: ")) {
+            pmDto.setTitle(pmTitle);
+        } else {
+            pmDto.setTitle("Re: " + pmTitle);
+        }
+        pmDto.setRecipient(pm.getUserFrom().getUsername());
+        return new ModelAndView("pm/pmForm", "pm", pmDto);
+    }
+
+    /**
+      * Render the page with the form for the reply with quoting to original message.
+      * The form has the next filled fields: recipient, title, message
+      * @param pmId {@link PrivateMessage} id
+      * @return {@code ModelAndView} with the message having filled recipient, title, message fields
+      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+      *          when message not found
+      */
+     @RequestMapping(value = "/pm/{pmId}/quote", method = RequestMethod.GET)
+     public ModelAndView displayQuotePMPage(@PathVariable("pmId") Long pmId) throws NotFoundException {
+         PrivateMessage pm = pmService.get(pmId);
+         PrivateMessageDto pmDto = new PrivateMessageDto();
+         String pmTitle = pm.getTitle();
+         //check the 'Re: ' in the  title of original message and modifying it.
+         if (pmTitle.contains("Re: ")) {
+             pmDto.setTitle(pmTitle);
+         } else {
+             pmDto.setTitle("Re: " + pmTitle);
+         }
+         pmDto.setRecipient(pm.getUserFrom().getUsername());
+         pmDto.setBody(pm.getBody());
+         return new ModelAndView("pm/pmForm", "pm", pmDto);
+     }
+
+
+    /**
      * Save the PrivateMessage for the filled in PrivateMessageDto.
      *
      * @param pmDto  {@link PrivateMessageDto} populated in form
