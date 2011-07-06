@@ -128,7 +128,7 @@ public class PrivateMessageController {
 
         PrivateMessage pm = pmService.get(pmId);
         if ("inbox".equals(folder)) {
-            pmService.markAsReaded(pm);
+            pmService.markAsRead(pm);
         }
 
         return new ModelAndView("pm/showPm", "pm", pm);

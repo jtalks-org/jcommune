@@ -15,13 +15,41 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-package org.jtalks.jcommune.model.entity;
+package org.jtalks.jcommune.service;
 
 /**
- * Private message status.
+ * Contains operations above user data cache.
  *
  * @author Kirill Afonin
  */
-public enum PrivateMessageStatus {
-    READ, DRAFT, NOT_READ
+public interface UserDataCacheService {
+    /**
+     * Get new messages count for {@code username} in cache.
+     *
+     * @param username username
+     * @return new messages count or {@code null} if user not in cache
+     */
+    Integer getNewPmCountFor(String username);
+
+    /**
+     * Put new messages count for {@code username} to cache.
+     *
+     * @param username username
+     * @param count    new messages count
+     */
+    void putNewPmCount(String username, int count);
+
+    /**
+     * Increment new messages count for {@code username} in cache.
+     *
+     * @param username username
+     */
+    void incrementNewMessageCountFor(String username);
+
+    /**
+     * Decrement new messages count for {@code username} in cache.
+     *
+     * @param username username
+     */
+    void decrementNewMessageCountFor(String username);
 }

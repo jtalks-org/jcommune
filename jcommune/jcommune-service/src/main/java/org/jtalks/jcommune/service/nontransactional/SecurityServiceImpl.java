@@ -28,7 +28,13 @@ import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.GrantedAuthoritySid;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.domain.PrincipalSid;
-import org.springframework.security.acls.model.*;
+import org.springframework.security.acls.model.AccessControlEntry;
+import org.springframework.security.acls.model.MutableAcl;
+import org.springframework.security.acls.model.MutableAclService;
+import org.springframework.security.acls.model.NotFoundException;
+import org.springframework.security.acls.model.ObjectIdentity;
+import org.springframework.security.acls.model.Permission;
+import org.springframework.security.acls.model.Sid;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -45,6 +51,7 @@ import java.util.List;
  */
 public class SecurityServiceImpl implements SecurityService {
 
+    public static final String ANONYMOUS_USER = "anonymousUser";
     private UserDao userDao;
     private MutableAclService mutableAclService;
     private SecurityContextFacade securityContextFacade;
@@ -81,19 +88,36 @@ public class SecurityServiceImpl implements SecurityService {
         if (auth == null) {
             return null;
         }
-
         Object principal = auth.getPrincipal();
-        String username = "";
+        String username = extractUsername(principal);
 
+        if (isAnonymous(username)) {
+            return null;
+        }
+        return username;
+    }
+
+    /**
+     * Get username from principal.
+     *
+     * @param principal principal
+     * @return username
+     */
+    private String extractUsername(Object principal) {
         // if principal is spring security user, cast it and get username
         // else it is javax.security principal with toString() that return username
         if (principal instanceof UserDetails) {
-            username = ((UserDetails) principal).getUsername();
-        } else {
-            username = principal.toString();
+            return ((UserDetails) principal).getUsername();
         }
+        return principal.toString();
+    }
 
-        return username;
+    /**
+     * @param username username
+     * @return {@code true} if user is anonymous
+     */
+    private boolean isAnonymous(String username) {
+        return username.equals(ANONYMOUS_USER);
     }
 
     /**

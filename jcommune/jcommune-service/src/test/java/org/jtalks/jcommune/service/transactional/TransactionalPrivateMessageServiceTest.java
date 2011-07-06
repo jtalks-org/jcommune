@@ -17,13 +17,12 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
+import org.jtalks.jcommune.service.UserDataCacheService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.testng.annotations.BeforeMethod;
@@ -31,7 +30,11 @@ import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -46,16 +49,16 @@ public class TransactionalPrivateMessageServiceTest {
     private SecurityService securityService;
     private TransactionalPrivateMessageService pmService;
     private UserService userService;
-    private Ehcache userDataCache;
+    private UserDataCacheService userDataCache;
     private static final long PM_ID = 1L;
-
+    private static final String USERNAME = "username";
 
     @BeforeMethod
     public void setUp() throws Exception {
         pmDao = mock(PrivateMessageDao.class);
         securityService = mock(SecurityService.class);
         userService = mock(UserService.class);
-        userDataCache = mock(Ehcache.class);
+        userDataCache = mock(UserDataCacheService.class);
         pmService = new TransactionalPrivateMessageService(pmDao, securityService, userService, userDataCache);
     }
 
@@ -85,53 +88,40 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testSendMessage() throws NotFoundException {
-        String userTo = "UserTo";
-        Element cacheElement = new Element(userTo, 1);
-        when(userDataCache.isKeyInCache(userTo)).thenReturn(true);
-        when(userDataCache.get(userTo)).thenReturn(cacheElement);
 
-        PrivateMessage pm = pmService.sendMessage("body", "title", userTo);
+        PrivateMessage pm = pmService.sendMessage("body", "title", USERNAME);
 
-        assertEquals(pm.getStatus(), PrivateMessageStatus.NOT_READED);
+        assertEquals(pm.getStatus(), PrivateMessageStatus.NOT_READ);
         verify(securityService).getCurrentUser();
-        verify(userService).getByUsername(userTo);
-        verify(userDataCache).isKeyInCache(userTo);
-        verify(userDataCache).get(userTo);
-        verify(userDataCache).put(new Element(userTo, 2));
+        verify(userService).getByUsername(USERNAME);
+        verify(userDataCache).incrementNewMessageCountFor(USERNAME);
         verify(pmDao).saveOrUpdate(pm);
         verify(securityService).grantReadPermissionToCurrentUser(pm);
-        verify(securityService).grantReadPermissionToUser(pm, userTo); 
+        verify(securityService).grantReadPermissionToUser(pm, USERNAME);
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testSendMessageToWrongUser() throws NotFoundException {
-        String wrongUsername = "wrong";
-        when(userService.getByUsername(wrongUsername)).thenThrow(new NotFoundException());
+        when(userService.getByUsername(USERNAME)).thenThrow(new NotFoundException());
 
-        PrivateMessage pm = pmService.sendMessage("body", "title", wrongUsername);
+        PrivateMessage pm = pmService.sendMessage("body", "title", USERNAME);
 
         verify(pmDao, never()).saveOrUpdate(pm);
-        verify(userService).getByUsername(wrongUsername);
+        verify(userService).getByUsername(USERNAME);
     }
 
     @Test
-    public void testMarkAsReaded() {
+    public void testMarkAsRead() {
         PrivateMessage pm = new PrivateMessage();
-        String username = "username";
         User userTo = new User();
-        userTo.setUsername(username);
+        userTo.setUsername(USERNAME);
         pm.setUserTo(userTo);
-        Element cacheElement = new Element(username, 2);
-        when(userDataCache.isKeyInCache(username)).thenReturn(true);
-        when(userDataCache.get(username)).thenReturn(cacheElement);
 
-        pmService.markAsReaded(pm);
+        pmService.markAsRead(pm);
 
-        assertTrue(pm.isReaded());
+        assertTrue(pm.isRead());
         verify(pmDao).saveOrUpdate(pm);
-        verify(userDataCache).isKeyInCache(username);
-        verify(userDataCache).get(username);
-        verify(userDataCache).put(new Element(username, 1));
+        verify(userDataCache).decrementNewMessageCountFor(USERNAME);
     }
 
     @Test
@@ -148,46 +138,42 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testSaveDraft() throws NotFoundException {
-        String recipient = "recipient";
 
-        PrivateMessage pm = pmService.saveDraft(PM_ID, "body", "title", recipient);
+        PrivateMessage pm = pmService.saveDraft(PM_ID, "body", "title", USERNAME);
 
         assertEquals(pm.getId(), PM_ID);
         verify(securityService).getCurrentUser();
-        verify(userService).getByUsername(recipient);
+        verify(userService).getByUsername(USERNAME);
         verify(pmDao).saveOrUpdate(pm);
         verify(securityService).grantAdminPermissionToCurrentUser(pm);
     }
 
     @Test
     public void testCurrentUserNewPmCount() {
-        String username = "username";
         int expectedPmCount = 2;
-        when(securityService.getCurrentUserUsername()).thenReturn(username);
-        when(pmDao.getNewMessagesCountFor(username)).thenReturn(expectedPmCount);
-        when(userDataCache.isKeyInCache(username)).thenReturn(false);
+        when(securityService.getCurrentUserUsername()).thenReturn(USERNAME);
+        when(pmDao.getNewMessagesCountFor(USERNAME)).thenReturn(expectedPmCount);
+        when(userDataCache.getNewPmCountFor(USERNAME)).thenReturn(null);
 
         int newPmCount = pmService.currentUserNewPmCount();
 
         assertEquals(newPmCount, expectedPmCount);
         verify(securityService).getCurrentUserUsername();
-        verify(pmDao).getNewMessagesCountFor(username);
-        verify(userDataCache).isKeyInCache(username);
-        verify(userDataCache).put(new Element(username, newPmCount));
+        verify(pmDao).getNewMessagesCountFor(USERNAME);
+        verify(userDataCache).putNewPmCount(USERNAME, newPmCount);
     }
 
     @Test
     public void testCurrentUserNewPmCountCached() {
-        String username = "username";
         int expectedPmCount = 2;
-        when(securityService.getCurrentUserUsername()).thenReturn(username);
-        when(userDataCache.isKeyInCache(username)).thenReturn(true);
-        when(userDataCache.get(username)).thenReturn(new Element(username, 2));
+        when(securityService.getCurrentUserUsername()).thenReturn(USERNAME);
+        when(userDataCache.getNewPmCountFor(USERNAME)).thenReturn(expectedPmCount);
 
         int newPmCount = pmService.currentUserNewPmCount();
 
         assertEquals(newPmCount, expectedPmCount);
         verify(pmDao, never()).getNewMessagesCountFor(anyString());
+        verify(userDataCache).getNewPmCountFor(USERNAME);
     }
 
     @Test
@@ -202,22 +188,16 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testSendDraft() throws NotFoundException {
-        String userTo = "UserTo";
-        Element cacheElement = new Element(userTo, 1);
-        when(userDataCache.isKeyInCache(userTo)).thenReturn(true);
-        when(userDataCache.get(userTo)).thenReturn(cacheElement);
 
-        PrivateMessage pm = pmService.sendDraft(1L, "body", "title", userTo);
+        PrivateMessage pm = pmService.sendDraft(1L, "body", "title", USERNAME);
 
-        assertEquals(pm.getStatus(), PrivateMessageStatus.NOT_READED);
+        assertEquals(pm.getStatus(), PrivateMessageStatus.NOT_READ);
         verify(securityService).getCurrentUser();
-        verify(userService).getByUsername(userTo);
-        verify(userDataCache).isKeyInCache(userTo);
-        verify(userDataCache).get(userTo);
-        verify(userDataCache).put(new Element(userTo, 2));
+        verify(userService).getByUsername(USERNAME);
+        verify(userDataCache).incrementNewMessageCountFor(USERNAME);
         verify(pmDao).saveOrUpdate(pm);
         verify(securityService).deleteFromAcl(pm);
         verify(securityService).grantReadPermissionToCurrentUser(pm);
-        verify(securityService).grantReadPermissionToUser(pm, userTo);        
+        verify(securityService).grantReadPermissionToUser(pm, USERNAME);
     }
 }

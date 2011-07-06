@@ -72,7 +72,7 @@ public class PrivateMessageHibernateDao extends AbstractHibernateDao<PrivateMess
     @SuppressWarnings("unchecked")
     public int getNewMessagesCountFor(String username) {
         return ((Number) getSession().getNamedQuery("getNewMessagesCountFor")
-                .setParameter("status", PrivateMessageStatus.NOT_READED)
+                .setParameter("status", PrivateMessageStatus.NOT_READ)
                 .setString("username", username).uniqueResult()).intValue();
     }
 }
