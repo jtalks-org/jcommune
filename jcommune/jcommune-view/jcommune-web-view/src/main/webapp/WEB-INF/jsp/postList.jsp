@@ -16,11 +16,13 @@
     </h2>
     <c:forEach var="post" items="${posts}" varStatus="i">
         <tr>
-            <td width="20%"><spring:message code="label.author"/>: <c:out
-                    value="${post.userCreated.username}"/>
+            <td width="20%"><spring:message code="label.author"/>:
+                <a href="${pageContext.request.contextPath}/user/${post.userCreated.id}.html">
+                    <c:out value="${post.userCreated.username}"/>
+                </a>
             </td>
-            <td width="80%"><spring:message code="label.text"/>: <c:out
-                    value="${post.postContent}"/>
+            <td width="80%"><spring:message code="label.text"/>:
+                <c:out value="${post.postContent}"/>
             </td>
             <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
                 <c:choose>

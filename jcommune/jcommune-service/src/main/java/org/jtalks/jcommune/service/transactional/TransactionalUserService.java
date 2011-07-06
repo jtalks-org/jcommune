@@ -76,6 +76,15 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void updateLastLoginTime(User user) {
+        user.updateLastLoginTime();
+        dao.saveOrUpdate(user);
+    }
+
+    /**
      * Check user for existance.
      *
      * @param user user for check existance
