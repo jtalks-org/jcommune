@@ -1,6 +1,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="joda" uri="http://www.joda.org/joda/time/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -36,6 +37,14 @@
         <li>
             <label><spring:message code="label.lastname"/></label>
             <span>${user.lastName}</span>
+        </li>
+        <li>
+            <label><spring:message code="label.lastlogin"/></label>
+            <span>
+                <joda:format value="${user.lastLogin}"
+                             locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
+                             pattern="dd MMM yyyy HH:mm"/>
+            </span>
         </li>
     </ul>
 </div>
