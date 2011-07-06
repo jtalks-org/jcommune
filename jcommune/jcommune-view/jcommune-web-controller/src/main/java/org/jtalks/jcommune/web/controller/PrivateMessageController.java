@@ -100,14 +100,14 @@ public class PrivateMessageController {
         PrivateMessage pm = pmService.get(pmId);
         PrivateMessageDto pmDto = new PrivateMessageDto();
         String pmTitle = pm.getTitle();
-        //check the 'Re: ' in the  title of original message and modifying it.
+        //check the "Re: " in the  title of original message and modifying it.
         if (pmTitle.contains("Re: ")) {
             pmDto.setTitle(pmTitle);
         } else {
             pmDto.setTitle("Re: " + pmTitle);
         }
         pmDto.setRecipient(pm.getUserFrom().getUsername());
-        return new ModelAndView("pm/pmForm", "pm", pmDto);
+        return new ModelAndView("pm/pmForm", "privateMessageDto", pmDto);
     }
 
     /**
@@ -130,8 +130,8 @@ public class PrivateMessageController {
              pmDto.setTitle("Re: " + pmTitle);
          }
          pmDto.setRecipient(pm.getUserFrom().getUsername());
-         pmDto.setBody(pm.getBody());
-         return new ModelAndView("pm/pmForm", "pm", pmDto);
+         pmDto.setBody("\n" +"< " + pm.getBody());
+         return new ModelAndView("pm/pmForm", "privateMessageDto", pmDto);
      }
 
 

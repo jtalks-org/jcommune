@@ -40,6 +40,7 @@ import static org.testng.Assert.assertEquals;
 /**
  * @author Pavel Vervenko
  * @author Max Malakhov
+ * @author Alexandre Teterin
  */
 public class PrivateMessageControllerTest {
 
@@ -124,6 +125,13 @@ public class PrivateMessageControllerTest {
 
         assertEquals(view, "pm/pmForm");
         verify(pmService).sendMessage(dto.getTitle(), dto.getBody(), dto.getRecipient());
+    }
+
+    @Test
+    public void testDisplayReplyPMPage() throws NotFoundException {
+        PrivateMessage pm = new PrivateMessage();
+        when(pmService.get(PM_ID)).thenReturn(pm);
+
     }
 
     @Test
