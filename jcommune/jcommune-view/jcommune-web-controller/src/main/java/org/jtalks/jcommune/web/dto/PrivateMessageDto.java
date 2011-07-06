@@ -27,6 +27,7 @@ import javax.validation.constraints.Size;
  * Holds message's title, body and username of the recipient.
  *
  * @author Pavel Vervenko
+ * @author Alexandre Teterin
  */
 public class PrivateMessageDto {
 
@@ -125,5 +126,48 @@ public class PrivateMessageDto {
         dto.setRecipient(pm.getUserTo().getUsername());
         dto.setId(pm.getId());
         return dto;
+    }
+
+    /**
+     * Create reply dto from {@link PrivateMessage}
+     * @param pm private message for conversion in to reply
+     * @return dto for reply
+     */
+    public static PrivateMessageDto getDtoForReply(PrivateMessage pm) {
+        PrivateMessageDto pmDto = new PrivateMessageDto();
+        pmDto.setRecipient(pm.getUserFrom().getUsername());
+        pmDto.setTitle(setTitleForReply(pm.getTitle()));
+        return pmDto;
+    }
+
+
+    /**
+     * Create quote dto from {@link PrivateMessage}
+     * @param pm private message for conversion in to the quote
+     * @return dto for quote
+     */
+    public static PrivateMessageDto getDtoForQuote (PrivateMessage pm) {
+        PrivateMessageDto pmDto = getDtoForReply(pm);
+        pmDto.setBody(setBodyForQuote(pm.getBody()));
+        return pmDto;
+    }
+
+    /**
+     * Create title for reply message
+     * @param pmTitle original message title
+     * @return reply title
+     */
+    public static String setTitleForReply(String pmTitle) {
+        //check the "Re: " occurrence in the  title of original message and modifying it.
+        return pmTitle.contains("Re: ") ? pmTitle : "Re: " + pmTitle;
+    }
+
+    /**
+     * Create body for quote message
+     * @param pmBody original message body
+     * @return quote body
+     */
+    public static String setBodyForQuote(String pmBody) {
+        return "\n" +"< " + pmBody;
     }
 }

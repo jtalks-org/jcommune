@@ -98,15 +98,7 @@ public class PrivateMessageController {
     @RequestMapping(value = "/pm/{pmId}/reply", method = RequestMethod.GET)
     public ModelAndView displayReplyPMPage(@PathVariable("pmId") Long pmId) throws NotFoundException {
         PrivateMessage pm = pmService.get(pmId);
-        PrivateMessageDto pmDto = new PrivateMessageDto();
-        String pmTitle = pm.getTitle();
-        //check the "Re: " in the  title of original message and modifying it.
-        if (pmTitle.contains("Re: ")) {
-            pmDto.setTitle(pmTitle);
-        } else {
-            pmDto.setTitle("Re: " + pmTitle);
-        }
-        pmDto.setRecipient(pm.getUserFrom().getUsername());
+        PrivateMessageDto pmDto = PrivateMessageDto.getDtoForReply(pm);
         return new ModelAndView("pm/pmForm", "privateMessageDto", pmDto);
     }
 
@@ -121,16 +113,7 @@ public class PrivateMessageController {
      @RequestMapping(value = "/pm/{pmId}/quote", method = RequestMethod.GET)
      public ModelAndView displayQuotePMPage(@PathVariable("pmId") Long pmId) throws NotFoundException {
          PrivateMessage pm = pmService.get(pmId);
-         PrivateMessageDto pmDto = new PrivateMessageDto();
-         String pmTitle = pm.getTitle();
-         //check the 'Re: ' in the  title of original message and modifying it.
-         if (pmTitle.contains("Re: ")) {
-             pmDto.setTitle(pmTitle);
-         } else {
-             pmDto.setTitle("Re: " + pmTitle);
-         }
-         pmDto.setRecipient(pm.getUserFrom().getUsername());
-         pmDto.setBody("\n" +"< " + pm.getBody());
+         PrivateMessageDto pmDto = PrivateMessageDto.getDtoForQuote(pm);
          return new ModelAndView("pm/pmForm", "privateMessageDto", pmDto);
      }
 
