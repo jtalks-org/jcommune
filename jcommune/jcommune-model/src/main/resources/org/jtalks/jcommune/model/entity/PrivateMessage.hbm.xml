@@ -3,7 +3,7 @@
   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
 
-  <typedef name="status" class='org.jtalks.jcommune.model.GenericEnumUserType'>
+  <typedef name="status" class="org.jtalks.jcommune.model.util.GenericEnumUserType">
     <param name="enumClass">org.jtalks.jcommune.model.entity.PrivateMessageStatus</param>
   </typedef>
 

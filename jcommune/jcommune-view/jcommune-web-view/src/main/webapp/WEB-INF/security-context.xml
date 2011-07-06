@@ -21,7 +21,7 @@
     <security:remember-me user-service-ref="securityService" key="JTalks"/>
   </security:http>
 
-  <bean id="successAuthHandler" class="org.jtalks.jcommune.web.SuccessfulAuthenticationHandler">
+  <bean id="successAuthHandler" class="org.jtalks.jcommune.web.util.SuccessfulAuthenticationHandler">
     <property name="userService" ref="userService"/>
   </bean>
 </beans>

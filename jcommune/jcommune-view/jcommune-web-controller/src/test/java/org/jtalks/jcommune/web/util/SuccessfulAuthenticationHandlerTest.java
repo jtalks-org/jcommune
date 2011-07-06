@@ -15,7 +15,7 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-package org.jtalks.jcommune.web;
+package org.jtalks.jcommune.web.util;
 
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
