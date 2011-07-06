@@ -43,6 +43,7 @@ import java.util.List;
  * @author Kravchenko Vitaliy
  * @author Kirill Afonin
  * @author Teterin Alexandre
+ * @author Max Malakhov
  * @see Topic
  */
 @Controller
@@ -153,11 +154,11 @@ public final class TopicController {
         Pagination pag = new Pagination(page, size, postsCount);
 
         List<Post> posts = postService.getPostRangeInTopic(topicId, pag.getStart(), pag.getPageSize());
-        String topicTitle = topicService.get(topicId).getTitle();
+        Topic topic = topicService.get(topicId);
 
         return new ModelAndView("postList")
                 .addObject("posts", posts)
-                .addObject("topicTitle", topicTitle)
+                .addObject("topic", topic)
                 .addObject("maxPages", pag.getMaxPages())
                 .addObject("page", pag.getPage())
                 .addObject("branchId", branchId)
