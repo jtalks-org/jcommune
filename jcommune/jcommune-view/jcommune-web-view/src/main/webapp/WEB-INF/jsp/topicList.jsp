@@ -22,7 +22,11 @@
             <tr>
                 <td><a href="${pageContext.request.contextPath}/branch/${branchId}/topic/${topic.id}.html"> <c:out
                         value="${topic.title}"/></a></td>
-                <td><c:out value="${topic.topicStarter.username}"/></td>
+                <td>
+                    <a href="${pageContext.request.contextPath}/user/${topic.topicStarter.id}.html">
+                        <c:out value="${topic.topicStarter.username}"/>
+                    </a>
+                </td>
                 <td><joda:format value="${topic.lastPost.creationDate}"
                                  locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
                                  pattern="dd MMM yyyy HH:mm"/></td>
@@ -80,7 +84,7 @@
             <c:url value="/branch/${branchId}.html" var="last">
                 <c:param name="page" value="${maxPages}"/>
             </c:url>
-            ...<a href='<c:out value="${last}" />' class="pn next"><spring:message code="pagination.last"/></a>
+            ...<a href='<c:out value="${last}"/>' class="pn next"><spring:message code="pagination.last"/></a>
         </c:if>
 
     </c:if>
