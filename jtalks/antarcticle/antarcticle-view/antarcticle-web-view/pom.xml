@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>antarcticle-view</artifactId>
@@ -13,7 +14,55 @@
   <packaging>war</packaging>
   <name>${artifactId}</name>
   <url>http://jtalks.org</url>
- 
+  <dependencies>
+    <dependency>
+      <groupId>org.jtalks.antarcticle</groupId>
+      <artifactId>antarcticle-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-orm</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-expression</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>opensymphony</groupId>
+      <artifactId>sitemesh</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jsp-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time-jsptags</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-taglibs</artifactId>
+    </dependency>
+  </dependencies>
+
 
   <build>
     <plugins>
@@ -36,8 +85,8 @@
             <type>installed</type>
             <deployables>
               <deployable>
-                <groupId>org.jtalks.jcommune</groupId>
-                <artifactId>jcommune-web-view</artifactId>
+                <groupId>org.jtalks.antarcticle</groupId>
+                <artifactId>antarcticle-web-view</artifactId>
                 <type>war</type>
               </deployable>
             </deployables>
@@ -46,6 +95,6 @@
       </plugin>
     </plugins>
 
-    <finalName>jcommune</finalName>
+    <finalName>antarcticle</finalName>
   </build>
 </project>

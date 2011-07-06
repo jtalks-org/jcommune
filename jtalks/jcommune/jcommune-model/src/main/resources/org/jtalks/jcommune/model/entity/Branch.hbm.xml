@@ -6,6 +6,7 @@
     <id column="BRANCH_ID" name="id" unsaved-value="0">
       <generator class="native"/>
     </id>
+    <discriminator column="BRANCH_TYPE" type="string"/>
     <property column="UUID" name="uuid" unique="true" not-null="true"/>
     <property name="name" column="NAME" not-null="true"/>
     <property name="description" column="DESCRIPTION"/>
