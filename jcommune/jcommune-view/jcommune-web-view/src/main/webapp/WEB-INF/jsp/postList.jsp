@@ -17,8 +17,10 @@
     </h2>
     <c:forEach var="post" items="${posts}" varStatus="i">
         <tr>
-            <td width="20%"><spring:message code="label.author"/>: <c:out
-                    value="${post.userCreated.username}"/>
+            <td width="20%"><spring:message code="label.author"/>:
+                <a href="${pageContext.request.contextPath}/user/${post.userCreated.id}.html">
+                    <c:out value="${post.userCreated.username}"/>
+                </a>
             </td>
             <td  class="link" width="80%"><a name="${post.id}" />
                 <a href="javascript:copyLink(${post.id})"><spring:message code="label.link" /></a> <br>
