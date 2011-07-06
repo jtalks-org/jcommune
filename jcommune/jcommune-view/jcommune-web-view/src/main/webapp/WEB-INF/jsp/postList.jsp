@@ -4,6 +4,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+
 <html>
 <head></head>
 <body>
@@ -16,13 +17,13 @@
     </h2>
     <c:forEach var="post" items="${posts}" varStatus="i">
         <tr>
-            <td width="20%"><spring:message code="label.author"/>:
-                <a href="${pageContext.request.contextPath}/user/${post.userCreated.id}.html">
-                    <c:out value="${post.userCreated.username}"/>
-                </a>
+            <td width="20%"><spring:message code="label.author"/>: <c:out
+                    value="${post.userCreated.username}"/>
             </td>
-            <td width="80%"><spring:message code="label.text"/>:
-                <c:out value="${post.postContent}"/>
+            <td  class="link" width="80%"><a name="${post.id}" />
+                <a href="javascript:copyLink(${post.id})"><spring:message code="label.link" /></a> <br>
+                <spring:message code="label.text"/>: <c:out
+                    value="${post.postContent}"/>
             </td>
             <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
                 <c:choose>
@@ -118,6 +119,13 @@
 
     </c:if>
 </div>
+
+
+<script type="text/javascript">
+		function copyLink(postId) {
+            prompt("Link to copy", document.location.href+"#"+postId);
+		}
+	</script>
 
 </body>
 </html>
