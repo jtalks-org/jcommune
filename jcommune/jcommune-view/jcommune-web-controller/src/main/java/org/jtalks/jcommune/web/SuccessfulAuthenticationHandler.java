@@ -33,6 +33,12 @@ import java.io.IOException;
 public class SuccessfulAuthenticationHandler extends SavedRequestAwareAuthenticationSuccessHandler {
     private UserService userService;
 
+    /**
+     * Setter for {@link UserService}.
+     * Required.
+     *
+     * @param userService service
+     */
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
