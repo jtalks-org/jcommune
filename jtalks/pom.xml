@@ -11,6 +11,6 @@
     <module>antarcticle</module>
     <module>jblah</module>
     <module>jcommune</module>
-    <module>jtalks-commone</module>
+    <module>jtalks-common</module>
   </modules>
 </project>
