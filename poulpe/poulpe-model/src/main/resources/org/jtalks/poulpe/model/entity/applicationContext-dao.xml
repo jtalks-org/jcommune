@@ -18,6 +18,8 @@
   <!--Declaration of DAO beans -->
   <bean id="branchDao" class="org.jtalks.poulpe.model.dao.hibernate.BranchHibernateDao"
         parent="abstractHibernateDao"/>
+  <bean id="componentDao" class="org.jtalks.poulpe.model.dao.hibernate.ComponentHibernateDao"
+        parent="abstractHibernateDao"/>        
   <!--Injecting sessionFactory bean to class AbstractHibernateDao, this way
     resolves a problem of multiple DAO beans definition -->
   <bean id="abstractHibernateDao"
@@ -40,6 +42,7 @@
     <property name="mappingResources">
       <list>
         <value>/org/jtalks/poulpe/model/entity/Branch.hbm.xml</value>
+        <value>/org/jtalks/poulpe/model/entity/Component.hbm.xml</value>
       </list>
     </property>
     <property name="hibernateProperties">
