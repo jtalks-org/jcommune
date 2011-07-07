@@ -21,7 +21,6 @@ package org.jtalks.jcommune.web.dto;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.Topic;
 
 /**

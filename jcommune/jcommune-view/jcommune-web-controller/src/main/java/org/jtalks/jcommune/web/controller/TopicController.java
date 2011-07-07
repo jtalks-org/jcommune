@@ -19,12 +19,10 @@ package org.jtalks.jcommune.web.controller;
 
 
 import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -184,7 +182,8 @@ public final class TopicController {
 
         return new ModelAndView("topicForm")
              .addObject("topicDto", TopicDto.getDtoFor(topic))
-             .addObject("branchId", branchId);
+             .addObject("branchId", branchId)
+             .addObject("topicId", topicId);
     }
 
     /**
@@ -192,19 +191,24 @@ public final class TopicController {
      *
      * @param pmDto  Dto populated in form
      * @param result validation result
+     * @param branchId hold the current branchId
+     * @param topicId the current topicId
      * @return {@code ModelAndView} object which will be redirect to forum.html
      *         if saved successfully or show form with error message
      */
-    @RequestMapping(value = "/branch/{branchId}/topic/save", method = RequestMethod.POST)
-    public String save(@Valid @ModelAttribute TopicDto topicDto, 
+    @RequestMapping(value = "/branch/{branchId}/topic/{topicId}/save", method = {RequestMethod.POST, RequestMethod.GET})
+    public ModelAndView save(@Valid @ModelAttribute TopicDto topicDto, 
                              BindingResult result,
-                             @PathVariable("branchId") Long branchId) throws NotFoundException {
+                             @PathVariable("branchId") Long branchId,
+                             @PathVariable("topicId") Long topicId) throws NotFoundException {
         if (result.hasErrors()) {
-            return "topicForm";
+            return new ModelAndView("topicForm")
+                .addObject("branchId", branchId)
+                .addObject("topicId", topicId);
         }
 
         topicService.saveTopic(topicDto.getId(), topicDto.getTopicName(), topicDto.getBodyText());
 
-        return "redirect:/branch/" + branchId + "/topic/" + topicDto.getId() + ".html";
+        return new ModelAndView("redirect:/branch/" + branchId + "/topic/" + topicId + ".html");
     }
 }
