@@ -15,16 +15,12 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-package org.jtalks.antarcticle.model.dao.hibernate;
 
-import org.jtalks.antarcticle.model.dao.ArticleDao;
-import org.jtalks.antarcticle.model.entity.Article;
-import org.jtalks.jcommune.model.dao.hibernate.AbstractHibernateDao;
+package org.jtalks.antarcticle.model.dao;
 
-/**
- *
- * @author Dmitry
- */
-public class ArticleHibernateDao extends AbstractHibernateDao<Article> implements ArticleDao {
-    
+import org.jtalks.antarcticle.model.entity.ArticleCollection;
+import org.jtalks.jcommune.model.dao.BranchDao;
+import org.jtalks.jcommune.model.dao.Dao;
+
+public interface ArticleCollectionDao extends Dao<ArticleCollection> {
 }

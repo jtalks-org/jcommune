@@ -15,16 +15,50 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-package org.jtalks.antarcticle.model.dao.hibernate;
+package org.jtalks.common.model.dao;
 
-import org.jtalks.antarcticle.model.dao.ArticleDao;
-import org.jtalks.antarcticle.model.entity.Article;
-import org.jtalks.jcommune.model.dao.hibernate.AbstractHibernateDao;
+import org.jtalks.common.model.entity.Persistent;
+
 
 /**
+ * Basic Data Access Object interface.
+ * Provides CRUD operations with {@link Persistent} objects.
  *
- * @author Dmitry
+ * @author Pavel Vervenko
+ * @see PostDao
+ * @see TopicDao
+ * @see UserDao
  */
-public class ArticleHibernateDao extends AbstractHibernateDao<Article> implements ArticleDao {
-    
+public interface Dao<T extends Persistent> {
+
+    /**
+     * Save or update the persistent object.
+     *
+     * @param persistent object to save
+     */
+    void saveOrUpdate(T persistent);
+
+    /**
+     * Delete the object by it's id.
+     *
+     * @param id the id
+     * @return {@code true} if entity deleted successfully
+     */
+    boolean delete(Long id);
+
+    /**
+     * Get the object by id.
+     *
+     * @param id the id
+     * @return loaded Persistence instance
+     */
+    T get(Long id);
+
+    /**
+     * Check entity existance by id.
+     *
+     * @param id entity id
+     * @return {@code true} if entity exist
+     */
+    boolean isExist(Long id);
 }

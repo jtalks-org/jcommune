@@ -3,19 +3,21 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>antarcticle</artifactId>
-    <groupId>org.jtalks.antarcticle</groupId>
+    <artifactId>jtalks-common</artifactId>
+    <groupId>org.jtalks.common</groupId>
     <version>0.4-SNAPSHOT</version>
-  </parent>  
-  <artifactId>antarcticle-model</artifactId>
+  </parent>
+    
+  <artifactId>jtalks-common-model</artifactId>
   <version>0.4-SNAPSHOT</version>
-  <name>${artifactId}</name>
-  <url>http://jtalks.org</url>
+  <name>${project.artifactId}</name>
+  <url>http://maven.apache.org</url>
+
+  <description>
+    This module contains common domain model of the project, and also - persistence layer.
+  </description>
+
   <dependencies>
-    <dependency>
-      <groupId>org.jtalks.jcommune</groupId>
-      <artifactId>jcommune-model</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-web</artifactId>
@@ -79,24 +81,6 @@
       <artifactId>unitils-core</artifactId>
     </dependency>
   </dependencies>
-  
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-        <includes>
-          <include>**/datasource.properties</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>src/main/resources</directory>
-        <includes>
-          <include>**/*.xml</include>
-        </includes>
-      </resource>
-    </resources>
-  </build>
 
   <properties>
     <jdbc.user>${env.JCOMMUNE_DB_USER}</jdbc.user>
