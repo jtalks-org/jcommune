@@ -21,10 +21,13 @@ package org.jtalks.jcommune.web.dto;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.jtalks.jcommune.model.entity.Topic;
+
 /**
  * DTO for {@link Topic} objects. Used for validation and binding to form.
  *
  * @author Vitaliy Kravchenko
+ * @author Max Malakhov
  */
 public class TopicDto {
 
@@ -35,6 +38,24 @@ public class TopicDto {
     @NotNull(message = "Length should be bigger than 2 and less than 1000")
     @Size(min = 2, max = 1000)
     private String bodyText;
+
+    /**
+     * @return topic id
+     */
+    public long getId() {
+        return id;
+    }
+
+    /**
+     * Set topic id.
+     *
+     * @param id id
+     */
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    private long id;
 
     /**
      * Get topic title.
@@ -72,4 +93,17 @@ public class TopicDto {
         this.bodyText = bodyText;
     }
 
+    /**
+     * Create dto from {@link Topic}
+     *
+     * @param topic topic for conversion
+     * @return dto for topic
+     */
+    public static TopicDto getDtoFor(Topic topic) {
+        TopicDto dto = new TopicDto();
+        dto.setTopicName(topic.getTitle());
+        dto.setBodyText(topic.getPosts().get(0).getPostContent());
+        dto.setId(topic.getId());
+        return dto;
+    }
 }

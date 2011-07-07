@@ -91,6 +91,17 @@ public interface TopicService extends EntityService<Topic> {
     int getTopicsInBranchCount(long branchId) throws NotFoundException;
 
     /**
+     * Update current topic with given title and body.
+     *
+     * @param topicId topic id
+     * @param topicName name of topic
+     * @param bodyText  body of topic
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when topic not found
+     */
+    void saveTopic(long topicId, String topicName, String bodyText) throws NotFoundException;
+
+    /**
      * Delete topic by id.
      *
      * @param topicId topic id

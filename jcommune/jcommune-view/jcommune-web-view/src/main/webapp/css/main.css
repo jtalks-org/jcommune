@@ -299,3 +299,16 @@ p, h1, form, button {
     width: 140px;
     float: left;
 }
+
+/*Copy link*/
+.link A:link {
+    TEXT-DECORATION: none
+}
+
+.link A:visited {
+    TEXT-DECORATION: none
+}
+
+.link A:hover {
+    TEXT-DECORATION: none
+}

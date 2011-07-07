@@ -43,6 +43,7 @@ import java.util.List;
  * @author Kravchenko Vitaliy
  * @author Kirill Afonin
  * @author Teterin Alexandre
+ * @author Max Malakhov
  * @see Topic
  */
 @Controller
@@ -153,15 +154,61 @@ public final class TopicController {
         Pagination pag = new Pagination(page, size, postsCount);
 
         List<Post> posts = postService.getPostRangeInTopic(topicId, pag.getStart(), pag.getPageSize());
-        String topicTitle = topicService.get(topicId).getTitle();
+        Topic topic = topicService.get(topicId);
 
         return new ModelAndView("postList")
                 .addObject("posts", posts)
-                .addObject("topicTitle", topicTitle)
+                .addObject("topic", topic)
                 .addObject("maxPages", pag.getMaxPages())
                 .addObject("page", pag.getPage())
                 .addObject("branchId", branchId)
                 .addObject("topicId", topicId);
     }
 
+    /**
+     * Method handles GET requests with URI /branch/{branchId}/topic/{topicId}
+     * Displays to user a list of messages from the chosen theme with pagination.
+     *
+     * @param topicId  the id of selected Topic
+     * @param branchId the id of selected topic branch
+     * @return {@code ModelAndView}
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when topic or branch not found
+     */
+    @RequestMapping(value = "/branch/{branchId}/topic/{topicId}/edit", method = RequestMethod.GET)
+    public ModelAndView edit(@PathVariable("branchId") Long branchId,
+                             @PathVariable("topicId") Long topicId) throws NotFoundException {
+        Topic topic = topicService.get(topicId);
+
+        return new ModelAndView("topicForm")
+             .addObject("topicDto", TopicDto.getDtoFor(topic))
+             .addObject("branchId", branchId)
+             .addObject("topicId", topicId);
+    }
+
+    /**
+     * Save topic.
+     *
+     * @param pmDto  Dto populated in form
+     * @param result validation result
+     * @param branchId hold the current branchId
+     * @param topicId the current topicId
+     * @return {@code ModelAndView} object which will be redirect to forum.html
+     *         if saved successfully or show form with error message
+     */
+    @RequestMapping(value = "/branch/{branchId}/topic/{topicId}/save", method = {RequestMethod.POST, RequestMethod.GET})
+    public ModelAndView save(@Valid @ModelAttribute TopicDto topicDto, 
+                             BindingResult result,
+                             @PathVariable("branchId") Long branchId,
+                             @PathVariable("topicId") Long topicId) throws NotFoundException {
+        if (result.hasErrors()) {
+            return new ModelAndView("topicForm")
+                .addObject("branchId", branchId)
+                .addObject("topicId", topicId);
+        }
+
+        topicService.saveTopic(topicDto.getId(), topicDto.getTopicName(), topicDto.getBodyText());
+
+        return new ModelAndView("redirect:/branch/" + branchId + "/topic/" + topicId + ".html");
+    }
 }

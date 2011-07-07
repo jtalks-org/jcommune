@@ -44,6 +44,7 @@ import static org.testng.Assert.fail;
  * Test for {@link SecurityServiceImpl}.
  *
  * @author Kirill Afonin
+ * @author Max Malakhov
  */
 public class SecurityServiceImplTest {
 
@@ -198,6 +199,71 @@ public class SecurityServiceImplTest {
         verify(mutableAclService, times(2)).readAclById(objectIdentity);
         verify(mutableAclService).createAcl(objectIdentity);
         verify(mutableAclService, times(2)).updateAcl(objectAcl);
+    }
+
+    @Test
+    public void testGrantAdminPermissionsToCurrentUser() throws Exception {
+        mockCurrentUserPrincipal();
+        Post object = Post.createNewPost();
+        object.setId(1L);
+        ObjectIdentity objectIdentity = new ObjectIdentityImpl(Post.class.getCanonicalName(), object.getId());
+        MutableAcl objectAcl = new AclImpl(objectIdentity, 2L, mock(AclAuthorizationStrategy.class),
+                mock(AuditLogger.class));
+        when(mutableAclService.readAclById(objectIdentity))
+                .thenThrow(new NotFoundException(""))
+                .thenReturn(objectAcl);
+        when(mutableAclService.createAcl(objectIdentity)).thenReturn(objectAcl);
+
+        securityService.grantAdminPermissionToCurrentUser(object);
+
+        assertGranted(objectAcl, new PrincipalSid(USERNAME),
+                BasePermission.ADMINISTRATION, "Permission to current user not granted");
+        verify(mutableAclService).readAclById(objectIdentity);
+        verify(mutableAclService).createAcl(objectIdentity);
+        verify(mutableAclService).updateAcl(objectAcl);
+    }
+
+    @Test
+    public void testGrantReadPermissionsToCurrentUser() throws Exception {
+        mockCurrentUserPrincipal();
+        Post object = Post.createNewPost();
+        object.setId(1L);
+        ObjectIdentity objectIdentity = new ObjectIdentityImpl(Post.class.getCanonicalName(), object.getId());
+        MutableAcl objectAcl = new AclImpl(objectIdentity, 2L, mock(AclAuthorizationStrategy.class),
+                mock(AuditLogger.class));
+        when(mutableAclService.readAclById(objectIdentity))
+                .thenThrow(new NotFoundException(""))
+                .thenReturn(objectAcl);
+        when(mutableAclService.createAcl(objectIdentity)).thenReturn(objectAcl);
+
+        securityService.grantReadPermissionToCurrentUser(object);
+
+        assertGranted(objectAcl, new PrincipalSid(USERNAME),
+                BasePermission.READ, "Permission to current user not granted");
+        verify(mutableAclService).readAclById(objectIdentity);
+        verify(mutableAclService).createAcl(objectIdentity);
+        verify(mutableAclService).updateAcl(objectAcl);
+    }
+
+    @Test
+    public void testGrantReadPermissionsToUser() throws Exception {
+        Post object = Post.createNewPost();
+        object.setId(1L);
+        ObjectIdentity objectIdentity = new ObjectIdentityImpl(Post.class.getCanonicalName(), object.getId());
+        MutableAcl objectAcl = new AclImpl(objectIdentity, 2L, mock(AclAuthorizationStrategy.class),
+                mock(AuditLogger.class));
+        when(mutableAclService.readAclById(objectIdentity))
+                .thenThrow(new NotFoundException(""))
+                .thenReturn(objectAcl);
+        when(mutableAclService.createAcl(objectIdentity)).thenReturn(objectAcl);
+
+        securityService.grantReadPermissionToUser(object, USERNAME);
+
+        assertGranted(objectAcl, new PrincipalSid(USERNAME),
+                BasePermission.READ, "Permission to current user not granted");
+        verify(mutableAclService).readAclById(objectIdentity);
+        verify(mutableAclService).createAcl(objectIdentity);
+        verify(mutableAclService).updateAcl(objectAcl);
     }
 
     @Test(expectedExceptions = {IllegalStateException.class})
