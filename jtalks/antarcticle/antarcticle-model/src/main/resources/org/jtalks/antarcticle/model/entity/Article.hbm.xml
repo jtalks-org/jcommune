@@ -2,11 +2,19 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.antarcticle.model.entity">
-  <class name="Article" table="article">
+  <class name="Article" table="ARTICLE">
     <id column="ARTICLE_ID" name="id" unsaved-value="0">
       <generator class="native"/>
     </id>
     <property column="UUID" name="uuid" unique="true" not-null="true"/>
-    <property column="article_content" name="articleContent" not-null="true" />
+    <property column="ARTICLE_CONTENT" name="articleContent" not-null="true" />
+    <property name="creationDate" column="CREATION_DATE"
+              type="org.joda.time.contrib.hibernate.PersistentDateTime"
+              not-null="true" />
+    <many-to-one name="articleCollection" column="ARTICLE_COLLECTION_ID" not-null="false" />
   </class>
+  <query name="getAllArticlesInCollection">
+      <![CDATA[FROM Article as article
+               WHERE article.articleCollection = :articleCollectionId ORDER BY article.creationDate]]>
+  </query>
 </hibernate-mapping>

@@ -18,11 +18,14 @@
 
 package org.jtalks.antarcticle.model.entity;
 
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Persistent;
 
 public class Article extends Persistent {
 
     private String articleContent;
+    private DateTime creationDate;
+    private ArticleCollection articleCollection;
 
     public Article() {
     }
@@ -39,4 +42,19 @@ public class Article extends Persistent {
         this.articleContent = articleContent;
     }
 
+    public DateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(DateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public ArticleCollection getArticleCollection() {
+        return articleCollection;
+    }
+
+    public void setArticleCollection(ArticleCollection articleCollection) {
+        this.articleCollection = articleCollection;
+    }
 }
