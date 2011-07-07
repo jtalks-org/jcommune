@@ -16,15 +16,27 @@
  * The jtalks.org Project
  */
 
-package org.jtalks.antarcticle.model.dao.hibernate;
+package org.jtalks.antarcticle.model.entity;
 
-import org.jtalks.antarcticle.model.dao.ArticleCollectionDao;
-import org.jtalks.antarcticle.model.entity.ArticleCollection;
-import org.jtalks.jcommune.model.dao.hibernate.AbstractHibernateDao;
+import org.jtalks.jcommune.model.entity.Persistent;
 
+public class Article extends Persistent {
 
+    private String articleContent;
 
-public class ArticleCollectionHibernateDao extends AbstractHibernateDao<ArticleCollection> implements ArticleCollectionDao {
+    public Article() {
+    }
 
+    public Article(String articleContent) {
+        this.articleContent = articleContent;
+    }
+
+    public String getArticleContent() {
+        return articleContent;
+    }
+
+    public void setArticleContent(String articleContent) {
+        this.articleContent = articleContent;
+    }
 
 }

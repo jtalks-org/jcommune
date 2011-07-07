@@ -18,7 +18,55 @@
 
 package org.jtalks.antarcticle.model.entity;
 
-import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.Persistent;
 
-public class ArticleCollection extends Branch {
+import java.util.ArrayList;
+import java.util.List;
+
+public class ArticleCollection extends Persistent {
+
+    private List<Article> articles = new ArrayList<Article>();
+    private String description;
+    private String title;
+
+    public ArticleCollection() {
+    }
+
+    public ArticleCollection(List<Article> articles) {
+        this.articles = articles;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void addArticle(Article article) {
+        articles.add(article);
+    }
+
+    public void removeArticle(Article article) {
+        articles.remove(article);
+    }
+
+    public List<Article> getArticles() {
+        return articles;
+    }
+
+    public void setArticles(List<Article> articles) {
+        this.articles = articles;
+    }
+
+
 }

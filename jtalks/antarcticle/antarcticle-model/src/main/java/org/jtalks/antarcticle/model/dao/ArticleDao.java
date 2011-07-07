@@ -16,15 +16,10 @@
  * The jtalks.org Project
  */
 
-package org.jtalks.antarcticle.model.dao.hibernate;
+package org.jtalks.antarcticle.model.dao;
 
-import org.jtalks.antarcticle.model.dao.ArticleCollectionDao;
-import org.jtalks.antarcticle.model.entity.ArticleCollection;
-import org.jtalks.jcommune.model.dao.hibernate.AbstractHibernateDao;
+import org.jtalks.antarcticle.model.entity.Article;
+import org.jtalks.jcommune.model.dao.Dao;
 
-
-
-public class ArticleCollectionHibernateDao extends AbstractHibernateDao<ArticleCollection> implements ArticleCollectionDao {
-
-
+public interface ArticleDao extends Dao<Article> {
 }

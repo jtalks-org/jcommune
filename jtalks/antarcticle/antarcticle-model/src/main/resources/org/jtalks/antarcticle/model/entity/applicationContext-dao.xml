@@ -6,9 +6,9 @@
        http://www.springframework.org/schema/aop
        http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
- <!-- <bean id="exceptionTranslationInterceptor"
-        class="org.springframework.dao.support.PersistenceExceptionTranslationInterceptor"/>
-     -->
+  <!-- <bean id="exceptionTranslationInterceptor"
+     class="org.springframework.dao.support.PersistenceExceptionTranslationInterceptor"/>
+  -->
   <!--Declaration of AOP Config
   <aop:config>
     <aop:advisor advice-ref="exceptionTranslationInterceptor"
@@ -42,7 +42,7 @@
     <property name="mappingResources">
       <list>
         <value>/org/jtalks/antarcticle/model/entity/ArticleCollection.hbm.xml</value>
-        <value>/org/jtalks/jcommune/model/entity/Branch.hbm.xml</value>
+        <value>/org/jtalks/antarcticle/model/entity/Article.hbm.xml</value>
       </list>
     </property>
     <property name="hibernateProperties">

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.jtalks.antarcticle.model.entity">
+  <class name="Article" table="article">
+    <id column="ARTICLE_ID" name="id" unsaved-value="0">
+      <generator class="native"/>
+    </id>
+    <property column="UUID" name="uuid" unique="true" not-null="true"/>
+    <property column="article_content" name="articleContent" not-null="true" />
+  </class>
+</hibernate-mapping>
