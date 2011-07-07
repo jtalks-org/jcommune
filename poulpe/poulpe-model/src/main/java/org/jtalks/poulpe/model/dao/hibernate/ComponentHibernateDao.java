@@ -22,7 +22,8 @@ import org.jtalks.poulpe.model.dao.ComponentDao;
 import org.jtalks.poulpe.model.entity.Component;
 
 /**
- *
+ * Implementation of dao for {@link Component}. Most of method inherited from superclass.
+ * 
  * @author Pavel Vervenko
  */
 public class ComponentHibernateDao extends AbstractHibernateDao<Component> implements ComponentDao {

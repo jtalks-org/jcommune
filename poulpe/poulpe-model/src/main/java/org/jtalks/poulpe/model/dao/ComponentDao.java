@@ -21,10 +21,16 @@ import java.util.List;
 import org.jtalks.poulpe.model.entity.Component;
 
 /**
- *
+ * Dao for jtalks engine {@link Component}.
+ * 
  * @author Pavel Vervenko
  */
 public interface ComponentDao extends Dao<Component> {
 
+    /**
+     * Get the list of all components.
+     * 
+     * @return components list
+     */
     List<Component> getAll();
 }

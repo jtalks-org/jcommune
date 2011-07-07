@@ -28,26 +28,50 @@ public class Component extends Persistent {
     private String description;
     private ComponentType componentType;
 
+    /**
+     * Get the component description.
+     * @return description
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Set components description.
+     * @param description 
+     */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     * Get component's name.
+     * @return name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Set the name of the component.
+     * @param name 
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Get the type of the component.
+     * @return type
+     */
     public ComponentType getComponentType() {
         return componentType;
     }
 
+    /**
+     * Set component's type.
+     * @param type 
+     */
     public void setComponentType(ComponentType type) {
         this.componentType = type;
     }

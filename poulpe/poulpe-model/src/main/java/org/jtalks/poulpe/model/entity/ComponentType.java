@@ -19,7 +19,7 @@ package org.jtalks.poulpe.model.entity;
 
 /**
  * Type of the engine component.
- * 
+ * @see Component
  * @author Pavel Vervenko
  */
 public enum ComponentType {
