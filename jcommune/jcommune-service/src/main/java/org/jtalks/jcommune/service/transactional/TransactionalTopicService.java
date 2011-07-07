@@ -17,6 +17,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Post;
@@ -170,6 +171,27 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
+    @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', admin)")
+    public void saveTopic(long topicId, String topicName, String bodyText)
+            throws NotFoundException {
+        if (!dao.isExist(topicId)) {
+            throw new NotFoundException("Topic with id: " + topicId + " not found");
+        }
+
+        Topic topic = dao.get(topicId);
+        topic.setTitle(topicName);
+        Post post = topic.getPosts().get(0);
+        post.setPostContent(bodyText);
+        post.setCreationDate(new DateTime());
+
+        dao.saveOrUpdate(topic);
+        logger.debug("Update the topic {}" , topic.getId());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', admin) or " +
             "hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', delete)")
     public void deleteTopic(long topicId) throws NotFoundException {
@@ -179,5 +201,4 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         dao.delete(topicId);
         securityService.deleteFromAcl(Topic.class, topicId);
     }
-
 }

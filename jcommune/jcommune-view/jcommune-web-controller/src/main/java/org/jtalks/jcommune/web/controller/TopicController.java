@@ -19,10 +19,12 @@ package org.jtalks.jcommune.web.controller;
 
 
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -165,4 +167,44 @@ public final class TopicController {
                 .addObject("topicId", topicId);
     }
 
+    /**
+     * Method handles GET requests with URI /branch/{branchId}/topic/{topicId}
+     * Displays to user a list of messages from the chosen theme with pagination.
+     *
+     * @param topicId  the id of selected Topic
+     * @param branchId the id of selected topic branch
+     * @return {@code ModelAndView}
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when topic or branch not found
+     */
+    @RequestMapping(value = "/branch/{branchId}/topic/{topicId}/edit", method = RequestMethod.GET)
+    public ModelAndView edit(@PathVariable("branchId") Long branchId,
+                             @PathVariable("topicId") Long topicId) throws NotFoundException {
+        Topic topic = topicService.get(topicId);
+
+        return new ModelAndView("topicForm")
+             .addObject("topicDto", TopicDto.getDtoFor(topic))
+             .addObject("branchId", branchId);
+    }
+
+    /**
+     * Save topic.
+     *
+     * @param pmDto  Dto populated in form
+     * @param result validation result
+     * @return {@code ModelAndView} object which will be redirect to forum.html
+     *         if saved successfully or show form with error message
+     */
+    @RequestMapping(value = "/branch/{branchId}/topic/save", method = RequestMethod.POST)
+    public String save(@Valid @ModelAttribute TopicDto topicDto, 
+                             BindingResult result,
+                             @PathVariable("branchId") Long branchId) throws NotFoundException {
+        if (result.hasErrors()) {
+            return "topicForm";
+        }
+
+        topicService.saveTopic(topicDto.getId(), topicDto.getTopicName(), topicDto.getBodyText());
+
+        return "redirect:/branch/" + branchId + "/topic/" + topicDto.getId() + ".html";
+    }
 }
