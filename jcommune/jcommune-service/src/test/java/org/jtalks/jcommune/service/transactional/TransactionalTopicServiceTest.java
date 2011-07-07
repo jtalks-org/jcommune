@@ -17,6 +17,8 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.aspectj.weaver.NewParentTypeMunger;
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -43,6 +45,7 @@ import static org.testng.Assert.*;
  * @author Osadchuck Eugeny
  * @author Kravchenko Vitaliy
  * @author Kirill Afonin
+ * @author Max Malakhov
  */
 public class TransactionalTopicServiceTest {
 
@@ -248,5 +251,39 @@ public class TransactionalTopicServiceTest {
         when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
         topicService.deleteTopic(TOPIC_ID);
+    }
+
+    @Test 
+    void testSaveTopic() throws NotFoundException {
+        String newTitle = "new title";
+        String newBody = "new body";
+        Topic topic = Topic.createNewTopic();
+        topic.setId(TOPIC_ID);
+        topic.setTitle("title");
+        Post post = Post.createNewPost();
+        post.setId(POST_ID);
+        post.setPostContent("body");
+        topic.addPost(post);
+
+        when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
+        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
+
+        topicService.saveTopic(TOPIC_ID, newTitle, newBody);
+
+        assertEquals(topic.getTitle(), newTitle);
+        assertEquals(post.getPostContent(), newBody);
+
+        verify(topicDao).isExist(TOPIC_ID);
+        verify(topicDao).get(TOPIC_ID);
+        verify(topicDao).saveOrUpdate(topic);
+    }
+
+    @Test(expectedExceptions = {NotFoundException.class})
+    void testSaveTopicNonExistentTopic() throws NotFoundException {
+        String newTitle = "new title";
+        String newBody = "new body";
+        when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
+
+        topicService.saveTopic(TOPIC_ID, newTitle, newBody);
     }
 }
