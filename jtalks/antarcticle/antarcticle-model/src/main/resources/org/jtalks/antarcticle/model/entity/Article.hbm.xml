@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.jtalks.antarcticle.model.entity">
+    <class name="Article" table="ARTICLE">
+        <id name="id" column="ARTICLE_ID" unsaved-value="0">
+            <generator class="native"/>
+        </id>
+        <property name="uuid" column="UUID" unique="true" not-null="true"/>
+        <property name="creationDate" column="ARTICLE_DATE"
+            type="org.joda.time.contrib.hibernate.PersistentDateTime"
+            not-null="true"/>
+        <property name="articleContent" column="ARTICLE_CONTENT" not-null="true"/>
+        <many-to-one name="userCreated" column="USER_CREATED" class="User" fetch="join"
+            foreign-key="FK_USER" lazy="false" not-null="true"/>
+        <property name="articleTopic" column="ARTICLE_TOPIC" /> 
+    </class>  
+</hibernate-mapping>
