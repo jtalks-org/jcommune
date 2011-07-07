@@ -23,6 +23,7 @@ import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.TopicDto;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
@@ -32,6 +33,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
@@ -144,7 +147,67 @@ public class TopicControllerTest {
         assertEquals(branchId, BRANCH_ID);
     }
 
+    @Test
+    public void testEdit() throws NotFoundException {
+        Topic topic = Topic.createNewTopic();
+        topic.setId(TOPIC_ID);
+        Post post = Post.createNewPost();
+        topic.addPost(post);
+
+        when(topicService.get(TOPIC_ID)).thenReturn(topic);
+
+        ModelAndView mav = controller.edit(BRANCH_ID, TOPIC_ID);
+
+        assertViewName(mav, "topicForm");
+        TopicDto dto = assertAndReturnModelAttributeOfType(mav, "topicDto", TopicDto.class);
+        long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
+        long topicId = assertAndReturnModelAttributeOfType(mav, "topicId", Long.class);
+        assertEquals(dto.getId(), TOPIC_ID);
+        assertEquals(branchId, BRANCH_ID);
+        assertEquals(topicId, TOPIC_ID);
+
+        verify(topicService).get(TOPIC_ID);
+    }
+
+    @Test
+    public void testSave() throws NotFoundException {
+         TopicDto dto = getDto();
+         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "topicDto");
+
+         ModelAndView mav = controller.save(dto, bindingResult, BRANCH_ID, TOPIC_ID);
+
+         assertViewName(mav, "redirect:/branch/" + BRANCH_ID + "/topic/" + TOPIC_ID + ".html");
+
+         verify(topicService).saveTopic(TOPIC_ID, TOPIC_THEME, TOPIC_CONTENT);
+    }
+
+    @Test
+    public void testSaveWithError() throws NotFoundException {
+         TopicDto dto = getDto();
+         BeanPropertyBindingResult resultWithErrors = mock(BeanPropertyBindingResult.class);
+
+         when(resultWithErrors.hasErrors()).thenReturn(true);
+
+         ModelAndView mav = controller.save(dto, resultWithErrors, BRANCH_ID, TOPIC_ID);
+
+         assertViewName(mav, "topicForm");
+         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
+         long topicId = assertAndReturnModelAttributeOfType(mav, "topicId", Long.class);
+         assertEquals(branchId, BRANCH_ID);
+         assertEquals(topicId, TOPIC_ID);
+
+         verify(topicService, never()).saveTopic(anyLong(), anyString(), anyString());
+    }
+
     private TopicDto getDto() {
+        TopicDto dto = new TopicDto();
+        dto.setId(TOPIC_ID);
+        dto.setBodyText(TOPIC_CONTENT);
+        dto.setTopicName(TOPIC_THEME);
+        return dto;
+    }
+
+    private TopicDto getTopicDto() {
         TopicDto dto = new TopicDto();
         dto.setBodyText(TOPIC_CONTENT);
         dto.setTopicName(TOPIC_THEME);
