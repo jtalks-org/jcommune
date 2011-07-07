@@ -26,6 +26,7 @@ import org.joda.time.DateTime;
  * to create new PrivateMessage with current creationDate.
  *
  * @author Pavel Vervenko
+ * @author Alexandre Teterin
  */
 public class PrivateMessage extends Persistent {
 
@@ -198,4 +199,23 @@ public class PrivateMessage extends Persistent {
     public boolean isDraft() {
         return this.status == PrivateMessageStatus.DRAFT;
     }
+
+
+    /**
+     * Prepare title for reply message
+     * @return reply title
+     */
+    public String prepareTitleForReply() {
+        //check the "Re: " occurrence in the title of original message and modifying it.
+        return title.startsWith("Re: ") ? getTitle() : "Re: " + getTitle();
+    }
+
+    /**
+     * Prepare body for quote message
+     * @return quote body
+     */
+    public String prepareBodyForQuote() {
+        return "\n" +"< " + getBody();
+    }
+
 }

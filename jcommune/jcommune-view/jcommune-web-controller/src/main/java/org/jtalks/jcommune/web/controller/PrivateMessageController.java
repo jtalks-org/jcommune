@@ -21,6 +21,7 @@ import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
+import org.jtalks.jcommune.web.dto.builder.PrivateMessageDtoBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,7 @@ import javax.validation.Valid;
  * @author Pavel Vervenko
  * @author Max Malakhov
  * @author Kirill Afonin
+ * @author Alexandre Teterin
  */
 @Controller
 public class PrivateMessageController {
@@ -47,14 +49,19 @@ public class PrivateMessageController {
     private final PrivateMessageService pmService;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    private final PrivateMessageDtoBuilder pmDtoBuilder;
+
     /**
-     * Requires {@link PrivateMessageService} for manipulations with messages.
+     * Requires {@link PrivateMessageService} for manipulations with messages,
+     * {@link PrivateMessageDtoBuilder} for creating different private message types (message, reply, quote, etc.)
      *
      * @param pmService the PrivateMessageService instance
+     * @param pmDtoBuilder the PrivateMessageDtoBuilder instance
      */
     @Autowired
-    public PrivateMessageController(PrivateMessageService pmService) {
+    public PrivateMessageController(PrivateMessageService pmService, PrivateMessageDtoBuilder pmDtoBuilder) {
         this.pmService = pmService;
+        this.pmDtoBuilder = pmDtoBuilder;
     }
 
     /**
@@ -98,8 +105,8 @@ public class PrivateMessageController {
     @RequestMapping(value = "/pm/{pmId}/reply", method = RequestMethod.GET)
     public ModelAndView displayReplyPMPage(@PathVariable("pmId") Long pmId) throws NotFoundException {
         PrivateMessage pm = pmService.get(pmId);
-        PrivateMessageDto pmDto = PrivateMessageDto.getDtoForReply(pm);
-        return new ModelAndView("pm/pmForm", "privateMessageDto", pmDto);
+        PrivateMessageDto dto = pmDtoBuilder.getReplyDtoFor(pm);
+        return new ModelAndView("pm/pmForm", "privateMessageDto", dto);
     }
 
     /**
@@ -113,8 +120,8 @@ public class PrivateMessageController {
      @RequestMapping(value = "/pm/{pmId}/quote", method = RequestMethod.GET)
      public ModelAndView displayQuotePMPage(@PathVariable("pmId") Long pmId) throws NotFoundException {
          PrivateMessage pm = pmService.get(pmId);
-         PrivateMessageDto pmDto = PrivateMessageDto.getDtoForQuote(pm);
-         return new ModelAndView("pm/pmForm", "privateMessageDto", pmDto);
+         PrivateMessageDto dto = pmDtoBuilder.getQuoteDtoFor(pm);
+         return new ModelAndView("pm/pmForm", "privateMessageDto", dto);
      }
 
 
@@ -186,7 +193,7 @@ public class PrivateMessageController {
         if (!pm.isDraft()) {
             return new ModelAndView("pm/inbox");
         }
-        return new ModelAndView("pm/pmForm", "privateMessageDto", PrivateMessageDto.getDtoFor(pm));
+        return new ModelAndView("pm/pmForm", "privateMessageDto", pmDtoBuilder.getFullPmDtoFor(pm));
     }
 
     /**

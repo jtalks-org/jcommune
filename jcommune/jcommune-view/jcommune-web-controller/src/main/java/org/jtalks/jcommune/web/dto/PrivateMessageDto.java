@@ -19,6 +19,7 @@ package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.jtalks.jcommune.web.dto.builder.PrivateMessageDtoBuilder;
 
 import javax.validation.constraints.Size;
 
@@ -40,6 +41,8 @@ public class PrivateMessageDto {
     private String body;
     @NotEmpty(message = "{not_empty}")
     private String recipient;
+
+    private PrivateMessageDtoBuilder pmDtoBuilder;
 
     /**
      * @return pm id
@@ -114,60 +117,12 @@ public class PrivateMessageDto {
     }
 
     /**
-     * Create dto from {@link PrivateMessage}
+     * G
      *
-     * @param pm private message for conversion
-     * @return dto for private message
+     * @return dto builder for the different private message types (message, reply, quote, etc.).
      */
-    public static PrivateMessageDto getDtoFor(PrivateMessage pm) {
-        PrivateMessageDto dto = new PrivateMessageDto();
-        dto.setBody(pm.getBody());
-        dto.setTitle(pm.getTitle());
-        dto.setRecipient(pm.getUserTo().getUsername());
-        dto.setId(pm.getId());
-        return dto;
+    public PrivateMessageDtoBuilder getPmDtoBuilder() {
+        return pmDtoBuilder;
     }
 
-    /**
-     * Create reply dto from {@link PrivateMessage}
-     * @param pm private message for conversion in to reply
-     * @return dto for reply
-     */
-    public static PrivateMessageDto getDtoForReply(PrivateMessage pm) {
-        PrivateMessageDto pmDto = new PrivateMessageDto();
-        pmDto.setRecipient(pm.getUserFrom().getUsername());
-        pmDto.setTitle(setTitleForReply(pm.getTitle()));
-        return pmDto;
-    }
-
-
-    /**
-     * Create quote dto from {@link PrivateMessage}
-     * @param pm private message for conversion in to the quote
-     * @return dto for quote
-     */
-    public static PrivateMessageDto getDtoForQuote (PrivateMessage pm) {
-        PrivateMessageDto pmDto = getDtoForReply(pm);
-        pmDto.setBody(setBodyForQuote(pm.getBody()));
-        return pmDto;
-    }
-
-    /**
-     * Create title for reply message
-     * @param pmTitle original message title
-     * @return reply title
-     */
-    public static String setTitleForReply(String pmTitle) {
-        //check the "Re: " occurrence in the  title of original message and modifying it.
-        return pmTitle.contains("Re: ") ? pmTitle : "Re: " + pmTitle;
-    }
-
-    /**
-     * Create body for quote message
-     * @param pmBody original message body
-     * @return quote body
-     */
-    public static String setBodyForQuote(String pmBody) {
-        return "\n" +"< " + pmBody;
-    }
 }
