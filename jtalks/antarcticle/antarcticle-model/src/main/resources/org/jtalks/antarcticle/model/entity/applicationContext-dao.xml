@@ -16,6 +16,9 @@
   </aop:config>   -->
 
   <!--Declaration of DAO beans -->
+  <bean id="articleDao"
+        class="org.jtalks.antarcticle.model.dao.hibernate.ArticleHibernateDao"
+        parent="abstractHibernateDao"/>
   <bean id="articleCollectionDao"
         class="org.jtalks.antarcticle.model.dao.hibernate.ArticleCollectionHibernateDao"
         parent="abstractHibernateDao"/>
