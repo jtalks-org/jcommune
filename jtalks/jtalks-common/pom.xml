@@ -10,7 +10,7 @@
   <groupId>org.jtalks.common</groupId>
   <artifactId>jtalks-common</artifactId>
   <version>0.4-SNAPSHOT</version>
-  <name>${artifactId}</name>
+  <name>${project.artifactId}</name>
   <url>http://maven.apache.org</url>
 
   <modules>
