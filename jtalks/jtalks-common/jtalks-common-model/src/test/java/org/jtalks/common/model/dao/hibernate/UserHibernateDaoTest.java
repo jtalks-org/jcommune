@@ -38,7 +38,7 @@ import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEqua
 /**
  * @author Kirill Afonin
  */
-@ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
+@ContextConfiguration(locations = {"classpath:/org/jtalks/common/model/entity/applicationContext-dao.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
 public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
