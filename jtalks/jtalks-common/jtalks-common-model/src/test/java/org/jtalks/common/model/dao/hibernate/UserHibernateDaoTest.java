@@ -32,7 +32,6 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
 
-// TODO maybe it wrong package
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
