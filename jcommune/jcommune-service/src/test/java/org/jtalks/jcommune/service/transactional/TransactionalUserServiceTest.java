@@ -8,8 +8,11 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 /**
  * @author Kirill Afonin
@@ -110,5 +113,15 @@ public class TransactionalUserServiceTest {
         assertEquals(user, expectedUser, "Users aren't equals");
         verify(userDao).isExist(USER_ID);
         verify(userDao).get(USER_ID);
+    }
+
+    @Test
+    public void testUpdateLastLoginTime() throws NotFoundException {
+        User user = new User();
+
+        userService.updateLastLoginTime(user);
+
+        assertNotNull(user.getLastLogin());
+        verify(userDao).saveOrUpdate(user);
     }
 }

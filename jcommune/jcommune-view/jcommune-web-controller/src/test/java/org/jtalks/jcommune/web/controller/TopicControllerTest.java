@@ -85,7 +85,6 @@ public class TopicControllerTest {
         int pageSize = 5;
         int startIndex = page * pageSize - pageSize;
         Topic topic = Topic.createNewTopic();
-        topic.setTitle("title");
         when(postService.getPostRangeInTopic(TOPIC_ID, startIndex, pageSize)).thenReturn(new ArrayList<Post>());
         when(postService.getPostsInTopicCount(TOPIC_ID)).thenReturn(10);
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
@@ -94,14 +93,14 @@ public class TopicControllerTest {
 
         assertViewName(mav, "postList");
         assertModelAttributeAvailable(mav, "posts");
-        String actualTitle = assertAndReturnModelAttributeOfType(mav, "topicTitle", String.class);
-        Long actualTopic = assertAndReturnModelAttributeOfType(mav, "topicId", Long.class);
-        Long actualBranch = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
+        Topic actualTopic = assertAndReturnModelAttributeOfType(mav, "topic", Topic.class);
+        Long actualTopicId = assertAndReturnModelAttributeOfType(mav, "topicId", Long.class);
+        Long actualBranchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         Integer actualMaxPages = assertAndReturnModelAttributeOfType(mav, "maxPages", Integer.class);
         Integer actualPage = assertAndReturnModelAttributeOfType(mav, "page", Integer.class);
-        assertEquals(actualTitle, "title");
-        assertEquals((long) actualTopic, TOPIC_ID);
-        assertEquals((long) actualBranch, TOPIC_ID);
+        assertEquals((Topic) actualTopic, topic);
+        assertEquals((long) actualTopicId, TOPIC_ID);
+        assertEquals((long) actualBranchId, TOPIC_ID);
         assertEquals((int) actualMaxPages, 2);
         assertEquals((int) actualPage, page);
         verify(postService).getPostRangeInTopic(TOPIC_ID, startIndex, pageSize);

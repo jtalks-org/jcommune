@@ -33,7 +33,7 @@ public interface UserService extends EntityService<User> {
      *
      * @param username username of User
      * @return {@link User} with given username
-     * @throws NotFoundException if the User not found
+     * @throws NotFoundException if user not found
      * @see User
      */
     User getByUsername(String username) throws NotFoundException;
@@ -47,4 +47,12 @@ public interface UserService extends EntityService<User> {
      * @see User
      */
     User registerUser(User user) throws DuplicateException;
+
+    /**
+     * Updates user last login time to current time.
+     *
+     * @param user user which must be updated
+     * @see User
+     */
+    void updateLastLoginTime(User user);
 }

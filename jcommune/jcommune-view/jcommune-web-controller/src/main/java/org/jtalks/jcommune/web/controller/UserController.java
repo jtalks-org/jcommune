@@ -17,13 +17,16 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateException;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -84,5 +87,18 @@ public class UserController {
         }
 
         return new ModelAndView("redirect:/");
+    }
+
+    /**
+     * Show page with user info.
+     *
+     * @param userId id
+     * @return user details view with {@link User} object
+     * @throws NotFoundException if user with given id not found
+     */
+    @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
+    public ModelAndView show(@PathVariable("userId") Long userId) throws NotFoundException {
+        User user = userService.get(userId);
+        return new ModelAndView("userDetails", "user", user);
     }
 }

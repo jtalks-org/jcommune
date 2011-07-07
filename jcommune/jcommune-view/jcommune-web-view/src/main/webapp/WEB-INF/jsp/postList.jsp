@@ -4,69 +4,78 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+
 <html>
 <head></head>
 <body>
-<table border="1" width="100%">
+<div id="content">
+    <div id="topicTitle">
+        <div style="float: left">
+            <h2><spring:message code="label.topic"/>
+                :
+                <c:out value="${topic.title}"/></h2>
+        </div>
+        <div style="float: right">
+        <sec:accesscontrollist hasPermission="8,16" domainObject="${topic}">
+            <a href="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/edit.html">
+                <h2><spring:message code="label.edit"/></h2></a>
+        </sec:accesscontrollist>
+        </div>
+        <div style="clear:both;"></div>
+    </div> <!-- topicTitle -->
+    <div id="postList">
+        <table border="1" width="100%">
+        <c:forEach var="post" items="${posts}" varStatus="i">
+            <tr>
+                <td width="20%"><spring:message code="label.author"/>:
+                    <a href="${pageContext.request.contextPath}/user/${post.userCreated.id}.html">
+                        <c:out value="${post.userCreated.username}"/></a></td>
+                <td class="link" width="80%"><a name="${post.id}"/>
+                    <a href="javascript:copyLink(${post.id})"><spring:message code="label.link" /></a>
+                    <br>
+                        <spring:message code="label.text"/>: <c:out value="${post.postContent}"/></td>
 
-    <h2>
-        <spring:message code="label.topic"/>
-        :
-        <c:out value="${topicTitle}"/>
-    </h2>
-    <c:forEach var="post" items="${posts}" varStatus="i">
-        <tr>
-            <td width="20%"><spring:message code="label.author"/>: <c:out
-                    value="${post.userCreated.username}"/>
-            </td>
-            <td width="80%"><spring:message code="label.text"/>: <c:out
-                    value="${post.postContent}"/>
-            </td>
-            <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
+                <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
                 <c:choose>
                     <c:when test="${page == 1 && i.index == 0}">
-                        <td>
-                            <form:form
-                                    action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/delete.html"
-                                    method="GET">
-                                <input type="submit" value="<spring:message code="label.delete"/>"/>
-                            </form:form>
-                        </td>
+                <td><form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/delete.html"
+                               method="GET">
+                        <input type="submit" value="<spring:message code="label.delete"/>"/>
+                    </form:form>
+                </td>
                     </c:when>
 
                     <c:otherwise>
-                        <td>
-                            <form:form
-                                    action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/post/${post.id}/delete.html"
-                                    method="GET">
-                                <input type="submit" value="<spring:message code="label.delete"/>"/>
-                            </form:form>
-                        </td>
+                <td> 
+                    <form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/post/${post.id}/delete.html"
+                               method="GET">
+                        <input type="submit" value="<spring:message code="label.delete"/>"/>
+                    </form:form>
+                </td>
                     </c:otherwise>
                 </c:choose>
-            </sec:accesscontrollist>
-        </tr>
-    </c:forEach>
-</table>
-<table>
-    <tr>
-        <td>
-            <form:form action="${pageContext.request.contextPath}/branch/${branchId}.html" method="GET">
+                </sec:accesscontrollist>
+            </tr>
+        </c:forEach>
+        </table>
+        <table>
+        <tr>
+            <td><form:form action="${pageContext.request.contextPath}/branch/${branchId}.html" 
+                       method="GET">
                 <input type="submit" value="<spring:message code="label.back"/>"/>
-            </form:form>
-        </td>
-        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-            <td>
-                <form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/answer.html"
-                           method="GET">
-                    <input type="submit" value="<spring:message code="label.answer"/>"/>
-                </form:form>
-            </td>
-        </sec:authorize>
-    </tr>
-</table>
+                </form:form></td>
 
-<div id="pagination">
+            <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+            <td><form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/answer.html"
+                   method="GET">
+                <input type="submit" value="<spring:message code="label.answer"/>"/>
+                </form:form></td>
+            </sec:authorize>
+
+        </tr>
+        </table>
+    </div> <!-- postList -->
+    <div id="pagination">
     <c:if test="${maxPages > 1}">
 
         <c:if test="${page > 2}">
@@ -115,7 +124,12 @@
         </c:if>
 
     </c:if>
-</div>
-
+    </div> <!-- pagination -->
+</div> <!-- content -->
+<script type="text/javascript">
+    function copyLink(postId) {
+        prompt("Link to copy", document.location.href+"#"+postId);
+    }
+</script>
 </body>
 </html>

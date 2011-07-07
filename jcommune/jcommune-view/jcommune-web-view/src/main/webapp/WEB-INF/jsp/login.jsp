@@ -10,8 +10,6 @@
 <c:if test="${not empty param.login_error}">
     <span style="color: red; ">
         <spring:message code="label.login_error"/>
-        <%--<br/>--%>
-        <%--<c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}"/>.--%>
     </span>
 </c:if>
 <form action='<c:url value="/j_spring_security_check"/>' method="POST">

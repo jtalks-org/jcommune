@@ -15,7 +15,7 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-package org.jtalks.jcommune.model;
+package org.jtalks.jcommune.model.util;
 
 import org.hibernate.HibernateException;
 import org.hibernate.type.NullableType;
