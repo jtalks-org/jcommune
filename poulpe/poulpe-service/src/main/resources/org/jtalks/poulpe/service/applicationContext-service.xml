@@ -25,4 +25,8 @@
         class="org.jtalks.poulpe.service.transactional.TransactionalBranchService">
     <constructor-arg index="0" ref="branchDao"/>
   </bean>
+  <bean id="componentService"
+        class="org.jtalks.poulpe.service.transactional.TransactionalComponentService">
+    <constructor-arg index="0" ref="componentDao"/>
+  </bean>  
 </beans>
