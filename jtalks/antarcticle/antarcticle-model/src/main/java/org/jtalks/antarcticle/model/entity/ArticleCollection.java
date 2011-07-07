@@ -23,6 +23,10 @@ import org.jtalks.jcommune.model.entity.Persistent;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Vitaliy Kravchwnko
+ */
+
 public class ArticleCollection extends Persistent {
 
     private List<Article> articles = new ArrayList<Article>();

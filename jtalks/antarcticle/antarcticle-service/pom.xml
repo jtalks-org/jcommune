@@ -9,7 +9,7 @@
   </parent>  
   <artifactId>antarcticle-service</artifactId>
   <version>0.4-SNAPSHOT</version>
-  <name>${artifactId}</name>
+  <name>${project.artifactId}</name>
   <url>http://jtalks.org</url>
   <dependencies>
     

@@ -22,5 +22,9 @@ import org.jtalks.antarcticle.model.dao.ArticleDao;
 import org.jtalks.antarcticle.model.entity.Article;
 import org.jtalks.jcommune.model.dao.hibernate.AbstractHibernateDao;
 
+/**
+ * @author Vitaliy Kravchwnko
+ */
+
 public class ArticleHibernateDao extends AbstractHibernateDao<Article> implements ArticleDao {
 }

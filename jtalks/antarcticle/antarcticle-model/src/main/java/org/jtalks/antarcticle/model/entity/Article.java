@@ -21,6 +21,10 @@ package org.jtalks.antarcticle.model.entity;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Persistent;
 
+/**
+ * @author Vitaliy Kravchwnko
+ */
+
 public class Article extends Persistent {
 
     private String articleContent;
