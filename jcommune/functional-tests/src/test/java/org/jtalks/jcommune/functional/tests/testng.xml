@@ -1,0 +1,9 @@
+<suite name="Suite" verbose="1">
+  <test name="Functional tests">
+    <parameter name="mainPageUrl" value="http://localhost:8080/jcommune"/>
+    <packages>
+      <package name="org.jtalks.jcommune.functional.tests"/>
+    </packages>
+  </test>
+</suite>
+
