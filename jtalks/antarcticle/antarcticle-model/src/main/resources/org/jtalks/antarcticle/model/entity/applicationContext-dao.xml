@@ -12,18 +12,18 @@
   <!--Declaration of AOP Config -->
   <aop:config>
     <aop:advisor advice-ref="exceptionTranslationInterceptor"
-                 pointcut="execution(* org.jtalks.antarticle.model.dao.Dao+.* (*))"/>
+                 pointcut="execution(* org.jtalks.jcommune.model.dao.Dao+.* (*))"/>
   </aop:config>
 
   <!--Declaration of DAO beans -->
   <bean id="userDao"
-        class="org.jtalks.antarticle.model.dao.hibernate.UserHibernateDao"
+        class="org.jtalks.jcommune.model.dao.hibernate.UserHibernateDao"
         parent="abstractHibernateDao"/>
   <bean id="articleDao"
-        class="org.jtalks.antarticle.model.dao.hibernate.ArticleHibernateDao"
+        class="org.jtalks.antarcticle.model.dao.hibernate.ArticleHibernateDao"
         parent="abstractHibernateDao"/>
   <bean id="commentDao"
-        class="org.jtalks.antarticle.model.dao.hibernate.CommentHibernateDao"
+        class="org.jtalks.antarcticle.model.dao.hibernate.CommentHibernateDao"
         parent="abstractHibernateDao"/>
 	<bean id="articleCollectionDao"
         class="org.jtalks.antarcticle.model.dao.hibernate.ArticleCollectionHibernateDao"
@@ -31,7 +31,7 @@
   <!--Injecting sessionFactory bean to class AbstractHibernateDao, this way
     resolves a problem of multiple DAO beans definition -->
   <bean id="abstractHibernateDao"
-        class="org.jtalks.antarticle.model.dao.hibernate.AbstractHibernateDao"
+        class="org.jtalks.jcommune.model.dao.hibernate.AbstractHibernateDao"
         abstract="true">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
@@ -49,10 +49,10 @@
     <property name="dataSource" ref="dataSource"/>
     <property name="mappingResources">
       <list>
-        <value>/org/jtalks/antarticle/model/entity/User.hbm.xml</value>
-        <value>/org/jtalks/antarticlee/model/entity/Article.hbm.xml</value>
-        <value>/org/jtalks/antarticle/model/entity/Comment.hbm.xml</value>
-		<value>/org/jtalks/antarcticle/model/entity/ArticleCollection.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/User.hbm.xml</value>
+        <value>/org/jtalks/antarcticle/model/entity/Article.hbm.xml</value>
+        <value>/org/jtalks/antarcticle/model/entity/Comment.hbm.xml</value>
+	<value>/org/jtalks/antarcticle/model/entity/ArticleCollection.hbm.xml</value>
       </list>
     </property>
     <property name="hibernateProperties">
@@ -71,7 +71,7 @@
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
   <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-    <property name="location" value="classpath:/org/jtalks/antarticle/model/datasource.properties"/>
+    <property name="location" value="classpath:/org/jtalks/antarcticle/model/datasource.properties"/>
   </bean>
 </beans>
 

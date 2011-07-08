@@ -12,7 +12,7 @@
   <artifactId>antarcticle-web-view</artifactId>
   <version>0.4-SNAPSHOT</version>
   <packaging>war</packaging>
-  <name>${artifactId}</name>
+  <name>${project.artifactId}</name>
   <url>http://jtalks.org</url>
   <dependencies>
     <dependency>

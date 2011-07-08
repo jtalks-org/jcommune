@@ -22,7 +22,7 @@ import org.jtalks.jcommune.model.dao.Dao;
 
 /**
  *
- * @author Dmitry
+ * @author Dmitry Sokolov
  */
 public interface CommentDao extends Dao<Comment> {
     

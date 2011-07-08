@@ -23,14 +23,17 @@ import org.jtalks.jcommune.model.entity.Persistent;
 
 /**
  *
- * @author Dmitry
+ * @author Vitaliy Kravchwnko
+ * @author Dmitry Sokolov
  */
+
 public class Article extends Persistent {
     
     private DateTime creationDate;
     private User userCreated;
     private String articleTopic;
     private String articleContent;
+    private ArticleCollection articleCollection;
 
     public Article() {
     }
@@ -67,11 +70,20 @@ public class Article extends Persistent {
         this.creationDate = creationDate;
     }
 
+
     public User getUserCreated() {
         return userCreated;
     }
 
     public void setUserCreated(User userCreated) {
         this.userCreated = userCreated;
+	}
+	
+    public ArticleCollection getArticleCollection() {
+        return articleCollection;
+    }
+
+    public void setArticleCollection(ArticleCollection articleCollection) {
+        this.articleCollection = articleCollection;
     }
 }

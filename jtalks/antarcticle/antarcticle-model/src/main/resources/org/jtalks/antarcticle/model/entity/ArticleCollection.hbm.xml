@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.antarcticle.model.entity">
-  <class name="ArticleCollection" table="article_collection">
+  <class name="ArticleCollection" table="ARTICLE_COLLECTION">
     <id column="ARTICLE_COLLECTION_ID" name="id" unsaved-value="0">
       <generator class="native"/>
     </id>
-    <property column="UUID" name="uuid" unique="true" not-null="true"/>
+    <property column="UUID" name="uuid" not-null="true" unique="true"/>
     <property column="TITLE" name="title" not-null="true"/>
     <property column="DESCRIPTION" name="description" not-null="true"/>
-    <list name="articles" cascade="all-delete-orphan">
+    <list cascade="all-delete-orphan" name="articles">
       <key column="ARTICLE_COLLECTION_ID" foreign-key="FK_ARTICLE_COLLECTION"/>
       <index column="LIST_INDEX"/>
       <one-to-many class="Article"/>

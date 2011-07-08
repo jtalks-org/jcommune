@@ -18,14 +18,27 @@
 
 package org.jtalks.antarcticle.model.dao.hibernate;
 
-import org.jtalks.antarcticle.model.dao.CommentDao;
-import org.jtalks.antarcticle.model.entity.Comment;
-import org.jtalks.jcommune.model.dao.hibernate.AbstractHibernateDao;
+import org.hibernate.Session;
+import org.jtalks.antarcticle.model.entity.ArticleCollection;
 
 /**
- *
- * @author Dmitry
+ * @author Pavel Karpukhin
  */
-public class CommentHibernateDao extends AbstractHibernateDao<Comment> implements CommentDao {
-    
+public final class ObjectsFactory {
+
+    private static Session session;
+
+    private ObjectsFactory() {
+    }
+
+    public static void setSession(Session session) {
+        ObjectsFactory.session = session;
+    }
+
+    public static ArticleCollection getDefaultArticleCollection() {
+        ArticleCollection newArticleCollection = new ArticleCollection();
+        newArticleCollection.setTitle("articleCollection title");
+        newArticleCollection.setDescription("articleCollection description");
+        return newArticleCollection;
+    }
 }

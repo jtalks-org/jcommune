@@ -19,7 +19,6 @@
 package org.jtalks.antarcticle.model.dao;
 
 import org.jtalks.antarcticle.model.entity.ArticleCollection;
-import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.Dao;
 
 public interface ArticleCollectionDao extends Dao<ArticleCollection> {
