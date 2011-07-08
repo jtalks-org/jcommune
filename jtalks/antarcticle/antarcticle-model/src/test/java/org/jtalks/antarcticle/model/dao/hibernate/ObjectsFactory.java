@@ -19,10 +19,15 @@
 package org.jtalks.antarcticle.model.dao.hibernate;
 
 import org.hibernate.Session;
+import org.joda.time.DateTime;
+import org.jtalks.antarcticle.model.entity.Article;
 import org.jtalks.antarcticle.model.entity.ArticleCollection;
+import org.jtalks.antarcticle.model.entity.Comment;
+import org.jtalks.jcommune.model.entity.User;
 
 /**
  * @author Pavel Karpukhin
+ * @author Dmitry Sokolov
  */
 public final class ObjectsFactory {
 
@@ -40,5 +45,42 @@ public final class ObjectsFactory {
         newArticleCollection.setTitle("articleCollection title");
         newArticleCollection.setDescription("articleCollection description");
         return newArticleCollection;
+    }
+    
+    public static Article getDefaultArticle() {
+        Article article = new Article();
+        article.setArticleTopic("article topic");
+        article.setArticleContent("article content");
+        article.setCreationDate(new DateTime());
+        article.setUserCreated(persist(getDefaultUser()));
+        return article;
+    }
+    
+    public static Comment getDefaultComment() {
+        Comment comment = new Comment(new DateTime());
+        comment.setCommentContent("comment content");
+        comment.setUserCommented(persist(getDefaultUser()));
+        comment.setArticle(persist(getDefaultArticle()));
+        return comment;
+    }
+    
+    // from jcommune ObjectsFactory   
+    public static User getDefaultUser() {
+        return getUser("username", "username@mail.com");
+    }
+
+    public static User getUser(String username, String email) {
+        User newUser = new User();
+        newUser.setEmail(email);
+        newUser.setFirstName("first name");
+        newUser.setLastName("last name");
+        newUser.setUsername(username);
+        newUser.setPassword("password");
+        return newUser;
+    }
+    
+     private static <T> T persist(T entity) {
+        session.save(entity);
+        return entity;
     }
 }

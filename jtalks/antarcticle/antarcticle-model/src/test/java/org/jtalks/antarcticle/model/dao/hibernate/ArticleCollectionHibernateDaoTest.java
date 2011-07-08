@@ -18,7 +18,6 @@
 
 package org.jtalks.antarcticle.model.dao.hibernate;
 
-import org.hibernate.PropertyValueException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.antarcticle.model.dao.ArticleCollectionDao;

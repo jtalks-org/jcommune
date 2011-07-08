@@ -24,7 +24,7 @@ import org.jtalks.jcommune.model.dao.hibernate.AbstractHibernateDao;
 
 /**
  *
- * @author Dmitry
+ * @author Dmitry Sokolov
  */
 public class CommentHibernateDao extends AbstractHibernateDao<Comment> implements CommentDao {
     
