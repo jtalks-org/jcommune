@@ -4,6 +4,7 @@
 .metadata
 
 *.iml
+/.idea/
 /jtalks\jcommune\jcommune-service\target\
 /jtalks\jcommune\jcommune-model\target\
 /jtalks\jcommune\jcommune-view\jcommune-web-view\target\
