@@ -19,6 +19,7 @@
 package org.jtalks.antarcticle.model.dao.hibernate;
 
 import org.hibernate.Session;
+import org.jtalks.antarcticle.model.entity.Article;
 import org.jtalks.antarcticle.model.entity.ArticleCollection;
 
 /**
@@ -40,5 +41,11 @@ public final class ObjectsFactory {
         newArticleCollection.setTitle("articleCollection title");
         newArticleCollection.setDescription("articleCollection description");
         return newArticleCollection;
+    }
+
+    public static Article getDefaultArtcle() {
+        Article newArticle = Article.createNewArticle();
+        newArticle.setArticleContent("article content");
+        return newArticle;
     }
 }
