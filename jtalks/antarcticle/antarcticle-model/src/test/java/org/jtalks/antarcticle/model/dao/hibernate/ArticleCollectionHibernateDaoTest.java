@@ -31,6 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import static org.testng.Assert.*;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
+
 /**
  * @author Pavel Karpukhin
  */
@@ -51,10 +54,47 @@ public class ArticleCollectionHibernateDaoTest extends AbstractTransactionalTest
         ObjectsFactory.setSession(session);
     }
 
+    @Test
+    public void testSave() {
+         ArticleCollection articleCollection = ObjectsFactory.getDefaultArticleCollection();
+
+        dao.saveOrUpdate(articleCollection);
+
+        assertNotSame(articleCollection.getId(), 0, "Id not created");
+    }
+
     @Test(expectedExceptions = PropertyValueException.class)
-    public void testSaveArticleCollectionWithTitleNotNullViolation() {
+    public void testSaveNotNullViolation() {
         ArticleCollection articleCollection = new ArticleCollection();
 
+        dao.saveOrUpdate(articleCollection);
+
+        session.evict(articleCollection);
+        ArticleCollection result = (ArticleCollection) session.get(ArticleCollection.class, articleCollection.getId());
+
+        assertReflectionEquals(articleCollection, result);
+    }
+
+    @Test
+    public void testUpdate() {
+        String newTitle = "new title";
+        ArticleCollection articleCollection = ObjectsFactory.getDefaultArticleCollection();
+        session.save(articleCollection);
+
+        articleCollection.setTitle(newTitle);
+        dao.saveOrUpdate(articleCollection);
+
+        session.evict(articleCollection);
+        ArticleCollection result = (ArticleCollection)session.get(ArticleCollection.class, articleCollection.getId());
+        assertReflectionEquals(articleCollection, result);
+    }
+
+    @Test(expectedExceptions = PropertyValueException.class)
+    public void testUpdateNotNullViolation() {
+        ArticleCollection articleCollection = ObjectsFactory.getDefaultArticleCollection();
+        session.save(articleCollection);
+
+        articleCollection.setTitle(null);
         dao.saveOrUpdate(articleCollection);
     }
 }

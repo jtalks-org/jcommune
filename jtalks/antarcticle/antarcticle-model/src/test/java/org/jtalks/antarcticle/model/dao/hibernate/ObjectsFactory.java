@@ -19,6 +19,7 @@
 package org.jtalks.antarcticle.model.dao.hibernate;
 
 import org.hibernate.Session;
+import org.jtalks.antarcticle.model.entity.ArticleCollection;
 
 /**
  * @author Pavel Karpukhin
@@ -32,5 +33,12 @@ public final class ObjectsFactory {
 
     public static void setSession(Session session) {
         ObjectsFactory.session = session;
+    }
+
+    public static ArticleCollection getDefaultArticleCollection() {
+        ArticleCollection newArticleCollection = new ArticleCollection();
+        newArticleCollection.setTitle("articleCollection title");
+        newArticleCollection.setDescription("articleCollection description");
+        return newArticleCollection;
     }
 }
