@@ -23,7 +23,7 @@ import org.jtalks.jcommune.model.entity.Persistent;
 
 /**
  *
- * @author Vitaliy Kravchwnko
+ * @author Vitaliy Kravchenko
  * @author Dmitry Sokolov
  */
 

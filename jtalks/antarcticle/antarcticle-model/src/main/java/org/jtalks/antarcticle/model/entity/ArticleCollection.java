@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Vitaliy Kravchwnko
+ * @author Vitaliy Kravchenko
  */
 
 public class ArticleCollection extends Persistent {
