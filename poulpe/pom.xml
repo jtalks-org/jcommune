@@ -190,17 +190,17 @@
       <dependency>
         <groupId>org.zkoss.zk</groupId>
         <artifactId>zk</artifactId>
-        <version>5.0.7</version>
+        <version>${zk.version}</version>
       </dependency>
       <dependency>
         <groupId>org.zkoss.zk</groupId>
         <artifactId>zul</artifactId>
-        <version>5.0.7</version>
+        <version>${zk.version}</version>
       </dependency>
       <dependency>
         <groupId>org.zkoss.zk</groupId>
         <artifactId>zkplus</artifactId>
-        <version>5.0.7</version>
+        <version>${zk.version}</version>
       </dependency>        
       <dependency>
         <groupId>org.zkoss.zk</groupId>
@@ -252,6 +252,7 @@
   <properties>
     <hibernateVersion>3.3.2.GA</hibernateVersion>
     <springVersion>3.0.5.RELEASE</springVersion>
+    <zk.version>5.0.7</zk.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 </project>
