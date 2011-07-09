@@ -17,3 +17,4 @@ be united under one core project JTalks which will provide an ability to include
 ### License
 
 JTalks.org project developed under Lesser General Public Licence 2.1 - [LGPL 2.1](http://www.gnu.org/licenses/lgpl-2.1.html)
+ 
