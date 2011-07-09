@@ -64,7 +64,12 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     @Override
     public User registerUser(User user) throws DuplicateException {
         if (isUserExist(user)) {
-            String msg = "User " + user.getUsername() + " already exist!";
+            String msg = "User " + user.getUsername() + " already exists!";
+            logger.warn(msg);
+            throw new DuplicateException(msg);
+        }
+        if (isEmailExist(user.getEmail())) {
+            String msg = "E-mail " + user.getEmail() + " already exists!";
             logger.warn(msg);
             throw new DuplicateException(msg);
         }
@@ -88,10 +93,20 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * Check user for existance.
      *
      * @param user user for check existance
-     * @return {@code true} if user with given username or email exist
+     * @return {@code true} if user with given username exist
      */
     private boolean isUserExist(User user) {
         return dao.isUserWithUsernameExist(user.getUsername()) ||
-                dao.isUserWithEmailExist(user.getEmail()) || user.getUsername().equals("anonymousUser");
+                user.getUsername().equals("anonymousUser");
+    }
+
+    /**
+     * Check email for existance.
+     *
+     * @param email email for check existance
+     * @return {@code true} if email exist
+     */
+    private boolean isEmailExist(String email) {
+        return dao.isUserWithEmailExist(email);
     }
 }
