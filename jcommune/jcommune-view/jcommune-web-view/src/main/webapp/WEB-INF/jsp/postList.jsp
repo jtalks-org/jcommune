@@ -25,53 +25,57 @@
     </div> <!-- topicTitle -->
     <div id="postList">
         <table border="1" width="100%">
+        <tr>
+            <td width="20%"><spring:message code="label.author"/>:
+                <a href="${pageContext.request.contextPath}/user/${topic.firstPost.userCreated.id}.html">
+                    <c:out value="${topic.firstPost.userCreated.username}"/></a></td>
+            <td class="link" width="80%"><a name="${topic.firstPost.id}"/>
+                 <a href="javascript:copyLink(${topic.firstPost.id})"><spring:message code="label.link" /></a>
+                     <br />
+                     <spring:message code="label.text"/>: <c:out value="${topic.firstPost.postContent}"/></td>
+
+            <sec:accesscontrollist hasPermission="8,16" domainObject="${topic.firstPost}">
+            <td><form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/delete.html"
+                           method="GET">
+                    <input type="submit" value="<spring:message code="label.delete"/>"/>
+                </form:form></td>
+            </sec:accesscontrollist>
+        </tr>
         <c:forEach var="post" items="${posts}" varStatus="i">
-            <tr>
-                <td width="20%"><spring:message code="label.author"/>:
-                    <a href="${pageContext.request.contextPath}/user/${post.userCreated.id}.html">
-                        <c:out value="${post.userCreated.username}"/></a></td>
-                <td class="link" width="80%"><a name="${post.id}"/>
-                    <a href="javascript:copyLink(${post.id})"><spring:message code="label.link" /></a>
-                    <br>
-                        <spring:message code="label.text"/>: <c:out value="${post.postContent}"/></td>
+        <c:if test='${post.id != topic.firstPost.id}'>
+        <tr>
+            <td width="20%"><spring:message code="label.author"/>:
+                <a href="${pageContext.request.contextPath}/user/${post.userCreated.id}.html">
+                    <c:out value="${post.userCreated.username}"/></a></td>
+            <td class="link" width="80%"><a name="${post.id}"/>
+                <a href="javascript:copyLink(${post.id})"><spring:message code="label.link" /></a>
+                    <br />
+                    <spring:message code="label.text"/>: <c:out value="${post.postContent}"/></td>
 
-                <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
-                <c:choose>
-                    <c:when test="${page == 1 && i.index == 0}">
-                <td><form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/delete.html"
-                               method="GET">
-                        <input type="submit" value="<spring:message code="label.delete"/>"/>
-                    </form:form>
-                </td>
-                    </c:when>
-
-                    <c:otherwise>
-                <td> 
-                    <form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/post/${post.id}/delete.html"
-                               method="GET">
-                        <input type="submit" value="<spring:message code="label.delete"/>"/>
-                    </form:form>
-                </td>
-                    </c:otherwise>
-                </c:choose>
-                </sec:accesscontrollist>
-            </tr>
+            <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
+            <td> 
+                <form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/post/${post.id}/delete.html"
+                           method="GET">
+                    <input type="submit" value="<spring:message code="label.delete"/>"/>
+                </form:form></td>
+            </sec:accesscontrollist>
+        </tr>
+        </c:if>
         </c:forEach>
         </table>
         <table>
         <tr>
             <td><form:form action="${pageContext.request.contextPath}/branch/${branchId}.html" 
-                       method="GET">
-                <input type="submit" value="<spring:message code="label.back"/>"/>
+                           method="GET">
+                    <input type="submit" value="<spring:message code="label.back"/>"/>
                 </form:form></td>
 
             <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
             <td><form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/answer.html"
-                   method="GET">
-                <input type="submit" value="<spring:message code="label.answer"/>"/>
-                </form:form></td>
+                           method="GET">
+                    <input type="submit" value="<spring:message code="label.answer"/>"/>
+                 </form:form></td>
             </sec:authorize>
-
         </tr>
         </table>
     </div> <!-- postList -->

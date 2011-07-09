@@ -15,6 +15,9 @@
       <index column="LIST_INDEX"/>
       <one-to-many class="Post"/>
     </list>
+    <many-to-one name="firstPost" column="FIRST_POST" class="Post"
+                 unique="true" foreign-key="FK_FIRST_POST" 
+                 lazy="false" cascade="all" fetch="select"/>
     <many-to-one name="lastPost" column="LAST_POST" class="Post"
                  unique="true" foreign-key="FK_LAST_POST" 
                  lazy="false" cascade="all" fetch="select"/>
