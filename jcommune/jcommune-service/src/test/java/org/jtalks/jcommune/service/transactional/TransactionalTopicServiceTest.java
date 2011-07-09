@@ -17,8 +17,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.aspectj.weaver.NewParentTypeMunger;
-import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -131,7 +129,7 @@ public class TransactionalTopicServiceTest {
 
         Topic createdTopic = topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, BRANCH_ID);
 
-        Post createdPost = createdTopic.getPosts().get(0);
+        Post createdPost = createdTopic.getFirstPost();
         assertEquals(createdTopic.getTitle(), TOPIC_TITLE);
         assertEquals(createdTopic.getTopicStarter(), author);
         assertEquals(createdTopic.getBranch(), branch);
@@ -263,7 +261,7 @@ public class TransactionalTopicServiceTest {
         Post post = Post.createNewPost();
         post.setId(POST_ID);
         post.setPostContent("body");
-        topic.addPost(post);
+        topic.setFirstPost(post);
 
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(topic);

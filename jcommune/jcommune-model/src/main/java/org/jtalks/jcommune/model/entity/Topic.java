@@ -51,6 +51,11 @@ public class Topic extends Persistent {
     private Branch branch;
 
     /**
+     * The first post in the topic.
+     */
+    private Post firstPost;
+
+    /**
      * The last post in the topic.
      */
     private Post lastPost;
@@ -203,6 +208,25 @@ public class Topic extends Persistent {
      */
     public void setBranch(Branch branch) {
         this.branch = branch;
+    }
+
+    /**
+     * Set the topic first post.
+     *
+     * @param firstPost the firstPost to set
+     */
+    public void setFirstPost(Post firstPost) {
+        this.firstPost = firstPost;
+        this.addPost(firstPost);
+    }
+
+    /**
+     * Get the topic first post.
+     *
+     * @return the firstPost
+     */
+    public Post getFirstPost() {
+        return firstPost;
     }
 
     /**

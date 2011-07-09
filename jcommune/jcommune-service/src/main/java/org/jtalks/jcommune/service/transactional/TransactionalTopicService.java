@@ -103,16 +103,16 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         }
 
         Topic topic = new Topic(branchService.get(branchId), currentUser, topicName);
-        Post post = new Post(topic, currentUser, bodyText);
-        topic.addPost(post);
+        Post first = new Post(topic, currentUser, bodyText);
+        topic.setFirstPost(first);
 
         dao.saveOrUpdate(topic);
         logger.debug("Created new topic {}" , topic.getId());
 
         securityService.grantAdminPermissionToCurrentUserAndAdmins(topic);
         logger.debug("Permissions granted on topic: {}", topic.getId());
-        securityService.grantAdminPermissionToCurrentUserAndAdmins(post);
-        logger.debug("Permissions granted on post: {}", post.getId());
+        securityService.grantAdminPermissionToCurrentUserAndAdmins(first);
+        logger.debug("Permissions granted on post: {}", first.getId());
 
         return topic;
     }
@@ -180,7 +180,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
 
         Topic topic = dao.get(topicId);
         topic.setTitle(topicName);
-        Post post = topic.getPosts().get(0);
+        Post post = topic.getFirstPost();
         post.setPostContent(bodyText);
         post.setCreationDate(new DateTime());
 
