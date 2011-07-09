@@ -56,8 +56,8 @@
             <type>installed</type>
             <deployables>
               <deployable>
-                <groupId>org.jtalks.pouple</groupId>
-                <artifactId>pouple-web-view</artifactId>
+                <groupId>org.jtalks.poulpe</groupId>
+                <artifactId>poulpe-web-view</artifactId>
                 <type>war</type>
               </deployable>
             </deployables>
