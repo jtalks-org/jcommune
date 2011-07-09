@@ -183,6 +183,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         Post post = topic.getFirstPost();
         post.setPostContent(bodyText);
         post.setCreationDate(new DateTime());
+        topic.setLastPost(post);
 
         dao.saveOrUpdate(topic);
         logger.debug("Update the topic {}" , topic.getId());
