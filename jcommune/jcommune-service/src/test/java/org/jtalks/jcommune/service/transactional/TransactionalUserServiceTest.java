@@ -125,9 +125,10 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void testUpdateLastLoginTime() throws NotFoundException {
+    public void testUpdateLastLoginTime() throws Exception {
         User user = new User();
         DateTime dateTimeBefore = new DateTime();
+        Thread.sleep(1000);
 
         userService.updateLastLoginTime(user);
 
