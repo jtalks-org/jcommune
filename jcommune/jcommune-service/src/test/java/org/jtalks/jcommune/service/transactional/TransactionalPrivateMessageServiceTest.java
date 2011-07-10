@@ -132,6 +132,17 @@ public class TransactionalPrivateMessageServiceTest {
     }
 
     @Test
+    public void testMarkAsReadAlreadyRead() {
+        PrivateMessage pm = new PrivateMessage();
+        pm.markAsRead();
+
+        pmService.markAsRead(pm);
+
+        verify(pmDao, never()).saveOrUpdate(pm);
+        verify(userDataCache, never()).decrementNewMessageCountFor(USERNAME);
+    }
+
+    @Test
     public void testGetDraftsFromCurrentUser() {
         User user = new User();
         when(pmDao.getDraftsFromUser(user)).thenReturn(new ArrayList<PrivateMessage>());
