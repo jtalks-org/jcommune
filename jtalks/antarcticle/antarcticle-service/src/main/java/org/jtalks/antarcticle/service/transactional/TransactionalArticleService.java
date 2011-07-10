@@ -29,6 +29,6 @@ import org.jtalks.jcommune.service.transactional.AbstractTransactionalEntityServ
 
 public class TransactionalArticleService extends AbstractTransactionalEntityService<Article, ArticleDao> implements ArticleService {
     public TransactionalArticleService(ArticleDao articleDao) {
-        this.dao = articleDao;
+        this.dao = articleDao;            
     }
 }

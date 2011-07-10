@@ -33,7 +33,7 @@
   </bean>
 
   <bean id="commentService"
-        class="org.jtalks.jcommune.service.transactional.TransactionalBranchService">
+        class="org.jtalks.antarcticle.service.transactional.TransactionalCommentService">
     <constructor-arg index="0" ref="commentDao"/>
   </bean>
 
