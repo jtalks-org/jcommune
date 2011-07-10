@@ -1,5 +1,6 @@
 package org.jtalks.jcommune.service.transactional;
 
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
@@ -12,7 +13,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
 
 /**
  * @author Kirill Afonin
@@ -118,10 +118,12 @@ public class TransactionalUserServiceTest {
     @Test
     public void testUpdateLastLoginTime() throws NotFoundException {
         User user = new User();
+        DateTime dateTimeBefore = new DateTime();
 
         userService.updateLastLoginTime(user);
 
-        assertNotNull(user.getLastLogin());
+        DateTime dateTimeAfter = user.getLastLogin();
+        assertEquals(dateTimeAfter.compareTo(dateTimeBefore), 1, "last login time lesser than before test");
         verify(userDao).saveOrUpdate(user);
     }
 }
