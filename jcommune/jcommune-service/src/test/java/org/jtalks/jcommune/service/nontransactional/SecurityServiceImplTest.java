@@ -131,7 +131,7 @@ public class SecurityServiceImplTest {
 
     @Test
     public void testGetCurrentUserUsernameAnonymousUser() throws Exception {
-        Principal user = new PrincipalImpl(SecurityServiceImpl.ANONYMOUS_USER);
+        Principal user = new PrincipalImpl(SecurityConstants.ANONYMOUS_USERNAME);
         Authentication auth = mock(Authentication.class);
         when(auth.getPrincipal()).thenReturn(user);
         when(securityContext.getAuthentication()).thenReturn(auth);

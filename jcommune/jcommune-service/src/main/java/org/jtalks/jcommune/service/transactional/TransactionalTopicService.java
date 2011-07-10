@@ -27,6 +27,7 @@ import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.SecurityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -69,7 +70,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
     public Post addAnswer(long topicId, String answerBody) throws NotFoundException {
         User currentUser = securityService.getCurrentUser();
         if (currentUser == null) {
@@ -87,7 +88,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         dao.saveOrUpdate(topic);
         logger.debug("Added answer to topic {}", topicId);
 
-        securityService.grantToCurrentUser().role("ROLE_ADMIN").admin().on(answer);
+        securityService.grantToCurrentUser().role(SecurityConstants.ROLE_ADMIN).admin().on(answer);
         return answer;
     }
 
@@ -95,7 +96,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
     public Topic createTopic(String topicName, String bodyText, long branchId) throws NotFoundException {
         User currentUser = securityService.getCurrentUser();
         if (currentUser == null) {
@@ -109,8 +110,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         dao.saveOrUpdate(topic);
         logger.debug("Created new topic {}", topic.getId());
 
-        securityService.grantToCurrentUser().role("ROLE_ADMIN").admin().on(topic)
-                .user(currentUser.getUsername()).role("ROLE_ADMIN").admin().on(first);
+        securityService.grantToCurrentUser().role(SecurityConstants.ROLE_ADMIN).admin().on(topic)
+                .user(currentUser.getUsername()).role(SecurityConstants.ROLE_ADMIN).admin().on(first);
 
         return topic;
     }

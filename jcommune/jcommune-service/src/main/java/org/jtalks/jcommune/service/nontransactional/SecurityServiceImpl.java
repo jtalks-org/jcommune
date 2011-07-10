@@ -39,7 +39,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
  */
 public class SecurityServiceImpl implements SecurityService {
 
-    public static final String ANONYMOUS_USER = "anonymousUser";
     private UserDao userDao;
     private AclManager aclManager;
     private SecurityContextFacade securityContextFacade;
@@ -104,7 +103,7 @@ public class SecurityServiceImpl implements SecurityService {
      * @return {@code true} if user is anonymous
      */
     private boolean isAnonymous(String username) {
-        return username.equals(ANONYMOUS_USER);
+        return username.equals(SecurityConstants.ANONYMOUS_USERNAME);
     }
 
     /**

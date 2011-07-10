@@ -28,6 +28,7 @@ import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.SecurityConstants;
 import org.jtalks.jcommune.service.security.AclBuilder;
 import org.mockito.Matchers;
 import org.testng.annotations.BeforeMethod;
@@ -115,7 +116,7 @@ public class TransactionalTopicServiceTest {
         verify(topicDao).get(TOPIC_ID);
         verify(topicDao).saveOrUpdate(answeredTopic);
         verify(securityService).grantToCurrentUser();
-        verify(aclBuilder).role("ROLE_ADMIN");
+        verify(aclBuilder).role(SecurityConstants.ROLE_ADMIN);
         verify(aclBuilder).admin();
         verify(aclBuilder).on(createdPost);
     }
@@ -156,7 +157,7 @@ public class TransactionalTopicServiceTest {
         verify(topicDao).saveOrUpdate(createdTopic);
         verify(branchService).get(BRANCH_ID);
         verify(securityService).grantToCurrentUser();
-        verify(aclBuilder, times(2)).role("ROLE_ADMIN");
+        verify(aclBuilder, times(2)).role(SecurityConstants.ROLE_ADMIN);
         verify(aclBuilder, times(2)).admin();
         verify(aclBuilder).user(USERNAME);
         verify(aclBuilder).on(createdTopic);
