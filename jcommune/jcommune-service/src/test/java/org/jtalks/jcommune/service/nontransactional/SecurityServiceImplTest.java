@@ -22,6 +22,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
@@ -186,6 +187,23 @@ public class SecurityServiceImplTest {
         AclBuilder builder = securityService.grantToCurrentUser();
 
         assertTrue(builder.containsSid(USERNAME));
+    }
+
+
+    @Test
+    public void testGrant() {
+        AclBuilder builder = securityService.grant();
+
+        assertNotNull(builder);
+        assertTrue(builder.getSids().isEmpty());
+    }
+
+    @Test
+    public void testDelete() {
+        AclBuilder builder = securityService.delete();
+
+        assertNotNull(builder);
+        assertTrue(builder.getSids().isEmpty());
     }
 
     private void mockCurrentUserPrincipal() {
