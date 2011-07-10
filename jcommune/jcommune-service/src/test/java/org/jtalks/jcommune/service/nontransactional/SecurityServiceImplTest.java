@@ -5,19 +5,8 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityContextFacade;
 import org.jtalks.jcommune.service.SecurityService;
-import org.springframework.security.acls.domain.AclAuthorizationStrategy;
-import org.springframework.security.acls.domain.AclImpl;
-import org.springframework.security.acls.domain.AuditLogger;
-import org.springframework.security.acls.domain.BasePermission;
-import org.springframework.security.acls.domain.GrantedAuthoritySid;
-import org.springframework.security.acls.domain.ObjectIdentityImpl;
-import org.springframework.security.acls.domain.PrincipalSid;
-import org.springframework.security.acls.model.MutableAcl;
-import org.springframework.security.acls.model.MutableAclService;
-import org.springframework.security.acls.model.NotFoundException;
-import org.springframework.security.acls.model.ObjectIdentity;
-import org.springframework.security.acls.model.Permission;
-import org.springframework.security.acls.model.Sid;
+import org.jtalks.jcommune.service.security.AclBuilder;
+import org.jtalks.jcommune.service.security.AclManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,18 +16,14 @@ import org.testng.annotations.Test;
 import sun.security.acl.PrincipalImpl;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
 /**
  * Test for {@link SecurityServiceImpl}.
@@ -55,7 +40,7 @@ public class SecurityServiceImplTest {
     private SecurityService securityService;
     private SecurityContextFacade securityContextFacade;
     private SecurityContext securityContext;
-    private MutableAclService mutableAclService;
+    private AclManager aclManager;
 
     private User getUser() {
         User user = new User();
@@ -69,8 +54,8 @@ public class SecurityServiceImplTest {
         userDao = mock(UserDao.class);
         securityContextFacade = mock(SecurityContextFacade.class);
         securityContext = mock(SecurityContext.class);
-        mutableAclService = mock(MutableAclService.class);
-        securityService = new SecurityServiceImpl(userDao, securityContextFacade, mutableAclService);
+        aclManager = mock(AclManager.class);
+        securityService = new SecurityServiceImpl(userDao, securityContextFacade, aclManager);
         when(securityContextFacade.getContext()).thenReturn(securityContext);
     }
 
@@ -178,168 +163,29 @@ public class SecurityServiceImplTest {
     }
 
     @Test
-    public void testGrantAdminPermissionsToCurrentUserAndAdmins() throws Exception {
-        mockCurrentUserPrincipal();
-        Post object = Post.createNewPost();
-        object.setId(1L);
-        ObjectIdentity objectIdentity = new ObjectIdentityImpl(Post.class.getCanonicalName(), object.getId());
-        MutableAcl objectAcl = new AclImpl(objectIdentity, 2L, mock(AclAuthorizationStrategy.class),
-                mock(AuditLogger.class));
-        when(mutableAclService.readAclById(objectIdentity))
-                .thenThrow(new NotFoundException(""))
-                .thenReturn(objectAcl);
-        when(mutableAclService.createAcl(objectIdentity)).thenReturn(objectAcl);
-
-        securityService.grantAdminPermissionToCurrentUserAndAdmins(object);
-
-        assertGranted(objectAcl, new PrincipalSid(USERNAME),
-                BasePermission.ADMINISTRATION, "Permission to current user not granted");
-        assertGranted(objectAcl, new GrantedAuthoritySid("ROLE_ADMIN"),
-                BasePermission.ADMINISTRATION, "Permission to ROLE_ADMIN not granted");
-        verify(mutableAclService, times(2)).readAclById(objectIdentity);
-        verify(mutableAclService).createAcl(objectIdentity);
-        verify(mutableAclService, times(2)).updateAcl(objectAcl);
-    }
-
-    @Test
-    public void testGrantAdminPermissionsToCurrentUser() throws Exception {
-        mockCurrentUserPrincipal();
-        Post object = Post.createNewPost();
-        object.setId(1L);
-        ObjectIdentity objectIdentity = new ObjectIdentityImpl(Post.class.getCanonicalName(), object.getId());
-        MutableAcl objectAcl = new AclImpl(objectIdentity, 2L, mock(AclAuthorizationStrategy.class),
-                mock(AuditLogger.class));
-        when(mutableAclService.readAclById(objectIdentity))
-                .thenThrow(new NotFoundException(""))
-                .thenReturn(objectAcl);
-        when(mutableAclService.createAcl(objectIdentity)).thenReturn(objectAcl);
-
-        securityService.grantAdminPermissionToCurrentUser(object);
-
-        assertGranted(objectAcl, new PrincipalSid(USERNAME),
-                BasePermission.ADMINISTRATION, "Permission to current user not granted");
-        verify(mutableAclService).readAclById(objectIdentity);
-        verify(mutableAclService).createAcl(objectIdentity);
-        verify(mutableAclService).updateAcl(objectAcl);
-    }
-
-    @Test
-    public void testGrantReadPermissionsToCurrentUser() throws Exception {
-        mockCurrentUserPrincipal();
-        Post object = Post.createNewPost();
-        object.setId(1L);
-        ObjectIdentity objectIdentity = new ObjectIdentityImpl(Post.class.getCanonicalName(), object.getId());
-        MutableAcl objectAcl = new AclImpl(objectIdentity, 2L, mock(AclAuthorizationStrategy.class),
-                mock(AuditLogger.class));
-        when(mutableAclService.readAclById(objectIdentity))
-                .thenThrow(new NotFoundException(""))
-                .thenReturn(objectAcl);
-        when(mutableAclService.createAcl(objectIdentity)).thenReturn(objectAcl);
-
-        securityService.grantReadPermissionToCurrentUser(object);
-
-        assertGranted(objectAcl, new PrincipalSid(USERNAME),
-                BasePermission.READ, "Permission to current user not granted");
-        verify(mutableAclService).readAclById(objectIdentity);
-        verify(mutableAclService).createAcl(objectIdentity);
-        verify(mutableAclService).updateAcl(objectAcl);
-    }
-
-    @Test
-    public void testGrantReadPermissionsToUser() throws Exception {
-        Post object = Post.createNewPost();
-        object.setId(1L);
-        ObjectIdentity objectIdentity = new ObjectIdentityImpl(Post.class.getCanonicalName(), object.getId());
-        MutableAcl objectAcl = new AclImpl(objectIdentity, 2L, mock(AclAuthorizationStrategy.class),
-                mock(AuditLogger.class));
-        when(mutableAclService.readAclById(objectIdentity))
-                .thenThrow(new NotFoundException(""))
-                .thenReturn(objectAcl);
-        when(mutableAclService.createAcl(objectIdentity)).thenReturn(objectAcl);
-
-        securityService.grantReadPermissionToUser(object, USERNAME);
-
-        assertGranted(objectAcl, new PrincipalSid(USERNAME),
-                BasePermission.READ, "Permission to current user not granted");
-        verify(mutableAclService).readAclById(objectIdentity);
-        verify(mutableAclService).createAcl(objectIdentity);
-        verify(mutableAclService).updateAcl(objectAcl);
-    }
-
-    @Test(expectedExceptions = {IllegalStateException.class})
-    public void testGrantAdminPermissionsToCurrentUserAndAdminsWithZeroId() {
-        mockCurrentUserPrincipal();
-        Post object = Post.createNewPost();
-
-        securityService.grantAdminPermissionToCurrentUserAndAdmins(object);
-    }
-
-
-    @Test
     public void testDeleteFromAcl() throws Exception {
         Post object = Post.createNewPost();
         object.setId(1L);
-        ObjectIdentity objectIdentity = new ObjectIdentityImpl(Post.class.getCanonicalName(), object.getId());
 
         securityService.deleteFromAcl(object);
 
-        verify(mutableAclService).deleteAcl(objectIdentity, true);
-    }
-
-    @Test(expectedExceptions = {IllegalStateException.class})
-    public void testDeleteFromAclWithZeroId() throws Exception {
-        Post object = Post.createNewPost();
-
-        securityService.deleteFromAcl(object);
+        verify(aclManager).deleteFromAcl(Post.class, 1L);
     }
 
     @Test
-    public void testDeletePermission() {
+    public void testDeleteFromAclByClassAndId() throws Exception {
+        securityService.deleteFromAcl(Post.class, 1L);
+
+        verify(aclManager).deleteFromAcl(Post.class, 1L);
+    }
+
+    @Test
+    public void testGrantToCurrentUser() throws Exception {
         mockCurrentUserPrincipal();
-        Post object = Post.createNewPost();
-        object.setId(1L);
-        ObjectIdentity objectIdentity = new ObjectIdentityImpl(Post.class.getCanonicalName(), object.getId());
-        MutableAcl objectAcl = new AclImpl(objectIdentity, 2L, mock(AclAuthorizationStrategy.class),
-                mock(AuditLogger.class));
-        objectAcl.insertAce(objectAcl.getEntries().size(), BasePermission.ADMINISTRATION,
-                new PrincipalSid(USERNAME), true);
-        objectAcl.insertAce(objectAcl.getEntries().size(), BasePermission.READ,
-                new PrincipalSid(USERNAME), true);
-        when(mutableAclService.readAclById(objectIdentity)).thenReturn(objectAcl);
 
+        AclBuilder builder = securityService.grantToCurrentUser();
 
-        securityService.deletePermission(object, new PrincipalSid(USERNAME),
-                BasePermission.ADMINISTRATION);
-
-        assertNotGranted(objectAcl, new PrincipalSid(USERNAME),
-                BasePermission.ADMINISTRATION, "Permission from current user wasn't taken away");
-        verify(mutableAclService, times(1)).readAclById(objectIdentity);
-        verify(mutableAclService, times(1)).updateAcl(objectAcl);
-    }
-
-    private void assertNotGranted(MutableAcl acl, Sid sid, Permission permission, String message) {
-        List<Permission> expectedPermission = new ArrayList<Permission>();
-        expectedPermission.add(permission);
-        List<Sid> expectedSid = new ArrayList<Sid>();
-        expectedSid.add(sid);
-        try {
-            acl.isGranted(expectedPermission, expectedSid, true);
-            fail(message);
-        } catch (NotFoundException e) {
-        }
-    }
-
-
-    private void assertGranted(MutableAcl acl, Sid sid, Permission permission, String message) {
-        List<Permission> expectedPermission = new ArrayList<Permission>();
-        expectedPermission.add(permission);
-        List<Sid> expectedSid = new ArrayList<Sid>();
-        expectedSid.add(sid);
-        try {
-            assertTrue(acl.isGranted(expectedPermission, expectedSid, true), message);
-        } catch (NotFoundException e) {
-            fail(message);
-        }
+        assertTrue(builder.containsSid(USERNAME));
     }
 
     private void mockCurrentUserPrincipal() {

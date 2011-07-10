@@ -130,6 +130,19 @@ public class AclManagerImpl implements AclManager {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteFromAcl(Class clazz, long id) {
+        if (id <= 0) {
+            throw new IllegalStateException("Object id must be greater then 0.");
+        }
+        ObjectIdentity oid = new ObjectIdentityImpl(clazz, id);
+        mutableAclService.deleteAcl(oid, true);
+        logger.debug("Deleted securedObject" + clazz.getSimpleName() + " with id:" + id);
+    }
+
+    /**
      * Creates {@code ObjectIdentity} for {@code securedObject}
      *
      * @param securedObject object

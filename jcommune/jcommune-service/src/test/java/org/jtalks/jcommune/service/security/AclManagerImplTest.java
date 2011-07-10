@@ -127,6 +127,20 @@ public class AclManagerImplTest {
         manager.grant(sids, permissions, object);
     }
 
+    @Test
+    public void testDeleteFromAcl() throws Exception {
+        ObjectIdentity objectIdentity = new ObjectIdentityImpl(target.getClass(), target.getId());
+
+        manager.deleteFromAcl(target.getClass(), ID);
+
+        verify(aclService).deleteAcl(objectIdentity, true);
+    }
+
+    @Test(expectedExceptions = {IllegalStateException.class})
+    public void testDeleteFromAclWithZeroId() throws Exception {
+        manager.deleteFromAcl(target.getClass(), 0);
+    }
+
     private void assertNotGranted(MutableAcl acl, Sid sid, Permission permission, String message) {
         List<Permission> expectedPermission = new ArrayList<Permission>();
         expectedPermission.add(permission);

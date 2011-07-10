@@ -46,4 +46,12 @@ public interface AclManager {
      * @param target      secured object
      */
     void delete(List<Sid> sids, List<Permission> permissions, Persistent target);
+
+    /**
+     * Delete object from acl. All permissions will be removed.
+     *
+     * @param clazz object {@code Class}
+     * @param id    object id
+     */
+    void deleteFromAcl(Class clazz, long id);
 }

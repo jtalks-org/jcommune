@@ -104,6 +104,8 @@ public class AclBuilderImplTest {
     public void testGrantOn() throws Exception {
         builder.user(USERNAME).admin().on(target);
 
+        assertFalse(builder.containsSid(USERNAME));
+        assertFalse(builder.hasPermission(BasePermission.ADMINISTRATION));
         verify(manager).grant(builder.getSids(), builder.getPermissions(), target);
     }
 
@@ -113,6 +115,8 @@ public class AclBuilderImplTest {
 
         builder.user(USERNAME).admin().on(target);
 
+        assertFalse(builder.containsSid(USERNAME));
+        assertFalse(builder.hasPermission(BasePermission.ADMINISTRATION));
         verify(manager).delete(builder.getSids(), builder.getPermissions(), target);
     }
 

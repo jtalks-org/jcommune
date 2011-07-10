@@ -140,6 +140,8 @@ public class AclBuilderImpl implements AclBuilder {
         } else {
             aclManager.delete(sids, permissions, target);
         }
+        sids.clear();
+        permissions.clear();
     }
 
     /**
