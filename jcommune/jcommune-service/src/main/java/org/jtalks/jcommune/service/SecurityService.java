@@ -63,20 +63,26 @@ public interface SecurityService extends UserDetailsService {
     void deleteFromAcl(Class clazz, long id);
 
     /**
+     * Create new builder for granting acl permissions.
      *
-     * @return
+     * @return builder for granting permissions
+     * @see AclBuilder
      */
     AclBuilder grant();
 
     /**
+     * Create new builder for granting acl permissions with added current user.
      *
-     * @return
+     * @return builder for granting permissions
+     * @see AclBuilder
      */
     AclBuilder grantToCurrentUser();
 
     /**
+     * Create new builder for removing acl permissions.
      *
-     * @return
+     * @return builder for removing permissions
+     * @see AclBuilder
      */
     AclBuilder delete();
 }
