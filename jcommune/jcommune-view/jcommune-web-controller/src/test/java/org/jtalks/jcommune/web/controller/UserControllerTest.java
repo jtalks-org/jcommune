@@ -10,14 +10,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 
@@ -67,7 +61,20 @@ public class UserControllerTest {
     public void testRegisterDuplicateUser() throws Exception {
         UserDto dto = getUserDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
-        doThrow(new DuplicateException("User already exists!")).when(userService).registerUser(any(User.class));
+        doThrow(new DuplicateException("User username already exists!")).when(userService).registerUser(any(User.class));
+
+        ModelAndView mav = controller.registerUser(dto, bindingResult);
+
+        assertViewName(mav, "registration");
+        assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
+        verify(userService).registerUser(any(User.class));
+    }
+
+    @Test
+    public void testRegisterUserWithDuplicateEmail() throws Exception {
+        UserDto dto = getUserDto();
+        BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
+        doThrow(new DuplicateException("E-mail mail@mail.com already exists!")).when(userService).registerUser(any(User.class));
 
         ModelAndView mav = controller.registerUser(dto, bindingResult);
 
