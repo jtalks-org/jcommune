@@ -99,10 +99,12 @@ public interface AclBuilder {
 
     /**
      * Set secured object and perform actions with permissions.
+     * This method also clears builder and you can reuse it.
      *
      * @param object secured object
+     * @return clean builder with same action
      */
-    void on(Persistent object);
+    AclBuilder on(Persistent object);
 
     /**
      * Check that sid (role or user) with given name in builder.

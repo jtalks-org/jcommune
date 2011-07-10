@@ -123,12 +123,13 @@ public class AclBuilderImpl implements AclBuilder {
      * {@inheritDoc}
      */
     @Override
-    public void on(Persistent object) {
+    public AclBuilder on(Persistent object) {
         target = object;
         if (sids.isEmpty() || permissions.isEmpty()) {
             throw new IllegalStateException("You can't grant permissions without sids or permissions");
         }
         executeUpdate();
+        return this;
     }
 
     /**
