@@ -8,5 +8,6 @@
     <property column="UUID" name="uuid" not-null="true" unique="true"/>
     <property column="NAME" name="name" not-null="true"/>
     <property column="DESCRIPTION" name="description"/>
+    <property column="DELETED" name="deleted"/>
   </class>
 </hibernate-mapping>
