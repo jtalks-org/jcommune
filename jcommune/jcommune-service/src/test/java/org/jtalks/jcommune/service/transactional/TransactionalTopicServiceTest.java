@@ -20,6 +20,7 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.Persistent;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
@@ -27,14 +28,21 @@ import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.security.AclBuilder;
+import org.mockito.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
 
 /**
  * This test cover {@code TransactionalTopicService} logic validation.
@@ -51,16 +59,19 @@ public class TransactionalTopicServiceTest {
     final long BRANCH_ID = 1L;
     final long POST_ID = 333L;
     final String TOPIC_TITLE = "topic title";
-    final String ANSWER_BODY = "Test Answer Body";
+    private static final String USERNAME = "username";
 
+    final String ANSWER_BODY = "Test Answer Body";
     private TopicService topicService;
     private SecurityService securityService;
     private BranchService branchService;
     private TopicDao topicDao;
     private BranchDao branchDao;
+    private AclBuilder aclBuilder;
 
     @BeforeMethod
     public void setUp() throws Exception {
+        aclBuilder = mockAclBuilder();
         topicDao = mock(TopicDao.class);
         branchService = mock(BranchService.class);
         securityService = mock(SecurityService.class);
@@ -94,6 +105,7 @@ public class TransactionalTopicServiceTest {
         User author = new User();
         when(securityService.getCurrentUser()).thenReturn(author);
         when(topicDao.get(TOPIC_ID)).thenReturn(answeredTopic);
+        when(securityService.grantToCurrentUser()).thenReturn(aclBuilder);
 
         Post createdPost = topicService.addAnswer(TOPIC_ID, ANSWER_BODY);
 
@@ -102,7 +114,10 @@ public class TransactionalTopicServiceTest {
         verify(securityService).getCurrentUser();
         verify(topicDao).get(TOPIC_ID);
         verify(topicDao).saveOrUpdate(answeredTopic);
-        verify(securityService).grantAdminPermissionToCurrentUserAndAdmins(createdPost);
+        verify(securityService).grantToCurrentUser();
+        verify(aclBuilder).role("ROLE_ADMIN");
+        verify(aclBuilder).admin();
+        verify(aclBuilder).on(createdPost);
     }
 
     @Test(expectedExceptions = {IllegalStateException.class})
@@ -123,9 +138,11 @@ public class TransactionalTopicServiceTest {
     @Test
     public void testCreateTopic() throws NotFoundException {
         User author = new User();
+        author.setUsername(USERNAME);
         Branch branch = new Branch();
         when(securityService.getCurrentUser()).thenReturn(author);
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
+        when(securityService.grantToCurrentUser()).thenReturn(aclBuilder);
 
         Topic createdTopic = topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, BRANCH_ID);
 
@@ -138,8 +155,12 @@ public class TransactionalTopicServiceTest {
         verify(securityService).getCurrentUser();
         verify(topicDao).saveOrUpdate(createdTopic);
         verify(branchService).get(BRANCH_ID);
-        verify(securityService).grantAdminPermissionToCurrentUserAndAdmins(createdPost);
-        verify(securityService).grantAdminPermissionToCurrentUserAndAdmins(createdTopic);
+        verify(securityService).grantToCurrentUser();
+        verify(aclBuilder, times(2)).role("ROLE_ADMIN");
+        verify(aclBuilder, times(2)).admin();
+        verify(aclBuilder).user(USERNAME);
+        verify(aclBuilder).on(createdTopic);
+        verify(aclBuilder).on(createdPost);
     }
 
     @Test(expectedExceptions = {IllegalStateException.class})
@@ -251,7 +272,7 @@ public class TransactionalTopicServiceTest {
         topicService.deleteTopic(TOPIC_ID);
     }
 
-    @Test 
+    @Test
     void testSaveTopic() throws NotFoundException {
         String newTitle = "new title";
         String newBody = "new body";
@@ -283,5 +304,18 @@ public class TransactionalTopicServiceTest {
         when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
         topicService.saveTopic(TOPIC_ID, newTitle, newBody);
+    }
+
+    private AclBuilder mockAclBuilder() {
+        AclBuilder newBuilder = mock(AclBuilder.class);
+        when(newBuilder.read()).thenReturn(newBuilder);
+        when(newBuilder.admin()).thenReturn(newBuilder);
+        when(newBuilder.delete()).thenReturn(newBuilder);
+        when(newBuilder.create()).thenReturn(newBuilder);
+        when(newBuilder.write()).thenReturn(newBuilder);
+        when(newBuilder.user(Matchers.anyString())).thenReturn(newBuilder);
+        when(newBuilder.role(Matchers.anyString())).thenReturn(newBuilder);
+        when(newBuilder.on(Matchers.<Persistent>anyObject())).thenReturn(newBuilder);
+        return newBuilder;
     }
 }
