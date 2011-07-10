@@ -38,11 +38,11 @@ public interface BranchService extends EntityService<Branch> {
      * Mark the branch as deleted.
      * @param selectedBranch branch to delete
      */
-    public void deleteBranch(Branch selectedBranch);
+    void deleteBranch(Branch selectedBranch);
 
     /**
      * Save or update branch.
      * @param selectedBranch instance to save
      */
-    public void saveBranch(Branch selectedBranch);
+    void saveBranch(Branch selectedBranch);
 }
