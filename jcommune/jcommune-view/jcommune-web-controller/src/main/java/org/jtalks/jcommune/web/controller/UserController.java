@@ -82,7 +82,13 @@ public class UserController {
         try {
             userService.registerUser(userDto.createUser());
         } catch (DuplicateException e) {
-            result.rejectValue("username", "validation.duplicateuser", "User already exist!");
+            if (e.getMessage().contains("User")) {
+                result.rejectValue("username", "validation.duplicateuser", "User already exists!");
+            }
+            if (e.getMessage().contains("E-mail")) {
+                result.rejectValue("email", "validation.duplicateemail", "E-mail already exists!");
+            }
+
             return new ModelAndView("registration");
         }
 

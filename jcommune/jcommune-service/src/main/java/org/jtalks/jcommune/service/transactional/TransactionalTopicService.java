@@ -104,7 +104,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
 
         Topic topic = new Topic(branchService.get(branchId), currentUser, topicName);
         Post first = new Post(topic, currentUser, bodyText);
-        topic.setFirstPost(first);
+        topic.addFirstPost(first);
 
         dao.saveOrUpdate(topic);
         logger.debug("Created new topic {}", topic.getId());
