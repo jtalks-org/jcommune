@@ -12,6 +12,7 @@
 .idea
 *.iml
 *.ipr
+*.iws
 
 # Netbeans project files
 nbproject
