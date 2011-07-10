@@ -23,6 +23,10 @@ import org.jtalks.antarcticle.model.entity.Comment;
 import org.jtalks.antarcticle.service.CommentService;
 import org.jtalks.jcommune.service.transactional.AbstractTransactionalEntityService;
 
+/**
+ * @author Vitaliy Kravchenko
+ */
+
 public class TransactionalCommentService extends AbstractTransactionalEntityService<Comment, CommentDao> implements CommentService {
     public TransactionalCommentService(CommentDao commentDao) {
         this.dao = commentDao;

@@ -23,6 +23,10 @@ import org.jtalks.antarcticle.model.entity.Article;
 import org.jtalks.antarcticle.service.ArticleService;
 import org.jtalks.jcommune.service.transactional.AbstractTransactionalEntityService;
 
+/**
+ * @author Vitaliy Kravchenko
+ */
+
 public class TransactionalArticleService extends AbstractTransactionalEntityService<Article, ArticleDao> implements ArticleService {
     public TransactionalArticleService(ArticleDao articleDao) {
         this.dao = articleDao;
