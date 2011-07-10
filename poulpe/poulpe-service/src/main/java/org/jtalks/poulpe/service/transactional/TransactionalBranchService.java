@@ -15,7 +15,6 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-
 package org.jtalks.poulpe.service.transactional;
 
 import org.jtalks.poulpe.model.dao.BranchDao;
@@ -25,12 +24,12 @@ import org.jtalks.poulpe.service.BranchService;
 import java.util.List;
 
 /**
+ * 
  * @author Vitaliy Kravchenko
+ * @author Pavel Vervenko
  */
-
 public class TransactionalBranchService extends AbstractTransactionalEntityService<Branch, BranchDao>
         implements BranchService {
-
 
     /**
      * Create an instance of entity based service
@@ -49,13 +48,20 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
         return dao.getAll();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteBranch(Branch selectedBranch) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        selectedBranch.setDeleted(true);
+        dao.saveOrUpdate(selectedBranch);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void saveBranch(Branch selectedBranch) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        dao.saveOrUpdate(selectedBranch);
     }
 }

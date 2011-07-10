@@ -15,7 +15,6 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-
 package org.jtalks.poulpe.model.entity;
 
 /**
@@ -27,6 +26,7 @@ public class Branch extends Persistent {
 
     private String name;
     private String description;
+    private boolean deleted;
 
     /**
      * Set branch name which briefly describes the topics contained in it.
@@ -62,5 +62,21 @@ public class Branch extends Persistent {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+     * Check if branch marked is deleted.
+     * @return deleted
+     */
+    public boolean getDeleted() {
+        return deleted;
+    }
+
+    /**
+     * Mark branch as deleted.
+     * @param deleted 
+     */
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

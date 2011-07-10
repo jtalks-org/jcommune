@@ -15,7 +15,6 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-
 package org.jtalks.poulpe.service.transactional;
 
 import org.jtalks.poulpe.model.dao.BranchDao;
@@ -29,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.*;
 
 /**
  * This test class is intended to test all topic-related forum branch facilities
@@ -38,8 +37,8 @@ import static org.testng.Assert.assertEquals;
  * @author Kirill Afonin
  */
 public class TransactionalBranchServiceTest {
-    private long BRANCH_ID = 1L;
 
+    private long BRANCH_ID = 1L;
     private BranchDao branchDao;
     private BranchService branchService;
 
@@ -79,5 +78,15 @@ public class TransactionalBranchServiceTest {
 
         assertEquals(actualBranchList, expectedBranchList);
         verify(branchDao).getAll();
+    }
+
+    @Test
+    public void testDeleteBranch() {
+        Branch branch = new Branch();
+        
+        branchService.deleteBranch(branch);
+        
+        assertTrue(branch.getDeleted());
+        verify(branchDao).saveOrUpdate(branch);
     }
 }

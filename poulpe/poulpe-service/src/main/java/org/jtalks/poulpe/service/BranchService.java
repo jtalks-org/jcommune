@@ -15,7 +15,6 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-
 package org.jtalks.poulpe.service;
 
 import org.jtalks.poulpe.model.entity.Branch;
@@ -26,8 +25,8 @@ import java.util.List;
  * @author Vitaliy Kravchenko
  * @author Kirill Afonin
  */
-
 public interface BranchService extends EntityService<Branch> {
+
     /**
      * Get list of all persistence objects T currently present in database.
      *
@@ -35,7 +34,15 @@ public interface BranchService extends EntityService<Branch> {
      */
     List<Branch> getAll();
 
+    /**
+     * Mark the branch as deleted.
+     * @param selectedBranch branch to delete
+     */
     public void deleteBranch(Branch selectedBranch);
 
+    /**
+     * Save or update branch.
+     * @param selectedBranch instance to save
+     */
     public void saveBranch(Branch selectedBranch);
 }
