@@ -6,6 +6,7 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.SecurityConstants;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -90,6 +91,14 @@ public class TransactionalUserServiceTest {
         User user = userWithUsernameEmailPassword();
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(true);
         when(userDao.isUserWithUsernameExist(USERNAME)).thenReturn(true);
+
+        userService.registerUser(user);
+    }
+
+    @Test(expectedExceptions = {DuplicateException.class})
+    public void testRegisterUserAnonymous() throws Exception {
+        User user = userWithUsernameEmailPassword();
+        user.setUsername(SecurityConstants.ANONYMOUS_USERNAME);
 
         userService.registerUser(user);
     }

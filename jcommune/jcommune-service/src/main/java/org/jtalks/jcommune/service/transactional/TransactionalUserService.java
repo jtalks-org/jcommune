@@ -22,6 +22,7 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.SecurityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,8 +97,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * @return {@code true} if user with given username exist
      */
     private boolean isUserExist(User user) {
-        return dao.isUserWithUsernameExist(user.getUsername()) ||
-                user.getUsername().equals("anonymousUser");
+        return user.getUsername().equals(SecurityConstants.ANONYMOUS_USERNAME)
+                || dao.isUserWithUsernameExist(user.getUsername());
     }
 
     /**

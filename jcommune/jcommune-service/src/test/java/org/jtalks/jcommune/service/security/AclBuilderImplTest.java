@@ -66,6 +66,13 @@ public class AclBuilderImplTest {
     }
 
     @Test
+    public void testNotContainsUser() {
+        builder.role(ROLE);
+
+        assertFalse(builder.containsSid(USERNAME));
+    }
+
+    @Test
     public void testAdmin() throws Exception {
         builder.admin();
 

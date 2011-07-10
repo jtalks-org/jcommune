@@ -224,4 +224,15 @@ public class TransactionalPrivateMessageServiceTest {
         verify(aclBuilder).on(pm);
     }
 
+    @Test
+    public void testGet() throws NotFoundException {
+        PrivateMessage expected = new PrivateMessage();
+        when(pmDao.get(PM_ID)).thenReturn(expected);
+        when(pmDao.isExist(PM_ID)).thenReturn(true);
+
+        PrivateMessage pm = pmService.get(PM_ID);
+
+        assertEquals(pm, expected);
+    }
+
 }
