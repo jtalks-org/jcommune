@@ -26,12 +26,12 @@ import org.jtalks.jcommune.service.UserDataCacheService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.security.AclBuilder;
-import org.mockito.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 
+import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -224,15 +224,4 @@ public class TransactionalPrivateMessageServiceTest {
         verify(aclBuilder).on(pm);
     }
 
-    private AclBuilder mockAclBuilder() {
-        AclBuilder newBuilder = mock(AclBuilder.class);
-        when(newBuilder.read()).thenReturn(newBuilder);
-        when(newBuilder.admin()).thenReturn(newBuilder);
-        when(newBuilder.delete()).thenReturn(newBuilder);
-        when(newBuilder.create()).thenReturn(newBuilder);
-        when(newBuilder.write()).thenReturn(newBuilder);
-        when(newBuilder.user(Matchers.anyString())).thenReturn(newBuilder);
-        when(newBuilder.role(Matchers.anyString())).thenReturn(newBuilder);
-        return newBuilder;
-    }
 }

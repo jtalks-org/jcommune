@@ -20,7 +20,6 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.Persistent;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
@@ -30,13 +29,13 @@ import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.SecurityConstants;
 import org.jtalks.jcommune.service.security.AclBuilder;
-import org.mockito.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -305,18 +304,5 @@ public class TransactionalTopicServiceTest {
         when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
         topicService.saveTopic(TOPIC_ID, newTitle, newBody);
-    }
-
-    private AclBuilder mockAclBuilder() {
-        AclBuilder newBuilder = mock(AclBuilder.class);
-        when(newBuilder.read()).thenReturn(newBuilder);
-        when(newBuilder.admin()).thenReturn(newBuilder);
-        when(newBuilder.delete()).thenReturn(newBuilder);
-        when(newBuilder.create()).thenReturn(newBuilder);
-        when(newBuilder.write()).thenReturn(newBuilder);
-        when(newBuilder.user(Matchers.anyString())).thenReturn(newBuilder);
-        when(newBuilder.role(Matchers.anyString())).thenReturn(newBuilder);
-        when(newBuilder.on(Matchers.<Persistent>anyObject())).thenReturn(newBuilder);
-        return newBuilder;
     }
 }
