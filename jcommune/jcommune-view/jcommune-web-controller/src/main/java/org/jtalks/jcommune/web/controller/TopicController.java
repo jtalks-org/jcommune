@@ -144,7 +144,7 @@ public final class TopicController {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic or branch not found
      */
-    @RequestMapping(value = "/branch/{branchId}/topic/{topicId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/branch/{branchId}/topic/{topicId}", method = {RequestMethod.POST, RequestMethod.GET})
     public ModelAndView show(@PathVariable("branchId") Long branchId,
                              @PathVariable("topicId") Long topicId,
                              @RequestParam(value = "page", required = false) Integer page,
