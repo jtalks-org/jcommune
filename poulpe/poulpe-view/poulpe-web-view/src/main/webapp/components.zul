@@ -1,0 +1,37 @@
+<?page title="Component List" contentType="text/html;charset=UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<zk>
+    <style>
+        .boldstyle { font-weight: bold; font-size: 14pt; }
+    </style>    
+    <zscript><![CDATA[
+        ListModel model = new BindingListModelList(componentPresenter.getComponents(), true);
+    ]]></zscript>
+
+    <window id="componentWindow" title="Component List" border="none" width="800px"
+            presenter="${componentPresenter}"
+            use="org.jtalks.poulpe.web.controller.ComponentViewImpl">
+    <vlayout>
+        <listbox model="${model}" selectedItem="@{componentPresenter.currentComponent}">
+            <listhead sizable="true">
+                <listheader align="center" label="Component" sort="auto" sclass="boldstyle" />
+                <listheader align="center" label="Description" />
+                <listheader align="center" label="Type" />
+            </listhead>
+            
+            <listitem id="listItem" self="@{each=comp }">
+                <listcell>
+                    <label id="compName" value="@{comp.name}" sclass="boldstyle" />
+                </listcell>
+                <listcell id="compDescription" label="@{comp.description}" />
+                <listcell id="compType" label="@{comp.componentType}" />
+            </listitem>
+        </listbox>
+        <div>
+            <button id="addCompButton" label="Add component" />
+            <button id="delCompButton" label="Delete" />
+        </div>
+    </vlayout>
+</window>
+</zk>

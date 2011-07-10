@@ -1,0 +1,31 @@
+<zk>
+    <window id="editWin" border="normal" width="430px">
+        <grid >
+            <columns>
+                <column label="Field Description" width="100px" />
+                <column label="Field Input" width="310px" />
+            </columns>
+            <rows>
+                <row>
+                    <label value="Name" />
+                    <textbox id="name" value="" width="300px" tabbable="true" />
+                </row>
+                <row>
+                    <label value="Description" />
+                    <textbox id="description" value="" width="300px" tabbable="true" />
+                </row>
+                <row>
+                    <label value="Type" />
+                    <combobox id="type" width="300px" tabbable="true">
+                        <comboitem>Article</comboitem>
+                        <comboitem>Forum</comboitem>
+                    </combobox>
+                </row>
+                <row align="right">
+                    <div />
+                    <button label="OK" onClick="editWin.onClose();"></button>
+                </row>
+            </rows>
+        </grid>
+    </window>
+</zk>
