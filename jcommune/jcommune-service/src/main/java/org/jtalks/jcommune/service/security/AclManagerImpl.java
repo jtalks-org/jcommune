@@ -69,7 +69,8 @@ public class AclManagerImpl implements AclManager {
      * @param target      securable object
      * @param acl         ACL of this object
      */
-    private void grantPermissionsToSids(List<Sid> sids, List<Permission> permissions, Persistent target, MutableAcl acl) {
+    private void grantPermissionsToSids(List<Sid> sids, List<Permission> permissions, Persistent target,
+                                        MutableAcl acl) {
         int aclIndex = acl.getEntries().size();
         for (Sid recipient : sids) {
             for (Permission permission : permissions) {

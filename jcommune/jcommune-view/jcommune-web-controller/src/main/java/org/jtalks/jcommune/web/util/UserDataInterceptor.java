@@ -51,13 +51,12 @@ public class UserDataInterceptor extends HandlerInterceptorAdapter {
      * @param request      current HTTP request
      * @param response     current HTTP response
      * @param handler      chosen handler to execute, for type and/or instance examination
-     * @param modelAndView the <code>ModelAndView</code> that the handler returned
-     *                     (can also be <code>null</code>)
-     * @throws Exception in case of errors
+     * @param modelAndView the {@code ModelAndView} that the handler returned
+     *                     (can also be {@code null})
      */
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
-                           ModelAndView modelAndView) throws Exception {
+                           ModelAndView modelAndView) {
         int newPmCount = service.currentUserNewPmCount();
         request.setAttribute("newPmCount", newPmCount);
     }
