@@ -1,6 +1,6 @@
-# Please keep it mind
-# If you need to ignore files on your local machine only, please use .git/info/exclude instead .gitignore
-# Project specified ignore rules must be located in project directory only
+# Please keep in mind:
+# - If you need to ignore files on your local machine only, please use .git/info/exclude instead .gitignore
+# - Project specified ignore rules must be located in project directory only
 
 # Eclipse project files
 .settings
