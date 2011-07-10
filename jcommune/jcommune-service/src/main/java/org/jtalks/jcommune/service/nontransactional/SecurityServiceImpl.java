@@ -20,13 +20,11 @@ package org.jtalks.jcommune.service.nontransactional;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.Persistent;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.SecurityContextFacade;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.security.AclBuilder;
 import org.jtalks.jcommune.service.security.AclBuilderImpl;
 import org.jtalks.jcommune.service.security.AclManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jtalks.jcommune.service.security.SecurityContextFacade;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -45,14 +43,13 @@ public class SecurityServiceImpl implements SecurityService {
     private UserDao userDao;
     private AclManager aclManager;
     private SecurityContextFacade securityContextFacade;
-    private final Logger logger = LoggerFactory.getLogger(SecurityServiceImpl.class);
 
     /**
      * Constructor creates an instance of service.
      *
      * @param userDao               {@link org.jtalks.jcommune.model.dao.UserDao} to be injected
-     * @param securityContextFacade {@link org.jtalks.jcommune.service.SecurityContextFacade} to be injected
-     * @param aclManager            service for actions with ACLs
+     * @param securityContextFacade {@link org.jtalks.jcommune.service.security.SecurityContextFacade} to be injected
+     * @param aclManager            manager for actions with ACLs
      */
     public SecurityServiceImpl(UserDao userDao, SecurityContextFacade securityContextFacade,
                                AclManager aclManager) {

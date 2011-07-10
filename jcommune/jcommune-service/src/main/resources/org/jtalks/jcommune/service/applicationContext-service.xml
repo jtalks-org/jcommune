@@ -55,13 +55,17 @@
   </bean>
 
   <bean id="securityContextFacade"
-        class="org.jtalks.jcommune.service.nontransactional.SecurityContextHolderFacade"/>
+        class="org.jtalks.jcommune.service.security.SecurityContextHolderFacade"/>
+
+  <bean id="aclManager" class="org.jtalks.jcommune.service.security.AclManagerImpl">
+    <constructor-arg ref="aclService"/>
+  </bean>
 
   <bean id="securityService"
         class="org.jtalks.jcommune.service.nontransactional.SecurityServiceImpl">
     <constructor-arg index="0" ref="userDao"/>
     <constructor-arg index="1" ref="securityContextFacade"/>
-    <constructor-arg index="2" ref="aclService"/>
+    <constructor-arg index="2" ref="aclManager"/>
   </bean>
 
   <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">

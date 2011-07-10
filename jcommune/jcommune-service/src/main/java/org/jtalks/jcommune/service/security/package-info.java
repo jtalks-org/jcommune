@@ -15,24 +15,5 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-package org.jtalks.jcommune.service;
 
-import org.springframework.security.core.context.SecurityContext;
-
-/**
- * Replacement for SecurityContextHolder singleton.
- *
- * @author Kirill Afonin
- */
-public interface SecurityContextFacade {
-
-    /**
-     * @return <code>SecurityContext</code>
-     */
-    SecurityContext getContext();
-
-    /**
-     * @param securityContext <code>SecurityContext</code> to set.
-     */
-    void setContext(SecurityContext securityContext);
-}
+package org.jtalks.jcommune.service.security;
