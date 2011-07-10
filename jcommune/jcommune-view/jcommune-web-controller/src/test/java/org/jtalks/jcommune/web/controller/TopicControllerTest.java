@@ -42,6 +42,7 @@ import static org.testng.Assert.assertEquals;
 /**
  * @author Teterin Alexandre
  * @author Kirill Afonin
+ * @author Max Malakhov
  */
 public class TopicControllerTest {
     public static final long BRANCH_ID = 1L;
@@ -152,7 +153,7 @@ public class TopicControllerTest {
         Topic topic = Topic.createNewTopic();
         topic.setId(TOPIC_ID);
         Post post = Post.createNewPost();
-        topic.addPost(post);
+        topic.setFirstPost(post);
 
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
 
@@ -202,13 +203,6 @@ public class TopicControllerTest {
     private TopicDto getDto() {
         TopicDto dto = new TopicDto();
         dto.setId(TOPIC_ID);
-        dto.setBodyText(TOPIC_CONTENT);
-        dto.setTopicName(TOPIC_THEME);
-        return dto;
-    }
-
-    private TopicDto getTopicDto() {
-        TopicDto dto = new TopicDto();
         dto.setBodyText(TOPIC_CONTENT);
         dto.setTopicName(TOPIC_THEME);
         return dto;

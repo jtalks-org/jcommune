@@ -102,7 +102,7 @@ public class TopicDto {
     public static TopicDto getDtoFor(Topic topic) {
         TopicDto dto = new TopicDto();
         dto.setTopicName(topic.getTitle());
-        dto.setBodyText(topic.getPosts().get(0).getPostContent());
+        dto.setBodyText(topic.getFirstPost().getPostContent());
         dto.setId(topic.getId());
         return dto;
     }

@@ -92,4 +92,10 @@
     </property>
   </bean>
 
+  <bean id="securityContextFacade"
+        class="org.jtalks.jcommune.service.security.SecurityContextHolderFacade"/>
+
+  <bean id="aclManager" class="org.jtalks.jcommune.service.security.AclManagerImpl">
+    <constructor-arg ref="aclService"/>
+  </bean>
 </beans>

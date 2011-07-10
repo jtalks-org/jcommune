@@ -1,10 +1,12 @@
 package org.jtalks.jcommune.service.transactional;
 
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.SecurityConstants;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -12,7 +14,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
 
 /**
  * @author Kirill Afonin
@@ -94,6 +95,14 @@ public class TransactionalUserServiceTest {
         userService.registerUser(user);
     }
 
+    @Test(expectedExceptions = {DuplicateException.class})
+    public void testRegisterUserAnonymous() throws Exception {
+        User user = userWithUsernameEmailPassword();
+        user.setUsername(SecurityConstants.ANONYMOUS_USERNAME);
+
+        userService.registerUser(user);
+    }
+
     private User userWithUsernameEmailPassword() {
         User user = new User();
         user.setEmail(EMAIL);
@@ -116,12 +125,15 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void testUpdateLastLoginTime() throws NotFoundException {
+    public void testUpdateLastLoginTime() throws Exception {
         User user = new User();
+        DateTime dateTimeBefore = new DateTime();
+        Thread.sleep(1000);
 
         userService.updateLastLoginTime(user);
 
-        assertNotNull(user.getLastLogin());
+        DateTime dateTimeAfter = user.getLastLogin();
+        assertEquals(dateTimeAfter.compareTo(dateTimeBefore), 1, "last login time lesser than before test");
         verify(userDao).saveOrUpdate(user);
     }
 }

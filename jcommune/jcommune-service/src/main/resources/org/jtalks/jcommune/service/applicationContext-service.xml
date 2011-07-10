@@ -54,14 +54,11 @@
     <constructor-arg index="3" ref="topicBranchDao"/>
   </bean>
 
-  <bean id="securityContextFacade"
-        class="org.jtalks.jcommune.service.nontransactional.SecurityContextHolderFacade"/>
-
   <bean id="securityService"
         class="org.jtalks.jcommune.service.nontransactional.SecurityServiceImpl">
     <constructor-arg index="0" ref="userDao"/>
     <constructor-arg index="1" ref="securityContextFacade"/>
-    <constructor-arg index="2" ref="aclService"/>
+    <constructor-arg index="2" ref="aclManager"/>
   </bean>
 
   <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">

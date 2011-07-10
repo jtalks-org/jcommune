@@ -101,4 +101,24 @@ public class UserDataCacheServiceImplTest {
         verify(cache).get(USERNAME);
         verify(cache).put(new Element(USERNAME, 1));
     }
+
+
+    @Test
+    public void testIncrementNewMessageCountForKeyNotInCache() throws Exception {
+        when(cache.isKeyInCache(USERNAME)).thenReturn(false);
+
+        userDataCacheService.incrementNewMessageCountFor(USERNAME);
+
+        verify(cache).isKeyInCache(USERNAME);
+    }
+
+
+    @Test
+    public void testDecrementNewMessageCountForKeyNotInCache() throws Exception {
+        when(cache.isKeyInCache(USERNAME)).thenReturn(false);
+
+        userDataCacheService.decrementNewMessageCountFor(USERNAME);
+
+        verify(cache).isKeyInCache(USERNAME);
+    }
 }

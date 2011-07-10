@@ -15,31 +15,24 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-package org.jtalks.jcommune.service.nontransactional;
+package org.jtalks.jcommune.service.security;
 
-import org.jtalks.jcommune.service.SecurityContextFacade;
 import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
- * Default implementation of {@link SecurityContextFacade}
+ * Replacement for SecurityContextHolder singleton.
  *
  * @author Kirill Afonin
  */
-public class SecurityContextHolderFacade implements SecurityContextFacade {
+public interface SecurityContextFacade {
 
     /**
-     * @return <code>SecurityContext</code> from <code>SecurityContextHolder</code>
+     * @return <code>SecurityContext</code>
      */
-    public SecurityContext getContext() {
-        return SecurityContextHolder.getContext();
-    }
+    SecurityContext getContext();
 
     /**
-     * Set <code>SecurityContext</code> to  <code>SecurityContextHolder</code>
      * @param securityContext <code>SecurityContext</code> to set.
      */
-    public void setContext(SecurityContext securityContext) {
-        SecurityContextHolder.setContext(securityContext);
-    }
+    void setContext(SecurityContext securityContext);
 }
