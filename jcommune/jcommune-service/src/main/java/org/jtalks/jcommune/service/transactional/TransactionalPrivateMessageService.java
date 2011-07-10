@@ -93,8 +93,7 @@ public class TransactionalPrivateMessageService
         dao.saveOrUpdate(pm);
         userDataCache.incrementNewMessageCountFor(recipientUsername);
 
-        securityService.grantReadPermissionToCurrentUser(pm);
-        securityService.grantReadPermissionToUser(pm, recipientUsername);
+        securityService.grantToCurrentUser().user(recipientUsername).read().on(pm);
 
         return pm;
     }
@@ -122,6 +121,9 @@ public class TransactionalPrivateMessageService
      * {@inheritDoc}
      */
     public void markAsRead(PrivateMessage pm) {
+        if (pm.isRead()) {
+            return;
+        }
         pm.markAsRead();
         dao.saveOrUpdate(pm);
         userDataCache.decrementNewMessageCountFor(pm.getUserTo().getUsername());
@@ -149,7 +151,7 @@ public class TransactionalPrivateMessageService
         pm.markAsDraft();
         dao.saveOrUpdate(pm);
 
-        securityService.grantAdminPermissionToCurrentUser(pm);
+        securityService.grantToCurrentUser().admin().on(pm);
 
         return pm;
     }
@@ -189,8 +191,7 @@ public class TransactionalPrivateMessageService
         userDataCache.incrementNewMessageCountFor(recipientUsername);
 
         securityService.deleteFromAcl(pm);
-        securityService.grantReadPermissionToCurrentUser(pm);
-        securityService.grantReadPermissionToUser(pm, recipientUsername);
+        securityService.grantToCurrentUser().user(recipientUsername).read().on(pm);
 
         return pm;
     }

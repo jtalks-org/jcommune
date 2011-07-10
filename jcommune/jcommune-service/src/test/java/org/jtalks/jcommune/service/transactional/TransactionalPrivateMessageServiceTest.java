@@ -25,6 +25,8 @@ import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserDataCacheService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.security.AclBuilder;
+import org.mockito.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -52,9 +54,11 @@ public class TransactionalPrivateMessageServiceTest {
     private UserDataCacheService userDataCache;
     private static final long PM_ID = 1L;
     private static final String USERNAME = "username";
+    private AclBuilder aclBuilder;
 
     @BeforeMethod
     public void setUp() throws Exception {
+        aclBuilder = mockAclBuilder();
         pmDao = mock(PrivateMessageDao.class);
         securityService = mock(SecurityService.class);
         userService = mock(UserService.class);
@@ -88,6 +92,7 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testSendMessage() throws NotFoundException {
+        when(securityService.grantToCurrentUser()).thenReturn(aclBuilder);
 
         PrivateMessage pm = pmService.sendMessage("body", "title", USERNAME);
 
@@ -96,8 +101,10 @@ public class TransactionalPrivateMessageServiceTest {
         verify(userService).getByUsername(USERNAME);
         verify(userDataCache).incrementNewMessageCountFor(USERNAME);
         verify(pmDao).saveOrUpdate(pm);
-        verify(securityService).grantReadPermissionToCurrentUser(pm);
-        verify(securityService).grantReadPermissionToUser(pm, USERNAME);
+        verify(securityService).grantToCurrentUser();
+        verify(aclBuilder).user(USERNAME);
+        verify(aclBuilder).read();
+        verify(aclBuilder).on(pm);
     }
 
     @Test(expectedExceptions = NotFoundException.class)
@@ -138,6 +145,7 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testSaveDraft() throws NotFoundException {
+        when(securityService.grantToCurrentUser()).thenReturn(aclBuilder);
 
         PrivateMessage pm = pmService.saveDraft(PM_ID, "body", "title", USERNAME);
 
@@ -145,7 +153,8 @@ public class TransactionalPrivateMessageServiceTest {
         verify(securityService).getCurrentUser();
         verify(userService).getByUsername(USERNAME);
         verify(pmDao).saveOrUpdate(pm);
-        verify(securityService).grantAdminPermissionToCurrentUser(pm);
+        verify(aclBuilder).admin();
+        verify(aclBuilder).on(pm);
     }
 
     @Test
@@ -188,6 +197,7 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testSendDraft() throws NotFoundException {
+        when(securityService.grantToCurrentUser()).thenReturn(aclBuilder);
 
         PrivateMessage pm = pmService.sendDraft(1L, "body", "title", USERNAME);
 
@@ -197,7 +207,21 @@ public class TransactionalPrivateMessageServiceTest {
         verify(userDataCache).incrementNewMessageCountFor(USERNAME);
         verify(pmDao).saveOrUpdate(pm);
         verify(securityService).deleteFromAcl(pm);
-        verify(securityService).grantReadPermissionToCurrentUser(pm);
-        verify(securityService).grantReadPermissionToUser(pm, USERNAME);
+        verify(securityService).grantToCurrentUser();
+        verify(aclBuilder).user(USERNAME);
+        verify(aclBuilder).read();
+        verify(aclBuilder).on(pm);
+    }
+
+    private AclBuilder mockAclBuilder() {
+        AclBuilder newBuilder = mock(AclBuilder.class);
+        when(newBuilder.read()).thenReturn(newBuilder);
+        when(newBuilder.admin()).thenReturn(newBuilder);
+        when(newBuilder.delete()).thenReturn(newBuilder);
+        when(newBuilder.create()).thenReturn(newBuilder);
+        when(newBuilder.write()).thenReturn(newBuilder);
+        when(newBuilder.user(Matchers.anyString())).thenReturn(newBuilder);
+        when(newBuilder.role(Matchers.anyString())).thenReturn(newBuilder);
+        return newBuilder;
     }
 }
