@@ -15,14 +15,21 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-package org.jtalks.antarcticle.model.dao;
 
-import org.jtalks.antarcticle.model.entity.Article;
-import org.jtalks.jcommune.model.dao.Dao;
+package org.jtalks.antarcticle.service.transactional;
+
+import org.jtalks.antarcticle.model.dao.ArticleCollectionDao;
+import org.jtalks.antarcticle.model.entity.ArticleCollection;
+import org.jtalks.antarcticle.service.ArticleCollectionService;
+import org.jtalks.jcommune.service.transactional.AbstractTransactionalEntityService;
 
 /**
- *
- * @author Dmitry Sokolov
+ * @author Vitaliy Kravchenko
  */
-public interface ArticleDao extends Dao<Article> {
+
+public class TransactionalArticleCollectionService extends AbstractTransactionalEntityService<ArticleCollection, ArticleCollectionDao> implements ArticleCollectionService {
+
+    public TransactionalArticleCollectionService(ArticleCollectionDao articleCollectionDao) {
+        this.dao = articleCollectionDao;
+    }
 }

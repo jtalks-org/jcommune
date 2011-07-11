@@ -15,14 +15,12 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-package org.jtalks.antarcticle.model.dao;
 
-import org.jtalks.antarcticle.model.entity.Article;
-import org.jtalks.jcommune.model.dao.Dao;
+package org.jtalks.antarcticle.service;
 
 /**
- *
- * @author Dmitry Sokolov
+ * @author Vitaliy Kravchenko
  */
-public interface ArticleDao extends Dao<Article> {
+
+public interface ArticleCollectionService {
 }

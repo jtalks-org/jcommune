@@ -15,7 +15,6 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-
 package org.jtalks.antarcticle.model.dao.hibernate;
 
 import org.jtalks.antarcticle.model.dao.ArticleDao;
@@ -23,8 +22,10 @@ import org.jtalks.antarcticle.model.entity.Article;
 import org.jtalks.jcommune.model.dao.hibernate.AbstractHibernateDao;
 
 /**
+ *
  * @author Vitaliy Kravchwnko
+ * @author Dmitry Sokolov
  */
-
 public class ArticleHibernateDao extends AbstractHibernateDao<Article> implements ArticleDao {
+    
 }

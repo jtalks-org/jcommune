@@ -79,7 +79,7 @@
       <artifactId>unitils-core</artifactId>
     </dependency>
   </dependencies>
-
+  
   <build>
     <resources>
       <resource>

@@ -18,12 +18,12 @@
 
 package org.jtalks.antarcticle.model.dao.hibernate;
 
-import org.hibernate.PropertyValueException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.antarcticle.model.dao.ArticleCollectionDao;
 import org.jtalks.antarcticle.model.entity.ArticleCollection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -63,7 +63,7 @@ public class ArticleCollectionHibernateDaoTest extends AbstractTransactionalTest
         assertNotSame(articleCollection.getId(), 0, "Id not created");
     }
 
-    @Test(expectedExceptions = PropertyValueException.class)
+    @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void testSaveNotNullViolation() {
         ArticleCollection articleCollection = new ArticleCollection();
 
@@ -89,7 +89,7 @@ public class ArticleCollectionHibernateDaoTest extends AbstractTransactionalTest
         assertReflectionEquals(articleCollection, result);
     }
 
-    @Test(expectedExceptions = PropertyValueException.class)
+    @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void testUpdateNotNullViolation() {
         ArticleCollection articleCollection = ObjectsFactory.getDefaultArticleCollection();
         session.save(articleCollection);

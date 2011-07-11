@@ -15,14 +15,17 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-package org.jtalks.antarcticle.model.dao;
 
-import org.jtalks.antarcticle.model.entity.Article;
-import org.jtalks.jcommune.model.dao.Dao;
+package org.jtalks.antarcticle.model.dao.hibernate;
+
+import org.jtalks.antarcticle.model.dao.CommentDao;
+import org.jtalks.antarcticle.model.entity.Comment;
+import org.jtalks.jcommune.model.dao.hibernate.AbstractHibernateDao;
 
 /**
  *
  * @author Dmitry Sokolov
  */
-public interface ArticleDao extends Dao<Article> {
+public class CommentHibernateDao extends AbstractHibernateDao<Comment> implements CommentDao {
+    
 }

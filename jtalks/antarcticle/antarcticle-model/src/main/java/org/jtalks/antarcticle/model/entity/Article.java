@@ -15,20 +15,24 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-
 package org.jtalks.antarcticle.model.entity;
 
 import org.joda.time.DateTime;
+import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.model.entity.Persistent;
 
 /**
- * @author Vitaliy Kravchwnko
+ *
+ * @author Vitaliy Kravchenko
+ * @author Dmitry Sokolov
  */
 
 public class Article extends Persistent {
-
-    private String articleContent;
+    
     private DateTime creationDate;
+    private User userCreated;
+    private String articleTopic;
+    private String articleContent;
     private ArticleCollection articleCollection;
 
     public Article() {
@@ -64,6 +68,14 @@ public class Article extends Persistent {
         this.articleContent = articleContent;
     }
 
+    public String getArticleTopic() {
+        return articleTopic;
+    }
+
+    public void setArticleTopic(String articleTopic) {
+        this.articleTopic = articleTopic;
+    }
+
     public DateTime getCreationDate() {
         return creationDate;
     }
@@ -72,6 +84,15 @@ public class Article extends Persistent {
         this.creationDate = creationDate;
     }
 
+
+    public User getUserCreated() {
+        return userCreated;
+    }
+
+    public void setUserCreated(User userCreated) {
+        this.userCreated = userCreated;
+	}
+	
     public ArticleCollection getArticleCollection() {
         return articleCollection;
     }

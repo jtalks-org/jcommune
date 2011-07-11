@@ -26,7 +26,8 @@ import org.jtalks.jcommune.model.dao.hibernate.AbstractHibernateDao;
 /**
  * @author Vitaliy Kravchwnko
  */
-public class ArticleCollectionHibernateDao extends AbstractHibernateDao<ArticleCollection> implements ArticleCollectionDao {
+public class ArticleCollectionHibernateDao extends 
+        AbstractHibernateDao<ArticleCollection> implements ArticleCollectionDao {
 
 
 }

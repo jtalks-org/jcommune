@@ -17,12 +17,13 @@
  */
 package org.jtalks.antarcticle.model.dao;
 
-import org.jtalks.antarcticle.model.entity.Article;
+import org.jtalks.antarcticle.model.entity.Comment;
 import org.jtalks.jcommune.model.dao.Dao;
 
 /**
  *
  * @author Dmitry Sokolov
  */
-public interface ArticleDao extends Dao<Article> {
+public interface CommentDao extends Dao<Comment> {
+    
 }
