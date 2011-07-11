@@ -50,14 +50,15 @@ public class PrivateMessageController {
     private PrivateMessageDtoBuilder pmDtoBuilder = new PrivateMessageDtoBuilder();
     private final Logger logger = LoggerFactory.getLogger(getClass());
     /**
-     * Requires {@link PrivateMessageService} for manipulations with messages,
-     * {@link PrivateMessageDtoBuilder} for creating different private message types (message, reply, quote, etc.)
-     *
      * @param pmService the PrivateMessageService instance
      */
     @Autowired
     public PrivateMessageController(PrivateMessageService pmService) {
         this.pmService = pmService;
+    }
+
+    public void setPmDtoBuilder(PrivateMessageDtoBuilder pmDtoBuilder) {
+        this.pmDtoBuilder = pmDtoBuilder;
     }
 
     /**
