@@ -15,5 +15,5 @@
   <query name="getAllArticlesInCollection">
       FROM Article as article
                WHERE article.articleCollection = :articleCollectionId ORDER BY article.creationDate
-  </query>
+  </query>    
 </hibernate-mapping>

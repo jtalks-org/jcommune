@@ -35,4 +35,5 @@ public interface ArticleCollectionService extends EntityService<ArticleCollectio
      * @return the list of all article collections
      */
     List<ArticleCollection> getAll();
+  
 }

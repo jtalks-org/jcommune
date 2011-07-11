@@ -40,6 +40,8 @@ public class TransactionalArticleCollectionService extends AbstractTransactional
      */
     @Override
     public List<ArticleCollection> getAll() {
-        return dao.getAll();
+        return dao.getAll();            
     }
+
+
 }
