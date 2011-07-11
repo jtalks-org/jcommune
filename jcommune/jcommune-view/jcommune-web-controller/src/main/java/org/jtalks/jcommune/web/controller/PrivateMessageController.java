@@ -47,6 +47,7 @@ import javax.validation.Valid;
 public class PrivateMessageController {
 
     private final PrivateMessageService pmService;
+    private PrivateMessageDtoBuilder pmDtoBuilder = new PrivateMessageDtoBuilder();
     private final Logger logger = LoggerFactory.getLogger(getClass());
     /**
      * Requires {@link PrivateMessageService} for manipulations with messages,
@@ -100,7 +101,7 @@ public class PrivateMessageController {
     @RequestMapping(value = "/pm/{pmId}/reply", method = RequestMethod.GET)
     public ModelAndView displayReplyPMPage(@PathVariable("pmId") Long pmId) throws NotFoundException {
         PrivateMessage pm = pmService.get(pmId);
-        PrivateMessageDto dto = PrivateMessageDtoBuilder.getReplyDtoFor(pm);
+        PrivateMessageDto dto = pmDtoBuilder.getReplyDtoFor(pm);
         return new ModelAndView("pm/pmForm", "privateMessageDto", dto);
     }
 
@@ -115,7 +116,7 @@ public class PrivateMessageController {
      @RequestMapping(value = "/pm/{pmId}/quote", method = RequestMethod.GET)
      public ModelAndView displayQuotePMPage(@PathVariable("pmId") Long pmId) throws NotFoundException {
          PrivateMessage pm = pmService.get(pmId);
-         PrivateMessageDto dto = PrivateMessageDtoBuilder.getQuoteDtoFor(pm);
+         PrivateMessageDto dto = pmDtoBuilder.getQuoteDtoFor(pm);
          return new ModelAndView("pm/pmForm", "privateMessageDto", dto);
      }
 
@@ -189,7 +190,7 @@ public class PrivateMessageController {
             return new ModelAndView("pm/inbox");
         }
         return new ModelAndView("pm/pmForm", "privateMessageDto",
-                PrivateMessageDtoBuilder.getFullPmDtoFor(pm));
+                new PrivateMessageDtoBuilder().getFullPmDtoFor(pm));
     }
 
     /**
