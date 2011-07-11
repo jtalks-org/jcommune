@@ -20,13 +20,11 @@ package org.jtalks.poulpe.service.transactional;
 import org.jtalks.poulpe.model.entity.Component;
 import java.util.List;
 import java.util.ArrayList;
-import org.jtalks.poulpe.service.exceptions.NotFoundException;
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeMethod;
 import org.jtalks.poulpe.model.dao.ComponentDao;
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
-
 
 /**
  *
@@ -55,7 +53,6 @@ public class TransactionalComponentServiceTest {
         verify(dao).getAll();
     }
 
-
     @Test
     public void testSaveComponent() {
         Component component = new Component();
@@ -72,5 +69,14 @@ public class TransactionalComponentServiceTest {
         instance.deleteComponent(component);
 
         verify(dao).delete(component.getId());
+    }
+
+    @Test
+    void testGetAvailableTypes() {
+        when(dao.getAvailableTypes()).thenReturn(new ArrayList());
+
+        instance.getAvailableTypes();
+
+        verify(dao).getAvailableTypes();
     }
 }

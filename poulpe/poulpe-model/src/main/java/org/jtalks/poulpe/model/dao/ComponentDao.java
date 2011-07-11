@@ -38,7 +38,7 @@ public interface ComponentDao extends Dao<Component> {
     
     /**
      * Get the list of unoccupied ComponentType.
-     * @return set of ComponentType
+     * @return list of ComponentType
      */
     List<ComponentType> getAvailableTypes();
 }

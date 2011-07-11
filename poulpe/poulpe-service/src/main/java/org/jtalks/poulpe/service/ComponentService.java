@@ -19,6 +19,7 @@ package org.jtalks.poulpe.service;
 
 import java.util.List;
 import org.jtalks.poulpe.model.entity.Component;
+import org.jtalks.poulpe.model.entity.ComponentType;
 
 /**
  * Service for some operations with {@link Component}.
@@ -44,4 +45,10 @@ public interface ComponentService extends EntityService<Component> {
      * @param component component to save
      */
     void saveComponent(Component component);
+
+    /**
+     * Get the list of unoccupied ComponentType.
+     * @return list of ComponentType
+     */
+    List<ComponentType> getAvailableTypes();
 }
