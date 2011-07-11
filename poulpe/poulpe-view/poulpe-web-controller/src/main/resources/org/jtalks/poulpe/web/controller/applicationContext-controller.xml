@@ -10,10 +10,6 @@
        http://www.springframework.org/schema/aop
        http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
-  <!--Declaration of controllers -->
-  <bean id="branchMAV" class="org.jtalks.poulpe.web.controller.BranchModelAndView"
-		p:branchService-ref="topicBranchService"/>
-
   <!--Declaration of presenters -->
   <bean id="componentPresenter" class="org.jtalks.poulpe.web.controller.ComponentPresenter" scope="session">
     <property name="componentService" ref="componentService" />
