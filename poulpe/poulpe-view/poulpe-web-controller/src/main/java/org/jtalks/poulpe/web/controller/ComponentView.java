@@ -12,13 +12,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  * Also add information on how to contact you by electronic and paper mail.
- * Creation date: July 10, 2011
+ * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
 package org.jtalks.poulpe.web.controller;
 
-import org.jtalks.poulpe.model.entity.ComponentType;
-import org.zkoss.zul.ListModelList;
+import java.util.List;
 
 /**
  * Interface which represents information about component displayed in admin panel.
@@ -28,23 +27,63 @@ import org.zkoss.zul.ListModelList;
  */
 public interface ComponentView {
 
+    /**
+     * Returns the component's id.
+     * @return the component's id
+     */
     long getCid();
 
+    /**
+     * Sets the component's id.
+     * @param cid the new value of the component's id
+     */
     void setCid(long cid);
 
+    /**
+     * Returns the component's name.
+     * @return the component's name
+     */
     String getName();
 
+    /**
+     * Sets the component's name.
+     * @param name the new value of the component's name
+     */
     void setName(String name);
 
+    /**
+     * Returns the component's description.
+     * @return the component's description
+     */
     String getDescription();
 
+    /**
+     * Sets the component's description.
+     * @param description the new value of the component's description.
+     */
     void setDescription(String description);
 
-    ComponentType getComponentType();
+    /**
+     * Returns the component's type.
+     * @return the component's type
+     */
+    String getComponentType();
 
-    void setComponentType(ComponentType type);
+    /**
+     * Sets the component's type.
+     * @param type the new value of the component's type
+     */
+    void setComponentType(String type);
+    
+    /**
+     * Updates the list of the components.
+     * @param list the new list of the components
+     */
+    void updateList(List<ComponentView> list);
 
-    ListModelList getModel();
-
-    void setModel(ListModelList model);
+    /**
+     * Shows the window for adding new / editing selected component. 
+     * @param component the component to be saved (empty or null to add new one)
+     */
+    void showEditWindow(ComponentView component);
 }
