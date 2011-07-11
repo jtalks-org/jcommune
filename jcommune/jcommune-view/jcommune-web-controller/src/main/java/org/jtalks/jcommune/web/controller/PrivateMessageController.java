@@ -48,20 +48,15 @@ public class PrivateMessageController {
 
     private final PrivateMessageService pmService;
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
-    private final PrivateMessageDtoBuilder pmDtoBuilder;
-
     /**
      * Requires {@link PrivateMessageService} for manipulations with messages,
      * {@link PrivateMessageDtoBuilder} for creating different private message types (message, reply, quote, etc.)
      *
      * @param pmService the PrivateMessageService instance
-     * @param pmDtoBuilder the PrivateMessageDtoBuilder instance
      */
     @Autowired
-    public PrivateMessageController(PrivateMessageService pmService, PrivateMessageDtoBuilder pmDtoBuilder) {
+    public PrivateMessageController(PrivateMessageService pmService) {
         this.pmService = pmService;
-        this.pmDtoBuilder = pmDtoBuilder;
     }
 
     /**
@@ -105,7 +100,7 @@ public class PrivateMessageController {
     @RequestMapping(value = "/pm/{pmId}/reply", method = RequestMethod.GET)
     public ModelAndView displayReplyPMPage(@PathVariable("pmId") Long pmId) throws NotFoundException {
         PrivateMessage pm = pmService.get(pmId);
-        PrivateMessageDto dto = pmDtoBuilder.getReplyDtoFor(pm);
+        PrivateMessageDto dto = PrivateMessageDtoBuilder.getReplyDtoFor(pm);
         return new ModelAndView("pm/pmForm", "privateMessageDto", dto);
     }
 
@@ -120,7 +115,7 @@ public class PrivateMessageController {
      @RequestMapping(value = "/pm/{pmId}/quote", method = RequestMethod.GET)
      public ModelAndView displayQuotePMPage(@PathVariable("pmId") Long pmId) throws NotFoundException {
          PrivateMessage pm = pmService.get(pmId);
-         PrivateMessageDto dto = pmDtoBuilder.getQuoteDtoFor(pm);
+         PrivateMessageDto dto = PrivateMessageDtoBuilder.getQuoteDtoFor(pm);
          return new ModelAndView("pm/pmForm", "privateMessageDto", dto);
      }
 
@@ -193,7 +188,8 @@ public class PrivateMessageController {
         if (!pm.isDraft()) {
             return new ModelAndView("pm/inbox");
         }
-        return new ModelAndView("pm/pmForm", "privateMessageDto", pmDtoBuilder.getFullPmDtoFor(pm));
+        return new ModelAndView("pm/pmForm", "privateMessageDto",
+                PrivateMessageDtoBuilder.getFullPmDtoFor(pm));
     }
 
     /**

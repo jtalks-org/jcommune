@@ -29,13 +29,15 @@ import org.jtalks.jcommune.web.dto.PrivateMessageDto;
  */
 
 public class PrivateMessageDtoBuilder {
+
+
     /**
      * Create the full private message dto from {@link org.jtalks.jcommune.model.entity.PrivateMessage}
      *
      * @param pm private message for conversion
      * @return dto for full private message
      */
-    public PrivateMessageDto getFullPmDtoFor(PrivateMessage pm) {
+    public static PrivateMessageDto getFullPmDtoFor(PrivateMessage pm) {
         PrivateMessageDto dto = new PrivateMessageDto();
         dto.setBody(pm.getBody());
         dto.setTitle(pm.getTitle());
@@ -49,7 +51,7 @@ public class PrivateMessageDtoBuilder {
      * @param pm private message for conversion in to reply
      * @return dto for reply
      */
-    public PrivateMessageDto getReplyDtoFor(PrivateMessage pm) {
+    public static PrivateMessageDto getReplyDtoFor(PrivateMessage pm) {
         PrivateMessageDto dto = new PrivateMessageDto();
         dto.setRecipient(pm.getUserFrom().getUsername());
         dto.setTitle(pm.prepareTitleForReply());
@@ -61,7 +63,7 @@ public class PrivateMessageDtoBuilder {
      * @param pm private message for conversion in to the quote
      * @return dto for quote
      */
-    public PrivateMessageDto getQuoteDtoFor(PrivateMessage pm) {
+    public static PrivateMessageDto getQuoteDtoFor(PrivateMessage pm) {
         PrivateMessageDto dto = getReplyDtoFor(pm);
         dto.setBody(pm.prepareBodyForQuote());
         return dto;

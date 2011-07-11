@@ -57,7 +57,7 @@ public class PrivateMessageControllerTest {
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
-        controller = new PrivateMessageController(pmService, pmDtoBuilder);
+        controller = new PrivateMessageController(pmService);
     }
 
     @Test
@@ -134,13 +134,26 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void testDisplayReplyPMPage() throws NotFoundException {
-        PrivateMessage pm = new PrivateMessage();
+        PrivateMessage pm = getPrivateMessage();
         when(pmService.get(PM_ID)).thenReturn(pm);
         ModelAndView mav = controller.displayReplyPMPage(PM_ID);
 
         verify(pmService).get(PM_ID);
         verify(pmDtoBuilder).getReplyDtoFor(pm);
         assertViewName(mav, "pm/pmForm");
+        assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
+    }
+
+    @Test
+    public void testDisplayQuotePMPage() throws NotFoundException {
+        PrivateMessage pm = getPrivateMessage();
+        when(pmService.get(PM_ID)).thenReturn(pm);
+        ModelAndView mav = controller.displayQuotePMPage(PM_ID);
+
+        verify(pmService).get(PM_ID);
+        verify(pmDtoBuilder).getQuoteDtoFor(pm);
+        assertViewName(mav, "pm/pmForm");
+        assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
     }
 
     @Test
@@ -193,9 +206,8 @@ public class PrivateMessageControllerTest {
         ModelAndView mav = controller.edit(PM_ID);
 
         assertViewName(mav, "pm/pmForm");
-        ////TODO: needed to fix this test
-        //PrivateMessageDto dto = assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
-        //assertEquals(dto.getId(), PM_ID);
+        PrivateMessageDto dto = assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
+        assertEquals(dto.getId(), PM_ID);
         verify(pmService).get(PM_ID);
     }
 
@@ -252,5 +264,21 @@ public class PrivateMessageControllerTest {
         dto.setTitle("title");
         dto.setRecipient("Recipient");
         return dto;
+    }
+
+    private PrivateMessage getPrivateMessage() {
+        User userSender = new User();
+        userSender.setUsername("Sender");
+        User userRecipient = new User();
+        userSender.setUsername("Recipient");
+
+        PrivateMessage pm = new PrivateMessage();
+        pm.setId(PM_ID);
+        pm.setBody("body");
+        pm.setTitle("title");
+        pm.setUserFrom(userSender);
+        pm.setUserTo(userRecipient);
+
+        return pm;
     }
 }

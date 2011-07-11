@@ -42,8 +42,6 @@ public class PrivateMessageDto {
     @NotEmpty(message = "{not_empty}")
     private String recipient;
 
-    private PrivateMessageDtoBuilder pmDtoBuilder;
-
     /**
      * @return pm id
      */
@@ -114,15 +112,6 @@ public class PrivateMessageDto {
      */
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    /**
-     * G
-     *
-     * @return dto builder for the different private message types (message, reply, quote, etc.).
-     */
-    public PrivateMessageDtoBuilder getPmDtoBuilder() {
-        return pmDtoBuilder;
     }
 
 }
