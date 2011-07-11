@@ -17,9 +17,13 @@
  */
 package org.jtalks.poulpe.model.dao.hibernate;
 
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import org.jtalks.poulpe.model.dao.ComponentDao;
 import org.jtalks.poulpe.model.entity.Component;
+import org.jtalks.poulpe.model.entity.ComponentType;
 
 /**
  * Implementation of dao for {@link Component}. Most of method inherited from superclass.
@@ -35,5 +39,19 @@ public class ComponentHibernateDao extends AbstractHibernateDao<Component> imple
     @SuppressWarnings("unchecked")
     public List<Component> getAll() {
         return getSession().createQuery("from Component").list();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<ComponentType> getAvailableTypes() {
+        List<ComponentType> typeList = new LinkedList();
+        for(Component current: getAll()) {
+            typeList.add(current.getComponentType());
+        }
+        List allTypes = new ArrayList(Arrays.asList(ComponentType.values()));
+        allTypes.removeAll(typeList);
+        return allTypes;
     }
 }

@@ -7,9 +7,9 @@
       <generator class="native"/>
     </id>
     <property column="UUID" name="uuid" not-null="true" unique="true"/>
-    <property column="NAME" name="name" not-null="true"/>
+    <property column="NAME" name="name" not-null="true" unique="true"/>
     <property column="DESCRIPTION" name="description"/>
-    <property name="componentType" column="C_TYPE">
+    <property name="componentType" column="C_TYPE" unique="true">
       <type name="org.hibernate.type.EnumType">
         <param name="enumClass">org.jtalks.poulpe.model.entity.ComponentType</param>
       </type>       
