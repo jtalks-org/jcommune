@@ -18,5 +18,13 @@
 
 package org.jtalks.antarcticle.service;
 
+import org.jtalks.antarcticle.model.entity.Article;
+
+/**
+ * @author Vitaliy Kravchenko
+ */
+
 public interface ArticleService {
+
+    Article getFirstArticleFromCollection(long id);
 }

@@ -20,11 +20,21 @@ package org.jtalks.antarcticle.service.transactional;
 
 import org.jtalks.antarcticle.model.dao.ArticleDao;
 import org.jtalks.antarcticle.model.entity.Article;
+import org.jtalks.antarcticle.model.entity.ArticleCollection;
 import org.jtalks.antarcticle.service.ArticleService;
 import org.jtalks.jcommune.service.transactional.AbstractTransactionalEntityService;
 
+/**
+ * @author Vitaliy Kravchenko
+ */
+
 public class TransactionalArticleService extends AbstractTransactionalEntityService<Article, ArticleDao> implements ArticleService {
     public TransactionalArticleService(ArticleDao articleDao) {
-        this.dao = articleDao;
+        this.dao = articleDao;            
+    }
+
+    @Override
+    public Article getFirstArticleFromCollection(long id) {
+        return dao.getFirstArticleFromCollection(id);         
     }
 }

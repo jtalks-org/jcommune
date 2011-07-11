@@ -21,9 +21,18 @@ package org.jtalks.antarcticle.model.dao;
 import org.jtalks.antarcticle.model.entity.ArticleCollection;
 import org.jtalks.jcommune.model.dao.Dao;
 
+import java.util.List;
+
 /**
  * @author VitaliyKravchenko
  */
 
 public interface ArticleCollectionDao extends Dao<ArticleCollection> {
+
+    /**
+     * Returns the list of all article collections
+     *
+     * @return the list of article collections
+     */
+    List<ArticleCollection> getAll();
 }

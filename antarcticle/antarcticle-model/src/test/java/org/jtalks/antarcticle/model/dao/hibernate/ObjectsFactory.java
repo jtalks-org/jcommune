@@ -46,7 +46,7 @@ public final class ObjectsFactory {
         newArticleCollection.setDescription("articleCollection description");
         return newArticleCollection;
     }
-    
+
     public static Article getDefaultArticle() {
         Article article = new Article();
         article.setArticleTopic("article topic");

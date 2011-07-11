@@ -18,5 +18,9 @@
 
 package org.jtalks.antarcticle.service;
 
+/**
+ * @author Vitaliy Kravchenko
+ */
+
 public interface CommentService {
 }
