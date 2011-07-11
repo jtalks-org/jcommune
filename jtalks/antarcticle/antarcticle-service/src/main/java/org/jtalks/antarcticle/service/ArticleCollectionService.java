@@ -18,9 +18,21 @@
 
 package org.jtalks.antarcticle.service;
 
+import org.jtalks.antarcticle.model.entity.ArticleCollection;
+import org.jtalks.jcommune.service.EntityService;
+
+import java.util.List;
+
 /**
  * @author Vitaliy Kravchenko
  */
 
-public interface ArticleCollectionService {
+public interface ArticleCollectionService extends EntityService<ArticleCollection> {
+
+    /**
+     * Returns the list of all article collections
+     *
+     * @return the list of all article collections
+     */
+    List<ArticleCollection> getAll();
 }

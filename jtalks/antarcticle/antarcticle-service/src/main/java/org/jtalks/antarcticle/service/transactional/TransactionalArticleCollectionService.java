@@ -23,6 +23,8 @@ import org.jtalks.antarcticle.model.entity.ArticleCollection;
 import org.jtalks.antarcticle.service.ArticleCollectionService;
 import org.jtalks.jcommune.service.transactional.AbstractTransactionalEntityService;
 
+import java.util.List;
+
 /**
  * @author Vitaliy Kravchenko
  */
@@ -31,5 +33,13 @@ public class TransactionalArticleCollectionService extends AbstractTransactional
 
     public TransactionalArticleCollectionService(ArticleCollectionDao articleCollectionDao) {
         this.dao = articleCollectionDao;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<ArticleCollection> getAll() {
+        return dao.getAll();
     }
 }

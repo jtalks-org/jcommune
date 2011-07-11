@@ -31,7 +31,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.List;
+
 import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
@@ -96,5 +99,17 @@ public class ArticleCollectionHibernateDaoTest extends AbstractTransactionalTest
 
         articleCollection.setTitle(null);
         dao.saveOrUpdate(articleCollection);
+    }
+
+    @Test
+    public void testGetAll() {
+        ArticleCollection articleCollection1 = ObjectsFactory.getDefaultArticleCollection();
+        session.save(articleCollection1);
+        ArticleCollection articleCollection2 = ObjectsFactory.getDefaultArticleCollection();
+        session.save(articleCollection2);
+
+        List<ArticleCollection> articleCollections = dao.getAll();
+
+        assertEquals(articleCollections.size(), 2);
     }
 }
