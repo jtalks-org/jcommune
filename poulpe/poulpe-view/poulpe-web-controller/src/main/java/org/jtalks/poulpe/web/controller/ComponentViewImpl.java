@@ -12,16 +12,23 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  * Also add information on how to contact you by electronic and paper mail.
- * Creation date: July 10, 2011
+ * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
 package org.jtalks.poulpe.web.controller;
 
-import org.jtalks.poulpe.model.entity.ComponentType;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Components;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.ext.AfterCompose;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Longbox;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 /**
@@ -33,84 +40,169 @@ import org.zkoss.zul.Window;
  */
 public class ComponentViewImpl extends Window implements ComponentView, AfterCompose {
 
-    private static final long serialVersionUID = 481006835514635561L;
+    private static final long serialVersionUID = -3927090308078350369L;
 
-    private long cid;
-    private String name;
-    private String description;
-    private ComponentType componentType;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+    
+    /** The path to the web-page for adding / editing component. */
+    private static final String EDIT_COMPONENT_URL = "/WEB-INF/pages/edit_component.zul";
+
+    private Longbox cid;
+    private Textbox name;
+    private Textbox description;
+    private Combobox componentType;
     private ListModelList model;
     private ComponentPresenter presenter;
 
+    /** {@inheritDoc} */
+    @Override
     public void afterCompose() {
         Components.wireVariables(this, this);
         Components.addForwards(this, this);
-        presenter.initView(this);
+        if (!presenter.hasView()) {
+            presenter.initView(this);
+        }
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public ComponentType getComponentType() {
-        return componentType;
-    }
-
+    /** {@inheritDoc} */
+    @Override
     public long getCid() {
-        return cid;
+        return cid.getValue();
     }
 
-    public ListModelList getModel() {
-        return model;
+    /** {@inheritDoc} */
+    @Override
+    public void setCid(long cid) {
+        this.cid.setValue(cid);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public String getName() {
+        return name.getValue();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setName(String compName) {
+        this.name.setValue(compName);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getDescription() {
+        return description.getValue();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setDescription(String description) {
+        this.description.setValue(description);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getComponentType() {
+        return componentType.getValue();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setComponentType(String type) {
+        this.componentType.setValue(type);
+    }
+
+    /**
+     * Returns the presenter which is linked with this window.
+     * 
+     * @return the presenter which is linked with this window
+     */
     public ComponentPresenter getPresenter() {
         return presenter;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setName(String compName) {
-        this.name = compName;
-    }
-
-    public void setComponentType(ComponentType type) {
-        this.componentType = type;
-    }
-
-    public void setCid(long cid) {
-        this.cid = cid;
-    }
-
-    public void setModel(ListModelList model) {
-        this.model = model;
-    }
-
+    /**
+     * Sets the presenter which is linked with this window.
+     * 
+     * @param presenter
+     *            new value of the presenter which is linked with this window
+     */
     public void setPresenter(ComponentPresenter presenter) {
         this.presenter = presenter;
     }
 
-    public void onClick$addCompButton() throws InterruptedException {
-        Messagebox.show("add" + (presenter == null));
+    /** {@inheritDoc} */
+    @Override
+    public void updateList(List<ComponentView> list) {
+        model.clear();
+        model.addAll(list);
     }
 
-    public void onClick$delCompButton() throws InterruptedException {
+    /** {@inheritDoc} */
+    @Override
+    public void showEditWindow(ComponentView component) {
+        if (component.getName() == null) {
+            component.setCid(0);
+            component.setName("");
+            component.setDescription("");
+            component.setComponentType("");
+        }
+        Window win = (Window) Executions.createComponents(EDIT_COMPONENT_URL, null, null);
+        ((Longbox) win.getFellow("cid")).setValue(component.getCid());
+        ((Textbox) win.getFellow("name")).setText(component.getName());
+        ((Textbox) win.getFellow("description")).setText(component.getDescription());
+        ((Textbox) win.getFellow("componentType")).setText(component.getComponentType());
+        try {
+            win.doModal();
+        } catch (Exception e) {
+            try {
+                Messagebox.show("Something wrong with showing popup window. Try again please.",
+                        "Problem with showing popup window", Messagebox.OK, Messagebox.QUESTION);
+            } catch (InterruptedException e1) {
+                logger.error("Something wrong with showing popup window.", e1);
+            }
+            logger.error("Something wrong with showing popup window.", e);
+        }
+    }
+
+    /**
+     * Tells to presenter that the window for adding new component must be
+     * shown.
+     * 
+     * @see ComponentPresenter
+     */
+    public void onClick$addCompButton() {
+        presenter.addComponent();
+    }
+
+    /**
+     * Tells to presenter to delete selected component (it knows which one it
+     * is).
+     * 
+     * @see ComponentPresenter
+     */
+    public void onClick$delCompButton() {
         presenter.deleteComponent();
-
     }
 
-    public void onClick$editCompButton() throws InterruptedException {
+    /**
+     * Tells to presenter that the window for editing selected component must be
+     * shown.
+     * 
+     * @see ComponentPresenter
+     */
+    public void onDoubleClick$listItem() {
         presenter.editComponent();
     }
 
-    public void onDoubleClick$listItem() throws InterruptedException {
-        presenter.editComponent();
+    /**
+     * Tells to presenter to save created or edited component in component list.
+     * 
+     * @see ComponentPresenter
+     */
+    public void onClick$saveCompButton() {
+        presenter.saveComponent(this);
+        onClose();
     }
 
 }
