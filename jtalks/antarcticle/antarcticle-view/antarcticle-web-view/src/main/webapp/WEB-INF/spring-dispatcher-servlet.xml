@@ -8,7 +8,7 @@
        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
        ">
 
-  <context:component-scan base-package="org.jtalks.jcommune.web.controller" use-default-filters="false">
+  <context:component-scan base-package="org.jtalks.antarcticle.web.controller" use-default-filters="false">
     <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
   </context:component-scan>
 
@@ -20,7 +20,5 @@
     <property name="prefix" value="/WEB-INF/jsp/"/>
     <property name="suffix" value=".jsp"/>
   </bean>
-
-  
 
 </beans>

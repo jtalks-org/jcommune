@@ -46,6 +46,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.jtalks.antarcticle</groupId>
+      <artifactId>antarcticle-web-controller</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
     </dependency>
