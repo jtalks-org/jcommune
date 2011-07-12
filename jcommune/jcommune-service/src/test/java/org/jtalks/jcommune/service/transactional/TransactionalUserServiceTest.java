@@ -6,7 +6,7 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.SecurityConstants;
+import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

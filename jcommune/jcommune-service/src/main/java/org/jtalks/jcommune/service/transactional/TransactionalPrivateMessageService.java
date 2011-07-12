@@ -26,7 +26,7 @@ import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserDataCacheService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.SecurityConstants;
+import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;

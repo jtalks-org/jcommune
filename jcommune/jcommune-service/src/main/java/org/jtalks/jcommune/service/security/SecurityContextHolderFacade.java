@@ -35,7 +35,7 @@ public class SecurityContextHolderFacade implements SecurityContextFacade {
     }
 
     /**
-     * Set <{@code SecurityContext} to  {@code SecurityContextHolder}
+     * Set {@code SecurityContext} to  {@code SecurityContextHolder}
      *
      * @param securityContext {@code SecurityContext} to set.
      */
