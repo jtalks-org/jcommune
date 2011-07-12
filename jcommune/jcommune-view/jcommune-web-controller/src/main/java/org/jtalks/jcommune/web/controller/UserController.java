@@ -19,7 +19,8 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.DuplicateException;
+import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
+import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,14 +82,11 @@ public class UserController {
 
         try {
             userService.registerUser(userDto.createUser());
-        } catch (DuplicateException e) {
-            if (e.getMessage().contains("User")) {
-                result.rejectValue("username", "validation.duplicateuser", "User already exists!");
-            }
-            if (e.getMessage().contains("E-mail")) {
-                result.rejectValue("email", "validation.duplicateemail", "E-mail already exists!");
-            }
-
+        } catch (DuplicateUserException e) {
+            result.rejectValue("username", "validation.duplicateuser");
+            return new ModelAndView("registration");
+        } catch (DuplicateEmailException e) {
+            result.rejectValue("email", "validation.duplicateemail");
             return new ModelAndView("registration");
         }
 

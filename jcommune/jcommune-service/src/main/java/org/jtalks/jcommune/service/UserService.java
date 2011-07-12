@@ -18,7 +18,9 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
 import org.jtalks.jcommune.service.exceptions.DuplicateException;
+import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 /**
@@ -46,7 +48,7 @@ public interface UserService extends EntityService<User> {
      * @throws DuplicateException if user with username or email already exist
      * @see User
      */
-    User registerUser(User user) throws DuplicateException;
+    User registerUser(User user) throws DuplicateUserException,DuplicateEmailException;
 
     /**
      * Updates user last login time to current time.

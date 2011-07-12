@@ -22,7 +22,12 @@
   </bean>
 
   <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-    <property name="basename" value="classpath:/org/jtalks/jcommune/web/view/messages"/>
+    <property name="basenames">
+      <list>
+        <value>classpath:/org/jtalks/jcommune/web/view/messages</value>
+        <value>classpath:/ValidationMessages</value>
+      </list>
+    </property>
     <property name="defaultEncoding" value="UTF-8"/>
   </bean>
 

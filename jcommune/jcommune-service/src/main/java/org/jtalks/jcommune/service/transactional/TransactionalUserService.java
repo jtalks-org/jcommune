@@ -20,7 +20,9 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
 import org.jtalks.jcommune.service.exceptions.DuplicateException;
+import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.SecurityConstants;
 import org.slf4j.Logger;
@@ -63,16 +65,16 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public User registerUser(User user) throws DuplicateException {
+    public User registerUser(User user) throws DuplicateUserException, DuplicateEmailException {
         if (isUserExist(user)) {
             String msg = "User " + user.getUsername() + " already exists!";
             logger.warn(msg);
-            throw new DuplicateException(msg);
+            throw new DuplicateUserException(msg);
         }
         if (isEmailExist(user.getEmail())) {
             String msg = "E-mail " + user.getEmail() + " already exists!";
             logger.warn(msg);
-            throw new DuplicateException(msg);
+            throw new DuplicateEmailException(msg);
         }
 
         dao.saveOrUpdate(user);

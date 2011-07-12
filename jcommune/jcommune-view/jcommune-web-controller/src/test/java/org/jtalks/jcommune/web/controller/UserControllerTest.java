@@ -2,7 +2,9 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
 import org.jtalks.jcommune.service.exceptions.DuplicateException;
+import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
 import org.jtalks.jcommune.web.dto.UserDto;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
@@ -61,7 +63,7 @@ public class UserControllerTest {
     public void testRegisterDuplicateUser() throws Exception {
         UserDto dto = getUserDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
-        doThrow(new DuplicateException("User username already exists!")).when(userService).registerUser(any(User.class));
+        doThrow(new DuplicateUserException("User username already exists!")).when(userService).registerUser(any(User.class));
 
         ModelAndView mav = controller.registerUser(dto, bindingResult);
 
@@ -74,7 +76,7 @@ public class UserControllerTest {
     public void testRegisterUserWithDuplicateEmail() throws Exception {
         UserDto dto = getUserDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
-        doThrow(new DuplicateException("E-mail mail@mail.com already exists!")).when(userService).registerUser(any(User.class));
+        doThrow(new DuplicateEmailException("E-mail mail@mail.com already exists!")).when(userService).registerUser(any(User.class));
 
         ModelAndView mav = controller.registerUser(dto, bindingResult);
 
