@@ -21,6 +21,10 @@
   </tx:advice>
 
   <!--Decalaration services bean -->
+  <bean id="branchService"
+        class="org.jtalks.poulpe.service.transactional.TransactionalBranchService">
+    <constructor-arg index="0" ref="branchDao"/>
+  </bean>
   <bean id="topicBranchService"
         class="org.jtalks.poulpe.service.transactional.TransactionalBranchService">
     <constructor-arg index="0" ref="branchDao"/>

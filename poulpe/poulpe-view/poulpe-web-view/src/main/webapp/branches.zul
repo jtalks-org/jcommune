@@ -1,19 +1,45 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?page title="Branch List" contentType="text/html;charset=UTF-8"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
-<zk>
-  <window title="Branch Editor" width="640px" border="normal">
-    <listbox id="list" multiple="true" rows="12" 
-      model="@{branchMAV.branches}"
-      selectedItem="@{branchMAV.selectedBranch}">
-      <listhead>
-        <listheader label="Name" />
-        <listheader label="Description"/>
-      </listhead>
-      <listitem self="@{each=branch}">
-        <listcell label="@{branch.name}"/>
-        <listcell label="@{branch.description}"/>
-      </listitem>
-    </listbox>
-  </window>
-</zk>
+<window title="Branch Editor" width="100%"  border="normal" presenter="${branchPresenter}" use="org.jtalks.poulpe.web.controller.BranchViewImpl" >
+   <listbox sizedByContent="true" id="branchesList">
+            <listfoot>
+              <listfooter>
+               <button id="addBranchButton" label="+" />
+               <button id="delBranchButton" label="-" />
+              </listfooter>
+            </listfoot>
+    </listbox>   
+
+<!-- New Branch Dialog -->
+    <window title="New Branch" id="newBranchDialog" border="normal" visible="false" mode="modal">
+        <vbox>
+            <hbox>
+                Branch Name: <textbox id="branchName"/>
+            </hbox>
+            <hbox>
+                Description: <textbox id="branchDescription"/>
+            </hbox>
+            <hbox>
+                <button id="addButton" label="add" />
+                <button id="closeButton" label="close" />
+            </hbox>
+        </vbox>
+    </window>
+    
+<!-- Edit Branch Dialog -->
+    <window title="Edit Branch" id="editBranchDialog" border="normal" visible="false" mode="modal">
+        <vbox>
+            <hbox>
+                Branch Name: <textbox id="branchName"/>
+            </hbox>
+            <hbox>
+                Description: <textbox id="branchDescription"/>
+            </hbox>
+            <hbox>
+                <button id="editButton" label="add" />
+                <button id="closeButton" label="close" />                
+            </hbox>
+        </vbox>
+    </window>
+</window>
