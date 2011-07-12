@@ -57,6 +57,7 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
 
     /**
      * Marks private message as read.
+     * If message is read, nothing happens.
      *
      * @param pm read private message
      */
