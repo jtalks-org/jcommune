@@ -30,7 +30,7 @@ import org.jtalks.poulpe.service.ComponentService;
 //3) control for componentType and componentName. Component.Name is unique in DB???
 //4) javadoc;
 //5) edit_component.zul : items of combo-box
-//6) view in presenter is transient???
+//6) logger
 
 /**
  * The class for mediating between model and view representation of components.
@@ -40,41 +40,38 @@ import org.jtalks.poulpe.service.ComponentService;
  */
 public class ComponentPresenter {
 
-    /** The object that is responsible for updating view (content of web-pages). */
-    private ComponentView view;
+    /** zzzzzzThe object that is responsible for updating view (content of web-pages). */
+    private ComponentListView listView;
+    private ComponentItemView itemView;
 
     /** The current (selected) component from the list of components. */
-    private ComponentViewListItem currentComponent;
+    private ComponentView selectedComponent;
 
     /** The service instance to manipulate with stored components. */
     private ComponentService componentService;
 
     /**
-     * Initialises the object that is responsible for updating view (content of
+     * zzzInitialises the object that is responsible for updating view (content of
      * web-pages).
      * 
      * @param view
      *            the object that is responsible for updating view (content of
      *            web-pages)
      */
-    public void initView(ComponentView view) {
-        // try {
-        // Messagebox.show(Integer.toString(view.hashCode()));
-        // } catch (InterruptedException e) {
-        // e.printStackTrace();
-        // }
-        this.view = view;
+    public void initListView(ComponentListView view) {
+        this.listView = view;
     }
-
+    
     /**
-     * Checks if this presenter has the object that is responsible for updating
-     * view (content of web-pages).
+     * zzzzzInitialises the object that is responsible for updating view (content of
+     * web-pages).
      * 
-     * @return true if this presenter has the object that is responsible for
-     *         updating view (content of web-pages), false otherwise
+     * @param view
+     *            the object that is responsible for updating view (content of
+     *            web-pages)
      */
-    public boolean hasView() {
-        return view != null;
+    public void initItemView(ComponentItemView view) {
+        this.itemView = view;
     }
 
 //    /**
@@ -122,7 +119,7 @@ public class ComponentPresenter {
      * @return the current component from the list of components
      */
     public ComponentView getCurrentComponent() {
-        return currentComponent;
+        return selectedComponent;
     }
 
     /**
@@ -132,8 +129,8 @@ public class ComponentPresenter {
      *            the new value of the current component from the list of
      *            components
      */
-    public void setCurrentComponent(ComponentViewListItem currentComponent) {
-        this.currentComponent = currentComponent;
+    public void setCurrentComponent(ComponentViewItem currentComponent) {
+        this.selectedComponent = currentComponent;
     }
 
     /**
@@ -144,17 +141,17 @@ public class ComponentPresenter {
     // TODO maybe it's too complicated: view delegates showing window to
     // presenter which delegates it to view %-) 
     public void addComponent() {
-        currentComponent = new ComponentViewListItem();
-        view.showEditWindow(currentComponent);
+        selectedComponent = new ComponentViewItem();
+        listView.showEditWindow(selectedComponent);
     }
 
     /**
      * Removes selected component from the component list.
      */
     public void deleteComponent() {
-        Component victim = ComponentViewModelConverter.view2Model(currentComponent);
+        Component victim = ComponentViewModelConverter.view2Model(selectedComponent);
         componentService.deleteComponent(victim);
-        view.updateList(getComponents());
+        listView.updateList(getComponents());
     }
 
     /**
@@ -163,19 +160,16 @@ public class ComponentPresenter {
      * @throws InterruptedException
      */
     public void editComponent() {
-        view.showEditWindow(currentComponent);
+        listView.showEditWindow(selectedComponent);
     }
 
     /**
      * Saves the created or edited component in component list.
-     * 
-     * @param viewComponent
-     *            the created or edited component in view representation
      */
-    public void saveComponent(ComponentView viewComponent) {
-        Component newbie = ComponentViewModelConverter.view2Model(viewComponent);
+    public void saveComponent() {
+        Component newbie = ComponentViewModelConverter.view2Model(itemView);
         componentService.saveComponent(newbie);
-        viewComponent.updateList(getComponents());
+        listView.updateList(getComponents());
         // TODO try to do it without additional request to database, using model
         // as list.
     }
@@ -206,7 +200,7 @@ final class ComponentViewModelConverter {
      * @return the component in view representation
      */
     public static ComponentView model2View(Component model) {
-        ComponentViewListItem view = new ComponentViewListItem();
+        ComponentViewItem view = new ComponentViewItem();
         view.setCid(model.getId());
         view.setName(model.getName());
         view.setDescription(model.getDescription());

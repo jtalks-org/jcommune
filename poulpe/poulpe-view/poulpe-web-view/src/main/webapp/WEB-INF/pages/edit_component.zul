@@ -2,7 +2,7 @@
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <zk>
     <window id="editCompWindow" border="normal" width="430px" presenter="${componentPresenter}"
-            use="org.jtalks.poulpe.web.controller.ComponentViewImpl">
+            use="org.jtalks.poulpe.web.controller.ComponentItemView">
         <longbox id="cid" visible="false" />
         <grid>
             <columns>
@@ -20,7 +20,7 @@
                 </row>
                 <row>
                     <label value="Type" />
-                    <combobox id="componentType" width="300px" tabbable="true">
+                    <combobox id="componentType" width="300px" tabbable="true" readonly="true">
                         <comboitem label="ARTICLE" />
                         <comboitem label="FORUM" />
                     </combobox>
