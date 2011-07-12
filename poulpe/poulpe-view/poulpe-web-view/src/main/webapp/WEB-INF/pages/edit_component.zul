@@ -12,18 +12,15 @@
             <rows>
                 <row>
                     <label value="Name" />
-                    <textbox id="name" width="300px" tabbable="true" />
+                    <textbox id="name" width="300px" onBlur='self.setConstraint("no empty")' />
                 </row>
                 <row>
                     <label value="Description" />
-                    <textbox id="description" width="300px" tabbable="true" />
+                    <textbox id="description" width="300px" />
                 </row>
                 <row>
                     <label value="Type" />
-                    <combobox id="componentType" width="300px" tabbable="true" readonly="true">
-                        <comboitem label="ARTICLE" />
-                        <comboitem label="FORUM" />
-                    </combobox>
+                    <combobox id="componentType" width="300px" readonly="true"  onBlur='self.setConstraint("no empty")' />
                 </row>
                 <row align="right">
                     <div />

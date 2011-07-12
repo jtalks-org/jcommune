@@ -23,7 +23,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.ext.AfterCompose;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Longbox;
 import org.zkoss.zul.Messagebox;
@@ -42,7 +45,7 @@ public class ComponentListView extends Window implements AfterCompose {
     private static final long serialVersionUID = 4042325860309593122L;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    
+
     /** The path to the web-page for adding / editing component. */
     private static final String EDIT_COMPONENT_URL = "/WEB-INF/pages/edit_component.zul";
 
@@ -76,14 +79,27 @@ public class ComponentListView extends Window implements AfterCompose {
         this.presenter = presenter;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Updates the list of the components.
+     * 
+     * @param list
+     *            the new list of the components
+     */
     public void updateList(List<ComponentView> list) {
         model.clear();
         model.addAll(list);
     }
 
-    /** {@inheritDoc} */
-    public void showEditWindow(ComponentView component) {
+    /**
+     * Shows the window for adding new / editing selected component.
+     * 
+     * @param component
+     *            the component to be saved (empty or null to add new one)
+     * @param types
+     *            the list of types {@code component} could be
+     */
+    public void showEditWindow(ComponentView component, List<String> types) {
+        logger.debug("b.showEditWindow(c,t): t.cid = {}", component.getCid());
         if (component == null || component.getName() == null) {
             component = new ComponentViewItem();
             component.setCid(0);
@@ -91,11 +107,16 @@ public class ComponentListView extends Window implements AfterCompose {
             component.setDescription("");
             component.setComponentType("");
         }
+        logger.debug("a.showEditWindow(c,t): t.cid = {}", component.getCid());
         Window win = (Window) Executions.createComponents(EDIT_COMPONENT_URL, null, null);
         ((Longbox) win.getFellow("cid")).setValue(component.getCid());
         ((Textbox) win.getFellow("name")).setText(component.getName());
         ((Textbox) win.getFellow("description")).setText(component.getDescription());
-        ((Textbox) win.getFellow("componentType")).setText(component.getComponentType());
+        Combobox cb = ((Combobox) win.getFellow("componentType"));
+        cb.setValue(component.getComponentType());
+        for (String string : types) {
+            cb.appendItem(string);
+        }
         try {
             win.doModal();
         } catch (Exception e) {
@@ -126,7 +147,22 @@ public class ComponentListView extends Window implements AfterCompose {
      * @see ComponentPresenter
      */
     public void onClick$delCompButton() {
-        presenter.deleteComponent();
+        String name = presenter.getSelectedComponent().getName();
+        try {
+            Messagebox.show("Are you sure that you wanna delete " + name + "?",
+                    "Delete " + name + "?", Messagebox.YES | Messagebox.CANCEL,
+                    Messagebox.QUESTION, Messagebox.CANCEL, new EventListener() {
+                        /** {@inheritDoc} */
+                        @Override
+                        public void onEvent(Event event) {
+                            if ((Integer) event.getData() == Messagebox.YES) {
+                                presenter.deleteComponent();
+                            }
+                        }
+                    });
+        } catch (InterruptedException e) {
+            logger.error("Error of showing message box comfirming deleting", e);
+        }
     }
 
     /**
@@ -139,8 +175,61 @@ public class ComponentListView extends Window implements AfterCompose {
         presenter.editComponent();
     }
 
-    public void deleteFromModel(ComponentViewItem currentComponent) {
-        model.remove(currentComponent);        
+    /**
+     * Removes from the displayed component list the {@code component} item. As
+     * result user will see updated list.
+     * 
+     * @param component
+     *            item to be deleted.
+     */
+    public void removeFromModel(ComponentViewItem component) {
+        model.remove(component);
+    }
+
+    /**
+     * Adds to the displayed component list the {@code component} item. As
+     * result user will see updated list.
+     * 
+     * @param component
+     *            item to be added.
+     */
+    public void addToModel(ComponentViewItem component) {
+        model.add(component);
+    }
+
+    /**
+     * Replaces in the displayed component list the old value of
+     * {@code component} item by the new one. As result user will see updated
+     * list. It searches the component to be replaced by its id.
+     * 
+     * @param view
+     *            the replacing item.
+     */
+    public void replaceInModel(ComponentViewItem view) {
+        for (int i = 0; i < model.size(); i++) {
+            ComponentViewItem item = (ComponentViewItem) model.get(i);
+            if (item.getCid() == view.getCid()) {
+                model.set(i, view);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Searches the component's id by its name.
+     * 
+     * @param name
+     *            the component's name
+     * @return the component's id whose name is {@code name}
+     */
+    public long getCidByName(String name) {
+        for (int i = 0; i < model.size(); i++) {
+            ComponentViewItem item = (ComponentViewItem) model.get(i);
+            if (name.equals(item.getName())) {
+                return item.getCid();
+            }
+        }
+        return -1;
     }
 
 }

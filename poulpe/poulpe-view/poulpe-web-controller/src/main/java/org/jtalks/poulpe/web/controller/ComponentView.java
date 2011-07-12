@@ -74,17 +74,4 @@ public interface ComponentView {
      */
     void setComponentType(String type);
     
-//    /**
-//     * Updates the list of the components.
-//     * @param list the new list of the components
-//     */
-//    void updateList(List<ComponentView> list);
-//
-//    /**
-//     * Shows the window for adding new / editing selected component. 
-//     * @param component the component to be saved (empty or null to add new one)
-//     */
-//    void showEditWindow(ComponentView component);
-//
-//    void deleteFromModel(ComponentViewListItem currentComponent);
 }

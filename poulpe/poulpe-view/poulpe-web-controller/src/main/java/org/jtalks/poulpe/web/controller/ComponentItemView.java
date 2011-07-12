@@ -17,10 +17,13 @@
  */
 package org.jtalks.poulpe.web.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Longbox;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -34,6 +37,8 @@ import org.zkoss.zul.Window;
 public class ComponentItemView extends Window implements ComponentView, AfterCompose {
 
     private static final long serialVersionUID = -3927090308078350369L;
+    
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private Longbox cid;
     private Textbox name;
@@ -122,7 +127,20 @@ public class ComponentItemView extends Window implements ComponentView, AfterCom
      * @see ComponentPresenter
      */
     public void onClick$saveCompButton() {
-        presenter.saveComponent();
-        onClose();
+        componentType.setConstraint("no empty");
+        name.setConstraint("no empty");
+        long pos = presenter.getCidByName(name.getValue());
+        if (pos == -1 || pos == cid.longValue()) {
+            presenter.saveComponent();
+            onClose();
+        } else {
+            try {
+                Messagebox.show("The component with such name already exists.", "Warning", Messagebox.OK,
+                        Messagebox.EXCLAMATION);
+            } catch (InterruptedException e) {
+                logger.error("Error of showing message box comfirming deleting", e);
+            }
+        }
     }
+
 }

@@ -23,13 +23,13 @@ import java.util.List;
 import org.jtalks.poulpe.model.entity.Component;
 import org.jtalks.poulpe.model.entity.ComponentType;
 import org.jtalks.poulpe.service.ComponentService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //TODO: tasks which are going to be done from the bottom
 //1) i18n support;
 //2) unit-test;
-//3) control for componentType and componentName. Component.Name is unique in DB???
 //4) javadoc;
-//5) edit_component.zul : items of combo-box
 //6) logger
 
 /**
@@ -39,59 +39,47 @@ import org.jtalks.poulpe.service.ComponentService;
  * 
  */
 public class ComponentPresenter {
+    
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    /** zzzzzzThe object that is responsible for updating view (content of web-pages). */
+    /** The object that is responsible for updating view of the component list. */
     private ComponentListView listView;
+    
+    /**
+     * The object that is responsible for storing and updating view of the added
+     * or edited component item.
+     */
     private ComponentItemView itemView;
 
     /** The current (selected) component from the list of components. */
-    private ComponentView selectedComponent;
+    private ComponentViewItem selectedComponent;
 
     /** The service instance to manipulate with stored components. */
     private ComponentService componentService;
 
     /**
-     * zzzInitialises the object that is responsible for updating view (content of
-     * web-pages).
+     * Initialises the object that is responsible for updating view of the
+     * component list.
      * 
      * @param view
-     *            the object that is responsible for updating view (content of
-     *            web-pages)
+     *            the object that is responsible for updating view of the
+     *            component list
      */
     public void initListView(ComponentListView view) {
         this.listView = view;
     }
     
     /**
-     * zzzzzInitialises the object that is responsible for updating view (content of
-     * web-pages).
+     * Initialises the object that is responsible for storing and updating view
+     * of the added or edited component item.
      * 
      * @param view
-     *            the object that is responsible for updating view (content of
-     *            web-pages)
+     *            the object that is responsible for storing and updating view
+     *            of the added or edited component item
      */
     public void initItemView(ComponentItemView view) {
         this.itemView = view;
     }
-
-//    /**
-//     * Returns a fake list of components, DON'T USE IT, it's only for testing.
-//     * Once more DO NOT USE IT. It ought to be deleted soon.
-//     * 
-//     * @deprecated
-//     * @return a fake list of components
-//     */
-//    public List<ComponentView> getFakeComponents() {
-//        List<Component> list = new ArrayList<Component>();
-//        for (int i = 0; i < 20; i++) {
-//            Component c = new Component();
-//            c.setName("Component Name #" + i);
-//            c.setDescription("Component Description #" + i);
-//            c.setComponentType(((i & 1) == 0) ? ComponentType.ARTICLE : ComponentType.FORUM);
-//            list.add(c);
-//        }
-//        return ComponentViewModelConverter.model2View(list);
-//    }
 
     /**
      * Returns view representation of all components.
@@ -114,64 +102,89 @@ public class ComponentPresenter {
     }
 
     /**
-     * Returns the current component from the list of components.
+     * Returns the selected component from the list of components.
      * 
-     * @return the current component from the list of components
+     * @return the selected component from the list of components
      */
-    public ComponentView getCurrentComponent() {
+    public ComponentView getSelectedComponent() {
         return selectedComponent;
     }
 
     /**
-     * Sets the current component from the list of components.
+     * Sets the selected component from the list of components.
      * 
      * @param currentComponent
-     *            the new value of the current component from the list of
+     *            the new value of the selected component from the list of
      *            components
      */
-    public void setCurrentComponent(ComponentViewItem currentComponent) {
+    public void setSelectedComponent(ComponentViewItem currentComponent) {
         this.selectedComponent = currentComponent;
     }
 
-    /**
-     * Shows the window for adding new component to component list.
-     * 
-     * @throws InterruptedException
-     */
+    /** Shows the window for adding new component to component list. */
     // TODO maybe it's too complicated: view delegates showing window to
     // presenter which delegates it to view %-) 
     public void addComponent() {
         selectedComponent = new ComponentViewItem();
-        listView.showEditWindow(selectedComponent);
+        List<String> types = getTypes();
+        listView.showEditWindow(selectedComponent, types);
     }
 
-    /**
-     * Removes selected component from the component list.
-     */
+    /** Removes the selected component from the component list. */
     public void deleteComponent() {
         Component victim = ComponentViewModelConverter.view2Model(selectedComponent);
         componentService.deleteComponent(victim);
-        listView.updateList(getComponents());
+        listView.removeFromModel(selectedComponent);
+        //listView.updateList(getComponents());
     }
 
     /**
-     * Shows the window for editing selected component from component list.
-     * 
-     * @throws InterruptedException
+     * Shows the window for editing the selected component from component list.
      */
     public void editComponent() {
-        listView.showEditWindow(selectedComponent);
+        List<String> types = getTypes();
+        types.add(selectedComponent.getComponentType());
+        listView.showEditWindow(selectedComponent, types);
     }
 
     /**
-     * Saves the created or edited component in component list.
+     * Obtains all unoccupied types of components and returns them.
+     * 
+     * @return the list unoccupied component types as strings
      */
+    private List<String> getTypes() {
+        List<ComponentType> origTypes = componentService.getAvailableTypes();
+        List<String> strTypes = new ArrayList<String>();
+        for (ComponentType orig : origTypes) {
+            strTypes.add(orig.toString());
+        }
+        return strTypes;
+    }
+
+    /** Saves the created or edited component in component list. */
     public void saveComponent() {
         Component newbie = ComponentViewModelConverter.view2Model(itemView);
-        componentService.saveComponent(newbie);
-        listView.updateList(getComponents());
-        // TODO try to do it without additional request to database, using model
-        // as list.
+        ComponentViewItem view = (ComponentViewItem) ComponentViewModelConverter.model2View(newbie);
+        logger.debug("Newbie.getId() = {}", view.getCid());
+        componentService.saveComponent(newbie);        
+        if (view.getCid() == 0) { 
+            view.setCid(newbie.getId());    // elements in table should have real IDs.
+            listView.addToModel(view);
+        } else {
+            listView.replaceInModel(view);
+        }
+        //listView.updateList(getComponents());
+    }
+
+    /**
+     * Delegates to the View searching the component's id by its name.
+     * 
+     * @param name
+     *            the component's name
+     * @return the component's id whose name is {@code name}
+     */
+    public long getCidByName(String name) {
+        return listView.getCidByName(name);
     }
 }
 
