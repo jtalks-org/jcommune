@@ -15,30 +15,12 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-
-package org.jtalks.antarcticle.model.dao.hibernate;
-
-import java.util.List;
-import org.hibernate.Query;
-import org.jtalks.antarcticle.model.dao.CommentDao;
-import org.jtalks.antarcticle.model.entity.Article;
-import org.jtalks.antarcticle.model.entity.Comment;
-import org.jtalks.jcommune.model.dao.hibernate.AbstractHibernateDao;
+package org.jtalks.antarcticle.service.transactional;
 
 /**
  *
  * @author Dmitry Sokolov
  */
-public class CommentHibernateDao extends AbstractHibernateDao<Comment> implements CommentDao {
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Comment> findByArticle(Article article) {
-        Query query = getSession().createQuery("SELECT c FROM Comment c WHERE c.article = :?");
-        query.setEntity(0, article);
-        return query.list();
-    }
+public class TransactionalCommentServiceTest {
     
 }

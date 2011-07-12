@@ -25,5 +25,10 @@ import org.jtalks.jcommune.model.dao.Dao;
  * @author Dmitry Sokolov
  */
 public interface ArticleDao extends Dao<Article> {
-    public Article getFirstArticleFromCollection(long collectionId);
+    /**
+     * Get first {@link Article} from {@link ArticleCollection}
+     * @param collectionId id of article collection
+     * @return article
+     */
+    Article getFirstArticleFromCollection(long collectionId);
 }

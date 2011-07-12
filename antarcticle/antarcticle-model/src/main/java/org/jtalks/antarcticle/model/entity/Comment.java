@@ -35,14 +35,14 @@ public class Comment extends Persistent {
     private String commentContent;
     private Article article;
 
-    /*
-     * Constructor for a comment
-     * All instance variabels get default value
+    /**
+     * Constructor for a comment.
+     * All instance variables get default value
      */
     public Comment() {
     }
     
-    /*
+    /**
      * Constructor for comment 
      * where creation date is set
      * 
@@ -52,7 +52,7 @@ public class Comment extends Persistent {
         this.creationDate = creationDate;
     }
 
-    /*
+    /**
      * Constructor for a comment
      * where all instance variable are initialized
      * 
@@ -68,7 +68,7 @@ public class Comment extends Persistent {
         this.article = article;
     }
 
-    /*
+    /**
      * Get the content of comment
      * @return the content of comment
      */
@@ -76,14 +76,14 @@ public class Comment extends Persistent {
         return commentContent;
     }
 
-    /* Set the content of comment
+    /** Set the content of comment
      * @param commentContent The text of content 
      */
     public void setCommentContent(String commentContent) {
         this.commentContent = commentContent;
     }
 
-    /*
+    /**
      * Get date when comment is created
      * @return creation date of comment
      */
@@ -91,15 +91,15 @@ public class Comment extends Persistent {
         return creationDate;
     }
 
-    /*
-     * Set cretion date of comment
+    /**
+     * Set creation date of comment
      * @param creationDate Date when post is created
      */
     public void setCreationDate(DateTime creationDate) {
         this.creationDate = creationDate;
     }
     
-    /*
+    /**
      * Get {@link User} who creates comment
      * @return user created a comment
      */
@@ -107,7 +107,7 @@ public class Comment extends Persistent {
         return userCommented;
     }
 
-    /*
+    /**
      * Set {@link User} who creates comment
      * @param userCommented user created a comment
      */
@@ -115,7 +115,7 @@ public class Comment extends Persistent {
         this.userCommented = userCommented;
     }
 
-    /*
+    /**
      * Get {@link Article} for which comment is created
      * @return article
      */
@@ -123,7 +123,7 @@ public class Comment extends Persistent {
         return article;
     }
     
-    /*
+    /**
      * Set {@link Article} for which comment is created
      * @param article   article
      */

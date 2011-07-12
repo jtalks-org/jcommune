@@ -21,6 +21,7 @@ package org.jtalks.antarcticle.service;
 import org.jtalks.antarcticle.model.entity.Article;
 import org.jtalks.antarcticle.model.entity.ArticleCollection;
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.EntityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 
@@ -29,11 +30,35 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
  * @authoe Dmitry Sokolov
  */
 
-public interface ArticleService {
+public interface ArticleService extends EntityService<Article> {
     
-    public void addArticle(Article article);
-    public Article createArticle(ArticleCollection articleCollection, User user);
-    public void deleteArticle(Article article) throws NotFoundException;
-    public Article getFirstArticleFromCollection(long id);
+    /**
+     * Persists {@link Article}
+     * @param article article which should to persist
+     */
+    void addArticle(Article article);
+    
+    /**
+     * Creates new article with defined {@link User} and {@link ArticleCollection}
+     * 
+     * @param articleCollection article collection
+     * @param user user who creates article
+     * @return article
+     */
+    Article createArticle(ArticleCollection articleCollection, User user);
+    
+    /**
+     * Delete {@link Article} from persistence
+     * @param article article which need to delete
+     * @throws NotFoundException if article is not persisted
+     */
+    void deleteArticle(Article article) throws NotFoundException;
+    
+    /**
+     * Get {@link Article} by article's identifier
+     * @param id article's identifier
+     * @return article
+     */
+    Article getFirstArticleFromCollection(long id);
 
 }

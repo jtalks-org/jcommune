@@ -19,7 +19,6 @@
 package org.jtalks.antarcticle.service.transactional;
 
 import org.joda.time.DateTime;
-import org.jtalks.antarcticle.model.dao.ArticleCollectionDao;
 import org.jtalks.antarcticle.model.dao.ArticleDao;
 import org.jtalks.antarcticle.model.entity.Article;
 import org.jtalks.antarcticle.model.entity.ArticleCollection;
@@ -30,23 +29,31 @@ import org.jtalks.jcommune.service.transactional.AbstractTransactionalEntityServ
 
 /**
  * @author Vitaliy Kravchenko
+ * @author Dmitry Sokolov
  */
-
-public class TransactionalArticleService extends AbstractTransactionalEntityService<Article, ArticleDao> 
+public class TransactionalArticleService 
+    extends AbstractTransactionalEntityService<Article, ArticleDao> 
     implements ArticleService {
     
-    private ArticleCollectionDao articleCollectionDao;
-            
-    public TransactionalArticleService(ArticleDao articleDao, ArticleCollectionDao articleCollectionDao) {
-        this.dao = articleDao;            
-        this.articleCollectionDao = articleCollectionDao;
+    /**
+     * Creates an instance of entity based service
+     * @param dao Data access object for CRUD operations of {@link Article}
+     */
+    public TransactionalArticleService(ArticleDao dao) {
+        this.dao = dao;            
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addArticle(Article article) {
         dao.saveOrUpdate(article);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Article createArticle(ArticleCollection articleCollection, User user) {
         Article article = new Article(new DateTime());
@@ -55,13 +62,23 @@ public class TransactionalArticleService extends AbstractTransactionalEntityServ
         return article;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteArticle(Article article) throws NotFoundException {
-        if(article.getId() == 0) throw new NotFoundException("The current article is not persist");
-        if(!dao.isExist(article.getId())) throw new NotFoundException("There is no article with id " + article.getId());
+        if(article.getId() == 0) {
+            throw new NotFoundException("The current article is not persist");
+        }
+        if(!dao.isExist(article.getId())) {
+            throw new NotFoundException("There is no article with id " + article.getId());
+        }
         dao.delete(article.getId());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Article getFirstArticleFromCollection(long id) {
         return dao.getFirstArticleFromCollection(id);         

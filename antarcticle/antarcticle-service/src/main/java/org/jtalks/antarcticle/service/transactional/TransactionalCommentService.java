@@ -31,22 +31,37 @@ import org.jtalks.jcommune.service.transactional.AbstractTransactionalEntityServ
 
 /**
  * @author Vitaliy Kravchenko
+ * @author Dmitry Sokolov
  */
 
-public class TransactionalCommentService extends AbstractTransactionalEntityService<Comment, CommentDao> implements CommentService {
+public class TransactionalCommentService 
+    extends AbstractTransactionalEntityService<Comment, CommentDao> 
+    implements CommentService {
     
     private ArticleDao articleDao;
     
-    public TransactionalCommentService(CommentDao commentDao, ArticleDao articleDao) {
-        this.dao = commentDao;
+    /**
+     * Creates an instance of entity based service
+     * 
+     * @param dao Data access object for CRUD operations of {@link Comment}
+     * @param articleDao Data access object for CRUD operations of {@link Article}
+     */
+    public TransactionalCommentService(CommentDao dao, ArticleDao articleDao) {
+        this.dao = dao;
         this.articleDao =  articleDao;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addComment(Comment comment) {
         dao.saveOrUpdate(comment);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Comment createComment(Article article, User user) {
         Comment comment = new Comment(new DateTime());
@@ -55,18 +70,32 @@ public class TransactionalCommentService extends AbstractTransactionalEntityServ
         return comment;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Comment> getCommentsByArticle(Article article) throws NotFoundException {
-        if(article.getId() == 0) throw new NotFoundException("The current article is not persist");
-        if(!articleDao.isExist(article.getId())) throw new NotFoundException("There is no article with id " + article.getId());
+        if(article.getId() == 0) {
+            throw new NotFoundException("The current article is not persist");
+        }
+        if(!articleDao.isExist(article.getId())) {
+            throw new NotFoundException("There is no article with id " + article.getId());
+        }
         return dao.findByArticle(article);
         
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteComment(Comment comment) throws NotFoundException {
-        if(comment.getId() == 0) throw new NotFoundException("The current comment is not persist yet");
-        if(!dao.isExist(comment.getId())) throw new NotFoundException("There is no comment with is " + comment.getId());
+        if(comment.getId() == 0) {
+            throw new NotFoundException("The current comment is not persist yet");
+        }
+        if(!dao.isExist(comment.getId())) {
+            throw new NotFoundException("There is no comment with is " + comment.getId());
+        }
         dao.delete(comment.getId());
     }
 }

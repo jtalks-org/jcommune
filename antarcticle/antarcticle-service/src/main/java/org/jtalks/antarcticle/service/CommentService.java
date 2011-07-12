@@ -30,8 +30,32 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 public interface CommentService {
     
-    public void addComment(Comment comment);
-    public Comment createComment(Article article, User user);
-    public List<Comment> getCommentsByArticle(Article article) throws NotFoundException;
-    public void deleteComment(Comment comment) throws NotFoundException;
+    /**
+     * Persists {@link Comment}
+     * @param comment comment which should be persisted
+     */
+    void addComment(Comment comment);
+    
+    /**
+     * Creates a comment with defined {@link Article} and {@link User}
+     * @param article article for which comment is created
+     * @param user user who creates a comment
+     * @return comment
+     */
+    Comment createComment(Article article, User user);
+    
+    /**
+     * Get list of {@link Comment} by {@link Article}
+     * @param article article for which comment need to search
+     * @return list of comments
+     * @throws NotFoundException if article is not persisted 
+     */
+    List<Comment> getCommentsByArticle(Article article) throws NotFoundException;
+    
+    /**
+     * Delete comment from persistence
+     * @param comment comment which should be deleted
+     * @throws NotFoundException if comment is not persisted
+     */
+    void deleteComment(Comment comment) throws NotFoundException;
 }

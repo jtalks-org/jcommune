@@ -28,6 +28,12 @@ import org.jtalks.jcommune.model.dao.Dao;
  */
 public interface CommentDao extends Dao<Comment> {
     
-    public List<Comment> findByArticle(Article article);
+    /**
+     * Get list of {@link Comment} by {@link Article}
+     * 
+     * @param article Article for which need to find comments 
+     * @return List of comments
+     */
+    List<Comment> findByArticle(Article article);
     
 }

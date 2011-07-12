@@ -35,9 +35,16 @@ public class Article extends Persistent {
     private String articleContent;
     private ArticleCollection articleCollection;
 
+    /**
+     * Constructor for article. All instance variables get default value 
+     */
     public Article() {
     }
 
+    /**
+     * Constructor for article with initializing of content
+     * @param articleContent Text for article
+     */
     public Article(String articleContent) {
         this.articleContent = articleContent;
     }
@@ -60,43 +67,82 @@ public class Article extends Persistent {
         return new Article(new DateTime());
     }
 
+    /**
+     * Get content of an article
+     * @return text of article
+     */
     public String getArticleContent() {
         return articleContent;
     }
 
+    /**
+     * Set content of article
+     * @param articleContent    Text for article
+     */
     public void setArticleContent(String articleContent) {
         this.articleContent = articleContent;
     }
 
+    /**
+     * Get topic of article
+     * @return topic of article
+     */
     public String getArticleTopic() {
         return articleTopic;
     }
 
+    /**
+     * Set topic for an article
+     * @param articleTopic topic of article 
+     */
     public void setArticleTopic(String articleTopic) {
         this.articleTopic = articleTopic;
     }
 
+    /**
+     * Get date when article is created
+     * @return creation date of article
+     */
     public DateTime getCreationDate() {
         return creationDate;
     }
 
+    /**
+     * Set date when article is created
+     * @param creationDate date of article creation
+     */
     public void setCreationDate(DateTime creationDate) {
         this.creationDate = creationDate;
     }
-
-
+    
+    /**
+     * Get {@link User} who creates an article
+     * @return user created an article
+     */
     public User getUserCreated() {
         return userCreated;
     }
 
+    /**
+     * Set {@link User} who creates an article
+     * @param userCreated user created an article
+     */
     public void setUserCreated(User userCreated) {
         this.userCreated = userCreated;
-	}
-	
+    }
+
+    /**
+     * Get {@link ArticleCollection} which article is belong
+     * @return article collection
+     */
     public ArticleCollection getArticleCollection() {
         return articleCollection;
     }
 
+    /**
+     * Set {@link ArticleCollection} which article is belong
+     * @param articleCollection article collection
+     */
     public void setArticleCollection(ArticleCollection articleCollection) {
         this.articleCollection = articleCollection;
     }

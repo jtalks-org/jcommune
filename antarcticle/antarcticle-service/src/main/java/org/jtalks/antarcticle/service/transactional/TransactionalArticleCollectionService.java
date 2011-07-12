@@ -29,8 +29,14 @@ import java.util.List;
  * @author Vitaliy Kravchenko
  */
 
-public class TransactionalArticleCollectionService extends AbstractTransactionalEntityService<ArticleCollection, ArticleCollectionDao> implements ArticleCollectionService {
+public class TransactionalArticleCollectionService 
+    extends AbstractTransactionalEntityService<ArticleCollection, ArticleCollectionDao> 
+    implements ArticleCollectionService {
 
+    /**
+     * Create an instance of entity based service
+     * @param articleCollectionDao Data access object for CRUD operations of {@link ArticleCollection}
+     */
     public TransactionalArticleCollectionService(ArticleCollectionDao articleCollectionDao) {
         this.dao = articleCollectionDao;
     }
