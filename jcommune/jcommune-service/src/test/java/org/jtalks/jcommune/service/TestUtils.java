@@ -17,22 +17,33 @@
  */
 package org.jtalks.jcommune.service;
 
-import org.springframework.security.core.context.SecurityContext;
+import org.jtalks.jcommune.model.entity.Persistent;
+import org.jtalks.jcommune.service.security.AclBuilder;
+import org.mockito.Matchers;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
- * Replacement for SecurityContextHolder singleton.
- *
  * @author Kirill Afonin
  */
-public interface SecurityContextFacade {
+public final class TestUtils {
 
     /**
-     * @return <code>SecurityContext</code>
+     * Create mock for {@code AclBuilder}.
+     *
+     * @return {@code AclBuilder} mock
      */
-    SecurityContext getContext();
-
-    /**
-     * @param securityContext <code>SecurityContext</code> to set.
-     */
-    void setContext(SecurityContext securityContext);
+    public static AclBuilder mockAclBuilder() {
+        AclBuilder newBuilder = mock(AclBuilder.class);
+        when(newBuilder.read()).thenReturn(newBuilder);
+        when(newBuilder.admin()).thenReturn(newBuilder);
+        when(newBuilder.delete()).thenReturn(newBuilder);
+        when(newBuilder.create()).thenReturn(newBuilder);
+        when(newBuilder.write()).thenReturn(newBuilder);
+        when(newBuilder.user(Matchers.anyString())).thenReturn(newBuilder);
+        when(newBuilder.role(Matchers.anyString())).thenReturn(newBuilder);
+        when(newBuilder.on(Matchers.<Persistent>anyObject())).thenReturn(newBuilder);
+        return newBuilder;
+    }
 }

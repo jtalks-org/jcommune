@@ -19,8 +19,7 @@ package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.Persistent;
 import org.jtalks.jcommune.model.entity.User;
-import org.springframework.security.acls.model.Permission;
-import org.springframework.security.acls.model.Sid;
+import org.jtalks.jcommune.service.security.AclBuilder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
@@ -49,13 +48,6 @@ public interface SecurityService extends UserDetailsService {
     String getCurrentUserUsername();
 
     /**
-     * Add administrator permissions to current user and administrators.
-     *
-     * @param securedObject a new secured object.
-     */
-    void grantAdminPermissionToCurrentUserAndAdmins(Persistent securedObject);
-
-    /**
      * Delete object from acl. All permissions will be removed.
      *
      * @param securedObject a removed secured object.
@@ -71,35 +63,26 @@ public interface SecurityService extends UserDetailsService {
     void deleteFromAcl(Class clazz, long id);
 
     /**
-     * Delete {@code permission} from {@code recipient} on {@code securedObject}
+     * Create new builder for granting acl permissions.
      *
-     * @param securedObject object for authorization with existent Acl
-     * @param recipient     sid from which will permission be removed
-     * @param permission    granted permission
+     * @return builder for granting permissions
+     * @see AclBuilder
      */
-    void deletePermission(Persistent securedObject, Sid recipient,
-                          Permission permission);
+    AclBuilder grant();
 
     /**
-     * Add reader permissions to user.
+     * Create new builder for granting acl permissions with added current user.
      *
-     * @param securedObject a new secured object.
-     * @param username      username user to which will permission be added
+     * @return builder for granting permissions
+     * @see AclBuilder
      */
-    void grantReadPermissionToUser(Persistent securedObject, String username);
+    AclBuilder grantToCurrentUser();
 
     /**
-     * Add reader permissions to current user.
+     * Create new builder for removing acl permissions.
      *
-     * @param securedObject a new secured object.
+     * @return builder for removing permissions
+     * @see AclBuilder
      */
-
-    void grantReadPermissionToCurrentUser(Persistent securedObject);
-
-    /**
-     * Add administrator permissions to current user.
-     *
-     * @param securedObject a new secured object.
-     */
-    void grantAdminPermissionToCurrentUser(Persistent securedObject);   
+    AclBuilder delete();
 }

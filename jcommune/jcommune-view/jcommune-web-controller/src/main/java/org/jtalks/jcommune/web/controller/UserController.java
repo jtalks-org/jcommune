@@ -24,13 +24,10 @@ import org.jtalks.jcommune.service.exceptions.DuplicateException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
-import org.jtalks.jcommune.web.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -58,9 +55,11 @@ public class UserController {
 
     /**
      * Assign {@link UserService} to field.
-     *
+     * 
      * @param userService {@link UserService} to be injected
      * @see UserService
+     * @param securityService {@link SecurityService} used for accessing to current logged in user
+     * @see SecurityService
      */
     @Autowired
     public UserController(UserService userService, SecurityService securityService) {
@@ -96,7 +95,13 @@ public class UserController {
         try {
             userService.registerUser(userDto.createUser());
         } catch (DuplicateException e) {
-            result.rejectValue("username", "validation.duplicateuser", "User already exist!");
+            if (e.getMessage().contains("User")) {
+                result.rejectValue("username", "validation.duplicateuser", "User already exists!");
+            }
+            if (e.getMessage().contains("E-mail")) {
+                result.rejectValue("email", "validation.duplicateemail", "E-mail already exists!");
+            }
+
             return new ModelAndView("registration");
         }
 
@@ -130,8 +135,7 @@ public class UserController {
         editedUser.setEmail(user.getEmail());
         editedUser.setFirstName(user.getFirstName());
         editedUser.setLastName(user.getLastName());
-        ModelAndView mav = new ModelAndView("editProfile", "editedUser", editedUser);
-        return mav;
+        return new ModelAndView("editProfile", "editedUser", editedUser);
     }
     
     /**

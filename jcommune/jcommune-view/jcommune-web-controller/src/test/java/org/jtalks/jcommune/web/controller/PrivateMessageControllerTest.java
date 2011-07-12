@@ -22,6 +22,7 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
+import org.jtalks.jcommune.web.dto.builder.PrivateMessageDtoBuilder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -40,6 +41,7 @@ import static org.testng.Assert.assertEquals;
 /**
  * @author Pavel Vervenko
  * @author Max Malakhov
+ * @author Alexandre Teterin
  */
 public class PrivateMessageControllerTest {
 
@@ -47,6 +49,10 @@ public class PrivateMessageControllerTest {
     private PrivateMessageController controller;
     @Mock
     private PrivateMessageService pmService;
+    @Mock
+    private PrivateMessageDtoBuilder pmDtoBuilder;
+    @Mock
+    private PrivateMessageDto pmDto;
 
     @BeforeMethod
     public void init() {
@@ -124,6 +130,36 @@ public class PrivateMessageControllerTest {
 
         assertEquals(view, "pm/pmForm");
         verify(pmService).sendMessage(dto.getTitle(), dto.getBody(), dto.getRecipient());
+    }
+
+    @Test
+    public void testDisplayReplyPMPage() throws NotFoundException {
+        PrivateMessage pm = new PrivateMessage();
+        controller.setPmDtoBuilder(pmDtoBuilder);
+        when(pmService.get(PM_ID)).thenReturn(pm);
+        when(pmDtoBuilder.getReplyDtoFor(pm)).thenReturn(pmDto);
+
+        ModelAndView mav = controller.displayReplyPMPage(PM_ID);
+
+        verify(pmService).get(PM_ID);
+        verify(pmDtoBuilder).getReplyDtoFor(pm);
+        assertViewName(mav, "pm/pmForm");
+        assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
+    }
+
+    @Test
+    public void testDisplayQuotePMPage() throws NotFoundException {
+        PrivateMessage pm = new PrivateMessage();
+        when(pmService.get(PM_ID)).thenReturn(pm);
+        controller.setPmDtoBuilder(pmDtoBuilder);
+        when(pmDtoBuilder.getQuoteDtoFor(pm)).thenReturn(pmDto);
+
+        ModelAndView mav = controller.displayQuotePMPage(PM_ID);
+
+        verify(pmService).get(PM_ID);
+        verify(pmDtoBuilder).getQuoteDtoFor(pm);
+        assertViewName(mav, "pm/pmForm");
+        assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
     }
 
     @Test

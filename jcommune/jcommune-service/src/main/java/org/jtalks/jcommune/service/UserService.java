@@ -59,7 +59,7 @@ public interface UserService extends EntityService<User> {
     /**
      * Update user entity.
      * 
-     * @param user
+     * @param user - user whose information would be updated 
      */
     void editUserProfile(User user);
 }

@@ -27,6 +27,7 @@ import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -69,7 +70,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
     public Post addAnswer(long topicId, String answerBody) throws NotFoundException {
         User currentUser = securityService.getCurrentUser();
         if (currentUser == null) {
@@ -87,7 +88,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         dao.saveOrUpdate(topic);
         logger.debug("Added answer to topic {}", topicId);
 
-        securityService.grantAdminPermissionToCurrentUserAndAdmins(answer);
+        securityService.grantToCurrentUser().role(SecurityConstants.ROLE_ADMIN).admin().on(answer);
         return answer;
     }
 
@@ -95,7 +96,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
     public Topic createTopic(String topicName, String bodyText, long branchId) throws NotFoundException {
         User currentUser = securityService.getCurrentUser();
         if (currentUser == null) {
@@ -103,16 +104,14 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         }
 
         Topic topic = new Topic(branchService.get(branchId), currentUser, topicName);
-        Post post = new Post(topic, currentUser, bodyText);
-        topic.addPost(post);
+        Post first = new Post(topic, currentUser, bodyText);
+        topic.addFirstPost(first);
 
         dao.saveOrUpdate(topic);
-        logger.debug("Created new topic {}" , topic.getId());
+        logger.debug("Created new topic {}", topic.getId());
 
-        securityService.grantAdminPermissionToCurrentUserAndAdmins(topic);
-        logger.debug("Permissions granted on topic: {}", topic.getId());
-        securityService.grantAdminPermissionToCurrentUserAndAdmins(post);
-        logger.debug("Permissions granted on post: {}", post.getId());
+        securityService.grantToCurrentUser().role(SecurityConstants.ROLE_ADMIN).admin().on(topic)
+                .user(currentUser.getUsername()).role(SecurityConstants.ROLE_ADMIN).admin().on(first);
 
         return topic;
     }
@@ -180,12 +179,13 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
 
         Topic topic = dao.get(topicId);
         topic.setTitle(topicName);
-        Post post = topic.getPosts().get(0);
+        Post post = topic.getFirstPost();
         post.setPostContent(bodyText);
         post.setCreationDate(new DateTime());
+        topic.setLastPost(post);
 
         dao.saveOrUpdate(topic);
-        logger.debug("Update the topic {}" , topic.getId());
+        logger.debug("Update the topic {}", topic.getId());
     }
 
     /**

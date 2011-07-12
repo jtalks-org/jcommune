@@ -42,13 +42,20 @@ public class Topic extends Persistent {
      * The user who create the topic
      */
     private User topicStarter;
+
     private String title;
+
     /**
      * The list of topic's posts
      */
     private List<Post> posts = new ArrayList<Post>();
 
     private Branch branch;
+
+    /**
+     * The first post in the topic.
+     */
+    private Post firstPost;
 
     /**
      * The last post in the topic.
@@ -95,13 +102,24 @@ public class Topic extends Persistent {
     }
 
     /**
+     * Add first {@link Post} to the topic.
+     * The method sets Posts.topic field to this Topic.
+     *
+     * @param firstPost post to add
+     */
+    public void addFirstPost(Post firstPost) {
+        this.firstPost = firstPost;
+        this.addPost(firstPost);
+    }
+
+    /**
      * Add new {@link Post} to the topic.
      * The method sets Posts.topic field to this Topic.
      *
      * @param newPost post to add
      */
     public void addPost(Post newPost) {
-        posts.add(newPost);
+        this.posts.add(newPost);
         this.lastPost = newPost;
     }
 
@@ -203,6 +221,24 @@ public class Topic extends Persistent {
      */
     public void setBranch(Branch branch) {
         this.branch = branch;
+    }
+
+    /**
+     * Set the topic first post.
+     *
+     * @param firstPost the firstPost to set
+     */
+    public void setFirstPost(Post firstPost) {
+        this.firstPost = firstPost;
+    }
+
+    /**
+     * Get the topic first post.
+     *
+     * @return the firstPost
+     */
+    public Post getFirstPost() {
+        return firstPost;
     }
 
     /**

@@ -26,6 +26,7 @@ import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserDataCacheService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
@@ -85,7 +86,7 @@ public class TransactionalPrivateMessageService
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
     public PrivateMessage sendMessage(String title, String body, String recipientUsername) throws NotFoundException {
         User recipient = userService.getByUsername(recipientUsername);
         PrivateMessage pm = populateMessage(title, body, recipient);
@@ -93,8 +94,7 @@ public class TransactionalPrivateMessageService
         dao.saveOrUpdate(pm);
         userDataCache.incrementNewMessageCountFor(recipientUsername);
 
-        securityService.grantReadPermissionToCurrentUser(pm);
-        securityService.grantReadPermissionToUser(pm, recipientUsername);
+        securityService.grantToCurrentUser().user(recipientUsername).read().on(pm);
 
         return pm;
     }
@@ -122,6 +122,9 @@ public class TransactionalPrivateMessageService
      * {@inheritDoc}
      */
     public void markAsRead(PrivateMessage pm) {
+        if (pm.isRead()) {
+            return;
+        }
         pm.markAsRead();
         dao.saveOrUpdate(pm);
         userDataCache.decrementNewMessageCountFor(pm.getUserTo().getUsername());
@@ -140,7 +143,7 @@ public class TransactionalPrivateMessageService
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
     public PrivateMessage saveDraft(long id, String title, String body, String recipientUsername)
             throws NotFoundException {
         User recipient = userService.getByUsername(recipientUsername);
@@ -149,7 +152,7 @@ public class TransactionalPrivateMessageService
         pm.markAsDraft();
         dao.saveOrUpdate(pm);
 
-        securityService.grantAdminPermissionToCurrentUser(pm);
+        securityService.grantToCurrentUser().admin().on(pm);
 
         return pm;
     }
@@ -189,8 +192,7 @@ public class TransactionalPrivateMessageService
         userDataCache.incrementNewMessageCountFor(recipientUsername);
 
         securityService.deleteFromAcl(pm);
-        securityService.grantReadPermissionToCurrentUser(pm);
-        securityService.grantReadPermissionToUser(pm, recipientUsername);
+        securityService.grantToCurrentUser().user(recipientUsername).read().on(pm);
 
         return pm;
     }
