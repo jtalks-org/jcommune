@@ -94,4 +94,12 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         return dao.isUserWithUsernameExist(user.getUsername()) ||
                 dao.isUserWithEmailExist(user.getEmail()) || user.getUsername().equals("anonymousUser");
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void editUserProfile(User user) {
+        dao.saveOrUpdate(user);
+    }
 }

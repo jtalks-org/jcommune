@@ -1,8 +1,10 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateException;
+import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.dto.UserDto;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
@@ -26,12 +28,14 @@ import static org.testng.Assert.assertNull;
  */
 public class UserControllerTest {
     private UserService userService;
+    private SecurityService securityService;
     private UserController controller;
 
     @BeforeMethod
     public void setUp() {
         userService = mock(UserService.class);
-        controller = new UserController(userService);
+        securityService = mock(SecurityService.class);
+        controller = new UserController(userService, securityService);
     }
 
     @Test
@@ -39,11 +43,11 @@ public class UserControllerTest {
         ModelAndView mav = controller.registrationPage();
 
         assertViewName(mav, "registration");
-        UserDto dto = assertAndReturnModelAttributeOfType(mav, "newUser", UserDto.class);
+        RegisterUserDto dto = assertAndReturnModelAttributeOfType(mav, "newUser", RegisterUserDto.class);
         assertNullFields(dto);
     }
 
-    private void assertNullFields(UserDto dto) {
+    private void assertNullFields(RegisterUserDto dto) {
         assertNull(dto.getEmail());
         assertNull(dto.getUsername());
         assertNull(dto.getPassword());
@@ -54,7 +58,7 @@ public class UserControllerTest {
 
     @Test
     public void testRegisterUser() throws Exception {
-        UserDto dto = getUserDto();
+        RegisterUserDto dto = getUserDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
 
         ModelAndView mav = controller.registerUser(dto, bindingResult);
@@ -65,7 +69,7 @@ public class UserControllerTest {
 
     @Test
     public void testRegisterDuplicateUser() throws Exception {
-        UserDto dto = getUserDto();
+        RegisterUserDto dto = getUserDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
         doThrow(new DuplicateException("")).when(userService).registerUser(any(User.class));
 
@@ -78,7 +82,7 @@ public class UserControllerTest {
 
     @Test
     public void testRegisterValidationFail() {
-        UserDto dto = getUserDto();
+        RegisterUserDto dto = getUserDto();
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
 
@@ -103,8 +107,8 @@ public class UserControllerTest {
     /**
      * @return UserDto with default field values
      */
-    private UserDto getUserDto() {
-        UserDto dto = new UserDto();
+    private RegisterUserDto getUserDto() {
+        RegisterUserDto dto = new RegisterUserDto();
         dto.setUsername("username");
         dto.setEmail("mail@mail.com");
         dto.setPassword("password");

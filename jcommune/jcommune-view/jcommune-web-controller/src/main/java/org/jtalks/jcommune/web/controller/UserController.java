@@ -18,13 +18,21 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.EditUserProfileDto;
+import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,8 +48,13 @@ import javax.validation.Valid;
  */
 @Controller
 public class UserController {
-
-    private UserService userService;
+    private final SecurityService securityService;
+    private final UserService userService;
+    
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+    }
 
     /**
      * Assign {@link UserService} to field.
@@ -50,8 +63,9 @@ public class UserController {
      * @see UserService
      */
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, SecurityService securityService) {
         this.userService = userService;
+        this.securityService = securityService;
     }
 
     /**
@@ -62,7 +76,7 @@ public class UserController {
      */
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
     public ModelAndView registrationPage() {
-        return new ModelAndView("registration").addObject("newUser", new UserDto());
+        return new ModelAndView("registration").addObject("newUser", new RegisterUserDto());
     }
 
     /**
@@ -73,7 +87,7 @@ public class UserController {
      * @return redirect to / if registration successfull or back to "/registration" if failed
      */
     @RequestMapping(value = "/user", method = {RequestMethod.POST, RequestMethod.GET})
-    public ModelAndView registerUser(@Valid @ModelAttribute("newUser") UserDto userDto, BindingResult result) {
+    public ModelAndView registerUser(@Valid @ModelAttribute("newUser") RegisterUserDto userDto, BindingResult result) {
 
         if (result.hasErrors()) {
             return new ModelAndView("registration");
@@ -100,5 +114,62 @@ public class UserController {
     public ModelAndView show(@PathVariable("userId") Long userId) throws NotFoundException {
         User user = userService.get(userId);
         return new ModelAndView("userDetails", "user", user);
+    }
+    
+    /**
+     * Show edit user profile page for current logged in user.
+     * 
+     * @return edit user profile page
+     * @throws NotFoundException - throws if current logged in user was not found 
+     */
+    @RequestMapping(value= "/user/edit", method = RequestMethod.GET)
+    public ModelAndView editProfilePage() throws NotFoundException {
+        String currentUser = securityService.getCurrentUserUsername();
+        User user = userService.getByUsername(currentUser);
+        EditUserProfileDto editedUser = new EditUserProfileDto();
+        editedUser.setEmail(user.getEmail());
+        editedUser.setFirstName(user.getFirstName());
+        editedUser.setLastName(user.getLastName());
+        ModelAndView mav = new ModelAndView("editProfile", "editedUser", editedUser);
+        return mav;
+    }
+    
+    /**
+     * Update user profile info. Check if the user enter valid data and update profile in database.
+     * In error case return into the edit profile page and draw the error.
+     *   
+     * @param editedUser - dto populated by user
+     * @param result - binding result which contains the validation result
+     * @return - in cace of errors return back to edit profile page, in another case return to user detalis page
+     * @throws NotFoundException - throws if current logged in user was not found
+     */
+    @RequestMapping(value= "/user/edit", method = RequestMethod.POST)
+    public ModelAndView editProfile(@Valid @ModelAttribute("editedUser") EditUserProfileDto editedUser, BindingResult result) throws NotFoundException{
+        if (result.hasErrors()) {
+            return new ModelAndView("editProfile");
+        }
+        
+        String currentUser = securityService.getCurrentUserUsername();
+        User user = userService.getByUsername(currentUser);
+        user.setEmail(editedUser.getEmail());
+        user.setFirstName(editedUser.getFirstName());
+        user.setLastName(editedUser.getLastName());
+        
+        boolean changePassword = editedUser.getNewUserPassword() != null;
+        if(changePassword){
+            if(editedUser.getCurrentUserPassword() == null || !user.getPassword().equals(editedUser.getCurrentUserPassword())){
+                result.rejectValue("currentUserPassword", "label.incorrectCurrentPassword", "Password does not match to the current password");
+                return new ModelAndView("editProfile");
+            }else{
+                user.setPassword(editedUser.getNewUserPassword());
+            } 
+        }        
+        
+        userService.editUserProfile(user);      
+        
+        return new ModelAndView(new StringBuilder()
+        .append("redirect:/user/")
+        .append(user.getId())
+        .append(".html").toString());
     }
 }

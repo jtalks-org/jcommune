@@ -55,4 +55,11 @@ public interface UserService extends EntityService<User> {
      * @see User
      */
     void updateLastLoginTime(User user);
+    
+    /**
+     * Update user entity.
+     * 
+     * @param user
+     */
+    void editUserProfile(User user);
 }
