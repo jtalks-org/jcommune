@@ -76,7 +76,7 @@ public class UserControllerTest {
 
     @Test
     public void testRegisterUserWithDuplicateEmail() throws Exception {
-        UserDto dto = getUserDto();
+        RegisterUserDto dto = getUserDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
         doThrow(new DuplicateException("E-mail mail@mail.com already exists!")).when(userService).registerUser(any(User.class));
 
