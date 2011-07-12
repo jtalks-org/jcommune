@@ -18,7 +18,9 @@
 package org.jtalks.poulpe.model.dao;
 
 import java.util.List;
+import java.util.Set;
 import org.jtalks.poulpe.model.entity.Component;
+import org.jtalks.poulpe.model.entity.ComponentType;
 
 /**
  * Dao for jtalks engine {@link Component}.
@@ -33,4 +35,10 @@ public interface ComponentDao extends Dao<Component> {
      * @return components list
      */
     List<Component> getAll();
+    
+    /**
+     * Get the list of unoccupied ComponentType.
+     * @return list of ComponentType
+     */
+    List<ComponentType> getAvailableTypes();
 }

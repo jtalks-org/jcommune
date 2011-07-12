@@ -15,40 +15,35 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-package org.jtalks.poulpe.service;
+package org.jtalks.poulpe.web.controller;
 
-import java.util.List;
-import org.jtalks.poulpe.model.entity.Component;
-import org.jtalks.poulpe.model.entity.ComponentType;
+import org.zkoss.zk.ui.Components;
+import org.zkoss.zk.ui.ext.AfterCompose;
+import org.zkoss.zul.Window;
 
 /**
- * Service for some operations with {@link Component}.
- * 
+ *
  * @author Pavel Vervenko
  */
-public interface ComponentService extends EntityService<Component> {
+public class TopicTypeViewImpl extends Window implements TopicTypeView, AfterCompose {
+
+    private TopicTypePresenter presenter;
 
     /**
-     * Get all components.
-     * @return the list of the components
+     * Setter for MVP Presenter.
+     * @param presenter the presenter
      */
-    List<Component> getAll();
+    public void setPresenter(TopicTypePresenter presenter) {
+        this.presenter = presenter;
+    }
 
     /**
-     * Delete the specified component.
-     * @param component component to delete
+     * {@inheritDoc}
      */
-    void deleteComponent(Component component);
-
-    /**
-     * Save new or update existent component.
-     * @param component component to save
-     */
-    void saveComponent(Component component);
-
-    /**
-     * Get the list of unoccupied ComponentType.
-     * @return list of ComponentType
-     */
-    List<ComponentType> getAvailableTypes();
+    @Override
+    public void afterCompose() {
+        Components.wireVariables(this, this);
+        Components.addForwards(this, this);
+        presenter.initView(this);
+    }
 }

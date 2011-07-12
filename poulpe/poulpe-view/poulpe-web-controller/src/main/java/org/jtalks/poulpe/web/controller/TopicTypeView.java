@@ -15,40 +15,12 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-package org.jtalks.poulpe.service;
-
-import java.util.List;
-import org.jtalks.poulpe.model.entity.Component;
-import org.jtalks.poulpe.model.entity.ComponentType;
+package org.jtalks.poulpe.web.controller;
 
 /**
- * Service for some operations with {@link Component}.
- * 
+ *
  * @author Pavel Vervenko
  */
-public interface ComponentService extends EntityService<Component> {
-
-    /**
-     * Get all components.
-     * @return the list of the components
-     */
-    List<Component> getAll();
-
-    /**
-     * Delete the specified component.
-     * @param component component to delete
-     */
-    void deleteComponent(Component component);
-
-    /**
-     * Save new or update existent component.
-     * @param component component to save
-     */
-    void saveComponent(Component component);
-
-    /**
-     * Get the list of unoccupied ComponentType.
-     * @return list of ComponentType
-     */
-    List<ComponentType> getAvailableTypes();
+public interface TopicTypeView {
+    
 }

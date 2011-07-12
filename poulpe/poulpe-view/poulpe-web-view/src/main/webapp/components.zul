@@ -9,10 +9,10 @@
         ListModel model = new BindingListModelList(componentPresenter.getComponents(), true);
     ]]></zscript>
 
-    <window id="componentWindow" title="Component List" border="none" width="800px" position="center" mode="overlapped"
-            presenter="${componentPresenter}" use="org.jtalks.poulpe.web.controller.ComponentViewImpl">
+    <window id="componentWindow" title="Component List" border="none" width="800px" position="center,top" mode="overlapped"
+            presenter="${componentPresenter}" use="org.jtalks.poulpe.web.controller.ComponentListView">
     <vlayout>
-        <listbox model="${model}" selectedItem="@{componentPresenter.currentComponent}">
+        <listbox model="${model}" selectedItem="@{componentPresenter.selectedComponent}">
             <listhead sizable="true">
                 <listheader align="center" label="Component" sort="auto" sclass="boldstyle" />
                 <listheader align="center" label="Description" />

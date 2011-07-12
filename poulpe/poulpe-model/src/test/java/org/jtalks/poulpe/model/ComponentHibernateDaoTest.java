@@ -64,6 +64,20 @@ public class ComponentHibernateDaoTest extends AbstractTransactionalTestNGSpring
         assertEquals(cList.size(), 2);
     }
 
+    @Test
+    public void testGetAvailableTypes() {
+        List<ComponentType> availableTypes = dao.getAvailableTypes();
+        ComponentType usedType = ComponentType.FORUM;
+        
+        assertEquals(availableTypes.size(), ComponentType.values().length);
+        assertTrue(availableTypes.contains(usedType));
+
+        session.save(getComponent("name", "desc", usedType));
+        availableTypes = dao.getAvailableTypes();
+
+        assertFalse(availableTypes.contains(usedType));
+    }
+
     private Component getComponent(String name, String desc, ComponentType componentType) {
         Component component = new Component();
         component.setName(name);

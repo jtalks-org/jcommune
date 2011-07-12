@@ -1,0 +1,35 @@
+<?page title="Edit Component List" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<zk>
+    <window id="editCompWindow" border="normal" width="430px" presenter="${componentPresenter}"
+            use="org.jtalks.poulpe.web.controller.ComponentItemView">
+        <longbox id="cid" visible="false" />
+        <grid>
+            <columns>
+                <column label="Field Description" width="100px" />
+                <column label="Field Input" width="310px" />
+            </columns>
+            <rows>
+                <row>
+                    <label value="Name" />
+                    <textbox id="name" width="300px" onBlur='self.setConstraint("no empty")' />
+                </row>
+                <row>
+                    <label value="Description" />
+                    <textbox id="description" width="300px" />
+                </row>
+                <row>
+                    <label value="Type" />
+                    <combobox id="componentType" width="300px" readonly="true"  onBlur='self.setConstraint("no empty")' />
+                </row>
+                <row align="right">
+                    <div />
+                    <div>
+                        <button label="Cancel" onClick="editCompWindow.onClose();" />
+                        <button id="saveCompButton" label="Save" />
+                    </div>
+                </row>
+            </rows>
+        </grid>
+    </window>
+</zk>

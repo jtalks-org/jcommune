@@ -15,40 +15,31 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-package org.jtalks.poulpe.service;
+package org.jtalks.poulpe.web.controller;
 
-import java.util.List;
-import org.jtalks.poulpe.model.entity.Component;
-import org.jtalks.poulpe.model.entity.ComponentType;
+import org.jtalks.poulpe.service.TopicTypeService;
+
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.testng.annotations.BeforeMethod;
 
 /**
- * Service for some operations with {@link Component}.
- * 
+ *
  * @author Pavel Vervenko
  */
-public interface ComponentService extends EntityService<Component> {
+public class TopicTypePresenterTest {
 
-    /**
-     * Get all components.
-     * @return the list of the components
-     */
-    List<Component> getAll();
+    private TopicTypePresenter presenter = new TopicTypePresenter();
+    @Mock
+    private TopicTypeView view;
+    @Mock
+    private TopicTypeService topicTypeService;
 
-    /**
-     * Delete the specified component.
-     * @param component component to delete
-     */
-    void deleteComponent(Component component);
-
-    /**
-     * Save new or update existent component.
-     * @param component component to save
-     */
-    void saveComponent(Component component);
-
-    /**
-     * Get the list of unoccupied ComponentType.
-     * @return list of ComponentType
-     */
-    List<ComponentType> getAvailableTypes();
+    @BeforeMethod
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        presenter.setTopicTypeService(topicTypeService);
+        presenter.initView(view);
+    }
+    
 }

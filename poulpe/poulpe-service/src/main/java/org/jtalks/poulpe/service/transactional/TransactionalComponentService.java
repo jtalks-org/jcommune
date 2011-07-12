@@ -20,8 +20,8 @@ package org.jtalks.poulpe.service.transactional;
 import java.util.List;
 import org.jtalks.poulpe.model.dao.ComponentDao;
 import org.jtalks.poulpe.model.entity.Component;
+import org.jtalks.poulpe.model.entity.ComponentType;
 import org.jtalks.poulpe.service.ComponentService;
-
 
 /**
  *
@@ -60,5 +60,13 @@ public class TransactionalComponentService extends AbstractTransactionalEntitySe
     @Override
     public void saveComponent(Component component) {
         dao.saveOrUpdate(component);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<ComponentType> getAvailableTypes() {
+        return dao.getAvailableTypes();
     }
 }

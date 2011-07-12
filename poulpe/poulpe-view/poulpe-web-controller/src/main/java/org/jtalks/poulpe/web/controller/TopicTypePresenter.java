@@ -15,40 +15,32 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-package org.jtalks.poulpe.service;
+package org.jtalks.poulpe.web.controller;
 
-import java.util.List;
-import org.jtalks.poulpe.model.entity.Component;
-import org.jtalks.poulpe.model.entity.ComponentType;
+import org.jtalks.poulpe.service.TopicTypeService;
 
 /**
- * Service for some operations with {@link Component}.
- * 
+ * Presenter of TopicType list page.
  * @author Pavel Vervenko
  */
-public interface ComponentService extends EntityService<Component> {
+public class TopicTypePresenter {
+
+    private TopicTypeService topicTypeService;
+    private TopicTypeView view;
 
     /**
-     * Get all components.
-     * @return the list of the components
+     * Save and init view.
+     * @param view view
      */
-    List<Component> getAll();
+    public void initView(TopicTypeView view) {
+        this.view = view;
+    }
 
     /**
-     * Delete the specified component.
-     * @param component component to delete
+     * Set the TopicTypeService implementation.
+     * @param topicTypeService impl of TopicTypeService
      */
-    void deleteComponent(Component component);
-
-    /**
-     * Save new or update existent component.
-     * @param component component to save
-     */
-    void saveComponent(Component component);
-
-    /**
-     * Get the list of unoccupied ComponentType.
-     * @return list of ComponentType
-     */
-    List<ComponentType> getAvailableTypes();
+    public void setTopicTypeService(TopicTypeService topicTypeService) {
+        this.topicTypeService = topicTypeService;
+    }
 }

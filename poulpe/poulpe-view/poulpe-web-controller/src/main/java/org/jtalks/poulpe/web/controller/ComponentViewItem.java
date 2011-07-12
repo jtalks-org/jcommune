@@ -12,17 +12,10 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  * Also add information on how to contact you by electronic and paper mail.
- * Creation date: July 10, 2011
+ * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
 package org.jtalks.poulpe.web.controller;
-
-import org.jtalks.poulpe.model.entity.ComponentType;
-import org.zkoss.zk.ui.Components;
-import org.zkoss.zk.ui.ext.AfterCompose;
-import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Window;
 
 /**
  * The class which manages actions and represents information about component
@@ -31,86 +24,59 @@ import org.zkoss.zul.Window;
  * @author Dmitriy Sukharev
  * 
  */
-public class ComponentViewImpl extends Window implements ComponentView, AfterCompose {
-
-    private static final long serialVersionUID = 481006835514635561L;
+public class ComponentViewItem implements ComponentView {
 
     private long cid;
     private String name;
     private String description;
-    private ComponentType componentType;
-    private ListModelList model;
-    private ComponentPresenter presenter;
+    private String componentType;
 
-    public void afterCompose() {
-        Components.wireVariables(this, this);
-        Components.addForwards(this, this);
-        presenter.initView(this);
-    }
-
+    /** {@inheritDoc} */
+    @Override
     public String getDescription() {
         return description;
     }
 
+    /** {@inheritDoc} */
+    @Override
     public String getName() {
         return name;
     }
 
-    public ComponentType getComponentType() {
+    /** {@inheritDoc} */
+    @Override
+    public String getComponentType() {
         return componentType;
     }
 
+    /** {@inheritDoc} */
+    @Override
     public long getCid() {
         return cid;
     }
 
-    public ListModelList getModel() {
-        return model;
-    }
-
-    public ComponentPresenter getPresenter() {
-        return presenter;
-    }
-
+    /** {@inheritDoc} */
+    @Override
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /** {@inheritDoc} */
+    @Override
     public void setName(String compName) {
         this.name = compName;
     }
 
-    public void setComponentType(ComponentType type) {
+    /** {@inheritDoc} */
+    @Override
+    public void setComponentType(String type) {
         this.componentType = type;
     }
 
+    /** {@inheritDoc} */
+    @Override
     public void setCid(long cid) {
         this.cid = cid;
-    }
-
-    public void setModel(ListModelList model) {
-        this.model = model;
-    }
-
-    public void setPresenter(ComponentPresenter presenter) {
-        this.presenter = presenter;
-    }
-
-    public void onClick$addCompButton() throws InterruptedException {
-        Messagebox.show("add" + (presenter == null));
-    }
-
-    public void onClick$delCompButton() throws InterruptedException {
-        presenter.deleteComponent();
-
-    }
-
-    public void onClick$editCompButton() throws InterruptedException {
-        presenter.editComponent();
-    }
-
-    public void onDoubleClick$listItem() throws InterruptedException {
-        presenter.editComponent();
     }
 
 }
