@@ -6,6 +6,7 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.security.AclBuilder;
 import org.jtalks.jcommune.service.security.AclManager;
+import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.jtalks.jcommune.service.security.SecurityContextFacade;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;

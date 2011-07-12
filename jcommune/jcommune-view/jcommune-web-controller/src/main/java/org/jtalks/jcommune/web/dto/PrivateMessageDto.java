@@ -19,6 +19,7 @@ package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.jtalks.jcommune.web.dto.builder.PrivateMessageDtoBuilder;
 
 import javax.validation.constraints.Size;
 
@@ -27,6 +28,7 @@ import javax.validation.constraints.Size;
  * Holds message's title, body and username of the recipient.
  *
  * @author Pavel Vervenko
+ * @author Alexandre Teterin
  */
 public class PrivateMessageDto {
 
@@ -112,18 +114,4 @@ public class PrivateMessageDto {
         this.title = title;
     }
 
-    /**
-     * Create dto from {@link PrivateMessage}
-     *
-     * @param pm private message for conversion
-     * @return dto for private message
-     */
-    public static PrivateMessageDto getDtoFor(PrivateMessage pm) {
-        PrivateMessageDto dto = new PrivateMessageDto();
-        dto.setBody(pm.getBody());
-        dto.setTitle(pm.getTitle());
-        dto.setRecipient(pm.getUserTo().getUsername());
-        dto.setId(pm.getId());
-        return dto;
-    }
 }

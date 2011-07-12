@@ -21,18 +21,20 @@ import org.springframework.security.core.context.SecurityContext;
 
 /**
  * Replacement for SecurityContextHolder singleton.
+ * {@code SecurityContext} contains security information associated with the
+ * current thread of execution.
  *
  * @author Kirill Afonin
  */
 public interface SecurityContextFacade {
 
     /**
-     * @return <code>SecurityContext</code>
+     * @return {@code SecurityContext}
      */
     SecurityContext getContext();
 
     /**
-     * @param securityContext <code>SecurityContext</code> to set.
+     * @param securityContext {@code SecurityContext} to set.
      */
     void setContext(SecurityContext securityContext);
 }

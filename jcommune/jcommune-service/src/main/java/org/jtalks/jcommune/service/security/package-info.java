@@ -16,4 +16,7 @@
  * The jtalks.org Project
  */
 
+/**
+ * Contains classes for authentication and authorization that coupled to Spring Security.
+ */
 package org.jtalks.jcommune.service.security;

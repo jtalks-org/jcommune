@@ -46,6 +46,11 @@
                              pattern="dd MMM yyyy HH:mm"/>
             </span>
         </li>
+        <li>
+            <a href="${pageContext.request.contextPath}/user/edit.html">
+                <label>Edit</label>                
+            </a>
+        </li>
     </ul>
 </div>
 </body>

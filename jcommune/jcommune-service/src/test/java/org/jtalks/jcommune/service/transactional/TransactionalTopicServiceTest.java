@@ -27,8 +27,8 @@ import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.SecurityConstants;
 import org.jtalks.jcommune.service.security.AclBuilder;
+import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
