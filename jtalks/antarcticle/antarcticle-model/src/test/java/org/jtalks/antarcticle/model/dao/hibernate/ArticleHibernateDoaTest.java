@@ -59,7 +59,6 @@ public class ArticleHibernateDoaTest extends AbstractTransactionalTestNGSpringCo
     public void testSave() {
         Article article = ObjectsFactory.getDefaultArticle();
         dao.saveOrUpdate(article);
-        assertNotNull(article.getId());
         assertNotSame(article.getId(), 0, "Id not created for article");
         
         session.evict(article);
@@ -113,13 +112,6 @@ public class ArticleHibernateDoaTest extends AbstractTransactionalTestNGSpringCo
         dao.delete(id2);
         assertEquals(getCount(), initCount);
     }
-    
-    
-    
-    
-    
-    
-
     
     private int getCount() {
         return ((Number) session.createQuery("select count(*) from Article").uniqueResult()).intValue();

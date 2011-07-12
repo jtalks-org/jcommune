@@ -18,9 +18,18 @@
 
 package org.jtalks.antarcticle.service;
 
+import org.jtalks.antarcticle.model.entity.Article;
+import org.jtalks.antarcticle.model.entity.ArticleCollection;
+import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+
 /**
  * @author Vitaliy Kravchenko
  */
 
 public interface ArticleService {
+    
+    public void addArticle(Article article);
+    public Article createArticle(ArticleCollection articleCollection, User user);
+    public void deleteArticle(Article article) throws NotFoundException;
 }

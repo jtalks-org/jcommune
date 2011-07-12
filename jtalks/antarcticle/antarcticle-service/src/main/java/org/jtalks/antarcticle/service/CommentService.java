@@ -18,9 +18,20 @@
 
 package org.jtalks.antarcticle.service;
 
+import java.util.List;
+import org.jtalks.antarcticle.model.entity.Article;
+import org.jtalks.antarcticle.model.entity.Comment;
+import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+
 /**
  * @author Vitaliy Kravchenko
  */
 
 public interface CommentService {
+    
+    public void addComment(Comment comment);
+    public Comment createComment(Article article, User user);
+    public List<Comment> getCommentsByArticle(Article article) throws NotFoundException;
+    public void deleteComment(Comment comment) throws NotFoundException;
 }
