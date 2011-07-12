@@ -134,26 +134,30 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void testDisplayReplyPMPage() throws NotFoundException {
-        PrivateMessage pm = getPrivateMessage();
+        PrivateMessage pm = new PrivateMessage();
+        controller.setPmDtoBuilder(pmDtoBuilder);
         when(pmService.get(PM_ID)).thenReturn(pm);
+        when(pmDtoBuilder.getReplyDtoFor(pm)).thenReturn(pmDto);
+
         ModelAndView mav = controller.displayReplyPMPage(PM_ID);
 
         verify(pmService).get(PM_ID);
-        //TODO: need to workaround for verifying class method call
-        //verify(pmDtoBuilder).getReplyDtoFor(pm);
+        verify(pmDtoBuilder).getReplyDtoFor(pm);
         assertViewName(mav, "pm/pmForm");
         assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
     }
 
     @Test
     public void testDisplayQuotePMPage() throws NotFoundException {
-        PrivateMessage pm = getPrivateMessage();
+        PrivateMessage pm = new PrivateMessage();
         when(pmService.get(PM_ID)).thenReturn(pm);
+        controller.setPmDtoBuilder(pmDtoBuilder);
+        when(pmDtoBuilder.getQuoteDtoFor(pm)).thenReturn(pmDto);
+
         ModelAndView mav = controller.displayQuotePMPage(PM_ID);
 
         verify(pmService).get(PM_ID);
-        //TODO: need to workaround for verifying class method call
-        //verify(pmDtoBuilder).getQuoteDtoFor(pm);
+        verify(pmDtoBuilder).getQuoteDtoFor(pm);
         assertViewName(mav, "pm/pmForm");
         assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
     }
@@ -266,21 +270,5 @@ public class PrivateMessageControllerTest {
         dto.setTitle("title");
         dto.setRecipient("Recipient");
         return dto;
-    }
-
-    private PrivateMessage getPrivateMessage() {
-        User userSender = new User();
-        userSender.setUsername("Sender");
-        User userRecipient = new User();
-        userSender.setUsername("Recipient");
-
-        PrivateMessage pm = new PrivateMessage();
-        pm.setId(PM_ID);
-        pm.setBody("body");
-        pm.setTitle("title");
-        pm.setUserFrom(userSender);
-        pm.setUserTo(userRecipient);
-
-        return pm;
     }
 }
