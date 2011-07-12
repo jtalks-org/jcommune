@@ -5,6 +5,7 @@ import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
 import org.jtalks.jcommune.service.exceptions.DuplicateException;
+import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.dto.UserDto;
 import org.springframework.validation.BeanPropertyBindingResult;
