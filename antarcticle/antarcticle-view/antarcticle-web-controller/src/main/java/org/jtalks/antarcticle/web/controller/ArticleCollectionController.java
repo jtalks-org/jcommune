@@ -18,9 +18,14 @@
 
 package org.jtalks.antarcticle.web.controller;
 
+import org.jtalks.antarcticle.model.entity.Article;
+import org.jtalks.antarcticle.model.entity.ArticleCollection;
 import org.jtalks.antarcticle.service.ArticleCollectionService;
+import org.jtalks.antarcticle.service.ArticleService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -32,6 +37,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class ArticleCollectionController {
 
     private ArticleCollectionService articleCollectionService;
+    private ArticleService articleService;
 
     @Autowired
     public ArticleCollectionController(ArticleCollectionService articleCollectionService) {
@@ -41,5 +47,13 @@ public class ArticleCollectionController {
     @RequestMapping(value = "/main", method = RequestMethod.GET)
     public ModelAndView articleCollectionList() {
         return new ModelAndView("articleCollectionList", "articleCollectionList", articleCollectionService.getAll());
+    }
+
+    @RequestMapping(value = "/articleCollection/{collectionId}", method = RequestMethod.GET)
+    public ModelAndView getCollectionById(@PathVariable("collectionId") long collectionId) throws NotFoundException {
+      Article firstArticle = articleService.getFirstArticleFromCollection(collectionId);
+      ArticleCollection articleCollection = articleCollectionService.get(collectionId);
+        return new ModelAndView("renderArticleCollection", "firstArticle",firstArticle)
+                .addObject("articleCollection",articleCollection);
     }
 }
