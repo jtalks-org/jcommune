@@ -17,6 +17,8 @@
  */
 package org.jtalks.poulpe.model;
 
+import java.util.Arrays;
+import java.util.Set;
 import org.testng.annotations.BeforeMethod;
 import java.util.List;
 import org.hibernate.Session;
@@ -66,14 +68,17 @@ public class ComponentHibernateDaoTest extends AbstractTransactionalTestNGSpring
 
     @Test
     public void testGetAvailableTypes() {
-        List<ComponentType> availableTypes = dao.getAvailableTypes();
-        ComponentType usedType = ComponentType.FORUM;
-        
-        assertEquals(availableTypes.size(), ComponentType.values().length);
-        assertTrue(availableTypes.contains(usedType));
+        Set<ComponentType> availableTypes = dao.getAvailableTypes();
 
+        assertEquals(availableTypes.size(), ComponentType.values().length);
+        assertTrue(availableTypes.containsAll(Arrays.asList(ComponentType.values())));
+    }
+
+    @Test
+    public void testGetAvailableTypesAfterInsert() {
+        ComponentType usedType = ComponentType.FORUM;
         session.save(getComponent("name", "desc", usedType));
-        availableTypes = dao.getAvailableTypes();
+        Set<ComponentType> availableTypes = dao.getAvailableTypes();
 
         assertFalse(availableTypes.contains(usedType));
     }

@@ -18,9 +18,9 @@
 package org.jtalks.poulpe.model.dao.hibernate;
 
 import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import org.jtalks.poulpe.model.dao.ComponentDao;
 import org.jtalks.poulpe.model.entity.Component;
 import org.jtalks.poulpe.model.entity.ComponentType;
@@ -45,13 +45,11 @@ public class ComponentHibernateDao extends AbstractHibernateDao<Component> imple
      * {@inheritDoc}
      */
     @Override
-    public List<ComponentType> getAvailableTypes() {
-        List<ComponentType> typeList = new LinkedList();
-        for(Component current: getAll()) {
-            typeList.add(current.getComponentType());
+    public Set<ComponentType> getAvailableTypes() {
+        Set<ComponentType> result = new LinkedHashSet<ComponentType>(Arrays.asList(ComponentType.values()));
+        for (Component current : getAll()) {
+            result.remove(current.getComponentType());
         }
-        List allTypes = new ArrayList(Arrays.asList(ComponentType.values()));
-        allTypes.removeAll(typeList);
-        return allTypes;
+        return result;
     }
 }
