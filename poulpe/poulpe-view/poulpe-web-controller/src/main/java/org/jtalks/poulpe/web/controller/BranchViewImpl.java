@@ -18,6 +18,8 @@
 
 package org.jtalks.poulpe.web.controller;
 
+import java.util.List;
+
 import org.jtalks.poulpe.model.entity.Branch;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.event.Event;
@@ -45,12 +47,18 @@ public class BranchViewImpl extends Window implements BranchView, AfterCompose {
     private Textbox editBranchDialog$branchName;
     private Textbox editBranchDialog$branchDescription;
 
+    private ListModelList branchesListModel;
+
     @Override
     public void afterCompose() {
         Components.addForwards(this, this);
         Components.wireVariables(this, this);
-        presenter.initView(this);
+
+        branchesListModel = new ListModelList();
+        branchesList.setModel(branchesListModel);
         branchesList.setItemRenderer(new ListBranchesRenderer());
+
+        presenter.initView(this);
     }
 
     public void setPresenter(BranchPresenter presenter) {
@@ -83,6 +91,50 @@ public class BranchViewImpl extends Window implements BranchView, AfterCompose {
         this.editBranchDialog$branchDescription.setText(editBranchDescription);
     }
 
+    @Override
+    public void showBranches(List<Branch> branches) {
+        branchesListModel.addAll(branches);
+    }
+
+    @Override
+    public void showBranch(Branch branch) {
+        branchesListModel.add(branch);
+
+    }
+
+    @Override
+    public void removeBranch(Branch branch) {
+        branchesListModel.remove(branch);
+
+    }
+
+    @Override
+    public void updateBranch(Branch branch) {
+        int index = branchesListModel.indexOf(branch);
+        branchesListModel.set(index, branch);
+    }
+
+    @Override
+    public void closeDialogs() {
+        closeNewBranchDialog();
+        closeEditBranchDialog();
+    }
+
+    @Override
+    public Branch getSelectedBranch() {
+        int index = branchesList.getSelectedIndex();
+
+        if (index > 0) {
+            return (Branch) branchesListModel.get(index);
+        }
+        return null;
+    }
+
+    @Override
+    public void openEditBranchDialog() {
+        editBranchDialog.setVisible(true);
+    }
+
     public void onClick$addBranchButton(Event event) {
         openNewBranchDialog();
     }
@@ -113,27 +165,6 @@ public class BranchViewImpl extends Window implements BranchView, AfterCompose {
     public void onClick$addButton$newBranchDialog(Event event) {
         presenter.addNewBranch();
         closeNewBranchDialog();
-    }
-
-    @Override
-    public void setBranchListModel(ListModelList branchModel) {
-        branchesList.setModel(branchModel);
-    }
-
-    @Override
-    public void closeDialogs() {
-        closeNewBranchDialog();
-        closeEditBranchDialog();
-    }
-
-    @Override
-    public int getSelectedBranchIndex() {
-        return branchesList.getSelectedIndex();
-    }
-
-    @Override
-    public void openEditBranchDialog() {
-        editBranchDialog.setVisible(true);
     }
 
     private void closeNewBranchDialog() {

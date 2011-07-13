@@ -23,14 +23,11 @@ import java.util.List;
 
 import org.jtalks.poulpe.model.entity.Branch;
 import org.jtalks.poulpe.service.BranchService;
-import org.zkoss.zul.ListModelList;
 
 public class BranchPresenter {
 
     private BranchView view;
     private BranchService branchService;
-
-    private ListModelList branchModel;
 
     public void setBranchService(BranchService service) {
         branchService = service;
@@ -38,8 +35,7 @@ public class BranchPresenter {
 
     public void initView(BranchView view) {
         this.view = view;
-        branchModel = new ListModelList(getBranches());
-        view.setBranchListModel(branchModel);
+        view.showBranches(getBranches());
         view.closeDialogs();
     }
 
@@ -51,12 +47,12 @@ public class BranchPresenter {
         branch.setName(name);
         branch.setDescription(desc);
         branchService.saveBranch(branch);
-        branchModel.add(branch);
+
+        view.showBranch(branch);
     }
 
     public void openEditDialog() {
-        int id = view.getSelectedBranchIndex();
-        Branch branch = (Branch) branchModel.get(id);
+        Branch branch = view.getSelectedBranch();
 
         view.setEditBranchName(branch.getName());
         view.setEditBranchDescription(branch.getDescription());
@@ -64,30 +60,35 @@ public class BranchPresenter {
     }
 
     public void editBranch() {
-        int index = view.getSelectedBranchIndex();
-        Branch branch = (Branch) branchModel.get(index);
+
+        Branch branch = view.getSelectedBranch();
 
         branch.setName(view.getEditBranchName());
         branch.setDescription(view.getEditBranchDescription());
 
         branchService.saveBranch(branch);
-        branchModel.set(index, branch);
+
+        view.updateBranch(branch);
     }
 
     public void markBranchAsDelete() {
-        int index = view.getSelectedBranchIndex();
-        Branch branch = (Branch) branchModel.get(index);
 
-        branchModel.remove(branch);
-        branchService.deleteBranch(branch);
+        Branch branch = view.getSelectedBranch();
+
+        if (branch != null) {
+            branchService.deleteBranch(branch);
+
+            view.removeBranch(branch);
+        }
     }
 
     private List<Branch> getBranches() {
         List<Branch> branches = new ArrayList<Branch>();
 
         for (Branch branch : branchService.getAll()) {
-            if (!branch.getDeleted())
+            if (!branch.getDeleted()) {
                 branches.add(branch);
+            }
         }
         return branches;
     }

@@ -18,11 +18,19 @@
 
 package org.jtalks.poulpe.web.controller;
 
-import org.zkoss.zul.ListModelList;
+import java.util.List;
+
+import org.jtalks.poulpe.model.entity.Branch;
 
 public interface BranchView {
 
-    void setBranchListModel(ListModelList branchModel);
+    void showBranches(List<Branch> branches);
+
+    void showBranch(Branch branch);
+
+    void removeBranch(Branch branch);
+
+    void updateBranch(Branch branch);
 
     void openEditBranchDialog();
 
@@ -34,7 +42,7 @@ public interface BranchView {
 
     String getEditBranchDescription();
 
-    int getSelectedBranchIndex();
+    Branch getSelectedBranch();
 
     String getNewBranchName();
 
