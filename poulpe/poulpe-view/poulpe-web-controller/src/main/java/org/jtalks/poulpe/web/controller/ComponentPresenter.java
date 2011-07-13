@@ -19,6 +19,7 @@ package org.jtalks.poulpe.web.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.jtalks.poulpe.model.entity.Component;
 import org.jtalks.poulpe.model.entity.ComponentType;
@@ -153,7 +154,7 @@ public class ComponentPresenter {
      * @return the list unoccupied component types as strings
      */
     private List<String> getTypes() {
-        List<ComponentType> origTypes = componentService.getAvailableTypes();
+        Set<ComponentType> origTypes = componentService.getAvailableTypes();
         List<String> strTypes = new ArrayList<String>();
         for (ComponentType orig : origTypes) {
             strTypes.add(orig.toString());
