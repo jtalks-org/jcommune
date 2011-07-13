@@ -18,17 +18,84 @@
 
 package org.jtalks.antarcticle.service.transactional;
 
+import java.util.List;
+import org.joda.time.DateTime;
+import org.jtalks.antarcticle.model.dao.ArticleDao;
 import org.jtalks.antarcticle.model.dao.CommentDao;
+import org.jtalks.antarcticle.model.entity.Article;
 import org.jtalks.antarcticle.model.entity.Comment;
 import org.jtalks.antarcticle.service.CommentService;
+import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.transactional.AbstractTransactionalEntityService;
 
 /**
  * @author Vitaliy Kravchenko
+ * @author Dmitry Sokolov
  */
 
-public class TransactionalCommentService extends AbstractTransactionalEntityService<Comment, CommentDao> implements CommentService {
-    public TransactionalCommentService(CommentDao commentDao) {
-        this.dao = commentDao;
+public class TransactionalCommentService 
+    extends AbstractTransactionalEntityService<Comment, CommentDao> 
+    implements CommentService {
+    
+    private ArticleDao articleDao;
+    
+    /**
+     * Creates an instance of entity based service
+     * 
+     * @param dao Data access object for CRUD operations of {@link Comment}
+     * @param articleDao Data access object for CRUD operations of {@link Article}
+     */
+    public TransactionalCommentService(CommentDao dao, ArticleDao articleDao) {
+        this.dao = dao;
+        this.articleDao =  articleDao;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addComment(Comment comment) {
+        dao.saveOrUpdate(comment);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Comment createComment(Article article, User user) {
+        Comment comment = new Comment(new DateTime());
+        comment.setArticle(article);
+        comment.setUserCommented(user);
+        return comment;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Comment> getCommentsByArticle(Article article) throws NotFoundException {
+        if(article.getId() == 0) {
+            throw new NotFoundException("The current article is not persist");
+        }
+        if(!articleDao.isExist(article.getId())) {
+            throw new NotFoundException("There is no article with id " + article.getId());
+        }
+        return dao.findByArticle(article);
+        
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteComment(Comment comment) throws NotFoundException {
+        if(comment.getId() == 0) {
+            throw new NotFoundException("The current comment is not persist yet");
+        }
+        if(!dao.isExist(comment.getId())) {
+            throw new NotFoundException("There is no comment with is " + comment.getId());
+        }
+        dao.delete(comment.getId());
     }
 }

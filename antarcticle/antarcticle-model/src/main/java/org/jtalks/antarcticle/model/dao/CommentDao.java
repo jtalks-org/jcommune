@@ -17,6 +17,8 @@
  */
 package org.jtalks.antarcticle.model.dao;
 
+import java.util.List;
+import org.jtalks.antarcticle.model.entity.Article;
 import org.jtalks.antarcticle.model.entity.Comment;
 import org.jtalks.jcommune.model.dao.Dao;
 
@@ -25,5 +27,13 @@ import org.jtalks.jcommune.model.dao.Dao;
  * @author Dmitry Sokolov
  */
 public interface CommentDao extends Dao<Comment> {
+    
+    /**
+     * Get list of {@link Comment} by {@link Article}
+     * 
+     * @param article Article for which need to find comments 
+     * @return List of comments
+     */
+    List<Comment> findByArticle(Article article);
     
 }

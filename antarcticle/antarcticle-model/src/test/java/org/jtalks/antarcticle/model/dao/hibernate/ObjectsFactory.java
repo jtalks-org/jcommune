@@ -49,7 +49,7 @@ public final class ObjectsFactory {
 
     public static Article getDefaultArticle() {
         Article article = new Article();
-        article.setArticleTopic("article topic");
+        article.setArticleTitle("article title");
         article.setArticleContent("article content");
         article.setCreationDate(new DateTime());
         article.setUserCreated(persist(getDefaultUser()));

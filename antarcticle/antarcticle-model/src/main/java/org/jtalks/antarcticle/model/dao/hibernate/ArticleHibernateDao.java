@@ -28,6 +28,9 @@ import org.jtalks.jcommune.model.dao.hibernate.AbstractHibernateDao;
  */
 public class ArticleHibernateDao extends AbstractHibernateDao<Article> implements ArticleDao {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Article getFirstArticleFromCollection(long collectionId) {
        return (Article) getSession().getNamedQuery("getAllArticlesInCollection").setMaxResults(1);

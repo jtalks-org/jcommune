@@ -35,6 +35,7 @@
   <bean id="commentService"
         class="org.jtalks.antarcticle.service.transactional.TransactionalCommentService">
     <constructor-arg index="0" ref="commentDao"/>
+    <constructor-arg index="1" ref="articleDao"/>
   </bean>
 
 
