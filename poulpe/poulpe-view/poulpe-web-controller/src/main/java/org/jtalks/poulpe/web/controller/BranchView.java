@@ -12,33 +12,34 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  * Also add information on how to contact you by electronic and paper mail.
- * Creation date: July 10, 2011
+ * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
 
 package org.jtalks.poulpe.web.controller;
 
-import java.util.List;
-
-import org.jtalks.poulpe.model.entity.Branch;
 import org.zkoss.zul.ListModelList;
 
 public interface BranchView {
-	
-	void setBranchListModel(ListModelList branchModel);
-	
-	void openEditBranchDialog();
-	
-	void setEditBranchName(String name);
-	void setEditBranchDescription(String description);
-	
-	String getEditBranchName();
-	String getEditBranchDescription();
-	
-	int getSelectedBranchIndex();
-	String getNewBranchName();
-	String getNewBranchDescription();
-	
-	void closeDialogs();	
-	
+
+    void setBranchListModel(ListModelList branchModel);
+
+    void openEditBranchDialog();
+
+    void setEditBranchName(String name);
+
+    void setEditBranchDescription(String description);
+
+    String getEditBranchName();
+
+    String getEditBranchDescription();
+
+    int getSelectedBranchIndex();
+
+    String getNewBranchName();
+
+    String getNewBranchDescription();
+
+    void closeDialogs();
+
 }
