@@ -15,8 +15,7 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-package org.jtalks.poulpe.web.controller;
-
+package org.jtalks.poulpe.web.controller.component;
 
 /**
  * Interface which represents information about component displayed in admin panel.
@@ -24,7 +23,7 @@ package org.jtalks.poulpe.web.controller;
  * @author Dmitriy Sukharev
  * 
  */
-public interface ComponentView {
+public interface ItemView extends PlainComponent {
 
     /**
      * Returns the component's id.
@@ -73,5 +72,12 @@ public interface ComponentView {
      * @param type the new value of the component's type
      */
     void setComponentType(String type);
-    
+
+    /**
+     * Adds new or updates existing item in the list of visible items.
+     * @param component the component to be update in callback window
+     * @param isNew the flag to show if {@code component} must be saved, not update
+     */
+    void updateCallbackWindow(PlainComponentItem component, boolean isNew);
+
 }

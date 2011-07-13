@@ -15,16 +15,16 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-package org.jtalks.poulpe.web.controller;
+package org.jtalks.poulpe.web.controller.component;
 
 /**
- * The class which manages actions and represents information about component
- * displayed in administrator panel.
+ * The class which represents information about component as a set of
+ * {@link String}s and primitive types.
  * 
  * @author Dmitriy Sukharev
  * 
  */
-public class ComponentViewItem implements ComponentView {
+public class PlainComponentItem implements PlainComponent {
 
     private long cid;
     private String name;
