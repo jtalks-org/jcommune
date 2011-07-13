@@ -20,9 +20,11 @@ package org.jtalks.poulpe.service.transactional;
 import org.jtalks.poulpe.model.entity.Component;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeMethod;
 import org.jtalks.poulpe.model.dao.ComponentDao;
+import org.jtalks.poulpe.model.entity.ComponentType;
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
 
@@ -73,7 +75,7 @@ public class TransactionalComponentServiceTest {
 
     @Test
     void testGetAvailableTypes() {
-        when(dao.getAvailableTypes()).thenReturn(new ArrayList());
+        when(dao.getAvailableTypes()).thenReturn(new LinkedHashSet<ComponentType>());
 
         instance.getAvailableTypes();
 

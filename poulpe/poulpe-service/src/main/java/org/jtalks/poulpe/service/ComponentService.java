@@ -18,6 +18,7 @@
 package org.jtalks.poulpe.service;
 
 import java.util.List;
+import java.util.Set;
 import org.jtalks.poulpe.model.entity.Component;
 import org.jtalks.poulpe.model.entity.ComponentType;
 
@@ -47,8 +48,8 @@ public interface ComponentService extends EntityService<Component> {
     void saveComponent(Component component);
 
     /**
-     * Get the list of unoccupied ComponentType.
-     * @return list of ComponentType
+     * Get the set of unoccupied ComponentType.
+     * @return set of ComponentType
      */
-    List<ComponentType> getAvailableTypes();
+    Set<ComponentType> getAvailableTypes();
 }
