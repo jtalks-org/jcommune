@@ -15,11 +15,13 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-package org.jtalks.poulpe.web.controller;
+package org.jtalks.poulpe.web.controller.component;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
+import java.util.Map;
+
 import org.zkoss.zk.ui.Components;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Longbox;
@@ -34,24 +36,38 @@ import org.zkoss.zul.Window;
  * @author Dmitriy Sukharev
  * 
  */
-public class ComponentItemView extends Window implements ComponentView, AfterCompose {
+public class ItemViewImpl extends Window implements ItemView, PlainComponent, AfterCompose {
 
     private static final long serialVersionUID = -3927090308078350369L;
-    
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private Longbox cid;
     private Textbox name;
     private Textbox description;
     private Combobox componentType;
-    private ComponentPresenter presenter;
+    private ItemPresenter presenter;
+
+    private Map<?, ?> args = Executions.getCurrent().getArg();
 
     /** {@inheritDoc} */
     @Override
     public void afterCompose() {
         Components.wireVariables(this, this);
         Components.addForwards(this, this);
-        presenter.initItemView(this);
+        initArgs();
+        presenter.initView(this);
+    }
+
+    /** Initialises this window using received arguments. */
+    private void initArgs() {
+        PlainComponent component = (PlainComponent) args.get("component");
+        List<?> types = (List<?>) args.get("types");
+        cid.setValue(component.getCid());
+        name.setText(component.getName());
+        description.setText(component.getDescription());
+        componentType.setValue(component.getComponentType());
+        for (Object obj : types) {
+            componentType.appendItem(obj.toString());
+        }
     }
 
     /** {@inheritDoc} */
@@ -107,7 +123,7 @@ public class ComponentItemView extends Window implements ComponentView, AfterCom
      * 
      * @return the presenter which is linked with this window
      */
-    public ComponentPresenter getPresenter() {
+    public ItemPresenter getPresenter() {
         return presenter;
     }
 
@@ -117,16 +133,20 @@ public class ComponentItemView extends Window implements ComponentView, AfterCom
      * @param presenter
      *            new value of the presenter which is linked with this window
      */
-    public void setPresenter(ComponentPresenter presenter) {
+    public void setPresenter(ItemPresenter presenter) {
         this.presenter = presenter;
     }
 
     /**
      * Tells to presenter to save created or edited component in component list.
      * 
-     * @see ComponentPresenter
+     * @see ListPresenter
+     * @throws InterruptedException
+     *             when a thread is waiting, sleeping, or otherwise occupied,
+     *             and the thread is interrupted, either before or during the
+     *             activity
      */
-    public void onClick$saveCompButton() {
+    public void onClick$saveCompButton() throws InterruptedException {
         componentType.setConstraint("no empty");
         name.setConstraint("no empty");
         long pos = presenter.getCidByName(name.getValue());
@@ -134,12 +154,20 @@ public class ComponentItemView extends Window implements ComponentView, AfterCom
             presenter.saveComponent();
             onClose();
         } else {
-            try {
-                Messagebox.show("The component with such name already exists.", "Warning", Messagebox.OK,
-                        Messagebox.EXCLAMATION);
-            } catch (InterruptedException e) {
-                logger.error("Error of showing message box comfirming deleting", e);
-            }
+            Messagebox.show("The component with such name already exists.", "Warning",
+                    Messagebox.OK, Messagebox.EXCLAMATION);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    // FIXIT: TEMPORARY SOLUTION
+    public void updateCallbackWindow(PlainComponentItem component, boolean isNew) {
+        ListViewImpl listWin = (ListViewImpl) args.get("callbackWin");
+        if (isNew) {
+            listWin.addToList(component);
+        } else {
+            listWin.updateInList(component);
         }
     }
 

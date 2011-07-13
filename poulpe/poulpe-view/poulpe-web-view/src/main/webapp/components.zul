@@ -1,36 +1,24 @@
-<?page title="Component List" contentType="text/html;charset=UTF-8"?>
+<?page title="ComponentList" contentType="text/html;charset=UTF-8"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <zk>
-    <style>
-        .boldstyle { font-weight: bold; font-size: 14pt; }
-    </style>    
-    <zscript><![CDATA[
-        ListModel model = new BindingListModelList(componentPresenter.getComponents(), true);
-    ]]></zscript>
-
-    <window id="componentWindow" title="Component List" border="none" width="800px" position="center,top" mode="overlapped"
-            presenter="${componentPresenter}" use="org.jtalks.poulpe.web.controller.ComponentListView">
-    <vlayout>
-        <listbox model="${model}" selectedItem="@{componentPresenter.selectedComponent}">
-            <listhead sizable="true">
-                <listheader align="center" label="Component" sort="auto" sclass="boldstyle" />
-                <listheader align="center" label="Description" />
-                <listheader align="center" label="Type" />
-            </listhead>
-            
-            <listitem id="listItem" self="@{each=comp }">
-                <listcell>
-                    <label id="compName" value="@{comp.name}" sclass="boldstyle" />
-                </listcell>
-                <listcell id="compDescription" label="@{comp.description}" />
-                <listcell id="compType" label="@{comp.componentType}" />
-            </listitem>
-        </listbox>
-        <div>
-            <button id="addCompButton" label="Add component" />
-            <button id="delCompButton" label="Delete" />
-        </div>
-    </vlayout>
-</window>
+    <style>.boldstyle { font-weight: bold; font-size: 14pt; }</style>
+    <window id="componentWindow" title="Component List" border="none"
+        width="800px" position="center,top" mode="overlapped"
+        presenter="${componentListPresenter}"
+        use="org.jtalks.poulpe.web.controller.component.ListViewImpl">
+        <vlayout>
+            <listbox id="listbox">
+                <listhead sizable="true">
+                    <listheader align="center" label="Component" sort="auto" sclass="boldstyle" />
+                    <listheader align="center" label="Description" />
+                    <listheader align="center" label="Type" />
+                </listhead>
+            </listbox>
+            <div>
+                <button id="addCompButton" label="Add component" />
+                <button id="delCompButton" label="Delete" />
+            </div>
+        </vlayout>
+    </window>
 </zk>

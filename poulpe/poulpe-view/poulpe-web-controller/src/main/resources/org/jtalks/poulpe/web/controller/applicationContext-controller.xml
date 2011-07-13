@@ -16,7 +16,11 @@
   </bean> 
 
   <!--Declaration of presenters -->
-  <bean id="componentPresenter" class="org.jtalks.poulpe.web.controller.ComponentPresenter" scope="session">
+  <bean id="componentItemPresenter" class="org.jtalks.poulpe.web.controller.component.ItemPresenter" scope="session">
+    <property name="componentService" ref="componentService" />
+  </bean>
+  
+  <bean id="componentListPresenter" class="org.jtalks.poulpe.web.controller.component.ListPresenter" scope="session">
     <property name="componentService" ref="componentService" />
   </bean>
 

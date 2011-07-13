@@ -1,8 +1,8 @@
-<?page title="Edit Component List" contentType="text/html;charset=UTF-8"?>
+<?page title="EditComponentList" contentType="text/html;charset=UTF-8"?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <zk>
-    <window id="editCompWindow" border="normal" width="430px" presenter="${componentPresenter}"
-            use="org.jtalks.poulpe.web.controller.ComponentItemView">
+    <window id="editCompWindow" border="normal" width="430px" presenter="${componentItemPresenter}"
+            use="org.jtalks.poulpe.web.controller.component.ItemViewImpl">
         <longbox id="cid" visible="false" />
         <grid>
             <columns>
@@ -12,7 +12,7 @@
             <rows>
                 <row>
                     <label value="Name" />
-                    <textbox id="name" width="300px" onBlur='self.setConstraint("no empty")' />
+                    <textbox id="name" width="300px" onBlur='self.setConstraint("no empty")' focus="true" />
                 </row>
                 <row>
                     <label value="Description" />
@@ -25,8 +25,8 @@
                 <row align="right">
                     <div />
                     <div>
-                        <button label="Cancel" onClick="editCompWindow.onClose();" />
                         <button id="saveCompButton" label="Save" />
+                        <button label="Cancel" onClick="editCompWindow.onClose();" />
                     </div>
                 </row>
             </rows>
