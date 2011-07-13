@@ -20,3 +20,12 @@
 /jcommune/jcommune-view/jcommune-web-controller/target/
 /jcommune/jcommune-view/jcommune-web-view/target/
 /jcommune/functional-tests/target/
+
+/poulpe/poulpe-model/logs/
+/poulpe/poulpe-model/target/
+/poulpe/poulpe-service/target/
+/poulpe/poulpe-view/poulpe-web-controller/target/
+/poulpe/poulpe-view/poulpe-web-view/target/
+/poulpe/poulpe-view/target/
+/poulpe/target/
+
