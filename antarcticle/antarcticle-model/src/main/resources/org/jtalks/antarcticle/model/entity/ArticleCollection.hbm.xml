@@ -13,9 +13,5 @@
       <index column="LIST_INDEX"/>
       <one-to-many class="Article"/>
     </list>
-  </class>
-  <query name="getFirstArticleFromCollection">
-   FROM Article as article
-    WHERE article.articleCollection = :articleCollectionId ORDER BY article.creationDate
-  </query>
+  </class>  
 </hibernate-mapping>

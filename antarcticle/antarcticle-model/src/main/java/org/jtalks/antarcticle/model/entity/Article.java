@@ -31,7 +31,7 @@ public class Article extends Persistent {
     
     private DateTime creationDate;
     private User userCreated;
-    private String articleTopic;
+    private String articleTitle;
     private String articleContent;
     private ArticleCollection articleCollection;
 
@@ -68,12 +68,12 @@ public class Article extends Persistent {
         this.articleContent = articleContent;
     }
 
-    public String getArticleTopic() {
-        return articleTopic;
+    public String getArticleTitle() {
+        return articleTitle;
     }
 
-    public void setArticleTopic(String articleTopic) {
-        this.articleTopic = articleTopic;
+    public void setArticleTitle(String articleTopic) {
+        this.articleTitle = articleTopic;
     }
 
     public DateTime getCreationDate() {
