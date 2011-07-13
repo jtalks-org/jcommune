@@ -22,13 +22,14 @@ import java.util.List;
 import org.jtalks.antarcticle.model.entity.Article;
 import org.jtalks.antarcticle.model.entity.Comment;
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.EntityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 /**
  * @author Vitaliy Kravchenko
  */
 
-public interface CommentService {
+public interface CommentService extends EntityService<Comment> {
     
     /**
      * Persists {@link Comment}

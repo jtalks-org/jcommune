@@ -17,7 +17,6 @@
  */
 package org.jtalks.antarcticle.service.transactional;
 
-import org.joda.time.DateTime;
 import org.jtalks.antarcticle.model.dao.ArticleDao;
 import org.jtalks.antarcticle.model.entity.Article;
 import org.jtalks.antarcticle.service.ArticleService;
@@ -30,14 +29,13 @@ import org.testng.annotations.Test;
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static org.jtalks.antarcticle.service.transactional.ObjectFactory.*;
 
 /**
  *
  * @author Dmitry Sokolov
  */
 public class TransactionalArticleServiceTest {
-    
-    private static long ARTICLE_ID = 33L;
     
     private ArticleService articleService;
     private ArticleDao articleDao;
@@ -50,7 +48,7 @@ public class TransactionalArticleServiceTest {
     
     @Test
     public void testGet() throws NotFoundException {
-        Article article = getDefaultAricle();
+        Article article = ObjectFactory.getDefaultAricle();
         article.setId(ARTICLE_ID);
         
         when(articleDao.isExist(ARTICLE_ID)).thenReturn(true);
@@ -67,7 +65,7 @@ public class TransactionalArticleServiceTest {
     }
     
     @Test
-    public void addArticle() {
+    public void testAddArticle() {
         Article article = getDefaultAricle();
         assertEquals(article.getId(), 0);
         
@@ -87,14 +85,41 @@ public class TransactionalArticleServiceTest {
         verify(articleDao).saveOrUpdate(article);
     }
     
-    
-    private Article getDefaultAricle() {
-        Article article = new Article();
-        article.setArticleContent("article conetent");
-        article.setCreationDate(new DateTime());
-        article.setArticleTitle("article topic");
-        //TODO set other fields
-        return article;
+    @Test
+    public void testCreateArticle() throws NotFoundException {
+        Article article = articleService
+                .createArticle(getDefaultArticleCollection(), getDefaultUser());
+        assertNotNull(article);
+        assertEquals(article.getUserCreated().getId(), getDefaultUser().getId());
+        assertEquals(article.getArticleCollection().getId(), getDefaultArticleCollection().getId());
+        assertNotNull(article.getCreationDate());
+        assertEquals(article.getId(), 0);
     }
-            
+    
+    @Test
+    public void testDeleteArticle() throws NotFoundException {
+        Article article = getDefaultAricle();
+        article.setId(ARTICLE_ID);
+        
+        when(articleDao.isExist(ARTICLE_ID)).thenReturn(true);
+        when(articleDao.delete(ARTICLE_ID)).thenReturn(true);
+        
+        articleService.deleteArticle(article);
+        
+        verify(articleDao).isExist(ARTICLE_ID);
+        verify(articleDao).delete(ARTICLE_ID);
+    }
+    
+    
+    @Test(expectedExceptions=NotFoundException.class)
+    public void testDeleteNotSavedArticle() throws NotFoundException {
+        Article notSavedArticle = getDefaultAricle();
+        assertEquals(notSavedArticle.getId(), 0);
+        notSavedArticle.setId(ARTICLE_ID);
+        
+        when(articleDao.isExist(ARTICLE_ID)).thenReturn(false);
+        articleService.deleteArticle(notSavedArticle);
+        
+        verify(articleDao).isExist(ARTICLE_ID);
+    }
 }
