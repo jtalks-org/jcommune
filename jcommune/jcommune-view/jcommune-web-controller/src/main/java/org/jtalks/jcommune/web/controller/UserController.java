@@ -34,11 +34,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Controller for User related actions: registration.
  *
  * @author Kirill Afonin
+ * @author Alexandre Teterin
  */
 @Controller
 public class UserController {
@@ -101,6 +103,8 @@ public class UserController {
             result.rejectValue("username", "validation.duplicateuser");
         } catch (DuplicateEmailException e) {
             result.rejectValue("email", "validation.duplicateemail");
+        } catch (UnsupportedEncodingException e) {
+            result.rejectValue("username", "validation.invalidusernamechar");
         }
         return new ModelAndView("registration");
     }
@@ -173,7 +177,7 @@ public class UserController {
 
         return new ModelAndView(new StringBuilder()
                 .append("redirect:/user/")
-                .append(user.getId())
+                .append(user.getEncodedUsername())
                 .append(".html").toString());
     }
 }
