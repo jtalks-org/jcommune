@@ -18,7 +18,6 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.Length;
-import org.jtalks.jcommune.web.controller.UserController;
 import org.jtalks.jcommune.web.validation.Matches;
 
 /**
