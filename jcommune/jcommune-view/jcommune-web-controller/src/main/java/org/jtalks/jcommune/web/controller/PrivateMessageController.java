@@ -49,6 +49,12 @@ public class PrivateMessageController {
     private final PrivateMessageService pmService;
     private PrivateMessageDtoBuilder pmDtoBuilder = new PrivateMessageDtoBuilder();
     private final Logger logger = LoggerFactory.getLogger(getClass());
+	
+	//constants are moved here when occurrs 4 or more times, as project PMD rule states
+	private final String pmForm = "pm/pmForm";
+	private final String pmId = "pmId";
+	private final String dto = "privateMessageDto";
+	
     /**
      * @param pmService the PrivateMessageService instance
      */
@@ -56,7 +62,12 @@ public class PrivateMessageController {
     public PrivateMessageController(PrivateMessageService pmService) {
         this.pmService = pmService;
     }
-
+	
+	/**
+	 * This method allows us to set the DTO builder.
+	 * This can be useful for testing to mock/stub the real builder.
+	 * @param pmDtoBuilder builder to be used when constructing DTO objects
+	 */
     public void setPmDtoBuilder(PrivateMessageDtoBuilder pmDtoBuilder) {
         this.pmDtoBuilder = pmDtoBuilder;
     }
@@ -88,7 +99,7 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/pm/new", method = RequestMethod.GET)
     public ModelAndView displayNewPMPage() {
-        return new ModelAndView("pm/pmForm", "privateMessageDto", new PrivateMessageDto());
+        return new ModelAndView(pmForm, dto, new PrivateMessageDto());
     }
 
     /**
@@ -100,10 +111,10 @@ public class PrivateMessageController {
      *          when message not found
      */
     @RequestMapping(value = "/pm/{pmId}/reply", method = RequestMethod.GET)
-    public ModelAndView displayReplyPMPage(@PathVariable("pmId") Long pmId) throws NotFoundException {
-        PrivateMessage pm = pmService.get(pmId);
-        PrivateMessageDto dto = pmDtoBuilder.getReplyDtoFor(pm);
-        return new ModelAndView("pm/pmForm", "privateMessageDto", dto);
+    public ModelAndView displayReplyPMPage(@PathVariable(pmId) Long id) throws NotFoundException {
+        PrivateMessage pm = pmService.get(id);
+        PrivateMessageDto object = pmDtoBuilder.getReplyDtoFor(pm);
+        return new ModelAndView(pmForm, dto, object);
     }
 
     /**
@@ -114,12 +125,12 @@ public class PrivateMessageController {
       * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
       *          when message not found
       */
-     @RequestMapping(value = "/pm/{pmId}/quote", method = RequestMethod.GET)
-     public ModelAndView displayQuotePMPage(@PathVariable("pmId") Long pmId) throws NotFoundException {
-         PrivateMessage pm = pmService.get(pmId);
-         PrivateMessageDto dto = pmDtoBuilder.getQuoteDtoFor(pm);
-         return new ModelAndView("pm/pmForm", "privateMessageDto", dto);
-     }
+    @RequestMapping(value = "/pm/{pmId}/quote", method = RequestMethod.GET)
+    public ModelAndView displayQuotePMPage(@PathVariable(pmId) Long id) throws NotFoundException {
+        PrivateMessage pm = pmService.get(id);
+        PrivateMessageDto object = pmDtoBuilder.getQuoteDtoFor(pm);
+        return new ModelAndView(pmForm, dto, object);
+    }
 
 
     /**
@@ -132,7 +143,7 @@ public class PrivateMessageController {
     @RequestMapping(value = "/pm/new", method = RequestMethod.POST)
     public String send(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
         if (result.hasErrors()) {
-            return "pm/pmForm";
+            return pmForm;
         }
         try {
             if (pmDto.getId() > 0) {
@@ -143,7 +154,7 @@ public class PrivateMessageController {
         } catch (NotFoundException nfe) {
             logger.info("User not found: {} ", pmDto.getRecipient());
             result.rejectValue("recipient", "label.wrong_recipient");
-            return "pm/pmForm";
+            return pmForm;
         }
         return "redirect:/pm/outbox.html";
     }
@@ -159,9 +170,9 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/pm/{folder}/{pmId}", method = RequestMethod.GET)
     public ModelAndView show(@PathVariable("folder") String folder,
-                             @PathVariable("pmId") Long pmId) throws NotFoundException {
+                             @PathVariable(pmId) Long id) throws NotFoundException {
 
-        PrivateMessage pm = pmService.get(pmId);
+        PrivateMessage pm = pmService.get(id);
         if ("inbox".equals(folder)) {
             pmService.markAsRead(pm);
         }
@@ -185,12 +196,12 @@ public class PrivateMessageController {
      * @throws NotFoundException when message not found
      */
     @RequestMapping(value = "/pm/{pmId}/edit", method = RequestMethod.GET)
-    public ModelAndView edit(@PathVariable("pmId") Long pmId) throws NotFoundException {
-        PrivateMessage pm = pmService.get(pmId);
+    public ModelAndView edit(@PathVariable(pmId) Long id) throws NotFoundException {
+        PrivateMessage pm = pmService.get(id);
         if (!pm.isDraft()) {
             return new ModelAndView("pm/inbox");
         }
-        return new ModelAndView("pm/pmForm", "privateMessageDto",
+        return new ModelAndView(pmForm, dto,
                 new PrivateMessageDtoBuilder().getFullPmDtoFor(pm));
     }
 
@@ -204,14 +215,14 @@ public class PrivateMessageController {
     @RequestMapping(value = "/pm/save", method = RequestMethod.POST)
     public String save(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
         if (result.hasErrors()) {
-            return "pm/pmForm";
+            return pmForm;
         }
         try {
             pmService.saveDraft(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
         } catch (NotFoundException nfe) {
             logger.info("User not found: {} ", pmDto.getRecipient());
             result.rejectValue("recipient", "label.wrong_recipient");
-            return "pm/pmForm";
+            return pmForm;
         }
         return "redirect:/pm/drafts.html";
     }

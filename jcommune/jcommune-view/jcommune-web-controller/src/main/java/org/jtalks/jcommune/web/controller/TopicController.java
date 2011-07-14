@@ -189,12 +189,14 @@ public final class TopicController {
     /**
      * Save topic.
      *
-     * @param pmDto  Dto populated in form
+     * @param topicDto  Dto populated in form
      * @param result validation result
      * @param branchId hold the current branchId
      * @param topicId the current topicId
      * @return {@code ModelAndView} object which will be redirect to forum.html
      *         if saved successfully or show form with error message
+	 * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when topic or branch not found
      */
     @RequestMapping(value = "/branch/{branchId}/topic/{topicId}/save", method = {RequestMethod.POST, RequestMethod.GET})
     public ModelAndView save(@Valid @ModelAttribute TopicDto topicDto, 

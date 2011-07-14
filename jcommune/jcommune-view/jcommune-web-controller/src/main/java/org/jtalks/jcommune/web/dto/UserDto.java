@@ -20,48 +20,23 @@ package org.jtalks.jcommune.web.dto;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.web.validation.Matches;
-
-import javax.validation.constraints.Size;
 
 /**
  * DTO for {@link User} object. Required for validation and binding
  * errors to form.
  *
  * @author Kirill Afonin
+ * @author Osadchuck Eugeny
  * @see User
  */
-@Matches(field = "password", verifyField = "passwordConfirm", message = "{password_not_matches}")
-public class UserDto {
-    @NotEmpty
-    @Size(min = 3, max = 20)
-    private String username;
+public abstract class UserDto {
+
     @NotEmpty
     @Email
     private String email;
     private String firstName;
     private String lastName;
-    @NotEmpty
-    @Size(min = 4)
-    private String password;
-    @NotEmpty
-    private String passwordConfirm;
-
-    /**
-     * @return username
-     */
-    public String getUsername() {
-        return username;
-    }
-
-    /**
-     * Set username.
-     *
-     * @param username username
-     */
-    public void setUsername(String username) {
-        this.username = username;
-    }
+   
 
     /**
      * Get email.
@@ -115,56 +90,5 @@ public class UserDto {
      */
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    /**
-     * Get password.
-     *
-     * @return password
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
-     * Set password.
-     *
-     * @param password password
-     */
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    /**
-     * Get password confirmation.
-     *
-     * @return password confirmation
-     */
-    public String getPasswordConfirm() {
-        return passwordConfirm;
-    }
-
-    /**
-     * Set password confirmation.
-     *
-     * @param passwordConfirm password confirmation
-     */
-    public void setPasswordConfirm(String passwordConfirm) {
-        this.passwordConfirm = passwordConfirm;
-    }
-
-    /**
-     * Populate {@link User} from fields.
-     *
-     * @return populated {@link User} object
-     */
-    public User createUser() {
-        User newUser = new User();
-        newUser.setEmail(email);
-        newUser.setFirstName(firstName);
-        newUser.setLastName(lastName);
-        newUser.setUsername(username);
-        newUser.setPassword(password);
-        return newUser;
     }
 }
