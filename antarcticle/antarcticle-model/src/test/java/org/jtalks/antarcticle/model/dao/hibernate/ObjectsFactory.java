@@ -30,6 +30,8 @@ import org.jtalks.jcommune.model.entity.User;
  * @author Dmitry Sokolov
  */
 public final class ObjectsFactory {
+    
+    private static int increment = 0;
 
     private static Session session;
 
@@ -66,7 +68,8 @@ public final class ObjectsFactory {
     
     // from jcommune ObjectsFactory   
     public static User getDefaultUser() {
-        return getUser("username", "username@mail.com");
+        int val = increment++;
+        return getUser("username"+val, "username"+val+"@mail.com");
     }
 
     public static User getUser(String username, String email) {

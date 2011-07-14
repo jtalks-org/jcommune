@@ -36,8 +36,8 @@ public class CommentHibernateDao extends AbstractHibernateDao<Comment> implement
      */
     @Override
     public List<Comment> findByArticle(Article article) {
-        Query query = getSession().createQuery("SELECT c FROM Comment c WHERE c.article = :?");
-        query.setEntity(0, article);
+        Query query = getSession().createQuery("SELECT c FROM Comment c WHERE c.article = :article");
+        query.setEntity("article", article);
         return query.list();
     }
     
