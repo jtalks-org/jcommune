@@ -49,6 +49,8 @@ import java.util.List;
 @Controller
 public final class TopicController {
 
+    public static final String TOPIC_ID = "topicId";
+    public static final String BRANCH_ID = "branchId";
     private TopicService topicService;
     private PostService postService;
 
@@ -71,7 +73,7 @@ public final class TopicController {
      * @return {@code ModelAndView} object with "newTopic" view, new {@link TopicDto} and branch id
      */
     @RequestMapping(value = "/branch/{branchId}/topic/create", method = RequestMethod.GET)
-    public ModelAndView createPage(@PathVariable("branchId") Long branchId) {
+    public ModelAndView createPage(@PathVariable(BRANCH_ID) Long branchId) {
         return new ModelAndView("newTopic")
                 .addObject("topicDto", new TopicDto())
                 .addObject("branchId", branchId);
@@ -90,7 +92,7 @@ public final class TopicController {
     @RequestMapping(value = "/branch/{branchId}/topic", method = {RequestMethod.POST, RequestMethod.GET})
     public ModelAndView create(@Valid @ModelAttribute TopicDto topicDto,
                                BindingResult result,
-                               @PathVariable("branchId") Long branchId) throws NotFoundException {
+                               @PathVariable(BRANCH_ID) Long branchId) throws NotFoundException {
         if (result.hasErrors()) {
             return new ModelAndView("newTopic").addObject("branchId", branchId);
         } else {
@@ -109,8 +111,8 @@ public final class TopicController {
      * @return {@code ModelAndView} with to parameters branchId and topicId
      */
     @RequestMapping(method = RequestMethod.GET, value = "/branch/{branchId}/topic/{topicId}/delete")
-    public ModelAndView deleteConfirmPage(@PathVariable("topicId") Long topicId,
-                                          @PathVariable("branchId") Long branchId) {
+    public ModelAndView deleteConfirmPage(@PathVariable(TOPIC_ID) Long topicId,
+                                          @PathVariable(BRANCH_ID) Long branchId) {
         return new ModelAndView("deleteTopic")
                 .addObject("topicId", topicId)
                 .addObject("branchId", branchId);
@@ -126,8 +128,8 @@ public final class TopicController {
      *          when topic not found
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/branch/{branchId}/topic/{topicId}")
-    public ModelAndView delete(@PathVariable("topicId") Long topicId,
-                               @PathVariable("branchId") Long branchId) throws NotFoundException {
+    public ModelAndView delete(@PathVariable(TOPIC_ID) Long topicId,
+                               @PathVariable(BRANCH_ID) Long branchId) throws NotFoundException {
         topicService.deleteTopic(topicId);
         return new ModelAndView("redirect:/branch/" + branchId + ".html");
     }
@@ -145,8 +147,8 @@ public final class TopicController {
      *          when topic or branch not found
      */
     @RequestMapping(value = "/branch/{branchId}/topic/{topicId}", method = {RequestMethod.POST, RequestMethod.GET})
-    public ModelAndView show(@PathVariable("branchId") Long branchId,
-                             @PathVariable("topicId") Long topicId,
+    public ModelAndView show(@PathVariable(BRANCH_ID) Long branchId,
+                             @PathVariable(TOPIC_ID) Long topicId,
                              @RequestParam(value = "page", required = false) Integer page,
                              @RequestParam(value = "size", required = false) Integer size) throws NotFoundException {
 
@@ -176,35 +178,37 @@ public final class TopicController {
      *          when topic or branch not found
      */
     @RequestMapping(value = "/branch/{branchId}/topic/{topicId}/edit", method = RequestMethod.GET)
-    public ModelAndView edit(@PathVariable("branchId") Long branchId,
-                             @PathVariable("topicId") Long topicId) throws NotFoundException {
+    public ModelAndView edit(@PathVariable(BRANCH_ID) Long branchId,
+                             @PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         Topic topic = topicService.get(topicId);
 
         return new ModelAndView("topicForm")
-             .addObject("topicDto", TopicDto.getDtoFor(topic))
-             .addObject("branchId", branchId)
-             .addObject("topicId", topicId);
+                .addObject("topicDto", TopicDto.getDtoFor(topic))
+                .addObject("branchId", branchId)
+                .addObject("topicId", topicId);
     }
 
     /**
      * Save topic.
      *
-     * @param pmDto  Dto populated in form
-     * @param result validation result
+     * @param topicDto Dto populated in form
+     * @param result   validation result
      * @param branchId hold the current branchId
-     * @param topicId the current topicId
+     * @param topicId  the current topicId
      * @return {@code ModelAndView} object which will be redirect to forum.html
      *         if saved successfully or show form with error message
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when topic or branch not found
      */
     @RequestMapping(value = "/branch/{branchId}/topic/{topicId}/save", method = {RequestMethod.POST, RequestMethod.GET})
-    public ModelAndView save(@Valid @ModelAttribute TopicDto topicDto, 
+    public ModelAndView save(@Valid @ModelAttribute TopicDto topicDto,
                              BindingResult result,
-                             @PathVariable("branchId") Long branchId,
-                             @PathVariable("topicId") Long topicId) throws NotFoundException {
+                             @PathVariable(BRANCH_ID) Long branchId,
+                             @PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         if (result.hasErrors()) {
             return new ModelAndView("topicForm")
-                .addObject("branchId", branchId)
-                .addObject("topicId", topicId);
+                    .addObject("branchId", branchId)
+                    .addObject("topicId", topicId);
         }
 
         topicService.saveTopic(topicDto.getId(), topicDto.getTopicName(), topicDto.getBodyText());

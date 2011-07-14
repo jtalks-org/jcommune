@@ -28,11 +28,14 @@ import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  * User service class. This class contains method needed to manipulate with User persistent entity.
  *
  * @author Osadchuck Eugeny
  * @author Kirill Afonin
+ * @author Alexandre Teterin
  */
 public class TransactionalUserService extends AbstractTransactionalEntityService<User, UserDao> implements UserService {
 
@@ -65,7 +68,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public User registerUser(User user) throws DuplicateUserException, DuplicateEmailException {
+    public User registerUser(User user) throws DuplicateUserException, DuplicateEmailException, UnsupportedEncodingException {
         if (isUserExist(user)) {
             String msg = "User " + user.getUsername() + " already exists!";
             logger.warn(msg);
@@ -76,6 +79,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
             logger.warn(msg);
             throw new DuplicateEmailException(msg);
         }
+
+        user.setEncodedUsername(user.getUsername());
 
         dao.saveOrUpdate(user);
 

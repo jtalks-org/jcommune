@@ -22,6 +22,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -31,6 +33,7 @@ import java.util.Collection;
  *
  * @author Pavel Vervenko
  * @author Kirill Afonin
+ * @author Alexandre Teterin
  */
 public class User extends Persistent implements UserDetails {
     private String lastName;
@@ -40,6 +43,7 @@ public class User extends Persistent implements UserDetails {
     private String password;
     private DateTime lastLogin;
     private String role = "ROLE_USER";
+    private String encodedUsername;
 
     /**
      * Get the user's Last Name.
@@ -199,5 +203,13 @@ public class User extends Persistent implements UserDetails {
      */
     public void updateLastLoginTime() {
         this.lastLogin = new DateTime();
+    }
+
+    public String getEncodedUsername() {
+        return encodedUsername;
+    }
+
+    public void setEncodedUsername(String username) throws UnsupportedEncodingException {
+        this.encodedUsername = URLEncoder.encode(username, "UTF-8");
     }
 }

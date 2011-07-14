@@ -20,8 +20,11 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.hibernate.Session;
 import org.jtalks.jcommune.model.entity.*;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  * @author Kirill Afonin
+ * @author Alexandre Teterin
  */
 //TODO: split this class on 2: objects factory and persisted objects factory
 public final class ObjectsFactory {
@@ -45,6 +48,11 @@ public final class ObjectsFactory {
         newUser.setLastName("last name");
         newUser.setUsername(username);
         newUser.setPassword("password");
+        try {
+            newUser.setEncodedUsername(username);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         return newUser;
     }
 

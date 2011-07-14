@@ -18,8 +18,6 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.NotEmpty;
-import org.jtalks.jcommune.model.entity.PrivateMessage;
-import org.jtalks.jcommune.web.dto.builder.PrivateMessageDtoBuilder;
 
 import javax.validation.constraints.Size;
 
