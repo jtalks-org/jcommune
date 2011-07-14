@@ -124,7 +124,7 @@ public class BranchViewImpl extends Window implements BranchView, AfterCompose {
     public Branch getSelectedBranch() {
         int index = branchesList.getSelectedIndex();
 
-        if (index > 0) {
+        if (index != -1) {
             return (Branch) branchesListModel.get(index);
         }
         return null;
