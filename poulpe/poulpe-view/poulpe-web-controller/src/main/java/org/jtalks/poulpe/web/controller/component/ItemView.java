@@ -73,11 +73,11 @@ public interface ItemView extends PlainComponent {
      */
     void setComponentType(String type);
 
-    /**
-     * Adds new or updates existing item in the list of visible items.
-     * @param component the component to be update in callback window
-     * @param isNew the flag to show if {@code component} must be saved, not update
-     */
-    void updateCallbackWindow(PlainComponentItem component, boolean isNew);
+//    /**
+//     * Adds new or updates existing item in the list of visible items.
+//     * @param component the component to be update in callback window
+//     * @param isNew the flag to show if {@code component} must be saved, not update
+//     */
+//    void updateCallbackWindow(PlainComponentItem component, boolean isNew);
 
 }

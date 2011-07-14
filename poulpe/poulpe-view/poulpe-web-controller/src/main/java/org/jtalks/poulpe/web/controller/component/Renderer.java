@@ -45,15 +45,24 @@ public class Renderer implements ListitemRenderer {
         arg0.appendChild(cell);
         arg0.appendChild(new Listcell(item.getDescription()));
         arg0.appendChild(new Listcell(item.getComponentType()));
-        arg0.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener() {
-            /** {@inheritDoc} */
-            @Override
-            public void onEvent(Event event) throws InterruptedException {
-                ListPresenter presenter = (ListPresenter) SpringUtil
-                        .getBean("componentListPresenter");
-                presenter.editComponent();
-            }
-        });
+        arg0.addEventListener(Events.ON_DOUBLE_CLICK, new DoubleClickListener());
+    }
+    
+    /**
+     * The class for listening double clicking at the visible items of the
+     * component list.
+     * 
+     * @author Dmitry Sukharev
+     * 
+     */
+    static class DoubleClickListener implements EventListener {
+        /** {@inheritDoc} */
+        @Override
+        public void onEvent(Event event) throws InterruptedException {
+            ListPresenter presenter = (ListPresenter) SpringUtil
+                    .getBean("componentListPresenter");
+            presenter.editComponent();
+        }
     }
 
 }

@@ -24,6 +24,7 @@ package org.jtalks.poulpe.web.controller.component;
  * @author Dmitriy Sukharev
  * 
  */
+//TODO: I'm very not sure necessity of this class.
 public class PlainComponentItem implements PlainComponent {
 
     private long cid;

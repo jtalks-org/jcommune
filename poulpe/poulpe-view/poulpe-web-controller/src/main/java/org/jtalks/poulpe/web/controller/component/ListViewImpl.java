@@ -89,11 +89,20 @@ public class ListViewImpl extends Window implements ListView, AfterCompose {
     /**
      * Tells to presenter to delete selected component (it knows which one it
      * is).
-     * @throws InterruptedException 
+     * 
+     * @throws InterruptedException
+     *             when a thread is waiting, sleeping, or otherwise occupied,
+     *             and the thread is interrupted, either before or during the
+     *             activity
      * 
      * @see ListPresenter
      */
     public void onClick$delCompButton() throws InterruptedException {
+        if (listbox.getSelectedIndex() == -1) { // if there is no selected item
+            Messagebox.show("There is no selected item to delete", "Warning", Messagebox.OK,
+                    Messagebox.EXCLAMATION);
+            return;
+        }
         String name = getSelectedItem().getName();
         Messagebox.show("Are you sure that you wanna delete " + name + "?", "Delete " + name + "?",
                 Messagebox.YES | Messagebox.CANCEL, Messagebox.QUESTION, Messagebox.CANCEL,
@@ -136,6 +145,12 @@ public class ListViewImpl extends Window implements ListView, AfterCompose {
         model.clear();
         model.addAll(list);
     }
+    
+//    /** {@inheritDoc} */
+//    @Override
+//    public boolean hasSelectedItem() {
+//        return listbox.getSelectedIndex() >= 0;
+//    }
 
     /** {@inheritDoc} */
     @Override
@@ -143,23 +158,23 @@ public class ListViewImpl extends Window implements ListView, AfterCompose {
         return (PlainComponent) model.get(listbox.getSelectedIndex());
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void addToList(PlainComponentItem component) {
-        model.add(component);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateInList(PlainComponentItem component) {
-        for (int i = 0; i < model.size(); i++) {
-            PlainComponentItem item = (PlainComponentItem) model.get(i);
-            if (item.getCid() == component.getCid()) {
-                model.set(i, component);
-                break;
-            }
-        }
-    }
+//    /** {@inheritDoc} */
+//    @Override
+//    public void addToList(PlainComponentItem component) {
+//        model.add(component);
+//    }
+//
+//    /** {@inheritDoc} */
+//    @Override
+//    public void updateInList(PlainComponentItem component) {
+//        for (int i = 0; i < model.size(); i++) {
+//            PlainComponentItem item = (PlainComponentItem) model.get(i);
+//            if (item.getCid() == component.getCid()) {
+//                model.set(i, component);
+//                break;
+//            }
+//        }
+//    }
 
 //    /**
 //     * Searches the component's id by its name.

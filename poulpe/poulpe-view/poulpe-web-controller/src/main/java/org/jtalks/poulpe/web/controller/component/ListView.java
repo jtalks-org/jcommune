@@ -43,22 +43,29 @@ public interface ListView {
      */
     void updateList(List<PlainComponentItem> list);
 
-    /**
-     * Adds to the displayed component list the {@code component} item. As
-     * result user will see updated list.
-     * 
-     * @param component
-     *            item to be added.
-     */
-    void addToList(PlainComponentItem component);
-
-    /**
-     * Replaces in the displayed component list the old value of
-     * {@code component} item by the new one. As result user will see updated
-     * list. It searches the component to be replaced by its id.
-     * 
-     * @param component
-     *            the replacing item.
-     */
-    void updateInList(PlainComponentItem component);
+//    /**
+//     * Checks if user selected item in the list of the components.
+//     * 
+//     * @return true if there is selected item, false otherwise
+//     */
+//    boolean hasSelectedItem();
+//
+//    /**
+//     * Adds to the displayed component list the {@code component} item. As
+//     * result user will see updated list.
+//     * 
+//     * @param component
+//     *            item to be added.
+//     */
+//    void addToList(PlainComponentItem component);
+//
+//    /**
+//     * Replaces in the displayed component list the old value of
+//     * {@code component} item by the new one. As result user will see updated
+//     * list. It searches the component to be replaced by its id.
+//     * 
+//     * @param component
+//     *            the replacing item.
+//     */
+//    void updateInList(PlainComponentItem component);
 }

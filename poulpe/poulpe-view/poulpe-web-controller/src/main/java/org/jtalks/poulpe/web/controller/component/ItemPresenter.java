@@ -17,10 +17,14 @@
  */
 package org.jtalks.poulpe.web.controller.component;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.jtalks.poulpe.model.entity.Component;
+import org.jtalks.poulpe.model.entity.ComponentType;
 import org.jtalks.poulpe.service.ComponentService;
+import org.jtalks.poulpe.service.exceptions.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +36,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ItemPresenter {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ItemPresenter.class);
 
     /**
      * The object that is responsible for storing and updating view of the added
@@ -70,15 +74,15 @@ public class ItemPresenter {
     public void saveComponent() {
         Component newbie = ViewModelConverter.view2Model(view);
         PlainComponentItem item = (PlainComponentItem) ViewModelConverter.model2View(newbie);
-        logger.debug("Newbie.getId() = {}", item.getCid());
+        LOGGER.debug("Newbie.getId() = {}", item.getCid());
         componentService.saveComponent(newbie);
 
-        if (item.getCid() == 0) { 
-            item.setCid(newbie.getId());    // elements in table should have real IDs.
-            view.updateCallbackWindow(item, true);
-        } else {
-            view.updateCallbackWindow(item, false);
-        }
+//        if (item.getCid() == 0) { 
+//            item.setCid(newbie.getId());    // elements in table should have real IDs.
+//            view.updateCallbackWindow(item, true);
+//        } else {
+//            view.updateCallbackWindow(item, false);
+//        }
     }
 
     /**
@@ -97,5 +101,33 @@ public class ItemPresenter {
             }
         }
         return -1;
+    }
+
+    /**
+     * Obtains all unoccupied types of components and returns them.
+     * 
+     * @return the list unoccupied component types as strings
+     */
+    public List<String> getTypes() {
+        Set<ComponentType> origTypes = componentService.getAvailableTypes();
+        List<String> strTypes = new ArrayList<String>();
+        for (ComponentType orig : origTypes) {
+            strTypes.add(orig.toString());
+        }
+        return strTypes;
+    }
+    
+    /**
+     * Returns the component by its id delegating obtaining of this component to
+     * {@link ComponentService}.
+     * 
+     * @param id
+     *            id of the component to be fetched
+     * @return the component by its id
+     * @throws NotFoundException
+     *             when entity can't be found
+     */
+    public PlainComponent getComponent(long id) throws NotFoundException {
+        return ViewModelConverter.model2View(componentService.get(id));
     }
 }

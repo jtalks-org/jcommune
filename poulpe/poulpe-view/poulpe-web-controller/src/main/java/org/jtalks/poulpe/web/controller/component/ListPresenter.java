@@ -17,16 +17,15 @@
  */
 package org.jtalks.poulpe.web.controller.component;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.jtalks.poulpe.model.entity.Component;
-import org.jtalks.poulpe.model.entity.ComponentType;
 import org.jtalks.poulpe.service.ComponentService;
 import org.jtalks.poulpe.web.controller.WindowManager;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 
 //TODO: tasks which are going to be done from the bottom
 //1) i18n support;
@@ -41,7 +40,7 @@ import org.jtalks.poulpe.web.controller.WindowManager;
  * 
  */
 public class ListPresenter {
-
+    
     /** The object that is responsible for updating view of the component list. */
     private ListView listView;
 
@@ -56,7 +55,7 @@ public class ListPresenter {
      *            the object that is responsible for updating view of the
      *            component list
      */
-    public void initListView(ListViewImpl view) {
+    public void initListView(ListView view) {
         this.listView = view;
         view.updateList(getComponents());
     }
@@ -90,12 +89,11 @@ public class ListPresenter {
      *             activity
      */
     public void addComponent() throws InterruptedException {
-        //selectedComponent = new ComponentViewItem();
         Map<String, Object> args = new HashMap<String, Object>();
-        args.put("component", new PlainComponentItem());
-        args.put("types", getTypes());
-        args.put("callbackWin", listView);          // FIXIT: TEMPORARY SOLUTION
+        args.put("componentId", 0L);
+        args.put("listener", new EditListListener());
         WindowManager.showEditComponentWindow(args);
+//        win.addEventListener(Events.ON_CLOSE, new EditListListener());
     }
 
     /**
@@ -107,36 +105,18 @@ public class ListPresenter {
      *             activity
      */
     public void editComponent() throws InterruptedException {
-        List<String> types = getTypes();
-        types.add(listView.getSelectedItem().getComponentType());
         Map<String, Object> args = new HashMap<String, Object>();
-        args.put("component", listView.getSelectedItem());
-        args.put("types", types);
-        args.put("callbackWin", listView);      // FIXIT: TEMPORARY SOLUTION
+        args.put("componentId", listView.getSelectedItem().getCid());
+        args.put("listener", new EditListListener());
         WindowManager.showEditComponentWindow(args);
+//        win.addEventListener(Events.ON_CLOSE, new EditListListener());
     }
 
     /** Removes the selected component from the component list. */
     public void deleteComponent() {
         Component victim = ViewModelConverter.view2Model(listView.getSelectedItem());
         componentService.deleteComponent(victim);
-        //listView.removeFromModel(listView.getSelectedItem());
         listView.updateList(getComponents());
-    }
-
-    /**
-     * Obtains all unoccupied types of components and returns them.
-     * 
-     * @return the list unoccupied component types as strings
-     */
-    // TODO: candidate to be removed.
-    private List<String> getTypes() {
-        Set<ComponentType> origTypes = componentService.getAvailableTypes();
-        List<String> strTypes = new ArrayList<String>();
-        for (ComponentType orig : origTypes) {
-            strTypes.add(orig.toString());
-        }
-        return strTypes;
     }
 
 //    /**
@@ -149,4 +129,19 @@ public class ListPresenter {
 //    public long getCidByName(String name) {
 //        return listView.getCidByName(name);
 //    }
+    
+    /**
+     * The class for listening changing of components and updating
+     * {@link ListView} in accordance with this changes.
+     * 
+     * @author Dmitriy Sukharev
+     * 
+     */
+    class EditListListener implements EventListener {
+        /** {@inheritDoc} */
+        @Override
+        public void onEvent(Event event) {
+            listView.updateList(getComponents());
+        }        
+    }
 }
