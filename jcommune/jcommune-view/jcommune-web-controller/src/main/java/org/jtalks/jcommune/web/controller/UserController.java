@@ -141,15 +141,12 @@ public class UserController {
      */
     @RequestMapping(value = "/user/edit", method = RequestMethod.POST)
     public ModelAndView editProfile(@Valid @ModelAttribute("editedUser") EditUserProfileDto editedUser, BindingResult result) throws NotFoundException {
+        String currentUser = securityService.getCurrentUserUsername();
+        User user = userService.getByUsername(currentUser);
+
         if (result.hasErrors()) {
             return new ModelAndView("editProfile");
         }
-
-        String currentUser = securityService.getCurrentUserUsername();
-        User user = userService.getByUsername(currentUser);
-        user.setEmail(editedUser.getEmail());
-        user.setFirstName(editedUser.getFirstName());
-        user.setLastName(editedUser.getLastName());
 
         boolean changePassword = editedUser.getNewUserPassword() != null;
         if (changePassword) {
@@ -160,12 +157,23 @@ public class UserController {
                 user.setPassword(editedUser.getNewUserPassword());
             }
         }
-
-        userService.editUserProfile(user);
-
+        
+        boolean changeEmail = !user.getEmail().equals(editedUser.getEmail());
+        if(changeEmail){
+            if(userService.isEmailExist(editedUser.getEmail())){
+                result.rejectValue("email", "validation.duplicateemail");
+                return new ModelAndView("editProfile");            
+            }            
+        }
+        
+        user.setEmail(editedUser.getEmail());
+        user.setFirstName(editedUser.getFirstName());
+        user.setLastName(editedUser.getLastName());
+        userService.editUserProfile(user);                                    
         return new ModelAndView(new StringBuilder()
-                .append("redirect:/user/")
-                .append(user.getId())
-                .append(".html").toString());
+        .append("redirect:/user/")
+        .append(user.getId())
+        .append(".html").toString());
+        
     }
 }

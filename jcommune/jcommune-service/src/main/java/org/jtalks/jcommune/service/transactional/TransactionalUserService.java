@@ -104,12 +104,9 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     }
 
     /**
-     * Check email for existance.
-     *
-     * @param email email for check existance
-     * @return {@code true} if email exist
+     * {@inheritDoc}
      */
-    private boolean isEmailExist(String email) {
+    public boolean isEmailExist(String email) {
         return dao.isUserWithEmailExist(email);
     }
     

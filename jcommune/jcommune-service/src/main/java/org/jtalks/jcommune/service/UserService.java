@@ -64,4 +64,12 @@ public interface UserService extends EntityService<User> {
      * @param user - user whose information would be updated 
      */
     void editUserProfile(User user);
+    
+    /**
+     * Check email for existance.
+     *
+     * @param email email for check existance
+     * @return {@code true} if email exist
+     */
+    boolean isEmailExist(String email);
 }
