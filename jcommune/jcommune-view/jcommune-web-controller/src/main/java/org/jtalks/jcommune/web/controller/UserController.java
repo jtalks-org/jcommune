@@ -30,7 +30,11 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -46,12 +50,13 @@ import java.io.UnsupportedEncodingException;
 public class UserController {
     private final SecurityService securityService;
     private final UserService userService;
-	
-	/**
-	 * This method turns the trim binder on. Trim bilder
+
+    /**
+     * This method turns the trim binder on. Trim bilder
      * removes leading and trailing spaces from the submitted fields.
-	 * @param binder Binder object to be injected
-	 */
+     *
+     * @param binder Binder object to be injected
+     */
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
@@ -149,8 +154,8 @@ public class UserController {
      * @throws NotFoundException - throws if current logged in user was not found
      */
     @RequestMapping(value = "/user/edit", method = RequestMethod.POST)
-    public ModelAndView editProfile(@Valid @ModelAttribute("editedUser") EditUserProfileDto editedUser, 
-				BindingResult result) throws NotFoundException {
+    public ModelAndView editProfile(@Valid @ModelAttribute("editedUser") EditUserProfileDto editedUser,
+                                    BindingResult result) throws NotFoundException {
         if (result.hasErrors()) {
             return new ModelAndView("editProfile");
         }
@@ -163,10 +168,10 @@ public class UserController {
 
         boolean changePassword = editedUser.getNewUserPassword() != null;
         if (changePassword) {
-            if (editedUser.getCurrentUserPassword() == null || 
-					!user.getPassword().equals(editedUser.getCurrentUserPassword())) {
-                result.rejectValue("currentUserPassword", "label.incorrectCurrentPassword", 
-					"Password does not match to the current password");
+            if (editedUser.getCurrentUserPassword() == null ||
+                    !user.getPassword().equals(editedUser.getCurrentUserPassword())) {
+                result.rejectValue("currentUserPassword", "label.incorrectCurrentPassword",
+                        "Password does not match to the current password");
                 return new ModelAndView("editProfile");
             } else {
                 user.setPassword(editedUser.getNewUserPassword());

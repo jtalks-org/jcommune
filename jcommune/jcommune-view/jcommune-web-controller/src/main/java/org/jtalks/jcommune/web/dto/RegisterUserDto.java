@@ -17,12 +17,11 @@
  */
 package org.jtalks.jcommune.web.dto;
 
-import javax.validation.constraints.Size;
-
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.web.controller.UserController;
 import org.jtalks.jcommune.web.validation.Matches;
+
+import javax.validation.constraints.Size;
 
 /**
  * DTO for {@link User} object. Required for validation and binding
