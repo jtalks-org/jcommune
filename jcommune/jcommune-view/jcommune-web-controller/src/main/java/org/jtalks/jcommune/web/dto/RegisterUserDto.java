@@ -26,22 +26,21 @@ import javax.validation.constraints.Size;
 /**
  * DTO for {@link User} object. Required for validation and binding
  * errors to form. This dto used for register user operation {@link UserController#registerUser}.
- * 
- * @author Osadchuck Eugeny
  *
+ * @author Osadchuck Eugeny
  */
 @Matches(field = "password", verifyField = "passwordConfirm", message = "{password_not_matches}")
 public class RegisterUserDto extends UserDto {
-    
+
     @NotEmpty
     @Size(min = 3, max = 20)
     private String username;
     @NotEmpty
-    @Size(min = 4)
+    @Size(min = 4, max = 20)
     private String password;
     @NotEmpty
     private String passwordConfirm;
-    
+
     /**
      * @return username
      */
@@ -93,7 +92,7 @@ public class RegisterUserDto extends UserDto {
     public void setPasswordConfirm(String passwordConfirm) {
         this.passwordConfirm = passwordConfirm;
     }
-    
+
     /**
      * Populate {@link User} from fields.
      *
