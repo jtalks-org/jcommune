@@ -80,7 +80,10 @@ public class TransactionalArticleService
      * {@inheritDoc}
      */
     @Override
-    public Article getFirstArticleFromCollection(long id) {
+    public Article getFirstArticleFromCollection(long id) throws NotFoundException {
+        if (!dao.isExist(id)){
+            throw new NotFoundException("There is no collection with such id");
+        }
         return dao.getFirstArticleFromCollection(id);         
     }
 }

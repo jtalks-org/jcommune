@@ -19,6 +19,7 @@ package org.jtalks.antarcticle.service.transactional;
 
 import org.jtalks.antarcticle.model.dao.ArticleDao;
 import org.jtalks.antarcticle.model.entity.Article;
+import org.jtalks.antarcticle.model.entity.ArticleCollection;
 import org.jtalks.antarcticle.service.ArticleService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.invocation.InvocationOnMock;
@@ -122,4 +123,25 @@ public class TransactionalArticleServiceTest {
         
         verify(articleDao).isExist(ARTICLE_ID);
     }
+
+    @Test
+    public void testGetFirstArticleFromCollection() throws NotFoundException {
+        ArticleCollection articleCollection = getDefaultArticleCollection();
+        articleCollection.setId(ARTICL_COL_ID);
+        Article article = getDefaultAricle();
+        article.setId(ARTICLE_ID);
+        article.setArticleCollection(articleCollection);
+
+        when(articleDao.isExist(ARTICL_COL_ID)).thenReturn(true);
+        when(articleDao.getFirstArticleFromCollection(ARTICL_COL_ID)).thenReturn(article);
+
+        Article resultArticle =  articleService.getFirstArticleFromCollection(ARTICL_COL_ID);
+
+        assertEquals(article,resultArticle);
+
+        verify(articleDao).isExist(ARTICL_COL_ID);
+        verify(articleDao).getFirstArticleFromCollection(ARTICL_COL_ID);
+
+    }
+
 }
