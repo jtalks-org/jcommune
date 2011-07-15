@@ -10,7 +10,7 @@
           type=text/css rel=stylesheet>
 </head>
 <body>
-<sec:authentication property="principal" var="auth" scope="request"/>
+<sec:authentication property="principal.username" var="auth" scope="request"/>
 <div id="userdetails">
     <ul>
         <li>
@@ -45,11 +45,13 @@
                              locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
                              pattern="dd MMM yyyy HH:mm"/>
             </span>
-        </li>
-        <li>
-            <a href="${pageContext.request.contextPath}/user/edit.html">
-                <label>Edit</label>                
-            </a>
+        </li>               
+        <li> 
+            <c:if test="${user.username == auth}">
+	            <a href="${pageContext.request.contextPath}/user/edit.html">
+	                <label>Edit</label>                
+	            </a>
+            </c:if>
         </li>
     </ul>
 </div>

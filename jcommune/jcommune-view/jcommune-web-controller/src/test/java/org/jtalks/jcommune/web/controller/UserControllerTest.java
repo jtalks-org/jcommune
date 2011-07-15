@@ -102,15 +102,15 @@ public class UserControllerTest {
 
 
     @Test
-    public void testShow() throws Exception {
-        long userId = 1L;
-        when(userService.get(userId)).thenReturn(new User());
+    public void testShow() throws Exception {        
+        String encodedUsername = "encodedUsername";
+        when(userService.getByEncodedUsername(encodedUsername)).thenReturn(new User());
 
-        ModelAndView mav = controller.show(userId);
+        ModelAndView mav = controller.show(encodedUsername);
 
         assertViewName(mav, "userDetails");
         assertModelAttributeAvailable(mav, "user");
-        verify(userService).get(userId);
+        verify(userService).getByEncodedUsername(encodedUsername);
     }
 
     /**

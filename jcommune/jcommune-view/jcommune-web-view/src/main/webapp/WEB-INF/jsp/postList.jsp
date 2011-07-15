@@ -27,7 +27,7 @@
         <table border="1" width="100%">
         <tr>
             <td width="20%"><spring:message code="label.author"/>:
-                <a href="${pageContext.request.contextPath}/user/${topic.firstPost.userCreated.id}.html">
+                <a href="${pageContext.request.contextPath}/user/${topic.firstPost.userCreated.encodedUsername}.html">
                     <c:out value="${topic.firstPost.userCreated.username}"/></a></td>
             <td class="link" width="80%"><a name="${topic.firstPost.id}"/>
                  <a href="javascript:copyLink(${topic.firstPost.id})"><spring:message code="label.link" /></a>
@@ -45,7 +45,7 @@
         <c:if test='${post.id != topic.firstPost.id}'>
         <tr>
             <td width="20%"><spring:message code="label.author"/>:
-                <a href="${pageContext.request.contextPath}/user/${post.userCreated.id}.html">
+                <a href="${pageContext.request.contextPath}/user/${post.userCreated.encodedUsername}.html">
                     <c:out value="${post.userCreated.username}"/></a></td>
             <td class="link" width="80%"><a name="${post.id}"/>
                 <a href="javascript:copyLink(${post.id})"><spring:message code="label.link" /></a>

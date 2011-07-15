@@ -18,6 +18,7 @@
 package org.jtalks.jcommune.web.util;
 
 import org.jtalks.jcommune.service.PrivateMessageService;
+import org.jtalks.jcommune.service.SecurityService;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.testng.annotations.BeforeMethod;
@@ -39,22 +40,30 @@ public class UserDataInterceptorTest {
     private HttpServletRequest request;
     private HttpServletResponse response;
     private PrivateMessageService service;
-
+    private SecurityService securityService;
+    
+    private final int userNewPmCount = 2;
+    private final String curUserEncodedName = "curUserEncodedName";
+    
     @BeforeMethod
     public void setUp() throws Exception {
         service = mock(PrivateMessageService.class);
-        interceptor = new UserDataInterceptor(service);
+        securityService = mock(SecurityService.class);
+        interceptor = new UserDataInterceptor(service, securityService);
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
     }
 
     @Test
     public void testPostHandle() throws Exception {
-        when(service.currentUserNewPmCount()).thenReturn(2);
-
+        when(service.currentUserNewPmCount()).thenReturn(userNewPmCount);
+        when(securityService.getCurrentUserEncodedName()).thenReturn(curUserEncodedName);
+        
         interceptor.postHandle(request, response, null, null);
 
-        assertEquals(request.getAttribute("newPmCount"), 2);
+        assertEquals(request.getAttribute("newPmCount"), userNewPmCount);
+        assertEquals(request.getAttribute("encodedUserName"), curUserEncodedName);
         verify(service).currentUserNewPmCount();
+        verify(securityService).getCurrentUserEncodedName();
     }
 }

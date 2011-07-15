@@ -18,6 +18,7 @@
 package org.jtalks.jcommune.web.util;
 
 import org.jtalks.jcommune.service.PrivateMessageService;
+import org.jtalks.jcommune.service.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -31,7 +32,8 @@ import javax.servlet.http.HttpServletResponse;
  * @author Kirill Afonin
  */
 public class UserDataInterceptor extends HandlerInterceptorAdapter {
-    private PrivateMessageService service;
+    private final PrivateMessageService service;
+    private final SecurityService securityService;  
 
     /**
      * Constructor
@@ -39,8 +41,9 @@ public class UserDataInterceptor extends HandlerInterceptorAdapter {
      * @param service service
      */
     @Autowired
-    public UserDataInterceptor(PrivateMessageService service) {
+    public UserDataInterceptor(PrivateMessageService service, SecurityService securityService) {
         this.service = service;
+        this.securityService = securityService;
     }
 
     /**
@@ -58,6 +61,8 @@ public class UserDataInterceptor extends HandlerInterceptorAdapter {
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
                            ModelAndView modelAndView) {
         int newPmCount = service.currentUserNewPmCount();
+        String encodedEserName = securityService.getCurrentUserEncodedName();
         request.setAttribute("newPmCount", newPmCount);
+        request.setAttribute("encodedUserName", encodedEserName);
     }
 }

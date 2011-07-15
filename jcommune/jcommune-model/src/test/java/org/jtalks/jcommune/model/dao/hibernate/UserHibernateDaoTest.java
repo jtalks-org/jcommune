@@ -151,6 +151,17 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         assertNotNull(result);
         assertReflectionEquals(user, result);
     }
+    
+    @Test
+    public void testGetByEncodedUsername() {
+        User user = ObjectsFactory.getDefaultUser();
+        session.save(user);
+
+        User result = dao.getByUsername(user.getUsername());
+
+        assertNotNull(result);
+        assertReflectionEquals(user, result);
+    }
 
     @Test
     public void testGetByUsernameNotExist() {

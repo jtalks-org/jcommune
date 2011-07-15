@@ -41,6 +41,16 @@ public interface UserService extends EntityService<User> {
      * @see User
      */
     User getByUsername(String username) throws NotFoundException;
+    
+    /**
+     * Get {@link User} by encodedUsername.
+     *
+     * @param encodedUsername encodedUsername of User
+     * @return {@link User} with given encodedUsername
+     * @throws NotFoundException if user not found
+     * @see User
+     */
+    User getByEncodedUsername(String encodedUsername) throws NotFoundException;
 
     /**
      * Try to register {@link User} with given features.

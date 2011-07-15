@@ -121,9 +121,9 @@ public class UserController {
      * @return user details view with {@link User} object
      * @throws NotFoundException if user with given id not found
      */
-    @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
-    public ModelAndView show(@PathVariable("userId") Long userId) throws NotFoundException {
-        User user = userService.get(userId);
+    @RequestMapping(value = "/user/{encodedUsername}", method = RequestMethod.GET)
+    public ModelAndView show(@PathVariable("encodedUsername") String encodedUsername) throws NotFoundException {
+        User user = userService.getByEncodedUsername(encodedUsername);
         return new ModelAndView("userDetails", "user", user);
     }
 

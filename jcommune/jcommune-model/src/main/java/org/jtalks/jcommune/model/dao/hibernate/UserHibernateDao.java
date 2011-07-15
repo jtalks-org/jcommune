@@ -42,6 +42,17 @@ public class UserHibernateDao extends AbstractHibernateDao<User> implements User
      * {@inheritDoc}
      */
     @Override
+    public User getByEncodedUsername(String encodedUsername) {
+        return (User) getSession()
+                .createQuery("from User u where u.encodedUsername = ?")
+                .setString(0, encodedUsername)
+                .uniqueResult();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean isUserWithUsernameExist(String username) {
         return ((Number) getSession()
                 .createQuery("select count(*) from User u where u.username = ?")

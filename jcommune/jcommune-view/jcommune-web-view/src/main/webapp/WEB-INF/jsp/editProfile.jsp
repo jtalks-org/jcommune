@@ -51,11 +51,12 @@
             <form:input path="currentUserPassword" size="25" type="password"/>
             <form:errors path="currentUserPassword" cssClass="error"/>
         </li>
-        <li>
-            <input type="submit" value="<spring:message code="label.save_changes"/>"/>
-        </li>
-    </ul>
+    </ul>       
+            <input type="submit" value="<spring:message code="label.save_changes"/>"/>        
     </form:form>
+    <form:form action='${pageContext.request.contextPath}/user/${auth}.html' method="GET">
+           <input type="submit" value="<spring:message code="label.back"/>"/>
+    </form:form>                
 </div>
 </body>
 </html>

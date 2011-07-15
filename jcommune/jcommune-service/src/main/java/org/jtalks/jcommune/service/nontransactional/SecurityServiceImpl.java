@@ -83,6 +83,28 @@ public class SecurityServiceImpl implements SecurityService {
         }
         return username;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getCurrentUserEncodedName() {
+        Authentication auth = securityContextFacade.getContext().getAuthentication();
+        if (auth == null) {
+            return null;
+        }
+        Object principal = auth.getPrincipal();
+        String username = extractUsername(principal);
+
+        if (isAnonymous(username)) {
+            return null;
+        }
+        User user = userDao.getByUsername(username);
+        if(user != null){
+            return user.getEncodedUsername();
+        }
+        return username;
+    }
 
     /**
      * Get username from principal.
@@ -157,6 +179,6 @@ public class SecurityServiceImpl implements SecurityService {
             throw new UsernameNotFoundException("User not found: " + username);
         }
         return user;
-    }
+    }    
 
 }

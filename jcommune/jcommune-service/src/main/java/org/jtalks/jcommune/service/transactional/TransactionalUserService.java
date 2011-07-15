@@ -63,6 +63,20 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         }
         return user;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public User getByEncodedUsername(String encodedUsername) throws NotFoundException {
+        User user = dao.getByEncodedUsername(encodedUsername);
+        if (user == null) {
+            String msg = "User " + encodedUsername + " not found.";
+            logger.info(msg);
+            throw new NotFoundException(msg);
+        }
+        return user;
+    }
 
     /**
      * {@inheritDoc}

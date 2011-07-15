@@ -16,6 +16,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import sun.security.acl.PrincipalImpl;
 
+import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 
 import static org.mockito.Mockito.mock;
@@ -36,6 +37,7 @@ import static org.testng.Assert.assertTrue;
 public class SecurityServiceImplTest {
 
     private static final String USERNAME = "username";
+    private static final String ENCODED_USERNAME = "encoded_username";
     private static final String PASSWORD = "password";
 
     private UserDao userDao;
@@ -48,6 +50,11 @@ public class SecurityServiceImplTest {
         User user = new User();
         user.setUsername(USERNAME);
         user.setPassword(PASSWORD);
+        try {
+            user.setEncodedUsername(ENCODED_USERNAME);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         return user;
     }
 
@@ -95,6 +102,20 @@ public class SecurityServiceImplTest {
 
     @Test
     public void testGetCurrentUserUsername() throws Exception {
+        User user = getUser();
+        Authentication auth = mock(Authentication.class);
+        when(auth.getPrincipal()).thenReturn(user);
+        when(securityContext.getAuthentication()).thenReturn(auth);
+
+        String encodedUsername = securityService.getCurrentUserUsername();
+
+        assertEquals(encodedUsername, ENCODED_USERNAME, "Encoded username not equals");
+        verify(auth).getPrincipal();
+        verify(securityContext).getAuthentication();
+    }
+    
+    @Test
+    public void testGetCurrentUserEncodedUsername() throws Exception {
         User user = getUser();
         Authentication auth = mock(Authentication.class);
         when(auth.getPrincipal()).thenReturn(user);
