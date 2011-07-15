@@ -32,6 +32,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 /**
  * @author Pavel Karpukhin
+ * @author Vitaliy Kravchenko
  */
 @Controller
 public class ArticleCollectionController {
@@ -40,8 +41,9 @@ public class ArticleCollectionController {
     private ArticleService articleService;
 
     @Autowired
-    public ArticleCollectionController(ArticleCollectionService articleCollectionService) {
+    public ArticleCollectionController(ArticleCollectionService articleCollectionService, ArticleService articleService) {
         this.articleCollectionService = articleCollectionService;
+        this.articleService = articleService;
     }
 
     @RequestMapping(value = "/main", method = RequestMethod.GET)
@@ -53,7 +55,7 @@ public class ArticleCollectionController {
     public ModelAndView getCollectionById(@PathVariable("collectionId") long collectionId) throws NotFoundException {
       Article firstArticle = articleService.getFirstArticleFromCollection(collectionId);
       ArticleCollection articleCollection = articleCollectionService.get(collectionId);
-        return new ModelAndView("renderArticleCollection", "firstArticle",firstArticle)
+        return new ModelAndView("displayArticleCollection", "firstArticle",firstArticle)
                 .addObject("articleCollection",articleCollection);
     }
 }

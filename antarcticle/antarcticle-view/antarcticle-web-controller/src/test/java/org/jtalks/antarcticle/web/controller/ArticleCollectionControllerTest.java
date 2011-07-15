@@ -2,6 +2,7 @@ package org.jtalks.antarcticle.web.controller;
 
 import org.jtalks.antarcticle.model.entity.ArticleCollection;
 import org.jtalks.antarcticle.service.ArticleCollectionService;
+import org.jtalks.antarcticle.service.ArticleService;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -20,12 +21,13 @@ import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 public class ArticleCollectionControllerTest {
 
     private ArticleCollectionService articleCollectionService;
+    private ArticleService articleService;
     private ArticleCollectionController controller;
 
     @BeforeMethod
     public void init() {
         articleCollectionService = mock(ArticleCollectionService.class);
-        controller = new ArticleCollectionController(articleCollectionService);
+        controller = new ArticleCollectionController(articleCollectionService, articleService);
     }
 
     @Test
