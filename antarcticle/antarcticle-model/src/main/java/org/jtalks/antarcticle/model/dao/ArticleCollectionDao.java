@@ -24,7 +24,7 @@ import org.jtalks.jcommune.model.dao.Dao;
 import java.util.List;
 
 /**
- * @author VitaliyKravchenko
+ * @author Vitaliy Kravchenko
  */
 
 public interface ArticleCollectionDao extends Dao<ArticleCollection> {

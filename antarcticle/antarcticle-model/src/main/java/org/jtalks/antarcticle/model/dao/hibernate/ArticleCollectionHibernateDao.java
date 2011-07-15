@@ -26,7 +26,7 @@ import java.util.List;
 
 
 /**
- * @author Vitaliy Kravchwnko
+ * @author Vitaliy Kravchenko
  */
 public class ArticleCollectionHibernateDao extends 
         AbstractHibernateDao<ArticleCollection> implements ArticleCollectionDao {

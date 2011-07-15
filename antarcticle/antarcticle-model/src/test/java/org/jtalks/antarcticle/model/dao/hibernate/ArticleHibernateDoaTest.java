@@ -59,9 +59,7 @@ public class ArticleHibernateDoaTest extends AbstractTransactionalTestNGSpringCo
     public void testSave() {
         Article article = ObjectsFactory.getDefaultArticle();
         dao.saveOrUpdate(article);
-        assertNotSame(article.getId(), 0, "Id not created for article");
-        
-        session.evict(article);
+        assertFalse(article.getId() == 0, "Id not created for article");
         Article sameArticle = (Article)session.get(Article.class, article.getId());
         assertReflectionEquals(article, sameArticle);
     }
@@ -69,30 +67,27 @@ public class ArticleHibernateDoaTest extends AbstractTransactionalTestNGSpringCo
     @Test
     public void testGet() {
         Article article = ObjectsFactory.getDefaultArticle();
-        dao.saveOrUpdate(article);
-        
-        Article sameArticle = dao.get(article.getId());
-        assertEquals(article.getId(), sameArticle.getId());
-        assertEquals(article.getArticleContent(), sameArticle.getArticleContent());
-        assertEquals(article.getArticleTitle(), sameArticle.getArticleTitle());
-        assertEquals(article.getCreationDate(), sameArticle.getCreationDate());
+        session.persist(article);
+        assertFalse(article.getId() == 0);
+        Long id = article.getId();
+        Article sameArticle = dao.get(id);
+        assertReflectionEquals(article, sameArticle);
     }
     
     @Test
     public void testUpdate() {
         String newContent = "Changed article content";
         Article article = ObjectsFactory.getDefaultArticle();
-        session.save(article);
+        session.persist(article);
+        assertNotSame(article.getId(), 0);
         Long id = article.getId();
-        article = null;
+        session.evict(article);
         article = dao.get(id);
         article.setArticleContent(newContent);
         dao.saveOrUpdate(article);
         session.evict(article);
-        article.setArticleContent("");
         Article sameArticle = dao.get(id);
         assertEquals(sameArticle.getArticleContent(), newContent);
-        assertNotSame(sameArticle.getArticleContent(), article.getArticleContent());
     }
 
     @Test
@@ -109,17 +104,17 @@ public class ArticleHibernateDoaTest extends AbstractTransactionalTestNGSpringCo
     public void testDelete() {
         int initCount = getCount();
         Article article = ObjectsFactory.getDefaultArticle();
-        session.save(article);
+        session.persist(article);
         Long id1 = article.getId();
         session.evict(article);
         assertEquals(getCount(), initCount+1);
         article = ObjectsFactory.getDefaultArticle();
-        session.save(article);
+        session.persist(article);
         Long id2 = article.getId();
         session.evict(article);
         assertEquals(getCount(), initCount+2);
-        dao.delete(id1);
-        dao.delete(id2);
+        assertTrue(dao.delete(id1));
+        assertTrue(dao.delete(id2));
         assertEquals(getCount(), initCount);
     }
 
