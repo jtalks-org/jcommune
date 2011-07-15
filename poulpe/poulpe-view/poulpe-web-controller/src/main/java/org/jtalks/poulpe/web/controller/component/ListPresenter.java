@@ -65,8 +65,8 @@ public class ListPresenter {
      * 
      * @return the list of the components
      */
-    public List<PlainComponentItem> getComponents() {
-        return ViewModelConverter.model2View(componentService.getAll());
+    public List<Component> getComponents() {
+        return componentService.getAll();
     }
 
     /**
@@ -106,7 +106,7 @@ public class ListPresenter {
      */
     public void editComponent() throws InterruptedException {
         Map<String, Object> args = new HashMap<String, Object>();
-        args.put("componentId", listView.getSelectedItem().getCid());
+        args.put("componentId", listView.getSelectedItem().getId());
         args.put("listener", new EditListListener());
         WindowManager.showEditComponentWindow(args);
 //        win.addEventListener(Events.ON_CLOSE, new EditListListener());
@@ -114,21 +114,10 @@ public class ListPresenter {
 
     /** Removes the selected component from the component list. */
     public void deleteComponent() {
-        Component victim = ViewModelConverter.view2Model(listView.getSelectedItem());
+        Component victim = listView.getSelectedItem();
         componentService.deleteComponent(victim);
         listView.updateList(getComponents());
     }
-
-//    /**
-//     * Delegates to the View searching the component's id by its name.
-//     * 
-//     * @param name
-//     *            the component's name
-//     * @return the component's id whose name is {@code name}
-//     */
-//    public long getCidByName(String name) {
-//        return listView.getCidByName(name);
-//    }
     
     /**
      * The class for listening changing of components and updating

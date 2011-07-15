@@ -20,6 +20,7 @@ package org.jtalks.poulpe.web.controller.component;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jtalks.poulpe.model.entity.Component;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -117,80 +118,17 @@ public class ListViewImpl extends Window implements ListView, AfterCompose {
                 });
     }
 
-//    /**
-//     * Tells to presenter that the window for editing selected component must be
-//     * shown.
-//     * @throws InterruptedException 
-//     * 
-//     * @see ListPresenter
-//     */
-//    public void onDoubleClick$listItem() throws InterruptedException {
-//        presenter.editComponent();
-//    }
-
-//    /**
-//     * Removes from the displayed component list the {@code component} item. As
-//     * result user will see updated list.
-//     * 
-//     * @param componentView
-//     *            item to be deleted.
-//     */
-//    public void removeFromModel(ComponentView componentView) {
-//        model.remove(componentView);
-//    }
-    
     /** {@inheritDoc} */
     @Override
-    public void updateList(List<PlainComponentItem> list) {
+    public void updateList(List<Component> list) {
         model.clear();
         model.addAll(list);
     }
-    
-//    /** {@inheritDoc} */
-//    @Override
-//    public boolean hasSelectedItem() {
-//        return listbox.getSelectedIndex() >= 0;
-//    }
 
     /** {@inheritDoc} */
     @Override
-    public PlainComponent getSelectedItem() {
-        return (PlainComponent) model.get(listbox.getSelectedIndex());
+    public Component getSelectedItem() {
+        return (Component) model.get(listbox.getSelectedIndex());
     }
-
-//    /** {@inheritDoc} */
-//    @Override
-//    public void addToList(PlainComponentItem component) {
-//        model.add(component);
-//    }
-//
-//    /** {@inheritDoc} */
-//    @Override
-//    public void updateInList(PlainComponentItem component) {
-//        for (int i = 0; i < model.size(); i++) {
-//            PlainComponentItem item = (PlainComponentItem) model.get(i);
-//            if (item.getCid() == component.getCid()) {
-//                model.set(i, component);
-//                break;
-//            }
-//        }
-//    }
-
-//    /**
-//     * Searches the component's id by its name.
-//     * 
-//     * @param name
-//     *            the component's name
-//     * @return the component's id whose name is {@code name}
-//     */
-//    public long getCidByName(String name) {
-//        for (int i = 0; i < model.size(); i++) {
-//            ComponentViewItem item = (ComponentViewItem) model.get(i);
-//            if (name.equals(item.getName())) {
-//                return item.getCid();
-//            }
-//        }
-//        return -1;
-//    }
 
 }

@@ -19,6 +19,7 @@ package org.jtalks.poulpe.web.controller.component;
 
 import java.util.Map;
 
+import org.jtalks.poulpe.model.entity.Component;
 import org.jtalks.poulpe.service.exceptions.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,7 @@ import org.zkoss.zul.Window;
  * @author Dmitriy Sukharev
  * 
  */
-public class ItemViewImpl extends Window implements ItemView, PlainComponent, AfterCompose {
+public class ItemViewImpl extends Window implements ItemView, AfterCompose {
 
     private static final transient Logger LOGGER = LoggerFactory.getLogger(ItemViewImpl.class);
     private static final long serialVersionUID = -3927090308078350369L;
@@ -64,11 +65,12 @@ public class ItemViewImpl extends Window implements ItemView, PlainComponent, Af
 
     /** Initialises this window using received arguments. */
     private void initArgs() {
+        // TODO: too huge method. Refactor!
         Map<?, ?> args = Executions.getCurrent().getArg();
         long id = (Long) args.get("componentId");
-        PlainComponent component = null;
+        Component component = null;
         if (id == 0) {
-            component = new PlainComponentItem();
+            component = new Component();
         } else {
             try {
                 component = presenter.getComponent(id);
@@ -84,14 +86,19 @@ public class ItemViewImpl extends Window implements ItemView, PlainComponent, Af
                 return;
             }
         }
-        cid.setValue(component.getCid());
+        cid.setValue(component.getId());
         name.setText(component.getName());
         description.setText(component.getDescription());
-        componentType.setValue(component.getComponentType());
+        if (component.getComponentType() == null) {
+            componentType.setValue(null);
+        } else {
+            componentType.setValue(component.getComponentType().toString());
+        }
         for (Object obj : presenter.getTypes()) {
             componentType.appendItem(obj.toString());
         }
-        saveCompButton.addEventListener(Events.ON_CLICK, (EventListener) args.get("listener"));
+        EventListener el = (EventListener) args.get("listener");
+        saveCompButton.addEventListener(Events.ON_CLICK, el);
     }
 
     /** {@inheritDoc} */
@@ -182,17 +189,5 @@ public class ItemViewImpl extends Window implements ItemView, PlainComponent, Af
                     Messagebox.OK, Messagebox.EXCLAMATION);
         }
     }
-
-//    /** {@inheritDoc} */
-//    @Override
-//    // FIXIT: TEMPORARY SOLUTION
-//    public void updateCallbackWindow(PlainComponentItem component, boolean isNew) {
-//        ListViewImpl listWin = (ListViewImpl) args.get("callbackWin");
-//        if (isNew) {
-//            listWin.addToList(component);
-//        } else {
-//            listWin.updateInList(component);
-//        }
-//    }
 
 }

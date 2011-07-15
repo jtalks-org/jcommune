@@ -72,17 +72,27 @@ public class ItemPresenter {
 
     /** Saves the created or edited component in component list. */
     public void saveComponent() {
-        Component newbie = ViewModelConverter.view2Model(view);
-        PlainComponentItem item = (PlainComponentItem) ViewModelConverter.model2View(newbie);
-        LOGGER.debug("Newbie.getId() = {}", item.getCid());
+        Component newbie = view2Model(view);
+        LOGGER.debug("Newbie.getId() = {}", view.getCid());
         componentService.saveComponent(newbie);
-
-//        if (item.getCid() == 0) { 
-//            item.setCid(newbie.getId());    // elements in table should have real IDs.
-//            view.updateCallbackWindow(item, true);
-//        } else {
-//            view.updateCallbackWindow(item, false);
 //        }
+    }
+    
+    /**
+     * Converts the component from the view representation to the model
+     * representation.
+     * 
+     * @param view
+     *            the view representation of the component
+     * @return the component in model representation
+     */
+    private Component view2Model(ItemView view) {
+        Component model = new Component();
+        model.setId(view.getCid());
+        model.setName(view.getName());
+        model.setDescription(view.getDescription());
+        model.setComponentType(ComponentType.valueOf(view.getComponentType()));
+        return model;
     }
 
     /**
@@ -93,7 +103,6 @@ public class ItemPresenter {
      * @return the component's id whose name is {@code name}
      */
     public long getCidByName(String name) {
-        // TODO: not good to do it through DB
         List<Component> list = componentService.getAll();
         for (Component component : list) {
             if (name.equals(component.getName())) {
@@ -127,7 +136,7 @@ public class ItemPresenter {
      * @throws NotFoundException
      *             when entity can't be found
      */
-    public PlainComponent getComponent(long id) throws NotFoundException {
-        return ViewModelConverter.model2View(componentService.get(id));
+    public Component getComponent(long id) throws NotFoundException {
+        return componentService.get(id);
     }
 }
