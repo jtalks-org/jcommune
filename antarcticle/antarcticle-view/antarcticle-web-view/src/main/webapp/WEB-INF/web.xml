@@ -21,6 +21,38 @@
     <servlet-name>spring-dispatcher</servlet-name>
     <url-pattern>*.html</url-pattern>
   </servlet-mapping>
+  
+<!-- FILTERS -->
+<!--  <filter>
+    <filter-name>UrlRewriteFilter</filter-name>
+    <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>UrlRewriteFilter</filter-name>
+        <url-pattern>/</url-pattern>
+  </filter-mapping>-->
+
+  <filter>
+    <filter-name>hibernateSessionInViewFilter</filter-name>
+    <filter-class>org.springframework.orm.hibernate3.support.OpenSessionInViewFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>hibernateSessionInViewFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+  <filter>
+    <filter-name>encoding-filter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>encoding-filter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
 
   <filter>
     <filter-name>sitemesh</filter-name>
@@ -30,11 +62,24 @@
     <filter-name>sitemesh</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
-
+  
+  <filter>
+    <filter-name>httpMethodFilter</filter-name>
+    <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>httpMethodFilter</filter-name>
+    <servlet-name>spring-dispatcher</servlet-name>
+  </filter-mapping>
 
   <!-- Listeners -->
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
+  
+  <error-page>
+    <exception-type>org.jtalks.jcommune.service.exceptions.NotFoundException</exception-type>
+    <location>/WEB-INF/jsp/404.jsp</location>
+  </error-page>
 
 </web-app>

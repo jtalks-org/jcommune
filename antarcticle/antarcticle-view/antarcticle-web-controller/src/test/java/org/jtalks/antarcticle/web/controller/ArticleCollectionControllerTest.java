@@ -25,6 +25,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import org.jtalks.antarcticle.service.ArticleService;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -38,12 +39,14 @@ import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 public class ArticleCollectionControllerTest {
 
     private ArticleCollectionService articleCollectionService;
+    private ArticleService articleService;
     private ArticleCollectionController controller;
 
     @BeforeMethod
     public void init() {
         articleCollectionService = mock(ArticleCollectionService.class);
-        controller = new ArticleCollectionController(articleCollectionService);
+        articleService = mock(ArticleService.class);
+        controller = new ArticleCollectionController(articleCollectionService, articleService);
     }
 
     @Test

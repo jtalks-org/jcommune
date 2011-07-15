@@ -15,13 +15,15 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-
 package org.jtalks.antarcticle.web.controller;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.jtalks.antarcticle.model.entity.Article;
-import org.jtalks.antarcticle.model.entity.ArticleCollection;
-import org.jtalks.antarcticle.service.ArticleCollectionService;
+import org.jtalks.antarcticle.model.entity.Comment;
 import org.jtalks.antarcticle.service.ArticleService;
+import org.jtalks.antarcticle.service.CommentService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,30 +33,33 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- * @author Pavel Karpukhin
+ *
+ * @author Dmitry Sokolov
  */
 @Controller
-public class ArticleCollectionController {
-
-    private ArticleCollectionService articleCollectionService;
+@RequestMapping(value="article")
+public class ArticleController {
+    
     private ArticleService articleService;
-
+    private CommentService commentService;
+    
     @Autowired
-    public ArticleCollectionController(ArticleCollectionService articleCollectionService, ArticleService articleService) {
-        this.articleCollectionService = articleCollectionService;
+    public ArticleController(ArticleService articleService, CommentService commentService) {
         this.articleService = articleService;
+        this.commentService = commentService;
     }
-
-    @RequestMapping(value = "/main", method = RequestMethod.GET)
-    public ModelAndView articleCollectionList() {
-        return new ModelAndView("articleCollectionList", "articleCollectionList", articleCollectionService.getAll());
+    
+    @RequestMapping(value="/{articleId}", method= RequestMethod.GET)
+    public ModelAndView displayArticleWithComments(@PathVariable("articleId") long articleId)
+        throws NotFoundException {
+        Article article = articleService.get(articleId);
+        List<Comment> comments = commentService.getCommentsByArticle(article);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("article", article);
+        map.put("comments", comments);
+        return new ModelAndView("articleWithComments", map);
     }
-
-    @RequestMapping(value = "/articleCollection/{collectionId}", method = RequestMethod.GET)
-    public ModelAndView getCollectionById(@PathVariable("collectionId") long collectionId) throws NotFoundException {
-      Article firstArticle = articleService.getFirstArticleFromCollection(collectionId);
-      ArticleCollection articleCollection = articleCollectionService.get(collectionId);
-        return new ModelAndView("renderArticleCollection", "firstArticle",firstArticle)
-                .addObject("articleCollection",articleCollection);
-    }
+    
+    
+    
 }
