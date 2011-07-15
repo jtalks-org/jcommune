@@ -10,7 +10,7 @@
   <!-- Declaration AOP configs -->
   <aop:config>
     <aop:pointcut id="defaultTxPointcut"
-                  expression="within(org.jtalks.antarcticle.service.transactional..*)"/>
+                  expression="within(org.jtalks.*.service.transactional..*)"/>
     <aop:advisor advice-ref="txAdvice" pointcut-ref="defaultTxPointcut"/>
   </aop:config>
 
