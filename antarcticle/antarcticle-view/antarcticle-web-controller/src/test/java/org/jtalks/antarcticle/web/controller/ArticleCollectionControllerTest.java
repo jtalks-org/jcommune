@@ -46,10 +46,8 @@ public class ArticleCollectionControllerTest {
     @BeforeMethod
     public void init() {
         articleCollectionService = mock(ArticleCollectionService.class);
-<<<<<<< HEAD
-=======
+
         articleService = mock(ArticleService.class);
->>>>>>> 0c685a7da2985cea36314fa4f132a1ea3639c349
         controller = new ArticleCollectionController(articleCollectionService, articleService);
     }
 
