@@ -33,6 +33,8 @@ public class ArticleHibernateDao extends AbstractHibernateDao<Article> implement
      */
     @Override
     public Article getFirstArticleFromCollection(long collectionId) {
-       return (Article) getSession().getNamedQuery("getAllArticlesInCollection").setMaxResults(1);
+       return (Article) getSession().getNamedQuery("getAllArticlesInCollection")
+               .setLong("articleCollectionId",collectionId)
+               .uniqueResult();
     }
 }

@@ -53,6 +53,7 @@ public final class ObjectsFactory {
         article.setArticleContent("article content");
         article.setCreationDate(new DateTime());
         article.setUserCreated(persist(getDefaultUser()));
+        article.setArticleCollection(persist(getDefaultArticleCollection()));
         return article;
     }
     

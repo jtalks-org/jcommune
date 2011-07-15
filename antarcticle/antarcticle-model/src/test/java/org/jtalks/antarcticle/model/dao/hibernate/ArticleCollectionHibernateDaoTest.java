@@ -21,6 +21,7 @@ package org.jtalks.antarcticle.model.dao.hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.antarcticle.model.dao.ArticleCollectionDao;
+import org.jtalks.antarcticle.model.entity.Article;
 import org.jtalks.antarcticle.model.entity.ArticleCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -112,4 +113,5 @@ public class ArticleCollectionHibernateDaoTest extends AbstractTransactionalTest
 
         assertEquals(articleCollections.size(), 2);
     }
+           
 }
