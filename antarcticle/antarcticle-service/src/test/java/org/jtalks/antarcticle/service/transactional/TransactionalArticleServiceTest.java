@@ -33,7 +33,7 @@ import static org.testng.Assert.assertNotNull;
 import static org.jtalks.antarcticle.service.transactional.ObjectFactory.*;
 
 /**
- *
+ * @author Vitaliy Kravchenko
  * @author Dmitry Sokolov
  */
 public class TransactionalArticleServiceTest {
