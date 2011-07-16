@@ -32,8 +32,7 @@ public class ArticleCollectionHibernateDao extends
         AbstractHibernateDao<ArticleCollection> implements ArticleCollectionDao {
 
     /**
-     * Gets all Article Collections
-     *
+     * Get all Article Collections
      * @return  the List of Article Collections
      */
     @Override
