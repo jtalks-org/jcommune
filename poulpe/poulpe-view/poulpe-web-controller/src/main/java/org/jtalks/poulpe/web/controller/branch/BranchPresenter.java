@@ -25,6 +25,8 @@ import org.jtalks.poulpe.model.entity.Branch;
 import org.jtalks.poulpe.service.BranchService;
 
 /**
+ * This class is implementation the presenter in pattern Model-View-Presenter
+ * 
  * @author Bekrenev Dmitry
  * */
 
@@ -33,16 +35,32 @@ public class BranchPresenter {
     private BranchView view;
     private BranchService branchService;
 
+    /**
+     * Sets the service instance which is used for manipulating with stored
+     * branches
+     * 
+     * @param service
+     *            The instance branch service
+     * */
     public void setBranchService(BranchService service) {
         branchService = service;
     }
 
+    /**
+     * Initialize view instance before first rendering
+     * 
+     * @param view
+     *            The instance view
+     * */
     public void initView(BranchView view) {
         this.view = view;
         view.showBranches(getBranches());
         view.closeDialogs();
     }
 
+    /**
+     * Use for store new branch from dialog window
+     * */
     public void addNewBranch() {
         String name = view.getNewBranchName();
         String desc = view.getNewBranchDescription();
@@ -55,6 +73,9 @@ public class BranchPresenter {
         view.showBranch(branch);
     }
 
+    /**
+     * Open modal dialog window for editing selected branch
+     * */
     public void openEditDialog() {
         Branch branch = view.getSelectedBranch();
 
@@ -63,6 +84,9 @@ public class BranchPresenter {
         view.openEditBranchDialog();
     }
 
+    /**
+     * Use for store edited branch from dialog window
+     * */
     public void editBranch() {
 
         Branch branch = view.getSelectedBranch();
@@ -75,6 +99,9 @@ public class BranchPresenter {
         view.updateBranch(branch);
     }
 
+    /**
+     * Marking selected branch as deleted
+     * */
     public void markBranchAsDelete() {
 
         Branch branch = view.getSelectedBranch();
@@ -85,6 +112,10 @@ public class BranchPresenter {
             view.removeBranch(branch);
         }
     }
+
+    /*
+     * It's temporary method for getting branches not marked as deleted.
+     */
 
     private List<Branch> getBranches() {
         List<Branch> branches = new ArrayList<Branch>();
