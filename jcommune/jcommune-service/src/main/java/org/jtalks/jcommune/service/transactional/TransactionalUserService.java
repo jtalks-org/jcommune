@@ -21,7 +21,6 @@ import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
-import org.jtalks.jcommune.service.exceptions.DuplicateException;
 import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
@@ -83,7 +82,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public User registerUser(User user) throws DuplicateUserException, DuplicateEmailException, UnsupportedEncodingException {
+    public User registerUser(User user) 
+            throws DuplicateUserException, DuplicateEmailException, UnsupportedEncodingException {
         if (isUserExist(user)) {
             String msg = "User " + user.getUsername() + " already exists!";
             logger.warn(msg);
@@ -124,9 +124,12 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     }
 
     /**
-     * {@inheritDoc}
+     * Check email for existance.
+     *
+     * @param email email for check existance
+     * @return {@code true} if email exist
      */
-    public boolean isEmailExist(String email) {
+    private boolean isEmailExist(String email) {
         return dao.isUserWithEmailExist(email);
     }
     
@@ -145,10 +148,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         }
         
         boolean changeEmail = !currentUser.getEmail().equals(editedUser.getEmail());
-        if(changeEmail){
-            if(isEmailExist(editedUser.getEmail())){
-                throw new DuplicateEmailException();            
-            }            
+        if(changeEmail && isEmailExist(editedUser.getEmail())){            
+            throw new DuplicateEmailException();                                    
         }
         currentUser.copyUser(editedUser);
         dao.saveOrUpdate(currentUser);   

@@ -17,7 +17,6 @@
  */
 package org.jtalks.jcommune.web.dto;
 
-import org.aspectj.weaver.NewFieldTypeMunger;
 import org.hibernate.validator.constraints.Length;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.web.validation.Matches;
@@ -110,7 +109,7 @@ public class EditUserProfileDto extends UserDto {
      * Create user from entered by user fields.
      * Method do not set the password value.
      * 
-     * return - user with set from DTO fields.
+     * @return - user with set from DTO fields.
      * @see User
      */
     public User createUser(){

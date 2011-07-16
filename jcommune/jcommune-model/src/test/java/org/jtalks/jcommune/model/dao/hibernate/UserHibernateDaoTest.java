@@ -37,6 +37,7 @@ import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEqua
 
 /**
  * @author Kirill Afonin
+ * @author Osadchuck Eugeny 
  */
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
@@ -157,7 +158,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         User user = ObjectsFactory.getDefaultUser();
         session.save(user);
 
-        User result = dao.getByUsername(user.getUsername());
+        User result = dao.getByEncodedUsername(user.getEncodedUsername());
 
         assertNotNull(result);
         assertReflectionEquals(user, result);

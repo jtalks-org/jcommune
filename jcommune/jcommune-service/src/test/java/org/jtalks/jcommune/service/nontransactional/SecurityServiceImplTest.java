@@ -118,13 +118,29 @@ public class SecurityServiceImplTest {
     public void testGetCurrentUserEncodedUsername() throws Exception {
         User user = getUser();
         Authentication auth = mock(Authentication.class);
-        when(auth.getPrincipal()).thenReturn(user);
         when(securityContext.getAuthentication()).thenReturn(auth);
+        when(auth.getPrincipal()).thenReturn(user);
         when(userDao.getByUsername(USERNAME)).thenReturn(user);
         
         String encodedUsername = securityService.getCurrentUserEncodedName();
         
         assertEquals(encodedUsername, ENCODED_USERNAME, "Encoded username not equals");
+        verify(auth).getPrincipal();
+        verify(securityContext).getAuthentication();
+        verify(userDao).getByUsername(USERNAME);
+    }
+    
+    @Test
+    public void testGetCurrentUserEncodedUsernameIsNull() throws Exception {
+        User user = getUser();
+        Authentication auth = mock(Authentication.class);
+        when(securityContext.getAuthentication()).thenReturn(auth);
+        when(auth.getPrincipal()).thenReturn(user);
+        when(userDao.getByUsername(USERNAME)).thenReturn(null);
+        
+        String encodedUsername = securityService.getCurrentUserEncodedName();
+        
+        assertNull(encodedUsername, "Encoded username is not null");
         verify(auth).getPrincipal();
         verify(securityContext).getAuthentication();
         verify(userDao).getByUsername(USERNAME);

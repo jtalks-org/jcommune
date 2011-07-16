@@ -55,6 +55,25 @@ public final class ObjectsFactory {
         }
         return newUser;
     }
+    
+    /**
+     * @return {@link User} with deference from default user values.
+     * @see {@link ObjectsFactory#getDefaultUser()}. 
+     */
+    public static User getAnotherUser(){
+        User newUser = new User();
+        newUser.setUsername("anotherUsername");
+        newUser.setFirstName("another first name");
+        newUser.setLastName("another last name");
+        newUser.setEmail("another@mail.com");
+        newUser.setPassword("anotherPassword");
+        try {
+            newUser.setEncodedUsername("anotherEncodedUsername");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return newUser;
+    }
 
     public static Post getDefaultPost() {
         return getPost(persist(getDefaultUser()));

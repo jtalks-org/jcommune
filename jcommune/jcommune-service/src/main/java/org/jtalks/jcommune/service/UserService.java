@@ -19,7 +19,6 @@ package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
-import org.jtalks.jcommune.service.exceptions.DuplicateException;
 import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
@@ -61,7 +60,8 @@ public interface UserService extends EntityService<User> {
      * @throws DuplicateException if user with username or email already exist
      * @see User
      */
-    User registerUser(User user) throws DuplicateUserException, DuplicateEmailException, UnsupportedEncodingException;
+    User registerUser(User user) 
+            throws DuplicateUserException, DuplicateEmailException, UnsupportedEncodingException;
 
     /**
      * Updates user last login time to current time.
@@ -82,12 +82,4 @@ public interface UserService extends EntityService<User> {
      * @throws WrongPasswordException when user enter wrong currentPassword
      */
     void editUserProfile(User editedUser, String username, String currentPassword, String newPassword) throws DuplicateEmailException, WrongPasswordException;
-    
-    /**
-     * Check email for existance.
-     *
-     * @param email email for check existance
-     * @return {@code true} if email exist
-     */
-    boolean isEmailExist(String email);
 }

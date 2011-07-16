@@ -118,7 +118,7 @@ public class UserController {
     /**
      * Show page with user info.
      *
-     * @param userId id
+     * @param encodedUsername - {@link User#getEncodedUsername()}
      * @return user details view with {@link User} object
      * @throws NotFoundException if user with given id not found
      */
@@ -136,8 +136,7 @@ public class UserController {
      */
     @RequestMapping(value = "/user/edit", method = RequestMethod.GET)
     public ModelAndView editProfilePage() throws NotFoundException {
-        String currentUser = securityService.getCurrentUserUsername();
-        User user = userService.getByUsername(currentUser);
+        User user = securityService.getCurrentUser();
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
         return new ModelAndView("editProfile", "editedUser", editedUser);
     }
@@ -153,17 +152,18 @@ public class UserController {
      */
     @RequestMapping(value = "/user/edit", method = RequestMethod.POST)
     public ModelAndView editProfile(@Valid @ModelAttribute("editedUser") EditUserProfileDto userDto,
-                                    BindingResult result) throws NotFoundException, UnsupportedEncodingException {
-        User currentUser = securityService.getCurrentUser();
+                                    BindingResult result) throws NotFoundException{
 
         if (result.hasErrors()) {
             return new ModelAndView("editProfile");
         }
 
+        User currentUser = securityService.getCurrentUser();
         User userData2Edit = userDto.createUser();
 
         try {
-            userService.editUserProfile(userData2Edit, currentUser.getUsername(), userDto.getCurrentUserPassword(), userDto.getNewUserPassword());
+            userService.editUserProfile(userData2Edit, currentUser.getUsername(), 
+                    userDto.getCurrentUserPassword(), userDto.getNewUserPassword());
         } catch (DuplicateEmailException e) {
             result.rejectValue("email", "validation.duplicateemail");
           return new ModelAndView("editProfile");

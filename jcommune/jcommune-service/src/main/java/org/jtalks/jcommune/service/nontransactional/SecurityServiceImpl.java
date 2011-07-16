@@ -89,17 +89,7 @@ public class SecurityServiceImpl implements SecurityService {
      */
     @Override
     public String getCurrentUserEncodedName() {
-        Authentication auth = securityContextFacade.getContext().getAuthentication();
-        if (auth == null) {
-            return null;
-        }
-        Object principal = auth.getPrincipal();
-        String username = extractUsername(principal);
-
-        if (isAnonymous(username)) {
-            return null;
-        }
-        User user = userDao.getByUsername(username);
+        User user = getCurrentUser();
         if(user != null){
             return user.getEncodedUsername();
         }

@@ -19,6 +19,7 @@ package org.jtalks.jcommune.web.util;
 
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.SecurityService;
+import org.jtalks.jcommune.service.nontransactional.SecurityServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -39,6 +40,7 @@ public class UserDataInterceptor extends HandlerInterceptorAdapter {
      * Constructor
      *
      * @param service service
+     * @param securityService - {@link SecurityService}
      */
     @Autowired
     public UserDataInterceptor(PrivateMessageService service, SecurityService securityService) {
