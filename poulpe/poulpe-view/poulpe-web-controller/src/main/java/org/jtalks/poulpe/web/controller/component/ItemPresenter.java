@@ -75,7 +75,6 @@ public class ItemPresenter {
         Component newbie = view2Model(view);
         LOGGER.debug("Newbie.getId() = {}", view.getCid());
         componentService.saveComponent(newbie);
-//        }
     }
     
     /**
@@ -103,6 +102,9 @@ public class ItemPresenter {
      * @return the component's id whose name is {@code name}
      */
     public long getCidByName(String name) {
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Component's name can't be empty");
+        }
         List<Component> list = componentService.getAll();
         for (Component component : list) {
             if (name.equals(component.getName())) {
