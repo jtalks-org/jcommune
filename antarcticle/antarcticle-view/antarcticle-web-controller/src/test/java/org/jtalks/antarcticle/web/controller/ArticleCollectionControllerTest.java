@@ -18,9 +18,11 @@
 
 package org.jtalks.antarcticle.web.controller;
 
+import org.jtalks.antarcticle.model.entity.Article;
 import org.jtalks.antarcticle.model.entity.ArticleCollection;
 import org.jtalks.antarcticle.service.ArticleCollectionService;
 import org.jtalks.antarcticle.service.ArticleService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -60,5 +62,17 @@ public class ArticleCollectionControllerTest {
         assertViewName(mav, "articleCollectionList");
         assertModelAttributeAvailable(mav, "articleCollectionList");
         verify(articleCollectionService).getAll();
+    }
+
+    @Test
+    public void testGetCollectionById() throws NotFoundException {
+        when(articleService.getFirstArticleFromCollection(1l)).thenReturn(new Article());
+        when(articleCollectionService.get(1L)).thenReturn(new ArticleCollection());
+
+        ModelAndView mav = controller.getCollectionById(1L);
+
+        assertViewName(mav,"displayArticleCollection");
+        assertModelAttributeAvailable(mav, "firstArticle");
+        assertModelAttributeAvailable(mav, "articleCollection");
     }
 }
