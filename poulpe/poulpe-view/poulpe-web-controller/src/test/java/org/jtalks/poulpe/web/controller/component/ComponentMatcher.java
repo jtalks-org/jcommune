@@ -15,9 +15,28 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-
-/** 
- * The package contains classes and interfaces of Presenter layer of MVP pattern
- * which are linked to components.
- */
 package org.jtalks.poulpe.web.controller.component;
+
+import org.jtalks.poulpe.model.entity.Component;
+import org.mockito.ArgumentMatcher;
+
+/**
+ * @author Dmitriy Sukharev
+ * 
+ */
+class ComponentMatcher extends ArgumentMatcher<Component> {
+    private Component comp;
+
+    public ComponentMatcher(Component comp) {
+        this.comp = comp;
+    }
+
+    @Override
+    public boolean matches(Object item) {
+        Component comp2 = (Component) item;
+        return comp.getId() == comp2.getId() && comp.getName().equals(comp2.getName())
+                && comp.getDescription().equals(comp2.getDescription())
+                && comp.getComponentType().equals(comp2.getComponentType());
+    }
+
+}

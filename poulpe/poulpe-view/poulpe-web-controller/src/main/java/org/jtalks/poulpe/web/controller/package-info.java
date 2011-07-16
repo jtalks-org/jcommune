@@ -16,5 +16,5 @@
  * The jtalks.org Project
  */
 
-/** The package which contains classes and interfaces of Presenter level of MVP pattern. */
+/** The package which contains classes and interfaces of Presenter layer of MVP pattern. */
 package org.jtalks.poulpe.web.controller;

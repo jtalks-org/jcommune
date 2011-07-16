@@ -17,44 +17,36 @@
  */
 package org.jtalks.poulpe.web.controller;
 
-import java.util.Map;
-
-import org.zkoss.zk.ui.Executions;
-import org.zkoss.zul.Window;
-
 /**
- * The class which is responsible for creating windows of the application.
+ * The interface for creation and closing application windows.
  * 
  * @author Dmitriy Sukharev
  * 
  */
-public final class WindowManager {
-
-    /**
-     * The empty constructor to prevent creating instances of utility class.
-     */
-    private WindowManager() {
-    }
-
-    /** The path to the web-page for adding / editing component. */
-    private static final String EDIT_COMPONENT_URL = "/WEB-INF/pages/edit_component.zul";
-
+public interface WindowManager {
+    
     /**
      * Creates and shows new window which is responsible for editing components.
      * 
-     * @param args
-     *            mandatory arguments which includes {@code component} to be
-     *            edited, {@code types} to be shown in the list of the available
-     *            for this component types
-     * @return created window
+     * @param componentId
+     *            identifier of the {@link Component} to be edited, or
+     *            {@code -1L} to create a new one
+     * @param listener
+     *            listener to be invoked after window is closed.
      * @throws InterruptedException
      *             when a thread is waiting, sleeping, or otherwise occupied,
      *             and the thread is interrupted
      */
-    public static Window showEditComponentWindow(Map<String, Object> args) throws InterruptedException {
-        Window win = (Window) Executions.createComponents(EDIT_COMPONENT_URL, null, args);
-        win.doModal();
-        return win;
-    }
-
+    void showEditComponentWindow(long componentId, Object listener) throws InterruptedException;
+    
+    /**
+     * Closes the {@code window} window and invokes its "onDetach" listener.
+     * 
+     * @param window
+     *            the window to be closed
+     * @throws Exception
+     *             when error of closing window including problems with
+     *             execution of the "onDetach" listener action
+     */
+    void closeWindow(Object window) throws Exception;
 }

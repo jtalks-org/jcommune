@@ -25,6 +25,7 @@ import org.jtalks.poulpe.model.entity.Component;
 import org.jtalks.poulpe.model.entity.ComponentType;
 import org.jtalks.poulpe.service.ComponentService;
 import org.jtalks.poulpe.service.exceptions.NotFoundException;
+import org.jtalks.poulpe.web.controller.WindowManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +47,8 @@ public class ItemPresenter {
 
     /** The service instance to manipulate with stored components. */
     private ComponentService componentService;
+    
+    private WindowManager windowManager;
 
     /**
      * Initialises the object that is responsible for storing and updating view
@@ -70,11 +73,28 @@ public class ItemPresenter {
         this.componentService = componentService;
     }
 
-    /** Saves the created or edited component in component list. */
-    public void saveComponent() {
+    /**
+     * Sets the window manager which is used for showing and closing windows.
+     * 
+     * @param windowManager
+     *            the new value of the window manager
+     */
+    public void setWindowManager(WindowManager windowManager) {
+        this.windowManager = windowManager;
+    }
+
+    /**
+     * Saves the created or edited component in component list.
+     * 
+     * @throws Exception
+     *             when error of closing window including problems with
+     *             execution of the "onDetach" listener action
+     */
+    public void saveComponent() throws Exception {
         Component newbie = view2Model(view);
         LOGGER.debug("Newbie.getId() = {}", view.getCid());
         componentService.saveComponent(newbie);
+        windowManager.closeWindow(view);
     }
     
     /**

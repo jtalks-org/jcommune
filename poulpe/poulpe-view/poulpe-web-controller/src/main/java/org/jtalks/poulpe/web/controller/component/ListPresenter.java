@@ -17,9 +17,7 @@
  */
 package org.jtalks.poulpe.web.controller.component;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.jtalks.poulpe.model.entity.Component;
 import org.jtalks.poulpe.service.ComponentService;
@@ -42,10 +40,12 @@ import org.zkoss.zk.ui.event.EventListener;
 public class ListPresenter {
     
     /** The object that is responsible for updating view of the component list. */
-    private ListView listView;
+    private ListView view;
 
     /** The service instance to manipulate with stored components. */
     private ComponentService componentService;
+    
+    private WindowManager windowManager;
 
     /**
      * Initialises the object that is responsible for updating view of the
@@ -55,8 +55,8 @@ public class ListPresenter {
      *            the object that is responsible for updating view of the
      *            component list
      */
-    public void initListView(ListView view) {
-        this.listView = view;
+    public void initView(ListView view) {
+        this.view = view;
         view.updateList(getComponents());
     }
     
@@ -81,6 +81,16 @@ public class ListPresenter {
     }
 
     /**
+     * Sets the window manager which is used for showing and closing windows.
+     * 
+     * @param windowManager
+     *            the new value of the window manager
+     */
+    public void setWindowManager(WindowManager windowManager) {
+        this.windowManager = windowManager;
+    }
+
+    /**
      * Shows the window for adding new component to component list.
      * 
      * @throws InterruptedException
@@ -89,11 +99,7 @@ public class ListPresenter {
      *             activity
      */
     public void addComponent() throws InterruptedException {
-        Map<String, Object> args = new HashMap<String, Object>();
-        args.put("componentId", 0L);
-        args.put("listener", new EditListListener());
-        WindowManager.showEditComponentWindow(args);
-//        win.addEventListener(Events.ON_CLOSE, new EditListListener());
+        invokeEditWindowFor(-1L);
     }
 
     /**
@@ -105,18 +111,28 @@ public class ListPresenter {
      *             activity
      */
     public void editComponent() throws InterruptedException {
-        Map<String, Object> args = new HashMap<String, Object>();
-        args.put("componentId", listView.getSelectedItem().getId());
-        args.put("listener", new EditListListener());
-        WindowManager.showEditComponentWindow(args);
-//        win.addEventListener(Events.ON_CLOSE, new EditListListener());
+        invokeEditWindowFor(view.getSelectedItem().getId());
+    }
+    
+    /**
+     * Invokes creation of the new window for editing existing or new component.
+     * 
+     * @param componentId
+     *            component to be edited
+     * @throws InterruptedException
+     *             when a thread is waiting, sleeping, or otherwise occupied,
+     *             and the thread is interrupted, either before or during the
+     *             activity
+     */
+    private void invokeEditWindowFor(long componentId) throws InterruptedException {
+        windowManager.showEditComponentWindow(componentId, new EditListListener());
     }
 
     /** Removes the selected component from the component list. */
     public void deleteComponent() {
-        Component victim = listView.getSelectedItem();
+        Component victim = view.getSelectedItem();
         componentService.deleteComponent(victim);
-        listView.updateList(getComponents());
+        view.updateList(getComponents());
     }
     
     /**
@@ -126,11 +142,11 @@ public class ListPresenter {
      * @author Dmitriy Sukharev
      * 
      */
-    class EditListListener implements EventListener {
+    public class EditListListener implements EventListener {
         /** {@inheritDoc} */
         @Override
         public void onEvent(Event event) {
-            listView.updateList(getComponents());
+            view.updateList(getComponents());
         }        
     }
 }

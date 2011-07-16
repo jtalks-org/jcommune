@@ -25,10 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.ext.AfterCompose;
-import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Longbox;
 import org.zkoss.zul.Messagebox;
@@ -51,7 +48,6 @@ public class ItemViewImpl extends Window implements ItemView, AfterCompose {
     private Textbox name;
     private Textbox description;
     private Combobox componentType;
-    private Button saveCompButton;
     private ItemPresenter presenter;
 
     /** {@inheritDoc} */
@@ -65,11 +61,30 @@ public class ItemViewImpl extends Window implements ItemView, AfterCompose {
 
     /** Initialises this window using received arguments. */
     private void initArgs() {
-        // TODO: too huge method. Refactor!
         Map<?, ?> args = Executions.getCurrent().getArg();
         long id = (Long) args.get("componentId");
+        Component component = obtainComponent(id);
+        if (component != null) {
+            cid.setValue(component.getId());
+            name.setText(component.getName());
+            description.setText(component.getDescription());
+            initTypes(component);
+        }
+//        EventListener el = (EventListener) args.get("listener");
+//        saveCompButton.addEventListener(Events.ON_CLICK, el);
+    }
+
+    /**
+     * Obtains the component by its ID.
+     * 
+     * @param id
+     *            the ID of the component, {@code -1L} to return new instance
+     * @return the component by its ID, new instance if {@code id} is equal to
+     *         {@code -1L}, and null if there is no component with such ID.
+     */
+    private Component obtainComponent(long id) {
         Component component = null;
-        if (id == 0) {
+        if (id == -1L) {
             component = new Component();
         } else {
             try {
@@ -83,22 +98,28 @@ public class ItemViewImpl extends Window implements ItemView, AfterCompose {
                 }
                 LOGGER.warn("Attempt to change non-existing item.", e);
                 detach();
-                return;
+                return null;
             }
         }
-        cid.setValue(component.getId());
-        name.setText(component.getName());
-        description.setText(component.getDescription());
+        return component;
+    }
+
+    /**
+     * Initialises the list of possible types for the specified component.
+     * 
+     * @param component
+     *            the component whose types are being determined.
+     */
+    private void initTypes(Component component) {
         if (component.getComponentType() == null) {
             componentType.setValue(null);
         } else {
             componentType.setValue(component.getComponentType().toString());
         }
+        componentType.appendItem(componentType.getValue());
         for (Object obj : presenter.getTypes()) {
             componentType.appendItem(obj.toString());
-        }
-        EventListener el = (EventListener) args.get("listener");
-        saveCompButton.addEventListener(Events.ON_CLICK, el);
+        }        
     }
 
     /** {@inheritDoc} */
@@ -171,19 +192,18 @@ public class ItemViewImpl extends Window implements ItemView, AfterCompose {
     /**
      * Tells to presenter to save created or edited component in component list.
      * 
+     * @throws Exception
+     *             when error of closing window including problems with
+     *             execution of the "onDetach" listener action
+     * 
      * @see ListPresenter
-     * @throws InterruptedException
-     *             when a thread is waiting, sleeping, or otherwise occupied,
-     *             and the thread is interrupted, either before or during the
-     *             activity
      */
-    public void onClick$saveCompButton() throws InterruptedException {
+    public void onClick$saveCompButton() throws Exception {
         componentType.setConstraint("no empty");
         name.setConstraint("no empty");
         long pos = presenter.getCidByName(name.getValue());
         if (pos == -1 || pos == cid.longValue()) {
             presenter.saveComponent();
-            detach();
         } else {
             Messagebox.show("The component with such name already exists.", "Warning",
                     Messagebox.OK, Messagebox.EXCLAMATION);

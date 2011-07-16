@@ -53,7 +53,7 @@ public class ListViewImpl extends Window implements ListView, AfterCompose {
         Components.addForwards(this, this);
         model = new BindingListModelList(new ArrayList<Object>(), true);
         listbox.setModel(model);
-        presenter.initListView(this);
+        presenter.initView(this);
         listbox.setItemRenderer(new Renderer());
     }
 
