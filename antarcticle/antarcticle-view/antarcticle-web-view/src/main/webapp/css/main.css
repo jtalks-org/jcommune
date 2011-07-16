@@ -135,6 +135,10 @@
     COLOR: #000;
     BACKGROUND-COLOR: #fff;
 }
+.container{ width: 80%; margin: 0 auto; padding: 10px 0; font:18px/24px Tahoma; color: #000;}
+        .title{font:bold 14px Tahoma; color: #6495ed; display: block; margin: 0 0 20px 0; padding: 0 5px;}
+        .small_block{border: 1px solid #000;  margin: 0 0 20px 0; padding: 5px; }
+        .big_block{border: 1px solid #000;  margin: 0 0 20px 0; padding: 5px;}
 
 HR {
     color: #003366
@@ -271,4 +275,8 @@ p, h1, form, button {
 
 #pagination p {
     color: #999999;
+}
+
+#articleCollection {
+    border: 1px solid #000
 }
