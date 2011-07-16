@@ -57,7 +57,8 @@ public interface UserService extends EntityService<User> {
      *
      * @param user user for register
      * @return registered {@link User}
-     * @throws DuplicateException if user with username or email already exist
+     * @throws DuplicateUserException if user with username already exist
+     * @throws DuplicateEmailException when user with given email already exist
      * @see User
      */
     User registerUser(User user) 
