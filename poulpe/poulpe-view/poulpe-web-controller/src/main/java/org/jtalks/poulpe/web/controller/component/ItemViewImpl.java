@@ -17,12 +17,18 @@
  */
 package org.jtalks.poulpe.web.controller.component;
 
-import java.util.List;
 import java.util.Map;
 
+import org.jtalks.poulpe.model.entity.Component;
+import org.jtalks.poulpe.service.exceptions.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.ext.AfterCompose;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Longbox;
 import org.zkoss.zul.Messagebox;
@@ -36,17 +42,17 @@ import org.zkoss.zul.Window;
  * @author Dmitriy Sukharev
  * 
  */
-public class ItemViewImpl extends Window implements ItemView, PlainComponent, AfterCompose {
+public class ItemViewImpl extends Window implements ItemView, AfterCompose {
 
+    private static final transient Logger LOGGER = LoggerFactory.getLogger(ItemViewImpl.class);
     private static final long serialVersionUID = -3927090308078350369L;
 
     private Longbox cid;
     private Textbox name;
     private Textbox description;
     private Combobox componentType;
+    private Button saveCompButton;
     private ItemPresenter presenter;
-
-    private Map<?, ?> args = Executions.getCurrent().getArg();
 
     /** {@inheritDoc} */
     @Override
@@ -59,15 +65,40 @@ public class ItemViewImpl extends Window implements ItemView, PlainComponent, Af
 
     /** Initialises this window using received arguments. */
     private void initArgs() {
-        PlainComponent component = (PlainComponent) args.get("component");
-        List<?> types = (List<?>) args.get("types");
-        cid.setValue(component.getCid());
+        // TODO: too huge method. Refactor!
+        Map<?, ?> args = Executions.getCurrent().getArg();
+        long id = (Long) args.get("componentId");
+        Component component = null;
+        if (id == 0) {
+            component = new Component();
+        } else {
+            try {
+                component = presenter.getComponent(id);
+            } catch (NotFoundException e) {
+                try {
+                    Messagebox.show("Oops! It looks like this item doesn't exist anymore.");
+                } catch (InterruptedException e1) {
+                    // TODO: what to do here???? I can't throw it up.
+                    LOGGER.error("Problem with showing messagebox.", e1);
+                }
+                LOGGER.warn("Attempt to change non-existing item.", e);
+                detach();
+                return;
+            }
+        }
+        cid.setValue(component.getId());
         name.setText(component.getName());
         description.setText(component.getDescription());
-        componentType.setValue(component.getComponentType());
-        for (Object obj : types) {
+        if (component.getComponentType() == null) {
+            componentType.setValue(null);
+        } else {
+            componentType.setValue(component.getComponentType().toString());
+        }
+        for (Object obj : presenter.getTypes()) {
             componentType.appendItem(obj.toString());
         }
+        EventListener el = (EventListener) args.get("listener");
+        saveCompButton.addEventListener(Events.ON_CLICK, el);
     }
 
     /** {@inheritDoc} */
@@ -152,22 +183,10 @@ public class ItemViewImpl extends Window implements ItemView, PlainComponent, Af
         long pos = presenter.getCidByName(name.getValue());
         if (pos == -1 || pos == cid.longValue()) {
             presenter.saveComponent();
-            onClose();
+            detach();
         } else {
             Messagebox.show("The component with such name already exists.", "Warning",
                     Messagebox.OK, Messagebox.EXCLAMATION);
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    // FIXIT: TEMPORARY SOLUTION
-    public void updateCallbackWindow(PlainComponentItem component, boolean isNew) {
-        ListViewImpl listWin = (ListViewImpl) args.get("callbackWin");
-        if (isNew) {
-            listWin.addToList(component);
-        } else {
-            listWin.updateInList(component);
         }
     }
 

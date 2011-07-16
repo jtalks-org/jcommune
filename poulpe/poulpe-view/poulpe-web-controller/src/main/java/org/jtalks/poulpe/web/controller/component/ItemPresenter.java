@@ -17,10 +17,14 @@
  */
 package org.jtalks.poulpe.web.controller.component;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.jtalks.poulpe.model.entity.Component;
+import org.jtalks.poulpe.model.entity.ComponentType;
 import org.jtalks.poulpe.service.ComponentService;
+import org.jtalks.poulpe.service.exceptions.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +36,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ItemPresenter {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ItemPresenter.class);
 
     /**
      * The object that is responsible for storing and updating view of the added
@@ -68,17 +72,26 @@ public class ItemPresenter {
 
     /** Saves the created or edited component in component list. */
     public void saveComponent() {
-        Component newbie = ViewModelConverter.view2Model(view);
-        PlainComponentItem item = (PlainComponentItem) ViewModelConverter.model2View(newbie);
-        logger.debug("Newbie.getId() = {}", item.getCid());
+        Component newbie = view2Model(view);
+        LOGGER.debug("Newbie.getId() = {}", view.getCid());
         componentService.saveComponent(newbie);
-
-        if (item.getCid() == 0) { 
-            item.setCid(newbie.getId());    // elements in table should have real IDs.
-            view.updateCallbackWindow(item, true);
-        } else {
-            view.updateCallbackWindow(item, false);
-        }
+    }
+    
+    /**
+     * Converts the component from the view representation to the model
+     * representation.
+     * 
+     * @param view
+     *            the view representation of the component
+     * @return the component in model representation
+     */
+    private Component view2Model(ItemView view) {
+        Component model = new Component();
+        model.setId(view.getCid());
+        model.setName(view.getName());
+        model.setDescription(view.getDescription());
+        model.setComponentType(ComponentType.valueOf(view.getComponentType()));
+        return model;
     }
 
     /**
@@ -89,7 +102,9 @@ public class ItemPresenter {
      * @return the component's id whose name is {@code name}
      */
     public long getCidByName(String name) {
-        // TODO: not good to do it through DB
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Component's name can't be empty");
+        }
         List<Component> list = componentService.getAll();
         for (Component component : list) {
             if (name.equals(component.getName())) {
@@ -97,5 +112,33 @@ public class ItemPresenter {
             }
         }
         return -1;
+    }
+
+    /**
+     * Obtains all unoccupied types of components and returns them.
+     * 
+     * @return the list unoccupied component types as strings
+     */
+    public List<String> getTypes() {
+        Set<ComponentType> origTypes = componentService.getAvailableTypes();
+        List<String> strTypes = new ArrayList<String>();
+        for (ComponentType orig : origTypes) {
+            strTypes.add(orig.toString());
+        }
+        return strTypes;
+    }
+    
+    /**
+     * Returns the component by its id delegating obtaining of this component to
+     * {@link ComponentService}.
+     * 
+     * @param id
+     *            id of the component to be fetched
+     * @return the component by its id
+     * @throws NotFoundException
+     *             when entity can't be found
+     */
+    public Component getComponent(long id) throws NotFoundException {
+        return componentService.get(id);
     }
 }

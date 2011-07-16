@@ -29,9 +29,9 @@ import org.zkoss.zul.Window;
  * 
  */
 public final class WindowManager {
-    
+
     /**
-     * The empty constructor to prevent creating instances of utility class. 
+     * The empty constructor to prevent creating instances of utility class.
      */
     private WindowManager() {
     }
@@ -46,13 +46,15 @@ public final class WindowManager {
      *            mandatory arguments which includes {@code component} to be
      *            edited, {@code types} to be shown in the list of the available
      *            for this component types
+     * @return created window
      * @throws InterruptedException
      *             when a thread is waiting, sleeping, or otherwise occupied,
      *             and the thread is interrupted
      */
-    public static void showEditComponentWindow(Map<String, Object> args) throws InterruptedException {
+    public static Window showEditComponentWindow(Map<String, Object> args) throws InterruptedException {
         Window win = (Window) Executions.createComponents(EDIT_COMPONENT_URL, null, args);
         win.doModal();
+        return win;
     }
 
 }

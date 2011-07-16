@@ -23,7 +23,7 @@ package org.jtalks.poulpe.web.controller.component;
  * @author Dmitriy Sukharev
  * 
  */
-public interface ItemView extends PlainComponent {
+public interface ItemView {
 
     /**
      * Returns the component's id.
@@ -72,12 +72,5 @@ public interface ItemView extends PlainComponent {
      * @param type the new value of the component's type
      */
     void setComponentType(String type);
-
-    /**
-     * Adds new or updates existing item in the list of visible items.
-     * @param component the component to be update in callback window
-     * @param isNew the flag to show if {@code component} must be saved, not update
-     */
-    void updateCallbackWindow(PlainComponentItem component, boolean isNew);
 
 }

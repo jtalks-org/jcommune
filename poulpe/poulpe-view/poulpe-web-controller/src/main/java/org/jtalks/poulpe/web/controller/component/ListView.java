@@ -19,9 +19,11 @@ package org.jtalks.poulpe.web.controller.component;
 
 import java.util.List;
 
+import org.jtalks.poulpe.model.entity.Component;
+
 /**
- * The interface for managing actions and represents information about components
- * displayed in administrator panel.
+ * The interface for managing actions and represents information about
+ * components displayed in administrator panel.
  * 
  * @author Dmitriy Sukharev
  * 
@@ -33,7 +35,7 @@ public interface ListView {
      * 
      * @return the selected component from the list of the visible components
      */
-    PlainComponent getSelectedItem();
+    Component getSelectedItem();
 
     /**
      * Updates the list of the components.
@@ -41,24 +43,6 @@ public interface ListView {
      * @param list
      *            the new list of the components
      */
-    void updateList(List<PlainComponentItem> list);
+    void updateList(List<Component> list);
 
-    /**
-     * Adds to the displayed component list the {@code component} item. As
-     * result user will see updated list.
-     * 
-     * @param component
-     *            item to be added.
-     */
-    void addToList(PlainComponentItem component);
-
-    /**
-     * Replaces in the displayed component list the old value of
-     * {@code component} item by the new one. As result user will see updated
-     * list. It searches the component to be replaced by its id.
-     * 
-     * @param component
-     *            the replacing item.
-     */
-    void updateInList(PlainComponentItem component);
 }
