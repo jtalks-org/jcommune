@@ -103,7 +103,7 @@ public class SecurityServiceImpl implements SecurityService {
         if(user != null){
             return user.getEncodedUsername();
         }
-        return username;
+        return null;
     }
 
     /**

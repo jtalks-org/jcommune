@@ -117,13 +117,13 @@ public class SecurityServiceImplTest {
     @Test
     public void testGetCurrentUserEncodedUsername() throws Exception {
         User user = getUser();
-        System.out.println("!!!!!USER.ENCODED_USERNAME = "+ user.getEncodedUsername());
         Authentication auth = mock(Authentication.class);
         when(auth.getPrincipal()).thenReturn(user);
         when(securityContext.getAuthentication()).thenReturn(auth);
         when(userDao.getByUsername(USERNAME)).thenReturn(user);
+        
         String encodedUsername = securityService.getCurrentUserEncodedName();
-        System.out.println("!!!!!ENCODED_USERNAME = "+ encodedUsername);
+        
         assertEquals(encodedUsername, ENCODED_USERNAME, "Encoded username not equals");
         verify(auth).getPrincipal();
         verify(securityContext).getAuthentication();

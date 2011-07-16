@@ -46,6 +46,24 @@ public class User extends Persistent implements UserDetails {
     private String encodedUsername;
 
     /**
+     * Copy from user properties firstName, lastName, email.
+     * Method should not copy these values if them is null.
+     * 
+     * @param user - copy resource
+     */
+    public void copyUser(User user){
+        if(user.firstName != null){
+            this.firstName = user.firstName;
+        }
+        if(user.lastName != null){
+            this.lastName = user.lastName;
+        }
+        if(user.email != null){
+            this.email = user.email;
+        }
+    }
+    
+    /**
      * Get the user's Last Name.
      *
      * @return the lastName
