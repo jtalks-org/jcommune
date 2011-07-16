@@ -11,7 +11,7 @@
        http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
   <!--Declaration of presenters -->
-  <bean id="branchPresenter" class="org.jtalks.poulpe.web.controller.BranchPresenter" scope="session">
+  <bean id="branchPresenter" class="org.jtalks.poulpe.web.controller.branch.BranchPresenter" scope="session">
     <property name="branchService" ref="branchService" />
   </bean> 
 

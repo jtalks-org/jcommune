@@ -16,11 +16,15 @@
  * The jtalks.org Project
  */
 
-package org.jtalks.poulpe.web.controller;
+package org.jtalks.poulpe.web.controller.branch;
 
 import java.util.List;
 
 import org.jtalks.poulpe.model.entity.Branch;
+
+/**
+ * @author Bekrenev Dmitry
+ * */
 
 public interface BranchView {
 

@@ -16,7 +16,7 @@
  * The jtalks.org Project
  */
 
-package org.jtalks.poulpe.web.controller;
+package org.jtalks.poulpe.web.controller.branch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +26,8 @@ import static org.mockito.Mockito.*;
 import org.testng.annotations.*;
 import org.jtalks.poulpe.model.entity.Branch;
 import org.jtalks.poulpe.service.BranchService;
+import org.jtalks.poulpe.web.controller.branch.BranchPresenter;
+import org.jtalks.poulpe.web.controller.branch.BranchView;
 import org.mockito.*;
 
 /**

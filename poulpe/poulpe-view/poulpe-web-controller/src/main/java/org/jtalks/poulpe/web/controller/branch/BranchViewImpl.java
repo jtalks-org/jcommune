@@ -16,7 +16,7 @@
  * The jtalks.org Project
  */
 
-package org.jtalks.poulpe.web.controller;
+package org.jtalks.poulpe.web.controller.branch;
 
 import java.util.List;
 
@@ -33,6 +33,10 @@ import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Window;
+
+/**
+ * @author Bekrenev Dmitry
+ * */
 
 public class BranchViewImpl extends Window implements BranchView, AfterCompose {
     private static final long serialVersionUID = 8689635788676853738L;
@@ -56,7 +60,25 @@ public class BranchViewImpl extends Window implements BranchView, AfterCompose {
 
         branchesListModel = new ListModelList();
         branchesList.setModel(branchesListModel);
-        branchesList.setItemRenderer(new ListBranchesRenderer());
+        branchesList.setItemRenderer(new ListitemRenderer() {
+
+            @Override
+            public void render(Listitem item, Object data) throws Exception {
+                Branch branch = (Branch) data;
+
+                Listcell cell = new Listcell();
+                Label name = new Label(branch.getName());
+                Label desc = new Label(branch.getDescription());
+                Vbox vbox = new Vbox();
+
+                name.setParent(vbox);
+                desc.setParent(vbox);
+                vbox.setParent(cell);
+                cell.setParent(item);
+                item.setId(String.valueOf(branch.getId()));
+
+            }
+        });
 
         presenter.initView(this);
     }
@@ -181,23 +203,4 @@ public class BranchViewImpl extends Window implements BranchView, AfterCompose {
         newBranchDialog.setVisible(true);
     }
 
-}
-
-class ListBranchesRenderer implements ListitemRenderer {
-
-    @Override
-    public void render(Listitem item, Object data) throws Exception {
-        Branch branch = (Branch) data;
-
-        Listcell cell = new Listcell();
-        Label name = new Label(branch.getName());
-        Label desc = new Label(branch.getDescription());
-        Vbox vbox = new Vbox();
-
-        name.setParent(vbox);
-        desc.setParent(vbox);
-        vbox.setParent(cell);
-        cell.setParent(item);
-        item.setId(String.valueOf(branch.getId()));
-    }
 }

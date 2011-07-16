@@ -16,13 +16,17 @@
  * The jtalks.org Project
  */
 
-package org.jtalks.poulpe.web.controller;
+package org.jtalks.poulpe.web.controller.branch;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jtalks.poulpe.model.entity.Branch;
 import org.jtalks.poulpe.service.BranchService;
+
+/**
+ * @author Bekrenev Dmitry
+ * */
 
 public class BranchPresenter {
 

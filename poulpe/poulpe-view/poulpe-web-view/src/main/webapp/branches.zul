@@ -1,7 +1,7 @@
 <?page title="Branch List" contentType="text/html;charset=UTF-8"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
-<window title="Branch Editor" width="100%"  border="normal" presenter="${branchPresenter}" use="org.jtalks.poulpe.web.controller.BranchViewImpl" >
+<window title="Branch Editor" width="100%"  border="normal" presenter="${branchPresenter}" use="org.jtalks.poulpe.web.controller.branch.BranchViewImpl" >
    <listbox sizedByContent="true" id="branchesList">
             <listfoot>
               <listfooter>
