@@ -34,7 +34,7 @@ import static org.testng.Assert.*;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
- *
+ * @author Vitaliy Kravchenko
  * @author Dmitry Sokolov
  */
 @ContextConfiguration(locations = {"classpath:/org/jtalks/antarcticle/model/entity/applicationContext-dao.xml"})
@@ -91,7 +91,7 @@ public class ArticleHibernateDoaTest extends AbstractTransactionalTestNGSpringCo
     }
 
     @Test
-    public void testGetFirstArticle(){         
+    public void testGetFirstArticleFromCollection(){
         Article article = ObjectsFactory.getDefaultArticle();           
         session.save(article);         
         session.flush();

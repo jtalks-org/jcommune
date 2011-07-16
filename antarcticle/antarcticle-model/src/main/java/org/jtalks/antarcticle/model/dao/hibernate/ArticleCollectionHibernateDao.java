@@ -31,6 +31,10 @@ import java.util.List;
 public class ArticleCollectionHibernateDao extends 
         AbstractHibernateDao<ArticleCollection> implements ArticleCollectionDao {
 
+    /**
+     * Get all Article Collections
+     * @return  the List of Article Collections
+     */
     @Override
     public List<ArticleCollection> getAll() {
         return getSession().createQuery("from ArticleCollection").list();
