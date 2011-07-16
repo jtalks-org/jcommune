@@ -35,6 +35,8 @@ import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Window;
 
 /**
+ * This class is implementation view for managing branches
+ * 
  * @author Bekrenev Dmitry
  * */
 
@@ -53,6 +55,9 @@ public class BranchViewImpl extends Window implements BranchView, AfterCompose {
 
     private ListModelList branchesListModel;
 
+    /**
+     * {@inheritDoc}
+     * */
     @Override
     public void afterCompose() {
         Components.addForwards(this, this);
@@ -71,6 +76,8 @@ public class BranchViewImpl extends Window implements BranchView, AfterCompose {
                 Label desc = new Label(branch.getDescription());
                 Vbox vbox = new Vbox();
 
+                name.setSclass("branch-name");
+                desc.setSclass("branch-description");
                 name.setParent(vbox);
                 desc.setParent(vbox);
                 vbox.setParent(cell);
@@ -83,40 +90,78 @@ public class BranchViewImpl extends Window implements BranchView, AfterCompose {
         presenter.initView(this);
     }
 
+    /**
+     * Set presenter
+     * 
+     * @see BranchPresenter
+     * */
     public void setPresenter(BranchPresenter presenter) {
         this.presenter = presenter;
     }
 
+    /**
+     * {@inheritDoc}
+     * */
     @Override
     public String getNewBranchDescription() {
         return newBranchDialog$branchDescription.getText();
     }
 
+    /**
+     * {@inheritDoc}
+     * */
     @Override
     public String getNewBranchName() {
         return newBranchDialog$branchName.getText();
     }
 
+    /**
+     * {@inheritDoc}
+     * */
+
+    @Override
     public String getEditBranchName() {
         return editBranchDialog$branchName.getText();
     }
 
+    /**
+     * {@inheritDoc}
+     * */
+
+    @Override
     public void setEditBranchName(String branchName) {
         this.editBranchDialog$branchName.setText(branchName);
     }
+
+    /**
+     * {@inheritDoc}
+     * */
 
     public String getEditBranchDescription() {
         return editBranchDialog$branchDescription.getText();
     }
 
+    /**
+     * {@inheritDoc}
+     * */
+
+    @Override
     public void setEditBranchDescription(String editBranchDescription) {
         this.editBranchDialog$branchDescription.setText(editBranchDescription);
     }
+
+    /**
+     * {@inheritDoc}
+     * */
 
     @Override
     public void showBranches(List<Branch> branches) {
         branchesListModel.addAll(branches);
     }
+
+    /**
+     * {@inheritDoc}
+     * */
 
     @Override
     public void showBranch(Branch branch) {
@@ -124,11 +169,19 @@ public class BranchViewImpl extends Window implements BranchView, AfterCompose {
 
     }
 
+    /**
+     * {@inheritDoc}
+     * */
+
     @Override
     public void removeBranch(Branch branch) {
         branchesListModel.remove(branch);
 
     }
+
+    /**
+     * {@inheritDoc}
+     * */
 
     @Override
     public void updateBranch(Branch branch) {
@@ -136,11 +189,19 @@ public class BranchViewImpl extends Window implements BranchView, AfterCompose {
         branchesListModel.set(index, branch);
     }
 
+    /**
+     * {@inheritDoc}
+     * */
+
     @Override
     public void closeDialogs() {
         closeNewBranchDialog();
         closeEditBranchDialog();
     }
+
+    /**
+     * {@inheritDoc}
+     * */
 
     @Override
     public Branch getSelectedBranch() {
@@ -152,53 +213,89 @@ public class BranchViewImpl extends Window implements BranchView, AfterCompose {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     * */
+
     @Override
     public void openEditBranchDialog() {
         editBranchDialog.setVisible(true);
     }
 
+    /**
+     * Event which happen when user click on add new branch button after it
+     * opens dialog for adding new branch
+     * */
     public void onClick$addBranchButton(Event event) {
         openNewBranchDialog();
     }
 
+    /**
+     * Event which happen when user click on delete branch button after it
+     * selected branch will be marked as deleted if no one branch selected then
+     * not happen
+     * */
     public void onClick$delBranchButton(Event event) {
         if (branchesList.getSelectedCount() == 1) {
             presenter.markBranchAsDelete();
         }
     }
 
+    /**
+     * Event which happen when user double click on branch after it will open
+     * edit dialog
+     * */
     public void onDoubleClick$branchesList(Event event) {
         presenter.openEditDialog();
     }
 
+    /**
+     * Event which happen when user click on edit button in edit branch dialog
+     * window this cause save changed branch
+     * */
     public void onClick$editButton$editBranchDialog() {
         presenter.editBranch();
         closeEditBranchDialog();
     }
 
+    /**
+     * Event which happen when user click on cancel button in edit branch dialog
+     * window this cause close edit dialog
+     * */
     public void onClick$closeButton$editBranchDialog() {
         closeEditBranchDialog();
     }
 
+    /**
+     * Event which happen when user click on cancel button in new branch dialog
+     * window this cause close new branch dialog
+     * */
     public void onClick$closeButton$newBranchDialog(Event event) {
         closeNewBranchDialog();
     }
 
+    /**
+     * Event which happen when user click on add button in new branch dialog
+     * window this cause save new branch
+     * */
     public void onClick$addButton$newBranchDialog(Event event) {
         presenter.addNewBranch();
         closeNewBranchDialog();
     }
 
+    /* Close new branch dialog add flush fields */
     private void closeNewBranchDialog() {
         newBranchDialog.setVisible(false);
         newBranchDialog$branchName.setText("");
         newBranchDialog$branchDescription.setText("");
     }
 
+    /* Close edit dialog */
     private void closeEditBranchDialog() {
         editBranchDialog.setVisible(false);
     }
 
+    /* Open new branch dialog */
     private void openNewBranchDialog() {
         newBranchDialog.setVisible(true);
     }

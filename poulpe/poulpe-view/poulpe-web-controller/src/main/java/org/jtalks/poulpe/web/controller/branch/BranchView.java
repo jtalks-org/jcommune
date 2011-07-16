@@ -23,35 +23,108 @@ import java.util.List;
 import org.jtalks.poulpe.model.entity.Branch;
 
 /**
+ * Interface for managing representation branches in view
+ * 
  * @author Bekrenev Dmitry
  * */
-
 public interface BranchView {
 
+    /**
+     * Show branches List
+     * 
+     * @param branches
+     *            List of branches for showing
+     * */
     void showBranches(List<Branch> branches);
 
+    /**
+     * Show branch
+     * 
+     * @param branch
+     *            branch for showing
+     * */
     void showBranch(Branch branch);
 
+    /**
+     * Remove branch from view. When branch marking as deleted this method allow
+     * update view.
+     * 
+     * @param branch
+     *            branch for remove from view
+     * */
     void removeBranch(Branch branch);
 
+    /**
+     * Update showed branch When branch will edited is method use for update
+     * view
+     * 
+     * @param branch
+     *            branch which was edited and should be updated
+     * */
     void updateBranch(Branch branch);
 
+    /**
+     * Open modal dialog for edit branch
+     */
     void openEditBranchDialog();
 
+    /**
+     * Set name of branch which editing Use for initialize edit dialog
+     * 
+     * @param name
+     *            name of editing branch
+     * */
     void setEditBranchName(String name);
 
+    /**
+     * Set description of branch which editing Use for initialize edit dialog
+     * 
+     * @param description
+     *            description of editing branch
+     * */
     void setEditBranchDescription(String description);
 
+    /**
+     * Get name of branch which edited After edit this method use for get new
+     * name of branch
+     * 
+     * @return edited name of branch
+     * */
     String getEditBranchName();
 
+    /**
+     * Get description of branch which edited After edit this method use for get
+     * new description of branch
+     * 
+     * @return edited description of branch
+     * */
     String getEditBranchDescription();
 
+    /**
+     * Get selected branch When user select branch in list branches with the
+     * help of this method we can get selected branch
+     * 
+     * @return selected branch
+     * */
     Branch getSelectedBranch();
 
+    /**
+     * Get new branch name which will be stored
+     * 
+     * @return new branch name
+     * */
     String getNewBranchName();
 
+    /**
+     * Get new branch description which will be stored
+     * 
+     * @return new branch description
+     * */
     String getNewBranchDescription();
 
+    /**
+     * Method close all modal dialogs use for initialize view
+     * */
     void closeDialogs();
 
 }

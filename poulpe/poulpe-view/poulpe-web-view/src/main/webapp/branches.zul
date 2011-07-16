@@ -1,8 +1,21 @@
 <?page title="Branch List" contentType="text/html;charset=UTF-8"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
-<window title="Branch Editor" width="100%"  border="normal" presenter="${branchPresenter}" use="org.jtalks.poulpe.web.controller.branch.BranchViewImpl" >
-   <listbox sizedByContent="true" id="branchesList">
+
+<window title="Branch Editor" width="30%"  border="normal" presenter="${branchPresenter}" use="org.jtalks.poulpe.web.controller.branch.BranchViewImpl" 
+        position="center,top" >
+   <style>
+    .branch-name {
+        font-size: 15pt;
+        font-weight: bold;
+    }
+    .branch-description {
+        font-size: 10pt;
+        font-style: italic;
+        color: #808080;
+    }
+   </style>
+   <listbox sizedByContent="true" id="branchesList" >
             <listfoot>
               <listfooter>
                <button id="addBranchButton" label="+" />
