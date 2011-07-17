@@ -19,8 +19,8 @@
 package org.jtalks.antarcticle.model.entity;
 
 import org.joda.time.DateTime;
-import org.jtalks.jcommune.model.entity.Persistent;
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.common.model.entity.Persistent;
+import org.jtalks.common.model.entity.User;
 
 /**
  * Represent a comment for a concrete article

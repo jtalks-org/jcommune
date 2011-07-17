@@ -19,7 +19,7 @@ package org.jtalks.antarcticle.model.dao.hibernate;
 
 import org.jtalks.antarcticle.model.dao.ArticleDao;
 import org.jtalks.antarcticle.model.entity.Article;
-import org.jtalks.jcommune.model.dao.hibernate.AbstractHibernateDao;
+import org.jtalks.common.model.dao.hibernate.AbstractHibernateDao;
 
 /**
  *

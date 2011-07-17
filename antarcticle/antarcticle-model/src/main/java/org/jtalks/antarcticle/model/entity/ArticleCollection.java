@@ -18,7 +18,7 @@
 
 package org.jtalks.antarcticle.model.entity;
 
-import org.jtalks.jcommune.model.entity.Persistent;
+import org.jtalks.common.model.entity.Persistent;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -19,7 +19,7 @@
 package org.jtalks.antarcticle.model.dao;
 
 import org.jtalks.antarcticle.model.entity.ArticleCollection;
-import org.jtalks.jcommune.model.dao.Dao;
+import org.jtalks.common.model.dao.Dao;
 
 import java.util.List;
 

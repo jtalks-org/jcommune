@@ -20,7 +20,7 @@ package org.jtalks.antarcticle.model.dao.hibernate;
 
 import org.jtalks.antarcticle.model.dao.ArticleCollectionDao;
 import org.jtalks.antarcticle.model.entity.ArticleCollection;
-import org.jtalks.jcommune.model.dao.hibernate.AbstractHibernateDao;
+import org.jtalks.common.model.dao.hibernate.AbstractHibernateDao;
 
 import java.util.List;
 
