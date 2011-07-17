@@ -47,4 +47,14 @@ public abstract class AbstractTransactionalEntityService<T extends Persistent, Y
         }
         return (T) dao.get(id);
     }
+    
+    /**
+     * Set the DAO.
+     * 
+     * @param dao Data Access Object
+     */
+    public void setDao(Y dao) {
+		this.dao = dao;
+	}
+    
 }
