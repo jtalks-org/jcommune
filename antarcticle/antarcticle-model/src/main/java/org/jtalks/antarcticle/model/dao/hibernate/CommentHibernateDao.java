@@ -23,7 +23,7 @@ import org.hibernate.Query;
 import org.jtalks.antarcticle.model.dao.CommentDao;
 import org.jtalks.antarcticle.model.entity.Article;
 import org.jtalks.antarcticle.model.entity.Comment;
-import org.jtalks.jcommune.model.dao.hibernate.AbstractHibernateDao;
+import org.jtalks.common.model.dao.hibernate.AbstractHibernateDao;
 
 /**
  *
