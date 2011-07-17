@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jtalks.poulpe.model.entity.Component;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -100,14 +101,14 @@ public class ListViewImpl extends Window implements ListView, AfterCompose {
      */
     public void onClick$delCompButton() throws InterruptedException {
         if (listbox.getSelectedIndex() == -1) { // if there is no selected item
-            Messagebox.show("There is no selected item to delete", "Warning", Messagebox.OK,
-                    Messagebox.EXCLAMATION);
+            Messagebox.show(Labels.getLabel("item.no.selected.item"),
+                    Labels.getLabel("window.warning"), Messagebox.OK, Messagebox.EXCLAMATION);
             return;
         }
         String name = getSelectedItem().getName();
-        Messagebox.show("Are you sure that you wanna delete " + name + "?", "Delete " + name + "?",
-                Messagebox.YES | Messagebox.CANCEL, Messagebox.QUESTION, Messagebox.CANCEL,
-                new EventListener() {
+        Messagebox.show(Labels.getLabel("item.delete.question") + " " + name + "?",
+                Labels.getLabel("item.delete.$") + " " + name + "?", Messagebox.YES | Messagebox.CANCEL,
+                Messagebox.QUESTION, Messagebox.CANCEL, new EventListener() {
                     /** {@inheritDoc} */
                     @Override
                     public void onEvent(Event event) {

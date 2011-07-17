@@ -3,21 +3,21 @@
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <zk>
     <style>.boldstyle { font-weight: bold; font-size: 14pt; }</style>
-    <window id="componentWindow" title="Component List" border="none"
+    <window id="componentWindow" title="${labels.window.title}" border="none"
         width="800px" position="center,top" mode="overlapped"
         presenter="${componentListPresenter}"
         use="org.jtalks.poulpe.web.controller.component.ListViewImpl">
         <vlayout>
             <listbox id="listbox">
                 <listhead sizable="true">
-                    <listheader align="center" label="Component" sort="auto" sclass="boldstyle" />
-                    <listheader align="center" label="Description" />
-                    <listheader align="center" label="Type" />
+                    <listheader align="center" label="${labels.componentName}" sort="auto" sclass="boldstyle" />
+                    <listheader align="center" label="${labels.description}" />
+                    <listheader align="center" label="${labels.type}" />
                 </listhead>
             </listbox>
             <div>
-                <button id="addCompButton" label="Add component" />
-                <button id="delCompButton" label="Delete" />
+                <button id="addCompButton" label="${labels.item.add}" />
+                <button id="delCompButton" label="${labels.item.delete.$}" />
             </div>
         </vlayout>
     </window>

@@ -23,6 +23,7 @@ import org.jtalks.poulpe.model.entity.Component;
 import org.jtalks.poulpe.service.exceptions.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.ext.AfterCompose;
@@ -91,7 +92,7 @@ public class ItemViewImpl extends Window implements ItemView, AfterCompose {
                 component = presenter.getComponent(id);
             } catch (NotFoundException e) {
                 try {
-                    Messagebox.show("Oops! It looks like this item doesn't exist anymore.");
+                    Messagebox.show(Labels.getLabel("item.doesnt.exist"));
                 } catch (InterruptedException e1) {
                     // TODO: what to do here???? I can't throw it up.
                     LOGGER.error("Problem with showing messagebox.", e1);
@@ -205,7 +206,7 @@ public class ItemViewImpl extends Window implements ItemView, AfterCompose {
         if (pos == -1 || pos == cid.longValue()) {
             presenter.saveComponent();
         } else {
-            Messagebox.show("The component with such name already exists.", "Warning",
+            Messagebox.show(Labels.getLabel("item.already.exist"), Labels.getLabel("window.warning"),
                     Messagebox.OK, Messagebox.EXCLAMATION);
         }
     }

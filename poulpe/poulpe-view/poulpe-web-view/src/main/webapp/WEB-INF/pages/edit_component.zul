@@ -1,33 +1,33 @@
 <?page title="EditComponentList" contentType="text/html;charset=UTF-8"?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <zk>
-    <window id="editCompWindow" title="Fill fields to save" border="normal" width="430px"
+    <window id="editCompWindow" title="${labels.editwin.title}" border="normal" width="430px"
             presenter="${componentItemPresenter}" closable="true"
             use="org.jtalks.poulpe.web.controller.component.ItemViewImpl">
         <longbox id="cid" visible="false" />
         <grid>
             <columns>
-                <column label="Field Description" width="100px" />
-                <column label="Field Input" width="310px" />
+                <column label="${labels.field.description}" width="100px" />
+                <column label="${labels.field.input}" width="310px" />
             </columns>
             <rows>
                 <row>
-                    <label value="Name" />
+                    <label value="${labels.title}" />
                     <textbox id="name" width="300px" onBlur='self.setConstraint("no empty")' focus="true" />
                 </row>
                 <row>
-                    <label value="Description" />
+                    <label value="${labels.description}" />
                     <textbox id="description" width="300px" />
                 </row>
                 <row>
-                    <label value="Type" />
+                    <label value="${labels.type}" />
                     <combobox id="componentType" width="300px" readonly="true"  onBlur='self.setConstraint("no empty")' />
                 </row>
                 <row align="right">
                     <div />
                     <div>
-                        <button id="saveCompButton" label="Save" />
-                        <button label="Cancel" onClick="editCompWindow.onClose();" />
+                        <button id="saveCompButton" label="${labels.item.save}" />
+                        <button label="${labels.window.cancel}" onClick="editCompWindow.onClose();" />
                     </div>
                 </row>
             </rows>
