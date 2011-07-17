@@ -1,6 +1,7 @@
 .settings
 .classpath
 .project
+MANIFEST.MF
 
 *.iml
 \jcommune\jcommune-service\target\
