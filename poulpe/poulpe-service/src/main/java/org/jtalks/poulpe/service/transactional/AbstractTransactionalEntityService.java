@@ -30,7 +30,7 @@ import org.jtalks.poulpe.service.exceptions.NotFoundException;
  * @author Osadchuck Eugeny
  * @author Kirill Afonin
  */
-public abstract class AbstractTransactionalEntityService<T extends Persistent, Y extends Dao>
+public abstract class AbstractTransactionalEntityService<T extends Persistent, Y extends Dao<T>>
         implements EntityService<T> {
     /**
      * Dao object implementation.
