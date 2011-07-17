@@ -40,12 +40,23 @@ public class ArticleCollectionController {
     private ArticleCollectionService articleCollectionService;
     private ArticleService articleService;
 
+    /**
+     * Constructs MVC controller with objects injected via autowiring
+     *
+     * @param articleCollectionService  the object which provides actions on {@link ArticleCollection} entity
+     * @param articleService  the object which provides actions on {@link Article} entity
+     */
     @Autowired
     public ArticleCollectionController(ArticleCollectionService articleCollectionService, ArticleService articleService) {
         this.articleCollectionService = articleCollectionService;
         this.articleService = articleService;
     }
 
+    /**
+     * Handles GET request and produces JSP page with all article collections
+     *
+     * @return {@link ModelAndView} with view name as articleCollectionList
+     */
     @RequestMapping(value = "/main", method = RequestMethod.GET)
     public ModelAndView articleCollectionList() {
         return new ModelAndView("articleCollectionList", "articleCollectionList", articleCollectionService.getAll());

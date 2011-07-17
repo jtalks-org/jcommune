@@ -1,10 +1,11 @@
+<%--
+  author: Pavel Karpukhin
+--%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%--
-  author: Pavel Karpukhin
---%>
+
 <html>
     <head> <title> All article collections </title> </head>
     <body>

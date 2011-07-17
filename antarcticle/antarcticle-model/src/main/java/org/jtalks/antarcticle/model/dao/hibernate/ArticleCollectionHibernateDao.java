@@ -37,6 +37,6 @@ public class ArticleCollectionHibernateDao extends
      */
     @Override
     public List<ArticleCollection> getAll() {
-        return getSession().createQuery("from ArticleCollection").list();
+        return getSession().getNamedQuery("getAllArticleCollections").list();
     }
 }

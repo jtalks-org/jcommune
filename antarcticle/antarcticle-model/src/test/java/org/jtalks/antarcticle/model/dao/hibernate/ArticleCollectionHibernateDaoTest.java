@@ -80,6 +80,24 @@ public class ArticleCollectionHibernateDaoTest extends AbstractTransactionalTest
     }
 
     @Test
+    public void testGet() {
+        ArticleCollection articleCollection = ObjectsFactory.getDefaultArticleCollection();
+        session.save(articleCollection);
+
+        ArticleCollection result = dao.get(articleCollection.getId());
+
+        assertNotNull(result);
+        assertEquals(result.getId(), articleCollection.getId());
+    }
+
+    @Test
+    public void testGetInvalidId() {
+        ArticleCollection result = dao.get(-567890L);
+
+        assertNull(result);
+    }
+
+    @Test
     public void testUpdate() {
         String newTitle = "new title";
         ArticleCollection articleCollection = ObjectsFactory.getDefaultArticleCollection();
@@ -103,6 +121,57 @@ public class ArticleCollectionHibernateDaoTest extends AbstractTransactionalTest
     }
 
     @Test
+    public void testDelete() {
+        ArticleCollection articleCollection = ObjectsFactory.getDefaultArticleCollection();
+
+        session.save(articleCollection);
+
+        session.evict(articleCollection);
+        boolean deleted = dao.delete(articleCollection.getId());
+
+        int articleCollectionCount = getCount();
+
+        assertTrue(deleted);
+        assertEquals(articleCollectionCount, 0);
+    }
+
+    @Test
+    public void testDeleteInvalidId() {
+        boolean result = dao.delete(-100500L);
+
+        assertFalse(result, "Entity deleted");
+    }
+
+    @Test
+    public void testDeleteWithArticles() {
+        ArticleCollection articleCollection = ObjectsFactory.getDefaultArticleCollection();
+        articleCollection.addArticle(ObjectsFactory.getDefaultArticleWithoutArticleCollection());
+
+        Article article = ObjectsFactory.getDefaultArticleWithoutArticleCollection();
+        articleCollection.addArticle(article);
+        articleCollection.setLastArticle(article);
+
+        session.save(articleCollection);
+        session.flush();
+
+        session.evict(articleCollection);
+        boolean deleted = dao.delete(articleCollection.getId());
+
+        session.flush();
+
+        int articleCollectionCount = getCount();
+
+        int articleCount = ((Number)session.createQuery("select count(*) from Article as article where article.articleCollection.id = " + articleCollection.getId()).uniqueResult()).intValue();
+
+        int allArticleCount = ((Number)session.createQuery("select count(*) from Article").uniqueResult()).intValue();
+
+        assertTrue(deleted);
+        assertEquals(articleCollectionCount, 0);
+        assertEquals(articleCount, 0);
+        assertEquals(allArticleCount, 2);
+    }
+
+    @Test
     public void testGetAll() {
         ArticleCollection articleCollection1 = ObjectsFactory.getDefaultArticleCollection();
         session.save(articleCollection1);
@@ -113,5 +182,8 @@ public class ArticleCollectionHibernateDaoTest extends AbstractTransactionalTest
 
         assertEquals(articleCollections.size(), 2);
     }
-           
+
+    private int getCount() {
+        return ((Number) session.createQuery("select count(*) from ArticleCollection").uniqueResult()).intValue();
+    }
 }

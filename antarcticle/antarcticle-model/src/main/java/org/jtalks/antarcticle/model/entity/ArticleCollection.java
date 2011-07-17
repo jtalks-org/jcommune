@@ -32,6 +32,7 @@ public class ArticleCollection extends Persistent {
     private List<Article> articles = new ArrayList<Article>();
     private String description;
     private String title;
+    private Article lastArticle;
 
     /**
      * Creates the ArticleCollection instance. All fields values are null.
@@ -120,5 +121,21 @@ public class ArticleCollection extends Persistent {
         this.articles = articles;
     }
 
+    /**
+     * Returns the last article of this article collection
+     *
+     * @return the value of lastArticle field
+     */
+    public Article getLastArticle() {
+        return lastArticle;
+    }
 
+    /**
+     * Sets the last article of this article collection
+     *
+     * @param lastArticle  the new value for lastArticle field
+     */
+    public void setLastArticle(Article lastArticle) {
+        this.lastArticle = lastArticle;
+    }
 }

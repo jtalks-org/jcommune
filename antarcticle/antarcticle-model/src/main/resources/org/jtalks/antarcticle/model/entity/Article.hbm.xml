@@ -9,7 +9,8 @@
     <property column="ARTICLE_CONTENT" name="articleContent" not-null="true"/>
     <property column="ARTICLE_TITLE" name="articleTitle"/>
     <property column="CREATION_DATE" name="creationDate" not-null="true" type="org.joda.time.contrib.hibernate.PersistentDateTime"/>
-    <many-to-one column="ARTICLE_COLLECTION_ID" name="articleCollection" not-null="false"/>
+    <many-to-one column="ARTICLE_COLLECTION_ID" name="articleCollection"
+                 foreign-key="FK_ARTICLE_COLLECTION" not-null="false" />
     <many-to-one class="org.jtalks.jcommune.model.entity.User" column="USER_CREATED" fetch="join"
                  foreign-key="FK_USER" lazy="false" name="userCreated" not-null="true"/>
   </class>

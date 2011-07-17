@@ -58,7 +58,16 @@ public final class ObjectsFactory {
         article.setArticleCollection(persist(getDefaultArticleCollection()));
         return article;
     }
-    
+
+    public static Article getDefaultArticleWithoutArticleCollection() {
+        Article article = new Article();
+        article.setArticleTitle("article title");
+        article.setArticleContent("article content");
+        article.setCreationDate(new DateTime());
+        article.setUserCreated(persist(getDefaultUser()));
+        return article;
+    }
+
     public static Comment getDefaultComment() {
         Comment comment = new Comment(new DateTime());
         comment.setCommentContent("comment content");
