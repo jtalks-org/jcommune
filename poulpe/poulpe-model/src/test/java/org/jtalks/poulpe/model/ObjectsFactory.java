@@ -17,33 +17,48 @@
  */
 package org.jtalks.poulpe.model;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.hibernate.Session;
 import org.jtalks.poulpe.model.entity.*;
 
 /**
  * @author Kirill Afonin
  */
-//TODO: split this class on 2: objects factory and persisted objects factory
+// TODO: split this class on 2: objects factory and persisted objects factory
 public final class ObjectsFactory {
-    private ObjectsFactory() {
-    }
+	private ObjectsFactory() {
+	}
 
-    public static void setSession(Session session) {
-        ObjectsFactory.session = session;
-    }
+	public static void setSession(Session session) {
+		ObjectsFactory.session = session;
+	}
 
-    private static Session session;
+	private static Session session;
 
-    public static Branch getDefaultBranch() {
-        Branch newBranch = new Branch();
-        newBranch.setName("branch name");
-        newBranch.setDescription("branch description");
-        return newBranch;
-    }
+	public static Branch getDefaultBranch() {
+		Branch newBranch = new Branch();
+		newBranch.setName("branch name");
+		newBranch.setDescription("branch description");
+		return newBranch;
+	}
 
-    private static <T> T persist(T entity) {
-        session.save(entity);
-        return entity;
-    }
+	/**
+	 * Create type of topic with random title, it may be usefull when need to persist mаny
+	 * object in testing.
+	 * 
+	 * @return type of topic
+	 */
+	public static TopicType createTopicTypeWithRandomTitle() {
+		TopicType topicType = new TopicType();
+		String randomTitle = "topic type title" + RandomStringUtils.random(10);
+		topicType.setTitle(randomTitle);
+		topicType.setDescription("topic type description");
+		return topicType;
+	}
+
+	private static <T> T persist(T entity) {
+		session.save(entity);
+		return entity;
+	}
 
 }
