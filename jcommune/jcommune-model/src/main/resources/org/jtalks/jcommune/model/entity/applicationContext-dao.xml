@@ -69,10 +69,10 @@
         <prop key="hibernate.connection.provider_class">${hibernate.connection.provider_class}</prop>
         <prop key="hibernate.connection.release_mode">auto</prop>
         <prop key="hibernate.cache.region.factory_class">
-          net.sf.ehcache.hibernate.EhCacheRegionFactory
+          net.sf.ehcache.hibernate.SingletonEhCacheRegionFactory
         </prop>
-        <prop key="hibernate.cache.use_second_level_cache">true</prop>
-        <prop key="hibernate.cache.use_query_cache">true</prop>
+        <prop key="hibernate.cache.use_second_level_cache">${hibernate.use_second_level_cache}</prop>
+        <prop key="hibernate.cache.use_query_cache">${hibernate.use_query_cache}</prop>
         <prop key="net.sf.ehcache.configurationResourceName">
           /org/jtalks/jcommune/model/entity/ehcache.xml
         </prop>
