@@ -34,6 +34,7 @@ public class UserHibernateDao extends AbstractHibernateDao<User> implements User
     public User getByUsername(String username) {
         return (User) getSession()
                 .createQuery("from User u where u.username = ?")
+                .setCacheable(true)
                 .setString(0, username)
                 .uniqueResult();
     }
@@ -45,10 +46,11 @@ public class UserHibernateDao extends AbstractHibernateDao<User> implements User
     public User getByEncodedUsername(String encodedUsername) {
         return (User) getSession()
                 .createQuery("from User u where u.encodedUsername = ?")
+                .setCacheable(true)
                 .setString(0, encodedUsername)
                 .uniqueResult();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -56,6 +58,7 @@ public class UserHibernateDao extends AbstractHibernateDao<User> implements User
     public boolean isUserWithUsernameExist(String username) {
         return ((Number) getSession()
                 .createQuery("select count(*) from User u where u.username = ?")
+                .setCacheable(true)
                 .setString(0, username)
                 .uniqueResult()).intValue() != 0;
     }
@@ -67,6 +70,7 @@ public class UserHibernateDao extends AbstractHibernateDao<User> implements User
     public boolean isUserWithEmailExist(String email) {
         return ((Number) getSession()
                 .createQuery("select count(*) from User u where u.email = ?")
+                .setCacheable(true)
                 .setString(0, email)
                 .uniqueResult()).intValue() != 0;
     }

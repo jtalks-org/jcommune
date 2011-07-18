@@ -3,6 +3,7 @@
   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
   <class name="Post" table="POST">
+    <cache usage="read-write"/>
     <id name="id" column="POST_ID" unsaved-value="0">
       <generator class="native"/>
     </id>

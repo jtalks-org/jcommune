@@ -39,6 +39,7 @@ public class PrivateMessageHibernateDao extends AbstractHibernateDao<PrivateMess
     @SuppressWarnings("unchecked")
     public List<PrivateMessage> getAllFromUser(User userFrom) {
         return getSession().getNamedQuery("getAllFromUser")
+                .setCacheable(true)
                 .setParameter("status", PrivateMessageStatus.DRAFT)
                 .setEntity("user", userFrom).list();
     }
@@ -50,6 +51,7 @@ public class PrivateMessageHibernateDao extends AbstractHibernateDao<PrivateMess
     @SuppressWarnings("unchecked")
     public List<PrivateMessage> getAllForUser(User userTo) {
         return getSession().getNamedQuery("getAllToUser")
+                .setCacheable(true)
                 .setParameter("status", PrivateMessageStatus.DRAFT)
                 .setEntity("user", userTo).list();
     }
@@ -61,6 +63,7 @@ public class PrivateMessageHibernateDao extends AbstractHibernateDao<PrivateMess
     @SuppressWarnings("unchecked")
     public List<PrivateMessage> getDraftsFromUser(User userFrom) {
         return getSession().getNamedQuery("getDraftsFromUser")
+                .setCacheable(true)
                 .setParameter("status", PrivateMessageStatus.DRAFT)
                 .setEntity("user", userFrom).list();
     }
@@ -72,6 +75,7 @@ public class PrivateMessageHibernateDao extends AbstractHibernateDao<PrivateMess
     @SuppressWarnings("unchecked")
     public int getNewMessagesCountFor(String username) {
         return ((Number) getSession().getNamedQuery("getNewMessagesCountFor")
+                .setCacheable(true)
                 .setParameter("status", PrivateMessageStatus.NOT_READ)
                 .setString("username", username).uniqueResult()).intValue();
     }

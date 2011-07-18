@@ -17,7 +17,7 @@
  */
 package org.jtalks.jcommune.web.dto;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Size;
 
@@ -30,21 +30,20 @@ import javax.validation.constraints.Size;
  */
 public class PrivateMessageDto {
 
-    /**
-     * Message's title. Must be 2-22 chars
-     */
+    @NotBlank
     @Size(min = 2, max = 22, message = "{title.length}")
     private String title;
+    @NotBlank
     @Size(min = 2, message = "{body.length}")
     private String body;
-    @NotEmpty(message = "{not_empty}")
+    @NotBlank
     private String recipient;
 
     /**
      * @return pm id
      */
     public long getId() {
-        return id;
+        return id ;
     }
 
     /**
