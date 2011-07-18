@@ -16,9 +16,6 @@
   </aop:config>
 
   <!--Declaration of DAO beans -->
-  <bean id="userDao"
-        class="org.jtalks.jcommune.model.dao.hibernate.UserHibernateDao"
-        parent="abstractHibernateDao"/>
   <bean id="articleDao"
         class="org.jtalks.antarcticle.model.dao.hibernate.ArticleHibernateDao"
         parent="abstractHibernateDao"/>
@@ -31,7 +28,7 @@
   <!--Injecting sessionFactory bean to class AbstractHibernateDao, this way
     resolves a problem of multiple DAO beans definition -->
   <bean id="abstractHibernateDao"
-        class="org.jtalks.jcommune.model.dao.hibernate.AbstractHibernateDao"
+        class="org.jtalks.AbstractHibernateDao"
         abstract="true">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
