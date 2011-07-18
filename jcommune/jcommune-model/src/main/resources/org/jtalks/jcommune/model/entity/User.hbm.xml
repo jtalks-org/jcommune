@@ -3,6 +3,7 @@
   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
   <class name="org.jtalks.jcommune.model.entity.User" table="USER">
+    <cache usage="nonstrict-read-write"/>
     <id column="ID" name="id" unsaved-value="0">
       <generator class="native"/>
     </id>

@@ -92,6 +92,7 @@ public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<
     @Override
     public boolean delete(Long id) {
         return getSession().createQuery(deleteQuery)
+                .setCacheable(true)
                 .setLong("id", id)
                 .executeUpdate() != 0;
     }
