@@ -21,4 +21,24 @@
     <property name="suffix" value=".jsp"/>
   </bean>
 
+  <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+    <property name="basename" value="classpath:/org/jtalks/antarcticle/web/view/messages"/>
+    <property name="defaultEncoding" value="UTF-8"/>
+  </bean>
+
+  <bean id="localeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"/>
+
+  <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver"/>
+
+  <bean id="handlerMapping" class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+    <property name="interceptors" ref="localeInterceptor"/>
+  </bean>
+
+  <!-- Interceptors -->
+  <mvc:interceptors>
+    <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+      <property name="paramName" value="lang"/>
+    </bean>
+  </mvc:interceptors>
+
 </beans>

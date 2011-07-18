@@ -16,27 +16,9 @@
  * The jtalks.org Project
  */
 
-package org.jtalks.antarcticle.model.dao.hibernate;
-
-import org.jtalks.antarcticle.model.dao.ArticleCollectionDao;
-import org.jtalks.antarcticle.model.entity.ArticleCollection;
-import org.jtalks.common.model.dao.hibernate.AbstractHibernateDao;
-
-import java.util.List;
-
-
 /**
- * @author Vitaliy Kravchenko
+ *
+ * Package for controllers.
+ *
  */
-public class ArticleCollectionHibernateDao extends 
-        AbstractHibernateDao<ArticleCollection> implements ArticleCollectionDao {
-
-    /**
-     * Get all Article Collections
-     * @return  the List of Article Collections
-     */
-    @Override
-    public List<ArticleCollection> getAll() {
-        return getSession().getNamedQuery("getAllArticleCollections").list();
-    }
-}
+package org.jtalks.antarcticle.web.controller;

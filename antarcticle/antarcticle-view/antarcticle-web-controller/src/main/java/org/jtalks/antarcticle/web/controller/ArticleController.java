@@ -43,12 +43,23 @@ public class ArticleController {
     private ArticleService articleService;
     private CommentService commentService;
     
+    /**
+     * Creates an article controller with injection of {@link ArticleService} and {@link CommentService}
+     * @param articleService article service
+     * @param commentService comment service
+     */
     @Autowired
     public ArticleController(ArticleService articleService, CommentService commentService) {
         this.articleService = articleService;
         this.commentService = commentService;
     }
     
+    /**
+     * GET handler for getting view of article with comments
+     * @param articleId id of article
+     * @return articleWithComments {@link ModelAndView} and article and comments as model
+     * @throws NotFoundException throws if there is no article with provided articleId
+     */
     @RequestMapping(value="/{articleId}", method= RequestMethod.GET)
     public ModelAndView displayArticleWithComments(@PathVariable("articleId") long articleId)
         throws NotFoundException {
@@ -59,7 +70,4 @@ public class ArticleController {
         map.put("comments", comments);
         return new ModelAndView("articleWithComments", map);
     }
-    
-    
-    
 }
