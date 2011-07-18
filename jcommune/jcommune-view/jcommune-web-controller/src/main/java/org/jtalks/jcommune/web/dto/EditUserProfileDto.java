@@ -31,10 +31,9 @@ import org.jtalks.jcommune.web.validation.Matches;
  */
 @Matches(field = "newUserPassword", verifyField = "newUserPasswordConfirm", message = "{password_not_matches}")
 public class EditUserProfileDto extends UserDto {
-
-    @NotBlank
+    
     private String currentUserPassword;
-    @NotBlank
+
     @Length(min=4, max=20)
     private String newUserPassword;
     private String newUserPasswordConfirm;
