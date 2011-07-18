@@ -14,12 +14,12 @@
   <url>http://jtalks.org</url>
   <dependencies>
     <dependency>
-      <groupId>org.jtalks.jcommune</groupId>
-      <artifactId>jcommune-model</artifactId>
+      <groupId>org.jtalks.common</groupId>
+      <artifactId>jtalks-common-model</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jtalks.jcommune</groupId>
-      <artifactId>jcommune-service</artifactId>
+      <groupId>org.jtalks.common</groupId>
+      <artifactId>jtalks-common-service</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jtalks.antarcticle</groupId>

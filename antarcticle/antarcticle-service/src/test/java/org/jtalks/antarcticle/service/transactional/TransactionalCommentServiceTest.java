@@ -23,7 +23,7 @@ import org.jtalks.antarcticle.model.dao.CommentDao;
 import org.jtalks.antarcticle.model.entity.Article;
 import org.jtalks.antarcticle.model.entity.Comment;
 import org.jtalks.antarcticle.service.CommentService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.common.service.exceptions.NotFoundException;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.testng.annotations.BeforeMethod;

@@ -21,7 +21,7 @@ package org.jtalks.antarcticle.service.transactional;
 import org.jtalks.antarcticle.model.dao.ArticleCollectionDao;
 import org.jtalks.antarcticle.model.entity.ArticleCollection;
 import org.jtalks.antarcticle.service.ArticleCollectionService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.common.service.exceptions.NotFoundException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

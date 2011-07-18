@@ -25,17 +25,17 @@ import org.jtalks.antarcticle.model.dao.CommentDao;
 import org.jtalks.antarcticle.model.entity.Article;
 import org.jtalks.antarcticle.model.entity.Comment;
 import org.jtalks.antarcticle.service.CommentService;
-import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.transactional.AbstractTransactionalEntityService;
+import org.jtalks.common.model.entity.User;
+import org.jtalks.common.service.exceptions.NotFoundException;
+import org.jtalks.common.service.transactional.AbstractTransactionalEntityService;
+
 
 /**
  * @author Vitaliy Kravchenko
  * @author Dmitry Sokolov
  */
 
-public class TransactionalCommentService 
-    extends AbstractTransactionalEntityService<Comment, CommentDao> 
+public class TransactionalCommentService extends AbstractTransactionalEntityService<Comment, CommentDao>
     implements CommentService {
     
     private ArticleDao articleDao;

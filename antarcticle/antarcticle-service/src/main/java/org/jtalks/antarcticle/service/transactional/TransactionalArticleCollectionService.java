@@ -21,7 +21,8 @@ package org.jtalks.antarcticle.service.transactional;
 import org.jtalks.antarcticle.model.dao.ArticleCollectionDao;
 import org.jtalks.antarcticle.model.entity.ArticleCollection;
 import org.jtalks.antarcticle.service.ArticleCollectionService;
-import org.jtalks.jcommune.service.transactional.AbstractTransactionalEntityService;
+import org.jtalks.common.service.transactional.AbstractTransactionalEntityService;
+
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ import java.util.List;
  */
 
 public class TransactionalArticleCollectionService 
-    extends AbstractTransactionalEntityService<ArticleCollection, ArticleCollectionDao> 
+    extends AbstractTransactionalEntityService<ArticleCollection, ArticleCollectionDao>
     implements ArticleCollectionService {
 
     /**

@@ -12,7 +12,7 @@
   <!--Declaration of AOP Config -->
   <aop:config>
     <aop:advisor advice-ref="exceptionTranslationInterceptor"
-                 pointcut="execution(* org.jtalks.jcommune.model.dao.Dao+.* (*))"/>
+                 pointcut="execution(* org.jtalks.common.model.dao.Dao+.* (*))"/>
   </aop:config>
 
   <!--Declaration of DAO beans -->
@@ -28,7 +28,7 @@
   <!--Injecting sessionFactory bean to class AbstractHibernateDao, this way
     resolves a problem of multiple DAO beans definition -->
   <bean id="abstractHibernateDao"
-        class="org.jtalks.AbstractHibernateDao"
+        class="org.jtalks.common.model.dao.hibernate.AbstractHibernateDao"
         abstract="true">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
@@ -46,10 +46,10 @@
     <property name="dataSource" ref="dataSource"/>
     <property name="mappingResources">
       <list>
-        <value>/org/jtalks/jcommune/model/entity/User.hbm.xml</value>
+        <value>/org/jtalks/common/model/entity/User.hbm.xml</value>
         <value>/org/jtalks/antarcticle/model/entity/Article.hbm.xml</value>
         <value>/org/jtalks/antarcticle/model/entity/Comment.hbm.xml</value>
-	<value>/org/jtalks/antarcticle/model/entity/ArticleCollection.hbm.xml</value>
+	      <value>/org/jtalks/antarcticle/model/entity/ArticleCollection.hbm.xml</value>
       </list>
     </property>
     <property name="hibernateProperties">

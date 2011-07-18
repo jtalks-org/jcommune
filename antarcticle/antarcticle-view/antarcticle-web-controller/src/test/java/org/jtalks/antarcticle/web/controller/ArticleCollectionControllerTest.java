@@ -22,13 +22,12 @@ import org.jtalks.antarcticle.model.entity.Article;
 import org.jtalks.antarcticle.model.entity.ArticleCollection;
 import org.jtalks.antarcticle.service.ArticleCollectionService;
 import org.jtalks.antarcticle.service.ArticleService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.common.service.exceptions.NotFoundException;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
-import org.jtalks.antarcticle.service.ArticleService;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;

@@ -21,7 +21,7 @@ import org.jtalks.antarcticle.model.dao.ArticleDao;
 import org.jtalks.antarcticle.model.entity.Article;
 import org.jtalks.antarcticle.model.entity.ArticleCollection;
 import org.jtalks.antarcticle.service.ArticleService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.common.service.exceptions.NotFoundException;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.testng.annotations.BeforeMethod;

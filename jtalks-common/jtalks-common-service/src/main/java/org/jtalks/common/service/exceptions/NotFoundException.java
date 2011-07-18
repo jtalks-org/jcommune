@@ -15,26 +15,29 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-
-package org.jtalks.antarcticle.service;
-
-import org.jtalks.antarcticle.model.entity.ArticleCollection;
-import org.jtalks.common.service.EntityService;
-
-
-import java.util.List;
+package org.jtalks.common.service.exceptions;
 
 /**
- * @author Vitaliy Kravchenko
+ * The exception for case when searching item not found.
+ *
+ * @author Pavel Vervenko
  */
-
-public interface ArticleCollectionService extends EntityService<ArticleCollection> {
+public class NotFoundException extends Exception {
 
     /**
-     * Returns the list of all article collections
+     * Default constructor.
      *
-     * @return the list of all article collections
+     * @param message exception message
      */
-    List<ArticleCollection> getAll();
-  
+    public NotFoundException(String message) {
+        super(message);
+    }
+
+    /**
+     * Create exception with specific message.
+     *
+     * {@link Exception}
+     */
+    public NotFoundException() {
+    }
 }

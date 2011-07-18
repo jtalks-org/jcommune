@@ -22,7 +22,7 @@ import org.jtalks.antarcticle.model.entity.Article;
 import org.jtalks.antarcticle.model.entity.ArticleCollection;
 import org.jtalks.antarcticle.service.ArticleCollectionService;
 import org.jtalks.antarcticle.service.ArticleService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.common.service.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;

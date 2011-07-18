@@ -15,26 +15,37 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
+package org.jtalks.common.service.transactional;
 
-package org.jtalks.antarcticle.service;
-
-import org.jtalks.antarcticle.model.entity.ArticleCollection;
+import org.jtalks.common.model.dao.Dao;
+import org.jtalks.common.model.entity.Persistent;
 import org.jtalks.common.service.EntityService;
+import org.jtalks.common.service.exceptions.NotFoundException;
 
-
-import java.util.List;
 
 /**
- * @author Vitaliy Kravchenko
+ * Generic implementation of all entity based services.
+ * Most of the implementations of the methods are basing on straightforward calls
+ * of the same named method from DAO interface.
+ *
+ * @author Osadchuck Eugeny
+ * @author Kirill Afonin
  */
-
-public interface ArticleCollectionService extends EntityService<ArticleCollection> {
+public abstract class AbstractTransactionalEntityService<T extends Persistent, Y extends Dao>
+        implements EntityService<T> {
+    /**
+     * Dao object implementation.
+     */
+    protected Y dao;
 
     /**
-     * Returns the list of all article collections
-     *
-     * @return the list of all article collections
+     * {@inheritDoc}
      */
-    List<ArticleCollection> getAll();
-  
+    @Override
+    public T get(Long id) throws NotFoundException {
+        if (!dao.isExist(id)) {
+            throw new NotFoundException("Entity with id: " + id + " not found");
+        }
+        return (T) dao.get(id);
+    }
 }

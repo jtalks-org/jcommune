@@ -20,9 +20,9 @@ package org.jtalks.antarcticle.service;
 
 import org.jtalks.antarcticle.model.entity.Article;
 import org.jtalks.antarcticle.model.entity.ArticleCollection;
-import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.EntityService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.common.model.entity.User;
+import org.jtalks.common.service.EntityService;
+import org.jtalks.common.service.exceptions.NotFoundException;
 
 
 /**

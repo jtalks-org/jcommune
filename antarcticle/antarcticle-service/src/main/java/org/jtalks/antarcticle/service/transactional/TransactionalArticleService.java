@@ -23,16 +23,17 @@ import org.jtalks.antarcticle.model.dao.ArticleDao;
 import org.jtalks.antarcticle.model.entity.Article;
 import org.jtalks.antarcticle.model.entity.ArticleCollection;
 import org.jtalks.antarcticle.service.ArticleService;
-import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.transactional.AbstractTransactionalEntityService;
+import org.jtalks.common.model.entity.User;
+import org.jtalks.common.service.exceptions.NotFoundException;
+import org.jtalks.common.service.transactional.AbstractTransactionalEntityService;
+
 
 /**
  * @author Vitaliy Kravchenko
  * @author Dmitry Sokolov
  */
 public class TransactionalArticleService 
-    extends AbstractTransactionalEntityService<Article, ArticleDao> 
+    extends AbstractTransactionalEntityService<Article, ArticleDao>
     implements ArticleService {
     
     /**

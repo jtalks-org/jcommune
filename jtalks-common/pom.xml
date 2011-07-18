@@ -15,6 +15,7 @@
 
   <modules>
     <module>jtalks-common-model</module>
+    <module>jtalks-common-service</module>
   </modules>
 
   <dependencyManagement>
@@ -25,6 +26,11 @@
         <groupId>org.jtalks.common</groupId>
         <artifactId>jtalks-common-model</artifactId>
         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jtalks.common</groupId>
+        <artifactId>jtalks-common-model</artifactId>
+        <version>0.4-SNAPSHOT</version>
       </dependency>
 
       <!-- Hibernate -->
