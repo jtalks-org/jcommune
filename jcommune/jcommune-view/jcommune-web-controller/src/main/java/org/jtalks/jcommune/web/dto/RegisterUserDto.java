@@ -17,7 +17,7 @@
  */
 package org.jtalks.jcommune.web.dto;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.web.validation.Matches;
 
@@ -32,13 +32,12 @@ import javax.validation.constraints.Size;
 @Matches(field = "password", verifyField = "passwordConfirm", message = "{password_not_matches}")
 public class RegisterUserDto extends UserDto {
 
-    @NotEmpty
+    @NotBlank
     @Size(min = 3, max = 20)
     private String username;
-    @NotEmpty
+    @NotBlank
     @Size(min = 4, max = 20)
     private String password;
-    @NotEmpty
     private String passwordConfirm;
 
     /**

@@ -18,6 +18,7 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.web.validation.Matches;
 
@@ -31,8 +32,9 @@ import org.jtalks.jcommune.web.validation.Matches;
 @Matches(field = "newUserPassword", verifyField = "newUserPasswordConfirm", message = "{password_not_matches}")
 public class EditUserProfileDto extends UserDto {
 
-    
+    @NotBlank
     private String currentUserPassword;
+    @NotBlank
     @Length(min=4, max=20)
     private String newUserPassword;
     private String newUserPasswordConfirm;
