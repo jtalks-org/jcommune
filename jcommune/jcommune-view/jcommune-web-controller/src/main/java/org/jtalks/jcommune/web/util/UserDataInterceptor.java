@@ -17,6 +17,7 @@
  */
 package org.jtalks.jcommune.web.util;
 
+import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.nontransactional.SecurityServiceImpl;
@@ -63,8 +64,11 @@ public class UserDataInterceptor extends HandlerInterceptorAdapter {
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
                            ModelAndView modelAndView) {
         int newPmCount = service.currentUserNewPmCount();
-        String encodedEserName = securityService.getCurrentUserEncodedName();
         request.setAttribute("newPmCount", newPmCount);
-        request.setAttribute("encodedUserName", encodedEserName);
+        User user = securityService.getCurrentUser();
+        
+        String encodedUserName = user != null ? user.getEncodedUsername() : null;        
+        request.setAttribute("encodedUserName", encodedUserName);            
+        
     }
 }

@@ -133,6 +133,9 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         return dao.isUserWithEmailExist(email);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void editUserProfile(User editedUser, String username, String currentPassword, String newPassword)
             throws DuplicateEmailException, WrongPasswordException {
@@ -151,7 +154,11 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         if(changeEmail && isEmailExist(editedUser.getEmail())){            
             throw new DuplicateEmailException();                                    
         }
-        currentUser.copyUser(editedUser);
+        
+        currentUser.setFirstName(editedUser.getFirstName());
+        currentUser.setLastName( editedUser.getLastName());
+        currentUser.setEmail(editedUser.getEmail());
+        
         dao.saveOrUpdate(currentUser);   
     }
 }

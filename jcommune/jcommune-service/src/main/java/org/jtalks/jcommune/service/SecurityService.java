@@ -46,14 +46,6 @@ public interface SecurityService extends UserDetailsService {
      *         no authenticated {@link User}.
      */
     String getCurrentUserUsername();
-    
-    /**
-     * Get current authenticated {@link User} encodedUsername.
-     *
-     * @return current authenticated {@link User} encodedUsername or {@code null} if there is
-     *         no authenticated {@link User}.
-     */
-    String getCurrentUserEncodedName();
 
     /**
      * Delete object from acl. All permissions will be removed.

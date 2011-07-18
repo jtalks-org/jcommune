@@ -17,6 +17,9 @@
  */
 package org.jtalks.jcommune.web.util;
 
+import java.io.UnsupportedEncodingException;
+
+import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -36,14 +39,21 @@ import static org.testng.Assert.assertEquals;
  * @author Kirill Afonin
  */
 public class UserDataInterceptorTest {
+    private final String USER_NAME = "username";
+    private final String ENCODED_USER_NAME = "encodeUsername";
+    private final String FIRST_NAME = "first name";
+    private final String LAST_NAME = "last name";
+    private final String EMAIL = "mail@mail.com";
+    private final String PASSWORD = "password";
+    private final int USER_NEW_PM_COUNT = 2;
+    
     private UserDataInterceptor interceptor;
     private HttpServletRequest request;
     private HttpServletResponse response;
     private PrivateMessageService service;
     private SecurityService securityService;
     
-    private final int userNewPmCount = 2;
-    private final String curUserEncodedName = "curUserEncodedName";
+
     
     @BeforeMethod
     public void setUp() throws Exception {
@@ -56,14 +66,30 @@ public class UserDataInterceptorTest {
 
     @Test
     public void testPostHandle() throws Exception {
-        when(service.currentUserNewPmCount()).thenReturn(userNewPmCount);
-        when(securityService.getCurrentUserEncodedName()).thenReturn(curUserEncodedName);
+        User user = getUser();
+        when(service.currentUserNewPmCount()).thenReturn(USER_NEW_PM_COUNT);
+        when(securityService.getCurrentUser()).thenReturn(user);
         
         interceptor.postHandle(request, response, null, null);
 
-        assertEquals(request.getAttribute("newPmCount"), userNewPmCount);
-        assertEquals(request.getAttribute("encodedUserName"), curUserEncodedName);
+        assertEquals(request.getAttribute("newPmCount"), USER_NEW_PM_COUNT);
+        assertEquals(request.getAttribute("encodedUserName"), ENCODED_USER_NAME);
         verify(service).currentUserNewPmCount();
-        verify(securityService).getCurrentUserEncodedName();
+        verify(securityService).getCurrentUser();
+    }
+    
+    private User getUser() {
+        User newUser = new User();
+        newUser.setUsername(USER_NAME);
+        try {
+            newUser.setEncodedUsername(ENCODED_USER_NAME);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        newUser.setFirstName(FIRST_NAME);
+        newUser.setLastName(LAST_NAME);
+        newUser.setEmail(EMAIL);
+        newUser.setPassword(PASSWORD);
+        return newUser;
     }
 }

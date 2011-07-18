@@ -83,18 +83,6 @@ public class SecurityServiceImpl implements SecurityService {
         }
         return username;
     }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getCurrentUserEncodedName() {
-        User user = getCurrentUser();
-        if(user != null){
-            return user.getEncodedUsername();
-        }
-        return null;
-    }
 
     /**
      * Get username from principal.

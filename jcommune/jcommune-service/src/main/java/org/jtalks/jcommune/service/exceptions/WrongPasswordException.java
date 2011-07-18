@@ -18,7 +18,10 @@
 package org.jtalks.jcommune.service.exceptions;
 
 /**
- * Exception for cases when user enter incorrect password.
+ * This exception used for cases when user want to change his current password to another one.
+ * For changing current password user should enter new and current password. 
+ * If user enter incorrect current password during editing own profile, 
+ * WrongPasswordException should be thrown from service tier.
  * 
  * @author Osadchuck Eugeny
  *
