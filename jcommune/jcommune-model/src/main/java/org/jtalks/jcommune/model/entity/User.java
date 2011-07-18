@@ -48,21 +48,21 @@ public class User extends Persistent implements UserDetails {
     /**
      * Copy from user properties firstName, lastName, email.
      * Method should not copy these values if them is null.
-     * 
+     *
      * @param user - copy resource
      */
-    public void copyUser(User user){
-        if(user.firstName != null){
+    public void copyUser(User user) {
+        if (user.firstName != null) {
             this.firstName = user.firstName;
         }
-        if(user.lastName != null){
+        if (user.lastName != null) {
             this.lastName = user.lastName;
         }
-        if(user.email != null){
+        if (user.email != null) {
             this.email = user.email;
         }
     }
-    
+
     /**
      * Get the user's Last Name.
      *
@@ -223,10 +223,19 @@ public class User extends Persistent implements UserDetails {
         this.lastLogin = new DateTime();
     }
 
+    /**
+     * @return encoded username
+     */
     public String getEncodedUsername() {
         return encodedUsername;
     }
 
+    /**
+     * Encode username using {@code URLEncoder} with UTF-8 encoding.
+     *
+     * @param username username
+     * @throws UnsupportedEncodingException if requested encoding not supported
+     */
     public void setEncodedUsername(String username) throws UnsupportedEncodingException {
         this.encodedUsername = URLEncoder.encode(username, "UTF-8");
     }

@@ -48,9 +48,9 @@ public class PrivateMessageController {
     private PrivateMessageDtoBuilder pmDtoBuilder = new PrivateMessageDtoBuilder();
 
     //constants are moved here when occurrs 4 or more times, as project PMD rule states
-    private final static String PM_FORM = "pm/pmForm";
-    private final static String PM_ID = "pmId";
-    private final static String DTO = "privateMessageDto";
+    private static final String PM_FORM = "pm/pmForm";
+    private static final String PM_ID = "pmId";
+    private static final String DTO = "privateMessageDto";
 
     /**
      * @param pmService the PrivateMessageService instance

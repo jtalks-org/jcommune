@@ -41,7 +41,7 @@ public interface UserService extends EntityService<User> {
      * @see User
      */
     User getByUsername(String username) throws NotFoundException;
-    
+
     /**
      * Get {@link User} by encodedUsername.
      *
@@ -57,11 +57,13 @@ public interface UserService extends EntityService<User> {
      *
      * @param user user for register
      * @return registered {@link User}
-     * @throws DuplicateUserException if user with username already exist
+     * @throws DuplicateUserException  if user with username already exist
      * @throws DuplicateEmailException when user with given email already exist
+     * @throws java.io.UnsupportedEncodingException
+     *                                 when encoding is not supported
      * @see User
      */
-    User registerUser(User user) 
+    User registerUser(User user)
             throws DuplicateUserException, DuplicateEmailException, UnsupportedEncodingException;
 
     /**
@@ -71,16 +73,18 @@ public interface UserService extends EntityService<User> {
      * @see User
      */
     void updateLastLoginTime(User user);
-    
+
     /**
      * Update user entity.
-     * 
-     * @param editedUser - user with new property values entered by user 
-     * @param username - username of User whose profile we are going to update (current logged in User.username)
+     *
+     * @param editedUser      - user with new property values entered by user
+     * @param username        - username of User whose profile we are going to update
+     *                        (current logged in User.username)
      * @param currentPassword - current user password, could be NULL
-     * @param newPassword - new user password, could be NULL
+     * @param newPassword     - new user password, could be NULL
      * @throws DuplicateEmailException when user with given email already exist
-     * @throws WrongPasswordException when user enter wrong currentPassword
+     * @throws WrongPasswordException  when user enter wrong currentPassword
      */
-    void editUserProfile(User editedUser, String username, String currentPassword, String newPassword) throws DuplicateEmailException, WrongPasswordException;
+    void editUserProfile(User editedUser, String username, String currentPassword, String newPassword)
+            throws DuplicateEmailException, WrongPasswordException;
 }

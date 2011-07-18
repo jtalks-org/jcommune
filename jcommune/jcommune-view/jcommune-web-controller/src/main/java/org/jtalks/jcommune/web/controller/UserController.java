@@ -49,6 +49,7 @@ import java.io.UnsupportedEncodingException;
  */
 @Controller
 public class UserController {
+    public static final String EDIT_PROFILE = "editProfile";
     private final SecurityService securityService;
     private final UserService userService;
 
@@ -138,7 +139,7 @@ public class UserController {
     public ModelAndView editProfilePage() throws NotFoundException {
         User user = securityService.getCurrentUser();
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
-        return new ModelAndView("editProfile", "editedUser", editedUser);
+        return new ModelAndView(EDIT_PROFILE, "editedUser", editedUser);
     }
 
     /**
@@ -146,32 +147,32 @@ public class UserController {
      * In error case return into the edit profile page and draw the error.
      *
      * @param userDto - dto populated by user
-     * @param result - binding result which contains the validation result
+     * @param result  - binding result which contains the validation result
      * @return - in case of errors return back to edit profile page, in another case return to user detalis page
      * @throws NotFoundException - throws if current logged in user was not found
      */
     @RequestMapping(value = "/user/edit", method = RequestMethod.POST)
     public ModelAndView editProfile(@Valid @ModelAttribute("editedUser") EditUserProfileDto userDto,
-                                    BindingResult result) throws NotFoundException{
+                                    BindingResult result) throws NotFoundException {
 
         if (result.hasErrors()) {
-            return new ModelAndView("editProfile");
+            return new ModelAndView(EDIT_PROFILE);
         }
 
         User currentUser = securityService.getCurrentUser();
         User userData2Edit = userDto.createUser();
 
         try {
-            userService.editUserProfile(userData2Edit, currentUser.getUsername(), 
+            userService.editUserProfile(userData2Edit, currentUser.getUsername(),
                     userDto.getCurrentUserPassword(), userDto.getNewUserPassword());
         } catch (DuplicateEmailException e) {
             result.rejectValue("email", "validation.duplicateemail");
-          return new ModelAndView("editProfile");
+            return new ModelAndView(EDIT_PROFILE);
         } catch (WrongPasswordException e) {
             result.rejectValue("currentUserPassword", "label.incorrectCurrentPassword",
-                  "Password does not match to the current password");
-          return new ModelAndView("editProfile");
-        }                                    
+                    "Password does not match to the current password");
+            return new ModelAndView(EDIT_PROFILE);
+        }
         return new ModelAndView(new StringBuilder()
                 .append("redirect:/user/")
                 .append(currentUser.getEncodedUsername())
