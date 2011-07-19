@@ -23,7 +23,7 @@ package org.jtalks.jcommune.model.entity;
  *
  * @author Vitaliy Kravchenko
  */
-public class Branch extends Persistent {
+public class Branch extends Entity {
 
     private String name;
     private String description;

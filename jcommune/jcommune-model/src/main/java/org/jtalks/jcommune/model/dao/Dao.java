@@ -17,19 +17,19 @@
  */
 package org.jtalks.jcommune.model.dao;
 
-import org.jtalks.jcommune.model.entity.Persistent;
+import org.jtalks.jcommune.model.entity.Entity;
 
 
 /**
  * Basic Data Access Object interface.
- * Provides CRUD operations with {@link Persistent} objects.
+ * Provides CRUD operations with {@link org.jtalks.jcommune.model.entity.Entity} objects.
  *
  * @author Pavel Vervenko
  * @see PostDao
  * @see TopicDao
  * @see UserDao
  */
-public interface Dao<T extends Persistent> {
+public interface Dao<T extends Entity> {
 
     /**
      * Save or update the persistent object.

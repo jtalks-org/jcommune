@@ -1,34 +1,36 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.jtalks.jcommune.model.entity.Persistent;
+import org.jtalks.jcommune.model.entity.Entity;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Kirill Afonin
  */
-public class PersistentTest {
-    private class PersistentObject extends Persistent {
-        public PersistentObject(String uuid) {
+public class EntityTest {
+    private class EntityObject extends Entity {
+        public EntityObject(String uuid) {
             this.setUuid(uuid);
         }
         
-        public PersistentObject() {
+        public EntityObject() {
             this.setUuid(java.util.UUID.randomUUID().toString());
         }
     }
 
-    private Persistent first;
-    private Persistent second;
-    private Persistent third;
+    private Entity first;
+    private Entity second;
+    private Entity third;
 
     @Test
     public void testEqualsSymmetry() {
         String uuid = java.util.UUID.randomUUID().toString();
         
-        first = new PersistentObject(uuid);
-        second = new PersistentObject(uuid);
+        first = new EntityObject(uuid);
+        second = new EntityObject(uuid);
 
         assertTrue(first.equals(second));
         assertTrue(second.equals(first));
@@ -36,14 +38,14 @@ public class PersistentTest {
 
     @Test
     public void testEqualsReflexivity() {
-        first = new PersistentObject();
+        first = new EntityObject();
 
         assertTrue(first.equals(first));
     }
 
     @Test
     public void testEqualsNull() {
-        first = new PersistentObject();
+        first = new EntityObject();
 
         assertFalse(first.equals(null));
     }
@@ -52,9 +54,9 @@ public class PersistentTest {
     public void testEqualsTransitivity() {
         String uuid = java.util.UUID.randomUUID().toString();
         
-        first = new PersistentObject(uuid);
-        second = new PersistentObject(uuid);
-        third = new PersistentObject(uuid);
+        first = new EntityObject(uuid);
+        second = new EntityObject(uuid);
+        third = new EntityObject(uuid);
 
         assertTrue(first.equals(second));
         assertTrue(second.equals(third));
@@ -63,8 +65,8 @@ public class PersistentTest {
 
     @Test
     public void testEqualsWhenDifferentId() {
-        first = new PersistentObject("id1");
-        second = new PersistentObject("id2");
+        first = new EntityObject("id1");
+        second = new EntityObject("id2");
 
         assertFalse(first.equals(second));
         assertFalse(second.equals(first));
@@ -73,8 +75,8 @@ public class PersistentTest {
     @Test
     public void testEqualsWhenDifferentClasses() {
         String id = "id";
-        first = new PersistentObject(id);
-        second = new Persistent() {
+        first = new EntityObject(id);
+        second = new Entity() {
         };
         second.setUuid(id);
 
@@ -83,8 +85,8 @@ public class PersistentTest {
 
     @Test
     public void testHashCode() {
-        first = new PersistentObject("uid1");
-        second = new PersistentObject("uid1");
+        first = new EntityObject("uid1");
+        second = new EntityObject("uid1");
 
         assertEquals(first.hashCode(), second.hashCode());
     }

@@ -17,7 +17,7 @@
  */
 package org.jtalks.jcommune.service;
 
-import org.jtalks.jcommune.model.entity.Persistent;
+import org.jtalks.jcommune.model.entity.Entity;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.security.AclBuilder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -52,7 +52,7 @@ public interface SecurityService extends UserDetailsService {
      *
      * @param securedObject a removed secured object.
      */
-    void deleteFromAcl(Persistent securedObject);
+    void deleteFromAcl(Entity securedObject);
 
     /**
      * Delete object from acl. All permissions will be removed.

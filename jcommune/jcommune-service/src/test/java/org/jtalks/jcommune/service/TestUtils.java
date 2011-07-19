@@ -17,7 +17,7 @@
  */
 package org.jtalks.jcommune.service;
 
-import org.jtalks.jcommune.model.entity.Persistent;
+import org.jtalks.jcommune.model.entity.Entity;
 import org.jtalks.jcommune.service.security.AclBuilder;
 import org.mockito.Matchers;
 
@@ -43,7 +43,7 @@ public final class TestUtils {
         when(newBuilder.write()).thenReturn(newBuilder);
         when(newBuilder.user(Matchers.anyString())).thenReturn(newBuilder);
         when(newBuilder.role(Matchers.anyString())).thenReturn(newBuilder);
-        when(newBuilder.on(Matchers.<Persistent>anyObject())).thenReturn(newBuilder);
+        when(newBuilder.on(Matchers.<Entity>anyObject())).thenReturn(newBuilder);
         return newBuilder;
     }
 }

@@ -17,7 +17,7 @@
  */
 package org.jtalks.jcommune.service.security;
 
-import org.jtalks.jcommune.model.entity.Persistent;
+import org.jtalks.jcommune.model.entity.Entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
@@ -54,7 +54,7 @@ public class AclManagerImpl implements AclManager {
      * {@inheritDoc}
      */
     @Override
-    public void grant(List<Sid> sids, List<Permission> permissions, Persistent target) {
+    public void grant(List<Sid> sids, List<Permission> permissions, Entity target) {
         ObjectIdentity oid = createIdentityFor(target);
         MutableAcl acl = getAclFor(oid);
         grantPermissionsToSids(sids, permissions, target, acl);
@@ -69,7 +69,7 @@ public class AclManagerImpl implements AclManager {
      * @param target      securable object
      * @param acl         ACL of this object
      */
-    private void grantPermissionsToSids(List<Sid> sids, List<Permission> permissions, Persistent target,
+    private void grantPermissionsToSids(List<Sid> sids, List<Permission> permissions, Entity target,
                                         MutableAcl acl) {
         int aclIndex = acl.getEntries().size();
         for (Sid recipient : sids) {
@@ -104,7 +104,7 @@ public class AclManagerImpl implements AclManager {
      * {@inheritDoc}
      */
     @Override
-    public void delete(List<Sid> sids, List<Permission> permissions, Persistent target) {
+    public void delete(List<Sid> sids, List<Permission> permissions, Entity target) {
         ObjectIdentity oid = createIdentityFor(target);
         MutableAcl acl = (MutableAcl) mutableAclService.readAclById(oid);
 
@@ -149,7 +149,7 @@ public class AclManagerImpl implements AclManager {
      * @param securedObject object
      * @return identity with {@code securedObject} class name and id
      */
-    private ObjectIdentity createIdentityFor(Persistent securedObject) {
+    private ObjectIdentity createIdentityFor(Entity securedObject) {
         if (securedObject.getId() <= 0) {
             throw new IllegalStateException("Object id must be assigned before creating acl.");
         }

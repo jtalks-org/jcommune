@@ -17,7 +17,7 @@
  */
 package org.jtalks.jcommune.service.security;
 
-import org.jtalks.jcommune.model.entity.Persistent;
+import org.jtalks.jcommune.model.entity.Entity;
 import org.springframework.security.acls.domain.AclAuthorizationStrategy;
 import org.springframework.security.acls.domain.AclImpl;
 import org.springframework.security.acls.domain.AuditLogger;
@@ -52,7 +52,7 @@ public class AclManagerImplTest {
     public static final String USERNAME = "username";
     private List<Sid> sids = new ArrayList<Sid>();
     private List<Permission> permissions = new ArrayList<Permission>();
-    private Persistent target = new Persistent() {
+    private Entity target = new Entity() {
         @Override
         public long getId() {
             return ID;
@@ -117,7 +117,7 @@ public class AclManagerImplTest {
 
     @Test(expectedExceptions = {IllegalStateException.class})
     public void testGrantWithZeroId() throws Exception {
-        Persistent object = new Persistent() {
+        Entity object = new Entity() {
             @Override
             public long getId() {
                 return 0;
