@@ -280,3 +280,24 @@ p, h1, form, button {
 #articleCollection {
     border: 1px solid #000
 }
+
+
+.div-table {
+    display:table;
+}
+
+.div-table-caption {
+	padding: 5px;
+    display:table-caption;
+	border: 1px solid #036;
+}
+
+.div-table-row {
+    display:table-row;
+}
+
+.div-table-col {
+    display:table-cell;
+    padding: 5px; 
+    border-top: 1px solid #036;
+}
