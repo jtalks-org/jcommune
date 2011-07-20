@@ -113,8 +113,9 @@ public class BranchPresenter {
         }
     }
 
-    /*
+    /**
      * It's temporary method for getting branches not marked as deleted.
+     * @return branch list not marked as deleted
      */
 
     private List<Branch> getBranches() {

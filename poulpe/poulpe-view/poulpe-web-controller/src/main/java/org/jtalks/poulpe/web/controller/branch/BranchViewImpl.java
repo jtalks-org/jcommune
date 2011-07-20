@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.jtalks.poulpe.model.entity.Branch;
 import org.zkoss.zk.ui.Components;
-import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModelList;
@@ -41,9 +40,15 @@ import org.zkoss.zul.Window;
  * */
 
 public class BranchViewImpl extends Window implements BranchView, AfterCompose {
-    private static final long serialVersionUID = 8689635788676853738L;
+    
+    private static final long serialVersionUID = -7175904766962858866L;
     private Listbox branchesList;
-    private BranchPresenter presenter;
+    
+    /**
+     * Important! If we are going to serialize/deserialize this class, this field 
+     * must be initialized explicitly during deserialization
+     */ 
+    private transient BranchPresenter presenter;
 
     private Window newBranchDialog;
     private Textbox newBranchDialog$branchName;
@@ -56,6 +61,31 @@ public class BranchViewImpl extends Window implements BranchView, AfterCompose {
     private ListModelList branchesListModel;
 
     /**
+     * Use for render ListItem This class draws two labels for branch name and
+     * description for change view attributes branch list item use css classes:
+     * .branch-name and .branch-description
+     * */
+    private static ListitemRenderer branchRenderer = new ListitemRenderer() {
+        @Override
+        public void render(Listitem item, Object data) {
+            Branch branch = (Branch) data;
+
+            Listcell cell = new Listcell();
+            Label name = new Label(branch.getName());
+            Label desc = new Label(branch.getDescription());
+            Vbox vbox = new Vbox();
+
+            name.setSclass("branch-name");
+            desc.setSclass("branch-description");
+            name.setParent(vbox);
+            desc.setParent(vbox);
+            vbox.setParent(cell);
+            cell.setParent(item);
+            item.setId(String.valueOf(branch.getId()));
+        }
+    };
+
+    /**
      * {@inheritDoc}
      * */
     @Override
@@ -65,28 +95,7 @@ public class BranchViewImpl extends Window implements BranchView, AfterCompose {
 
         branchesListModel = new ListModelList();
         branchesList.setModel(branchesListModel);
-        branchesList.setItemRenderer(new ListitemRenderer() {
-
-            @Override
-            public void render(Listitem item, Object data) throws Exception {
-                Branch branch = (Branch) data;
-
-                Listcell cell = new Listcell();
-                Label name = new Label(branch.getName());
-                Label desc = new Label(branch.getDescription());
-                Vbox vbox = new Vbox();
-
-                name.setSclass("branch-name");
-                desc.setSclass("branch-description");
-                name.setParent(vbox);
-                desc.setParent(vbox);
-                vbox.setParent(cell);
-                cell.setParent(item);
-                item.setId(String.valueOf(branch.getId()));
-
-            }
-        });
-
+        branchesList.setItemRenderer(branchRenderer);
         presenter.initView(this);
     }
 
@@ -94,6 +103,8 @@ public class BranchViewImpl extends Window implements BranchView, AfterCompose {
      * Set presenter
      * 
      * @see BranchPresenter
+     * @param presenter
+     *            instance presenter for view
      * */
     public void setPresenter(BranchPresenter presenter) {
         this.presenter = presenter;
@@ -226,7 +237,7 @@ public class BranchViewImpl extends Window implements BranchView, AfterCompose {
      * Event which happen when user click on add new branch button after it
      * opens dialog for adding new branch
      * */
-    public void onClick$addBranchButton(Event event) {
+    public void onClick$addBranchButton() {
         openNewBranchDialog();
     }
 
@@ -235,7 +246,7 @@ public class BranchViewImpl extends Window implements BranchView, AfterCompose {
      * selected branch will be marked as deleted if no one branch selected then
      * not happen
      * */
-    public void onClick$delBranchButton(Event event) {
+    public void onClick$delBranchButton() {
         if (branchesList.getSelectedCount() == 1) {
             presenter.markBranchAsDelete();
         }
@@ -245,7 +256,7 @@ public class BranchViewImpl extends Window implements BranchView, AfterCompose {
      * Event which happen when user double click on branch after it will open
      * edit dialog
      * */
-    public void onDoubleClick$branchesList(Event event) {
+    public void onDoubleClick$branchesList() {
         presenter.openEditDialog();
     }
 
@@ -270,7 +281,7 @@ public class BranchViewImpl extends Window implements BranchView, AfterCompose {
      * Event which happen when user click on cancel button in new branch dialog
      * window this cause close new branch dialog
      * */
-    public void onClick$closeButton$newBranchDialog(Event event) {
+    public void onClick$closeButton$newBranchDialog() {
         closeNewBranchDialog();
     }
 
@@ -278,26 +289,26 @@ public class BranchViewImpl extends Window implements BranchView, AfterCompose {
      * Event which happen when user click on add button in new branch dialog
      * window this cause save new branch
      * */
-    public void onClick$addButton$newBranchDialog(Event event) {
+    public void onClick$addButton$newBranchDialog() {
         presenter.addNewBranch();
         closeNewBranchDialog();
     }
 
-    /* Close new branch dialog add flush fields */
+    /** Close new branch dialog add flush fields */
     private void closeNewBranchDialog() {
         newBranchDialog.setVisible(false);
         newBranchDialog$branchName.setText("");
         newBranchDialog$branchDescription.setText("");
     }
 
-    /* Close edit dialog */
+    /** Close edit dialog */
     private void closeEditBranchDialog() {
         editBranchDialog.setVisible(false);
         editBranchDialog$branchName.setText("");
         editBranchDialog$branchDescription.setText("");
     }
 
-    /* Open new branch dialog */
+    /** Open new branch dialog */
     private void openNewBranchDialog() {
         newBranchDialog.setVisible(true);
     }
