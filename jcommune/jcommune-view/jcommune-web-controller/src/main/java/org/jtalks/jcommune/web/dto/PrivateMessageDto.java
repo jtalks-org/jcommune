@@ -30,12 +30,16 @@ import javax.validation.constraints.Size;
  */
 public class PrivateMessageDto {
 
+    private static final int MAX_MESSAGE_LENGTH = 1000;
+
     @NotBlank
     @Size(min = 2, max = 22, message = "{title.length}")
     private String title;
+
     @NotBlank
-    @Size(min = 2, message = "{body.length}")
+    @Size(min = 2, max = MAX_MESSAGE_LENGTH, message = "{body.length}")
     private String body;
+
     @NotBlank
     private String recipient;
 

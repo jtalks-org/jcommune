@@ -20,7 +20,7 @@
     <property name="creationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
               column="CREATION_DATE" not-null="true"/>
     <property name="title" column="TITLE" not-null="true"/>
-    <property name="body" column="BODY" not-null="true"/>
+    <property name="body" type="text" column="BODY" not-null="true"/>
     <property name="status" column="STATUS" type="status"/>
   </class>
   <query name="getAllFromUser">

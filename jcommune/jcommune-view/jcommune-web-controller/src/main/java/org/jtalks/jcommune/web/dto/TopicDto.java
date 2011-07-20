@@ -31,12 +31,14 @@ import javax.validation.constraints.Size;
  */
 public class TopicDto {
 
+    private static final int MAX_POST_LENGTH = 2000;
+
     @NotBlank
     @Size(min = 5, max = 255)
     private String topicName;
 
     @NotBlank
-    @Size(min = 5, max = 10000)
+    @Size(min = 5, max = MAX_POST_LENGTH)
     private String bodyText;
 
     /**
