@@ -1,4 +1,4 @@
-use jtalks;
+use p_antarcticle;
 
 insert into user values(1,1,'chris', 'Fuko','christoph','chff@mail.ru',123456,'admin');
 insert into article_collection values(1,1,'Collection title','Collection description',null);
