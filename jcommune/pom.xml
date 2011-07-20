@@ -256,6 +256,11 @@
         <type>jar</type>
         <scope>compile</scope>
       </dependency>
+      <dependency>
+        <groupId>com.googlecode.flyway</groupId>
+        <artifactId>flyway-core</artifactId>
+        <version>1.4.2</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
