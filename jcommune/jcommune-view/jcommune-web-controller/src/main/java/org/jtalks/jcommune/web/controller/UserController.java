@@ -46,10 +46,13 @@ import java.io.UnsupportedEncodingException;
  *
  * @author Kirill Afonin
  * @author Alexandre Teterin
+ * @author Max Malakhov
  */
 @Controller
 public class UserController {
     public static final String EDIT_PROFILE = "editProfile";
+    public static final String REGISTRATION = "registration";
+    
     private final SecurityService securityService;
     private final UserService userService;
 
@@ -86,7 +89,8 @@ public class UserController {
      */
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
     public ModelAndView registrationPage() {
-        return new ModelAndView("registration").addObject("newUser", new RegisterUserDto());
+    	RegisterUserDto newUser = new RegisterUserDto();
+        return new ModelAndView(REGISTRATION).addObject("newUser", newUser);
     }
 
     /**
@@ -94,13 +98,13 @@ public class UserController {
      *
      * @param userDto {@link RegisterUserDto} populated in form
      * @param result  result of {@link RegisterUserDto} validation
-     * @return redirect to / if registration successfull or back to "/registration" if failed
+     * @return redirect to / if registration successful or back to "/registration" if failed
      */
-    @RequestMapping(value = "/user", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public ModelAndView registerUser(@Valid @ModelAttribute("newUser") RegisterUserDto userDto, BindingResult result) {
 
         if (result.hasErrors()) {
-            return new ModelAndView("registration");
+            return new ModelAndView(REGISTRATION);
         }
 
         try {
@@ -113,7 +117,7 @@ public class UserController {
         } catch (UnsupportedEncodingException e) {
             result.rejectValue("username", "validation.invalidusernamechar");
         }
-        return new ModelAndView("registration");
+        return new ModelAndView(REGISTRATION);
     }
 
     /**
