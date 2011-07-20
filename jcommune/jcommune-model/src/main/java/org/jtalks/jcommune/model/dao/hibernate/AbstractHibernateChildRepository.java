@@ -19,7 +19,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
-import org.jtalks.jcommune.model.dao.Dao;
+import org.jtalks.jcommune.model.dao.ChildRepository;
 import org.jtalks.jcommune.model.entity.Entity;
 
 import java.lang.reflect.ParameterizedType;
@@ -33,7 +33,7 @@ import java.lang.reflect.ParameterizedType;
  * @author Pavel Vervenko
  * @author Kirill Afonin
  */
-public abstract class AbstractHibernateDao<T extends Entity> implements Dao<T> {
+public abstract class AbstractHibernateChildRepository<T extends Entity> implements ChildRepository<T> {
 
     /**
      * Hibernate SessionFactory
@@ -51,12 +51,11 @@ public abstract class AbstractHibernateDao<T extends Entity> implements Dao<T> {
      * @return type of entity
      */
     @SuppressWarnings("unchecked")
-    private Class<T> getType() {
+    protected Class<T> getType() {
         return (Class<T>) ((ParameterizedType) getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
-    private final String deleteQuery = "delete " + type.getSimpleName() + " e where e.id= :id";
 
     /**
      * Get current Hibernate session.
@@ -80,21 +79,10 @@ public abstract class AbstractHibernateDao<T extends Entity> implements Dao<T> {
      * {@inheritDoc}
      */
     @Override
-    public void saveOrUpdate(T entity) {
+    public void update(T entity) {
         Session session = getSession();
         session.saveOrUpdate(entity);
         session.flush();   //TODO: WOW, this shouldn't be here, it's related only to tests,
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean delete(Long id) {
-        return getSession().createQuery(deleteQuery)
-                .setCacheable(true)
-                .setLong("id", id)
-                .executeUpdate() != 0;
     }
 
     /**

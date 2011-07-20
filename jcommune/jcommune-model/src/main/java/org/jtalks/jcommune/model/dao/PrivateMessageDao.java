@@ -23,14 +23,14 @@ import org.jtalks.jcommune.model.entity.User;
 import java.util.List;
 
 /**
- * DAO interface for private messaging. Except of basic CRUD operations from {@link Dao}
+ * DAO interface for private messaging. Except of basic CRUD operations from {@link ChildRepository}
  * provides methods to get all messages from some user or to the user.
  *
  * @author Pavel Vervenko
  * @author Kirill Afonin
  * @see org.jtalks.jcommune.model.dao.hibernate.PrivateMessageHibernateDao
  */
-public interface PrivateMessageDao extends Dao<PrivateMessage> {
+public interface PrivateMessageDao extends ParentRepository<PrivateMessage> {
 
     /**
      * Get all messages sent by specified user.

@@ -120,8 +120,7 @@ public class TransactionalPrivateMessageServiceTest {
     @Test
     public void testMarkAsRead() {
         PrivateMessage pm = new PrivateMessage();
-        User userTo = new User();
-        userTo.setUsername(USERNAME);
+        User userTo = new User(USERNAME, "email", "password");
         pm.setUserTo(userTo);
 
         pmService.markAsRead(pm);

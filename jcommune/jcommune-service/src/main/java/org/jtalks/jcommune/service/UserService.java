@@ -23,8 +23,6 @@ import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 
-import java.io.UnsupportedEncodingException;
-
 /**
  * This interface should have methods which give us more abilities in manipulating User persistent entity.
  *

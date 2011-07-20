@@ -28,8 +28,6 @@ import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.UnsupportedEncodingException;
-
 /**
  * User service class. This class contains method needed to manipulate with User persistent entity.
  *

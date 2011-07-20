@@ -45,6 +45,15 @@ public class User extends Entity implements UserDetails {
     private String role = "ROLE_USER";
     private String encodedUsername;
 
+    public User() {
+    }
+
+    public User(String username, String email, String password) {
+        this.setUsername(username);
+        this.email = email;
+        this.password = password;
+    }
+
     /**
      * Get the user's Last Name.
      *
@@ -221,7 +230,7 @@ public class User extends Entity implements UserDetails {
     /**
      * @param encodedUsername encoded username to set
      */
-    public void setEncodedUsername(String encodedUsername) {
+    protected void setEncodedUsername(String encodedUsername) {
         this.encodedUsername = encodedUsername;
     }
 }

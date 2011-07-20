@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
   <class name="Branch" table="BRANCH">
     <cache usage="nonstrict-read-write"/>
@@ -10,5 +10,12 @@
     <property column="UUID" name="uuid" unique="true" not-null="true"/>
     <property name="name" column="NAME" not-null="true"/>
     <property name="description" column="DESCRIPTION"/>
+
+    <list name="topics" cascade="all-delete-orphan">
+      <cache usage="nonstrict-read-write"/>
+      <key column="BRANCH_ID" foreign-key="FK_BRANCH"/>
+      <index column="TOPICS_INDEX"/>
+      <one-to-many class="Topic"/>
+    </list>
   </class>
 </hibernate-mapping>

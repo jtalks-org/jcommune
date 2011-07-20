@@ -30,7 +30,7 @@ import java.util.List;
  * @author Pavel Vervenko
  * @author Kirill Afonin
  */
-public class PrivateMessageHibernateDao extends AbstractHibernateDao<PrivateMessage> implements PrivateMessageDao {
+public class PrivateMessageHibernateDao extends ParentRepositoryImpl<PrivateMessage> implements PrivateMessageDao {
 
     /**
      * {@inheritDoc}

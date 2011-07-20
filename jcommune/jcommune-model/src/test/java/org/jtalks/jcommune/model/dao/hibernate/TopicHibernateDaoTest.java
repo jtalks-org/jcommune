@@ -21,7 +21,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +35,9 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.testng.Assert.*;
-import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 
 /**
  * @author Kirill Afonin
@@ -59,27 +59,6 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     }
 
     /*===== Common methods =====*/
-
-    @Test
-    public void testSave() {
-        Topic topic = ObjectsFactory.getDefaultTopic();
-
-        dao.saveOrUpdate(topic);
-
-        assertNotSame(topic.getId(), 0, "Id not created");
-
-        session.evict(topic);
-        Topic result = (Topic) session.get(Topic.class, topic.getId());
-
-        assertReflectionEquals(topic, result);
-    }
-
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void testSavePostWithDateNotNullViolation() {
-        Topic topic = new Topic();
-
-        dao.saveOrUpdate(topic);
-    }
 
     @Test
     public void testGet() {
@@ -107,7 +86,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         session.save(topic);
         topic.setTitle(newTitle);
 
-        dao.saveOrUpdate(topic);
+        dao.update(topic);
         session.evict(topic);
         Topic result = (Topic) session.get(Topic.class, topic.getId());
 
@@ -118,34 +97,9 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     public void testUpdateNotNullViolation() {
         Topic topic = ObjectsFactory.getDefaultTopic();
         session.save(topic);
-        topic.setBranch(null);
+        topic.setTitle(null);
 
-        dao.saveOrUpdate(topic);
-    }
-
-    @Test
-    public void testDelete() {
-        Topic topic = ObjectsFactory.getDefaultTopic();
-        Post post = ObjectsFactory.getPost(topic.getTopicStarter());
-        topic.setLastPost(post);
-        topic.addPost(post);
-        topic.addPost(ObjectsFactory.getPost(topic.getTopicStarter()));
-        session.save(topic);
-        session.flush();
-
-        session.evict(topic);
-        boolean deleted = dao.delete(topic.getId());
-        int topicCount = getCount();
-
-        assertTrue(deleted);
-        assertEquals(topicCount, 0);
-    }
-
-    @Test
-    public void testDeleteInvalidId() {
-        boolean result = dao.delete(-100500L);
-
-        assertFalse(result, "Entity deleted");
+        dao.update(topic);
     }
 
     private List<Topic> createAndSaveTopicList(int size) {
@@ -153,12 +107,12 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         User author = ObjectsFactory.getDefaultUser();
         session.save(author);
         Branch branch = ObjectsFactory.getDefaultBranch();
-        session.save(branch);
         for (int i = 0; i < size; i++) {
-            Topic newTopic = new Topic(branch, author, "title" + i);
-            session.save(newTopic);
+            Topic newTopic = new Topic(author, "title" + i);
+            branch.addTopic(newTopic);
             topics.add(newTopic);
         }
+        session.save(branch);
         return topics;
     }
 

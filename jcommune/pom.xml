@@ -100,6 +100,16 @@
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
+        <artifactId>spring-jdbc</artifactId>
+        <version>${springVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context-support</artifactId>
+        <version>${springVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
         <artifactId>spring-orm</artifactId>
         <version>${springVersion}</version>
       </dependency>
@@ -245,6 +255,11 @@
         <version>1.8.3</version>
         <type>jar</type>
         <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.googlecode.flyway</groupId>
+        <artifactId>flyway-core</artifactId>
+        <version>1.4.2</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

@@ -12,7 +12,7 @@
   <!--Declaration of AOP Config -->
   <aop:config>
     <aop:advisor advice-ref="exceptionTranslationInterceptor"
-                 pointcut="execution(* org.jtalks.jcommune.model.dao.Dao+.* (*))"/>
+                 pointcut="execution(* org.jtalks.jcommune.model.dao.ChildRepository+.* (*))"/>
   </aop:config>
 
   <!--Declaration of DAO beans -->
@@ -29,24 +29,28 @@
         parent="abstractHibernateDao"/>
   <bean id="privateMessageDao" class="org.jtalks.jcommune.model.dao.hibernate.PrivateMessageHibernateDao"
         parent="abstractHibernateDao"/>
-  <!--Injecting sessionFactory bean to class AbstractHibernateDao, this way
+  <!--Injecting sessionFactory bean to class AbstractHibernateChildRepository, this way
     resolves a problem of multiple DAO beans definition -->
   <bean id="abstractHibernateDao"
-        class="org.jtalks.jcommune.model.dao.hibernate.AbstractHibernateDao"
+        class="org.jtalks.jcommune.model.dao.hibernate.AbstractHibernateChildRepository"
         abstract="true">
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
-
+  <!-- Migrations -->
+  <bean id="flyway" class="com.googlecode.flyway.core.Flyway" init-method="migrate" depends-on="dataSource">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="basePackage" value="org.jtalks.jcommune.migrations"/>
+    <property name="baseDir" value="/org/jtalks/jcommune/migrations"/>
+  </bean>
   <!--Declaration and setting up datasource, sessionFactory and transactionalManager
     beans -->
-
   <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
     <property name="driverClassName" value="${jdbc.driverClassName}"/>
     <property name="url" value="${jdbc.url}"/>
     <property name="username" value="${jdbc.username:root}"/>
     <property name="password" value="${jdbc.password:root}"/>
   </bean>
-  <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+  <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" depends-on="flyway">
     <property name="dataSource" ref="dataSource"/>
     <property name="mappingResources">
       <list>

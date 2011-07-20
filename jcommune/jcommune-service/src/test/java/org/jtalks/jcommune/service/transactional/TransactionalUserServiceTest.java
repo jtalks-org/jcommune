@@ -29,8 +29,6 @@ public class TransactionalUserServiceTest {
     private static final String ENCODED_USERNAME = "encodedUsername";
     private static final String FIRST_USERNAME = "first name";
     private static final String LAST_USERNAME = "last name";
-    private static final String NEW_FIRST_USERNAME = "new first name";
-    private static final String NEW_LAST_USERNAME = "new last name";
     private static final String NEW_EMAIL = "new_username@mail.com";
     private static final String EMAIL = "username@mail.com";
     private static final String PASSWORD = "password";
@@ -64,22 +62,22 @@ public class TransactionalUserServiceTest {
 
         userService.getByUsername(USERNAME);
     }
-    
+
     @Test
-    public void testGetByEncodedUsername() throws Exception{
+    public void testGetByEncodedUsername() throws Exception {
         User user = getUser();
         when(userDao.getByEncodedUsername(ENCODED_USERNAME)).thenReturn(user);
-        
+
         User actualUser = userService.getByEncodedUsername(ENCODED_USERNAME);
-        
-        assertEquals(actualUser, user,"Users are not equal");
+
+        assertEquals(actualUser, user, "Users are not equal");
         verify(userDao).getByEncodedUsername(anyString());
     }
-    
+
     @Test(expectedExceptions = NotFoundException.class)
-    public void testGetByEncodedUsernamenotFound() throws Exception{
+    public void testGetByEncodedUsernamenotFound() throws Exception {
         when(userDao.getByEncodedUsername(ENCODED_USERNAME)).thenReturn(null);
-        
+
         User actualUser = userService.getByEncodedUsername(ENCODED_USERNAME);
 
         verify(userDao).getByEncodedUsername(anyString());
@@ -130,101 +128,100 @@ public class TransactionalUserServiceTest {
 
     @Test(expectedExceptions = {DuplicateException.class})
     public void testRegisterUserAnonymous() throws Exception {
-        User user = getUser();
-        user.setUsername(SecurityConstants.ANONYMOUS_USERNAME);
+        User user = getUser(SecurityConstants.ANONYMOUS_USERNAME);
 
         userService.registerUser(user);
     }
 
     @Test
-    public void testEditUserProfile() throws Exception{
+    public void testEditUserProfile() throws Exception {
         User user = getUser();
         User editedUsed = getEditedUser(true);
-        
+
         when(userDao.getByUsername(anyString())).thenReturn(user);
         when(userDao.isUserWithEmailExist(anyString())).thenReturn(false);
-        
+
         userService.editUserProfile(editedUsed, USERNAME, PASSWORD, NEW_PASSWORD);
-        
+
         verify(userDao).getByUsername(anyString());
         verify(userDao).saveOrUpdate(any(User.class));
-        
+
         assertEquals(user.getEmail(), editedUsed.getEmail(), "Email was not changed");
         assertEquals(user.getFirstName(), editedUsed.getFirstName(), "first name was not changed");
         assertEquals(user.getLastName(), editedUsed.getLastName(), "last name was not changed");
         assertEquals(user.getPassword(), NEW_PASSWORD, "new password was not accepted");
     }
-    
+
     @Test(expectedExceptions = WrongPasswordException.class)
-    public void testEditUserProfileWrongPassword() throws Exception{
+    public void testEditUserProfileWrongPassword() throws Exception {
         User user = getUser();
         User editedUsed = getEditedUser(true);
-        
+
         when(userDao.getByUsername(anyString())).thenReturn(user);
-        
+
         userService.editUserProfile(editedUsed, USERNAME, WRONG_PASSWORD, NEW_PASSWORD);
-        
+
         verify(userDao).getByUsername(anyString());
         verify(userDao, times(0)).isUserWithEmailExist(anyString());
         verify(userDao, times(0)).saveOrUpdate(any(User.class));
     }
-    
+
     @Test(expectedExceptions = WrongPasswordException.class)
-    public void testEditUserProfilecurrentPasswordNull() throws Exception{
+    public void testEditUserProfilecurrentPasswordNull() throws Exception {
         User user = getUser();
         User editedUsed = getEditedUser(true);
-        
+
         when(userDao.getByUsername(anyString())).thenReturn(user);
-        
+
         userService.editUserProfile(editedUsed, USERNAME, null, NEW_PASSWORD);
-        
+
         verify(userDao).getByUsername(anyString());
         verify(userDao, times(0)).isUserWithEmailExist(anyString());
         verify(userDao, times(0)).saveOrUpdate(any(User.class));
     }
-    
+
     @Test(expectedExceptions = DuplicateEmailException.class)
-    public void testEditUserProfileDublicateEmail() throws Exception{
+    public void testEditUserProfileDublicateEmail() throws Exception {
         User user = getUser();
         User editedUsed = getEditedUser(true);
-        
+
         when(userDao.getByUsername(anyString())).thenReturn(user);
         when(userDao.isUserWithEmailExist(anyString())).thenReturn(true);
-        
+
         userService.editUserProfile(editedUsed, USERNAME, null, null);
-        
+
         verify(userDao).getByUsername(anyString());
         verify(userDao).isUserWithEmailExist(anyString());
         verify(userDao, times(0)).saveOrUpdate(any(User.class));
     }
 
-    
+
     /**
+     * @param username username
      * @return create and return {@link User} with default username, encodedUsername,
-     * first name, last name,  email and password
+     *         first name, last name,  email and password
      */
-    private User getUser() {
-        User user = new User();
-        user.setUsername(USERNAME);
+    private User getUser(String username) {
+        User user = new User(username, EMAIL, PASSWORD);
         user.setFirstName(FIRST_USERNAME);
         user.setLastName(LAST_USERNAME);
-        user.setEmail(EMAIL);
-        user.setPassword(PASSWORD);
         return user;
     }
-    
+
+    private User getUser() {
+        return getUser(USERNAME);
+    }
+
+
     /**
      * @param isNewEmail - if true NEW_EMAIL will be used, if false EMAIL will be used as email
-     * @return create and return {@link User} with edit (new) emw_email, 
-     * new first name, new last name and new_password
+     * @return create and return {@link User} with edit (new) emw_email,
+     *         new first name, new last name and new_password
      */
     private User getEditedUser(boolean isNewEmail) {
-        User user = new User();
-        user.setUsername(USERNAME);
+        User user = new User(USERNAME, isNewEmail ? NEW_EMAIL : EMAIL, PASSWORD);
         user.setFirstName(FIRST_USERNAME);
         user.setLastName(LAST_USERNAME);
-        user.setEmail(isNewEmail ? NEW_EMAIL : EMAIL);
-        user.setPassword(PASSWORD);
         return user;
     }
 

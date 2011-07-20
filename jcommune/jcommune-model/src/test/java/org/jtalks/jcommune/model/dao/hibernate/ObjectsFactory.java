@@ -18,9 +18,11 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Session;
-import org.jtalks.jcommune.model.entity.*;
-
-import java.io.UnsupportedEncodingException;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.User;
 
 /**
  * @author Kirill Afonin
@@ -42,55 +44,24 @@ public final class ObjectsFactory {
     }
 
     public static User getUser(String username, String email) {
-        User newUser = new User();
-        newUser.setEmail(email);
+        User newUser = new User(username, email, "password");
         newUser.setFirstName("first name");
         newUser.setLastName("last name");
-        newUser.setUsername(username);
-        newUser.setPassword("password");
-        return newUser;
-    }
-    
-    /**
-     * @return {@link User} with deference from default user values.
-     * @see {@link ObjectsFactory#getDefaultUser()}. 
-     */
-    public static User getAnotherUser(){
-        User newUser = new User();
-        newUser.setUsername("anotherUsername");
-        newUser.setFirstName("another first name");
-        newUser.setLastName("another last name");
-        newUser.setEmail("another@mail.com");
-        newUser.setPassword("anotherPassword");
         return newUser;
     }
 
     public static Post getDefaultPost() {
-        return getPost(persist(getDefaultUser()));
-    }
-
-    public static Post getPost(User author) {
-        Post newPost = Post.createNewPost();
-        newPost.setPostContent("post content");
-        newPost.setUserCreated(author);
-        return newPost;
+        return new Post(persist(getDefaultUser()), "post content");
     }
 
     public static Topic getDefaultTopic() {
-        Topic newTopic = Topic.createNewTopic();
-        newTopic.setTitle("topic title");
         User user = persist(getDefaultUser());
-        newTopic.setTopicStarter(user);
-        newTopic.setBranch(persist(getDefaultBranch()));
-        newTopic.setLastPost(getPost(user));
-        return newTopic;
-    }
-
-    public static Topic getTopic(User author) {
-        Topic newTopic = Topic.createNewTopic();
-        newTopic.setTitle("topic title");
-        newTopic.setTopicStarter(author);
-        newTopic.setBranch(persist(getDefaultBranch()));
+        Branch branch = getDefaultBranch();
+        Topic newTopic = new Topic(user, "topic title");
+        Post post = new Post(user, "post content");
+        newTopic.addPost(post);
+        branch.addTopic(newTopic);
+        persist(branch);
         return newTopic;
     }
 

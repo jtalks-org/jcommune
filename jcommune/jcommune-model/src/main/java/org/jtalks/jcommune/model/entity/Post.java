@@ -43,7 +43,7 @@ public class Post extends Entity {
     /**
      * Constructs the instance with initialized fields.
      */
-    public Post() {
+    protected Post() {
     }
 
     /**
@@ -51,7 +51,7 @@ public class Post extends Entity {
      *
      * @param creationDate the creation date of the post
      */
-    public Post(DateTime creationDate) {
+    protected Post(DateTime creationDate) {
         this.creationDate = creationDate;
     }
 
@@ -59,15 +59,13 @@ public class Post extends Entity {
      * Creates the Post instance with required fields.
      * Creation date is set to now.
      *
-     * @param topic       topic that contains post
      * @param userCreated user who create the post
      * @param postContent content of the post
      */
-    public Post(Topic topic, User userCreated, String postContent) {
+    public Post(User userCreated, String postContent) {
         this.creationDate = new DateTime();
         this.userCreated = userCreated;
         this.postContent = postContent;
-        this.topic = topic;
     }
 
     /**
@@ -105,7 +103,7 @@ public class Post extends Entity {
      *
      * @param userCreated the userCreated to set
      */
-    public void setUserCreated(User userCreated) {
+    protected void setUserCreated(User userCreated) {
         this.userCreated = userCreated;
     }
 
@@ -133,7 +131,7 @@ public class Post extends Entity {
     /**
      * @param topic the Topic to set
      */
-    public void setTopic(Topic topic) {
+    protected void setTopic(Topic topic) {
         this.topic = topic;
     }
 }

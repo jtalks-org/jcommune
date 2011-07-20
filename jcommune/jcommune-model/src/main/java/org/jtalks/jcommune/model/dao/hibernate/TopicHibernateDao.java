@@ -29,7 +29,7 @@ import java.util.List;
  * @author Kirill Afonin
  * @author Vitaliy Kravchenko
  */
-public class TopicHibernateDao extends AbstractHibernateDao<Topic> implements TopicDao {
+public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> implements TopicDao {
 
     /**
      * {@inheritDoc}
@@ -53,19 +53,4 @@ public class TopicHibernateDao extends AbstractHibernateDao<Topic> implements To
         return ((Number) getSession().createQuery("select count(*) from Topic t where t.branch = ?")
                 .setCacheable(true).setLong(0, branchId).uniqueResult()).intValue();
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean delete(Long id) {
-        //TODO: not efficient solution. See more info on the next link http://bit.ly/m85eLs
-        Topic topic = get(id);
-        if (topic == null) {
-            return false;
-        }
-        getSession().delete(topic);
-        return true;
-    }
-
 }

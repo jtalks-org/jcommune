@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * @author Vitaliy Kravchenko
  */
-public class BranchHibernateDao extends AbstractHibernateDao<Branch> implements BranchDao {
+public class BranchHibernateDao extends ParentRepositoryImpl<Branch> implements BranchDao {
     /**
      * {@inheritDoc}
      */
@@ -34,5 +34,19 @@ public class BranchHibernateDao extends AbstractHibernateDao<Branch> implements 
     @SuppressWarnings("unchecked")
     public List<Branch> getAll() {
         return getSession().createQuery("from Branch").setCacheable(true).list();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean delete(Long id) {
+        //TODO: not efficient solution. See more info on the next link http://bit.ly/m85eLs
+        Branch branch = get(id);
+        if (branch == null) {
+            return false;
+        }
+        getSession().delete(branch);
+        return true;
     }
 }
