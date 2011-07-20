@@ -98,10 +98,16 @@ public class User extends Persistent implements UserDetails {
     }
 
     /**
+     * Set the username and encoded username (based on username)
      * @param username the username to set
      */
     public void setUsername(String username) {
         this.username = username;
+        try {
+            setEncodedUsername(URLEncoder.encode(username, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Could not encode username", e);
+        }
     }
 
     /**
@@ -205,11 +211,19 @@ public class User extends Persistent implements UserDetails {
         this.lastLogin = new DateTime();
     }
 
+    /**
+     *
+     * @return encoded username
+     */
     public String getEncodedUsername() {
         return encodedUsername;
     }
 
-    public void setEncodedUsername(String username) throws UnsupportedEncodingException {
-        this.encodedUsername = URLEncoder.encode(username, "UTF-8");
+    /**
+     *
+     * @param encodedUsername encoded username to set
+     */
+    public void setEncodedUsername(String encodedUsername) {
+        this.encodedUsername = encodedUsername;
     }
 }

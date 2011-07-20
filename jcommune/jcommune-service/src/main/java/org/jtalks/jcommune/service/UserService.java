@@ -50,7 +50,7 @@ public interface UserService extends EntityService<User> {
      * @throws DuplicateException if user with username or email already exist
      * @see User
      */
-    User registerUser(User user) throws DuplicateUserException, DuplicateEmailException, UnsupportedEncodingException;
+    User registerUser(User user) throws DuplicateUserException, DuplicateEmailException;
 
     /**
      * Updates user last login time to current time.

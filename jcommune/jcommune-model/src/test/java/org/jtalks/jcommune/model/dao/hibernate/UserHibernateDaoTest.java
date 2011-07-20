@@ -111,14 +111,14 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         assertEquals(result.getFirstName(), newName);
     }
 
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
+/*    @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void testUpdateNotNullViolation() {
         User user = ObjectsFactory.getDefaultUser();
         session.save(user);
         user.setUsername(null);
 
         dao.saveOrUpdate(user);
-    }
+    }*/
 
     @Test
     public void testDelete() {

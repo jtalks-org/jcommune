@@ -48,11 +48,6 @@ public final class ObjectsFactory {
         newUser.setLastName("last name");
         newUser.setUsername(username);
         newUser.setPassword("password");
-        try {
-            newUser.setEncodedUsername(username);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
         return newUser;
     }
 

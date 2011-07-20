@@ -108,8 +108,6 @@ public class UserController {
             result.rejectValue("username", "validation.duplicateuser");
         } catch (DuplicateEmailException e) {
             result.rejectValue("email", "validation.duplicateemail");
-        } catch (UnsupportedEncodingException e) {
-            result.rejectValue("username", "validation.invalidusernamechar");
         }
         return new ModelAndView("registration");
     }
