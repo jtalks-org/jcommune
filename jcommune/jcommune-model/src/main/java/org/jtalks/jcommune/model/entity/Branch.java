@@ -18,15 +18,20 @@
 
 package org.jtalks.jcommune.model.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Forum branch that contains topics related to branch theme.
  *
  * @author Vitaliy Kravchenko
+ * @author Kirill Afonin
  */
 public class Branch extends Entity {
 
     private String name;
     private String description;
+    private List<Topic> topics = new ArrayList<Topic>();
 
     /**
      * Set branch name which briefly describes the topics contained in it.
@@ -62,5 +67,45 @@ public class Branch extends Entity {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+     * @return list of topics
+     */
+    protected List<Topic> getTopics() {
+        return topics;
+    }
+
+    /**
+     * @param topics list of topics
+     */
+    protected void setTopics(List<Topic> topics) {
+        this.topics = topics;
+    }
+
+    /**
+     * Add topic to branch.
+     *
+     * @param topic topic
+     */
+    public void addTopic(Topic topic) {
+        topic.setBranch(this);
+        this.topics.add(topic);
+    }
+
+    /**
+     * Delete topic from branch.
+     *
+     * @param topic topic
+     */
+    public void deleteTopic(Topic topic) {
+        this.topics.remove(topic);
+    }
+
+    /**
+     * @return number of topics in branch
+     */
+    public int topicCount() {
+        return topics.size();
     }
 }
