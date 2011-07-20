@@ -123,6 +123,13 @@ public class TransactionalArticleServiceTest {
         
         verify(articleDao).isExist(ARTICLE_ID);
     }
+    
+    @Test(expectedExceptions=NotFoundException.class)
+    public void testDeleteArticleWithoutId() throws NotFoundException {
+        Article article = getDefaultAricle();
+        assertEquals(article.getId(), 0);
+        articleService.deleteArticle(article);
+    }
 
     @Test
     public void testGetFirstArticleFromCollection() throws NotFoundException {
@@ -141,7 +148,6 @@ public class TransactionalArticleServiceTest {
 
         verify(articleDao).isExist(ARTICL_COL_ID);
         verify(articleDao).getFirstArticleFromCollection(ARTICL_COL_ID);
-
     }
 
 }

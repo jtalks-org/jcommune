@@ -24,6 +24,7 @@ import org.joda.time.DateTime;
 import org.jtalks.antarcticle.model.dao.CommentDao;
 import org.jtalks.antarcticle.model.entity.Article;
 import org.jtalks.antarcticle.model.entity.Comment;
+import org.jtalks.common.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -65,6 +66,11 @@ public class CommentHibernateDoaTest extends AbstractTransactionalTestNGSpringCo
         Comment sameComment = (Comment)session.get(Comment.class, id);
         assertNotNull(sameComment);
         assertReflectionEquals(comment, sameComment);
+        assertEquals(comment.getId(), sameComment.getId());
+        assertEquals(comment.getCommentContent(), sameComment.getCommentContent());
+        assertEquals(comment.getCreationDate(), sameComment.getCreationDate());
+        assertEquals(comment.getUserCommented().getId(), sameComment.getUserCommented().getId());
+        assertEquals(comment.getArticle().getId(), sameComment.getArticle().getId());
     }
     
     @Test
@@ -135,6 +141,32 @@ public class CommentHibernateDoaTest extends AbstractTransactionalTestNGSpringCo
         session.save(comment);
         result = dao.findByArticle(article);
         assertEquals(result.size(), 2);
+    }
+    
+    @Test
+    public void testGetByArticle() {
+        Article article = ObjectsFactory.getDefaultArticle();
+        session.save(article);
+        assertTrue(article.getId() != 0);
+        User user = article.getUserCreated();
+        assertTrue(user.getId() != 0);
+        Comment comment = new Comment();
+        comment.setArticle(article);
+        comment.setCreationDate(new DateTime());
+        comment.setUserCommented(user);
+        comment.setUuid("UUID-12");
+        comment.setCommentContent("Comment content");
+        session.save(comment);
+        long id1 = comment.getId();
+        comment = new Comment(user, new DateTime(), "Comment contents 2", article);
+        comment.setUuid("dsds");
+        session.save(comment);
+        long id2 = comment.getId();
+        List<Comment> comments = dao.findByArticle(article);
+        assertNotNull(comments);
+        assertEquals(comments.size(), 2);
+        assertTrue(comments.get(0).getId() == id1 || comments.get(0).getId() == id2);
+        assertTrue(comments.get(1).getId() == id1 || comments.get(1).getId() == id2);
     }
         
     private int getCount() {
