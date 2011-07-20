@@ -44,13 +44,13 @@
     <window title="Edit Branch" id="editBranchDialog" border="normal" visible="false" mode="modal">
         <vbox>
             <hbox>
-                Branch Name: <textbox id="branchName"/>
+                Branch Name: <textbox id="branchName" width="200px"/>
             </hbox>
             <hbox>
-                Description: <textbox id="branchDescription"/>
+                Description: <textbox id="branchDescription" width="200px"/>
             </hbox>
             <hbox>
-                <button id="editButton" label="add" />
+                <button id="editButton" label="edit" />
                 <button id="closeButton" label="close" />                
             </hbox>
         </vbox>

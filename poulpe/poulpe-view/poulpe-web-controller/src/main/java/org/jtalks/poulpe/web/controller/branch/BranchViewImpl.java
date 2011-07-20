@@ -293,6 +293,8 @@ public class BranchViewImpl extends Window implements BranchView, AfterCompose {
     /* Close edit dialog */
     private void closeEditBranchDialog() {
         editBranchDialog.setVisible(false);
+        editBranchDialog$branchName.setText("");
+        editBranchDialog$branchDescription.setText("");
     }
 
     /* Open new branch dialog */
