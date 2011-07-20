@@ -23,8 +23,6 @@ import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 
-import java.io.UnsupportedEncodingException;
-
 /**
  * This interface should have methods which give us more abilities in manipulating User persistent entity.
  *
@@ -59,12 +57,10 @@ public interface UserService extends EntityService<User> {
      * @return registered {@link User}
      * @throws DuplicateUserException  if user with username already exist
      * @throws DuplicateEmailException when user with given email already exist
-     * @throws java.io.UnsupportedEncodingException
-     *                                 when encoding is not supported
      * @see User
      */
-    User registerUser(User user)
-            throws DuplicateUserException, DuplicateEmailException, UnsupportedEncodingException;
+    User registerUser(User user) throws DuplicateUserException, DuplicateEmailException;
+
 
     /**
      * Updates user last login time to current time.

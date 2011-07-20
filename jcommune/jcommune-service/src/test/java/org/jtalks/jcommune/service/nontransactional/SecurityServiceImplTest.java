@@ -16,7 +16,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import sun.security.acl.PrincipalImpl;
 
-import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 
 import static org.mockito.Mockito.mock;
@@ -37,7 +36,6 @@ import static org.testng.Assert.assertTrue;
 public class SecurityServiceImplTest {
 
     private static final String USERNAME = "username";
-    private static final String ENCODED_USERNAME = "encoded_username";
     private static final String PASSWORD = "password";
 
     private UserDao userDao;
@@ -47,13 +45,7 @@ public class SecurityServiceImplTest {
     private AclManager aclManager;
 
     private User getUser() {
-        User user = new User(USERNAME, null, PASSWORD);
-        try {
-            user.setEncodedUsername(ENCODED_USERNAME);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return user;
+        return new User(USERNAME, "email", PASSWORD);
     }
 
     @BeforeMethod
@@ -110,7 +102,7 @@ public class SecurityServiceImplTest {
         assertEquals(username, USERNAME, "Username not equals");
         verify(auth).getPrincipal();
         verify(securityContext).getAuthentication();
-    }
+    }    
 
     @Test
     public void testGetCurrentUserUsernamePrincipal() throws Exception {

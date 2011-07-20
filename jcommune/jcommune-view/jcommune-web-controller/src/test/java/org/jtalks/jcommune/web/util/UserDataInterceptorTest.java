@@ -27,7 +27,6 @@ import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.UnsupportedEncodingException;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -39,7 +38,7 @@ import static org.testng.Assert.assertEquals;
  */
 public class UserDataInterceptorTest {
     private final String USER_NAME = "username";
-    private final String ENCODED_USER_NAME = "encodeUsername";
+    private final String ENCODED_USER_NAME = "username";
     private final String FIRST_NAME = "first name";
     private final String LAST_NAME = "last name";
     private final String EMAIL = "mail@mail.com";
@@ -51,7 +50,6 @@ public class UserDataInterceptorTest {
     private HttpServletResponse response;
     private PrivateMessageService service;
     private SecurityService securityService;
-
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -75,14 +73,9 @@ public class UserDataInterceptorTest {
         verify(service).currentUserNewPmCount();
         verify(securityService).getCurrentUser();
     }
-
+    
     private User getUser() {
         User newUser = new User(USER_NAME, EMAIL, PASSWORD);
-        try {
-            newUser.setEncodedUsername(ENCODED_USER_NAME);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
         newUser.setFirstName(FIRST_NAME);
         newUser.setLastName(LAST_NAME);
         return newUser;

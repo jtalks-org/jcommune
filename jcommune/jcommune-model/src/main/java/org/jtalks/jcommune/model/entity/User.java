@@ -49,7 +49,7 @@ public class User extends Entity implements UserDetails {
     }
 
     public User(String username, String email, String password) {
-        this.username = username;
+        this.setUsername(username);
         this.email = email;
         this.password = password;
     }
@@ -107,10 +107,16 @@ public class User extends Entity implements UserDetails {
     }
 
     /**
+     * Set the username and encoded username (based on username)
      * @param username the username to set
      */
     public void setUsername(String username) {
         this.username = username;
+        try {
+            setEncodedUsername(URLEncoder.encode(username, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Could not encode username", e);
+        }
     }
 
     /**
@@ -222,12 +228,9 @@ public class User extends Entity implements UserDetails {
     }
 
     /**
-     * Encode username using {@code URLEncoder} with UTF-8 encoding.
-     *
-     * @param username username
-     * @throws UnsupportedEncodingException if requested encoding not supported
+     * @param encodedUsername encoded username to set
      */
-    public void setEncodedUsername(String username) throws UnsupportedEncodingException {
-        this.encodedUsername = URLEncoder.encode(username, "UTF-8");
+    protected void setEncodedUsername(String encodedUsername) {
+        this.encodedUsername = encodedUsername;
     }
 }

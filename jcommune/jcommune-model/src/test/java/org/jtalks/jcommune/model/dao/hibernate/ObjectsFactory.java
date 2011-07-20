@@ -24,8 +24,6 @@ import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 
-import java.io.UnsupportedEncodingException;
-
 /**
  * @author Kirill Afonin
  * @author Alexandre Teterin
@@ -49,11 +47,6 @@ public final class ObjectsFactory {
         User newUser = new User(username, email, "password");
         newUser.setFirstName("first name");
         newUser.setLastName("last name");
-        try {
-            newUser.setEncodedUsername(username);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
         return newUser;
     }
 

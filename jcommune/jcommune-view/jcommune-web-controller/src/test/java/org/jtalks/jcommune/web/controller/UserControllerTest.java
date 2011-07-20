@@ -17,7 +17,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import static org.mockito.Mockito.any;
@@ -260,11 +259,6 @@ public class UserControllerTest {
     
     private User getUser() {
         User newUser = new User(USER_NAME, EMAIL, PASSWORD);
-        try {
-            newUser.setEncodedUsername(ENCODED_USER_NAME);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
         newUser.setFirstName(FIRST_NAME);
         newUser.setLastName(LAST_NAME);
         return newUser;
