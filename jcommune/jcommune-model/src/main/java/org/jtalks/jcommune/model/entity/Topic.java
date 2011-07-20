@@ -65,19 +65,17 @@ public class Topic extends Entity {
     /**
      * Creates the Topic instance. All fields values are null.
      */
-    public Topic() {
+    protected Topic() {
     }
 
     /**
      * Creates the Topic instance with required fields.
      * Creation and modification date is set to now.
      *
-     * @param branch       branch that contains topic
      * @param topicStarter user who create the topic
      * @param title        topic title
      */
-    public Topic(Branch branch, User topicStarter, String title) {
-        this.branch = branch;
+    public Topic(User topicStarter, String title) {
         this.topicStarter = topicStarter;
         this.title = title;
         this.creationDate = new DateTime();
@@ -102,25 +100,18 @@ public class Topic extends Entity {
     }
 
     /**
-     * Add first {@link Post} to the topic.
-     * The method sets Posts.topic field to this Topic.
-     *
-     * @param firstPost post to add
-     */
-    public void addFirstPost(Post firstPost) {
-        this.firstPost = firstPost;
-        this.addPost(firstPost);
-    }
-
-    /**
      * Add new {@link Post} to the topic.
      * The method sets Posts.topic field to this Topic.
      *
-     * @param newPost post to add
+     * @param post post to add
      */
-    public void addPost(Post newPost) {
-        this.posts.add(newPost);
-        this.lastPost = newPost;
+    public void addPost(Post post) {
+        if (posts.isEmpty()) {
+            this.firstPost = post;
+        }
+        post.setTopic(this);
+        this.posts.add(post);
+        this.lastPost = post;
     }
 
     /**
@@ -165,7 +156,7 @@ public class Topic extends Entity {
      *
      * @param userCreated the user who create the post
      */
-    public void setTopicStarter(User userCreated) {
+    protected void setTopicStarter(User userCreated) {
         this.topicStarter = userCreated;
     }
 
@@ -192,7 +183,7 @@ public class Topic extends Entity {
      *
      * @return the list of posts
      */
-    public List<Post> getPosts() {
+    protected List<Post> getPosts() {
         return posts;
     }
 
@@ -201,7 +192,7 @@ public class Topic extends Entity {
      *
      * @param posts the posts to set
      */
-    public void setPosts(List<Post> posts) {
+    protected void setPosts(List<Post> posts) {
         this.posts = posts;
     }
 
@@ -219,7 +210,7 @@ public class Topic extends Entity {
      *
      * @param branch branch that contains the topic
      */
-    public void setBranch(Branch branch) {
+    void setBranch(Branch branch) {
         this.branch = branch;
     }
 
@@ -228,7 +219,7 @@ public class Topic extends Entity {
      *
      * @param firstPost the firstPost to set
      */
-    public void setFirstPost(Post firstPost) {
+    protected void setFirstPost(Post firstPost) {
         this.firstPost = firstPost;
     }
 
@@ -265,10 +256,16 @@ public class Topic extends Entity {
      * @param removedPost post for delete
      */
     private void updateLastPost(Post removedPost) {
-        if (this.lastPost.getId() == removedPost.getId()) {
-            if (!this.posts.isEmpty()) {
-                this.lastPost = this.posts.get(this.posts.size() - 1);
-            }
+        if (this.lastPost.getId() == removedPost.getId() &&
+                !this.posts.isEmpty()) {
+            this.lastPost = this.posts.get(this.posts.size() - 1);
         }
+    }
+
+    /**
+     * @return number of posts in topic
+     */
+    public int postCount() {
+        return posts.size();
     }
 }

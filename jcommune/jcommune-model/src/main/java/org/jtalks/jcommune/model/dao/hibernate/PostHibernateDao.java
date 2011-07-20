@@ -30,7 +30,7 @@ import java.util.List;
  * @author Pavel Vervenko
  * @author Kirill Afonin
  */
-public class PostHibernateDao extends AbstractHibernateDao<Post> implements PostDao {
+public class PostHibernateDao extends AbstractHibernateChildRepository<Post> implements PostDao {
 
     /**
      * {@inheritDoc}

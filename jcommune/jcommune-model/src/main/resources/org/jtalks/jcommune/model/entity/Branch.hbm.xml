@@ -14,7 +14,7 @@
     <list name="topics" cascade="all-delete-orphan">
       <cache usage="nonstrict-read-write"/>
       <key column="BRANCH_ID" foreign-key="FK_BRANCH"/>
-      <index column="INDEX"/>
+      <index column="TOPICS_INDEX"/>
       <one-to-many class="Topic"/>
     </list>
   </class>

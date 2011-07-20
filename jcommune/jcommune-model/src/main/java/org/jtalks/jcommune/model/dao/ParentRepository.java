@@ -15,23 +15,26 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-
 package org.jtalks.jcommune.model.dao;
 
-import org.jtalks.jcommune.model.entity.Branch;
-
-import java.util.List;
+import org.jtalks.jcommune.model.entity.Entity;
 
 /**
- * @author Vitaliy Kravchenko
+ * @author Kirill Afonin
  */
-
-public interface BranchDao extends ParentRepository<Branch> {
+public interface ParentRepository<T extends Entity> extends ChildRepository<T> {
+    /**
+     * Save or update entity.
+     *
+     * @param entity object to save
+     */
+    void saveOrUpdate(T entity);
 
     /**
-     * Get the list of all branches.
+     * Delete the entity by id.
      *
-     * @return list of branches
+     * @param id the id
+     * @return {@code true} if entity deleted successfully
      */
-    List<Branch> getAll();
+    boolean delete(Long id);
 }

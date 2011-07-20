@@ -35,8 +35,9 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.testng.Assert.*;
-import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 
 /**
  * @author Kirill Afonin
@@ -59,27 +60,6 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     }
 
     /*===== Common methods =====*/
-
-    @Test
-    public void testSave() {
-        Post post = ObjectsFactory.getDefaultPost();
-
-        dao.saveOrUpdate(post);
-
-        assertNotSame(post.getId(), 0, "Id not created");
-
-        session.evict(post);
-        Post result = (Post) session.get(Post.class, post.getId());
-
-        assertReflectionEquals(post, result);
-    }
-
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void testSavePostWithDateNotNullViolation() {
-        Post post = new Post();
-
-        dao.saveOrUpdate(post);
-    }
 
     @Test
     public void testGet() {
@@ -106,7 +86,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         session.save(post);
         post.setPostContent(newContent);
 
-        dao.saveOrUpdate(post);
+        dao.update(post);
         session.evict(post);
         Post result = (Post) session.get(Post.class, post.getId());
 
@@ -117,40 +97,21 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     public void testUpdateNotNullViolation() {
         Post post = ObjectsFactory.getDefaultPost();
         session.save(post);
-        post.setUserCreated(null);
+        post.setPostContent(null);
 
-        dao.saveOrUpdate(post);
-    }
-
-    @Test
-    public void testDelete() {
-        Post post = ObjectsFactory.getDefaultPost();
-        session.save(post);
-
-        boolean result = dao.delete(post.getId());
-        int postCount = getCount();
-
-        assertTrue(result, "Entity is not deleted");
-        assertEquals(postCount, 0);
-    }
-
-    @Test
-    public void testDeleteInvalidId() {
-        boolean result = dao.delete(-100500L);
-
-        assertFalse(result, "Entity deleted");
+        dao.update(post);
     }
 
     private List<Post> createAndSavePostList(int size) {
         List<Post> posts = new ArrayList<Post>();
         Topic topic = ObjectsFactory.getDefaultTopic();
-        session.save(topic);
         User author = topic.getTopicStarter();
-        for (int i = 0; i < size; i++) {
-            Post newPost = new Post(topic, author, "content " + i);
-            session.save(newPost);
+        for (int i = 0; i < size - 1; i++) {
+            Post newPost = new Post(author, "content " + i);
+            topic.addPost(newPost);
             posts.add(newPost);
         }
+        session.save(topic);
         return posts;
     }
 
@@ -170,7 +131,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     }
 
     @Test
-    public void testGetTopicsInBranchCount() {
+    public void testGetPostsInTopicCount() {
         List<Post> persistedPosts = createAndSavePostList(5);
         long topicId = persistedPosts.get(0).getTopic().getId();
 

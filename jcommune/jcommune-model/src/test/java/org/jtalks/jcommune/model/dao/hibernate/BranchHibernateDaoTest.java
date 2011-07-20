@@ -21,6 +21,9 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -32,7 +35,12 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNotSame;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
@@ -126,7 +134,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         session.save(branch);
 
         boolean result = dao.delete(branch.getId());
-        int branchCount = getCount();
+        int branchCount = getBranchCount();
 
         assertTrue(result, "Entity is not deleted");
         assertEquals(branchCount, 0);
@@ -168,10 +176,30 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
 
     @Test
     public void testIsNotExist() {
-     assertFalse(dao.isExist(99999L));
+        assertFalse(dao.isExist(99999L));
     }
 
-    private int getCount() {
+    @Test
+    public void testDeleteTopicFromBranchCascade() {
+        Branch branch = ObjectsFactory.getDefaultBranch();
+        User author = ObjectsFactory.getDefaultUser();
+        session.save(author);
+        Topic topic = new Topic(author, "title");
+        Post post = new Post(author, "content");
+        topic.addPost(post);
+        branch.addTopic(topic);
+        session.save(branch);
+
+        branch.deleteTopic(topic);
+        dao.saveOrUpdate(branch);
+        session.flush();
+
+        assertEquals(getBranchCount(), 1);
+        assertEquals(((Number) session.createQuery("select count(*) from Topic").uniqueResult()).intValue(), 0);
+        assertEquals(((Number) session.createQuery("select count(*) from Post").uniqueResult()).intValue(), 0);
+    }
+
+    private int getBranchCount() {
         return ((Number) session.createQuery("select count(*) from Branch").uniqueResult()).intValue();
     }
 }

@@ -30,7 +30,7 @@ import java.util.List;
  * @author Vitaliy Kravchenko
  * @see org.jtalks.jcommune.model.dao.hibernate.TopicHibernateDao
  */
-public interface TopicDao extends Dao<Topic> {
+public interface TopicDao extends ChildRepository<Topic> {
 
     /**
      * Get posts range from branch.

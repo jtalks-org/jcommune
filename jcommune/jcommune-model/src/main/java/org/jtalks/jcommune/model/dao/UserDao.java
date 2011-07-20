@@ -21,13 +21,13 @@ import org.jtalks.jcommune.model.entity.User;
 
 /**
  * This interface provides persistence operations for
- * {@link User} objects. Now it has no specific methods, it has only methods inherited from {@link Dao} interface.
+ * {@link User} objects. Now it has no specific methods, it has only methods inherited from {@link ChildRepository} interface.
  *
  * @author Pavel Vervenko
  * @author Kirill Afonin
  * @see UserHibernateDao
  */
-public interface UserDao extends Dao<User> {
+public interface UserDao extends ParentRepository<User> {
 
     /**
      * Get {@link User} with corresponding username.
@@ -37,7 +37,7 @@ public interface UserDao extends Dao<User> {
      * @see User
      */
     User getByUsername(String username);
-    
+
     /**
      * Get {@link User} with corresponding encodedUsername.
      *

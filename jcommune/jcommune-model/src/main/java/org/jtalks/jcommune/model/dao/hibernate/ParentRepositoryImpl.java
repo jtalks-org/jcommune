@@ -15,23 +15,39 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
+package org.jtalks.jcommune.model.dao.hibernate;
 
-package org.jtalks.jcommune.model.dao;
-
-import org.jtalks.jcommune.model.entity.Branch;
-
-import java.util.List;
+import org.hibernate.classic.Session;
+import org.jtalks.jcommune.model.dao.ParentRepository;
+import org.jtalks.jcommune.model.entity.Entity;
 
 /**
- * @author Vitaliy Kravchenko
+ * @author Kirill Afonin
  */
+public class ParentRepositoryImpl<T extends Entity>
+        extends AbstractHibernateChildRepository<T> implements ParentRepository<T> {
 
-public interface BranchDao extends ParentRepository<Branch> {
+
+    private final String deleteQuery = "delete " + getType().getSimpleName() + " e where e.id= :id";
 
     /**
-     * Get the list of all branches.
-     *
-     * @return list of branches
+     * {@inheritDoc}
      */
-    List<Branch> getAll();
+    @Override
+    public void saveOrUpdate(T entity) {
+        Session session = getSession();
+        session.saveOrUpdate(entity);
+        session.flush();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean delete(Long id) {
+        return getSession().createQuery(deleteQuery)
+                .setCacheable(true)
+                .setLong("id", id)
+                .executeUpdate() != 0;
+    }
 }

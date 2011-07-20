@@ -35,8 +35,14 @@ import java.util.Map;
 
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.ModelAndViewAssert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeValues;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -153,7 +159,7 @@ public class TopicControllerTest {
         Topic topic = Topic.createNewTopic();
         topic.setId(TOPIC_ID);
         Post post = Post.createNewPost();
-        topic.setFirstPost(post);
+        topic.addPost(post);
 
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
 

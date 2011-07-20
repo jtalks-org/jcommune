@@ -26,7 +26,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 
@@ -54,7 +56,7 @@ public class TopicAnswerControllerTest {
     @Test
     public void testGetAnswerPage() throws NotFoundException {
         boolean isValid = false;
-        when(topicService.get(TOPIC_ID)).thenReturn(new Topic());
+        when(topicService.get(TOPIC_ID)).thenReturn(Topic.createNewTopic());
 
         ModelAndView mav = controller.getAnswerPage(TOPIC_ID, isValid, BRANCH_ID);
 

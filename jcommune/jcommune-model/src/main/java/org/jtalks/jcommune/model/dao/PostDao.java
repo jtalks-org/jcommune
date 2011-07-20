@@ -24,14 +24,14 @@ import java.util.List;
 /**
  * Interface allows to make basic CRUD operations with the
  * {@link Post} objects.
- * At the current moment it doesn't provides any additional methods over the basic {@link Dao} interface
+ * At the current moment it doesn't provides any additional methods over the basic {@link ChildRepository} interface
  * but some specific methods will be added soon.
  *
  * @author Pavel Vervenko
  * @author Kirill Afonin
  * @see PostHibernateDao
  */
-public interface PostDao extends Dao<Post> {
+public interface PostDao extends ChildRepository<Post> {
 
     /**
      * Get posts range from topic.

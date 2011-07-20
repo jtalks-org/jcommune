@@ -47,9 +47,7 @@ public class SecurityServiceImplTest {
     private AclManager aclManager;
 
     private User getUser() {
-        User user = new User();
-        user.setUsername(USERNAME);
-        user.setPassword(PASSWORD);
+        User user = new User(USERNAME, null, PASSWORD);
         try {
             user.setEncodedUsername(ENCODED_USERNAME);
         } catch (UnsupportedEncodingException e) {
@@ -112,7 +110,7 @@ public class SecurityServiceImplTest {
         assertEquals(username, USERNAME, "Username not equals");
         verify(auth).getPrincipal();
         verify(securityContext).getAuthentication();
-    }    
+    }
 
     @Test
     public void testGetCurrentUserUsernamePrincipal() throws Exception {

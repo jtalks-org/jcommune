@@ -98,12 +98,9 @@ public class RegisterUserDto extends UserDto {
      * @return populated {@link User} object
      */
     public User createUser() {
-        User newUser = new User();
-        newUser.setEmail(getEmail());
+        User newUser = new User(username, getEmail(), password);
         newUser.setFirstName(getFirstName());
         newUser.setLastName(getLastName());
-        newUser.setUsername(username);
-        newUser.setPassword(password);
         return newUser;
     }
 }

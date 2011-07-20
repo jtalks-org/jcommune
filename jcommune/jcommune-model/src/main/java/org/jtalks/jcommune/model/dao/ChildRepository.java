@@ -21,33 +21,22 @@ import org.jtalks.jcommune.model.entity.Entity;
 
 
 /**
- * Basic Data Access Object interface.
- * Provides CRUD operations with {@link org.jtalks.jcommune.model.entity.Entity} objects.
  *
  * @author Pavel Vervenko
- * @see PostDao
- * @see TopicDao
- * @see UserDao
+ * @author Kirill Afonin
  */
-public interface Dao<T extends Entity> {
+public interface ChildRepository<T extends Entity> {
 
     /**
-     * Save or update the persistent object.
+     * Update entity.
+     * You should not try to save entity using this method.
      *
-     * @param persistent object to save
+     * @param entity object to save
      */
-    void saveOrUpdate(T persistent);
+    void update(T entity);
 
     /**
-     * Delete the object by it's id.
-     *
-     * @param id the id
-     * @return {@code true} if entity deleted successfully
-     */
-    boolean delete(Long id);
-
-    /**
-     * Get the object by id.
+     * Get entity by id.
      *
      * @param id the id
      * @return loaded Persistence instance

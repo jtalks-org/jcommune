@@ -45,8 +45,7 @@ public class SuccessfulAuthenticationHandlerTest {
 
     @Test
     public void testOnAuthenticationSuccess() throws Exception {
-        User user = new User();
-        user.setUsername("username");
+        User user = new User("username", "email", "password");
         Authentication auth = mock(Authentication.class);
         when(auth.getPrincipal()).thenReturn(user);
 

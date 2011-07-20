@@ -45,6 +45,15 @@ public class User extends Entity implements UserDetails {
     private String role = "ROLE_USER";
     private String encodedUsername;
 
+    public User() {
+    }
+
+    public User(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
+
     /**
      * Get the user's Last Name.
      *
