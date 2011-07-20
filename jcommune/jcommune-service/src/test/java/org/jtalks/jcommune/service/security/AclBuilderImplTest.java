@@ -17,7 +17,7 @@
  */
 package org.jtalks.jcommune.service.security;
 
-import org.jtalks.jcommune.model.entity.Persistent;
+import org.jtalks.jcommune.model.entity.Entity;
 import org.springframework.security.acls.domain.BasePermission;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -35,7 +35,7 @@ public class AclBuilderImplTest {
     public static final String ROLE = "ROLE_USER";
     private AclBuilder builder;
     private AclManager manager;
-    private Persistent target = new Persistent() {
+    private Entity target = new Entity() {
     };
 
     @BeforeMethod

@@ -50,6 +50,20 @@ public final class ObjectsFactory {
         newUser.setPassword("password");
         return newUser;
     }
+    
+    /**
+     * @return {@link User} with deference from default user values.
+     * @see {@link ObjectsFactory#getDefaultUser()}. 
+     */
+    public static User getAnotherUser(){
+        User newUser = new User();
+        newUser.setUsername("anotherUsername");
+        newUser.setFirstName("another first name");
+        newUser.setLastName("another last name");
+        newUser.setEmail("another@mail.com");
+        newUser.setPassword("anotherPassword");
+        return newUser;
+    }
 
     public static Post getDefaultPost() {
         return getPost(persist(getDefaultUser()));

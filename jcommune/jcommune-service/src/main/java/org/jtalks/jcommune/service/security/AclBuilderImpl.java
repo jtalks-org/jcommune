@@ -17,7 +17,7 @@
  */
 package org.jtalks.jcommune.service.security;
 
-import org.jtalks.jcommune.model.entity.Persistent;
+import org.jtalks.jcommune.model.entity.Entity;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.GrantedAuthoritySid;
 import org.springframework.security.acls.domain.PrincipalSid;
@@ -40,7 +40,7 @@ public class AclBuilderImpl implements AclBuilder {
 
     private List<Sid> sids = new ArrayList<Sid>();
     private List<Permission> permissions = new ArrayList<Permission>();
-    private Persistent target;
+    private Entity target;
     private AclManager aclManager;
     private Action action;
 
@@ -49,7 +49,7 @@ public class AclBuilderImpl implements AclBuilder {
      *
      * @param aclManager instance of manager
      * @param action     action that will be executed when you call
-     *                   {@link AclBuilder#on(org.jtalks.jcommune.model.entity.Persistent)
+     *                   {@link AclBuilder#on(org.jtalks.jcommune.model.entity.Entity)
      */
     public AclBuilderImpl(AclManager aclManager, Action action) {
         this.aclManager = aclManager;
@@ -123,7 +123,7 @@ public class AclBuilderImpl implements AclBuilder {
      * {@inheritDoc}
      */
     @Override
-    public AclBuilder on(Persistent object) {
+    public AclBuilder on(Entity object) {
         target = object;
         if (sids.isEmpty() || permissions.isEmpty()) {
             throw new IllegalStateException("You can't grant permissions without sids or permissions");

@@ -33,6 +33,6 @@ public class BranchHibernateDao extends AbstractHibernateDao<Branch> implements 
     @Override
     @SuppressWarnings("unchecked")
     public List<Branch> getAll() {
-        return getSession().createQuery("from Branch").list();
+        return getSession().createQuery("from Branch").setCacheable(true).list();
     }
 }

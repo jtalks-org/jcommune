@@ -19,9 +19,9 @@ package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
-import org.jtalks.jcommune.service.exceptions.DuplicateException;
 import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 
 import java.io.UnsupportedEncodingException;
 
@@ -43,14 +43,26 @@ public interface UserService extends EntityService<User> {
     User getByUsername(String username) throws NotFoundException;
 
     /**
+     * Get {@link User} by encodedUsername.
+     *
+     * @param encodedUsername encodedUsername of User
+     * @return {@link User} with given encodedUsername
+     * @throws NotFoundException if user not found
+     * @see User
+     */
+    User getByEncodedUsername(String encodedUsername) throws NotFoundException;
+
+    /**
      * Try to register {@link User} with given features.
      *
      * @param user user for register
      * @return registered {@link User}
-     * @throws DuplicateException if user with username or email already exist
+     * @throws DuplicateUserException  if user with username already exist
+     * @throws DuplicateEmailException when user with given email already exist
      * @see User
      */
     User registerUser(User user) throws DuplicateUserException, DuplicateEmailException;
+
 
     /**
      * Updates user last login time to current time.
@@ -59,11 +71,18 @@ public interface UserService extends EntityService<User> {
      * @see User
      */
     void updateLastLoginTime(User user);
-    
+
     /**
      * Update user entity.
-     * 
-     * @param user - user whose information would be updated 
+     *
+     * @param editedUser      - user with new property values entered by user
+     * @param username        - username of User whose profile we are going to update
+     *                        (current logged in User.username)
+     * @param currentPassword - current user password, could be NULL
+     * @param newPassword     - new user password, could be NULL
+     * @throws DuplicateEmailException when user with given email already exist
+     * @throws WrongPasswordException  when user enter wrong currentPassword
      */
-    void editUserProfile(User user);
+    void editUserProfile(User editedUser, String username, String currentPassword, String newPassword)
+            throws DuplicateEmailException, WrongPasswordException;
 }

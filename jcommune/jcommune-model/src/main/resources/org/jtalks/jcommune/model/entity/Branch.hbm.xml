@@ -3,6 +3,7 @@
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
   <class name="Branch" table="BRANCH">
+    <cache usage="nonstrict-read-write"/>
     <id column="BRANCH_ID" name="id" unsaved-value="0">
       <generator class="native"/>
     </id>

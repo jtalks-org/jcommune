@@ -37,6 +37,15 @@ public interface UserDao extends Dao<User> {
      * @see User
      */
     User getByUsername(String username);
+    
+    /**
+     * Get {@link User} with corresponding encodedUsername.
+     *
+     * @param encodedUsername encoded name of requested user.
+     * @return {@link User} with given encodedUsername.
+     * @see User
+     */
+    User getByEncodedUsername(String encodedUsername);
 
     /**
      * Check if {@link User} with given username exist.

@@ -28,7 +28,7 @@ import org.joda.time.DateTime;
  * @author Pavel Vervenko
  * @author Alexandre Teterin
  */
-public class PrivateMessage extends Persistent {
+public class PrivateMessage extends Entity {
 
     private DateTime creationDate;
     private User userFrom;

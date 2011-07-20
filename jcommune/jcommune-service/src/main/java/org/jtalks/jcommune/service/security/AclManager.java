@@ -17,7 +17,7 @@
  */
 package org.jtalks.jcommune.service.security;
 
-import org.jtalks.jcommune.model.entity.Persistent;
+import org.jtalks.jcommune.model.entity.Entity;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.security.acls.model.Sid;
 
@@ -36,7 +36,7 @@ public interface AclManager {
      * @param permissions list of permissions
      * @param target      secured object
      */
-    void grant(List<Sid> sids, List<Permission> permissions, Persistent target);
+    void grant(List<Sid> sids, List<Permission> permissions, Entity target);
 
     /**
      * Delete permissions from list for every sid in list on {@code target} object.
@@ -45,7 +45,7 @@ public interface AclManager {
      * @param permissions list of permissions
      * @param target      secured object
      */
-    void delete(List<Sid> sids, List<Permission> permissions, Persistent target);
+    void delete(List<Sid> sids, List<Permission> permissions, Entity target);
 
     /**
      * Delete object from acl. All permissions will be removed.

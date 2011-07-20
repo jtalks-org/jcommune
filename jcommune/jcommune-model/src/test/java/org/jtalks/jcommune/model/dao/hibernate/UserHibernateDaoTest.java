@@ -37,6 +37,7 @@ import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEqua
 
 /**
  * @author Kirill Afonin
+ * @author Osadchuck Eugeny 
  */
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
@@ -111,14 +112,14 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         assertEquals(result.getFirstName(), newName);
     }
 
-/*    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void testUpdateNotNullViolation() {
         User user = ObjectsFactory.getDefaultUser();
         session.save(user);
-        user.setUsername(null);
+        user.setEmail(null);
 
         dao.saveOrUpdate(user);
-    }*/
+    }
 
     @Test
     public void testDelete() {
@@ -147,6 +148,17 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         session.save(user);
 
         User result = dao.getByUsername(user.getUsername());
+
+        assertNotNull(result);
+        assertReflectionEquals(user, result);
+    }
+    
+    @Test
+    public void testGetByEncodedUsername() {
+        User user = ObjectsFactory.getDefaultUser();
+        session.save(user);
+
+        User result = dao.getByEncodedUsername(user.getEncodedUsername());
 
         assertNotNull(result);
         assertReflectionEquals(user, result);

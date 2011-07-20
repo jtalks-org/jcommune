@@ -18,7 +18,7 @@
 package org.jtalks.jcommune.service.security;
 
 
-import org.jtalks.jcommune.model.entity.Persistent;
+import org.jtalks.jcommune.model.entity.Entity;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.security.acls.model.Sid;
 
@@ -29,12 +29,12 @@ import java.util.List;
  * <p/>
  * <b>Examples:</b>
  * <p>You want grant &quot;admin&quot; permission to user with name &quot;jack&quot;
- * on {@code Topic topic = ...;} object. Object must have <b>assigned id</b> and be inherited from {@link Persistent}.
+ * on {@code Topic topic = ...;} object. Object must have <b>assigned id</b> and be inherited from {@link org.jtalks.jcommune.model.entity.Entity}.
  * Create builder instance({@link AclBuilderImpl}):
  * {@code AclBuilder builder = new AclBuilderImpl(manager, AclBuilderImpl.Action.GRANT); }
  * Granting permissions:
  * {@code builder.user(&quot;jack&quot;).admin().on(topic);}
- * Permissions will be created when you call {@link AclBuilder#on(org.jtalks.jcommune.model.entity.Persistent)}
+ * Permissions will be created when you call {@link AclBuilder#on(org.jtalks.jcommune.model.entity.Entity)}
  * </p>
  * <p>
  * You want grant &quot;read&quot; and &quot;delete&quot; permissions to user with name &quot;jack&quot;
@@ -104,7 +104,7 @@ public interface AclBuilder {
      * @param object secured object
      * @return clean builder with same action
      */
-    AclBuilder on(Persistent object);
+    AclBuilder on(Entity object);
 
     /**
      * Check that sid (role or user) with given name in builder.

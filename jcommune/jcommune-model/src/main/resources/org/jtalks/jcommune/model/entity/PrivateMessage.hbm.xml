@@ -7,8 +7,8 @@
     <param name="enumClass">org.jtalks.jcommune.model.entity.PrivateMessageStatus</param>
   </typedef>
 
-
   <class name="PrivateMessage" table="PRIVATE_MESSAGE">
+    <cache usage="nonstrict-read-write"/>
     <id column="PM_ID" name="id" unsaved-value="0">
       <generator class="native"/>
     </id>

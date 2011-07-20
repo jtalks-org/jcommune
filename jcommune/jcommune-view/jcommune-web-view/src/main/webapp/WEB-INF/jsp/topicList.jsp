@@ -23,7 +23,7 @@
                 <td><a href="${pageContext.request.contextPath}/branch/${branchId}/topic/${topic.id}.html"> <c:out
                         value="${topic.title}"/></a></td>
                 <td>
-                    <a href="${pageContext.request.contextPath}/user/${topic.topicStarter.id}.html">
+                    <a href="${pageContext.request.contextPath}/user/${topic.topicStarter.encodedUsername}.html">
                         <c:out value="${topic.topicStarter.username}"/>
                     </a>
                 </td>

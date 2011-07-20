@@ -35,7 +35,7 @@ import java.util.Collection;
  * @author Kirill Afonin
  * @author Alexandre Teterin
  */
-public class User extends Persistent implements UserDetails {
+public class User extends Entity implements UserDetails {
     private String lastName;
     private String firstName;
     private String username;
@@ -212,7 +212,6 @@ public class User extends Persistent implements UserDetails {
     }
 
     /**
-     *
      * @return encoded username
      */
     public String getEncodedUsername() {
@@ -220,7 +219,6 @@ public class User extends Persistent implements UserDetails {
     }
 
     /**
-     *
      * @param encodedUsername encoded username to set
      */
     public void setEncodedUsername(String encodedUsername) {

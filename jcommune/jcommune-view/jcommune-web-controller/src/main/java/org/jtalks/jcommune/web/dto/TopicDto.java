@@ -18,10 +18,10 @@
 
 package org.jtalks.jcommune.web.dto;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
+import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.Topic;
+
+import javax.validation.constraints.Size;
 
 /**
  * DTO for {@link Topic} objects. Used for validation and binding to form.
@@ -31,12 +31,12 @@ import org.jtalks.jcommune.model.entity.Topic;
  */
 public class TopicDto {
 
-    @NotNull(message = "Length should be bigger than 5 and less than 255")
+    @NotBlank
     @Size(min = 5, max = 255)
     private String topicName;
 
-    @NotNull(message = "Length should be bigger than 2 and less than 1000")
-    @Size(min = 2, max = 1000)
+    @NotBlank
+    @Size(min = 5, max = 10000)
     private String bodyText;
 
     /**

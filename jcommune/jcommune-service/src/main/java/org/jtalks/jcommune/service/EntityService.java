@@ -17,7 +17,7 @@
  */
 package org.jtalks.jcommune.service;
 
-import org.jtalks.jcommune.model.entity.Persistent;
+import org.jtalks.jcommune.model.entity.Entity;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 /**
@@ -27,7 +27,7 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
  * @author Osadchuck Eugeny
  * @author Kirill Afonin
  */
-public interface EntityService<T extends Persistent> {
+public interface EntityService<T extends Entity> {
 
     /**
      * Get persistent object by id. Method is trying to find persistent object with current primary id and return it.

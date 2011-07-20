@@ -18,7 +18,7 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.model.dao.UserDao;
-import org.jtalks.jcommune.model.entity.Persistent;
+import org.jtalks.jcommune.model.entity.Entity;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.security.AclBuilder;
@@ -111,7 +111,7 @@ public class SecurityServiceImpl implements SecurityService {
      * {@inheritDoc}
      */
     @Override
-    public void deleteFromAcl(Persistent securedObject) {
+    public void deleteFromAcl(Entity securedObject) {
         deleteFromAcl(securedObject.getClass(), securedObject.getId());
     }
 
@@ -157,6 +157,6 @@ public class SecurityServiceImpl implements SecurityService {
             throw new UsernameNotFoundException("User not found: " + username);
         }
         return user;
-    }
+    }    
 
 }

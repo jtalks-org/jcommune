@@ -23,6 +23,7 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
 import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +46,13 @@ import java.io.UnsupportedEncodingException;
  *
  * @author Kirill Afonin
  * @author Alexandre Teterin
+ * @author Max Malakhov
  */
 @Controller
 public class UserController {
+    public static final String EDIT_PROFILE = "editProfile";
+    public static final String REGISTRATION = "registration";
+    
     private final SecurityService securityService;
     private final UserService userService;
 
@@ -84,7 +89,8 @@ public class UserController {
      */
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
     public ModelAndView registrationPage() {
-        return new ModelAndView("registration").addObject("newUser", new RegisterUserDto());
+    	RegisterUserDto newUser = new RegisterUserDto();
+        return new ModelAndView(REGISTRATION).addObject("newUser", newUser);
     }
 
     /**
@@ -92,13 +98,13 @@ public class UserController {
      *
      * @param userDto {@link RegisterUserDto} populated in form
      * @param result  result of {@link RegisterUserDto} validation
-     * @return redirect to / if registration successfull or back to "/registration" if failed
+     * @return redirect to / if registration successful or back to "/registration" if failed
      */
-    @RequestMapping(value = "/user", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public ModelAndView registerUser(@Valid @ModelAttribute("newUser") RegisterUserDto userDto, BindingResult result) {
 
         if (result.hasErrors()) {
-            return new ModelAndView("registration");
+            return new ModelAndView(REGISTRATION);
         }
 
         try {
@@ -109,19 +115,19 @@ public class UserController {
         } catch (DuplicateEmailException e) {
             result.rejectValue("email", "validation.duplicateemail");
         }
-        return new ModelAndView("registration");
+        return new ModelAndView(REGISTRATION);
     }
 
     /**
      * Show page with user info.
      *
-     * @param userId id
+     * @param encodedUsername - {@link User#getEncodedUsername()}
      * @return user details view with {@link User} object
      * @throws NotFoundException if user with given id not found
      */
-    @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
-    public ModelAndView show(@PathVariable("userId") Long userId) throws NotFoundException {
-        User user = userService.get(userId);
+    @RequestMapping(value = "/user/{encodedUsername}", method = RequestMethod.GET)
+    public ModelAndView show(@PathVariable("encodedUsername") String encodedUsername) throws NotFoundException {
+        User user = userService.getByEncodedUsername(encodedUsername);
         return new ModelAndView("userDetails", "user", user);
     }
 
@@ -133,54 +139,45 @@ public class UserController {
      */
     @RequestMapping(value = "/user/edit", method = RequestMethod.GET)
     public ModelAndView editProfilePage() throws NotFoundException {
-        String currentUser = securityService.getCurrentUserUsername();
-        User user = userService.getByUsername(currentUser);
-        EditUserProfileDto editedUser = new EditUserProfileDto();
-        editedUser.setEmail(user.getEmail());
-        editedUser.setFirstName(user.getFirstName());
-        editedUser.setLastName(user.getLastName());
-        return new ModelAndView("editProfile", "editedUser", editedUser);
+        User user = securityService.getCurrentUser();
+        EditUserProfileDto editedUser = new EditUserProfileDto(user);
+        return new ModelAndView(EDIT_PROFILE, "editedUser", editedUser);
     }
 
     /**
      * Update user profile info. Check if the user enter valid data and update profile in database.
      * In error case return into the edit profile page and draw the error.
      *
-     * @param editedUser - dto populated by user
-     * @param result     - binding result which contains the validation result
-     * @return - in cace of errors return back to edit profile page, in another case return to user detalis page
+     * @param userDto - dto populated by user
+     * @param result  - binding result which contains the validation result
+     * @return - in case of errors return back to edit profile page, in another case return to user detalis page
      * @throws NotFoundException - throws if current logged in user was not found
      */
     @RequestMapping(value = "/user/edit", method = RequestMethod.POST)
-    public ModelAndView editProfile(@Valid @ModelAttribute("editedUser") EditUserProfileDto editedUser,
+    public ModelAndView editProfile(@Valid @ModelAttribute("editedUser") EditUserProfileDto userDto,
                                     BindingResult result) throws NotFoundException {
+
         if (result.hasErrors()) {
-            return new ModelAndView("editProfile");
+            return new ModelAndView(EDIT_PROFILE);
         }
 
-        String currentUser = securityService.getCurrentUserUsername();
-        User user = userService.getByUsername(currentUser);
-        user.setEmail(editedUser.getEmail());
-        user.setFirstName(editedUser.getFirstName());
-        user.setLastName(editedUser.getLastName());
+        User currentUser = securityService.getCurrentUser();
+        User userData2Edit = userDto.createUser();
 
-        boolean changePassword = editedUser.getNewUserPassword() != null;
-        if (changePassword) {
-            if (editedUser.getCurrentUserPassword() == null ||
-                    !user.getPassword().equals(editedUser.getCurrentUserPassword())) {
-                result.rejectValue("currentUserPassword", "label.incorrectCurrentPassword",
-                        "Password does not match to the current password");
-                return new ModelAndView("editProfile");
-            } else {
-                user.setPassword(editedUser.getNewUserPassword());
-            }
+        try {
+            userService.editUserProfile(userData2Edit, currentUser.getUsername(),
+                    userDto.getCurrentUserPassword(), userDto.getNewUserPassword());
+        } catch (DuplicateEmailException e) {
+            result.rejectValue("email", "validation.duplicateemail");
+            return new ModelAndView(EDIT_PROFILE);
+        } catch (WrongPasswordException e) {
+            result.rejectValue("currentUserPassword", "label.incorrectCurrentPassword",
+                    "Password does not match to the current password");
+            return new ModelAndView(EDIT_PROFILE);
         }
-
-        userService.editUserProfile(user);
-
         return new ModelAndView(new StringBuilder()
                 .append("redirect:/user/")
-                .append(user.getEncodedUsername())
+                .append(currentUser.getEncodedUsername())
                 .append(".html").toString());
     }
 }

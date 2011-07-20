@@ -21,9 +21,9 @@ import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
-import org.jtalks.jcommune.service.exceptions.DuplicateException;
 import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +58,20 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         User user = dao.getByUsername(username);
         if (user == null) {
             String msg = "User " + username + " not found.";
+            logger.info(msg);
+            throw new NotFoundException(msg);
+        }
+        return user;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public User getByEncodedUsername(String encodedUsername) throws NotFoundException {
+        User user = dao.getByEncodedUsername(encodedUsername);
+        if (user == null) {
+            String msg = "User " + encodedUsername + " not found.";
             logger.info(msg);
             throw new NotFoundException(msg);
         }
@@ -120,7 +134,28 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public void editUserProfile(User user) {
-        dao.saveOrUpdate(user);
+    public void editUserProfile(User editedUser, String username, String currentPassword, String newPassword)
+            throws DuplicateEmailException, WrongPasswordException {
+        User currentUser = dao.getByUsername(username);
+        boolean changePassword = newPassword != null;
+        if (changePassword) {
+            if (currentPassword == null ||
+                    !currentUser.getPassword().equals(currentPassword)) {
+                throw new WrongPasswordException();
+            } else {
+                currentUser.setPassword(newPassword);
+            }
+        }
+        
+        boolean changeEmail = !currentUser.getEmail().equals(editedUser.getEmail());
+        if(changeEmail && isEmailExist(editedUser.getEmail())){            
+            throw new DuplicateEmailException();                                    
+        }
+        
+        currentUser.setFirstName(editedUser.getFirstName());
+        currentUser.setLastName( editedUser.getLastName());
+        currentUser.setEmail(editedUser.getEmail());
+        
+        dao.saveOrUpdate(currentUser);   
     }
 }

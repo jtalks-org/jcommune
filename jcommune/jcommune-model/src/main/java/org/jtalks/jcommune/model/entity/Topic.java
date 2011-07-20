@@ -32,7 +32,7 @@ import java.util.List;
  * @author Vitaliy Kravchenko
  * @author Max Malakhov
  */
-public class Topic extends Persistent {
+public class Topic extends Entity {
 
     /**
      * The creation date of the topic.

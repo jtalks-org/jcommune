@@ -18,18 +18,20 @@
 package org.jtalks.jcommune.model.entity;
 
 /**
- * Basic class for persistent objects.
- * 
+ * Gives uniqueness to objects.
+ *
  * @author Pavel Vervenko
+ * @author Kirill Afonin
  */
-public abstract class Persistent {
+public abstract class Entity {
 
     private long id;
 
     private String uuid = java.util.UUID.randomUUID().toString();
-    
+
     /**
      * Get the primary id of the persistent object.
+     *
      * @return the id
      */
     public long getId() {
@@ -38,6 +40,7 @@ public abstract class Persistent {
 
     /**
      * Set the id for the persistent object.
+     *
      * @param id id to set
      */
     public void setId(long id) {
@@ -45,7 +48,8 @@ public abstract class Persistent {
     }
 
     /**
-     * Get the unique id. 
+     * Get the unique id.
+     *
      * @return the uuid
      */
     public String getUuid() {
@@ -54,12 +58,13 @@ public abstract class Persistent {
 
     /**
      * Set the unique id for the persistent object.
+     *
      * @param uuid uuid to set
      */
     public void setUuid(String uuid) {
         this.uuid = uuid;
-    }    
-    
+    }
+
     /**
      * {@inheritDoc }
      */
@@ -74,7 +79,7 @@ public abstract class Persistent {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        Persistent other = (Persistent) obj;
+        Entity other = (Entity) obj;
         return uuid.equals(other.uuid);
     }
 

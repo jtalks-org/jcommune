@@ -18,7 +18,7 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.NotBlank;
 
 /**
  * DTO for {@link User} object. Required for validation and binding
@@ -30,7 +30,7 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 public abstract class UserDto {
 
-    @NotEmpty
+    @NotBlank
     @Email
     private String email;
     private String firstName;

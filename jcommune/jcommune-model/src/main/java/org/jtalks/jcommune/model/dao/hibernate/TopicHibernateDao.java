@@ -38,6 +38,7 @@ public class TopicHibernateDao extends AbstractHibernateDao<Topic> implements To
     @SuppressWarnings("unchecked")
     public List<Topic> getTopicRangeInBranch(Long branchId, int start, int max) {
         return getSession().getNamedQuery("getAllTopicsInBranch")
+                .setCacheable(true)
                 .setLong("branchId", branchId)
                 .setFirstResult(start)
                 .setMaxResults(max)
@@ -50,7 +51,7 @@ public class TopicHibernateDao extends AbstractHibernateDao<Topic> implements To
     @Override
     public int getTopicsInBranchCount(long branchId) {
         return ((Number) getSession().createQuery("select count(*) from Topic t where t.branch = ?")
-                .setLong(0, branchId).uniqueResult()).intValue();
+                .setCacheable(true).setLong(0, branchId).uniqueResult()).intValue();
     }
 
     /**

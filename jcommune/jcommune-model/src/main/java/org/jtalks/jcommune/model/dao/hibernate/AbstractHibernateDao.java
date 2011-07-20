@@ -20,12 +20,12 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
 import org.jtalks.jcommune.model.dao.Dao;
-import org.jtalks.jcommune.model.entity.Persistent;
+import org.jtalks.jcommune.model.entity.Entity;
 
 import java.lang.reflect.ParameterizedType;
 
 /**
- * Basic class for access to the {@link Persistent} objects.
+ * Basic class for access to the {@link org.jtalks.jcommune.model.entity.Entity} objects.
  * Uses to load objects from database, save, update or delete them.
  * The implementation is based on the Hibernate.
  * Has the implementation of some commonly used methods.
@@ -33,7 +33,7 @@ import java.lang.reflect.ParameterizedType;
  * @author Pavel Vervenko
  * @author Kirill Afonin
  */
-public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<T> {
+public abstract class AbstractHibernateDao<T extends Entity> implements Dao<T> {
 
     /**
      * Hibernate SessionFactory
@@ -92,6 +92,7 @@ public abstract class AbstractHibernateDao<T extends Persistent> implements Dao<
     @Override
     public boolean delete(Long id) {
         return getSession().createQuery(deleteQuery)
+                .setCacheable(true)
                 .setLong("id", id)
                 .executeUpdate() != 0;
     }

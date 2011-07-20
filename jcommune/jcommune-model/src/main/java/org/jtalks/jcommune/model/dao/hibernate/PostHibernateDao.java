@@ -39,6 +39,7 @@ public class PostHibernateDao extends AbstractHibernateDao<Post> implements Post
     @SuppressWarnings("unchecked")
     public List<Post> getPostRangeInTopic(long topicId, int start, int max) {
         return getSession().getNamedQuery("getAllPostsInTopic")
+                .setCacheable(true)
                 .setLong("topicId", topicId)
                 .setFirstResult(start)
                 .setMaxResults(max)
@@ -51,6 +52,6 @@ public class PostHibernateDao extends AbstractHibernateDao<Post> implements Post
     @Override
     public int getPostsInTopicCount(long topicId) {
         return ((Number) getSession().createQuery("select count(*) from Post p where p.topic = ?")
-                .setLong(0, topicId).uniqueResult()).intValue();
+                .setCacheable(true).setLong(0, topicId).uniqueResult()).intValue();
     }
 }
