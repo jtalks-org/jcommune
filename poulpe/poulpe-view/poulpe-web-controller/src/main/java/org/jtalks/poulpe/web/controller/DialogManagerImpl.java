@@ -43,36 +43,55 @@ public class DialogManagerImpl implements DialogManager {
                     Messagebox.EXCLAMATION);
         } catch (InterruptedException e) {
             LOGGER.error("Problem with showing messagebox.", e);
-            // TODO unlikely to happen
+            // it's unlikely to happen
             throw new AssertionError(e);
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    // TODO: it doesn't work at present. As far as I understood this message is
-    // shown in a separate thread so false value is returned always.
-    public boolean confirmDeletion(String victim) {
-        final boolean[] result = new boolean[1];
+    public void confirmDeletion(final String victim, final DialogManager.Confirmable confirmable) {
+        final String title = Labels.getLabel("item.delete.$") + " " + victim + "?";
+        final String text = Labels.getLabel("item.delete.question") + " " + victim + "?";
         try {
-            Messagebox.show(Labels.getLabel("item.delete.question") + " " + victim + "?",
-                    Labels.getLabel("item.delete.$") + " " + victim + "?", Messagebox.YES
-                            | Messagebox.CANCEL, Messagebox.QUESTION, Messagebox.CANCEL,
-                    new EventListener() {
-                        /** {@inheritDoc} */
-                        @Override
-                        public void onEvent(Event event) {
-                            if ((Integer) event.getData() == Messagebox.YES) {
-                                result[0] = true;
-                            }
-                        }
-                    });
+            Messagebox.show(text, title, Messagebox.YES | Messagebox.CANCEL, Messagebox.QUESTION,
+                    Messagebox.CANCEL, new DialogDeleteListener(confirmable));
         } catch (InterruptedException e) {
             LOGGER.error("Problem with showing deleting messagebox.", e);
-            // TODO unlikely to happen
+            // it's unlikely to happen
             throw new AssertionError(e);
         }
-        return result[0];
+    }
+
+    /**
+     * The class for deciding if the item ought to be deleted in accordance with
+     * the message button user clicked on.
+     * 
+     * @author Dmitriy Sukharev
+     * 
+     */
+    private static class DialogDeleteListener implements EventListener {
+
+        private Confirmable confirmable;
+
+        /**
+         * Constructor of the listener which initialises the object whose
+         * {@code execute} method will be invoked.
+         * 
+         * @param confirmable
+         *            the object whose {@code execute} method will be invoked
+         */
+        public DialogDeleteListener(Confirmable confirmable) {
+            this.confirmable = confirmable;
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public void onEvent(Event event) {
+            if ((Integer) event.getData() == Messagebox.YES) {
+                confirmable.execute();
+            }
+        }
     }
 
 }

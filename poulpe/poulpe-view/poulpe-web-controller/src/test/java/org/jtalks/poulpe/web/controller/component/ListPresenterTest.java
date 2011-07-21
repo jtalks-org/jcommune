@@ -18,7 +18,6 @@
 package org.jtalks.poulpe.web.controller.component;
 
 import static org.mockito.Matchers.argThat;
-import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -31,10 +30,10 @@ import java.util.List;
 import org.jtalks.poulpe.model.entity.Component;
 import org.jtalks.poulpe.model.entity.ComponentType;
 import org.jtalks.poulpe.service.ComponentService;
+import org.jtalks.poulpe.web.controller.DialogManager;
 import org.jtalks.poulpe.web.controller.WindowManager;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
-import org.mockito.InOrder;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -64,7 +63,7 @@ public class ListPresenterTest {
         verify(view).createModel(argThat(new ComponentListMatcher(fake)));
     }
     
-    @Test (enabled=false)
+    @Test
     public void addComponentTest() {
         ListView view = mock(ListView.class);
         WindowManager wm = mock(WindowManager.class);
@@ -76,16 +75,15 @@ public class ListPresenterTest {
         // damn, it's implementation dependent.
         // upd: now it's independent, but too general.
         ArgumentCaptor<Object> argument2 =
-            ArgumentCaptor.forClass(Object.class);        
+            ArgumentCaptor.forClass(Object.class);
         
         presenter.addComponent();
         verify(wm).showEditComponentWindow(
                 argument1.capture(), argument2.capture());
         assertEquals(argument1.getValue(), new Long(-1L));
-        assertNotNull(argument2.getValue());
     }
     
-    @Test (enabled=false)
+    @Test
     public void editComponentTest() {
         ListView view = mock(ListView.class);
         WindowManager wm = mock(WindowManager.class);
@@ -99,25 +97,62 @@ public class ListPresenterTest {
         presenter.editComponent();
         verify(wm).showEditComponentWindow(argument1.capture(), argument2.capture());
         assertEquals(argument1.getValue(), new Long(fake.getId()));
-        assertNotNull(argument2.getValue());
     }
     
-    @Test (enabled=false)
+    @Test
     public void deleteComponentTest() {
         ComponentService componentService = mock(ComponentService.class);
         ListView view = mock(ListView.class);
+        DialogManager dm = mock(DialogManager.class);
+        presenter.setDialogManager(dm);
         presenter.setComponentService(componentService);
         presenter.initView(view);        
         Component fake = getFakeComponent(1L, "Fake1", "Desc1", ComponentType.ARTICLE);
         
+        ArgumentCaptor<String> argument1 = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<DialogManager.Confirmable> argument2 =
+            ArgumentCaptor.forClass(DialogManager.Confirmable.class);  
+        
         when(view.getSelectedItem()).thenReturn(fake);
-        when(componentService.getAll()).thenReturn(new ArrayList<Component>());
+        when(view.hasSelectedItem()).thenReturn(true);
+        //when(componentService.getAll()).thenReturn(new ArrayList<Component>());
         
         presenter.deleteComponent();
         
-        InOrder inOrder = inOrder(componentService, view);
-        inOrder.verify(componentService).deleteComponent(argThat(new ComponentMatcher(fake)));
-        inOrder.verify(view).updateList(presenter.getComponents());
+//        InOrder inOrder = inOrder(componentService, view);
+//        inOrder.verify(componentService).deleteComponent(argThat(new ComponentMatcher(fake)));
+//        inOrder.verify(view).updateList(presenter.getComponents());
+        verify(dm).confirmDeletion(argument1.capture(), argument2.capture());
+        assertEquals(argument1.getValue(), fake.getName());
+        assertNotNull(argument2.getValue());
+        
+        
+        // =========================
+        when(view.hasSelectedItem()).thenReturn(false);
+        presenter.deleteComponent();
+        verify(dm).notify("item.no.selected.item");
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Test public void executeDcTest() {
+        ComponentService componentService = mock(ComponentService.class);
+        ListView view = mock(ListView.class);
+        presenter.setComponentService(componentService);
+        presenter.initView(view);
+        
+        final int id = 1;
+        List<Component> fakeList = getFakeComponents();        
+        Component fake = fakeList.get(id);        
+        
+        when(componentService.getAll()).thenReturn(fakeList);
+        when(view.getSelectedItem()).thenReturn(fake);
+        
+        @SuppressWarnings("rawtypes")
+        ArgumentCaptor<List> argument = ArgumentCaptor.forClass(List.class);
+        presenter.new DeleteConfirmable().execute();
+        
+        verify(componentService).deleteComponent(fake);
+        verify(view).updateList(argument.capture());        
     }
     
     private Component getFakeComponent(long id, String name, String description, ComponentType type) {

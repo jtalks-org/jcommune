@@ -20,6 +20,7 @@ package org.jtalks.poulpe.web.controller.component;
 import java.util.List;
 
 import org.jtalks.poulpe.model.entity.Component;
+import org.jtalks.poulpe.web.controller.DialogManager;
 
 //TODO: tasks which are going to be done
 //2) unit-test;
@@ -88,10 +89,8 @@ public class ListPresenter extends AbstractPresenter {
             getDialogManager().notify("item.no.selected.item");
         } else {
             Component victim = view.getSelectedItem();
-            if (getDialogManager().confirmDeletion(victim.getName())) {
-                getComponentService().deleteComponent(victim);
-                view.updateList(getComponents());
-            }
+            DeleteConfirmable dc = new DeleteConfirmable();
+            getDialogManager().confirmDeletion(victim.getName(), dc);
         }
     }
 
@@ -100,4 +99,21 @@ public class ListPresenter extends AbstractPresenter {
         view.updateList(getComponents());
     }
 
+    /**
+     * The class for executing deletion of the selected item, delegates this
+     * task to the component service and view.
+     * 
+     * @author Dmitriy Sukharev
+     * 
+     */
+    class DeleteConfirmable implements DialogManager.Confirmable {
+        /** {@inheritDoc} */
+        @Override
+        public void execute() {
+            Component victim = view.getSelectedItem();
+            getComponentService().deleteComponent(victim);
+            updateList();
+        }        
+    }
+    
 }

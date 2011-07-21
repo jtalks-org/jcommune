@@ -39,15 +39,13 @@ import org.zkoss.zul.Window;
  */
 public class ItemViewImpl extends Window implements ItemView, AfterCompose {
 
-    // private static final transient Logger LOGGER =
-    // LoggerFactory.getLogger(ItemViewImpl.class);
     private static final long serialVersionUID = -3927090308078350369L;
 
     private Longbox cid;
     private Textbox name;
     private Textbox description;
     private Combobox componentType;
-    private ItemPresenter presenter;
+    private transient ItemPresenter presenter;
 
     /** {@inheritDoc} */
     @Override
@@ -58,6 +56,7 @@ public class ItemViewImpl extends Window implements ItemView, AfterCompose {
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("unchecked")
     @Override
     public Map<String, Object> getArgs() {
         return Executions.getCurrent().getArg();
@@ -78,37 +77,37 @@ public class ItemViewImpl extends Window implements ItemView, AfterCompose {
     /** {@inheritDoc} */
     @Override
     public String getName() {
-        return name.getValue();
+        return name.getText();
     }
 
     /** {@inheritDoc} */
     @Override
     public void setName(String compName) {
-        this.name.setValue(compName);
+        this.name.setText(compName);
     }
 
     /** {@inheritDoc} */
     @Override
     public String getDescription() {
-        return description.getValue();
+        return description.getText();
     }
 
     /** {@inheritDoc} */
     @Override
     public void setDescription(String description) {
-        this.description.setValue(description);
+        this.description.setText(description);
     }
 
     /** {@inheritDoc} */
     @Override
     public String getComponentType() {
-        return componentType.getValue();
+        return componentType.getText();
     }
 
     /** {@inheritDoc} */
     @Override
     public void setComponentType(String type) {
-        this.componentType.setValue(type);
+        this.componentType.setText(type);
     }
 
     /**
@@ -146,6 +145,14 @@ public class ItemViewImpl extends Window implements ItemView, AfterCompose {
     public void onClick$saveCompButton() {
         componentType.setConstraint("no empty");
         name.setConstraint("no empty");
+//        new Constraint() {
+//            
+//            @Override
+//            public void validate(Component comp, Object value) throws WrongValueException {
+//                // TODO Auto-generated method stub
+//                
+//            }
+//        };
         presenter.saveComponent();
     }
 

@@ -17,6 +17,7 @@
  */
 package org.jtalks.poulpe.web.controller;
 
+
 /**
  * The interface represents the manager for showing different types of dialog
  * messages.
@@ -35,7 +36,6 @@ public interface DialogManager {
      * @param localeMessage
      *            i18n key whose value should be shown as a message
      */
-    // TODO alternatively add boolean to indicate that it's not i18n key
     void notify(String localeMessage);
 
     /**
@@ -43,7 +43,23 @@ public interface DialogManager {
      * 
      * @param victim
      *            the item to be deleted
+     * @param comfirmable 
      * @return true if user choice to delete item, false otherwise
      */
-    boolean confirmDeletion(String victim);
+    void confirmDeletion(String victim, Confirmable comfirmable);
+    
+    /**
+     * The interface for storing some actions that ought to be executed when
+     * user confirms them.
+     * 
+     * @author Dmitriy Sukharev
+     * 
+     */
+    interface Confirmable {
+        /**
+         * The actions to be executed after the user confirms that he/she wants
+         * them to be executed.
+         */
+        void execute();
+    }
 }

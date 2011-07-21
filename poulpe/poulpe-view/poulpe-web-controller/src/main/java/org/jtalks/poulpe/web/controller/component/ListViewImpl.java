@@ -42,7 +42,7 @@ public class ListViewImpl extends Window implements ListView, AfterCompose {
 
     private ListModelList model;
     private Listbox listbox;
-    private ListPresenter presenter;
+    private transient ListPresenter presenter;
 
     /** {@inheritDoc} */
     @Override

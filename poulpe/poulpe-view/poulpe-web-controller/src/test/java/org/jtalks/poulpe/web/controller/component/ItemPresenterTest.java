@@ -151,31 +151,8 @@ public class ItemPresenterTest {
         verify(wm).closeWindow(view);
     }
 
-//    @Test
-//    public void saveComponentTest() throws NotFoundException {
-//        ComponentService componentService = mock(ComponentService.class);
-////        ItemViewImpl view = mock(ItemViewImpl.class);
-////        WindowManager wm = mock(WindowManager.class);
-//        presenter.setComponentService(componentService);
-////        presenter.initView(view);
-////        presenter.setWindowManager(wm);
-//        Component fake = getFakeComponent(2L, "comp", "abc", ComponentType.ARTICLE);
-//        
-//        
-////
-////        when(view.getCid()).thenReturn(fake.getId());
-////        when(view.getName()).thenReturn(fake.getName());
-////        when(view.getDescription()).thenReturn(fake.getDescription());
-////        when(view.getComponentType()).thenReturn(fake.getComponentType().toString());
-//        initViewTest();
-//
-//        presenter.saveComponent();
-//        verify(componentService).saveComponent(argThat(new ComponentMatcher(fake)));
-////        verify(wm).closeWindow(view);
-//    }
-    
     @Test
-    public void saveComponentTest0() throws NotFoundException {
+    public void saveComponentTest1() throws NotFoundException {
         ComponentService componentService = mock(ComponentService.class);
         ItemViewImpl view = mock(ItemViewImpl.class);
         WindowManager wm = mock(WindowManager.class);
@@ -203,6 +180,69 @@ public class ItemPresenterTest {
         presenter.saveComponent();
         verify(componentService).saveComponent(argThat(new ComponentMatcher(fake)));
         verify(wm).closeWindow(view);
+    }
+    
+    // re-saving one from the list
+    @Test
+    public void saveComponentTest2() throws NotFoundException {
+        ComponentService componentService = mock(ComponentService.class);
+        ItemViewImpl view = mock(ItemViewImpl.class);
+        WindowManager wm = mock(WindowManager.class);
+        presenter.setComponentService(componentService);
+        presenter.setWindowManager(wm);
+        
+        final int ID = 1;
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("componentId", (long)ID);
+        
+        List<Component> fakeList = getFakeComponents();
+        when(componentService.getAll()).thenReturn(fakeList);
+        when(componentService.get((long) ID)).thenReturn(fakeList.get(ID));
+        when(view.getArgs()).thenReturn(map);
+        
+        final Component fake = fakeList.get(ID);
+        
+        presenter.initView(view);
+        
+        when(view.getName()).thenReturn(fake.getName());
+        when(view.getCid()).thenReturn(fake.getId());
+        when(view.getDescription()).thenReturn(fake.getDescription());
+        when(view.getComponentType()).thenReturn(fake.getComponentType().toString());
+
+        presenter.saveComponent();
+        verify(componentService).saveComponent(argThat(new ComponentMatcher(fake)));
+        verify(wm).closeWindow(view);
+    }
+    
+ // re-saving one from the list
+    @Test
+    public void saveComponentTest3() throws NotFoundException {
+        ComponentService componentService = mock(ComponentService.class);
+        ItemViewImpl view = mock(ItemViewImpl.class);
+        WindowManager wm = mock(WindowManager.class);
+        presenter.setComponentService(componentService);
+        presenter.setWindowManager(wm);
+        
+        final int ID = 1;
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("componentId", (long)ID);
+        
+        List<Component> fakeList = getFakeComponents();
+        when(componentService.getAll()).thenReturn(fakeList);
+        when(componentService.get((long) ID)).thenReturn(fakeList.get(ID));
+        when(view.getArgs()).thenReturn(map);
+        
+        final Component fake = getFakeComponent(0, fakeList.get(ID).getName(), "new", ComponentType.ARTICLE);
+        
+        presenter.initView(view);
+        
+        when(view.getName()).thenReturn(fake.getName());
+        when(view.getCid()).thenReturn(fake.getId());
+        when(view.getDescription()).thenReturn(fake.getDescription());
+        when(view.getComponentType()).thenReturn(fake.getComponentType().toString());
+
+        presenter.saveComponent();
+        verify(view).wrongName("item.already.exist");
     }
 
     @Test

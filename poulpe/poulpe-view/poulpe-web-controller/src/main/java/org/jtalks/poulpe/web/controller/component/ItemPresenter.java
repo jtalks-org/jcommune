@@ -57,7 +57,6 @@ public class ItemPresenter extends AbstractPresenter {
         initArgs();
     }
     
-    
     /** Initialises this window using received arguments. */
     private void initArgs() {
         Map<String, Object> args = view.getArgs();
@@ -116,7 +115,6 @@ public class ItemPresenter extends AbstractPresenter {
         long pos = getCidByName(view.getName());
         if (pos == -1 || pos == view.getCid()) {
             Component newbie = view2Model(view);
-            LOGGER.debug("Newbie.getId() = {}", view.getCid());
             getComponentService().saveComponent(newbie);
             getWindowManager().closeWindow(view);
         } else {
