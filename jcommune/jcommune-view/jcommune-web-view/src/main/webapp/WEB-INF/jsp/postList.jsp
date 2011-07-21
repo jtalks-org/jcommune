@@ -25,12 +25,13 @@
     </div> <!-- topicTitle -->
     <div id="postList">
         <table border="1" width="100%">
+        <c:if test="${page == 1}">
         <tr>
             <td width="20%"><spring:message code="label.author"/>:
                 <a href="${pageContext.request.contextPath}/user/${topic.firstPost.userCreated.encodedUsername}.html">
                     <c:out value="${topic.firstPost.userCreated.username}"/></a></td>
             <td class="link" width="80%"><a name="${topic.firstPost.id}"/>
-                 <a href="javascript:copyLink(${topic.firstPost.id})"><spring:message code="label.link" /></a>
+                <a href="javascript:copyLink(${topic.firstPost.id})"><spring:message code="label.link" /></a>
                      <br />
                      <spring:message code="label.text"/>: <c:out value="${topic.firstPost.postContent}"/></td>
 
@@ -41,6 +42,7 @@
                 </form:form></td>
             </sec:accesscontrollist>
         </tr>
+        </c:if>
         <c:forEach var="post" items="${posts}" varStatus="i">
         <c:if test='${post.id != topic.firstPost.id}'>
         <tr>
