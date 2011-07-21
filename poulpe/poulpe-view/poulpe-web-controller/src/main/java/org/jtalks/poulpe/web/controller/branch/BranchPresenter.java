@@ -20,9 +20,12 @@ package org.jtalks.poulpe.web.controller.branch;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jtalks.poulpe.model.entity.Branch;
 import org.jtalks.poulpe.service.BranchService;
+import org.jtalks.poulpe.service.exceptions.NotUniqueException;
 
 /**
  * This class is implementation the presenter in pattern Model-View-Presenter
@@ -68,7 +71,12 @@ public class BranchPresenter {
         Branch branch = new Branch();
         branch.setName(name);
         branch.setDescription(desc);
-        branchService.saveBranch(branch);
+        try {
+            branchService.saveBranch(branch);
+        } catch (NotUniqueException ex) {
+            //TODO: add processing here
+            Logger.getLogger(BranchPresenter.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         view.showBranch(branch);
     }
@@ -93,8 +101,12 @@ public class BranchPresenter {
 
         branch.setName(view.getEditBranchName());
         branch.setDescription(view.getEditBranchDescription());
-
-        branchService.saveBranch(branch);
+        try {
+            branchService.saveBranch(branch);
+        } catch (NotUniqueException ex) {
+            //TODO: add processing here
+            Logger.getLogger(BranchPresenter.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         view.updateBranch(branch);
     }

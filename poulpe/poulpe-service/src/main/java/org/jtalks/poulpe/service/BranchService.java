@@ -17,6 +17,7 @@
  */
 package org.jtalks.poulpe.service;
 
+import org.jtalks.poulpe.service.exceptions.NotUniqueException;
 import org.jtalks.poulpe.model.entity.Branch;
 
 import java.util.List;
@@ -43,8 +44,9 @@ public interface BranchService extends EntityService<Branch> {
     /**
      * Save or update branch.
      * @param selectedBranch instance to save
+     * @throws NotUniqueException if branch with the same name already exists
      */
-    void saveBranch(Branch selectedBranch);
+    void saveBranch(Branch selectedBranch) throws NotUniqueException;
     
     /**
      * Check if branch with given name exists.

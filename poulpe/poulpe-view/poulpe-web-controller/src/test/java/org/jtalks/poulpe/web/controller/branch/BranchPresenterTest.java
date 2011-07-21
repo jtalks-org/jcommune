@@ -20,6 +20,7 @@ package org.jtalks.poulpe.web.controller.branch;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.jtalks.poulpe.service.exceptions.NotUniqueException;
 
 import static org.testng.Assert.*;
 import static org.mockito.Mockito.*;
@@ -105,7 +106,7 @@ public class BranchPresenterTest {
     }
 
     @Test
-    public void testAddNewBranch() {
+    public void testAddNewBranch() throws NotUniqueException {
 
         // Setup moc
         Branch newBranch = makeFakeBranch("New Branch", "New Description",
@@ -138,7 +139,7 @@ public class BranchPresenterTest {
     }
 
     @Test
-    public void testEditBranch() {
+    public void testEditBranch() throws NotUniqueException {
         Branch selectedBranch = makeFakeBranch("Selected Branch",
                 "Selected Branch", false);
 
