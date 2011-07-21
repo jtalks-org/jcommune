@@ -83,10 +83,21 @@ public class TransactionalBranchServiceTest {
     @Test
     public void testDeleteBranch() {
         Branch branch = new Branch();
-        
+
         branchService.deleteBranch(branch);
-        
+
         assertTrue(branch.getDeleted());
         verify(branchDao).saveOrUpdate(branch);
+    }
+
+    @Test
+    public void testIsBranchNameExists() {
+        String branchName = "name";
+        when(branchDao.isBranchNameExists(branchName)).thenReturn(true);
+        
+        boolean result = branchService.isBranchNameExists(branchName);
+        
+        assertTrue(result);
+        verify(branchDao).isBranchNameExists(branchName);
     }
 }
