@@ -34,4 +34,11 @@ public interface BranchDao extends Dao<Branch> {
      * @return list of branches
      */
     List<Branch> getAll();
+    
+    /**
+     * Method to check is branch used.
+     * @param branchName
+     * @return true if branch with such name already exists
+     */
+    boolean isBranchNameExists(String branchName);
 }

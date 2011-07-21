@@ -45,4 +45,11 @@ public interface BranchService extends EntityService<Branch> {
      * @param selectedBranch instance to save
      */
     void saveBranch(Branch selectedBranch);
+    
+    /**
+     * Check if branch with given name exists.
+     * @param branchName
+     * @return true if exists
+     */
+    boolean isBranchNameExists(String branchName);
 }

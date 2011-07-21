@@ -64,4 +64,12 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
     public void saveBranch(Branch selectedBranch) {
         dao.saveOrUpdate(selectedBranch);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isBranchNameExists(String branchName) {
+        return dao.isBranchNameExists(branchName);
+    }
 }

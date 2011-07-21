@@ -15,7 +15,6 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-
 package org.jtalks.poulpe.model.dao.hibernate;
 
 import org.jtalks.poulpe.model.dao.BranchDao;
@@ -25,8 +24,10 @@ import java.util.List;
 
 /**
  * @author Vitaliy Kravchenko
+ * @author Pavel Vervenko
  */
 public class BranchHibernateDao extends AbstractHibernateDao<Branch> implements BranchDao {
+
     /**
      * {@inheritDoc}
      */
@@ -34,5 +35,16 @@ public class BranchHibernateDao extends AbstractHibernateDao<Branch> implements 
     @SuppressWarnings("unchecked")
     public List<Branch> getAll() {
         return getSession().createQuery("from Branch").list();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isBranchNameExists(String branchName) {
+        return ((Number) getSession()
+                .createQuery("select count(*) from Branch b where b.name = ?")
+                .setString(0, branchName)
+                .uniqueResult()).intValue() != 0;
     }
 }
