@@ -17,19 +17,16 @@
  */
 package org.jtalks.poulpe.web.controller.component;
 
+import java.util.List;
 import java.util.Map;
 
-import org.jtalks.poulpe.model.entity.Component;
-import org.jtalks.poulpe.service.exceptions.NotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Longbox;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -42,7 +39,8 @@ import org.zkoss.zul.Window;
  */
 public class ItemViewImpl extends Window implements ItemView, AfterCompose {
 
-    private static final transient Logger LOGGER = LoggerFactory.getLogger(ItemViewImpl.class);
+    // private static final transient Logger LOGGER =
+    // LoggerFactory.getLogger(ItemViewImpl.class);
     private static final long serialVersionUID = -3927090308078350369L;
 
     private Longbox cid;
@@ -56,71 +54,13 @@ public class ItemViewImpl extends Window implements ItemView, AfterCompose {
     public void afterCompose() {
         Components.wireVariables(this, this);
         Components.addForwards(this, this);
-        initArgs();
         presenter.initView(this);
     }
 
-    /** Initialises this window using received arguments. */
-    private void initArgs() {
-        Map<?, ?> args = Executions.getCurrent().getArg();
-        long id = (Long) args.get("componentId");
-        Component component = obtainComponent(id);
-        if (component != null) {
-            cid.setValue(component.getId());
-            name.setText(component.getName());
-            description.setText(component.getDescription());
-            initTypes(component);
-        }
-//        EventListener el = (EventListener) args.get("listener");
-//        saveCompButton.addEventListener(Events.ON_CLICK, el);
-    }
-
-    /**
-     * Obtains the component by its ID.
-     * 
-     * @param id
-     *            the ID of the component, {@code -1L} to return new instance
-     * @return the component by its ID, new instance if {@code id} is equal to
-     *         {@code -1L}, and null if there is no component with such ID.
-     */
-    private Component obtainComponent(long id) {
-        Component component = null;
-        if (id == -1L) {
-            component = new Component();
-        } else {
-            try {
-                component = presenter.getComponent(id);
-            } catch (NotFoundException e) {
-                try {
-                    Messagebox.show(Labels.getLabel("item.doesnt.exist"));
-                } catch (InterruptedException e1) {
-                    // TODO: what to do here???? I can't throw it up.
-                    LOGGER.error("Problem with showing messagebox.", e1);
-                }
-                LOGGER.warn("Attempt to change non-existing item.", e);
-                detach();
-                return null;
-            }
-        }
-        return component;
-    }
-
-    /**
-     * Initialises the list of possible types for the specified component.
-     * 
-     * @param component
-     *            the component whose types are being determined.
-     */
-    private void initTypes(Component component) {
-        if (component.getComponentType() == null) {
-            componentType.setValue(null);
-        } else {
-            componentType.setValue(component.getComponentType().toString());
-        }
-        componentType.appendItem(componentType.getValue());
-        for (Object obj : presenter.getTypes()) {
-            componentType.appendItem(obj.toString());
-        }        
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, Object> getArgs() {
+        return Executions.getCurrent().getArg();
     }
 
     /** {@inheritDoc} */
@@ -180,6 +120,14 @@ public class ItemViewImpl extends Window implements ItemView, AfterCompose {
         return presenter;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void setComponentTypes(List<String> types) {
+        for (String type : types) {
+            componentType.appendItem(type);
+        }
+    }
+
     /**
      * Sets the presenter which is linked with this window.
      * 
@@ -193,22 +141,18 @@ public class ItemViewImpl extends Window implements ItemView, AfterCompose {
     /**
      * Tells to presenter to save created or edited component in component list.
      * 
-     * @throws Exception
-     *             when error of closing window including problems with
-     *             execution of the "onDetach" listener action
-     * 
      * @see ListPresenter
      */
-    public void onClick$saveCompButton() throws Exception {
+    public void onClick$saveCompButton() {
         componentType.setConstraint("no empty");
         name.setConstraint("no empty");
-        long pos = presenter.getCidByName(name.getValue());
-        if (pos == -1 || pos == cid.longValue()) {
-            presenter.saveComponent();
-        } else {
-            Messagebox.show(Labels.getLabel("item.already.exist"), Labels.getLabel("window.warning"),
-                    Messagebox.OK, Messagebox.EXCLAMATION);
-        }
+        presenter.saveComponent();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void wrongName(String error) {
+        throw new WrongValueException(name, Labels.getLabel(error));
     }
 
 }

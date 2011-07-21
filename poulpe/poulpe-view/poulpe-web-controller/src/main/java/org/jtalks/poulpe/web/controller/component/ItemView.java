@@ -17,6 +17,9 @@
  */
 package org.jtalks.poulpe.web.controller.component;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Interface which represents information about component displayed in admin panel.
  * 
@@ -72,5 +75,23 @@ public interface ItemView {
      * @param type the new value of the component's type
      */
     void setComponentType(String type);
+
+    /**
+     * Returns the arguments given to this window.
+     * @return the arguments given to this window
+     */
+    Map<String, Object> getArgs();
+
+    /**
+     * Sets the list of available component types for the current item.
+     * @param types the list of available component types for the current item
+     */
+    void setComponentTypes(List<String> types);
+
+    /**
+     * Notifies user about wrong value of component name.
+     * @param string the message to be shown to user
+     */
+    void wrongName(String string);
 
 }

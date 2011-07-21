@@ -19,13 +19,12 @@ package org.jtalks.poulpe.web.controller.component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.jtalks.poulpe.model.entity.Component;
 import org.jtalks.poulpe.model.entity.ComponentType;
-import org.jtalks.poulpe.service.ComponentService;
 import org.jtalks.poulpe.service.exceptions.NotFoundException;
-import org.jtalks.poulpe.web.controller.WindowManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * @author Dmitriy Sukharev
  * 
  */
-public class ItemPresenter {
+public class ItemPresenter extends AbstractPresenter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ItemPresenter.class);
 
@@ -44,11 +43,6 @@ public class ItemPresenter {
      * or edited component item.
      */
     private ItemView view;
-
-    /** The service instance to manipulate with stored components. */
-    private ComponentService componentService;
-    
-    private WindowManager windowManager;
 
     /**
      * Initialises the object that is responsible for storing and updating view
@@ -60,41 +54,74 @@ public class ItemPresenter {
      */
     public void initView(ItemView view) {
         this.view = view;
+        initArgs();
+    }
+    
+    
+    /** Initialises this window using received arguments. */
+    private void initArgs() {
+        Map<String, Object> args = view.getArgs();
+        long id = (Long) args.get("componentId");
+        Component component = obtainComponent(id);
+        if (component != null) {
+            view.setCid(component.getId());
+            view.setName(component.getName());
+            view.setDescription(component.getDescription());
+            initTypes(component);
+        }
     }
 
     /**
-     * Sets the service instance which is used for manipulating with stored
-     * components.
+     * Obtains the component by its ID.
      * 
-     * @param componentService
-     *            the new value of the service instance
+     * @param id
+     *            the ID of the component, {@code -1L} to return new instance
+     * @return the component by its ID, new instance if {@code id} is equal to
+     *         {@code -1L}, and null if there is no component with such ID.
      */
-    public void setComponentService(ComponentService componentService) {
-        this.componentService = componentService;
+    private Component obtainComponent(long id) {
+        Component component = null;
+        if (id == -1L) {
+            component = new Component();
+        } else {
+            try {
+                component = getComponent(id);
+            } catch (NotFoundException e) {
+                LOGGER.warn("Attempt to change non-existing item.", e);
+                getDialogManager().notify("item.doesnt.exist");
+                getWindowManager().closeWindow(view);
+                // component will never be returned here
+            }
+        }
+        return component;
     }
 
     /**
-     * Sets the window manager which is used for showing and closing windows.
+     * Initialises the list of possible types for the specified component.
      * 
-     * @param windowManager
-     *            the new value of the window manager
+     * @param component
+     *            the component whose types are being determined.
      */
-    public void setWindowManager(WindowManager windowManager) {
-        this.windowManager = windowManager;
+    private void initTypes(Component component) {
+        if (component.getComponentType() == null) {
+            view.setComponentType(null);
+        } else {
+            view.setComponentType(component.getComponentType().toString());
+        }
+        view.setComponentTypes(getTypes());
     }
 
-    /**
-     * Saves the created or edited component in component list.
-     * 
-     * @throws Exception
-     *             when error of closing window including problems with
-     *             execution of the "onDetach" listener action
-     */
-    public void saveComponent() throws Exception {
-        Component newbie = view2Model(view);
-        LOGGER.debug("Newbie.getId() = {}", view.getCid());
-        componentService.saveComponent(newbie);
-        windowManager.closeWindow(view);
+    /** Saves the created or edited component in component list. */
+    public void saveComponent() {
+        long pos = getCidByName(view.getName());
+        if (pos == -1 || pos == view.getCid()) {
+            Component newbie = view2Model(view);
+            LOGGER.debug("Newbie.getId() = {}", view.getCid());
+            getComponentService().saveComponent(newbie);
+            getWindowManager().closeWindow(view);
+        } else {
+            view.wrongName("item.already.exist");
+        }
     }
     
     /**
@@ -125,7 +152,7 @@ public class ItemPresenter {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Component's name can't be empty");
         }
-        List<Component> list = componentService.getAll();
+        List<Component> list = getComponentService().getAll();
         for (Component component : list) {
             if (name.equals(component.getName())) {
                 return component.getId();
@@ -140,7 +167,7 @@ public class ItemPresenter {
      * @return the list unoccupied component types as strings
      */
     public List<String> getTypes() {
-        Set<ComponentType> origTypes = componentService.getAvailableTypes();
+        Set<ComponentType> origTypes = getComponentService().getAvailableTypes();
         List<String> strTypes = new ArrayList<String>();
         for (ComponentType orig : origTypes) {
             strTypes.add(orig.toString());
@@ -159,6 +186,6 @@ public class ItemPresenter {
      *             when entity can't be found
      */
     public Component getComponent(long id) throws NotFoundException {
-        return componentService.get(id);
+        return getComponentService().get(id);
     }
 }

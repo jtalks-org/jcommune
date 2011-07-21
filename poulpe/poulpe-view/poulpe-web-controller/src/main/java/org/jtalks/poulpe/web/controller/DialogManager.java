@@ -18,31 +18,32 @@
 package org.jtalks.poulpe.web.controller;
 
 /**
- * The interface for creation and closing application windows.
+ * The interface represents the manager for showing different types of dialog
+ * messages.
  * 
  * @author Dmitriy Sukharev
  * 
  */
-public interface WindowManager {
+public interface DialogManager {
+    // It's just 2 methods I need right now. I don't mind if somebody change
+    // this interface significantly.
+    // But it looks like all our current user stories need this two methods.
 
     /**
-     * Creates and shows new window which is responsible for editing components.
+     * Notifies user using {@code localeMessage} message.
      * 
-     * @param componentId
-     *            identifier of the {@link Component} to be edited, or
-     *            {@code -1L} to create a new one
-     * @param listener
-     *            listener to be invoked after window is closed. It's actually
-     *            might be the object of any class, writing the implementation
-     *            of WindowManager you should document what type it has.
+     * @param localeMessage
+     *            i18n key whose value should be shown as a message
      */
-    void showEditComponentWindow(long componentId, Object listener);
+    // TODO alternatively add boolean to indicate that it's not i18n key
+    void notify(String localeMessage);
 
     /**
-     * Closes the {@code window} window and invokes its "onDetach" listener.
+     * Asks user if they want to delete item.
      * 
-     * @param window
-     *            the window to be closed
+     * @param victim
+     *            the item to be deleted
+     * @return true if user choice to delete item, false otherwise
      */
-    void closeWindow(Object window);
+    boolean confirmDeletion(String victim);
 }

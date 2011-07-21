@@ -26,13 +26,17 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.jtalks.poulpe.model.entity.Component;
 import org.jtalks.poulpe.model.entity.ComponentType;
 import org.jtalks.poulpe.service.ComponentService;
+import org.jtalks.poulpe.service.exceptions.NotFoundException;
+import org.jtalks.poulpe.web.controller.DialogManager;
 import org.jtalks.poulpe.web.controller.WindowManager;
 import org.testng.annotations.Test;
 
@@ -53,19 +57,146 @@ public class ItemPresenterTest {
         comp.setComponentType(type);
         return comp;
     }
-
+    
+    private List<Component> getFakeComponents() {
+        List<Component> list = new ArrayList<Component>();
+        ComponentType[] types = ComponentType.values();
+        for (int i = 0; i < types.length; i++) {
+            list.add(getFakeComponent(i, "Fake" + i, "Desc" + i, types[i]));
+        }
+        return list;
+    }
+    
+    /**
+     * Tests if the componentId is correct id.
+     * @throws NotFoundException
+     */
     @Test
-    public void saveComponentTest() throws Exception {
+    public void initViewTest() throws NotFoundException {
+        ComponentService componentService = mock(ComponentService.class);
+        ItemViewImpl view = mock(ItemViewImpl.class);
+        presenter.setComponentService(componentService);
+        
+        final int id = 0;
+        List<Component> fake = getFakeComponents();
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("componentId", (long)id);
+        
+        when(componentService.getAll()).thenReturn(fake);
+        when(componentService.get((long) id)).thenReturn(fake.get(id));
+        when(view.getArgs()).thenReturn(map);
+        
+        presenter.initView(view);
+        
+        verify(view).setCid(fake.get(id).getId());
+        verify(view).setName(fake.get(id).getName());
+        verify(view).setDescription(fake.get(id).getDescription());
+        verify(view).setComponentType(fake.get(id).getComponentType().toString());
+    }
+    
+    /**
+     * Tests if componentId is -1L (new element)
+     * @throws NotFoundException
+     */
+    @Test
+    public void initViewTest2() {
+        ComponentService componentService = mock(ComponentService.class);
+        ItemViewImpl view = mock(ItemViewImpl.class);
+        WindowManager wm = mock(WindowManager.class);
+        DialogManager dm = mock(DialogManager.class);
+        presenter.setComponentService(componentService);
+        presenter.setWindowManager(wm);
+        presenter.setDialogManager(dm);
+        
+        final int id = -1;
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("componentId", (long)id);
+
+        when(view.getArgs()).thenReturn(map);
+        
+        presenter.initView(view);
+        
+        verify(view).setCid(0);
+        verify(view).setName(null);
+        verify(view).setDescription(null);
+        verify(view).setComponentType(null);
+    }
+    
+    /**
+     * Tests if there is no such object
+     * @throws NotFoundException
+     */
+    @Test
+    public void initViewTest3() throws NotFoundException {
+        ComponentService componentService = mock(ComponentService.class);
+        ItemViewImpl view = mock(ItemViewImpl.class);
+        WindowManager wm = mock(WindowManager.class);
+        DialogManager dm = mock(DialogManager.class);
+        presenter.setComponentService(componentService);
+        presenter.setWindowManager(wm);
+        presenter.setDialogManager(dm);
+        
+        final int id = 9999;
+        List<Component> fake = getFakeComponents();
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("componentId", (long)id);
+        
+        when(componentService.getAll()).thenReturn(fake);
+        when(componentService.get((long) id)).thenThrow(new NotFoundException());
+        when(view.getArgs()).thenReturn(map);
+        
+        presenter.initView(view);
+        
+        verify(dm).notify("item.doesnt.exist");
+        verify(wm).closeWindow(view);
+    }
+
+//    @Test
+//    public void saveComponentTest() throws NotFoundException {
+//        ComponentService componentService = mock(ComponentService.class);
+////        ItemViewImpl view = mock(ItemViewImpl.class);
+////        WindowManager wm = mock(WindowManager.class);
+//        presenter.setComponentService(componentService);
+////        presenter.initView(view);
+////        presenter.setWindowManager(wm);
+//        Component fake = getFakeComponent(2L, "comp", "abc", ComponentType.ARTICLE);
+//        
+//        
+////
+////        when(view.getCid()).thenReturn(fake.getId());
+////        when(view.getName()).thenReturn(fake.getName());
+////        when(view.getDescription()).thenReturn(fake.getDescription());
+////        when(view.getComponentType()).thenReturn(fake.getComponentType().toString());
+//        initViewTest();
+//
+//        presenter.saveComponent();
+//        verify(componentService).saveComponent(argThat(new ComponentMatcher(fake)));
+////        verify(wm).closeWindow(view);
+//    }
+    
+    @Test
+    public void saveComponentTest0() throws NotFoundException {
         ComponentService componentService = mock(ComponentService.class);
         ItemViewImpl view = mock(ItemViewImpl.class);
         WindowManager wm = mock(WindowManager.class);
         presenter.setComponentService(componentService);
-        presenter.initView(view);
         presenter.setWindowManager(wm);
-        Component fake = getFakeComponent(2L, "comp", "abc", ComponentType.ARTICLE);
-
-        when(view.getCid()).thenReturn(fake.getId());
+        
+        Component fake = getFakeComponent(0, "extraordinary", "new", ComponentType.ARTICLE);
+        
+        final int ID = 1;
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("componentId", (long)ID);
+        
+        List<Component> fakeList = getFakeComponents();
+        when(componentService.getAll()).thenReturn(fakeList);
+        when(componentService.get((long) ID)).thenReturn(fakeList.get(ID));
+        when(view.getArgs()).thenReturn(map);
+        
+        presenter.initView(view);
+        
         when(view.getName()).thenReturn(fake.getName());
+        when(view.getCid()).thenReturn(fake.getId());
         when(view.getDescription()).thenReturn(fake.getDescription());
         when(view.getComponentType()).thenReturn(fake.getComponentType().toString());
 

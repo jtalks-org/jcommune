@@ -10,7 +10,8 @@
        http://www.springframework.org/schema/aop
        http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
-  <bean id="windowManager" class="org.jtalks.poulpe.web.controller.WindowManagerImpl" scope="prototype" />
+  <bean id="windowManager" class="org.jtalks.poulpe.web.controller.WindowManagerImpl" scope="singleton" />
+  <bean id="dialogManager" class="org.jtalks.poulpe.web.controller.DialogManagerImpl" scope="singleton" />
 
   <!--Declaration of presenters -->
   <bean id="branchPresenter" class="org.jtalks.poulpe.web.controller.branch.BranchPresenter" scope="session">
@@ -20,10 +21,12 @@
   <bean id="componentItemPresenter" class="org.jtalks.poulpe.web.controller.component.ItemPresenter" scope="prototype">
     <property name="componentService" ref="componentService" />
     <property name="windowManager" ref="windowManager" />
+    <property name="dialogManager" ref="dialogManager" />
   </bean>
   <bean id="componentListPresenter" class="org.jtalks.poulpe.web.controller.component.ListPresenter" scope="session">
     <property name="componentService" ref="componentService" />
     <property name="windowManager" ref="windowManager" />
+    <property name="dialogManager" ref="dialogManager" />
   </bean>
 
 </beans>

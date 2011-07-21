@@ -45,4 +45,29 @@ public interface ListView {
      */
     void updateList(List<Component> list);
 
+    /**
+     * Initialises model (content of list-box) by component.
+     * 
+     * @param list
+     *            new list of components to be shown
+     */
+    void createModel(List<Component> list);
+
+    /**
+     * Determines if there is selected item in the component list.
+     * 
+     * @return true if there is selected item in the component list, false
+     *         otherwise
+     */
+    boolean hasSelectedItem();
+
+    /**
+     * Returns the object to be used for updating this view after some action
+     * happen.
+     * 
+     * @return the object to be used for updating this view after some action
+     *         happen
+     */
+    Object getUpdater();
+
 }

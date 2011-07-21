@@ -37,23 +37,37 @@ public final class WindowManagerImpl implements WindowManager {
 
     /** {@inheritDoc} */
     @Override
-    public void showEditComponentWindow(long componentId, Object listener) throws InterruptedException {
+    public void showEditComponentWindow(long componentId, Object listener) {
         Map<String, Object> args = new HashMap<String, Object>();
         args.put("componentId", componentId);
         Window win = (Window) Executions.createComponents(EDIT_COMPONENT_URL, null, args);
         win.setAttribute("CLOSE_LISTENER", listener);
-        win.doModal();
+        try {
+            win.doModal();
+        } catch (Exception e) {
+            // It's extremely incredible that this exception will appear,
+            // on the other hand it's bad to throw the Exception instance,
+            // plus it complicates API. Therefore it's wrapped with
+            // uncontrolled error.
+            throw new AssertionError(e);
+        }
     }
     
     /** {@inheritDoc} */
     @Override
-    public void closeWindow(Object object) throws Exception {
+    public void closeWindow(Object object) {
         Window win = (Window) object;
         win.detach();
 
         Object attr = win.getAttribute("CLOSE_LISTENER");
         if (attr instanceof EventListener) {
-            ((EventListener) attr).onEvent(null);
+            try {
+                ((EventListener) attr).onEvent(null);
+            } catch (Exception e) {
+                // This has the same explanation as throwing AssertionError in
+                // the showEditComponentWindow method.
+                throw new AssertionError(e);
+            }
         }
     }
 

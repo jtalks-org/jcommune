@@ -20,16 +20,10 @@ package org.jtalks.poulpe.web.controller.component;
 import java.util.List;
 
 import org.jtalks.poulpe.model.entity.Component;
-import org.jtalks.poulpe.service.ComponentService;
-import org.jtalks.poulpe.web.controller.WindowManager;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 
-//TODO: tasks which are going to be done from the bottom
-//1) i18n support;
+//TODO: tasks which are going to be done
 //2) unit-test;
 //4) javadoc;
-//6) logger
 
 /**
  * The class for mediating between model and view representation of components.
@@ -37,27 +31,22 @@ import org.zkoss.zk.ui.event.EventListener;
  * @author Dmitriy Sukharev
  * 
  */
-public class ListPresenter {
+public class ListPresenter extends AbstractPresenter {
     
     /** The object that is responsible for updating view of the component list. */
     private ListView view;
-
-    /** The service instance to manipulate with stored components. */
-    private ComponentService componentService;
     
-    private WindowManager windowManager;
-
     /**
      * Initialises the object that is responsible for updating view of the
      * component list.
      * 
-     * @param view
+     * @param listView
      *            the object that is responsible for updating view of the
      *            component list
      */
-    public void initView(ListView view) {
-        this.view = view;
-        view.updateList(getComponents());
+    public void initView(ListView listView) {
+        this.view = listView;
+        listView.createModel(getComponents());
     }
     
     /**
@@ -66,51 +55,20 @@ public class ListPresenter {
      * @return the list of the components
      */
     public List<Component> getComponents() {
-        return componentService.getAll();
-    }
-
-    /**
-     * Sets the service instance which is used for manipulating with stored
-     * components.
-     * 
-     * @param componentService
-     *            the new value of the service instance
-     */
-    public void setComponentService(ComponentService componentService) {
-        this.componentService = componentService;
-    }
-
-    /**
-     * Sets the window manager which is used for showing and closing windows.
-     * 
-     * @param windowManager
-     *            the new value of the window manager
-     */
-    public void setWindowManager(WindowManager windowManager) {
-        this.windowManager = windowManager;
+        return getComponentService().getAll();
     }
 
     /**
      * Shows the window for adding new component to component list.
-     * 
-     * @throws InterruptedException
-     *             when a thread is waiting, sleeping, or otherwise occupied,
-     *             and the thread is interrupted, either before or during the
-     *             activity
      */
-    public void addComponent() throws InterruptedException {
+    public void addComponent() {
         invokeEditWindowFor(-1L);
     }
 
     /**
      * Shows the window for editing the selected component from component list.
-     * 
-     * @throws InterruptedException
-     *             when a thread is waiting, sleeping, or otherwise occupied,
-     *             and the thread is interrupted, either before or during the
-     *             activity
      */
-    public void editComponent() throws InterruptedException {
+    public void editComponent() {
         invokeEditWindowFor(view.getSelectedItem().getId());
     }
     
@@ -119,34 +77,27 @@ public class ListPresenter {
      * 
      * @param componentId
      *            component to be edited
-     * @throws InterruptedException
-     *             when a thread is waiting, sleeping, or otherwise occupied,
-     *             and the thread is interrupted, either before or during the
-     *             activity
      */
-    private void invokeEditWindowFor(long componentId) throws InterruptedException {
-        windowManager.showEditComponentWindow(componentId, new EditListListener());
+    private void invokeEditWindowFor(long componentId) {
+        getWindowManager().showEditComponentWindow(componentId, view.getUpdater());
     }
 
     /** Removes the selected component from the component list. */
     public void deleteComponent() {
-        Component victim = view.getSelectedItem();
-        componentService.deleteComponent(victim);
+        if (!view.hasSelectedItem()) { // if there is no selected item
+            getDialogManager().notify("item.no.selected.item");
+        } else {
+            Component victim = view.getSelectedItem();
+            if (getDialogManager().confirmDeletion(victim.getName())) {
+                getComponentService().deleteComponent(victim);
+                view.updateList(getComponents());
+            }
+        }
+    }
+
+    /** Update the list of component which is displayed. */
+    public void updateList() {
         view.updateList(getComponents());
     }
-    
-    /**
-     * The class for listening changing of components and updating
-     * {@link ListView} in accordance with this changes.
-     * 
-     * @author Dmitriy Sukharev
-     * 
-     */
-    public class EditListListener implements EventListener {
-        /** {@inheritDoc} */
-        @Override
-        public void onEvent(Event event) {
-            view.updateList(getComponents());
-        }        
-    }
+
 }

@@ -17,11 +17,9 @@
  */
 package org.jtalks.poulpe.web.controller.component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.jtalks.poulpe.model.entity.Component;
-import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -29,7 +27,6 @@ import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zkplus.databind.BindingListModelList;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 /**
@@ -52,10 +49,15 @@ public class ListViewImpl extends Window implements ListView, AfterCompose {
     public void afterCompose() {
         Components.wireVariables(this, this);
         Components.addForwards(this, this);
-        model = new BindingListModelList(new ArrayList<Object>(), true);
-        listbox.setModel(model);
         presenter.initView(this);
         listbox.setItemRenderer(new Renderer());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void createModel(List<Component> list) {
+        model = new BindingListModelList(list, true);
+        listbox.setModel(model);
     }
 
     /**
@@ -80,11 +82,10 @@ public class ListViewImpl extends Window implements ListView, AfterCompose {
     /**
      * Tells to presenter that the window for adding new component must be
      * shown.
-     * @throws InterruptedException 
      * 
      * @see ListPresenter
      */
-    public void onClick$addCompButton() throws InterruptedException {
+    public void onClick$addCompButton() {
         presenter.addComponent();
     }
 
@@ -92,31 +93,10 @@ public class ListViewImpl extends Window implements ListView, AfterCompose {
      * Tells to presenter to delete selected component (it knows which one it
      * is).
      * 
-     * @throws InterruptedException
-     *             when a thread is waiting, sleeping, or otherwise occupied,
-     *             and the thread is interrupted, either before or during the
-     *             activity
-     * 
      * @see ListPresenter
      */
-    public void onClick$delCompButton() throws InterruptedException {
-        if (listbox.getSelectedIndex() == -1) { // if there is no selected item
-            Messagebox.show(Labels.getLabel("item.no.selected.item"),
-                    Labels.getLabel("window.warning"), Messagebox.OK, Messagebox.EXCLAMATION);
-            return;
-        }
-        String name = getSelectedItem().getName();
-        Messagebox.show(Labels.getLabel("item.delete.question") + " " + name + "?",
-                Labels.getLabel("item.delete.$") + " " + name + "?", Messagebox.YES | Messagebox.CANCEL,
-                Messagebox.QUESTION, Messagebox.CANCEL, new EventListener() {
-                    /** {@inheritDoc} */
-                    @Override
-                    public void onEvent(Event event) {
-                        if ((Integer) event.getData() == Messagebox.YES) {
-                            presenter.deleteComponent();
-                        }
-                    }
-                });
+    public void onClick$delCompButton() {
+        presenter.deleteComponent();
     }
 
     /** {@inheritDoc} */
@@ -128,8 +108,36 @@ public class ListViewImpl extends Window implements ListView, AfterCompose {
 
     /** {@inheritDoc} */
     @Override
+    public boolean hasSelectedItem() {
+        return listbox.getSelectedIndex() != -1;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public Component getSelectedItem() {
         return (Component) model.get(listbox.getSelectedIndex());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public EditListListener getUpdater() {
+        return new EditListListener();
+    }
+
+    /**
+     * The class for listening changing of components and updating
+     * {@link ListView} in accordance with this changes.
+     * 
+     * @author Dmitriy Sukharev
+     * 
+     */
+    public class EditListListener implements EventListener {
+        /** {@inheritDoc} */
+        @SuppressWarnings("unused")
+        @Override
+        public void onEvent(Event event) {
+            presenter.updateList();
+        }
     }
 
 }
