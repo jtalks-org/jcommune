@@ -15,7 +15,7 @@
                <div class="small_block">
                   <p><c:out value="${articleCollection.description}"/></p>
                </div>
-               <a class="title" href="${pageContext.request.contextPath}/antarcticleCollection/${firstArticle.id}.html">
+               <a class="title" href="${pageContext.request.contextPath}/article/${firstArticle.id}.html">
                    <c:out value="${firstArticle.articleTitle}"/>
                </a>
                <div class="big_block">
