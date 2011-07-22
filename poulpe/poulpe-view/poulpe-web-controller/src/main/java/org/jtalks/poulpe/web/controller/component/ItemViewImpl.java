@@ -17,9 +17,10 @@
  */
 package org.jtalks.poulpe.web.controller.component;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.jtalks.poulpe.model.entity.ComponentType;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.Executions;
@@ -45,6 +46,8 @@ public class ItemViewImpl extends Window implements ItemView, AfterCompose {
     private Textbox name;
     private Textbox description;
     private Combobox componentType;
+    /* Important! If we are going to serialize/deserialize this class, this
+     * field must be initialised explicitly during deserialization */
     private transient ItemPresenter presenter;
 
     /** {@inheritDoc} */
@@ -121,9 +124,9 @@ public class ItemViewImpl extends Window implements ItemView, AfterCompose {
 
     /** {@inheritDoc} */
     @Override
-    public void setComponentTypes(List<String> types) {
-        for (String type : types) {
-            componentType.appendItem(type);
+    public void setComponentTypes(Set<ComponentType> types) {
+        for (ComponentType type : types) {
+            componentType.appendItem(type.toString());
         }
     }
 

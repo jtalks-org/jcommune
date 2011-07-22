@@ -27,7 +27,7 @@ package org.jtalks.poulpe.web.controller;
  */
 public interface DialogManager {
     // It's just 2 methods I need right now. I don't mind if somebody change
-    // this interface significantly.
+    // this interface.
     // But it looks like all our current user stories need this two methods.
 
     /**
@@ -43,19 +43,19 @@ public interface DialogManager {
      * 
      * @param victim
      *            the item to be deleted
-     * @param comfirmable 
-     * @return true if user choice to delete item, false otherwise
+     * @param performable
+     *            the action to be performed when user confirms item deletion
      */
-    void confirmDeletion(String victim, Confirmable comfirmable);
-    
+    void confirmDeletion(String victim, Performable performable);
+
     /**
-     * The interface for storing some actions that ought to be executed when
+     * The interface for storing some actions that ought to be performed when
      * user confirms them.
      * 
      * @author Dmitriy Sukharev
      * 
      */
-    interface Confirmable {
+    interface Performable {
         /**
          * The actions to be executed after the user confirms that he/she wants
          * them to be executed.

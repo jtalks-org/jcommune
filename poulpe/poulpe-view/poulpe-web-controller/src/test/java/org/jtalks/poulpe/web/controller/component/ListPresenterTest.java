@@ -32,59 +32,53 @@ import org.jtalks.poulpe.model.entity.ComponentType;
 import org.jtalks.poulpe.service.ComponentService;
 import org.jtalks.poulpe.web.controller.DialogManager;
 import org.jtalks.poulpe.web.controller.WindowManager;
+import org.jtalks.poulpe.web.controller.component.ListPresenter.DeletePerformable;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatcher;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-
 /**
  * The test for {@link ListPresenter} class.
+ * 
  * @author Dmitriy Sukharev
- *
+ * 
  */
 public class ListPresenterTest {
-    
+
     private ListPresenter presenter;
 
-    @BeforeTest
-    protected void setUp() {
+    @BeforeTest public void setUp() {
         presenter = new ListPresenter();
     }
-    
-    @Test public void initListViewTest() {        
+
+    /** Tests view initialisation. */
+    @Test public void initListViewTest() {
         ComponentService componentService = mock(ComponentService.class);
         ListView view = mock(ListView.class);
         presenter.setComponentService(componentService);
         List<Component> fake = getFakeComponents();
-        
+
         when(componentService.getAll()).thenReturn(fake);
-        presenter.initView(view);        
+        presenter.initView(view);
         verify(view).createModel(argThat(new ComponentListMatcher(fake)));
     }
-    
-    @Test
-    public void addComponentTest() {
+
+    @Test public void addComponentTest() {
         ListView view = mock(ListView.class);
         WindowManager wm = mock(WindowManager.class);
         ComponentService componentService = mock(ComponentService.class);
         presenter.setComponentService(componentService);
-        presenter.initView(view);        
+        presenter.initView(view);
         presenter.setWindowManager(wm);
         ArgumentCaptor<Long> argument1 = ArgumentCaptor.forClass(Long.class);
-        // damn, it's implementation dependent.
-        // upd: now it's independent, but too general.
-        ArgumentCaptor<Object> argument2 =
-            ArgumentCaptor.forClass(Object.class);
-        
+        ArgumentCaptor<Object> argument2 = ArgumentCaptor.forClass(Object.class);
+
         presenter.addComponent();
-        verify(wm).showEditComponentWindow(
-                argument1.capture(), argument2.capture());
+        verify(wm).showEditComponentWindow(argument1.capture(), argument2.capture());
         assertEquals(argument1.getValue(), new Long(-1L));
     }
-    
-    @Test
-    public void editComponentTest() {
+
+    @Test public void editComponentTest() {
         ListView view = mock(ListView.class);
         WindowManager wm = mock(WindowManager.class);
         presenter.initView(view);
@@ -98,63 +92,58 @@ public class ListPresenterTest {
         verify(wm).showEditComponentWindow(argument1.capture(), argument2.capture());
         assertEquals(argument1.getValue(), new Long(fake.getId()));
     }
-    
-    @Test
-    public void deleteComponentTest() {
+
+    @Test public void deleteComponentTest() {
         ComponentService componentService = mock(ComponentService.class);
         ListView view = mock(ListView.class);
         DialogManager dm = mock(DialogManager.class);
         presenter.setDialogManager(dm);
         presenter.setComponentService(componentService);
-        presenter.initView(view);        
+        presenter.initView(view);
         Component fake = getFakeComponent(1L, "Fake1", "Desc1", ComponentType.ARTICLE);
-        
+
         ArgumentCaptor<String> argument1 = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<DialogManager.Confirmable> argument2 =
-            ArgumentCaptor.forClass(DialogManager.Confirmable.class);  
-        
+        ArgumentCaptor<DialogManager.Performable> argument2 = ArgumentCaptor
+                .forClass(DialogManager.Performable.class);
+
         when(view.getSelectedItem()).thenReturn(fake);
         when(view.hasSelectedItem()).thenReturn(true);
-        //when(componentService.getAll()).thenReturn(new ArrayList<Component>());
-        
+
         presenter.deleteComponent();
-        
-//        InOrder inOrder = inOrder(componentService, view);
-//        inOrder.verify(componentService).deleteComponent(argThat(new ComponentMatcher(fake)));
-//        inOrder.verify(view).updateList(presenter.getComponents());
+
         verify(dm).confirmDeletion(argument1.capture(), argument2.capture());
         assertEquals(argument1.getValue(), fake.getName());
         assertNotNull(argument2.getValue());
-        
-        
-        // =========================
+
+        // and another check
         when(view.hasSelectedItem()).thenReturn(false);
         presenter.deleteComponent();
         verify(dm).notify("item.no.selected.item");
     }
-    
+
+    /** Tests executed method of the {@link DeletePerformable} inner class. */
     @SuppressWarnings("unchecked")
     @Test public void executeDcTest() {
         ComponentService componentService = mock(ComponentService.class);
         ListView view = mock(ListView.class);
         presenter.setComponentService(componentService);
         presenter.initView(view);
-        
+
         final int id = 1;
-        List<Component> fakeList = getFakeComponents();        
-        Component fake = fakeList.get(id);        
-        
+        List<Component> fakeList = getFakeComponents();
+        Component fake = fakeList.get(id);
+
         when(componentService.getAll()).thenReturn(fakeList);
         when(view.getSelectedItem()).thenReturn(fake);
-        
+
         @SuppressWarnings("rawtypes")
         ArgumentCaptor<List> argument = ArgumentCaptor.forClass(List.class);
-        presenter.new DeleteConfirmable().execute();
-        
+        presenter.new DeletePerformable().execute();
+
         verify(componentService).deleteComponent(fake);
-        verify(view).updateList(argument.capture());        
+        verify(view).updateList(argument.capture());
     }
-    
+
     private Component getFakeComponent(long id, String name, String description, ComponentType type) {
         Component comp = new Component();
         comp.setId(id);
@@ -172,29 +161,4 @@ public class ListPresenterTest {
         }
         return list;
     }
-}
-
-class ComponentListMatcher extends ArgumentMatcher<List<Component>> {
-    private List<Component> list;
-    
-    public ComponentListMatcher(List<Component> list) {
-        this.list = list;
-    }
-
-    @Override
-    public boolean matches(Object item) {
-        List<?> list2 = (List<?>) item;
-        assertEquals(list.size(), list2.size());
-        boolean isMatch = true;
-        for (int i = 0; i < list.size(); i++) {
-            Component comp = list.get(i);
-            Component comp2 = (Component) list2.get(i);
-            isMatch &= comp.getId() == comp2.getId()
-                    && comp.getName().equals(comp2.getName())
-                    && comp.getDescription().equals(comp2.getDescription())
-                    && comp.getComponentType().equals(comp2.getComponentType());
-        }
-        return isMatch;
-    }
-
 }

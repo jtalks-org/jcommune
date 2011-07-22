@@ -17,10 +17,8 @@
  */
 package org.jtalks.poulpe.web.controller.component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.jtalks.poulpe.model.entity.Component;
 import org.jtalks.poulpe.model.entity.ComponentType;
@@ -56,7 +54,7 @@ public class ItemPresenter extends AbstractPresenter {
         this.view = view;
         initArgs();
     }
-    
+
     /** Initialises this window using received arguments. */
     private void initArgs() {
         Map<String, Object> args = view.getArgs();
@@ -84,7 +82,7 @@ public class ItemPresenter extends AbstractPresenter {
             component = new Component();
         } else {
             try {
-                component = getComponent(id);
+                component = getComponentService().get(id);
             } catch (NotFoundException e) {
                 LOGGER.warn("Attempt to change non-existing item.", e);
                 getDialogManager().notify("item.doesnt.exist");
@@ -107,7 +105,7 @@ public class ItemPresenter extends AbstractPresenter {
         } else {
             view.setComponentType(component.getComponentType().toString());
         }
-        view.setComponentTypes(getTypes());
+        view.setComponentTypes(getComponentService().getAvailableTypes());
     }
 
     /** Saves the created or edited component in component list. */
@@ -118,10 +116,11 @@ public class ItemPresenter extends AbstractPresenter {
             getComponentService().saveComponent(newbie);
             getWindowManager().closeWindow(view);
         } else {
+            LOGGER.warn("Attempt to create item ({}) with duplicate title.", view.getName());
             view.wrongName("item.already.exist");
         }
     }
-    
+
     /**
      * Converts the component from the view representation to the model
      * representation.
@@ -157,33 +156,5 @@ public class ItemPresenter extends AbstractPresenter {
             }
         }
         return -1;
-    }
-
-    /**
-     * Obtains all unoccupied types of components and returns them.
-     * 
-     * @return the list unoccupied component types as strings
-     */
-    public List<String> getTypes() {
-        Set<ComponentType> origTypes = getComponentService().getAvailableTypes();
-        List<String> strTypes = new ArrayList<String>();
-        for (ComponentType orig : origTypes) {
-            strTypes.add(orig.toString());
-        }
-        return strTypes;
-    }
-    
-    /**
-     * Returns the component by its id delegating obtaining of this component to
-     * {@link ComponentService}.
-     * 
-     * @param id
-     *            id of the component to be fetched
-     * @return the component by its id
-     * @throws NotFoundException
-     *             when entity can't be found
-     */
-    public Component getComponent(long id) throws NotFoundException {
-        return getComponentService().get(id);
     }
 }

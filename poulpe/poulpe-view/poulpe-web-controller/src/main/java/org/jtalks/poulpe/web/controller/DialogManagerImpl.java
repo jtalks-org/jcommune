@@ -43,14 +43,13 @@ public class DialogManagerImpl implements DialogManager {
                     Messagebox.EXCLAMATION);
         } catch (InterruptedException e) {
             LOGGER.error("Problem with showing messagebox.", e);
-            // it's unlikely to happen
-            throw new AssertionError(e);
+            throw new AssertionError(e);    // it's unlikely to happen
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    public void confirmDeletion(final String victim, final DialogManager.Confirmable confirmable) {
+    public void confirmDeletion(final String victim, final DialogManager.Performable confirmable) {
         final String title = Labels.getLabel("item.delete.$") + " " + victim + "?";
         final String text = Labels.getLabel("item.delete.question") + " " + victim + "?";
         try {
@@ -58,8 +57,7 @@ public class DialogManagerImpl implements DialogManager {
                     Messagebox.CANCEL, new DialogDeleteListener(confirmable));
         } catch (InterruptedException e) {
             LOGGER.error("Problem with showing deleting messagebox.", e);
-            // it's unlikely to happen
-            throw new AssertionError(e);
+            throw new AssertionError(e);    // it's unlikely to happen
         }
     }
 
@@ -72,7 +70,7 @@ public class DialogManagerImpl implements DialogManager {
      */
     private static class DialogDeleteListener implements EventListener {
 
-        private Confirmable confirmable;
+        private Performable confirmable;
 
         /**
          * Constructor of the listener which initialises the object whose
@@ -81,7 +79,7 @@ public class DialogManagerImpl implements DialogManager {
          * @param confirmable
          *            the object whose {@code execute} method will be invoked
          */
-        public DialogDeleteListener(Confirmable confirmable) {
+        public DialogDeleteListener(Performable confirmable) {
             this.confirmable = confirmable;
         }
 

@@ -21,8 +21,8 @@ import org.jtalks.poulpe.model.entity.Component;
 import org.mockito.ArgumentMatcher;
 
 /**
+ * The class for matching the {@link Component} items.
  * @author Dmitriy Sukharev
- * 
  */
 class ComponentMatcher extends ArgumentMatcher<Component> {
     private Component comp;

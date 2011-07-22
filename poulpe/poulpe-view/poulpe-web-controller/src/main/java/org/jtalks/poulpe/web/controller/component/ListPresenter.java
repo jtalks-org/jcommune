@@ -22,9 +22,6 @@ import java.util.List;
 import org.jtalks.poulpe.model.entity.Component;
 import org.jtalks.poulpe.web.controller.DialogManager;
 
-//TODO: tasks which are going to be done
-//2) unit-test;
-//4) javadoc;
 
 /**
  * The class for mediating between model and view representation of components.
@@ -89,7 +86,7 @@ public class ListPresenter extends AbstractPresenter {
             getDialogManager().notify("item.no.selected.item");
         } else {
             Component victim = view.getSelectedItem();
-            DeleteConfirmable dc = new DeleteConfirmable();
+            DeletePerformable dc = new DeletePerformable();
             getDialogManager().confirmDeletion(victim.getName(), dc);
         }
     }
@@ -106,7 +103,7 @@ public class ListPresenter extends AbstractPresenter {
      * @author Dmitriy Sukharev
      * 
      */
-    class DeleteConfirmable implements DialogManager.Confirmable {
+    class DeletePerformable implements DialogManager.Performable {
         /** {@inheritDoc} */
         @Override
         public void execute() {
@@ -115,5 +112,5 @@ public class ListPresenter extends AbstractPresenter {
             updateList();
         }        
     }
-    
+
 }

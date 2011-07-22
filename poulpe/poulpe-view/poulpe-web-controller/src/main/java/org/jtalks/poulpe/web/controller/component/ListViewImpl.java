@@ -42,6 +42,8 @@ public class ListViewImpl extends Window implements ListView, AfterCompose {
 
     private ListModelList model;
     private Listbox listbox;
+    /* Important! If we are going to serialize/deserialize this class, this
+     * field must be initialised explicitly during deserialization */
     private transient ListPresenter presenter;
 
     /** {@inheritDoc} */
