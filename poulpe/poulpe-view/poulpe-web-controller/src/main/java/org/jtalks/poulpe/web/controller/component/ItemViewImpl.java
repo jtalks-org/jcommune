@@ -125,6 +125,7 @@ public class ItemViewImpl extends Window implements ItemView, AfterCompose {
     /** {@inheritDoc} */
     @Override
     public void setComponentTypes(Set<ComponentType> types) {
+        componentType.appendItem(componentType.getText());
         for (ComponentType type : types) {
             componentType.appendItem(type.toString());
         }
