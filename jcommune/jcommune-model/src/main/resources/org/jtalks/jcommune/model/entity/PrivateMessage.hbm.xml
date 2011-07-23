@@ -3,10 +3,6 @@
   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
 
-  <typedef name="status" class="org.jtalks.jcommune.model.util.GenericEnumUserType">
-    <param name="enumClass">org.jtalks.jcommune.model.entity.PrivateMessageStatus</param>
-  </typedef>
-
   <class name="PrivateMessage" table="PRIVATE_MESSAGE">
     <cache usage="nonstrict-read-write"/>
     <id column="PM_ID" name="id" unsaved-value="0">
@@ -21,7 +17,13 @@
               column="CREATION_DATE" not-null="true"/>
     <property name="title" column="TITLE" not-null="true"/>
     <property name="body" type="text" column="BODY" not-null="true"/>
-    <property name="status" column="STATUS" type="status"/>
+    <property name="status" column="STATUS">
+      <type name="org.hibernate.type.EnumType">
+        <param name="enumClass">org.jtalks.jcommune.model.entity.PrivateMessageStatus</param>
+        <!-- varchar -->
+        <param name="type">12</param>
+      </type>
+    </property>
   </class>
   <query name="getAllFromUser">
     <![CDATA[FROM PrivateMessage as pm 

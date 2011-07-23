@@ -119,7 +119,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         assertEquals(result.getName(), newName);
     }
 
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    @Test(expectedExceptions = Exception.class)
     public void testUpdateNotNullViolation() {
         Branch branch = ObjectsFactory.getDefaultBranch();
         session.save(branch);

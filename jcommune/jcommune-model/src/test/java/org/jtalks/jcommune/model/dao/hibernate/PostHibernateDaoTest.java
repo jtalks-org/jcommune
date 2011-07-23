@@ -24,7 +24,6 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -93,7 +92,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         assertEquals(result.getPostContent(), newContent);
     }
 
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    @Test(expectedExceptions = Exception.class)
     public void testUpdateNotNullViolation() {
         Post post = ObjectsFactory.getDefaultPost();
         session.save(post);

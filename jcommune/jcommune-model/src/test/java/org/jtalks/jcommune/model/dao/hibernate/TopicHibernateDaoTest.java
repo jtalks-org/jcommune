@@ -24,7 +24,6 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -93,7 +92,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         assertEquals(result.getTitle(), newTitle);
     }
 
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    @Test(expectedExceptions = Exception.class)
     public void testUpdateNotNullViolation() {
         Topic topic = ObjectsFactory.getDefaultTopic();
         session.save(topic);
