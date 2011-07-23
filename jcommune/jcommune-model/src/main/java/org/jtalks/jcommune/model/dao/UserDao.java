@@ -21,7 +21,8 @@ import org.jtalks.jcommune.model.entity.User;
 
 /**
  * This interface provides persistence operations for
- * {@link User} objects. Now it has no specific methods, it has only methods inherited from {@link ChildRepository} interface.
+ * {@link User} objects. Now it has no specific methods, it has only methods
+ * inherited from {@link ChildRepository} interface.
  *
  * @author Pavel Vervenko
  * @author Kirill Afonin

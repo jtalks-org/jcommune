@@ -18,7 +18,6 @@
 package org.jtalks.jcommune.model.util;
 
 import com.googlecode.flyway.core.Flyway;
-import com.googlecode.flyway.core.exception.FlywayException;
 
 /**
  * Wrapper that gives ability for disabling flyway migrations.
@@ -26,7 +25,7 @@ import com.googlecode.flyway.core.exception.FlywayException;
  * @author Kirill Afonin
  */
 public class FlywayWrapper extends Flyway {
-    boolean enabled = true;
+    private boolean enabled = true;
 
     /**
      * Can be used for disabling/enabling migrations.
@@ -42,7 +41,7 @@ public class FlywayWrapper extends Flyway {
      * {@inheritDoc}
      */
     @Override
-    public int migrate() throws FlywayException {
+    public int migrate() {
         if (enabled) {
             return super.migrate();
         }

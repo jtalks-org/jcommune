@@ -121,12 +121,12 @@ public class User extends Entity implements UserDetails {
      *
      * @param username the username to set
      */
-    public void setUsername(String username) {
+    final public void setUsername(String username) {
         this.username = username;
         try {
             setEncodedUsername(URLEncoder.encode(username, "UTF-8"));
         } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("Could not encode username", e);
+            throw new IllegalStateException("Could not encode username", e);
         }
     }
 

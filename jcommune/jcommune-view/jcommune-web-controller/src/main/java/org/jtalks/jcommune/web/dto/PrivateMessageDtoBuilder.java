@@ -16,10 +16,9 @@
  * The jtalks.org Project
  */
 
-package org.jtalks.jcommune.web.dto.builder;
+package org.jtalks.jcommune.web.dto;
 
 import org.jtalks.jcommune.model.entity.PrivateMessage;
-import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 
 /**
  * DTO builder for {@link org.jtalks.jcommune.web.dto.PrivateMessageDto} objects.

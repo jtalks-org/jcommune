@@ -22,7 +22,7 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
-import org.jtalks.jcommune.web.dto.builder.PrivateMessageDtoBuilder;
+import org.jtalks.jcommune.web.dto.PrivateMessageDtoBuilder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.validation.BeanPropertyBindingResult;
