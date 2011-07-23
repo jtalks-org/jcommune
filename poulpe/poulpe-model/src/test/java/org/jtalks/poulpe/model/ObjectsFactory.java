@@ -19,7 +19,8 @@ package org.jtalks.poulpe.model;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.hibernate.Session;
-import org.jtalks.poulpe.model.entity.*;
+import org.jtalks.poulpe.model.entity.Branch;
+import org.jtalks.poulpe.model.entity.TopicType;
 
 /**
  * @author Kirill Afonin
