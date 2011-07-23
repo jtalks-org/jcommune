@@ -13,7 +13,7 @@
             <rows>
                 <row>
                     <label value="${labels.title}" />
-                    <textbox id="name" width="300px" onBlur='self.setConstraint("no empty")' focus="true" />
+                    <textbox id="name" width="300px" focus="true" />
                 </row>
                 <row>
                     <label value="${labels.description}" />
@@ -21,7 +21,7 @@
                 </row>
                 <row>
                     <label value="${labels.type}" />
-                    <combobox id="componentType" width="300px" readonly="true"  onBlur='self.setConstraint("no empty")' />
+                    <combobox id="componentType" width="300px" readonly="true" onBlur='self.setConstraint("no empty")' />
                 </row>
                 <row align="right">
                     <div />

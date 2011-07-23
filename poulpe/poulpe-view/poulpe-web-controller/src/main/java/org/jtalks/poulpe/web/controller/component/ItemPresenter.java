@@ -121,6 +121,15 @@ public class ItemPresenter extends AbstractPresenter {
         }
     }
 
+    /** Checks if name of created or edited component is a duplicate. Invokes notification if it is. */
+    public void checkComponent() {
+        long pos = getCidByName(view.getName());
+        if (pos != -1 && pos != view.getCid()) {
+            view.wrongName("item.already.exist");
+        }
+        
+    }
+
     /**
      * Converts the component from the view representation to the model
      * representation.
@@ -157,4 +166,5 @@ public class ItemPresenter extends AbstractPresenter {
         }
         return -1;
     }
+
 }

@@ -149,15 +149,17 @@ public class ItemViewImpl extends Window implements ItemView, AfterCompose {
     public void onClick$saveCompButton() {
         componentType.setConstraint("no empty");
         name.setConstraint("no empty");
-//        new Constraint() {
-//            
-//            @Override
-//            public void validate(Component comp, Object value) throws WrongValueException {
-//                // TODO Auto-generated method stub
-//                
-//            }
-//        };
         presenter.saveComponent();
+    }
+    
+    /**
+     * Tells to presenter to check if name of created or edited component is a duplicate.
+     * 
+     * @see ListPresenter
+     */
+    public void onBlur$name() {
+        name.setConstraint("no empty");
+        presenter.checkComponent();
     }
 
     /** {@inheritDoc} */

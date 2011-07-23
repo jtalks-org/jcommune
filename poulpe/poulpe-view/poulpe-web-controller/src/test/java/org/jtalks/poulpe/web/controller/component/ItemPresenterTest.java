@@ -20,6 +20,8 @@ package org.jtalks.poulpe.web.controller.component;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
@@ -157,7 +159,7 @@ public class ItemPresenterTest {
      * @return initialised view (and changed presenter)
      * @throws NotFoundException
      */
-    private ItemView saveCompPreparation(Component fake, List<Component> fakeList)
+    private ItemView compPreparation(Component fake, List<Component> fakeList)
             throws NotFoundException {
         ComponentService componentService = mock(ComponentService.class);
         ItemViewImpl view = mock(ItemViewImpl.class);
@@ -190,7 +192,7 @@ public class ItemPresenterTest {
     @Test public void saveComponentNewTest() throws NotFoundException {
         List<Component> fakeList = getFakeComponents();
         Component fake = getFakeComponent(0, "extraordinary", "new", ComponentType.ARTICLE);
-        ItemView view = saveCompPreparation(fake, fakeList);
+        ItemView view = compPreparation(fake, fakeList);
 
         presenter.saveComponent();
 
@@ -206,7 +208,7 @@ public class ItemPresenterTest {
         final int ID = 1;
         List<Component> fakeList = getFakeComponents();
         final Component fake = fakeList.get(ID);
-        ItemView view = saveCompPreparation(fake, fakeList);
+        ItemView view = compPreparation(fake, fakeList);
 
         presenter.saveComponent();
 
@@ -222,11 +224,38 @@ public class ItemPresenterTest {
         final int ID = 1;
         List<Component> fakeList = getFakeComponents();
         final Component fake = getFakeComponent(0, fakeList.get(ID).getName(), "new", ComponentType.ARTICLE);
-        ItemView view = saveCompPreparation(fake, fakeList);
+        ItemView view = compPreparation(fake, fakeList);
 
         presenter.saveComponent();
 
         verify(view).wrongName("item.already.exist");
+    }
+    
+    /**
+     * Tests checking component (checking if component name isn't duplicate).
+     * @throws NotFoundException
+     */
+    @Test public void checkComponent() throws NotFoundException {
+        final int ID = 1;
+        List<Component> fakeList = getFakeComponents();
+        
+        // new component
+        Component fake = getFakeComponent(0, "extraordinary", "new", ComponentType.ARTICLE);
+        ItemView view = compPreparation(fake, fakeList);
+        presenter.checkComponent();
+        verify(view, never()).wrongName("item.already.exist");
+        
+        // existing
+        fake = fakeList.get(ID);
+        view = compPreparation(fake, fakeList);
+        presenter.checkComponent();
+        verify(view, never()).wrongName("item.already.exist");
+        
+        // duplicate
+        fake = getFakeComponent(0, fakeList.get(ID).getName(), "new", ComponentType.ARTICLE);
+        view = compPreparation(fake, fakeList);
+        presenter.checkComponent();
+        verify(view, times(1)).wrongName("item.already.exist");
     }
 
     // TODO I hope getCidByName will be deleted (as well as the following 3 tests)
