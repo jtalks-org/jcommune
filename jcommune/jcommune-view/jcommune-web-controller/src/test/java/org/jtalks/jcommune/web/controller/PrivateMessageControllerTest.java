@@ -33,7 +33,13 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
@@ -206,7 +212,7 @@ public class PrivateMessageControllerTest {
         PrivateMessage pm = PrivateMessage.createNewPrivateMessage();
         pm.setId(PM_ID);
         pm.markAsDraft();
-        pm.setUserTo(new User());
+        pm.setUserTo(new User("username", "email", "password"));
         when(pmService.get(PM_ID)).thenReturn(pm);
 
         ModelAndView mav = controller.edit(PM_ID);

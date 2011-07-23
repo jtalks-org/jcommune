@@ -105,7 +105,7 @@ public class TransactionalTopicServiceTest {
     @Test
     public void testAddAnswer() throws NotFoundException {
         Topic answeredTopic = Topic.createNewTopic();
-        User author = new User();
+        User author = new User(USERNAME, "email", "password");
         when(securityService.getCurrentUser()).thenReturn(author);
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(answeredTopic);

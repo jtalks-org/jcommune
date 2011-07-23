@@ -68,7 +68,7 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testGetInboxForCurrentUser() {
-        User user = new User();
+        User user =new User(USERNAME, "email", "password");
         when(pmDao.getAllForUser(user)).thenReturn(new ArrayList<PrivateMessage>());
         when(securityService.getCurrentUser()).thenReturn(user);
 
@@ -80,7 +80,7 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testGetOutboxForCurrentUser() {
-        User user = new User();
+        User user = new User(USERNAME, "email", "password");
         when(pmDao.getAllFromUser(user)).thenReturn(new ArrayList<PrivateMessage>());
         when(securityService.getCurrentUser()).thenReturn(user);
 
@@ -143,7 +143,7 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testGetDraftsFromCurrentUser() {
-        User user = new User();
+        User user = new User(USERNAME, "email", "password");
         when(pmDao.getDraftsFromUser(user)).thenReturn(new ArrayList<PrivateMessage>());
         when(securityService.getCurrentUser()).thenReturn(user);
 

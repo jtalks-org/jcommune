@@ -25,6 +25,7 @@
   <bean id="userService"
         class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
     <constructor-arg index="0" ref="userDao"/>
+    <constructor-arg index="1" ref="securityService"/>
   </bean>
 
   <bean id="postService"

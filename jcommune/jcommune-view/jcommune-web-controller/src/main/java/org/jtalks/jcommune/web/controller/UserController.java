@@ -51,7 +51,7 @@ import javax.validation.Valid;
 public class UserController {
     public static final String EDIT_PROFILE = "editProfile";
     public static final String REGISTRATION = "registration";
-    
+
     private final SecurityService securityService;
     private final UserService userService;
 
@@ -71,8 +71,6 @@ public class UserController {
      *
      * @param userService     {@link UserService} to be injected
      * @param securityService {@link SecurityService} used for accessing to current logged in user
-     * @see UserService
-     * @see SecurityService
      */
     @Autowired
     public UserController(UserService userService, SecurityService securityService) {
@@ -88,7 +86,7 @@ public class UserController {
      */
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
     public ModelAndView registrationPage() {
-    	RegisterUserDto newUser = new RegisterUserDto();
+        RegisterUserDto newUser = new RegisterUserDto();
         return new ModelAndView(REGISTRATION).addObject("newUser", newUser);
     }
 
@@ -120,7 +118,7 @@ public class UserController {
     /**
      * Show page with user info.
      *
-     * @param encodedUsername - {@link User#getEncodedUsername()}
+     * @param encodedUsername {@link User#getEncodedUsername()}
      * @return user details view with {@link User} object
      * @throws NotFoundException if user with given id not found
      */
@@ -134,7 +132,7 @@ public class UserController {
      * Show edit user profile page for current logged in user.
      *
      * @return edit user profile page
-     * @throws NotFoundException - throws if current logged in user was not found
+     * @throws NotFoundException throws if current logged in user was not found
      */
     @RequestMapping(value = "/user/edit", method = RequestMethod.GET)
     public ModelAndView editProfilePage() throws NotFoundException {
@@ -147,9 +145,9 @@ public class UserController {
      * Update user profile info. Check if the user enter valid data and update profile in database.
      * In error case return into the edit profile page and draw the error.
      *
-     * @param userDto - dto populated by user
-     * @param result  - binding result which contains the validation result
-     * @return - in case of errors return back to edit profile page, in another case return to user detalis page
+     * @param userDto dto populated by user
+     * @param result  binding result which contains the validation result
+     * @return in case of errors return back to edit profile page, in another case return to user detalis page
      * @throws NotFoundException - throws if current logged in user was not found
      */
     @RequestMapping(value = "/user/edit", method = RequestMethod.POST)
@@ -160,12 +158,10 @@ public class UserController {
             return new ModelAndView(EDIT_PROFILE);
         }
 
-        User currentUser = securityService.getCurrentUser();
-        User userData2Edit = userDto.createUser();
-
+        User editedUser;
         try {
-            userService.editUserProfile(userData2Edit, currentUser.getUsername(),
-                    userDto.getCurrentUserPassword(), userDto.getNewUserPassword());
+            editedUser = userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
+                    userDto.getLastName(), userDto.getCurrentUserPassword(), userDto.getNewUserPassword());
         } catch (DuplicateEmailException e) {
             result.rejectValue("email", "validation.duplicateemail");
             return new ModelAndView(EDIT_PROFILE);
@@ -176,7 +172,7 @@ public class UserController {
         }
         return new ModelAndView(new StringBuilder()
                 .append("redirect:/user/")
-                .append(currentUser.getEncodedUsername())
+                .append(editedUser.getEncodedUsername())
                 .append(".html").toString());
     }
 }

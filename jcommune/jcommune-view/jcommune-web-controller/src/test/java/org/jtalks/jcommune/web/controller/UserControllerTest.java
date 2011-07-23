@@ -17,13 +17,11 @@ import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.Map;
-
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
@@ -40,7 +38,7 @@ public class UserControllerTest {
     private UserService userService;
     private SecurityService securityService;
     private UserController controller;
-    
+
     private final String USER_NAME = "username";
     private final String ENCODED_USER_NAME = "encodeUsername";
     private final String FIRST_NAME = "first name";
@@ -90,7 +88,8 @@ public class UserControllerTest {
     public void testRegisterDuplicateUser() throws Exception {
         RegisterUserDto dto = getRegisterUserDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
-        doThrow(new DuplicateUserException("User username already exists!")).when(userService).registerUser(any(User.class));
+        doThrow(new DuplicateUserException("User username already exists!"))
+                .when(userService).registerUser(any(User.class));
 
         ModelAndView mav = controller.registerUser(dto, bindingResult);
 
@@ -103,7 +102,8 @@ public class UserControllerTest {
     public void testRegisterUserWithDuplicateEmail() throws Exception {
         RegisterUserDto dto = getRegisterUserDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
-        doThrow(new DuplicateEmailException("E-mail mail@mail.com already exists!")).when(userService).registerUser(any(User.class));
+        doThrow(new DuplicateEmailException("E-mail mail@mail.com already exists!"))
+                .when(userService).registerUser(any(User.class));
 
         ModelAndView mav = controller.registerUser(dto, bindingResult);
 
@@ -124,108 +124,109 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testShow() throws Exception {        
-        String encodedUsername = "encodedUsername";
-        when(userService.getByEncodedUsername(encodedUsername)).thenReturn(new User());
+    public void testShow() throws Exception {
+        when(userService.getByEncodedUsername(ENCODED_USER_NAME))
+                .thenReturn(new User("username", "email", "password"));
 
-        ModelAndView mav = controller.show(encodedUsername);
+        ModelAndView mav = controller.show(ENCODED_USER_NAME);
 
         assertViewName(mav, "userDetails");
         assertModelAttributeAvailable(mav, "user");
-        verify(userService).getByEncodedUsername(encodedUsername);
+        verify(userService).getByEncodedUsername(ENCODED_USER_NAME);
     }
-    
+
     @Test
-    public void testEditProfilePage() throws NotFoundException{
+    public void testEditProfilePage() throws NotFoundException {
         User user = getUser();
         when(securityService.getCurrentUser()).thenReturn(user);
-        
+
         ModelAndView mav = controller.editProfilePage();
-        
+
         assertViewName(mav, "editProfile");
-        assertModelAttributeAvailable(mav, "editedUser");        
+        EditUserProfileDto dto = assertAndReturnModelAttributeOfType(mav, "editedUser", EditUserProfileDto.class);
+        assertEquals(dto.getFirstName(), user.getFirstName(), "First name is not equal");
+        assertEquals(dto.getLastName(), user.getLastName(), "Last name is not equal");
+        assertEquals(dto.getEmail(), user.getEmail(), "Last name is not equal");
         verify(securityService).getCurrentUser();
-        
-        Map<String, Object> modelMap = mav.getModel();
-        EditUserProfileDto dto = (EditUserProfileDto) modelMap.get("editedUser");
-        
-        assertEquals(dto.getFirstName(), user.getFirstName(),"First name is not equal");
-        assertEquals(dto.getLastName(), user.getLastName(),"Last name is not equal");
-        assertEquals(dto.getEmail(), user.getEmail(),"Last name is not equal");
-        
     }
-    
+
     @Test
-    public void testEditProfile() throws NotFoundException{
+    public void testEditProfile() throws Exception {
         User user = getUser();
-        when(securityService.getCurrentUser()).thenReturn(user);
-        EditUserProfileDto dto = getEditUserProfileDto();
-        BindingResult bindingResult = new BeanPropertyBindingResult(dto, "editedUser");
-        
-        ModelAndView mav = controller.editProfile(dto, bindingResult);
-        
-        String excpectedUrl = new StringBuilder().append("redirect:/user/").append(user.getEncodedUsername()).append(".html").toString();
+        EditUserProfileDto userDto = getEditUserProfileDto();
+        when(userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
+                userDto.getLastName(), userDto.getCurrentUserPassword(),
+                userDto.getNewUserPassword())).thenReturn(user);
+        BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
+
+        ModelAndView mav = controller.editProfile(userDto, bindingResult);
+
+        String excpectedUrl = "redirect:/user/" + user.getEncodedUsername() + ".html";
         assertViewName(mav, excpectedUrl);
-        verify(securityService).getCurrentUser();
+        verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
+                userDto.getLastName(), userDto.getCurrentUserPassword(),
+                userDto.getNewUserPassword());
     }
-        
-    @Test
-    public void testEditProfileDublicatedEmail() throws Exception{
-        User user = getUser();
-        EditUserProfileDto dto = getEditUserProfileDto();
-        BindingResult bindingResult = new BeanPropertyBindingResult(dto, "editedUser");
-        
-        when(securityService.getCurrentUser()).thenReturn(user);
-        doThrow(new DuplicateEmailException()).when(userService).editUserProfile(any(User.class), anyString(), anyString(), anyString());
 
-        ModelAndView mav = controller.editProfile(dto, bindingResult);
+    @Test
+    public void testEditProfileDublicatedEmail() throws Exception {
+        EditUserProfileDto userDto = getEditUserProfileDto();
+        BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
+
+        doThrow(new DuplicateEmailException()).when(userService)
+                .editUserProfile(userDto.getEmail(), userDto.getFirstName(),
+                        userDto.getLastName(), userDto.getCurrentUserPassword(),
+                        userDto.getNewUserPassword());
+
+        ModelAndView mav = controller.editProfile(userDto, bindingResult);
 
         assertViewName(mav, "editProfile");
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
-        verify(userService).editUserProfile(any(User.class), anyString(), anyString(), anyString());
-        
-        for(ObjectError error : bindingResult.getAllErrors()){
-            if(error != null && error instanceof FieldError){
-                assertEquals(((FieldError)error).getField(), "email");
-            }
-        }
-    }
-    
-    @Test
-    public void testEditProfileWrongPassword() throws Exception{
-        User user = getUser();
-        EditUserProfileDto dto = getEditUserProfileDto();
-        BindingResult bindingResult = new BeanPropertyBindingResult(dto, "editedUser");
-        
-        when(securityService.getCurrentUser()).thenReturn(user);
-        doThrow(new WrongPasswordException()).when(userService).editUserProfile(any(User.class), anyString(), anyString(), anyString());
+        verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
+                userDto.getLastName(), userDto.getCurrentUserPassword(),
+                userDto.getNewUserPassword());
 
-        ModelAndView mav = controller.editProfile(dto, bindingResult);
+        assertContainsError(bindingResult, "email");
+    }
+
+    @Test
+    public void testEditProfileWrongPassword() throws Exception {
+        EditUserProfileDto userDto = getEditUserProfileDto();
+        BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
+        doThrow(new WrongPasswordException()).when(userService)
+                .editUserProfile(userDto.getEmail(), userDto.getFirstName(),
+                        userDto.getLastName(), userDto.getCurrentUserPassword(),
+                        userDto.getNewUserPassword());
+
+        ModelAndView mav = controller.editProfile(userDto, bindingResult);
 
         assertViewName(mav, "editProfile");
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
-        verify(userService).editUserProfile(any(User.class), anyString(), anyString(), anyString());
-        
-        for(ObjectError error : bindingResult.getAllErrors()){
-            if(error != null && error instanceof FieldError){
-                assertEquals(((FieldError)error).getField(), "currentUserPassword");
-            }
-        }
+        verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
+                userDto.getLastName(), userDto.getCurrentUserPassword(),
+                userDto.getNewUserPassword());
+        assertContainsError(bindingResult, "currentUserPassword");
     }
-    
+
     @Test
-    public void testeditProfilevalidationFail() throws Exception{
-        User user = getUser();
+    public void testEditProfileValidationFail() throws Exception {
         EditUserProfileDto dto = getEditUserProfileDto();
         BindingResult bindingResult = mock(BindingResult.class);
-        
         when(bindingResult.hasErrors()).thenReturn(true);
-        
-        when(securityService.getCurrentUser()).thenReturn(user);
-        
+
         ModelAndView mav = controller.editProfile(dto, bindingResult);
+
         assertViewName(mav, "editProfile");
-        verify(securityService, times(0)).getCurrentUser();
+        verify(userService, never()).editUserProfile(anyString(), anyString(), anyString(),
+                anyString(), anyString());
+    }
+
+    private void assertContainsError(BindingResult bindingResult, String errorName) {
+        for (ObjectError error : bindingResult.getAllErrors()) {
+            if (error != null && error instanceof FieldError) {
+                assertEquals(((FieldError) error).getField(), errorName);
+            }
+        }
     }
 
     /**
@@ -241,11 +242,11 @@ public class UserControllerTest {
         dto.setLastName(LAST_NAME);
         return dto;
     }
-    
+
     /**
      * @return {@link EditUserProfileDto} with default values
      */
-    private EditUserProfileDto  getEditUserProfileDto(){
+    private EditUserProfileDto getEditUserProfileDto() {
         EditUserProfileDto dto = new EditUserProfileDto();
         dto.setEmail(EMAIL);
         dto.setFirstName(FIRST_NAME);
@@ -253,10 +254,10 @@ public class UserControllerTest {
         dto.setCurrentUserPassword(PASSWORD);
         dto.setNewUserPassword(NEW_PASSWORD);
         dto.setNewUserPasswordConfirm(NEW_PASSWORD);
-        
+
         return dto;
     }
-    
+
     private User getUser() {
         User newUser = new User(USER_NAME, EMAIL, PASSWORD);
         newUser.setFirstName(FIRST_NAME);

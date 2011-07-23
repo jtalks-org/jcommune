@@ -18,27 +18,25 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.web.validation.Matches;
 
 /**
  * This dto used for transferring data in edit {@link User} profile operation.
  * To get more info see {@link UserController#editProfile}.
- *  
- * @author Osadchuck Eugeny
  *
+ * @author Osadchuck Eugeny
  */
 @Matches(field = "newUserPassword", verifyField = "newUserPasswordConfirm", message = "{password_not_matches}")
 public class EditUserProfileDto extends UserDto {
-    
+
     private String currentUserPassword;
 
-    @Length(min=4, max=20)
+    @Length(min = 4, max = 20)
     private String newUserPassword;
     private String newUserPasswordConfirm;
-    
-    
+
+
     /**
      * Default constructor
      */
@@ -49,7 +47,7 @@ public class EditUserProfileDto extends UserDto {
     /**
      * Constructor which fills dto fields from user.
      * Fields {@link User#getFirstName()}, {@link User#getLastName()()}, {@link User#getEmail()} will be copied.
-     *  
+     *
      * @param user - copying source
      */
     public EditUserProfileDto(User user) {
@@ -57,8 +55,8 @@ public class EditUserProfileDto extends UserDto {
         this.setLastName(user.getLastName());
         this.setEmail(user.getEmail());
     }
-    
-    /**    
+
+    /**
      * @return - current user password
      */
     public String getCurrentUserPassword() {
@@ -67,8 +65,8 @@ public class EditUserProfileDto extends UserDto {
 
     /**
      * Set current user password
-     * 
-     * @param currentUserPassword - current user password 
+     *
+     * @param currentUserPassword - current user password
      */
     public void setCurrentUserPassword(String currentUserPassword) {
         this.currentUserPassword = currentUserPassword;
@@ -83,7 +81,7 @@ public class EditUserProfileDto extends UserDto {
 
     /**
      * Set new user password
-     * 
+     *
      * @param newUserPassword - new user password
      */
     public void setNewUserPassword(String newUserPassword) {
@@ -99,26 +97,10 @@ public class EditUserProfileDto extends UserDto {
 
     /**
      * Set new user password confirmation.
-     * 
+     *
      * @param newUserPasswordConfirm - new user password confirmation
      */
     public void setNewUserPasswordConfirm(String newUserPasswordConfirm) {
         this.newUserPasswordConfirm = newUserPasswordConfirm;
-    }
-    
-    /**
-     * Create user from entered by user fields.
-     * Method do not set the password value.
-     * 
-     * @return - user with set from DTO fields.
-     * @see User
-     */
-    public User createUser(){
-        User user = new User();
-        user.setFirstName(getFirstName());
-        user.setLastName(getLastName());
-        user.setEmail(getEmail());
-        
-        return user;
     }
 }

@@ -19,6 +19,7 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
 import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
@@ -35,17 +36,21 @@ import org.slf4j.LoggerFactory;
  * @author Kirill Afonin
  * @author Alexandre Teterin
  */
-public class TransactionalUserService extends AbstractTransactionalEntityService<User, UserDao> implements UserService {
+public class TransactionalUserService extends AbstractTransactionalEntityService<User, UserDao>
+        implements UserService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    private SecurityService securityService;
 
     /**
      * Create an instance of User entity based service
      *
-     * @param dao - data access object, which should be able do all CRUD operations with user entity
+     * @param dao             for operations with data storage
+     * @param securityService for security
      */
-    public TransactionalUserService(UserDao dao) {
+    public TransactionalUserService(UserDao dao, SecurityService securityService) {
         this.dao = dao;
+        this.securityService = securityService;
     }
 
     /**
@@ -61,7 +66,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         }
         return user;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -127,14 +132,14 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     private boolean isEmailExist(String email) {
         return dao.isUserWithEmailExist(email);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public void editUserProfile(User editedUser, String username, String currentPassword, String newPassword)
-            throws DuplicateEmailException, WrongPasswordException {
-        User currentUser = dao.getByUsername(username);
+    public User editUserProfile(String email, String firstName, String lastName, String currentPassword,
+                                String newPassword) throws DuplicateEmailException, WrongPasswordException {
+        User currentUser = securityService.getCurrentUser();
         boolean changePassword = newPassword != null;
         if (changePassword) {
             if (currentPassword == null ||
@@ -144,16 +149,17 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
                 currentUser.setPassword(newPassword);
             }
         }
-        
-        boolean changeEmail = !currentUser.getEmail().equals(editedUser.getEmail());
-        if(changeEmail && isEmailExist(editedUser.getEmail())){            
-            throw new DuplicateEmailException();                                    
+
+        boolean changeEmail = !currentUser.getEmail().equals(email);
+        if (changeEmail && isEmailExist(email)) {
+            throw new DuplicateEmailException();
         }
-        
-        currentUser.setFirstName(editedUser.getFirstName());
-        currentUser.setLastName( editedUser.getLastName());
-        currentUser.setEmail(editedUser.getEmail());
-        
-        dao.saveOrUpdate(currentUser);   
+
+        currentUser.setEmail(email);
+        currentUser.setFirstName(firstName);
+        currentUser.setLastName(lastName);
+
+        dao.saveOrUpdate(currentUser);
+        return currentUser;
     }
 }

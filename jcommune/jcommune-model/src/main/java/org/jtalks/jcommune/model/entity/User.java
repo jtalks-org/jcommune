@@ -45,9 +45,19 @@ public class User extends Entity implements UserDetails {
     private String role = "ROLE_USER";
     private String encodedUsername;
 
-    public User() {
+    /**
+     * Only for hibernate usage.
+     */
+    protected User() {
     }
 
+    /**
+     * Create instance with requiered fields.
+     *
+     * @param username username
+     * @param email    email
+     * @param password password
+     */
     public User(String username, String email, String password) {
         this.setUsername(username);
         this.email = email;
@@ -108,6 +118,7 @@ public class User extends Entity implements UserDetails {
 
     /**
      * Set the username and encoded username (based on username)
+     *
      * @param username the username to set
      */
     public void setUsername(String username) {

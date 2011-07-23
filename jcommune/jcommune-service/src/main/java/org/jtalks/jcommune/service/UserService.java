@@ -73,14 +73,15 @@ public interface UserService extends EntityService<User> {
     /**
      * Update user entity.
      *
-     * @param editedUser      - user with new property values entered by user
-     * @param username        - username of User whose profile we are going to update
-     *                        (current logged in User.username)
-     * @param currentPassword - current user password, could be NULL
-     * @param newPassword     - new user password, could be NULL
+     * @param email           email
+     * @param firstName       first name
+     * @param lastName        last name
+     * @param currentPassword current user password, could be NULL
+     * @param newPassword     new user password, could be NULL
+     * @return edited user
      * @throws DuplicateEmailException when user with given email already exist
      * @throws WrongPasswordException  when user enter wrong currentPassword
      */
-    void editUserProfile(User editedUser, String username, String currentPassword, String newPassword)
-            throws DuplicateEmailException, WrongPasswordException;
+    User editUserProfile(String email, String firstName, String lastName, String currentPassword,
+                         String newPassword) throws DuplicateEmailException, WrongPasswordException;
 }
