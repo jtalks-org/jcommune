@@ -58,7 +58,6 @@ public class Renderer implements ListitemRenderer {
      */
     static class DoubleClickListener implements EventListener {
         /** {@inheritDoc} */
-        @SuppressWarnings("unused")
         @Override
         public void onEvent(Event event) throws InterruptedException {
             ListPresenter presenter = (ListPresenter) SpringUtil

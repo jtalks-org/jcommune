@@ -25,6 +25,11 @@ package org.jtalks.poulpe.service.exceptions;
 public class NotFoundException extends Exception {
 
     /**
+     * Generated uid
+     */
+    private static final long serialVersionUID = -1274217026403800641L;
+
+    /**
      * Default constructor.
      *
      * @param message exception message

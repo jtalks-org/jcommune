@@ -27,6 +27,11 @@ package org.jtalks.poulpe.service.exceptions;
 public class DuplicateException extends Exception {
 
     /**
+     * Generated uid
+     */
+    private static final long serialVersionUID = 4465878070051063015L;
+
+    /**
      * Default constructor.
      *
      * {@link Exception}

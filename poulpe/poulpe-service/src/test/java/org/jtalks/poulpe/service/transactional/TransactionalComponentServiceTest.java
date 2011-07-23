@@ -36,8 +36,6 @@ public class TransactionalComponentServiceTest {
 
     private ComponentDao dao;
     private TransactionalComponentService instance;
-    private long COMPONENT_ID = 100500;
-
     @BeforeMethod
     public void setUp() throws Exception {
         dao = mock(ComponentDao.class);

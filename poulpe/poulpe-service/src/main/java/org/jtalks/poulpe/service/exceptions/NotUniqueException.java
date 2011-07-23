@@ -24,6 +24,11 @@ package org.jtalks.poulpe.service.exceptions;
 public class NotUniqueException extends Exception {
 
     /**
+     * Generated uid
+     */
+    private static final long serialVersionUID = -1301487402231289042L;
+
+    /**
      * Default constructor.
      *
      * {@link Exception}

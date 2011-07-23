@@ -27,6 +27,11 @@ import org.zkoss.zul.Window;
  */
 public class TopicTypeViewImpl extends Window implements TopicTypeView, AfterCompose {
 
+    /**
+     * Generated uid
+     */
+    private static final long serialVersionUID = 1657959037954482623L;
+    
     private TopicTypePresenter presenter;
 
     /**

@@ -135,7 +135,6 @@ public class ListViewImpl extends Window implements ListView, AfterCompose {
      */
     public class EditListListener implements EventListener {
         /** {@inheritDoc} */
-        @SuppressWarnings("unused")
         @Override
         public void onEvent(Event event) {
             presenter.updateList();
