@@ -33,125 +33,124 @@ import org.testng.annotations.Test;
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
 public class TopicTypeDaoTest extends AbstractTransactionalTestNGSpringContextTests {
-	
-	 @Autowired
-	    private SessionFactory sessionFactory;
-	    @Autowired
-	    private TopicTypeDao dao;
-	    private Session session;
 
-	    @BeforeMethod
-	    public void setUp() throws Exception {
-	        session = sessionFactory.getCurrentSession();
-	        ObjectsFactory.setSession(session);
-	    }
+    @Autowired
+    private SessionFactory sessionFactory;
+    @Autowired
+    private TopicTypeDao dao;
+    private Session session;
 
-	    @Test
-	    public void testSave() {
-	        TopicType topicType = ObjectsFactory.createTopicTypeWithRandomTitle();
-	        dao.saveOrUpdate(topicType);
+    @BeforeMethod
+    public void setUp() throws Exception {
+        session = sessionFactory.getCurrentSession();
+        ObjectsFactory.setSession(session);
+    }
 
-	        assertNotSame(topicType.getId(), 0, "Id not created");
+    @Test
+    public void testSave() {
+        TopicType topicType = ObjectsFactory.createTopicTypeWithRandomTitle();
+        dao.saveOrUpdate(topicType);
 
-	        session.evict(topicType);
-	        TopicType result = (TopicType) session.get(TopicType.class, topicType.getId());
+        assertNotSame(topicType.getId(), 0, "Id not created");
 
-	        assertReflectionEquals(topicType, result);
-	    }
+        session.evict(topicType);
+        TopicType result = (TopicType) session.get(TopicType.class,
+                topicType.getId());
 
+        assertReflectionEquals(topicType, result);
+    }
 
-	    @Test(expectedExceptions = DataIntegrityViolationException.class)
-	    public void testSaveTopicTypeWithNameNotNullViolation() {
-	        TopicType TopicType = new TopicType();
+    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    public void testSaveTopicTypeWithNameNotNullViolation() {
+        TopicType TopicType = new TopicType();
 
-	        dao.saveOrUpdate(TopicType);
-	    }
+        dao.saveOrUpdate(TopicType);
+    }
 
-	    @Test
-	    public void testGet() {
-	        TopicType TopicType = ObjectsFactory.createTopicTypeWithRandomTitle();
-	        session.save(TopicType);
+    @Test
+    public void testGet() {
+        TopicType TopicType = ObjectsFactory.createTopicTypeWithRandomTitle();
+        session.save(TopicType);
 
-	        TopicType result = dao.get(TopicType.getId());
+        TopicType result = dao.get(TopicType.getId());
 
-	        assertNotNull(result);
-	        assertEquals(result.getId(), TopicType.getId());
-	    }
+        assertNotNull(result);
+        assertEquals(result.getId(), TopicType.getId());
+    }
 
-	    @Test
-	    public void testGetInvalidId() {
-	        TopicType result = dao.get(-567890L);
+    @Test
+    public void testGetInvalidId() {
+        TopicType result = dao.get(-567890L);
 
-	        assertNull(result);
-	    }
+        assertNull(result);
+    }
 
-	    @Test
-	    public void testUpdate() {
-	        TopicType topicType = ObjectsFactory.createTopicTypeWithRandomTitle();
-	        session.save(topicType);
-	        
-	        String newTitle = "new title";
-	        topicType.setTitle(newTitle);
-	        dao.saveOrUpdate(topicType);
-	        session.evict(topicType);
-	        TopicType result = (TopicType) session.get(TopicType.class, topicType.getId());
+    @Test
+    public void testUpdate() {
+        TopicType topicType = ObjectsFactory.createTopicTypeWithRandomTitle();
+        session.save(topicType);
 
-	        assertEquals(result.getTitle(), newTitle);
-	    }
+        String newTitle = "new title";
+        topicType.setTitle(newTitle);
+        dao.saveOrUpdate(topicType);
+        session.evict(topicType);
+        TopicType result = (TopicType) session.get(TopicType.class, topicType.getId());
 
-	    @Test
-	    public void testDelete() {
-	        TopicType topicType = ObjectsFactory.createTopicTypeWithRandomTitle();
-	        session.save(topicType);
+        assertEquals(result.getTitle(), newTitle);
+    }
 
-	        boolean result = dao.delete(topicType.getId());
-	        int TopicTypeCount = getCount();
+    @Test
+    public void testDelete() {
+        TopicType topicType = ObjectsFactory.createTopicTypeWithRandomTitle();
+        session.save(topicType);
 
-	        assertTrue(result, "Entity is not deleted");
-	        assertEquals(TopicTypeCount, 0);
-	    }
+        boolean result = dao.delete(topicType.getId());
+        int TopicTypeCount = getCount();
 
-	    @Test
-	    public void testDeleteInvalidId() {
-	        boolean result = dao.delete(-100500L);
+        assertTrue(result, "Entity is not deleted");
+        assertEquals(TopicTypeCount, 0);
+    }
 
-	        assertFalse(result, "Entity deleted");
-	    }
+    @Test
+    public void testDeleteInvalidId() {
+        boolean result = dao.delete(-100500L);
 
-	    @Test
-	    public void testGetAll() {
-	        TopicType topicType1 = ObjectsFactory.createTopicTypeWithRandomTitle();
-	        session.save(topicType1);
-	        TopicType topicType2 = ObjectsFactory.createTopicTypeWithRandomTitle();
-	        session.save(topicType2);
+        assertFalse(result, "Entity deleted");
+    }
 
-	        List<TopicType> topicTypes = dao.getAll();
+    @Test
+    public void testGetAll() {
+        TopicType topicType1 = ObjectsFactory.createTopicTypeWithRandomTitle();
+        session.save(topicType1);
+        TopicType topicType2 = ObjectsFactory.createTopicTypeWithRandomTitle();
+        session.save(topicType2);
 
-	        assertEquals(topicTypes.size(), 2);
-	    }
+        List<TopicType> topicTypes = dao.getAll();
 
-	    @Test
-	    public void testGetAllWithEmptyTable() {
-	        List<TopicType> TopicTypees = dao.getAll();
+        assertEquals(topicTypes.size(), 2);
+    }
 
-	        assertTrue(TopicTypees.isEmpty());
-	    }
+    @Test
+    public void testGetAllWithEmptyTable() {
+        List<TopicType> TopicTypees = dao.getAll();
 
-	    @Test
-	    public void testIsExist() {
-	        TopicType TopicType = ObjectsFactory.createTopicTypeWithRandomTitle();
-	        session.save(TopicType);
+        assertTrue(TopicTypees.isEmpty());
+    }
 
-	        assertTrue(dao.isExist(TopicType.getId()));
-	    }
+    @Test
+    public void testIsExist() {
+        TopicType TopicType = ObjectsFactory.createTopicTypeWithRandomTitle();
+        session.save(TopicType);
 
-	    @Test
-	    public void testIsNotExist() {
-	     assertFalse(dao.isExist(99999L));
-	    }
+        assertTrue(dao.isExist(TopicType.getId()));
+    }
 
-	    private int getCount() {
-	        return ((Number) session.createQuery("select count(*) from TopicType").uniqueResult()).intValue();
-	    }
+    @Test
+    public void testIsNotExist() {
+        assertFalse(dao.isExist(99999L));
+    }
 
+    private int getCount() {
+        return ((Number) session.createQuery("select count(*) from TopicType").uniqueResult()).intValue();
+    }
 }
