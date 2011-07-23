@@ -15,7 +15,7 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-package org.jtalks.poulpe.model;
+package org.jtalks.poulpe.model.dao.hibernate;
 
 import java.util.Arrays;
 import java.util.Set;

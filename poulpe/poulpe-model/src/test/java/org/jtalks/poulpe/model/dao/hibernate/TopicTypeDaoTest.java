@@ -12,7 +12,6 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jtalks.poulpe.model.ObjectsFactory;
 import org.jtalks.poulpe.model.dao.TopicTypeDao;
 import org.jtalks.poulpe.model.entity.TopicType;
 import org.springframework.beans.factory.annotation.Autowired;

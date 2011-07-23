@@ -1,4 +1,4 @@
-package org.jtalks.poulpe.model;
+package org.jtalks.poulpe.model.dao.hibernate;
 
 /**
  * Copyright (C) 2011  jtalks.org Team
