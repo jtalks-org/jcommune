@@ -38,7 +38,6 @@ import org.mockito.*;
 public class BranchPresenterTest {
 
     final private int COUNT_BRANCES = 3;
-    final private int COUNT_DELETED_BRANCHES = 3;
 
     private BranchPresenter presenter = new BranchPresenter();
     @Mock
@@ -60,12 +59,6 @@ public class BranchPresenterTest {
             String strTimes = String.valueOf(times);
             branches.add(makeFakeBranch("Branch #" + strTimes, "Description #"
                     + strTimes, false));
-        }
-
-        for (int times = 0; times < COUNT_DELETED_BRANCHES; times++) {
-            String strTimes = String.valueOf(times);
-            branches.add(makeFakeBranch("Branch #" + strTimes, "Description #"
-                    + strTimes, true));
         }
 
         return branches;
@@ -155,23 +148,23 @@ public class BranchPresenterTest {
     }
 
     @Test
-    public void testMarkBranchAsDeletedIfBranchSelected() {
+    public void testDeleteBranchIfBranchSelected() {
         Branch selectedBranch = makeFakeBranch("Selected Branch",
                 "Selected Branch", false);
 
         when(view.getSelectedBranch()).thenReturn(selectedBranch);
 
-        presenter.markBranchAsDelete();
+        presenter.deleteBranch();
 
         verify(branchService).deleteBranch(compareWithBranch(selectedBranch));
         verify(view).removeBranch(selectedBranch);
     }
 
     @Test
-    public void testMarkBranchAsDeletedIfBranchNotSelected() {
+    public void testDeleteBranchIfBranchNotSelected() {
         when(view.getSelectedBranch()).thenReturn(null);
 
-        presenter.markBranchAsDelete();
+        presenter.deleteBranch();
 
         verify(branchService, never()).deleteBranch((Branch) any());
         verify(view, never()).removeBranch((Branch) any());

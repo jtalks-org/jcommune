@@ -55,8 +55,8 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
      */
     @Override
     public void deleteBranch(Branch selectedBranch) {
-        selectedBranch.setDeleted(true);
-        dao.saveOrUpdate(selectedBranch);
+          // TODO: check returned value? 
+          dao.delete(selectedBranch.getId());
     }
 
     /**

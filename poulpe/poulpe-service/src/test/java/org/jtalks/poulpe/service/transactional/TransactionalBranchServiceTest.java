@@ -86,8 +86,7 @@ public class TransactionalBranchServiceTest {
 
         branchService.deleteBranch(branch);
 
-        assertTrue(branch.getDeleted());
-        verify(branchDao).saveOrUpdate(branch);
+        verify(branchDao).delete(branch.getId());
     }
 
     @Test

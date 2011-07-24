@@ -21,6 +21,8 @@ package org.jtalks.poulpe.web.controller.branch;
 import java.util.List;
 
 import org.jtalks.poulpe.model.entity.Branch;
+import org.jtalks.poulpe.web.controller.DialogManager;
+import org.jtalks.poulpe.web.controller.DialogManagerImpl;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Label;
@@ -40,14 +42,14 @@ import org.zkoss.zul.Window;
  * */
 
 public class BranchViewImpl extends Window implements BranchView, AfterCompose {
-    
+
     private static final long serialVersionUID = -7175904766962858866L;
     private Listbox branchesList;
-    
+
     /**
-     * Important! If we are going to serialize/deserialize this class, this field 
-     * must be initialized explicitly during deserialization
-     */ 
+     * Important! If we are going to serialize/deserialize this class, this
+     * field must be initialized explicitly during deserialization
+     */
     private transient BranchPresenter presenter;
 
     private Window newBranchDialog;
@@ -187,7 +189,6 @@ public class BranchViewImpl extends Window implements BranchView, AfterCompose {
     @Override
     public void removeBranch(Branch branch) {
         branchesListModel.remove(branch);
-
     }
 
     /**
@@ -243,12 +244,22 @@ public class BranchViewImpl extends Window implements BranchView, AfterCompose {
 
     /**
      * Event which happen when user click on delete branch button after it
-     * selected branch will be marked as deleted if no one branch selected then
-     * not happen
+     * opening confirmation dialog and if user confirms selected branch will be
+     * marked as deleted if no one branch selected then not happen
      * */
     public void onClick$delBranchButton() {
         if (branchesList.getSelectedCount() == 1) {
-            presenter.markBranchAsDelete();
+            Branch branch = (Branch) branchesListModel.get(branchesList
+                    .getSelectedIndex());
+            DialogManager dmanager = new DialogManagerImpl();
+            dmanager.confirmDeletion(branch.getName(),
+                    new DialogManager.Performable() {
+
+                        @Override
+                        public void execute() {
+                            presenter.deleteBranch();
+                        }
+                    });
         }
     }
 

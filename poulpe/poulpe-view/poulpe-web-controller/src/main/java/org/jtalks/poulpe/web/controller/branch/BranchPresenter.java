@@ -18,8 +18,6 @@
 
 package org.jtalks.poulpe.web.controller.branch;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,7 +55,7 @@ public class BranchPresenter {
      * */
     public void initView(BranchView view) {
         this.view = view;
-        view.showBranches(getBranches());
+        view.showBranches(branchService.getAll());
         view.closeDialogs();
     }
 
@@ -74,8 +72,9 @@ public class BranchPresenter {
         try {
             branchService.saveBranch(branch);
         } catch (NotUniqueException ex) {
-            //TODO: add processing here
-            Logger.getLogger(BranchPresenter.class.getName()).log(Level.SEVERE, null, ex);
+            // TODO: add processing here
+            Logger.getLogger(BranchPresenter.class.getName()).log(Level.SEVERE,
+                    null, ex);
         }
 
         view.showBranch(branch);
@@ -104,41 +103,25 @@ public class BranchPresenter {
         try {
             branchService.saveBranch(branch);
         } catch (NotUniqueException ex) {
-            //TODO: add processing here
-            Logger.getLogger(BranchPresenter.class.getName()).log(Level.SEVERE, null, ex);
+            // TODO: add processing here
+            Logger.getLogger(BranchPresenter.class.getName()).log(Level.SEVERE,
+                    null, ex);
         }
 
         view.updateBranch(branch);
     }
 
     /**
-     * Marking selected branch as deleted
+     * Delete branch
      * */
-    public void markBranchAsDelete() {
+    public void deleteBranch() {
 
         Branch branch = view.getSelectedBranch();
 
         if (branch != null) {
             branchService.deleteBranch(branch);
-
             view.removeBranch(branch);
         }
-    }
-
-    /**
-     * It's temporary method for getting branches not marked as deleted.
-     * @return branch list not marked as deleted
-     */
-
-    private List<Branch> getBranches() {
-        List<Branch> branches = new ArrayList<Branch>();
-
-        for (Branch branch : branchService.getAll()) {
-            if (!branch.getDeleted()) {
-                branches.add(branch);
-            }
-        }
-        return branches;
     }
 
 }
