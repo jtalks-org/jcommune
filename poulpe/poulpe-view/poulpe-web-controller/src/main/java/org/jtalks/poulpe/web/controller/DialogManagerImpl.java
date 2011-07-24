@@ -39,7 +39,7 @@ public class DialogManagerImpl implements DialogManager {
     @Override
     public void notify(String str) {
         try {
-            Messagebox.show(Labels.getLabel(str), Labels.getLabel("window.warning"), Messagebox.OK,
+            Messagebox.show(Labels.getLabel(str), Labels.getLabel("dialogmanager.warning"), Messagebox.OK,
                     Messagebox.EXCLAMATION);
         } catch (InterruptedException e) {
             LOGGER.error("Problem with showing messagebox.", e);
@@ -50,8 +50,8 @@ public class DialogManagerImpl implements DialogManager {
     /** {@inheritDoc} */
     @Override
     public void confirmDeletion(final String victim, final DialogManager.Performable confirmable) {
-        final String title = Labels.getLabel("item.delete.$") + " " + victim + "?";
-        final String text = Labels.getLabel("item.delete.question") + " " + victim + "?";
+        final String title = String.format(Labels.getLabel("dialogmanager.delete.title"), victim);
+        final String text = String.format(Labels.getLabel("dialogmanager.delete.question"), victim);
         try {
             Messagebox.show(text, title, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
                     Messagebox.NO, new DialogDeleteListener(confirmable));
