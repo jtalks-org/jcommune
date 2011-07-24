@@ -53,8 +53,8 @@ public class DialogManagerImpl implements DialogManager {
         final String title = Labels.getLabel("item.delete.$") + " " + victim + "?";
         final String text = Labels.getLabel("item.delete.question") + " " + victim + "?";
         try {
-            Messagebox.show(text, title, Messagebox.YES | Messagebox.CANCEL, Messagebox.QUESTION,
-                    Messagebox.CANCEL, new DialogDeleteListener(confirmable));
+            Messagebox.show(text, title, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
+                    Messagebox.NO, new DialogDeleteListener(confirmable));
         } catch (InterruptedException e) {
             LOGGER.error("Problem with showing deleting messagebox.", e);
             throw new AssertionError(e);    // it's unlikely to happen
