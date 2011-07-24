@@ -18,4 +18,11 @@ public interface TopicTypeDao extends Dao<TopicType> {
      */
     List<TopicType> getAll();
 
+    /**
+     * Check if type of topic with given name exists.
+     * @param topicTypeName
+     * @return true if exists
+     */
+    boolean isTopicTypeNameExists(String topicTypeName);
+
 }

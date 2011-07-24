@@ -1,7 +1,7 @@
 package org.jtalks.poulpe.service.transactional;
 
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,7 @@ import junit.framework.TestCase;
 
 import org.jtalks.poulpe.model.dao.TopicTypeDao;
 import org.jtalks.poulpe.model.entity.TopicType;
+import org.jtalks.poulpe.service.exceptions.NotUniqueException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.BeforeMethod;
@@ -22,7 +23,8 @@ public class TransactionalTopicTypeServiceTest extends TestCase {
 	@Mock
 	private TopicTypeDao dao;
 
-	@BeforeMethod
+	@Override
+    @BeforeMethod
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		service = new TransactionalTopicTypeService();
@@ -41,10 +43,39 @@ public class TransactionalTopicTypeServiceTest extends TestCase {
 	}
 
 	@Test
-	public void testSaveComponent() {
-		TopicType topicType = new TopicType();
-		service.saveTopicType(topicType);
-		verify(dao).saveOrUpdate(topicType);
+	public void testSaveTopicType() throws NotUniqueException {
+	    TopicType topicType = new TopicType();
+	    try {
+		    topicType.setTitle(null);
+		    service.saveTopicType(topicType);
+		    fail("null name not allowed");
+		} catch (IllegalArgumentException e) {
+		    // ok
+		}
+		
+		try {
+            topicType.setTitle("");
+            service.saveTopicType(topicType);
+            fail("null name not allowed");
+        } catch (IllegalArgumentException e) {
+            // ok
+        }
+		
+        when(dao.isTopicTypeNameExists(anyString())).thenReturn(true);
+        try {
+            topicType.setTitle("some type");
+            service.saveTopicType(topicType);
+            fail();
+        } catch (NotUniqueException e) {
+            verify(dao).isTopicTypeNameExists("some type");
+        }
+		
+        // test successful
+        reset(dao);
+        when(dao.isTopicTypeNameExists(anyString())).thenReturn(false);
+        service.saveTopicType(topicType);
+        verify(dao).isTopicTypeNameExists("some type");
+        verify(dao).saveOrUpdate(topicType);
 	}
 
 	@Test

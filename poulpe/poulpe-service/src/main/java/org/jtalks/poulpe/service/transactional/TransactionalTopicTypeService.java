@@ -5,6 +5,7 @@ import java.util.List;
 import org.jtalks.poulpe.model.dao.TopicTypeDao;
 import org.jtalks.poulpe.model.entity.TopicType;
 import org.jtalks.poulpe.service.TopicTypeService;
+import org.jtalks.poulpe.service.exceptions.NotUniqueException;
 
 public class TransactionalTopicTypeService extends
         AbstractTransactionalEntityService<TopicType, TopicTypeDao> implements TopicTypeService {
@@ -20,7 +21,21 @@ public class TransactionalTopicTypeService extends
     }
 
     @Override
-    public void saveTopicType(TopicType topicType) {
+    public void saveTopicType(TopicType topicType) throws NotUniqueException {
+        String title = topicType.getTitle(); 
+        if (title == null || title.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        
+        if (dao.isTopicTypeNameExists(title)) {
+            throw new NotUniqueException("Not unique title of topic type: " + title);
+        }
+        
         dao.saveOrUpdate(topicType);
+    }
+
+    @Override
+    public boolean isTopicTypeNameExists(String topicTypeName) {
+        return dao.isTopicTypeNameExists(topicTypeName);
     }
 }

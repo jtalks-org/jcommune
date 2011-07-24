@@ -148,6 +148,15 @@ public class TopicTypeDaoTest extends AbstractTransactionalTestNGSpringContextTe
     public void testIsNotExist() {
         assertFalse(dao.isExist(99999L));
     }
+    
+    @Test
+    public void testIsBranchNameExists() {
+        assertFalse(dao.isTopicTypeNameExists("werwerwewr"));
+    
+        TopicType topicType = ObjectsFactory.createTopicTypeWithRandomTitle();
+        session.save(topicType);
+        assertTrue(dao.isTopicTypeNameExists(topicType.getTitle()));
+    }
 
     private int getCount() {
         return ((Number) session.createQuery("select count(*) from TopicType").uniqueResult()).intValue();

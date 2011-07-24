@@ -19,6 +19,7 @@ package org.jtalks.poulpe.service;
 
 import java.util.List;
 import org.jtalks.poulpe.model.entity.TopicType;
+import org.jtalks.poulpe.service.exceptions.NotUniqueException;
 
 /**
  * Service for operations with {@link TopicType}
@@ -42,6 +43,14 @@ public interface TopicTypeService extends EntityService<TopicType> {
     /**
      * Save new or update TopicType.
      * @param topicType topicType to save
+     * @throws NotUniqueException 
      */
-    void saveTopicType(TopicType topicType);
+    void saveTopicType(TopicType topicType) throws NotUniqueException;
+    
+    /**
+     * Check if type of topic with given name exists.
+     * @param topicTypeName
+     * @return true if exists
+     */
+    boolean isTopicTypeNameExists(String topicTypeName);
 }
