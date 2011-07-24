@@ -66,18 +66,23 @@ public class BranchPresenter {
         String name = view.getNewBranchName();
         String desc = view.getNewBranchDescription();
 
-        Branch branch = new Branch();
-        branch.setName(name);
-        branch.setDescription(desc);
-        try {
-            branchService.saveBranch(branch);
-        } catch (NotUniqueException ex) {
-            // TODO: add processing here
-            Logger.getLogger(BranchPresenter.class.getName()).log(Level.SEVERE,
-                    null, ex);
-        }
+        if (!branchService.isBranchNameExists(name)) {
+            Branch branch = new Branch();
+            branch.setName(name);
+            branch.setDescription(desc);
+            try {
+                branchService.saveBranch(branch);
+            } catch (NotUniqueException ex) {
+                // TODO: add processing here
+                Logger.getLogger(BranchPresenter.class.getName()).log(
+                        Level.SEVERE, null, ex);
+            }
 
-        view.showBranch(branch);
+            view.showBranch(branch);
+            view.closeNewBranchDialog();
+        } else {
+            view.openErrorPopupInNewBranchDialog();
+        }
     }
 
     /**
@@ -97,18 +102,22 @@ public class BranchPresenter {
     public void editBranch() {
 
         Branch branch = view.getSelectedBranch();
+        if (!branchService.isBranchNameExists(view.getEditBranchName())) {
+            branch.setName(view.getEditBranchName());
+            branch.setDescription(view.getEditBranchDescription());
+            try {
+                branchService.saveBranch(branch);
+            } catch (NotUniqueException ex) {
+                // TODO: add processing here
+                Logger.getLogger(BranchPresenter.class.getName()).log(
+                        Level.SEVERE, null, ex);
+            }
 
-        branch.setName(view.getEditBranchName());
-        branch.setDescription(view.getEditBranchDescription());
-        try {
-            branchService.saveBranch(branch);
-        } catch (NotUniqueException ex) {
-            // TODO: add processing here
-            Logger.getLogger(BranchPresenter.class.getName()).log(Level.SEVERE,
-                    null, ex);
+            view.updateBranch(branch);
+            view.closeEditBranchDialog();
+        } else {
+            view.openErrorPopupInEditBranchDialog();
         }
-
-        view.updateBranch(branch);
     }
 
     /**

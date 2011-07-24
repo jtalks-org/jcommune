@@ -127,4 +127,25 @@ public interface BranchView {
      * */
     void closeDialogs();
 
+    /**
+     * Close new branch dialog
+     * */
+
+    void closeNewBranchDialog();
+
+    /**
+     * Close edit branch dialog
+     * */
+    void closeEditBranchDialog();
+
+    /**
+     * Open popup message when name new branch already exists
+     * */
+    void openErrorPopupInNewBranchDialog();
+
+    /**
+     * Open popup message when name edit branch already exists
+     * */
+    void openErrorPopupInEditBranchDialog();
+
 }

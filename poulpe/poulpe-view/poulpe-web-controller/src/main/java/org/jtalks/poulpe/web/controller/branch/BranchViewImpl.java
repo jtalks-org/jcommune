@@ -23,6 +23,7 @@ import java.util.List;
 import org.jtalks.poulpe.model.entity.Branch;
 import org.jtalks.poulpe.web.controller.DialogManager;
 import org.jtalks.poulpe.web.controller.DialogManagerImpl;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Label;
@@ -277,7 +278,14 @@ public class BranchViewImpl extends Window implements BranchView, AfterCompose {
      * */
     public void onClick$editButton$editBranchDialog() {
         presenter.editBranch();
-        closeEditBranchDialog();
+    }
+
+    /**
+     * Event which happen when name branch textbox field get focus in edit
+     * dialog This event cause clear error message
+     * */
+    public void onFocus$branchName$editBranchDialog() {
+        editBranchDialog$branchName.setErrorMessage("");
     }
 
     /**
@@ -302,18 +310,47 @@ public class BranchViewImpl extends Window implements BranchView, AfterCompose {
      * */
     public void onClick$addButton$newBranchDialog() {
         presenter.addNewBranch();
-        closeNewBranchDialog();
     }
 
-    /** Close new branch dialog add flush fields */
-    private void closeNewBranchDialog() {
+    /**
+     * Event which happen when name branch textbox field get focus This event
+     * cause clear error message
+     * */
+    public void onFocus$branchName$newBranchDialog() {
+        newBranchDialog$branchName.setErrorMessage("");
+    }
+
+    /**
+     * {@inheritDoc}
+     * */
+    @Override
+    public void openErrorPopupInNewBranchDialog() {
+        final String message = Labels
+                .getLabel("branches.error.branch_name_already_exists");
+        newBranchDialog$branchName.setErrorMessage(message);
+    }
+
+    /**
+     * {@inheritDoc}
+     * */
+    @Override
+    public void openErrorPopupInEditBranchDialog() {
+        final String message = Labels
+                .getLabel("branches.error.branch_name_already_exists");
+        editBranchDialog$branchName.setErrorMessage(message);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void closeNewBranchDialog() {
         newBranchDialog.setVisible(false);
         newBranchDialog$branchName.setText("");
         newBranchDialog$branchDescription.setText("");
     }
 
-    /** Close edit dialog */
-    private void closeEditBranchDialog() {
+    /** {@inheritDoc} */
+    @Override
+    public void closeEditBranchDialog() {
         editBranchDialog.setVisible(false);
         editBranchDialog$branchName.setText("");
         editBranchDialog$branchDescription.setText("");
