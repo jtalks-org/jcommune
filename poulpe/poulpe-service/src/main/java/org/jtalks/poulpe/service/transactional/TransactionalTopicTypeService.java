@@ -1,5 +1,6 @@
 package org.jtalks.poulpe.service.transactional;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.jtalks.poulpe.model.dao.TopicTypeDao;
@@ -38,4 +39,12 @@ public class TransactionalTopicTypeService extends
     public boolean isTopicTypeNameExists(String topicTypeName) {
         return dao.isTopicTypeNameExists(topicTypeName);
     }
+
+    @Override
+    public void deleteTopicTypes(Collection<TopicType> topicTypes) {
+        for (TopicType topicType: topicTypes) {
+            deleteTopicType(topicType);
+        }
+    }
+    
 }

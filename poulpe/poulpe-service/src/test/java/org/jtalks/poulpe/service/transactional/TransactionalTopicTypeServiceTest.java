@@ -4,6 +4,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -79,12 +80,25 @@ public class TransactionalTopicTypeServiceTest extends TestCase {
 	}
 
 	@Test
-	public void testDeleteComponent() {
+	public void testDeleteTopicType() {
 		TopicType topicType = new TopicType();
 		Long testId = 12L;
 		topicType.setId(testId);
 		service.deleteTopicType(topicType);
 		verify(dao).delete(testId);
 	}
+	
+	@Test
+    public void testDeleteTopicTypes() {
+	    TopicType topicType1 = new TopicType();
+	    topicType1.setId(12L);
+	    TopicType topicType2 = new TopicType();
+        topicType2.setId(13L);
+        List<TopicType> list = Arrays.asList(topicType1, topicType2);
+        service.deleteTopicTypes(list);
+        for (TopicType topicType : list) {
+            verify(dao).delete(topicType.getId());
+        }
+    }
 
 }

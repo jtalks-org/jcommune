@@ -17,6 +17,7 @@
  */
 package org.jtalks.poulpe.service;
 
+import java.util.Collection;
 import java.util.List;
 import org.jtalks.poulpe.model.entity.TopicType;
 import org.jtalks.poulpe.service.exceptions.NotUniqueException;
@@ -39,6 +40,12 @@ public interface TopicTypeService extends EntityService<TopicType> {
      * @param topicType topicType to delete
      */
     void deleteTopicType(TopicType topicType);
+    
+    /**
+     * Delete the specified TopicType.
+     * @param topicType collection to delete
+     */
+    void deleteTopicTypes(Collection<TopicType> topicType);
 
     /**
      * Save new or update TopicType.
