@@ -23,9 +23,7 @@ import org.jtalks.jcommune.service.UserDataCacheService;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
@@ -48,25 +46,22 @@ public class UserDataCacheServiceImplTest {
 
     @Test
     public void testGetNewPmCountFor() throws Exception {
-        when(cache.isKeyInCache(USERNAME)).thenReturn(true);
         when(cache.get(USERNAME)).thenReturn(new Element(USERNAME, 2));
 
         Integer count = userDataCacheService.getNewPmCountFor(USERNAME);
 
         assertEquals(count.intValue(), 2);
-        verify(cache).isKeyInCache(USERNAME);
         verify(cache).get(USERNAME);
     }
 
     @Test
     public void testGetNewPmCountForNonExistentUserInCache() throws Exception {
-        when(cache.isKeyInCache(USERNAME)).thenReturn(false);
+        when(cache.get(USERNAME)).thenReturn(null);
 
         Integer count = userDataCacheService.getNewPmCountFor(USERNAME);
 
         assertNull(count);
-        verify(cache).isKeyInCache(USERNAME);
-        verify(cache, never()).get(anyString());
+        verify(cache).get(USERNAME);
     }
 
     @Test
@@ -79,12 +74,10 @@ public class UserDataCacheServiceImplTest {
     @Test
     public void testIncrementNewMessageCountFor() throws Exception {
         Element cacheElement = new Element(USERNAME, 1);
-        when(cache.isKeyInCache(USERNAME)).thenReturn(true);
         when(cache.get(USERNAME)).thenReturn(cacheElement);
 
         userDataCacheService.incrementNewMessageCountFor(USERNAME);
 
-        verify(cache).isKeyInCache(USERNAME);
         verify(cache).get(USERNAME);
         verify(cache).put(new Element(USERNAME, 2));
     }
@@ -92,12 +85,10 @@ public class UserDataCacheServiceImplTest {
     @Test
     public void testDecrementNewMessageCountFor() throws Exception {
         Element cacheElement = new Element(USERNAME, 2);
-        when(cache.isKeyInCache(USERNAME)).thenReturn(true);
         when(cache.get(USERNAME)).thenReturn(cacheElement);
 
         userDataCacheService.decrementNewMessageCountFor(USERNAME);
 
-        verify(cache).isKeyInCache(USERNAME);
         verify(cache).get(USERNAME);
         verify(cache).put(new Element(USERNAME, 1));
     }
@@ -105,20 +96,20 @@ public class UserDataCacheServiceImplTest {
 
     @Test
     public void testIncrementNewMessageCountForKeyNotInCache() throws Exception {
-        when(cache.isKeyInCache(USERNAME)).thenReturn(false);
+        when(cache.get(USERNAME)).thenReturn(null);
 
         userDataCacheService.incrementNewMessageCountFor(USERNAME);
 
-        verify(cache).isKeyInCache(USERNAME);
+        verify(cache).get(USERNAME);
     }
 
 
     @Test
     public void testDecrementNewMessageCountForKeyNotInCache() throws Exception {
-        when(cache.isKeyInCache(USERNAME)).thenReturn(false);
+        when(cache.get(USERNAME)).thenReturn(null);
 
         userDataCacheService.decrementNewMessageCountFor(USERNAME);
 
-        verify(cache).isKeyInCache(USERNAME);
+        verify(cache).get(USERNAME);
     }
 }

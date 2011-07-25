@@ -44,10 +44,11 @@ public class UserDataCacheServiceImpl implements UserDataCacheService {
      */
     @Override
     public Integer getNewPmCountFor(String username) {
-        if (userDataCache.isKeyInCache(username)) {
-            return (Integer) userDataCache.get(username).getValue();
+        Element cacheElementForUser = userDataCache.get(username);
+        if (cacheElementForUser == null) {
+            return null;
         }
-        return null;
+        return (Integer) cacheElementForUser.getValue();
     }
 
     /**
@@ -63,8 +64,9 @@ public class UserDataCacheServiceImpl implements UserDataCacheService {
      */
     @Override
     public void incrementNewMessageCountFor(String username) {
-        if (userDataCache.isKeyInCache(username)) {
-            int count = (Integer) userDataCache.get(username).getValue();
+        Element cacheElementForUser = userDataCache.get(username);
+        if (cacheElementForUser != null) {
+            int count = (Integer) cacheElementForUser.getValue();
             count++;
             userDataCache.put(new Element(username, count));
         }
@@ -75,8 +77,9 @@ public class UserDataCacheServiceImpl implements UserDataCacheService {
      */
     @Override
     public void decrementNewMessageCountFor(String username) {
-        if (userDataCache.isKeyInCache(username)) {
-            int count = (Integer) userDataCache.get(username).getValue();
+        Element cacheElementForUser = userDataCache.get(username);
+        if (cacheElementForUser != null) {
+            int count = (Integer) cacheElementForUser.getValue();
             count--;
             userDataCache.put(new Element(username, count));
         }
