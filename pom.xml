@@ -14,6 +14,8 @@
     <module>jtalks-common</module>
   </modules>
 
+
+
   <build>
     <plugins>
       <plugin>
@@ -36,19 +38,17 @@
           </excludes>
           <useDefaultExcludes>true</useDefaultExcludes>
           <strictCheck>true</strictCheck>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>test</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>    
+        </configuration>          
+      </plugin>
 
     </plugins>
   </build>
+
+  <scm>
+    <connection>scm:git:ssh://jtalks.org:jtalks-org.git</connection>
+    <developerConnection>scm:git:ssh://jtalks.org:jtalks-org.git</developerConnection>
+    <url>scm:git:ssh://jtalks.org:jtalks-org.git</url>
+  </scm>
 
   <properties>
     <headerBaseDir>${basedir}</headerBaseDir>
