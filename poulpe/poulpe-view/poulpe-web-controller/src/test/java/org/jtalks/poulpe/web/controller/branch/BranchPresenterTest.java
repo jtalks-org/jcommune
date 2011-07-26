@@ -99,12 +99,13 @@ public class BranchPresenterTest {
     }
 
     @Test
-    public void testAddNewBranch() throws NotUniqueException {
+    public void testAddNewBranchIfAllCorrect() throws NotUniqueException {
 
         // Setup moc
         Branch newBranch = makeFakeBranch("New Branch", "New Description",
                 false);
 
+        when(branchService.isBranchNameExists("New Branch")).thenReturn(false);
         when(view.getNewBranchName()).thenReturn(newBranch.getName());
         when(view.getNewBranchDescription()).thenReturn(
                 newBranch.getDescription());
@@ -115,6 +116,19 @@ public class BranchPresenterTest {
         // check
         verify(branchService).saveBranch(compareWithBranch(newBranch));
         verify(view).showBranch(compareWithBranch(newBranch));
+        verify(branchService).isBranchNameExists("New Branch");
+    }
+
+    @Test
+    public void testAddNewBranchIfBranchExists() {
+
+        final String name = "exists name";
+        when(branchService.isBranchNameExists(name)).thenReturn(true);
+        when(view.getNewBranchName()).thenReturn(name);
+        presenter.addNewBranch();
+
+        verify(branchService).isBranchNameExists(name);
+        verify(view).openErrorPopupInNewBranchDialog();
     }
 
     @Test
@@ -132,7 +146,7 @@ public class BranchPresenterTest {
     }
 
     @Test
-    public void testEditBranch() throws NotUniqueException {
+    public void testEditBranchIfAllCorrect() throws NotUniqueException {
         Branch selectedBranch = makeFakeBranch("Selected Branch",
                 "Selected Branch", false);
 
@@ -144,7 +158,21 @@ public class BranchPresenterTest {
 
         verify(branchService).saveBranch(compareWithBranch(selectedBranch));
         verify(view).updateBranch(selectedBranch);
+        verify(branchService).isBranchNameExists("Edited Branch");
 
+    }
+
+    @Test
+    public void testEditBranchIfBranchExists() {
+        final String name = "exists branch";
+
+        when(view.getEditBranchName()).thenReturn(name);
+        when(branchService.isBranchNameExists(name)).thenReturn(true);
+
+        presenter.editBranch();
+
+        verify(branchService).isBranchNameExists(name);
+        verify(view).openErrorPopupInEditBranchDialog();
     }
 
     @Test
