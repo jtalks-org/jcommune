@@ -20,6 +20,7 @@ package org.jtalks.antarcticle.model.dao.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.joda.time.DateTime;
 import org.jtalks.antarcticle.model.dao.ArticleCollectionDao;
 import org.jtalks.antarcticle.model.entity.Article;
 import org.jtalks.antarcticle.model.entity.ArticleCollection;
@@ -59,7 +60,7 @@ public class ArticleCollectionHibernateDaoTest extends AbstractTransactionalTest
     }
 
     @Test
-    public void testSave() {
+    public void testSaveArticleCollection() {
          ArticleCollection articleCollection = ObjectsFactory.getDefaultArticleCollection();
 
         dao.saveOrUpdate(articleCollection);
@@ -68,7 +69,7 @@ public class ArticleCollectionHibernateDaoTest extends AbstractTransactionalTest
     }
 
     @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void testSaveNotNullViolation() {
+    public void testSaveArticleCollectionWithNotNullViolation() {
         ArticleCollection articleCollection = new ArticleCollection();
 
         dao.saveOrUpdate(articleCollection);
@@ -80,7 +81,7 @@ public class ArticleCollectionHibernateDaoTest extends AbstractTransactionalTest
     }
 
     @Test
-    public void testGet() {
+    public void testGetArticleCollection() {
         ArticleCollection articleCollection = ObjectsFactory.getDefaultArticleCollection();
         session.save(articleCollection);
 
@@ -91,14 +92,14 @@ public class ArticleCollectionHibernateDaoTest extends AbstractTransactionalTest
     }
 
     @Test
-    public void testGetInvalidId() {
+    public void testGetArticleCollectionWithInvalidId() {
         ArticleCollection result = dao.get(-567890L);
 
         assertNull(result);
     }
 
     @Test
-    public void testUpdate() {
+    public void testUpdateArticleCollection() {
         String newTitle = "new title";
         ArticleCollection articleCollection = ObjectsFactory.getDefaultArticleCollection();
         session.save(articleCollection);
@@ -112,7 +113,7 @@ public class ArticleCollectionHibernateDaoTest extends AbstractTransactionalTest
     }
 
     @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void testUpdateNotNullViolation() {
+    public void testUpdateArticleCollectionWithNotNullViolation() {
         ArticleCollection articleCollection = ObjectsFactory.getDefaultArticleCollection();
         session.save(articleCollection);
 
@@ -121,7 +122,7 @@ public class ArticleCollectionHibernateDaoTest extends AbstractTransactionalTest
     }
 
     @Test
-    public void testDelete() {
+    public void testDeleteArticleCollection() {
         ArticleCollection articleCollection = ObjectsFactory.getDefaultArticleCollection();
 
         session.save(articleCollection);
@@ -136,14 +137,14 @@ public class ArticleCollectionHibernateDaoTest extends AbstractTransactionalTest
     }
 
     @Test
-    public void testDeleteInvalidId() {
+    public void testDeleteArticleCollectionWithInvalidId() {
         boolean result = dao.delete(-100500L);
 
         assertFalse(result, "Entity deleted");
     }
 
     @Test
-    public void testDeleteWithArticles() {
+    public void testDeleteArticleCollectionWithArticles() {
         ArticleCollection articleCollection = ObjectsFactory.getDefaultArticleCollection();
         articleCollection.addArticle(ObjectsFactory.getDefaultArticleWithoutArticleCollection());
 
@@ -172,7 +173,7 @@ public class ArticleCollectionHibernateDaoTest extends AbstractTransactionalTest
     }
 
     @Test
-    public void testGetAll() {
+    public void testGetAllArticleCollections() {
         ArticleCollection articleCollection1 = ObjectsFactory.getDefaultArticleCollection();
         session.save(articleCollection1);
         ArticleCollection articleCollection2 = ObjectsFactory.getDefaultArticleCollection();
@@ -181,6 +182,52 @@ public class ArticleCollectionHibernateDaoTest extends AbstractTransactionalTest
         List<ArticleCollection> articleCollections = dao.getAll();
 
         assertEquals(articleCollections.size(), 2);
+    }
+
+    @Test(enabled=false)
+    public void testGetAllArticleCollectionsInCorrectOrder() {
+        final String articleCollection1Title = "Article Collection 1 Title";
+        final String articleCollection2Title = "Article Collection 2 Title";
+        final String articleCollection3Title = "Article Collection Without Articles";
+
+
+        ArticleCollection articleCollection = ObjectsFactory.getDefaultArticleCollection();
+        articleCollection.setTitle(articleCollection1Title);
+
+        Article article = ObjectsFactory.createDefaultArticle(new DateTime(2011, 07, 16, 0, 0, 0, 0));
+        article.setArticleCollection(articleCollection);
+        articleCollection.addArticle(article);
+
+        article = ObjectsFactory.createDefaultArticle(new DateTime(2011, 07, 17, 0, 0, 0, 0));
+        article.setArticleCollection(articleCollection);
+        articleCollection.addArticle(article);
+
+        session.save(articleCollection);
+
+        articleCollection = ObjectsFactory.getDefaultArticleCollection();
+        articleCollection.setTitle(articleCollection2Title);
+
+        article = ObjectsFactory.createDefaultArticle(new DateTime(2011, 07, 17, 0, 0, 0, 0));
+        article.setArticleCollection(articleCollection);
+        articleCollection.addArticle(article);
+
+        article = ObjectsFactory.createDefaultArticle(new DateTime(2011, 07, 18, 0, 0, 0, 0));
+        article.setArticleCollection(articleCollection);
+        articleCollection.addArticle(article);
+
+        session.save(articleCollection);
+
+        articleCollection = ObjectsFactory.getDefaultArticleCollection();
+        articleCollection.setTitle(articleCollection3Title);
+
+        session.save(articleCollection);
+
+        List<ArticleCollection> articleCollections = dao.getAll();
+
+        assertEquals(articleCollections.size(), 3);
+        assertEquals(articleCollections.get(0).getTitle(), articleCollection2Title);
+        assertEquals(articleCollections.get(1).getTitle(), articleCollection1Title);
+        assertEquals(articleCollections.get(2).getTitle(), articleCollection3Title);
     }
 
     private int getCount() {
