@@ -87,8 +87,7 @@ public class ListPresenterTest {
         ArgumentCaptor<Object> argument2 = ArgumentCaptor.forClass(Object.class);
         Component fake = getFakeComponent(10L, "Fake1", "Desc1", ComponentType.ARTICLE);
 
-        when(view.getSelectedItem()).thenReturn(fake);
-        presenter.editComponent();
+        presenter.editComponent(fake);
         verify(wm).showEditComponentWindow(argument1.capture(), argument2.capture());
         assertEquals(argument1.getValue(), new Long(fake.getId()));
     }

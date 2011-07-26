@@ -23,10 +23,15 @@ import org.jtalks.poulpe.model.entity.Component;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zkplus.databind.BindingListModelList;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Window;
 
 /**
@@ -52,7 +57,26 @@ public class ListViewImpl extends Window implements ListView, AfterCompose {
         Components.wireVariables(this, this);
         Components.addForwards(this, this);
         presenter.initView(this);
-        listbox.setItemRenderer(new Renderer());
+        listbox.setItemRenderer(new ListitemRenderer() {
+            /** {@inheritDoc} */
+            @Override public void render(Listitem arg0, Object arg1) {
+                final Component item = (Component) arg1;
+                Listcell cell = new Listcell();
+                Label nameLabel = new Label(item.getName());
+                cell.appendChild(nameLabel);
+                nameLabel.setSclass("boldstyle");
+                arg0.appendChild(cell);
+                arg0.appendChild(new Listcell(item.getDescription()));
+                arg0.appendChild(new Listcell(item.getComponentType().toString()));
+                arg0.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener() {
+                    /** {@inheritDoc} */
+                    @Override
+                    public void onEvent(@SuppressWarnings("unused") Event event) {
+                        presenter.editComponent(item);
+                    }
+                });
+            }            
+        });
     }
 
     /** {@inheritDoc} */
@@ -136,7 +160,7 @@ public class ListViewImpl extends Window implements ListView, AfterCompose {
     public class EditListListener implements EventListener {
         /** {@inheritDoc} */
         @Override
-        public void onEvent(Event event) {
+        public void onEvent(@SuppressWarnings("unused") Event event) {
             presenter.updateList();
         }
     }

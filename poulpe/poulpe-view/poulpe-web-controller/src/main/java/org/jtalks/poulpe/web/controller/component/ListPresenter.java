@@ -65,16 +65,18 @@ public class ListPresenter extends AbstractPresenter {
 
     /**
      * Shows the window for editing the selected component from component list.
+     * 
+     * @param component to be edited
      */
-    public void editComponent() {
-        invokeEditWindowFor(view.getSelectedItem().getId());
+    public void editComponent(Component component) {
+        invokeEditWindowFor(component.getId());
     }
     
     /**
      * Invokes creation of the new window for editing existing or new component.
      * 
      * @param componentId
-     *            component to be edited
+     *            identifier of component which will be edited
      */
     private void invokeEditWindowFor(long componentId) {
         getWindowManager().showEditComponentWindow(componentId, view.getUpdater());
