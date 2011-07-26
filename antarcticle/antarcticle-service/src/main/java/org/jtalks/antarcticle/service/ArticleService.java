@@ -58,6 +58,7 @@ public interface ArticleService extends EntityService<Article> {
      * Get {@link Article} by article's identifier
      * @param id article's identifier
      * @return article
+     * @throws NotFoundException if entity is not found
      */
     Article getFirstArticleFromCollection(long id) throws NotFoundException;
 
