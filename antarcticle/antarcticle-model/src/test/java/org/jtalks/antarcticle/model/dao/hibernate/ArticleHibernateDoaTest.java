@@ -107,6 +107,7 @@ public class ArticleHibernateDoaTest extends AbstractTransactionalTestNGSpringCo
         assertEquals(article,obtainedArticle);
     }
 
+    @Test
     public void testDelete() {
         int initCount = getCount();
         Article article = ObjectsFactory.getDefaultArticle();
