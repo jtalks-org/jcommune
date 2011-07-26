@@ -106,4 +106,8 @@
 
     <finalName>antarcticle</finalName>
   </build>
+
+  <properties>
+    <headerBaseDir>${basedir}/../../..</headerBaseDir>
+  </properties>
 </project>

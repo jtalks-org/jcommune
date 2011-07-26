@@ -36,5 +36,9 @@
       <artifactId>mockito-all</artifactId>
     </dependency>
   </dependencies>
+
+  <properties>
+    <headerBaseDir>${basedir}/../../..</headerBaseDir>
+  </properties>
   
 </project>

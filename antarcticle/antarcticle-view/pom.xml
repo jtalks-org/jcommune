@@ -16,4 +16,8 @@
     <module>antarcticle-web-controller</module>
     <module>antarcticle-web-view</module>
   </modules>
+
+  <properties>
+    <headerBaseDir>${basedir}/../..</headerBaseDir>
+  </properties>
 </project>

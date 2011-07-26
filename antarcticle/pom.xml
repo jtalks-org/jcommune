@@ -218,9 +218,8 @@
 	  <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-all</artifactId>
-        <version>1.8.5</version>
-        <type>jar</type>
-        <scope>compile</scope>
+        <version>1.8.5</version>         
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.hsqldb</groupId>
@@ -237,7 +236,7 @@
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>servlet-api</artifactId>
-		<scope>provided</scope>
+		    <scope>provided</scope>
         <version>2.5</version>
       </dependency>
       <dependency>
@@ -310,6 +309,7 @@
   <properties>
     <hibernateVersion>3.3.2.GA</hibernateVersion>
     <springVersion>3.0.5.RELEASE</springVersion>
+    <headerBaseDir>${basedir}/..</headerBaseDir>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   

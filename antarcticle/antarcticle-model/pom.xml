@@ -101,6 +101,7 @@
   <properties>
     <jdbc.user>${env.JTALKS_DB_USER}</jdbc.user>
     <jdbc.pass>${env.JTALKS_DB_PASSWORD}</jdbc.pass>
+    <headerBaseDir>${basedir}/../..</headerBaseDir>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 </project>
