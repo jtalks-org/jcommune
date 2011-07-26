@@ -14,7 +14,6 @@
     <module>jtalks-common</module>
   </modules>
 
-
   <build>
     <plugins>
       <plugin>
@@ -38,31 +37,18 @@
           <useDefaultExcludes>true</useDefaultExcludes>
           <strictCheck>true</strictCheck>
         </configuration>
-      </plugin>
+        <executions>
+          <execution>
+            <phase>test</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>    
 
     </plugins>
   </build>
-
-  <distributionManagement>      
-    <repository>
-      <id>jtalks-nexus</id>
-      <name>jtalks nexus</name>
-      <url>http://repo.jtalks.org/content/repositories/releases</url>
-    </repository>
-
-   
-    <snapshotRepository>
-      <id>jtalks-nexus</id>
-      <name>jtalks nexus</name>
-      <url>http://repo.jtalks.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
-
-  <scm>
-    <connection>scm:git:ssh://jtalks.org:jtalks-org.git</connection>
-    <developerConnection>scm:git:ssh://jtalks.org:jtalks-org.git</developerConnection>
-    <url>scm:git:ssh://jtalks.org:jtalks-org.git</url>
-  </scm>
 
   <properties>
     <headerBaseDir>${basedir}</headerBaseDir>
