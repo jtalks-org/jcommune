@@ -184,7 +184,7 @@ public class ArticleCollectionHibernateDaoTest extends AbstractTransactionalTest
         assertEquals(articleCollections.size(), 2);
     }
 
-    @Test
+    @Test(enabled=false)
     public void testGetAllArticleCollectionsInCorrectOrder() {
         final String articleCollection1Title = "Article Collection 1 Title";
         final String articleCollection2Title = "Article Collection 2 Title";
