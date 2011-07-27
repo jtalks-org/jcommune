@@ -5,7 +5,7 @@
   <groupId>org.jtalks</groupId>
   <artifactId>jtalks</artifactId>
   <packaging>pom</packaging>
-  <version>0.4-SNAPSHOT</version>
+  <version>0.4</version>
   <name>${artifactId}</name>
 
   <modules>
