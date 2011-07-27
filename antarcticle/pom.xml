@@ -5,12 +5,12 @@
   <parent>
     <artifactId>jtalks</artifactId>
     <groupId>org.jtalks</groupId>
-    <version>0.4-SNAPSHOT</version>
+    <version>0.4</version>
   </parent>
   <groupId>org.jtalks.antarcticle</groupId>
   <artifactId>antarcticle</artifactId>
   <packaging>pom</packaging>
-  <version>0.4-SNAPSHOT</version>
+  <version>0.4</version>
   <name>antarcticle</name>
   <url>http://jtalks.org</url>
 
@@ -42,12 +42,12 @@
       <dependency>
         <groupId>org.jtalks.common</groupId>
         <artifactId>jtalks-common-model</artifactId>
-        <version>0.4-SNAPSHOT</version>
+        <version>0.4</version>
       </dependency>
       <dependency>
         <groupId>org.jtalks.common</groupId>
         <artifactId>jtalks-common-service</artifactId>
-        <version>0.4-SNAPSHOT</version>
+        <version>0.4</version>
       </dependency>     
 
       <!-- Hibernate -->

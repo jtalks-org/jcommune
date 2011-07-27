@@ -4,12 +4,12 @@
   <parent>
     <artifactId>jtalks</artifactId>
     <groupId>org.jtalks</groupId>
-    <version>0.4-SNAPSHOT</version>
+    <version>0.4</version>
   </parent>
   <packaging>pom</packaging>
   <groupId>org.jtalks.common</groupId>
   <artifactId>jtalks-common</artifactId>
-  <version>0.4-SNAPSHOT</version>
+  <version>0.4</version>
   <name>${project.artifactId}</name>
   <url>http://maven.apache.org</url>
 
@@ -30,7 +30,7 @@
       <dependency>
         <groupId>org.jtalks.common</groupId>
         <artifactId>jtalks-common-model</artifactId>
-        <version>0.4-SNAPSHOT</version>
+        <version>0.4</version>
       </dependency>
 
       <!-- Hibernate -->

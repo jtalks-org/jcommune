@@ -5,10 +5,10 @@
   <parent>
     <artifactId>antarcticle</artifactId>
     <groupId>org.jtalks.antarcticle</groupId>
-    <version>0.4-SNAPSHOT</version>
+    <version>0.4</version>
   </parent>  
   <artifactId>antarcticle-model</artifactId>
-  <version>0.4-SNAPSHOT</version>
+  <version>0.4</version>
   <name>${project.artifactId}</name>
   <url>http://jtalks.org</url>
   <dependencies>
