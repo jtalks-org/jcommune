@@ -62,12 +62,6 @@ public class ArticleHibernateDoaTest extends AbstractTransactionalTestNGSpringCo
         assertFalse(article.getId() == 0, "Id not created for article");
         Article sameArticle = (Article)session.get(Article.class, article.getId());
         assertReflectionEquals(article, sameArticle);
-        assertEquals(article.getId(), sameArticle.getId());
-        assertEquals(article.getArticleContent(), sameArticle.getArticleContent());
-        assertEquals(article.getArticleTitle(), sameArticle.getArticleTitle());
-        assertEquals(article.getCreationDate(), sameArticle.getCreationDate());
-        assertEquals(article.getArticleCollection().getId(), sameArticle.getArticleCollection().getId());
-        assertEquals(article.getUserCreated().getId(), sameArticle.getUserCreated().getId());
     }
     
     @Test

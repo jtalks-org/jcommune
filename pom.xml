@@ -44,8 +44,7 @@
     </plugins>
   </build>
 
-  <distributionManagement>
-    
+  <distributionManagement>      
     <repository>
       <id>jtalks-nexus</id>
       <name>jtalks nexus</name>

@@ -4,11 +4,11 @@
   <parent>
     <artifactId>antarcticle</artifactId>
     <groupId>org.jtalks.antarcticle</groupId>
-    <version>0.4-SNAPSHOT</version>
+    <version>0.4</version>
   </parent>  
   <artifactId>antarcticle-view</artifactId>
   <packaging>pom</packaging>
-  <version>0.4-SNAPSHOT</version>
+  <version>0.4</version>
   <name>${project.artifactId}</name>
   <url>http://jtalks.org</url>
  
@@ -16,8 +16,4 @@
     <module>antarcticle-web-controller</module>
     <module>antarcticle-web-view</module>
   </modules>
-
-  <properties>
-    <headerBaseDir>${basedir}/../..</headerBaseDir>
-  </properties>
 </project>

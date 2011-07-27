@@ -47,8 +47,7 @@ public class ArticleCollectionController {
      * @param articleService  the object which provides actions on {@link Article} entity
      */
     @Autowired
-    public ArticleCollectionController(ArticleCollectionService articleCollectionService,
-                                       ArticleService articleService) {
+    public ArticleCollectionController(ArticleCollectionService articleCollectionService, ArticleService articleService) {
         this.articleCollectionService = articleCollectionService;
         this.articleService = articleService;
     }
@@ -63,15 +62,8 @@ public class ArticleCollectionController {
         return new ModelAndView("articleCollectionList", "articleCollectionList", articleCollectionService.getAll());
     }
 
-    /**
-     * Handles GEt request and produces JSP page with first article
-     * @param collectionId  selected collection's id
-     * @return  {@link ModelAndView} with first article and view name
-     * @throws NotFoundException if entity is not found
-     */
     @RequestMapping(value = "/articleCollection/{collectionId}", method = RequestMethod.GET)
-    public ModelAndView displaySelectedCollection(@PathVariable("collectionId") long collectionId)
-            throws NotFoundException {
+    public ModelAndView getCollectionById(@PathVariable("collectionId") long collectionId) throws NotFoundException {
       Article firstArticle = articleService.getFirstArticleFromCollection(collectionId);
       ArticleCollection articleCollection = articleCollectionService.get(collectionId);
         return new ModelAndView("displayArticleCollection", "firstArticle",firstArticle)

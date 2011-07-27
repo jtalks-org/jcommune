@@ -32,22 +32,11 @@ public class ArticleCollectionHibernateDao extends
         AbstractHibernateDao<ArticleCollection> implements ArticleCollectionDao {
 
     /**
-     * Gets all Article Collections
-     *
+     * Get all Article Collections
      * @return  the List of Article Collections
      */
     @Override
     public List<ArticleCollection> getAll() {
-        final String query =
-                "SELECT ARTICLE_COLLECTION_ID, UUID, TITLE, DESCRIPTION, LAST_ARTICLE_ID " +
-                "FROM (" +
-                "    SELECT AC.ARTICLE_COLLECTION_ID, AC.UUID, AC.TITLE, AC.DESCRIPTION, AC.LAST_ARTICLE_ID, (" +
-                "        SELECT max(creation_date) " +
-                "        FROM article " +
-                "        where article_collection_id = ac.article_collection_id) as CREATION_DATE " +
-                "    FROM ARTICLE_COLLECTION AS AC) AS T " +
-                "ORDER BY CREATION_DATE DESC";
-
-        return getSession().createSQLQuery(query).addEntity(ArticleCollection.class).list();
+        return getSession().getNamedQuery("getAllArticleCollections").list();
     }
 }

@@ -119,6 +119,7 @@ public class TransactionalCommentServiceTest {
         comment.setId(COMMENT_ID);
         
         when(commentDao.isExist(COMMENT_ID)).thenReturn(false);
+//        when(commentDao.delete(COMMENT_ID)).thenReturn(true);
         
         commentService.deleteComment(comment);
         verify(commentDao).isExist(COMMENT_ID);
@@ -149,19 +150,5 @@ public class TransactionalCommentServiceTest {
         
         List<Comment> result = commentService.getCommentsByArticle(article);
         verify(articleDao.isExist(ARTICLE_ID));
-    }
-    
-    @Test(expectedExceptions=NotFoundException.class)
-    public void testDeleteCommentWithoutId() throws NotFoundException {
-        Comment comment = getDefualtComment();
-        assertEquals(comment.getId(), 0);
-        commentService.deleteComment(comment);
-    }
-    
-    @Test(expectedExceptions=NotFoundException.class)
-    public void testFindCommentsByViolanteArticle() throws NotFoundException {
-        Article article = getDefaultAricle();
-        assertEquals(article.getId(), 0);
-        commentService.getCommentsByArticle(article);
     }
 }

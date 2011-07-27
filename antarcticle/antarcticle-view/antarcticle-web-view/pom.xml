@@ -6,11 +6,11 @@
   <parent>
     <artifactId>antarcticle-view</artifactId>
     <groupId>org.jtalks.antarcticle</groupId>
-    <version>0.4-SNAPSHOT</version>
+    <version>0.4</version>
   </parent>
   <groupId>org.jtalks.antarcticle</groupId>
   <artifactId>antarcticle-web-view</artifactId>
-  <version>0.4-SNAPSHOT</version>
+  <version>0.4</version>
   <packaging>war</packaging>
   <name>${project.artifactId}</name>
   <url>http://jtalks.org</url>
@@ -66,10 +66,6 @@
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-taglibs</artifactId>
     </dependency>
-    <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time-jsptags</artifactId>
-    </dependency>
   </dependencies>
 
 
@@ -106,8 +102,4 @@
 
     <finalName>antarcticle</finalName>
   </build>
-
-  <properties>
-    <headerBaseDir>${basedir}/../../..</headerBaseDir>
-  </properties>
 </project>

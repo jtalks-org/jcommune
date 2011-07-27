@@ -5,12 +5,12 @@
   <parent>
     <artifactId>jtalks</artifactId>
     <groupId>org.jtalks</groupId>
-    <version>0.4-SNAPSHOT</version>
+    <version>0.4</version>
   </parent>
   <groupId>org.jtalks.antarcticle</groupId>
   <artifactId>antarcticle</artifactId>
   <packaging>pom</packaging>
-  <version>0.4-SNAPSHOT</version>
+  <version>0.4</version>
   <name>antarcticle</name>
   <url>http://jtalks.org</url>
 
@@ -42,12 +42,12 @@
       <dependency>
         <groupId>org.jtalks.common</groupId>
         <artifactId>jtalks-common-model</artifactId>
-        <version>0.4-SNAPSHOT</version>
+        <version>0.4</version>
       </dependency>
       <dependency>
         <groupId>org.jtalks.common</groupId>
         <artifactId>jtalks-common-service</artifactId>
-        <version>0.4-SNAPSHOT</version>
+        <version>0.4</version>
       </dependency>     
 
       <!-- Hibernate -->
@@ -218,8 +218,9 @@
 	  <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-all</artifactId>
-        <version>1.8.5</version>         
-        <scope>test</scope>
+        <version>1.8.5</version>
+        <type>jar</type>
+        <scope>compile</scope>
       </dependency>
       <dependency>
         <groupId>org.hsqldb</groupId>
@@ -236,7 +237,7 @@
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>servlet-api</artifactId>
-		    <scope>provided</scope>
+		<scope>provided</scope>
         <version>2.5</version>
       </dependency>
       <dependency>
@@ -309,7 +310,6 @@
   <properties>
     <hibernateVersion>3.3.2.GA</hibernateVersion>
     <springVersion>3.0.5.RELEASE</springVersion>
-    <headerBaseDir>${basedir}/..</headerBaseDir>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   

@@ -8,7 +8,7 @@
     <property column="UUID" name="uuid" not-null="true" unique="true"/>
     <property column="COMMENT_DATE" name="creationDate" not-null="true" type="org.joda.time.contrib.hibernate.PersistentDateTime"/>
     <property column="COMMENT_CONTENT" name="commentContent" not-null="true"/>
-    <many-to-one class="org.jtalks.common.model.entity.User" column="USER_CREATED" fetch="join" foreign-key="FK_USER" lazy="false" name="userCommented" not-null="true"/>
+    <!--many-to-one class="User" column="USER_CREATED" fetch="join" foreign-key="FK_USER" lazy="false" name="userCreated" not-null="true"/-->
     <many-to-one class="Article" column="ARTICLE_ID" fetch="join" foreign-key="FK_ARTICLE" lazy="false" name="article" not-null="true"/>
   </class>
 </hibernate-mapping>

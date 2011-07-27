@@ -5,10 +5,10 @@
   <parent>
     <artifactId>antarcticle</artifactId>
     <groupId>org.jtalks.antarcticle</groupId>
-    <version>0.4-SNAPSHOT</version>
+    <version>0.4</version>
   </parent>  
   <artifactId>antarcticle-model</artifactId>
-  <version>0.4-SNAPSHOT</version>
+  <version>0.4</version>
   <name>${project.artifactId}</name>
   <url>http://jtalks.org</url>
   <dependencies>
@@ -101,7 +101,6 @@
   <properties>
     <jdbc.user>${env.JTALKS_DB_USER}</jdbc.user>
     <jdbc.pass>${env.JTALKS_DB_PASSWORD}</jdbc.pass>
-    <headerBaseDir>${basedir}/../..</headerBaseDir>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 </project>

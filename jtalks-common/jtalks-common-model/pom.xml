@@ -5,11 +5,11 @@
   <parent>
     <artifactId>jtalks-common</artifactId>
     <groupId>org.jtalks.common</groupId>
-    <version>0.4-SNAPSHOT</version>
+    <version>0.4</version>
   </parent>
     
   <artifactId>jtalks-common-model</artifactId>
-  <version>0.4-SNAPSHOT</version>
+  <version>0.4</version>
   <name>${project.artifactId}</name>
   <url>http://maven.apache.org</url>
 

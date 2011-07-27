@@ -58,14 +58,14 @@ public class Article extends Persistent {
         this.creationDate = creationDate;
     }
 
-//    /**
-//     * Creates the Article instance with the creationDate initialized with current date and time
-//     *
-//     * @return new Article instance
-//     */
-//    public static Article createNewArticle() {
-//        return new Article(new DateTime());
-//    }
+    /**
+     * Creates the Article instance with the creationDate initialized with current date and time
+     *
+     * @return new Article instance
+     */
+    public static Article createNewArticle() {
+        return new Article(new DateTime());
+    }
 
     /**
      * Get content of an article

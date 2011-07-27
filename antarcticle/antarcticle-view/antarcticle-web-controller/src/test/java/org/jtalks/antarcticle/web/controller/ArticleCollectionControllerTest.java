@@ -68,7 +68,7 @@ public class ArticleCollectionControllerTest {
         when(articleService.getFirstArticleFromCollection(1l)).thenReturn(new Article());
         when(articleCollectionService.get(1L)).thenReturn(new ArticleCollection());
 
-        ModelAndView mav = controller.displaySelectedCollection(1L);
+        ModelAndView mav = controller.getCollectionById(1L);
 
         assertViewName(mav,"displayArticleCollection");
         assertModelAttributeAvailable(mav, "firstArticle");

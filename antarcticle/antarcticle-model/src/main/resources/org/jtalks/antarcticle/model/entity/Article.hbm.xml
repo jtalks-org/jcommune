@@ -6,7 +6,7 @@
       <generator class="native"/>
     </id>
     <property column="UUID" name="uuid" not-null="true" unique="true"/>
-    <property column="ARTICLE_CONTENT" name="articleContent" not-null="true" type="text" />
+    <property column="ARTICLE_CONTENT" name="articleContent" not-null="true"/>
     <property column="ARTICLE_TITLE" name="articleTitle"/>
     <property column="CREATION_DATE" name="creationDate" not-null="true" type="org.joda.time.contrib.hibernate.PersistentDateTime"/>
     <many-to-one column="ARTICLE_COLLECTION_ID" name="articleCollection"
