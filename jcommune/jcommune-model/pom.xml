@@ -116,6 +116,7 @@
     <jdbc.user>${env.JCOMMUNE_DB_USER}</jdbc.user>
     <jdbc.pass>${env.JCOMMUNE_DB_PASS}</jdbc.pass>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <headerBaseDir>${basedir}/..</headerBaseDir>
   </properties>
 </project>
 

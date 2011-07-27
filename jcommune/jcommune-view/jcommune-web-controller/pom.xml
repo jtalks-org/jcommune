@@ -60,10 +60,8 @@
     </dependency>
   </dependencies>
 
+  <properties>
+    <headerBaseDir>${basedir}/../..</headerBaseDir>
+  </properties>
+
 </project>
-
-
-
-
-
-

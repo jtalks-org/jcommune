@@ -78,7 +78,6 @@
 
   </dependencies>
 
-
   <build>
     <plugins>
       <plugin>
@@ -112,5 +111,9 @@
 
     <finalName>jcommune</finalName>
   </build>
-
+  
+  <properties>
+    <headerBaseDir>${basedir}/../..</headerBaseDir>
+  </properties>
+  
 </project>
