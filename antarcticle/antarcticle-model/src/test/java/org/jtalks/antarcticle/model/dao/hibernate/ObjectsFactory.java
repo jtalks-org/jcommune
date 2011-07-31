@@ -59,6 +59,14 @@ public final class ObjectsFactory {
         return article;
     }
 
+    public static Article createDefaultArticle(DateTime creationDate) {
+        Article article = new Article(creationDate);
+        article.setArticleTitle("article title");
+        article.setArticleContent("article content");
+        article.setUserCreated(persist(getDefaultUser()));
+        return article;
+    }
+
     public static Article getDefaultArticleWithoutArticleCollection() {
         Article article = new Article();
         article.setArticleTitle("article title");
