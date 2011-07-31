@@ -56,7 +56,6 @@ public class MatchesValidator implements ConstraintValidator<Matches, Object> {
      * @param value   object with {@link Matches} annotation
      * @param context validation context
      * @return {@code true} if validation successfull or false if fails
-     * @throws IllegalStateException if property not found or doesnt have getter
      */
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {

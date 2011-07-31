@@ -94,7 +94,7 @@ public final class TopicController {
                                BindingResult result,
                                @PathVariable(BRANCH_ID) Long branchId) throws NotFoundException {
         if (result.hasErrors()) {
-            return new ModelAndView("newTopic").addObject("branchId", branchId);
+            return new ModelAndView("newTopic").addObject(BRANCH_ID, branchId);
         } else {
             Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(),
                     branchId);
@@ -114,8 +114,8 @@ public final class TopicController {
     public ModelAndView deleteConfirmPage(@PathVariable(TOPIC_ID) Long topicId,
                                           @PathVariable(BRANCH_ID) Long branchId) {
         return new ModelAndView("deleteTopic")
-                .addObject("topicId", topicId)
-                .addObject("branchId", branchId);
+                .addObject(TOPIC_ID, topicId)
+                .addObject(BRANCH_ID, branchId);
     }
 
     /**
@@ -163,8 +163,8 @@ public final class TopicController {
                 .addObject("topic", topic)
                 .addObject("maxPages", pag.getMaxPages())
                 .addObject("page", pag.getPage())
-                .addObject("branchId", branchId)
-                .addObject("topicId", topicId);
+                .addObject(BRANCH_ID, branchId)
+                .addObject(TOPIC_ID, topicId);
     }
 
     /**
@@ -184,8 +184,8 @@ public final class TopicController {
 
         return new ModelAndView("topicForm")
                 .addObject("topicDto", TopicDto.getDtoFor(topic))
-                .addObject("branchId", branchId)
-                .addObject("topicId", topicId);
+                .addObject(BRANCH_ID, branchId)
+                .addObject(TOPIC_ID, topicId);
     }
 
     /**
@@ -207,8 +207,8 @@ public final class TopicController {
                              @PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         if (result.hasErrors()) {
             return new ModelAndView("topicForm")
-                    .addObject("branchId", branchId)
-                    .addObject("topicId", topicId);
+                    .addObject(BRANCH_ID, branchId)
+                    .addObject(TOPIC_ID, topicId);
         }
 
         topicService.saveTopic(topicDto.getId(), topicDto.getTopicName(), topicDto.getBodyText());
