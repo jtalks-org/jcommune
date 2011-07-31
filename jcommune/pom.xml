@@ -301,40 +301,6 @@
         <version>2.9</version>
       </plugin>
       
-      <plugin>
-        <!-- <inherited>false</inherited>  -->
-        <groupId>com.mycila.maven-license-plugin</groupId>
-        <artifactId>maven-license-plugin</artifactId>
-        <version>1.9.0</version>
-        <configuration>
-          <!-- <header>${basedir}/header.txt</header>
-          <failIfMissing>true</failIfMissing> -->
-          <basedir>${headerBaseDir}</basedir>
-          <header>${pathtoHeader}</header>
-          <aggregate>true</aggregate>
-          <includes>
-            <include>src/**</include>
-            <include>**/test/**</include>
-          </includes>
-          <excludes>
-            <exclude>target/**</exclude>
-            <exclude>**/*.properties</exclude>
-            <exclude>**/*.sql</exclude>
-            <exclude>**/empty</exclude>
-          </excludes>
-          <useDefaultExcludes>true</useDefaultExcludes>
-          <strictCheck>true</strictCheck>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>test</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>  
-      
     </plugins>
   </build>
 
