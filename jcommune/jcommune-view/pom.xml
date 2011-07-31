@@ -9,7 +9,7 @@
   </parent>
   <artifactId>jcommune-view</artifactId>
   <packaging>pom</packaging>
-  <name>${artifactId}</name>
+  <name>${project.artifactId}</name>
   <description>
         This is the POM module that doesn't contain any code - it's just a module that joins
         two logical modules: web-view that contains web specific stuff like web.xml, web resources;
