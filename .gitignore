@@ -6,17 +6,30 @@
 .settings
 .classpath
 .project
+MANIFEST.MF
 .metadata
 
 # IntelliJ Idea project files
 .idea
 *.iml
-*.ipr
-*.iws
+\jcommune\jcommune-service\target\
+\jcommune\jcommune-model\target\
+\jcommune\jcommune-view\jcommune-web-view\target\
+\jcommune\jcommune-view\jcommune-web-controller\target\
+!/jcommune/jcommune-model/src/main/java/
+/jcommune/jcommune-model/target/
+/jcommune/jcommune-model/catalog.xml
+/jcommune/jcommune.ipr
+/jcommune/jcommune.iws
 
 # Netbeans project files
 nbproject
 
-# Always ignore these directories/files
-target
-logs
+/poulpe/poulpe-model/logs/
+/poulpe/poulpe-model/target/
+/poulpe/poulpe-service/target/
+/poulpe/poulpe-view/poulpe-web-controller/target/
+/poulpe/poulpe-view/poulpe-web-view/target/
+/poulpe/poulpe-view/target/
+/poulpe/target/
+
