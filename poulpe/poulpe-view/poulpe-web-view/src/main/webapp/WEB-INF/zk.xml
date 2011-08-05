@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<zk>
-    <system-config>
-        <label-location>/WEB-INF/i18n/poulpe.properties</label-location>             
-    </system-config>
-</zk>
