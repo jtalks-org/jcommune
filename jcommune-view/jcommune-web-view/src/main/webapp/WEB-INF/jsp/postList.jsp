@@ -2,6 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="joda" uri="http://www.joda.org/joda/time/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 
@@ -38,6 +39,11 @@
                                         <a href="javascript:copyLink(${post.id})">
                                             <spring:message code="label.link"/>
                                         </a>
+                                        <span class="modification-date">
+                                            <joda:format value="${post.creationDate}"
+                                                 locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
+                                                 pattern="dd MMM yyyy HH:mm"/>
+                                        </span>
                                     </td>
                                 </tr>
                                 <tr>

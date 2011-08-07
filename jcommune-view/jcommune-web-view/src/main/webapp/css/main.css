@@ -370,6 +370,11 @@ p, h1, form, button {
     float: right;
 }
 
+#posts .modification-date {
+    font-size: 14px;
+    font-style: italic;
+}
+
 #posts .buttons {
     height: 35px;
     border: 0;
@@ -467,6 +472,7 @@ p, h1, form, button {
 #answer button {
     margin-top: 10px;
     float: none;
+    text-decoration: underline;
 }
 
 #answer form div {
@@ -492,4 +498,16 @@ p, h1, form, button {
 #answer label {
     font-weight: bold;
     font-style: italic;
+    padding-left: 5px;
+}
+
+#answer input {
+    display:block;
+    border: 3px solid #a3a03b;
+    border-radius: 6px;
+    background-color: #fffff2;
+}
+
+#answer a.coolbutton {
+    float: none;
 }
