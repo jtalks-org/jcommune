@@ -17,7 +17,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -87,6 +86,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
 
         Post answer = new Post(currentUser, answerBody);
         topic.addPost(answer);
+        topic.updateModificationDate();
 
         dao.update(topic);
         logger.debug("Added answer to topic {}", topicId);
@@ -169,8 +169,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         topic.setTitle(topicName);
         Post post = topic.getFirstPost();
         post.setPostContent(bodyText);
-        post.setCreationDate(new DateTime());
-        topic.setLastPost(post);
+//        post.setCreationDate(new DateTime());
+        topic.updateModificationDate();
 
         dao.update(topic);
         logger.debug("Update the topic {}", topic.getId());

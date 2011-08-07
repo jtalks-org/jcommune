@@ -27,7 +27,7 @@
                         <c:out value="${topic.topicStarter.username}"/>
                     </a>
                 </td>
-                <td><joda:format value="${topic.lastPost.creationDate}"
+                <td><joda:format value="${topic.modificationDate}"
                                  locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
                                  pattern="dd MMM yyyy HH:mm"/></td>
             </tr>
