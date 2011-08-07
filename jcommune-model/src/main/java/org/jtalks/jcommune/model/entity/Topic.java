@@ -53,11 +53,6 @@ public class Topic extends Entity {
     private Branch branch;
 
     /**
-     * The first post in the topic.
-     */
-    private Post firstPost;
-
-    /**
      * The last post in the topic.
      */
     private Post lastPost;
@@ -106,9 +101,6 @@ public class Topic extends Entity {
      * @param post post to add
      */
     public void addPost(Post post) {
-        if (posts.isEmpty()) {
-            this.firstPost = post;
-        }
         post.setTopic(this);
         this.posts.add(post);
         this.lastPost = post;
@@ -215,21 +207,12 @@ public class Topic extends Entity {
     }
 
     /**
-     * Set the topic first post.
-     *
-     * @param firstPost the firstPost to set
-     */
-    protected void setFirstPost(Post firstPost) {
-        this.firstPost = firstPost;
-    }
-
-    /**
      * Get the topic first post.
      *
      * @return the firstPost
      */
     public Post getFirstPost() {
-        return firstPost;
+        return posts.get(0);
     }
 
     /**

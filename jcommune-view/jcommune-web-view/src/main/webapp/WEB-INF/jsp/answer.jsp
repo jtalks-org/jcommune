@@ -10,20 +10,21 @@
     <link href="${pageContext.request.contextPath}/css/main.css" type=text/css rel=stylesheet>
   </head>
   <body>
-    <div id="stylized">
-      <h1 style="margin:10px">
-        <spring:message code="label.answer_to" />: <c:out value="${topic.title}"/>
-      </h1>
-      <jtalks:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/answer.html" 
-                   method="POST">
+    <div id="answer">
         <c:if test="${validationError==true}">
-          <div style="margin: 10px; color: #e43131"><spring:message code="label.answer_error"/></div>
+            <div id="error"><spring:message code="label.answer_error"/></div>
         </c:if>
-        <textarea style="margin:10px" name="bodytext" cols="40" rows="10"></textarea>
-        <br>
-        <input type="submit" value="<spring:message code="label.answer"/>" />
-        <div class="spacer"></div>
-      </jtalks:form>
+        <jtalks:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/answer.html"
+                       method="POST">
+            <div>
+                <h2><spring:message code="label.answer_to" />: <c:out value="${topic.title}"/></h2>
+                <label for="bodytext">Write your message here:</label>
+                <textarea name="bodytext" id="bodytext" cols="30" rows="10"></textarea>
+
+                <div class="clear"></div>
+                <button type="submit" class="coolbutton"><spring:message code="label.answer"/></button>
+            </div>
+        </jtalks:form>
     </div>
   </body>
 </html>
