@@ -20,6 +20,8 @@ package org.jtalks.jcommune.web.dto;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
+import javax.validation.constraints.Pattern;
+
 /**
  * DTO for {@link User} object. Required for validation and binding
  * errors to form.
@@ -31,7 +33,7 @@ import org.hibernate.validator.constraints.NotBlank;
 public abstract class UserDto {
 
     @NotBlank
-    @Email
+    @Pattern(regexp = "^[\\w-]+(\\.[\\w-]+)*@([a-z0-9-]+(\\.[a-z0-9-]+)*?\\.[a-z]{2,6}|(\\d{1,3}\\.){3}\\d{1,3})(:\\d{4})?$", message = "{validation.emailexception}")
     private String email;
     private String firstName;
     private String lastName;

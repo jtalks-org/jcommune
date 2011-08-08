@@ -17,6 +17,8 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.hibernate.validator.constraints.Email;
+import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
@@ -26,6 +28,7 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
+import org.jtalks.jcommune.web.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
@@ -38,6 +41,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.persistence.Column;
 import javax.validation.Valid;
 
 /**
@@ -99,11 +103,10 @@ public class UserController {
      */
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public ModelAndView registerUser(@Valid @ModelAttribute("newUser") RegisterUserDto userDto, BindingResult result) {
-
+        String email = "";
         if (result.hasErrors()) {
             return new ModelAndView(REGISTRATION);
         }
-
         try {
             userService.registerUser(userDto.createUser());
             return new ModelAndView("redirect:/");
