@@ -18,6 +18,12 @@
 package org.jtalks.jcommune.model.entity;
 
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 
 /**
  * Text message to send from one user to another. <br/>
@@ -30,6 +36,11 @@ import org.joda.time.DateTime;
  */
 public class PrivateMessage extends Entity {
 
+    public static final String QUOTE_PREFIX = ">";
+    public static final String QUOTE_SEPARATOR = " ";
+    public static final String NEW_LINE = System.getProperty("line.separator");
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private DateTime creationDate;
     private User userFrom;
     private User userTo;
@@ -203,6 +214,7 @@ public class PrivateMessage extends Entity {
 
     /**
      * Prepare title for reply message
+     *
      * @return reply title
      */
     public String prepareTitleForReply() {
@@ -211,11 +223,46 @@ public class PrivateMessage extends Entity {
     }
 
     /**
-     * Prepare body for quote message
+     * Prepare body for quote message according to next rules:
+     * <ul>
+     * <li>each new line beginning with  ">";</li>
+     * <li>if there is not ">" or space in the start of the line the space added between ">"  and line.</li>
+     * </ul>
+     * Quote example:
+     * >>> replay
+     * >> replay
+     * > replay
+     *
      * @return quote body
      */
+
     public String prepareBodyForQuote() {
-        return "\n" +"< " + getBody();
+        StringBuilder bodyBuilder = new StringBuilder();
+        BufferedReader inputData = new BufferedReader(new StringReader(getBody()));
+        try {
+            String line;
+            while ((line = inputData.readLine()) != null) {
+                if (line.startsWith(QUOTE_PREFIX)) {
+                    //create quote line from the quoted line
+                    bodyBuilder.append(QUOTE_PREFIX);
+                    bodyBuilder.append(line);
+                    bodyBuilder.append(NEW_LINE);
+                } else {
+                    //create quote line from the unquoted line
+                    bodyBuilder.append(QUOTE_PREFIX);
+                    bodyBuilder.append(QUOTE_SEPARATOR);
+                    bodyBuilder.append(line);
+                    bodyBuilder.append(NEW_LINE);
+                }
+
+            }
+        } catch (IOException e) {
+            logger.error("Invalid message body data " + e.getMessage());
+        }
+
+
+        return bodyBuilder.toString();
     }
+
 
 }

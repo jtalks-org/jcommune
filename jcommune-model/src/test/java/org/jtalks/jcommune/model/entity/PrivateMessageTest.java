@@ -20,6 +20,7 @@ package org.jtalks.jcommune.model.entity;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
 import static org.testng.Assert.*;
 
 /**
@@ -41,14 +42,13 @@ public class PrivateMessageTest {
     @DataProvider(name = "title-provider")
     public Object[][] rangeTitleData() {
 
-        return new Object[][] {
+        return new Object[][]{
                 {"Title", "Re: Title"},
                 {"Re: Title", "Re: Title"},
                 {"Title Re:", "Re: Title Re:"},
                 {"Tit Re: le", "Re: Tit Re: le"},
         };
     }
-
 
 
     @Test(dataProvider = "body-provider")
@@ -59,11 +59,22 @@ public class PrivateMessageTest {
 
     }
 
-    @DataProvider(name="body-provider")
+    @DataProvider(name = "body-provider")
     public Object[][] rangeBodyData() {
 
-        return new Object[][] {
-                {"Body", "\n< Body"}
+        return new Object[][]{
+                //data set for unquoted line test
+                {"Line1" + PrivateMessage.NEW_LINE + "Line2",
+                        PrivateMessage.QUOTE_PREFIX + PrivateMessage.QUOTE_SEPARATOR + "Line1"
+                                + PrivateMessage.NEW_LINE
+                                + PrivateMessage.QUOTE_PREFIX + PrivateMessage.QUOTE_SEPARATOR
+                                + "Line2" + PrivateMessage.NEW_LINE},
+                //data set for quoted line test
+                {"> Line1" + PrivateMessage.NEW_LINE + "> Line2",
+                        PrivateMessage.QUOTE_PREFIX + "> Line1"
+                                + PrivateMessage.NEW_LINE
+                                + PrivateMessage.QUOTE_PREFIX + "> Line2" + PrivateMessage.NEW_LINE},
         };
+
     }
 }
