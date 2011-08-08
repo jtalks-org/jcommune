@@ -38,6 +38,7 @@ public class Topic extends Entity {
      * The creation date of the topic.
      */
     private DateTime creationDate;
+    private DateTime modificationDate;
     /**
      * The user who create the topic
      */
@@ -51,11 +52,6 @@ public class Topic extends Entity {
     private List<Post> posts = new ArrayList<Post>();
 
     private Branch branch;
-
-    /**
-     * The first post in the topic.
-     */
-    private Post firstPost;
 
     /**
      * The last post in the topic.
@@ -79,6 +75,7 @@ public class Topic extends Entity {
         this.topicStarter = topicStarter;
         this.title = title;
         this.creationDate = new DateTime();
+        this.modificationDate= new DateTime();
     }
 
     /**
@@ -106,9 +103,6 @@ public class Topic extends Entity {
      * @param post post to add
      */
     public void addPost(Post post) {
-        if (posts.isEmpty()) {
-            this.firstPost = post;
-        }
         post.setTopic(this);
         this.posts.add(post);
         this.lastPost = post;
@@ -121,7 +115,7 @@ public class Topic extends Entity {
      */
     public void removePost(Post postToRemove) {
         posts.remove(postToRemove);
-        updateLastPost(postToRemove);
+        updateModificationDate();
     }
 
     /**
@@ -215,51 +209,12 @@ public class Topic extends Entity {
     }
 
     /**
-     * Set the topic first post.
-     *
-     * @param firstPost the firstPost to set
-     */
-    protected void setFirstPost(Post firstPost) {
-        this.firstPost = firstPost;
-    }
-
-    /**
      * Get the topic first post.
      *
      * @return the firstPost
      */
     public Post getFirstPost() {
-        return firstPost;
-    }
-
-    /**
-     * Set the topic last post.
-     *
-     * @param lastPost the lastPost to set
-     */
-    public void setLastPost(Post lastPost) {
-        this.lastPost = lastPost;
-    }
-
-    /**
-     * Get the topic last post.
-     *
-     * @return the lastPost
-     */
-    public Post getLastPost() {
-        return lastPost;
-    }
-
-    /**
-     * Set the topic last post when it was removed.
-     *
-     * @param removedPost post for delete
-     */
-    private void updateLastPost(Post removedPost) {
-        if (this.lastPost.getId() == removedPost.getId() &&
-                !this.posts.isEmpty()) {
-            this.lastPost = this.posts.get(this.posts.size() - 1);
-        }
+        return posts.get(0);
     }
 
     /**
@@ -267,5 +222,29 @@ public class Topic extends Entity {
      */
     public int postCount() {
         return posts.size();
+    }
+
+    /**
+     * @return date and time when theme was changed last time
+     */
+    public DateTime getModificationDate() {
+        return modificationDate;
+    }
+
+    /**
+     * @param modificationDate date and time when theme was changed last time
+     */
+    public void setModificationDate(DateTime modificationDate) {
+        this.modificationDate = modificationDate;
+    }
+
+    /**
+     * Set modification date to now.
+     *
+     * @return new modification date
+     */
+    public DateTime updateModificationDate()  {
+        this.modificationDate = new DateTime();
+        return this.modificationDate;
     }
 }
