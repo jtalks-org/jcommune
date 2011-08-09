@@ -7,7 +7,7 @@
 The filter itself is used to make decorator.jsp localization available.-->
 <urlrewrite>
   <rule>
-    <from>/</from>
+    <from >/</from>
     <to type="redirect">/jcommune/index.html</to>
   </rule>
 
