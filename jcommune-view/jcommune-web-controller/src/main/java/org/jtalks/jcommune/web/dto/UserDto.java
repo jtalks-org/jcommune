@@ -17,7 +17,6 @@
  */
 package org.jtalks.jcommune.web.dto;
 
-import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Pattern;
@@ -33,11 +32,12 @@ import javax.validation.constraints.Pattern;
 public abstract class UserDto {
 
     @NotBlank
-    @Pattern(regexp = "^[\\w-]+(\\.[\\w-]+)*@([a-z0-9-]+(\\.[a-z0-9-]+)*?\\.[a-z]{2,6}|(\\d{1,3}\\.){3}\\d{1,3})(:\\d{4})?$", message = "{validation.emailexception}")
+    @Pattern(regexp = "^[\\w-]+(\\.[\\w-]+)*@([a-z0-9-]+(\\.[a-z0-9-]+)*?\\" +
+            ".[a-z]{2,6}|(\\d{1,3}\\.){3}\\d{1,3})(:\\d{4})?$", message = "{validation.emailexception}")
     private String email;
     private String firstName;
     private String lastName;
-   
+
 
     /**
      * Get email.

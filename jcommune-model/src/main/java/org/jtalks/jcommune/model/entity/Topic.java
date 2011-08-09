@@ -53,10 +53,6 @@ public class Topic extends Entity {
 
     private Branch branch;
 
-    /**
-     * The last post in the topic.
-     */
-    private Post lastPost;
 
     /**
      * Creates the Topic instance. All fields values are null.
@@ -105,7 +101,6 @@ public class Topic extends Entity {
     public void addPost(Post post) {
         post.setTopic(this);
         this.posts.add(post);
-        this.lastPost = post;
     }
 
     /**

@@ -121,7 +121,7 @@ public class User extends Entity implements UserDetails {
      *
      * @param username the username to set
      */
-     public final void setUsername(String username) {
+    public final void setUsername(String username) {
         this.username = username;
         try {
             setEncodedUsername(URLEncoder.encode(username, "UTF-8"));

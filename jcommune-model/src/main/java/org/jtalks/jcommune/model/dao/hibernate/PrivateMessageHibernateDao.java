@@ -31,8 +31,9 @@ import java.util.List;
  * @author Kirill Afonin
  */
 public class PrivateMessageHibernateDao extends ParentRepositoryImpl<PrivateMessage> implements PrivateMessageDao {
-	
-	public static final String STATUS = "status";
+
+    public static final String STATUS = "status";
+
     /**
      * {@inheritDoc}
      */
