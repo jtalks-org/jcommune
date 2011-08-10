@@ -28,18 +28,19 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
+ * Filter that activated when user successfully authenticated.
+ *
  * @author Kirill Afonin
  */
 public class SuccessfulAuthenticationHandler extends SavedRequestAwareAuthenticationSuccessHandler {
     private UserService userService;
 
     /**
-     * Setter for {@link UserService}.
-     * Required.
+     * Constructor.
      *
-     * @param userService service
+     * @param userService service for users related actions
      */
-    public void setUserService(UserService userService) {
+    public SuccessfulAuthenticationHandler(UserService userService) {
         this.userService = userService;
     }
 

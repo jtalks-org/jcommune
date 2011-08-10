@@ -39,8 +39,7 @@ public class SuccessfulAuthenticationHandlerTest {
     @BeforeMethod
     public void setUp() throws Exception {
         userService = mock(UserService.class);
-        handler = new SuccessfulAuthenticationHandler();
-        handler.setUserService(userService);
+        handler = new SuccessfulAuthenticationHandler(userService);
     }
 
     @Test

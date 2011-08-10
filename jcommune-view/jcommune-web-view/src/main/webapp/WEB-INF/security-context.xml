@@ -22,6 +22,6 @@
   </security:http>
 
   <bean id="successAuthHandler" class="org.jtalks.jcommune.web.util.SuccessfulAuthenticationHandler">
-    <property name="userService" ref="userService"/>
+    <constructor-arg ref="userService"/>
   </bean>
 </beans>
