@@ -446,7 +446,7 @@ p, h1, form, button {
 }
 
 #answer #error {
-    width: 50%;
+    width: 70%;
     margin: auto;
     padding-top: 5px;
     height: 30px;
