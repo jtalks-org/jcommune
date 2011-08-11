@@ -229,9 +229,9 @@ public class PrivateMessage extends Entity {
      * <li>if there is not ">" or space in the start of the line the space added between ">"  and line.</li>
      * </ul>
      * Quote example:
-     * >>> replay
-     * >> replay
-     * > replay
+     * >>> reply
+     * >> reply
+     * > reply
      *
      * @return quote body
      */
