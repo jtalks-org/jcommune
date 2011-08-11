@@ -26,7 +26,7 @@ import java.util.List;
  * @author Vitaliy Kravchenko
  */
 
-public interface BranchDao extends ParentRepository<Branch> {
+public interface BranchDao extends ChildRepository<Branch> {
 
     /**
      * Get the list of all branches.
@@ -34,4 +34,20 @@ public interface BranchDao extends ParentRepository<Branch> {
      * @return list of branches
      */
     List<Branch> getAll();
+
+    /**
+     * Get branches range from section.
+     *
+     * @param sectionId section id from which we obtain branches
+     * @return list of {@code Branch} objects
+     */
+    List<Branch> getTopicRangeInBranch(Long sectionId);
+
+    /**
+     * Get number of branches in section.
+     *
+     * @param sectionId section id where you have to count branches
+     * @return number of branches in section
+     */
+    int getBranchesInSectionCount(Long sectionId);
 }

@@ -16,41 +16,22 @@
  * The jtalks.org Project
  */
 
-package org.jtalks.jcommune.model.dao.hibernate;
-
-import org.jtalks.jcommune.model.dao.BranchDao;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.Topic;
+package org.jtalks.jcommune.model.dao;
 
 import java.util.List;
 
+import org.jtalks.jcommune.model.entity.Section;
+
 /**
- * @author Vitaliy Kravchenko
  * @author Max Malakhov
  */
-public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch> implements BranchDao {
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<Branch> getAll() {
-        return getSession().createQuery("from Branch").setCacheable(true).list();
-    }
+public interface SectionDao extends ParentRepository<Section> {
 
     /**
-     * {@inheritDoc}
+     * Get the list of all sections.
+     *
+     * @return list of section
      */
-    @Override
-    public List<Branch> getTopicRangeInBranch(Long sectionId) {
-        return null;
-    }
+    List<Section> getAll();
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getBranchesInSectionCount(Long sectionId) {
-        return 0;
-    }
 }

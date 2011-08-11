@@ -18,39 +18,33 @@
 
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.jtalks.jcommune.model.dao.BranchDao;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.Topic;
-
 import java.util.List;
 
-/**
- * @author Vitaliy Kravchenko
- * @author Max Malakhov
- */
-public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch> implements BranchDao {
+import org.jtalks.jcommune.model.dao.SectionDao;
+import org.jtalks.jcommune.model.entity.Section;
+
+public class SectionHibernateDao extends ParentRepositoryImpl<Section> implements SectionDao {
     /**
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<Branch> getAll() {
-        return getSession().createQuery("from Branch").setCacheable(true).list();
+    public List<Section> getAll() {
+        return getSession().createQuery("from Section").setCacheable(true).list();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<Branch> getTopicRangeInBranch(Long sectionId) {
-        return null;
+    public boolean delete(Long id) {
+        //TODO: not efficient solution. See more info on the next link http://bit.ly/m85eLs
+        Section section = get(id);
+        if (section == null) {
+            return false;
+        }
+        getSession().delete(section);
+        return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getBranchesInSectionCount(Long sectionId) {
-        return 0;
-    }
 }
