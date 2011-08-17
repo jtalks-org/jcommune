@@ -31,14 +31,13 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * Controller for User related actions: registration.
@@ -151,7 +150,7 @@ public class UserController {
      */
     @RequestMapping(value = "/user/edit", method = RequestMethod.POST)
     public ModelAndView editProfile(@Valid @ModelAttribute("editedUser") EditUserProfileDto userDto,
-                                    BindingResult result) throws NotFoundException {
+                                    BindingResult result) throws NotFoundException, IOException, SQLException {
 
         if (result.hasErrors()) {
             return new ModelAndView(EDIT_PROFILE);
@@ -160,7 +159,8 @@ public class UserController {
         User editedUser;
         try {
             editedUser = userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
-                    userDto.getLastName(), userDto.getCurrentUserPassword(), userDto.getNewUserPassword());
+                    userDto.getLastName(), userDto.getCurrentUserPassword(), userDto.getNewUserPassword(),
+                    getAvatarByteArray(userDto.getAvatar()));
         } catch (DuplicateEmailException e) {
             result.rejectValue("email", "validation.duplicateemail");
             return new ModelAndView(EDIT_PROFILE);
@@ -173,5 +173,35 @@ public class UserController {
                 .append("redirect:/user/")
                 .append(editedUser.getEncodedUsername())
                 .append(".html").toString());
+    }
+
+
+    /**
+     * Remove avatar from user profile.
+     *
+     * @return edit user profile page
+     */
+    @RequestMapping(value = "/user/remove/avatar", method = RequestMethod.GET)
+    public ModelAndView removeAvatar() {
+        User user = securityService.getCurrentUser();
+        userService.removeAvatar(user);
+        EditUserProfileDto editedUser = new EditUserProfileDto(user);
+        return new ModelAndView(EDIT_PROFILE, "editedUser", editedUser);
+    }
+
+    /**
+     * Returns avatar as an array of bytes.
+     *
+     * @param avatar multipart file from submitted form
+     * @return avatar byte array from submitted form if user loaded avatar
+     *         or avatar byte array from db if didn't
+     * @throws IOException in case of access errors (if the temporary store fails)
+     */
+    public byte[] getAvatarByteArray(MultipartFile avatar) throws IOException {
+        if (!avatar.getOriginalFilename().equals("")) {
+            return avatar.getBytes();
+        } else {
+            return securityService.getCurrentUser().getAvatar();
+        }
     }
 }

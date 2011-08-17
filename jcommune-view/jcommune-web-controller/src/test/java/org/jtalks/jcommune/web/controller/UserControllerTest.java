@@ -17,6 +17,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.aspectj.util.FileUtil;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
@@ -26,24 +27,24 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
+import org.mockito.Matchers;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.io.File;
+import java.io.IOException;
+
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 
@@ -63,10 +64,17 @@ public class UserControllerTest {
     private final String EMAIL = "mail@mail.com";
     private final String PASSWORD = "password";
     private final String NEW_PASSWORD = "newPassword";
+    private MultipartFile avatar;
 
+    @BeforeClass
+    public void mockAvatar() throws IOException {
+        avatar = new MockMultipartFile("test_avatar.jpg", "test_avatar.jpg", "image/jpeg",
+                FileUtil.readAsByteArray(
+                        new File("jcommune-view/jcommune-web-controller/src/test/resources/test_avatar.jpg")));
+    }
 
     @BeforeMethod
-    public void setUp() {
+    public void setUp() throws IOException {
         userService = mock(UserService.class);
         securityService = mock(SecurityService.class);
         controller = new UserController(userService, securityService);
@@ -153,7 +161,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testEditProfilePage() throws NotFoundException {
+    public void testEditProfilePage() throws NotFoundException, IOException {
         User user = getUser();
         when(securityService.getCurrentUser()).thenReturn(user);
 
@@ -173,7 +181,7 @@ public class UserControllerTest {
         EditUserProfileDto userDto = getEditUserProfileDto();
         when(userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword())).thenReturn(user);
+                userDto.getNewUserPassword(), userDto.getAvatar().getBytes())).thenReturn(user);
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
         ModelAndView mav = controller.editProfile(userDto, bindingResult);
@@ -182,7 +190,7 @@ public class UserControllerTest {
         assertViewName(mav, excpectedUrl);
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword());
+                userDto.getNewUserPassword(), userDto.getAvatar().getBytes());
     }
 
     @Test
@@ -193,7 +201,7 @@ public class UserControllerTest {
         doThrow(new DuplicateEmailException()).when(userService)
                 .editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                         userDto.getLastName(), userDto.getCurrentUserPassword(),
-                        userDto.getNewUserPassword());
+                        userDto.getNewUserPassword(), userDto.getAvatar().getBytes());
 
         ModelAndView mav = controller.editProfile(userDto, bindingResult);
 
@@ -201,7 +209,7 @@ public class UserControllerTest {
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword());
+                userDto.getNewUserPassword(), userDto.getAvatar().getBytes());
 
         assertContainsError(bindingResult, "email");
     }
@@ -213,7 +221,7 @@ public class UserControllerTest {
         doThrow(new WrongPasswordException()).when(userService)
                 .editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                         userDto.getLastName(), userDto.getCurrentUserPassword(),
-                        userDto.getNewUserPassword());
+                        userDto.getNewUserPassword(), userDto.getAvatar().getBytes());
 
         ModelAndView mav = controller.editProfile(userDto, bindingResult);
 
@@ -221,7 +229,7 @@ public class UserControllerTest {
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword());
+                userDto.getNewUserPassword(), userDto.getAvatar().getBytes());
         assertContainsError(bindingResult, "currentUserPassword");
     }
 
@@ -235,7 +243,17 @@ public class UserControllerTest {
 
         assertViewName(mav, "editProfile");
         verify(userService, never()).editUserProfile(anyString(), anyString(), anyString(),
-                anyString(), anyString());
+                anyString(), anyString(), Matchers.<byte[]>anyObject());
+    }
+
+    @Test
+    public void testRemoveAvatar() throws IOException {
+        User user = getUser();
+        when(securityService.getCurrentUser()).thenReturn(user);
+        ModelAndView mav = controller.removeAvatar();
+        assertViewName(mav, "editProfile");
+        verify(securityService).getCurrentUser();
+        verify(userService).removeAvatar(user);
     }
 
     private void assertContainsError(BindingResult bindingResult, String errorName) {
@@ -271,14 +289,15 @@ public class UserControllerTest {
         dto.setCurrentUserPassword(PASSWORD);
         dto.setNewUserPassword(NEW_PASSWORD);
         dto.setNewUserPasswordConfirm(NEW_PASSWORD);
-
+        dto.setAvatar(avatar);
         return dto;
     }
 
-    private User getUser() {
+    private User getUser() throws IOException {
         User newUser = new User(USER_NAME, EMAIL, PASSWORD);
         newUser.setFirstName(FIRST_NAME);
         newUser.setLastName(LAST_NAME);
+        newUser.setAvatar(avatar.getBytes());
         return newUser;
     }
 }

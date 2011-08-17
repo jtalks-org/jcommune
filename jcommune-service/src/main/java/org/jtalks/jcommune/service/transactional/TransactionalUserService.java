@@ -138,7 +138,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      */
     @Override
     public User editUserProfile(String email, String firstName, String lastName, String currentPassword,
-                                String newPassword) throws DuplicateEmailException, WrongPasswordException {
+                                String newPassword, byte[] avatar) throws DuplicateEmailException, WrongPasswordException {
         User currentUser = securityService.getCurrentUser();
         boolean changePassword = newPassword != null;
         if (changePassword) {
@@ -158,8 +158,19 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         currentUser.setEmail(email);
         currentUser.setFirstName(firstName);
         currentUser.setLastName(lastName);
+        currentUser.setAvatar(avatar);
+
 
         dao.saveOrUpdate(currentUser);
         return currentUser;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void removeAvatar(User user) {
+        user.setAvatar(null);
+    }
+
 }

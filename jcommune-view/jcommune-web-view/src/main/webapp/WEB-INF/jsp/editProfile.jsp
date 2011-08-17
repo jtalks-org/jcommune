@@ -12,51 +12,79 @@
           type=text/css rel=stylesheet>
 </head>
 <body>
-<div id="editUserdetails" >
-    <form:form id = "editProfileForm" name="editProfileForm" 
-        action="${pageContext.request.contextPath}/user/edit.html"
-        modelAttribute="editedUser" method="POST">
-    <ul>
-        <li>
-            <label><spring:message code="label.username"/></label>
-            <span>"${auth}"</span>
-        </li>
-        <li>
-            <label><spring:message code="label.email"/></label>
-            <form:input path="email" size="25" value="${editedUser.email}"/>            
-            <form:errors path="email" cssClass="error"/>
-        </li>
-        <li>
-            <label><spring:message code="label.firstname"/></label>
-            <form:input path="firstName" size="25" value="${editedUser.firstName}"/>
-            <form:errors path="firstName" cssClass="error"/>                   
-        </li>
-        <li>
-            <label><spring:message code="label.lastname"/></label>   
-            <form:input path="lastName" size="25" value="${editedUser.lastName}"/>
-            <form:errors path="lastName" cssClass="error"/>         
-        </li>
-        <li>
-            <label><spring:message code="label.newPassword"/></label>   
-            <form:input path="newUserPassword" size="25" type="password"/>
-            <form:errors path="newUserPassword" cssClass="error"/>         
-        </li>
-        <li>
-            <label><spring:message code="label.newPasswordConfiration"/></label>
-            <form:input path="newUserPasswordConfirm" size="25" type="password"/>
-            <form:errors path="newUserPasswordConfirm" cssClass="error"/>         
-        </li>
-        <li>        
-            <label><spring:message code="label.currentPassword"/></label>   
-            <form:input path="currentUserPassword" size="25" type="password"/>
-            <form:errors path="currentUserPassword" cssClass="error"/>
-        </li>
-    </ul>       
-            <input type="submit" value="<spring:message code="label.save_changes"/>"/>        
+<div id="editUserdetails">
+    <form:form id="editProfileForm" name="editProfileForm"
+               action="${pageContext.request.contextPath}/user/edit.html"
+               modelAttribute="editedUser" method="POST" enctype="multipart/form-data">
+
+        <table>
+            <tr>
+                <td><label><spring:message code="label.username"/></label></td>
+                <td><span>"${auth}"</span></td>
+            </tr>
+
+            <tr>
+                <td><label><spring:message code="label.email"/></label></td>
+                <td><form:input path="email" size="25" value="${editedUser.email}"/></td>
+                <td><form:errors path="email" cssClass="error"/></td>
+            </tr>
+            <tr>
+                <td><label><spring:message code="label.firstname"/></label></td>
+                <td><form:input path="firstName" size="25" value="${editedUser.firstName}"/></td>
+                <td><form:errors path="firstName" cssClass="error"/></td>
+            </tr>
+            <tr>
+                <td><label><spring:message code="label.lastname"/></label></td>
+                <td><form:input path="lastName" size="25" value="${editedUser.lastName}"/></td>
+                <td><form:errors path="lastName" cssClass="error"/></td>
+            </tr>
+            <tr>
+                <td><label><spring:message code="label.newPassword"/></label></td>
+                <td><form:input path="newUserPassword" size="25" type="password"/></td>
+                <td><form:errors path="newUserPassword" cssClass="error"/></td>
+            </tr>
+            <tr>
+                <td><label><spring:message code="label.newPasswordConfiration"/></label></td>
+                <td><form:input path="newUserPasswordConfirm" size="25" type="password"/></td>
+                <td><form:errors path="newUserPasswordConfirm" cssClass="error"/></td>
+            </tr>
+            <tr>
+                <td><label><spring:message code="label.currentPassword"/></label></td>
+                <td><form:input path="currentUserPassword" size="25" type="password"/></td>
+                <td><form:errors path="currentUserPassword" cssClass="error"/></td>
+            </tr>
+            <tr>
+                <td>Avatar will be here<br><a
+                        href="${pageContext.request.contextPath}/user/remove/avatar.html"><spring:message
+                        code="label.avatar.remove"/></a></td>
+                <td><form:input path="avatar" type="file"/></td>
+                <td><form:errors path="avatar" cssClass="error"/></td>
+            </tr>
+        </table>
     </form:form>
-    <form:form action='${pageContext.request.contextPath}/user/${auth}.html' method="GET">
-           <input type="submit" value="<spring:message code="label.back"/>"/>
-    </form:form>                
+
+    <table>
+        <tr>
+            <td>
+                <form:form action='${pageContext.request.contextPath}/user/${auth}.html' method="GET">
+                    <input type="submit" value="<spring:message code="label.back"/>"/>
+                </form:form>
+            </td>
+            <td>
+                <input type="submit" value="<spring:message code="label.save_changes"/>"
+                       onclick="submitForm('editProfileForm')"/>
+            </td>
+        </tr>
+    </table>
+
 </div>
+
+
+<script type="text/javascript">
+    function submitForm(formName) {
+        document.forms[formName].submit();
+    }
+</script>
+
 </body>
 </html>

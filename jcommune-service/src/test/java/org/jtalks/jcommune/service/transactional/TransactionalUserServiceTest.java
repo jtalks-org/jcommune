@@ -17,6 +17,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.aspectj.util.FileUtil;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
@@ -27,15 +28,16 @@ import org.jtalks.jcommune.service.exceptions.DuplicateException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.service.security.SecurityConstants;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.io.File;
+import java.io.IOException;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -52,11 +54,18 @@ public class TransactionalUserServiceTest {
     private static final String PASSWORD = "password";
     private static final String WRONG_PASSWORD = "abracodabra";
     private static final String NEW_PASSWORD = "newPassword";
+    private byte[] avatar;
     private static final Long USER_ID = 999L;
 
     private UserService userService;
     private UserDao userDao;
     private SecurityService securityService;
+
+    @BeforeClass
+    public void mockAvatar() throws IOException {
+        avatar = FileUtil.readAsByteArray(
+                new File("jcommune-view/jcommune-web-controller/src/test/resources/test_avatar.jpg"));
+    }
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -160,7 +169,7 @@ public class TransactionalUserServiceTest {
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
 
         User editedUser = userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
-                PASSWORD, NEW_PASSWORD);
+                PASSWORD, NEW_PASSWORD, avatar);
 
         verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
@@ -176,7 +185,7 @@ public class TransactionalUserServiceTest {
         when(securityService.getCurrentUser()).thenReturn(user);
 
         userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
-                WRONG_PASSWORD, NEW_PASSWORD);
+                WRONG_PASSWORD, NEW_PASSWORD, avatar);
 
         verify(securityService).getCurrentUser();
         verify(userDao, never()).isUserWithEmailExist(anyString());
@@ -189,7 +198,7 @@ public class TransactionalUserServiceTest {
         when(securityService.getCurrentUser()).thenReturn(user);
 
         userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
-                null, NEW_PASSWORD);
+                null, NEW_PASSWORD, avatar);
 
         verify(securityService).getCurrentUser();
         verify(userDao, never()).isUserWithEmailExist(anyString());
@@ -203,7 +212,7 @@ public class TransactionalUserServiceTest {
         when(userDao.isUserWithEmailExist(NEW_EMAIL)).thenReturn(true);
 
         userService.editUserProfile(NEW_EMAIL, FIRST_NAME, LAST_NAME,
-                null, null);
+                null, null, avatar);
 
         verify(securityService).getCurrentUser();
         verify(userDao).isUserWithEmailExist(NEW_EMAIL);
@@ -220,6 +229,7 @@ public class TransactionalUserServiceTest {
         User user = new User(username, EMAIL, PASSWORD);
         user.setFirstName(FIRST_NAME);
         user.setLastName(LAST_NAME);
+        user.setAvatar(avatar);
         return user;
     }
 
@@ -251,5 +261,12 @@ public class TransactionalUserServiceTest {
         DateTime dateTimeAfter = user.getLastLogin();
         assertEquals(dateTimeAfter.compareTo(dateTimeBefore), 1, "last login time lesser than before test");
         verify(userDao).saveOrUpdate(user);
+    }
+
+    @Test
+    public void testRemoveAvatar() {
+        User user = getUser();
+        userService.removeAvatar(user);
+        assertEquals(user.getAvatar(), null, "Avatar after remove should be null");
     }
 }
