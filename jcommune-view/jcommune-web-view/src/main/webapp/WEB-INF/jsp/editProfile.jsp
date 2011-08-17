@@ -54,9 +54,10 @@
                 <td><form:errors path="currentUserPassword" cssClass="error"/></td>
             </tr>
             <tr>
-                <td>Avatar will be here<br><a
-                        href="${pageContext.request.contextPath}/user/remove/avatar.html"><spring:message
-                        code="label.avatar.remove"/></a></td>
+                <td><img src="${pageContext.request.contextPath}/show/${auth}/avatar.html" width="100"
+                         height="100"/><br>
+                    <a href="${pageContext.request.contextPath}/user/remove/avatar.html"><spring:message
+                            code="label.avatar.remove"/></a></td>
                 <td><form:input path="avatar" type="file"/></td>
                 <td><form:errors path="avatar" cssClass="error"/></td>
             </tr>

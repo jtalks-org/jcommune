@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -45,6 +46,7 @@ import java.sql.SQLException;
  * @author Kirill Afonin
  * @author Alexandre Teterin
  * @author Max Malakhov
+ * @author Eugeny Batov
  */
 @Controller
 public class UserController {
@@ -187,6 +189,23 @@ public class UserController {
         userService.removeAvatar(user);
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
         return new ModelAndView(EDIT_PROFILE, "editedUser", editedUser);
+    }
+
+    /**
+     * Write user avatar  in response for rendering it on html pages.
+     *
+     * @param response        servlet response
+     * @param encodedUsername {@link User#getEncodedUsername()}
+     * @throws NotFoundException - throws if user with given encodedUsername not found
+     */
+    @RequestMapping(value = "/show/{encodedUsername}/avatar", method = RequestMethod.GET)
+    public void renderAvatar(HttpServletResponse response,
+                             @PathVariable("encodedUsername") String encodedUsername) throws NotFoundException, IOException {
+        User user = userService.getByEncodedUsername(encodedUsername);
+        response.setContentType("image/jpeg");
+        byte[] avatar = user.getAvatar();
+        response.setContentLength(avatar.length);
+        response.getOutputStream().write(avatar);
     }
 
     /**
