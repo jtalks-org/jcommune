@@ -19,59 +19,64 @@
                 <col class="oce-first"/>
             </colgroup>
             <thead>
-                <tr>
-                    <th scope="col">Author</th>
-                    <th scope="col">Message</th>
-                </tr>
+            <tr>
+                <th scope="col">Author</th>
+                <th scope="col">Message</th>
+            </tr>
             </thead>
             <tbody>
-                <c:forEach var="post" items="${posts}" varStatus="i">
-                    <tr>
-                        <td class="author">
-                            <a href="${pageContext.request.contextPath}/user/${post.userCreated.encodedUsername}.html">
-                                    <c:out value="${post.userCreated.username}"/>
-                            </a>
-                        </td>
-                        <td class="content" valign="top">
-                            <table>
-                                <tr>
-                                    <td class="link">
-                                        <a href="javascript:copyLink(${post.id})">
-                                            <spring:message code="label.link"/>
-                                        </a>
+            <c:forEach var="post" items="${posts}" varStatus="i">
+                <tr>
+                    <td class="author">
+                        <a href="${pageContext.request.contextPath}/user/${post.userCreated.encodedUsername}.html">
+                            <c:out value="${post.userCreated.username}"/>
+                        </a><br>
+                        <img src="${pageContext.request.contextPath}/show/${post.userCreated.encodedUsername}/avatar.html" width="100"
+                             height="100"/>
+                    </td>
+                    <td class="content" valign="top">
+                        <table>
+                            <tr>
+                                <td class="link">
+                                    <a href="javascript:copyLink(${post.id})">
+                                        <spring:message code="label.link"/>
+                                    </a>
                                         <span class="modification-date">
                                             <joda:format value="${post.creationDate}"
-                                                 locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
-                                                 pattern="dd MMM yyyy HH:mm"/>
+                                                         locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
+                                                         pattern="dd MMM yyyy HH:mm"/>
                                         </span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text">
-                                        <c:out value="${post.postContent}"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="buttons">
-                                        <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
-                                            <c:choose>
-                                                <c:when test="${page == 1 && i.index == 0}">
-                                                    <%-- first post - url to delete topic --%>
-                                                    <c:set var="delete_url" value="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/delete.html"/>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <%-- url to delete post --%>
-                                                    <c:set var="delete_url" value="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/post/${post.id}/delete.html"/>
-                                                </c:otherwise>
-                                            </c:choose>
-                                            <a class="coolbutton" href="${delete_url}"><spring:message code="label.delete"/></a>
-                                        </sec:accesscontrollist>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </c:forEach>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text">
+                                    <c:out value="${post.postContent}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="buttons">
+                                    <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
+                                        <c:choose>
+                                            <c:when test="${page == 1 && i.index == 0}">
+                                                <%-- first post - url to delete topic --%>
+                                                <c:set var="delete_url"
+                                                       value="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/delete.html"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <%-- url to delete post --%>
+                                                <c:set var="delete_url"
+                                                       value="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/post/${post.id}/delete.html"/>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <a class="coolbutton" href="${delete_url}"><spring:message
+                                                code="label.delete"/></a>
+                                    </sec:accesscontrollist>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </c:forEach>
             </tbody>
         </table>
         <div id="buttons">
@@ -79,17 +84,20 @@
                 <spring:message code="label.back"/>
             </a>
             <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                <a class="coolbutton" href="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/answer.html">
-                   <spring:message code="label.answer"/>
+                <a class="coolbutton"
+                   href="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/answer.html">
+                    <spring:message code="label.answer"/>
                 </a>
             </sec:authorize>
             <sec:accesscontrollist hasPermission="8,16" domainObject="${topic}">
-                <a class="coolbutton" href="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/edit.html">
+                <a class="coolbutton"
+                   href="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/edit.html">
                     <spring:message code="label.edit"/>
                 </a>
             </sec:accesscontrollist>
         </div>
-    </div> <!-- postList -->
+    </div>
+    <!-- postList -->
     <c:if test="${maxPages > 1}">
         <div id="pagination">
             <c:if test="${page > 2}">
@@ -136,12 +144,14 @@
                 </c:url>
                 ...<a href='<c:out value="${last}"/>' class="pn next"><spring:message code="pagination.last"/></a>
             </c:if>
-        </div> <!-- pagination -->
+        </div>
+        <!-- pagination -->
     </c:if>
-</div> <!-- content -->
+</div>
+<!-- content -->
 <script type="text/javascript">
     function copyLink(postId) {
-        prompt("Link to copy", document.location.href+"#"+postId);
+        prompt("Link to copy", document.location.href + "#" + postId);
     }
 </script>
 </body>

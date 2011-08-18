@@ -70,10 +70,12 @@ public class PrivateMessageTest {
                                 + PrivateMessage.QUOTE_PREFIX + PrivateMessage.QUOTE_SEPARATOR
                                 + "Line2" + PrivateMessage.NEW_LINE},
                 //data set for quoted line test
-                {"> Line1" + PrivateMessage.NEW_LINE + "> Line2",
-                        PrivateMessage.QUOTE_PREFIX + "> Line1"
-                                + PrivateMessage.NEW_LINE
-                                + PrivateMessage.QUOTE_PREFIX + "> Line2" + PrivateMessage.NEW_LINE},
+                {PrivateMessage.QUOTE_PREFIX + PrivateMessage.QUOTE_SEPARATOR + "Line1" + PrivateMessage.NEW_LINE
+                        + PrivateMessage.QUOTE_PREFIX + PrivateMessage.QUOTE_SEPARATOR + "Line2",
+                        PrivateMessage.QUOTE_PREFIX + PrivateMessage.QUOTE_PREFIX + PrivateMessage.QUOTE_SEPARATOR
+                                + "Line1" + PrivateMessage.NEW_LINE
+                                + PrivateMessage.QUOTE_PREFIX + PrivateMessage.QUOTE_PREFIX
+                        + PrivateMessage.QUOTE_SEPARATOR + "Line2" + PrivateMessage.NEW_LINE}
         };
 
     }

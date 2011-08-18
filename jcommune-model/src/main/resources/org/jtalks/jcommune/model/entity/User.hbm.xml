@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
   <class name="org.jtalks.jcommune.model.entity.User" table="USER">
     <cache usage="nonstrict-read-write"/>
@@ -17,5 +17,8 @@
     <property column="ROLE" name="role"/>
     <property column="LAST_LOGIN" name="lastLogin"
               type="org.joda.time.contrib.hibernate.PersistentDateTime" not-null="false"/>
+    <property name="avatar" lazy="true">
+      <column name="AVATAR" sql-type="blob"/>
+    </property>
   </class>
 </hibernate-mapping>
