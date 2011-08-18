@@ -24,8 +24,6 @@ import org.jtalks.jcommune.web.validation.Matches;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-
 /**
  * This dto used for transferring data in edit {@link User} profile operation.
  * To get more info see {@link UserController#editProfile}.
@@ -52,7 +50,7 @@ public class EditUserProfileDto extends UserDto {
 
     /**
      * Constructor which fills dto fields from user.
-     * Fields {@link User#getFirstName()}, {@link User#getLastName()()}, {@link User#getEmail()} will be copied.
+     * Fields {@link User#getFirstName()}, {@link User#getLastName()}, {@link User#getEmail(), {@link User#getAvatar()} } will be copied.
      *
      * @param user - copying source
      */
@@ -60,7 +58,7 @@ public class EditUserProfileDto extends UserDto {
         this.setFirstName(user.getFirstName());
         this.setLastName(user.getLastName());
         this.setEmail(user.getEmail());
-       // this.setAvatar(new MockMultipartFile("avatar", user.getAvatar()));
+        this.setAvatar(new MockMultipartFile("avatar", user.getAvatar()));
     }
 
     /**

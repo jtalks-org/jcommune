@@ -31,8 +31,11 @@
                         <a href="${pageContext.request.contextPath}/user/${post.userCreated.encodedUsername}.html">
                             <c:out value="${post.userCreated.username}"/>
                         </a><br>
-                        <img src="${pageContext.request.contextPath}/show/${post.userCreated.encodedUsername}/avatar.html" width="100"
-                             height="100"/>
+                        <c:if test="${post.userCreated.avatar != null}">
+                            <img src="${pageContext.request.contextPath}/show/${post.userCreated.encodedUsername}/avatar.html"
+                                 width="100"
+                                 height="100"/>
+                        </c:if>
                     </td>
                     <td class="content" valign="top">
                         <table>
