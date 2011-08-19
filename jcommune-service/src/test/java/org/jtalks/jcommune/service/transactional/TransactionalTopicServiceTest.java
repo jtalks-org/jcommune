@@ -282,6 +282,40 @@ public class TransactionalTopicServiceTest {
 
         assertEquals(topic.getTitle(), newTitle);
         assertEquals(post.getPostContent(), newBody);
+        assertEquals(topic.getTopicWeight(),newWeight);
+        assertEquals(topic.isSticked(),newSticked);
+        assertEquals(topic.isAnnouncement(),newAnnouncement);
+
+        verify(topicDao).isExist(TOPIC_ID);
+        verify(topicDao).get(TOPIC_ID);
+        verify(topicDao).update(topic);
+    }
+
+    @Test
+    void testSaveTopicSimple() throws NotFoundException {
+        String newTitle = "new title";
+        String newBody = "new body";
+        int newWeight = 0;
+        boolean newSticked = false;
+        boolean newAnnouncement = false;
+        Topic topic = Topic.createNewTopic();
+        topic.setId(TOPIC_ID);
+        topic.setTitle("title");
+        Post post = Post.createNewPost();
+        post.setId(POST_ID);
+        post.setPostContent("body");
+        topic.addPost(post);
+
+        when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
+        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
+
+        topicService.saveTopic(TOPIC_ID, newTitle, newBody);
+
+        assertEquals(topic.getTitle(), newTitle);
+        assertEquals(post.getPostContent(), newBody);
+        assertEquals(topic.getTopicWeight(),newWeight);
+        assertEquals(topic.isSticked(),newSticked);
+        assertEquals(topic.isAnnouncement(),newAnnouncement);
 
         verify(topicDao).isExist(TOPIC_ID);
         verify(topicDao).get(TOPIC_ID);
