@@ -54,18 +54,12 @@ public class TransactionalUserServiceTest {
     private static final String PASSWORD = "password";
     private static final String WRONG_PASSWORD = "abracodabra";
     private static final String NEW_PASSWORD = "newPassword";
-    private byte[] avatar;
+    private byte[] avatar=new byte[10];
     private static final Long USER_ID = 999L;
 
     private UserService userService;
     private UserDao userDao;
     private SecurityService securityService;
-
-    @BeforeClass
-    public void mockAvatar() throws IOException {
-        avatar = FileUtil.readAsByteArray(
-                new File("jcommune-view/jcommune-web-controller/src/test/resources/test_avatar.jpg"));
-    }
 
     @BeforeMethod
     public void setUp() throws Exception {
