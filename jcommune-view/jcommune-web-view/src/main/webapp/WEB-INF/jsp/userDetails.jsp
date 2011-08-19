@@ -46,10 +46,12 @@
                              pattern="dd MMM yyyy HH:mm"/>
             </span>
         </li>
-        <li>
-            <img src="${pageContext.request.contextPath}/show/${auth}/avatar.html" width="100"
-                 height="100"/>
-        </li>
+        <c:if test="${user.avatar != null}">
+            <li>
+                <img src="${pageContext.request.contextPath}/show/${auth}/avatar.html" width="100"
+                     height="100"/>
+            </li>
+        </c:if>
         <li>
             <c:if test="${user.username == auth}">
                 <a href="${pageContext.request.contextPath}/user/edit.html">
