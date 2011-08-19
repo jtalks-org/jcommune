@@ -38,8 +38,13 @@ public class AvatarSizeValidator implements ConstraintValidator<AvatarSize, Mult
         //nothing to do
     }
 
+    /**
+     * @param multipartFile
+     * @param context validation context
+     * @return {@code true} if validation successfull or false if fails
+     */
     @Override
-    public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext context) {
         if (multipartFile.getOriginalFilename().equals("")) {
             return true;
         }

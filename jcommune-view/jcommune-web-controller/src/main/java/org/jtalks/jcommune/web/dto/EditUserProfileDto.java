@@ -50,7 +50,8 @@ public class EditUserProfileDto extends UserDto {
 
     /**
      * Constructor which fills dto fields from user.
-     * Fields {@link User#getFirstName()}, {@link User#getLastName()}, {@link User#getEmail(), {@link User#getAvatar()} } will be copied.
+     * Fields {@link User#getFirstName()}, {@link User#getLastName()}, {@link User#getEmail(), {@link User#getAvatar()}
+     * will be copied.
      *
      * @param user - copying source
      */
@@ -109,10 +110,18 @@ public class EditUserProfileDto extends UserDto {
         this.newUserPasswordConfirm = newUserPasswordConfirm;
     }
 
+    /**
+     * @return - user avatar
+     */
     public MultipartFile getAvatar() {
         return avatar;
     }
 
+    /**
+     * Set user avatar.
+     *
+     * @param avatar - user avatar
+     */
     public void setAvatar(MultipartFile avatar) {
         this.avatar = avatar;
     }
