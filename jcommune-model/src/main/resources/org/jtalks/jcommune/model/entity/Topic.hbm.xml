@@ -13,6 +13,9 @@
               column="CREATION_DATE" not-null="true"/>
     <property name="modificationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
               column="MODIFICATION_DATE" not-null="false"/>
+    <property name="topicWeight" column="TOPIC_WEIGHT" not-null="false"/>
+    <property name="sticked" column="STICKED" not-null="false"/>
+    <property name="announcement" column="ANNOUNCEMENT" not-null="false"/>
 
     <list name="posts" cascade="all-delete-orphan">
       <cache usage="nonstrict-read-write"/>
@@ -30,7 +33,7 @@
     <return alias="TOPIC" class="Topic"/>
     <![CDATA[SELECT topic.* FROM TOPIC as topic
              WHERE topic.branch_id = :branchId
-             ORDER BY topic.modification_date DESC]]>
+             ORDER BY topic.sticked DESC, topic.topic_weight DESC, topic.modification_date DESC]]>
   </sql-query>
 
 </hibernate-mapping>

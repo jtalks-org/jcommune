@@ -100,7 +100,7 @@ public interface TopicService extends EntityService<Topic> {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic not found
      */
-    void saveTopic(long topicId, String topicName, String bodyText) throws NotFoundException;
+    void saveTopic(long topicId, String topicName, String bodyText, int topicWeight, boolean sticked, boolean announcement) throws NotFoundException;
 
     /**
      * Delete topic by id.

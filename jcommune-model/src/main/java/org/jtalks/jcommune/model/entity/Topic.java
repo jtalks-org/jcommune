@@ -46,6 +46,12 @@ public class Topic extends Entity {
 
     private String title;
 
+    private int topicWeight;
+
+    private boolean sticked;
+
+    private boolean announcement;
+
     /**
      * The list of topic's posts
      */
@@ -72,6 +78,9 @@ public class Topic extends Entity {
         this.title = title;
         this.creationDate = new DateTime();
         this.modificationDate= new DateTime();
+        this.topicWeight = 0;
+        this.sticked = false;
+        this.announcement = false;
     }
 
     /**
@@ -241,5 +250,29 @@ public class Topic extends Entity {
     public DateTime updateModificationDate()  {
         this.modificationDate = new DateTime();
         return this.modificationDate;
+    }
+
+    public int getTopicWeight() {
+        return this.topicWeight;
+    }
+
+    public void setTopicWeight(int topicWeight) {
+        this.topicWeight = topicWeight;
+    }
+
+    public boolean isSticked() {
+        return this.sticked;
+    }
+
+    public void setSticked(boolean sticked) {
+        this.sticked = sticked;
+    }
+
+    public boolean isAnnouncement() {
+        return this.announcement;
+    }
+
+    public void setAnnouncement(boolean announcement) {
+        this.announcement = announcement;
     }
 }

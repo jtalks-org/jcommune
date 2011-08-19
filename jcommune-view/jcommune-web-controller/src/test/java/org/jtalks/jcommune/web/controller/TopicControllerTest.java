@@ -29,12 +29,12 @@ import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -54,6 +54,9 @@ public class TopicControllerTest {
     public static final long BRANCH_ID = 1L;
     private final String TOPIC_CONTENT = "content here";
     private final String TOPIC_THEME = "Topic theme";
+    private final int TOPIC_WEIGHT = 0;
+    private final boolean STICKED = false;
+    private final boolean ANNOUNCEMENT = false;
 
     private TopicService topicService;
     private PostService postService;
@@ -185,7 +188,7 @@ public class TopicControllerTest {
 
          assertViewName(mav, "redirect:/branch/" + BRANCH_ID + "/topic/" + TOPIC_ID + ".html");
 
-         verify(topicService).saveTopic(TOPIC_ID, TOPIC_THEME, TOPIC_CONTENT);
+         verify(topicService).saveTopic(TOPIC_ID, TOPIC_THEME, TOPIC_CONTENT, TOPIC_WEIGHT, STICKED, ANNOUNCEMENT);
     }
 
     @Test
@@ -203,7 +206,7 @@ public class TopicControllerTest {
          assertEquals(branchId, BRANCH_ID);
          assertEquals(topicId, TOPIC_ID);
 
-         verify(topicService, never()).saveTopic(anyLong(), anyString(), anyString());
+         verify(topicService, never()).saveTopic(anyLong(), anyString(), anyString(), anyInt(), anyBoolean(), anyBoolean());
     }
 
     private TopicDto getDto() {
