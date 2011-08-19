@@ -36,12 +36,12 @@ public interface BranchDao extends ChildRepository<Branch> {
     List<Branch> getAll();
 
     /**
-     * Get branches range from section.
+     * Get branches from section.
      *
      * @param sectionId section id from which we obtain branches
      * @return list of {@code Branch} objects
      */
-    List<Branch> getTopicRangeInBranch(Long sectionId);
+    List<Branch> getBranchesInSection(Long sectionId);
 
     /**
      * Get number of branches in section.

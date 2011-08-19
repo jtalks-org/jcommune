@@ -42,8 +42,12 @@ public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch>
      * {@inheritDoc}
      */
     @Override
-    public List<Branch> getTopicRangeInBranch(Long sectionId) {
-        return null;
+    @SuppressWarnings("unchecked")
+    public List<Branch> getBranchesInSection(Long sectionId) {
+        return getSession().getNamedQuery("getAllBranchesInSection")
+                .setCacheable(true)
+                .setLong("sectionId", sectionId)
+                .list();
     }
 
     /**
@@ -51,6 +55,7 @@ public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch>
      */
     @Override
     public int getBranchesInSectionCount(Long sectionId) {
-        return 0;
+        return ((Number) getSession().createQuery("select count(*) from Branch b where b.section = ?")
+                .setCacheable(true).setLong(0, sectionId).uniqueResult()).intValue();
     }
 }

@@ -84,5 +84,4 @@ public class BranchControllerTest {
         verify(topicService).getTopicsInBranchCount(branchId);
     }
 
-
 }

@@ -70,7 +70,7 @@ public class UserControllerTest {
     public void mockAvatar() throws IOException {
         avatar = new MockMultipartFile("test_avatar.jpg", "test_avatar.jpg", "image/jpeg",
                 FileUtil.readAsByteArray(
-                        new File("jcommune-view/jcommune-web-controller/src/test/resources/test_avatar.jpg")));
+                        new File("/home/max/workspace/jtalks-org/jcommune/jcommune-view/jcommune-web-controller/src/test/resources/test_avatar.jpg")));
     }
 
     @BeforeMethod

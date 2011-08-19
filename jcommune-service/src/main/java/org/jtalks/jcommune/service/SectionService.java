@@ -18,42 +18,19 @@
 
 package org.jtalks.jcommune.service;
 
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.model.entity.Section;
 
 import java.util.List;
 
 /**
- * @author Vitaliy Kravchenko
- * @author Kirill Afonin
  * @author Max Malakhov
  */
 
-public interface BranchService extends EntityService<Branch> {
+public interface SectionService extends EntityService<Section> {
     /**
      * Get list of all persistence objects T currently present in database.
      *
      * @return - list of persistence objects T.
      */
-    List<Branch> getAll();
-
-    /**
-     * Get branches range from section.
-     *
-     * @param sectionId section id from which we obtain branches
-     * @return list of {@code Branch} objects
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when section not found
-     */
-    List<Branch> getBranchRangeInSection(long sectionId) throws NotFoundException;
-
-    /**
-     * Get number of branches in section.
-     *
-     * @param sectionId section id where you have to count branches
-     * @return number of branches in section
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when branch not found
-     */
-    int getBranchesInSectionCount(long sectionId) throws NotFoundException;
+    List<Section> getAll();
 }
