@@ -24,19 +24,12 @@ import org.jtalks.jcommune.model.entity.Branch;
 import java.util.List;
 
 /**
+ * Hibernate DAO implementation from the {@link Branch}.
+ *
  * @author Vitaliy Kravchenko
  * @author Max Malakhov
  */
 public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch> implements BranchDao {
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<Branch> getAll() {
-        return getSession().createQuery("from Branch").setCacheable(true).list();
-    }
-
     /**
      * {@inheritDoc}
      */

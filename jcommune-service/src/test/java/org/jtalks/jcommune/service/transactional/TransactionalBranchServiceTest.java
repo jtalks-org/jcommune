@@ -31,6 +31,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 /**
  * This test class is intended to test all topic-related forum branch facilities
@@ -40,6 +41,8 @@ import static org.testng.Assert.assertEquals;
  */
 public class TransactionalBranchServiceTest {
     private long BRANCH_ID = 1L;
+    private long SECTION_ID = 2L;
+    final String BRANCH_NAME = "branch name";
 
     private BranchDao branchDao;
     private SectionDao sectionDao;
@@ -48,12 +51,13 @@ public class TransactionalBranchServiceTest {
     @BeforeMethod
     public void setUp() throws Exception {
         branchDao = mock(BranchDao.class);
+        sectionDao = mock(SectionDao.class);
         branchService = new TransactionalBranchService(branchDao, sectionDao);
     }
 
     @Test
     public void testGet() throws NotFoundException {
-        Branch expectedBranch = new Branch();
+        Branch expectedBranch = new Branch(BRANCH_NAME);
         when(branchDao.isExist(BRANCH_ID)).thenReturn(true);
         when(branchDao.get(BRANCH_ID)).thenReturn(expectedBranch);
 
@@ -72,14 +76,43 @@ public class TransactionalBranchServiceTest {
     }
 
     @Test
-    public void getAllTest() {
-        List<Branch> expectedBranchList = new ArrayList<Branch>();
-        expectedBranchList.add(new Branch());
-        when(branchDao.getAll()).thenReturn(expectedBranchList);
+    public void testGetBranchesInSection() throws NotFoundException {
+        List<Branch> expectedList = new ArrayList<Branch>();
+        expectedList.add(Branch.createNewBranch());
+        when(sectionDao.isExist(SECTION_ID)).thenReturn(true);
+        when(branchDao.getBranchesInSection(SECTION_ID)).thenReturn(expectedList);
 
-        List<Branch> actualBranchList = branchService.getAll();
+        List<Branch> branches = branchService.getBranchesInSection(SECTION_ID);
 
-        assertEquals(actualBranchList, expectedBranchList);
-        verify(branchDao).getAll();
+        assertNotNull(branches);
+        verify(branchDao).getBranchesInSection(SECTION_ID);
+        verify(sectionDao).isExist(SECTION_ID);
+    }
+
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testGetBranchesInNonExistentSection() throws NotFoundException {
+        when(sectionDao.isExist(SECTION_ID)).thenReturn(false);
+
+        branchService.getBranchesInSection(SECTION_ID);
+    }
+
+    @Test
+    public void testGetBranchesInSectionCount() throws NotFoundException {
+        int expectedCount = 10;
+        when(sectionDao.isExist(SECTION_ID)).thenReturn(true);
+        when(branchDao.getBranchesInSectionCount(SECTION_ID)).thenReturn(expectedCount);
+
+        int count = branchService.getBranchesInSectionCount(SECTION_ID);
+
+        assertEquals(count, expectedCount);
+        verify(sectionDao).isExist(SECTION_ID);
+        verify(branchDao).getBranchesInSectionCount(SECTION_ID);
+    }
+
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testGetBranchesCountInNonExistentSection() throws NotFoundException {
+        when(sectionDao.isExist(SECTION_ID)).thenReturn(false);
+
+        branchService.getBranchesInSectionCount(SECTION_ID);
     }
 }

@@ -25,6 +25,8 @@ import org.jtalks.jcommune.service.SectionService;
 import java.util.List;
 
 /**
+ * The implementation of SectionService
+ * 
  * @author Max Malakhov
  */
 

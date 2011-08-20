@@ -59,16 +59,6 @@ public final class BranchController {
 
 
     /**
-     * This method handles GET request and produces JSP page with all topic branches
-     *
-     * @return {@link ModelAndView} with view name as renderAllBranches
-     */
-    @RequestMapping(value = "/main-branches", method = RequestMethod.GET)
-    public ModelAndView branchesList() {
-        return new ModelAndView("branchList", "branchList", branchService.getAll());
-    }
-
-    /**
      * Displays to user a list of topic from the chosen branch with pagination.
      *
      * @param branchId branch for display

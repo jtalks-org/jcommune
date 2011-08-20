@@ -36,6 +36,31 @@ public class Branch extends Entity {
     private Section section;
 
     /**
+     * Creates the Branch instance. All fields values are null.
+     */
+    protected Branch() {
+    }
+
+    /**
+     * Creates the Branch instance with required fields.
+     *
+     * @param name branch name
+     */
+    public Branch(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Creates a new Branch
+     *
+     * @return newly created Branch
+     */
+    public static Branch createNewBranch() {
+        return new Branch();
+    }
+
+
+    /**
      * Set branch name which briefly describes the topics contained in it.
      *
      * @return branch name
@@ -112,18 +137,18 @@ public class Branch extends Entity {
     }
 
     /**
-     * Get section that contains branch
+     * Get section of branch
      *
-     * @return section that contains the branch
+     * @return section of the branch
      */
     public Section getSection() {
         return section;
     }
 
     /**
-     * Set section that contains branch
+     * Set section for branch
      *
-     * @param section section that contains the branch
+     * @param section for the branch
      */
     public void setSection(Section section) {
         this.section = section;

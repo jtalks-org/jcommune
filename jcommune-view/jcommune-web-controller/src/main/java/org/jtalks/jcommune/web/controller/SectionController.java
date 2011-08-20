@@ -18,10 +18,6 @@
 
 package org.jtalks.jcommune.web.controller;
 
-import java.util.List;
-
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.Section;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -33,6 +29,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
+ * Displays to user page contains section list with related branch lists
+ * and page contains branch list from the chosen section
+ * 
  * @author Max Malakhov
  */
 
@@ -61,7 +60,7 @@ public final class SectionController {
      * @return {@link ModelAndView} with view name as renderAllSection
      */
     @RequestMapping(value = "/main", method = RequestMethod.GET)
-    public ModelAndView sectionsList() {
+    public ModelAndView sectionList() {
         return new ModelAndView("sectionList", "sectionList", sectionService.getAll());
     }
 
@@ -69,17 +68,11 @@ public final class SectionController {
      * Displays to user a list of branches from the chosen section.
      *
      * @param sectionId section for display
-     * @return {@code ModelAndView} with branches list
+     * @return {@code ModelAndView} the chosen section
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException when section not found
      */
     @RequestMapping(value = "/section/{sectionId}", method = RequestMethod.GET)
-    public ModelAndView show(@PathVariable("sectionId") long sectionId) throws NotFoundException {
-
-        Section section = sectionService.get(sectionId);
-        List<Branch> branchList = branchService.getBranchRangeInSection(sectionId);
-
-        return new ModelAndView("branchList")
-                .addObject("section", section)
-                .addObject("branchList", branchList);
+    public ModelAndView branchList(@PathVariable("sectionId") long sectionId) throws NotFoundException {
+        return new ModelAndView("branchList","section", sectionService.get(sectionId));
     }
 }

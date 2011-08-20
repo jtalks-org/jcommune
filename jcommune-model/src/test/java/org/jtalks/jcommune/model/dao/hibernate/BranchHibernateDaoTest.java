@@ -22,6 +22,7 @@ import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Section;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.testng.Assert.assertEquals;
@@ -82,7 +84,9 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
 
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void testSaveBranchWithNameNotNullViolation() {
-        Branch branch = new Branch();
+        Branch branch = ObjectsFactory.getDefaultBranch();
+        session.save(branch);
+        branch.setName(null);
 
         dao.update(branch);
     }
@@ -128,44 +132,6 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         dao.update(branch);
     }
 
-    /*@Test
-    public void testDelete() {
-        Branch branch = ObjectsFactory.getDefaultBranch();
-        session.save(branch);
-
-        boolean result = dao.delete(branch.getId());
-        int branchCount = getBranchCount();
-
-        assertTrue(result, "Entity is not deleted");
-        assertEquals(branchCount, 0);
-    }
-
-    @Test
-    public void testDeleteInvalidId() {
-        boolean result = dao.delete(-100500L);
-
-        assertFalse(result, "Entity deleted");
-    }*/
-
-    @Test
-    public void testGetAll() {
-        Branch branch1 = ObjectsFactory.getDefaultBranch();
-        session.save(branch1);
-        Branch branch2 = ObjectsFactory.getDefaultBranch();
-        session.save(branch2);
-
-        List<Branch> branches = dao.getAll();
-
-        assertEquals(branches.size(), 2);
-    }
-
-    @Test
-    public void testGetAllWithEmptyTable() {
-        List<Branch> branches = dao.getAll();
-
-        assertTrue(branches.isEmpty());
-    }
-
     @Test
     public void testIsExist() {
         Branch branch = ObjectsFactory.getDefaultBranch();
@@ -201,5 +167,37 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
 
     private int getBranchCount() {
         return ((Number) session.createQuery("select count(*) from Branch").uniqueResult()).intValue();
+    }
+
+    private List<Branch> createAndSaveBranchList(int size) {
+        List<Branch> branches = new ArrayList<Branch>();
+        Section section = ObjectsFactory.getDefaultSection();
+        for (int i = 0; i < size; i++) {
+            Branch newBranch = new Branch("Branch #" + i);
+            section.addBranch(newBranch);
+            branches.add(newBranch);
+        }
+        session.save(section);
+        return branches;
+    }
+
+    @Test
+    public void testGetBranchesInSection() {
+        List<Branch> persistedBranches = createAndSaveBranchList(5);
+        long sectionId = persistedBranches.get(0).getSection().getId();
+
+        List<Branch> branches = dao.getBranchesInSection(sectionId);
+
+        assertEquals(sectionId, branches.get(0).getSection().getId(), "Incorrect section");
+    }
+    
+    @Test
+    public void testGetBranchesInSectionCount() {
+        List<Branch> persistedBranches = createAndSaveBranchList(5);
+        long sectionId = persistedBranches.get(0).getSection().getId();
+
+        int count = dao.getBranchesInSectionCount(sectionId);
+
+        assertEquals(count, 5);
     }
 }

@@ -59,6 +59,7 @@ public class TransactionalTopicServiceTest {
     final long BRANCH_ID = 1L;
     final long POST_ID = 333L;
     final String TOPIC_TITLE = "topic title";
+    final String BRANCH_NAME = "branch name";
     private static final String USERNAME = "username";
 
     final String ANSWER_BODY = "Test Answer Body";
@@ -134,7 +135,7 @@ public class TransactionalTopicServiceTest {
     @Test
     public void testCreateTopic() throws NotFoundException {
         User author = new User(USERNAME, "email", "password");
-        Branch branch = new Branch();
+        Branch branch = new Branch(BRANCH_NAME);
         when(securityService.getCurrentUser()).thenReturn(author);
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
         when(securityService.grantToCurrentUser()).thenReturn(aclBuilder);
@@ -240,7 +241,7 @@ public class TransactionalTopicServiceTest {
     @Test
     public void testDeleteTopic() throws NotFoundException {
         Topic topic = Topic.createNewTopic();
-        Branch branch = new Branch();
+        Branch branch = new Branch(BRANCH_NAME);
         branch.addTopic(topic);
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(topic);
