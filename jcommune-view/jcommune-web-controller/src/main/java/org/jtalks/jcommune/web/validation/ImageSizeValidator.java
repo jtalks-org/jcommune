@@ -15,39 +15,37 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
+package org.jtalks.jcommune.web.validation;
 
-package org.jtalks.jcommune.model.dao;
+import org.springframework.web.multipart.MultipartFile;
 
-import org.jtalks.jcommune.model.entity.Branch;
-
-import java.util.List;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 
 /**
- * @author Vitaliy Kravchenko
+ * @author Eugeny Batov
  */
+public class ImageSizeValidator implements ConstraintValidator<ImageSize, MultipartFile> {
 
-public interface BranchDao extends ChildRepository<Branch> {
+    private int imageSize;
 
-    /**
-     * Get the list of all branches.
-     *
-     * @return list of branches
-     */
-    List<Branch> getAll();
-
-    /**
-     * Get branches from section.
-     *
-     * @param sectionId section id from which we obtain branches
-     * @return list of {@code Branch} objects
-     */
-    List<Branch> getBranchesInSection(Long sectionId);
+    @Override
+    public void initialize(ImageSize constraintAnnotation) {
+        this.imageSize = constraintAnnotation.size();
+    }
 
     /**
-     * Get number of branches in section.
+     * Check that file's size no more imageSize.
      *
-     * @param sectionId section id where you have to count branches
-     * @return number of branches in section
+     * @param multipartFile image that user want upload as avatar
+     * @param context       validation context
+     * @return {@code true} if validation successfull or false if fails
      */
-    int getBranchesInSectionCount(Long sectionId);
+    @Override
+    public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext context) {
+        if (multipartFile.isEmpty()) {
+            return true;
+        }
+        return multipartFile.getSize() < imageSize;
+    }
 }

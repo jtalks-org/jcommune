@@ -19,6 +19,7 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.jcommune.model.dao.BranchDao;
+import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -41,12 +42,13 @@ public class TransactionalBranchServiceTest {
     private long BRANCH_ID = 1L;
 
     private BranchDao branchDao;
+    private SectionDao sectionDao;
     private BranchService branchService;
 
     @BeforeMethod
     public void setUp() throws Exception {
         branchDao = mock(BranchDao.class);
-        branchService = new TransactionalBranchService(branchDao);
+        branchService = new TransactionalBranchService(branchDao, sectionDao);
     }
 
     @Test

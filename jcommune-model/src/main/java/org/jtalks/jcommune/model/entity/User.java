@@ -24,7 +24,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -146,10 +145,16 @@ public class User extends Entity implements UserDetails {
         this.role = role;
     }
 
+    /**
+     * @return user avatar
+     */
     public byte[] getAvatar() {
         return avatar;
     }
 
+    /**
+     * @param avatar user avatar
+     */
     public void setAvatar(byte[] avatar) {
         this.avatar = avatar;
     }

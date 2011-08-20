@@ -18,27 +18,32 @@
 
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 import java.util.List;
 
 /**
  * @author Vitaliy Kravchenko
+ * @author Max Malakhov
  */
 
 public class TransactionalBranchService extends AbstractTransactionalEntityService<Branch, BranchDao>
         implements BranchService {
 
+    private SectionDao sectionDao;
 
     /**
      * Create an instance of entity based service
      *
      * @param branchDao - data access object, which should be able do all CRUD operations.
      */
-    public TransactionalBranchService(BranchDao branchDao) {
+    public TransactionalBranchService(BranchDao branchDao, SectionDao sectionDao) {
         this.dao = branchDao;
+        this.sectionDao = sectionDao;
     }
 
     /**
@@ -47,5 +52,27 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
     @Override
     public List<Branch> getAll() {
         return dao.getAll();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Branch> getBranchRangeInSection(long sectionId) throws NotFoundException {
+        if (!sectionDao.isExist(sectionId)) {
+            throw new NotFoundException("Section with id: " + sectionId + " not found");
+        }
+        return dao.getBranchesInSection(sectionId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getBranchesInSectionCount(long sectionId) throws NotFoundException {
+        if (!sectionDao.isExist(sectionId)) {
+            throw new NotFoundException("Section with id: " + sectionId + " not found");
+        }
+        return dao.getBranchesInSectionCount(sectionId);
     }
 }

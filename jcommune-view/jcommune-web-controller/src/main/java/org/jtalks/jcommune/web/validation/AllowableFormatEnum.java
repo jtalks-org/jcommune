@@ -17,35 +17,19 @@
  */
 package org.jtalks.jcommune.web.validation;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-
 /**
  * @author Eugeny Batov
  */
-public class AvatarWeightValidator implements ConstraintValidator<AvatarWeight, MultipartFile> {
+public enum AllowableFormatEnum {
+    JPG("image/jpeg"), GIF("image/gif"), PNG("image/png");
 
-    private final static int MAX_AVATAR_SIZE = 66560;
+    private String contentType;
 
-    @Override
-    public void initialize(AvatarWeight avatarWeight) {
-        //nothing to do
+    AllowableFormatEnum(String contentType) {
+        this.contentType = contentType;
     }
 
-    /**
-     * Check that file's weight no more max avtar size.
-     *
-     * @param multipartFile image that user want upload as avatar
-     * @param context       validation context
-     * @return {@code true} if validation successfull or false if fails
-     */
-    @Override
-    public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext context) {
-        if (multipartFile.getOriginalFilename().equals("")) {
-            return true;
-        }
-        return multipartFile.getSize() < MAX_AVATAR_SIZE;
+    String getContentType() {
+        return contentType;
     }
 }

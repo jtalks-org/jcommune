@@ -24,22 +24,23 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * @author Eugeny Batov
  */
-@Target({ANNOTATION_TYPE})
+@Target({FIELD, ANNOTATION_TYPE})
 @Retention(RUNTIME)
-@Constraint(validatedBy = AvatarFormatValidator.class)
+@Constraint(validatedBy = ImageSizeValidator.class)
 @Documented
-public @interface AvatarFormat {
+public @interface ImageSize {
     /**
      * Message for display when validation fails.
      *
      * @return message when validation fails.
      */
-    String message() default "{avatar.wrong.format}";
+    String message() default "{avatar.wrong.weight}";
 
     /**
      * Groups element that specifies the processing groups with which the
@@ -56,4 +57,12 @@ public @interface AvatarFormat {
      * @return payload
      */
     Class<? extends Payload>[] payload() default {};
+
+    /**
+     * Size of image for check dimension.
+     *
+     * @return size of image
+     */
+    int size();
+
 }

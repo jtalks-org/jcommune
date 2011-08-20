@@ -25,8 +25,9 @@ import java.util.List;
 
 /**
  * @author Vitaliy Kravchenko
+ * @author Max Malakhov
  */
-public class BranchHibernateDao extends ParentRepositoryImpl<Branch> implements BranchDao {
+public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch> implements BranchDao {
     /**
      * {@inheritDoc}
      */
@@ -40,13 +41,20 @@ public class BranchHibernateDao extends ParentRepositoryImpl<Branch> implements 
      * {@inheritDoc}
      */
     @Override
-    public boolean delete(Long id) {
-        //TODO: not efficient solution. See more info on the next link http://bit.ly/m85eLs
-        Branch branch = get(id);
-        if (branch == null) {
-            return false;
-        }
-        getSession().delete(branch);
-        return true;
+    @SuppressWarnings("unchecked")
+    public List<Branch> getBranchesInSection(Long sectionId) {
+        return getSession().createQuery("from Branch b where b.section = ?")
+                .setCacheable(true)
+                .setLong(0, sectionId)
+                .list();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getBranchesInSectionCount(Long sectionId) {
+        return ((Number) getSession().createQuery("select count(*) from Branch b where b.section = ?")
+                .setCacheable(true).setLong(0, sectionId).uniqueResult()).intValue();
     }
 }

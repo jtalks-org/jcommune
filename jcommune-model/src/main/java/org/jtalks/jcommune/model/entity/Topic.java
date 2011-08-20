@@ -274,8 +274,9 @@ public class Topic extends Entity {
      */
     public void setSticked(boolean sticked) {
         this.sticked = sticked;
-        if (!sticked)
+        if (!sticked){
             topicWeight = 0;
+        }
     }
     /**
      * @return flag og announcement

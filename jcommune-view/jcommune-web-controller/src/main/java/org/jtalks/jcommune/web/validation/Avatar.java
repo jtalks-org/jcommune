@@ -30,9 +30,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 /**
  * @author Eugeny Batov
  */
-@AvatarWeight
-@AvatarFormat
-@AvatarSize
+@ImageSize(size = 66560)
+@ImageFormat(format = {AllowableFormatEnum.JPG, AllowableFormatEnum.PNG, AllowableFormatEnum.GIF})
+@ImageDimension(width = 100, height = 100)
 @Target({FIELD, ANNOTATION_TYPE})
 @Retention(RUNTIME)
 @Constraint(validatedBy = {})
@@ -61,4 +61,5 @@ public @interface Avatar {
      * @return payload
      */
     Class<? extends Payload>[] payload() default {};
+
 }

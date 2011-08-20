@@ -2,23 +2,21 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
-  <class name="Branch" table="BRANCH">
+  <class name="Section" table="SECTION">
     <cache usage="nonstrict-read-write"/>
-    <id column="BRANCH_ID" name="id" unsaved-value="0">
+    <id column="SECTION_ID" name="id" unsaved-value="0">
       <generator class="native"/>
     </id>
     <property column="UUID" name="uuid" unique="true" not-null="true"/>
     <property name="name" column="NAME" not-null="true"/>
     <property name="description" column="DESCRIPTION"/>
-
-    <list name="topics" cascade="all-delete-orphan">
+    <property name="position" column="POSITION"/>
+   
+    <list name="branches" cascade="all-delete-orphan">
       <cache usage="nonstrict-read-write"/>
-      <key column="BRANCH_ID" foreign-key="FK_BRANCH"/>
-      <index column="TOPICS_INDEX"/>
-      <one-to-many class="Topic"/>
+      <key column="SECTION_ID" foreign-key="FK_SECTION"/>
+      <index column="BRANCHES_INDEX"/>
+      <one-to-many class="Branch"/>
     </list>
-
-    <many-to-one name="section" column="SECTION_ID" class="Section"
-                 not-null="false"/>
   </class>
 </hibernate-mapping>

@@ -16,38 +16,35 @@
  * The jtalks.org Project
  */
 
-package org.jtalks.jcommune.model.dao;
+package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.dao.SectionDao;
+import org.jtalks.jcommune.model.entity.Section;
+import org.jtalks.jcommune.service.SectionService;
 
 import java.util.List;
 
 /**
- * @author Vitaliy Kravchenko
+ * @author Max Malakhov
  */
 
-public interface BranchDao extends ChildRepository<Branch> {
+public class TransactionalSectionService extends AbstractTransactionalEntityService<Section, SectionDao>
+        implements SectionService {
 
     /**
-     * Get the list of all branches.
+     * Create an instance of entity based service
      *
-     * @return list of branches
+     * @param sectionDao - data access object, which should be able do all CRUD operations.
      */
-    List<Branch> getAll();
+    public TransactionalSectionService(SectionDao sectionDao) {
+        this.dao = sectionDao;
+    }
 
     /**
-     * Get branches from section.
-     *
-     * @param sectionId section id from which we obtain branches
-     * @return list of {@code Branch} objects
+     * {@inheritDoc}
      */
-    List<Branch> getBranchesInSection(Long sectionId);
-
-    /**
-     * Get number of branches in section.
-     *
-     * @param sectionId section id where you have to count branches
-     * @return number of branches in section
-     */
-    int getBranchesInSectionCount(Long sectionId);
+    @Override
+    public List<Section> getAll() {
+        return dao.getAll();
+    }
 }

@@ -150,7 +150,7 @@ public class TransactionalTopicServiceTest {
         assertEquals(createdPost.getUserCreated(), author);
         assertEquals(createdPost.getPostContent(), ANSWER_BODY);
         verify(securityService).getCurrentUser();
-        verify(branchDao).saveOrUpdate(branch);
+        verify(branchDao).update(branch);
         verify(branchService).get(BRANCH_ID);
         verify(securityService).grantToCurrentUser();
         verify(aclBuilder, times(2)).role(SecurityConstants.ROLE_ADMIN);
@@ -250,7 +250,7 @@ public class TransactionalTopicServiceTest {
 
         assertEquals(branchFromWhichTopicDeleted, branch);
         assertEquals(branch.topicCount(), 0);
-        verify(branchDao).saveOrUpdate(branch);
+        verify(branchDao).update(branch);
         verify(securityService).deleteFromAcl(Topic.class, TOPIC_ID);
     }
 

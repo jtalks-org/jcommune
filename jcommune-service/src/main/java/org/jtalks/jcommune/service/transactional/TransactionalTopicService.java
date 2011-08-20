@@ -113,7 +113,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         topic.addPost(first);
         branch.addTopic(topic);
 
-        branchDao.saveOrUpdate(branch);
+        branchDao.update(branch);
         logger.debug("Created new topic {}", topic.getId());
 
         securityService.grantToCurrentUser().role(SecurityConstants.ROLE_ADMIN).admin().on(topic)
@@ -174,7 +174,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      */
     @Override
     @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', admin)")
-    public void saveTopic(long topicId, String topicName, String bodyText, int topicWeight, boolean sticked, boolean announcement)
+    public void saveTopic(long topicId, String topicName, String bodyText, int topicWeight,
+                          boolean sticked, boolean announcement)
             throws NotFoundException {
         Topic topic = get(topicId);
         topic.setTitle(topicName);
@@ -199,7 +200,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         Topic topic = get(topicId);
         Branch branch = topic.getBranch();
         branch.deleteTopic(topic);
-        branchDao.saveOrUpdate(branch);
+        branchDao.update(branch);
 
         securityService.deleteFromAcl(Topic.class, topicId);
         return branch;

@@ -211,7 +211,8 @@ public final class TopicController {
                     .addObject(TOPIC_ID, topicId);
         }
 
-        topicService.saveTopic(topicDto.getId(), topicDto.getTopicName(), topicDto.getBodyText(), topicDto.getTopicWeight(), topicDto.isSticked(), topicDto.isAnnouncement());
+        topicService.saveTopic(topicDto.getId(), topicDto.getTopicName(), topicDto.getBodyText(),
+                               topicDto.getTopicWeight(), topicDto.isSticked(), topicDto.isAnnouncement());
 
         return new ModelAndView("redirect:/branch/" + branchId + "/topic/" + topicId + ".html");
     }

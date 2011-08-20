@@ -19,20 +19,28 @@ package org.jtalks.jcommune.web.validation;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.awt.Image;
+import java.io.IOException;
 
 /**
  * @author Eugeny Batov
  */
-public class AvatarFormatValidator implements ConstraintValidator<AvatarFormat, MultipartFile> {
+public class ImageDimensionValidator implements ConstraintValidator<ImageDimension, MultipartFile> {
+
+    private int imageHeight;
+    private int imageWidth;
+
     @Override
-    public void initialize(AvatarFormat avatarFormat) {
-        //nothing to do
+    public void initialize(ImageDimension constraintAnnotation) {
+        this.imageHeight = constraintAnnotation.height();
+        this.imageWidth = constraintAnnotation.width();
     }
 
     /**
-     * Check that file has extension jpg, png or gif.
+     * Validate object with {@link ImageDimension} annotation.
      *
      * @param multipartFile image that user want upload as avatar
      * @param context       validation context
@@ -40,10 +48,16 @@ public class AvatarFormatValidator implements ConstraintValidator<AvatarFormat, 
      */
     @Override
     public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext context) {
-        if (multipartFile.getOriginalFilename().equals("")) {
+        if (multipartFile.isEmpty()) {
             return true;
         }
-        String contentType = multipartFile.getContentType();
-        return contentType.equals("image/jpeg") || contentType.equals("image/png") || contentType.equals("image/gif");
+        Image image;
+        try {
+            image = ImageIO.read(multipartFile.getInputStream());
+        } catch (Exception e) {
+            return false;
+        }
+        return (image == null) ? false : image.getHeight(null) == imageWidth &&
+                image.getHeight(null) == imageHeight;
     }
 }

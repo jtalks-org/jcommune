@@ -69,7 +69,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     public void testSave() {
         Branch branch = ObjectsFactory.getDefaultBranch();
 
-        dao.saveOrUpdate(branch);
+        dao.update(branch);
 
         assertNotSame(branch.getId(), 0, "Id not created");
 
@@ -84,7 +84,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     public void testSaveBranchWithNameNotNullViolation() {
         Branch branch = new Branch();
 
-        dao.saveOrUpdate(branch);
+        dao.update(branch);
     }
 
     @Test
@@ -112,7 +112,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         session.save(branch);
         branch.setName(newName);
 
-        dao.saveOrUpdate(branch);
+        dao.update(branch);
         session.evict(branch);
         Branch result = (Branch) session.get(Branch.class, branch.getId());
 
@@ -125,10 +125,10 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         session.save(branch);
         branch.setName(null);
 
-        dao.saveOrUpdate(branch);
+        dao.update(branch);
     }
 
-    @Test
+    /*@Test
     public void testDelete() {
         Branch branch = ObjectsFactory.getDefaultBranch();
         session.save(branch);
@@ -145,7 +145,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         boolean result = dao.delete(-100500L);
 
         assertFalse(result, "Entity deleted");
-    }
+    }*/
 
     @Test
     public void testGetAll() {
@@ -191,7 +191,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         session.save(branch);
 
         branch.deleteTopic(topic);
-        dao.saveOrUpdate(branch);
+        dao.update(branch);
         session.flush();
 
         assertEquals(getBranchCount(), 1);

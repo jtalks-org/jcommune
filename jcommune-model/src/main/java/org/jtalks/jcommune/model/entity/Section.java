@@ -24,108 +24,106 @@ import java.util.List;
 /**
  * Forum branch that contains topics related to branch theme.
  *
- * @author Vitaliy Kravchenko
- * @author Kirill Afonin
  * @author Max Malakhov
  */
-public class Branch extends Entity {
+public class Section extends Entity {
 
     private String name;
     private String description;
-    private List<Topic> topics = new ArrayList<Topic>();
-    private Section section;
+    private Long position;
+    private List<Branch> branches = new ArrayList<Branch>();
 
     /**
-     * Set branch name which briefly describes the topics contained in it.
+     * Set section name which briefly describes the topics contained in it.
      *
-     * @return branch name
+     * @return section name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Get branch name.
+     * Get section name.
      *
-     * @param name branch name
+     * @param name section name
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * Get branch description.
+     * Get section description.
      *
-     * @return branch description
+     * @return section description
      */
     public String getDescription() {
         return description;
     }
 
     /**
-     * Set branch description which contains additional information about the branch.
+     * Set section description which contains additional information about the section.
      *
-     * @param description branch description
+     * @param description section description
      */
     public void setDescription(String description) {
         this.description = description;
     }
 
     /**
-     * @return list of topics
+     * Get section position.
+     *
+     * @param index section position
      */
-    protected List<Topic> getTopics() {
-        return topics;
+    public void setPosition(Long position) {
+        this.position = position;
     }
 
     /**
-     * @param topics list of topics
+     * Get section position.
+     *
+     * @return section position
      */
-    protected void setTopics(List<Topic> topics) {
-        this.topics = topics;
+    public Long getPosition() {
+        return position;
     }
 
     /**
-     * Add topic to branch.
+     * @return list of branches
+     */
+    public List<Branch> getBranches() {
+        return branches;
+    }
+
+    /**
+     * @param branches list of branches
+     */
+    public void setBranches(List<Branch> branches) {
+        this.branches = branches;
+    }
+
+    /**
+     * Add branch to section.
+     *
+     * @param branch branch
+     */
+    public void addBranch(Branch branch) {
+        branch.setSection(this);
+        this.branches.add(branch);
+    }
+
+    /**
+     * Delete branch from section.
      *
      * @param topic topic
      */
-    public void addTopic(Topic topic) {
-        topic.setBranch(this);
-        this.topics.add(topic);
+    public void deleteTopic(Branch branch) {
+        this.branches.remove(branch);
     }
 
     /**
-     * Delete topic from branch.
-     *
-     * @param topic topic
+     * @return number of branches in section
      */
-    public void deleteTopic(Topic topic) {
-        this.topics.remove(topic);
-    }
-
-    /**
-     * @return number of topics in branch
-     */
-    public int topicCount() {
-        return topics.size();
-    }
-
-    /**
-     * Get section that contains branch
-     *
-     * @return section that contains the branch
-     */
-    public Section getSection() {
-        return section;
-    }
-
-    /**
-     * Set section that contains branch
-     *
-     * @param section section that contains the branch
-     */
-    public void setSection(Section section) {
-        this.section = section;
+    public int branchCount() {
+        return branches.size();
     }
 }

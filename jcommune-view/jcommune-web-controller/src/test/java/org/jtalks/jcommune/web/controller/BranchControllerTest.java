@@ -56,8 +56,8 @@ public class BranchControllerTest {
 
         ModelAndView mav = controller.branchesList();
 
-        assertViewName(mav, "branchesList");
-        assertModelAttributeAvailable(mav, "topicsBranchList");
+        assertViewName(mav, "branchList");
+        assertModelAttributeAvailable(mav, "branchList");
         verify(branchService).getAll();
     }
 
@@ -83,6 +83,5 @@ public class BranchControllerTest {
         verify(topicService).getTopicRangeInBranch(branchId, startIndex, pageSize);
         verify(topicService).getTopicsInBranchCount(branchId);
     }
-
 
 }

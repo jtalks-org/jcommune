@@ -16,38 +16,36 @@
  * The jtalks.org Project
  */
 
-package org.jtalks.jcommune.model.dao;
-
-import org.jtalks.jcommune.model.entity.Branch;
+package org.jtalks.jcommune.model.dao.hibernate;
 
 import java.util.List;
 
-/**
- * @author Vitaliy Kravchenko
- */
+import org.jtalks.jcommune.model.dao.SectionDao;
+import org.jtalks.jcommune.model.entity.Section;
 
-public interface BranchDao extends ChildRepository<Branch> {
+public class SectionHibernateDao extends ParentRepositoryImpl<Section> implements SectionDao {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Section> getAll() {
+        return getSession().createQuery("from Section s order by s.position asc")
+                .setCacheable(true).list();
+    }
 
     /**
-     * Get the list of all branches.
-     *
-     * @return list of branches
+     * {@inheritDoc}
      */
-    List<Branch> getAll();
+    @Override
+    public boolean delete(Long id) {
+        //TODO: not efficient solution. See more info on the next link http://bit.ly/m85eLs
+        Section section = get(id);
+        if (section == null) {
+            return false;
+        }
+        getSession().delete(section);
+        return true;
+    }
 
-    /**
-     * Get branches from section.
-     *
-     * @param sectionId section id from which we obtain branches
-     * @return list of {@code Branch} objects
-     */
-    List<Branch> getBranchesInSection(Long sectionId);
-
-    /**
-     * Get number of branches in section.
-     *
-     * @param sectionId section id where you have to count branches
-     * @return number of branches in section
-     */
-    int getBranchesInSectionCount(Long sectionId);
 }

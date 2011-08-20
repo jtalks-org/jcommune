@@ -18,36 +18,20 @@
 
 package org.jtalks.jcommune.model.dao;
 
-import org.jtalks.jcommune.model.entity.Branch;
-
 import java.util.List;
 
+import org.jtalks.jcommune.model.entity.Section;
+
 /**
- * @author Vitaliy Kravchenko
+ * @author Max Malakhov
  */
-
-public interface BranchDao extends ChildRepository<Branch> {
-
-    /**
-     * Get the list of all branches.
-     *
-     * @return list of branches
-     */
-    List<Branch> getAll();
+public interface SectionDao extends ParentRepository<Section> {
 
     /**
-     * Get branches from section.
+     * Get the list of all sections.
      *
-     * @param sectionId section id from which we obtain branches
-     * @return list of {@code Branch} objects
+     * @return list of section
      */
-    List<Branch> getBranchesInSection(Long sectionId);
+    List<Section> getAll();
 
-    /**
-     * Get number of branches in section.
-     *
-     * @param sectionId section id where you have to count branches
-     * @return number of branches in section
-     */
-    int getBranchesInSectionCount(Long sectionId);
 }

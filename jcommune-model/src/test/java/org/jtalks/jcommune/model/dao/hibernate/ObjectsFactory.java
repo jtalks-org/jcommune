@@ -21,12 +21,14 @@ import org.hibernate.Session;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.jtalks.jcommune.model.entity.Section;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 
 /**
  * @author Kirill Afonin
  * @author Alexandre Teterin
+ * @author Max Malakhov
  */
 //TODO: split this class on 2: objects factory and persisted objects factory
 public final class ObjectsFactory {
@@ -70,6 +72,14 @@ public final class ObjectsFactory {
         newBranch.setName("branch name");
         newBranch.setDescription("branch description");
         return newBranch;
+    }
+
+    public static Section getDefaultSection() {
+        Section newSection = new Section();
+        newSection.setName("section name");
+        newSection.setDescription("branch description");
+        newSection.setPosition(1L);
+        return newSection;
     }
 
     /**
