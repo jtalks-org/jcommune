@@ -48,7 +48,7 @@ public class ImageDimensionValidator implements ConstraintValidator<ImageDimensi
      */
     @Override
     public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext context) {
-        if (multipartFile.getOriginalFilename().equals("")) {
+        if (multipartFile.isEmpty()) {
             return true;
         }
         Image image;

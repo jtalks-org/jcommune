@@ -56,7 +56,7 @@
             <tr>
 
                 <td>
-                    <c:if test="${editedUser.avatar.size>0}">
+                    <c:if test="${user.avatar!=null}">
                         <img src="${pageContext.request.contextPath}/show/${auth}/avatar.html" width="100"
                              height="100"/><br>
 
