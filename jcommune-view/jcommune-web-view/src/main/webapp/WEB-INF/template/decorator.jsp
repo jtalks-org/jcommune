@@ -1,11 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="decorator" uri="http://www.opensymphony.com/sitemesh/decorator"%>
-<%@ taglib prefix="page" uri="http://www.opensymphony.com/sitemesh/page"%>
+<%@ taglib prefix="decorator" uri="http://www.opensymphony.com/sitemesh/decorator" %>
+<%@ taglib prefix="page" uri="http://www.opensymphony.com/sitemesh/page" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
-<fmt:setBundle basename="org.jtalks.jcommune.web.view.messages" />
+<fmt:setBundle basename="org.jtalks.jcommune.web.view.messages"/>
 <fmt:setLocale value="en"/>
 <html>
 <head>
@@ -16,7 +16,7 @@
 
     <title><decorator:title default="JCommune"/></title>
     <link href="${pageContext.request.contextPath}/css/main.css"
-          type=text/css rel=stylesheet />
+          type=text/css rel=stylesheet/>
 </head>
 <body>
 <div align="center">
@@ -33,11 +33,26 @@
         </tr>
         <tr>
             <td class="background">
-                <a href="${pageContext.request.contextPath}/main.html">&nbsp;&nbsp;
-                    <span class="nav"><fmt:message key="label.forum"/> </span> </a> | <span style="float: right">
+                <c:forEach var="breadcrumb" items="${breadcrumbList}">
+                    <c:choose>
+                        <c:when test="${breadcrumb.breadcrumbLocation.name == 'main'}">
+                            <a href="${pageContext.request.contextPath}/${breadcrumb.breadcrumbLocation.name}.html">
+                                <span class="nav"> <fmt:message key="label.forum"/> </span>
+                            </a>
+                        </c:when>
+                        <c:otherwise>
+                            <a href="${pageContext.request.contextPath}/${breadcrumb.breadcrumbLocation.name}/${breadcrumb.id}.html">
+                                <span class="nav"> <c:out value="${breadcrumb.breadcrumbLocationValue}"/> </span>
+                            </a>
+                        </c:otherwise>
+                    </c:choose>
+                </c:forEach>
+                <span style="float: right">
                 <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                    <a href="${pageContext.request.contextPath}/user/${encodedUserName}.html"><sec:authentication property="principal.username"/></a>&nbsp;                    
-                    <a href="${pageContext.request.contextPath}/pm/inbox.html"><fmt:message key="label.pm"/> (${newPmCount})</a>
+                    <a href="${pageContext.request.contextPath}/user/${encodedUserName}.html"><sec:authentication
+                            property="principal.username"/></a>&nbsp;
+                    <a href="${pageContext.request.contextPath}/pm/inbox.html"><fmt:message key="label.pm"/>
+                        (${newPmCount})</a>
                     <a href="${pageContext.request.contextPath}/logout.html"><fmt:message key="label.logout"/></a>
                 </sec:authorize>
                 &nbsp;

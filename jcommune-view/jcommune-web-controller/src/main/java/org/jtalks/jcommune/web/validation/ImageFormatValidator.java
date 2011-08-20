@@ -41,7 +41,7 @@ public class ImageFormatValidator implements ConstraintValidator<ImageFormat, Mu
      */
     @Override
     public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext context) {
-        if (multipartFile.getOriginalFilename().equals("")) {
+        if (multipartFile.isEmpty()) {
             return true;
         }
         String contentType = multipartFile.getContentType();

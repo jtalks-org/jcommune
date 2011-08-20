@@ -58,15 +58,7 @@ public class ImageDimensionValidatorTest {
     public void testValidatorNormalDimension() {
         Set<ConstraintViolation<TestObject>> constraintViolations =
                 validator.validate(new TestObject(new MockMultipartFile("test_avatar", "test_avatar",
-                        "image/png", new byte[]{-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0, 0,
-                        4, 0, 0, 0, 4, 1, 0, 0, 0, 0, -127, -118, -93, -45, 0, 0, 0, 9, 112, 72, 89, 115, 0, 0, 1,
-                        -118, 0, 0, 1, -118, 1, 51, -105, 48, 88, 0, 0, 0, 32, 99, 72, 82, 77, 0, 0, 122, 37, 0, 0,
-                        -128, -125, 0, 0, -7, -1, 0, 0, -128, -23, 0, 0, 117, 48, 0, 0, -22, 96, 0, 0, 58, -104, 0, 0,
-                        23, 111, -110, 95, -59, 70, 0, 0, 0, 22, 73, 68, 65, 84, 120, -38, 98, -40, -49, -60, -64, -92,
-                        -64, -60, 0, 0, 0, 0, -1, -1, 3, 0, 5, -71, 0, -26, -35, -7, 32, 96, 0, 0, 0, 0, 73, 69, 78, 68,
-                        -82, 66, 96, -126
-
-                })));
+                        "image/png", normalAvatarByteArray)));
 
         Assert.assertEquals(constraintViolations.size(), 0, "Validation errors");
 
@@ -76,14 +68,7 @@ public class ImageDimensionValidatorTest {
     public void testValidatorLittleDimension() {
         Set<ConstraintViolation<TestObject>> constraintViolations =
                 validator.validate(new TestObject(new MockMultipartFile("test_avatar", "test_avatar",
-                        "image/png", new byte[]{-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0, 0,
-                        3, 0, 0, 0, 3, 8, 0, 0, 0, 0, 115, 67, -22, 99, 0, 0, 0, 9, 112, 72, 89, 115, 0, 0, 1, -118, 0,
-                        0, 1, -118, 1, 51, -105, 48, 88, 0, 0, 0, 32, 99, 72, 82, 77, 0, 0, 122, 37, 0, 0, -128, -125,
-                        0, 0, -7, -1, 0, 0, -128, -23, 0, 0, 117, 48, 0, 0, -22, 96, 0, 0, 58, -104, 0, 0, 23, 111,
-                        -110, 95, -59, 70, 0, 0, 0, 27, 73, 68, 65, 84, 120, -38, 98, 100, -8, -49, -64, -16, -97,
-                        -31, 63, -61, -1, -1, 12, 0, 0, 0, 0, -1, -1, 3, 0, 26, -3, 4, -3, 23, 76, -83, 113, 0, 0, 0,
-                        0, 73, 69, 78, 68, -82, 66, 96, -126
-                })));
+                        "image/png", littleAvatarByteArray)));
 
         Assert.assertEquals(constraintViolations.size(), 1, "Validation without errors");
         Assert.assertNotNull(constraintViolations.iterator().next().getMessage());
@@ -93,18 +78,48 @@ public class ImageDimensionValidatorTest {
     public void testValidatorBigDimension() {
         Set<ConstraintViolation<TestObject>> constraintViolations =
                 validator.validate(new TestObject(new MockMultipartFile("test_avatar", "test_avatar",
-                        "image/png", new byte[]{-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0, 0,
-                        5, 0, 0, 0, 5, 8, 2, 0, 0, 0, 2, 13, -79, -78, 0, 0, 0, 9, 112, 72, 89, 115, 0, 0, 1, -118, 0,
-                        0, 1, -118, 1, 51, -105, 48, 88, 0, 0, 0, 32, 99, 72, 82, 77, 0, 0, 122, 37, 0, 0, -128, -125,
-                        0, 0, -7, -1, 0, 0, -128, -23, 0, 0, 117, 48, 0, 0, -22, 96, 0, 0, 58, -104, 0, 0, 23, 111,
-                        -110, 95, -59, 70, 0, 0, 0, 54, 73, 68, 65, 84, 120, -38, 76, -55, -79, 21, -128, 32, 0, -60,
-                        -48, 28, 14, 32, -52, -30, -2, -93, 121, -79, -112, -126, 116, -1, 37, 42, 71, 3, -72, -41, 4,
-                        -110, -88, -88, 42, 79, -37, 110, 3, 109, -81, 12, -33, -26, -1, 73, -88, 36, -33, 0, -62, -31,
-                        36, 71, 49, 115, -89, 85, 0, 0, 0, 0, 73, 69, 78, 68, -82, 66, 96, -126
-                })));
+                        "image/png", bigAvatarByteArray)));
 
         Assert.assertEquals(constraintViolations.size(), 1, "Validation without errors");
         Assert.assertNotNull(constraintViolations.iterator().next().getMessage());
     }
+
+    @Test
+    public void testValidatorImageNull() {
+        Set<ConstraintViolation<TestObject>> constraintViolations =
+                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "",
+                        "application/octet-stream",
+                        new byte[0])));
+
+        Assert.assertEquals(constraintViolations.size(), 0, "Validation errors");
+    }
+
+    private byte[] normalAvatarByteArray = new byte[]{-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0,
+            0, 0, 4, 0, 0, 0, 4, 1, 0, 0, 0, 0, -127, -118, -93, -45, 0, 0, 0, 9, 112, 72, 89, 115, 0, 0, 1,
+            -118, 0, 0, 1, -118, 1, 51, -105, 48, 88, 0, 0, 0, 32, 99, 72, 82, 77, 0, 0, 122, 37, 0, 0,
+            -128, -125, 0, 0, -7, -1, 0, 0, -128, -23, 0, 0, 117, 48, 0, 0, -22, 96, 0, 0, 58, -104, 0, 0,
+            23, 111, -110, 95, -59, 70, 0, 0, 0, 22, 73, 68, 65, 84, 120, -38, 98, -40, -49, -60, -64, -92,
+            -64, -60, 0, 0, 0, 0, -1, -1, 3, 0, 5, -71, 0, -26, -35, -7, 32, 96, 0, 0, 0, 0, 73, 69, 78, 68,
+            -82, 66, 96, -126
+    };
+
+    private byte[] littleAvatarByteArray = new byte[]{-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0,
+            0, 0, 3, 0, 0, 0, 3, 8, 0, 0, 0, 0, 115, 67, -22, 99, 0, 0, 0, 9, 112, 72, 89, 115, 0, 0, 1, -118, 0,
+            0, 1, -118, 1, 51, -105, 48, 88, 0, 0, 0, 32, 99, 72, 82, 77, 0, 0, 122, 37, 0, 0, -128, -125,
+            0, 0, -7, -1, 0, 0, -128, -23, 0, 0, 117, 48, 0, 0, -22, 96, 0, 0, 58, -104, 0, 0, 23, 111,
+            -110, 95, -59, 70, 0, 0, 0, 27, 73, 68, 65, 84, 120, -38, 98, 100, -8, -49, -64, -16, -97,
+            -31, 63, -61, -1, -1, 12, 0, 0, 0, 0, -1, -1, 3, 0, 26, -3, 4, -3, 23, 76, -83, 113, 0, 0, 0,
+            0, 73, 69, 78, 68, -82, 66, 96, -126
+    };
+
+    private byte[] bigAvatarByteArray = new byte[]{-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0,
+            0, 5, 0, 0, 0, 5, 8, 2, 0, 0, 0, 2, 13, -79, -78, 0, 0, 0, 9, 112, 72, 89, 115, 0, 0, 1, -118, 0,
+            0, 1, -118, 1, 51, -105, 48, 88, 0, 0, 0, 32, 99, 72, 82, 77, 0, 0, 122, 37, 0, 0, -128, -125,
+            0, 0, -7, -1, 0, 0, -128, -23, 0, 0, 117, 48, 0, 0, -22, 96, 0, 0, 58, -104, 0, 0, 23, 111,
+            -110, 95, -59, 70, 0, 0, 0, 54, 73, 68, 65, 84, 120, -38, 76, -55, -79, 21, -128, 32, 0, -60,
+            -48, 28, 14, 32, -52, -30, -2, -93, 121, -79, -112, -126, 116, -1, 37, 42, 71, 3, -72, -41, 4,
+            -110, -88, -88, 42, 79, -37, 110, 3, 109, -81, 12, -33, -26, -1, 73, -88, 36, -33, 0, -62, -31,
+            36, 71, 49, 115, -89, 85, 0, 0, 0, 0, 73, 69, 78, 68, -82, 66, 96, -126
+    };
 
 }
