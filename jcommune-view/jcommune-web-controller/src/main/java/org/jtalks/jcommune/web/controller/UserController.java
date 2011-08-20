@@ -223,7 +223,7 @@ public class UserController {
      * @throws IOException in case of access errors (if the temporary store fails)
      */
     public byte[] getAvatarByteArray(MultipartFile avatar) throws IOException {
-        if (!avatar.getOriginalFilename().equals("")) {
+        if (!avatar.isEmpty()) {
             return avatar.getBytes();
         } else {
             return securityService.getCurrentUser().getAvatar();
