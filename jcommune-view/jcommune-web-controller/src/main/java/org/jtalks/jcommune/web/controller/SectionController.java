@@ -18,6 +18,9 @@
 
 package org.jtalks.jcommune.web.controller;
 
+import java.util.List;
+
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Section;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
@@ -59,7 +62,7 @@ public final class SectionController {
      */
     @RequestMapping(value = "/main", method = RequestMethod.GET)
     public ModelAndView sectionsList() {
-        return new ModelAndView("sectionList", "sections", sectionService.getAll());
+        return new ModelAndView("sectionList", "sectionList", sectionService.getAll());
     }
 
     /**
@@ -73,7 +76,10 @@ public final class SectionController {
     public ModelAndView show(@PathVariable("sectionId") long sectionId) throws NotFoundException {
 
         Section section = sectionService.get(sectionId);
+        List<Branch> branchList = branchService.getBranchRangeInSection(sectionId);
 
-        return new ModelAndView("branchList", "section", section);
+        return new ModelAndView("branchList")
+                .addObject("section", section)
+                .addObject("branchList", branchList);
     }
 }

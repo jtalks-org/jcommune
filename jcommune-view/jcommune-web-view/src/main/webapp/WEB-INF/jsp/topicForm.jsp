@@ -19,6 +19,19 @@
             <form:label path="bodyText"><spring:message code="label.text"/></form:label>
             <form:textarea path="bodyText"/>
             <form:errors path="bodyText" cols="30" rows="10"/>
+            <br />
+            <spring:message code="label.sticked"/>
+            <form:checkbox path="sticked" value="true"></form:checkbox>
+            <form:errors path="sticked"/>
+            <br />
+            <form:label path="topicWeight"><spring:message code="label.weight"/></form:label>
+            <form:input path="topicWeight" size="20"/>
+            <form:errors path="topicWeight"/>
+            <br />
+            <spring:message code="label.announcement"/>
+            <form:checkbox path="announcement" value="true"></form:checkbox>
+            <form:errors path="announcement"/>
+
 
             <div class="clear"></div>
 

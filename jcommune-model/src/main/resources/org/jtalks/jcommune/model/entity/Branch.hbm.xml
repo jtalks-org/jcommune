@@ -21,10 +21,4 @@
     <many-to-one name="section" column="SECTION_ID" class="Section"
                  not-null="false"/>
   </class>
-  <sql-query name="getAllBranchesInSection">
-    <return alias="BRANCH" class="Branch"/>
-    <![CDATA[SELECT branch.* 
-             FROM Branch as branch
-             WHERE branch.section_id = :sectionId]]>
-  </sql-query>
 </hibernate-mapping>

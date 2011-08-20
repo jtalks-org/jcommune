@@ -20,7 +20,6 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.Topic;
 
 import java.util.List;
 
@@ -44,9 +43,9 @@ public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch>
     @Override
     @SuppressWarnings("unchecked")
     public List<Branch> getBranchesInSection(Long sectionId) {
-        return getSession().getNamedQuery("getAllBranchesInSection")
+        return getSession().createQuery("from Branch b where b.section = ?")
                 .setCacheable(true)
-                .setLong("sectionId", sectionId)
+                .setLong(0, sectionId)
                 .list();
     }
 

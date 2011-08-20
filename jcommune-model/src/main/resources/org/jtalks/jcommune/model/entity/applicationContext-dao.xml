@@ -29,7 +29,7 @@
         parent="abstractHibernateDao"/>
   <bean id="privateMessageDao" class="org.jtalks.jcommune.model.dao.hibernate.PrivateMessageHibernateDao"
         parent="abstractHibernateDao"/>
-  <bean id="brachSectionDao" class="org.jtalks.jcommune.model.dao.hibernate.SectionHibernateDao"
+  <bean id="branchSectionDao" class="org.jtalks.jcommune.model.dao.hibernate.SectionHibernateDao"
         parent="abstractHibernateDao"/>
   <!--Injecting sessionFactory bean to class AbstractHibernateChildRepository, this way
     resolves a problem of multiple DAO beans definition -->

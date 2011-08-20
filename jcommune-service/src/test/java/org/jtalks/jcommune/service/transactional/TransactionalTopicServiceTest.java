@@ -264,6 +264,9 @@ public class TransactionalTopicServiceTest {
     void testSaveTopic() throws NotFoundException {
         String newTitle = "new title";
         String newBody = "new body";
+        int newWeight = 0;
+        boolean newSticked = false;
+        boolean newAnnouncement = false;
         Topic topic = Topic.createNewTopic();
         topic.setId(TOPIC_ID);
         topic.setTitle("title");
@@ -275,7 +278,7 @@ public class TransactionalTopicServiceTest {
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(topic);
 
-        topicService.saveTopic(TOPIC_ID, newTitle, newBody);
+        topicService.saveTopic(TOPIC_ID, newTitle, newBody, newWeight, newSticked, newAnnouncement);
 
         assertEquals(topic.getTitle(), newTitle);
         assertEquals(post.getPostContent(), newBody);
@@ -289,8 +292,11 @@ public class TransactionalTopicServiceTest {
     void testSaveTopicNonExistentTopic() throws NotFoundException {
         String newTitle = "new title";
         String newBody = "new body";
+        int newWeight = 0;
+        boolean newSticked = false;
+        boolean newAnnouncement = false;
         when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
-        topicService.saveTopic(TOPIC_ID, newTitle, newBody);
+        topicService.saveTopic(TOPIC_ID, newTitle, newBody, newWeight, newSticked, newAnnouncement);
     }
 }

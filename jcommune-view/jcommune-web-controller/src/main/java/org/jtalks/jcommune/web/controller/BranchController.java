@@ -65,7 +65,7 @@ public final class BranchController {
      */
     @RequestMapping(value = "/main-branches", method = RequestMethod.GET)
     public ModelAndView branchesList() {
-        return new ModelAndView("branchesList", "topicsBranchList", branchService.getAll());
+        return new ModelAndView("branchList", "branchList", branchService.getAll());
     }
 
     /**

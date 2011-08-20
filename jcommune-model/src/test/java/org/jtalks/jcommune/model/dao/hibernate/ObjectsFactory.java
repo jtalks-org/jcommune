@@ -78,7 +78,7 @@ public final class ObjectsFactory {
         Section newSection = new Section();
         newSection.setName("section name");
         newSection.setDescription("branch description");
-        newSection.setIndex(13L);
+        newSection.setPosition(1L);
         return newSection;
     }
 

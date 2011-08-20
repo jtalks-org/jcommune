@@ -30,7 +30,7 @@ public class Section extends Entity {
 
     private String name;
     private String description;
-    private Long index;
+    private Long position;
     private List<Branch> branches = new ArrayList<Branch>();
 
     /**
@@ -70,34 +70,34 @@ public class Section extends Entity {
     }
 
     /**
-     * Get section index.
+     * Get section position.
      *
-     * @param index section index
+     * @param index section position
      */
-    public void setIndex(Long index) {
-        this.index = index;
+    public void setPosition(Long position) {
+        this.position = position;
     }
 
     /**
-     * Get section index.
+     * Get section position.
      *
-     * @return section index
+     * @return section position
      */
-    public Long getIndex() {
-        return index;
+    public Long getPosition() {
+        return position;
     }
 
     /**
      * @return list of branches
      */
-    protected List<Branch> getBranches() {
+    public List<Branch> getBranches() {
         return branches;
     }
 
     /**
      * @param branches list of branches
      */
-    protected void setBranches(List<Branch> branches) {
+    public void setBranches(List<Branch> branches) {
         this.branches = branches;
     }
 
@@ -123,7 +123,7 @@ public class Section extends Entity {
     /**
      * @return number of branches in section
      */
-    public int topicCount() {
+    public int branchCount() {
         return branches.size();
     }
 }

@@ -165,8 +165,21 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', admin)")
     public void saveTopic(long topicId, String topicName, String bodyText)
             throws NotFoundException {
+        saveTopic(topicId, topicName, bodyText, 0, false, false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', admin)")
+    public void saveTopic(long topicId, String topicName, String bodyText, int topicWeight, boolean sticked, boolean announcement)
+            throws NotFoundException {
         Topic topic = get(topicId);
         topic.setTitle(topicName);
+        topic.setTopicWeight(topicWeight);
+        topic.setSticked(sticked);
+        topic.setAnnouncement(announcement);
         Post post = topic.getFirstPost();
         post.setPostContent(bodyText);
 //        post.setCreationDate(new DateTime());

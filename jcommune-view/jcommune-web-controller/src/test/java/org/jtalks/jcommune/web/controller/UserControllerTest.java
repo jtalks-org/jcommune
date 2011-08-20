@@ -17,7 +17,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.aspectj.util.FileUtil;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
@@ -39,7 +38,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.io.File;
 import java.io.IOException;
 
 import static org.mockito.Matchers.anyString;
@@ -69,8 +67,7 @@ public class UserControllerTest {
     @BeforeClass
     public void mockAvatar() throws IOException {
         avatar = new MockMultipartFile("test_avatar.jpg", "test_avatar.jpg", "image/jpeg",
-                FileUtil.readAsByteArray(
-                        new File("/home/max/workspace/jtalks-org/jcommune/jcommune-view/jcommune-web-controller/src/test/resources/test_avatar.jpg")));
+                new byte[10]);
     }
 
     @BeforeMethod

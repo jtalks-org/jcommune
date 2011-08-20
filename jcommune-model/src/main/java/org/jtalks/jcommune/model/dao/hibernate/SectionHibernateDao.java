@@ -30,7 +30,7 @@ public class SectionHibernateDao extends ParentRepositoryImpl<Section> implement
     @Override
     @SuppressWarnings("unchecked")
     public List<Section> getAll() {
-        return getSession().createQuery("from Section s order by s.index asc")
+        return getSession().createQuery("from Section s order by s.position asc")
                 .setCacheable(true).list();
     }
 

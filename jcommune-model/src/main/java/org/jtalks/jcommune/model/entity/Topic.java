@@ -17,6 +17,7 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import javassist.expr.NewExpr;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
@@ -46,6 +47,12 @@ public class Topic extends Entity {
 
     private String title;
 
+    private int topicWeight;
+
+    private boolean sticked;
+
+    private boolean announcement;
+
     /**
      * The list of topic's posts
      */
@@ -72,6 +79,9 @@ public class Topic extends Entity {
         this.title = title;
         this.creationDate = new DateTime();
         this.modificationDate= new DateTime();
+        this.topicWeight = 0;
+        this.sticked = false;
+        this.announcement = false;
     }
 
     /**
@@ -241,5 +251,43 @@ public class Topic extends Entity {
     public DateTime updateModificationDate()  {
         this.modificationDate = new DateTime();
         return this.modificationDate;
+    }
+    /**
+     * @return priority of a sticked topic
+     */
+    public int getTopicWeight() {
+        return this.topicWeight;
+    }
+    /**
+     * @param topicWeight a priority for a sticked topic
+     */
+    public void setTopicWeight(int topicWeight) {
+        this.topicWeight = topicWeight;
+    }
+    /**
+     * @return flag og stickedness
+     */
+    public boolean isSticked() {
+        return this.sticked;
+    }
+    /**
+     * @param sticked a flag of stickedness for a topic
+     */
+    public void setSticked(boolean sticked) {
+        this.sticked = sticked;
+        if (!sticked)
+            topicWeight = 0;
+    }
+    /**
+     * @return flag og announcement
+     */
+    public boolean isAnnouncement() {
+        return this.announcement;
+    }
+     /**
+     * @param announcement a flag of announcemet for a topic
+     */
+    public void setAnnouncement(boolean announcement) {
+        this.announcement = announcement;
     }
 }

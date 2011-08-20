@@ -56,8 +56,8 @@ public class BranchControllerTest {
 
         ModelAndView mav = controller.branchesList();
 
-        assertViewName(mav, "branchesList");
-        assertModelAttributeAvailable(mav, "topicsBranchList");
+        assertViewName(mav, "branchList");
+        assertModelAttributeAvailable(mav, "branchList");
         verify(branchService).getAll();
     }
 

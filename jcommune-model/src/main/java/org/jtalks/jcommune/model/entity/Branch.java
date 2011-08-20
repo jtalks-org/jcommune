@@ -125,7 +125,7 @@ public class Branch extends Entity {
      *
      * @param section section that contains the branch
      */
-    void setSection(Section section) {
+    public void setSection(Section section) {
         this.section = section;
     }
 }

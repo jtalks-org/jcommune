@@ -41,6 +41,11 @@ public class TopicDto {
     @Size(min = 5, max = MAX_POST_LENGTH)
     private String bodyText;
 
+    private int topicWeight;
+
+    private boolean sticked;
+    private boolean announcement;
+
     /**
      * @return topic id
      */
@@ -95,6 +100,30 @@ public class TopicDto {
         this.bodyText = bodyText;
     }
 
+    public int getTopicWeight() {
+        return this.topicWeight;
+    }
+
+    public void setTopicWeight(int topicWeight) {
+        this.topicWeight = topicWeight;
+    }
+
+    public boolean isSticked() {
+        return this.sticked;
+    }
+
+    public void setSticked(boolean sticked) {
+        this.sticked = sticked;
+    }
+
+    public boolean isAnnouncement() {
+        return this.announcement;
+    }
+
+    public void setAnnouncement(boolean announcement) {
+        this.announcement = announcement;
+    }
+
     /**
      * Create dto from {@link Topic}
      *
@@ -106,6 +135,9 @@ public class TopicDto {
         dto.setTopicName(topic.getTitle());
         dto.setBodyText(topic.getFirstPost().getPostContent());
         dto.setId(topic.getId());
+        dto.setTopicWeight(topic.getTopicWeight());
+        dto.setSticked(topic.isSticked());
+        dto.setAnnouncement(topic.isAnnouncement());
         return dto;
     }
 }
