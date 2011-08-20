@@ -21,7 +21,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import javax.validation.ConstraintViolation;
@@ -33,14 +32,13 @@ import java.util.Set;
 /**
  * @author Eugeny Batov
  */
-public class ImageFormatValidatorTest {
-
+public class ImageSizeValidatorTest {
     /**
      * Class for testing constraint.
      */
     public class TestObject {
 
-        @ImageFormat(format = {AllowableFormatEnum.JPG, AllowableFormatEnum.PNG, AllowableFormatEnum.GIF})
+        @ImageSize(size = 66560)
         MultipartFile avatar;
 
         public TestObject(MockMultipartFile avatar) {
@@ -56,49 +54,25 @@ public class ImageFormatValidatorTest {
         validator = factory.getValidator();
     }
 
-    @Test(dataProvider = "allowableFormats")
-    public void testValidatorSuccess(String contentType) {
+    @Test
+    public void testValidatorSuccess() {
         Set<ConstraintViolation<TestObject>> constraintViolations =
                 validator.validate(new TestObject(new MockMultipartFile("test_avatar", "test_avatar",
-                        contentType,
-                        new byte[10])));
+                        "image/jpeg",
+                        new byte[1024])));
 
         Assert.assertEquals(constraintViolations.size(), 0, "Validation errors");
     }
 
-    @Test(dataProvider = "notAllowableFormats")
-    public void testValidatorFail(String contentType) {
+    @Test
+    public void testValidatorFail() {
         Set<ConstraintViolation<TestObject>> constraintViolations =
                 validator.validate(new TestObject(new MockMultipartFile("test_avatar", "test_avatar",
-                        contentType,
-                        new byte[10])));
+                        "image/jpeg",
+                        new byte[102400])));
 
         Assert.assertEquals(constraintViolations.size(), 1, "Validation without errors");
         Assert.assertNotNull(constraintViolations.iterator().next().getMessage());
     }
 
-
-    @DataProvider
-    public Object[][] allowableFormats() {
-        return new Object[][]{
-                {AllowableFormatEnum.JPG.getContentType()},
-                {AllowableFormatEnum.PNG.getContentType()},
-                {AllowableFormatEnum.GIF.getContentType()}
-        };
-    }
-
-    @DataProvider
-    public Object[][] notAllowableFormats() {
-        return new Object[][]{
-                {"image/bmp"},
-                {"image/tiff"},
-                {"text/plain"},
-                {"audio/mpeg"},
-                {"audio/x-wav"},
-                {"text/plain"},
-                {"text/html"},
-                {"video/mpeg"}
-
-        };
-    }
 }
