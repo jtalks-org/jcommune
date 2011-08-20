@@ -100,26 +100,50 @@ public class TopicDto {
         this.bodyText = bodyText;
     }
 
+    /**
+     * @return priority of sticked topic
+     */
     public int getTopicWeight() {
         return this.topicWeight;
     }
 
+    /**
+     * Set priority for a sticked topic.
+     *
+     * @param topicWeight priority(weight) of sticked topic
+     */
     public void setTopicWeight(int topicWeight) {
         this.topicWeight = topicWeight;
     }
 
+    /**
+     * @return stickedness flag of topic
+     */
     public boolean isSticked() {
         return this.sticked;
     }
 
+    /**
+     * Set flag of stickedness.
+     *
+     * @param sticked flag of stickedness
+     */
     public void setSticked(boolean sticked) {
         this.sticked = sticked;
     }
 
+    /**
+     * @return announcement flag of topic
+     */
     public boolean isAnnouncement() {
         return this.announcement;
     }
 
+    /**
+     * Set flag of announcement for a topic
+     *
+     * @param announcement flag of announcement
+     */
     public void setAnnouncement(boolean announcement) {
         this.announcement = announcement;
     }
