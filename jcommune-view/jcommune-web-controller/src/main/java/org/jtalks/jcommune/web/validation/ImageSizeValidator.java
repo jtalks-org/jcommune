@@ -17,43 +17,35 @@
  */
 package org.jtalks.jcommune.web.validation;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import org.springframework.web.multipart.MultipartFile;
 
-import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 
 /**
  * @author Eugeny Batov
  */
-@Target({ANNOTATION_TYPE})
-@Retention(RUNTIME)
-@Constraint(validatedBy = AvatarFormatValidator.class)
-@Documented
-public @interface AvatarFormat {
-    /**
-     * Message for display when validation fails.
-     *
-     * @return message when validation fails.
-     */
-    String message() default "{avatar.wrong.format}";
+public class ImageSizeValidator implements ConstraintValidator<ImageSize, MultipartFile> {
+
+    private int imageSize;
+
+    @Override
+    public void initialize(ImageSize constraintAnnotation) {
+        this.imageSize = constraintAnnotation.size();
+    }
 
     /**
-     * Groups element that specifies the processing groups with which the
-     * constraint declaration is associated.
+     * Check that file's size no more imageSize.
      *
-     * @return array of groups
+     * @param multipartFile image that user want upload as avatar
+     * @param context       validation context
+     * @return {@code true} if validation successfull or false if fails
      */
-    Class<?>[] groups() default {};
-
-    /**
-     * Payload element that specifies the payload with which the the
-     * constraint declaration is associated.
-     *
-     * @return payload
-     */
-    Class<? extends Payload>[] payload() default {};
+    @Override
+    public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext context) {
+        if (multipartFile.getOriginalFilename().equals("")) {
+            return true;
+        }
+        return multipartFile.getSize() < imageSize;
+    }
 }

@@ -19,23 +19,28 @@ package org.jtalks.jcommune.web.validation;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.awt.Image;
+import java.io.IOException;
 
 /**
  * @author Eugeny Batov
  */
-public class AvatarWeightValidator implements ConstraintValidator<AvatarWeight, MultipartFile> {
+public class ImageDimensionValidator implements ConstraintValidator<ImageDimension, MultipartFile> {
 
-    private final static int MAX_AVATAR_SIZE = 66560;
+    private int imageHeight;
+    private int imageWidth;
 
     @Override
-    public void initialize(AvatarWeight avatarWeight) {
-        //nothing to do
+    public void initialize(ImageDimension constraintAnnotation) {
+        this.imageHeight = constraintAnnotation.height();
+        this.imageWidth = constraintAnnotation.width();
     }
 
     /**
-     * Check that file's weight no more max avtar size.
+     * Validate object with {@link ImageDimension} annotation.
      *
      * @param multipartFile image that user want upload as avatar
      * @param context       validation context
@@ -46,6 +51,13 @@ public class AvatarWeightValidator implements ConstraintValidator<AvatarWeight, 
         if (multipartFile.getOriginalFilename().equals("")) {
             return true;
         }
-        return multipartFile.getSize() < MAX_AVATAR_SIZE;
+        Image image;
+        try {
+            image = ImageIO.read(multipartFile.getInputStream());
+        } catch (IOException e) {
+            return false;
+        }
+        return (image == null) ? false : image.getHeight(null) == imageWidth &&
+                image.getHeight(null) == imageHeight;
     }
 }

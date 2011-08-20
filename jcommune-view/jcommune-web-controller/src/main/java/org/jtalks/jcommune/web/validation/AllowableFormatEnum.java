@@ -17,33 +17,19 @@
  */
 package org.jtalks.jcommune.web.validation;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-
 /**
  * @author Eugeny Batov
  */
-public class AvatarFormatValidator implements ConstraintValidator<AvatarFormat, MultipartFile> {
-    @Override
-    public void initialize(AvatarFormat avatarFormat) {
-        //nothing to do
+public enum AllowableFormatEnum {
+    JPG("image/jpeg"), GIF("image/gif"), PNG("image/png");
+
+    private String contentType;
+
+    AllowableFormatEnum(String contentType) {
+        this.contentType = contentType;
     }
 
-    /**
-     * Check that file has extension jpg, png or gif.
-     *
-     * @param multipartFile image that user want upload as avatar
-     * @param context       validation context
-     * @return {@code true} if validation successfull or false if fails
-     */
-    @Override
-    public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext context) {
-        if (multipartFile.getOriginalFilename().equals("")) {
-            return true;
-        }
-        String contentType = multipartFile.getContentType();
-        return contentType.equals("image/jpeg") || contentType.equals("image/png") || contentType.equals("image/gif");
+    String getContentType() {
+        return contentType;
     }
 }
