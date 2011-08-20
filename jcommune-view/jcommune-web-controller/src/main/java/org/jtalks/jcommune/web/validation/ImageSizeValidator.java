@@ -43,7 +43,7 @@ public class ImageSizeValidator implements ConstraintValidator<ImageSize, Multip
      */
     @Override
     public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext context) {
-        if (multipartFile.getOriginalFilename().equals("")) {
+        if (multipartFile.isEmpty()) {
             return true;
         }
         return multipartFile.getSize() < imageSize;

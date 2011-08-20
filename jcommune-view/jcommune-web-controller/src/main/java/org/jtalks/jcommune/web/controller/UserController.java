@@ -143,7 +143,7 @@ public class UserController {
     public ModelAndView editProfilePage() throws NotFoundException {
         User user = securityService.getCurrentUser();
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
-        return new ModelAndView(EDIT_PROFILE, "editedUser", editedUser);
+        return new ModelAndView(EDIT_PROFILE, "editedUser", editedUser).addObject(user);
     }
 
     /**
