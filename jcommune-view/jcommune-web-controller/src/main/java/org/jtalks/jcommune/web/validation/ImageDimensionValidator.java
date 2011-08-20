@@ -54,7 +54,7 @@ public class ImageDimensionValidator implements ConstraintValidator<ImageDimensi
         Image image;
         try {
             image = ImageIO.read(multipartFile.getInputStream());
-        } catch (IOException e) {
+        } catch (Exception e) {
             return false;
         }
         return (image == null) ? false : image.getHeight(null) == imageWidth &&
