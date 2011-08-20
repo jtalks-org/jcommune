@@ -36,6 +36,7 @@ public class Post extends Entity {
      * Creation date and time
      */
     private DateTime creationDate;
+    private DateTime modificationDate;
     private User userCreated;
     private String postContent;
     private Topic topic;
@@ -53,6 +54,7 @@ public class Post extends Entity {
      */
     protected Post(DateTime creationDate) {
         this.creationDate = creationDate;
+        this.modificationDate= new DateTime();
     }
 
     /**
@@ -84,11 +86,30 @@ public class Post extends Entity {
         return creationDate;
     }
 
+    public DateTime getModificationDate() {
+        return modificationDate;
+    }
+
     /**
      * @param postDate the postDate to set
      */
     public void setCreationDate(DateTime postDate) {
         this.creationDate = postDate;
+    }
+    /**
+     * @param modificationDate date and time when theme was changed last time
+     */
+    public void setModificationDate(DateTime modificationDate) {
+        this.modificationDate = modificationDate;
+    }
+    /**
+     * Set modification date to now.
+     *
+     * @return new modification date
+     */
+    public DateTime updateModificationDate()  {
+        this.modificationDate = new DateTime();
+        return this.modificationDate;
     }
 
     /**

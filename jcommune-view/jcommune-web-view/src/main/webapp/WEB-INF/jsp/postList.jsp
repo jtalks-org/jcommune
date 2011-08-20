@@ -45,7 +45,7 @@
                                         <spring:message code="label.link"/>
                                     </a>
                                         <span class="modification-date">
-                                            <joda:format value="${post.creationDate}"
+                                            <joda:format  value="${post.creationDate}"
                                                          locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
                                                          pattern="dd MMM yyyy HH:mm"/>
                                         </span>
@@ -54,8 +54,15 @@
                             <tr>
                                 <td class="text">
                                     <c:out value="${post.postContent}"/>
+                                    <br/><br/><br/>
+                                    <c:if test="${post.modificationDate!=null}">
+                                    <spring:message code="label.modify"/>
+                                     <joda:format value="${post.modificationDate}"
+                                                         locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
+                                                         pattern="dd MMM yyyy HH:mm"/>
+                                     </c:if>
                                 </td>
-                            </tr>
+                            </tr>                           
                             <tr>
                                 <td class="buttons">
                                     <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
@@ -73,6 +80,24 @@
                                         </c:choose>
                                         <a class="coolbutton" href="${delete_url}"><spring:message
                                                 code="label.delete"/></a>
+                                    </sec:accesscontrollist>
+                               
+                               
+                                    <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
+                                        <c:choose>
+                                            <c:when test="${page == 0 && i.index == 0}">
+                                                <%-- first post - url to edit topic --%>
+                                                <c:set var="edit_url"
+                                                       value="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/edit.html"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <%-- url to edit post --%>
+                                                <c:set var="edit_url"
+                                                       value="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/post/${post.id}/edit.html"/>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <a class="coolbutton" href="${edit_url}"><spring:message
+                                                code="label.edit"/></a>
                                     </sec:accesscontrollist>
                                 </td>
                             </tr>

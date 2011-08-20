@@ -16,15 +16,25 @@
  * The jtalks.org Project
  */
 package org.jtalks.jcommune.web.controller;
+import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.model.entity.Post;
 
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.PostDto;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+
+
+import javax.validation.Valid;
+
 
 /**
  * @author Osadchuck Eugeny
@@ -33,7 +43,11 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Controller
 public class PostController {
+    public static final String TOPIC_ID = "topicId";
+    public static final String BRANCH_ID = "branchId";
+    public static final String POST_ID = "postId";
     private final TopicService topicService;
+    private final PostService postService;
 
     /**
      * Constructor. Injects {@link TopicService}.
@@ -41,8 +55,9 @@ public class PostController {
      * @param topicService {@link TopicService} instance to be injected
      */
     @Autowired
-    public PostController(TopicService topicService) {
+    public PostController(TopicService topicService, PostService postService) {
         this.topicService = topicService;
+        this.postService = postService;
     }
 
     /**
@@ -85,4 +100,56 @@ public class PostController {
                 .append(topicId)
                 .append(".html").toString());
     }
+   
+    /**
+     * Edit post by given id.
+     *
+     * @param topicId  topic id
+     * @param postId   post id
+     * @param branchId branch containing topic
+     * @return redirect to post form page
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException when topic or post not found
+     */ 
+    @RequestMapping(value = "/branch/{branchId}/topic/{topicId}/post/{postId}/edit", method = RequestMethod.GET)
+    public ModelAndView edit(@PathVariable(BRANCH_ID) Long branchId,
+                             @PathVariable(TOPIC_ID) Long topicId,
+                             @PathVariable(POST_ID) Long postId) throws NotFoundException {
+        Post post = postService.get(postId);
+       
+        return new ModelAndView("postForm")
+                .addObject("postDto", PostDto.getDtoFor(post))
+                .addObject(BRANCH_ID, branchId)
+                .addObject(TOPIC_ID, topicId)
+                .addObject(POST_ID, postId);
+} 
+    /**
+     * Save post.
+     *
+     * @param postDto Dto populated in form
+     * @param result   validation result
+     * @param branchId hold the current branchId
+     * @param topicId  the current topicId
+     * @param postId  the current postcId
+     * @return {@code ModelAndView} object which will be redirect to topic page
+     *         if saved successfully or show form with error message
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when topic, branch or post not found
+     */
+    @RequestMapping(value = "/branch/{branchId}/topic/{topicId}/post/{postId}/save", method = {RequestMethod.GET, RequestMethod.POST})
+    public ModelAndView save(@Valid @ModelAttribute PostDto postDto,
+                             BindingResult result,
+                             @PathVariable(BRANCH_ID) Long branchId,
+                             @PathVariable(TOPIC_ID) Long topicId,
+                             @PathVariable(POST_ID) Long postId) throws NotFoundException {
+     if (result.hasErrors()) {
+            return new ModelAndView("postForm")
+                    .addObject(BRANCH_ID, branchId)
+                    .addObject(TOPIC_ID, topicId)
+                    .addObject(POST_ID, postId);
+       } 
+
+        topicService.savePost(topicId, postDto.getId(),postDto.getBodyText());
+
+        return new ModelAndView("redirect:/branch/" + branchId + "/topic/" + topicId + ".html");
+    } 
 }

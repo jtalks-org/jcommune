@@ -123,4 +123,14 @@ public interface TopicService extends EntityService<Topic> {
      * @throws NotFoundException when topic not found
      */
     Branch deleteTopic(long topicId) throws NotFoundException;
+    /**
+     * Update post by id.
+     *
+     * @param topicId topic id
+     * @param postId post id
+     * @param postContent post content
+     * @throws NotFoundException when post not found
+     */
+    void savePost(long topicId, long postId, String postContent) throws NotFoundException;
+
 }

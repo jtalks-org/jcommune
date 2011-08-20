@@ -11,6 +11,8 @@
     <property name="creationDate" column="POST_DATE"
               type="org.joda.time.contrib.hibernate.PersistentDateTime"
               not-null="true"/>
+    <property name="modificationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
+              column="MODIFICATION_DATE" not-null="false"/>          
     <property name="postContent" type="text" column="POST_CONTENT" not-null="true"/>
     <many-to-one name="userCreated" column="USER_CREATED" class="User" fetch="join"
                  foreign-key="FK_USER" lazy="false" not-null="true"/>
