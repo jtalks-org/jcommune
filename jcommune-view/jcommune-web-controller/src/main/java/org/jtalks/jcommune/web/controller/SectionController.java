@@ -25,6 +25,7 @@ import org.jtalks.jcommune.model.entity.Section;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,8 +50,8 @@ public final class SectionController {
      * @param branchService  autowired object from Spring Context
      */
     @Autowired
-    public SectionController(SectionService sectionService, 
-            BranchService branchService) {
+    public SectionController(SectionService sectionService,
+                             BranchService branchService) {
         this.sectionService = sectionService;
         this.branchService = branchService;
     }
@@ -62,7 +63,9 @@ public final class SectionController {
      */
     @RequestMapping(value = "/main", method = RequestMethod.GET)
     public ModelAndView sectionsList() {
-        return new ModelAndView("sectionList", "sectionList", sectionService.getAll());
+        return new ModelAndView("sectionList")
+                .addObject("sectionList", sectionService.getAll())
+                .addObject("breadcrumbList", new BreadcrumbBuilder().getForumBreadcrumb());
     }
 
     /**
@@ -70,7 +73,8 @@ public final class SectionController {
      *
      * @param sectionId section for display
      * @return {@code ModelAndView} with branches list
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException when section not found
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when section not found
      */
     @RequestMapping(value = "/section/{sectionId}", method = RequestMethod.GET)
     public ModelAndView show(@PathVariable("sectionId") long sectionId) throws NotFoundException {
@@ -80,6 +84,7 @@ public final class SectionController {
 
         return new ModelAndView("branchList")
                 .addObject("section", section)
-                .addObject("branchList", branchList);
+                .addObject("branchList", branchList)
+                .addObject("breadcrumbList", new BreadcrumbBuilder().getSectionBreadcrumb(section));
     }
 }

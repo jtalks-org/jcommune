@@ -22,7 +22,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 /**
- * DTO for {@link PrivateMessage} objects. Used for validation and binding to the form.
+ * DTO for {@link org.jtalks.jcommune.model.entity.PrivateMessage} objects. Used for validation and binding to the form.
  * Holds message's title, body and username of the recipient.
  *
  * @author Pavel Vervenko

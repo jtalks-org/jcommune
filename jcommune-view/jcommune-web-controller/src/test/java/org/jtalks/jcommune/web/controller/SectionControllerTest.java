@@ -22,6 +22,7 @@ import org.testng.annotations.Test;
 
 /**
  * @author Max Malakhov
+ * @author Alexandre Teterin
  */
 public class SectionControllerTest {
     private SectionService sectionService;
@@ -37,27 +38,39 @@ public class SectionControllerTest {
 
     @Test
     public void testDisplayAllSections() {
+        //set expectations
         when(sectionService.getAll()).thenReturn(new ArrayList<Section>());
 
+        //invoke the object under test
         ModelAndView mav = controller.sectionsList();
 
+        //check expectations
+        verify(sectionService).getAll();
+
+        //check result
         assertViewName(mav, "sectionList");
         assertModelAttributeAvailable(mav, "sectionList");
-        verify(sectionService).getAll();
-   }
+        assertModelAttributeAvailable(mav, "breadcrumbList");
+    }
 
-    @Test(enabled=false)
+    @Test(enabled = false)
     public void testBranchesInSection() throws NotFoundException {
         long sectionId = 1L;
 
+        //set expectations
         when(branchService.getBranchRangeInSection(sectionId)).thenReturn(new ArrayList<Branch>());
 
+        //invoke the object under test
         ModelAndView mav = controller.show(sectionId);
 
+        //check expectations
+        verify(branchService).getBranchRangeInSection(sectionId);
+
+        //check result
         assertViewName(mav, "branchList");
         assertAndReturnModelAttributeOfType(mav, "branchList", List.class);
         Long actualSection = assertAndReturnModelAttributeOfType(mav, "sectionId", Long.class);
         assertEquals((long) actualSection, sectionId);
-        verify(branchService).getBranchRangeInSection(sectionId);
+        assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 }
