@@ -1,0 +1,1 @@
+alter table POST add MODIFICATION_DATE datetime;
