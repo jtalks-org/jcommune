@@ -13,9 +13,9 @@
               column="CREATION_DATE" not-null="true"/>
     <property name="modificationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
               column="MODIFICATION_DATE" not-null="false"/>
-    <property name="topicWeight" column="TOPIC_WEIGHT" not-null="false"/>
-    <property name="sticked" column="STICKED" not-null="false"/>
-    <property name="announcement" column="ANNOUNCEMENT" not-null="false"/>
+    <property name="topicWeight" column="TOPIC_WEIGHT" not-null="true"/>
+    <property name="sticked" column="STICKED" not-null="true"/>
+    <property name="announcement" column="ANNOUNCEMENT" not-null="true"/>
 
     <list name="posts" cascade="all-delete-orphan">
       <cache usage="nonstrict-read-write"/>

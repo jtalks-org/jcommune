@@ -17,7 +17,6 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import javassist.expr.NewExpr;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;

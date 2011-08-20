@@ -200,7 +200,8 @@ public class UserController {
      */
     @RequestMapping(value = "/show/{encodedUsername}/avatar", method = RequestMethod.GET)
     public void renderAvatar(HttpServletResponse response,
-                             @PathVariable("encodedUsername") String encodedUsername) throws NotFoundException, IOException {
+                             @PathVariable("encodedUsername") String encodedUsername) throws NotFoundException,
+            IOException {
         User user = userService.getByEncodedUsername(encodedUsername);
         response.setContentType("image/jpeg");
         byte[] avatar = user.getAvatar();

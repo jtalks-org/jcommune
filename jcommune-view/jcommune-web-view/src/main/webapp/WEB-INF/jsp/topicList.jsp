@@ -23,11 +23,15 @@
             <tr>
                 <td>
                     <c:choose>
-                            <c:when test="${topic.announcement=='true'}"><div class="announcement"><a href="${pageContext.request.contextPath}/branch/${branchId}/topic/${topic.id}.html"><spring:message code="label.marked_as_announcement"/><c:out
-                        value="${topic.title}"/></a></div></td></c:when>
-                            <c:otherwise><a href="${pageContext.request.contextPath}/branch/${branchId}/topic/${topic.id}.html"> <c:out
-                        value="${topic.title}"/></a></td></c:otherwise>
+                        <c:when test="${topic.announcement=='true'}">
+                            <div class="announcement"><a href="${pageContext.request.contextPath}/branch/${branchId}/topic/${topic.id}.html">
+                            <spring:message code="label.marked_as_announcement"/><c:out value="${topic.title}"/></a></div>
+                        </c:when>
+                        <c:otherwise><a href="${pageContext.request.contextPath}/branch/${branchId}/topic/${topic.id}.html">
+                            <c:out value="${topic.title}"/></a>
+                        </c:otherwise>
                     </c:choose>
+                </td>
                 <td>
                     <a href="${pageContext.request.contextPath}/user/${topic.topicStarter.encodedUsername}.html">
                         <c:out value="${topic.topicStarter.username}"/>
