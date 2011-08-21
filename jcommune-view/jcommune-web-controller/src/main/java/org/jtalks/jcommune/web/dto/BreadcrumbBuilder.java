@@ -35,7 +35,7 @@ public class BreadcrumbBuilder {
      * @param section {@link org.jtalks.jcommune.model.entity.Section} the breadcrumbed section.
      * @return the breadcrumb list for the current <code>Section</code> location.
      */
-    public List<Breadcrumb> getSectionBreadcrumb(Section section) {
+    public List<Breadcrumb> getForumBreadcrumb(Section section) {
         breadcrumbList = getForumBreadcrumb();
         breadcrumbList.add(prepareSectionBreadcrumb(section));
 
@@ -49,7 +49,7 @@ public class BreadcrumbBuilder {
      * @return the breadcrumb list for the current <code>Branch</code> location.
      */
     public List<Breadcrumb> getBranchBreadcrumb(Branch branch) {
-        breadcrumbList = getSectionBreadcrumb(branch.getSection());
+        breadcrumbList = getForumBreadcrumb(branch.getSection());
         breadcrumbList.add(prepareBranchBreadcrumb(branch));
 
         return breadcrumbList;
