@@ -20,6 +20,7 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -72,6 +73,7 @@ public class TopicAnswerController {
         mav.addObject("topic", answeringTopic);
         mav.addObject("branchId", branchId);
         mav.addObject("topicId", topicId);
+        mav.addObject("breadcrumbList", new BreadcrumbBuilder().getTopicBreadcrumb(answeringTopic));
         if (validationError != null && validationError) {
             mav.addObject("validationError", validationError);
         }
@@ -95,7 +97,7 @@ public class TopicAnswerController {
                                      @PathVariable("branchId") long branchId) throws NotFoundException {
         if (isValidAnswer(bodyText)) {
             topicService.addAnswer(topicId, bodyText);
-            return new ModelAndView("redirect:/branch/" + branchId + "/topic/" + topicId + ".html");
+            return new ModelAndView("redirect:/topic/" + topicId + ".html");
         } else {
             return getAnswerPage(topicId, true, branchId);
         }

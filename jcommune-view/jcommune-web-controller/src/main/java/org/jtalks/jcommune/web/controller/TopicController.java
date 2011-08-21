@@ -196,7 +196,8 @@ public final class TopicController {
         return new ModelAndView("topicForm")
                 .addObject("topicDto", TopicDto.getDtoFor(topic))
                 .addObject(BRANCH_ID, branchId)
-                .addObject(TOPIC_ID, topicId);
+                .addObject(TOPIC_ID, topicId)
+                .addObject("breadcrumbList", new BreadcrumbBuilder().getTopicBreadcrumb(topic));
     }
 
     /**
@@ -225,6 +226,6 @@ public final class TopicController {
         topicService.saveTopic(topicDto.getId(), topicDto.getTopicName(), topicDto.getBodyText(),
                                topicDto.getTopicWeight(), topicDto.isSticked(), topicDto.isAnnouncement());
 
-        return new ModelAndView("redirect:/branch/" + branchId + "/topic/" + topicId + ".html");
+        return new ModelAndView("redirect:/topic/" + topicId + ".html");
     }
 }

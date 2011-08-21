@@ -21,6 +21,7 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.PostDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -93,9 +94,7 @@ public class PostController {
                                @PathVariable("branchId") Long branchId) throws NotFoundException {
         topicService.deletePost(topicId, postId);
         return new ModelAndView(new StringBuilder()
-                .append("redirect:/branch/")
-                .append(branchId)
-                .append("/topic/")
+                .append("redirect:/topic/")
                 .append(topicId)
                 .append(".html").toString());
     }
@@ -120,7 +119,8 @@ public class PostController {
                 .addObject("postDto", PostDto.getDtoFor(post))
                 .addObject(BRANCH_ID, branchId)
                 .addObject(TOPIC_ID, topicId)
-                .addObject(POST_ID, postId);
+                .addObject(POST_ID, postId)
+                .addObject("breadcrumbList", new BreadcrumbBuilder().getTopicBreadcrumb(topicService.get(topicId)));
     }
 
     /**
