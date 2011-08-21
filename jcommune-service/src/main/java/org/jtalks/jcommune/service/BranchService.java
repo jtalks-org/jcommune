@@ -24,6 +24,8 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import java.util.List;
 
 /**
+ * The interface to manipulate with branches
+ * 
  * @author Vitaliy Kravchenko
  * @author Kirill Afonin
  * @author Max Malakhov
@@ -31,21 +33,14 @@ import java.util.List;
 
 public interface BranchService extends EntityService<Branch> {
     /**
-     * Get list of all persistence objects T currently present in database.
-     *
-     * @return - list of persistence objects T.
-     */
-    List<Branch> getAll();
-
-    /**
-     * Get branches range from section.
+     * Get branches from section.
      *
      * @param sectionId section id from which we obtain branches
      * @return list of {@code Branch} objects
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when section not found
      */
-    List<Branch> getBranchRangeInSection(long sectionId) throws NotFoundException;
+    List<Branch> getBranchesInSection(long sectionId) throws NotFoundException;
 
     /**
      * Get number of branches in section.

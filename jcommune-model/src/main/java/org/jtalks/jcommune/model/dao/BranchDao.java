@@ -23,17 +23,14 @@ import org.jtalks.jcommune.model.entity.Branch;
 import java.util.List;
 
 /**
+ * DAO for the {@link Branch} objects.
+ * 
  * @author Vitaliy Kravchenko
+ * @author Max Malakhov
+ * @see org.jtalks.jcommune.model.dao.hibernate.BranchHibernateDao
  */
 
 public interface BranchDao extends ChildRepository<Branch> {
-
-    /**
-     * Get the list of all branches.
-     *
-     * @return list of branches
-     */
-    List<Branch> getAll();
 
     /**
      * Get branches from section.

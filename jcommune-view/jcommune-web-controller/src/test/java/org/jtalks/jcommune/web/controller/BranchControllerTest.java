@@ -18,7 +18,6 @@
 
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicService;
@@ -49,18 +48,7 @@ public class BranchControllerTest {
         topicService = mock(TopicService.class);
         controller = new BranchController(branchService, topicService);
     }
-
-    @Test
-    public void testDisplayAllBranches() {
-        when(branchService.getAll()).thenReturn(new ArrayList<Branch>());
-
-        ModelAndView mav = controller.branchesList();
-
-        assertViewName(mav, "branchList");
-        assertModelAttributeAvailable(mav, "branchList");
-        verify(branchService).getAll();
-    }
-
+    //TODO Need to fix test
     @Test (enabled = false)
     public void testTopicsInBranch() throws NotFoundException {
         long branchId = 1L;

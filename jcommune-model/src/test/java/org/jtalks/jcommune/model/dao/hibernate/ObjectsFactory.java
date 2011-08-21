@@ -68,15 +68,13 @@ public final class ObjectsFactory {
     }
 
     public static Branch getDefaultBranch() {
-        Branch newBranch = new Branch();
-        newBranch.setName("branch name");
+        Branch newBranch = new Branch("branch name");
         newBranch.setDescription("branch description");
         return newBranch;
     }
 
     public static Section getDefaultSection() {
-        Section newSection = new Section();
-        newSection.setName("section name");
+        Section newSection = new Section("section name");
         newSection.setDescription("branch description");
         newSection.setPosition(1L);
         return newSection;

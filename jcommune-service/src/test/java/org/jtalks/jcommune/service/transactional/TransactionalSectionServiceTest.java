@@ -21,7 +21,8 @@ import org.testng.annotations.Test;
  * @author Max Malakhov
  */
 public class TransactionalSectionServiceTest {
-    private long SECTION_ID = 13L;
+    final long SECTION_ID = 1L;
+    final String SECTION_NAME = "section name";
 
     private SectionDao sectionDao;
     private SectionService sectionService;
@@ -34,7 +35,7 @@ public class TransactionalSectionServiceTest {
 
     @Test
     public void testGet() throws NotFoundException {
-        Section expectedSection = new Section();
+        Section expectedSection = new Section(SECTION_NAME);
         when(sectionDao.isExist(SECTION_ID)).thenReturn(true);
         when(sectionDao.get(SECTION_ID)).thenReturn(expectedSection);
 
@@ -55,7 +56,7 @@ public class TransactionalSectionServiceTest {
     @Test
     public void testGetAll() {
         List<Section> expectedSectionList = new ArrayList<Section>();
-        expectedSectionList.add(new Section());
+        expectedSectionList.add(new Section(SECTION_NAME));
         when(sectionDao.getAll()).thenReturn(expectedSectionList);
 
         List<Section> actualSectionList = sectionService.getAll();

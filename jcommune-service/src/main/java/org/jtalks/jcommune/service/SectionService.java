@@ -23,14 +23,16 @@ import org.jtalks.jcommune.model.entity.Section;
 import java.util.List;
 
 /**
+ * The interface to manipulate with sections
+ *
  * @author Max Malakhov
  */
 
 public interface SectionService extends EntityService<Section> {
     /**
-     * Get list of all persistence objects T currently present in database.
+     * Get list of all sections.
      *
-     * @return - list of persistence objects T.
+     * @return - list of the sections.
      */
     List<Section> getAll();
 }

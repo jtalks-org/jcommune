@@ -23,7 +23,10 @@ import java.util.List;
 import org.jtalks.jcommune.model.entity.Section;
 
 /**
+ * DAO for the {@link Section} objects.
+ * 
  * @author Max Malakhov
+ * @see org.jtalks.jcommune.model.dao.hibernate.SectionHibernateDao
  */
 public interface SectionDao extends ParentRepository<Section> {
 

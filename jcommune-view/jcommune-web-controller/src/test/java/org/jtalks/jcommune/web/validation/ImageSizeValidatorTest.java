@@ -75,4 +75,14 @@ public class ImageSizeValidatorTest {
         Assert.assertNotNull(constraintViolations.iterator().next().getMessage());
     }
 
+    @Test
+    public void testValidatorImageNull() {
+        Set<ConstraintViolation<TestObject>> constraintViolations =
+                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "",
+                        "application/octet-stream",
+                        new byte[0])));
+
+        Assert.assertEquals(constraintViolations.size(), 0, "Validation errors");
+    }
+
 }
