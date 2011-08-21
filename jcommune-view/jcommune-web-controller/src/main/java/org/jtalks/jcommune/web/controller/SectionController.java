@@ -19,7 +19,6 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Section;
-import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
@@ -33,7 +32,7 @@ import org.springframework.web.servlet.ModelAndView;
 /**
  * Displays to user page contains section list with related branch lists
  * and page contains branch list from the chosen section
- * 
+ *
  * @author Max Malakhov
  */
 
@@ -41,19 +40,15 @@ import org.springframework.web.servlet.ModelAndView;
 public final class SectionController {
 
     private SectionService sectionService;
-    private BranchService branchService;
 
     /**
      * Constructor creates MVC controller with specified SectionService
      *
      * @param sectionService autowired object from Spring Context
-     * @param branchService  autowired object from Spring Context
      */
     @Autowired
-    public SectionController(SectionService sectionService,
-                             BranchService branchService) {
+    public SectionController(SectionService sectionService) {
         this.sectionService = sectionService;
-        this.branchService = branchService;
     }
 
     /**
@@ -73,7 +68,8 @@ public final class SectionController {
      *
      * @param sectionId section for display
      * @return {@code ModelAndView} the chosen section
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException when section not found
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when section not found
      */
     @RequestMapping(value = "/section/{sectionId}", method = RequestMethod.GET)
     public ModelAndView branchList(@PathVariable("sectionId") long sectionId) throws NotFoundException {

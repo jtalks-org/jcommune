@@ -21,7 +21,6 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.Post;
 
 import javax.validation.constraints.Size;
-import org.joda.time.DateTime;
 
 public class PostDto {
     private static final int MAX_POST_LENGTH = 2000;
@@ -29,7 +28,6 @@ public class PostDto {
     @NotBlank
     @Size(min = 5, max = MAX_POST_LENGTH)
     private String bodyText;
-    private DateTime modifyDate;
     private long id;
 
     /**
