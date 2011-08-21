@@ -50,15 +50,6 @@ public class Branch extends Entity {
         this.name = name;
     }
 
-    /**
-     * Creates a new Branch
-     *
-     * @return newly created Branch
-     */
-    public static Branch createNewBranch() {
-        return new Branch();
-    }
-
 
     /**
      * Set branch name which briefly describes the topics contained in it.

@@ -78,7 +78,7 @@ public class TransactionalBranchServiceTest {
     @Test
     public void testGetBranchesInSection() throws NotFoundException {
         List<Branch> expectedList = new ArrayList<Branch>();
-        expectedList.add(Branch.createNewBranch());
+        expectedList.add(new Branch(BRANCH_NAME));
         when(sectionDao.isExist(SECTION_ID)).thenReturn(true);
         when(branchDao.getBranchesInSection(SECTION_ID)).thenReturn(expectedList);
 
