@@ -208,8 +208,8 @@ public class UserController {
                              @PathVariable("encodedUsername") String encodedUsername) throws NotFoundException,
             IOException {
         User user = userService.getByEncodedUsername(encodedUsername);
-        response.setContentType("image/jpeg");
         byte[] avatar = user.getAvatar();
+        response.setContentType("image/jpeg");
         response.setContentLength(avatar.length);
         response.getOutputStream().write(avatar);
     }
