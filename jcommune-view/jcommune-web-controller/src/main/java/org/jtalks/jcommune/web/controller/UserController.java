@@ -31,7 +31,6 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,7 +42,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.sql.SQLException;
 
 /**
  * Controller for User related actions: registration.
@@ -154,10 +152,11 @@ public class UserController {
      * @param result  binding result which contains the validation result
      * @return in case of errors return back to edit profile page, in another case return to user detalis page
      * @throws NotFoundException - throws if current logged in user was not found
+     * @throws IOException       - throws in case of access errors (if the temporary store fails)
      */
     @RequestMapping(value = "/user/edit", method = RequestMethod.POST)
     public ModelAndView editProfile(@Valid @ModelAttribute("editedUser") EditUserProfileDto userDto,
-                                    BindingResult result) throws NotFoundException, IOException, SQLException {
+                                    BindingResult result) throws NotFoundException, IOException {
 
         if (result.hasErrors()) {
             return new ModelAndView(EDIT_PROFILE);
@@ -202,6 +201,7 @@ public class UserController {
      * @param response        servlet response
      * @param encodedUsername {@link User#getEncodedUsername()}
      * @throws NotFoundException - throws if user with given encodedUsername not found
+     * @throws IOException       - throws if an output exception occurred
      */
     @RequestMapping(value = "/show/{encodedUsername}/avatar", method = RequestMethod.GET)
     public void renderAvatar(HttpServletResponse response,
@@ -220,9 +220,9 @@ public class UserController {
      * @param avatar multipart file from submitted form
      * @return avatar byte array from submitted form if user loaded avatar
      *         or avatar byte array from db if didn't
-     * @throws IOException in case of access errors (if the temporary store fails)
+     * @throws IOException - throws in case of access errors (if the temporary store fails)
      */
-    public byte[] getAvatarByteArray(MultipartFile avatar) throws IOException {
+    private byte[] getAvatarByteArray(MultipartFile avatar) throws IOException {
         if (!avatar.isEmpty()) {
             return avatar.getBytes();
         } else {
