@@ -42,6 +42,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
      * Create an instance of entity based service
      *
      * @param branchDao - data access object, which should be able do all CRUD operations.
+     * @param sectionDao - used for checking branch existance.
      */
     public TransactionalBranchService(BranchDao branchDao, SectionDao sectionDao) {
         this.dao = branchDao;

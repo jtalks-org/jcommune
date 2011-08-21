@@ -97,7 +97,7 @@ public class Section extends Entity {
     /**
      * Get section position, the lower the value the greater the upward.
      *
-     * @param index section position
+     * @param position section position
      */
     public void setPosition(Long position) {
         this.position = position;
@@ -141,7 +141,7 @@ public class Section extends Entity {
     /**
      * Delete branch from section.
      *
-     * @param topic topic
+     * @param branch branch
      */
     public void deleteTopic(Branch branch) {
         this.branches.remove(branch);
