@@ -56,6 +56,93 @@ public class BreadcrumbBuilder {
     }
 
     /**
+     * Returns the topic breadcrumbs.
+     *
+     * @param topic {@link org.jtalks.jcommune.model.entity.Topic} the breadcrumbed topic.
+     * @return the breadcrumb list for the current <code>Topic</code> location.
+     */
+    public List<Breadcrumb> getTopicBreadcrumb(Topic topic) {
+        breadcrumbList = getBranchBreadcrumb(topic.getBranch());
+        breadcrumbList.add(prepareTopicBreadcrumb(topic));
+
+        return breadcrumbList;
+    }
+
+    /**
+     * Returns the post breadcrumbs.
+     *
+     * @param post {@link org.jtalks.jcommune.model.entity.Post} the breadcrumbed post.
+     * @return the breadcrumb list for the current <code>Post</code> location.
+     */
+    public List<Breadcrumb> getPostBreadcrumb(Post post) {
+        breadcrumbList = getTopicBreadcrumb(post.getTopic());
+        breadcrumbList.add(preparePostBreadcrumb(post));
+
+        return breadcrumbList;
+    }
+
+    /**
+     * Returns the profile breadcrumbs.
+     *
+     * @param user {@link org.jtalks.jcommune.model.entity.User} the breadcrumbed user profile.
+     * @return the breadcrumb list for the <code>User</code> profile location.
+     */
+    public List<Breadcrumb> getProfileBreadcrumb(User user) {
+        breadcrumbList = getForumBreadcrumb();
+        breadcrumbList.add(prepareProfileBreadcrumb(user));
+
+        return breadcrumbList;
+    }
+
+    /**
+     * Returns the PM breadcrumbs.
+     *
+     * @return the breadcrumb list for the PM location.
+     */
+    public List<Breadcrumb> getPmBreadcrumb() {
+        breadcrumbList = getForumBreadcrumb();
+        breadcrumbList.add(preparePmBreadcrumb());
+
+        return breadcrumbList;
+    }
+
+    /**
+     * Return the Inbox breadcrumbs.
+     *
+     * @return the breadcrumb list for the Inbox location.
+     */
+    public List<Breadcrumb> getInboxBreadcrumb() {
+        breadcrumbList = getPmBreadcrumb();
+        breadcrumbList.add(prepareInboxBreadcrumb());
+
+        return breadcrumbList;
+    }
+
+    /**
+     * Returns the Outbox breadcrumbs.
+     *
+     * @return the breadcrumb list for the Outbox location.
+     */
+    public List<Breadcrumb> getOutboxBreadcrumb() {
+        breadcrumbList = getPmBreadcrumb();
+        breadcrumbList.add(prepareOutboxBreadcrumb());
+
+        return breadcrumbList;
+    }
+
+    /**
+     * Returns the Drafts breadcrumbs.
+     *
+     * @return the breadcrumb list for the Drafts location.
+     */
+    public List<Breadcrumb> getDraftsBreadcrumbs() {
+        breadcrumbList = getPmBreadcrumb();
+        breadcrumbList.add(prepareDraftsBreadcrumb());
+
+        return breadcrumbList;
+    }
+
+    /**
      *Fill the forum breadcrumb.
      *
      * @return {@link Breadcrumb} the filled breadcrumb fot the Forum location.
