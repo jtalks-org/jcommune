@@ -9,7 +9,7 @@ package org.jtalks.jcommune.web.dto;
 public class Breadcrumb {
 
     public static final String ROOT_BREADCRUMB_NAME_VALUE = "Forum";
-    public static final Long ROOT_BREADCRUMB_ID = 1L;
+    public static final Long STUB_BREADCRUMB_ID = 1L;
 
     /**
      * Enumerates all possible location on the forum
@@ -22,13 +22,13 @@ public class Breadcrumb {
         TOPIC("topic"),
         POST("post"),
 
-        PROFILE("profile"),
+        PROFILE("user"),
 
         PRIVATE_MESSAGE("pm"),
-        INBOX("inbox"),
-        OUTBOX("outbox"),
+        INBOX("pm/inbox"),
+        OUTBOX("pm/outbox"),
         NEW_MESSAGE("new"),
-        DRAFTS("drafts");
+        DRAFTS("pm/drafts");
 
         //Display name for the HTML link
         private String name;

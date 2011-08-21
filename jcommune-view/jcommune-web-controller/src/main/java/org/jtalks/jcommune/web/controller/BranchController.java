@@ -23,6 +23,7 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,6 +38,7 @@ import java.util.List;
 /**
  * @author Vitaliy kravchenko
  * @author Kirill Afonin
+ * @author Alexandre Teterin
  */
 
 @Controller
@@ -90,7 +92,8 @@ public final class BranchController {
                 .addObject("branchId", branchId)
                 .addObject("topics", topics)
                 .addObject("maxPages", pag.getMaxPages())
-                .addObject("page", pag.getPage());
+                .addObject("page", pag.getPage())
+                .addObject("breadcrumbList", new BreadcrumbBuilder().getBranchBreadcrumb(branchService.get(branchId)));
     }
 
 }
