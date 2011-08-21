@@ -20,3 +20,12 @@ ALTER TABLE BRANCH ADD `BRANCHES_INDEX` int(11) DEFAULT NULL;
 ALTER TABLE BRANCH ADD `SECTION_ID` bigint(20) DEFAULT NULL;
 ALTER TABLE BRANCH ADD KEY `FK_SECTION` (`SECTION_ID`);
 --ALTER TABLE BRANCH ADD CONSTRAINT `FK_SECTION` FOREIGN KEY (`SECTION_ID`) REFERENCES `SECTION` (`SECTION_ID`);
+
+-- setup sections
+insert into SECTION (name,uuid,position) values ('First Section','notexistinguuid',1); 
+set @bi=-1;
+update BRANCH 
+set branches_index = (@bi:=@bi+1), 
+    section_id = (select section_id from SECTION s where s.uuid='notexistinguuid') 
+where branches_index is null 
+   or section_id is null ;

@@ -23,6 +23,7 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,6 +38,7 @@ import java.util.List;
 /**
  * @author Vitaliy kravchenko
  * @author Kirill Afonin
+ * @author Alexandre Teterin
  */
 
 @Controller
@@ -57,16 +59,6 @@ public final class BranchController {
         this.topicService = topicService;
     }
 
-
-    /**
-     * This method handles GET request and produces JSP page with all topic branches
-     *
-     * @return {@link ModelAndView} with view name as renderAllBranches
-     */
-    @RequestMapping(value = "/main-branches", method = RequestMethod.GET)
-    public ModelAndView branchesList() {
-        return new ModelAndView("branchList", "branchList", branchService.getAll());
-    }
 
     /**
      * Displays to user a list of topic from the chosen branch with pagination.
@@ -90,7 +82,8 @@ public final class BranchController {
                 .addObject("branchId", branchId)
                 .addObject("topics", topics)
                 .addObject("maxPages", pag.getMaxPages())
-                .addObject("page", pag.getPage());
+                .addObject("page", pag.getPage())
+                .addObject("breadcrumbList", new BreadcrumbBuilder().getBranchBreadcrumb(branchService.get(branchId)));
     }
 
 }

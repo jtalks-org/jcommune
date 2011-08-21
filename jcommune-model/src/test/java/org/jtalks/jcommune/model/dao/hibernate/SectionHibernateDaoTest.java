@@ -60,14 +60,16 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
     }
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void testSaveSectionWithNameNotNullViolation() {
-    	Section section = new Section();
+        Section section = ObjectsFactory.getDefaultSection();
+        session.save(section);
+        section.setName(null);
 
         dao.saveOrUpdate(section);
     }
 
     @Test
     public void testGet() {
-    	Section section = ObjectsFactory.getDefaultSection();
+        Section section = ObjectsFactory.getDefaultSection();
         session.save(section);
 
         Section result = dao.get(section.getId());

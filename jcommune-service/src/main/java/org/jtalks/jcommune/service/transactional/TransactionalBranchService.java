@@ -27,6 +27,8 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import java.util.List;
 
 /**
+ * The implementation of BranchService
+ * 
  * @author Vitaliy Kravchenko
  * @author Max Malakhov
  */
@@ -40,6 +42,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
      * Create an instance of entity based service
      *
      * @param branchDao - data access object, which should be able do all CRUD operations.
+     * @param sectionDao - used for checking branch existance.
      */
     public TransactionalBranchService(BranchDao branchDao, SectionDao sectionDao) {
         this.dao = branchDao;
@@ -50,15 +53,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
      * {@inheritDoc}
      */
     @Override
-    public List<Branch> getAll() {
-        return dao.getAll();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Branch> getBranchRangeInSection(long sectionId) throws NotFoundException {
+    public List<Branch> getBranchesInSection(long sectionId) throws NotFoundException {
         if (!sectionDao.isExist(sectionId)) {
             throw new NotFoundException("Section with id: " + sectionId + " not found");
         }

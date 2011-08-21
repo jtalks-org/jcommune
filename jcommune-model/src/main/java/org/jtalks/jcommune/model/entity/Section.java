@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Forum branch that contains topics related to branch theme.
+ * Forum section that joins branches related by section theme.
  *
  * @author Max Malakhov
  */
@@ -32,6 +32,31 @@ public class Section extends Entity {
     private String description;
     private Long position;
     private List<Branch> branches = new ArrayList<Branch>();
+
+    /**
+     * Creates the Section instance. All fields values are null.
+     */
+    protected Section() {
+    }
+
+    /**
+     * Creates the Section instance with required fields.
+     *
+     * @param name section name
+     */
+    public Section(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Creates a new Section
+     *
+     * @return newly created Section
+     */
+    public static Section createNewSection() {
+        return new Section();
+    }
+
 
     /**
      * Set section name which briefly describes the topics contained in it.
@@ -70,16 +95,16 @@ public class Section extends Entity {
     }
 
     /**
-     * Get section position.
+     * Get section position, the lower the value the greater the upward.
      *
-     * @param index section position
+     * @param position section position
      */
     public void setPosition(Long position) {
         this.position = position;
     }
 
     /**
-     * Get section position.
+     * Get section position, the lower the value the greater the upward.
      *
      * @return section position
      */
@@ -88,6 +113,8 @@ public class Section extends Entity {
     }
 
     /**
+     * Get the list of the branches.
+     * 
      * @return list of branches
      */
     public List<Branch> getBranches() {
@@ -97,7 +124,7 @@ public class Section extends Entity {
     /**
      * @param branches list of branches
      */
-    public void setBranches(List<Branch> branches) {
+    protected void setBranches(List<Branch> branches) {
         this.branches = branches;
     }
 
@@ -114,7 +141,7 @@ public class Section extends Entity {
     /**
      * Delete branch from section.
      *
-     * @param topic topic
+     * @param branch branch
      */
     public void deleteTopic(Branch branch) {
         this.branches.remove(branch);

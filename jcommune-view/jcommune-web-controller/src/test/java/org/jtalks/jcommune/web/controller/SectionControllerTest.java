@@ -9,9 +9,7 @@ import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Section;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
@@ -22,6 +20,7 @@ import org.testng.annotations.Test;
 
 /**
  * @author Max Malakhov
+ * @author Alexandre Teterin
  */
 public class SectionControllerTest {
     private SectionService sectionService;
@@ -37,27 +36,34 @@ public class SectionControllerTest {
 
     @Test
     public void testDisplayAllSections() {
+        //set expectations
         when(sectionService.getAll()).thenReturn(new ArrayList<Section>());
-
-        ModelAndView mav = controller.sectionsList();
-
+        //invoke the object under test
+        ModelAndView mav = controller.sectionList();
+        //check result
         assertViewName(mav, "sectionList");
         assertModelAttributeAvailable(mav, "sectionList");
+        assertModelAttributeAvailable(mav, "breadcrumbList");
+        //check expectations
         verify(sectionService).getAll();
-   }
+    }
 
-    @Test(enabled=false)
+    @Test
     public void testBranchesInSection() throws NotFoundException {
         long sectionId = 1L;
-
-        when(branchService.getBranchRangeInSection(sectionId)).thenReturn(new ArrayList<Branch>());
-
-        ModelAndView mav = controller.show(sectionId);
-
+        Section section = new Section("section name");
+        section.setId(sectionId);
+        //set expectations
+        when(sectionService.get(sectionId)).thenReturn(section);
+        //invoke the object under test
+        ModelAndView mav = controller.branchList(sectionId);
+        //check result
         assertViewName(mav, "branchList");
-        assertAndReturnModelAttributeOfType(mav, "branchList", List.class);
-        Long actualSection = assertAndReturnModelAttributeOfType(mav, "sectionId", Long.class);
-        assertEquals((long) actualSection, sectionId);
-        verify(branchService).getBranchRangeInSection(sectionId);
+        assertModelAttributeAvailable(mav, "section");
+        Section actaulSection = assertAndReturnModelAttributeOfType(mav, "section", Section.class);
+        assertEquals((long) actaulSection.getId(), sectionId);
+        assertModelAttributeAvailable(mav, "breadcrumbList");
+        //check expectations
+        verify(sectionService).get(sectionId);
     }
 }

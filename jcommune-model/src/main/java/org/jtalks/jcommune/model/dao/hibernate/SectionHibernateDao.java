@@ -23,6 +23,11 @@ import java.util.List;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.entity.Section;
 
+/**
+ * Hibernate DAO implementation from the {@link Section}.
+ * 
+ * @author Max Malakhov
+ */
 public class SectionHibernateDao extends ParentRepositoryImpl<Section> implements SectionDao {
     /**
      * {@inheritDoc}
