@@ -40,7 +40,7 @@ public class ImageFormatValidatorTest {
      */
     public class TestObject {
 
-        @ImageFormat(format = {AllowableFormatEnum.JPG, AllowableFormatEnum.PNG, AllowableFormatEnum.GIF})
+        @ImageFormat(format = {AllowableAvatarFormatsEnum.JPG, AllowableAvatarFormatsEnum.PNG, AllowableAvatarFormatsEnum.GIF})
         MultipartFile avatar;
 
         public TestObject(MockMultipartFile avatar) {
@@ -90,9 +90,9 @@ public class ImageFormatValidatorTest {
     @DataProvider
     public Object[][] allowableFormats() {
         return new Object[][]{
-                {AllowableFormatEnum.JPG.getContentType()},
-                {AllowableFormatEnum.PNG.getContentType()},
-                {AllowableFormatEnum.GIF.getContentType()}
+                {AllowableAvatarFormatsEnum.JPG.getContentType()},
+                {AllowableAvatarFormatsEnum.PNG.getContentType()},
+                {AllowableAvatarFormatsEnum.GIF.getContentType()}
         };
     }
 

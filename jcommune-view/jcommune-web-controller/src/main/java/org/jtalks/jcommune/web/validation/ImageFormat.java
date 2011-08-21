@@ -63,5 +63,5 @@ public @interface ImageFormat {
      *
      * @return enum of allowable formats
      */
-    AllowableFormatEnum[] format();
+    AllowableAvatarFormatsEnum[] format();
 }
