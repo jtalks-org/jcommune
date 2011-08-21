@@ -31,7 +31,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @author Eugeny Batov
  */
 @ImageSize(size = 66560)
-@ImageFormat(format = {AllowableFormatEnum.JPG, AllowableFormatEnum.PNG, AllowableFormatEnum.GIF})
+@ImageFormat(format = {AllowableAvatarFormatsEnum.JPG, AllowableAvatarFormatsEnum.PNG, AllowableAvatarFormatsEnum.GIF})
 @ImageDimension(width = 100, height = 100)
 @Target({FIELD, ANNOTATION_TYPE})
 @Retention(RUNTIME)
