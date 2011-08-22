@@ -56,6 +56,7 @@ public final class TopicController {
     private TopicService topicService;
     private PostService postService;
     private BranchService branchService;
+    private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
 
     /**
      * Constructor creates controller with objects injected via autowiring.
@@ -71,6 +72,15 @@ public final class TopicController {
         this.branchService = branchService;
     }
 
+     /**
+     * This method allows us to set the breadcrumb builder.
+     * This can be useful for testing to mock/stub the real builder.
+     *
+     * @param breadcrumbBuilder builder to be used when constructing breadcrumb objects
+     */
+    public void setBreadcrumbBuilder(BreadcrumbBuilder breadcrumbBuilder) {
+        this.breadcrumbBuilder = breadcrumbBuilder;
+    }
 
     /**
      * Method handles newTopic.html GET request and display page for creation new topic
@@ -83,7 +93,7 @@ public final class TopicController {
         return new ModelAndView("newTopic")
                 .addObject("topicDto", new TopicDto())
                 .addObject("branchId", branchId)
-                .addObject("breadcrumbList", new BreadcrumbBuilder().getBranchBreadcrumb(branchService.get(branchId)));
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)));
     }
 
     /**
@@ -103,7 +113,7 @@ public final class TopicController {
         if (result.hasErrors()) {
             return new ModelAndView("newTopic")
                     .addObject(BRANCH_ID, branchId)
-                    .addObject("breadcrumbList", new BreadcrumbBuilder().getBranchBreadcrumb(branchService.get(branchId)));
+                    .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)));
         } else {
             Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(),
                     branchId);
@@ -175,7 +185,8 @@ public final class TopicController {
                 .addObject("page", pag.getPage())
                 .addObject(BRANCH_ID, branchId)
                 .addObject(TOPIC_ID, topicId)
-                .addObject("breadcrumbList", new BreadcrumbBuilder().getTopicBreadcrumb(topic));
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(topic))
+                ;
     }
 
     /**
@@ -197,7 +208,7 @@ public final class TopicController {
                 .addObject("topicDto", TopicDto.getDtoFor(topic))
                 .addObject(BRANCH_ID, branchId)
                 .addObject(TOPIC_ID, topicId)
-                .addObject("breadcrumbList", new BreadcrumbBuilder().getTopicBreadcrumb(topic));
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(topic));
     }
 
     /**

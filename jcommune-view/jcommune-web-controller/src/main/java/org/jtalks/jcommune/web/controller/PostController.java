@@ -47,6 +47,7 @@ public class PostController {
     public static final String POST_ID = "postId";
     private final TopicService topicService;
     private final PostService postService;
+    private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
 
     /**
      * Constructor. Injects {@link TopicService}.
@@ -57,6 +58,17 @@ public class PostController {
     public PostController(TopicService topicService, PostService postService) {
         this.topicService = topicService;
         this.postService = postService;
+    }
+
+    /**
+     * This method allows us to set the breadcrumb builder.
+     * This can be useful for testing to mock/stub the real builder.
+     *
+     * @param breadcrumbBuilder builder to be used when constructing breadcrumb objects
+     */
+
+    public void setBreadcrumbBuilder(BreadcrumbBuilder breadcrumbBuilder) {
+        this.breadcrumbBuilder = breadcrumbBuilder;
     }
 
     /**
@@ -120,7 +132,7 @@ public class PostController {
                 .addObject(BRANCH_ID, branchId)
                 .addObject(TOPIC_ID, topicId)
                 .addObject(POST_ID, postId)
-                .addObject("breadcrumbList", new BreadcrumbBuilder().getTopicBreadcrumb(topicService.get(topicId)));
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(topicService.get(topicId)));
     }
 
     /**
@@ -130,7 +142,7 @@ public class PostController {
      * @param result   validation result
      * @param branchId hold the current branchId
      * @param topicId  the current topicId
-     * @param postId   the current postcId
+     * @param postId   the current postId
      * @return {@code ModelAndView} object which will be redirect to topic page
      *         if saved successfully or show form with error message
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException

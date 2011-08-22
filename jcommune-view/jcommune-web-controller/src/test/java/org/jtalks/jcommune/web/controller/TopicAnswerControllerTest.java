@@ -20,17 +20,18 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.Breadcrumb;
+import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import java.util.ArrayList;
+
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.ModelAndViewAssert.*;
 
 /**
  * Tests for {@link TopicAnswerController} actions.
@@ -44,6 +45,10 @@ public class TopicAnswerControllerTest {
     public static final long TOPIC_ID = 1L;
     private static final long BRANCH_ID = 1L;
     private TopicAnswerController controller;
+
+    @Mock
+    private BreadcrumbBuilder breadcrumbBuilder;
+
     @Mock
     private TopicService topicService;
 
@@ -51,37 +56,53 @@ public class TopicAnswerControllerTest {
     public void init() throws NotFoundException {
         MockitoAnnotations.initMocks(this);
         controller = new TopicAnswerController(topicService);
+        controller.setBreadcrumbBuilder(breadcrumbBuilder);
     }
 
-    //TODO Need fix the test
-    @Test (enabled = false)
+    @Test
     public void testGetAnswerPage() throws NotFoundException {
         boolean isValid = false;
-        when(topicService.get(TOPIC_ID)).thenReturn(Topic.createNewTopic());
+        Topic topic = mock(Topic.class);
 
+        //set expectations
+        when(topicService.get(TOPIC_ID)).thenReturn(topic);
+        when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
+
+        //invoke the object under test
         ModelAndView mav = controller.getAnswerPage(TOPIC_ID, isValid, BRANCH_ID);
 
+        //check expectations
+        verify(topicService).get(TOPIC_ID);
+        verify(breadcrumbBuilder).getForumBreadcrumb(topic);
+
+        //check result
         assertAndReturnModelAttributeOfType(mav, "topic", Topic.class);
         assertViewName(mav, "answer");
-        verify(topicService).get(TOPIC_ID);
+        assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 
-    //TODO Need fix the test
-    @Test (enabled = false)
-    public void testSubmitAnswer() throws NotFoundException {
+    @Test
+    public void testSubmitAnswerValidationPass() throws NotFoundException {
+        //invoke the object under test
         ModelAndView mav = controller.submitAnswer(TOPIC_ID, ANSWER_BODY, BRANCH_ID);
 
-        assertViewName(mav, "redirect:/branch/" + BRANCH_ID + "/topic/" + TOPIC_ID + ".html");
+        //check expectations
         verify(topicService).addAnswer(TOPIC_ID, ANSWER_BODY);
+
+        //check result
+        assertViewName(mav, "redirect:/topic/" + TOPIC_ID + ".html");
     }
 
-    //TODO Need fix the test
-    @Test (enabled = false)
-    public void testSubmitShortAnswer() throws NotFoundException {
+    @Test
+    public void testSubmitAnswerValidationFail() throws NotFoundException {
+        //invoke the object under test
         ModelAndView mav = controller.submitAnswer(TOPIC_ID, SHORT_ANSWER_BODY, BRANCH_ID);
 
+        //check expectations
+        verify(topicService, never()).addAnswer(TOPIC_ID, SHORT_ANSWER_BODY);
+
+        //check result
         assertViewName(mav, "answer");
         assertAndReturnModelAttributeOfType(mav, "validationError", Boolean.class);
-        verify(topicService, never()).addAnswer(TOPIC_ID, SHORT_ANSWER_BODY);
     }
 }

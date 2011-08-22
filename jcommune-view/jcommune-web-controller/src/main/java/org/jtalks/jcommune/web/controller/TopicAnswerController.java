@@ -41,6 +41,7 @@ public class TopicAnswerController {
 
     public static final int MIN_ANSWER_LENGTH = 1;
     private TopicService topicService;
+    private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
 
     /**
      * Constructor creates MVC controller with specifying TopicService, SecurityService.
@@ -50,6 +51,16 @@ public class TopicAnswerController {
     @Autowired
     public TopicAnswerController(TopicService topicService) {
         this.topicService = topicService;
+    }
+
+    /**
+     * This method allows us to set the breadcrumb builder.
+     * This can be useful for testing to mock/stub the real builder.
+     *
+     * @param breadcrumbBuilder builder to be used when constructing breadcrumb objects
+     */
+    public void setBreadcrumbBuilder(BreadcrumbBuilder breadcrumbBuilder) {
+        this.breadcrumbBuilder = breadcrumbBuilder;
     }
 
     /**
@@ -73,7 +84,7 @@ public class TopicAnswerController {
         mav.addObject("topic", answeringTopic);
         mav.addObject("branchId", branchId);
         mav.addObject("topicId", topicId);
-        mav.addObject("breadcrumbList", new BreadcrumbBuilder().getTopicBreadcrumb(answeringTopic));
+        mav.addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(answeringTopic));
         if (validationError != null && validationError) {
             mav.addObject("validationError", validationError);
         }
