@@ -38,6 +38,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static org.mockito.Matchers.anyString;
@@ -252,6 +254,21 @@ public class UserControllerTest {
         verify(securityService).getCurrentUser();
         verify(userService).removeAvatar(user);
     }
+
+    @Test
+    public void testRenderAvatar() throws Exception {
+        when(userService.getByEncodedUsername(ENCODED_USER_NAME))
+                .thenReturn(getUser());
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        ServletOutputStream servletOutputStream = mock(ServletOutputStream.class);
+        when(response.getOutputStream()).thenReturn(servletOutputStream);
+        controller.renderAvatar(response, ENCODED_USER_NAME);
+        verify(response).setContentType("image/jpeg");
+        verify(response).setContentLength(avatar.getBytes().length);
+        verify(response).getOutputStream();
+        verify(servletOutputStream).write(avatar.getBytes());
+    }
+
 
     private void assertContainsError(BindingResult bindingResult, String errorName) {
         for (ObjectError error : bindingResult.getAllErrors()) {

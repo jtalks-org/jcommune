@@ -48,15 +48,6 @@ public class Section extends Entity {
         this.name = name;
     }
 
-    /**
-     * Creates a new Section
-     *
-     * @return newly created Section
-     */
-    public static Section createNewSection() {
-        return new Section();
-    }
-
 
     /**
      * Set section name which briefly describes the topics contained in it.

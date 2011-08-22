@@ -17,11 +17,15 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.Breadcrumb;
+import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
@@ -60,14 +64,21 @@ public class TopicControllerTest {
 
     private TopicService topicService;
     private PostService postService;
+    private BranchService branchService;
     private TopicController controller;
+    private BreadcrumbBuilder breadcrumbBuilder;
+    private Branch branch;
     public static final long TOPIC_ID = 1;
 
     @BeforeMethod
     public void init() {
         topicService = mock(TopicService.class);
         postService = mock(PostService.class);
-        controller = new TopicController(topicService, postService);
+        branchService = mock(BranchService.class);
+        breadcrumbBuilder = mock(BreadcrumbBuilder.class);
+        branch = mock(Branch.class);
+        controller = new TopicController(topicService, postService, branchService);
+        controller.setBreadcrumbBuilder(breadcrumbBuilder);
     }
 
 
@@ -97,64 +108,111 @@ public class TopicControllerTest {
         int page = 2;
         int pageSize = 5;
         int startIndex = page * pageSize - pageSize;
-        Topic topic = Topic.createNewTopic();
+        Topic topic = mock(Topic.class);
+
+        //set expectations
         when(postService.getPostRangeInTopic(TOPIC_ID, startIndex, pageSize)).thenReturn(new ArrayList<Post>());
         when(postService.getPostsInTopicCount(TOPIC_ID)).thenReturn(10);
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
+        when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
+        when(topic.getBranch()).thenReturn(branch);
+        when(branch.getId()).thenReturn(1L);
 
-        ModelAndView mav = controller.show(BRANCH_ID, TOPIC_ID, page, pageSize);
 
-        assertViewName(mav, "postList");
-        assertModelAttributeAvailable(mav, "posts");
-        Topic actualTopic = assertAndReturnModelAttributeOfType(mav, "topic", Topic.class);
-        Long actualTopicId = assertAndReturnModelAttributeOfType(mav, "topicId", Long.class);
-        Long actualBranchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
-        Integer actualMaxPages = assertAndReturnModelAttributeOfType(mav, "maxPages", Integer.class);
-        Integer actualPage = assertAndReturnModelAttributeOfType(mav, "page", Integer.class);
-        assertEquals((Topic) actualTopic, topic);
-        assertEquals((long) actualTopicId, TOPIC_ID);
-        assertEquals((long) actualBranchId, TOPIC_ID);
-        assertEquals((int) actualMaxPages, 2);
-        assertEquals((int) actualPage, page);
+        //invoke the object under test
+        ModelAndView mav = controller.show(TOPIC_ID, page, pageSize);
+
+
+        //check expectations
         verify(postService).getPostRangeInTopic(TOPIC_ID, startIndex, pageSize);
         verify(postService).getPostsInTopicCount(TOPIC_ID);
         verify(topicService).get(TOPIC_ID);
+        verify(breadcrumbBuilder).getForumBreadcrumb(topic);
+
+
+        //check result
+        assertViewName(mav, "postList");
+        assertModelAttributeAvailable(mav, "posts");
+
+        Topic actualTopic = assertAndReturnModelAttributeOfType(mav, "topic", Topic.class);
+        assertEquals(actualTopic, topic);
+
+        Long actualTopicId = assertAndReturnModelAttributeOfType(mav, "topicId", Long.class);
+        assertEquals((long) actualTopicId, TOPIC_ID);
+
+        Long actualBranchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
+        assertEquals((long) actualBranchId, TOPIC_ID);
+
+        Integer actualMaxPages = assertAndReturnModelAttributeOfType(mav, "maxPages", Integer.class);
+        assertEquals((int) actualMaxPages, 2);
+
+        Integer actualPage = assertAndReturnModelAttributeOfType(mav, "page", Integer.class);
+        assertEquals((int) actualPage, page);
+
+        assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 
     @Test
-    public void testCreate() throws Exception {
+    public void testCreateValidationPass() throws Exception {
         Topic topic = Topic.createNewTopic();
         topic.setId(TOPIC_ID);
-        when(topicService.createTopic(TOPIC_THEME, TOPIC_CONTENT, BRANCH_ID)).thenReturn(topic);
         TopicDto dto = getDto();
         BindingResult result = mock(BindingResult.class);
 
-        ModelAndView view = controller.create(dto, result, BRANCH_ID);
+        //set expectations
+        when(topicService.createTopic(TOPIC_THEME, TOPIC_CONTENT, BRANCH_ID)).thenReturn(topic);
 
-        assertEquals(view.getViewName(), "redirect:/branch/1/topic/1.html");
+        //invoke the object under test
+        ModelAndView mav = controller.create(dto, result, BRANCH_ID);
+
+        //check expectations
         verify(topicService).createTopic(TOPIC_THEME, TOPIC_CONTENT, BRANCH_ID);
+
+        //check result
+        assertViewName(mav, "redirect:/topic/1.html");
     }
 
     @Test
     public void testCreateValidationFail() throws Exception {
         BindingResult result = mock(BindingResult.class);
-        when(result.hasErrors()).thenReturn(true);
 
+        //set expectations
+        when(result.hasErrors()).thenReturn(true);
+        when(branchService.get(BRANCH_ID)).thenReturn(branch);
+        when(breadcrumbBuilder.getForumBreadcrumb(branch)).thenReturn(new ArrayList<Breadcrumb>());
+
+        //invoke the object under test
         ModelAndView mav = controller.create(getDto(), result, BRANCH_ID);
 
+        //check expectations
+        verify(branchService).get(BRANCH_ID);
+        verify(breadcrumbBuilder).getForumBreadcrumb(branch);
+        //check result
         assertViewName(mav, "newTopic");
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         assertEquals(branchId, BRANCH_ID);
     }
 
     @Test
-    public void testCreatePage() {
+    public void testCreatePage() throws NotFoundException {
+
+        //set expectations
+        when(branchService.get(BRANCH_ID)).thenReturn(branch);
+        when(breadcrumbBuilder.getForumBreadcrumb(branch)).thenReturn(new ArrayList<Breadcrumb>());
+
+        //invoke the object under test
         ModelAndView mav = controller.createPage(BRANCH_ID);
 
+        //check expectations
+        verify(branchService).get(BRANCH_ID);
+        verify(breadcrumbBuilder).getForumBreadcrumb(branch);
+
+        //check result
         assertViewName(mav, "newTopic");
         assertModelAttributeAvailable(mav, "topicDto");
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         assertEquals(branchId, BRANCH_ID);
+        assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 
     @Test
@@ -164,49 +222,62 @@ public class TopicControllerTest {
         Post post = Post.createNewPost();
         topic.addPost(post);
 
+        //set expectations
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
+        when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
 
+        //invoke the object under test
         ModelAndView mav = controller.edit(BRANCH_ID, TOPIC_ID);
 
+        //check expectations
+        verify(topicService).get(TOPIC_ID);
+        verify(breadcrumbBuilder).getForumBreadcrumb(topic);
+
+        //check result
         assertViewName(mav, "topicForm");
         TopicDto dto = assertAndReturnModelAttributeOfType(mav, "topicDto", TopicDto.class);
+        assertEquals(dto.getId(), TOPIC_ID);
+
+        long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
+        assertEquals(branchId, BRANCH_ID);
+
+        long topicId = assertAndReturnModelAttributeOfType(mav, "topicId", Long.class);
+        assertEquals(topicId, TOPIC_ID);
+
+        assertModelAttributeAvailable(mav, "breadcrumbList");
+    }
+
+    @Test
+    public void testSaveValidationPass() throws NotFoundException {
+        TopicDto dto = getDto();
+        BindingResult bindingResult = new BeanPropertyBindingResult(dto, "topicDto");
+
+        //invoke the object under test
+        ModelAndView mav = controller.save(dto, bindingResult, BRANCH_ID, TOPIC_ID);
+
+        //check expectations
+        verify(topicService).saveTopic(TOPIC_ID, TOPIC_THEME, TOPIC_CONTENT, TOPIC_WEIGHT, STICKED, ANNOUNCEMENT);
+
+        //check result
+        assertViewName(mav, "redirect:/topic/" + TOPIC_ID + ".html");
+    }
+
+    @Test
+    public void testSaveValidationFail() throws NotFoundException {
+        TopicDto dto = getDto();
+        BeanPropertyBindingResult resultWithErrors = mock(BeanPropertyBindingResult.class);
+
+        when(resultWithErrors.hasErrors()).thenReturn(true);
+
+        ModelAndView mav = controller.save(dto, resultWithErrors, BRANCH_ID, TOPIC_ID);
+
+        assertViewName(mav, "topicForm");
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         long topicId = assertAndReturnModelAttributeOfType(mav, "topicId", Long.class);
-        assertEquals(dto.getId(), TOPIC_ID);
         assertEquals(branchId, BRANCH_ID);
         assertEquals(topicId, TOPIC_ID);
 
-        verify(topicService).get(TOPIC_ID);
-    }
-
-    @Test
-    public void testSave() throws NotFoundException {
-         TopicDto dto = getDto();
-         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "topicDto");
-
-         ModelAndView mav = controller.save(dto, bindingResult, BRANCH_ID, TOPIC_ID);
-
-         assertViewName(mav, "redirect:/branch/" + BRANCH_ID + "/topic/" + TOPIC_ID + ".html");
-
-         verify(topicService).saveTopic(TOPIC_ID, TOPIC_THEME, TOPIC_CONTENT, TOPIC_WEIGHT, STICKED, ANNOUNCEMENT);
-    }
-
-    @Test
-    public void testSaveWithError() throws NotFoundException {
-         TopicDto dto = getDto();
-         BeanPropertyBindingResult resultWithErrors = mock(BeanPropertyBindingResult.class);
-
-         when(resultWithErrors.hasErrors()).thenReturn(true);
-
-         ModelAndView mav = controller.save(dto, resultWithErrors, BRANCH_ID, TOPIC_ID);
-
-         assertViewName(mav, "topicForm");
-         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
-         long topicId = assertAndReturnModelAttributeOfType(mav, "topicId", Long.class);
-         assertEquals(branchId, BRANCH_ID);
-         assertEquals(topicId, TOPIC_ID);
-
-         verify(topicService, never()).saveTopic(anyLong(), anyString(), anyString(), anyInt(), anyBoolean(), anyBoolean());
+        verify(topicService, never()).saveTopic(anyLong(), anyString(), anyString(), anyInt(), anyBoolean(), anyBoolean());
     }
 
     private TopicDto getDto() {

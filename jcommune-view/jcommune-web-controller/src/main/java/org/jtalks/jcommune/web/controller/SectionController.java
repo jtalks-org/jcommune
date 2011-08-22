@@ -34,12 +34,14 @@ import org.springframework.web.servlet.ModelAndView;
  * and page contains branch list from the chosen section
  *
  * @author Max Malakhov
+ * @author Alexandre Teterin
  */
 
 @Controller
 public final class SectionController {
 
     private SectionService sectionService;
+    private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
 
     /**
      * Constructor creates MVC controller with specified SectionService
@@ -52,6 +54,16 @@ public final class SectionController {
     }
 
     /**
+     * This method allows us to set the breadcrumb builder.
+     * This can be useful for testing to mock/stub the real builder.
+     *
+     * @param breadcrumbBuilder builder to be used when constructing breadcrumb objects
+     */
+    public void setBreadcrumbBuilder(BreadcrumbBuilder breadcrumbBuilder) {
+        this.breadcrumbBuilder = breadcrumbBuilder;
+    }
+
+    /**
      * This method handles GET request and produces JSP page with all branch sections
      *
      * @return {@link ModelAndView} with view name as renderAllSection
@@ -60,7 +72,7 @@ public final class SectionController {
     public ModelAndView sectionList() {
         return new ModelAndView("sectionList")
                 .addObject("sectionList", sectionService.getAll())
-                .addObject("breadcrumbList", new BreadcrumbBuilder().getForumBreadcrumb());
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
     }
 
     /**
@@ -77,6 +89,6 @@ public final class SectionController {
 
         return new ModelAndView("branchList")
                 .addObject("section", section)
-                .addObject("breadcrumbList", new BreadcrumbBuilder().getSectionBreadcrumb(section));
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(section));
     }
 }

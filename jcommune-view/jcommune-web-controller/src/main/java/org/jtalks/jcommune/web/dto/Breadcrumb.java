@@ -8,7 +8,13 @@ package org.jtalks.jcommune.web.dto;
 
 public class Breadcrumb {
 
-    public static final String ROOT_BREADCRUMB_NAME_VALUE = "Forum";
+    public static final String ROOT_BREADCRUMB_LOCATION_VALUE = "Forum";
+    public static final String PM_BREADCRUMB_LOCATION_VALUE = "PM";
+    public static final String INBOX_BREADCRUMB_LOCATION_VALUE = "Inbox";
+    public static final String OUTBOX_BREADCRUMB_LOCATION_VALUE = "Outbox";
+    public static final String DRAFTS_BREADCRUMB_LOCATION_VALUE = "Drafts";
+    public static final String NEW_PM_BREADCRUMB_LOCATION_VALUE = "New Message";
+    public static final String DRAFT_PM_BREADCRUMB_LOCATION_VALUE = "Draft";
     public static final Long STUB_BREADCRUMB_ID = 1L;
 
     /**
@@ -25,10 +31,12 @@ public class Breadcrumb {
         PROFILE("user"),
 
         PRIVATE_MESSAGE("pm"),
-        INBOX("pm/inbox"),
-        OUTBOX("pm/outbox"),
-        NEW_MESSAGE("new"),
-        DRAFTS("pm/drafts");
+        INBOX("inbox"),
+        OUTBOX("outbox"),
+        NEW_PM("new"),
+        DRAFTS("drafts"),
+        DRAFT_PM("draft");
+
 
         //Display name for the HTML link
         private String name;
