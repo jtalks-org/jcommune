@@ -156,7 +156,7 @@ public class User extends Entity implements UserDetails {
      * @param avatar user avatar
      */
     public void setAvatar(byte[] avatar) {
-        this.avatar = (avatar!=null)?avatar.clone():avatar;
+        this.avatar = (avatar!=null)?avatar.clone():null;
     }
 
 
