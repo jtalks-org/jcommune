@@ -22,8 +22,7 @@
   </bean>
 
   <bean id="multipartResolver" class=
-      "org.springframework.web.multipart.commons.CommonsMultipartResolver">
-  </bean>
+      "org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
 
   <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
     <property name="basenames">

@@ -41,7 +41,7 @@ public class ImageFormatValidatorTest {
     public class TestObject {
 
         @ImageFormat(format = {AllowableAvatarFormatsEnum.JPG, AllowableAvatarFormatsEnum.PNG, AllowableAvatarFormatsEnum.GIF})
-        MultipartFile avatar;
+        private MultipartFile avatar;
 
         public TestObject(MockMultipartFile avatar) {
             this.avatar = avatar;

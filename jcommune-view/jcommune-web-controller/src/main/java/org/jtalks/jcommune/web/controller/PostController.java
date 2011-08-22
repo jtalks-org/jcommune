@@ -53,6 +53,7 @@ public class PostController {
      * Constructor. Injects {@link TopicService}.
      *
      * @param topicService {@link TopicService} instance to be injected
+     * @param postService {@link PostService} instance to be injected
      */
     @Autowired
     public PostController(TopicService topicService, PostService postService) {

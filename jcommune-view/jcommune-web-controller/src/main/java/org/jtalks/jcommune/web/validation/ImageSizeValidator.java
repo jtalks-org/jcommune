@@ -23,12 +23,21 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 /**
+ * Validator for {@link ImageSize}. Checks that image has allowable size.
+ *
  * @author Eugeny Batov
+ * @see ImageSize
  */
 public class ImageSizeValidator implements ConstraintValidator<ImageSize, MultipartFile> {
 
     private int imageSize;
 
+    /**
+     * Initialize validator fields from annotation instance.
+     *
+     * @param constraintAnnotation {@link ImageSize} annotation from class
+     * @see ImageSize
+     */
     @Override
     public void initialize(ImageSize constraintAnnotation) {
         this.imageSize = constraintAnnotation.size();
@@ -44,6 +53,7 @@ public class ImageSizeValidator implements ConstraintValidator<ImageSize, Multip
     @Override
     public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext context) {
         if (multipartFile.isEmpty()) {
+            //assume that empty multipart file is valid to avoid validation message when user doesn't load nothing
             return true;
         }
         return multipartFile.getSize() < imageSize;

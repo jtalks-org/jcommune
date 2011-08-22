@@ -28,7 +28,30 @@ import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
+ * Constraint for checking that image has allowable format.
+ * This constraint for use with JSR-303 validator.
+ * <p/>
+ * You must annotate your field with {@link ImageFormat} annotation
+ * You must fill in the parameter <code>format</code>
+ * field name to test.
+ * Constraint can be used with any field types that have correct
+ * </code>equals()</code> method.
+ * <p/>
+ * Example:
+ * Validate that <code>format</code> are allowable.
+ * {@code
+ * class Test {
+ * &#064;ImageFormat(format={AllowableAvatarFormatsEnum.JPG, AllowableAvatarFormatsEnum.PNG,
+ * AllowableAvatarFormatsEnum.GIF})
+ * private MultipartFile image;
+ * public Test(MockMultipartFile image) {
+ * this.image = image;
+ * }
+ * }
+ * }
+ *
  * @author Eugeny Batov
+ * @see ImageFormatValidator
  */
 @Target({FIELD, ANNOTATION_TYPE})
 @Retention(RUNTIME)

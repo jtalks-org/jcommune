@@ -54,22 +54,28 @@
                 <td><form:errors path="currentUserPassword" cssClass="error"/></td>
             </tr>
             <tr>
-
-                <td>
-                    <c:if test="${user.avatar!=null}">
-                        <img src="${pageContext.request.contextPath}/show/${auth}/avatar.html" width="100"
-                             height="100"/><br>
-
-                        <a href="${pageContext.request.contextPath}/user/remove/avatar.html"><spring:message
-                                code="label.avatar.remove"/></a>
-                    </c:if>
-                </td>
-
+                <td></td>
                 <td><form:input path="avatar" type="file"/></td>
                 <td><form:errors path="avatar" cssClass="error"/></td>
             </tr>
         </table>
     </form:form>
+
+    <form action="${pageContext.request.contextPath}/user/remove/avatar.html" id="removeAvatarForm"
+          name="removeAvatarForm" method="POST">
+        <table>
+            <tr>
+                <td>
+                    <c:if test="${user.avatar!=null}">
+                        <img src="${pageContext.request.contextPath}/show/${auth}/avatar.html" width="100"
+                             height="100"/><br>
+                        <a href="javascript:submitForm('removeAvatarForm')"><spring:message
+                                code="label.avatar.remove"/></a>
+                    </c:if>
+                </td>
+            </tr>
+        </table>
+    </form>
 
     <table>
         <tr>

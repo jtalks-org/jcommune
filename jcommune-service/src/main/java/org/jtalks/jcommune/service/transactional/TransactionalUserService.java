@@ -160,7 +160,9 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         currentUser.setEmail(email);
         currentUser.setFirstName(firstName);
         currentUser.setLastName(lastName);
-        currentUser.setAvatar(avatar);
+        if (avatar.length > 0) {
+            currentUser.setAvatar(avatar);
+        }
 
 
         dao.saveOrUpdate(currentUser);

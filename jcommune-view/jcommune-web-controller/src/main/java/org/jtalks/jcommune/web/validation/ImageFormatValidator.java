@@ -23,12 +23,17 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 /**
+ * Validator for {@link ImageFormat}. Checks that image has allowable format.
+ *
  * @author Eugeny Batov
+ * @see ImageFormat
  */
 public class ImageFormatValidator implements ConstraintValidator<ImageFormat, MultipartFile> {
+    private AllowableAvatarFormatsEnum[] formats;
+
     @Override
-    public void initialize(ImageFormat imageFormat) {
-        //nothing to do
+    public void initialize(ImageFormat constraintAnnotation) {
+        this.formats = constraintAnnotation.format();
     }
 
     /**
@@ -42,9 +47,15 @@ public class ImageFormatValidator implements ConstraintValidator<ImageFormat, Mu
     @Override
     public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext context) {
         if (multipartFile.isEmpty()) {
+            //assume that empty multipart file is valid to avoid validation message when user doesn't load nothing
             return true;
         }
         String contentType = multipartFile.getContentType();
-        return contentType.equals("image/jpeg") || contentType.equals("image/png") || contentType.equals("image/gif");
+        for (AllowableAvatarFormatsEnum format : formats) {
+            if (format.getContentType().equals(contentType)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

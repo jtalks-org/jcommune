@@ -28,9 +28,30 @@ import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
+ * Constraint for checking that image has allowable dimension.
+ * This constraint for use with JSR-303 validator.
+ * <p/>
+ * You must annotate your field with {@link ImageDimension} annotation
+ * You must fill in the parameter <code>width</code> and <code>height</code>
+ * field name to test.
+ * Constraint can be used with any field types that have correct
+ * </code>equals()</code> method.
+ * <p/>
+ * Example:
+ * Validate that <code>width</code> and <code>height</code> are allowable.
+ * {@code
+ * class Test {
+ * &#064;ImageDimension(width = 100, height = 100)
+ * private MultipartFile image;
+ * public Test(MockMultipartFile image) {
+ * this.image = image;
+ * }
+ * }
+ * }
+ *
  * @author Eugeny Batov
+ * @see ImageFormatValidator
  */
-
 @Target({FIELD,ANNOTATION_TYPE})
 @Retention(RUNTIME)
 @Constraint(validatedBy = ImageDimensionValidator.class)

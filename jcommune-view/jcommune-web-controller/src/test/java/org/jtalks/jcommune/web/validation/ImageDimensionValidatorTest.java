@@ -39,7 +39,7 @@ public class ImageDimensionValidatorTest {
     public class TestObject {
 
         @ImageDimension(width = 4, height = 4)
-        MultipartFile avatar;
+        private MultipartFile avatar;
 
         public TestObject(MockMultipartFile avatar) {
             this.avatar = avatar;
