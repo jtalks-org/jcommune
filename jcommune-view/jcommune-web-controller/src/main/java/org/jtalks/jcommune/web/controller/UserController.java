@@ -166,7 +166,7 @@ public class UserController {
         try {
             editedUser = userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                     userDto.getLastName(), userDto.getCurrentUserPassword(), userDto.getNewUserPassword(),
-                    getAvatarByteArray(userDto.getAvatar()));
+                    userDto.getAvatar().getBytes());
         } catch (DuplicateEmailException e) {
             result.rejectValue("email", "validation.duplicateemail");
             return new ModelAndView(EDIT_PROFILE);
@@ -187,7 +187,7 @@ public class UserController {
      *
      * @return edit user profile page
      */
-    @RequestMapping(value = "/user/remove/avatar", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/remove/avatar", method = RequestMethod.POST)
     public ModelAndView removeAvatar() {
         User user = securityService.getCurrentUser();
         userService.removeAvatar(user);
@@ -214,19 +214,4 @@ public class UserController {
         response.getOutputStream().write(avatar);
     }
 
-    /**
-     * Returns avatar as an array of bytes.
-     *
-     * @param avatar multipart file from submitted form
-     * @return avatar byte array from submitted form if user loaded avatar
-     *         or avatar byte array from db if didn't
-     * @throws IOException - throws in case of access errors (if the temporary store fails)
-     */
-    private byte[] getAvatarByteArray(MultipartFile avatar) throws IOException {
-        if (!avatar.isEmpty()) {
-            return avatar.getBytes();
-        } else {
-            return securityService.getCurrentUser().getAvatar();
-        }
-    }
 }

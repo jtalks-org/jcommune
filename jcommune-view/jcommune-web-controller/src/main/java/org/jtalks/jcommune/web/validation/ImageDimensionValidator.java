@@ -23,16 +23,24 @@ import javax.imageio.ImageIO;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.awt.Image;
-import java.io.IOException;
 
 /**
+ * Validator for {@link ImageDimension}. Checks that image has allowable dimension.
+ *
  * @author Eugeny Batov
+ * @see ImageDimension
  */
 public class ImageDimensionValidator implements ConstraintValidator<ImageDimension, MultipartFile> {
 
     private int imageHeight;
     private int imageWidth;
 
+    /**
+     * Initialize validator fields from annotation instance.
+     *
+     * @param constraintAnnotation {@link ImageDimension} annotation from class
+     * @see ImageDimension
+     */
     @Override
     public void initialize(ImageDimension constraintAnnotation) {
         this.imageHeight = constraintAnnotation.height();
@@ -49,6 +57,7 @@ public class ImageDimensionValidator implements ConstraintValidator<ImageDimensi
     @Override
     public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext context) {
         if (multipartFile.isEmpty()) {
+            //assume that empty multipart file is valid to avoid validation message when user doesn't load nothing
             return true;
         }
         Image image;

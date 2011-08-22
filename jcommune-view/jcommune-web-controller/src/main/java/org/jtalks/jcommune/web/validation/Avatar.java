@@ -28,6 +28,25 @@ import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
+ * Constraint for checking that avatar satisfies size, dimension and format constraints.
+ * This constraint for use with JSR-303 validator.
+ * <p/>
+ * You must annotate your filed with {@link Avatar} annotation
+ * Constraint can be used with any field types that have correct
+ * </code>equals()</code> method.
+ * <p/>
+ * Example:
+ * Validate that <code>field1</code> and <code>field2</code> are equals.
+ * {@code
+ * class Test {
+ * &#064;Avatar
+ * private MultipartFile image;
+ * public Test(MockMultipartFile image) {
+ * this.image = image;
+ * }
+ * }
+ * }
+ *
  * @author Eugeny Batov
  */
 @ImageSize(size = 66560)
