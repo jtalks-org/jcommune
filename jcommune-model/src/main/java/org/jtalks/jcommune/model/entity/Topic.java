@@ -208,7 +208,7 @@ public class Topic extends Entity {
      *
      * @param branch branch that contains the topic
      */
-    void setBranch(Branch branch) {
+    public void setBranch(Branch branch) {
         this.branch = branch;
     }
 

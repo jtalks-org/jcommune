@@ -59,6 +59,12 @@ public class Breadcrumb {
     private BreadcrumbLocation breadcrumbLocation;
     private String breadcrumbLocationValue;
 
+    public Breadcrumb(Long id, BreadcrumbLocation breadcrumbLocation, String breadcrumbLocationValue) {
+        this.id = id;
+        this.breadcrumbLocation = breadcrumbLocation;
+        this.breadcrumbLocationValue = breadcrumbLocationValue;
+    }
+
     public Long getId() {
         return id;
     }
@@ -81,5 +87,27 @@ public class Breadcrumb {
 
     public void setBreadcrumbLocationValue(String breadcrumbLocationValue) {
         this.breadcrumbLocationValue = breadcrumbLocationValue;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Breadcrumb that = (Breadcrumb) o;
+
+        if (breadcrumbLocation != that.breadcrumbLocation) return false;
+        if (!breadcrumbLocationValue.equals(that.breadcrumbLocationValue)) return false;
+        if (!id.equals(that.id)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + breadcrumbLocation.hashCode();
+        result = 31 * result + breadcrumbLocationValue.hashCode();
+        return result;
     }
 }

@@ -152,7 +152,7 @@ public class Post extends Entity {
     /**
      * @param topic the Topic to set
      */
-    protected void setTopic(Topic topic) {
+    public void setTopic(Topic topic) {
         this.topic = topic;
     }
 }
