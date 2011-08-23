@@ -27,11 +27,13 @@ import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.mockito.Matchers;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeClass;
@@ -43,8 +45,16 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.ModelAndViewAssert.*;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 
@@ -269,6 +279,14 @@ public class UserControllerTest {
         verify(servletOutputStream).write(avatar.getBytes());
     }
 
+    @Test
+    public void testInitBinder() {
+        WebDataBinder binder = mock(WebDataBinder.class);
+
+        controller.initBinder(binder);
+
+        verify(binder).registerCustomEditor(eq(String.class), any(StringTrimmerEditor.class));
+    }
 
     private void assertContainsError(BindingResult bindingResult, String errorName) {
         for (ObjectError error : bindingResult.getAllErrors()) {
