@@ -27,10 +27,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Set;
 
 /**
@@ -61,8 +57,8 @@ public class ImageDimensionValidatorTest {
     @Test
     public void testValidatorNormalDimension() {
         Set<ConstraintViolation<TestObject>> constraintViolations =
-                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "test_avatar",
-                        "image/png", normalAvatarByteArray)));
+                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "test_avatar", "image/png",
+                        normalAvatarByteArray)));
 
         Assert.assertEquals(constraintViolations.size(), 0, "Validation errors");
 
@@ -71,8 +67,8 @@ public class ImageDimensionValidatorTest {
     @Test
     public void testValidatorLittleDimension() {
         Set<ConstraintViolation<TestObject>> constraintViolations =
-                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "test_avatar",
-                        "image/png", littleAvatarByteArray)));
+                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "test_avatar", "image/png",
+                        littleAvatarByteArray)));
 
         Assert.assertEquals(constraintViolations.size(), 1, "Validation without errors");
         Assert.assertNotNull(constraintViolations.iterator().next().getMessage());
@@ -81,8 +77,8 @@ public class ImageDimensionValidatorTest {
     @Test
     public void testValidatorBigDimension() {
         Set<ConstraintViolation<TestObject>> constraintViolations =
-                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "test_avatar",
-                        "image/png", bigAvatarByteArray)));
+                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "test_avatar", "image/png",
+                        bigAvatarByteArray)));
 
         Assert.assertEquals(constraintViolations.size(), 1, "Validation without errors");
         Assert.assertNotNull(constraintViolations.iterator().next().getMessage());
@@ -91,8 +87,7 @@ public class ImageDimensionValidatorTest {
     @Test
     public void testValidatorImageNull() {
         Set<ConstraintViolation<TestObject>> constraintViolations =
-                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "",
-                        "application/octet-stream",
+                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "", "application/octet-stream",
                         new byte[0])));
 
         Assert.assertEquals(constraintViolations.size(), 0, "Validation errors");
@@ -101,8 +96,7 @@ public class ImageDimensionValidatorTest {
     @Test
     public void testValidatorNotImage() {
         Set<ConstraintViolation<TestObject>> constraintViolations =
-                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "",
-                        "text/plain",
+                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "", "text/plain",
                         new byte[1024])));
 
         Assert.assertEquals(constraintViolations.size(), 1, "Validation without errors");
@@ -112,8 +106,7 @@ public class ImageDimensionValidatorTest {
     @Test
     public void testValidatorImageIco() {
         Set<ConstraintViolation<TestObject>> constraintViolations =
-                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "",
-                        "image/ico",
+                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "", "image/ico",
                         icoAvatarByteArray)));
 
         Assert.assertEquals(constraintViolations.size(), 1, "Validation without errors");
@@ -149,40 +142,40 @@ public class ImageDimensionValidatorTest {
             36, 71, 49, 115, -89, 85, 0, 0, 0, 0, 73, 69, 78, 68, -82, 66, 96, -126
     };
 
-        private byte[] icoAvatarByteArray = new byte[]{0, 0, 1, 0, 1, 0, 16, 16, 0, 0, 1, 0, 24, 0, 104, 3, 0, 0, 22, 0,
-                0, 0, 40, 0, 0, 0, 16, 0, 0, 0, 32, 0, 0, 0, 1, 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 96, 0, 0, 0, 96, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 114, 66, 41, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0,0, 114, 66, 41, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89,
-                99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 114,
-                66, 41, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 114, 66, 41, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99,
-                75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 114, 66, 41, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 114, 66, 41, -89, 99, 75, -89,
-                99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89,
-                99, 75, -89, 99, 75, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 114, 66, 41, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -68, -69, -70, -111, -111, -111,
-                -111, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111,
-                -111, -68, -69, -70, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -111, -111, -111,
-                -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29,
-                -29, -111, -111, -111, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -111, -111, -111,
-                -29, -29, -29, -29, -29, -29, -29, -29, -29, 114, 66, 41, -29, -29, -29, -29, -29, -29, -29, -29, -29,
-                -111, -111, -111, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -111, -111, -111, -20,
-                -19, -19, -20, -19, -19, -20, -19, -19, 114, 66, 41, -20, -19, -19, -20, -19, -19, -20, -19, -19, -111,
-                -111, -111, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -111, -111, -111, -5, -5,
-                -6, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -5, -5, -6, -111, -111, -111, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -111, -111, -111, -5, -5, -6, -5, -5, -6,
-                -5, -5, -6, 114, 66, 41, -5, -5, -6, -5, -5, -6, -5, -5, -6, -111, -111, -111, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -111, -111, -111, -4, -4, -4, -4, -4, -4, -4, -4, -4, 114, 66,
-                41, -4, -4, -4, -4, -4, -4, -4, -4, -4, -111, -111, -111, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, -111, -111, -111, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4,
-                -4, -4, -4, -4, -111, -111, -111, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -68,
-                -69, -70, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111,
-                -111, -111, -111, -111, -111, -111, -68, -69, -70, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, -9, -1, 0, 0, -16, 0, 0, 0, -9, -1, 0, 0, -16, 0, 0, 0, -9, -1, 0, 0, -16, 0, 0, 0, -9, -1,
-                0, 0, 0, 127, 0, 0, 0, 127, 0, 0, 0, 127, 0, 0, 0, 127, 0, 0, 0, 127, 0, 0, 0, 127, 0, 0, 0, 127, 0,
-                0, 0, 127, 0, 0, 0, 127, 0, 0,
+    private byte[] icoAvatarByteArray = new byte[]{0, 0, 1, 0, 1, 0, 16, 16, 0, 0, 1, 0, 24, 0, 104, 3, 0, 0, 22, 0,
+            0, 0, 40, 0, 0, 0, 16, 0, 0, 0, 32, 0, 0, 0, 1, 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 96, 0, 0, 0, 96, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 114, 66, 41, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 114, 66, 41, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89,
+            99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 114,
+            66, 41, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 114, 66, 41, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99,
+            75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 114, 66, 41, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 114, 66, 41, -89, 99, 75, -89,
+            99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89,
+            99, 75, -89, 99, 75, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 114, 66, 41, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -68, -69, -70, -111, -111, -111,
+            -111, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111,
+            -111, -68, -69, -70, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -111, -111, -111,
+            -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29, -29,
+            -29, -111, -111, -111, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -111, -111, -111,
+            -29, -29, -29, -29, -29, -29, -29, -29, -29, 114, 66, 41, -29, -29, -29, -29, -29, -29, -29, -29, -29,
+            -111, -111, -111, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -111, -111, -111, -20,
+            -19, -19, -20, -19, -19, -20, -19, -19, 114, 66, 41, -20, -19, -19, -20, -19, -19, -20, -19, -19, -111,
+            -111, -111, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -111, -111, -111, -5, -5,
+            -6, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -89, 99, 75, -5, -5, -6, -111, -111, -111, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -111, -111, -111, -5, -5, -6, -5, -5, -6,
+            -5, -5, -6, 114, 66, 41, -5, -5, -6, -5, -5, -6, -5, -5, -6, -111, -111, -111, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -111, -111, -111, -4, -4, -4, -4, -4, -4, -4, -4, -4, 114, 66,
+            41, -4, -4, -4, -4, -4, -4, -4, -4, -4, -111, -111, -111, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, -111, -111, -111, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4,
+            -4, -4, -4, -4, -111, -111, -111, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -68,
+            -69, -70, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111, -111,
+            -111, -111, -111, -111, -111, -111, -68, -69, -70, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, -9, -1, 0, 0, -16, 0, 0, 0, -9, -1, 0, 0, -16, 0, 0, 0, -9, -1, 0, 0, -16, 0, 0, 0, -9, -1,
+            0, 0, 0, 127, 0, 0, 0, 127, 0, 0, 0, 127, 0, 0, 0, 127, 0, 0, 0, 127, 0, 0, 0, 127, 0, 0, 0, 127, 0,
+            0, 0, 127, 0, 0, 0, 127, 0, 0,
 
     };
 

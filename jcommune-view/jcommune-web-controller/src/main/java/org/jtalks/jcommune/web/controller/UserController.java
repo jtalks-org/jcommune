@@ -27,16 +27,14 @@ import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
+import org.jtalks.jcommune.web.validation.ImageFormats;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
@@ -154,7 +152,7 @@ public class UserController {
     public ModelAndView editProfilePage() throws NotFoundException {
         User user = securityService.getCurrentUser();
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
-        return new ModelAndView(EDIT_PROFILE, "editedUser", editedUser).addObject(user);
+        return new ModelAndView(EDIT_PROFILE, "editedUser", editedUser);
     }
 
     /**
@@ -171,8 +169,13 @@ public class UserController {
     public ModelAndView editProfile(@Valid @ModelAttribute("editedUser") EditUserProfileDto userDto,
                                     BindingResult result) throws NotFoundException, IOException {
 
+        User user = securityService.getCurrentUser();
+
         if (result.hasErrors()) {
-            return new ModelAndView(EDIT_PROFILE);
+            if (user.getAvatar() == null) {
+                userDto.setAvatar(new MockMultipartFile("avatar","",ImageFormats.JPG.getContentType(),new byte[0]));
+            }
+            return new ModelAndView(EDIT_PROFILE, "editedUser", userDto);
         }
 
         User editedUser;
