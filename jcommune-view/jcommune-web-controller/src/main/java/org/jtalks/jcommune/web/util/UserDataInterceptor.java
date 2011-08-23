@@ -40,7 +40,7 @@ public class UserDataInterceptor extends HandlerInterceptorAdapter {
      * Constructor
      *
      * @param service         service
-     * @param securityService - {@link SecurityService}
+     * @param securityService {@link SecurityService}
      */
     @Autowired
     public UserDataInterceptor(PrivateMessageService service, SecurityService securityService) {
@@ -65,9 +65,8 @@ public class UserDataInterceptor extends HandlerInterceptorAdapter {
         int newPmCount = service.currentUserNewPmCount();
         request.setAttribute("newPmCount", newPmCount);
         User user = securityService.getCurrentUser();
-        
-        String encodedUserName = user != null ? user.getEncodedUsername() : null;        
-        request.setAttribute("encodedUserName", encodedUserName);            
-        
+
+        String encodedUserName = user != null ? user.getEncodedUsername() : null;
+        request.setAttribute("encodedUserName", encodedUserName);
     }
 }

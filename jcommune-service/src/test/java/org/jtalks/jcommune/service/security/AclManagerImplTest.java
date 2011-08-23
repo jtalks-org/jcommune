@@ -71,7 +71,7 @@ public class AclManagerImplTest {
     }
 
     @Test
-    public void testGrant() throws Exception {
+    public void testGrantOnObjectWithNotExistingAcl() throws Exception {
         ObjectIdentity objectIdentity = new ObjectIdentityImpl(target.getClass(), ID);
         MutableAcl objectAcl = new AclImpl(objectIdentity, 2L, mock(AclAuthorizationStrategy.class),
                 mock(AuditLogger.class));
@@ -86,6 +86,23 @@ public class AclManagerImplTest {
                 BasePermission.READ, "Permission to ROLE_USER not granted");
         verify(aclService).readAclById(objectIdentity);
         verify(aclService).createAcl(objectIdentity);
+        verify(aclService).updateAcl(objectAcl);
+    }
+
+    @Test
+    public void testGrantOnObjectWithExistingAcl() throws Exception {
+        ObjectIdentity objectIdentity = new ObjectIdentityImpl(target.getClass(), ID);
+        MutableAcl objectAcl = new AclImpl(objectIdentity, 2L, mock(AclAuthorizationStrategy.class),
+                mock(AuditLogger.class));
+        when(aclService.readAclById(objectIdentity)).thenReturn(objectAcl);
+
+        manager.grant(sids, permissions, target);
+
+        assertGranted(objectAcl, new PrincipalSid(USERNAME),
+                BasePermission.READ, "Permission to user not granted");
+        assertGranted(objectAcl, new GrantedAuthoritySid(ROLE),
+                BasePermission.READ, "Permission to ROLE_USER not granted");
+        verify(aclService).readAclById(objectIdentity);
         verify(aclService).updateAcl(objectAcl);
     }
 

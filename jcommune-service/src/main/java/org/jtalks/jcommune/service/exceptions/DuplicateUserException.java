@@ -23,14 +23,6 @@ package org.jtalks.jcommune.service.exceptions;
  * @author Eugeny Batov
  */
 public class DuplicateUserException extends DuplicateException {
-
-    /**
-     * Default constructor.
-     */
-    public DuplicateUserException() {
-        super();
-    }
-
     /**
      * Create exception with specific message.
      *
@@ -39,5 +31,4 @@ public class DuplicateUserException extends DuplicateException {
     public DuplicateUserException(String message) {
         super(message);
     }
-
 }
