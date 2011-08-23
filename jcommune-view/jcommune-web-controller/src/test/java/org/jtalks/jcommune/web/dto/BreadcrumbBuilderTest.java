@@ -45,13 +45,11 @@ public class BreadcrumbBuilderTest {
         branch.setId(ID);
         branch.setSection(section);
 
-        topic = new Topic(user, TOPIC_NAME);
+        topic = new Topic(user, branch, TOPIC_NAME);
         topic.setId(ID);
-        topic.setBranch(branch);
 
-        post = new Post(user, "content");
+        post = new Post(topic);
         post.setId(ID);
-        post.setTopic(topic);
     }
 
     @Test
@@ -73,31 +71,13 @@ public class BreadcrumbBuilderTest {
     }
 
     @Test
-    public void testGetSectionBreadcrumb() throws Exception {
+    public void testGetBranchBreadcrumb() throws Exception {
         //init
         Breadcrumb expectedBreadcrumb = new Breadcrumb(
                 ID,
                 Breadcrumb.BreadcrumbLocation.SECTION,
                 section.getName());
         List<Breadcrumb> expectedList = breadcrumbBuilder.getForumBreadcrumb();
-        expectedList.add(expectedBreadcrumb);
-
-        //invoke the object under test
-        List<Breadcrumb> actualList = breadcrumbBuilder.getForumBreadcrumb(section);
-
-        //check result
-        assertEquals(actualList, expectedList);
-
-    }
-
-    @Test
-    public void testGetBranchBreadcrumb() throws Exception {
-        //init
-        Breadcrumb expectedBreadcrumb = new Breadcrumb(
-                ID,
-                Breadcrumb.BreadcrumbLocation.BRANCH,
-                branch.getName());
-        List<Breadcrumb> expectedList = breadcrumbBuilder.getForumBreadcrumb(section);
         expectedList.add(expectedBreadcrumb);
 
         //invoke the object under test
@@ -112,8 +92,8 @@ public class BreadcrumbBuilderTest {
         //init
         Breadcrumb expectedBreadcrumb = new Breadcrumb(
                 ID,
-                Breadcrumb.BreadcrumbLocation.TOPIC,
-                topic.getTitle());
+                Breadcrumb.BreadcrumbLocation.BRANCH,
+                branch.getName());
         List<Breadcrumb> expectedList = breadcrumbBuilder.getForumBreadcrumb(branch);
         expectedList.add(expectedBreadcrumb);
 
@@ -129,8 +109,8 @@ public class BreadcrumbBuilderTest {
         //init
         Breadcrumb expectedBreadcrumb = new Breadcrumb(
                 ID,
-                Breadcrumb.BreadcrumbLocation.POST,
-                "Post ID " + post.getId());
+                Breadcrumb.BreadcrumbLocation.TOPIC,
+                topic.getTitle());
         List<Breadcrumb> expectedList = breadcrumbBuilder.getForumBreadcrumb(topic);
         expectedList.add(expectedBreadcrumb);
 

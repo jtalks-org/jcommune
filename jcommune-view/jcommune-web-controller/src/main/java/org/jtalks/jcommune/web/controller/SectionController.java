@@ -89,6 +89,6 @@ public final class SectionController {
 
         return new ModelAndView("branchList")
                 .addObject("section", section)
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(section));
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
     }
 }

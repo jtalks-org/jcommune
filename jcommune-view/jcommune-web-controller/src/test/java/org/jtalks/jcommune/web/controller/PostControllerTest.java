@@ -152,7 +152,7 @@ public class PostControllerTest {
 
         ModelAndView mav = controller.save(dto, bindingResult, BRANCH_ID, TOPIC_ID, POST_ID);
 
-        assertViewName(mav, "redirect:/branch/" + BRANCH_ID + "/topic/" + TOPIC_ID + ".html");
+        assertViewName(mav, "redirect:/topic/" + TOPIC_ID + ".html");
 
         verify(topicService).savePost(TOPIC_ID, POST_ID, POST_CONTENT);
 

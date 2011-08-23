@@ -67,6 +67,20 @@ public class Topic extends Entity {
     }
 
     /**
+     * Constructor used only for the input data in the
+     * org.jtalks.jcommune.web.dto.BreadcrumbBuilderTest class.
+     * *
+     * @param topicStarter
+     * @param branch
+     * @param title
+     */
+    public Topic(User topicStarter, Branch branch, String title) {
+        this.topicStarter = topicStarter;
+        this.branch = branch;
+        this.title = title;
+    }
+
+    /**
      * Add new {@link Post} to the topic.
      * The method sets Posts.topic field to this Topic.
      *
@@ -173,7 +187,7 @@ public class Topic extends Entity {
      *
      * @param branch branch that contains the topic
      */
-    public void setBranch(Branch branch) {
+    void setBranch(Branch branch) {
         this.branch = branch;
     }
 

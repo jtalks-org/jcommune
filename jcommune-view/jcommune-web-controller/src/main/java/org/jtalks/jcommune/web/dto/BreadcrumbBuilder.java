@@ -1,3 +1,20 @@
+/**
+ * Copyright (C) 2011  jtalks.org Team
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Also add information on how to contact you by electronic and paper mail.
+ * Creation date: Apr 12, 2011 / 8:05:19 PM
+ * The jtalks.org Project
+ */
 package org.jtalks.jcommune.web.dto;
 
 import org.jtalks.jcommune.model.entity.*;
@@ -13,6 +30,8 @@ import java.util.List;
  */
 
 public class BreadcrumbBuilder {
+       //TODO Need to define standard URI for most location - ${Entity type}/${Entity ID}.html
+
 
     /**
      * Returns the Forum breadcrumbs.
@@ -27,26 +46,13 @@ public class BreadcrumbBuilder {
     }
 
     /**
-     * Returns the section breadcrumbs.
-     *
-     * @param section {@link org.jtalks.jcommune.model.entity.Section} the breadcrumbed section.
-     * @return the breadcrumb list for the current <code>Section</code> location.
-     */
-    public List<Breadcrumb> getForumBreadcrumb(Section section) {
-        List<Breadcrumb> breadcrumbList = getForumBreadcrumb();
-        breadcrumbList.add(prepareSectionBreadcrumb(section));
-
-        return breadcrumbList;
-    }
-
-    /**
      * Returns the branch breadcrumbs.
      *
      * @param branch {@link org.jtalks.jcommune.model.entity.Branch} the breadcrumbed branch.
      * @return the breadcrumb list for the current <code>Branch</code> location.
      */
     public List<Breadcrumb> getForumBreadcrumb(Branch branch) {
-        List<Breadcrumb> breadcrumbList = getForumBreadcrumb(branch.getSection());
+        List<Breadcrumb> breadcrumbList = getForumBreadcrumb();
         breadcrumbList.add(prepareBranchBreadcrumb(branch));
 
         return breadcrumbList;
@@ -127,12 +133,13 @@ public class BreadcrumbBuilder {
     }
 
     /**
-     * Fill the section breadcrumb.
+     * Fill the branch breadcrumb.
      *
-     * @param section {@link org.jtalks.jcommune.model.entity.Section} the breadcrumbed section.
-     * @return {@link Breadcrumb} the filled breadcrumb for the Forum location.
+     * @param branch {@link org.jtalks.jcommune.model.entity.Branch} the breadcrumbed branch.
+     * @return {@link Breadcrumb} the filled breadcrumb for the Section location.
      */
-    private Breadcrumb prepareSectionBreadcrumb(Section section) {
+    private Breadcrumb prepareBranchBreadcrumb(Branch branch) {
+        Section section = branch.getSection();
         return new Breadcrumb(
                 section.getId(),
                 Breadcrumb.BreadcrumbLocation.SECTION,
@@ -142,27 +149,15 @@ public class BreadcrumbBuilder {
     /**
      * Fill the branch breadcrumb.
      *
-     * @param branch {@link org.jtalks.jcommune.model.entity.Branch} the breadcrumbed branch.
-     * @return {@link Breadcrumb} the filled breadcrumb for the Section location.
-     */
-    private Breadcrumb prepareBranchBreadcrumb(Branch branch) {
-        return new Breadcrumb(
-                branch.getId(),
-                Breadcrumb.BreadcrumbLocation.BRANCH,
-                branch.getName());
-    }
-
-    /**
-     * Fill the branch breadcrumb.
-     *
      * @param topic {@link org.jtalks.jcommune.model.entity.Topic} the breadcrumbed topic.
      * @return {@link Breadcrumb} the filled breadcrumb for the Topic location.
      */
     private Breadcrumb prepareTopicBreadcrumb(Topic topic) {
+        Branch branch = topic.getBranch();
         return new Breadcrumb(
-                topic.getId(),
-                Breadcrumb.BreadcrumbLocation.TOPIC,
-                topic.getTitle());
+                branch.getId(),
+                Breadcrumb.BreadcrumbLocation.BRANCH,
+                branch.getName());
     }
 
     /**
@@ -172,11 +167,11 @@ public class BreadcrumbBuilder {
      * @return {@link Breadcrumb} the filled breadcrumb for the Post location.
      */
     private Breadcrumb preparePostBreadcrumb(Post post) {
+        Topic topic = post.getTopic();
         return new Breadcrumb(
-                post.getId(),
-                Breadcrumb.BreadcrumbLocation.POST,
-                //TODO Need additional info about display post breadcrumb
-                "Post ID " + post.getId());
+                topic.getId(),
+                Breadcrumb.BreadcrumbLocation.TOPIC,
+                topic.getTitle());
     }
 
     /**
@@ -215,30 +210,5 @@ public class BreadcrumbBuilder {
                 Breadcrumb.DRAFTS_BREADCRUMB_LOCATION_VALUE);
     }
 
-    /**
-     * Fill the new PM breadcrumb.
-     *
-     * @return {@link Breadcrumb} the filled breadcrumb for the new PM location.
-     */
-    private Breadcrumb prepareNewPMBreadcrumb() {
-        return new Breadcrumb(
-                Breadcrumb.STUB_BREADCRUMB_ID,
-                Breadcrumb.BreadcrumbLocation.NEW_PM,
-                Breadcrumb.NEW_PM_BREADCRUMB_LOCATION_VALUE);
-    }
 
-    /**
-     * Fill the draft PM breadcrumb.
-     *
-     * @param pm {@link org.jtalks.jcommune.model.entity.PrivateMessage} the breadcrumbed draft pm.
-     * @return {@link Breadcrumb} the filled breadcrumb for the draft location.
-     */
-    private Breadcrumb prepareDraftPmBreadcrumb(PrivateMessage pm) {
-        //TODO Need to define standard URI for most location - ${Entity type}/${Entity ID}.html
-        //TODO Need additional info regarding to display draft breadcrumb
-        return new Breadcrumb(
-                pm.getId(),
-                Breadcrumb.BreadcrumbLocation.DRAFT_PM,
-                Breadcrumb.DRAFT_PM_BREADCRUMB_LOCATION_VALUE + ": " + pm.getTitle());
-    }
 }

@@ -65,14 +65,14 @@ public class SectionControllerTest {
 
         //set expectations
         when(sectionService.get(sectionId)).thenReturn(section);
-        when(breadcrumbBuilder.getForumBreadcrumb(section)).thenReturn(new ArrayList<Breadcrumb>());
+        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
 
         //invoke the object under test
         ModelAndView mav = controller.branchList(sectionId);
 
         //check expectations
         verify(sectionService).get(sectionId);
-        verify(breadcrumbBuilder).getForumBreadcrumb(section);
+        verify(breadcrumbBuilder).getForumBreadcrumb();
 
         //check result
         assertViewName(mav, "branchList");
