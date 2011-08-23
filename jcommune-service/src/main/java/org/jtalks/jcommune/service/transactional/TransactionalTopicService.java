@@ -17,7 +17,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -205,17 +204,4 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         securityService.deleteFromAcl(Topic.class, topicId);
         return branch;
     }
-    
-    @Override
-    public void savePost(long topicId, long postId, String postContent) 
-            throws NotFoundException{
-        Topic topic = get(topicId);
-        Post post = postService.get(postId);
-
-        post.setPostContent(postContent); 
-        post.setModificationDate(new DateTime());
-
-        dao.update(topic);
-        logger.debug("Update the topic {}", topic.getId());
-     }
 }

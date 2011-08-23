@@ -120,4 +120,22 @@ public class TransactionalPostServiceTest {
 
         postService.getPostsInTopicCount(TOPIC_ID);
     }
+    
+    @Test
+    void testSavePost() throws NotFoundException {
+        String newBody = "new body";
+        Post post = Post.createNewPost();
+        post.setId(POST_ID);
+        post.setPostContent("body");
+        
+        when(postDao.isExist(POST_ID)).thenReturn(true);      
+        when(postService.get(POST_ID)).thenReturn(post); 
+        
+        postService.savePost(POST_ID,newBody);
+        
+        assertEquals(post.getPostContent(), newBody);
+        
+        verify(postDao).get(POST_ID);
+        verify(postDao).update(post);        
+    }
 }

@@ -85,7 +85,9 @@ public class Post extends Entity {
     public DateTime getCreationDate() {
         return creationDate;
     }
-
+     /**
+     * @return date and time when the post was changed last time
+     */
     public DateTime getModificationDate() {
         return modificationDate;
     }
@@ -93,13 +95,13 @@ public class Post extends Entity {
     /**
      * @param postDate the postDate to set
      */
-    public void setCreationDate(DateTime postDate) {
+    protected void setCreationDate(DateTime postDate) {
         this.creationDate = postDate;
     }
     /**
-     * @param modificationDate date and time when theme was changed last time
+     * @param modificationDate date and time when the post was changed last time
      */
-    public void setModificationDate(DateTime modificationDate) {
+    protected void setModificationDate(DateTime modificationDate) {
         this.modificationDate = modificationDate;
     }
     /**

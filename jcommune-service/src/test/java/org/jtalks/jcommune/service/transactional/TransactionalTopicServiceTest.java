@@ -293,29 +293,7 @@ public class TransactionalTopicServiceTest {
         verify(topicDao).update(topic);
     }
     
-    @Test
-    void testSavePost() throws NotFoundException {
-        String newBody = "new body";
-        Topic topic = Topic.createNewTopic();
-        topic.setId(TOPIC_ID);
-        Post post = Post.createNewPost();
-        post.setId(POST_ID);
-        post.setPostContent("body");
-        topic.addPost(post);
-
-        when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
-        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
-        
-        when(postService.get(POST_ID)).thenReturn(post);
-
-        topicService.savePost(TOPIC_ID, POST_ID, newBody);
-
-        assertEquals(post.getPostContent(), newBody);
-
-        verify(topicDao).isExist(TOPIC_ID);
-        verify(topicDao).get(TOPIC_ID);
-        verify(topicDao).update(topic);
-    } 
+    
 
     @Test
     void testSaveTopicSimple() throws NotFoundException {

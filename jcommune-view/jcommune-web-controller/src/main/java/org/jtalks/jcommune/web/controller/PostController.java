@@ -149,7 +149,7 @@ public class PostController {
                     .addObject(POST_ID, postId);
         }
 
-        topicService.savePost(topicId, postDto.getId(), postDto.getBodyText());
+        postService.savePost(postDto.getId(),postDto.getBodyText());
 
         return new ModelAndView("redirect:/branch/" + branchId + "/topic/" + topicId + ".html");
     }

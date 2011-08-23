@@ -38,7 +38,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.never;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
 
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeValues;
@@ -131,7 +132,7 @@ public class PostControllerTest {
 
          assertViewName(mav, "redirect:/branch/" + BRANCH_ID + "/topic/" + TOPIC_ID + ".html");
 
-         verify(topicService).savePost(TOPIC_ID, POST_ID, POST_CONTENT);
+         verify(postService).savePost(POST_ID,POST_CONTENT);
         
     }
     
@@ -152,7 +153,7 @@ public class PostControllerTest {
          assertEquals(topicId, TOPIC_ID);
          assertEquals(postId, POST_ID);
 
-         verify(topicService, never()).savePost(anyLong(), anyLong(), anyString());
+         verify(postService, never()).savePost( anyLong(), anyString());
     }
     
      private PostDto getDto() {
