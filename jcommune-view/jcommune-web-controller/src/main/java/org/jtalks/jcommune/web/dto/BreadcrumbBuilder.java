@@ -79,37 +79,12 @@ public class BreadcrumbBuilder {
     }
 
     /**
-     * Returns the profile breadcrumbs.
-     *
-     * @param user {@link org.jtalks.jcommune.model.entity.User} the breadcrumbed user profile.
-     * @return the breadcrumb list for the <code>User</code> profile location.
-     */
-    public List<Breadcrumb> getProfileBreadcrumb(User user) {
-        List<Breadcrumb> breadcrumbList = getForumBreadcrumb();
-        breadcrumbList.add(prepareProfileBreadcrumb(user));
-
-        return breadcrumbList;
-    }
-
-    /**
-     * Returns the PM breadcrumbs.
-     *
-     * @return the breadcrumb list for the PM location.
-     */
-    public List<Breadcrumb> getPmBreadcrumb() {
-        List<Breadcrumb> breadcrumbList = getForumBreadcrumb();
-        breadcrumbList.add(preparePmBreadcrumb());
-
-        return breadcrumbList;
-    }
-
-    /**
      * Return the Inbox breadcrumbs.
      *
      * @return the breadcrumb list for the Inbox location.
      */
     public List<Breadcrumb> getInboxBreadcrumb() {
-        List<Breadcrumb> breadcrumbList = getPmBreadcrumb();
+        List<Breadcrumb> breadcrumbList = getForumBreadcrumb();
         breadcrumbList.add(prepareInboxBreadcrumb());
 
         return breadcrumbList;
@@ -121,7 +96,7 @@ public class BreadcrumbBuilder {
      * @return the breadcrumb list for the Outbox location.
      */
     public List<Breadcrumb> getOutboxBreadcrumb() {
-        List<Breadcrumb> breadcrumbList = getPmBreadcrumb();
+        List<Breadcrumb> breadcrumbList = getForumBreadcrumb();
         breadcrumbList.add(prepareOutboxBreadcrumb());
 
         return breadcrumbList;
@@ -133,7 +108,7 @@ public class BreadcrumbBuilder {
      * @return the breadcrumb list for the Drafts location.
      */
     public List<Breadcrumb> getDraftsBreadcrumbs() {
-        List<Breadcrumb> breadcrumbList = getPmBreadcrumb();
+        List<Breadcrumb> breadcrumbList = getForumBreadcrumb();
         breadcrumbList.add(prepareDraftsBreadcrumb());
 
         return breadcrumbList;
@@ -142,7 +117,7 @@ public class BreadcrumbBuilder {
     /**
      * Fill the forum breadcrumb.
      *
-     * @return {@link Breadcrumb} the filled breadcrumb fot the Forum location.
+     * @return {@link Breadcrumb} the filled breadcrumb for the Forum location.
      */
     private Breadcrumb prepareForumBreadcrumb() {
         return new Breadcrumb(
@@ -155,7 +130,7 @@ public class BreadcrumbBuilder {
      * Fill the section breadcrumb.
      *
      * @param section {@link org.jtalks.jcommune.model.entity.Section} the breadcrumbed section.
-     * @return {@link Breadcrumb} the filled breadcrumb fot the Forum location.
+     * @return {@link Breadcrumb} the filled breadcrumb for the Forum location.
      */
     private Breadcrumb prepareSectionBreadcrumb(Section section) {
         return new Breadcrumb(
@@ -168,7 +143,7 @@ public class BreadcrumbBuilder {
      * Fill the branch breadcrumb.
      *
      * @param branch {@link org.jtalks.jcommune.model.entity.Branch} the breadcrumbed branch.
-     * @return {@link Breadcrumb} the filled breadcrumb fot the Section location.
+     * @return {@link Breadcrumb} the filled breadcrumb for the Section location.
      */
     private Breadcrumb prepareBranchBreadcrumb(Branch branch) {
         return new Breadcrumb(
@@ -181,7 +156,7 @@ public class BreadcrumbBuilder {
      * Fill the branch breadcrumb.
      *
      * @param topic {@link org.jtalks.jcommune.model.entity.Topic} the breadcrumbed topic.
-     * @return {@link Breadcrumb} the filled breadcrumb fot the Topic location.
+     * @return {@link Breadcrumb} the filled breadcrumb for the Topic location.
      */
     private Breadcrumb prepareTopicBreadcrumb(Topic topic) {
         return new Breadcrumb(
@@ -194,7 +169,7 @@ public class BreadcrumbBuilder {
      * Fill the post breadcrumb.
      *
      * @param post {@link org.jtalks.jcommune.model.entity.Post} the breadcrumbed post.
-     * @return {@link Breadcrumb} the filled breadcrumb fot the Post location.
+     * @return {@link Breadcrumb} the filled breadcrumb for the Post location.
      */
     private Breadcrumb preparePostBreadcrumb(Post post) {
         return new Breadcrumb(
@@ -205,34 +180,9 @@ public class BreadcrumbBuilder {
     }
 
     /**
-     * Fill the profile breadcrumb.
-     *
-     * @param user {@link org.jtalks.jcommune.model.entity.User} the breadcrumbed user profile.
-     * @return {@link Breadcrumb} the filled breadcrumb fot the user profile location.
-     */
-    private Breadcrumb prepareProfileBreadcrumb(User user) {
-        return new Breadcrumb(
-                user.getId(),
-                Breadcrumb.BreadcrumbLocation.PROFILE,
-                user.getUsername());
-    }
-
-    /**
-     * Fill the PM breadcrumb.
-     *
-     * @return {@link Breadcrumb} the filled breadcrumb fot the PM location.
-     */
-    private Breadcrumb preparePmBreadcrumb() {
-        return new Breadcrumb(
-                Breadcrumb.STUB_BREADCRUMB_ID,
-                Breadcrumb.BreadcrumbLocation.PRIVATE_MESSAGE,
-                Breadcrumb.PM_BREADCRUMB_LOCATION_VALUE);
-    }
-
-    /**
      * Fill the inbox breadcrumb.
      *
-     * @return {@link Breadcrumb} the filled breadcrumb fot the inbox location.
+     * @return {@link Breadcrumb} the filled breadcrumb for the inbox location.
      */
     private Breadcrumb prepareInboxBreadcrumb() {
         return new Breadcrumb(
@@ -244,7 +194,7 @@ public class BreadcrumbBuilder {
     /**
      * Fill the outbox breadcrumb.
      *
-     * @return {@link Breadcrumb} the filled breadcrumb fot the outbox location.
+     * @return {@link Breadcrumb} the filled breadcrumb for the outbox location.
      */
     private Breadcrumb prepareOutboxBreadcrumb() {
         return new Breadcrumb(
@@ -256,7 +206,7 @@ public class BreadcrumbBuilder {
     /**
      * Fill the drafts breadcrumb.
      *
-     * @return {@link Breadcrumb} the filled breadcrumb fot the drafts location.
+     * @return {@link Breadcrumb} the filled breadcrumb for the drafts location.
      */
     private Breadcrumb prepareDraftsBreadcrumb() {
         return new Breadcrumb(
@@ -268,7 +218,7 @@ public class BreadcrumbBuilder {
     /**
      * Fill the new PM breadcrumb.
      *
-     * @return {@link Breadcrumb} the filled breadcrumb fot the new PM location.
+     * @return {@link Breadcrumb} the filled breadcrumb for the new PM location.
      */
     private Breadcrumb prepareNewPMBreadcrumb() {
         return new Breadcrumb(
@@ -281,7 +231,7 @@ public class BreadcrumbBuilder {
      * Fill the draft PM breadcrumb.
      *
      * @param pm {@link org.jtalks.jcommune.model.entity.PrivateMessage} the breadcrumbed draft pm.
-     * @return {@link Breadcrumb} the filled breadcrumb fot the draft location.
+     * @return {@link Breadcrumb} the filled breadcrumb for the draft location.
      */
     private Breadcrumb prepareDraftPmBreadcrumb(PrivateMessage pm) {
         //TODO Need to define standard URI for most location - ${Entity type}/${Entity ID}.html

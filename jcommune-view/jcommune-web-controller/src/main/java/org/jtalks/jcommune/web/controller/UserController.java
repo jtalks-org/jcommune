@@ -24,6 +24,7 @@ import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
 import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
+import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,7 @@ public class UserController {
 
     private final SecurityService securityService;
     private final UserService userService;
+    private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
 
     /**
      * This method turns the trim binder on. Trim bilder
@@ -79,6 +81,16 @@ public class UserController {
     public UserController(UserService userService, SecurityService securityService) {
         this.userService = userService;
         this.securityService = securityService;
+    }
+
+     /**
+     * This method allows us to set the breadcrumb builder.
+     * This can be useful for testing to mock/stub the real builder.
+     *
+     * @param breadcrumbBuilder builder to be used when constructing breadcrumb objects
+     */
+    public void setBreadcrumbBuilder(BreadcrumbBuilder breadcrumbBuilder) {
+        this.breadcrumbBuilder = breadcrumbBuilder;
     }
 
     /**
@@ -127,7 +139,9 @@ public class UserController {
     @RequestMapping(value = "/user/{encodedUsername}", method = RequestMethod.GET)
     public ModelAndView show(@PathVariable("encodedUsername") String encodedUsername) throws NotFoundException {
         User user = userService.getByEncodedUsername(encodedUsername);
-        return new ModelAndView("userDetails", "user", user);
+        return new ModelAndView("userDetails")
+                .addObject("user", user)
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
     }
 
     /**

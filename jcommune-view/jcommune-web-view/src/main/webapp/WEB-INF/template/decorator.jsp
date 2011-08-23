@@ -35,11 +35,23 @@
             <td class="background">
                 <c:forEach var="breadcrumb" items="${breadcrumbList}">
                     <c:choose>
+                        <%--create root breadcrumb--%>
                         <c:when test="${breadcrumb.breadcrumbLocation.name == 'main'}">
                             <a href="${pageContext.request.contextPath}/${breadcrumb.breadcrumbLocation.name}.html">
                                 <span class="nav"> <fmt:message key="label.forum"/> </span>
                             </a>
                         </c:when>
+                        <%--create inbox, outbox, drafts breadcrumbs--%>
+                        <c:when test="${breadcrumb.breadcrumbLocation.name == 'inbox'
+                        || breadcrumb.breadcrumbLocation.name == 'outbox'
+                        || breadcrumb.breadcrumbLocation.name == 'drafts'}">
+                            <%--TODO Need to define standard URI for most location - ${Entity type}/${Entity ID}.html--%>
+                            <%--TODO Need to remove '/pm/' from controller mapping.html--%>
+                            <a href="${pageContext.request.contextPath}/pm/${breadcrumb.breadcrumbLocation.name}.html">
+                                <span class="nav"> <c:out value="${breadcrumb.breadcrumbLocationValue}"/> </span>
+                            </a>
+                        </c:when>
+                        <%--create section, topic, branch, post breadcrumb--%>
                         <c:otherwise>
                             <a href="${pageContext.request.contextPath}/${breadcrumb.breadcrumbLocation.name}/${breadcrumb.id}.html">
                                 <span class="nav"> <c:out value="${breadcrumb.breadcrumbLocationValue}"/> </span>
@@ -49,7 +61,7 @@
                 </c:forEach>
                 <span style="float: right">
                 <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                    <a href="${pageContext.request.contextPath}/user/${encodedUserName}.html"><sec:authentication property="principal.username"/></a>&nbsp;                    
+                    <a href="${pageContext.request.contextPath}/user/${encodedUserName}.html"><sec:authentication property="principal.username"/></a>&nbsp;
                     <a href="${pageContext.request.contextPath}/pm/inbox.html"><fmt:message key="label.pm"/> (${newPmCount})</a>
                     <a href="${pageContext.request.contextPath}/logout.html"><fmt:message key="label.logout"/></a>
                 </sec:authorize>

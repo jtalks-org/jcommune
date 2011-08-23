@@ -24,6 +24,8 @@ import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
 import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
+import org.jtalks.jcommune.web.dto.Breadcrumb;
+import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.mockito.Matchers;
@@ -43,6 +45,7 @@ import org.testng.annotations.Test;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -75,6 +78,7 @@ public class UserControllerTest {
     private final String PASSWORD = "password";
     private final String NEW_PASSWORD = "newPassword";
     private MultipartFile avatar;
+    private BreadcrumbBuilder breadcrumbBuilder;
 
     @BeforeClass
     public void mockAvatar() throws IOException {
@@ -87,6 +91,8 @@ public class UserControllerTest {
         userService = mock(UserService.class);
         securityService = mock(SecurityService.class);
         controller = new UserController(userService, securityService);
+        breadcrumbBuilder = mock(BreadcrumbBuilder.class);
+        controller.setBreadcrumbBuilder(breadcrumbBuilder);
     }
 
     @Test
@@ -159,14 +165,24 @@ public class UserControllerTest {
 
     @Test
     public void testShow() throws Exception {
+        //set expectations
         when(userService.getByEncodedUsername(ENCODED_USER_NAME))
                 .thenReturn(new User("username", "email", "password"));
+        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
 
+
+        //invoke the object under test
         ModelAndView mav = controller.show(ENCODED_USER_NAME);
 
+        //check expectations
+        verify(userService).getByEncodedUsername(ENCODED_USER_NAME);
+        verify(breadcrumbBuilder).getForumBreadcrumb();
+
+        //check result
         assertViewName(mav, "userDetails");
         assertModelAttributeAvailable(mav, "user");
-        verify(userService).getByEncodedUsername(ENCODED_USER_NAME);
+        assertModelAttributeAvailable(mav, "breadcrumbList");
+
     }
 
     @Test
