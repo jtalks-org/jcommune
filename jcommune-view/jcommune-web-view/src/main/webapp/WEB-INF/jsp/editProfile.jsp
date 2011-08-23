@@ -12,7 +12,7 @@
           type=text/css rel=stylesheet>
 </head>
 <body>
-<div id="editUserdetails">
+<div id="editUserDetails">
     <form:form id="editProfileForm" name="editProfileForm"
                action="${pageContext.request.contextPath}/user/edit.html"
                modelAttribute="editedUser" method="POST" enctype="multipart/form-data">
@@ -66,7 +66,7 @@
         <table>
             <tr>
                 <td>
-                    <c:if test="${user.avatar!=null}">
+                    <c:if test="${editedUser.avatar!=null}">
                         <img src="${pageContext.request.contextPath}/show/${auth}/avatar.html" width="100"
                              height="100"/><br>
                         <a href="javascript:submitForm('removeAvatarForm')"><spring:message

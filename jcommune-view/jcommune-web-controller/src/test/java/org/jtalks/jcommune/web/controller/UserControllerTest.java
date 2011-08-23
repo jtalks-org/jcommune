@@ -259,10 +259,10 @@ public class UserControllerTest {
     public void testRemoveAvatar() throws IOException {
         User user = getUser();
         when(securityService.getCurrentUser()).thenReturn(user);
-        ModelAndView mav = controller.removeAvatar();
+        ModelAndView mav = controller.removeAvatarFromCurrentUser();
         assertViewName(mav, "editProfile");
         verify(securityService).getCurrentUser();
-        verify(userService).removeAvatar(user);
+        verify(userService).removeAvatarFromCurrentUser(user);
     }
 
     @Test

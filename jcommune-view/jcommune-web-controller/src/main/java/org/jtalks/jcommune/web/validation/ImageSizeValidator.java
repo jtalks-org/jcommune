@@ -31,7 +31,7 @@ import javax.validation.ConstraintValidatorContext;
 public class ImageSizeValidator implements ConstraintValidator<ImageSize, MultipartFile> {
 
     private int imageSize;
-    private final int BYTES_IN_KILOBYTE=1024;
+    private static final int BYTES_IN_KILOBYTE=1024;
 
     /**
      * Initialize validator fields from annotation instance.
