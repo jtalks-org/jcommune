@@ -29,7 +29,7 @@ import javax.validation.ConstraintValidatorContext;
  * @see ImageFormat
  */
 public class ImageFormatValidator implements ConstraintValidator<ImageFormat, MultipartFile> {
-    private AllowableAvatarFormatsEnum[] formats;
+    private ImageFormats[] formats;
 
     @Override
     public void initialize(ImageFormat constraintAnnotation) {
@@ -51,7 +51,7 @@ public class ImageFormatValidator implements ConstraintValidator<ImageFormat, Mu
             return true;
         }
         String contentType = multipartFile.getContentType();
-        for (AllowableAvatarFormatsEnum format : formats) {
+        for (ImageFormats format : formats) {
             if (format.getContentType().equals(contentType)) {
                 return true;
             }

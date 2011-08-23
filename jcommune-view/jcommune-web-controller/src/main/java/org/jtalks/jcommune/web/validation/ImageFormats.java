@@ -22,7 +22,7 @@ package org.jtalks.jcommune.web.validation;
  *
  * @author Eugeny Batov
  */
-public enum AllowableAvatarFormatsEnum {
+public enum ImageFormats {
 
     JPG("image/jpeg"), GIF("image/gif"), PNG("image/png");
 
@@ -33,7 +33,7 @@ public enum AllowableAvatarFormatsEnum {
      *
      * @param contentType - content type
      */
-    AllowableAvatarFormatsEnum(String contentType) {
+    ImageFormats(String contentType) {
         this.contentType = contentType;
     }
 

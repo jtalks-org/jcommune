@@ -31,6 +31,7 @@ import javax.validation.ConstraintValidatorContext;
 public class ImageSizeValidator implements ConstraintValidator<ImageSize, MultipartFile> {
 
     private int imageSize;
+    private final int BYTES_IN_KILOBYTE=1024;
 
     /**
      * Initialize validator fields from annotation instance.
@@ -56,6 +57,6 @@ public class ImageSizeValidator implements ConstraintValidator<ImageSize, Multip
             //assume that empty multipart file is valid to avoid validation message when user doesn't load nothing
             return true;
         }
-        return multipartFile.getSize() < imageSize;
+        return multipartFile.getSize()/BYTES_IN_KILOBYTE < imageSize;
     }
 }

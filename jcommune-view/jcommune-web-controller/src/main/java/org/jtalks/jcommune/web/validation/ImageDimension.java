@@ -63,7 +63,7 @@ public @interface ImageDimension {
      *
      * @return message when validation fails.
      */
-    String message() default "{avatar.wrong.size}";
+    String message() default "{image.wrong.dimension}";
 
     /**
      * Groups element that specifies the processing groups with which the

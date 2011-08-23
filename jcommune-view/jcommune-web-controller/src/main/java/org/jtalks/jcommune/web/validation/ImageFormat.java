@@ -41,8 +41,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * Validate that <code>format</code> are allowable.
  * {@code
  * class Test {
- * &#064;ImageFormat(format={AllowableAvatarFormatsEnum.JPG, AllowableAvatarFormatsEnum.PNG,
- * AllowableAvatarFormatsEnum.GIF})
+ * &#064;ImageFormat(format={ImageFormats.JPG, ImageFormats.PNG,
+ * ImageFormats.GIF})
  * private MultipartFile image;
  * public Test(MockMultipartFile image) {
  * this.image = image;
@@ -63,7 +63,7 @@ public @interface ImageFormat {
      *
      * @return message when validation fails.
      */
-    String message() default "{avatar.wrong.format}";
+    String message() default "{image.wrong.format}";
 
     /**
      * Groups element that specifies the processing groups with which the
@@ -86,5 +86,5 @@ public @interface ImageFormat {
      *
      * @return enum of allowable formats
      */
-    AllowableAvatarFormatsEnum[] format();
+    ImageFormats[] format();
 }
