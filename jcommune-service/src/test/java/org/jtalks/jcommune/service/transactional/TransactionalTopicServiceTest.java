@@ -19,7 +19,6 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -62,7 +61,7 @@ public class TransactionalTopicServiceTest {
     final String TOPIC_TITLE = "topic title";
     final String BRANCH_NAME = "branch name";
     private static final String USERNAME = "username";
-
+    private User user;
     final String ANSWER_BODY = "Test Answer Body";
     private TopicService topicService;
     private SecurityService securityService;
@@ -82,6 +81,7 @@ public class TransactionalTopicServiceTest {
         postService = mock(PostService.class);
         topicService = new TransactionalTopicService(topicDao, securityService,
                 branchService, branchDao, postService);
+        user = new User(USERNAME, "email@mail.com", "password");
     }
 
     @Test
@@ -107,8 +107,7 @@ public class TransactionalTopicServiceTest {
     @Test
     public void testAddAnswer() throws NotFoundException {
         Topic answeredTopic = Topic.createNewTopic();
-        User author = new User(USERNAME, "email", "password");
-        when(securityService.getCurrentUser()).thenReturn(author);
+        when(securityService.getCurrentUser()).thenReturn(user);
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(answeredTopic);
         when(securityService.grantToCurrentUser()).thenReturn(aclBuilder);
@@ -116,7 +115,7 @@ public class TransactionalTopicServiceTest {
         Post createdPost = topicService.addAnswer(TOPIC_ID, ANSWER_BODY);
 
         assertEquals(createdPost.getPostContent(), ANSWER_BODY);
-        assertEquals(createdPost.getUserCreated(), author);
+        assertEquals(createdPost.getUserCreated(), user);
         verify(securityService).getCurrentUser();
         verify(topicDao).get(TOPIC_ID);
         verify(topicDao).update(answeredTopic);
@@ -135,9 +134,8 @@ public class TransactionalTopicServiceTest {
 
     @Test
     public void testCreateTopic() throws NotFoundException {
-        User author = new User(USERNAME, "email", "password");
         Branch branch = new Branch(BRANCH_NAME);
-        when(securityService.getCurrentUser()).thenReturn(author);
+        when(securityService.getCurrentUser()).thenReturn(user);
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
         when(securityService.grantToCurrentUser()).thenReturn(aclBuilder);
 
@@ -145,10 +143,10 @@ public class TransactionalTopicServiceTest {
 
         Post createdPost = createdTopic.getFirstPost();
         assertEquals(createdTopic.getTitle(), TOPIC_TITLE);
-        assertEquals(createdTopic.getTopicStarter(), author);
+        assertEquals(createdTopic.getTopicStarter(), user);
         assertEquals(createdTopic.getBranch(), branch);
         assertEquals(branch.topicCount(), 1, "Topic not added to branch");
-        assertEquals(createdPost.getUserCreated(), author);
+        assertEquals(createdPost.getUserCreated(), user);
         assertEquals(createdPost.getPostContent(), ANSWER_BODY);
         verify(securityService).getCurrentUser();
         verify(branchDao).update(branch);
@@ -171,9 +169,9 @@ public class TransactionalTopicServiceTest {
     @Test
     public void testDeletePost() throws NotFoundException {
         Topic topic = Topic.createNewTopic();
-        Post post1 = Post.createNewPost();
+        Post post1 = new Post(user, "content");
         post1.setId(1L);
-        Post postForDelete = Post.createNewPost();
+        Post postForDelete = new Post(user, "content");
         postForDelete.setId(POST_ID);
         topic.addPost(post1);
         topic.addPost(postForDelete);
@@ -272,9 +270,8 @@ public class TransactionalTopicServiceTest {
         Topic topic = Topic.createNewTopic();
         topic.setId(TOPIC_ID);
         topic.setTitle("title");
-        Post post = Post.createNewPost();
+        Post post = new Post(user, "content");
         post.setId(POST_ID);
-        post.setPostContent("body");
         topic.addPost(post);
 
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
@@ -284,28 +281,28 @@ public class TransactionalTopicServiceTest {
 
         assertEquals(topic.getTitle(), newTitle);
         assertEquals(post.getPostContent(), newBody);
-        assertEquals(topic.getTopicWeight(),newWeight);
-        assertEquals(topic.isSticked(),newSticked);
-        assertEquals(topic.isAnnouncement(),newAnnouncement);
+        assertEquals(topic.getTopicWeight(), newWeight);
+        assertEquals(topic.isSticked(), newSticked);
+        assertEquals(topic.isAnnouncement(), newAnnouncement);
 
         verify(topicDao).isExist(TOPIC_ID);
         verify(topicDao).get(TOPIC_ID);
         verify(topicDao).update(topic);
     }
-    
+
     @Test
     void testSavePost() throws NotFoundException {
         String newBody = "new body";
         Topic topic = Topic.createNewTopic();
         topic.setId(TOPIC_ID);
-        Post post = Post.createNewPost();
+        Post post = new Post(user, "content");
         post.setId(POST_ID);
         post.setPostContent("body");
         topic.addPost(post);
 
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(topic);
-        
+
         when(postService.get(POST_ID)).thenReturn(post);
 
         topicService.savePost(TOPIC_ID, POST_ID, newBody);
@@ -315,7 +312,7 @@ public class TransactionalTopicServiceTest {
         verify(topicDao).isExist(TOPIC_ID);
         verify(topicDao).get(TOPIC_ID);
         verify(topicDao).update(topic);
-    } 
+    }
 
     @Test
     void testSaveTopicSimple() throws NotFoundException {
@@ -327,9 +324,8 @@ public class TransactionalTopicServiceTest {
         Topic topic = Topic.createNewTopic();
         topic.setId(TOPIC_ID);
         topic.setTitle("title");
-        Post post = Post.createNewPost();
+        Post post =  new Post(user, "content");
         post.setId(POST_ID);
-        post.setPostContent("body");
         topic.addPost(post);
 
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
@@ -339,9 +335,9 @@ public class TransactionalTopicServiceTest {
 
         assertEquals(topic.getTitle(), newTitle);
         assertEquals(post.getPostContent(), newBody);
-        assertEquals(topic.getTopicWeight(),newWeight);
-        assertEquals(topic.isSticked(),newSticked);
-        assertEquals(topic.isAnnouncement(),newAnnouncement);
+        assertEquals(topic.getTopicWeight(), newWeight);
+        assertEquals(topic.isSticked(), newSticked);
+        assertEquals(topic.isAnnouncement(), newAnnouncement);
 
         verify(topicDao).isExist(TOPIC_ID);
         verify(topicDao).get(TOPIC_ID);

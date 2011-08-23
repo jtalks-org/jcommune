@@ -17,7 +17,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -213,7 +212,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         Post post = postService.get(postId);
 
         post.setPostContent(postContent); 
-        post.setModificationDate(new DateTime());
+        post.updateModificationDate();
 
         dao.update(topic);
         logger.debug("Update the topic {}", topic.getId());

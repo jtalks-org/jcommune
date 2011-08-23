@@ -20,6 +20,7 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
@@ -33,12 +34,14 @@ import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -217,9 +220,10 @@ public class TopicControllerTest {
 
     @Test
     public void testEdit() throws NotFoundException {
+        User user = new User("username", "email@mail.com", "password");
         Topic topic = Topic.createNewTopic();
         topic.setId(TOPIC_ID);
-        Post post = Post.createNewPost();
+        Post post = new Post(user, "content");
         topic.addPost(post);
 
         //set expectations

@@ -17,34 +17,36 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.PostDto;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.ModelAndView;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-
-import org.jtalks.jcommune.service.TopicService;
-import org.jtalks.jcommune.service.PostService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.springframework.web.servlet.ModelAndView;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindingResult;
-
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.never;
-import static org.mockito.Matchers.*;
-
-import static org.springframework.test.web.ModelAndViewAssert.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeValues;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -108,9 +110,10 @@ public class PostControllerTest {
 
     @Test
     public void editTest() throws NotFoundException {
+        User user = new User("username", "email@mail.com", "password");
         Topic topic = Topic.createNewTopic();
         topic.setId(TOPIC_ID);
-        Post post = Post.createNewPost();
+        Post post = new Post(user, "content");
         post.setId(POST_ID);
         topic.addPost(post);
 
