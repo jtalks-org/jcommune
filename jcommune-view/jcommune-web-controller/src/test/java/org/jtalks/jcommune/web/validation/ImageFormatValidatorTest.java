@@ -59,8 +59,7 @@ public class ImageFormatValidatorTest {
     @Test(dataProvider = "allowableFormats")
     public void testValidatorSuccess(String contentType) {
         Set<ConstraintViolation<TestObject>> constraintViolations =
-                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "test_avatar",
-                        contentType,
+                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "test_avatar", contentType,
                         new byte[10])));
 
         Assert.assertEquals(constraintViolations.size(), 0, "Validation errors");
@@ -69,8 +68,7 @@ public class ImageFormatValidatorTest {
     @Test(dataProvider = "notAllowableFormats")
     public void testValidatorFail(String contentType) {
         Set<ConstraintViolation<TestObject>> constraintViolations =
-                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "test_avatar",
-                        contentType,
+                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "test_avatar", contentType,
                         new byte[10])));
 
         Assert.assertEquals(constraintViolations.size(), 1, "Validation without errors");
@@ -80,8 +78,7 @@ public class ImageFormatValidatorTest {
     @Test
     public void testValidatorImageNull() {
         Set<ConstraintViolation<TestObject>> constraintViolations =
-                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "",
-                        "application/octet-stream",
+                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "", "application/octet-stream",
                         new byte[0])));
 
         Assert.assertEquals(constraintViolations.size(), 0, "Validation errors");

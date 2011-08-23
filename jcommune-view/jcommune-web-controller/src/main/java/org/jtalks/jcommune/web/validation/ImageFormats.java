@@ -40,7 +40,7 @@ public enum ImageFormats {
     /**
      * @return contentType - content type of chosen format
      */
-    String getContentType() {
+    public String getContentType() {
         return contentType;
     }
 }

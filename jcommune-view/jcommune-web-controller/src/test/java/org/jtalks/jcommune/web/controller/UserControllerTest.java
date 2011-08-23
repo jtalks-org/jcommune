@@ -260,6 +260,9 @@ public class UserControllerTest {
 
     @Test
     public void testEditProfileValidationFail() throws Exception {
+        User user=getUser();
+        when(securityService.getCurrentUser()).thenReturn(user);
+
         EditUserProfileDto dto = getEditUserProfileDto();
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
