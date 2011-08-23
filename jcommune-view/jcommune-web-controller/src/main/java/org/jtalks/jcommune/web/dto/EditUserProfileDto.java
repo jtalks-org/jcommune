@@ -59,7 +59,6 @@ public class EditUserProfileDto extends UserDto {
         this.setFirstName(user.getFirstName());
         this.setLastName(user.getLastName());
         this.setEmail(user.getEmail());
-        this.setAvatar(new MockMultipartFile("avatar","", ImageFormats.JPG.getContentType(),user.getAvatar()));
     }
 
     /**
