@@ -38,7 +38,7 @@ public class ImageSizeValidatorTest {
      */
     public class TestObject {
 
-        @ImageSize(size = 66560)
+        @ImageSize(size = 65)
         private MultipartFile avatar;
 
         public TestObject(MockMultipartFile avatar) {
