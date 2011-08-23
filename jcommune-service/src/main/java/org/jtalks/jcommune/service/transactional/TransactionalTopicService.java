@@ -204,4 +204,20 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         securityService.deleteFromAcl(Topic.class, topicId);
         return branch;
     }
+<<<<<<< HEAD
+=======
+    
+    @Override
+    public void savePost(long topicId, long postId, String postContent) 
+            throws NotFoundException{
+        Topic topic = get(topicId);
+        Post post = postService.get(postId);
+
+        post.setPostContent(postContent); 
+        post.updateModificationDate();
+
+        dao.update(topic);
+        logger.debug("Update the topic {}", topic.getId());
+     }
+>>>>>>> 958ab9ea84c217fadccc0ae0aab0eb86855f3c3d
 }

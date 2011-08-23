@@ -24,14 +24,18 @@ import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
 import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
+import org.jtalks.jcommune.web.dto.Breadcrumb;
+import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.mockito.Matchers;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeClass;
@@ -41,10 +45,19 @@ import org.testng.annotations.Test;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.ModelAndViewAssert.*;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 
@@ -65,6 +78,7 @@ public class UserControllerTest {
     private final String PASSWORD = "password";
     private final String NEW_PASSWORD = "newPassword";
     private MultipartFile avatar;
+    private BreadcrumbBuilder breadcrumbBuilder;
 
     @BeforeClass
     public void mockAvatar() throws IOException {
@@ -77,6 +91,8 @@ public class UserControllerTest {
         userService = mock(UserService.class);
         securityService = mock(SecurityService.class);
         controller = new UserController(userService, securityService);
+        breadcrumbBuilder = mock(BreadcrumbBuilder.class);
+        controller.setBreadcrumbBuilder(breadcrumbBuilder);
     }
 
     @Test
@@ -149,14 +165,24 @@ public class UserControllerTest {
 
     @Test
     public void testShow() throws Exception {
+        //set expectations
         when(userService.getByEncodedUsername(ENCODED_USER_NAME))
                 .thenReturn(new User("username", "email", "password"));
+        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
 
+
+        //invoke the object under test
         ModelAndView mav = controller.show(ENCODED_USER_NAME);
 
+        //check expectations
+        verify(userService).getByEncodedUsername(ENCODED_USER_NAME);
+        verify(breadcrumbBuilder).getForumBreadcrumb();
+
+        //check result
         assertViewName(mav, "userDetails");
         assertModelAttributeAvailable(mav, "user");
-        verify(userService).getByEncodedUsername(ENCODED_USER_NAME);
+        assertModelAttributeAvailable(mav, "breadcrumbList");
+
     }
 
     @Test
@@ -249,10 +275,10 @@ public class UserControllerTest {
     public void testRemoveAvatar() throws IOException {
         User user = getUser();
         when(securityService.getCurrentUser()).thenReturn(user);
-        ModelAndView mav = controller.removeAvatar();
+        ModelAndView mav = controller.removeAvatarFromCurrentUser();
         assertViewName(mav, "editProfile");
         verify(securityService).getCurrentUser();
-        verify(userService).removeAvatar(user);
+        verify(userService).removeAvatarFromCurrentUser(user);
     }
 
     @Test
@@ -269,6 +295,14 @@ public class UserControllerTest {
         verify(servletOutputStream).write(avatar.getBytes());
     }
 
+    @Test
+    public void testInitBinder() {
+        WebDataBinder binder = mock(WebDataBinder.class);
+
+        controller.initBinder(binder);
+
+        verify(binder).registerCustomEditor(eq(String.class), any(StringTrimmerEditor.class));
+    }
 
     private void assertContainsError(BindingResult bindingResult, String errorName) {
         for (ObjectError error : bindingResult.getAllErrors()) {

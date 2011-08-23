@@ -14,16 +14,13 @@ import java.util.List;
 
 public class BreadcrumbBuilder {
 
-    //represent the location breadcrumb list
-    private List<Breadcrumb> breadcrumbList;
-
     /**
      * Returns the Forum breadcrumbs.
      *
      * @return the breadcrumb list for the Forum location. Contains one (root) breadcrumb.
      */
     public List<Breadcrumb> getForumBreadcrumb() {
-        breadcrumbList = new ArrayList<Breadcrumb>();
+        List<Breadcrumb> breadcrumbList = new ArrayList<Breadcrumb>();
         breadcrumbList.add(prepareForumBreadcrumb());
 
         return breadcrumbList;
@@ -35,8 +32,8 @@ public class BreadcrumbBuilder {
      * @param section {@link org.jtalks.jcommune.model.entity.Section} the breadcrumbed section.
      * @return the breadcrumb list for the current <code>Section</code> location.
      */
-    public List<Breadcrumb> getSectionBreadcrumb(Section section) {
-        breadcrumbList = getForumBreadcrumb();
+    public List<Breadcrumb> getForumBreadcrumb(Section section) {
+        List<Breadcrumb> breadcrumbList = getForumBreadcrumb();
         breadcrumbList.add(prepareSectionBreadcrumb(section));
 
         return breadcrumbList;
@@ -48,8 +45,8 @@ public class BreadcrumbBuilder {
      * @param branch {@link org.jtalks.jcommune.model.entity.Branch} the breadcrumbed branch.
      * @return the breadcrumb list for the current <code>Branch</code> location.
      */
-    public List<Breadcrumb> getBranchBreadcrumb(Branch branch) {
-        breadcrumbList = getSectionBreadcrumb(branch.getSection());
+    public List<Breadcrumb> getForumBreadcrumb(Branch branch) {
+        List<Breadcrumb> breadcrumbList = getForumBreadcrumb(branch.getSection());
         breadcrumbList.add(prepareBranchBreadcrumb(branch));
 
         return breadcrumbList;
@@ -61,8 +58,8 @@ public class BreadcrumbBuilder {
      * @param topic {@link org.jtalks.jcommune.model.entity.Topic} the breadcrumbed topic.
      * @return the breadcrumb list for the current <code>Topic</code> location.
      */
-    public List<Breadcrumb> getTopicBreadcrumb(Topic topic) {
-        breadcrumbList = getBranchBreadcrumb(topic.getBranch());
+    public List<Breadcrumb> getForumBreadcrumb(Topic topic) {
+        List<Breadcrumb> breadcrumbList = getForumBreadcrumb(topic.getBranch());
         breadcrumbList.add(prepareTopicBreadcrumb(topic));
 
         return breadcrumbList;
@@ -74,34 +71,9 @@ public class BreadcrumbBuilder {
      * @param post {@link org.jtalks.jcommune.model.entity.Post} the breadcrumbed post.
      * @return the breadcrumb list for the current <code>Post</code> location.
      */
-    public List<Breadcrumb> getPostBreadcrumb(Post post) {
-        breadcrumbList = getTopicBreadcrumb(post.getTopic());
+    public List<Breadcrumb> getForumBreadcrumb(Post post) {
+        List<Breadcrumb> breadcrumbList = getForumBreadcrumb(post.getTopic());
         breadcrumbList.add(preparePostBreadcrumb(post));
-
-        return breadcrumbList;
-    }
-
-    /**
-     * Returns the profile breadcrumbs.
-     *
-     * @param user {@link org.jtalks.jcommune.model.entity.User} the breadcrumbed user profile.
-     * @return the breadcrumb list for the <code>User</code> profile location.
-     */
-    public List<Breadcrumb> getProfileBreadcrumb(User user) {
-        breadcrumbList = getForumBreadcrumb();
-        breadcrumbList.add(prepareProfileBreadcrumb(user));
-
-        return breadcrumbList;
-    }
-
-    /**
-     * Returns the PM breadcrumbs.
-     *
-     * @return the breadcrumb list for the PM location.
-     */
-    public List<Breadcrumb> getPmBreadcrumb() {
-        breadcrumbList = getForumBreadcrumb();
-        breadcrumbList.add(preparePmBreadcrumb());
 
         return breadcrumbList;
     }
@@ -112,7 +84,7 @@ public class BreadcrumbBuilder {
      * @return the breadcrumb list for the Inbox location.
      */
     public List<Breadcrumb> getInboxBreadcrumb() {
-        breadcrumbList = getPmBreadcrumb();
+        List<Breadcrumb> breadcrumbList = getForumBreadcrumb();
         breadcrumbList.add(prepareInboxBreadcrumb());
 
         return breadcrumbList;
@@ -124,7 +96,7 @@ public class BreadcrumbBuilder {
      * @return the breadcrumb list for the Outbox location.
      */
     public List<Breadcrumb> getOutboxBreadcrumb() {
-        breadcrumbList = getPmBreadcrumb();
+        List<Breadcrumb> breadcrumbList = getForumBreadcrumb();
         breadcrumbList.add(prepareOutboxBreadcrumb());
 
         return breadcrumbList;
@@ -136,187 +108,137 @@ public class BreadcrumbBuilder {
      * @return the breadcrumb list for the Drafts location.
      */
     public List<Breadcrumb> getDraftsBreadcrumbs() {
-        breadcrumbList = getPmBreadcrumb();
+        List<Breadcrumb> breadcrumbList = getForumBreadcrumb();
         breadcrumbList.add(prepareDraftsBreadcrumb());
 
         return breadcrumbList;
     }
 
     /**
-     *Fill the forum breadcrumb.
+     * Fill the forum breadcrumb.
      *
-     * @return {@link Breadcrumb} the filled breadcrumb fot the Forum location.
+     * @return {@link Breadcrumb} the filled breadcrumb for the Forum location.
      */
     private Breadcrumb prepareForumBreadcrumb() {
-        Breadcrumb breadcrumb = new Breadcrumb();
-        breadcrumb.setId(Breadcrumb.STUB_BREADCRUMB_ID);
-        breadcrumb.setBreadcrumbLocation(Breadcrumb.BreadcrumbLocation.FORUM);
-        breadcrumb.setBreadcrumbLocationValue(Breadcrumb.ROOT_BREADCRUMB_LOCATION_VALUE);
-
-        return breadcrumb;
+        return new Breadcrumb(
+                Breadcrumb.STUB_BREADCRUMB_ID,
+                Breadcrumb.BreadcrumbLocation.FORUM,
+                Breadcrumb.ROOT_BREADCRUMB_LOCATION_VALUE);
     }
 
-
     /**
-     *Fill the section breadcrumb.
+     * Fill the section breadcrumb.
      *
      * @param section {@link org.jtalks.jcommune.model.entity.Section} the breadcrumbed section.
-     * @return {@link Breadcrumb} the filled breadcrumb fot the Forum location.
+     * @return {@link Breadcrumb} the filled breadcrumb for the Forum location.
      */
     private Breadcrumb prepareSectionBreadcrumb(Section section) {
-        Breadcrumb breadcrumb = new Breadcrumb();
-        breadcrumb.setId(section.getId());
-        breadcrumb.setBreadcrumbLocation(Breadcrumb.BreadcrumbLocation.SECTION);
-        breadcrumb.setBreadcrumbLocationValue(section.getName());
-
-        return breadcrumb;
+        return new Breadcrumb(
+                section.getId(),
+                Breadcrumb.BreadcrumbLocation.SECTION,
+                section.getName());
     }
 
     /**
-     *Fill the branch breadcrumb.
+     * Fill the branch breadcrumb.
      *
      * @param branch {@link org.jtalks.jcommune.model.entity.Branch} the breadcrumbed branch.
-     * @return {@link Breadcrumb} the filled breadcrumb fot the Section location.
+     * @return {@link Breadcrumb} the filled breadcrumb for the Section location.
      */
     private Breadcrumb prepareBranchBreadcrumb(Branch branch) {
-        Breadcrumb breadcrumb = new Breadcrumb();
-        breadcrumb.setId(branch.getId());
-        breadcrumb.setBreadcrumbLocation(Breadcrumb.BreadcrumbLocation.BRANCH);
-        breadcrumb.setBreadcrumbLocationValue(branch.getName());
-
-        return breadcrumb;
+        return new Breadcrumb(
+                branch.getId(),
+                Breadcrumb.BreadcrumbLocation.BRANCH,
+                branch.getName());
     }
 
     /**
-     *Fill the branch breadcrumb.
+     * Fill the branch breadcrumb.
      *
      * @param topic {@link org.jtalks.jcommune.model.entity.Topic} the breadcrumbed topic.
-     * @return {@link Breadcrumb} the filled breadcrumb fot the Topic location.
+     * @return {@link Breadcrumb} the filled breadcrumb for the Topic location.
      */
     private Breadcrumb prepareTopicBreadcrumb(Topic topic) {
-        Breadcrumb breadcrumb = new Breadcrumb();
-        breadcrumb.setId(topic.getId());
-        breadcrumb.setBreadcrumbLocation(Breadcrumb.BreadcrumbLocation.TOPIC);
-        breadcrumb.setBreadcrumbLocationValue(topic.getTitle());
-
-        return breadcrumb;
+        return new Breadcrumb(
+                topic.getId(),
+                Breadcrumb.BreadcrumbLocation.TOPIC,
+                topic.getTitle());
     }
 
     /**
      * Fill the post breadcrumb.
+     *
      * @param post {@link org.jtalks.jcommune.model.entity.Post} the breadcrumbed post.
-     * @return {@link Breadcrumb} the filled breadcrumb fot the Post location.
+     * @return {@link Breadcrumb} the filled breadcrumb for the Post location.
      */
     private Breadcrumb preparePostBreadcrumb(Post post) {
-        Breadcrumb breadcrumb = new Breadcrumb();
-        breadcrumb.setId(post.getId());
-        breadcrumb.setBreadcrumbLocation(Breadcrumb.BreadcrumbLocation.POST);
-        //TODO Need additional info about display post breadcrumb
-        breadcrumb.setBreadcrumbLocationValue("Post ID " + post.getId());
-
-        return breadcrumb;
-    }
-
-    /**
-     * Fill the profile breadcrumb.
-     *
-     * @param user {@link org.jtalks.jcommune.model.entity.User} the breadcrumbed user profile.
-     * @return {@link Breadcrumb} the filled breadcrumb fot the user profile location.
-     */
-    private Breadcrumb prepareProfileBreadcrumb(User user) {
-        Breadcrumb breadcrumb = new Breadcrumb();
-        breadcrumb.setId(user.getId());
-        breadcrumb.setBreadcrumbLocation(Breadcrumb.BreadcrumbLocation.PROFILE);
-        breadcrumb.setBreadcrumbLocationValue(user.getUsername());
-
-        return breadcrumb;
-    }
-
-    /**
-     * Fill the PM breadcrumb.
-     *
-     * @return {@link Breadcrumb} the filled breadcrumb fot the PM location.
-     */
-    private Breadcrumb preparePmBreadcrumb() {
-        Breadcrumb breadcrumb = new Breadcrumb();
-        breadcrumb.setId(Breadcrumb.STUB_BREADCRUMB_ID);
-        breadcrumb.setBreadcrumbLocation(Breadcrumb.BreadcrumbLocation.PRIVATE_MESSAGE);
-        breadcrumb.setBreadcrumbLocationValue(Breadcrumb.PM_BREADCRUMB_LOCATION_VALUE);
-
-        return breadcrumb;
+        return new Breadcrumb(
+                post.getId(),
+                Breadcrumb.BreadcrumbLocation.POST,
+                //TODO Need additional info about display post breadcrumb
+                "Post ID " + post.getId());
     }
 
     /**
      * Fill the inbox breadcrumb.
      *
-     * @return {@link Breadcrumb} the filled breadcrumb fot the inbox location.
+     * @return {@link Breadcrumb} the filled breadcrumb for the inbox location.
      */
     private Breadcrumb prepareInboxBreadcrumb() {
-        Breadcrumb breadcrumb = new Breadcrumb();
-        breadcrumb.setId(Breadcrumb.STUB_BREADCRUMB_ID);
-        breadcrumb.setBreadcrumbLocation(Breadcrumb.BreadcrumbLocation.INBOX);
-        breadcrumb.setBreadcrumbLocationValue(Breadcrumb.INBOX_BREADCRUMB_LOCATION_VALUE);
-
-        return breadcrumb;
+        return new Breadcrumb(
+                Breadcrumb.STUB_BREADCRUMB_ID,
+                Breadcrumb.BreadcrumbLocation.INBOX,
+                Breadcrumb.INBOX_BREADCRUMB_LOCATION_VALUE);
     }
 
     /**
-     *Fill the outbox breadcrumb.
+     * Fill the outbox breadcrumb.
      *
-     * @return {@link Breadcrumb} the filled breadcrumb fot the outbox location.
+     * @return {@link Breadcrumb} the filled breadcrumb for the outbox location.
      */
     private Breadcrumb prepareOutboxBreadcrumb() {
-        Breadcrumb breadcrumb = new Breadcrumb();
-        breadcrumb.setId(Breadcrumb.STUB_BREADCRUMB_ID);
-        breadcrumb.setBreadcrumbLocation(Breadcrumb.BreadcrumbLocation.OUTBOX);
-        breadcrumb.setBreadcrumbLocationValue(Breadcrumb.OUTBOX_BREADCRUMB_LOCATION_VALUE);
-
-        return breadcrumb;
+        return new Breadcrumb(
+                Breadcrumb.STUB_BREADCRUMB_ID,
+                Breadcrumb.BreadcrumbLocation.OUTBOX,
+                Breadcrumb.OUTBOX_BREADCRUMB_LOCATION_VALUE);
     }
 
     /**
-     *Fill the drafts breadcrumb.
+     * Fill the drafts breadcrumb.
      *
-     * @return {@link Breadcrumb} the filled breadcrumb fot the drafts location.
+     * @return {@link Breadcrumb} the filled breadcrumb for the drafts location.
      */
     private Breadcrumb prepareDraftsBreadcrumb() {
-        Breadcrumb breadcrumb = new Breadcrumb();
-        breadcrumb.setId(Breadcrumb.STUB_BREADCRUMB_ID);
-        breadcrumb.setBreadcrumbLocation(Breadcrumb.BreadcrumbLocation.DRAFTS);
-        breadcrumb.setBreadcrumbLocationValue(Breadcrumb.DRAFTS_BREADCRUMB_LOCATION_VALUE);
-
-        return breadcrumb;
+        return new Breadcrumb(
+                Breadcrumb.STUB_BREADCRUMB_ID,
+                Breadcrumb.BreadcrumbLocation.DRAFTS,
+                Breadcrumb.DRAFTS_BREADCRUMB_LOCATION_VALUE);
     }
 
     /**
      * Fill the new PM breadcrumb.
      *
-     * @return {@link Breadcrumb} the filled breadcrumb fot the new PM location.
+     * @return {@link Breadcrumb} the filled breadcrumb for the new PM location.
      */
     private Breadcrumb prepareNewPMBreadcrumb() {
-        Breadcrumb breadcrumb = new Breadcrumb();
-        breadcrumb.setId(Breadcrumb.STUB_BREADCRUMB_ID);
-        breadcrumb.setBreadcrumbLocation(Breadcrumb.BreadcrumbLocation.NEW_PM);
-        breadcrumb.setBreadcrumbLocationValue(Breadcrumb.NEW_PM_BREADCRUMB_LOCATION_VALUE);
-
-        return breadcrumb;
+        return new Breadcrumb(
+                Breadcrumb.STUB_BREADCRUMB_ID,
+                Breadcrumb.BreadcrumbLocation.NEW_PM,
+                Breadcrumb.NEW_PM_BREADCRUMB_LOCATION_VALUE);
     }
 
     /**
      * Fill the draft PM breadcrumb.
      *
      * @param pm {@link org.jtalks.jcommune.model.entity.PrivateMessage} the breadcrumbed draft pm.
-     * @return {@link Breadcrumb} the filled breadcrumb fot the draft location.
+     * @return {@link Breadcrumb} the filled breadcrumb for the draft location.
      */
     private Breadcrumb prepareDraftPmBreadcrumb(PrivateMessage pm) {
-        Breadcrumb breadcrumb = new Breadcrumb();
-        breadcrumb.setId(pm.getId());
         //TODO Need to define standard URI for most location - ${Entity type}/${Entity ID}.html
-        // TODO Need to refactor current draft URI (/pm/drafts/${id}.html) to standard type (/pm/drafts/draft/${id}.html)
-        breadcrumb.setBreadcrumbLocation(Breadcrumb.BreadcrumbLocation.DRAFT_PM);
         //TODO Need additional info regarding to display draft breadcrumb
-        breadcrumb.setBreadcrumbLocationValue(Breadcrumb.DRAFT_PM_BREADCRUMB_LOCATION_VALUE + ": " + pm.getTitle());
-
-        return breadcrumb;
+        return new Breadcrumb(
+                pm.getId(),
+                Breadcrumb.BreadcrumbLocation.DRAFT_PM,
+                Breadcrumb.DRAFT_PM_BREADCRUMB_LOCATION_VALUE + ": " + pm.getTitle());
     }
 }

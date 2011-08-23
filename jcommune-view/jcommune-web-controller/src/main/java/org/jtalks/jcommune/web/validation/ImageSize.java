@@ -28,7 +28,29 @@ import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
+ * Constraint for checking that image has allowable size.
+ * This constraint for use with JSR-303 validator.
+ * <p/>
+ * You must annotate your field with {@link ImageSize} annotation
+ * You must fill in the parameter <code>size</code>
+ * field name to test.
+ * Constraint can be used with any field types that have correct
+ * </code>equals()</code> method.
+ * <p/>
+ * Example:
+ * Validate that <code>size</code> are allowable.
+ * {@code
+ * class Test {
+ * &#064;ImageSize(size=65)
+ * private MultipartFile image;
+ * public Test(MockMultipartFile image) {
+ * this.image = image;
+ * }
+ * }
+ * }
+ *
  * @author Eugeny Batov
+ * @see ImageSizeValidator
  */
 @Target({FIELD, ANNOTATION_TYPE})
 @Retention(RUNTIME)
@@ -40,7 +62,7 @@ public @interface ImageSize {
      *
      * @return message when validation fails.
      */
-    String message() default "{avatar.wrong.weight}";
+    String message() default "{image.wrong.size}";
 
     /**
      * Groups element that specifies the processing groups with which the
@@ -61,7 +83,7 @@ public @interface ImageSize {
     /**
      * Size of image for check dimension.
      *
-     * @return size of image
+     * @return size of image in kilobytes
      */
     int size();
 

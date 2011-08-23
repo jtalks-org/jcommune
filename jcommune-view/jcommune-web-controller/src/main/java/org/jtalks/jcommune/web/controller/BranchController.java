@@ -19,10 +19,13 @@
 
 package org.jtalks.jcommune.web.controller;
 
+import com.sun.org.apache.bcel.internal.generic.NEW;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,6 +50,7 @@ public final class BranchController {
 
     private BranchService branchService;
     private TopicService topicService;
+    private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
 
     /**
      * Constructor creates MVC controller with specified BranchService
@@ -59,6 +64,15 @@ public final class BranchController {
         this.topicService = topicService;
     }
 
+     /**
+     * This method allows us to set the breadcrumb builder.
+     * This can be useful for testing to mock/stub the real builder.
+     *
+     * @param breadcrumbBuilder builder to be used when constructing breadcrumb objects
+     */
+    public void setBreadcrumbBuilder(BreadcrumbBuilder breadcrumbBuilder) {
+        this.breadcrumbBuilder = breadcrumbBuilder;
+    }
 
     /**
      * Displays to user a list of topic from the chosen branch with pagination.
@@ -83,7 +97,7 @@ public final class BranchController {
                 .addObject("topics", topics)
                 .addObject("maxPages", pag.getMaxPages())
                 .addObject("page", pag.getPage())
-                .addObject("breadcrumbList", new BreadcrumbBuilder().getBranchBreadcrumb(branchService.get(branchId)));
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)));
     }
 
 }

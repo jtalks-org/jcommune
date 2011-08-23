@@ -18,17 +18,28 @@
 package org.jtalks.jcommune.web.validation;
 
 /**
+ * Stores all allowable formats and their content types.
+ *
  * @author Eugeny Batov
  */
-public enum AllowableFormatEnum {
+public enum ImageFormats {
+
     JPG("image/jpeg"), GIF("image/gif"), PNG("image/png");
 
     private String contentType;
 
-    AllowableFormatEnum(String contentType) {
+    /**
+     * Enum constructor.
+     *
+     * @param contentType - content type
+     */
+    ImageFormats(String contentType) {
         this.contentType = contentType;
     }
 
+    /**
+     * @return contentType - content type of chosen format
+     */
     String getContentType() {
         return contentType;
     }

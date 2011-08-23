@@ -91,6 +91,6 @@ public interface UserService extends EntityService<User> {
      * @param user user whose avatar must be delete
      * @see User
      */
-    void removeAvatar(User user);
+    void removeAvatarFromCurrentUser(User user);
 
 }

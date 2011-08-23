@@ -128,20 +128,4 @@ public class Section extends Entity {
         branch.setSection(this);
         this.branches.add(branch);
     }
-
-    /**
-     * Delete branch from section.
-     *
-     * @param branch branch
-     */
-    public void deleteTopic(Branch branch) {
-        this.branches.remove(branch);
-    }
-
-    /**
-     * @return number of branches in section
-     */
-    public int branchCount() {
-        return branches.size();
-    }
 }

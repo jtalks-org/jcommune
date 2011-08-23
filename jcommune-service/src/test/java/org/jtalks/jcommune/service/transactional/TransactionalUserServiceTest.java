@@ -17,7 +17,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.aspectj.util.FileUtil;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
@@ -28,12 +27,8 @@ import org.jtalks.jcommune.service.exceptions.DuplicateException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.service.security.SecurityConstants;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.io.File;
-import java.io.IOException;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -260,7 +255,7 @@ public class TransactionalUserServiceTest {
     @Test
     public void testRemoveAvatar() {
         User user = getUser();
-        userService.removeAvatar(user);
+        userService.removeAvatarFromCurrentUser(user);
         assertEquals(user.getAvatar(), null, "Avatar after remove should be null");
     }
 }

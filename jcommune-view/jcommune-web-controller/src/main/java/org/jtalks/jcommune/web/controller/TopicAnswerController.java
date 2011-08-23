@@ -20,6 +20,7 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +41,7 @@ public class TopicAnswerController {
 
     public static final int MIN_ANSWER_LENGTH = 1;
     private TopicService topicService;
+    private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
 
     /**
      * Constructor creates MVC controller with specifying TopicService, SecurityService.
@@ -49,6 +51,16 @@ public class TopicAnswerController {
     @Autowired
     public TopicAnswerController(TopicService topicService) {
         this.topicService = topicService;
+    }
+
+    /**
+     * This method allows us to set the breadcrumb builder.
+     * This can be useful for testing to mock/stub the real builder.
+     *
+     * @param breadcrumbBuilder builder to be used when constructing breadcrumb objects
+     */
+    public void setBreadcrumbBuilder(BreadcrumbBuilder breadcrumbBuilder) {
+        this.breadcrumbBuilder = breadcrumbBuilder;
     }
 
     /**
@@ -72,6 +84,7 @@ public class TopicAnswerController {
         mav.addObject("topic", answeringTopic);
         mav.addObject("branchId", branchId);
         mav.addObject("topicId", topicId);
+        mav.addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(answeringTopic));
         if (validationError != null && validationError) {
             mav.addObject("validationError", validationError);
         }
@@ -95,7 +108,7 @@ public class TopicAnswerController {
                                      @PathVariable("branchId") long branchId) throws NotFoundException {
         if (isValidAnswer(bodyText)) {
             topicService.addAnswer(topicId, bodyText);
-            return new ModelAndView("redirect:/branch/" + branchId + "/topic/" + topicId + ".html");
+            return new ModelAndView("redirect:/topic/" + topicId + ".html");
         } else {
             return getAnswerPage(topicId, true, branchId);
         }

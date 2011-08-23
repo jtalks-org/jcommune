@@ -15,24 +15,32 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-package org.jtalks.jcommune.service.exceptions;
+package org.jtalks.jcommune.model.entity;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.testng.annotations.Test;
+
+import static org.testng.Assert.assertTrue;
 
 /**
- * This exception used for cases when user want to change his current password to another one.
- * For changing current password user should enter new and current password.
- * If user enter incorrect current password during editing own profile,
- * WrongPasswordException should be thrown from service tier.
- *
- * @author Osadchuck Eugeny
+ * @author Kirill Afonin
  */
-public class WrongPasswordException extends Exception {
+public class UserTest {
+    User user = new User("username", "email@mail.com", "pass");
 
-    /**
-     * Default constructor.
-     * <p/>
-     * {@link Exception}
-     */
-    public WrongPasswordException() {
-        super();
+    @Test
+    public void testSpringSecurityDefaults() {
+        assertTrue(user.isAccountNonExpired());
+        assertTrue(user.isAccountNonLocked());
+        assertTrue(user.isCredentialsNonExpired());
+        assertTrue(user.isEnabled());
+    }
+
+    @Test
+    public void testUserDefaultAuthority() {
+        GrantedAuthority expectedAuthority = new GrantedAuthorityImpl("ROLE_USER");
+
+        assertTrue(user.getAuthorities().contains(expectedAuthority));
     }
 }

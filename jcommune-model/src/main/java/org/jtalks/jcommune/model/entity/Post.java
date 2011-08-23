@@ -48,16 +48,6 @@ public class Post extends Entity {
     }
 
     /**
-     * Construct the instance with the specified creation date.
-     *
-     * @param creationDate the creation date of the post
-     */
-    protected Post(DateTime creationDate) {
-        this.creationDate = creationDate;
-        this.modificationDate= new DateTime();
-    }
-
-    /**
      * Creates the Post instance with required fields.
      * Creation date is set to now.
      *
@@ -68,15 +58,6 @@ public class Post extends Entity {
         this.creationDate = new DateTime();
         this.userCreated = userCreated;
         this.postContent = postContent;
-    }
-
-    /**
-     * Creates the new instance with the creationDate initialized with current time.
-     *
-     * @return new Post instance
-     */
-    public static Post createNewPost() {
-        return new Post(new DateTime());
     }
 
     /**
@@ -98,12 +79,14 @@ public class Post extends Entity {
     protected void setCreationDate(DateTime postDate) {
         this.creationDate = postDate;
     }
+
     /**
      * @param modificationDate date and time when the post was changed last time
      */
     protected void setModificationDate(DateTime modificationDate) {
         this.modificationDate = modificationDate;
     }
+
     /**
      * Set modification date to now.
      *
@@ -154,7 +137,7 @@ public class Post extends Entity {
     /**
      * @param topic the Topic to set
      */
-    protected void setTopic(Topic topic) {
+    public void setTopic(Topic topic) {
         this.topic = topic;
     }
 }

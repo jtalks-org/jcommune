@@ -21,6 +21,7 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.PostDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -46,16 +47,29 @@ public class PostController {
     public static final String POST_ID = "postId";
     private final TopicService topicService;
     private final PostService postService;
+    private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
 
     /**
      * Constructor. Injects {@link TopicService}.
      *
      * @param topicService {@link TopicService} instance to be injected
+     * @param postService {@link PostService} instance to be injected
      */
     @Autowired
     public PostController(TopicService topicService, PostService postService) {
         this.topicService = topicService;
         this.postService = postService;
+    }
+
+    /**
+     * This method allows us to set the breadcrumb builder.
+     * This can be useful for testing to mock/stub the real builder.
+     *
+     * @param breadcrumbBuilder builder to be used when constructing breadcrumb objects
+     */
+
+    public void setBreadcrumbBuilder(BreadcrumbBuilder breadcrumbBuilder) {
+        this.breadcrumbBuilder = breadcrumbBuilder;
     }
 
     /**
@@ -93,9 +107,7 @@ public class PostController {
                                @PathVariable("branchId") Long branchId) throws NotFoundException {
         topicService.deletePost(topicId, postId);
         return new ModelAndView(new StringBuilder()
-                .append("redirect:/branch/")
-                .append(branchId)
-                .append("/topic/")
+                .append("redirect:/topic/")
                 .append(topicId)
                 .append(".html").toString());
     }
@@ -120,7 +132,8 @@ public class PostController {
                 .addObject("postDto", PostDto.getDtoFor(post))
                 .addObject(BRANCH_ID, branchId)
                 .addObject(TOPIC_ID, topicId)
-                .addObject(POST_ID, postId);
+                .addObject(POST_ID, postId)
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(topicService.get(topicId)));
     }
 
     /**
@@ -130,7 +143,7 @@ public class PostController {
      * @param result   validation result
      * @param branchId hold the current branchId
      * @param topicId  the current topicId
-     * @param postId   the current postcId
+     * @param postId   the current postId
      * @return {@code ModelAndView} object which will be redirect to topic page
      *         if saved successfully or show form with error message
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException

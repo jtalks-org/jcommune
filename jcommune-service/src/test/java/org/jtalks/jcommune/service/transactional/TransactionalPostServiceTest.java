@@ -20,6 +20,7 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.testng.Assert;
@@ -29,7 +30,9 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
@@ -48,17 +51,19 @@ public class TransactionalPostServiceTest {
     private PostService postService;
     private PostDao postDao;
     private TopicDao topicDao;
+    private User user;
 
     @BeforeMethod
     public void setUp() throws Exception {
         postDao = mock(PostDao.class);
         topicDao = mock(TopicDao.class);
         postService = new TransactionalPostService(postDao, topicDao);
+        user = new User("username", "email@mail.com", "password");
     }
 
     @Test
     public void testGet() throws NotFoundException {
-        Post post = Post.createNewPost();
+        Post post = new Post(user, "content");
         when(postDao.isExist(POST_ID)).thenReturn(true);
         when(postDao.get(POST_ID)).thenReturn(post);
 
@@ -81,8 +86,8 @@ public class TransactionalPostServiceTest {
         int start = 1;
         int max = 2;
         List<Post> expectedList = new ArrayList<Post>();
-        expectedList.add(Post.createNewPost());
-        expectedList.add(Post.createNewPost());
+        expectedList.add(new Post(user, "content"));
+        expectedList.add(new Post(user, "content"));
         when(postDao.getPostRangeInTopic(TOPIC_ID, start, max)).thenReturn(expectedList);
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
 
