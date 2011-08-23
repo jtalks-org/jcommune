@@ -64,7 +64,7 @@ public class TopicControllerTest {
     private final int TOPIC_WEIGHT = 0;
     private final boolean STICKED = false;
     private final boolean ANNOUNCEMENT = false;
-
+    private User user;
     private TopicService topicService;
     private PostService postService;
     private BranchService branchService;
@@ -82,6 +82,7 @@ public class TopicControllerTest {
         branch = mock(Branch.class);
         controller = new TopicController(topicService, postService, branchService);
         controller.setBreadcrumbBuilder(breadcrumbBuilder);
+        user = new User("username", "email@mail.com", "password");
     }
 
 
@@ -157,7 +158,7 @@ public class TopicControllerTest {
 
     @Test
     public void testCreateValidationPass() throws Exception {
-        Topic topic = Topic.createNewTopic();
+        Topic topic = new Topic(user, "title");
         topic.setId(TOPIC_ID);
         TopicDto dto = getDto();
         BindingResult result = mock(BindingResult.class);
@@ -220,8 +221,7 @@ public class TopicControllerTest {
 
     @Test
     public void testEdit() throws NotFoundException {
-        User user = new User("username", "email@mail.com", "password");
-        Topic topic = Topic.createNewTopic();
+        Topic topic = new Topic(user, "title");
         topic.setId(TOPIC_ID);
         Post post = new Post(user, "content");
         topic.addPost(post);

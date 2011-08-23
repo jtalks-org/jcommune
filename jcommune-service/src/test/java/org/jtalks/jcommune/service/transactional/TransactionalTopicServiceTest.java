@@ -86,7 +86,7 @@ public class TransactionalTopicServiceTest {
 
     @Test
     public void testGet() throws NotFoundException {
-        Topic expectedTopic = Topic.createNewTopic();
+        Topic expectedTopic = new Topic(user, "title");
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(expectedTopic);
 
@@ -106,7 +106,7 @@ public class TransactionalTopicServiceTest {
 
     @Test
     public void testAddAnswer() throws NotFoundException {
-        Topic answeredTopic = Topic.createNewTopic();
+        Topic answeredTopic = new Topic(user, "title");
         when(securityService.getCurrentUser()).thenReturn(user);
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(answeredTopic);
@@ -168,7 +168,7 @@ public class TransactionalTopicServiceTest {
 
     @Test
     public void testDeletePost() throws NotFoundException {
-        Topic topic = Topic.createNewTopic();
+        Topic topic = new Topic(user, "title");
         Post post1 = new Post(user, "content");
         post1.setId(1L);
         Post postForDelete = new Post(user, "content");
@@ -197,8 +197,8 @@ public class TransactionalTopicServiceTest {
         int start = 1;
         int max = 2;
         List<Topic> expectedList = new ArrayList<Topic>();
-        expectedList.add(Topic.createNewTopic());
-        expectedList.add(Topic.createNewTopic());
+        expectedList.add(new Topic(user, "title"));
+        expectedList.add(new Topic(user, "title"));
         when(branchDao.isExist(BRANCH_ID)).thenReturn(true);
         when(topicDao.getTopicRangeInBranch(BRANCH_ID, start, max)).thenReturn(expectedList);
 
@@ -239,7 +239,7 @@ public class TransactionalTopicServiceTest {
 
     @Test
     public void testDeleteTopic() throws NotFoundException {
-        Topic topic = Topic.createNewTopic();
+        Topic topic = new Topic(user, "title");
         Branch branch = new Branch(BRANCH_NAME);
         branch.addTopic(topic);
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
@@ -267,7 +267,7 @@ public class TransactionalTopicServiceTest {
         int newWeight = 0;
         boolean newSticked = false;
         boolean newAnnouncement = false;
-        Topic topic = Topic.createNewTopic();
+        Topic topic = new Topic(user, "title");
         topic.setId(TOPIC_ID);
         topic.setTitle("title");
         Post post = new Post(user, "content");
@@ -293,7 +293,7 @@ public class TransactionalTopicServiceTest {
     @Test
     void testSavePost() throws NotFoundException {
         String newBody = "new body";
-        Topic topic = Topic.createNewTopic();
+        Topic topic = new Topic(user, "title");
         topic.setId(TOPIC_ID);
         Post post = new Post(user, "content");
         post.setId(POST_ID);
@@ -321,10 +321,10 @@ public class TransactionalTopicServiceTest {
         int newWeight = 0;
         boolean newSticked = false;
         boolean newAnnouncement = false;
-        Topic topic = Topic.createNewTopic();
+        Topic topic = new Topic(user, "title");
         topic.setId(TOPIC_ID);
         topic.setTitle("title");
-        Post post =  new Post(user, "content");
+        Post post = new Post(user, "content");
         post.setId(POST_ID);
         topic.addPost(post);
 

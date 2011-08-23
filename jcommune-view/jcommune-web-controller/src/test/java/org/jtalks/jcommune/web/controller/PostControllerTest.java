@@ -111,7 +111,7 @@ public class PostControllerTest {
     @Test
     public void editTest() throws NotFoundException {
         User user = new User("username", "email@mail.com", "password");
-        Topic topic = Topic.createNewTopic();
+        Topic topic = new Topic(user, "title");
         topic.setId(TOPIC_ID);
         Post post = new Post(user, "content");
         post.setId(POST_ID);
