@@ -105,6 +105,17 @@ public class ImageDimensionValidatorTest {
         Assert.assertNotNull(constraintViolations.iterator().next().getMessage());
     }
 
+    @Test
+    public void testValidatorImageIco() {
+        Set<ConstraintViolation<TestObject>> constraintViolations =
+                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "",
+                        "image/ico",
+                        new byte[1024])));
+
+        Assert.assertEquals(constraintViolations.size(), 1, "Validation without errors");
+        Assert.assertNotNull(constraintViolations.iterator().next().getMessage());
+    }
+
 
     private byte[] normalAvatarByteArray = new byte[]{-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0,
             0, 0, 4, 0, 0, 0, 4, 1, 0, 0, 0, 0, -127, -118, -93, -45, 0, 0, 0, 9, 112, 72, 89, 115, 0, 0, 1,
