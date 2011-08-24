@@ -34,9 +34,12 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -53,6 +56,7 @@ import java.io.IOException;
 public class UserController {
     public static final String EDIT_PROFILE = "editProfile";
     public static final String REGISTRATION = "registration";
+    public static final String EDITED_USER="editedUser";
 
     private final SecurityService securityService;
     private final UserService userService;
@@ -149,7 +153,7 @@ public class UserController {
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
         editedUser.setAvatar(new MockMultipartFile("avatar", "", ImageFormats.JPG.getContentType(), user.getAvatar()));
         return new ModelAndView(EDIT_PROFILE)
-                .addObject("editedUser", editedUser)
+                .addObject(EDITED_USER, editedUser)
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
     }
 
@@ -164,7 +168,7 @@ public class UserController {
      * @throws IOException       - throws in case of access errors (if the temporary store fails)
      */
     @RequestMapping(value = "/user/edit", method = RequestMethod.POST)
-    public ModelAndView editProfile(@Valid @ModelAttribute("editedUser") EditUserProfileDto userDto,
+    public ModelAndView editProfile(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
                                     BindingResult result) throws NotFoundException, IOException {
 
         User user = securityService.getCurrentUser();
@@ -173,7 +177,7 @@ public class UserController {
             if (user.getAvatar() == null) {
                 userDto.setAvatar(new MockMultipartFile("avatar","",ImageFormats.JPG.getContentType(),new byte[0]));
             }
-            return new ModelAndView(EDIT_PROFILE, "editedUser", userDto);
+            return new ModelAndView(EDIT_PROFILE, EDITED_USER, userDto);
         }
 
         User editedUser;
@@ -206,7 +210,7 @@ public class UserController {
         User user = securityService.getCurrentUser();
         userService.removeAvatarFromCurrentUser();
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
-        return new ModelAndView(EDIT_PROFILE, "editedUser", editedUser);
+        return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUser);
     }
 
     /**
