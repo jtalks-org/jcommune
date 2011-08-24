@@ -147,6 +147,7 @@ public class UserController {
     public ModelAndView editProfilePage() throws NotFoundException {
         User user = securityService.getCurrentUser();
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
+        editedUser.setAvatar(new MockMultipartFile("avatar", "", ImageFormats.JPG.getContentType(), user.getAvatar()));
         return new ModelAndView(EDIT_PROFILE)
                 .addObject("editedUser", editedUser)
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
