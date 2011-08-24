@@ -32,6 +32,7 @@ import org.joda.time.DateTime;
  * @author Kirill Afonin
  */
 public class Post extends Entity {
+
     /**
      * Creation date and time
      */

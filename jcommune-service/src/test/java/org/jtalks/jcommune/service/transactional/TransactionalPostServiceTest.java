@@ -129,9 +129,8 @@ public class TransactionalPostServiceTest {
     @Test
     void testSavePost() throws NotFoundException {
         String newBody = "new body";
-        Post post = Post.createNewPost();
+        Post post = new Post(user, "content");
         post.setId(POST_ID);
-        post.setPostContent("body");
         
         when(postDao.isExist(POST_ID)).thenReturn(true);      
         when(postService.get(POST_ID)).thenReturn(post); 
