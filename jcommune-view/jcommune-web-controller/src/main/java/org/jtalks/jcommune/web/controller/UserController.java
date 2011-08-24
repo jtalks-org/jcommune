@@ -204,7 +204,6 @@ public class UserController {
     public ModelAndView removeAvatarFromCurrentUser() {
         User user = securityService.getCurrentUser();
         userService.removeAvatarFromCurrentUser();
-        //userService.removeAvatarFromCurrentUser(user);
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
         return new ModelAndView(EDIT_PROFILE, "editedUser", editedUser);
     }
