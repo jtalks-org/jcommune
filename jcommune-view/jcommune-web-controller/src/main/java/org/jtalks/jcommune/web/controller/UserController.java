@@ -27,16 +27,14 @@ import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
+import org.jtalks.jcommune.web.validation.ImageFormats;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
@@ -58,7 +56,7 @@ public class UserController {
 
     private final SecurityService securityService;
     private final UserService userService;
-    private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
+    private BreadcrumbBuilder breadcrumbBuilder;
 
     /**
      * This method turns the trim binder on. Trim bilder
@@ -76,20 +74,15 @@ public class UserController {
      *
      * @param userService     {@link UserService} to be injected
      * @param securityService {@link SecurityService} used for accessing to current logged in user
+     * @param breadcrumbBuilder the object which provides actions on
+     * {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      */
     @Autowired
-    public UserController(UserService userService, SecurityService securityService) {
+    public UserController(UserService userService,
+                          SecurityService securityService,
+                          BreadcrumbBuilder breadcrumbBuilder) {
         this.userService = userService;
         this.securityService = securityService;
-    }
-
-     /**
-     * This method allows us to set the breadcrumb builder.
-     * This can be useful for testing to mock/stub the real builder.
-     *
-     * @param breadcrumbBuilder builder to be used when constructing breadcrumb objects
-     */
-    public void setBreadcrumbBuilder(BreadcrumbBuilder breadcrumbBuilder) {
         this.breadcrumbBuilder = breadcrumbBuilder;
     }
 
@@ -154,7 +147,9 @@ public class UserController {
     public ModelAndView editProfilePage() throws NotFoundException {
         User user = securityService.getCurrentUser();
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
-        return new ModelAndView(EDIT_PROFILE, "editedUser", editedUser).addObject(user);
+        return new ModelAndView(EDIT_PROFILE)
+                .addObject("editedUser", editedUser)
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
     }
 
     /**
@@ -171,8 +166,13 @@ public class UserController {
     public ModelAndView editProfile(@Valid @ModelAttribute("editedUser") EditUserProfileDto userDto,
                                     BindingResult result) throws NotFoundException, IOException {
 
+        User user = securityService.getCurrentUser();
+
         if (result.hasErrors()) {
-            return new ModelAndView(EDIT_PROFILE);
+            if (user.getAvatar() == null) {
+                userDto.setAvatar(new MockMultipartFile("avatar","",ImageFormats.JPG.getContentType(),new byte[0]));
+            }
+            return new ModelAndView(EDIT_PROFILE, "editedUser", userDto);
         }
 
         User editedUser;
@@ -203,7 +203,8 @@ public class UserController {
     @RequestMapping(value = "/user/remove/avatar", method = RequestMethod.POST)
     public ModelAndView removeAvatarFromCurrentUser() {
         User user = securityService.getCurrentUser();
-        userService.removeAvatarFromCurrentUser(user);
+        userService.removeAvatarFromCurrentUser();
+        //userService.removeAvatarFromCurrentUser(user);
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
         return new ModelAndView(EDIT_PROFILE, "editedUser", editedUser);
     }

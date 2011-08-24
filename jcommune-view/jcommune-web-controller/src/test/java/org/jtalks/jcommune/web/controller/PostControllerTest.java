@@ -72,11 +72,10 @@ public class PostControllerTest {
     public void init() {
         topicService = mock(TopicService.class);
         postService = mock(PostService.class);
-        controller = new PostController(topicService, postService);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
-        controller.setBreadcrumbBuilder(breadcrumbBuilder);
-        
-        user = new User("username", "email@mail.com", "password");
+        controller = new PostController(topicService, postService);
+        controller.setBreadcrumbBuilder(breadcrumbBuilder);      
+        user = new User("username", "email@mail.com", "password");    
     }
 
 
@@ -156,6 +155,7 @@ public class PostControllerTest {
          BindingResult bindingResult = new BeanPropertyBindingResult(dto, "postDto");
 
          ModelAndView mav = controller.save(dto, bindingResult, BRANCH_ID, TOPIC_ID,POST_ID);
+         assertViewName(mav, "redirect:/topic/" + TOPIC_ID + ".html");
 
          assertViewName(mav, "redirect:/topic/" + TOPIC_ID + ".html");
 

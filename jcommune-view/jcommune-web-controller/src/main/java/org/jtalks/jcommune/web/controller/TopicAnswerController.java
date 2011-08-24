@@ -41,27 +41,21 @@ public class TopicAnswerController {
 
     public static final int MIN_ANSWER_LENGTH = 1;
     private TopicService topicService;
-    private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
+    private BreadcrumbBuilder breadcrumbBuilder;
 
     /**
      * Constructor creates MVC controller with specifying TopicService, SecurityService.
      *
      * @param topicService {@link TopicService} to be injected
+     * @param breadcrumbBuilder the object which provides actions on
+     * {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      */
     @Autowired
-    public TopicAnswerController(TopicService topicService) {
+    public TopicAnswerController(TopicService topicService, BreadcrumbBuilder breadcrumbBuilder) {
         this.topicService = topicService;
-    }
-
-    /**
-     * This method allows us to set the breadcrumb builder.
-     * This can be useful for testing to mock/stub the real builder.
-     *
-     * @param breadcrumbBuilder builder to be used when constructing breadcrumb objects
-     */
-    public void setBreadcrumbBuilder(BreadcrumbBuilder breadcrumbBuilder) {
         this.breadcrumbBuilder = breadcrumbBuilder;
     }
+
 
     /**
      * Creates the answering page with empty answer form.

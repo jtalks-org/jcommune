@@ -30,8 +30,13 @@ import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.ModelAndViewAssert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 
 /**
  * Tests for {@link TopicAnswerController} actions.
@@ -55,8 +60,7 @@ public class TopicAnswerControllerTest {
     @BeforeMethod
     public void init() throws NotFoundException {
         MockitoAnnotations.initMocks(this);
-        controller = new TopicAnswerController(topicService);
-        controller.setBreadcrumbBuilder(breadcrumbBuilder);
+        controller = new TopicAnswerController(topicService, breadcrumbBuilder);
     }
 
     @Test

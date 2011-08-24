@@ -173,7 +173,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public void removeAvatarFromCurrentUser(User user) {
+    public void removeAvatarFromCurrentUser() {
+        User user=securityService.getCurrentUser();
         user.setAvatar(null);
     }
 

@@ -69,8 +69,7 @@ public class PrivateMessageControllerTest {
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
-        controller = new PrivateMessageController(pmService);
-        controller.setBreadcrumbBuilder(breadcrumbBuilder);
+        controller = new PrivateMessageController(pmService, breadcrumbBuilder, pmDtoBuilder);
     }
 
     @Test
@@ -175,7 +174,6 @@ public class PrivateMessageControllerTest {
     @Test
     public void testDisplayReplyPMPage() throws NotFoundException {
         PrivateMessage pm = new PrivateMessage();
-        controller.setPmDtoBuilder(pmDtoBuilder);
         //set expectations
         when(pmService.get(PM_ID)).thenReturn(pm);
         when(pmDtoBuilder.getReplyDtoFor(pm)).thenReturn(pmDto);
@@ -198,7 +196,6 @@ public class PrivateMessageControllerTest {
     @Test
     public void testDisplayQuotePMPage() throws NotFoundException {
         PrivateMessage pm = new PrivateMessage();
-        controller.setPmDtoBuilder(pmDtoBuilder);
         //set expectations
         when(pmService.get(PM_ID)).thenReturn(pm);
         when(pmDtoBuilder.getQuoteDtoFor(pm)).thenReturn(pmDto);
@@ -271,14 +268,14 @@ public class PrivateMessageControllerTest {
 
         //set expectations
         when(pmService.get(PM_ID)).thenReturn(pm);
-        when(breadcrumbBuilder.getDraftsBreadcrumbs()).thenReturn(new ArrayList<Breadcrumb>());
+        when(breadcrumbBuilder.getDraftsBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
 
         //invoke the object under test
         ModelAndView mav = controller.show(box, PM_ID);
 
         //check expectations
         verify(pmService).get(PM_ID);
-        verify(breadcrumbBuilder).getDraftsBreadcrumbs();
+        verify(breadcrumbBuilder).getDraftsBreadcrumb();
 
         //check result
         assertViewName(mav, "pm/showPm");

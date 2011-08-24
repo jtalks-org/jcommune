@@ -41,25 +41,17 @@ import org.springframework.web.servlet.ModelAndView;
 public final class SectionController {
 
     private SectionService sectionService;
-    private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
+    private BreadcrumbBuilder breadcrumbBuilder;
 
     /**
      * Constructor creates MVC controller with specified SectionService
      *
      * @param sectionService autowired object from Spring Context
+     * @param breadcrumbBuilder the object which provides actions on {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      */
     @Autowired
-    public SectionController(SectionService sectionService) {
+    public SectionController(SectionService sectionService, BreadcrumbBuilder breadcrumbBuilder) {
         this.sectionService = sectionService;
-    }
-
-    /**
-     * This method allows us to set the breadcrumb builder.
-     * This can be useful for testing to mock/stub the real builder.
-     *
-     * @param breadcrumbBuilder builder to be used when constructing breadcrumb objects
-     */
-    public void setBreadcrumbBuilder(BreadcrumbBuilder breadcrumbBuilder) {
         this.breadcrumbBuilder = breadcrumbBuilder;
     }
 
@@ -89,6 +81,6 @@ public final class SectionController {
 
         return new ModelAndView("branchList")
                 .addObject("section", section)
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(section));
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
     }
 }

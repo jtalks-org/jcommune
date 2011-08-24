@@ -57,8 +57,7 @@ public class ImageSizeValidatorTest {
     @Test
     public void testValidatorSuccess() {
         Set<ConstraintViolation<TestObject>> constraintViolations =
-                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "test_avatar",
-                        "image/jpeg",
+                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "test_avatar", "image/jpeg",
                         new byte[1024])));
 
         Assert.assertEquals(constraintViolations.size(), 0, "Validation errors");
@@ -67,8 +66,7 @@ public class ImageSizeValidatorTest {
     @Test
     public void testValidatorFail() {
         Set<ConstraintViolation<TestObject>> constraintViolations =
-                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "test_avatar",
-                        "image/jpeg",
+                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "test_avatar", "image/jpeg",
                         new byte[102400])));
 
         Assert.assertEquals(constraintViolations.size(), 1, "Validation without errors");
@@ -78,8 +76,7 @@ public class ImageSizeValidatorTest {
     @Test
     public void testValidatorImageNull() {
         Set<ConstraintViolation<TestObject>> constraintViolations =
-                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "",
-                        "application/octet-stream",
+                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "", "application/octet-stream",
                         new byte[0])));
 
         Assert.assertEquals(constraintViolations.size(), 0, "Validation errors");

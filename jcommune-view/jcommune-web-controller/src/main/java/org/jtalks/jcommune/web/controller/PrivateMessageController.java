@@ -34,7 +34,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,8 +48,8 @@ import java.util.List;
 public class PrivateMessageController {
 
     private final PrivateMessageService pmService;
-    private PrivateMessageDtoBuilder pmDtoBuilder = new PrivateMessageDtoBuilder();
-    private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
+    private PrivateMessageDtoBuilder pmDtoBuilder;
+    private BreadcrumbBuilder breadcrumbBuilder;
 
     //constants are moved here when occurs 4 or more times, as project PMD rule states
     private static final String PM_FORM = "pm/pmForm";
@@ -59,30 +58,18 @@ public class PrivateMessageController {
 
     /**
      * @param pmService the PrivateMessageService instance
+     * @param breadcrumbBuilder the object which provides actions on
+     * {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
+     * @param pmDtoBuilder the object which provides actions on
+     * {@link org.jtalks.jcommune.web.dto.PrivateMessageDtoBuilder} entity
      */
     @Autowired
-    public PrivateMessageController(PrivateMessageService pmService) {
+    public PrivateMessageController(PrivateMessageService pmService,
+                                    BreadcrumbBuilder breadcrumbBuilder,
+                                    PrivateMessageDtoBuilder pmDtoBuilder) {
         this.pmService = pmService;
-    }
-
-    /**
-     * This method allows us to set the DTO builder.
-     * This can be useful for testing to mock/stub the real builder.
-     *
-     * @param pmDtoBuilder builder to be used when constructing DTO objects
-     */
-    public void setPmDtoBuilder(PrivateMessageDtoBuilder pmDtoBuilder) {
-        this.pmDtoBuilder = pmDtoBuilder;
-    }
-
-     /**
-     * This method allows us to set the breadcrumb builder.
-     * This can be useful for testing to mock/stub the real builder.
-     *
-     * @param breadcrumbBuilder builder to be used when constructing breadcrumb objects
-     */
-    public void setBreadcrumbBuilder(BreadcrumbBuilder breadcrumbBuilder) {
         this.breadcrumbBuilder = breadcrumbBuilder;
+        this.pmDtoBuilder = pmDtoBuilder;
     }
 
     /**
@@ -204,7 +191,7 @@ public class PrivateMessageController {
         } else if ("outbox".equals(folder)) {
             breadcrumbList = breadcrumbBuilder.getOutboxBreadcrumb();
         } else if ("drafts".equals(folder)) {
-            breadcrumbList = breadcrumbBuilder.getDraftsBreadcrumbs();
+            breadcrumbList = breadcrumbBuilder.getDraftsBreadcrumb();
         } else {
             breadcrumbList = breadcrumbBuilder.getForumBreadcrumb();
         }

@@ -12,6 +12,9 @@
     <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
   </context:component-scan>
 
+   <context:component-scan base-package="org.jtalks.jcommune.web.dto" use-default-filters="false">
+    <context:include-filter type="annotation" expression="org.springframework.stereotype.Component"/>
+  </context:component-scan>
   <mvc:annotation-driven/>
 
   <!-- Beans -->
