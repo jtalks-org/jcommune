@@ -20,9 +20,7 @@ package org.jtalks.jcommune.web.dto;
 import org.hibernate.validator.constraints.Length;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.web.validation.Avatar;
-import org.jtalks.jcommune.web.validation.ImageFormats;
 import org.jtalks.jcommune.web.validation.Matches;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
