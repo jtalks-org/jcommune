@@ -20,8 +20,8 @@
             </colgroup>
             <thead>
             <tr>
-                <th scope="col">Author</th>
-                <th scope="col">Message</th>
+                <th scope="col"><spring:message code="label.topic.header.author"/></th>
+                <th scope="col"><spring:message code="label.topic.header.message"/></th>
             </tr>
             </thead>
             <tbody>
