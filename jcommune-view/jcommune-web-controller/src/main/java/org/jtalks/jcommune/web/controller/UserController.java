@@ -203,7 +203,8 @@ public class UserController {
     @RequestMapping(value = "/user/remove/avatar", method = RequestMethod.POST)
     public ModelAndView removeAvatarFromCurrentUser() {
         User user = securityService.getCurrentUser();
-        userService.removeAvatarFromCurrentUser(user);
+        userService.removeAvatarFromCurrentUser();
+        //userService.removeAvatarFromCurrentUser(user);
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
         return new ModelAndView(EDIT_PROFILE, "editedUser", editedUser);
     }
