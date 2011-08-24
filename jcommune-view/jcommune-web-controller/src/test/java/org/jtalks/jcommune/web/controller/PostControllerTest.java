@@ -103,10 +103,14 @@ public class PostControllerTest {
         long postId = 5;
         long branchId = 1;
 
-        ModelAndView actualMav = controller.delete(topicId, postId, branchId);
+        //invoke the object under test
+       ModelAndView actualMav = controller.delete(topicId, postId, branchId);
 
-        assertViewName(actualMav, "redirect:/branch/1/topic/" + topicId + ".html");
-        verify(topicService, times(1)).deletePost(topicId, postId);
+       //check expectations
+       verify(topicService, times(1)).deletePost(topicId, postId);
+
+       //check result
+       assertViewName(actualMav, "redirect:/topic/" + topicId + ".html");
     }
     
     @Test
@@ -153,7 +157,7 @@ public class PostControllerTest {
 
          ModelAndView mav = controller.save(dto, bindingResult, BRANCH_ID, TOPIC_ID,POST_ID);
 
-         assertViewName(mav, "redirect:/branch/" + BRANCH_ID + "/topic/" + TOPIC_ID + ".html");
+         assertViewName(mav, "redirect:/topic/" + TOPIC_ID + ".html");
 
          verify(postService).savePost(POST_ID,POST_CONTENT);
         

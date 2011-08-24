@@ -164,6 +164,6 @@ public class PostController {
 
         postService.savePost(postDto.getId(),postDto.getBodyText());
 
-        return new ModelAndView("redirect:/branch/" + branchId + "/topic/" + topicId + ".html");
+        return new ModelAndView("redirect:/topic/" + topicId + ".html");
     }
 }
