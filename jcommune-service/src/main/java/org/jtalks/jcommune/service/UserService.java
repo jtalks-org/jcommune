@@ -86,11 +86,8 @@ public interface UserService extends EntityService<User> {
                          String newPassword, byte[] avatar) throws DuplicateEmailException, WrongPasswordException;
 
     /**
-     * Remove user's avatar.
-     *
-     * @param user user whose avatar must be delete
-     * @see User
+     * Remove current user's avatar.
      */
-    void removeAvatarFromCurrentUser(User user);
+    void removeAvatarFromCurrentUser();
 
 }

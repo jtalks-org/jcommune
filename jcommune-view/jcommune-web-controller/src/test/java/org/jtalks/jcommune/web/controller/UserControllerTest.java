@@ -305,7 +305,7 @@ public class UserControllerTest {
         ModelAndView mav = controller.removeAvatarFromCurrentUser();
         assertViewName(mav, "editProfile");
         verify(securityService).getCurrentUser();
-        verify(userService).removeAvatarFromCurrentUser(user);
+        verify(userService).removeAvatarFromCurrentUser();
     }
 
     @Test
