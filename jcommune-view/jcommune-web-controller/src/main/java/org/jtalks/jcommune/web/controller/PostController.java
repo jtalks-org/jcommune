@@ -42,9 +42,9 @@ import javax.validation.Valid;
  */
 @Controller
 public class PostController {
-    public static final String TOPIC_ID = TOPIC_ID;
-    public static final String BRANCH_ID = BRANCH_ID;
-    public static final String POST_ID = POST_ID;
+    public static final String TOPIC_ID = "topicId";
+    public static final String BRANCH_ID = "branchId";
+    public static final String POST_ID = "postId";
     private final TopicService topicService;
     private final PostService postService;
     private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
