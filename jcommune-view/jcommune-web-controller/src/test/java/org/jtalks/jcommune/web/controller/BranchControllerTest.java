@@ -52,8 +52,7 @@ public class BranchControllerTest {
         branchService = mock(BranchService.class);
         topicService = mock(TopicService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
-        controller = new BranchController(branchService, topicService);
-        controller.setBreadcrumbBuilder(breadcrumbBuilder);
+        controller = new BranchController(branchService, topicService, breadcrumbBuilder);
     }
 
     @Test

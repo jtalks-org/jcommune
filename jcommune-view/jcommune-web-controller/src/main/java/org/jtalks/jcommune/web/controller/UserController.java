@@ -56,7 +56,7 @@ public class UserController {
 
     private final SecurityService securityService;
     private final UserService userService;
-    private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
+    private BreadcrumbBuilder breadcrumbBuilder;
 
     /**
      * This method turns the trim binder on. Trim bilder
@@ -74,20 +74,15 @@ public class UserController {
      *
      * @param userService     {@link UserService} to be injected
      * @param securityService {@link SecurityService} used for accessing to current logged in user
+     * @param breadcrumbBuilder the object which provides actions on
+     * {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      */
     @Autowired
-    public UserController(UserService userService, SecurityService securityService) {
+    public UserController(UserService userService,
+                          SecurityService securityService,
+                          BreadcrumbBuilder breadcrumbBuilder) {
         this.userService = userService;
         this.securityService = securityService;
-    }
-
-     /**
-     * This method allows us to set the breadcrumb builder.
-     * This can be useful for testing to mock/stub the real builder.
-     *
-     * @param breadcrumbBuilder builder to be used when constructing breadcrumb objects
-     */
-    public void setBreadcrumbBuilder(BreadcrumbBuilder breadcrumbBuilder) {
         this.breadcrumbBuilder = breadcrumbBuilder;
     }
 
@@ -152,7 +147,9 @@ public class UserController {
     public ModelAndView editProfilePage() throws NotFoundException {
         User user = securityService.getCurrentUser();
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
-        return new ModelAndView(EDIT_PROFILE, "editedUser", editedUser);
+        return new ModelAndView(EDIT_PROFILE)
+                .addObject("editedUser", editedUser)
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
     }
 
     /**

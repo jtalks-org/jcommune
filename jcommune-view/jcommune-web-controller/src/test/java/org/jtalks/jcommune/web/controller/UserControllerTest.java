@@ -90,9 +90,8 @@ public class UserControllerTest {
     public void setUp() throws IOException {
         userService = mock(UserService.class);
         securityService = mock(SecurityService.class);
-        controller = new UserController(userService, securityService);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
-        controller.setBreadcrumbBuilder(breadcrumbBuilder);
+        controller = new UserController(userService, securityService, breadcrumbBuilder);
     }
 
     @Test
@@ -188,16 +187,24 @@ public class UserControllerTest {
     @Test
     public void testEditProfilePage() throws NotFoundException, IOException {
         User user = getUser();
+        //set expectations
         when(securityService.getCurrentUser()).thenReturn(user);
+        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
 
+        //invoke the object under test
         ModelAndView mav = controller.editProfilePage();
 
+        //check expectations
+        verify(securityService).getCurrentUser();
+        verify(breadcrumbBuilder).getForumBreadcrumb();
+
+        //check result
         assertViewName(mav, "editProfile");
         EditUserProfileDto dto = assertAndReturnModelAttributeOfType(mav, "editedUser", EditUserProfileDto.class);
         assertEquals(dto.getFirstName(), user.getFirstName(), "First name is not equal");
         assertEquals(dto.getLastName(), user.getLastName(), "Last name is not equal");
         assertEquals(dto.getEmail(), user.getEmail(), "Last name is not equal");
-        verify(securityService).getCurrentUser();
+        assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 
     @Test

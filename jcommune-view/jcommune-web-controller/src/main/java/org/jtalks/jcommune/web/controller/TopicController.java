@@ -56,7 +56,7 @@ public final class TopicController {
     private TopicService topicService;
     private PostService postService;
     private BranchService branchService;
-    private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
+    private BreadcrumbBuilder breadcrumbBuilder;
 
     /**
      * Constructor creates controller with objects injected via autowiring.
@@ -64,21 +64,16 @@ public final class TopicController {
      * @param topicService the object which provides actions on {@link Topic} entity
      * @param postService  the object which provides actions on {@link Post} entity
      * @param branchService the object which provides actions on {@link org.jtalks.jcommune.model.entity.Branch} entity
+     * @param breadcrumbBuilder the object which provides actions on
+     * {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      */
     @Autowired
-    public TopicController(TopicService topicService, PostService postService, BranchService branchService) {
+    public TopicController(TopicService topicService, PostService postService,
+                           BranchService branchService,
+                           BreadcrumbBuilder breadcrumbBuilder) {
         this.topicService = topicService;
         this.postService = postService;
         this.branchService = branchService;
-    }
-
-     /**
-     * This method allows us to set the breadcrumb builder.
-     * This can be useful for testing to mock/stub the real builder.
-     *
-     * @param breadcrumbBuilder builder to be used when constructing breadcrumb objects
-     */
-    public void setBreadcrumbBuilder(BreadcrumbBuilder breadcrumbBuilder) {
         this.breadcrumbBuilder = breadcrumbBuilder;
     }
 
@@ -87,6 +82,8 @@ public final class TopicController {
      *
      * @param branchId {@link org.jtalks.jcommune.model.entity.Branch} id
      * @return {@code ModelAndView} object with "newTopic" view, new {@link TopicDto} and branch id
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when branch not found
      */
     @RequestMapping(value = "/branch/{branchId}/topic/create", method = RequestMethod.GET)
     public ModelAndView createPage(@PathVariable(BRANCH_ID) Long branchId) throws NotFoundException {

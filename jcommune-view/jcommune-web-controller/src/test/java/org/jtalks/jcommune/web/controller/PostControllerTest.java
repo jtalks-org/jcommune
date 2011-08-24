@@ -70,8 +70,7 @@ public class PostControllerTest {
         topicService = mock(TopicService.class);
         postService = mock(PostService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
-        controller = new PostController(topicService, postService);
-        controller.setBreadcrumbBuilder(breadcrumbBuilder);
+        controller = new PostController(topicService, postService, breadcrumbBuilder);
     }
 
 

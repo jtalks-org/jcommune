@@ -42,12 +42,12 @@
                             </a>
                         </c:when>
                         <%--create inbox, outbox, drafts breadcrumbs--%>
-                        <c:when test="${breadcrumb.breadcrumbLocation.name == 'inbox'
-                        || breadcrumb.breadcrumbLocation.name == 'outbox'
-                        || breadcrumb.breadcrumbLocation.name == 'drafts'}">
+                        <c:when test="${breadcrumb.breadcrumbLocation.name == '/pm/inbox'
+                        || breadcrumb.breadcrumbLocation.name == '/pm/outbox'
+                        || breadcrumb.breadcrumbLocation.name == '/pm/drafts'}">
                             <%--TODO Need to define standard URI for most location - ${Entity type}/${Entity ID}.html--%>
                             <%--TODO Need to remove '/pm/' from controller mapping.html--%>
-                            <a href="${pageContext.request.contextPath}/pm/${breadcrumb.breadcrumbLocation.name}.html">
+                            <a href="${pageContext.request.contextPath}${breadcrumb.breadcrumbLocation.name}.html">
                                 <span class="nav"> <c:out value="${breadcrumb.breadcrumbLocationValue}"/> </span>
                             </a>
                         </c:when>

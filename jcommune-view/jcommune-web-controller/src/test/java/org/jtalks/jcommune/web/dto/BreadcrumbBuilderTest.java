@@ -1,9 +1,7 @@
 package org.jtalks.jcommune.web.dto;
 
-import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.*;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -121,4 +119,53 @@ public class BreadcrumbBuilderTest {
         assertEquals(actualList, expectedList);
     }
 
+    @Test
+    public void testGetInboxBreadcrumb() throws Exception {
+        //init
+        Breadcrumb expectedBreadcrumb = new Breadcrumb(
+                Breadcrumb.STUB_BREADCRUMB_ID,
+                Breadcrumb.BreadcrumbLocation.INBOX,
+                Breadcrumb.INBOX_BREADCRUMB_LOCATION_VALUE);
+        List<Breadcrumb> expectedList = breadcrumbBuilder.getForumBreadcrumb();
+        expectedList.add(expectedBreadcrumb);
+
+        //invoke the object under test
+        List<Breadcrumb> actualList = breadcrumbBuilder.getInboxBreadcrumb();
+
+        //check result
+        assertEquals(actualList, expectedList);
+    }
+
+    @Test
+    public void testGetOutboxBreadcrumb() throws Exception {
+        //init
+        Breadcrumb expectedBreadcrumb = new Breadcrumb(
+                Breadcrumb.STUB_BREADCRUMB_ID,
+                Breadcrumb.BreadcrumbLocation.OUTBOX,
+                Breadcrumb.OUTBOX_BREADCRUMB_LOCATION_VALUE);
+        List<Breadcrumb> expectedList = breadcrumbBuilder.getForumBreadcrumb();
+        expectedList.add(expectedBreadcrumb);
+
+        //invoke the object under test
+        List<Breadcrumb> actualList = breadcrumbBuilder.getOutboxBreadcrumb();
+
+        //check result
+        assertEquals(actualList, expectedList);
+    }
+    @Test
+    public void testGetDraftsBreadcrumb() throws Exception {
+        //init
+        Breadcrumb expectedBreadcrumb = new Breadcrumb(
+                Breadcrumb.STUB_BREADCRUMB_ID,
+                Breadcrumb.BreadcrumbLocation.DRAFTS,
+                Breadcrumb.DRAFTS_BREADCRUMB_LOCATION_VALUE);
+        List<Breadcrumb> expectedList = breadcrumbBuilder.getForumBreadcrumb();
+        expectedList.add(expectedBreadcrumb);
+
+        //invoke the object under test
+        List<Breadcrumb> actualList = breadcrumbBuilder.getDraftsBreadcrumb();
+
+        //check result
+        assertEquals(actualList, expectedList);
+    }
 }

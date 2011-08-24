@@ -34,8 +34,7 @@ public class SectionControllerTest {
     public void init() {
         sectionService = mock(SectionService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
-        controller = new SectionController(sectionService);
-        controller.setBreadcrumbBuilder(breadcrumbBuilder);
+        controller = new SectionController(sectionService, breadcrumbBuilder);
     }
 
     @Test

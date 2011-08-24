@@ -17,7 +17,11 @@
  */
 package org.jtalks.jcommune.web.dto;
 
-import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Section;
+import org.jtalks.jcommune.model.entity.Topic;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +33,7 @@ import java.util.List;
  * @author Alexandre Teterin
  */
 
+@Component
 public class BreadcrumbBuilder {
        //TODO Need to define standard URI for most location - ${Entity type}/${Entity ID}.html
 
@@ -113,7 +118,7 @@ public class BreadcrumbBuilder {
      *
      * @return the breadcrumb list for the Drafts location.
      */
-    public List<Breadcrumb> getDraftsBreadcrumbs() {
+    public List<Breadcrumb> getDraftsBreadcrumb() {
         List<Breadcrumb> breadcrumbList = getForumBreadcrumb();
         breadcrumbList.add(prepareDraftsBreadcrumb());
 

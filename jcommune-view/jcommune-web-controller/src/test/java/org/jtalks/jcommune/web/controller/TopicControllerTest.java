@@ -80,8 +80,7 @@ public class TopicControllerTest {
         branchService = mock(BranchService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
         branch = mock(Branch.class);
-        controller = new TopicController(topicService, postService, branchService);
-        controller.setBreadcrumbBuilder(breadcrumbBuilder);
+        controller = new TopicController(topicService, postService, branchService, breadcrumbBuilder);
         user = new User("username", "email@mail.com", "password");
     }
 

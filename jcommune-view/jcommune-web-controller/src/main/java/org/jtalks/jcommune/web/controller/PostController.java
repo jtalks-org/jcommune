@@ -47,18 +47,21 @@ public class PostController {
     public static final String POST_ID = "postId";
     private final TopicService topicService;
     private final PostService postService;
-    private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
+    private BreadcrumbBuilder breadcrumbBuilder;
 
     /**
      * Constructor. Injects {@link TopicService}.
      *
      * @param topicService {@link TopicService} instance to be injected
      * @param postService {@link PostService} instance to be injected
+     * @param breadcrumbBuilder the object which provides actions on
+     * {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      */
     @Autowired
-    public PostController(TopicService topicService, PostService postService) {
+    public PostController(TopicService topicService, PostService postService, BreadcrumbBuilder breadcrumbBuilder) {
         this.topicService = topicService;
         this.postService = postService;
+        this.breadcrumbBuilder = breadcrumbBuilder;
     }
 
     /**
@@ -149,7 +152,8 @@ public class PostController {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic, branch or post not found
      */
-    @RequestMapping(value = "/branch/{branchId}/topic/{topicId}/post/{postId}/save", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/branch/{branchId}/topic/{topicId}/post/{postId}/save",
+            method = {RequestMethod.GET, RequestMethod.POST})
     public ModelAndView save(@Valid @ModelAttribute PostDto postDto,
                              BindingResult result,
                              @PathVariable(BRANCH_ID) Long branchId,

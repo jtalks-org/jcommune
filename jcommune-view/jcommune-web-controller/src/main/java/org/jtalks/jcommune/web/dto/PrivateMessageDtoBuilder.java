@@ -19,6 +19,7 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.springframework.stereotype.Component;
 
 /**
  * DTO builder for {@link org.jtalks.jcommune.web.dto.PrivateMessageDto} objects.
@@ -27,6 +28,7 @@ import org.jtalks.jcommune.model.entity.PrivateMessage;
  * @author Alexandre Teterin
  */
 
+@Component
 public class PrivateMessageDtoBuilder {
 
 
