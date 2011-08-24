@@ -28,6 +28,7 @@ import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
+import org.jtalks.jcommune.web.validation.ImageFormats;
 import org.mockito.Matchers;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.mock.web.MockMultipartFile;
@@ -211,15 +212,38 @@ public class UserControllerTest {
 
         ModelAndView mav = controller.editProfile(userDto, bindingResult);
 
-        String excpectedUrl = "redirect:/user/" + user.getEncodedUsername() + ".html";
-        assertViewName(mav, excpectedUrl);
+        String expectedUrl = "redirect:/user/" + user.getEncodedUsername() + ".html";
+        assertViewName(mav, expectedUrl);
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
                 userDto.getNewUserPassword(), userDto.getAvatar().getBytes());
     }
 
     @Test
-    public void testEditProfileDublicatedEmail() throws Exception {
+    public void testEditProfileWithAvatarFailedValidation() throws Exception {
+        User user = getUserWithoutAvatar();
+        when(securityService.getCurrentUser()).thenReturn(user);
+        EditUserProfileDto userDto = mock(EditUserProfileDto.class);
+        when(userDto.getEmail()).thenReturn(EMAIL);
+        when(userDto.getFirstName()).thenReturn(FIRST_NAME);
+        when(userDto.getLastName()).thenReturn(LAST_NAME);
+        when(userDto.getCurrentUserPassword()).thenReturn(PASSWORD);
+        when(userDto.getNewUserPassword()).thenReturn(NEW_PASSWORD);
+        when(userDto.getAvatar()).thenReturn(avatar);
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        ModelAndView mav = controller.editProfile(userDto, bindingResult);
+
+        assertViewName(mav, "editProfile");
+        verify(userDto).setAvatar(Matchers.<MultipartFile>anyObject());
+        verify(userService, never()).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
+                userDto.getLastName(), userDto.getCurrentUserPassword(),
+                userDto.getNewUserPassword(), userDto.getAvatar().getBytes());
+    }
+
+    @Test
+    public void testEditProfileDuplicatedEmail() throws Exception {
         EditUserProfileDto userDto = getEditUserProfileDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
@@ -349,6 +373,14 @@ public class UserControllerTest {
         newUser.setFirstName(FIRST_NAME);
         newUser.setLastName(LAST_NAME);
         newUser.setAvatar(avatar.getBytes());
+        return newUser;
+    }
+
+    private User getUserWithoutAvatar() throws IOException {
+        User newUser = new User(USER_NAME, EMAIL, PASSWORD);
+        newUser.setFirstName(FIRST_NAME);
+        newUser.setLastName(LAST_NAME);
+        newUser.setAvatar(null);
         return newUser;
     }
 }
