@@ -42,9 +42,9 @@ import javax.validation.Valid;
  */
 @Controller
 public class PostController {
-    public static final String TOPIC_ID = "topicId";
-    public static final String BRANCH_ID = "branchId";
-    public static final String POST_ID = "postId";
+    public static final String TOPIC_ID = TOPIC_ID;
+    public static final String BRANCH_ID = BRANCH_ID;
+    public static final String POST_ID = POST_ID;
     private final TopicService topicService;
     private final PostService postService;
     private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
@@ -81,13 +81,13 @@ public class PostController {
      * @return {@code ModelAndView} with to parameter topicId and postId
      */
     @RequestMapping(method = RequestMethod.GET, value = "/branch/{branchId}/topic/{topicId}/post/{postId}/delete")
-    public ModelAndView deleteConfirmPage(@PathVariable("topicId") Long topicId,
-                                          @PathVariable("postId") Long postId,
-                                          @PathVariable("branchId") Long branchId) {
+    public ModelAndView deleteConfirmPage(@PathVariable(TOPIC_ID) Long topicId,
+                                          @PathVariable(POST_ID) Long postId,
+                                          @PathVariable(BRANCH_ID) Long branchId) {
         return new ModelAndView("deletePost")
-                .addObject("topicId", topicId)
-                .addObject("postId", postId)
-                .addObject("branchId", branchId);
+                .addObject(TOPIC_ID, topicId)
+                .addObject(POST_ID, postId)
+                .addObject(BRANCH_ID, branchId);
     }
 
     /**
@@ -102,9 +102,9 @@ public class PostController {
      *          when topic or post not found
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/branch/{branchId}/topic/{topicId}/post/{postId}")
-    public ModelAndView delete(@PathVariable("topicId") Long topicId,
-                               @PathVariable("postId") Long postId,
-                               @PathVariable("branchId") Long branchId) throws NotFoundException {
+    public ModelAndView delete(@PathVariable(TOPIC_ID) Long topicId,
+                               @PathVariable(POST_ID) Long postId,
+                               @PathVariable(BRANCH_ID) Long branchId) throws NotFoundException {
         topicService.deletePost(topicId, postId);
         return new ModelAndView(new StringBuilder()
                 .append("redirect:/topic/")
