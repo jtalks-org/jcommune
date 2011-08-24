@@ -51,6 +51,7 @@ public class PostDto {
     /**
      * Get post content.
      *
+     * @return post content
      */
     public String getBodyText() {
         return bodyText;
