@@ -19,7 +19,7 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
-//import org.jtalks.jcommune.web.dto.PostDto;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -77,7 +77,8 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public void savePost(long postId,String postContent) throws NotFoundException{
+    @PreAuthorize("hasPermission(#postId, 'org.jtalks.jcommune.model.entity.Post', admin)")
+    public void savePost(long postId, String postContent) throws NotFoundException{
         Post post = get(postId);
 
         post.setPostContent(postContent); 

@@ -1,6 +1,7 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org.org/tags/form" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head></head>
@@ -19,19 +20,21 @@
             <form:label path="bodyText"><spring:message code="label.text"/></form:label>
             <form:textarea path="bodyText"/>
             <form:errors path="bodyText" cols="30" rows="10"/>
-            <br />
-            <spring:message code="label.sticked"/>
-            <form:checkbox path="sticked" value="true"></form:checkbox>
-            <form:errors path="sticked"/>
-            <br />
-            <form:label path="topicWeight"><spring:message code="label.weight"/></form:label>
-            <form:input path="topicWeight" size="20"/>
-            <form:errors path="topicWeight"/>
-            <br />
-            <spring:message code="label.announcement"/>
-            <form:checkbox path="announcement" value="true"></form:checkbox>
-            <form:errors path="announcement"/>
 
+	    <sec:authorize access="hasRole('ROLE_ADMIN')">
+	      <br />
+	      <spring:message code="label.sticked"/>
+	      <form:checkbox path="sticked" value="true"></form:checkbox>
+	      <form:errors path="sticked"/>
+	      <br />
+	      <form:label path="topicWeight"><spring:message code="label.weight"/></form:label>
+	      <form:input path="topicWeight" size="20"/>
+	      <form:errors path="topicWeight"/>
+	      <br />
+	      <spring:message code="label.announcement"/>
+	      <form:checkbox path="announcement" value="true"></form:checkbox>
+	      <form:errors path="announcement"/>
+	    </sec:authorize>
 
             <div class="clear"></div>
 
