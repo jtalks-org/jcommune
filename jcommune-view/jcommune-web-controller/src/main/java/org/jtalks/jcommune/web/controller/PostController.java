@@ -58,19 +58,10 @@ public class PostController {
      * {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      */
     @Autowired
-    public PostController(TopicService topicService, PostService postService) {
+    public PostController(TopicService topicService, PostService postService,
+                          BreadcrumbBuilder breadcrumbBuilder) {
         this.topicService = topicService;
         this.postService = postService;
-    }
-
-    /**
-     * This method allows us to set the breadcrumb builder.
-     * This can be useful for testing to mock/stub the real builder.
-     *
-     * @param breadcrumbBuilder builder to be used when constructing breadcrumb objects
-     */
-
-    public void setBreadcrumbBuilder(BreadcrumbBuilder breadcrumbBuilder) {
         this.breadcrumbBuilder = breadcrumbBuilder;
     }
 

@@ -17,38 +17,36 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.web.dto.PostDto;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
-import org.jtalks.jcommune.web.dto.Breadcrumb;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ArrayList;
-
-
-import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.Breadcrumb;
+import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
+import org.jtalks.jcommune.web.dto.PostDto;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindingResult;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.never;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
-
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeValues;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
 import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeValues;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -65,7 +63,6 @@ public class PostControllerTest {
     public static final long POST_ID = 1;
     public static final long BRANCH_ID = 1L;
     private final String POST_CONTENT = "postContent";
-    private User user;
     private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
 
     @BeforeMethod
@@ -73,9 +70,7 @@ public class PostControllerTest {
         topicService = mock(TopicService.class);
         postService = mock(PostService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
-        controller = new PostController(topicService, postService);
-        controller.setBreadcrumbBuilder(breadcrumbBuilder);      
-        user = new User("username", "email@mail.com", "password");    
+        controller = new PostController(topicService, postService, breadcrumbBuilder);
     }
 
 
