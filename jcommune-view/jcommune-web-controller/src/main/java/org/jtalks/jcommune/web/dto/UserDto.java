@@ -33,7 +33,7 @@ public abstract class UserDto {
 
     @NotBlank(message = "{validation.email.notblank}")
     @Pattern(regexp = "^[\\w-]+(\\.[\\w-]+)*@([a-z0-9-]+(\\.[a-z0-9-]+)*?\\" +
-            ".[a-z]{2,6}|(\\d{1,3}\\.){3}\\d{1,3})(:\\d{4})?$", message = "{validation.emailexception}")
+            ".[a-z]{2,6}|(\\d{1,3}\\.){3}\\d{1,3})(:\\d{4})?$", message = "{validation.email.wrong.format}")
     private String email;
     private String firstName;
     private String lastName;
