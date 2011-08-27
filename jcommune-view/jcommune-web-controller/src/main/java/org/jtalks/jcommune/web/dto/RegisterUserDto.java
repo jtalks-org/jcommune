@@ -32,12 +32,13 @@ import javax.validation.constraints.Size;
 @Matches(field = "password", verifyField = "passwordConfirm", message = "{password_not_matches}")
 public class RegisterUserDto extends UserDto {
 
-    @NotBlank
-    @Size(min = 3, max = 20)
+    @NotBlank(message = "{validation.username.notblank}")
+    @Size(min = 3, max = 20, message = "{validation.username.length}")
     private String username;
-    @NotBlank
+    @NotBlank(message = "{validation.password.notblank}")
     @Size(min = 4, max = 20)
     private String password;
+    @NotBlank(message = "{validation.password.confirm.notblank}")
     private String passwordConfirm;
 
     /**
