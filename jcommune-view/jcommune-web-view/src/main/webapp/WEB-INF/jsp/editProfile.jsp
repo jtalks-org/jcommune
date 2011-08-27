@@ -20,7 +20,7 @@
         <table>
             <tr>
                 <td><label><spring:message code="label.username"/></label></td>
-                <td><span>"${auth}"</span></td>
+                <td><span><c:out value="${auth}"/></span></td>
             </tr>
 
             <tr>

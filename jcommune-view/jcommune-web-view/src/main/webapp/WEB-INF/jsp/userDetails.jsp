@@ -15,28 +15,28 @@
     <ul>
         <li>
             <label><spring:message code="label.username"/></label>
-            <span>${user.username}</span>
+            <span><c:out value="${user.username}"/></span>
         </li>
         <li>
             <label>Email</label>
             <c:choose>
                 <c:when test="${user.username == auth}">
-                    <span>${user.email}</span>
+                    <span><c:out value="${user.email}"/></span>
                 </c:when>
                 <c:otherwise>
                     <sec:authorize access="hasRole('ROLE_ADMIN')">
-                        <span>${user.email}</span>
+                        <span><c:out value="${user.email}"/></span>
                     </sec:authorize>
                 </c:otherwise>
             </c:choose>
         </li>
         <li>
             <label><spring:message code="label.firstname"/></label>
-            <span>${user.firstName}</span>
+            <span><c:out value="${user.firstName}"/></span>
         </li>
         <li>
             <label><spring:message code="label.lastname"/></label>
-            <span>${user.lastName}</span>
+            <span><c:out value="${user.lastName}"/></span>
         </li>
         <li>
             <label><spring:message code="label.lastlogin"/></label>
