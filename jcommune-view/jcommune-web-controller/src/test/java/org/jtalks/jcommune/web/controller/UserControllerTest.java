@@ -309,7 +309,9 @@ public class UserControllerTest {
     public void testRemoveAvatar() throws IOException {
         User user = getUser();
         when(securityService.getCurrentUser()).thenReturn(user);
+
         ModelAndView mav = controller.removeAvatarFromCurrentUser();
+
         assertViewName(mav, "editProfile");
         verify(securityService).getCurrentUser();
         verify(userService).removeAvatarFromCurrentUser();
@@ -322,7 +324,9 @@ public class UserControllerTest {
         HttpServletResponse response = mock(HttpServletResponse.class);
         ServletOutputStream servletOutputStream = mock(ServletOutputStream.class);
         when(response.getOutputStream()).thenReturn(servletOutputStream);
+
         controller.renderAvatar(response, ENCODED_USER_NAME);
+
         verify(response).setContentType("image/jpeg");
         verify(response).setContentLength(avatar.getBytes().length);
         verify(response).getOutputStream();
