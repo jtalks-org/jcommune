@@ -81,6 +81,8 @@ public interface TopicService extends EntityService<Topic> {
      */
     List<Topic> getTopicRangeInBranch(long branchId, int start, int max) throws NotFoundException;
 
+    List<Topic> getAllTopicsPastLastDay(int start, int max);
+
     /**
      * Get number of topics in branch.
      *
@@ -90,6 +92,8 @@ public interface TopicService extends EntityService<Topic> {
      *          when branch not found
      */
     int getTopicsInBranchCount(long branchId) throws NotFoundException;
+
+    int getTopicsPastLastDayCount();
 
     /**
      * Update current topic with given title and body.

@@ -147,6 +147,11 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         return dao.getTopicRangeInBranch(branchId, start, max);
     }
 
+    @Override
+    public List<Topic> getAllTopicsPastLastDay(int start, int max) {
+        return dao.getAllTopicsPastLastDay(start, max);  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -156,6 +161,11 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
             throw new NotFoundException("Branch with id: " + branchId + " not found");
         }
         return dao.getTopicsInBranchCount(branchId);
+    }
+
+    @Override
+    public int getTopicsPastLastDayCount() {
+        return dao.getTopicsPastLastDayCount();
     }
 
     /**

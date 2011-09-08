@@ -511,3 +511,7 @@ p, h1, form, button {
 #answer a.coolbutton {
     float: none;
 }
+
+#shortContent {
+    font-style: italic;
+}

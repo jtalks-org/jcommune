@@ -29,6 +29,7 @@ public class Breadcrumb {
     public static final String INBOX_BREADCRUMB_LOCATION_VALUE = "Inbox";
     public static final String OUTBOX_BREADCRUMB_LOCATION_VALUE = "Outbox";
     public static final String DRAFTS_BREADCRUMB_LOCATION_VALUE = "Drafts";
+    public static final String RECENT_BREADCRUMB_LOCATION_VALUE = "Recent";
     public static final Long STUB_BREADCRUMB_ID = 1L;
 
     /**
@@ -44,7 +45,9 @@ public class Breadcrumb {
 
         INBOX("/pm/inbox"),
         OUTBOX("/pm/outbox"),
-        DRAFTS("/pm/drafts");
+        DRAFTS("/pm/drafts"),
+
+        RECENT("/recent");
 
 
         //Display name for the HTML link

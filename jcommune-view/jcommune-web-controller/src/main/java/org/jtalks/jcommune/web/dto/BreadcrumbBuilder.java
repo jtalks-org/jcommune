@@ -125,6 +125,13 @@ public class BreadcrumbBuilder {
         return breadcrumbList;
     }
 
+    public List<Breadcrumb> getRecentBreadcrumb() {
+        List<Breadcrumb> breadcrumbList = getForumBreadcrumb();
+        breadcrumbList.add(prepareRecentBreadcrumb());
+
+        return  breadcrumbList;
+    }
+
     /**
      * Fill the forum breadcrumb.
      *
@@ -202,6 +209,14 @@ public class BreadcrumbBuilder {
                 Breadcrumb.BreadcrumbLocation.OUTBOX,
                 Breadcrumb.OUTBOX_BREADCRUMB_LOCATION_VALUE);
     }
+
+    private Breadcrumb prepareRecentBreadcrumb() {
+        return new Breadcrumb(
+                Breadcrumb.STUB_BREADCRUMB_ID,
+                Breadcrumb.BreadcrumbLocation.RECENT,
+                Breadcrumb.RECENT_BREADCRUMB_LOCATION_VALUE);
+    }
+
 
     /**
      * Fill the drafts breadcrumb.

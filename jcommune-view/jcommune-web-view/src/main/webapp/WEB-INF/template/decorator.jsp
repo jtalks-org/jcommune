@@ -44,7 +44,8 @@
                         <%--create inbox, outbox, drafts breadcrumbs--%>
                         <c:when test="${breadcrumb.breadcrumbLocation.name == '/pm/inbox'
                         || breadcrumb.breadcrumbLocation.name == '/pm/outbox'
-                        || breadcrumb.breadcrumbLocation.name == '/pm/drafts'}">
+                        || breadcrumb.breadcrumbLocation.name == '/pm/drafts'
+                        || breadcrumb.breadcrumbLocation.name == '/recent'}">
                             <%--TODO Need to define standard URI for most location - ${Entity type}/${Entity ID}.html--%>
                             <%--TODO Need to remove '/pm/' from controller mapping.html--%>
                             <a href="${pageContext.request.contextPath}${breadcrumb.breadcrumbLocation.name}.html">
@@ -71,7 +72,9 @@
                     <a href="${pageContext.request.contextPath}/registration.html"><fmt:message key="label.signup"/></a>
                 </sec:authorize>
                 &nbsp;
-                <a href="?lang=en">En</a> | <a href="?lang=ru">Ru</a> </span></td>
+                <a href="?lang=en">En</a> | <a href="?lang=ru">Ru</a><br/>
+                <span style="float: right ">
+                <a href="${pageContext.request.contextPath}/recent.html"><fmt:message key="label.recent"/></a></span></span></td>
         </tr>
         <tr>
             <td bgcolor="003366"></td>
