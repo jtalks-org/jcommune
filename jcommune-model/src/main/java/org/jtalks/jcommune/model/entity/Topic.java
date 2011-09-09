@@ -42,8 +42,6 @@ public class Topic extends Entity {
     private boolean announcement;
     private List<Post> posts = new ArrayList<Post>();
     private Branch branch;
-    private String lastPostShortContent;
-    private Post lastPost;
 
     /**
      * Used only by hibernate.
@@ -213,10 +211,6 @@ public class Topic extends Entity {
         }
 
         return shortContent;
-    }
-
-    public void setLastPostShortContent(String content){
-        this.lastPostShortContent = content;
     }
 
     public Post getLastPost(){
