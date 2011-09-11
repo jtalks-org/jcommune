@@ -7,6 +7,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <fmt:setBundle basename="org.jtalks.jcommune.web.view.messages" />
 <fmt:setLocale value="en"/>
+<!--apply timezone settings-->
+<%pageContext.setAttribute("dateTimeZone",session.getAttribute("GMT")); %>
 <html>
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" content=""/>
@@ -18,7 +20,8 @@
     <link href="${pageContext.request.contextPath}/css/main.css"
           type=text/css rel=stylesheet />
 </head>
-<body>
+<!--Define timezone to adjust date and time values-->
+<body onload='document.cookie="GMT=" + new Date().getTimezoneOffset()'>
 <div align="center">
     <table cellspacing=0 cellpadding=0 width=100% border=0>
         <tr>
