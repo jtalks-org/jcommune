@@ -63,18 +63,21 @@
 
     <form action="${pageContext.request.contextPath}/user/remove/avatar.html" id="removeAvatarForm"
           name="removeAvatarForm" method="POST">
-        <table>
-            <tr>
-                <td>
-                    <c:if test="${editedUser.avatar.size>0}">
-                        <img src="${pageContext.request.contextPath}/show/${auth}/avatar.html" width="100"
-                             height="100"/><br>
+        <c:if test="${editedUser.avatar.size>0}">
+            <table>
+                <tr>
+                    <td width="100" height="100" align="center" valign="middle">
+                        <img src="${pageContext.request.contextPath}/show/${auth}/avatar.html"/><br>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                         <a href="javascript:submitForm('removeAvatarForm')"><spring:message
                                 code="label.avatar.remove"/></a>
-                    </c:if>
-                </td>
-            </tr>
-        </table>
+                    </td>
+                </tr>
+            </table>
+        </c:if>
     </form>
 
     <table>

@@ -28,7 +28,7 @@ import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
-import org.jtalks.jcommune.web.validation.ImageFormats;
+import org.jtalks.jcommune.web.util.ImageUtil;
 import org.mockito.Matchers;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.mock.web.MockMultipartFile;
@@ -45,20 +45,14 @@ import org.testng.annotations.Test;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 
@@ -84,7 +78,7 @@ public class UserControllerTest {
     @BeforeClass
     public void mockAvatar() throws IOException {
         avatar = new MockMultipartFile("test_avatar.jpg", "test_avatar.jpg", "image/jpeg",
-                new byte[10]);
+                avatarByteArray);
     }
 
     @BeforeMethod
@@ -214,7 +208,10 @@ public class UserControllerTest {
         EditUserProfileDto userDto = getEditUserProfileDto();
         when(userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), userDto.getAvatar().getBytes())).thenReturn(user);
+                userDto.getNewUserPassword(), ImageUtil.convertImageToByteArray(ImageUtil.resizeImage(
+                (BufferedImage) ImageUtil.convertMultipartFileToImage(userDto.getAvatar()), ImageUtil.IMAGE_PNG, 4, 4))
+        )).thenReturn(user);
+
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
         ModelAndView mav = controller.editProfile(userDto, bindingResult);
@@ -223,7 +220,9 @@ public class UserControllerTest {
         assertViewName(mav, expectedUrl);
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), userDto.getAvatar().getBytes());
+                userDto.getNewUserPassword(), ImageUtil.convertImageToByteArray(ImageUtil.resizeImage(
+                (BufferedImage) ImageUtil.convertMultipartFileToImage(userDto.getAvatar()), ImageUtil.IMAGE_PNG, 4, 4))
+        );
     }
 
     @Test
@@ -257,7 +256,9 @@ public class UserControllerTest {
         doThrow(new DuplicateEmailException()).when(userService)
                 .editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                         userDto.getLastName(), userDto.getCurrentUserPassword(),
-                        userDto.getNewUserPassword(), userDto.getAvatar().getBytes());
+                        userDto.getNewUserPassword(), ImageUtil.convertImageToByteArray(ImageUtil.resizeImage(
+                        (BufferedImage) ImageUtil.convertMultipartFileToImage(userDto.getAvatar()), ImageUtil.IMAGE_PNG,
+                        4, 4)));
 
         ModelAndView mav = controller.editProfile(userDto, bindingResult);
 
@@ -265,7 +266,9 @@ public class UserControllerTest {
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), userDto.getAvatar().getBytes());
+                userDto.getNewUserPassword(), ImageUtil.convertImageToByteArray(ImageUtil.resizeImage(
+                (BufferedImage) ImageUtil.convertMultipartFileToImage(userDto.getAvatar()), ImageUtil.IMAGE_PNG, 4, 4))
+        );
 
         assertContainsError(bindingResult, "email");
     }
@@ -277,7 +280,9 @@ public class UserControllerTest {
         doThrow(new WrongPasswordException()).when(userService)
                 .editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                         userDto.getLastName(), userDto.getCurrentUserPassword(),
-                        userDto.getNewUserPassword(), userDto.getAvatar().getBytes());
+                        userDto.getNewUserPassword(), ImageUtil.convertImageToByteArray(ImageUtil.resizeImage(
+                        (BufferedImage) ImageUtil.convertMultipartFileToImage(userDto.getAvatar()), ImageUtil.IMAGE_PNG,
+                        4, 4)));
 
         ModelAndView mav = controller.editProfile(userDto, bindingResult);
 
@@ -285,13 +290,15 @@ public class UserControllerTest {
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), userDto.getAvatar().getBytes());
+                userDto.getNewUserPassword(), ImageUtil.convertImageToByteArray(ImageUtil.resizeImage(
+                (BufferedImage) ImageUtil.convertMultipartFileToImage(userDto.getAvatar()), ImageUtil.IMAGE_PNG, 4, 4))
+        );
         assertContainsError(bindingResult, "currentUserPassword");
     }
 
     @Test
     public void testEditProfileValidationFail() throws Exception {
-        User user=getUser();
+        User user = getUser();
         when(securityService.getCurrentUser()).thenReturn(user);
 
         EditUserProfileDto dto = getEditUserProfileDto();
@@ -394,4 +401,13 @@ public class UserControllerTest {
         newUser.setAvatar(null);
         return newUser;
     }
+
+    private byte[] avatarByteArray = new byte[]{-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0,
+            0, 0, 4, 0, 0, 0, 4, 1, 0, 0, 0, 0, -127, -118, -93, -45, 0, 0, 0, 9, 112, 72, 89, 115, 0, 0, 1,
+            -118, 0, 0, 1, -118, 1, 51, -105, 48, 88, 0, 0, 0, 32, 99, 72, 82, 77, 0, 0, 122, 37, 0, 0,
+            -128, -125, 0, 0, -7, -1, 0, 0, -128, -23, 0, 0, 117, 48, 0, 0, -22, 96, 0, 0, 58, -104, 0, 0,
+            23, 111, -110, 95, -59, 70, 0, 0, 0, 22, 73, 68, 65, 84, 120, -38, 98, -40, -49, -60, -64, -92,
+            -64, -60, 0, 0, 0, 0, -1, -1, 3, 0, 5, -71, 0, -26, -35, -7, 32, 96, 0, 0, 0, 0, 73, 69, 78, 68,
+            -82, 66, 96, -126
+    };
 }

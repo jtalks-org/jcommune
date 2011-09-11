@@ -48,8 +48,13 @@
         </li>
         <c:if test="${user.avatar != null}">
             <li>
-                <img src="${pageContext.request.contextPath}/show/${user.username}/avatar.html" width="100"
-                     height="100"/>
+                <table>
+                    <tr>
+                        <td width="100" height="100" align="center" valign="middle">
+                            <img src="${pageContext.request.contextPath}/show/${user.username}/avatar.html"/>
+                        </td>
+                    </tr>
+                </table>
             </li>
         </c:if>
         <li>
