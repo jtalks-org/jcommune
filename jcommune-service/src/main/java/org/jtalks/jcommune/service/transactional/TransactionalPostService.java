@@ -87,4 +87,12 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         dao.update(post);
         logger.debug("Update the post {}", post.getId());
      }
+    
+     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Post> getLastPost() throws NotFoundException {
+        return dao.getLastPost();
+    } 
 }

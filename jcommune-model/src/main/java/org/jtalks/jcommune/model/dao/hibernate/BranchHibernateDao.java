@@ -50,4 +50,5 @@ public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch>
         return ((Number) getSession().createQuery("select count(*) from Branch b where b.section = ?")
                 .setCacheable(true).setLong(0, sectionId).uniqueResult()).intValue();
     }
+
 }

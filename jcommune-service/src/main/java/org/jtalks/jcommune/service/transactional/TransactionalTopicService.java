@@ -213,5 +213,5 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
 
         securityService.deleteFromAcl(Topic.class, topicId);
         return branch;
-    }
+    }                    
 }
