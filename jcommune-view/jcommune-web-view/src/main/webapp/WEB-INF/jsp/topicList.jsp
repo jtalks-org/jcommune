@@ -20,6 +20,7 @@
         </tr>
 
         <c:forEach var="topic" items="${topics}">
+            
             <tr>
                 <td>
                     <c:choose>
@@ -41,10 +42,20 @@
                         <c:out value="${topic.topicStarter.username}"/>
                     </a>
                 </td>
-                <td><joda:format value="${topic.modificationDate}"
+                
+                <td>
+                    <c:forEach var="post"  items="${lastPost}" >
+                        <a href="${pageContext.request.contextPath}/user/${post.userCreated.encodedUsername}.html">
+                            <c:out value="${post.userCreated.username}"/></a>
+                       <a href="${pageContext.request.contextPath}/topic/${topic.id}.html">
+                            <joda:format value="${post.creationDate}"
                                  locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
-                                 pattern="dd MMM yyyy HH:mm"/></td>
+                                 pattern="dd MMM yyyy HH:mm"/></a>
+                        
+                    </c:forEach>
+                </td>    
             </tr>
+           
         </c:forEach>
     </table>
     <br>

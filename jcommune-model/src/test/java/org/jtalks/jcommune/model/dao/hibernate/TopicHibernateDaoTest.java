@@ -143,4 +143,6 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     private int getCount() {
         return ((Number) session.createQuery("select count(*) from Topic").uniqueResult()).intValue();
     }
+    
+       
 }

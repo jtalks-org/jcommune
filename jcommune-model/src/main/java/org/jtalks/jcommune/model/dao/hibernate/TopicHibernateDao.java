@@ -19,6 +19,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.Post;
 
 import java.util.List;
 
@@ -37,12 +38,7 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
     @Override
     @SuppressWarnings("unchecked")
     public List<Topic> getTopicRangeInBranch(Long branchId, int start, int max) {
-        return getSession().getNamedQuery("getAllTopicsInBranch")
-                .setCacheable(true)
-                .setLong("branchId", branchId)
-                .setFirstResult(start)
-                .setMaxResults(max)
-                .list();
+        return getSession().getNamedQuery("getAllTopicsInBranch").setCacheable(true).setLong("branchId", branchId).setFirstResult(start).setMaxResults(max).list();
     }
 
     /**
@@ -50,7 +46,6 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      */
     @Override
     public int getTopicsInBranchCount(long branchId) {
-        return ((Number) getSession().createQuery("select count(*) from Topic t where t.branch = ?")
-                .setCacheable(true).setLong(0, branchId).uniqueResult()).intValue();
+        return ((Number) getSession().createQuery("select count(*) from Topic t where t.branch = ?").setCacheable(true).setLong(0, branchId).uniqueResult()).intValue();
     }
 }
