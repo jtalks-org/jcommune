@@ -32,9 +32,13 @@
                             <c:out value="${post.userCreated.username}"/>
                         </a><br>
                         <c:if test="${post.userCreated.avatar != null}">
-                            <img src="${pageContext.request.contextPath}/show/${post.userCreated.encodedUsername}/avatar.html"
-                                 width="100"
-                                 height="100"/>
+                            <table>
+                                <tr>
+                                    <td width="100" height="100" align="center" valign="middle">
+                                        <img src="${pageContext.request.contextPath}/show/${post.userCreated.encodedUsername}/avatar.html"/>
+                                    </td>
+                                </tr>
+                            </table>
                         </c:if>
                     </td>
                     <td class="content" valign="top">
@@ -45,7 +49,7 @@
                                         <spring:message code="label.link"/>
                                     </a>
                                         <span class="modification-date">
-                                            <joda:format  value="${post.creationDate}"
+                                            <joda:format value="${post.creationDate}"
                                                          locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
                                                          pattern="dd MMM yyyy HH:mm"/>
                                         </span>
@@ -56,13 +60,13 @@
                                     <c:out value="${post.postContent}"/>
                                     <br/><br/><br/>
                                     <c:if test="${post.modificationDate!=null}">
-                                    <spring:message code="label.modify"/>
-                                     <joda:format value="${post.modificationDate}"
-                                                         locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
-                                                         pattern="dd MMM yyyy HH:mm"/>
-                                     </c:if>
+                                        <spring:message code="label.modify"/>
+                                        <joda:format value="${post.modificationDate}"
+                                                     locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
+                                                     pattern="dd MMM yyyy HH:mm"/>
+                                    </c:if>
                                 </td>
-                            </tr>                           
+                            </tr>
                             <tr>
                                 <td class="buttons">
                                     <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
@@ -81,8 +85,8 @@
                                         <a class="coolbutton" href="${delete_url}"><spring:message
                                                 code="label.delete"/></a>
                                     </sec:accesscontrollist>
-                               
-                               
+
+
                                     <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
                                         <c:choose>
                                             <c:when test="${page == 0 && i.index == 0}">

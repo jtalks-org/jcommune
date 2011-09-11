@@ -18,27 +18,56 @@
 package org.jtalks.jcommune.web.util;
 
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Eugeny Batov
  */
 public class ImageUtilTest {
 
+    private MultipartFile multipartFile;
+
+    @BeforeClass
+    public void mockAvatar() throws IOException {
+        multipartFile = new MockMultipartFile("test_avatar.png", "test_avatar.png", "image/png",
+                originalImageByteArray);
+    }
+
     @Test
-    public void testResizeToSquare() throws IOException {
-        int expectedDimension = 4;
-        Image originalImage = ImageIO.read(new MockMultipartFile("test_image", "test_image", "image/png",
+    public void testResizeImage() throws IOException {
+        int expectedWidth = 4;
+        int expectedHeight = 4;
+        BufferedImage originalImage = ImageIO.read(new MockMultipartFile("test_image", "test_image", "image/png",
                 originalImageByteArray).getInputStream());
-        Image modifiedImage = ImageUtil.resizeToSquare(originalImage, expectedDimension);
-        assertEquals(modifiedImage.getWidth(null), expectedDimension);
-        assertEquals(modifiedImage.getHeight(null), expectedDimension);
+        Image modifiedImage = ImageUtil.resizeImage(originalImage, ImageUtil.IMAGE_PNG, expectedWidth, expectedHeight);
+        assertEquals(modifiedImage.getWidth(null), expectedWidth);
+        assertEquals(modifiedImage.getHeight(null), expectedHeight);
+    }
+
+    @Test
+    public void testConvertMultipartFileToImage() throws IOException {
+        Image image = ImageUtil.convertMultipartFileToImage(multipartFile);
+        assertTrue(image instanceof BufferedImage);
+        assertTrue(image != null);
+    }
+
+    @Test
+    public void testConvertImageToByteArray() throws IOException {
+        Image image = ImageUtil.convertMultipartFileToImage(multipartFile);
+        byte[] imageByteArray = ImageUtil.convertImageToByteArray(image);
+        assertTrue(imageByteArray instanceof byte[]);
+        assertTrue(imageByteArray != null);
+        assertTrue(imageByteArray.length != 0);
     }
 
 

@@ -27,6 +27,7 @@ import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
+import org.jtalks.jcommune.web.util.ImageUtil;
 import org.jtalks.jcommune.web.validation.ImageFormats;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -39,9 +40,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 /**
@@ -56,7 +61,11 @@ import java.io.IOException;
 public class UserController {
     public static final String EDIT_PROFILE = "editProfile";
     public static final String REGISTRATION = "registration";
-    public static final String EDITED_USER="editedUser";
+    public static final String EDITED_USER = "editedUser";
+
+    public static final int AVATAR_MAX_HEIGHT = 100;
+    public static final int AVATAR_MAX_WIDTH = 100;
+
 
     private final SecurityService securityService;
     private final UserService userService;
@@ -76,10 +85,10 @@ public class UserController {
     /**
      * Assign {@link UserService} to field.
      *
-     * @param userService     {@link UserService} to be injected
-     * @param securityService {@link SecurityService} used for accessing to current logged in user
+     * @param userService       {@link UserService} to be injected
+     * @param securityService   {@link SecurityService} used for accessing to current logged in user
      * @param breadcrumbBuilder the object which provides actions on
-     * {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
+     *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      */
     @Autowired
     public UserController(UserService userService,
@@ -175,7 +184,7 @@ public class UserController {
 
         if (result.hasErrors()) {
             if (user.getAvatar() == null) {
-                userDto.setAvatar(new MockMultipartFile("avatar","",ImageFormats.JPG.getContentType(),new byte[0]));
+                userDto.setAvatar(new MockMultipartFile("avatar", "", ImageFormats.JPG.getContentType(), new byte[0]));
             }
             return new ModelAndView(EDIT_PROFILE, EDITED_USER, userDto);
         }
@@ -184,7 +193,7 @@ public class UserController {
         try {
             editedUser = userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                     userDto.getLastName(), userDto.getCurrentUserPassword(), userDto.getNewUserPassword(),
-                    userDto.getAvatar().getBytes());
+                    prepareImage(userDto.getAvatar()));
         } catch (DuplicateEmailException e) {
             result.rejectValue("email", "validation.duplicateemail");
             return new ModelAndView(EDIT_PROFILE);
@@ -230,6 +239,20 @@ public class UserController {
         response.setContentType("image/jpeg");
         response.setContentLength(avatar.length);
         response.getOutputStream().write(avatar);
+    }
+
+    /**
+     * Prepares image to save- converts multipart file to image, resizes image to required dimension, converts image to
+     * byte array.
+     *
+     * @param multipartFile input multipart file
+     * @return prepared image byte array
+     * @throws IOException- throws if an I/O error occurs
+     */
+    private byte[] prepareImage(MultipartFile multipartFile) throws IOException {
+        Image image = ImageUtil.convertMultipartFileToImage(multipartFile);
+        image = ImageUtil.resizeImage((BufferedImage) image, ImageUtil.IMAGE_JPEG, AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
+        return ImageUtil.convertImageToByteArray(image);
     }
 
 }
