@@ -35,6 +35,10 @@ import java.io.IOException;
  */
 public class ImageUtil {
 
+    private ImageUtil() {
+        //Utility classes should not have a public or default constructor
+    }
+
     public static final int IMAGE_UNKNOWN = -1;
     public static final int IMAGE_JPEG = 0;
     public static final int IMAGE_PNG = 1;
