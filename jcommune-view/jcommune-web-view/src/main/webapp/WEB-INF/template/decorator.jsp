@@ -20,7 +20,7 @@
           type=text/css rel=stylesheet/>
 </head>
 <!--apply timezone settings-->
-<joda:dateTimeZone value="<%=session.getAttribute("GMT")%>">
+<joda:dateTimeZone value='<%=session.getAttribute("GMT")%>'>
     <!--Define timezone to adjust date and time values-->
     <body onload='document.cookie="GMT=" + new Date().getTimezoneOffset()'>
     <div align="center">
