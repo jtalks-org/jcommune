@@ -20,9 +20,11 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,17 +55,26 @@ public final class TopicController {
     public static final String BRANCH_ID = "branchId";
     private TopicService topicService;
     private PostService postService;
+    private BranchService branchService;
+    private BreadcrumbBuilder breadcrumbBuilder;
 
     /**
      * Constructor creates controller with objects injected via autowiring.
      *
      * @param topicService the object which provides actions on {@link Topic} entity
      * @param postService  the object which provides actions on {@link Post} entity
+     * @param branchService the object which provides actions on {@link org.jtalks.jcommune.model.entity.Branch} entity
+     * @param breadcrumbBuilder the object which provides actions on
+     * {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      */
     @Autowired
-    public TopicController(TopicService topicService, PostService postService) {
+    public TopicController(TopicService topicService, PostService postService,
+                           BranchService branchService,
+                           BreadcrumbBuilder breadcrumbBuilder) {
         this.topicService = topicService;
         this.postService = postService;
+        this.branchService = branchService;
+        this.breadcrumbBuilder = breadcrumbBuilder;
     }
 
     /**
@@ -71,12 +82,15 @@ public final class TopicController {
      *
      * @param branchId {@link org.jtalks.jcommune.model.entity.Branch} id
      * @return {@code ModelAndView} object with "newTopic" view, new {@link TopicDto} and branch id
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when branch not found
      */
     @RequestMapping(value = "/branch/{branchId}/topic/create", method = RequestMethod.GET)
-    public ModelAndView createPage(@PathVariable(BRANCH_ID) Long branchId) {
+    public ModelAndView createPage(@PathVariable(BRANCH_ID) Long branchId) throws NotFoundException {
         return new ModelAndView("newTopic")
                 .addObject("topicDto", new TopicDto())
-                .addObject("branchId", branchId);
+                .addObject("branchId", branchId)
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)));
     }
 
     /**
@@ -94,11 +108,13 @@ public final class TopicController {
                                BindingResult result,
                                @PathVariable(BRANCH_ID) Long branchId) throws NotFoundException {
         if (result.hasErrors()) {
-            return new ModelAndView("newTopic").addObject(BRANCH_ID, branchId);
+            return new ModelAndView("newTopic")
+                    .addObject(BRANCH_ID, branchId)
+                    .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)));
         } else {
             Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(),
                     branchId);
-            return new ModelAndView("redirect:/branch/" + branchId + "/topic/"
+            return new ModelAndView("redirect:/topic/"
                     + createdTopic.getId() + ".html");
         }
     }
@@ -135,28 +151,29 @@ public final class TopicController {
     }
 
     /**
-     * Method handles GET requests with URI /branch/{branchId}/topic/{topicId}
+     * Method handles GET requests with URI /topic/{topicId}
      * Displays to user a list of messages from the chosen theme with pagination.
      *
      * @param topicId  the id of selected Topic
      * @param page     page
      * @param size     number of posts on the page
-     * @param branchId the id of selected topic branch
      * @return {@code ModelAndView}
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic or branch not found
      */
-    @RequestMapping(value = "/branch/{branchId}/topic/{topicId}", method = {RequestMethod.POST, RequestMethod.GET})
-    public ModelAndView show(@PathVariable(BRANCH_ID) Long branchId,
-                             @PathVariable(TOPIC_ID) Long topicId,
+    @RequestMapping(value = "/topic/{topicId}", method = {RequestMethod.POST, RequestMethod.GET})
+    public ModelAndView show(@PathVariable(TOPIC_ID) Long topicId,
                              @RequestParam(value = "page", required = false) Integer page,
                              @RequestParam(value = "size", required = false) Integer size) throws NotFoundException {
+
+        Topic topic = topicService.get(topicId);
+
+        Long branchId = topic.getBranch().getId();
 
         int postsCount = postService.getPostsInTopicCount(topicId);
         Pagination pag = new Pagination(page, size, postsCount);
 
         List<Post> posts = postService.getPostRangeInTopic(topicId, pag.getStart(), pag.getPageSize());
-        Topic topic = topicService.get(topicId);
 
         return new ModelAndView("postList")
                 .addObject("posts", posts)
@@ -164,7 +181,9 @@ public final class TopicController {
                 .addObject("maxPages", pag.getMaxPages())
                 .addObject("page", pag.getPage())
                 .addObject(BRANCH_ID, branchId)
-                .addObject(TOPIC_ID, topicId);
+                .addObject(TOPIC_ID, topicId)
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(topic))
+                ;
     }
 
     /**
@@ -185,7 +204,8 @@ public final class TopicController {
         return new ModelAndView("topicForm")
                 .addObject("topicDto", TopicDto.getDtoFor(topic))
                 .addObject(BRANCH_ID, branchId)
-                .addObject(TOPIC_ID, topicId);
+                .addObject(TOPIC_ID, topicId)
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(topic));
     }
 
     /**
@@ -214,6 +234,6 @@ public final class TopicController {
         topicService.saveTopic(topicDto.getId(), topicDto.getTopicName(), topicDto.getBodyText(),
                                topicDto.getTopicWeight(), topicDto.isSticked(), topicDto.isAnnouncement());
 
-        return new ModelAndView("redirect:/branch/" + branchId + "/topic/" + topicId + ".html");
+        return new ModelAndView("redirect:/topic/" + topicId + ".html");
     }
 }

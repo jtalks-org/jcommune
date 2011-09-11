@@ -73,7 +73,21 @@ public class UserDataInterceptorTest {
         verify(service).currentUserNewPmCount();
         verify(securityService).getCurrentUser();
     }
-    
+
+    @Test
+    public void testPostHandleWithoutCurrentUser() throws Exception {
+        User user = getUser();
+        when(service.currentUserNewPmCount()).thenReturn(0);
+        when(securityService.getCurrentUser()).thenReturn(null);
+
+        interceptor.postHandle(request, response, null, null);
+
+        assertEquals(request.getAttribute("newPmCount"), 0);
+        assertEquals(request.getAttribute("encodedUserName"), null);
+        verify(service).currentUserNewPmCount();
+        verify(securityService).getCurrentUser();
+    }
+
     private User getUser() {
         User newUser = new User(USER_NAME, EMAIL, PASSWORD);
         newUser.setFirstName(FIRST_NAME);

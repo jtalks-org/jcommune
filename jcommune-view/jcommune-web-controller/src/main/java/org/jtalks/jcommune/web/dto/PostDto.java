@@ -21,7 +21,9 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.Post;
 
 import javax.validation.constraints.Size;
-
+/**
+ * DTO for {@link Post} objects. Used for validation and binding to form.
+ */
 public class PostDto {
     private static final int MAX_POST_LENGTH = 2000;
 
@@ -51,6 +53,7 @@ public class PostDto {
     /**
      * Get post content.
      *
+     * @return post content
      */
     public String getBodyText() {
         return bodyText;

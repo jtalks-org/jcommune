@@ -32,6 +32,7 @@ import org.joda.time.DateTime;
  * @author Kirill Afonin
  */
 public class Post extends Entity {
+
     /**
      * Creation date and time
      */
@@ -48,16 +49,6 @@ public class Post extends Entity {
     }
 
     /**
-     * Construct the instance with the specified creation date.
-     *
-     * @param creationDate the creation date of the post
-     */
-    protected Post(DateTime creationDate) {
-        this.creationDate = creationDate;
-        this.modificationDate= new DateTime();
-    }
-
-    /**
      * Creates the Post instance with required fields.
      * Creation date is set to now.
      *
@@ -71,12 +62,13 @@ public class Post extends Entity {
     }
 
     /**
-     * Creates the new instance with the creationDate initialized with current time.
+     * Constructor used only for the input data in the testGetPostBreadcrumb method
+     * org.jtalks.jcommune.web.dto.BreadcrumbBuilderTest class.
      *
-     * @return new Post instance
+     * @param topic to be used as input data
      */
-    public static Post createNewPost() {
-        return new Post(new DateTime());
+    public Post(Topic topic) {
+        this.topic = topic;
     }
 
     /**
@@ -85,7 +77,9 @@ public class Post extends Entity {
     public DateTime getCreationDate() {
         return creationDate;
     }
-
+     /**
+     * @return date and time when the post was changed last time
+     */
     public DateTime getModificationDate() {
         return modificationDate;
     }
@@ -93,15 +87,17 @@ public class Post extends Entity {
     /**
      * @param postDate the postDate to set
      */
-    public void setCreationDate(DateTime postDate) {
+    protected void setCreationDate(DateTime postDate) {
         this.creationDate = postDate;
     }
+
     /**
-     * @param modificationDate date and time when theme was changed last time
+     * @param modificationDate date and time when the post was changed last time
      */
-    public void setModificationDate(DateTime modificationDate) {
+    protected void setModificationDate(DateTime modificationDate) {
         this.modificationDate = modificationDate;
     }
+
     /**
      * Set modification date to now.
      *

@@ -34,21 +34,25 @@ import org.springframework.web.servlet.ModelAndView;
  * and page contains branch list from the chosen section
  *
  * @author Max Malakhov
+ * @author Alexandre Teterin
  */
 
 @Controller
 public final class SectionController {
 
     private SectionService sectionService;
+    private BreadcrumbBuilder breadcrumbBuilder;
 
     /**
      * Constructor creates MVC controller with specified SectionService
      *
      * @param sectionService autowired object from Spring Context
+     * @param breadcrumbBuilder the object which provides actions on {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      */
     @Autowired
-    public SectionController(SectionService sectionService) {
+    public SectionController(SectionService sectionService, BreadcrumbBuilder breadcrumbBuilder) {
         this.sectionService = sectionService;
+        this.breadcrumbBuilder = breadcrumbBuilder;
     }
 
     /**
@@ -60,7 +64,7 @@ public final class SectionController {
     public ModelAndView sectionList() {
         return new ModelAndView("sectionList")
                 .addObject("sectionList", sectionService.getAll())
-                .addObject("breadcrumbList", new BreadcrumbBuilder().getForumBreadcrumb());
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
     }
 
     /**
@@ -77,6 +81,6 @@ public final class SectionController {
 
         return new ModelAndView("branchList")
                 .addObject("section", section)
-                .addObject("breadcrumbList", new BreadcrumbBuilder().getSectionBreadcrumb(section));
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
     }
 }

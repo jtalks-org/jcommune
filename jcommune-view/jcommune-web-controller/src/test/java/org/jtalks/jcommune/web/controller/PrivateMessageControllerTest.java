@@ -21,6 +21,8 @@ import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.Breadcrumb;
+import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 import org.jtalks.jcommune.web.dto.PrivateMessageDtoBuilder;
 import org.mockito.Mock;
@@ -31,6 +33,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.anyLong;
@@ -41,6 +44,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 
@@ -59,37 +63,66 @@ public class PrivateMessageControllerTest {
     private PrivateMessageDtoBuilder pmDtoBuilder;
     @Mock
     private PrivateMessageDto pmDto;
+    @Mock
+    private BreadcrumbBuilder breadcrumbBuilder;
 
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
-        controller = new PrivateMessageController(pmService);
+        controller = new PrivateMessageController(pmService, breadcrumbBuilder, pmDtoBuilder);
     }
 
     @Test
     public void displayInboxPageTest() {
+        //set expectations
+        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
+
+        //invoke the object under test
         ModelAndView mav = controller.displayInboxPage();
 
+        //check expectations
+        verify(pmService).getInboxForCurrentUser();
+        verify(breadcrumbBuilder).getForumBreadcrumb();
+
+        //check result
         assertViewName(mav, "pm/inbox");
         assertAndReturnModelAttributeOfType(mav, "pmList", List.class);
-        verify(pmService).getInboxForCurrentUser();
+        assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 
     @Test
     public void displayOutboxPageTest() {
+        //set expectations
+        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
+
+        //invoke the object under test
         ModelAndView mav = controller.displayOutboxPage();
 
+        //check expectations
+        verify(pmService).getOutboxForCurrentUser();
+        verify(breadcrumbBuilder).getForumBreadcrumb();
+
+        //check result
         assertViewName(mav, "pm/outbox");
         assertAndReturnModelAttributeOfType(mav, "pmList", List.class);
-        verify(pmService).getOutboxForCurrentUser();
+        assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 
     @Test
     public void displayNewPMPageTest() {
+        //set expectations
+        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
+
+        //invoke the object under test
         ModelAndView mav = controller.displayNewPMPage();
 
+        //check expectations
+        verify(breadcrumbBuilder).getForumBreadcrumb();
+
+        //check result
         assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
         assertViewName(mav, "pm/pmForm");
+        assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 
     @Test
@@ -141,70 +174,132 @@ public class PrivateMessageControllerTest {
     @Test
     public void testDisplayReplyPMPage() throws NotFoundException {
         PrivateMessage pm = new PrivateMessage();
-        controller.setPmDtoBuilder(pmDtoBuilder);
+        //set expectations
         when(pmService.get(PM_ID)).thenReturn(pm);
         when(pmDtoBuilder.getReplyDtoFor(pm)).thenReturn(pmDto);
+        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
 
+        //invoke the object under test
         ModelAndView mav = controller.displayReplyPMPage(PM_ID);
 
+        //check expectations
         verify(pmService).get(PM_ID);
         verify(pmDtoBuilder).getReplyDtoFor(pm);
+        verify(breadcrumbBuilder).getForumBreadcrumb();
+
+        //check result
         assertViewName(mav, "pm/pmForm");
         assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
+        assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 
     @Test
     public void testDisplayQuotePMPage() throws NotFoundException {
         PrivateMessage pm = new PrivateMessage();
+        //set expectations
         when(pmService.get(PM_ID)).thenReturn(pm);
-        controller.setPmDtoBuilder(pmDtoBuilder);
         when(pmDtoBuilder.getQuoteDtoFor(pm)).thenReturn(pmDto);
+        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
 
+        //invoke the object under test
         ModelAndView mav = controller.displayQuotePMPage(PM_ID);
 
+        //check expectations
         verify(pmService).get(PM_ID);
         verify(pmDtoBuilder).getQuoteDtoFor(pm);
+
+        //check result
         assertViewName(mav, "pm/pmForm");
         assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
+        assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 
     @Test
     public void testShowInbox() throws NotFoundException {
         String box = "inbox";
         PrivateMessage pm = new PrivateMessage();
-        when(pmService.get(PM_ID)).thenReturn(pm);
 
+        //set expectations
+        when(pmService.get(PM_ID)).thenReturn(pm);
+        when(breadcrumbBuilder.getInboxBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
+
+        //invoke the object under test
         ModelAndView mav = controller.show(box, PM_ID);
 
+        //check expectations
+        verify(pmService).get(PM_ID);
+        verify(pmService).markAsRead(pm);
+        verify(breadcrumbBuilder).getInboxBreadcrumb();
+
+        //check result
         assertViewName(mav, "pm/showPm");
         PrivateMessage actualPm = assertAndReturnModelAttributeOfType(mav, "pm", PrivateMessage.class);
         assertEquals(actualPm, pm);
-
-        verify(pmService).get(PM_ID);
-        verify(pmService).markAsRead(pm);
+        assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 
     @Test
     public void testShowOutbox() throws NotFoundException {
         String box = "outbox";
         PrivateMessage pm = new PrivateMessage();
-        when(pmService.get(PM_ID)).thenReturn(pm);
 
+        //set expectations
+        when(pmService.get(PM_ID)).thenReturn(pm);
+        when(breadcrumbBuilder.getOutboxBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
+
+        //invoke the object under test
         ModelAndView mav = controller.show(box, PM_ID);
 
+        //check expectations
+        verify(pmService).get(PM_ID);
+        verify(breadcrumbBuilder).getOutboxBreadcrumb();
+
+        //check result
         assertViewName(mav, "pm/showPm");
         PrivateMessage actualPm = assertAndReturnModelAttributeOfType(mav, "pm", PrivateMessage.class);
         assertEquals(actualPm, pm);
+        assertModelAttributeAvailable(mav, "breadcrumbList");
+    }
+
+    @Test
+    public void testShowDrafts() throws NotFoundException {
+        String box = "drafts";
+        PrivateMessage pm = new PrivateMessage();
+
+        //set expectations
+        when(pmService.get(PM_ID)).thenReturn(pm);
+        when(breadcrumbBuilder.getDraftsBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
+
+        //invoke the object under test
+        ModelAndView mav = controller.show(box, PM_ID);
+
+        //check expectations
         verify(pmService).get(PM_ID);
+        verify(breadcrumbBuilder).getDraftsBreadcrumb();
+
+        //check result
+        assertViewName(mav, "pm/showPm");
+        PrivateMessage actualPm = assertAndReturnModelAttributeOfType(mav, "pm", PrivateMessage.class);
+        assertEquals(actualPm, pm);
+        assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 
     @Test
     public void testDisplayDraftsPage() {
+        //set expectations
+        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
+
+        //invoke the object under test
         ModelAndView mav = controller.displayDraftsPage();
 
+        //check expectations
+        verify(pmService).getDraftsFromCurrentUser();
+        verify(breadcrumbBuilder).getForumBreadcrumb();
+
+        //check result
         assertViewName(mav, "pm/drafts");
         assertAndReturnModelAttributeOfType(mav, "pmList", List.class);
-        verify(pmService).getDraftsFromCurrentUser();
+        assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 
     @Test
@@ -213,24 +308,42 @@ public class PrivateMessageControllerTest {
         pm.setId(PM_ID);
         pm.markAsDraft();
         pm.setUserTo(new User("username", "email", "password"));
-        when(pmService.get(PM_ID)).thenReturn(pm);
 
+        //set expectations
+        when(pmService.get(PM_ID)).thenReturn(pm);
+        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
+
+        //invoke the object under test
         ModelAndView mav = controller.edit(PM_ID);
 
+        //check expectations
+        verify(pmService).get(PM_ID);
+        verify(breadcrumbBuilder).getForumBreadcrumb();
+
+        //check result
         assertViewName(mav, "pm/pmForm");
         PrivateMessageDto dto = assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
         assertEquals(dto.getId(), PM_ID);
-        verify(pmService).get(PM_ID);
+        assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 
     @Test
     public void testEditNotDraft() throws NotFoundException {
         PrivateMessage pm = PrivateMessage.createNewPrivateMessage();
+        //set expectations
         when(pmService.get(PM_ID)).thenReturn(pm);
+        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
 
+        //invoke the object under test
         ModelAndView mav = controller.edit(PM_ID);
 
+        //check expectations
+        verify(pmService).get(PM_ID);
+        verify(breadcrumbBuilder).getForumBreadcrumb();
+
+        //check result
         assertViewName(mav, "pm/inbox");
+        assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 
     @Test

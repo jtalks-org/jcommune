@@ -40,8 +40,8 @@ public class ImageFormatValidatorTest {
      */
     public class TestObject {
 
-        @ImageFormat(format = {AllowableFormatEnum.JPG, AllowableFormatEnum.PNG, AllowableFormatEnum.GIF})
-        MultipartFile avatar;
+        @ImageFormat(format = {ImageFormats.JPG, ImageFormats.PNG, ImageFormats.GIF})
+        private MultipartFile avatar;
 
         public TestObject(MockMultipartFile avatar) {
             this.avatar = avatar;
@@ -59,8 +59,7 @@ public class ImageFormatValidatorTest {
     @Test(dataProvider = "allowableFormats")
     public void testValidatorSuccess(String contentType) {
         Set<ConstraintViolation<TestObject>> constraintViolations =
-                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "test_avatar",
-                        contentType,
+                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "test_avatar", contentType,
                         new byte[10])));
 
         Assert.assertEquals(constraintViolations.size(), 0, "Validation errors");
@@ -69,8 +68,7 @@ public class ImageFormatValidatorTest {
     @Test(dataProvider = "notAllowableFormats")
     public void testValidatorFail(String contentType) {
         Set<ConstraintViolation<TestObject>> constraintViolations =
-                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "test_avatar",
-                        contentType,
+                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "test_avatar", contentType,
                         new byte[10])));
 
         Assert.assertEquals(constraintViolations.size(), 1, "Validation without errors");
@@ -80,8 +78,7 @@ public class ImageFormatValidatorTest {
     @Test
     public void testValidatorImageNull() {
         Set<ConstraintViolation<TestObject>> constraintViolations =
-                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "",
-                        "application/octet-stream",
+                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "", "application/octet-stream",
                         new byte[0])));
 
         Assert.assertEquals(constraintViolations.size(), 0, "Validation errors");
@@ -90,9 +87,9 @@ public class ImageFormatValidatorTest {
     @DataProvider
     public Object[][] allowableFormats() {
         return new Object[][]{
-                {AllowableFormatEnum.JPG.getContentType()},
-                {AllowableFormatEnum.PNG.getContentType()},
-                {AllowableFormatEnum.GIF.getContentType()}
+                {ImageFormats.JPG.getContentType()},
+                {ImageFormats.PNG.getContentType()},
+                {ImageFormats.GIF.getContentType()}
         };
     }
 

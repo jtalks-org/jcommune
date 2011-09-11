@@ -17,7 +17,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -148,6 +147,11 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         return dao.getTopicRangeInBranch(branchId, start, max);
     }
 
+    @Override
+    public List<Topic> getAllTopicsPastLastDay(int start, int max) {
+        return dao.getAllTopicsPastLastDay(start, max);  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -157,6 +161,11 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
             throw new NotFoundException("Branch with id: " + branchId + " not found");
         }
         return dao.getTopicsInBranchCount(branchId);
+    }
+
+    @Override
+    public int getTopicsPastLastDayCount() {
+        return dao.getTopicsPastLastDayCount();
     }
 
     /**
@@ -205,17 +214,4 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         securityService.deleteFromAcl(Topic.class, topicId);
         return branch;
     }
-    
-    @Override
-    public void savePost(long topicId, long postId, String postContent) 
-            throws NotFoundException{
-        Topic topic = get(topicId);
-        Post post = postService.get(postId);
-
-        post.setPostContent(postContent); 
-        post.setModificationDate(new DateTime());
-
-        dao.update(topic);
-        logger.debug("Update the topic {}", topic.getId());
-     }
 }

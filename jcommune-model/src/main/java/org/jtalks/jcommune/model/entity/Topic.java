@@ -33,35 +33,18 @@ import java.util.List;
  * @author Max Malakhov
  */
 public class Topic extends Entity {
-
-    /**
-     * The creation date of the topic.
-     */
     private DateTime creationDate;
     private DateTime modificationDate;
-    /**
-     * The user who create the topic
-     */
     private User topicStarter;
-
     private String title;
-
     private int topicWeight;
-
     private boolean sticked;
-
     private boolean announcement;
-
-    /**
-     * The list of topic's posts
-     */
     private List<Post> posts = new ArrayList<Post>();
-
     private Branch branch;
 
-
     /**
-     * Creates the Topic instance. All fields values are null.
+     * Used only by hibernate.
      */
     protected Topic() {
     }
@@ -77,28 +60,24 @@ public class Topic extends Entity {
         this.topicStarter = topicStarter;
         this.title = title;
         this.creationDate = new DateTime();
-        this.modificationDate= new DateTime();
+        this.modificationDate = new DateTime();
         this.topicWeight = 0;
         this.sticked = false;
         this.announcement = false;
     }
 
     /**
-     * Creates the Topic with the specified creation date.
-     *
-     * @param creationDate the topic's creation date
+     * Constructor used only for the input data in the
+     * org.jtalks.jcommune.web.dto.BreadcrumbBuilderTest class.
+     * *
+     * @param topicStarter user who create the topic
+     * @param branch topic branch
+     * @param title        topic title
      */
-    public Topic(DateTime creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    /**
-     * Creates a new Topic with the creationDate initialized with current time.
-     *
-     * @return newly created Topic
-     */
-    public static Topic createNewTopic() {
-        return new Topic(new DateTime());
+    public Topic(User topicStarter, Branch branch, String title) {
+        this.topicStarter = topicStarter;
+        this.branch = branch;
+        this.title = title;
     }
 
     /**
@@ -136,7 +115,7 @@ public class Topic extends Entity {
      *
      * @param creationDate the creationDate to set
      */
-    public void setCreationDate(DateTime creationDate) {
+    protected void setCreationDate(DateTime creationDate) {
         this.creationDate = creationDate;
     }
 
@@ -221,6 +200,24 @@ public class Topic extends Entity {
         return posts.get(0);
     }
 
+    public String getLastPostShortContent() {
+        String content = getLastPost().getPostContent();
+        String shortContent;
+        if (content.length() > 200){
+            shortContent = content.substring(0,200);
+            shortContent = shortContent + "...";
+        } else {
+            shortContent = content;
+        }
+
+        return shortContent;
+    }
+
+    public Post getLastPost(){
+        return posts.get(postCount() - 1);
+    }
+
+
     /**
      * @return number of posts in topic
      */
@@ -238,7 +235,7 @@ public class Topic extends Entity {
     /**
      * @param modificationDate date and time when theme was changed last time
      */
-    public void setModificationDate(DateTime modificationDate) {
+    protected void setModificationDate(DateTime modificationDate) {
         this.modificationDate = modificationDate;
     }
 
@@ -247,44 +244,50 @@ public class Topic extends Entity {
      *
      * @return new modification date
      */
-    public DateTime updateModificationDate()  {
+    public DateTime updateModificationDate() {
         this.modificationDate = new DateTime();
         return this.modificationDate;
     }
+
     /**
      * @return priority of a sticked topic
      */
     public int getTopicWeight() {
         return this.topicWeight;
     }
+
     /**
      * @param topicWeight a priority for a sticked topic
      */
     public void setTopicWeight(int topicWeight) {
         this.topicWeight = topicWeight;
     }
+
     /**
      * @return flag og stickedness
      */
     public boolean isSticked() {
         return this.sticked;
     }
+
     /**
      * @param sticked a flag of stickedness for a topic
      */
     public void setSticked(boolean sticked) {
         this.sticked = sticked;
-        if (!sticked){
+        if (!sticked) {
             topicWeight = 0;
         }
     }
+
     /**
      * @return flag og announcement
      */
     public boolean isAnnouncement() {
         return this.announcement;
     }
-     /**
+
+    /**
      * @param announcement a flag of announcemet for a topic
      */
     public void setAnnouncement(boolean announcement) {

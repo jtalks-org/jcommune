@@ -81,6 +81,8 @@ public interface TopicService extends EntityService<Topic> {
      */
     List<Topic> getTopicRangeInBranch(long branchId, int start, int max) throws NotFoundException;
 
+    List<Topic> getAllTopicsPastLastDay(int start, int max);
+
     /**
      * Get number of topics in branch.
      *
@@ -90,6 +92,8 @@ public interface TopicService extends EntityService<Topic> {
      *          when branch not found
      */
     int getTopicsInBranchCount(long branchId) throws NotFoundException;
+
+    int getTopicsPastLastDayCount();
 
     /**
      * Update current topic with given title and body.
@@ -124,14 +128,4 @@ public interface TopicService extends EntityService<Topic> {
      * @throws NotFoundException when topic not found
      */
     Branch deleteTopic(long topicId) throws NotFoundException;
-    /**
-     * Update post by id.
-     *
-     * @param topicId topic id
-     * @param postId post id
-     * @param postContent post content
-     * @throws NotFoundException when post not found
-     */
-    void savePost(long topicId, long postId, String postContent) throws NotFoundException;
-
 }

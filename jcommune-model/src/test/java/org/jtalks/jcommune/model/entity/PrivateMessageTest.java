@@ -21,7 +21,7 @@ package org.jtalks.jcommune.model.entity;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 /**
  * @author Alexandre Teterin
@@ -75,7 +75,7 @@ public class PrivateMessageTest {
                         PrivateMessage.QUOTE_PREFIX + PrivateMessage.QUOTE_PREFIX + PrivateMessage.QUOTE_SEPARATOR
                                 + "Line1" + PrivateMessage.NEW_LINE
                                 + PrivateMessage.QUOTE_PREFIX + PrivateMessage.QUOTE_PREFIX
-                        + PrivateMessage.QUOTE_SEPARATOR + "Line2" + PrivateMessage.NEW_LINE}
+                                + PrivateMessage.QUOTE_SEPARATOR + "Line2" + PrivateMessage.NEW_LINE}
         };
 
     }

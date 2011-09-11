@@ -180,7 +180,7 @@ public class SecurityServiceImplTest {
 
     @Test
     public void testDeleteFromAcl() throws Exception {
-        Post object = Post.createNewPost();
+        Post object = new Post(getUser(), "content");
         object.setId(1L);
 
         securityService.deleteFromAcl(object);

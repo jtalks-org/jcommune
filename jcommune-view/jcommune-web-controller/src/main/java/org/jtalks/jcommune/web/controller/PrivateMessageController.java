@@ -20,6 +20,8 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.Breadcrumb;
+import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 import org.jtalks.jcommune.web.dto.PrivateMessageDtoBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * MVC controller for Private Messaging. Handles request for inbox, outbox and new private messages.
@@ -45,28 +48,27 @@ import javax.validation.Valid;
 public class PrivateMessageController {
 
     private final PrivateMessageService pmService;
-    private PrivateMessageDtoBuilder pmDtoBuilder = new PrivateMessageDtoBuilder();
+    private PrivateMessageDtoBuilder pmDtoBuilder;
+    private BreadcrumbBuilder breadcrumbBuilder;
 
-    //constants are moved here when occurrs 4 or more times, as project PMD rule states
+    //constants are moved here when occurs 4 or more times, as project PMD rule states
     private static final String PM_FORM = "pm/pmForm";
     private static final String PM_ID = "pmId";
     private static final String DTO = "privateMessageDto";
 
     /**
      * @param pmService the PrivateMessageService instance
+     * @param breadcrumbBuilder the object which provides actions on
+     * {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
+     * @param pmDtoBuilder the object which provides actions on
+     * {@link org.jtalks.jcommune.web.dto.PrivateMessageDtoBuilder} entity
      */
     @Autowired
-    public PrivateMessageController(PrivateMessageService pmService) {
+    public PrivateMessageController(PrivateMessageService pmService,
+                                    BreadcrumbBuilder breadcrumbBuilder,
+                                    PrivateMessageDtoBuilder pmDtoBuilder) {
         this.pmService = pmService;
-    }
-
-    /**
-     * This method allows us to set the DTO builder.
-     * This can be useful for testing to mock/stub the real builder.
-     *
-     * @param pmDtoBuilder builder to be used when constructing DTO objects
-     */
-    public void setPmDtoBuilder(PrivateMessageDtoBuilder pmDtoBuilder) {
+        this.breadcrumbBuilder = breadcrumbBuilder;
         this.pmDtoBuilder = pmDtoBuilder;
     }
 
@@ -77,7 +79,9 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/pm/inbox", method = RequestMethod.GET)
     public ModelAndView displayInboxPage() {
-        return new ModelAndView("pm/inbox", "pmList", pmService.getInboxForCurrentUser());
+        return new ModelAndView("pm/inbox")
+                .addObject("pmList", pmService.getInboxForCurrentUser())
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
     }
 
     /**
@@ -87,7 +91,9 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/pm/outbox", method = RequestMethod.GET)
     public ModelAndView displayOutboxPage() {
-        return new ModelAndView("pm/outbox", "pmList", pmService.getOutboxForCurrentUser());
+        return new ModelAndView("pm/outbox")
+                .addObject("pmList", pmService.getOutboxForCurrentUser())
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
     }
 
     /**
@@ -97,7 +103,9 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/pm/new", method = RequestMethod.GET)
     public ModelAndView displayNewPMPage() {
-        return new ModelAndView(PM_FORM, DTO, new PrivateMessageDto());
+        return new ModelAndView(PM_FORM)
+                .addObject(DTO, new PrivateMessageDto())
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
     }
 
     /**
@@ -113,7 +121,9 @@ public class PrivateMessageController {
     public ModelAndView displayReplyPMPage(@PathVariable(PM_ID) Long id) throws NotFoundException {
         PrivateMessage pm = pmService.get(id);
         PrivateMessageDto object = pmDtoBuilder.getReplyDtoFor(pm);
-        return new ModelAndView(PM_FORM, DTO, object);
+        return new ModelAndView(PM_FORM)
+                .addObject(DTO, object)
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
     }
 
     /**
@@ -129,7 +139,9 @@ public class PrivateMessageController {
     public ModelAndView displayQuotePMPage(@PathVariable(PM_ID) Long id) throws NotFoundException {
         PrivateMessage pm = pmService.get(id);
         PrivateMessageDto object = pmDtoBuilder.getQuoteDtoFor(pm);
-        return new ModelAndView(PM_FORM, DTO, object);
+        return new ModelAndView(PM_FORM)
+                .addObject(DTO, object)
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
     }
 
 
@@ -172,11 +184,21 @@ public class PrivateMessageController {
                              @PathVariable(PM_ID) Long id) throws NotFoundException {
 
         PrivateMessage pm = pmService.get(id);
+        List<Breadcrumb> breadcrumbList;
         if ("inbox".equals(folder)) {
             pmService.markAsRead(pm);
+            breadcrumbList = breadcrumbBuilder.getInboxBreadcrumb();
+        } else if ("outbox".equals(folder)) {
+            breadcrumbList = breadcrumbBuilder.getOutboxBreadcrumb();
+        } else if ("drafts".equals(folder)) {
+            breadcrumbList = breadcrumbBuilder.getDraftsBreadcrumb();
+        } else {
+            breadcrumbList = breadcrumbBuilder.getForumBreadcrumb();
         }
 
-        return new ModelAndView("pm/showPm", "pm", pm);
+        return new ModelAndView("pm/showPm")
+                .addObject("pm", pm)
+                .addObject("breadcrumbList", breadcrumbList);
     }
 
     /**
@@ -186,22 +208,25 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/pm/drafts", method = RequestMethod.GET)
     public ModelAndView displayDraftsPage() {
-        return new ModelAndView("pm/drafts", "pmList", pmService.getDraftsFromCurrentUser());
+        return new ModelAndView("pm/drafts")
+                .addObject("pmList", pmService.getDraftsFromCurrentUser())
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
     }
 
     /**
      * @param id {@link PrivateMessage} id
-     * @return private messsage form view and populated form dto
+     * @return private message form view and populated form dto
      * @throws NotFoundException when message not found
      */
     @RequestMapping(value = "/pm/{pmId}/edit", method = RequestMethod.GET)
     public ModelAndView edit(@PathVariable(PM_ID) Long id) throws NotFoundException {
         PrivateMessage pm = pmService.get(id);
         if (!pm.isDraft()) {
-            return new ModelAndView("pm/inbox");
+            return new ModelAndView("pm/inbox", "breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
         }
-        return new ModelAndView(PM_FORM, DTO,
-                new PrivateMessageDtoBuilder().getFullPmDtoFor(pm));
+        return new ModelAndView(PM_FORM)
+                .addObject(DTO, new PrivateMessageDtoBuilder().getFullPmDtoFor(pm))
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
     }
 
     /**

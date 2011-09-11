@@ -50,4 +50,14 @@ public interface PostService extends EntityService<Post> {
      *          when topic not found
      */
     int getPostsInTopicCount(long topicId) throws NotFoundException;
+      
+    /**
+     * Update current post with given content, add the modification date.
+     *
+     * @param postId   post id
+     * @param postContent  content of post
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when post not found
+     */
+    void savePost(long postId,String postContent) throws NotFoundException;
 }

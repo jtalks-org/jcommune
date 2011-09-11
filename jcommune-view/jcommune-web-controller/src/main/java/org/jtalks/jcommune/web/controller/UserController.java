@@ -24,26 +24,25 @@ import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
 import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
+import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
+import org.jtalks.jcommune.web.validation.ImageFormats;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-
 import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.sql.SQLException;
 
 /**
  * Controller for User related actions: registration.
@@ -57,9 +56,11 @@ import java.sql.SQLException;
 public class UserController {
     public static final String EDIT_PROFILE = "editProfile";
     public static final String REGISTRATION = "registration";
+    public static final String EDITED_USER="editedUser";
 
     private final SecurityService securityService;
     private final UserService userService;
+    private BreadcrumbBuilder breadcrumbBuilder;
 
     /**
      * This method turns the trim binder on. Trim bilder
@@ -77,11 +78,16 @@ public class UserController {
      *
      * @param userService     {@link UserService} to be injected
      * @param securityService {@link SecurityService} used for accessing to current logged in user
+     * @param breadcrumbBuilder the object which provides actions on
+     * {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      */
     @Autowired
-    public UserController(UserService userService, SecurityService securityService) {
+    public UserController(UserService userService,
+                          SecurityService securityService,
+                          BreadcrumbBuilder breadcrumbBuilder) {
         this.userService = userService;
         this.securityService = securityService;
+        this.breadcrumbBuilder = breadcrumbBuilder;
     }
 
     /**
@@ -130,7 +136,9 @@ public class UserController {
     @RequestMapping(value = "/user/{encodedUsername}", method = RequestMethod.GET)
     public ModelAndView show(@PathVariable("encodedUsername") String encodedUsername) throws NotFoundException {
         User user = userService.getByEncodedUsername(encodedUsername);
-        return new ModelAndView("userDetails", "user", user);
+        return new ModelAndView("userDetails")
+                .addObject("user", user)
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
     }
 
     /**
@@ -143,7 +151,10 @@ public class UserController {
     public ModelAndView editProfilePage() throws NotFoundException {
         User user = securityService.getCurrentUser();
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
-        return new ModelAndView(EDIT_PROFILE, "editedUser", editedUser).addObject(user);
+        editedUser.setAvatar(new MockMultipartFile("avatar", "", ImageFormats.JPG.getContentType(), user.getAvatar()));
+        return new ModelAndView(EDIT_PROFILE)
+                .addObject(EDITED_USER, editedUser)
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
     }
 
     /**
@@ -154,20 +165,26 @@ public class UserController {
      * @param result  binding result which contains the validation result
      * @return in case of errors return back to edit profile page, in another case return to user detalis page
      * @throws NotFoundException - throws if current logged in user was not found
+     * @throws IOException       - throws in case of access errors (if the temporary store fails)
      */
     @RequestMapping(value = "/user/edit", method = RequestMethod.POST)
-    public ModelAndView editProfile(@Valid @ModelAttribute("editedUser") EditUserProfileDto userDto,
-                                    BindingResult result) throws NotFoundException, IOException, SQLException {
+    public ModelAndView editProfile(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
+                                    BindingResult result) throws NotFoundException, IOException {
+
+        User user = securityService.getCurrentUser();
 
         if (result.hasErrors()) {
-            return new ModelAndView(EDIT_PROFILE);
+            if (user.getAvatar() == null) {
+                userDto.setAvatar(new MockMultipartFile("avatar","",ImageFormats.JPG.getContentType(),new byte[0]));
+            }
+            return new ModelAndView(EDIT_PROFILE, EDITED_USER, userDto);
         }
 
         User editedUser;
         try {
             editedUser = userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                     userDto.getLastName(), userDto.getCurrentUserPassword(), userDto.getNewUserPassword(),
-                    getAvatarByteArray(userDto.getAvatar()));
+                    userDto.getAvatar().getBytes());
         } catch (DuplicateEmailException e) {
             result.rejectValue("email", "validation.duplicateemail");
             return new ModelAndView(EDIT_PROFILE);
@@ -188,12 +205,12 @@ public class UserController {
      *
      * @return edit user profile page
      */
-    @RequestMapping(value = "/user/remove/avatar", method = RequestMethod.GET)
-    public ModelAndView removeAvatar() {
+    @RequestMapping(value = "/user/remove/avatar", method = RequestMethod.POST)
+    public ModelAndView removeAvatarFromCurrentUser() {
         User user = securityService.getCurrentUser();
-        userService.removeAvatar(user);
+        userService.removeAvatarFromCurrentUser();
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
-        return new ModelAndView(EDIT_PROFILE, "editedUser", editedUser);
+        return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUser);
     }
 
     /**
@@ -202,6 +219,7 @@ public class UserController {
      * @param response        servlet response
      * @param encodedUsername {@link User#getEncodedUsername()}
      * @throws NotFoundException - throws if user with given encodedUsername not found
+     * @throws IOException       - throws if an output exception occurred
      */
     @RequestMapping(value = "/show/{encodedUsername}/avatar", method = RequestMethod.GET)
     public void renderAvatar(HttpServletResponse response,
@@ -214,19 +232,4 @@ public class UserController {
         response.getOutputStream().write(avatar);
     }
 
-    /**
-     * Returns avatar as an array of bytes.
-     *
-     * @param avatar multipart file from submitted form
-     * @return avatar byte array from submitted form if user loaded avatar
-     *         or avatar byte array from db if didn't
-     * @throws IOException in case of access errors (if the temporary store fails)
-     */
-    public byte[] getAvatarByteArray(MultipartFile avatar) throws IOException {
-        if (!avatar.isEmpty()) {
-            return avatar.getBytes();
-        } else {
-            return securityService.getCurrentUser().getAvatar();
-        }
-    }
 }

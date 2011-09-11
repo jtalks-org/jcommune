@@ -46,19 +46,34 @@ public final class BranchController {
 
     private BranchService branchService;
     private TopicService topicService;
+    private BreadcrumbBuilder breadcrumbBuilder;
 
     /**
      * Constructor creates MVC controller with specified BranchService
      *
      * @param branchService autowired object from Spring Context
      * @param topicService  autowired object from Spring Context
+     * @param breadcrumbBuilder the object which provides actions on
+     * {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      */
     @Autowired
-    public BranchController(BranchService branchService, TopicService topicService) {
+    public BranchController(BranchService branchService,
+                            TopicService topicService,
+                            BreadcrumbBuilder breadcrumbBuilder) {
         this.branchService = branchService;
         this.topicService = topicService;
+        this.breadcrumbBuilder = breadcrumbBuilder;
     }
 
+     /**
+     * This method allows us to set the breadcrumb builder.
+     * This can be useful for testing to mock/stub the real builder.
+     *
+     * @param breadcrumbBuilder builder to be used when constructing breadcrumb objects
+     */
+    public void setBreadcrumbBuilder(BreadcrumbBuilder breadcrumbBuilder) {
+        this.breadcrumbBuilder = breadcrumbBuilder;
+    }
 
     /**
      * Displays to user a list of topic from the chosen branch with pagination.
@@ -83,7 +98,22 @@ public final class BranchController {
                 .addObject("topics", topics)
                 .addObject("maxPages", pag.getMaxPages())
                 .addObject("page", pag.getPage())
-                .addObject("breadcrumbList", new BreadcrumbBuilder().getBranchBreadcrumb(branchService.get(branchId)));
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)));
+    }
+
+    @RequestMapping(value = "/recent", method = RequestMethod.GET)
+    public ModelAndView show(@RequestParam(value = "page", required = false) Integer page,
+                             @RequestParam(value = "size", required = false) Integer size) throws NotFoundException {
+        int topicsCount = topicService.getTopicsPastLastDayCount();
+        Pagination pag = new Pagination(page, size, topicsCount);
+
+        List<Topic> topics = topicService.getAllTopicsPastLastDay(pag.getStart(), pag.getPageSize());
+
+        return new ModelAndView("recent")
+                .addObject("topics", topics)
+                .addObject("maxPages", pag.getMaxPages())
+                .addObject("page", pag.getPage())
+                .addObject("breadcrumbList", breadcrumbBuilder.getRecentBreadcrumb());
     }
 
 }

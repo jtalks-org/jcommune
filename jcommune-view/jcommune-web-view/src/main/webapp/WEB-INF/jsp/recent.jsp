@@ -11,7 +11,6 @@
     <title>Forum</title>
 </head>
 <body>
-<form:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/create.html" method="GET">
     <table border="1" width="100%">
         <tr>
             <td width="80%"><spring:message code="label.topic"/></td>
@@ -35,10 +34,13 @@
                             <c:out value="${topic.title}"/></a>
                         </c:otherwise>
                     </c:choose>
+                    <div id="shortContent">
+                    <c:out value="${topic.lastPostShortContent}"/>
+                    </div>
                 </td>
                 <td>
-                    <a href="${pageContext.request.contextPath}/user/${topic.topicStarter.encodedUsername}.html">
-                        <c:out value="${topic.topicStarter.username}"/>
+                    <a href="${pageContext.request.contextPath}/user/${topic.lastPost.userCreated.encodedUsername}.html">
+                        <c:out value="${topic.lastPost.userCreated.username}"/>
                     </a>
                 </td>
                 <td><joda:format value="${topic.modificationDate}"
@@ -48,16 +50,14 @@
         </c:forEach>
     </table>
     <br>
-    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-        <input type="submit" value="<spring:message code="label.addtopic"/>"/>
-    </sec:authorize>
-</form:form>
+
+
 
 <div id="pagination">
     <c:if test="${maxPages > 1}">
 
         <c:if test="${page > 2}">
-            <c:url value="/branch/${branchId}.html" var="first">
+            <c:url value="/recent.html" var="first">
                 <c:param name="page" value="1"/>
             </c:url>
             <a href='<c:out value="${first}" />' class="pn next"><spring:message code="pagination.first"/></a>...
@@ -86,7 +86,7 @@
                     <span>${i.index}</span>
                 </c:when>
                 <c:otherwise>
-                    <c:url value="/branch/${branchId}.html" var="url">
+                    <c:url value="/recent.html" var="url">
                         <c:param name="page" value="${i.index}"/>
                     </c:url>
                     <a href='<c:out value="${url}" />'>${i.index}</a>
@@ -95,7 +95,7 @@
         </c:forEach>
 
         <c:if test="${page + 2 < maxPages+1}">
-            <c:url value="/branch/${branchId}.html" var="last">
+            <c:url value="/recent.html" var="last">
                 <c:param name="page" value="${maxPages}"/>
             </c:url>
             ...<a href='<c:out value="${last}"/>' class="pn next"><spring:message code="pagination.last"/></a>

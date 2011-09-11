@@ -1,14 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="decorator" uri="http://www.opensymphony.com/sitemesh/decorator" %>
-<%@ taglib prefix="page" uri="http://www.opensymphony.com/sitemesh/page" %>
+<%@ taglib prefix="decorator" uri="http://www.opensymphony.com/sitemesh/decorator"%>
+<%@ taglib prefix="page" uri="http://www.opensymphony.com/sitemesh/page"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
-<fmt:setBundle basename="org.jtalks.jcommune.web.view.messages"/>
+<fmt:setBundle basename="org.jtalks.jcommune.web.view.messages" />
 <fmt:setLocale value="en"/>
-<!--apply timezone settings-->
-<%pageContext.setAttribute("dateTimeZone",session.getAttribute("GMT")); %>
 <html>
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" content=""/>
@@ -18,10 +16,9 @@
 
     <title><decorator:title default="JCommune"/></title>
     <link href="${pageContext.request.contextPath}/css/main.css"
-          type=text/css rel=stylesheet/>
+          type=text/css rel=stylesheet />
 </head>
-<!--Define timezone to adjust date and time values-->
-<body onload='document.cookie="GMT=" + new Date().getTimezoneOffset()'>
+<body>
 <div align="center">
     <table cellspacing=0 cellpadding=0 width=100% border=0>
         <tr>
@@ -38,11 +35,24 @@
             <td class="background">
                 <c:forEach var="breadcrumb" items="${breadcrumbList}">
                     <c:choose>
+                        <%--create root breadcrumb--%>
                         <c:when test="${breadcrumb.breadcrumbLocation.name == 'main'}">
                             <a href="${pageContext.request.contextPath}/${breadcrumb.breadcrumbLocation.name}.html">
                                 <span class="nav"> <fmt:message key="label.forum"/> </span>
                             </a>
                         </c:when>
+                        <%--create inbox, outbox, drafts breadcrumbs--%>
+                        <c:when test="${breadcrumb.breadcrumbLocation.name == '/pm/inbox'
+                        || breadcrumb.breadcrumbLocation.name == '/pm/outbox'
+                        || breadcrumb.breadcrumbLocation.name == '/pm/drafts'
+                        || breadcrumb.breadcrumbLocation.name == '/recent'}">
+                            <%--TODO Need to define standard URI for most location - ${Entity type}/${Entity ID}.html--%>
+                            <%--TODO Need to remove '/pm/' from controller mapping.html--%>
+                            <a href="${pageContext.request.contextPath}${breadcrumb.breadcrumbLocation.name}.html">
+                                <span class="nav"> <c:out value="${breadcrumb.breadcrumbLocationValue}"/> </span>
+                            </a>
+                        </c:when>
+                        <%--create section, topic, branch, post breadcrumb--%>
                         <c:otherwise>
                             <a href="${pageContext.request.contextPath}/${breadcrumb.breadcrumbLocation.name}/${breadcrumb.id}.html">
                                 <span class="nav"> <c:out value="${breadcrumb.breadcrumbLocationValue}"/> </span>
@@ -52,10 +62,8 @@
                 </c:forEach>
                 <span style="float: right">
                 <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                    <a href="${pageContext.request.contextPath}/user/${encodedUserName}.html"><sec:authentication
-                            property="principal.username"/></a>&nbsp;
-                    <a href="${pageContext.request.contextPath}/pm/inbox.html"><fmt:message key="label.pm"/>
-                        (${newPmCount})</a>
+                    <a href="${pageContext.request.contextPath}/user/${encodedUserName}.html"><sec:authentication property="principal.username"/></a>&nbsp;
+                    <a href="${pageContext.request.contextPath}/pm/inbox.html"><fmt:message key="label.pm"/> (${newPmCount})</a>
                     <a href="${pageContext.request.contextPath}/logout.html"><fmt:message key="label.logout"/></a>
                 </sec:authorize>
                 &nbsp;
@@ -64,7 +72,9 @@
                     <a href="${pageContext.request.contextPath}/registration.html"><fmt:message key="label.signup"/></a>
                 </sec:authorize>
                 &nbsp;
-                <a href="?lang=en">En</a> | <a href="?lang=ru">Ru</a> </span></td>
+                <a href="?lang=en">En</a> | <a href="?lang=ru">Ru</a><br/>
+                <span style="float: right ">
+                <a href="${pageContext.request.contextPath}/recent.html"><fmt:message key="label.recent"/></a></span></span></td>
         </tr>
         <tr>
             <td bgcolor="003366"></td>

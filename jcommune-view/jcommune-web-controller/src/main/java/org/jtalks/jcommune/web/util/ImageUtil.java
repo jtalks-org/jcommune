@@ -15,20 +15,32 @@
  * Creation date: Apr 12, 2011 / 8:05:19 PM
  * The jtalks.org Project
  */
-package org.jtalks.jcommune.service.exceptions;
+package org.jtalks.jcommune.web.util;
+
+import java.awt.Image;
 
 /**
- * Exception for cases when user already exists in system.
+ * Class that consists util methods for working with images.
  *
  * @author Eugeny Batov
  */
-public class DuplicateUserException extends DuplicateException {
+public class ImageUtil {
+
     /**
-     * Create exception with specific message.
+     * Resizes original image to square image with given dimension.
      *
-     * @param message exception message
+     * @param originalImage      -    image to resizing
+     * @param expectedDimension- expected dimension after resizing
+     * @return modified image with new dimensions
      */
-    public DuplicateUserException(String message) {
-        super(message);
+    public static Image resizeToSquare(Image originalImage, int expectedDimension) {
+        int originalWidth = originalImage.getWidth(null);
+        int originalHeight = originalImage.getHeight(null);
+        int maxDimension = Math.max(originalHeight, originalWidth);
+        double scale = (double) maxDimension / expectedDimension;
+        int modifiedWidth = (int) (originalWidth / scale);
+        int modifiedHeight = (int) (originalHeight / scale);
+        return originalImage.getScaledInstance(modifiedWidth, modifiedHeight, Image.SCALE_DEFAULT);
     }
+
 }

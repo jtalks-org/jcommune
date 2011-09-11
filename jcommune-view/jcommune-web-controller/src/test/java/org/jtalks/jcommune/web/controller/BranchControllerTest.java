@@ -18,10 +18,13 @@
 
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.Breadcrumb;
+import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -36,20 +39,23 @@ import static org.testng.Assert.assertEquals;
 
 /**
  * @author Kravchenko Vitaliy
+ * @author Alexandre Teterin
  */
 public class BranchControllerTest {
     private BranchService branchService;
     private TopicService topicService;
     private BranchController controller;
+    private BreadcrumbBuilder breadcrumbBuilder;
 
     @BeforeMethod
     public void init() {
         branchService = mock(BranchService.class);
         topicService = mock(TopicService.class);
-        controller = new BranchController(branchService, topicService);
+        breadcrumbBuilder = mock(BreadcrumbBuilder.class);
+        controller = new BranchController(branchService, topicService, breadcrumbBuilder);
     }
-    //TODO Need to fix test
-    @Test (enabled = false)
+
+    @Test
     public void testTopicsInBranch() throws NotFoundException {
         long branchId = 1L;
         int page = 2;
@@ -58,6 +64,9 @@ public class BranchControllerTest {
         //set expectations
         when(topicService.getTopicsInBranchCount(branchId)).thenReturn(10);
         when(topicService.getTopicRangeInBranch(branchId, startIndex, pageSize)).thenReturn(new ArrayList<Topic>());
+        when(branchService.get(branchId)).thenReturn(new Branch("name"));
+        when(breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)))
+                .thenReturn(new ArrayList<Breadcrumb>());
 
         //invoke the object under test
         ModelAndView mav = controller.show(branchId, page, pageSize);
@@ -65,6 +74,7 @@ public class BranchControllerTest {
         //check expectations
         verify(topicService).getTopicRangeInBranch(branchId, startIndex, pageSize);
         verify(topicService).getTopicsInBranchCount(branchId);
+        verify(breadcrumbBuilder).getForumBreadcrumb(branchService.get(branchId));
 
          //check result
         assertViewName(mav, "topicList");
@@ -78,6 +88,8 @@ public class BranchControllerTest {
 
         Integer actualPage = assertAndReturnModelAttributeOfType(mav, "page", Integer.class);
         assertEquals((int) actualPage, page);
+
+        assertModelAttributeAvailable(mav, "breadcrumbList");
 
     }
 

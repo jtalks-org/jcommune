@@ -160,7 +160,9 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         currentUser.setEmail(email);
         currentUser.setFirstName(firstName);
         currentUser.setLastName(lastName);
-        currentUser.setAvatar(avatar);
+        if (avatar.length > 0) {
+            currentUser.setAvatar(avatar);
+        }
 
 
         dao.saveOrUpdate(currentUser);
@@ -171,7 +173,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public void removeAvatar(User user) {
+    public void removeAvatarFromCurrentUser() {
+        User user=securityService.getCurrentUser();
         user.setAvatar(null);
     }
 

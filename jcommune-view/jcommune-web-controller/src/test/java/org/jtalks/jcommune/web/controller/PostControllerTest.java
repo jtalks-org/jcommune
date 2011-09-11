@@ -17,32 +17,36 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.web.dto.PostDto;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import java.util.HashMap;
-import java.util.Map;
-
-
-import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.Breadcrumb;
+import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
+import org.jtalks.jcommune.web.dto.PostDto;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindingResult;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.never;
-import static org.mockito.Matchers.*;
-
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeValues;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeValues;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -59,12 +63,14 @@ public class PostControllerTest {
     public static final long POST_ID = 1;
     public static final long BRANCH_ID = 1L;
     private final String POST_CONTENT = "postContent";
+    private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
 
     @BeforeMethod
     public void init() {
         topicService = mock(TopicService.class);
         postService = mock(PostService.class);
-        controller = new PostController(topicService, postService);
+        breadcrumbBuilder = mock(BreadcrumbBuilder.class);
+        controller = new PostController(topicService, postService, breadcrumbBuilder);
     }
 
 
@@ -91,35 +97,51 @@ public class PostControllerTest {
         long postId = 5;
         long branchId = 1;
 
-        ModelAndView actualMav = controller.delete(topicId, postId, branchId);
+        //invoke the object under test
+       ModelAndView actualMav = controller.delete(topicId, postId, branchId);
 
-        assertViewName(actualMav, "redirect:/branch/1/topic/" + topicId + ".html");
-        verify(topicService, times(1)).deletePost(topicId, postId);
+       //check expectations
+       verify(topicService, times(1)).deletePost(topicId, postId);
+
+       //check result
+       assertViewName(actualMav, "redirect:/topic/" + topicId + ".html");
     }
     
     @Test
     public void editTest() throws NotFoundException {      
-       Topic topic=Topic.createNewTopic();
+       User user = new User("username", "email@mail.com", "password");
+       Topic topic = new Topic(user, "title");
        topic.setId(TOPIC_ID);
-       Post post = Post.createNewPost();
+       Post post = new Post(user, "content");       
        post.setId(POST_ID);
        topic.addPost(post);
-        
+       
+       //set expectations
        when(postService.get(POST_ID)).thenReturn(post);
-        
-       ModelAndView actualMav = controller.edit(BRANCH_ID, TOPIC_ID,POST_ID);
+       when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
 
+       //invoke the object under test
+       ModelAndView actualMav = controller.edit(BRANCH_ID, TOPIC_ID, POST_ID);
+
+       //check expectations
+       verify(postService).get(POST_ID);
+
+       //check result
        assertViewName(actualMav, "postForm");
+
        PostDto dto = assertAndReturnModelAttributeOfType(actualMav, "postDto", PostDto.class);
-       long branchId = assertAndReturnModelAttributeOfType(actualMav, "branchId", Long.class);
-       long topicId = assertAndReturnModelAttributeOfType(actualMav, "topicId", Long.class);
-       long postId = assertAndReturnModelAttributeOfType(actualMav, "postId", Long.class);
        assertEquals(dto.getId(), TOPIC_ID);
-       assertEquals(branchId, BRANCH_ID);
-       assertEquals(topicId, TOPIC_ID);
+
+       long branchId = assertAndReturnModelAttributeOfType(actualMav, "branchId", Long.class);
+       assertEquals(branchId, BRANCH_ID); 
+
+       long topicId = assertAndReturnModelAttributeOfType(actualMav, "topicId", Long.class);
+       assertEquals(topicId, TOPIC_ID); 
+
+       long postId = assertAndReturnModelAttributeOfType(actualMav, "postId", Long.class);
        assertEquals(postId, POST_ID);
 
-       verify(postService).get(POST_ID); 
+       assertModelAttributeAvailable(actualMav, "breadcrumbList");
     }
     
     @Test
@@ -128,10 +150,11 @@ public class PostControllerTest {
          BindingResult bindingResult = new BeanPropertyBindingResult(dto, "postDto");
 
          ModelAndView mav = controller.save(dto, bindingResult, BRANCH_ID, TOPIC_ID,POST_ID);
+         assertViewName(mav, "redirect:/topic/" + TOPIC_ID + ".html");
 
-         assertViewName(mav, "redirect:/branch/" + BRANCH_ID + "/topic/" + TOPIC_ID + ".html");
+         assertViewName(mav, "redirect:/topic/" + TOPIC_ID + ".html");
 
-         verify(topicService).savePost(TOPIC_ID, POST_ID, POST_CONTENT);
+         verify(postService).savePost(POST_ID,POST_CONTENT);
         
     }
     
@@ -152,7 +175,7 @@ public class PostControllerTest {
          assertEquals(topicId, TOPIC_ID);
          assertEquals(postId, POST_ID);
 
-         verify(topicService, never()).savePost(anyLong(), anyLong(), anyString());
+         verify(postService, never()).savePost( anyLong(), anyString());
     }
     
      private PostDto getDto() {
