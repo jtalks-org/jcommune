@@ -104,6 +104,16 @@ public class TimeZoneConversionInterceptorTest {
     }
 
     @Test
+    public void testNoCookiesAtAll() throws Exception {
+        when(request.getCookies()).thenReturn(null);
+        sut.preHandle(request, response, null);
+        assertEquals(
+                session.getAttribute(GMT_PARAM_NAME),
+                TimeZone.getDefault().getID(),
+                "Default timezone was not set when no cookies specified");
+    }
+
+    @Test
     public void testIllegalCookieFormat() throws Exception {
         when(cookie.getValue()).thenReturn("wrong timezone offset");
         when(request.getCookies()).thenReturn(new Cookie[]{cookie});

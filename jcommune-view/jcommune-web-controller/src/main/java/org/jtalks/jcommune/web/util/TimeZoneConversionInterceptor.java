@@ -38,18 +38,28 @@ public class TimeZoneConversionInterceptor extends HandlerInterceptorAdapter {
     public static final String GMT_PARAM_NAME = "GMT";
 
     /**
-     * @inheritDoc
+     * Intercepts request handling to obtain timezone information set in cookies
+     * by user agent
+     *
+     * @param request  current HTTP request
+     * @param response current HTTP response
+     * @param handler  chosen handler to execute, for type and/or instance evaluation
+     * @return this implementation always returns true
+     * @throws Exception from the next interceptors from the chain
      */
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
         if (request.getSession().getAttribute(GMT_PARAM_NAME) == null) {
             // default value will be overwritten if found
             this.setGmtAttribute(request, this.getDefaultTimezoneId());
-            for (Cookie cookie : request.getCookies()) {
-                if (cookie.getName().equals(GMT_PARAM_NAME)) {
-                    String convertedId = convertTimeZoneId(cookie.getValue());
-                    this.setGmtAttribute(request, convertedId);
-                    break;
+            if (request.getCookies() != null) {
+                for (Cookie cookie : request.getCookies()) {
+                    if (cookie.getName().equals(GMT_PARAM_NAME)) {
+                        String convertedId = this.convertTimeZoneId(cookie.getValue());
+                        this.setGmtAttribute(request, convertedId);
+                        break;
+                    }
                 }
             }
         }
@@ -81,14 +91,32 @@ public class TimeZoneConversionInterceptor extends HandlerInterceptorAdapter {
         }
     }
 
+    /**
+     * Sets session attribute under GMT_PARAM_NAME key.
+     * This attribute indicates timezone
+     *
+     * @param request request to get session from
+     * @param value   string to be set as attribute value
+     */
     private void setGmtAttribute(HttpServletRequest request, String value) {
         request.getSession().setAttribute(GMT_PARAM_NAME, value);
     }
 
+    /**
+     * Returns default time zone canonical id
+     *
+     * @return host server time zone canonical id
+     */
     private String getDefaultTimezoneId() {
         return TimeZone.getDefault().getID();
     }
 
+    /**
+     * Returns string representation of the int with explicit sign
+     *
+     * @param value int to be converted
+     * @return "+value" or "-value" string
+     */
     private String getSignedIntString(int value) {
         if (value > 0) {
             return "+" + value;
