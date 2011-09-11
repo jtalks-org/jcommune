@@ -20,10 +20,7 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
-import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
+import org.jtalks.jcommune.service.exceptions.*;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
@@ -201,6 +198,9 @@ public class UserController {
             result.rejectValue("currentUserPassword", "label.incorrectCurrentPassword",
                     "Password does not match to the current password");
             return new ModelAndView(EDIT_PROFILE);
+        } catch (InvalidImageException e) {
+            result.rejectValue("avatar", "avatar.wrong.format");
+            return new ModelAndView(EDIT_PROFILE);
         }
         return new ModelAndView(new StringBuilder()
                 .append("redirect:/user/")
@@ -249,8 +249,15 @@ public class UserController {
      * @return prepared image byte array
      * @throws IOException- throws if an I/O error occurs
      */
-    private byte[] prepareImage(MultipartFile multipartFile) throws IOException {
+    private byte[] prepareImage(MultipartFile multipartFile) throws IOException, InvalidImageException {
+        if (multipartFile.isEmpty()) {
+            //assume that empty multipart file is valid to avoid validation message when user doesn't load nothing
+            return null;
+        }
         Image image = ImageUtil.convertMultipartFileToImage(multipartFile);
+        if(image==null){
+            throw new InvalidImageException();
+        }
         image = ImageUtil.resizeImage((BufferedImage) image, ImageUtil.IMAGE_JPEG, AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
         return ImageUtil.convertImageToByteArray(image);
     }

@@ -160,7 +160,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         currentUser.setEmail(email);
         currentUser.setFirstName(firstName);
         currentUser.setLastName(lastName);
-        if (avatar.length > 0) {
+        if (avatar != null && avatar.length > 0) {
             currentUser.setAvatar(avatar);
         }
 
@@ -174,7 +174,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      */
     @Override
     public void removeAvatarFromCurrentUser() {
-        User user=securityService.getCurrentUser();
+        User user = securityService.getCurrentUser();
         user.setAvatar(null);
     }
 
