@@ -1,12 +1,14 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="decorator" uri="http://www.opensymphony.com/sitemesh/decorator"%>
-<%@ taglib prefix="page" uri="http://www.opensymphony.com/sitemesh/page"%>
+<%@ taglib prefix="decorator" uri="http://www.opensymphony.com/sitemesh/decorator" %>
+<%@ taglib prefix="page" uri="http://www.opensymphony.com/sitemesh/page" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
-<fmt:setBundle basename="org.jtalks.jcommune.web.view.messages" />
+<fmt:setBundle basename="org.jtalks.jcommune.web.view.messages"/>
 <fmt:setLocale value="en"/>
+<!--apply timezone settings-->
+<%pageContext.setAttribute("dateTimeZone",session.getAttribute("GMT")); %>
 <html>
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" content=""/>
@@ -16,9 +18,10 @@
 
     <title><decorator:title default="JCommune"/></title>
     <link href="${pageContext.request.contextPath}/css/main.css"
-          type=text/css rel=stylesheet />
+          type=text/css rel=stylesheet/>
 </head>
-<body>
+<!--Define timezone to adjust date and time values-->
+<body onload='document.cookie="GMT=" + new Date().getTimezoneOffset()'>
 <div align="center">
     <table cellspacing=0 cellpadding=0 width=100% border=0>
         <tr>
@@ -49,8 +52,10 @@
                 </c:forEach>
                 <span style="float: right">
                 <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                    <a href="${pageContext.request.contextPath}/user/${encodedUserName}.html"><sec:authentication property="principal.username"/></a>&nbsp;                    
-                    <a href="${pageContext.request.contextPath}/pm/inbox.html"><fmt:message key="label.pm"/> (${newPmCount})</a>
+                    <a href="${pageContext.request.contextPath}/user/${encodedUserName}.html"><sec:authentication
+                            property="principal.username"/></a>&nbsp;
+                    <a href="${pageContext.request.contextPath}/pm/inbox.html"><fmt:message key="label.pm"/>
+                        (${newPmCount})</a>
                     <a href="${pageContext.request.contextPath}/logout.html"><fmt:message key="label.logout"/></a>
                 </sec:authorize>
                 &nbsp;
