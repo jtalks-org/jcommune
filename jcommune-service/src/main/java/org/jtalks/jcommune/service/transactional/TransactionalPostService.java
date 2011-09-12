@@ -19,12 +19,15 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import java.util.List;
 
 /**
@@ -36,7 +39,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
 
     private TopicDao topicDao;
     private final Logger logger = LoggerFactory.getLogger(getClass());
-  //  private PostDto postDto;
+    private SecurityService securityService;
 
 
     /**
@@ -44,11 +47,12 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      *
      * @param dao      data access object, which should be able do all CRUD operations with post entity.
      * @param topicDao this dao used for checking branch existance
+     * @param securityService service for authorization
      */
-    public TransactionalPostService(PostDao dao, TopicDao topicDao) {
+    public TransactionalPostService(PostDao dao, TopicDao topicDao, SecurityService securityService) {
         this.dao = dao;
         this.topicDao = topicDao;
-
+        this.securityService = securityService;
     }
 
     /**
@@ -87,4 +91,20 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         dao.update(post);
         logger.debug("Update the post {}", post.getId());
      }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @PreAuthorize("hasPermission(#postId, 'org.jtalks.jcommune.model.entity.Post', admin) or " +
+            "hasPermission(#postId, 'org.jtalks.jcommune.model.entity.Post', delete)")
+    public void deletePost(long postId) throws NotFoundException {
+        Post post = get(postId);
+        Topic topic = post.getTopic();
+        topic.removePost(post);
+        topicDao.update(topic);
+        securityService.deleteFromAcl(post);
+        logger.debug("Deleted post with id: {}", postId);
+    }
 }
