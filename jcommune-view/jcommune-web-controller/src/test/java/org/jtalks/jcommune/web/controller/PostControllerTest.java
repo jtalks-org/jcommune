@@ -21,7 +21,6 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PostService;
-import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
@@ -40,7 +39,6 @@ import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
@@ -56,7 +54,6 @@ import static org.testng.Assert.assertEquals;
  * @author Osadchuck Eugeny
  */
 public class PostControllerTest {
-    private TopicService topicService;
     private PostService postService;
     private PostController controller;
     public static final long TOPIC_ID = 1;
@@ -67,10 +64,9 @@ public class PostControllerTest {
 
     @BeforeMethod
     public void init() {
-        topicService = mock(TopicService.class);
         postService = mock(PostService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
-        controller = new PostController(topicService, postService, breadcrumbBuilder);
+        controller = new PostController(postService, breadcrumbBuilder);
     }
 
 
@@ -98,87 +94,87 @@ public class PostControllerTest {
         long branchId = 1;
 
         //invoke the object under test
-       ModelAndView actualMav = controller.delete(topicId, postId, branchId);
+        ModelAndView actualMav = controller.delete(topicId, postId, branchId);
 
-       //check expectations
-       verify(topicService, times(1)).deletePost(topicId, postId);
+        //check expectations
+        verify(postService).deletePost(postId);
 
-       //check result
-       assertViewName(actualMav, "redirect:/topic/" + topicId + ".html");
+        //check result
+        assertViewName(actualMav, "redirect:/topic/" + topicId + ".html");
     }
-    
+
     @Test
-    public void editTest() throws NotFoundException {      
-       User user = new User("username", "email@mail.com", "password");
-       Topic topic = new Topic(user, "title");
-       topic.setId(TOPIC_ID);
-       Post post = new Post(user, "content");       
-       post.setId(POST_ID);
-       topic.addPost(post);
-       
-       //set expectations
-       when(postService.get(POST_ID)).thenReturn(post);
-       when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
+    public void editTest() throws NotFoundException {
+        User user = new User("username", "email@mail.com", "password");
+        Topic topic = new Topic(user, "title");
+        topic.setId(TOPIC_ID);
+        Post post = new Post(user, "content");
+        post.setId(POST_ID);
+        topic.addPost(post);
 
-       //invoke the object under test
-       ModelAndView actualMav = controller.edit(BRANCH_ID, TOPIC_ID, POST_ID);
+        //set expectations
+        when(postService.get(POST_ID)).thenReturn(post);
+        when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
 
-       //check expectations
-       verify(postService).get(POST_ID);
+        //invoke the object under test
+        ModelAndView actualMav = controller.edit(BRANCH_ID, TOPIC_ID, POST_ID);
 
-       //check result
-       assertViewName(actualMav, "postForm");
+        //check expectations
+        verify(postService).get(POST_ID);
 
-       PostDto dto = assertAndReturnModelAttributeOfType(actualMav, "postDto", PostDto.class);
-       assertEquals(dto.getId(), TOPIC_ID);
+        //check result
+        assertViewName(actualMav, "postForm");
 
-       long branchId = assertAndReturnModelAttributeOfType(actualMav, "branchId", Long.class);
-       assertEquals(branchId, BRANCH_ID); 
+        PostDto dto = assertAndReturnModelAttributeOfType(actualMav, "postDto", PostDto.class);
+        assertEquals(dto.getId(), TOPIC_ID);
 
-       long topicId = assertAndReturnModelAttributeOfType(actualMav, "topicId", Long.class);
-       assertEquals(topicId, TOPIC_ID); 
+        long branchId = assertAndReturnModelAttributeOfType(actualMav, "branchId", Long.class);
+        assertEquals(branchId, BRANCH_ID);
 
-       long postId = assertAndReturnModelAttributeOfType(actualMav, "postId", Long.class);
-       assertEquals(postId, POST_ID);
+        long topicId = assertAndReturnModelAttributeOfType(actualMav, "topicId", Long.class);
+        assertEquals(topicId, TOPIC_ID);
 
-       assertModelAttributeAvailable(actualMav, "breadcrumbList");
+        long postId = assertAndReturnModelAttributeOfType(actualMav, "postId", Long.class);
+        assertEquals(postId, POST_ID);
+
+        assertModelAttributeAvailable(actualMav, "breadcrumbList");
     }
-    
+
     @Test
     public void saveTest() throws NotFoundException {
-         PostDto dto = getDto();
-         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "postDto");
+        PostDto dto = getDto();
+        BindingResult bindingResult = new BeanPropertyBindingResult(dto, "postDto");
 
-         ModelAndView mav = controller.save(dto, bindingResult, BRANCH_ID, TOPIC_ID,POST_ID);
-         assertViewName(mav, "redirect:/topic/" + TOPIC_ID + ".html");
+        ModelAndView mav = controller.save(dto, bindingResult, BRANCH_ID, TOPIC_ID, POST_ID);
+        assertViewName(mav, "redirect:/topic/" + TOPIC_ID + ".html");
 
-         assertViewName(mav, "redirect:/topic/" + TOPIC_ID + ".html");
+        assertViewName(mav, "redirect:/topic/" + TOPIC_ID + ".html");
 
-         verify(postService).savePost(POST_ID,POST_CONTENT);
-        
+        verify(postService).savePost(POST_ID, POST_CONTENT);
+
     }
-    
+
     @Test
     public void testSaveWithError() throws NotFoundException {
-         PostDto dto = getDto();
-         BeanPropertyBindingResult resultWithErrors = mock(BeanPropertyBindingResult.class);
+        PostDto dto = getDto();
+        BeanPropertyBindingResult resultWithErrors = mock(BeanPropertyBindingResult.class);
 
-         when(resultWithErrors.hasErrors()).thenReturn(true);
+        when(resultWithErrors.hasErrors()).thenReturn(true);
 
-         ModelAndView mav = controller.save(dto, resultWithErrors, BRANCH_ID, TOPIC_ID,POST_ID);
+        ModelAndView mav = controller.save(dto, resultWithErrors, BRANCH_ID, TOPIC_ID, POST_ID);
 
-         assertViewName(mav, "postForm");
-         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
-         long topicId = assertAndReturnModelAttributeOfType(mav, "topicId", Long.class);
-         long postId = assertAndReturnModelAttributeOfType(mav, "postId", Long.class);
-         assertEquals(branchId, BRANCH_ID);
-         assertEquals(topicId, TOPIC_ID);
-         assertEquals(postId, POST_ID);
+        assertViewName(mav, "postForm");
+        long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
+        long topicId = assertAndReturnModelAttributeOfType(mav, "topicId", Long.class);
+        long postId = assertAndReturnModelAttributeOfType(mav, "postId", Long.class);
+        assertEquals(branchId, BRANCH_ID);
+        assertEquals(topicId, TOPIC_ID);
+        assertEquals(postId, POST_ID);
 
-         verify(postService, never()).savePost( anyLong(), anyString());
+        verify(postService, never()).savePost(anyLong(), anyString());
     }
-    
-     private PostDto getDto() {
+
+    private PostDto getDto() {
         PostDto dto = new PostDto();
         dto.setId(POST_ID);
         dto.setBodyText(POST_CONTENT);
