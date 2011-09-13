@@ -20,15 +20,12 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
-import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
+import org.jtalks.jcommune.service.exceptions.*;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
-import org.jtalks.jcommune.web.util.ImageUtil;
+import org.jtalks.jcommune.web.util.ImagePreprocessor;
 import org.mockito.Matchers;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.mock.web.MockMultipartFile;
@@ -45,7 +42,6 @@ import org.testng.annotations.Test;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -72,8 +68,11 @@ public class UserControllerTest {
     private final String EMAIL = "mail@mail.com";
     private final String PASSWORD = "password";
     private final String NEW_PASSWORD = "newPassword";
+    private final int AVATAR_MAX_WIDTH = 100;
+    private final int AVATAR_MAX_HEIGHT = 100;
     private MultipartFile avatar;
     private BreadcrumbBuilder breadcrumbBuilder;
+    private ImagePreprocessor imagePreprocessor;
 
     @BeforeClass
     public void mockAvatar() throws IOException {
@@ -86,7 +85,8 @@ public class UserControllerTest {
         userService = mock(UserService.class);
         securityService = mock(SecurityService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
-        controller = new UserController(userService, securityService, breadcrumbBuilder);
+        imagePreprocessor = mock(ImagePreprocessor.class);
+        controller = new UserController(userService, securityService, breadcrumbBuilder, imagePreprocessor);
     }
 
     @Test
@@ -206,11 +206,14 @@ public class UserControllerTest {
     public void testEditProfile() throws Exception {
         User user = getUser();
         EditUserProfileDto userDto = getEditUserProfileDto();
+
+        when(imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH,
+                AVATAR_MAX_HEIGHT)).thenReturn(avatarByteArray);
+
         when(userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), ImageUtil.convertImageToByteArray(ImageUtil.resizeImage(
-                (BufferedImage) ImageUtil.convertMultipartFileToImage(userDto.getAvatar()), ImageUtil.IMAGE_PNG, 4, 4))
-        )).thenReturn(user);
+                userDto.getNewUserPassword(), imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH,
+                AVATAR_MAX_HEIGHT))).thenReturn(user);
 
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
@@ -220,9 +223,8 @@ public class UserControllerTest {
         assertViewName(mav, expectedUrl);
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), ImageUtil.convertImageToByteArray(ImageUtil.resizeImage(
-                (BufferedImage) ImageUtil.convertMultipartFileToImage(userDto.getAvatar()), ImageUtil.IMAGE_PNG, 4, 4))
-        );
+                userDto.getNewUserPassword(), imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH,
+                AVATAR_MAX_HEIGHT));
     }
 
     @Test
@@ -249,16 +251,36 @@ public class UserControllerTest {
     }
 
     @Test
+    public void testEditProfileAvatarWrongFormat() throws Exception {
+        EditUserProfileDto userDto = getEditUserProfileWithWrongFormatDto();
+        BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
+
+        doThrow(new InvalidImageException()).when(imagePreprocessor).preprocessImage(userDto.getAvatar(),
+                AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
+
+
+        ModelAndView mav = controller.editProfile(userDto, bindingResult);
+
+        assertViewName(mav, "editProfile");
+        assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
+
+        verify(imagePreprocessor).preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
+
+        assertContainsError(bindingResult, "avatar");
+    }
+
+    @Test
     public void testEditProfileDuplicatedEmail() throws Exception {
         EditUserProfileDto userDto = getEditUserProfileDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
-        doThrow(new DuplicateEmailException()).when(userService)
-                .editUserProfile(userDto.getEmail(), userDto.getFirstName(),
-                        userDto.getLastName(), userDto.getCurrentUserPassword(),
-                        userDto.getNewUserPassword(), ImageUtil.convertImageToByteArray(ImageUtil.resizeImage(
-                        (BufferedImage) ImageUtil.convertMultipartFileToImage(userDto.getAvatar()), ImageUtil.IMAGE_PNG,
-                        4, 4)));
+        when(imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH,
+                AVATAR_MAX_HEIGHT)).thenReturn(avatarByteArray);
+
+        when(userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
+                userDto.getLastName(), userDto.getCurrentUserPassword(),
+                userDto.getNewUserPassword(), imagePreprocessor.preprocessImage(userDto.getAvatar(),
+                AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT))).thenThrow(new DuplicateEmailException());
 
         ModelAndView mav = controller.editProfile(userDto, bindingResult);
 
@@ -266,9 +288,8 @@ public class UserControllerTest {
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), ImageUtil.convertImageToByteArray(ImageUtil.resizeImage(
-                (BufferedImage) ImageUtil.convertMultipartFileToImage(userDto.getAvatar()), ImageUtil.IMAGE_PNG, 4, 4))
-        );
+                userDto.getNewUserPassword(), imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH,
+                AVATAR_MAX_HEIGHT));
 
         assertContainsError(bindingResult, "email");
     }
@@ -277,12 +298,14 @@ public class UserControllerTest {
     public void testEditProfileWrongPassword() throws Exception {
         EditUserProfileDto userDto = getEditUserProfileDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
-        doThrow(new WrongPasswordException()).when(userService)
-                .editUserProfile(userDto.getEmail(), userDto.getFirstName(),
-                        userDto.getLastName(), userDto.getCurrentUserPassword(),
-                        userDto.getNewUserPassword(), ImageUtil.convertImageToByteArray(ImageUtil.resizeImage(
-                        (BufferedImage) ImageUtil.convertMultipartFileToImage(userDto.getAvatar()), ImageUtil.IMAGE_PNG,
-                        4, 4)));
+
+        when(imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH,
+                AVATAR_MAX_HEIGHT)).thenReturn(avatarByteArray);
+
+        when(userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
+                userDto.getLastName(), userDto.getCurrentUserPassword(),
+                userDto.getNewUserPassword(), imagePreprocessor.preprocessImage(userDto.getAvatar(),
+                AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT))).thenThrow(new WrongPasswordException());
 
         ModelAndView mav = controller.editProfile(userDto, bindingResult);
 
@@ -290,9 +313,8 @@ public class UserControllerTest {
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), ImageUtil.convertImageToByteArray(ImageUtil.resizeImage(
-                (BufferedImage) ImageUtil.convertMultipartFileToImage(userDto.getAvatar()), ImageUtil.IMAGE_PNG, 4, 4))
-        );
+                userDto.getNewUserPassword(), imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH,
+                AVATAR_MAX_HEIGHT));
         assertContainsError(bindingResult, "currentUserPassword");
     }
 
@@ -383,6 +405,23 @@ public class UserControllerTest {
         dto.setNewUserPassword(NEW_PASSWORD);
         dto.setNewUserPasswordConfirm(NEW_PASSWORD);
         dto.setAvatar(avatar);
+        return dto;
+    }
+
+    /**
+     * @return {@link EditUserProfileDto} with default values
+     */
+    private EditUserProfileDto getEditUserProfileWithWrongFormatDto() {
+        MultipartFile wrongFormatAvatar = new MockMultipartFile("test_avatar.bmp", "test_avatar.bmp", "image/bmp",
+                new byte[0]);
+        EditUserProfileDto dto = new EditUserProfileDto();
+        dto.setEmail(EMAIL);
+        dto.setFirstName(FIRST_NAME);
+        dto.setLastName(LAST_NAME);
+        dto.setCurrentUserPassword(PASSWORD);
+        dto.setNewUserPassword(NEW_PASSWORD);
+        dto.setNewUserPasswordConfirm(NEW_PASSWORD);
+        dto.setAvatar(wrongFormatAvatar);
         return dto;
     }
 
