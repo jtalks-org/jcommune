@@ -60,16 +60,6 @@ public interface TopicService extends EntityService<Topic> {
     Topic createTopic(String topicName, String bodyText, long branchId) throws NotFoundException;
 
     /**
-     * Delete post from topic.
-     *
-     * @param topicId topic id
-     * @param postId  post id
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when topic or post not found
-     */
-    void deletePost(long topicId, long postId) throws NotFoundException;
-
-    /**
      * Get posts range from branch.
      *
      * @param branchId branch id from which we obtain topics

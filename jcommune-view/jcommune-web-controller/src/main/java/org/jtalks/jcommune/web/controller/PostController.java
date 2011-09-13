@@ -45,22 +45,19 @@ public class PostController {
     public static final String TOPIC_ID = "topicId";
     public static final String BRANCH_ID = "branchId";
     public static final String POST_ID = "postId";
-    private final TopicService topicService;
     private final PostService postService;
     private BreadcrumbBuilder breadcrumbBuilder;
 
     /**
      * Constructor. Injects {@link TopicService}.
      *
-     * @param topicService {@link TopicService} instance to be injected
      * @param postService {@link PostService} instance to be injected
      * @param breadcrumbBuilder the object which provides actions on
      * {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      */
     @Autowired
-    public PostController(TopicService topicService, PostService postService,
+    public PostController(PostService postService,
                           BreadcrumbBuilder breadcrumbBuilder) {
-        this.topicService = topicService;
         this.postService = postService;
         this.breadcrumbBuilder = breadcrumbBuilder;
     }
@@ -98,7 +95,7 @@ public class PostController {
     public ModelAndView delete(@PathVariable(TOPIC_ID) Long topicId,
                                @PathVariable(POST_ID) Long postId,
                                @PathVariable(BRANCH_ID) Long branchId) throws NotFoundException {
-        topicService.deletePost(topicId, postId);
+        postService.deletePost(postId);
         return new ModelAndView(new StringBuilder()
                 .append("redirect:/topic/")
                 .append(topicId)
@@ -126,7 +123,7 @@ public class PostController {
                 .addObject(BRANCH_ID, branchId)
                 .addObject(TOPIC_ID, topicId)
                 .addObject(POST_ID, postId)
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(topicService.get(topicId)));
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(post.getTopic()));
     }
 
     /**

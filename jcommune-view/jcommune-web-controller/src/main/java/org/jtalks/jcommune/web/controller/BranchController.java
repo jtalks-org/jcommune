@@ -20,8 +20,10 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.Pagination;
@@ -46,6 +48,7 @@ public final class BranchController {
 
     private BranchService branchService;
     private TopicService topicService;
+    private PostService postService;
     private BreadcrumbBuilder breadcrumbBuilder;
 
     /**
@@ -59,9 +62,11 @@ public final class BranchController {
     @Autowired
     public BranchController(BranchService branchService,
                             TopicService topicService,
+                            PostService postService,
                             BreadcrumbBuilder breadcrumbBuilder) {
         this.branchService = branchService;
         this.topicService = topicService;
+        this.postService = postService;
         this.breadcrumbBuilder = breadcrumbBuilder;
     }
 
@@ -92,12 +97,14 @@ public final class BranchController {
         Pagination pag = new Pagination(page, size, topicsCount);
 
         List<Topic> topics = topicService.getTopicRangeInBranch(branchId, pag.getStart(), pag.getPageSize());
-
+  
+        List<Post> lastPost=postService.getLastPost();
         return new ModelAndView("topicList")
                 .addObject("branchId", branchId)
                 .addObject("topics", topics)
                 .addObject("maxPages", pag.getMaxPages())
                 .addObject("page", pag.getPage())
+                .addObject("lastPost",lastPost)
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)));
     }
 

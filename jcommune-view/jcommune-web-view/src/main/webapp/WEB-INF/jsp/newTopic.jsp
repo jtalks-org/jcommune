@@ -20,6 +20,7 @@
 
                 <div class="clear"></div>
                 <button type="submit" class="coolbutton"><spring:message code="label.addtopic"/></button>
+                <a href="${pageContext.request.contextPath}/branch/${branchId}.html" class="coolbutton" ><spring:message code='label.back'/></a>
             </div>
         </jtalks:form>
     </div>

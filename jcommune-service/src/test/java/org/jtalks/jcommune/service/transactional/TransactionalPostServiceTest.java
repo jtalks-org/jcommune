@@ -20,8 +20,10 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -50,6 +52,7 @@ public class TransactionalPostServiceTest {
 
     private PostService postService;
     private PostDao postDao;
+    private SecurityService securityService;
     private TopicDao topicDao;
     private User user;
 
@@ -57,7 +60,8 @@ public class TransactionalPostServiceTest {
     public void setUp() throws Exception {
         postDao = mock(PostDao.class);
         topicDao = mock(TopicDao.class);
-        postService = new TransactionalPostService(postDao, topicDao);
+        securityService = mock(SecurityService.class);
+        postService = new TransactionalPostService(postDao, topicDao, securityService);
         user = new User("username", "email@mail.com", "password");
     }
 
@@ -141,5 +145,33 @@ public class TransactionalPostServiceTest {
         
         verify(postDao).get(POST_ID);
         verify(postDao).update(post);        
+    }
+
+
+    @Test
+    public void testDeletePost() throws NotFoundException {
+        Topic topic = new Topic(user, "title");
+        Post post1 = new Post(user, "content");
+        post1.setId(1L);
+        Post postForDelete = new Post(user, "content");
+        postForDelete.setId(POST_ID);
+        topic.addPost(post1);
+        topic.addPost(postForDelete);
+        when(postDao.isExist(POST_ID)).thenReturn(true);
+        when(postDao.get(POST_ID)).thenReturn(postForDelete);
+
+        postService.deletePost(POST_ID);
+
+        assertEquals(topic.postCount(), 1, "Post not deleted from list");
+        verify(postDao).get(POST_ID);
+        verify(topicDao).update(topic);
+        verify(securityService).deleteFromAcl(postForDelete);
+    }
+
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testDeleteNonExistentPost() throws NotFoundException {
+        when(postDao.isExist(POST_ID)).thenReturn(false);
+
+        postService.deletePost(POST_ID);
     }
 }

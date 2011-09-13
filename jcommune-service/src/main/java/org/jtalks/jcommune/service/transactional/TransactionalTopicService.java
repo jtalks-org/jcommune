@@ -125,21 +125,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#postId, 'org.jtalks.jcommune.model.entity.Post', admin) or " +
-            "hasPermission(#postId, 'org.jtalks.jcommune.model.entity.Post', delete)")
-    public void deletePost(long topicId, long postId) throws NotFoundException {
-        Post post = postService.get(postId);
-        Topic topic = post.getTopic();
-        topic.removePost(post);
-        dao.update(topic);
-        securityService.deleteFromAcl(post);
-        logger.debug("Deleted post with id: {}", postId);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public List<Topic> getTopicRangeInBranch(long branchId, int start, int max) throws NotFoundException {
         if (!branchDao.isExist(branchId)) {
             throw new NotFoundException("Branch with id: " + branchId + " not found");
@@ -213,5 +198,5 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
 
         securityService.deleteFromAcl(Topic.class, topicId);
         return branch;
-    }
+    }                    
 }

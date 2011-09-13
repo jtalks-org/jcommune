@@ -18,6 +18,7 @@
 package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.Post;
 
 import java.util.List;
 

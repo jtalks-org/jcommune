@@ -167,32 +167,6 @@ public class TransactionalTopicServiceTest {
     }
 
     @Test
-    public void testDeletePost() throws NotFoundException {
-        Topic topic = new Topic(user, "title");
-        Post post1 = new Post(user, "content");
-        post1.setId(1L);
-        Post postForDelete = new Post(user, "content");
-        postForDelete.setId(POST_ID);
-        topic.addPost(post1);
-        topic.addPost(postForDelete);
-        when(postService.get(POST_ID)).thenReturn(postForDelete);
-
-        topicService.deletePost(TOPIC_ID, POST_ID);
-
-        assertEquals(topic.postCount(), 1, "Post not deleted from list");
-        verify(postService).get(POST_ID);
-        verify(topicDao).update(topic);
-        verify(securityService).deleteFromAcl(postForDelete);
-    }
-
-    @Test(expectedExceptions = {NotFoundException.class})
-    public void testDeleteNonExistentPost() throws NotFoundException {
-        when(postService.get(POST_ID)).thenThrow(new NotFoundException(""));
-
-        topicService.deletePost(TOPIC_ID, POST_ID);
-    }
-
-    @Test
     public void testGetTopicsRangeInBranch() throws NotFoundException {
         int start = 1;
         int max = 2;
