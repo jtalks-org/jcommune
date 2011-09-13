@@ -88,6 +88,7 @@ public class UserController {
      * @param securityService   {@link SecurityService} used for accessing to current logged in user
      * @param breadcrumbBuilder the object which provides actions on
      *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
+     * @param imagePreprocessor {@link ImagePreprocessor} used for preparing image before save
      */
     @Autowired
     public UserController(UserService userService,

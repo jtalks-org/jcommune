@@ -38,10 +38,14 @@ public class ImagePreprocessor {
      * byte array.
      *
      * @param multipartFile input multipart file
+     * @param  maxWidth max width of modified image
+     * @param  maxHeight max height of modified image
      * @return prepared image byte array
      * @throws java.io.IOException - throws if an I/O error occurs
+     * @throws InvalidImageException - throws if image is invalid or image's format is not allowable
      */
-    public byte[] preprocessImage(MultipartFile multipartFile, int maxWidth, int maxHeight) throws IOException, InvalidImageException {
+    public byte[] preprocessImage(MultipartFile multipartFile, int maxWidth, int maxHeight) throws IOException,
+            InvalidImageException {
         if (multipartFile.isEmpty()) {
             //assume that empty multipart file is valid to avoid validation message when user doesn't load nothing
             return null;

@@ -33,8 +33,11 @@ import java.io.IOException;
  *
  * @author Eugeny Batov
  */
-public class ImageUtil {
+public final class ImageUtil {
 
+    /**
+     * Empty constructor.
+     */
     private ImageUtil() {
         //Utility classes should not have a public or default constructor
     }
