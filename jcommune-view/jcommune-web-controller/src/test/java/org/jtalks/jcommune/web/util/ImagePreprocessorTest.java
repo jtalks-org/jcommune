@@ -1,3 +1,20 @@
+/**
+ * Copyright (C) 2011  jtalks.org Team
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Also add information on how to contact you by electronic and paper mail.
+ * Creation date: Apr 12, 2011 / 8:05:19 PM
+ * The jtalks.org Project
+ */
 package org.jtalks.jcommune.web.util;
 
 import org.jtalks.jcommune.service.exceptions.InvalidImageException;
@@ -8,6 +25,7 @@ import org.testng.annotations.Test;
 
 import java.io.IOException;
 
+import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertTrue;
 
 /**
@@ -16,20 +34,37 @@ import static org.testng.Assert.assertTrue;
 public class ImagePreprocessorTest {
 
     private MultipartFile image;
+    private ImagePreprocessor imagePreprocessor;
 
     @BeforeClass
     public void mockImage() throws IOException {
+        imagePreprocessor = new ImagePreprocessor();
         image = new MockMultipartFile("test_avatar.png", "test_avatar.png", "image/png",
                 imageByteArray);
     }
 
     @Test
     public void testPreprocessImage() throws IOException, InvalidImageException {
-        ImagePreprocessor imagePreprocessor = new ImagePreprocessor();
         byte[] modifiedImageByteArray = imagePreprocessor.preprocessImage(image, 4, 4);
         assertTrue(modifiedImageByteArray instanceof byte[]);
         assertTrue(modifiedImageByteArray != null);
         assertTrue(modifiedImageByteArray.length != 0);
+    }
+
+    @Test
+    public void testPreprocessImageEmptyMultipartFile() throws IOException, InvalidImageException {
+        MultipartFile emptyMultipartFile = new MockMultipartFile("test_avatar.png", "test_avatar.png", "image/png",
+                new byte[0]);
+        byte[] modifiedImageByteArray = imagePreprocessor.preprocessImage(emptyMultipartFile, 4, 4);
+        assertTrue(modifiedImageByteArray == null);
+    }
+
+    @Test(expectedExceptions = InvalidImageException.class)
+    public void testPreprocessFakeImage() throws IOException, InvalidImageException {
+        MultipartFile fakeImage = new MockMultipartFile("test_avatar.doc", "test_avatar.doc", "image/doc",
+                new byte[]{1, 3, 2});
+        imagePreprocessor.preprocessImage(fakeImage, 4, 4);
+
     }
 
     private byte[] imageByteArray = new byte[]{-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0,
