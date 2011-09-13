@@ -60,7 +60,7 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
      */   
     @Override
     public List<Post> getLastPost() {
-        return getSession().createQuery("from Post p where p.creationDate=(select max(p.creationDate) from p)")
+        return getSession().createQuery("select topic from Post p where p.creationDate=(select max(p.creationDate) from p) group by p.topic")
                 .setCacheable(true).list();
     }
 }

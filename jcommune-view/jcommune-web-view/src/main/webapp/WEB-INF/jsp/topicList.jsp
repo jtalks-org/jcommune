@@ -19,8 +19,7 @@
             <td width="10%"><spring:message code="label.date"/></td>
         </tr>
 
-        <c:forEach var="topic" items="${topics}">
-            
+        <c:forEach var="topic" items="${topics}">           
             <tr>
                 <td>
                     <c:choose>
@@ -43,19 +42,15 @@
                     </a>
                 </td>
                 
-                <td>
-                    <c:forEach var="post"  items="${lastPost}" >
-                        <a href="${pageContext.request.contextPath}/user/${post.userCreated.encodedUsername}.html">
-                            <c:out value="${post.userCreated.username}"/></a>
-                       <a href="${pageContext.request.contextPath}/topic/${topic.id}.html">
-                            <joda:format value="${post.creationDate}"
-                                 locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
-                                 pattern="dd MMM yyyy HH:mm"/></a>
-                        
-                    </c:forEach>
+                <td>                  
+                   <a href="${pageContext.request.contextPath}/user/${topic.lastPost.userCreated.encodedUsername}.html">
+                         <c:out value="${topic.lastPost.userCreated.username}"/></a>
+                   <a href="${pageContext.request.contextPath}/topic/${topic.id}.html">
+                       <joda:format value="${topic.lastPost.creationDate}"
+                            locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
+                            pattern="dd MMM yyyy HH:mm"/></a>                  
                 </td>    
-            </tr>
-           
+            </tr>          
         </c:forEach>
     </table>
     <br>
