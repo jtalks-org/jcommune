@@ -182,7 +182,7 @@ public class TransactionalTopicServiceTest {
         assertEquals(topics.size(), max, "Unexpected list size");
         verify(topicDao).getTopicRangeInBranch(BRANCH_ID, start, max);
         verify(branchDao).isExist(BRANCH_ID);
-    }
+    } 
 
     @Test(expectedExceptions = {NotFoundException.class})
     public void testGetTopicsRangeInNonExistentBranch() throws NotFoundException {

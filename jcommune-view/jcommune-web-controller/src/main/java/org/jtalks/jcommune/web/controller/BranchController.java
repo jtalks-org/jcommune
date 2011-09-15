@@ -19,6 +19,7 @@
 
 package org.jtalks.jcommune.web.controller;
 
+import java.util.ArrayList;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.BranchService;
@@ -97,14 +98,11 @@ public final class BranchController {
         Pagination pag = new Pagination(page, size, topicsCount);
 
         List<Topic> topics = topicService.getTopicRangeInBranch(branchId, pag.getStart(), pag.getPageSize());
-  
-        List<Post> lastPost=postService.getLastPost();
         return new ModelAndView("topicList")
                 .addObject("branchId", branchId)
                 .addObject("topics", topics)
                 .addObject("maxPages", pag.getMaxPages())
                 .addObject("page", pag.getPage())
-                .addObject("lastPost",lastPost)
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)));
     }
 

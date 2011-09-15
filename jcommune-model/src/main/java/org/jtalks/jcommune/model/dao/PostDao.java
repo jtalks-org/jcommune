@@ -56,5 +56,4 @@ public interface PostDao extends ChildRepository<Post> {
      *
      * @return last posts
      */
-    List<Post> getLastPost();
 }

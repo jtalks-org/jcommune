@@ -142,5 +142,4 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     private int getCount() {
         return ((Number) session.createQuery("select count(*) from Post").uniqueResult()).intValue();
     }
-
 }

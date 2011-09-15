@@ -69,13 +69,4 @@ public interface PostService extends EntityService<Post> {
      *          when topic or post not found
      */
     void deletePost(long postId) throws NotFoundException;
-           
-    /**
-     * Get last post for each topic
-     *
-     * @return last posts
-     * @throws org.jtaks.jcommune.service.exceptions.NotFoundException
-     *          when post not found
-     */
-     List<Post> getLastPost() throws NotFoundException;
 }

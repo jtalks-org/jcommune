@@ -54,13 +54,4 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
         return ((Number) getSession().createQuery("select count(*) from Post p where p.topic = ?")
                 .setCacheable(true).setLong(0, topicId).uniqueResult()).intValue();
     }
-    
-     /**
-     * {@inheritDoc}
-     */   
-    @Override
-    public List<Post> getLastPost() {
-        return getSession().createQuery("select topic from Post p where p.creationDate=(select max(p.creationDate) from p) group by p.topic")
-                .setCacheable(true).list();
-    }
 }

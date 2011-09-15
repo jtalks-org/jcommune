@@ -42,7 +42,6 @@ public class Post extends Entity {
     private String postContent;
     private Topic topic;
     
-
     /**
      * Constructs the instance with initialized fields.
      */

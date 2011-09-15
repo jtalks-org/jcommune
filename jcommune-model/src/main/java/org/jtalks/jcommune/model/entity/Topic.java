@@ -43,6 +43,7 @@ public class Topic extends Entity {
     private List<Post> posts = new ArrayList<Post>();
     private Branch branch;
 
+
     /**
      * Used only by hibernate.
      */

@@ -105,13 +105,5 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         topicDao.update(topic);
         securityService.deleteFromAcl(post);
         logger.debug("Deleted post with id: {}", postId);
-    }
-        
-     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Post> getLastPost() throws NotFoundException {
-        return dao.getLastPost();
     } 
 }
