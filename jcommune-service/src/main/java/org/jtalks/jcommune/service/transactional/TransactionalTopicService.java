@@ -129,9 +129,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         if (!branchDao.isExist(branchId)) {
             throw new NotFoundException("Branch with id: " + branchId + " not found");
         }
-        List<Topic> topics = dao.getTopicRangeInBranch(branchId, start, max);
-        
-        return topics;
+        return dao.getTopicRangeInBranch(branchId, start, max);
+
     }
 
     @Override
