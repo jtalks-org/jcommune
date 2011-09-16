@@ -50,10 +50,4 @@ public interface PostDao extends ChildRepository<Post> {
      * @return number of posts in topic
      */
     int getPostsInTopicCount(long topicId);
-    
-     /**
-     * Get last post for each topic
-     *
-     * @return last posts
-     */
 }
