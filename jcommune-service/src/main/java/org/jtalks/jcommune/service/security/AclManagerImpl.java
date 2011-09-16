@@ -88,7 +88,7 @@ public class AclManagerImpl implements AclManager {
      * If ACL does not exist it will be created.
      *
      * @param oid object identity
-     * @return ACL fro this object identity
+     * @return ACL for this object identity
      */
     private MutableAcl getAclFor(ObjectIdentity oid) {
         MutableAcl acl;
