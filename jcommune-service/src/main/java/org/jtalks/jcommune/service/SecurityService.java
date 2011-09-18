@@ -17,7 +17,7 @@
  */
 package org.jtalks.jcommune.service;
 
-import org.jtalks.jcommune.model.entity.Entity;
+import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.security.AclBuilder;
 import org.springframework.security.core.userdetails.UserDetailsService;

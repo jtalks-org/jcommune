@@ -24,7 +24,6 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -50,7 +49,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     private final SecurityService securityService;
     private BranchService branchService;
     private BranchDao branchDao;
-    private PostService postService;
 
     /**
      * Create an instance of User entity based service
@@ -62,13 +60,11 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * @param postService     post service
      */
     public TransactionalTopicService(TopicDao dao, SecurityService securityService,
-                                     BranchService branchService, BranchDao branchDao,
-                                     PostService postService) {
+                                     BranchService branchService, BranchDao branchDao) {
         this.securityService = securityService;
         this.dao = dao;
         this.branchService = branchService;
         this.branchDao = branchDao;
-        this.postService = postService;
     }
 
     /**

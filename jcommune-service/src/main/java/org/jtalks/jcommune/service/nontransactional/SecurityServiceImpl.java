@@ -17,8 +17,8 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.dao.UserDao;
-import org.jtalks.jcommune.model.entity.Entity;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.security.AclBuilder;

@@ -18,6 +18,7 @@
 package org.jtalks.jcommune.model.entity;
 
 import org.joda.time.DateTime;
+import org.jtalks.common.model.entity.Entity;
 
 /**
  * Represents the simple version of post of the forum

@@ -17,7 +17,7 @@
  */
 package org.jtalks.jcommune.service.security;
 
-import org.jtalks.jcommune.model.entity.Entity;
+import org.jtalks.common.model.entity.Entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;

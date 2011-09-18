@@ -17,7 +17,7 @@
  */
 package org.jtalks.jcommune.service.security;
 
-import org.jtalks.jcommune.model.entity.Entity;
+import org.jtalks.common.model.entity.Entity;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.GrantedAuthoritySid;
 import org.springframework.security.acls.domain.PrincipalSid;

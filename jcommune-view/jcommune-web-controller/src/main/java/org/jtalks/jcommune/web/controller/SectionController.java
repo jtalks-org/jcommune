@@ -46,8 +46,9 @@ public final class SectionController {
     /**
      * Constructor creates MVC controller with specified SectionService
      *
-     * @param sectionService autowired object from Spring Context
-     * @param breadcrumbBuilder the object which provides actions on {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
+     * @param sectionService    autowired object from Spring Context
+     * @param breadcrumbBuilder the object which provides actions on
+     *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      */
     @Autowired
     public SectionController(SectionService sectionService, BreadcrumbBuilder breadcrumbBuilder) {

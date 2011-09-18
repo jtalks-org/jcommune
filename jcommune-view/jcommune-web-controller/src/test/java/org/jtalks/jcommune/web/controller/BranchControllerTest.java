@@ -22,7 +22,6 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicService;
-import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
@@ -33,8 +32,12 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.ModelAndViewAssert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 
 
@@ -45,7 +48,6 @@ import static org.testng.Assert.assertEquals;
 public class BranchControllerTest {
     private BranchService branchService;
     private TopicService topicService;
-    private PostService postService;
     private BranchController controller;
     private BreadcrumbBuilder breadcrumbBuilder;
 
@@ -53,9 +55,8 @@ public class BranchControllerTest {
     public void init() {
         branchService = mock(BranchService.class);
         topicService = mock(TopicService.class);
-        postService = mock(PostService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
-        controller = new BranchController(branchService, topicService, postService, breadcrumbBuilder);
+        controller = new BranchController(branchService, topicService, breadcrumbBuilder);
     }
 
     @Test

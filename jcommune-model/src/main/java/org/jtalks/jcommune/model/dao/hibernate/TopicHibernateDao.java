@@ -19,10 +19,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.Post;
 
-
-import java.math.BigInteger;
 import java.util.List;
 
 /**
