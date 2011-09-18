@@ -215,6 +215,9 @@ public class Topic extends Entity {
         return shortContent;
     }
 
+    /**
+     * @return last post in the topic
+     */
     public Post getLastPost(){
         return posts.get(postCount() - 1);
     }

@@ -47,6 +47,7 @@ import java.util.List;
 @Controller
 public class PrivateMessageController {
 
+    public static final String BREADCRUMB_LIST = "breadcrumbList";
     private final PrivateMessageService pmService;
     private PrivateMessageDtoBuilder pmDtoBuilder;
     private BreadcrumbBuilder breadcrumbBuilder;
@@ -81,7 +82,7 @@ public class PrivateMessageController {
     public ModelAndView displayInboxPage() {
         return new ModelAndView("pm/inbox")
                 .addObject("pmList", pmService.getInboxForCurrentUser())
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
+                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
     }
 
     /**
@@ -93,7 +94,7 @@ public class PrivateMessageController {
     public ModelAndView displayOutboxPage() {
         return new ModelAndView("pm/outbox")
                 .addObject("pmList", pmService.getOutboxForCurrentUser())
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
+                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
     }
 
     /**
@@ -105,7 +106,7 @@ public class PrivateMessageController {
     public ModelAndView displayNewPMPage() {
         return new ModelAndView(PM_FORM)
                 .addObject(DTO, new PrivateMessageDto())
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
+                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
     }
 
     /**
@@ -123,7 +124,7 @@ public class PrivateMessageController {
         PrivateMessageDto object = pmDtoBuilder.getReplyDtoFor(pm);
         return new ModelAndView(PM_FORM)
                 .addObject(DTO, object)
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
+                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
     }
 
     /**
@@ -141,7 +142,7 @@ public class PrivateMessageController {
         PrivateMessageDto object = pmDtoBuilder.getQuoteDtoFor(pm);
         return new ModelAndView(PM_FORM)
                 .addObject(DTO, object)
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
+                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
     }
 
 
@@ -198,7 +199,7 @@ public class PrivateMessageController {
 
         return new ModelAndView("pm/showPm")
                 .addObject("pm", pm)
-                .addObject("breadcrumbList", breadcrumbList);
+                .addObject(BREADCRUMB_LIST, breadcrumbList);
     }
 
     /**
@@ -210,7 +211,7 @@ public class PrivateMessageController {
     public ModelAndView displayDraftsPage() {
         return new ModelAndView("pm/drafts")
                 .addObject("pmList", pmService.getDraftsFromCurrentUser())
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
+                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
     }
 
     /**
@@ -222,11 +223,11 @@ public class PrivateMessageController {
     public ModelAndView edit(@PathVariable(PM_ID) Long id) throws NotFoundException {
         PrivateMessage pm = pmService.get(id);
         if (!pm.isDraft()) {
-            return new ModelAndView("pm/inbox", "breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
+            return new ModelAndView("pm/inbox", BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
         }
         return new ModelAndView(PM_FORM)
                 .addObject(DTO, new PrivateMessageDtoBuilder().getFullPmDtoFor(pm))
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
+                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
     }
 
     /**

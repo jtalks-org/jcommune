@@ -24,7 +24,6 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -69,7 +68,6 @@ public class TransactionalTopicServiceTest {
     private TopicDao topicDao;
     private BranchDao branchDao;
     private AclBuilder aclBuilder;
-    private PostService postService;
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -78,9 +76,8 @@ public class TransactionalTopicServiceTest {
         branchService = mock(BranchService.class);
         securityService = mock(SecurityService.class);
         branchDao = mock(BranchDao.class);
-        postService = mock(PostService.class);
         topicService = new TransactionalTopicService(topicDao, securityService,
-                branchService, branchDao, postService);
+                branchService, branchDao);
         user = new User(USERNAME, "email@mail.com", "password");
     }
 
