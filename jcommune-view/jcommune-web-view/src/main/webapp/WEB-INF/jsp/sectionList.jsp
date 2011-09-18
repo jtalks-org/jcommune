@@ -56,7 +56,7 @@
                                     <c:out value="${branch.description}"/>
                                     <a href="#">ЧаВО</a>
                                     <br/>
-                                    Модераторы: <a class="moderator" href="#"></a>
+                                    Модераторы: <a class="moderator" href="#">Vurn</a>
                                 </p>
                             </div>
                             <div class="forum_themes">
@@ -73,8 +73,8 @@
                             </div>
                         </li>
                 </c:forEach>
+                </ul>
             </c:forEach>
-            </ul>
         </form:form> <!-- Конец группы форумов -->
     </div>
     <!-- Конец всех форумов -->
