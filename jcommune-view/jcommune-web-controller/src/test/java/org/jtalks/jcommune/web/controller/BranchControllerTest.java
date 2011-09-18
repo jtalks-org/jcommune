@@ -96,4 +96,33 @@ public class BranchControllerTest {
 
     }
 
+    @Test
+    public void testRecent() throws NotFoundException {
+        int page = 2;
+        int pageSize = 5;
+        int startIndex = page * pageSize - pageSize;
+        //set expectations
+        when(topicService.getTopicsPastLastDayCount()).thenReturn(10);
+        when(topicService.getAllTopicsPastLastDay(startIndex, pageSize)).thenReturn(new ArrayList<Topic>());
+
+
+        //invoke the object under test
+        ModelAndView mav = controller.show(page, pageSize);
+
+        //check expectations
+        verify(topicService).getAllTopicsPastLastDay(startIndex, pageSize);
+        verify(topicService).getTopicsPastLastDayCount();
+
+         //check result
+        assertViewName(mav, "recent");
+        assertAndReturnModelAttributeOfType(mav, "topics", List.class);
+
+        Integer actualMaxPages = assertAndReturnModelAttributeOfType(mav, "maxPages", Integer.class);
+        assertEquals((int) actualMaxPages, 2);
+
+        Integer actualPage = assertAndReturnModelAttributeOfType(mav, "page", Integer.class);
+        assertEquals((int) actualPage, page);
+
+    }
+
 }

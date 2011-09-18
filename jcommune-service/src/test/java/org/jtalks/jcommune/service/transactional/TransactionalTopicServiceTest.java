@@ -182,7 +182,32 @@ public class TransactionalTopicServiceTest {
         assertEquals(topics.size(), max, "Unexpected list size");
         verify(topicDao).getTopicRangeInBranch(BRANCH_ID, start, max);
         verify(branchDao).isExist(BRANCH_ID);
-    } 
+    }
+
+    @Test
+    public void testGetAllTopicsPastLastDay() throws NotFoundException {
+        int start = 1;
+        int max = 2;
+        List<Topic> expectedList = new ArrayList<Topic>();
+        expectedList.add(new Topic(user, "title"));
+        expectedList.add(new Topic(user, "title"));
+        when(topicDao.getAllTopicsPastLastDay(start, max)).thenReturn(expectedList);
+
+        List<Topic> topics = topicService.getAllTopicsPastLastDay(start, max);
+
+        assertNotNull(topics);
+        assertEquals(topics.size(), max);
+    }
+
+    @Test
+    public void testGetTopicsPastLastDayCount() throws NotFoundException {
+        int expectedCount = 10;
+        when(topicDao.getTopicsPastLastDayCount()).thenReturn(expectedCount);
+
+        int count = topicService.getTopicsPastLastDayCount();
+
+        assertEquals(expectedCount, count);
+    }
 
     @Test(expectedExceptions = {NotFoundException.class})
     public void testGetTopicsRangeInNonExistentBranch() throws NotFoundException {

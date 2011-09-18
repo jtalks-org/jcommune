@@ -140,6 +140,14 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         assertEquals(count, 5);
     }
 
+    /*@Test
+    public void testGetAllTopicsPastLastDay() {
+        List<Topic> persistedTopics = createAndSaveTopicList(5);
+        int count = dao.getAllTopicsPastLastDay(1, 10).size();
+
+        assertEquals(count, 5);
+    }*/
+
     private int getCount() {
         return ((Number) session.createQuery("select count(*) from Topic").uniqueResult()).intValue();
     }

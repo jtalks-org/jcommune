@@ -106,6 +106,14 @@ public final class BranchController {
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)));
     }
 
+    /**
+     * Displays to user a list of topic past last 24 hour.
+     *
+     * @param page     page
+     * @param size     number of posts on the page
+     * @return {@code ModelAndView} with topics list and vars for pagination
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException when branch not found
+     */
     @RequestMapping(value = "/recent", method = RequestMethod.GET)
     public ModelAndView show(@RequestParam(value = "page", required = false) Integer page,
                              @RequestParam(value = "size", required = false) Integer size) throws NotFoundException {

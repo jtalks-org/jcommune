@@ -51,7 +51,19 @@ public interface TopicDao extends ChildRepository<Topic> {
      */
     int getTopicsInBranchCount(long branchId);
 
+     /**
+     * Get count of topics past last 24 hour.
+     *
+     * @return count of topics
+     */
     int getTopicsPastLastDayCount();
 
+    /**
+     * Get all topics past last 24 hour.
+     *
+     * @param start    start index of topic
+     * @param max      number of topics
+     * @return list of topics
+     */
     List getAllTopicsPastLastDay(int start, int max);
 }

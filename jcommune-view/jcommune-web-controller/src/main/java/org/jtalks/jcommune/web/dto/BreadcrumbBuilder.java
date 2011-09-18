@@ -125,6 +125,11 @@ public class BreadcrumbBuilder {
         return breadcrumbList;
     }
 
+    /**
+     * Returns the Recent breadcrumbs.
+     *
+     * @return the breadcrumb list for the Recent location.
+     */
     public List<Breadcrumb> getRecentBreadcrumb() {
         List<Breadcrumb> breadcrumbList = getForumBreadcrumb();
         breadcrumbList.add(prepareRecentBreadcrumb());
@@ -210,6 +215,11 @@ public class BreadcrumbBuilder {
                 Breadcrumb.OUTBOX_BREADCRUMB_LOCATION_VALUE);
     }
 
+    /**
+     * Fill the recent breadcrumb.
+     *
+     * @return {@link Breadcrumb} the filled breadcrumb for the recent location.
+     */
     private Breadcrumb prepareRecentBreadcrumb() {
         return new Breadcrumb(
                 Breadcrumb.STUB_BREADCRUMB_ID,
