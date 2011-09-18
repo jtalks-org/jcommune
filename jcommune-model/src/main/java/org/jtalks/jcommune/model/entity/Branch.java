@@ -18,6 +18,8 @@
 
 package org.jtalks.jcommune.model.entity;
 
+import org.jtalks.common.model.entity.Entity;
+
 import java.util.ArrayList;
 import java.util.List;
 

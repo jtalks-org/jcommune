@@ -17,7 +17,7 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.jtalks.jcommune.model.entity.Entity;
+import org.jtalks.common.model.entity.Entity;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;

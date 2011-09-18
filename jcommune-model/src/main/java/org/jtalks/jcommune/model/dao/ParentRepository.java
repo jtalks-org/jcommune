@@ -17,7 +17,7 @@
  */
 package org.jtalks.jcommune.model.dao;
 
-import org.jtalks.jcommune.model.entity.Entity;
+import org.jtalks.common.model.entity.Entity;
 
 /**
  * @author Kirill Afonin

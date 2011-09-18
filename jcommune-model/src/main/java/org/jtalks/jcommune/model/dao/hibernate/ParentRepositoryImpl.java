@@ -18,8 +18,8 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.classic.Session;
+import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.dao.ParentRepository;
-import org.jtalks.jcommune.model.entity.Entity;
 
 /**
  * @author Kirill Afonin
