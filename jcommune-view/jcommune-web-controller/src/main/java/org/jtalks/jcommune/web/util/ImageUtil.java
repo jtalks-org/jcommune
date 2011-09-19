@@ -40,10 +40,10 @@ public final class ImageUtil {
     public static final int IMAGE_PNG = 1;
     public static final int IMAGE_GIF = 2;
 
-    private static final int ALPHA_CANAL_MASK = 0xFF000000;
-    private static final int RED_CANAL_MASK = 0x00FF0000;
-    private static final int GREEN_CANAL_MASK = 0x0000FF00;
-    private static final int BLUE_CANAL_MASK = 0x000000FF;
+    private static final int ALPHA_CHANNEL_MASK = 0xFF000000;
+    private static final int RED_CHANNEL_MASK = 0x00FF0000;
+    private static final int GREEN_CHANNEL_MASK = 0x0000FF00;
+    private static final int BLUE_CHANNEL_MASK = 0x000000FF;
     private static final int BIT = 8;
     private static final int TWO_BITS = 16;
     private static final int THREE_BITS = 24;
@@ -196,15 +196,15 @@ public final class ImageUtil {
      * @return rgb an integer pixel in the ARGB color model
      */
     private static int getRGBInterpolation(int value1, int value2, double distance) {
-        int alpha1 = (value1 & ALPHA_CANAL_MASK) >>> THREE_BITS;
-        int red1 = (value1 & RED_CANAL_MASK) >> TWO_BITS;
-        int green1 = (value1 & GREEN_CANAL_MASK) >> BIT;
-        int blue1 = (value1 & BLUE_CANAL_MASK);
+        int alpha1 = (value1 & ALPHA_CHANNEL_MASK) >>> THREE_BITS;
+        int red1 = (value1 & RED_CHANNEL_MASK) >> TWO_BITS;
+        int green1 = (value1 & GREEN_CHANNEL_MASK) >> BIT;
+        int blue1 = (value1 & BLUE_CHANNEL_MASK);
 
-        int alpha2 = (value2 & ALPHA_CANAL_MASK) >>> THREE_BITS;
-        int red2 = (value2 & RED_CANAL_MASK) >> TWO_BITS;
-        int green2 = (value2 & GREEN_CANAL_MASK)>> BIT;
-        int blue2 = (value2 & BLUE_CANAL_MASK);
+        int alpha2 = (value2 & ALPHA_CHANNEL_MASK) >>> THREE_BITS;
+        int red2 = (value2 & RED_CHANNEL_MASK) >> TWO_BITS;
+        int green2 = (value2 & GREEN_CHANNEL_MASK)>> BIT;
+        int blue2 = (value2 & BLUE_CHANNEL_MASK);
 
         int rgb = ((int) (alpha1 * (1.0 - distance) + alpha2 * distance) << THREE_BITS)
                 | ((int) (red1 * (1.0 - distance) + red2 * distance) << TWO_BITS)
