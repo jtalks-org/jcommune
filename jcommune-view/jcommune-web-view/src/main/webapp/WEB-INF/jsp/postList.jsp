@@ -8,8 +8,8 @@
 
 <html>
 <head></head>
-<body class="topic_page">
-<div class="wrap">
+<body>
+<div class="wrap topic_page">
     <!-- Начало всех форумов -->
     <div class="all_forums">
         <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>

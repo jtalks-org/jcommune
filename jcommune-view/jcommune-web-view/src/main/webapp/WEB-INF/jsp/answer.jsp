@@ -9,11 +9,11 @@
     <title><spring:message code="label.answer_to"/>: <c:out value="${topic.title}"/></title>
     <link href="${pageContext.request.contextPath}/css/main.css" type=text/css rel=stylesheet>
 </head>
-<body class="answer_page">
+<body>
 
 <h1>JTalks</h1>
 
-<div class="wrap">
+<div class="wrap answer_page">
     <!-- Начало всех форумов -->
     <div class="all_forums">
         <c:if test="${validationError==true}">

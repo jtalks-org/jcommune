@@ -13,12 +13,15 @@
           href="${pageContext.request.contextPath}/css/screen.css"/>
     <link rel="shortcut icon" type="image/ico" href="favicon.ico"/>
 </head>
-<body class="main_page">
+<body>
 <h1>JTalks</h1>
 
-<div class="wrap">
+<div class="wrap main_page">
     <!-- Начало всех форумов -->
     <div class="all_forums">
+        <a class="forum_top_right_link" href="${pageContext.request.contextPath}/recent.html"><spring:message
+                code="label.recent"/></a> <br/>
+        <a class="forum_top_right_link" href="#">Сообщения без ответа</a>
         <h2><a class="heading" href="#">Java форум JTalks</a></h2>
         <br/>
 
@@ -26,9 +29,7 @@
             форум программистов
         </div>
         <a class="forums_list" href="#" title="Список форумов">Список форумов</a>
-        <a class="forum_top_right_link" href="${pageContext.request.contextPath}/recent.html"><spring:message
-                code="label.recent"/></a> <br/>
-        <a class="forum_top_right_link" href="#">Сообщения без ответа</a>
+
 
 
         <c:forEach var="section" items="${sectionList}">

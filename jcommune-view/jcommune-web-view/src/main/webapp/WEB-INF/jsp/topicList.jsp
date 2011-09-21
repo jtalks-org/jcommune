@@ -9,9 +9,9 @@
 <head>
     <title>Forum</title>
 </head>
-<body class="branch_page">
+<body>
 
-<div class="wrap">
+<div class="wrap branch_page">
 
     <!-- Начало всех форумов -->
     <div class="all_forums">

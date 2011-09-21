@@ -276,6 +276,8 @@ a.last_message_user {
 	background: #c6c6c6;
 }
 .forum_message_cell {
+	width: 100%;
+	max-width: 100%;
 	padding: 10px;
 	padding-top: 0;
 	padding-left: 0;
