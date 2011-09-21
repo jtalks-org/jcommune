@@ -18,6 +18,7 @@
 package org.jtalks.jcommune.model.entity;
 
 import org.joda.time.DateTime;
+import org.jtalks.common.model.entity.Entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

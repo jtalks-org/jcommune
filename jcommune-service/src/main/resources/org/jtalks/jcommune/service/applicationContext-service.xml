@@ -60,7 +60,6 @@
     <constructor-arg index="1" ref="securityService"/>
     <constructor-arg index="2" ref="topicBranchService"/>
     <constructor-arg index="3" ref="topicBranchDao"/>
-    <constructor-arg index="4" ref="postService"/>
   </bean>
 
   <bean id="securityService"

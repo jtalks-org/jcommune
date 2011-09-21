@@ -19,10 +19,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.Post;
 
-
-import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -62,7 +59,7 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
     @Override
     public int getTopicsPastLastDayCount() {
         Number big = (Number) getSession()
-                .createSQLQuery("select count(*) from Topic t WHERE t.MODIFICATION_DATE > DATE_ADD( NOW() , INTERVAL -1 DAY)")
+                .createSQLQuery("select count(*) from TOPIC t WHERE t.MODIFICATION_DATE > DATE_ADD( NOW() , INTERVAL -1 DAY)")
                 .setCacheable(false)
                 .uniqueResult();
         return big.intValue();

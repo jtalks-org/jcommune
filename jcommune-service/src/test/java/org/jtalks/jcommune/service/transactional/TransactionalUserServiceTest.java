@@ -157,8 +157,10 @@ public class TransactionalUserServiceTest {
         when(securityService.getCurrentUser()).thenReturn(user);
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
 
+        byte[] newAvatar=new byte[12];
+
         User editedUser = userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
-                PASSWORD, NEW_PASSWORD, avatar);
+                PASSWORD, NEW_PASSWORD, newAvatar);
 
         verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
@@ -166,6 +168,47 @@ public class TransactionalUserServiceTest {
         assertEquals(editedUser.getFirstName(), FIRST_NAME, "first name was not changed");
         assertEquals(editedUser.getLastName(), LAST_NAME, "last name was not changed");
         assertEquals(editedUser.getPassword(), NEW_PASSWORD, "new password was not accepted");
+        assertEquals(editedUser.getAvatar(),newAvatar,"avatar was not changed");
+    }
+
+    @Test
+    public void testEditUserProfileNullAvatar() throws Exception {
+        User user = getUser();
+        when(securityService.getCurrentUser()).thenReturn(user);
+        when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
+
+        byte[] newAvatar =null;
+
+        User editedUser = userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
+                PASSWORD, NEW_PASSWORD, newAvatar);
+
+        verify(securityService).getCurrentUser();
+        verify(userDao).saveOrUpdate(user);
+        assertEquals(editedUser.getEmail(), EMAIL, "Email was not changed");
+        assertEquals(editedUser.getFirstName(), FIRST_NAME, "first name was not changed");
+        assertEquals(editedUser.getLastName(), LAST_NAME, "last name was not changed");
+        assertEquals(editedUser.getPassword(), NEW_PASSWORD, "new password was not accepted");
+        assertEquals(editedUser.getAvatar(),avatar,"avatar was changed");
+    }
+
+    @Test
+    public void testEditUserProfileEmptyAvatar() throws Exception {
+        User user = getUser();
+        when(securityService.getCurrentUser()).thenReturn(user);
+        when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
+
+        byte[] newAvatar =new byte[0];
+
+        User editedUser = userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
+                PASSWORD, NEW_PASSWORD, newAvatar);
+
+        verify(securityService).getCurrentUser();
+        verify(userDao).saveOrUpdate(user);
+        assertEquals(editedUser.getEmail(), EMAIL, "Email was not changed");
+        assertEquals(editedUser.getFirstName(), FIRST_NAME, "first name was not changed");
+        assertEquals(editedUser.getLastName(), LAST_NAME, "last name was not changed");
+        assertEquals(editedUser.getPassword(), NEW_PASSWORD, "new password was not accepted");
+        assertEquals(editedUser.getAvatar(), avatar, "avatar was changed");
     }
 
     @Test(expectedExceptions = WrongPasswordException.class)

@@ -19,8 +19,8 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
+import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.dao.ChildRepository;
-import org.jtalks.jcommune.model.entity.Entity;
 
 import java.lang.reflect.ParameterizedType;
 

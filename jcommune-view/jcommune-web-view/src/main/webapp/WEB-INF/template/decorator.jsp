@@ -16,21 +16,47 @@
     <meta http-equiv="Expires" content="-1"/>
 
     <title><decorator:title default="JCommune"/></title>
-    <link href="${pageContext.request.contextPath}/css/main.css"
-          type=text/css rel=stylesheet/>
+    <link rel="stylesheet" type="text/css" media="screen, projection"
+          href="${pageContext.request.contextPath}/css/screen.css"/>
 </head>
 <!--apply timezone settings-->
 <joda:dateTimeZone value='<%=session.getAttribute("GMT")%>'>
     <!--Define timezone to adjust date and time values-->
     <body onload='document.cookie="GMT=" + new Date().getTimezoneOffset()'>
+
+    <div class="top_line">
+        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+            Привет, <a class="currentusername"
+                       href="${pageContext.request.contextPath}/user/${encodedUserName}.html"
+                       title="Имя пользователя"><sec:authentication
+                property="principal.username"/></a>!
+        </sec:authorize>
+        <ul class="top_menu">
+            <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                <li class="no_border"><a href="${pageContext.request.contextPath}/user/${encodedUserName}.html"
+                                         title="Профиль"><fmt:message key="label.profile"/></a></li>
+                <li><a href="#" title="Настройки"><fmt:message
+                        key="label.settings"/></a></li>
+                <li><a href="${pageContext.request.contextPath}/pm/inbox.html" title="Сообщения"><fmt:message
+                        key="label.pm"/>(${newPmCount})</a></li>
+                <li><a href="#" title="Пользователи"><fmt:message
+                        key="label.users"/></a></li>
+                <li><a href="#" title="Группы"><fmt:message key="label.groups"/></a></li>
+                <li><a href="#" title="Для чайников"><fmt:message key="label.newbies"/></a></li>
+                <li><a href="${pageContext.request.contextPath}/logout.html" title="На выход"><fmt:message
+                        key="label.logout"/></a></li>
+            </sec:authorize>
+            <sec:authorize access="hasRole('ROLE_ANONYMOUS')">
+                <li><a href="${pageContext.request.contextPath}/login.html"><fmt:message key="label.signin"/></a>
+                </li>
+                <li><a href="${pageContext.request.contextPath}/registration.html"><fmt:message
+                        key="label.signup"/></a></li>
+            </sec:authorize>
+        </ul>
+    </div>
+
+
     <div align="center">
-        <table cellspacing=0 cellpadding=0 width=100% border=0>
-            <tr>
-                <td><span class="textlogo1"><b>JTalks Developers</b>&nbsp;</span>
-                </td>
-            </tr>
-        </table>
-        &nbsp;
         <table cellspacing=0 cellpadding=5 width=100% border=0>
             <tr>
                 <td bgcolor="#003366"></td>
@@ -65,19 +91,6 @@
                         </c:choose>
                     </c:forEach>
                 <span style="float: right">
-                <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                    <a href="${pageContext.request.contextPath}/user/${encodedUserName}.html"><sec:authentication
-                            property="principal.username"/></a>&nbsp;
-                    <a href="${pageContext.request.contextPath}/pm/inbox.html"><fmt:message key="label.pm"/>
-                        (${newPmCount})</a>
-                    <a href="${pageContext.request.contextPath}/logout.html"><fmt:message key="label.logout"/></a>
-                </sec:authorize>
-                &nbsp;
-                <sec:authorize access="hasRole('ROLE_ANONYMOUS')">
-                    <a href="${pageContext.request.contextPath}/login.html"><fmt:message key="label.signin"/></a>
-                    <a href="${pageContext.request.contextPath}/registration.html"><fmt:message key="label.signup"/></a>
-                </sec:authorize>
-                &nbsp;
                 <a href="?lang=en">En</a> | <a href="?lang=ru">Ru</a><br/>
                 <span style="float: right ">
                 <a href="${pageContext.request.contextPath}/recent.html"><fmt:message
@@ -93,10 +106,17 @@
 
     </div>
     <decorator:body/>
-    <div style="clear:both;"></div>
-    <hr width=100% size=2>
-    <span class="text">Copyright 2011. JTalks</span>
-    <br>
+    <div class="footer"> <!-- Подвал -->
+        <div class="copyright">
+            Java and all Java-related trademarks and logos are trademarks or registered tradermarks of Oracle
+            Corporation
+            in the United States and other countries.
+            <br/>
+            Этот сайт не относится к фирме Oracle Corporation и не поддерживается ею.
+            <br/>
+            © 2011 www.jtalks.org: <a href="#">форум java программистов</a>
+        </div>
+    </div>
     </body>
 </joda:dateTimeZone>
 </html>

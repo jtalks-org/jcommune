@@ -51,9 +51,9 @@ public class PostController {
     /**
      * Constructor. Injects {@link TopicService}.
      *
-     * @param postService {@link PostService} instance to be injected
+     * @param postService       {@link PostService} instance to be injected
      * @param breadcrumbBuilder the object which provides actions on
-     * {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
+     *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      */
     @Autowired
     public PostController(PostService postService,
@@ -153,7 +153,7 @@ public class PostController {
                     .addObject(POST_ID, postId);
         }
 
-        postService.savePost(postDto.getId(),postDto.getBodyText());
+        postService.savePost(postDto.getId(), postDto.getBodyText());
 
         return new ModelAndView("redirect:/topic/" + topicId + ".html");
     }

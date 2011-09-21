@@ -1,33 +1,122 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+         pageEncoding="UTF-8" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Section List</title>
+    <title>Форум JTalks</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" media="screen, projection"
+          href="${pageContext.request.contextPath}/css/screen.css"/>
+    <link rel="shortcut icon" type="image/ico" href="favicon.ico"/>
 </head>
-<body>
-<form:form method="POST">
-  <c:forEach var="section" items="${sectionList}">
-    <h3><a href="${pageContext.request.contextPath}/section/${section.id}.html"> 
-      <c:out value="${section.name}"/></a></h3>
-      <span style="font-size: xx-small;"><c:out value="${section.description}"/></span>
-    <br />
-    <table border="1" width="100%">
-        <c:forEach var="branch" items="${section.branches}" varStatus="i">
-            <tr>
-                <td><a href="${pageContext.request.contextPath}/branch/${branch.id}.html">
-                    <c:out value="${branch.name}"/></a><br>
-                    <span style="font-size: xx-small;"><c:out value="${branch.description}"/> </span>
-                </td>
-            </tr>
-        </c:forEach>
-    </table>
-    <br />
-  </c:forEach>
-</form:form>
+<body class="main_page">
+<h1>JTalks</h1>
+
+<div class="wrap">
+    <!-- Начало всех форумов -->
+    <div class="all_forums">
+        <h2><a class="heading" href="#">Java форум JTalks</a></h2>
+        <br/>
+
+        <div class="forum_misc_info">
+            форум программистов
+        </div>
+        <a class="forums_list" href="#" title="Список форумов">Список форумов</a>
+        <a class="forum_top_right_link" href="#">Сообщения без ответа</a>
+
+        <form:form method="POST">
+            <c:forEach var="section" items="${sectionList}">
+                <!-- Начало группы форумов -->
+                <div class="forum_header_table"> <!-- Шапка группы форумов -->
+                    <div class="forum_header">
+                        <h3><a class="forum_header_link"
+                               href="${pageContext.request.contextPath}/section/${section.id}.html">
+                            <c:out value="${section.name}"/></a></h3>
+                        <span class="forum_header_themes">Темы</span>
+                        <span class="forum_header_messages">Сообщения</span>
+                        <span class="forum_header_last_message">Последнее сообщение</span>
+                    </div>
+                </div>
+
+                <ul class="forum_table"> <!-- Группа форумов -->
+                <c:forEach var="branch" items="${section.branches}" varStatus="i">
+                        <li class="forum_row"> <!-- Отдельный форум -->
+                            <div class="forum_icon"> <!-- Иконка с кофе -->
+                                <img class="icon" src="images/closed_cup.png" alt="" title="Форум закрыт"/>
+                            </div>
+                            <div class="forum_info"> <!-- Информация о форуме -->
+                                <h4><a class="forum_link"
+                                       href="${pageContext.request.contextPath}/branch/${branch.id}.html">
+                                    <c:out value="${branch.name}"/></a></h4> <!-- Ссылка на форум -->
+                                <p>
+                                    <c:out value="${branch.description}"/>
+                                    <a href="#">ЧаВО</a>
+                                    <br/>
+                                    Модераторы: <a class="moderator" href="#">Vurn</a>
+                                </p>
+                            </div>
+                            <div class="forum_themes">
+                                26
+                            </div>
+                            <div class="forum_messages">
+                                6574
+                            </div>
+                            <div class="forum_last_message">
+                                <span>Июл 04, 2011 23:54</span>
+                                <br/>
+                                <a href="#">Pahan</a>
+                                <a href="#"><img src="images/icon_latest_reply.gif" alt="Последнее сообщение"/></a>
+                            </div>
+                        </li>
+                </c:forEach>
+                </ul>
+            </c:forEach>
+        </form:form> <!-- Конец группы форумов -->
+    </div>
+    <!-- Конец всех форумов -->
+    <div class="users_information">    <!-- Информация о посетителях -->
+        <div class="forum_header_table"> <!-- Шапка группы -->
+            <div class="forum_header">
+                <h3><a class="users_information_link" href="#">Кто сейчас на форуме?</a></h3>
+                <span class="empty_cell"></span> <!-- Необходим для правильного отображения псевдотаблицы -->
+            </div>
+        </div>
+        <div class="forum_table"> <!-- Таблица -->
+            <div class="forum_row"> <!-- Отдельный ряд -->
+                <div class="forum_info"> <!-- Содержимое ряда -->
+                    Наши пользователи оставили сообщений: 120693
+                    <br/>
+                    Всего зарегистрированных пользователей: 10478
+                </div>
+                <div class="empty_cell"></div>
+                <!-- Необходим для правильного отображения псевдотаблицы -->
+            </div>
+            <div class="forum_row"> <!-- Отдельный ряд -->
+                <div class="forum_info"> <!-- Содержимое ряда -->
+                    Сейчас посетителей на форуме: 35,
+                    из них зарегистрированных: 5,
+                    скрытых: 0
+                    и гостей: 30
+                    <span class="admin"> [Администратор] </span> <span class="moderator"> [Модератор]</span>
+                    <br/>
+                    Зарегистрированные пользователи:
+                    <ul class="users_list">
+                        <li><a href="#" class="moderator">andreyko</a>,</li>
+                        <li><a href="#" class="admin">Староверъ</a>,</li>
+                        <li><a href="#" class="user">Вася</a>.</li>
+                    </ul>
+                </div>
+                <div class="empty_cell"></div>
+                <!-- Необходим для правильного отображения псевдотаблицы -->
+            </div>
+        </div>
+    </div>
+    <div class="footer_buffer"></div>
+    <!-- Несемантичный буфер для прибития подвала -->
+</div>
 </body>
 </html>

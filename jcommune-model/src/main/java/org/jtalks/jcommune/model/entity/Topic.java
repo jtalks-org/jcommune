@@ -18,6 +18,7 @@
 package org.jtalks.jcommune.model.entity;
 
 import org.joda.time.DateTime;
+import org.jtalks.common.model.entity.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -201,12 +202,22 @@ public class Topic extends Entity {
         return posts.get(0);
     }
 
+    /**
+     * Get a short version of topic content for preview in recent messages.
+     *
+     * @return shortContent
+     */
     public String getLastPostShortContent() {
         String content = getLastPost().getPostContent();
-        String shortContent;
+        String shortContent = "";
         if (content.length() > 200){
-            shortContent = content.substring(0,200);
-            shortContent = shortContent + "...";
+            for (int i = 197; i > 1; i--){
+                if (content.charAt(i) == ' '){
+                    shortContent = content.substring(0,i);
+                    shortContent = shortContent + "...";
+                    break;
+                }
+            }
         } else {
             shortContent = content;
         }
@@ -214,6 +225,11 @@ public class Topic extends Entity {
         return shortContent;
     }
 
+    /**
+     * Get the topic last post.
+     *
+     * @return last post
+     */
     public Post getLastPost(){
         return posts.get(postCount() - 1);
     }

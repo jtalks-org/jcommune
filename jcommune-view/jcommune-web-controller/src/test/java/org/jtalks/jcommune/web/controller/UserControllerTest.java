@@ -20,7 +20,11 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.*;
+import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
+import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
+import org.jtalks.jcommune.service.exceptions.InvalidImageException;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
@@ -47,8 +51,15 @@ import java.util.ArrayList;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.ModelAndViewAssert.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 
@@ -210,10 +221,12 @@ public class UserControllerTest {
         when(imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH,
                 AVATAR_MAX_HEIGHT)).thenReturn(avatarByteArray);
 
+        byte[] resizedAvatar = imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH,
+                AVATAR_MAX_HEIGHT);
+
         when(userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH,
-                AVATAR_MAX_HEIGHT))).thenReturn(user);
+                userDto.getNewUserPassword(),resizedAvatar)).thenReturn(user);
 
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
@@ -223,8 +236,7 @@ public class UserControllerTest {
         assertViewName(mav, expectedUrl);
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH,
-                AVATAR_MAX_HEIGHT));
+                userDto.getNewUserPassword(), resizedAvatar);
     }
 
     @Test
@@ -277,10 +289,12 @@ public class UserControllerTest {
         when(imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH,
                 AVATAR_MAX_HEIGHT)).thenReturn(avatarByteArray);
 
+        byte[] resizedAvatar = imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH,
+                AVATAR_MAX_HEIGHT);
+
         when(userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), imagePreprocessor.preprocessImage(userDto.getAvatar(),
-                AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT))).thenThrow(new DuplicateEmailException());
+                userDto.getNewUserPassword(), resizedAvatar)).thenThrow(new DuplicateEmailException());
 
         ModelAndView mav = controller.editProfile(userDto, bindingResult);
 
@@ -288,8 +302,7 @@ public class UserControllerTest {
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH,
-                AVATAR_MAX_HEIGHT));
+                userDto.getNewUserPassword(), resizedAvatar);
 
         assertContainsError(bindingResult, "email");
     }
@@ -302,10 +315,12 @@ public class UserControllerTest {
         when(imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH,
                 AVATAR_MAX_HEIGHT)).thenReturn(avatarByteArray);
 
+        byte[] resizedAvatar = imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH,
+                AVATAR_MAX_HEIGHT);
+
         when(userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), imagePreprocessor.preprocessImage(userDto.getAvatar(),
-                AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT))).thenThrow(new WrongPasswordException());
+                userDto.getNewUserPassword(), resizedAvatar)).thenThrow(new WrongPasswordException());
 
         ModelAndView mav = controller.editProfile(userDto, bindingResult);
 
@@ -313,8 +328,7 @@ public class UserControllerTest {
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH,
-                AVATAR_MAX_HEIGHT));
+                userDto.getNewUserPassword(), resizedAvatar);
         assertContainsError(bindingResult, "currentUserPassword");
     }
 
