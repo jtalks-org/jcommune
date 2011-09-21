@@ -94,10 +94,7 @@
                             </c:otherwise>
                         </c:choose>
                     </c:forEach>
-
-                <span style="float: right ">
-                <a href="${pageContext.request.contextPath}/recent.html"><fmt:message
-                        key="label.recent"/></a></span></span></td>
+                </td>
             </tr>
             <tr>
                 <td bgcolor="003366"></td>
