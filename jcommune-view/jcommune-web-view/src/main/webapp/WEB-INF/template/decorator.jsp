@@ -52,6 +52,10 @@
                 <li><a href="${pageContext.request.contextPath}/registration.html"><fmt:message
                         key="label.signup"/></a></li>
             </sec:authorize>
+            <li class="flag no_border"><a href="?lang=ru"><img
+                    src="${pageContext.request.contextPath}/images/flag_russia.png" alt=""/></a></li>
+            <li class="flag"><a href="?lang=en"><img
+                    src="${pageContext.request.contextPath}/images/flag_great_britain.png" alt=""/></a></li>
         </ul>
     </div>
 
@@ -90,8 +94,7 @@
                             </c:otherwise>
                         </c:choose>
                     </c:forEach>
-                <span style="float: right">
-                <a href="?lang=en">En</a> | <a href="?lang=ru">Ru</a><br/>
+
                 <span style="float: right ">
                 <a href="${pageContext.request.contextPath}/recent.html"><fmt:message
                         key="label.recent"/></a></span></span></td>

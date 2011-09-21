@@ -26,56 +26,61 @@
             форум программистов
         </div>
         <a class="forums_list" href="#" title="Список форумов">Список форумов</a>
+        <a class="forum_top_right_link" href="${pageContext.request.contextPath}/recent.html"><spring:message
+                code="label.recent"/></a> <br/>
         <a class="forum_top_right_link" href="#">Сообщения без ответа</a>
 
-        <form:form method="POST">
-            <c:forEach var="section" items="${sectionList}">
-                <!-- Начало группы форумов -->
-                <div class="forum_header_table"> <!-- Шапка группы форумов -->
-                    <div class="forum_header">
-                        <h3><a class="forum_header_link"
-                               href="${pageContext.request.contextPath}/section/${section.id}.html">
-                            <c:out value="${section.name}"/></a></h3>
-                        <span class="forum_header_themes">Темы</span>
-                        <span class="forum_header_messages">Сообщения</span>
-                        <span class="forum_header_last_message">Последнее сообщение</span>
-                    </div>
-                </div>
 
-                <ul class="forum_table"> <!-- Группа форумов -->
+        <c:forEach var="section" items="${sectionList}">
+            <!-- Начало группы форумов -->
+            <div class="forum_header_table"> <!-- Шапка группы форумов -->
+                <div class="forum_header">
+                    <h3><a class="forum_header_link"
+                           href="${pageContext.request.contextPath}/section/${section.id}.html">
+                        <c:out value="${section.name}"/></a></h3>
+                    <span class="forum_header_themes"><spring:message code="label.section.header.topics"/></span>
+                    <span class="forum_header_messages"><spring:message code="label.section.header.messages"/></span>
+                    <span class="forum_header_last_message"><spring:message
+                            code="label.section.header.lastMessage"/></span>
+                </div>
+            </div>
+
+            <ul class="forum_table"> <!-- Группа форумов -->
                 <c:forEach var="branch" items="${section.branches}" varStatus="i">
-                        <li class="forum_row"> <!-- Отдельный форум -->
-                            <div class="forum_icon"> <!-- Иконка с кофе -->
-                                <img class="icon" src="images/closed_cup.png" alt="" title="Форум закрыт"/>
-                            </div>
-                            <div class="forum_info"> <!-- Информация о форуме -->
-                                <h4><a class="forum_link"
-                                       href="${pageContext.request.contextPath}/branch/${branch.id}.html">
-                                    <c:out value="${branch.name}"/></a></h4> <!-- Ссылка на форум -->
-                                <p>
-                                    <c:out value="${branch.description}"/>
-                                    <a href="#">ЧаВО</a>
-                                    <br/>
-                                    Модераторы: <a class="moderator" href="#">Vurn</a>
-                                </p>
-                            </div>
-                            <div class="forum_themes">
-                                26
-                            </div>
-                            <div class="forum_messages">
-                                6574
-                            </div>
-                            <div class="forum_last_message">
-                                <span>Июл 04, 2011 23:54</span>
+                    <li class="forum_row"> <!-- Отдельный форум -->
+                        <div class="forum_icon"> <!-- Иконка с кофе -->
+                            <img class="icon" src="${pageContext.request.contextPath}/images/closed_cup.png" alt=""
+                                 title="Форум закрыт"/>
+                        </div>
+                        <div class="forum_info"> <!-- Информация о форуме -->
+                            <h4><a class="forum_link"
+                                   href="${pageContext.request.contextPath}/branch/${branch.id}.html">
+                                <c:out value="${branch.name}"/></a></h4> <!-- Ссылка на форум -->
+                            <p>
+                                <c:out value="${branch.description}"/>
+                                <a href="#">ЧаВО</a>
                                 <br/>
-                                <a href="#">Pahan</a>
-                                <a href="#"><img src="images/icon_latest_reply.gif" alt="Последнее сообщение"/></a>
-                            </div>
-                        </li>
+                                Модераторы: <a class="moderator" href="#">Vurn</a>
+                            </p>
+                        </div>
+                        <div class="forum_themes">
+                            26
+                        </div>
+                        <div class="forum_messages">
+                            6574
+                        </div>
+                        <div class="forum_last_message">
+                            <span>Июл 04, 2011 23:54</span>
+                            <br/>
+                            <a href="#">Pahan</a>
+                            <a href="#"><img src="${pageContext.request.contextPath}/images/icon_latest_reply.gif"
+                                             alt="Последнее сообщение"/></a>
+                        </div>
+                    </li>
                 </c:forEach>
-                </ul>
-            </c:forEach>
-        </form:form> <!-- Конец группы форумов -->
+            </ul>
+        </c:forEach>
+        <!-- Конец группы форумов -->
     </div>
     <!-- Конец всех форумов -->
     <div class="users_information">    <!-- Информация о посетителях -->

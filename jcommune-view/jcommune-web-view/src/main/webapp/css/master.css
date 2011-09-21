@@ -62,6 +62,10 @@ h2 {
 	padding: 0 5px;
 	border-left: 1px solid white;
 }
+li.flag {
+	position: relative;
+	top: -2px;
+}
 li.no_border {
 	border: none;
 }
@@ -89,6 +93,8 @@ li.no_border {
 	padding-top: 5px;
 }
 .main_page .forum_top_right_link {
+	position: relative;
+	top: 48px;
 	padding: 0;
 }
 .heading {
@@ -327,7 +333,28 @@ a.last_message_user {
 }
 
 					/* Answer Form */
-.answer_page .forum_misc_info {
+.forum_header_menu {
+	display: table-cell;
+	padding: 0 10px;
+	border-right: 1px solid #b2b2b2;
+	vertical-align: middle;
+	text-align: center;
+	line-height: 0.8;
+	text-decoration: none;
+	background: ;
+}
+.pm_page #newmsg_link {
+	background: url(../images/active_bg.jpg) repeat-x;
+	color: white;
+}
+.forum_header_menu:hover {
+	background: url(../images/hover_bg.jpg) repeat-x;	
+}
+.pm_page .empty_cell {
+	width: 100%;
+}				
+.answer_page .forum_misc_info,
+.pm_page .forum_misc_info {
 	margin-bottom: 20px;
 }
 	
@@ -348,10 +375,12 @@ a.last_message_user {
 	margin-top: 0;
 	margin-bottom: 5px;
 }
-.answer_page .button {
+.answer_page .button,
+.pm_page .button {
 	border: 1px solid grey; !important
 }
-.answer_page .button:active {
+.answer_page .button:active,
+.pm_page .button:active {
 	background: #FEAEAE;
 }
 .options {
@@ -375,7 +404,7 @@ a.last_message_user {
 	font-size: 11px;
 	margin: 5px;
 }
-#subject {
+#subject, #recipient {
 	width: 95%;
 }
 
