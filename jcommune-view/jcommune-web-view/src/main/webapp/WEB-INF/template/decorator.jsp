@@ -47,7 +47,7 @@
                         key="label.logout"/></a></li>
             </sec:authorize>
             <sec:authorize access="hasRole('ROLE_ANONYMOUS')">
-                <li><a href="${pageContext.request.contextPath}/login.html"><fmt:message key="label.signin"/></a>
+                <li class="no_border"><a href="${pageContext.request.contextPath}/login.html"><fmt:message key="label.signin"/></a>
                 </li>
                 <li><a href="${pageContext.request.contextPath}/registration.html"><fmt:message
                         key="label.signup"/></a></li>

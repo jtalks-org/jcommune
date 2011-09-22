@@ -4,7 +4,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <html>
-  <div style="float: left; width: 150px;">
+  <%--<div style="float: left; width: 150px;">
   <menu>
       <li>
           <a href="${pageContext.request.contextPath}/pm/inbox.html">
@@ -23,5 +23,19 @@
               <spring:message code="label.drafts"/></a>
       </li>
   </menu>
-  </div>
+  </div>--%>
+<div class="forum_header_table">
+    <div class="forum_header">
+        <a class="forum_header_menu" id="inbox_link" href="${pageContext.request.contextPath}/pm/inbox.html">
+            <spring:message code="label.inbox"/></a>
+        <a class="forum_header_menu" id="outbox_link" href="${pageContext.request.contextPath}/pm/outbox.html">
+            <spring:message code="label.outbox"/></a>
+        <a class="forum_header_menu" id="newmsg_link" href="${pageContext.request.contextPath}/pm/new.html">
+            <spring:message code="label.new_pm"/></a>
+        <a class="forum_header_menu" id="draft_link"
+           href="${pageContext.request.contextPath}/pm/drafts.html">
+            <spring:message code="label.drafts"/></a>
+        <span class="empty_cell"></span> <!-- Необходима для корректного отображения псевдотаблицы -->
+    </div>
+</div>
 </html>
