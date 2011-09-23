@@ -60,6 +60,7 @@ public interface TopicDao extends ChildRepository<Topic> {
     /**
      * Get all topics past last 24 hour.
      *
+     *
      * @param start    start index of topic
      * @param max      number of topics
      * @return list of topics
