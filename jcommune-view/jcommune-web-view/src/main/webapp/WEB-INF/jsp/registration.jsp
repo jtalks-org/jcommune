@@ -5,7 +5,7 @@
 <html>
 <head>
     <title><spring:message code="label.signup"/></title>
-    <link href="${pageContext.request.contextPath}/css/main.css"
+    <link href="${pageContext.request.contextPath}/resources/css/main.css"
           type=text/css rel=stylesheet>
 </head>
 

@@ -8,7 +8,7 @@
 <sec:authentication property="principal.username" var="auth" scope="request"/>
 <head>
     <title><spring:message code="label.user"/> - "${auth}"</title>
-    <link href="${pageContext.request.contextPath}/css/main.css"
+    <link href="${pageContext.request.contextPath}/resources/css/main.css"
           type=text/css rel=stylesheet>
 </head>
 <body>

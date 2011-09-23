@@ -7,7 +7,7 @@
 <head>
 </head>
 <body>
-<a href="${pageContext.request.contextPath}/main.html">Welcome to JCommune project </a>
+<a href="${pageContext.request.contextPath}/sections">Welcome to JCommune project </a>
 
 
 </body>

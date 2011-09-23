@@ -48,7 +48,7 @@
             <c:forEach var="topic" items="${topics}">
                 <li class="forum_row"> <!-- Топик -->
                     <div class="forum_icon"> <!-- Иконка с кофе -->
-                        <img class="icon" src="${pageContext.request.contextPath}/images/closed_cup.png" alt=""
+                        <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png" alt=""
                              title="Форум закрыт"/>
                     </div>
                     <c:choose>
@@ -96,7 +96,7 @@
                         <a class="last_message_user"
                            href="${pageContext.request.contextPath}/user/${topic.lastPost.userCreated.encodedUsername}.html">
                             <c:out value="${topic.lastPost.userCreated.username}"/></a>
-                        <a href="#"><img src="${pageContext.request.contextPath}/images/icon_latest_reply.gif"
+                        <a href="#"><img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
                                          alt="Последнее сообщение"/></a>
                     </div>
                 </li>

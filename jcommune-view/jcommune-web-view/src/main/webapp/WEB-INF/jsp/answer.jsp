@@ -7,7 +7,7 @@
 <html>
 <head>
     <title><spring:message code="label.answer_to"/>: <c:out value="${topic.title}"/></title>
-    <link href="${pageContext.request.contextPath}/css/main.css" type=text/css rel=stylesheet>
+    <link href="${pageContext.request.contextPath}/resources/css/main.css" type=text/css rel=stylesheet>
 </head>
 <body>
 

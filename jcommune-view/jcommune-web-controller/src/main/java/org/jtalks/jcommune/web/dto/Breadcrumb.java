@@ -36,7 +36,7 @@ public class Breadcrumb {
      * Enumerates all possible location on the forum
      */
     public enum BreadcrumbLocation {
-        FORUM("main"),
+        FORUM("sections"),
 
         BRANCH("branch"),
         SECTION("section"),

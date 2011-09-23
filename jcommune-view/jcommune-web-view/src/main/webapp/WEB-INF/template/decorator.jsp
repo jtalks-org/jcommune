@@ -17,7 +17,7 @@
 
     <title><decorator:title default="JCommune"/></title>
     <link rel="stylesheet" type="text/css" media="screen, projection"
-          href="${pageContext.request.contextPath}/css/screen.css"/>
+          href="${pageContext.request.contextPath}/resources/css/screen.css"/>
 </head>
 <!--apply timezone settings-->
 <joda:dateTimeZone value='<%=session.getAttribute("GMT")%>'>
@@ -53,9 +53,9 @@
                         key="label.signup"/></a></li>
             </sec:authorize>
             <li class="flag no_border"><a href="?lang=ru"><img
-                    src="${pageContext.request.contextPath}/images/flag_russia.png" alt=""/></a></li>
+                    src="${pageContext.request.contextPath}/resources/images/flag_russia.png" alt=""/></a></li>
             <li class="flag"><a href="?lang=en"><img
-                    src="${pageContext.request.contextPath}/images/flag_great_britain.png" alt=""/></a></li>
+                    src="${pageContext.request.contextPath}/resources/images/flag_great_britain.png" alt=""/></a></li>
         </ul>
     </div>
 
@@ -70,7 +70,7 @@
                     <c:forEach var="breadcrumb" items="${breadcrumbList}">
                         <c:choose>
                             <%--create root breadcrumb--%>
-                            <c:when test="${breadcrumb.breadcrumbLocation.name == 'main'}">
+                            <c:when test="${breadcrumb.breadcrumbLocation.name == 'sections'}">
                                 <a href="${pageContext.request.contextPath}/${breadcrumb.breadcrumbLocation.name}.html">
                                     <span class="nav"> <fmt:message key="label.forum"/> </span>
                                 </a>

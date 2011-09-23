@@ -10,7 +10,7 @@
     <title>Форум JTalks</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" type="text/css" media="screen, projection"
-          href="${pageContext.request.contextPath}/css/screen.css"/>
+          href="${pageContext.request.contextPath}/resources/css/screen.css"/>
     <link rel="shortcut icon" type="image/ico" href="favicon.ico"/>
 </head>
 <body>
@@ -50,7 +50,7 @@
                 <c:forEach var="branch" items="${section.branches}" varStatus="i">
                     <li class="forum_row"> <!-- Отдельный форум -->
                         <div class="forum_icon"> <!-- Иконка с кофе -->
-                            <img class="icon" src="${pageContext.request.contextPath}/images/closed_cup.png" alt=""
+                            <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png" alt=""
                                  title="Форум закрыт"/>
                         </div>
                         <div class="forum_info"> <!-- Информация о форуме -->
@@ -74,7 +74,7 @@
                             <span>Июл 04, 2011 23:54</span>
                             <br/>
                             <a href="#">Pahan</a>
-                            <a href="#"><img src="${pageContext.request.contextPath}/images/icon_latest_reply.gif"
+                            <a href="#"><img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
                                              alt="Последнее сообщение"/></a>
                         </div>
                     </li>

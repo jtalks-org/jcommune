@@ -61,7 +61,7 @@ public final class SectionController {
      *
      * @return {@link ModelAndView} with view name as renderAllSection
      */
-    @RequestMapping(value = "/main", method = RequestMethod.GET)
+    @RequestMapping(value = "/sections", method = RequestMethod.GET)
     public ModelAndView sectionList() {
         return new ModelAndView("sectionList")
                 .addObject("sectionList", sectionService.getAll())
