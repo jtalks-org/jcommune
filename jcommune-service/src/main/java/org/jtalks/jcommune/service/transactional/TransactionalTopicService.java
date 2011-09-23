@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2011  jtalks.org Team
+ * Copyright (C) 2011  jtalks.org Team.
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -131,7 +131,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
 
     @Override
     public List<Topic> getAllTopicsPastLastDay(int start, int max) {
-        return dao.getAllTopicsPastLastDay(start, max);  //To change body of implemented methods use File | Settings | File Templates.
+        return dao.getAllTopicsPastLastDay(start, max);
     }
 
     /**
