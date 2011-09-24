@@ -9,21 +9,38 @@
 <html>
 <head></head>
 <body>
+<c:set var="authenticated" value="${false}"/>
 <div class="wrap topic_page">
     <!-- Начало всех форумов -->
     <div class="all_forums">
         <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
 
         <div class="forum_misc_info">
-            Делимся рецептами
+            &nbsp;
             <span class="nav_top">На страницу: 1, <a href="#">2</a> <a href="#">След.</a></span>
         </div>
         <div class="forum_top_right_link">
             <a href="#">Предыдущая тема</a> ::
             <a href="#">Следующая тема</a>
         </div>
-        <a class="button top_button" href="#">Новая тема</a>
-        <a class="button top_button" href="#">Ответить</a>
+        <a class="button top_button" href="${pageContext.request.contextPath}/branch/${branchId}.html">
+            <spring:message code="label.back"/>
+        </a>
+        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+            <a class="button top_button" href="#">Новая тема</a>
+            <a class="button top_button"
+               href="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/answer.html">
+                <spring:message code="label.answer"/>
+            </a>
+            <c:set var="authenticated" value="${true}"/>
+        </sec:authorize>
+        <c:if test="${authenticated==false}">
+            <a class="button top_button disabled" href="#">Новая тема</a>
+            <a class="button top_button disabled"
+               href="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/answer.html">
+                <spring:message code="label.answer"/>
+            </a>
+        </c:if>
         &nbsp; &nbsp; &nbsp;
         <a class="forums_list" href="#" title="Список форумов">Список форумов</a>
         <span class="arrow"> > </span>
@@ -49,14 +66,14 @@
                         <div class="status">Онлайн</div>
 
                         <c:if test="${post.userCreated.avatar != null}">
-                        <%--    <table>
-                                <tr>
-                                    <td width="100" height="100" align="center" valign="middle">--%>
-                                        <img src="${pageContext.request.contextPath}/show/${post.userCreated.encodedUsername}/avatar.html"
-                                             alt="Аватар" class="avatar"/>
-                        <%-- </td>
-                                </tr>
-                            </table> --%>
+                            <%--    <table>
+                    <tr>
+                        <td width="100" height="100" align="center" valign="middle">--%>
+                            <img src="${pageContext.request.contextPath}/show/${post.userCreated.encodedUsername}/avatar.html"
+                                 alt="Аватар" class="avatar"/>
+                            <%-- </td>
+                               </tr>
+                           </table> --%>
                         </c:if>
 
                         <br/>
@@ -69,43 +86,50 @@
                     </div>
                     <div class="forum_message_cell">
                         <div class="post_details">
-                              <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
-                                        <c:choose>
-                                            <c:when test="${page == 1 && i.index == 0}">
-                                                <%-- first post - url to delete topic --%>
-                                                <c:set var="delete_url"
-                                                       value="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/delete.html"/>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <%-- url to delete post --%>
-                                                <c:set var="delete_url"
-                                                       value="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/post/${post.id}/delete.html"/>
-                                            </c:otherwise>
-                                        </c:choose>
-                                        <a class="button" href="${delete_url}"><spring:message
-                                                code="label.delete"/></a>
-                                    </sec:accesscontrollist>
+                            <a class="button" href="javascript:copyLink(${post.id})">
+                                <spring:message code="label.link"/>
+                            </a>
+                            <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
+                                <c:choose>
+                                    <c:when test="${page == 1 && i.index == 0}">
+                                        <%-- first post - url to delete topic --%>
+                                        <c:set var="delete_url"
+                                               value="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/delete.html"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <%-- url to delete post --%>
+                                        <c:set var="delete_url"
+                                               value="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/post/${post.id}/delete.html"/>
+                                    </c:otherwise>
+                                </c:choose>
+                                <a class="button" href="${delete_url}"><spring:message
+                                        code="label.delete"/></a>
+                            </sec:accesscontrollist>
 
 
-                                    <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
-                                        <c:choose>
-                                            <c:when test="${page == 0 && i.index == 0}">
-                                                <%-- first post - url to edit topic --%>
-                                                <c:set var="edit_url"
-                                                       value="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/edit.html"/>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <%-- url to edit post --%>
-                                                <c:set var="edit_url"
-                                                       value="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/post/${post.id}/edit.html"/>
-                                            </c:otherwise>
-                                        </c:choose>
-                                        <a class="button" href="${edit_url}"><spring:message
-                                                code="label.edit"/></a>
-                                    </sec:accesscontrollist>
-                            <a class="button" href="#">Цитата</a>
-                            Добавлено: Авг 31, 2011 14:52 &nbsp; &nbsp; &nbsp; Заголовок сообщения: Re: RE: Считывание
-                            объекта с середины файла
+                            <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
+                                <c:choose>
+                                    <c:when test="${page == 0 && i.index == 0}">
+                                        <%-- first post - url to edit topic --%>
+                                        <c:set var="edit_url"
+                                               value="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/edit.html"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <%-- url to edit post --%>
+                                        <c:set var="edit_url"
+                                               value="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/post/${post.id}/edit.html"/>
+                                    </c:otherwise>
+                                </c:choose>
+                                <a class="button" href="${edit_url}"><spring:message
+                                        code="label.edit"/></a>
+                            </sec:accesscontrollist>
+                            <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                                <a class="button" href="#"><spring:message
+                                        code="label.quotation"/></a>
+                            </sec:authorize>
+                            <spring:message code="label.added"/>&nbsp;<joda:format value="${post.creationDate}"
+                                                                                   locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
+                                                                                   pattern="dd MMM yyyy HH:mm"/>
                         </div>
                         <p class="forum_message_cell_text">
                             <c:out value="${post.postContent}"/>
@@ -126,13 +150,20 @@
         <a class="button" href="${pageContext.request.contextPath}/branch/${branchId}.html">
             <spring:message code="label.back"/>
         </a>
-        <a class="button" href="#">Новая тема</a>
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+            <a class="button" href="#">Новая тема</a>
             <a class="button"
                href="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/answer.html">
                 <spring:message code="label.answer"/>
             </a>
         </sec:authorize>
+        <c:if test="${authenticated==false}">
+            <a class="button disabled" href="#">Новая тема</a>
+            <a class="button disabled"
+               href="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/answer.html">
+                <spring:message code="label.answer"/>
+            </a>
+        </c:if>
         &nbsp; &nbsp; &nbsp;
         <a class="forums_list" href="#" title="Список форумов">Список форумов</a>
         <span class="arrow"> > </span><a class="forums_list" href="#" title="Для новичков">Для новичков</a>
