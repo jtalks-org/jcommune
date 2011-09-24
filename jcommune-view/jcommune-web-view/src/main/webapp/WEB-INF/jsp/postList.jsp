@@ -10,6 +10,8 @@
 <head></head>
 <body>
 <c:set var="authenticated" value="${false}"/>
+<h1>JTalks</h1>
+
 <div class="wrap topic_page">
     <!-- Начало всех форумов -->
     <div class="all_forums">

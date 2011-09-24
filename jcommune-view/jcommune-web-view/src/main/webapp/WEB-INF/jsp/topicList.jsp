@@ -10,6 +10,7 @@
     <title>Forum</title>
 </head>
 <body>
+<h1>JTalks</h1>
 
 <div class="wrap branch_page">
 
@@ -48,7 +49,8 @@
             <c:forEach var="topic" items="${topics}">
                 <li class="forum_row"> <!-- Топик -->
                     <div class="forum_icon"> <!-- Иконка с кофе -->
-                        <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png" alt=""
+                        <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png"
+                             alt=""
                              title="Форум закрыт"/>
                     </div>
                     <c:choose>
@@ -56,16 +58,14 @@
                             <div class="forum_info"> <!-- Ссылка на тему -->
                                 <h4><span class="sticky">Объявление: </span><a class="forum_link"
                                                                                href="${pageContext.request.contextPath}/topic/${topic.id}.html">
-                                    <spring:message code="label.marked_as_announcement"/><c:out
-                                        value="${topic.title}"/></a></h4>
+                                    <c:out value="${topic.title}"/></a></h4>
                             </div>
                         </c:when>
                         <c:when test="${topic.sticked=='true'}">
                             <div class="forum_info"> <!-- Ссылка на тему -->
                                 <h4><span class="sticky">Прикреплено: </span><a class="forum_link"
                                                                                 href="${pageContext.request.contextPath}/topic/${topic.id}.html">
-                                    <spring:message code="label.marked_as_sticked"/><c:out
-                                        value="${topic.title}"/></a></h4>
+                                    <c:out value="${topic.title}"/></a></h4>
                             </div>
                         </c:when>
                         <c:otherwise>
@@ -177,11 +177,11 @@
             <br/>
             Сейчас этот форум просматривают: Нет
 
+        </div>
     </div>
-</div>
-<!-- Конец всех форумов -->
-<div class="footer_buffer"></div>
-<!-- Несемантичный буфер для прибития подвала -->
+    <!-- Конец всех форумов -->
+    <div class="footer_buffer"></div>
+    <!-- Несемантичный буфер для прибития подвала -->
 </div>
 </body>
 </html>
