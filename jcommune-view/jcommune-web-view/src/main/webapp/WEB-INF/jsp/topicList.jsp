@@ -121,19 +121,7 @@
         </ul>
 
         <!-- Конец группы форумов -->
-        <span class="nav_bottom">На страницу: 1, <a href="#">2</a> <a href="#">След.</a></span>
-        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-            <a class="button"
-               href="${pageContext.request.contextPath}/branch/${branchId}/topic/create.html#"><spring:message
-                    code="label.addtopic"/></a>
-            &nbsp; &nbsp; &nbsp;
-        </sec:authorize>
-        <a class="forums_list" href="#" title="Список форумов">Список форумов</a>
-        <span class="arrow"> > </span>
-        <a class="forums_list" href="#" title="Для новичков">Для новичков</a>
-
-        <div class="forum_misc_info">
-            <div id="pagination">
+        <span class="nav_bottom"><spring:message code="label.onPage"/>
                 <c:if test="${maxPages > 1}">
 
                     <c:if test="${page > 2}">
@@ -183,7 +171,19 @@
                     </c:if>
 
                 </c:if>
-            </div>
+            </span>
+        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+            <a class="button"
+               href="${pageContext.request.contextPath}/branch/${branchId}/topic/create.html#"><spring:message
+                    code="label.addtopic"/></a>
+            &nbsp; &nbsp; &nbsp;
+        </sec:authorize>
+        <a class="forums_list" href="#" title="Список форумов">Список форумов</a>
+        <span class="arrow"> > </span>
+        <a class="forums_list" href="#" title="Для новичков">Для новичков</a>
+
+        <div class="forum_misc_info">
+            <spring:message code="label.page"/> <c:out value="${page}"/> <spring:message code="label.of"/> <c:out value="${maxPages}"/>
             <br/>
             Модераторы:
             <ul class="users_list">
