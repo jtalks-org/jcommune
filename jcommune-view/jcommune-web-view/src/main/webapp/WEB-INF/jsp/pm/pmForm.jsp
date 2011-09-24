@@ -18,7 +18,6 @@
         <h2><a class="heading" href="#"><spring:message code="label.new_pm"/></a></h2>
 
         <div class="forum_misc_info">
-            Напиши меня, детка!
         </div>
         <a class="forums_list" href="#" title="Список форумов">Список форумов</a>
         <span class="arrow"> > </span>
