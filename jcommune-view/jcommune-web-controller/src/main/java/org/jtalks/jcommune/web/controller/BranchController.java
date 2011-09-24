@@ -15,6 +15,7 @@
 
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicService;
@@ -80,7 +81,11 @@ public final class BranchController {
         Pagination pag = new Pagination(page, size, topicsCount);
 
         List<Topic> topics = topicService.getTopicRangeInBranch(branchId, pag.getStart(), pag.getPageSize());
+
+        Branch branch = branchService.get(branchId);
+
         return new ModelAndView("topicList")
+                .addObject("branch", branch)
                 .addObject("branchId", branchId)
                 .addObject("topics", topics)
                 .addObject("maxPages", pag.getMaxPages())
@@ -91,10 +96,11 @@ public final class BranchController {
     /**
      * Displays to user a list of topic past last 24 hour.
      *
-     * @param page     page
-     * @param size     number of posts on the page
+     * @param page page
+     * @param size number of posts on the page
      * @return {@code ModelAndView} with topics list and vars for pagination
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException when branch not found
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when branch not found
      */
     @RequestMapping(value = "/recent", method = RequestMethod.GET)
     public ModelAndView show(@RequestParam(value = PAGE, required = false) Integer page,

@@ -32,10 +32,11 @@
 
     <!-- Начало всех форумов -->
     <div class="all_forums">
-        <h2><a class="heading" href="#">Для новичков</a></h2>
+        <h2><a class="heading" href="#"><c:out value="${branch.name}"/></a></h2>
 
         <div class="forum_misc_info">
-            Здесь вы можете задать свои глупые вопросы
+            <c:out value="${branch.description}"/>
+
             <span class="nav_top">На страницу: 1, <a href="#">2</a> <a href="#">След.</a></span>
         </div>
         <a class="forum_top_right_link" href="#">Отметить все темы как прочтенные</a>
