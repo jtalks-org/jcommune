@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2011  jtalks.org Team.
+ * Copyright (C) 2011  JTalks.org Team
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -11,19 +11,12 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- * Also add information on how to contact you by electronic and paper mail.
- * Creation date: Apr 12, 2011 / 8:05:19 PM
- * The jtalks.org Project
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-
-import org.hibernate.dialect.Oracle10gDialect;
-import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Topic;
 
-import org.joda.time.DateTime;
 import java.util.List;
 
 /**
@@ -62,12 +55,8 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
 
     @Override
     public int getTopicsPastLastDayCount() {
-        DateTime jd = new DateTime();
-        jd = jd.minusDays(1);
-
         Number big = (Number) getSession()
-                .createQuery("select count(*) FROM Topic WHERE modificationDate > :maxModDate")
-                .setParameter("maxModDate", jd)
+                .createSQLQuery("select count(*) from TOPIC t WHERE t.MODIFICATION_DATE > DATE_ADD( NOW() , INTERVAL -1 DAY)")
                 .setCacheable(false)
                 .uniqueResult();
         return big.intValue();
@@ -76,11 +65,7 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
 
     @Override
     public List<Topic> getAllTopicsPastLastDay(int start, int max) {
-        DateTime jd = new DateTime();
-        jd = jd.minusDays(1);
-
-        return getSession().createQuery("FROM Topic WHERE modificationDate > :maxModDate")
-                .setParameter("maxModDate", jd)
+        return getSession().getNamedQuery("getAllTopicsPastLastDay")
                 .setCacheable(true)
                 .setFirstResult(start)
                 .setMaxResults(max)
