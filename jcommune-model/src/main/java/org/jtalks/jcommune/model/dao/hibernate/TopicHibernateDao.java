@@ -17,13 +17,9 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-
-import org.hibernate.dialect.Oracle10gDialect;
-import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Topic;
 
-import org.joda.time.DateTime;
 import java.util.List;
 
 /**
@@ -62,12 +58,8 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
 
     @Override
     public int getTopicsPastLastDayCount() {
-        DateTime jd = new DateTime();
-        jd = jd.minusDays(1);
-
         Number big = (Number) getSession()
-                .createQuery("select count(*) FROM Topic WHERE modificationDate > :maxModDate")
-                .setParameter("maxModDate", jd)
+                .createSQLQuery("select count(*) from TOPIC t WHERE t.MODIFICATION_DATE > DATE_ADD( NOW() , INTERVAL -1 DAY)")
                 .setCacheable(false)
                 .uniqueResult();
         return big.intValue();
@@ -76,11 +68,7 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
 
     @Override
     public List<Topic> getAllTopicsPastLastDay(int start, int max) {
-        DateTime jd = new DateTime();
-        jd = jd.minusDays(1);
-
-        return getSession().createQuery("FROM Topic WHERE modificationDate > :maxModDate")
-                .setParameter("maxModDate", jd)
+        return getSession().getNamedQuery("getAllTopicsPastLastDay")
                 .setCacheable(true)
                 .setFirstResult(start)
                 .setMaxResults(max)
