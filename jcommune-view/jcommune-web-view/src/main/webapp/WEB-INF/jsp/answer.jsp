@@ -50,14 +50,14 @@
             <!-- Начало группы форумов -->
             <div class="forum_header_table"> <!-- Шапка топика -->
                 <div class="forum_header">
-                    <span class="forum_header_answer">Ответить</span>
+                    <span class="forum_header_answer"><spring:message code="label.answer"/></span>
                     <span class="empty_cell"></span> <!-- Необходима для корректного отображения псевдотаблицы -->
                 </div>
             </div>
             <ul class="forum_table"> <!-- Форма ответа -->
                 <li class="forum_row">
                     <div class="forum_answer_left">
-                        Тема
+                        <spring:message code="label.answer.topic"/>
                     </div>
                     <div class="forum_answer_right">
                         <input id="subject" type="text" name="subject" size="45" maxlength="60" tabindex="1"
@@ -67,7 +67,7 @@
                 </li>
                 <li class="forum_row">
                     <div class="forum_answer_left align-top">
-                        Сообщение
+                        <spring:message code="label.answer.message"/>
                         <table class="smiles_table">
                             <tbody>
                             <tr>
@@ -152,7 +152,7 @@
                 </li>
                 <li class="forum_row">
                     <div class="forum_answer_left">
-                        Опции
+                        <spring:message code="label.answer.options"/>
                     </div>
                     <div class="forum_answer_right options">
                         <input id="notify" type="checkbox" name="notify" checked="checked"/> Сообщать мне о получении
