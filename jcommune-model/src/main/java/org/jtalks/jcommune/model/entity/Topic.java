@@ -200,29 +200,6 @@ public class Topic extends Entity {
     }
 
     /**
-     * Get a short version of topic content for preview in recent messages.
-     *
-     * @return shortContent
-     */
-    public String getLastPostShortContent() {
-        String content = getLastPost().getPostContent();
-        String shortContent = "";
-        if (content.length() > 200){
-            for (int i = 197; i > 1; i--){
-                if (content.charAt(i) == ' '){
-                    shortContent = content.substring(0,i);
-                    shortContent = shortContent + "...";
-                    break;
-                }
-            }
-        } else {
-            shortContent = content;
-        }
-
-        return shortContent;
-    }
-
-    /**
      * Get the topic last post.
      *
      * @return last post
@@ -230,7 +207,6 @@ public class Topic extends Entity {
     public Post getLastPost(){
         return posts.get(postCount() - 1);
     }
-
 
     /**
      * @return number of posts in topic
