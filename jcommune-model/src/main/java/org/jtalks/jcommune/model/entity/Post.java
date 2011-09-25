@@ -149,4 +149,27 @@ public class Post extends Entity {
     protected void setTopic(Topic topic) {
         this.topic = topic;
     }
+
+    /**
+     * Get a short version of topic content for preview in recent messages (max 200 character).
+     *
+     * @return shortContent
+     */
+    public String getShortContent(){
+        String content = this.getPostContent();
+        String shortContent = "";
+        if (content.length() > 200){
+            for (int i = 197; i > 1; i--){
+                if (content.charAt(i) == ' '){
+                    shortContent = content.substring(0,i);
+                    shortContent = shortContent + "...";
+                    break;
+                }
+            }
+        } else {
+            shortContent = content;
+        }
+
+        return shortContent;
+    }
 }

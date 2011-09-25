@@ -51,7 +51,7 @@
                         </c:otherwise>
                     </c:choose>
                     <div id="shortContent">
-                    <c:out value="${topic.lastPostShortContent}"/>
+                    <c:out value="${topic.lastPost.shortContent}"/>
                     </div>
                 </td>
                 <td>

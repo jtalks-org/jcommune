@@ -125,6 +125,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Topic> getAllTopicsPastLastDay(int start, int max) {
         return dao.getAllTopicsPastLastDay(start, max);
@@ -141,6 +144,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         return dao.getTopicsInBranchCount(branchId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getTopicsPastLastDayCount() {
         return dao.getTopicsPastLastDayCount();
