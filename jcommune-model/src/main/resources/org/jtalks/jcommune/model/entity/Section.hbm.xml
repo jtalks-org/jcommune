@@ -15,8 +15,9 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 -->
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+  "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
   <class name="Section" table="SECTION">
     <cache usage="nonstrict-read-write"/>
@@ -27,7 +28,7 @@
     <property name="name" column="NAME" not-null="true"/>
     <property name="description" column="DESCRIPTION"/>
     <property name="position" column="POSITION"/>
-   
+
     <list name="branches" cascade="all-delete-orphan">
       <cache usage="nonstrict-read-write"/>
       <key column="SECTION_ID" foreign-key="FK_SECTION"/>

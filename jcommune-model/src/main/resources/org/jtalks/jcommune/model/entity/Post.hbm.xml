@@ -15,8 +15,9 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 -->
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+  "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
   <class name="Post" table="POST">
     <cache usage="read-write"/>
@@ -28,7 +29,7 @@
               type="org.joda.time.contrib.hibernate.PersistentDateTime"
               not-null="true"/>
     <property name="modificationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
-              column="MODIFICATION_DATE" not-null="false"/>          
+              column="MODIFICATION_DATE" not-null="false"/>
     <property name="postContent" type="text" column="POST_CONTENT" not-null="true"/>
 
     <many-to-one name="userCreated" column="USER_CREATED" class="User" fetch="join"

@@ -54,7 +54,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * @param securityService {@link SecurityService} for retrieving current user
      * @param branchService   {@link org.jtalks.jcommune.service.BranchService} instance to be injected
      * @param branchDao       used for checking branch existance
-     * @param postService     post service
      */
     public TransactionalTopicService(TopicDao dao, SecurityService securityService,
                                      BranchService branchService, BranchDao branchDao) {

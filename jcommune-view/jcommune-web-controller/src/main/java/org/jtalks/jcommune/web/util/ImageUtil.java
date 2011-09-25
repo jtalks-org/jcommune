@@ -17,8 +17,7 @@ package org.jtalks.jcommune.web.util;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
-import java.awt.Dimension;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
 import java.awt.image.RenderedImage;
@@ -126,13 +125,12 @@ public final class ImageUtil {
      * @return bufferedImage The resized image
      */
     private static BufferedImage createBufferedImage(BufferedImage source, int type, int width, int height) {
+        int imageType = BufferedImage.TYPE_INT_RGB;
         if (type == ImageUtil.IMAGE_PNG && hasAlpha(source)) {
-            type = BufferedImage.TYPE_INT_ARGB;
-        } else {
-            type = BufferedImage.TYPE_INT_RGB;
+            imageType = BufferedImage.TYPE_INT_ARGB;
         }
 
-        BufferedImage bufferedImage = new BufferedImage(width, height, type);
+        BufferedImage bufferedImage = new BufferedImage(width, height, imageType);
 
         int sourceX;
         int sourceY;
@@ -200,7 +198,7 @@ public final class ImageUtil {
 
         int alpha2 = (value2 & ALPHA_CHANNEL_MASK) >>> THREE_BITS;
         int red2 = (value2 & RED_CHANNEL_MASK) >> TWO_BITS;
-        int green2 = (value2 & GREEN_CHANNEL_MASK)>> BIT;
+        int green2 = (value2 & GREEN_CHANNEL_MASK) >> BIT;
         int blue2 = (value2 & BLUE_CHANNEL_MASK);
 
         int rgb = ((int) (alpha1 * (1.0 - distance) + alpha2 * distance) << THREE_BITS)

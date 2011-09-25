@@ -62,7 +62,8 @@ public final class TopicController {
      *
      * @param topicService      the object which provides actions on {@link Topic} entity
      * @param postService       the object which provides actions on {@link Post} entity
-     * @param branchService     the object which provides actions on {@link org.jtalks.jcommune.model.entity.Branch} entity
+     * @param branchService     the object which provides actions on
+     *                          {@link org.jtalks.jcommune.model.entity.Branch} entity
      * @param breadcrumbBuilder the object which provides actions on
      *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      */
