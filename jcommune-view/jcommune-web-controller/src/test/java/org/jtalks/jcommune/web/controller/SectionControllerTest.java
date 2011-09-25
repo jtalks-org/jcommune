@@ -15,12 +15,10 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Section;
-import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
-import org.mockito.Mock;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -54,13 +52,16 @@ public class SectionControllerTest {
     @Test
     public void testDisplayAllSections() {
         //set expectations
-        when(sectionService.getAll()).thenReturn(new ArrayList<Section>());
-        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
+        expectationsForAllSections();
 
         //invoke the object under test
         ModelAndView mav = controller.sectionList();
 
         //check expectations
+        verifyAndAssertAllSections(mav);
+    }
+
+    private void verifyAndAssertAllSections(ModelAndView mav) {
         verify(sectionService).getAll();
         verify(breadcrumbBuilder).getForumBreadcrumb();
 
@@ -68,6 +69,11 @@ public class SectionControllerTest {
         assertViewName(mav, "sectionList");
         assertModelAttributeAvailable(mav, "sectionList");
         assertModelAttributeAvailable(mav, "breadcrumbList");
+    }
+
+    private void expectationsForAllSections() {
+        when(sectionService.getAll()).thenReturn(new ArrayList<Section>());
+        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
     }
 
     @Test
@@ -93,5 +99,17 @@ public class SectionControllerTest {
         Section actualSection = assertAndReturnModelAttributeOfType(mav, "section", Section.class);
         assertEquals((long) actualSection.getId(), sectionId);
         assertModelAttributeAvailable(mav, "breadcrumbList");
+    }
+
+    @Test
+    public void testRoot() {
+        //set expectations
+        expectationsForAllSections();
+
+        //invoke the object under test
+        ModelAndView mav = controller.root();
+
+        //check expectations
+        verifyAndAssertAllSections(mav);
     }
 }

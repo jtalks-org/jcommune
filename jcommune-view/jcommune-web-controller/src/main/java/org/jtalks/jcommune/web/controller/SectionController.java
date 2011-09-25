@@ -65,6 +65,16 @@ public final class SectionController {
     }
 
     /**
+     * Action for root path. Do same as SectionController#sectionList()
+     *
+     * @return populated {@code ModelAndView}
+     */
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public ModelAndView root() {
+        return sectionList();
+    }
+
+    /**
      * Displays to user a list of branches from the chosen section.
      *
      * @param sectionId section for display

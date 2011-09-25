@@ -80,7 +80,6 @@
 
     <!-- simple pages -->
     <mvc:view-controller path="/login.html" view-name="login"/>
-    <mvc:view-controller path="/index.html" view-name="index"/>
 
     <!-- static resources -->
     <mvc:resources mapping="/resources/**" location="/resources/" />
