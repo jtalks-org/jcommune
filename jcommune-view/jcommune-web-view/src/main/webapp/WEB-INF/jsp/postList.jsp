@@ -127,7 +127,7 @@
 
                     <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
                         <c:choose>
-                            <c:when test="${page == 0 && i.index == 0}">
+                            <c:when test="${page == 1 && i.index == 0}">
                                 <%-- first post - url to edit topic --%>
                                 <c:set var="edit_url"
                                        value="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/edit.html"/>

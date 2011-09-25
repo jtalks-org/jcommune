@@ -73,14 +73,14 @@
                     <c:choose>
                         <c:when test="${topic.announcement=='true'}">
                             <div class="forum_info"> <!-- Ссылка на тему -->
-                                <h4><span class="sticky">Объявление: </span><a class="forum_link"
+                                <h4><span class="sticky"><spring:message code="label.marked_as_announcement"/> </span><a class="forum_link"
                                                                                href="${pageContext.request.contextPath}/topic/${topic.id}.html">
                                     <c:out value="${topic.title}"/></a></h4>
                             </div>
                         </c:when>
                         <c:when test="${topic.sticked=='true'}">
                             <div class="forum_info"> <!-- Ссылка на тему -->
-                                <h4><span class="sticky">Прикреплено: </span><a class="forum_link"
+                                <h4><span class="sticky"><spring:message code="label.marked_as_sticked"/> </span><a class="forum_link"
                                                                                 href="${pageContext.request.contextPath}/topic/${topic.id}.html">
                                     <c:out value="${topic.title}"/></a></h4>
                             </div>
