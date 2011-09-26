@@ -36,7 +36,7 @@ public class Breadcrumb {
         FORUM("sections"),
 
         BRANCH("branch"),
-        SECTION("section"),
+        SECTION("sections"),
         TOPIC("topic"),
         POST("post"),
 
@@ -81,7 +81,9 @@ public class Breadcrumb {
     }
 
     private Long id;
+    //URL breadcrumb value
     private BreadcrumbLocation breadcrumbLocation;
+    //Display breadcrumb value
     private String breadcrumbLocationValue;
 
     /**

@@ -82,7 +82,7 @@ public final class SectionController {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when section not found
      */
-    @RequestMapping(value = "/section/{sectionId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/sections/{sectionId}", method = RequestMethod.GET)
     public ModelAndView branchList(@PathVariable("sectionId") long sectionId) throws NotFoundException {
         Section section = sectionService.get(sectionId);
 

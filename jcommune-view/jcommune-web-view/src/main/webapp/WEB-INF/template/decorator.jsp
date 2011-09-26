@@ -86,7 +86,7 @@
                     <c:forEach var="breadcrumb" items="${breadcrumbList}">
                         <c:choose>
                             <%--create root breadcrumb--%>
-                            <c:when test="${breadcrumb.breadcrumbLocation.name == 'sections'}">
+                            <c:when test="${breadcrumb.breadcrumbLocationValue == 'Forum'}">
                                 <a href="${pageContext.request.contextPath}/${breadcrumb.breadcrumbLocation.name}.html">
                                     <span class="nav"> <fmt:message key="label.forum"/> </span>
                                 </a>

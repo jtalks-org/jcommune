@@ -53,7 +53,7 @@
             <div class="forum_header_table"> <!-- Шапка группы форумов -->
                 <div class="forum_header">
                     <h3><a class="forum_header_link"
-                           href="${pageContext.request.contextPath}/section/${section.id}.html">
+                           href="${pageContext.request.contextPath}/sections/${section.id}.html">
                         <c:out value="${section.name}"/></a></h3>
                     <span class="forum_header_themes"><spring:message code="label.section.header.topics"/></span>
                     <span class="forum_header_messages"><spring:message code="label.section.header.messages"/></span>
