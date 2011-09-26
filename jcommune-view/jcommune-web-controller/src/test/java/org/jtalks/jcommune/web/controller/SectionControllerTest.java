@@ -1,12 +1,24 @@
+/**
+ * Copyright (C) 2011  JTalks.org Team
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Section;
-import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
-import org.mockito.Mock;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -40,13 +52,16 @@ public class SectionControllerTest {
     @Test
     public void testDisplayAllSections() {
         //set expectations
-        when(sectionService.getAll()).thenReturn(new ArrayList<Section>());
-        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
+        expectationsForAllSections();
 
         //invoke the object under test
         ModelAndView mav = controller.sectionList();
 
         //check expectations
+        verifyAndAssertAllSections(mav);
+    }
+
+    private void verifyAndAssertAllSections(ModelAndView mav) {
         verify(sectionService).getAll();
         verify(breadcrumbBuilder).getForumBreadcrumb();
 
@@ -54,6 +69,11 @@ public class SectionControllerTest {
         assertViewName(mav, "sectionList");
         assertModelAttributeAvailable(mav, "sectionList");
         assertModelAttributeAvailable(mav, "breadcrumbList");
+    }
+
+    private void expectationsForAllSections() {
+        when(sectionService.getAll()).thenReturn(new ArrayList<Section>());
+        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
     }
 
     @Test
@@ -79,5 +99,17 @@ public class SectionControllerTest {
         Section actualSection = assertAndReturnModelAttributeOfType(mav, "section", Section.class);
         assertEquals((long) actualSection.getId(), sectionId);
         assertModelAttributeAvailable(mav, "breadcrumbList");
+    }
+
+    @Test
+    public void testRoot() {
+        //set expectations
+        expectationsForAllSections();
+
+        //invoke the object under test
+        ModelAndView mav = controller.root();
+
+        //check expectations
+        verifyAndAssertAllSections(mav);
     }
 }

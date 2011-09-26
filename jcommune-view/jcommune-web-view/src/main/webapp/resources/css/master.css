@@ -3,9 +3,7 @@
 	background: url(../images/pattern.jpg);
 }
 body {
-	position: relative;
-	min-width: 960px;
-	max-width: 1600px;
+	width: 100%;
 	height: 100%;
 	background: url(../images/bg_cup.png) no-repeat top right;
 	font: 12px Arial, sans-serif;
@@ -97,6 +95,9 @@ li.no_border {
 	top: 48px;
 	padding: 0;
 }
+.branch_page .forum_top_right_link {
+	padding: 0;
+}
 .heading {
 	font-size: 25px;
 	text-decoration: none;
@@ -120,6 +121,7 @@ a.heading:hover {
 	z-index: 1000;
 	position: relative;
 	display: table;
+	table-layout: fixed;
 	margin: 0 -2px;
 	border-bottom: 1px solid #686868;
 	border-left: 1px solid #686868;
@@ -159,7 +161,7 @@ a.heading:hover {
 .forum_header_answer {
 	display: table-cell;
 	min-width: 90px;
-	padding: 0 10px;
+	padding: 0 5px 0 0;
 	vertical-align: middle;
 	text-align: center;
 	font-size: 11px;
@@ -172,7 +174,7 @@ a.heading:hover {
 }
 .forum_header_date {
 	min-width: 180px;
-	padding: 0 10px 0 6px;
+	padding: 0 10px 0 8px;
 }
 .forum_header_userinfo {
 	min-width: 160px;
@@ -180,9 +182,10 @@ a.heading:hover {
 }
 
 					/* Forum Main Table */
-.forum_table {
+.forum_table, .registration {
 	display: table;
-	border: 1px solid #b2b2b2;
+	table-layout: fixed;
+	width: 100%;
 	color: #3e3e3e;
 	line-height: 1;
 }
@@ -228,14 +231,14 @@ a.heading:hover {
 .forum_answer_left,
 .forum_answer_right{
 	display: table-cell;
-	padding: 0 10px;
+	padding: 0 5px 0 0;
 	border-bottom: 1px solid #b2b2b2;
 	vertical-align: middle;
 	text-align: center;
 }
 					/* Forum Cells - Main */
 .forum_icon {
-	min-width: 30px;
+	width: 30px;
 	padding: 5px;
 	padding-right: 0;
 }
@@ -252,26 +255,30 @@ a.moderator {
 	font-weight: normal;
 }
 .forum_messages, .forum_clicks, .forum_header_messages, .forum_header_clicks  {
+	width: 65px;
 	min-width: 65px;
 }
 .forum_themes, .forum_header_themes {
+	width: 35px;
 	min-width: 35px;
 }
 .forum_last_message {
-	min-width: 130px;
-	padding: 0 6px 0 10px;
+	width: 130px;
+	padding: 0 3px 0 0;
 }
 a.last_message_user {
 	font-weight: normal;
 }
 .forum_answers, .forum_header_answers {
+	width: 50px;
 	min-width: 50px;
 }
 .forum_author, .forum_header_author {
+	width: 100px;
 	min-width: 100px;
 }
 .forum_userinfo {
-	min-width: 160px;
+	width: 160px;
 	padding: 10px;
 	background: #c6c6c6;
 }
@@ -287,6 +294,7 @@ a.last_message_user {
 }
 .forum_message_cell p {
 	padding-left: 10px;
+	word-wrap: break-word;
 }
 .post_details {
 	width: 100%;
@@ -334,7 +342,7 @@ a.last_message_user {
 	font-weight: bold;
 }
 
-					/* Answer Form */
+					/* Answer Form & Buttons */
 .forum_header_menu {
 	display: table-cell;
 	padding: 0 10px;
@@ -345,13 +353,14 @@ a.last_message_user {
 	text-decoration: none;
 	background: ;
 }
+.forum_header_menu:hover {
+	background: url(../images/hover_bg.jpg) repeat-x;	
+}
 .pm_page #newmsg_link {
 	background: url(../images/active_bg.jpg) repeat-x;
 	color: white;
 }
-.forum_header_menu:hover {
-	background: url(../images/hover_bg.jpg) repeat-x;	
-}
+
 .pm_page .empty_cell {
 	width: 100%;
 }				
@@ -361,7 +370,7 @@ a.last_message_user {
 }
 	
 .forum_answer_left {
-	min-width: 160px;
+	width: 160px;
 	border-right: 1px solid #b2b2b2;
 	font-weight: bold;
 	padding: 10px;
@@ -385,13 +394,17 @@ a.last_message_user {
 .pm_page .button:active {
 	background: #FEAEAE;
 }
+a.disabled {
+	background-color: #8b8b8b;
+	color: #b8b8b8;
+}
 .options {
 	text-align: left;
 }
 .align-top {
 	vertical-align: top;
 }
-#message {
+#body {
 	display: block;
 	width: 95%;
 	margin: 5px auto;
@@ -406,13 +419,38 @@ a.last_message_user {
 	font-size: 11px;
 	margin: 5px;
 }
-#subject, #recipient {
+#title, #recipient {
 	width: 95%;
 }
-
-
-	
-	
+					/* Registration */
+.registration_page h1 {
+	left: 40%;
+}
+.registration_page .forum_table {
+	margin: 0 auto;
+	width: auto;
+}
+.registration_page .forum_header_table {
+	width: 567px;
+	margin: 0 auto;
+}
+.forum_table label, .reg_table_cell{
+	display: table-cell;
+	width: 125px;
+	padding: 5px 10px;
+	border-bottom: 1px solid #b2b2b2;
+	vertical-align: middle;
+	text-align: right;
+}
+.reg_table_cell {
+	width: 400px;
+}
+.registration_page .forum_table div {
+	display: table-row;
+}
+.reg_table_cell input {
+	width: 390px;
+}	
 					/* Users Numbers */
 .users_information {
 	margin-top: 20px;

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2011  jtalks.org Team
+ * Copyright (C) 2011  JTalks.org Team
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -11,17 +11,13 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- * Also add information on how to contact you by electronic and paper mail.
- * Creation date: Apr 12, 2011 / 8:05:19 PM
- * The jtalks.org Project
  */
 package org.jtalks.jcommune.web.util;
 
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
-import java.awt.Dimension;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
 import java.awt.image.RenderedImage;
@@ -129,13 +125,12 @@ public final class ImageUtil {
      * @return bufferedImage The resized image
      */
     private static BufferedImage createBufferedImage(BufferedImage source, int type, int width, int height) {
+        int imageType = BufferedImage.TYPE_INT_RGB;
         if (type == ImageUtil.IMAGE_PNG && hasAlpha(source)) {
-            type = BufferedImage.TYPE_INT_ARGB;
-        } else {
-            type = BufferedImage.TYPE_INT_RGB;
+            imageType = BufferedImage.TYPE_INT_ARGB;
         }
 
-        BufferedImage bufferedImage = new BufferedImage(width, height, type);
+        BufferedImage bufferedImage = new BufferedImage(width, height, imageType);
 
         int sourceX;
         int sourceY;
@@ -203,7 +198,7 @@ public final class ImageUtil {
 
         int alpha2 = (value2 & ALPHA_CHANNEL_MASK) >>> THREE_BITS;
         int red2 = (value2 & RED_CHANNEL_MASK) >> TWO_BITS;
-        int green2 = (value2 & GREEN_CHANNEL_MASK)>> BIT;
+        int green2 = (value2 & GREEN_CHANNEL_MASK) >> BIT;
         int blue2 = (value2 & BLUE_CHANNEL_MASK);
 
         int rgb = ((int) (alpha1 * (1.0 - distance) + alpha2 * distance) << THREE_BITS)

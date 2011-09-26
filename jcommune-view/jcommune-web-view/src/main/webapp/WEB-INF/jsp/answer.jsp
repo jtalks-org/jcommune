@@ -1,3 +1,19 @@
+<%--
+
+    Copyright (C) 2011  JTalks.org Team
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+--%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org.org/tags/form" %>
@@ -34,14 +50,14 @@
             <!-- Начало группы форумов -->
             <div class="forum_header_table"> <!-- Шапка топика -->
                 <div class="forum_header">
-                    <span class="forum_header_answer">Ответить</span>
+                    <span class="forum_header_answer"><spring:message code="label.answer"/></span>
                     <span class="empty_cell"></span> <!-- Необходима для корректного отображения псевдотаблицы -->
                 </div>
             </div>
             <ul class="forum_table"> <!-- Форма ответа -->
                 <li class="forum_row">
                     <div class="forum_answer_left">
-                        Тема
+                        <spring:message code="label.answer.topic"/>
                     </div>
                     <div class="forum_answer_right">
                         <input id="subject" type="text" name="subject" size="45" maxlength="60" tabindex="1"
@@ -51,7 +67,7 @@
                 </li>
                 <li class="forum_row">
                     <div class="forum_answer_left align-top">
-                        Сообщение
+                        <spring:message code="label.answer.message"/>
                         <table class="smiles_table">
                             <tbody>
                             <tr>
@@ -136,7 +152,7 @@
                 </li>
                 <li class="forum_row">
                     <div class="forum_answer_left">
-                        Опции
+                        <spring:message code="label.answer.options"/>
                     </div>
                     <div class="forum_answer_right options">
                         <input id="notify" type="checkbox" name="notify" checked="checked"/> Сообщать мне о получении

@@ -1,3 +1,19 @@
+<%--
+
+    Copyright (C) 2011  JTalks.org Team
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+--%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
@@ -10,15 +26,17 @@
     <title>Forum</title>
 </head>
 <body>
+<h1>JTalks</h1>
 
 <div class="wrap branch_page">
 
     <!-- Начало всех форумов -->
     <div class="all_forums">
-        <h2><a class="heading" href="#">Для новичков</a></h2>
+        <h2><a class="heading" href="#"><c:out value="${branch.name}"/></a></h2>
 
         <div class="forum_misc_info">
-            Здесь вы можете задать свои глупые вопросы
+            <c:out value="${branch.description}"/>
+
             <span class="nav_top">На страницу: 1, <a href="#">2</a> <a href="#">След.</a></span>
         </div>
         <a class="forum_top_right_link" href="#">Отметить все темы как прочтенные</a>
@@ -48,24 +66,23 @@
             <c:forEach var="topic" items="${topics}">
                 <li class="forum_row"> <!-- Топик -->
                     <div class="forum_icon"> <!-- Иконка с кофе -->
-                        <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png" alt=""
+                        <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png"
+                             alt=""
                              title="Форум закрыт"/>
                     </div>
                     <c:choose>
                         <c:when test="${topic.announcement=='true'}">
                             <div class="forum_info"> <!-- Ссылка на тему -->
-                                <h4><span class="sticky">Объявление: </span><a class="forum_link"
+                                <h4><span class="sticky"><spring:message code="label.marked_as_announcement"/> </span><a class="forum_link"
                                                                                href="${pageContext.request.contextPath}/topic/${topic.id}.html">
-                                    <spring:message code="label.marked_as_announcement"/><c:out
-                                        value="${topic.title}"/></a></h4>
+                                    <c:out value="${topic.title}"/></a></h4>
                             </div>
                         </c:when>
                         <c:when test="${topic.sticked=='true'}">
                             <div class="forum_info"> <!-- Ссылка на тему -->
-                                <h4><span class="sticky">Прикреплено: </span><a class="forum_link"
+                                <h4><span class="sticky"><spring:message code="label.marked_as_sticked"/> </span><a class="forum_link"
                                                                                 href="${pageContext.request.contextPath}/topic/${topic.id}.html">
-                                    <spring:message code="label.marked_as_sticked"/><c:out
-                                        value="${topic.title}"/></a></h4>
+                                    <c:out value="${topic.title}"/></a></h4>
                             </div>
                         </c:when>
                         <c:otherwise>
@@ -104,19 +121,7 @@
         </ul>
 
         <!-- Конец группы форумов -->
-        <span class="nav_bottom">На страницу: 1, <a href="#">2</a> <a href="#">След.</a></span>
-        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-            <a class="button"
-               href="${pageContext.request.contextPath}/branch/${branchId}/topic/create.html#"><spring:message
-                    code="label.addtopic"/></a>
-            &nbsp; &nbsp; &nbsp;
-        </sec:authorize>
-        <a class="forums_list" href="#" title="Список форумов">Список форумов</a>
-        <span class="arrow"> > </span>
-        <a class="forums_list" href="#" title="Для новичков">Для новичков</a>
-
-        <div class="forum_misc_info">
-            <div id="pagination">
+        <span class="nav_bottom"><spring:message code="label.onPage"/>
                 <c:if test="${maxPages > 1}">
 
                     <c:if test="${page > 2}">
@@ -166,7 +171,19 @@
                     </c:if>
 
                 </c:if>
-            </div>
+            </span>
+        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+            <a class="button"
+               href="${pageContext.request.contextPath}/branch/${branchId}/topic/create.html#"><spring:message
+                    code="label.addtopic"/></a>
+            &nbsp; &nbsp; &nbsp;
+        </sec:authorize>
+        <a class="forums_list" href="#" title="Список форумов">Список форумов</a>
+        <span class="arrow"> > </span>
+        <a class="forums_list" href="#" title="Для новичков">Для новичков</a>
+
+        <div class="forum_misc_info">
+            <spring:message code="label.page"/> <c:out value="${page}"/> <spring:message code="label.of"/> <c:out value="${maxPages}"/>
             <br/>
             Модераторы:
             <ul class="users_list">
@@ -177,11 +194,11 @@
             <br/>
             Сейчас этот форум просматривают: Нет
 
+        </div>
     </div>
-</div>
-<!-- Конец всех форумов -->
-<div class="footer_buffer"></div>
-<!-- Несемантичный буфер для прибития подвала -->
+    <!-- Конец всех форумов -->
+    <div class="footer_buffer"></div>
+    <!-- Несемантичный буфер для прибития подвала -->
 </div>
 </body>
 </html>
