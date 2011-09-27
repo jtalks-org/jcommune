@@ -73,7 +73,7 @@ public final class BranchController {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
      */
-    @RequestMapping(value = "/branch/{branchId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/branches/{branchId}", method = RequestMethod.GET)
     public ModelAndView show(@PathVariable("branchId") long branchId,
                              @RequestParam(value = PAGE, required = false) Integer page,
                              @RequestParam(value = "size", required = false) Integer size) throws NotFoundException {
@@ -102,7 +102,7 @@ public final class BranchController {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
      */
-    @RequestMapping(value = "/recent", method = RequestMethod.GET)
+    @RequestMapping(value = "/topics/recent", method = RequestMethod.GET)
     public ModelAndView show(@RequestParam(value = PAGE, required = false) Integer page,
                              @RequestParam(value = "size", required = false) Integer size) throws NotFoundException {
         int topicsCount = topicService.getTopicsPastLastDayCount();

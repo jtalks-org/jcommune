@@ -35,19 +35,19 @@ public class Breadcrumb {
     public enum BreadcrumbLocation {
         FORUM("sections"),
 
-        BRANCH("branch"),
+        BRANCH("branches"),
         SECTION("sections"),
-        TOPIC("topic"),
-        POST("post"),
+        TOPIC("topics"),
+        POST("posts"),
 
-        INBOX("/pm/inbox"),
-        OUTBOX("/pm/outbox"),
-        DRAFTS("/pm/drafts"),
+        INBOX("/inbox"),
+        OUTBOX("/outbox"),
+        DRAFTS("/drafts"),
 
-        RECENT("/recent");
+        RECENT("/topics/recent");
 
 
-        //Display name for the HTML link
+        //Displayed value for the HTML link
         private String name;
 
         /**
@@ -81,9 +81,9 @@ public class Breadcrumb {
     }
 
     private Long id;
-    //URL breadcrumb value
+    //Displayed URL breadcrumb value
     private BreadcrumbLocation breadcrumbLocation;
-    //Display breadcrumb value
+    //Displayed breadcrumb value
     private String breadcrumbLocationValue;
 
     /**

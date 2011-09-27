@@ -35,7 +35,7 @@
 <div class="wrap main_page">
     <!-- Начало всех форумов -->
     <div class="all_forums">
-        <a class="forum_top_right_link" href="${pageContext.request.contextPath}/recent.html"><spring:message
+        <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/recent"><spring:message
                 code="label.recent"/></a> <br/>
         <a class="forum_top_right_link" href="#">Сообщения без ответа</a>
         <h2><a class="heading" href="#">Java форум JTalks</a></h2>
@@ -71,7 +71,7 @@
                         </div>
                         <div class="forum_info"> <!-- Информация о форуме -->
                             <h4><a class="forum_link"
-                                   href="${pageContext.request.contextPath}/branch/${branch.id}.html">
+                                   href="${pageContext.request.contextPath}/branches/${branch.id}.html">
                                 <c:out value="${branch.name}"/></a></h4> <!-- Ссылка на форум -->
                             <p>
                                 <c:out value="${branch.description}"/>

@@ -29,7 +29,7 @@
     <table border="1" width="100%">
         <c:forEach var="branch" items="${section.branches}" varStatus="i">
             <tr>
-                <td><a href="${pageContext.request.contextPath}/branch/${branch.id}.html"> <c:out
+                <td><a href="${pageContext.request.contextPath}/branches/${branch.id}.html"> <c:out
                         value="${branch.name}"/></a><br>
                     <span style="font-size: xx-small; "><c:out value="${branch.description}"/> </span>
                 </td>

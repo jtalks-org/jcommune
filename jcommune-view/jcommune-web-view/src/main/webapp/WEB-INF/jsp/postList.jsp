@@ -208,7 +208,7 @@
                 </c:url>
                 ...<a href='<c:out value="${last}"/>' class="pn next"><spring:message code="pagination.last"/></a>
             </c:if></span>
-<a class="button" href="${pageContext.request.contextPath}/branch/${branchId}.html">
+<a class="button" href="${pageContext.request.contextPath}/branches/${branchId}.html">
     <spring:message code="label.back"/>
 </a>
 <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
