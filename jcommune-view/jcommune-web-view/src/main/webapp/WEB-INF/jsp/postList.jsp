@@ -41,7 +41,7 @@
     <a href="#">Предыдущая тема</a> ::
     <a href="#">Следующая тема</a>
 </div>
-<a class="button top_button" href="${pageContext.request.contextPath}/branch/${branchId}.html">
+<a class="button top_button" href="${pageContext.request.contextPath}/branches/${branchId}.html">
     <spring:message code="label.back"/>
 </a>
 <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">

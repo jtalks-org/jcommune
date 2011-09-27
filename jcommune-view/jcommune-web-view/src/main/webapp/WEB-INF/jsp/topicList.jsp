@@ -42,7 +42,7 @@
         <a class="forum_top_right_link" href="#">Отметить все темы как прочтенные</a>
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
             <a class="button top_button"
-               href="${pageContext.request.contextPath}/branch/${branchId}/topic/create.html"><spring:message
+               href="${pageContext.request.contextPath}/topics/new?branchId=${branchId}"><spring:message
                     code="label.addtopic"/></a>
             &nbsp; &nbsp; &nbsp;
         </sec:authorize>
@@ -174,7 +174,7 @@
             </span>
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
             <a class="button"
-               href="${pageContext.request.contextPath}/branch/${branchId}/topic/create.html#"><spring:message
+               href="${pageContext.request.contextPath}/topics/new?branchId=${branchId}"><spring:message
                     code="label.addtopic"/></a>
             &nbsp; &nbsp; &nbsp;
         </sec:authorize>
