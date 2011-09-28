@@ -30,7 +30,7 @@
 		<form:form action='${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/post/${postId}.html' method="DELETE">
 		    <input type="submit" value="<spring:message code="label.yes"/>"/>
 		</form:form>
-		<form:form action='${pageContext.request.contextPath}/topic/${topicId}.html' method="GET">
+		<form:form action='${pageContext.request.contextPath}/topics/${topicId}' method="GET">
             <input type="submit" value="<spring:message code="label.cancel"/>"/>
         </form:form>
 	</div>

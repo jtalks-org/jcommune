@@ -30,7 +30,7 @@
             <form:textarea path="bodyText"/>
             <form:errors path="bodyText" cols="30" rows="10"/>
             <br />
-            <a href="${pageContext.request.contextPath}/topic/${topicId}.html" class="coolbutton" ><spring:message code='label.back'/></a>
+            <a href="${pageContext.request.contextPath}/topics/${topicId}" class="coolbutton" ><spring:message code='label.back'/></a>
             <button type="submit" class="coolbutton"><spring:message code='label.save'/></button>
         </div>
     </jtalks:form>

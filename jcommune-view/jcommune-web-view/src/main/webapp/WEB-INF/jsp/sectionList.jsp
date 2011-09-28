@@ -71,7 +71,7 @@
                         </div>
                         <div class="forum_info"> <!-- Информация о форуме -->
                             <h4><a class="forum_link"
-                                   href="${pageContext.request.contextPath}/branches/${branch.id}.html">
+                                   href="${pageContext.request.contextPath}/branches/${branch.id}">
                                 <c:out value="${branch.name}"/></a></h4> <!-- Ссылка на форум -->
                             <p>
                                 <c:out value="${branch.description}"/>

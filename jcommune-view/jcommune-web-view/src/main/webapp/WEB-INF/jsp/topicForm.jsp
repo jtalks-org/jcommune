@@ -23,8 +23,8 @@
 <head></head>
 <body>
 <div id="answer">
-    <jtalks:form name="editForm" modelAttribute="topicDto" method="POST"
-           action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/save.html">
+    <jtalks:form name="editForm" modelAttribute="topicDto" method="PUT"
+           action="${pageContext.request.contextPath}/topics/${topicId}?branchId=${branchId}">
         <form:hidden path="id"/>
         <div>
             <h2><spring:message code="h.edit_topic" /></h2>
@@ -54,7 +54,7 @@
 
             <div class="clear"></div>
 
-            <a href="${pageContext.request.contextPath}/topic/${topicId}.html" class="coolbutton" ><spring:message code='label.back'/></a>
+            <a href="${pageContext.request.contextPath}/topics/${topicId}" class="coolbutton" ><spring:message code='label.back'/></a>
             <button type="submit" class="coolbutton"><spring:message code='label.save'/></button>
         </div>
     </jtalks:form>

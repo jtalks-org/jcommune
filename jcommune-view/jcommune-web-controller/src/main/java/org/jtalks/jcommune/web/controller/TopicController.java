@@ -103,7 +103,7 @@ public final class TopicController {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
      */
-    @RequestMapping(value = "/branch/{branchId}/topic", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "/branch/{branchId}/topic", method = RequestMethod.POST)
     public ModelAndView create(@Valid @ModelAttribute TopicDto topicDto,
                                BindingResult result,
                                @PathVariable(BRANCH_ID) Long branchId) throws NotFoundException {
@@ -114,8 +114,8 @@ public final class TopicController {
         } else {
             Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(),
                     branchId);
-            return new ModelAndView("redirect:/topic/"
-                    + createdTopic.getId() + ".html");
+            return new ModelAndView("redirect:/topics/"
+                    + createdTopic.getId());
         }
     }
 
@@ -126,9 +126,9 @@ public final class TopicController {
      * @param branchId branch containing topic
      * @return {@code ModelAndView} with to parameters branchId and topicId
      */
-    @RequestMapping(method = RequestMethod.GET, value = "/branch/{branchId}/topic/{topicId}/delete")
+    @RequestMapping(method = RequestMethod.GET, value = "/topics/{topicId}/delete")
     public ModelAndView deleteConfirmPage(@PathVariable(TOPIC_ID) Long topicId,
-                                          @PathVariable(BRANCH_ID) Long branchId) {
+                                          @RequestParam(BRANCH_ID) Long branchId) {
         return new ModelAndView("deleteTopic")
                 .addObject(TOPIC_ID, topicId)
                 .addObject(BRANCH_ID, branchId);
@@ -143,11 +143,11 @@ public final class TopicController {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic not found
      */
-    @RequestMapping(method = RequestMethod.DELETE, value = "/branch/{branchId}/topic/{topicId}")
+    @RequestMapping(method = RequestMethod.DELETE, value = "/topics/{topicId}")
     public ModelAndView delete(@PathVariable(TOPIC_ID) Long topicId,
-                               @PathVariable(BRANCH_ID) Long branchId) throws NotFoundException {
+                               @RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
         topicService.deleteTopic(topicId);
-        return new ModelAndView("redirect:/branch/" + branchId + ".html");
+        return new ModelAndView("redirect:/branches/" + branchId);
     }
 
     /**
@@ -161,7 +161,7 @@ public final class TopicController {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic or branch not found
      */
-    @RequestMapping(value = "/topic/{topicId}", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.GET)
     public ModelAndView show(@PathVariable(TOPIC_ID) Long topicId,
                              @RequestParam(value = "page", required = false) Integer page,
                              @RequestParam(value = "size", required = false) Integer size) throws NotFoundException {
@@ -196,8 +196,8 @@ public final class TopicController {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic or branch not found
      */
-    @RequestMapping(value = "/branch/{branchId}/topic/{topicId}/edit", method = RequestMethod.GET)
-    public ModelAndView edit(@PathVariable(BRANCH_ID) Long branchId,
+    @RequestMapping(value = "/topics/{topicId}/edit", method = RequestMethod.GET)
+    public ModelAndView edit(@RequestParam(BRANCH_ID) Long branchId,
                              @PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         Topic topic = topicService.get(topicId);
 
@@ -220,10 +220,10 @@ public final class TopicController {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic or branch not found
      */
-    @RequestMapping(value = "/branch/{branchId}/topic/{topicId}/save", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.PUT)
     public ModelAndView save(@Valid @ModelAttribute TopicDto topicDto,
                              BindingResult result,
-                             @PathVariable(BRANCH_ID) Long branchId,
+                             @RequestParam(BRANCH_ID) Long branchId,
                              @PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         if (result.hasErrors()) {
             return new ModelAndView("topicForm")
@@ -234,6 +234,6 @@ public final class TopicController {
         topicService.saveTopic(topicDto.getId(), topicDto.getTopicName(), topicDto.getBodyText(),
                 topicDto.getTopicWeight(), topicDto.isSticked(), topicDto.isAnnouncement());
 
-        return new ModelAndView("redirect:/topic/" + topicId + ".html");
+        return new ModelAndView("redirect:/topics/" + topicId);
     }
 }

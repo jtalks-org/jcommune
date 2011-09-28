@@ -41,7 +41,7 @@
     <a href="#">Предыдущая тема</a> ::
     <a href="#">Следующая тема</a>
 </div>
-<a class="button top_button" href="${pageContext.request.contextPath}/branches/${branchId}.html">
+<a class="button top_button" href="${pageContext.request.contextPath}/branches/${branchId}">
     <spring:message code="label.back"/>
 </a>
 <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
@@ -112,7 +112,7 @@
                             <c:when test="${page == 1 && i.index == 0}">
                                 <%-- first post - url to delete topic --%>
                                 <c:set var="delete_url"
-                                       value="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/delete.html"/>
+                                       value="${pageContext.request.contextPath}/topics/${topicId}/delete?branchId=${branchId}"/>
                             </c:when>
                             <c:otherwise>
                                 <%-- url to delete post --%>
@@ -130,7 +130,7 @@
                             <c:when test="${page == 1 && i.index == 0}">
                                 <%-- first post - url to edit topic --%>
                                 <c:set var="edit_url"
-                                       value="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/edit.html"/>
+                                       value="${pageContext.request.contextPath}/topics/${topicId}/edit?branchId=${branchId}"/>
                             </c:when>
                             <c:otherwise>
                                 <%-- url to edit post --%>
@@ -208,7 +208,7 @@
                 </c:url>
                 ...<a href='<c:out value="${last}"/>' class="pn next"><spring:message code="pagination.last"/></a>
             </c:if></span>
-<a class="button" href="${pageContext.request.contextPath}/branches/${branchId}.html">
+<a class="button" href="${pageContext.request.contextPath}/branches/${branchId}">
     <spring:message code="label.back"/>
 </a>
 <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">

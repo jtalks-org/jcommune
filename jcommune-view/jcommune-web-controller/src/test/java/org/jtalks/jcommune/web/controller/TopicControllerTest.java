@@ -99,7 +99,7 @@ public class TopicControllerTest {
     public void testDelete() throws NotFoundException {
         ModelAndView actualMav = controller.delete(TOPIC_ID, BRANCH_ID);
 
-        assertViewName(actualMav, "redirect:/branch/" + BRANCH_ID + ".html");
+        assertViewName(actualMav, "redirect:/branches/" + BRANCH_ID);
         verify(topicService).deleteTopic(TOPIC_ID);
     }
 
@@ -169,7 +169,7 @@ public class TopicControllerTest {
         verify(topicService).createTopic(TOPIC_THEME, TOPIC_CONTENT, BRANCH_ID);
 
         //check result
-        assertViewName(mav, "redirect:/topic/1.html");
+        assertViewName(mav, "redirect:/topics/1");
     }
 
     @Test
@@ -259,7 +259,7 @@ public class TopicControllerTest {
         verify(topicService).saveTopic(TOPIC_ID, TOPIC_THEME, TOPIC_CONTENT, TOPIC_WEIGHT, STICKED, ANNOUNCEMENT);
 
         //check result
-        assertViewName(mav, "redirect:/topic/" + TOPIC_ID + ".html");
+        assertViewName(mav, "redirect:/topics/" + TOPIC_ID);
     }
 
     @Test

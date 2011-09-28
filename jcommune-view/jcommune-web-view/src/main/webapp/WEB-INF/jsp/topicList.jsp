@@ -88,7 +88,7 @@
                         <c:otherwise>
                             <div class="forum_info"> <!-- Ссылка на тему -->
                                 <h4><a class="forum_link"
-                                       href="${pageContext.request.contextPath}/topic/${topic.id}.html"><c:out
+                                       href="${pageContext.request.contextPath}/topics/${topic.id}"><c:out
                                         value="${topic.title}"/></a></h4>
 
                             </div>
@@ -125,7 +125,7 @@
                 <c:if test="${maxPages > 1}">
 
                     <c:if test="${page > 2}">
-                        <c:url value="/branches/${branchId}.html" var="first">
+                        <c:url value="/branches/${branchId}" var="first">
                             <c:param name="page" value="1"/>
                         </c:url>
                         <a href='<c:out value="${first}" />' class="pn next"><spring:message
@@ -155,7 +155,7 @@
                                 <span>${i.index}</span>
                             </c:when>
                             <c:otherwise>
-                                <c:url value="/branches/${branchId}.html" var="url">
+                                <c:url value="/branches/${branchId}" var="url">
                                     <c:param name="page" value="${i.index}"/>
                                 </c:url>
                                 <a href='<c:out value="${url}" />'>${i.index}</a>
@@ -164,7 +164,7 @@
                     </c:forEach>
 
                     <c:if test="${page + 2 < maxPages+1}">
-                        <c:url value="/branches/${branchId}.html" var="last">
+                        <c:url value="/branches/${branchId}" var="last">
                             <c:param name="page" value="${maxPages}"/>
                         </c:url>
                         ...<a href='<c:out value="${last}"/>' class="pn next"><spring:message code="pagination.last"/></a>

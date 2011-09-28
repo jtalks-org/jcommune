@@ -168,7 +168,7 @@
                 </li>
             </ul>
             <button type="submit" class="button"><spring:message code="label.addtopic"/></button>
-            <a href="${pageContext.request.contextPath}/branches/${branchId}.html" class="button">
+            <a href="${pageContext.request.contextPath}/branches/${branchId}" class="button">
                 <spring:message code='label.back'/></a>
         </jtalks:form>
     </div>
