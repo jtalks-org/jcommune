@@ -22,15 +22,16 @@
 <head></head>
 <body>
 <div id="answer">
-    <jtalks:form name="editForm" modelAttribute="postDto" method="POST"
-           action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/post/${postId}/save.html">
+    <jtalks:form name="editForm" modelAttribute="postDto" method="PUT"
+                 action="${pageContext.request.contextPath}/posts/${postId}?topicId=${topicId}">
         <form:hidden path="id"/>
-        <div>            
+        <div>
             <form:label path="bodyText"><spring:message code="label.text"/></form:label>
             <form:textarea path="bodyText"/>
             <form:errors path="bodyText" cols="30" rows="10"/>
-            <br />
-            <a href="${pageContext.request.contextPath}/topics/${topicId}" class="coolbutton" ><spring:message code='label.back'/></a>
+            <br/>
+            <a href="${pageContext.request.contextPath}/topics/${topicId}" class="coolbutton"><spring:message
+                    code='label.back'/></a>
             <button type="submit" class="coolbutton"><spring:message code='label.save'/></button>
         </div>
     </jtalks:form>

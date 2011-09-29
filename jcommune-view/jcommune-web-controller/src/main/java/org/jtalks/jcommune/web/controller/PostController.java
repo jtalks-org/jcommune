@@ -23,10 +23,7 @@ import org.jtalks.jcommune.web.dto.PostDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -36,11 +33,11 @@ import javax.validation.Valid;
  * @author Osadchuck Eugeny
  * @author Kravchenko Vitaliy
  * @author Kirill Afonin
+ * @author Alexandre Teterin
  */
 @Controller
 public class PostController {
     public static final String TOPIC_ID = "topicId";
-    public static final String BRANCH_ID = "branchId";
     public static final String POST_ID = "postId";
     private final PostService postService;
     private BreadcrumbBuilder breadcrumbBuilder;
@@ -62,62 +59,53 @@ public class PostController {
     /**
      * Redirect user to confirmation page.
      *
-     * @param topicId  topic id, this in topic which contains post which should be deleted
-     * @param postId   post id to delete
-     * @param branchId branch containing topic
+     * @param topicId topic id, this in topic which contains post which should be deleted
+     * @param postId  post id to delete
      * @return {@code ModelAndView} with to parameter topicId and postId
      */
-    @RequestMapping(method = RequestMethod.GET, value = "/branch/{branchId}/topic/{topicId}/post/{postId}/delete")
-    public ModelAndView deleteConfirmPage(@PathVariable(TOPIC_ID) Long topicId,
-                                          @PathVariable(POST_ID) Long postId,
-                                          @PathVariable(BRANCH_ID) Long branchId) {
+    @RequestMapping(method = RequestMethod.GET, value = "/posts/{postId}/delete")
+    public ModelAndView deleteConfirmPage(@RequestParam(TOPIC_ID) Long topicId,
+                                          @PathVariable(POST_ID) Long postId) {
         return new ModelAndView("deletePost")
                 .addObject(TOPIC_ID, topicId)
-                .addObject(POST_ID, postId)
-                .addObject(BRANCH_ID, branchId);
+                .addObject(POST_ID, postId);
     }
 
     /**
      * Delete post by given id.
      *
-     * @param topicId  topic id, this in topic which contains post which should be deleted
-     *                 also used for redirection back to topic.
-     * @param postId   post
-     * @param branchId branch containing topic
+     * @param topicId topic id, this in topic which contains post which should be deleted
+     *                also used for redirection back to topic.
+     * @param postId  post
      * @return redirect to topic page
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic or post not found
      */
-    @RequestMapping(method = RequestMethod.DELETE, value = "/branch/{branchId}/topic/{topicId}/post/{postId}")
-    public ModelAndView delete(@PathVariable(TOPIC_ID) Long topicId,
-                               @PathVariable(POST_ID) Long postId,
-                               @PathVariable(BRANCH_ID) Long branchId) throws NotFoundException {
+    @RequestMapping(method = RequestMethod.DELETE, value = "/posts/{postId}")
+    public ModelAndView delete(@RequestParam(TOPIC_ID) Long topicId,
+                               @PathVariable(POST_ID) Long postId) throws NotFoundException {
         postService.deletePost(postId);
         return new ModelAndView(new StringBuilder()
-                .append("redirect:/topic/")
-                .append(topicId)
-                .append(".html").toString());
+                .append("redirect:/topics/")
+                .append(topicId).toString());
     }
 
     /**
      * Edit post by given id.
      *
-     * @param topicId  topic id
-     * @param postId   post id
-     * @param branchId branch containing topic
+     * @param topicId topic id
+     * @param postId  post id
      * @return redirect to post form page
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic or post not found
      */
-    @RequestMapping(value = "/branch/{branchId}/topic/{topicId}/post/{postId}/edit", method = RequestMethod.GET)
-    public ModelAndView edit(@PathVariable(BRANCH_ID) Long branchId,
-                             @PathVariable(TOPIC_ID) Long topicId,
+    @RequestMapping(value = "/posts/{postId}/edit", method = RequestMethod.GET)
+    public ModelAndView edit(@RequestParam(TOPIC_ID) Long topicId,
                              @PathVariable(POST_ID) Long postId) throws NotFoundException {
         Post post = postService.get(postId);
 
         return new ModelAndView("postForm")
                 .addObject("postDto", PostDto.getDtoFor(post))
-                .addObject(BRANCH_ID, branchId)
                 .addObject(TOPIC_ID, topicId)
                 .addObject(POST_ID, postId)
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(post.getTopic()));
@@ -126,32 +114,29 @@ public class PostController {
     /**
      * Save post.
      *
-     * @param postDto  Dto populated in form
-     * @param result   validation result
-     * @param branchId hold the current branchId
-     * @param topicId  the current topicId
-     * @param postId   the current postId
+     * @param postDto Dto populated in form
+     * @param result  validation result
+     * @param topicId the current topicId
+     * @param postId  the current postId
      * @return {@code ModelAndView} object which will be redirect to topic page
      *         if saved successfully or show form with error message
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic, branch or post not found
      */
-    @RequestMapping(value = "/branch/{branchId}/topic/{topicId}/post/{postId}/save",
-            method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/posts/{postId}",
+            method = RequestMethod.PUT)
     public ModelAndView save(@Valid @ModelAttribute PostDto postDto,
                              BindingResult result,
-                             @PathVariable(BRANCH_ID) Long branchId,
-                             @PathVariable(TOPIC_ID) Long topicId,
+                             @RequestParam(TOPIC_ID) Long topicId,
                              @PathVariable(POST_ID) Long postId) throws NotFoundException {
         if (result.hasErrors()) {
             return new ModelAndView("postForm")
-                    .addObject(BRANCH_ID, branchId)
                     .addObject(TOPIC_ID, topicId)
                     .addObject(POST_ID, postId);
         }
 
         postService.savePost(postDto.getId(), postDto.getBodyText());
 
-        return new ModelAndView("redirect:/topic/" + topicId + ".html");
+        return new ModelAndView("redirect:/topics/" + topicId);
     }
 }

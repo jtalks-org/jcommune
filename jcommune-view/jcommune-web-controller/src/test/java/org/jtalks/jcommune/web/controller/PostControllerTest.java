@@ -34,14 +34,8 @@ import java.util.Map;
 
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeValues;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -55,7 +49,6 @@ public class PostControllerTest {
     private PostController controller;
     public static final long TOPIC_ID = 1;
     public static final long POST_ID = 1;
-    public static final long BRANCH_ID = 1L;
     private final String POST_CONTENT = "postContent";
     private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
 
@@ -73,13 +66,12 @@ public class PostControllerTest {
         long branchId = 1;
         long postId = 5;
 
-        ModelAndView actualMav = controller.deleteConfirmPage(topicId, postId, branchId);
+        ModelAndView actualMav = controller.deleteConfirmPage(topicId, postId);
 
         assertViewName(actualMav, "deletePost");
         Map<String, Object> expectedModel = new HashMap<String, Object>();
         expectedModel.put("topicId", topicId);
         expectedModel.put("postId", postId);
-        expectedModel.put("branchId", branchId);
         assertModelAttributeValues(actualMav, expectedModel);
 
     }
@@ -91,13 +83,13 @@ public class PostControllerTest {
         long branchId = 1;
 
         //invoke the object under test
-        ModelAndView actualMav = controller.delete(topicId, postId, branchId);
+        ModelAndView actualMav = controller.delete(topicId, postId);
 
         //check expectations
         verify(postService).deletePost(postId);
 
         //check result
-        assertViewName(actualMav, "redirect:/topic/" + topicId + ".html");
+        assertViewName(actualMav, "redirect:/topics/" + topicId);
     }
 
     @Test
@@ -114,7 +106,7 @@ public class PostControllerTest {
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
 
         //invoke the object under test
-        ModelAndView actualMav = controller.edit(BRANCH_ID, TOPIC_ID, POST_ID);
+        ModelAndView actualMav = controller.edit(TOPIC_ID, POST_ID);
 
         //check expectations
         verify(postService).get(POST_ID);
@@ -124,9 +116,6 @@ public class PostControllerTest {
 
         PostDto dto = assertAndReturnModelAttributeOfType(actualMav, "postDto", PostDto.class);
         assertEquals(dto.getId(), TOPIC_ID);
-
-        long branchId = assertAndReturnModelAttributeOfType(actualMav, "branchId", Long.class);
-        assertEquals(branchId, BRANCH_ID);
 
         long topicId = assertAndReturnModelAttributeOfType(actualMav, "topicId", Long.class);
         assertEquals(topicId, TOPIC_ID);
@@ -142,10 +131,8 @@ public class PostControllerTest {
         PostDto dto = getDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "postDto");
 
-        ModelAndView mav = controller.save(dto, bindingResult, BRANCH_ID, TOPIC_ID, POST_ID);
-        assertViewName(mav, "redirect:/topic/" + TOPIC_ID + ".html");
-
-        assertViewName(mav, "redirect:/topic/" + TOPIC_ID + ".html");
+        ModelAndView mav = controller.save(dto, bindingResult, TOPIC_ID, POST_ID);
+        assertViewName(mav, "redirect:/topics/" + TOPIC_ID);
 
         verify(postService).savePost(POST_ID, POST_CONTENT);
 
@@ -158,13 +145,11 @@ public class PostControllerTest {
 
         when(resultWithErrors.hasErrors()).thenReturn(true);
 
-        ModelAndView mav = controller.save(dto, resultWithErrors, BRANCH_ID, TOPIC_ID, POST_ID);
+        ModelAndView mav = controller.save(dto, resultWithErrors, TOPIC_ID, POST_ID);
 
         assertViewName(mav, "postForm");
-        long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         long topicId = assertAndReturnModelAttributeOfType(mav, "topicId", Long.class);
         long postId = assertAndReturnModelAttributeOfType(mav, "postId", Long.class);
-        assertEquals(branchId, BRANCH_ID);
         assertEquals(topicId, TOPIC_ID);
         assertEquals(postId, POST_ID);
 

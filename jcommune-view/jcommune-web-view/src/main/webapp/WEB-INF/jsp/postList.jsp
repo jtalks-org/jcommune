@@ -117,7 +117,7 @@
                             <c:otherwise>
                                 <%-- url to delete post --%>
                                 <c:set var="delete_url"
-                                       value="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/post/${post.id}/delete.html"/>
+                                       value="${pageContext.request.contextPath}/posts/${post.id}/delete?topicId=${topicId}"/>
                             </c:otherwise>
                         </c:choose>
                         <a class="button" href="${delete_url}"><spring:message
@@ -135,7 +135,7 @@
                             <c:otherwise>
                                 <%-- url to edit post --%>
                                 <c:set var="edit_url"
-                                       value="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/post/${post.id}/edit.html"/>
+                                       value="${pageContext.request.contextPath}/posts/${post.id}/edit?topicId=${topicId}"/>
                             </c:otherwise>
                         </c:choose>
                         <a class="button" href="${edit_url}"><spring:message
