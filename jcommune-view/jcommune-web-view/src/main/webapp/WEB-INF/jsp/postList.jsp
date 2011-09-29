@@ -47,7 +47,7 @@
 <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
     <a class="button top_button" href="#">Новая тема</a>
     <a class="button top_button"
-       href="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/answer.html">
+       href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}">
         <spring:message code="label.answer"/>
     </a>
     <c:set var="authenticated" value="${true}"/>
@@ -55,7 +55,7 @@
 <c:if test="${authenticated==false}">
     <a class="button top_button disabled" href="#">Новая тема</a>
     <a class="button top_button disabled"
-       href="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/answer.html">
+       href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}">
         <spring:message code="label.answer"/>
     </a>
 </c:if>
@@ -165,7 +165,7 @@
 </ul>
 
         <span class="nav_bottom"><spring:message code="label.onPage"/>  <c:if test="${page > 2}">
-            <c:url value="/topic/${topicId}.html" var="first">
+            <c:url value="/topics/${topicId}" var="first">
                 <c:param name="page" value="1"/>
             </c:url>
             <a href='<c:out value="${first}" />' class="pn next"><spring:message code="pagination.first"/></a>...
@@ -194,7 +194,7 @@
                         <span>${i.index}</span>
                     </c:when>
                     <c:otherwise>
-                        <c:url value="/topic/${topicId}.html" var="url">
+                        <c:url value="/topics/${topicId}" var="url">
                             <c:param name="page" value="${i.index}"/>
                         </c:url>
                         <a href='<c:out value="${url}" />'>${i.index}</a>
@@ -203,7 +203,7 @@
             </c:forEach>
 
             <c:if test="${page + 2 < maxPages+1}">
-                <c:url value="/topic/${topicId}.html" var="last">
+                <c:url value="/topics/${topicId}" var="last">
                     <c:param name="page" value="${maxPages}"/>
                 </c:url>
                 ...<a href='<c:out value="${last}"/>' class="pn next"><spring:message code="pagination.last"/></a>
@@ -214,14 +214,14 @@
 <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
     <a class="button" href="#">Новая тема</a>
     <a class="button"
-       href="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/answer.html">
+       href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}">
         <spring:message code="label.answer"/>
     </a>
 </sec:authorize>
 <c:if test="${authenticated==false}">
     <a class="button disabled" href="#">Новая тема</a>
     <a class="button disabled"
-       href="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/answer.html">
+       href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}">
         <spring:message code="label.answer"/>
     </a>
 </c:if>

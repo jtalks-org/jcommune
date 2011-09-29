@@ -35,7 +35,7 @@
         <c:if test="${validationError==true}">
             <div id="error"><spring:message code="label.answer_error"/></div>
         </c:if>
-        <jtalks:form action="${pageContext.request.contextPath}/branch/${branchId}/topic/${topicId}/answer.html"
+        <jtalks:form action="${pageContext.request.contextPath}/posts/new?topicId=${topicId}"
                      method="POST">
             <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
 

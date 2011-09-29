@@ -31,9 +31,10 @@ import org.springframework.web.servlet.ModelAndView;
  *
  * @author Pavel Vervenko
  * @author Kravchenko Vitaliy
+ * @author Alexandre Teterin
  */
 @Controller
-@RequestMapping(value = "/branch/{branchId}/topic/{topicId}/answer")
+@RequestMapping(value = "/posts/new")
 public class TopicAnswerController {
 
     public static final int MIN_ANSWER_LENGTH = 1;
@@ -60,20 +61,17 @@ public class TopicAnswerController {
      *
      * @param topicId         the id of the topic for the answer
      * @param validationError is true when post length is less than 2
-     * @param branchId        branch
      * @return answering {@code ModelAndView} or redirect to the login page
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic not found
      */
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView getAnswerPage(@PathVariable("topicId") Long topicId,
+    public ModelAndView getAnswerPage(@RequestParam("topicId") Long topicId,
                                       @RequestParam(value = "validationError", required = false)
-                                      Boolean validationError,
-                                      @PathVariable("branchId") long branchId) throws NotFoundException {
+                                      Boolean validationError) throws NotFoundException {
         ModelAndView mav = new ModelAndView("answer");
         Topic answeringTopic = topicService.get(topicId);
         mav.addObject("topic", answeringTopic);
-        mav.addObject("branchId", branchId);
         mav.addObject("topicId", topicId);
         mav.addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(answeringTopic));
         if (validationError != null && validationError) {
@@ -88,20 +86,18 @@ public class TopicAnswerController {
      *
      * @param topicId  the id of the answered topic
      * @param bodyText the content of the answer
-     * @param branchId branch
      * @return redirect to the topic view
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic or branch not found
      */
     @RequestMapping(method = RequestMethod.POST)
-    public ModelAndView submitAnswer(@PathVariable("topicId") Long topicId,
-                                     @RequestParam("bodytext") String bodyText,
-                                     @PathVariable("branchId") long branchId) throws NotFoundException {
+    public ModelAndView submitAnswer(@RequestParam("topicId") Long topicId,
+                                     @RequestParam("bodytext") String bodyText) throws NotFoundException {
         if (isValidAnswer(bodyText)) {
             topicService.addAnswer(topicId, bodyText);
-            return new ModelAndView("redirect:/topic/" + topicId + ".html");
+            return new ModelAndView("redirect:/topics/" + topicId);
         } else {
-            return getAnswerPage(topicId, true, branchId);
+            return getAnswerPage(topicId, true);
         }
 
     }

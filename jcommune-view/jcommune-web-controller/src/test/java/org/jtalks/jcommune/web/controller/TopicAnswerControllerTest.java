@@ -70,7 +70,7 @@ public class TopicAnswerControllerTest {
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
 
         //invoke the object under test
-        ModelAndView mav = controller.getAnswerPage(TOPIC_ID, isValid, BRANCH_ID);
+        ModelAndView mav = controller.getAnswerPage(TOPIC_ID, isValid);
 
         //check expectations
         verify(topicService).get(TOPIC_ID);
@@ -85,19 +85,19 @@ public class TopicAnswerControllerTest {
     @Test
     public void testSubmitAnswerValidationPass() throws NotFoundException {
         //invoke the object under test
-        ModelAndView mav = controller.submitAnswer(TOPIC_ID, ANSWER_BODY, BRANCH_ID);
+        ModelAndView mav = controller.submitAnswer(TOPIC_ID, ANSWER_BODY);
 
         //check expectations
         verify(topicService).addAnswer(TOPIC_ID, ANSWER_BODY);
 
         //check result
-        assertViewName(mav, "redirect:/topic/" + TOPIC_ID + ".html");
+        assertViewName(mav, "redirect:/topics/" + TOPIC_ID);
     }
 
     @Test
     public void testSubmitAnswerValidationFail() throws NotFoundException {
         //invoke the object under test
-        ModelAndView mav = controller.submitAnswer(TOPIC_ID, SHORT_ANSWER_BODY, BRANCH_ID);
+        ModelAndView mav = controller.submitAnswer(TOPIC_ID, SHORT_ANSWER_BODY);
 
         //check expectations
         verify(topicService, never()).addAnswer(TOPIC_ID, SHORT_ANSWER_BODY);
