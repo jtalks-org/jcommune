@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.dao;
 
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Topic;
 
 import java.util.List;
@@ -52,7 +53,7 @@ public interface TopicDao extends ChildRepository<Topic> {
      *
      * @return count of topics
      */
-    int getTopicsPastLastDayCount();
+    int getTopicsPastLastDayCount(DateTime lastLogin);
 
     /**
      * Get all topics past last 24 hour.
@@ -61,5 +62,5 @@ public interface TopicDao extends ChildRepository<Topic> {
      * @param max      number of topics
      * @return list of topics
      */
-    List getAllTopicsPastLastDay(int start, int max);
+    List getAllTopicsPastLastDay(int start, int max, DateTime lastLogin);
 }

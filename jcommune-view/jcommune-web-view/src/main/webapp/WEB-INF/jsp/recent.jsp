@@ -39,14 +39,14 @@
                 <td>
                     <c:choose>
                         <c:when test="${topic.announcement=='true'}">
-                            <div class="announcement"><a href="${pageContext.request.contextPath}/topic/${topic.id}.html">
+                            <div class="announcement"><a href="${pageContext.request.contextPath}/topics/${topic.id}.html">
                             <spring:message code="label.marked_as_announcement"/><c:out value="${topic.title}"/></a></div>
                         </c:when>
                         <c:when test="${topic.sticked=='true'}">
-                            <div class="sticked"><a href="${pageContext.request.contextPath}/topic/${topic.id}.html">
+                            <div class="sticked"><a href="${pageContext.request.contextPath}/topics/${topic.id}.html">
                             <spring:message code="label.marked_as_sticked"/><c:out value="${topic.title}"/></a></div>
                         </c:when>
-                        <c:otherwise><a href="${pageContext.request.contextPath}/topic/${topic.id}.html">
+                        <c:otherwise><a href="${pageContext.request.contextPath}/topics/${topic.id}.html">
                             <c:out value="${topic.title}"/></a>
                         </c:otherwise>
                     </c:choose>

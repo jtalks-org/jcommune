@@ -14,14 +14,17 @@
  */
 package org.jtalks.jcommune.web.util;
 
+import org.hibernate.Session;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.web.context.request.SessionScope;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
@@ -54,6 +57,8 @@ public class SuccessfulAuthenticationHandler extends SavedRequestAwareAuthentica
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws ServletException, IOException {
         User user = (User) authentication.getPrincipal();
+        HttpSession session = request.getSession(true);
+        session.setAttribute("lastlogin",user.getLastLogin());
         userService.updateLastLoginTime(user);
         logger.info("User logged in: " + user.getUsername());
         super.onAuthenticationSuccess(request, response, authentication);

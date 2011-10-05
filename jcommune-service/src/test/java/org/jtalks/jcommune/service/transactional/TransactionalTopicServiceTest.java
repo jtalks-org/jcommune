@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -182,12 +183,13 @@ public class TransactionalTopicServiceTest {
     public void testGetAllTopicsPastLastDay() throws NotFoundException {
         int start = 1;
         int max = 2;
+        DateTime now = new DateTime();
         List<Topic> expectedList = new ArrayList<Topic>();
         expectedList.add(new Topic(user, "title"));
         expectedList.add(new Topic(user, "title"));
-        when(topicDao.getAllTopicsPastLastDay(start, max)).thenReturn(expectedList);
+        when(topicDao.getAllTopicsPastLastDay(start, max, now)).thenReturn(expectedList);
 
-        List<Topic> topics = topicService.getAllTopicsPastLastDay(start, max);
+        List<Topic> topics = topicService.getAllTopicsPastLastDay(start, max, now);
 
         assertNotNull(topics);
         assertEquals(topics.size(), max);
@@ -196,9 +198,10 @@ public class TransactionalTopicServiceTest {
     @Test
     public void testGetTopicsPastLastDayCount() throws NotFoundException {
         int expectedCount = 10;
-        when(topicDao.getTopicsPastLastDayCount()).thenReturn(expectedCount);
+        DateTime now = new DateTime();
+        when(topicDao.getTopicsPastLastDayCount(now)).thenReturn(expectedCount);
 
-        int count = topicService.getTopicsPastLastDayCount();
+        int count = topicService.getTopicsPastLastDayCount(now);
 
         assertEquals(expectedCount, count);
     }

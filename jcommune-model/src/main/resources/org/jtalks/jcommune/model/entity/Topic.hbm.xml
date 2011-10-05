@@ -53,12 +53,6 @@
              ORDER BY topic.sticked DESC, topic.topic_weight DESC, topic.modification_date DESC]]>
   </sql-query>
 
-  <sql-query name="getAllTopicsPastLastDay">
-    <return alias="TOPIC" class="Topic"/>
-    <![CDATA[SELECT topic.* FROM TOPIC as topic
-             WHERE topic.MODIFICATION_DATE > DATE_ADD( NOW( ) , INTERVAL -1 DAY)
-             ORDER BY topic.modification_date DESC]]>
-  </sql-query>
 
 
 </hibernate-mapping>

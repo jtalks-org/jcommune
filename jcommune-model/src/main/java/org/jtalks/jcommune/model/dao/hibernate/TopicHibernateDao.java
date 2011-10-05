@@ -19,6 +19,7 @@ import org.jtalks.jcommune.model.entity.Topic;
 
 import java.util.List;
 import org.joda.time.DateTime;
+import sun.jdbc.odbc.JdbcOdbcDatabaseMetaData;
 
 /**
  * Hibernate DAO implementation from the {@link Topic}.
@@ -58,13 +59,11 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      * {@inheritDoc}
      */
     @Override
-    public int getTopicsPastLastDayCount() {
-        DateTime DateMinusDay = new DateTime();
-        DateMinusDay = DateMinusDay.minusDays(1);
-
+    public int getTopicsPastLastDayCount(DateTime lastLogin) {
+        DateTime time = lastLogin.toDateTime();
         Number big = (Number) getSession()
                 .createQuery("select count(*) FROM Topic WHERE modificationDate > :maxModDate")
-                .setParameter("maxModDate", DateMinusDay)
+                .setParameter("maxModDate", time)
                 .setCacheable(false)
                 .uniqueResult();
         return big.intValue();
@@ -75,13 +74,11 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      * {@inheritDoc}
      */
     @Override
-    public List<Topic> getAllTopicsPastLastDay(int start, int max) {
-        DateTime DateMinusDay = new DateTime();
-        DateMinusDay = DateMinusDay.minusDays(1);
-
-        return getSession().createQuery("FROM Topic WHERE modificationDate > :maxModDate")
-                .setParameter("maxModDate", DateMinusDay)
-                .setCacheable(true)
+    public List<Topic> getAllTopicsPastLastDay(int start, int max, DateTime lastLogin) {
+        DateTime time = lastLogin.toDateTime();
+         return getSession().createQuery("FROM Topic WHERE modificationDate > :maxModDate")
+                .setParameter("maxModDate", time)
+                .setCacheable(false)
                 .setFirstResult(start)
                 .setMaxResults(max)
                 .list();

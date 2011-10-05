@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service;
 
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -77,7 +78,7 @@ public interface TopicService extends EntityService<Topic> {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
      */
-    List<Topic> getAllTopicsPastLastDay(int start, int max);
+    List<Topic> getAllTopicsPastLastDay(int start, int max, DateTime lastLogin);
 
     /**
      * Get number of topics in branch.
@@ -96,7 +97,7 @@ public interface TopicService extends EntityService<Topic> {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
      */
-    int getTopicsPastLastDayCount();
+    int getTopicsPastLastDayCount(DateTime lastLogin);
 
     /**
      * Update current topic with given title and body.
