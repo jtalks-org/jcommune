@@ -34,7 +34,8 @@ import org.slf4j.LoggerFactory;
  * @author Alexandre Teterin
  */
 public class TransactionalUserService extends AbstractTransactionalEntityService<User, UserDao>
-        implements UserService {
+        implements UserService
+{
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private SecurityService securityService;
@@ -45,7 +46,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * @param dao             for operations with data storage
      * @param securityService for security
      */
-    public TransactionalUserService(UserDao dao, SecurityService securityService) {
+    public TransactionalUserService(UserDao dao, SecurityService securityService)
+    {
         this.dao = dao;
         this.securityService = securityService;
     }
@@ -54,9 +56,11 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public User getByUsername(String username) throws NotFoundException {
+    public User getByUsername(String username) throws NotFoundException
+    {
         User user = dao.getByUsername(username);
-        if (user == null) {
+        if (user == null)
+        {
             String msg = "User " + username + " not found.";
             logger.info(msg);
             throw new NotFoundException(msg);
@@ -68,9 +72,11 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public User getByEncodedUsername(String encodedUsername) throws NotFoundException {
+    public User getByEncodedUsername(String encodedUsername) throws NotFoundException
+    {
         User user = dao.getByEncodedUsername(encodedUsername);
-        if (user == null) {
+        if (user == null)
+        {
             String msg = "User " + encodedUsername + " not found.";
             logger.info(msg);
             throw new NotFoundException(msg);
@@ -82,13 +88,16 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public User registerUser(User user) throws DuplicateUserException, DuplicateEmailException {
-        if (isUserExist(user)) {
+    public User registerUser(User user) throws DuplicateUserException, DuplicateEmailException
+    {
+        if (isUserExist(user))
+        {
             String msg = "User " + user.getUsername() + " already exists!";
             logger.warn(msg);
             throw new DuplicateUserException(msg);
         }
-        if (isEmailExist(user.getEmail())) {
+        if (isEmailExist(user.getEmail()))
+        {
             String msg = "E-mail " + user.getEmail() + " already exists!";
             logger.warn(msg);
             throw new DuplicateEmailException(msg);
@@ -104,7 +113,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public void updateLastLoginTime(User user) {
+    public void updateLastLoginTime(User user)
+    {
         user.updateLastLoginTime();
         dao.saveOrUpdate(user);
     }
@@ -115,7 +125,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * @param user user for check existance
      * @return {@code true} if user with given username exist
      */
-    private boolean isUserExist(User user) {
+    private boolean isUserExist(User user)
+    {
         return user.getUsername().equals(SecurityConstants.ANONYMOUS_USERNAME)
                 || dao.isUserWithUsernameExist(user.getUsername());
     }
@@ -126,7 +137,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * @param email email for check existance
      * @return {@code true} if email exist
      */
-    private boolean isEmailExist(String email) {
+    private boolean isEmailExist(String email)
+    {
         return dao.isUserWithEmailExist(email);
     }
 
@@ -135,29 +147,42 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      */
     @Override
     public User editUserProfile(String email, String firstName, String lastName, String currentPassword,
-                                String newPassword, byte[] avatar)
-            throws DuplicateEmailException, WrongPasswordException {
+                                String newPassword, byte[] avatar, String signature)
+            throws DuplicateEmailException, WrongPasswordException
+    {
 
         User currentUser = securityService.getCurrentUser();
         boolean changePassword = newPassword != null;
-        if (changePassword) {
+        if (changePassword)
+        {
             if (currentPassword == null ||
-                    !currentUser.getPassword().equals(currentPassword)) {
+                    !currentUser.getPassword().equals(currentPassword))
+            {
                 throw new WrongPasswordException();
-            } else {
+            } else
+            {
                 currentUser.setPassword(newPassword);
             }
         }
 
         boolean changeEmail = !currentUser.getEmail().equals(email);
-        if (changeEmail && isEmailExist(email)) {
+        if (changeEmail && isEmailExist(email))
+        {
             throw new DuplicateEmailException();
         }
 
         currentUser.setEmail(email);
+        if (signature != null && signature.trim().equals(""))
+        {
+            currentUser.setSignature(null);
+        } else
+        {
+            currentUser.setSignature(signature);
+        }
         currentUser.setFirstName(firstName);
         currentUser.setLastName(lastName);
-        if (avatar != null && avatar.length > 0) {
+        if (avatar != null && avatar.length > 0)
+        {
             currentUser.setAvatar(avatar);
         }
 
@@ -170,7 +195,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public void removeAvatarFromCurrentUser() {
+    public void removeAvatarFromCurrentUser()
+    {
         User user = securityService.getCurrentUser();
         user.setAvatar(null);
     }

@@ -26,7 +26,8 @@ import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
  * @author Osadchuck Eugeny
  * @author Kirill Afonin
  */
-public interface UserService extends EntityService<User> {
+public interface UserService extends EntityService<User>
+{
     /**
      * Get {@link User} by username.
      *
@@ -75,12 +76,14 @@ public interface UserService extends EntityService<User> {
      * @param lastName        last name
      * @param currentPassword current user password, could be NULL
      * @param newPassword     new user password, could be NULL
+     * @param avatar          user avatar
+     * @param signature       user signature
      * @return edited user
      * @throws DuplicateEmailException when user with given email already exist
      * @throws WrongPasswordException  when user enter wrong currentPassword
      */
     User editUserProfile(String email, String firstName, String lastName, String currentPassword,
-                         String newPassword, byte[] avatar) throws DuplicateEmailException, WrongPasswordException;
+                         String newPassword, byte[] avatar, String signature) throws DuplicateEmailException, WrongPasswordException;
 
     /**
      * Remove current user's avatar.

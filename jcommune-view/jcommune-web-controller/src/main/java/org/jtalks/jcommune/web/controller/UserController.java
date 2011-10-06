@@ -53,7 +53,8 @@ import java.io.IOException;
  * @author Eugeny Batov
  */
 @Controller
-public class UserController {
+public class UserController
+{
     public static final String EDIT_PROFILE = "editProfile";
     public static final String REGISTRATION = "registration";
     public static final String EDITED_USER = "editedUser";
@@ -74,7 +75,8 @@ public class UserController {
      * @param binder Binder object to be injected
      */
     @InitBinder
-    public void initBinder(WebDataBinder binder) {
+    public void initBinder(WebDataBinder binder)
+    {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
@@ -91,11 +93,12 @@ public class UserController {
     public UserController(UserService userService,
                           SecurityService securityService,
                           BreadcrumbBuilder breadcrumbBuilder,
-                          ImagePreprocessor imagePreprocessor) {
+                          ImagePreprocessor imagePreprocessor)
+    {
         this.userService = userService;
         this.securityService = securityService;
         this.breadcrumbBuilder = breadcrumbBuilder;
-        this.imagePreprocessor=imagePreprocessor;
+        this.imagePreprocessor = imagePreprocessor;
     }
 
     /**
@@ -105,7 +108,8 @@ public class UserController {
      *         {@link RegisterUserDto} with name "newUser
      */
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
-    public ModelAndView registrationPage() {
+    public ModelAndView registrationPage()
+    {
         RegisterUserDto newUser = new RegisterUserDto();
         return new ModelAndView(REGISTRATION).addObject("newUser", newUser);
     }
@@ -118,17 +122,22 @@ public class UserController {
      * @return redirect to / if registration successful or back to "/registration" if failed
      */
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
-    public ModelAndView registerUser(@Valid @ModelAttribute("newUser") RegisterUserDto userDto, BindingResult result) {
-        if (result.hasErrors()) {
+    public ModelAndView registerUser(@Valid @ModelAttribute("newUser") RegisterUserDto userDto, BindingResult result)
+    {
+        if (result.hasErrors())
+        {
             return new ModelAndView(REGISTRATION);
         }
 
-        try {
+        try
+        {
             userService.registerUser(userDto.createUser());
             return new ModelAndView("redirect:/");
-        } catch (DuplicateUserException e) {
+        } catch (DuplicateUserException e)
+        {
             result.rejectValue("username", "validation.duplicateuser");
-        } catch (DuplicateEmailException e) {
+        } catch (DuplicateEmailException e)
+        {
             result.rejectValue("email", "validation.duplicateemail");
         }
         return new ModelAndView(REGISTRATION);
@@ -142,7 +151,8 @@ public class UserController {
      * @throws NotFoundException if user with given id not found
      */
     @RequestMapping(value = "/user/{encodedUsername}", method = RequestMethod.GET)
-    public ModelAndView show(@PathVariable("encodedUsername") String encodedUsername) throws NotFoundException {
+    public ModelAndView show(@PathVariable("encodedUsername") String encodedUsername) throws NotFoundException
+    {
         User user = userService.getByEncodedUsername(encodedUsername);
         return new ModelAndView("userDetails")
                 .addObject("user", user)
@@ -156,7 +166,8 @@ public class UserController {
      * @throws NotFoundException throws if current logged in user was not found
      */
     @RequestMapping(value = "/user/edit", method = RequestMethod.GET)
-    public ModelAndView editProfilePage() throws NotFoundException {
+    public ModelAndView editProfilePage() throws NotFoundException
+    {
         User user = securityService.getCurrentUser();
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
         editedUser.setAvatar(new MockMultipartFile("avatar", "", ImageFormats.JPG.getContentType(), user.getAvatar()));
@@ -177,30 +188,37 @@ public class UserController {
      */
     @RequestMapping(value = "/user/edit", method = RequestMethod.POST)
     public ModelAndView editProfile(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
-                                    BindingResult result) throws NotFoundException, IOException {
+                                    BindingResult result) throws NotFoundException, IOException
+    {
 
         User user = securityService.getCurrentUser();
 
-        if (result.hasErrors()) {
-            if (user.getAvatar() == null) {
+        if (result.hasErrors())
+        {
+            if (user.getAvatar() == null)
+            {
                 userDto.setAvatar(new MockMultipartFile("avatar", "", ImageFormats.JPG.getContentType(), new byte[0]));
             }
             return new ModelAndView(EDIT_PROFILE, EDITED_USER, userDto);
         }
 
         User editedUser;
-        try {
+        try
+        {
             editedUser = userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                     userDto.getLastName(), userDto.getCurrentUserPassword(), userDto.getNewUserPassword(),
-                    imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT));
-        } catch (DuplicateEmailException e) {
+                    imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT), userDto.getSignature());
+        } catch (DuplicateEmailException e)
+        {
             result.rejectValue("email", "validation.duplicateemail");
             return new ModelAndView(EDIT_PROFILE);
-        } catch (WrongPasswordException e) {
+        } catch (WrongPasswordException e)
+        {
             result.rejectValue("currentUserPassword", "label.incorrectCurrentPassword",
                     "Password does not match to the current password");
             return new ModelAndView(EDIT_PROFILE);
-        } catch (InvalidImageException e) {
+        } catch (InvalidImageException e)
+        {
             result.rejectValue("avatar", "avatar.wrong.format");
             return new ModelAndView(EDIT_PROFILE);
         }
@@ -217,7 +235,8 @@ public class UserController {
      * @return edit user profile page
      */
     @RequestMapping(value = "/user/remove/avatar", method = RequestMethod.POST)
-    public ModelAndView removeAvatarFromCurrentUser() {
+    public ModelAndView removeAvatarFromCurrentUser()
+    {
         User user = securityService.getCurrentUser();
         userService.removeAvatarFromCurrentUser();
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
@@ -235,7 +254,8 @@ public class UserController {
     @RequestMapping(value = "/show/{encodedUsername}/avatar", method = RequestMethod.GET)
     public void renderAvatar(HttpServletResponse response,
                              @PathVariable("encodedUsername") String encodedUsername) throws NotFoundException,
-            IOException {
+            IOException
+    {
         User user = userService.getByEncodedUsername(encodedUsername);
         byte[] avatar = user.getAvatar();
         response.setContentType("image/jpeg");

@@ -54,6 +54,12 @@
             <label><spring:message code="label.lastname"/></label>
             <span><c:out value="${user.lastName}"/></span>
         </li>
+		<c:if test="${user.signature != null}">
+			<li>
+				<label><spring:message code="label.signature"/></label>
+				<span><c:out value="${user.signature}"/></span>
+			</li>
+		</c:if>
         <li>
             <label><spring:message code="label.lastlogin"/></label>
             <span>

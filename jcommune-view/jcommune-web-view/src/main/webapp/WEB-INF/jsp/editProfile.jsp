@@ -69,6 +69,11 @@
                 <td><form:input path="currentUserPassword" size="25" type="password"/></td>
                 <td><form:errors path="currentUserPassword" cssClass="error"/></td>
             </tr>
+			<tr>
+                <td><label><spring:message code="label.signature"/></label></td>
+                <td><form:input path="signature" size="50" value="${editedUser.signature}"/></td>
+                <td><form:errors path="signature" cssClass="error"/></td>
+            </tr>
             <tr>
                 <td></td>
                 <td><form:input path="avatar" type="file"/></td>

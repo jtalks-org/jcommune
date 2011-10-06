@@ -39,7 +39,8 @@ public class User extends Entity implements UserDetails {
     private String username;
     private String email;
     private String password;
-    private DateTime lastLogin;
+    private DateTime lastLogin;	
+    private String signature;
     private String role = "ROLE_USER";
     private String encodedUsername;
     private byte[] avatar;
@@ -256,5 +257,21 @@ public class User extends Entity implements UserDetails {
      */
     protected void setEncodedUsername(String encodedUsername) {
         this.encodedUsername = encodedUsername;
+    }
+	
+	/**
+     * @return user signature
+     */
+    public String getSignature()
+    {
+        return signature;
+    }
+
+    /**
+     * @param signature user signature
+     */
+    public void setSignature(String signature)
+    {
+        this.signature = signature;
     }
 }

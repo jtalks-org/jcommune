@@ -159,6 +159,11 @@
                                      pattern="dd MMM yyyy HH:mm"/>
                     </c:if>
                 </p>
+				<c:if test="${post.userCreated.signature!=null}">
+				<p class="forum_message_cell_signature">
+                    <c:out value="${post.userCreated.signature}"/>                 
+                </p>
+				</c:if>
             </div>
         </li>
     </c:forEach>

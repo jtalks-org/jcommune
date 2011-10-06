@@ -26,7 +26,8 @@ import javax.validation.constraints.Pattern;
  * @author Osadchuck Eugeny
  * @see User
  */
-public abstract class UserDto {
+public abstract class UserDto
+{
 
     @NotBlank(message = "{validation.email.notblank}")
     @Pattern(regexp = "^[a-zA-Z0-9_'+*/^&=?~{}\\-](\\.?[a-zA-Z0-9_'+*/^&=?~{}\\-])" +
@@ -36,6 +37,7 @@ public abstract class UserDto {
     private String email;
     private String firstName;
     private String lastName;
+    private String signature;
 
 
     /**
@@ -43,7 +45,8 @@ public abstract class UserDto {
      *
      * @return email
      */
-    public String getEmail() {
+    public String getEmail()
+    {
         return email;
     }
 
@@ -52,7 +55,8 @@ public abstract class UserDto {
      *
      * @param email email
      */
-    public void setEmail(String email) {
+    public void setEmail(String email)
+    {
         this.email = email;
     }
 
@@ -61,7 +65,8 @@ public abstract class UserDto {
      *
      * @return first name
      */
-    public String getFirstName() {
+    public String getFirstName()
+    {
         return firstName;
     }
 
@@ -70,7 +75,8 @@ public abstract class UserDto {
      *
      * @param firstName first name
      */
-    public void setFirstName(String firstName) {
+    public void setFirstName(String firstName)
+    {
         this.firstName = firstName;
     }
 
@@ -79,7 +85,8 @@ public abstract class UserDto {
      *
      * @return last name
      */
-    public String getLastName() {
+    public String getLastName()
+    {
         return lastName;
     }
 
@@ -88,7 +95,24 @@ public abstract class UserDto {
      *
      * @param lastName last name
      */
-    public void setLastName(String lastName) {
+    public void setLastName(String lastName)
+    {
         this.lastName = lastName;
+    }
+
+    /**
+     * @return signature
+     */
+    public String getSignature()
+    {
+        return signature;
+    }
+
+    /**
+     * @param signature user signature
+     */
+    public void setSignature(String signature)
+    {
+        this.signature = signature;
     }
 }

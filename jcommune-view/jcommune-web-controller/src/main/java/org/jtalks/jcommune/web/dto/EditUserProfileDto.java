@@ -27,9 +27,11 @@ import org.springframework.web.multipart.MultipartFile;
  * @author Osadchuck Eugeny
  */
 @Matches(field = "newUserPassword", verifyField = "newUserPasswordConfirm", message = "{password_not_matches}")
-public class EditUserProfileDto extends UserDto {
+public class EditUserProfileDto extends UserDto
+{
 
     private String currentUserPassword;
+    private String signature;
 
     @Length(min = 4, max = 20)
     private String newUserPassword;
@@ -40,7 +42,8 @@ public class EditUserProfileDto extends UserDto {
     /**
      * Default constructor
      */
-    public EditUserProfileDto() {
+    public EditUserProfileDto()
+    {
         super();
     }
 
@@ -50,16 +53,19 @@ public class EditUserProfileDto extends UserDto {
      *
      * @param user - copying source
      */
-    public EditUserProfileDto(User user) {
+    public EditUserProfileDto(User user)
+    {
         this.setFirstName(user.getFirstName());
         this.setLastName(user.getLastName());
         this.setEmail(user.getEmail());
+        this.setSignature(user.getSignature());
     }
 
     /**
      * @return - current user password
      */
-    public String getCurrentUserPassword() {
+    public String getCurrentUserPassword()
+    {
         return currentUserPassword;
     }
 
@@ -68,14 +74,16 @@ public class EditUserProfileDto extends UserDto {
      *
      * @param currentUserPassword - current user password
      */
-    public void setCurrentUserPassword(String currentUserPassword) {
+    public void setCurrentUserPassword(String currentUserPassword)
+    {
         this.currentUserPassword = currentUserPassword;
     }
 
     /**
      * @return - new user password
      */
-    public String getNewUserPassword() {
+    public String getNewUserPassword()
+    {
         return newUserPassword;
     }
 
@@ -84,14 +92,16 @@ public class EditUserProfileDto extends UserDto {
      *
      * @param newUserPassword - new user password
      */
-    public void setNewUserPassword(String newUserPassword) {
+    public void setNewUserPassword(String newUserPassword)
+    {
         this.newUserPassword = newUserPassword;
     }
 
     /**
      * @return - new user password confirmation
      */
-    public String getNewUserPasswordConfirm() {
+    public String getNewUserPasswordConfirm()
+    {
         return newUserPasswordConfirm;
     }
 
@@ -100,14 +110,16 @@ public class EditUserProfileDto extends UserDto {
      *
      * @param newUserPasswordConfirm - new user password confirmation
      */
-    public void setNewUserPasswordConfirm(String newUserPasswordConfirm) {
+    public void setNewUserPasswordConfirm(String newUserPasswordConfirm)
+    {
         this.newUserPasswordConfirm = newUserPasswordConfirm;
     }
 
     /**
      * @return - user avatar
      */
-    public MultipartFile getAvatar() {
+    public MultipartFile getAvatar()
+    {
         return avatar;
     }
 
@@ -116,8 +128,24 @@ public class EditUserProfileDto extends UserDto {
      *
      * @param avatar - user avatar
      */
-    public void setAvatar(MultipartFile avatar) {
+    public void setAvatar(MultipartFile avatar)
+    {
         this.avatar = avatar;
     }
 
+    /**
+     * @return signature
+     */
+    public String getSignature()
+    {
+        return signature;
+    }
+
+    /**
+     * @param signature user signature
+     */
+    public void setSignature(String signature)
+    {
+        this.signature = signature;
+    }
 }
