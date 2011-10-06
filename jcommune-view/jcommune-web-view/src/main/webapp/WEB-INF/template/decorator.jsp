@@ -63,7 +63,8 @@
                         key="label.logout"/></a></li>
             </sec:authorize>
             <sec:authorize access="hasRole('ROLE_ANONYMOUS')">
-                <li class="no_border"><a href="${pageContext.request.contextPath}/login.html"><fmt:message key="label.signin"/></a>
+                <li class="no_border"><a href="${pageContext.request.contextPath}/login.html"><fmt:message
+                        key="label.signin"/></a>
                 </li>
                 <li><a href="${pageContext.request.contextPath}/registration.html"><fmt:message
                         key="label.signup"/></a></li>
@@ -76,51 +77,7 @@
     </div>
 
 
-    <div align="center">
-        <table cellspacing=0 cellpadding=5 width=100% border=0>
-            <tr>
-                <td bgcolor="#003366"></td>
-            </tr>
-            <tr>
-                <td class="background">
-                    <c:forEach var="breadcrumb" items="${breadcrumbList}">
-                        <c:choose>
-                            <%--create root breadcrumb--%>
-                            <c:when test="${breadcrumb.breadcrumbLocationValue == 'Forum'}">
-                                <a href="${pageContext.request.contextPath}/${breadcrumb.breadcrumbLocation.name}">
-                                    <span class="nav"> <fmt:message key="label.forum"/> </span>
-                                </a>
-                            </c:when>
-                            <%--create inbox, outbox, drafts breadcrumbs--%>
-                            <c:when test="${breadcrumb.breadcrumbLocation.name == '/pm/inbox'
-                        || breadcrumb.breadcrumbLocation.name == '/pm/outbox'
-                        || breadcrumb.breadcrumbLocation.name == '/pm/drafts'
-                        || breadcrumb.breadcrumbLocation.name == '/topics/recent'}">
-                                <%--TODO Need to define standard URI for most location - ${Entity type}/${Entity ID}.html--%>
-                                <%--TODO Need to remove '/pm/' from controller mapping.html--%>
-                                <a href="${pageContext.request.contextPath}${breadcrumb.breadcrumbLocation.name}">
-                                    <span class="nav"> <c:out value="${breadcrumb.breadcrumbLocationValue}"/> </span>
-                                </a>
-                            </c:when>
-                            <%--create section, topic, branch, post breadcrumb--%>
-                            <c:otherwise>
-                                <a href="${pageContext.request.contextPath}/${breadcrumb.breadcrumbLocation.name}/${breadcrumb.id}">
-                                    <span class="nav"> <c:out value="${breadcrumb.breadcrumbLocationValue}"/> </span>
-                                </a>
-                            </c:otherwise>
-                        </c:choose>
-                    </c:forEach>
-                </td>
-            </tr>
-            <tr>
-                <td bgcolor="003366"></td>
 
-            </tr>
-
-        </table>
-        &nbsp;
-
-    </div>
     <decorator:body/>
     <div class="footer"> <!-- Подвал -->
         <div class="copyright">

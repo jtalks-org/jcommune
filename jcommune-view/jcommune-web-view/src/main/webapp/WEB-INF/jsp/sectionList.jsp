@@ -18,6 +18,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -44,9 +45,8 @@
         <div class="forum_misc_info">
             форум программистов
         </div>
-        <a class="forums_list" href="#" title="Список форумов">Список форумов</a>
 
-
+        <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
         <c:forEach var="section" items="${sectionList}">
             <!-- Начало группы форумов -->

@@ -20,6 +20,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="joda" uri="http://www.joda.org/joda/time/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <html>
@@ -27,6 +28,9 @@
     <title>Forum</title>
 </head>
 <body>
+
+<jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
+
     <table border="1" width="100%">
         <tr>
             <td width="80%"><spring:message code="label.topic"/></td>

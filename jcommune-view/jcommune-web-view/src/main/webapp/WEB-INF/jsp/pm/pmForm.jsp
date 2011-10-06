@@ -17,6 +17,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -35,10 +36,8 @@
 
         <div class="forum_misc_info">
         </div>
-        <a class="forums_list" href="#" title="Список форумов">Список форумов</a>
-        <span class="arrow"> > </span>
-        <a class="forums_list" href="#" title="Для новичков">Личные сообщения</a>
 
+        <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
         <jsp:include page="pmNavigationMenu.jsp"/>
         <form:form action="${pageContext.request.contextPath}/pm/new.html" modelAttribute="privateMessageDto"

@@ -16,7 +16,7 @@
 --%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="jtalks" uri="http://www.jtalks.org.org/tags/form" %>
+<%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
@@ -42,9 +42,8 @@
             <div class="forum_misc_info">
                 Ответ!
             </div>
-            <a class="forums_list" href="#" title="Список форумов">Список форумов</a>
-            <span class="arrow"> > </span>
-            <a class="forums_list" href="#" title="Для новичков">Для новичков</a>
+
+            <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
 
             <!-- Начало группы форумов -->

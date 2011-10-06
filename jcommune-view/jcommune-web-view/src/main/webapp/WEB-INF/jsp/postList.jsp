@@ -19,6 +19,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="joda" uri="http://www.joda.org/joda/time/tags" %>
+<%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 
@@ -60,10 +61,8 @@
     </a>
 </c:if>
 &nbsp; &nbsp; &nbsp;
-<a class="forums_list" href="#" title="Список форумов">Список форумов</a>
-<span class="arrow"> > </span>
-<a class="forums_list" href="#" title="Для новичков">Для новичков</a>
 
+<jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
 <!-- Начало группы форумов -->
 <div class="forum_header_table"> <!-- Шапка топика -->
@@ -231,8 +230,8 @@
     </a>
 </c:if>
 &nbsp; &nbsp; &nbsp;
-<a class="forums_list" href="#" title="Список форумов">Список форумов</a>
-<span class="arrow"> > </span><a class="forums_list" href="#" title="Для новичков">Для новичков</a>
+
+<jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
 <div class="forum_misc_info">
     <spring:message code="label.page"/> <c:out value="${page}"/> <spring:message code="label.of"/> <c:out
