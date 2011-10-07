@@ -40,6 +40,7 @@ public class User extends Entity implements UserDetails {
     private String email;
     private String password;
     private DateTime lastLogin;
+    private String signature;
     private String role = "ROLE_USER";
     private String encodedUsername;
     private byte[] avatar;
@@ -147,14 +148,14 @@ public class User extends Entity implements UserDetails {
      * @return user avatar
      */
     public byte[] getAvatar() {
-        return (avatar!=null)?avatar.clone():avatar;
+        return (avatar != null) ? avatar.clone() : avatar;
     }
 
     /**
      * @param avatar user avatar
      */
     public void setAvatar(byte[] avatar) {
-        this.avatar = (avatar!=null)?avatar.clone():null;
+        this.avatar = (avatar != null) ? avatar.clone() : null;
     }
 
 
@@ -256,5 +257,19 @@ public class User extends Entity implements UserDetails {
      */
     protected void setEncodedUsername(String encodedUsername) {
         this.encodedUsername = encodedUsername;
+    }
+
+    /**
+     * @return user signature
+     */
+    public String getSignature() {
+        return signature;
+    }
+
+    /**
+     * @param signature user signature
+     */
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 }

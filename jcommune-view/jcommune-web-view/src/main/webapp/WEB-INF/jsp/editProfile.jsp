@@ -19,6 +19,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="joda" uri="http://www.joda.org/joda/time/tags" %>
+<%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <sec:authentication property="principal.username" var="auth" scope="request"/>
@@ -28,6 +29,9 @@
           type=text/css rel=stylesheet>
 </head>
 <body>
+
+<jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
+
 <div id="editUserDetails">
     <form:form id="editProfileForm" name="editProfileForm"
                action="${pageContext.request.contextPath}/users/update"
@@ -68,6 +72,11 @@
                 <td><label><spring:message code="label.currentPassword"/></label></td>
                 <td><form:input path="currentUserPassword" size="25" type="password"/></td>
                 <td><form:errors path="currentUserPassword" cssClass="error"/></td>
+            </tr>
+            <tr>
+                <td><label><spring:message code="label.signature"/></label></td>
+                <td><form:input path="signature" size="50" value="${editedUser.signature}"/></td>
+                <td><form:errors path="signature" cssClass="error"/></td>
             </tr>
             <tr>
                 <td></td>

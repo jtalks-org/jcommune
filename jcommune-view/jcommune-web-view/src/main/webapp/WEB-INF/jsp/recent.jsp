@@ -19,6 +19,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="joda" uri="http://www.joda.org/joda/time/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <html>
@@ -26,6 +27,9 @@
     <title>Forum</title>
 </head>
 <body>
+
+<jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
+
 <table border="1" width="100%">
     <tr>
         <td width="80%"><spring:message code="label.topic"/></td>
@@ -38,15 +42,15 @@
             <td>
                 <c:choose>
                     <c:when test="${topic.announcement=='true'}">
-                        <div class="announcement"><a href="${pageContext.request.contextPath}/topics/${topic.id}">
+                        <div class="announcement"><a href="${pageContext.request.contextPath}/topics/${topic.id}.html">
                             <spring:message code="label.marked_as_announcement"/><c:out value="${topic.title}"/></a>
                         </div>
                     </c:when>
                     <c:when test="${topic.sticked=='true'}">
-                        <div class="sticked"><a href="${pageContext.request.contextPath}/topics/${topic.id}">
+                        <div class="sticked"><a href="${pageContext.request.contextPath}/topics/${topic.id}.html">
                             <spring:message code="label.marked_as_sticked"/><c:out value="${topic.title}"/></a></div>
                     </c:when>
-                    <c:otherwise><a href="${pageContext.request.contextPath}/topics/${topic.id}">
+                    <c:otherwise><a href="${pageContext.request.contextPath}/topics/${topic.id}.html">
                         <c:out value="${topic.title}"/></a>
                     </c:otherwise>
                 </c:choose>

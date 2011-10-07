@@ -18,6 +18,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@taglib prefix="joda" uri="http://www.joda.org/joda/time/tags" %>
+<%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -27,6 +28,9 @@
 </head>
 <body>
 <div align="left">
+
+    <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
+
     <jsp:include page="pmNavigationMenu.jsp"/>
     <div>
         <div style="float: left">

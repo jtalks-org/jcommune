@@ -44,9 +44,10 @@ public class TransactionalUserServiceTest {
     private static final String NEW_EMAIL = "new_username@mail.com";
     private static final String EMAIL = "username@mail.com";
     private static final String PASSWORD = "password";
+    private static final String SIGNATURE = "signature";
     private static final String WRONG_PASSWORD = "abracodabra";
     private static final String NEW_PASSWORD = "newPassword";
-    private byte[] avatar=new byte[10];
+    private byte[] avatar = new byte[10];
     private static final Long USER_ID = 999L;
 
     private UserService userService;
@@ -154,10 +155,10 @@ public class TransactionalUserServiceTest {
         when(securityService.getCurrentUser()).thenReturn(user);
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
 
-        byte[] newAvatar=new byte[12];
+        byte[] newAvatar = new byte[12];
 
         User editedUser = userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
-                PASSWORD, NEW_PASSWORD, newAvatar);
+                PASSWORD, NEW_PASSWORD, newAvatar, SIGNATURE);
 
         verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
@@ -165,7 +166,7 @@ public class TransactionalUserServiceTest {
         assertEquals(editedUser.getFirstName(), FIRST_NAME, "first name was not changed");
         assertEquals(editedUser.getLastName(), LAST_NAME, "last name was not changed");
         assertEquals(editedUser.getPassword(), NEW_PASSWORD, "new password was not accepted");
-        assertEquals(editedUser.getAvatar(),newAvatar,"avatar was not changed");
+        assertEquals(editedUser.getAvatar(), newAvatar, "avatar was not changed");
     }
 
     @Test
@@ -174,10 +175,10 @@ public class TransactionalUserServiceTest {
         when(securityService.getCurrentUser()).thenReturn(user);
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
 
-        byte[] newAvatar =null;
+        byte[] newAvatar = null;
 
         User editedUser = userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
-                PASSWORD, NEW_PASSWORD, newAvatar);
+                PASSWORD, NEW_PASSWORD, newAvatar, SIGNATURE);
 
         verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
@@ -185,7 +186,7 @@ public class TransactionalUserServiceTest {
         assertEquals(editedUser.getFirstName(), FIRST_NAME, "first name was not changed");
         assertEquals(editedUser.getLastName(), LAST_NAME, "last name was not changed");
         assertEquals(editedUser.getPassword(), NEW_PASSWORD, "new password was not accepted");
-        assertEquals(editedUser.getAvatar(),avatar,"avatar was changed");
+        assertEquals(editedUser.getAvatar(), avatar, "avatar was changed");
     }
 
     @Test
@@ -194,10 +195,10 @@ public class TransactionalUserServiceTest {
         when(securityService.getCurrentUser()).thenReturn(user);
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
 
-        byte[] newAvatar =new byte[0];
+        byte[] newAvatar = new byte[0];
 
         User editedUser = userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
-                PASSWORD, NEW_PASSWORD, newAvatar);
+                PASSWORD, NEW_PASSWORD, newAvatar, SIGNATURE);
 
         verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
@@ -214,7 +215,7 @@ public class TransactionalUserServiceTest {
         when(securityService.getCurrentUser()).thenReturn(user);
 
         userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
-                WRONG_PASSWORD, NEW_PASSWORD, avatar);
+                WRONG_PASSWORD, NEW_PASSWORD, avatar, SIGNATURE);
 
         verify(securityService).getCurrentUser();
         verify(userDao, never()).isUserWithEmailExist(anyString());
@@ -227,7 +228,7 @@ public class TransactionalUserServiceTest {
         when(securityService.getCurrentUser()).thenReturn(user);
 
         userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
-                null, NEW_PASSWORD, avatar);
+                null, NEW_PASSWORD, avatar, SIGNATURE);
 
         verify(securityService).getCurrentUser();
         verify(userDao, never()).isUserWithEmailExist(anyString());
@@ -241,7 +242,7 @@ public class TransactionalUserServiceTest {
         when(userDao.isUserWithEmailExist(NEW_EMAIL)).thenReturn(true);
 
         userService.editUserProfile(NEW_EMAIL, FIRST_NAME, LAST_NAME,
-                null, null, avatar);
+                null, null, avatar, SIGNATURE);
 
         verify(securityService).getCurrentUser();
         verify(userDao).isUserWithEmailExist(NEW_EMAIL);

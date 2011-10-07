@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
@@ -25,15 +26,15 @@ import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSessionContext;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
 
 
@@ -46,6 +47,8 @@ public class BranchControllerTest {
     private TopicService topicService;
     private BranchController controller;
     private BreadcrumbBuilder breadcrumbBuilder;
+
+    private static final DateTime now = new DateTime();
 
     @BeforeMethod
     public void init() {
@@ -76,7 +79,7 @@ public class BranchControllerTest {
         verify(topicService).getTopicsInBranchCount(branchId);
         verify(breadcrumbBuilder).getForumBreadcrumb(branchService.get(branchId));
 
-         //check result
+        //check result
         assertViewName(mav, "topicList");
         assertAndReturnModelAttributeOfType(mav, "topics", List.class);
 
@@ -99,18 +102,18 @@ public class BranchControllerTest {
         int pageSize = 5;
         int startIndex = page * pageSize - pageSize;
         //set expectations
-        when(topicService.getTopicsPastLastDayCount()).thenReturn(10);
-        when(topicService.getAllTopicsPastLastDay(startIndex, pageSize)).thenReturn(new ArrayList<Topic>());
+        when(topicService.getTopicsPastLastDayCount(now)).thenReturn(10);
+        when(topicService.getAllTopicsPastLastDay(startIndex, pageSize, now)).thenReturn(new ArrayList<Topic>());
 
 
         //invoke the object under test
-        ModelAndView mav = controller.show(page, pageSize);
+        ModelAndView mav = controller.show(page, pageSize, getFakeSession());
 
         //check expectations
-        verify(topicService).getAllTopicsPastLastDay(startIndex, pageSize);
-        verify(topicService).getTopicsPastLastDayCount();
+        verify(topicService).getAllTopicsPastLastDay(startIndex, pageSize, now);
+        verify(topicService).getTopicsPastLastDayCount(now);
 
-         //check result
+        //check result
         assertViewName(mav, "recent");
         assertAndReturnModelAttributeOfType(mav, "topics", List.class);
 
@@ -120,6 +123,96 @@ public class BranchControllerTest {
         Integer actualPage = assertAndReturnModelAttributeOfType(mav, "page", Integer.class);
         assertEquals((int) actualPage, page);
 
+    }
+
+    private HttpSession getFakeSession() {
+        return new HttpSession() {
+
+            @Override
+            public long getCreationTime() {
+                return 0;  //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public String getId() {
+                return null;  //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public long getLastAccessedTime() {
+                return 0;  //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public ServletContext getServletContext() {
+                return null;  //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void setMaxInactiveInterval(int i) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public int getMaxInactiveInterval() {
+                return 0;  //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public HttpSessionContext getSessionContext() {
+                return null;  //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public Object getAttribute(String s) {
+                return now;
+            }
+
+            @Override
+            public Object getValue(String s) {
+                return null;  //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public Enumeration getAttributeNames() {
+                return null;  //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public String[] getValueNames() {
+                return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void setAttribute(String s, Object o) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void putValue(String s, Object o) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void removeAttribute(String s) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void removeValue(String s) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void invalidate() {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public boolean isNew() {
+                return false;  //To change body of implemented methods use File | Settings | File Templates.
+            }
+        };
     }
 
 }

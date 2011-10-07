@@ -15,6 +15,7 @@
 
 package org.jtalks.jcommune.web.controller;
 
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -104,11 +106,15 @@ public final class BranchController {
      */
     @RequestMapping(value = "/topics/recent", method = RequestMethod.GET)
     public ModelAndView show(@RequestParam(value = PAGE, required = false) Integer page,
-                             @RequestParam(value = "size", required = false) Integer size) throws NotFoundException {
-        int topicsCount = topicService.getTopicsPastLastDayCount();
+                             @RequestParam(value = "size", required = false) Integer size, HttpSession session) throws NotFoundException {
+
+        DateTime lastLogin = (DateTime) session.getAttribute("lastlogin");
+        if (lastLogin == null)
+            lastLogin = new DateTime().minusDays(1);
+        int topicsCount = topicService.getTopicsPastLastDayCount(lastLogin);
         Pagination pag = new Pagination(page, size, topicsCount);
 
-        List<Topic> topics = topicService.getAllTopicsPastLastDay(pag.getStart(), pag.getPageSize());
+        List<Topic> topics = topicService.getAllTopicsPastLastDay(pag.getStart(), pag.getPageSize(), lastLogin);
 
         return new ModelAndView("recent")
                 .addObject("topics", topics)

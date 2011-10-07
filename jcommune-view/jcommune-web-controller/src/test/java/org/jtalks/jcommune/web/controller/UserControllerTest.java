@@ -212,7 +212,7 @@ public class UserControllerTest {
 
         when(userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), resizedAvatar)).thenReturn(user);
+                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE)).thenReturn(user);
 
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 

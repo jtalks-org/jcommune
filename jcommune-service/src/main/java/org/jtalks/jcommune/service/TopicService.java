@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service;
 
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -71,13 +72,13 @@ public interface TopicService extends EntityService<Topic> {
     /**
      * Get topic past last 24 hour.
      *
-     * @param start    start index of topic
-     * @param max      number of topics
+     * @param start start index of topic
+     * @param max   number of topics
      * @return list of {@code Topic} objects with size {@code max}
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
      */
-    List<Topic> getAllTopicsPastLastDay(int start, int max);
+    List<Topic> getAllTopicsPastLastDay(int start, int max, DateTime lastLogin);
 
     /**
      * Get number of topics in branch.
@@ -96,7 +97,7 @@ public interface TopicService extends EntityService<Topic> {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
      */
-    int getTopicsPastLastDayCount();
+    int getTopicsPastLastDayCount(DateTime lastLogin);
 
     /**
      * Update current topic with given title and body.
@@ -112,17 +113,18 @@ public interface TopicService extends EntityService<Topic> {
     /**
      * Update current topic with given title and body.
      *
-     * @param topicId   topic id
-     * @param topicName name of topic
-     * @param bodyText  body of topic
-     * @param topicWeight priority for sticked topic
-     * @param sticked flag for sticking a topic
+     * @param topicId      topic id
+     * @param topicName    name of topic
+     * @param bodyText     body of topic
+     * @param topicWeight  priority for sticked topic
+     * @param sticked      flag for sticking a topic
      * @param announcement flag, which set topic as announcement
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic not found
      */
     void saveTopic(long topicId, String topicName, String bodyText, int topicWeight,
                    boolean sticked, boolean announcement) throws NotFoundException;
+
     /**
      * Delete topic by id.
      *

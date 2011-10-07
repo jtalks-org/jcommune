@@ -16,49 +16,42 @@
 
 -->
 <!DOCTYPE hibernate-mapping PUBLIC
-  "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-  "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
-  <class name="Topic" table="TOPIC">
-    <cache usage="read-write"/>
-    <id column="TOPIC_ID" name="id" unsaved-value="0">
-      <generator class="native"/>
-    </id>
-    <property column="UUID" name="uuid" unique="true" not-null="true"/>
-    <property column="TITLE" name="title" not-null="true"/>
-    <property name="creationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
-              column="CREATION_DATE" not-null="true"/>
-    <property name="modificationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
-              column="MODIFICATION_DATE" not-null="false"/>
-    <property name="topicWeight" column="TOPIC_WEIGHT" not-null="true"/>
-    <property name="sticked" column="STICKED" not-null="true"/>
-    <property name="announcement" column="ANNOUNCEMENT" not-null="true"/>
+    <class name="Topic" table="TOPIC">
+        <cache usage="read-write"/>
+        <id column="TOPIC_ID" name="id" unsaved-value="0">
+            <generator class="native"/>
+        </id>
+        <property column="UUID" name="uuid" unique="true" not-null="true"/>
+        <property column="TITLE" name="title" not-null="true"/>
+        <property name="creationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
+                  column="CREATION_DATE" not-null="true"/>
+        <property name="modificationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
+                  column="MODIFICATION_DATE" not-null="false"/>
+        <property name="topicWeight" column="TOPIC_WEIGHT" not-null="true"/>
+        <property name="sticked" column="STICKED" not-null="true"/>
+        <property name="announcement" column="ANNOUNCEMENT" not-null="true"/>
 
-    <list name="posts" cascade="all-delete-orphan">
-      <cache usage="nonstrict-read-write"/>
-      <key column="TOPIC_ID" foreign-key="FK_TOPIC"/>
-      <index column="LIST_INDEX"/>
-      <one-to-many class="Post"/>
-    </list>
+        <list name="posts" cascade="all-delete-orphan">
+            <cache usage="nonstrict-read-write"/>
+            <key column="TOPIC_ID" foreign-key="FK_TOPIC"/>
+            <index column="LIST_INDEX"/>
+            <one-to-many class="Post"/>
+        </list>
 
-    <many-to-one name="topicStarter" column="TOPIC_STARTER" class="User" lazy="false"
-                 not-null="true" foreign-key="FK_TOPIC_STARTER"/>
-    <many-to-one name="branch" column="BRANCH_ID" class="Branch"
-                 not-null="false"/>
-  </class>
-  <sql-query name="getAllTopicsInBranch">
-    <return alias="TOPIC" class="Topic"/>
-    <![CDATA[SELECT topic.* FROM TOPIC as topic
+        <many-to-one name="topicStarter" column="TOPIC_STARTER" class="User" lazy="false"
+                     not-null="true" foreign-key="FK_TOPIC_STARTER"/>
+        <many-to-one name="branch" column="BRANCH_ID" class="Branch"
+                     not-null="false"/>
+    </class>
+    <sql-query name="getAllTopicsInBranch">
+        <return alias="TOPIC" class="Topic"/>
+        <![CDATA[SELECT topic.* FROM TOPIC as topic
              WHERE topic.branch_id = :branchId
              ORDER BY topic.sticked DESC, topic.topic_weight DESC, topic.modification_date DESC]]>
-  </sql-query>
-
-  <sql-query name="getAllTopicsPastLastDay">
-    <return alias="TOPIC" class="Topic"/>
-    <![CDATA[SELECT topic.* FROM TOPIC as topic
-             WHERE topic.MODIFICATION_DATE > DATE_ADD( NOW( ) , INTERVAL -1 DAY)
-             ORDER BY topic.modification_date DESC]]>
-  </sql-query>
+    </sql-query>
 
 
 </hibernate-mapping>

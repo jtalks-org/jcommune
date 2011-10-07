@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -129,8 +130,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    public List<Topic> getAllTopicsPastLastDay(int start, int max) {
-        return dao.getAllTopicsPastLastDay(start, max);
+    public List<Topic> getAllTopicsPastLastDay(int start, int max, DateTime lastLogin) {
+        return dao.getAllTopicsPastLastDay(start, max, lastLogin);
     }
 
     /**
@@ -148,8 +149,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    public int getTopicsPastLastDayCount() {
-        return dao.getTopicsPastLastDayCount();
+    public int getTopicsPastLastDayCount(DateTime lastLogin) {
+        return dao.getTopicsPastLastDayCount(lastLogin);
     }
 
     /**
@@ -197,5 +198,5 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
 
         securityService.deleteFromAcl(Topic.class, topicId);
         return branch;
-    }                    
+    }
 }

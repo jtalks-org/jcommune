@@ -16,7 +16,7 @@
 --%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="jtalks" uri="http://www.jtalks.org.org/tags/form" %>
+<%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -24,37 +24,38 @@
 <body>
 <div id="answer">
     <jtalks:form name="editForm" modelAttribute="topicDto" method="PUT"
-           action="${pageContext.request.contextPath}/topics/${topicId}?branchId=${branchId}">
+                 action="${pageContext.request.contextPath}/topics/${topicId}?branchId=${branchId}">
         <form:hidden path="id"/>
         <div>
-            <h2><spring:message code="h.edit_topic" /></h2>
+            <h2><spring:message code="h.edit_topic"/></h2>
 
             <form:label path="topicName"><spring:message code="label.topic"/></form:label>
             <form:input path="topicName" size="50"/>
             <form:errors path="topicName"/>
-            <br />
+            <br/>
             <form:label path="bodyText"><spring:message code="label.text"/></form:label>
             <form:textarea path="bodyText"/>
             <form:errors path="bodyText" cols="30" rows="10"/>
 
-	    <sec:authorize access="hasRole('ROLE_ADMIN')">
-	      <br />
-	      <spring:message code="label.sticked"/>
-	      <form:checkbox path="sticked" value="true"></form:checkbox>
-	      <form:errors path="sticked"/>
-	      <br />
-	      <form:label path="topicWeight"><spring:message code="label.weight"/></form:label>
-	      <form:input path="topicWeight" size="20"/>
-	      <form:errors path="topicWeight"/>
-	      <br />
-	      <spring:message code="label.announcement"/>
-	      <form:checkbox path="announcement" value="true"></form:checkbox>
-	      <form:errors path="announcement"/>
-	    </sec:authorize>
+            <sec:authorize access="hasRole('ROLE_ADMIN')">
+                <br/>
+                <spring:message code="label.sticked"/>
+                <form:checkbox path="sticked" value="true"></form:checkbox>
+                <form:errors path="sticked"/>
+                <br/>
+                <form:label path="topicWeight"><spring:message code="label.weight"/></form:label>
+                <form:input path="topicWeight" size="20"/>
+                <form:errors path="topicWeight"/>
+                <br/>
+                <spring:message code="label.announcement"/>
+                <form:checkbox path="announcement" value="true"></form:checkbox>
+                <form:errors path="announcement"/>
+            </sec:authorize>
 
             <div class="clear"></div>
 
-            <a href="${pageContext.request.contextPath}/topics/${topicId}" class="coolbutton" ><spring:message code='label.back'/></a>
+            <a href="${pageContext.request.contextPath}/topics/${topicId}" class="coolbutton"><spring:message
+                    code='label.back'/></a>
             <button type="submit" class="coolbutton"><spring:message code='label.save'/></button>
         </div>
     </jtalks:form>

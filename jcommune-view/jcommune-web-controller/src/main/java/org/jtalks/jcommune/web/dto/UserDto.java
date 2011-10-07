@@ -36,6 +36,7 @@ public abstract class UserDto {
     private String email;
     private String firstName;
     private String lastName;
+    private String signature;
 
 
     /**
@@ -90,5 +91,19 @@ public abstract class UserDto {
      */
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    /**
+     * @return signature
+     */
+    public String getSignature() {
+        return signature;
+    }
+
+    /**
+     * @param signature user signature
+     */
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 }
