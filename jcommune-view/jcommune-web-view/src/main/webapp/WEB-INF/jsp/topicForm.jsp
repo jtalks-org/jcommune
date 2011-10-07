@@ -23,7 +23,7 @@
 <head></head>
 <body>
 <div id="answer">
-    <jtalks:form name="editForm" modelAttribute="topicDto" method="PUT"
+    <jtalks:form name="editForm" modelAttribute="topicDto" method="POST"
                  action="${pageContext.request.contextPath}/topics/${topicId}?branchId=${branchId}">
         <form:hidden path="id"/>
         <div>

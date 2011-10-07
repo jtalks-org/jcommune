@@ -124,7 +124,7 @@ public class PostController {
      *          when topic, branch or post not found
      */
     @RequestMapping(value = "/posts/{postId}",
-            method = RequestMethod.PUT)
+            method = RequestMethod.POST)
     public ModelAndView save(@Valid @ModelAttribute PostDto postDto,
                              BindingResult result,
                              @RequestParam(TOPIC_ID) Long topicId,

@@ -27,11 +27,7 @@ import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -103,10 +99,10 @@ public final class TopicController {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
      */
-    @RequestMapping(value = "/branch/{branchId}/topic", method = RequestMethod.POST)
+    @RequestMapping(value = "/topics", method = RequestMethod.POST)
     public ModelAndView create(@Valid @ModelAttribute TopicDto topicDto,
                                BindingResult result,
-                               @PathVariable(BRANCH_ID) Long branchId) throws NotFoundException {
+                               @RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
         if (result.hasErrors()) {
             return new ModelAndView("newTopic")
                     .addObject(BRANCH_ID, branchId)
@@ -220,7 +216,7 @@ public final class TopicController {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic or branch not found
      */
-    @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.POST)
     public ModelAndView save(@Valid @ModelAttribute TopicDto topicDto,
                              BindingResult result,
                              @RequestParam(BRANCH_ID) Long branchId,
