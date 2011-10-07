@@ -404,6 +404,7 @@ public class UserControllerTest {
         dto.setLastName(LAST_NAME);
         dto.setCurrentUserPassword(PASSWORD);
         dto.setNewUserPassword(NEW_PASSWORD);
+        dto.setSignature(SIGNATURE);
         dto.setNewUserPasswordConfirm(NEW_PASSWORD);
         dto.setAvatar(avatar);
         return dto;
@@ -422,6 +423,7 @@ public class UserControllerTest {
         dto.setCurrentUserPassword(PASSWORD);
         dto.setNewUserPassword(NEW_PASSWORD);
         dto.setNewUserPasswordConfirm(NEW_PASSWORD);
+        dto.setSignature(SIGNATURE);
         dto.setAvatar(wrongFormatAvatar);
         return dto;
     }
