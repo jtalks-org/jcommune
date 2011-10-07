@@ -77,7 +77,7 @@
                 <table>
                     <tr>
                         <td width="100" height="100" align="center" valign="middle">
-                            <img src="${pageContext.request.contextPath}/show/${user.username}/avatar"/>
+                            <img src="${pageContext.request.contextPath}/${user.username}/avatar"/>
                         </td>
                     </tr>
                 </table>

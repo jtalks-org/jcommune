@@ -92,7 +92,7 @@
             <table>
                 <tr>
                     <td width="100" height="100" align="center" valign="middle">
-                        <img src="${pageContext.request.contextPath}/show/${auth}/avatar"/><br>
+                        <img src="${pageContext.request.contextPath}/${auth}/avatar"/><br>
                     </td>
                 </tr>
                 <tr>

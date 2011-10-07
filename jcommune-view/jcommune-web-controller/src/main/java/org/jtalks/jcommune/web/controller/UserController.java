@@ -223,7 +223,7 @@ public class UserController {
      * @throws NotFoundException - throws if user with given encodedUsername not found
      * @throws IOException       - throws if an output exception occurred
      */
-    @RequestMapping(value = "/show/{encodedUsername}/avatar", method = RequestMethod.GET)
+    @RequestMapping(value = "/{encodedUsername}/avatar", method = RequestMethod.GET)
     public void renderAvatar(HttpServletResponse response,
                              @PathVariable("encodedUsername") String encodedUsername) throws NotFoundException,
             IOException {
