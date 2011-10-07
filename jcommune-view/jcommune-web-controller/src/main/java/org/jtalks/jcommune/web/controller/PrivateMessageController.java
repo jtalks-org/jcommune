@@ -55,11 +55,11 @@ public class PrivateMessageController {
     private static final String DTO = "privateMessageDto";
 
     /**
-     * @param pmService the PrivateMessageService instance
+     * @param pmService         the PrivateMessageService instance
      * @param breadcrumbBuilder the object which provides actions on
-     * {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
-     * @param pmDtoBuilder the object which provides actions on
-     * {@link org.jtalks.jcommune.web.dto.PrivateMessageDtoBuilder} entity
+     *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
+     * @param pmDtoBuilder      the object which provides actions on
+     *                          {@link org.jtalks.jcommune.web.dto.PrivateMessageDtoBuilder} entity
      */
     @Autowired
     public PrivateMessageController(PrivateMessageService pmService,
@@ -75,7 +75,7 @@ public class PrivateMessageController {
      *
      * @return {@code ModelAndView} with added list of inbox messages
      */
-    @RequestMapping(value = "/pm/inbox", method = RequestMethod.GET)
+    @RequestMapping(value = "/inbox", method = RequestMethod.GET)
     public ModelAndView displayInboxPage() {
         return new ModelAndView("pm/inbox")
                 .addObject("pmList", pmService.getInboxForCurrentUser())
@@ -87,7 +87,7 @@ public class PrivateMessageController {
      *
      * @return {@code ModelAndView} with added list of outbox messages
      */
-    @RequestMapping(value = "/pm/outbox", method = RequestMethod.GET)
+    @RequestMapping(value = "/outbox", method = RequestMethod.GET)
     public ModelAndView displayOutboxPage() {
         return new ModelAndView("pm/outbox")
                 .addObject("pmList", pmService.getOutboxForCurrentUser())
@@ -115,7 +115,7 @@ public class PrivateMessageController {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when message not found
      */
-    @RequestMapping(value = "/pm/{pmId}/reply", method = RequestMethod.GET)
+    @RequestMapping(value = "/reply/{pmId}", method = RequestMethod.GET)
     public ModelAndView displayReplyPMPage(@PathVariable(PM_ID) Long id) throws NotFoundException {
         PrivateMessage pm = pmService.get(id);
         PrivateMessageDto object = pmDtoBuilder.getReplyDtoFor(pm);
@@ -133,7 +133,7 @@ public class PrivateMessageController {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when message not found
      */
-    @RequestMapping(value = "/pm/{pmId}/quote", method = RequestMethod.GET)
+    @RequestMapping(value = "/quote/{pmId}", method = RequestMethod.GET)
     public ModelAndView displayQuotePMPage(@PathVariable(PM_ID) Long id) throws NotFoundException {
         PrivateMessage pm = pmService.get(id);
         PrivateMessageDto object = pmDtoBuilder.getQuoteDtoFor(pm);
@@ -150,7 +150,7 @@ public class PrivateMessageController {
      * @param result result of {@link PrivateMessageDto} validation
      * @return redirect to /inbox on success or back to "/new_pm" on validation errors
      */
-    @RequestMapping(value = "/pm/new", method = RequestMethod.POST)
+    @RequestMapping(value = "/pm", method = RequestMethod.POST)
     public String send(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
         if (result.hasErrors()) {
             return PM_FORM;
@@ -165,7 +165,7 @@ public class PrivateMessageController {
             result.rejectValue("recipient", "label.wrong_recipient");
             return PM_FORM;
         }
-        return "redirect:/pm/outbox.html";
+        return "redirect:/outbox";
     }
 
     /**
@@ -177,7 +177,7 @@ public class PrivateMessageController {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when message not found
      */
-    @RequestMapping(value = "/pm/{folder}/{pmId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{folder}/{pmId}", method = RequestMethod.GET)
     public ModelAndView show(@PathVariable("folder") String folder,
                              @PathVariable(PM_ID) Long id) throws NotFoundException {
 
@@ -204,7 +204,7 @@ public class PrivateMessageController {
      *
      * @return {@code ModelAndView} with list of messages
      */
-    @RequestMapping(value = "/pm/drafts", method = RequestMethod.GET)
+    @RequestMapping(value = "/drafts", method = RequestMethod.GET)
     public ModelAndView displayDraftsPage() {
         return new ModelAndView("pm/drafts")
                 .addObject("pmList", pmService.getDraftsFromCurrentUser())
@@ -245,6 +245,6 @@ public class PrivateMessageController {
             result.rejectValue("recipient", "label.wrong_recipient");
             return PM_FORM;
         }
-        return "redirect:/pm/drafts.html";
+        return "redirect:/drafts";
     }
 }

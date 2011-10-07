@@ -62,14 +62,14 @@
                 <tr>
                     <td>
                         <form:form
-                                action="${pageContext.request.contextPath}/pm/${pm.id}/reply.html"
+                                action="${pageContext.request.contextPath}/reply/${pm.id}"
                                 method="GET">
                             <input type="submit" value="<spring:message code="label.reply"/>"/>
                         </form:form>
                     </td>
                     <td>
                         <form:form
-                                action="${pageContext.request.contextPath}/pm/${pm.id}/quote.html"
+                                action="${pageContext.request.contextPath}/quote/${pm.id}"
                                 method="GET">
                             <input type="submit" value="<spring:message code="label.quote"/>"/>
                         </form:form>

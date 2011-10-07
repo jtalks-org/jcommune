@@ -26,7 +26,7 @@
 <div class="wrap answer_page">
     <!-- Начало всех форумов -->
     <div class="all_forums">
-        <jtalks:form action="${pageContext.request.contextPath}/branch/${branchId}/topic.html"
+        <jtalks:form action="${pageContext.request.contextPath}/branch/${branchId}/topic"
                      modelAttribute="topicDto"
                      method="POST">
             <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>

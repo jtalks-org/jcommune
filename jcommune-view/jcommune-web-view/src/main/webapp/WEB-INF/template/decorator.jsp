@@ -53,17 +53,17 @@
                                          title="Профиль"><fmt:message key="label.profile"/></a></li>
                 <li><a href="#" title="Настройки"><fmt:message
                         key="label.settings"/></a></li>
-                <li><a href="${pageContext.request.contextPath}/pm/inbox.html" title="Сообщения"><fmt:message
+                <li><a href="${pageContext.request.contextPath}/inbox" title="Сообщения"><fmt:message
                         key="label.pm"/>(${newPmCount})</a></li>
                 <li><a href="#" title="Пользователи"><fmt:message
                         key="label.users"/></a></li>
                 <li><a href="#" title="Группы"><fmt:message key="label.groups"/></a></li>
                 <li><a href="#" title="Для чайников"><fmt:message key="label.newbies"/></a></li>
-                <li><a href="${pageContext.request.contextPath}/logout.html" title="На выход"><fmt:message
+                <li><a href="${pageContext.request.contextPath}/logout" title="На выход"><fmt:message
                         key="label.logout"/></a></li>
             </sec:authorize>
             <sec:authorize access="hasRole('ROLE_ANONYMOUS')">
-                <li class="no_border"><a href="${pageContext.request.contextPath}/login.html"><fmt:message
+                <li class="no_border"><a href="${pageContext.request.contextPath}/login"><fmt:message
                         key="label.signin"/></a>
                 </li>
                 <li><a href="${pageContext.request.contextPath}/users/new"><fmt:message

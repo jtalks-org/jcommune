@@ -87,7 +87,7 @@ public class Breadcrumb {
     private String breadcrumbLocationValue;
 
     /**
-     * Create instance <code>Breadcrumb</code> and set it fields.
+     * Create instance {@code }Breadcrumb{@code } and set it fields.
      *
      * @param id                      location id
      * @param breadcrumbLocation      used for constructing location URL
@@ -120,7 +120,7 @@ public class Breadcrumb {
     /**
      * Set the location element breadcrumb URL.
      *
-     * @param breadcrumbLocation  the location element breadcrumb URL.
+     * @param breadcrumbLocation the location element breadcrumb URL.
      */
     public void setBreadcrumbLocation(BreadcrumbLocation breadcrumbLocation) {
         this.breadcrumbLocation = breadcrumbLocation;

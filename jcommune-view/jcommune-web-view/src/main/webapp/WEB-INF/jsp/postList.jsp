@@ -86,7 +86,7 @@
                     <%--    <table>
             <tr>
                 <td width="100" height="100" align="center" valign="middle">--%>
-                    <img src="${pageContext.request.contextPath}/show/${post.userCreated.encodedUsername}/avatar.html"
+                    <img src="${pageContext.request.contextPath}/show/${post.userCreated.encodedUsername}/avatar"
                          alt="Аватар" class="avatar"/>
                     <%-- </td>
                        </tr>

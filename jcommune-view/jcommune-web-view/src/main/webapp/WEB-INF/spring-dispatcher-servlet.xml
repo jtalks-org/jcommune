@@ -79,9 +79,9 @@
     </mvc:interceptors>
 
     <!-- simple pages -->
-    <mvc:view-controller path="/login.html" view-name="login"/>
+    <mvc:view-controller path="/login" view-name="login"/>
 
     <!-- static resources -->
-    <mvc:resources mapping="/resources/**" location="/resources/" />
+    <mvc:resources mapping="/resources/**" location="/resources/"/>
 
 </beans>

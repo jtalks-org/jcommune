@@ -44,13 +44,13 @@
             <c:forEach var="pm" items="${pmList}">
                 <tr>
                     <td><c:out value="${pm.userTo.username}"/></td>
-                    <td><a href="${pageContext.request.contextPath}/pm/drafts/${pm.id}.html">
+                    <td><a href="${pageContext.request.contextPath}/drafts/${pm.id}">
                         <c:out value="${pm.title}"/></a>
                     </td>
                     <td><joda:format value="${pm.creationDate}"
                                      locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
                                      pattern="dd MMM yyyy HH:mm"/></td>
-                    <td><a href="${pageContext.request.contextPath}/pm/${pm.id}/edit.html">
+                    <td><a href="${pageContext.request.contextPath}/pm/${pm.id}/edit">
                         <spring:message code="label.edit"/></a></td>
                 </tr>
             </c:forEach>

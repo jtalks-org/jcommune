@@ -40,7 +40,7 @@
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
         <jsp:include page="pmNavigationMenu.jsp"/>
-        <form:form action="${pageContext.request.contextPath}/pm/new.html" modelAttribute="privateMessageDto"
+        <form:form action="${pageContext.request.contextPath}/pm" modelAttribute="privateMessageDto"
                    method="POST"
                    onsubmit="this.getAttribute('submitted')" name="editForm">
             <ul class="forum_table"> <!-- Форма ответа -->
@@ -162,9 +162,9 @@
                    value="<spring:message code="label.preview"/>"/>
             <input id="post" type="submit" class="button" accesskey="s" tabindex="6" name="post"
                    value="<spring:message code="label.send"/>"
-                   onclick="document.editForm.action='${pageContext.request.contextPath}/pm/new.html'"/>
+                   onclick="document.editForm.action='${pageContext.request.contextPath}/pm'"/>
             <input id="save_pm" type="submit" class="button" name="save_pm" value="<spring:message code="label.save"/>"
-                   onclick="document.editForm.action='${pageContext.request.contextPath}/pm/save.html'"/>
+                   onclick="document.editForm.action='${pageContext.request.contextPath}/pm/save'"/>
         </form:form>
     </div>
     <div class="footer_buffer"></div>

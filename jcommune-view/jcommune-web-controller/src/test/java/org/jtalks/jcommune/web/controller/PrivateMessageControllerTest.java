@@ -33,16 +33,8 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -129,7 +121,7 @@ public class PrivateMessageControllerTest {
 
         String view = controller.send(dto, bindingResult);
 
-        assertEquals(view, "redirect:/pm/outbox.html");
+        assertEquals(view, "redirect:/outbox");
         verify(pmService).sendMessage(dto.getTitle(), dto.getBody(), dto.getRecipient());
     }
 
@@ -141,7 +133,7 @@ public class PrivateMessageControllerTest {
 
         String view = controller.send(dto, bindingResult);
 
-        assertEquals(view, "redirect:/pm/outbox.html");
+        assertEquals(view, "redirect:/outbox");
         verify(pmService).sendDraft(dto.getId(), dto.getTitle(), dto.getBody(), dto.getRecipient());
     }
 
@@ -350,7 +342,7 @@ public class PrivateMessageControllerTest {
 
         String view = controller.save(dto, bindingResult);
 
-        assertEquals(view, "redirect:/pm/drafts.html");
+        assertEquals(view, "redirect:/drafts");
         verify(pmService).saveDraft(dto.getId(), dto.getTitle(), dto.getBody(), dto.getRecipient());
     }
 

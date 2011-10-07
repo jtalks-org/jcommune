@@ -50,7 +50,7 @@
                     </c:otherwise>
                 </c:choose>
                 <td><c:out value="${pm.userTo.username}"/></td>
-                <td><a href="${pageContext.request.contextPath}/pm/outbox/${pm.id}.html">
+                <td><a href="${pageContext.request.contextPath}/outbox/${pm.id}">
                     <c:out value="${pm.title}"/></a></td>
                 <td><joda:format value="${pm.creationDate}"
                                  locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
