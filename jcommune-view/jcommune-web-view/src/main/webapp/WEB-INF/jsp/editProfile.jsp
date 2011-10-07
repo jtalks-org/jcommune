@@ -30,7 +30,7 @@
 <body>
 <div id="editUserDetails">
     <form:form id="editProfileForm" name="editProfileForm"
-               action="${pageContext.request.contextPath}/user/edit.html"
+               action="${pageContext.request.contextPath}/users/update"
                modelAttribute="editedUser" method="POST" enctype="multipart/form-data">
 
         <table>
@@ -77,7 +77,7 @@
         </table>
     </form:form>
 
-    <form action="${pageContext.request.contextPath}/user/remove/avatar.html" id="removeAvatarForm"
+    <form action="${pageContext.request.contextPath}/users/edit/avatar" id="removeAvatarForm"
           name="removeAvatarForm" method="POST">
         <c:if test="${editedUser.avatar.size>0}">
             <table>
@@ -99,7 +99,7 @@
     <table>
         <tr>
             <td>
-                <form:form action='${pageContext.request.contextPath}/user/${auth}.html' method="GET">
+                <form:form action='${pageContext.request.contextPath}/users/${auth}' method="GET">
                     <input type="submit" value="<spring:message code="label.back"/>"/>
                 </form:form>
             </td>

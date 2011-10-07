@@ -78,7 +78,7 @@
         <li class="forum_row"> <!-- Сообщение -->
             <div class="forum_userinfo">
                 <a class="username"
-                   href="${pageContext.request.contextPath}/user/${post.userCreated.encodedUsername}.html">
+                   href="${pageContext.request.contextPath}/users/${post.userCreated.encodedUsername}">
                     <c:out value="${post.userCreated.username}"/></a>
 
                 <div class="status">Онлайн</div>

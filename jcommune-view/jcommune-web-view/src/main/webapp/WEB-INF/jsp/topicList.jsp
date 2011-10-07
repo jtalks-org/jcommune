@@ -73,15 +73,17 @@
                     <c:choose>
                         <c:when test="${topic.announcement=='true'}">
                             <div class="forum_info"> <!-- Ссылка на тему -->
-                                <h4><span class="sticky"><spring:message code="label.marked_as_announcement"/> </span><a class="forum_link"
-                                                                               href="${pageContext.request.contextPath}/topic/${topic.id}.html">
+                                <h4><span class="sticky"><spring:message code="label.marked_as_announcement"/> </span><a
+                                        class="forum_link"
+                                        href="${pageContext.request.contextPath}/topics/${topic.id}">
                                     <c:out value="${topic.title}"/></a></h4>
                             </div>
                         </c:when>
                         <c:when test="${topic.sticked=='true'}">
                             <div class="forum_info"> <!-- Ссылка на тему -->
-                                <h4><span class="sticky"><spring:message code="label.marked_as_sticked"/> </span><a class="forum_link"
-                                                                                href="${pageContext.request.contextPath}/topic/${topic.id}.html">
+                                <h4><span class="sticky"><spring:message code="label.marked_as_sticked"/> </span><a
+                                        class="forum_link"
+                                        href="${pageContext.request.contextPath}/topics/${topic.id}">
                                     <c:out value="${topic.title}"/></a></h4>
                             </div>
                         </c:when>
@@ -98,20 +100,20 @@
                         26
                     </div>
                     <div class="forum_author">
-                        <a href="${pageContext.request.contextPath}/user/${topic.topicStarter.encodedUsername}.html"
+                        <a href="${pageContext.request.contextPath}/users/${topic.topicStarter.encodedUsername}"
                            title="Автор темы"><c:out value="${topic.topicStarter.username}"/></a>
                     </div>
                     <div class="forum_clicks">
                         953092
                     </div>
                     <div class="forum_last_message">
-                        <a href="${pageContext.request.contextPath}/topic/${topic.id}.html">
+                        <a href="${pageContext.request.contextPath}/topics/${topic.id}">
                             <joda:format value="${topic.lastPost.creationDate}"
                                          locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
                                          pattern="dd MMM yyyy HH:mm"/></a>
                         <br/>
                         <a class="last_message_user"
-                           href="${pageContext.request.contextPath}/user/${topic.lastPost.userCreated.encodedUsername}.html">
+                           href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
                             <c:out value="${topic.lastPost.userCreated.username}"/></a>
                         <a href="#"><img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
                                          alt="Последнее сообщение"/></a>
@@ -183,7 +185,8 @@
         <a class="forums_list" href="#" title="Для новичков">Для новичков</a>
 
         <div class="forum_misc_info">
-            <spring:message code="label.page"/> <c:out value="${page}"/> <spring:message code="label.of"/> <c:out value="${maxPages}"/>
+            <spring:message code="label.page"/> <c:out value="${page}"/> <spring:message code="label.of"/> <c:out
+                value="${maxPages}"/>
             <br/>
             Модераторы:
             <ul class="users_list">

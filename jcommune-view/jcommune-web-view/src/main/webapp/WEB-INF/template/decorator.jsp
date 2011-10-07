@@ -43,13 +43,13 @@
     <div class="top_line">
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
             Привет, <a class="currentusername"
-                       href="${pageContext.request.contextPath}/user/${encodedUserName}.html"
+                       href="${pageContext.request.contextPath}/users/${encodedUserName}"
                        title="Имя пользователя"><sec:authentication
                 property="principal.username"/></a>!
         </sec:authorize>
         <ul class="top_menu">
             <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                <li class="no_border"><a href="${pageContext.request.contextPath}/user/${encodedUserName}.html"
+                <li class="no_border"><a href="${pageContext.request.contextPath}/users/${encodedUserName}"
                                          title="Профиль"><fmt:message key="label.profile"/></a></li>
                 <li><a href="#" title="Настройки"><fmt:message
                         key="label.settings"/></a></li>
@@ -63,9 +63,10 @@
                         key="label.logout"/></a></li>
             </sec:authorize>
             <sec:authorize access="hasRole('ROLE_ANONYMOUS')">
-                <li class="no_border"><a href="${pageContext.request.contextPath}/login.html"><fmt:message key="label.signin"/></a>
+                <li class="no_border"><a href="${pageContext.request.contextPath}/login.html"><fmt:message
+                        key="label.signin"/></a>
                 </li>
-                <li><a href="${pageContext.request.contextPath}/registration.html"><fmt:message
+                <li><a href="${pageContext.request.contextPath}/users/new"><fmt:message
                         key="label.signup"/></a></li>
             </sec:authorize>
             <li class="flag no_border"><a href="?lang=ru"><img

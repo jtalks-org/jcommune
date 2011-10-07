@@ -38,6 +38,7 @@
         <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/recent"><spring:message
                 code="label.recent"/></a> <br/>
         <a class="forum_top_right_link" href="#">Сообщения без ответа</a>
+
         <h2><a class="heading" href="#">Java форум JTalks</a></h2>
         <br/>
 
@@ -47,13 +48,12 @@
         <a class="forums_list" href="#" title="Список форумов">Список форумов</a>
 
 
-
         <c:forEach var="section" items="${sectionList}">
             <!-- Начало группы форумов -->
             <div class="forum_header_table"> <!-- Шапка группы форумов -->
                 <div class="forum_header">
                     <h3><a class="forum_header_link"
-                           href="${pageContext.request.contextPath}/sections/${section.id}.html">
+                           href="${pageContext.request.contextPath}/sections/${section.id}">
                         <c:out value="${section.name}"/></a></h3>
                     <span class="forum_header_themes"><spring:message code="label.section.header.topics"/></span>
                     <span class="forum_header_messages"><spring:message code="label.section.header.messages"/></span>
@@ -66,7 +66,8 @@
                 <c:forEach var="branch" items="${section.branches}" varStatus="i">
                     <li class="forum_row"> <!-- Отдельный форум -->
                         <div class="forum_icon"> <!-- Иконка с кофе -->
-                            <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png" alt=""
+                            <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png"
+                                 alt=""
                                  title="Форум закрыт"/>
                         </div>
                         <div class="forum_info"> <!-- Информация о форуме -->
@@ -90,8 +91,9 @@
                             <span>Июл 04, 2011 23:54</span>
                             <br/>
                             <a href="#">Pahan</a>
-                            <a href="#"><img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
-                                             alt="Последнее сообщение"/></a>
+                            <a href="#"><img
+                                    src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
+                                    alt="Последнее сообщение"/></a>
                         </div>
                     </li>
                 </c:forEach>

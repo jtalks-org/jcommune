@@ -27,7 +27,7 @@
 
 <body>
 <div id="stylized" class="registration">
-    <form:form id="form" name="form" action='${pageContext.request.contextPath}/registration.html'
+    <form:form id="form" name="form" action='${pageContext.request.contextPath}/users'
                modelAttribute="newUser" method="POST">
         <h1><spring:message code="label.signup"/></h1>
 

@@ -17,11 +17,7 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
-import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
-import org.jtalks.jcommune.service.exceptions.InvalidImageException;
+import org.jtalks.jcommune.service.exceptions.*;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
@@ -33,11 +29,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
@@ -95,7 +87,7 @@ public class UserController {
         this.userService = userService;
         this.securityService = securityService;
         this.breadcrumbBuilder = breadcrumbBuilder;
-        this.imagePreprocessor=imagePreprocessor;
+        this.imagePreprocessor = imagePreprocessor;
     }
 
     /**
@@ -104,7 +96,7 @@ public class UserController {
      * @return {@code ModelAndView} with "registration" view and empty
      *         {@link RegisterUserDto} with name "newUser
      */
-    @RequestMapping(value = "/registration", method = RequestMethod.GET)
+    @RequestMapping(value = "/users/new", method = RequestMethod.GET)
     public ModelAndView registrationPage() {
         RegisterUserDto newUser = new RegisterUserDto();
         return new ModelAndView(REGISTRATION).addObject("newUser", newUser);
@@ -117,7 +109,7 @@ public class UserController {
      * @param result  result of {@link RegisterUserDto} validation
      * @return redirect to / if registration successful or back to "/registration" if failed
      */
-    @RequestMapping(value = "/registration", method = RequestMethod.POST)
+    @RequestMapping(value = "/users", method = RequestMethod.POST)
     public ModelAndView registerUser(@Valid @ModelAttribute("newUser") RegisterUserDto userDto, BindingResult result) {
         if (result.hasErrors()) {
             return new ModelAndView(REGISTRATION);
@@ -141,7 +133,7 @@ public class UserController {
      * @return user details view with {@link User} object
      * @throws NotFoundException if user with given id not found
      */
-    @RequestMapping(value = "/user/{encodedUsername}", method = RequestMethod.GET)
+    @RequestMapping(value = "/users/{encodedUsername}", method = RequestMethod.GET)
     public ModelAndView show(@PathVariable("encodedUsername") String encodedUsername) throws NotFoundException {
         User user = userService.getByEncodedUsername(encodedUsername);
         return new ModelAndView("userDetails")
@@ -155,7 +147,7 @@ public class UserController {
      * @return edit user profile page
      * @throws NotFoundException throws if current logged in user was not found
      */
-    @RequestMapping(value = "/user/edit", method = RequestMethod.GET)
+    @RequestMapping(value = "/users/edit", method = RequestMethod.GET)
     public ModelAndView editProfilePage() throws NotFoundException {
         User user = securityService.getCurrentUser();
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
@@ -175,7 +167,7 @@ public class UserController {
      * @throws NotFoundException - throws if current logged in user was not found
      * @throws IOException       - throws in case of access errors (if the temporary store fails)
      */
-    @RequestMapping(value = "/user/edit", method = RequestMethod.POST)
+    @RequestMapping(value = "/users/update", method = RequestMethod.POST)
     public ModelAndView editProfile(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
                                     BindingResult result) throws NotFoundException, IOException {
 
@@ -205,9 +197,8 @@ public class UserController {
             return new ModelAndView(EDIT_PROFILE);
         }
         return new ModelAndView(new StringBuilder()
-                .append("redirect:/user/")
-                .append(editedUser.getEncodedUsername())
-                .append(".html").toString());
+                .append("redirect:/users/")
+                .append(editedUser.getEncodedUsername()).toString());
     }
 
 
@@ -216,7 +207,7 @@ public class UserController {
      *
      * @return edit user profile page
      */
-    @RequestMapping(value = "/user/remove/avatar", method = RequestMethod.POST)
+    @RequestMapping(value = "/users/edit/avatar", method = RequestMethod.POST)
     public ModelAndView removeAvatarFromCurrentUser() {
         User user = securityService.getCurrentUser();
         userService.removeAvatarFromCurrentUser();

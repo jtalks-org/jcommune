@@ -14,7 +14,6 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
-<%@ page import="org.jtalks.jcommune.model.entity.Topic" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
@@ -27,46 +26,46 @@
     <title>Forum</title>
 </head>
 <body>
-    <table border="1" width="100%">
+<table border="1" width="100%">
+    <tr>
+        <td width="80%"><spring:message code="label.topic"/></td>
+        <td width="10%"><spring:message code="label.author"/></td>
+        <td width="10%"><spring:message code="label.date"/></td>
+    </tr>
+
+    <c:forEach var="topic" items="${topics}">
         <tr>
-            <td width="80%"><spring:message code="label.topic"/></td>
-            <td width="10%"><spring:message code="label.author"/></td>
-            <td width="10%"><spring:message code="label.date"/></td>
-        </tr>
-
-        <c:forEach var="topic" items="${topics}">
-            <tr>
-                <td>
-                    <c:choose>
-                        <c:when test="${topic.announcement=='true'}">
-                            <div class="announcement"><a href="${pageContext.request.contextPath}/topic/${topic.id}.html">
-                            <spring:message code="label.marked_as_announcement"/><c:out value="${topic.title}"/></a></div>
-                        </c:when>
-                        <c:when test="${topic.sticked=='true'}">
-                            <div class="sticked"><a href="${pageContext.request.contextPath}/topic/${topic.id}.html">
+            <td>
+                <c:choose>
+                    <c:when test="${topic.announcement=='true'}">
+                        <div class="announcement"><a href="${pageContext.request.contextPath}/topics/${topic.id}">
+                            <spring:message code="label.marked_as_announcement"/><c:out value="${topic.title}"/></a>
+                        </div>
+                    </c:when>
+                    <c:when test="${topic.sticked=='true'}">
+                        <div class="sticked"><a href="${pageContext.request.contextPath}/topics/${topic.id}">
                             <spring:message code="label.marked_as_sticked"/><c:out value="${topic.title}"/></a></div>
-                        </c:when>
-                        <c:otherwise><a href="${pageContext.request.contextPath}/topic/${topic.id}.html">
-                            <c:out value="${topic.title}"/></a>
-                        </c:otherwise>
-                    </c:choose>
-                    <div id="shortContent">
+                    </c:when>
+                    <c:otherwise><a href="${pageContext.request.contextPath}/topics/${topic.id}">
+                        <c:out value="${topic.title}"/></a>
+                    </c:otherwise>
+                </c:choose>
+                <div id="shortContent">
                     <c:out value="${topic.lastPost.shortContent}"/>
-                    </div>
-                </td>
-                <td>
-                    <a href="${pageContext.request.contextPath}/user/${topic.lastPost.userCreated.encodedUsername}.html">
-                        <c:out value="${topic.lastPost.userCreated.username}"/>
-                    </a>
-                </td>
-                <td><joda:format value="${topic.modificationDate}"
-                                 locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
-                                 pattern="dd MMM yyyy HH:mm"/></td>
-            </tr>
-        </c:forEach>
-    </table>
-    <br>
-
+                </div>
+            </td>
+            <td>
+                <a href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
+                    <c:out value="${topic.lastPost.userCreated.username}"/>
+                </a>
+            </td>
+            <td><joda:format value="${topic.modificationDate}"
+                             locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
+                             pattern="dd MMM yyyy HH:mm"/></td>
+        </tr>
+    </c:forEach>
+</table>
+<br>
 
 
 <div id="pagination">
