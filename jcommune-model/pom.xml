@@ -6,7 +6,7 @@
   <parent>
     <artifactId>jcommune</artifactId>
     <groupId>org.jtalks.jcommune</groupId>
-    <version>0.6-SNAPSHOT</version>
+    <version>0.7-SNAPSHOT</version>
   </parent>
   <artifactId>jcommune-model</artifactId>
   <name>${project.artifactId}</name>
@@ -117,8 +117,8 @@
   </build>
 
   <properties>
-    <jdbc.user>${env.JCOMMUNE_DB_USER}</jdbc.user>
-    <jdbc.pass>${env.JCOMMUNE_DB_PASS}</jdbc.pass>
+    <jdbc.user>root</jdbc.user>
+    <jdbc.pass>root</jdbc.pass>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <headerBaseDir>${basedir}/..</headerBaseDir>
   </properties>
