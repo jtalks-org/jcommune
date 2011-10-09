@@ -137,7 +137,6 @@ public class TransactionalTopicServiceTest {
         assertEquals(createdTopic.getTitle(), TOPIC_TITLE);
         assertEquals(createdTopic.getTopicStarter(), user);
         assertEquals(createdTopic.getBranch(), branch);
-        assertEquals(branch.topicCount(), 1, "Topic not added to branch");
         assertEquals(createdPost.getUserCreated(), user);
         assertEquals(createdPost.getPostContent(), ANSWER_BODY);
         verify(securityService).getCurrentUser();
@@ -241,7 +240,7 @@ public class TransactionalTopicServiceTest {
         Branch branchFromWhichTopicDeleted = topicService.deleteTopic(TOPIC_ID);
 
         assertEquals(branchFromWhichTopicDeleted, branch);
-        assertEquals(branch.topicCount(), 0);
+        assertEquals(branch.getTopicCount(), 0);
         verify(branchDao).update(branch);
         verify(securityService).deleteFromAcl(Topic.class, TOPIC_ID);
     }

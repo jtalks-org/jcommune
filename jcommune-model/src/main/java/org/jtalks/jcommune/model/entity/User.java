@@ -43,6 +43,7 @@ public class User extends Entity implements UserDetails {
     private String signature;
     private String role = "ROLE_USER";
     private String encodedUsername;
+    private int userPostCount;
     private byte[] avatar;
 
     /**
@@ -271,5 +272,20 @@ public class User extends Entity implements UserDetails {
      */
     public void setSignature(String signature) {
         this.signature = signature;
+    }
+
+    /**
+     * @return count post this user
+     */
+    public int getUserPostCount(){
+        return this.userPostCount;
+
+    }
+
+    /**
+     * @param userPostCount count posts this user to set
+     */
+    public void setUserPostCount(int userPostCount){
+        this.userPostCount = userPostCount;
     }
 }

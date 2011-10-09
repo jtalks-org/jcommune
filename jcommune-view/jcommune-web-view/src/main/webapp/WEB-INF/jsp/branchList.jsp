@@ -37,6 +37,9 @@
                         value="${branch.name}"/></a><br>
                     <span style="font-size: xx-small; "><c:out value="${branch.description}"/> </span>
                 </td>
+                <td>
+                      <c:out value="${branch.topicCount}"/>
+                </td>
             </tr>
         </c:forEach>
     </table>

@@ -89,4 +89,11 @@ public interface UserService extends EntityService<User> {
      */
     void removeAvatarFromCurrentUser();
 
+    /**
+     * Get count posts this user from database
+     * @param userCreated user created
+     * @return count count
+     */
+    int getCountPostOfUser(User userCreated);
+
 }

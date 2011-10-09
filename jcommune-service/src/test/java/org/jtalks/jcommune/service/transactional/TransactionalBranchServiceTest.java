@@ -111,4 +111,14 @@ public class TransactionalBranchServiceTest {
 
         branchService.getBranchesInSectionCount(SECTION_ID);
     }
+
+    @Test
+    public void testTransactionTopicInBranchCount() throws NotFoundException {
+        Branch branch = new Branch();
+        when(branchDao.getTopicInBranchCount(branch)).thenReturn(1);
+
+        assertEquals(branchService.getTopicInBranchCount(branch),1);
+
+        verify(branchDao).getTopicInBranchCount(branch);
+    }
 }

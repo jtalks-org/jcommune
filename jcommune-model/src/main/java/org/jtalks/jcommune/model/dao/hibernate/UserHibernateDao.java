@@ -71,4 +71,16 @@ public class UserHibernateDao extends ParentRepositoryImpl<User> implements User
                 .setString(0, email)
                 .uniqueResult()).intValue() != 0;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getCountPostOfUser(User userCreated){
+        return ((Number) getSession().getNamedQuery("getCountPostOfUser")
+                .setCacheable(true)
+                .setEntity("userCreated",userCreated)
+                .uniqueResult())
+                .intValue();
+    }
 }

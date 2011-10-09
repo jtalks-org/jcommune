@@ -47,4 +47,14 @@ public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch>
                 .setCacheable(true).setLong(0, sectionId).uniqueResult()).intValue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public int getTopicInBranchCount(Branch branch) {
+        return ((Number) getSession().getNamedQuery("getTopcInBranchCount")
+                .setCacheable(true)
+                .setEntity("branch", branch)
+                .uniqueResult())
+                .intValue();
+    }
 }

@@ -61,6 +61,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
             logger.info(msg);
             throw new NotFoundException(msg);
         }
+        user.setUserPostCount(dao.getCountPostOfUser(user));
         return user;
     }
 
@@ -75,6 +76,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
             logger.info(msg);
             throw new NotFoundException(msg);
         }
+        user.setUserPostCount(dao.getCountPostOfUser(user));
         return user;
     }
 
@@ -180,4 +182,11 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         user.setAvatar(null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getCountPostOfUser(User userCreated) {
+        return dao.getCountPostOfUser(userCreated);
+    }
 }

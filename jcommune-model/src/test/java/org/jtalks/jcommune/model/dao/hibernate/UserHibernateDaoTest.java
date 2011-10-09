@@ -16,7 +16,11 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -45,14 +49,17 @@ import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEqua
 public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
     @Autowired
     private UserDao dao;
+    private PostDao daoP;
     @Autowired
     private SessionFactory sessionFactory;
     private Session session;
+    private User user;
 
     @BeforeMethod
     public void setUp() throws Exception {
         session = sessionFactory.getCurrentSession();
         ObjectsFactory.setSession(session);
+        user = ObjectsFactory.getDefaultUser();
     }
 
     /*===== Common methods =====*/
@@ -213,6 +220,75 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
         assertFalse(result, "User exist");
     }
+
+    @Test
+    public void testDaoUserPostCountCreateNewPost() {
+        Post post = Post.createNewPost(user, "");
+        dao.saveOrUpdate(user);
+        session.save(post);
+
+        int result = dao.getCountPostOfUser(user);
+        assertEquals(result, 1);
+    }
+
+    @Test
+    public void testDaoUserPostCountDeleteBranch(){
+        Post post1 = Post.createNewPost(user,"");
+        Topic topic = new Topic(user,"");
+        Branch branch = ObjectsFactory.getDefaultBranch();
+
+        topic.addPost(post1);
+        branch.addTopic(topic);
+
+        dao.saveOrUpdate(user);
+        session.save(branch);
+
+        int result = dao.getCountPostOfUser(user);
+        assertEquals(result,1);
+
+        session.delete(branch);
+
+        result = dao.getCountPostOfUser(user);
+        assertEquals(result,0);
+    }
+
+    @Test
+    public void testDaoUserPostCountDeleteTopic(){
+        Post post1 = Post.createNewPost(user,"");
+        Topic topic = new Topic(user,"");
+        Branch branch = ObjectsFactory.getDefaultBranch();
+
+        topic.addPost(post1);
+        branch.addTopic(topic);
+
+        dao.saveOrUpdate(user);
+        session.save(branch);
+
+        int result = dao.getCountPostOfUser(user);
+        assertEquals(result,1);
+
+        branch.deleteTopic(topic);
+
+        result = dao.getCountPostOfUser(user);
+        assertEquals(result,0);
+    }
+
+    @Test
+    public void testDaoUserPostCountRemovePost(){
+        Post post = Post.createNewPost(user,"");
+
+        dao.saveOrUpdate(user);
+        session.save(post);
+
+        int result = dao.getCountPostOfUser(user);
+        assertEquals(result,1);
+
+        session.delete(post);
+
+        result = dao.getCountPostOfUser(user);
+        assertEquals(result, 0);
+    }
+
 
     private int getCount() {
         return ((Number) session.createQuery("select count(*) from User").uniqueResult()).intValue();

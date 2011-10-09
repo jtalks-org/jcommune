@@ -55,11 +55,13 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     @Autowired
     private BranchDao dao;
     private Session session;
+    Branch branch;
 
     @BeforeMethod
     public void setUp() throws Exception {
         session = sessionFactory.getCurrentSession();
         ObjectsFactory.setSession(session);
+        branch = ObjectsFactory.getDefaultBranch();
     }
 
     /*===== Common methods =====*/
@@ -196,5 +198,17 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         int count = dao.getBranchesInSectionCount(sectionId);
 
         assertEquals(count, 5);
+    }
+
+    @Test
+    public void testDaoTopicInBranchCount() {
+        Topic topic = ObjectsFactory.getDefaultTopic();
+        session.save(topic);
+        branch.addTopic(topic);
+        session.save(branch);
+
+        int result = dao.getTopicInBranchCount(branch);
+
+        assertEquals(result, 1);
     }
 }

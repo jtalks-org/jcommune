@@ -32,11 +32,12 @@ public class Branch extends Entity {
     private String description;
     private List<Topic> topics = new ArrayList<Topic>();
     private Section section;
+    private int topicCount;
 
     /**
      * Creates the Branch instance. All fields values are null.
      */
-    protected Branch() {
+    public Branch() {
     }
 
     /**
@@ -119,10 +120,20 @@ public class Branch extends Entity {
     }
 
     /**
-     * @return number of topics in branch
+     * @return count topics in branch
+      */
+     public int getTopicCount()
+    {
+        return this.topicCount;
+     }
+
+    /**
+     * @param topicCount count topics to set
      */
-    public int topicCount() {
-        return topics.size();
+    public void setTopicCount(int topicCount)
+    {
+        this.topicCount= topicCount;
+
     }
 
     /**

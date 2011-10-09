@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.dao.BranchDao;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Section;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -24,6 +26,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 /**
  * Displays to user page contains section list with related branch lists

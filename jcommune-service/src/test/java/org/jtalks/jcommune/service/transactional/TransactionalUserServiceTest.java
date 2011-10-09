@@ -300,4 +300,14 @@ public class TransactionalUserServiceTest {
         userService.removeAvatarFromCurrentUser();
         assertEquals(user.getAvatar(), null, "Avatar after remove should be null");
     }
+
+    @Test
+    public void testTransactionUserPostCount() throws NotFoundException {
+        User user = new User(USERNAME, EMAIL, PASSWORD);
+        when(userDao.getCountPostOfUser(user)).thenReturn(1);
+
+        assertEquals(userService.getCountPostOfUser(user),1);
+
+        verify(userDao).getCountPostOfUser(user);
+    }
 }

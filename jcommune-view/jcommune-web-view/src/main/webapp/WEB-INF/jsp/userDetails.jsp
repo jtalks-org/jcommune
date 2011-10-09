@@ -84,6 +84,10 @@
             </li>
         </c:if>
         <li>
+            <label><spring:message code="label.postcount"/></label>
+            <c:out value="${user.userPostCount}"/>
+        </li>
+        <li>
             <c:if test="${user.username == auth}">
                 <a href="${pageContext.request.contextPath}/users/edit">
                     <label>Edit</label>

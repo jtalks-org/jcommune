@@ -53,7 +53,15 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
         if (!sectionDao.isExist(sectionId)) {
             throw new NotFoundException("Section with id: " + sectionId + " not found");
         }
-        return dao.getBranchesInSection(sectionId);
+
+        List<Branch> branchList = dao.getBranchesInSection(sectionId);
+
+        for(Branch branch : branchList)
+        {
+            branch.setTopicCount(dao.getTopicInBranchCount(branch));
+        }
+
+        return branchList;
     }
 
     /**
@@ -65,5 +73,13 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
             throw new NotFoundException("Section with id: " + sectionId + " not found");
         }
         return dao.getBranchesInSectionCount(sectionId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getTopicInBranchCount(Branch branch){
+        return dao.getTopicInBranchCount(branch);
     }
 }

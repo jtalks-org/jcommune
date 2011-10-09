@@ -70,6 +70,15 @@ public class Post extends Entity {
     }
 
     /**
+     * Creates the new instance with the creationDate initialized with current time.***
+     *
+     * @return new Post instance
+     */
+    public static Post createNewPost(User userCreated, String postContent) {
+        return new Post(userCreated,postContent);
+    }
+
+    /**
      * @return the postDate
      */
     public DateTime getCreationDate() {
