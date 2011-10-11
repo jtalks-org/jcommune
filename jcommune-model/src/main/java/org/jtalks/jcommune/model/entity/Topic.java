@@ -40,6 +40,7 @@ public class Topic extends Entity {
     private boolean announcement;
     private List<Post> posts = new ArrayList<Post>();
     private Branch branch;
+    private int postCount;
 
 
     /**
@@ -282,5 +283,21 @@ public class Topic extends Entity {
      */
     public void setAnnouncement(boolean announcement) {
         this.announcement = announcement;
+    }
+
+    /**
+     * Get count of post in topic.
+     *
+     * @return count of post
+     */
+    public int getPostCount(){
+        return posts.size();
+    }
+
+    /**
+     * @param postCount number of post
+     */
+    public void setPostCount(int postCount){
+        this.postCount = postCount;
     }
 }

@@ -83,7 +83,7 @@
                             </p>
                         </div>
                         <div class="forum_themes">
-                            26
+                            <c:out value="${section.branchCount}"/>
                         </div>
                         <div class="forum_messages">
                             6574

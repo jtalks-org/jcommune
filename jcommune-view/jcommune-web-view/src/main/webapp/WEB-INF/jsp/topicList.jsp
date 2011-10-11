@@ -98,7 +98,7 @@
                         </c:otherwise>
                     </c:choose>
                     <div class="forum_answers">
-                        26
+                        <c:out value="${topic.postCount}"/>
                     </div>
                     <div class="forum_author">
                         <a href="${pageContext.request.contextPath}/user/${topic.topicStarter.encodedUsername}"

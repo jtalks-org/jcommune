@@ -30,6 +30,7 @@ public class Section extends Entity {
     private String description;
     private Long position;
     private List<Branch> branches = new ArrayList<Branch>();
+    private int branchCount;
 
     /**
      * Creates the Section instance. All fields values are null.
@@ -125,5 +126,21 @@ public class Section extends Entity {
     public void addBranch(Branch branch) {
         branch.setSection(this);
         this.branches.add(branch);
+    }
+
+    /**
+     * Get count of branch in section.
+     *
+     * @return count of branch
+     */
+    public int getBranchCount(){
+        return branches.size();
+    }
+
+    /**
+     * @param branchCount number of branches
+     */
+    public void setBranchCount(int branchCount){
+        this.branchCount = branchCount;
     }
 }
