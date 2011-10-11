@@ -101,7 +101,7 @@
                         26
                     </div>
                     <div class="forum_author">
-                        <a href="${pageContext.request.contextPath}/user/${topic.topicStarter.encodedUsername}"
+                        <a href="${pageContext.request.contextPath}/users/${topic.topicStarter.encodedUsername}"
                            title="Автор темы"><c:out value="${topic.topicStarter.username}"/></a>
                     </div>
                     <div class="forum_clicks">
@@ -114,7 +114,7 @@
                                          pattern="dd MMM yyyy HH:mm"/></a>
                         <br/>
                         <a class="last_message_user"
-                           href="${pageContext.request.contextPath}/user/${topic.lastPost.userCreated.encodedUsername}">
+                           href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
                             <c:out value="${topic.lastPost.userCreated.username}"/></a>
                         <a href="#"><img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
                                          alt="Последнее сообщение"/></a>

@@ -183,8 +183,8 @@ public final class TopicController {
     }
 
     /**
-     * Method handles GET requests with URI /branch/{branchId}/topic/{topicId}
-     * Displays to user a list of messages from the chosen theme with pagination.
+     * Method handles GET requests with URI /topic/{topicId}/edit
+     * Get edit topic view.
      *
      * @param topicId  the id of selected Topic
      * @param branchId the id of selected topic branch
