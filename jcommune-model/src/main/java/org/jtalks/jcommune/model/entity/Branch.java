@@ -124,7 +124,7 @@ public class Branch extends Entity {
       */
      public int getTopicCount()
     {
-        return this.topicCount;
+        return topics.size();
      }
 
     /**
