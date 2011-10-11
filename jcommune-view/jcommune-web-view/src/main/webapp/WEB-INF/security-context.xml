@@ -23,15 +23,34 @@
        ">
     <!-- Http Security -->
     <security:http auto-config="true" use-expressions="true">
-        <security:intercept-url pattern="/pm/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
-        <security:intercept-url pattern="/user/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
-        <security:intercept-url pattern="/branch/*/topic/create.html" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
-        <security:intercept-url pattern="/branch/*/topic/*/answer.html" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
-        <security:intercept-url pattern="/branch/*/topic/*/post/*/delete.html"
+        <security:intercept-url pattern="/topics/new" method="GET" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+
+        <security:intercept-url pattern="/posts/new" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+        <security:intercept-url pattern="/posts/*/delete"
+                                method="GET"
                                 access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+        <security:intercept-url pattern="/posts/*"
+                                method="DELETE"
+                                access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+
+        <security:intercept-url pattern="/users/new" method="GET" access="permitAll"/>
+        <security:intercept-url pattern="/users" method="POST" access="permitAll"/>
+        <security:intercept-url pattern="/users/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+
+
+        <security:intercept-url pattern="/pm/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+        <security:intercept-url pattern="/inbox" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+        <security:intercept-url pattern="/outbox" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+        <security:intercept-url pattern="/reply/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+        <security:intercept-url pattern="/quote/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+        <security:intercept-url pattern="/drafts" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+        <security:intercept-url pattern="/outbox" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+        <security:intercept-url pattern="/answer" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+
         <security:intercept-url pattern="*" access="permitAll"/>
-        <security:form-login login-page="/login.html" login-processing-url="/j_spring_security_check"
-                             authentication-failure-url="/login.html?login_error=1" default-target-url="/"
+
+        <security:form-login login-page="/login" login-processing-url="/j_spring_security_check"
+                             authentication-failure-url="/login?login_error=1" default-target-url="/"
                              authentication-success-handler-ref="successAuthHandler"/>
         <security:logout logout-url="/logout" logout-success-url="/"/>
         <security:remember-me user-service-ref="securityService" key="JTalks"/>
