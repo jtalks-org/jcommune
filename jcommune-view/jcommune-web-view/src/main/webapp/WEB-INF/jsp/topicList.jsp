@@ -76,7 +76,7 @@
                             <div class="forum_info"> <!-- Ссылка на тему -->
                                 <h4><span class="sticky"><spring:message code="label.marked_as_announcement"/> </span><a
                                         class="forum_link"
-                                        href="${pageContext.request.contextPath}/topic/${topic.id}">
+                                        href="${pageContext.request.contextPath}/topics/${topic.id}">
                                     <c:out value="${topic.title}"/></a></h4>
                             </div>
                         </c:when>
@@ -84,7 +84,7 @@
                             <div class="forum_info"> <!-- Ссылка на тему -->
                                 <h4><span class="sticky"><spring:message code="label.marked_as_sticked"/> </span><a
                                         class="forum_link"
-                                        href="${pageContext.request.contextPath}/topic/${topic.id}">
+                                        href="${pageContext.request.contextPath}/topics/${topic.id}">
                                     <c:out value="${topic.title}"/></a></h4>
                             </div>
                         </c:when>
@@ -108,7 +108,7 @@
                         953092
                     </div>
                     <div class="forum_last_message">
-                        <a href="${pageContext.request.contextPath}/topic/${topic.id}">
+                        <a href="${pageContext.request.contextPath}/topics/${topic.id}">
                             <joda:format value="${topic.lastPost.creationDate}"
                                          locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
                                          pattern="dd MMM yyyy HH:mm"/></a>
