@@ -199,4 +199,14 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         securityService.deleteFromAcl(Topic.class, topicId);
         return branch;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addTopicView(long topicId) throws NotFoundException {
+        Topic topic = get(topicId);
+        topic.setViews(topic.getViews() + 1);
+        dao.update(topic);
+    }
 }

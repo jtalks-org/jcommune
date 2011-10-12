@@ -105,7 +105,7 @@
                            title="Автор темы"><c:out value="${topic.topicStarter.username}"/></a>
                     </div>
                     <div class="forum_clicks">
-                        953092
+                        <c:out value="${topic.views}"/>
                     </div>
                     <div class="forum_last_message">
                         <a href="${pageContext.request.contextPath}/topic/${topic.id}">

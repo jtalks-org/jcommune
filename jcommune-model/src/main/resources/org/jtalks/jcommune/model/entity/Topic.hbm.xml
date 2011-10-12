@@ -32,6 +32,7 @@
                   column="MODIFICATION_DATE" not-null="false"/>
         <property name="topicWeight" column="TOPIC_WEIGHT" not-null="true"/>
         <property name="sticked" column="STICKED" not-null="true"/>
+        <property name="views" column="VIEWS"/>
         <property name="announcement" column="ANNOUNCEMENT" not-null="true"/>
 
         <list name="posts" cascade="all-delete-orphan">

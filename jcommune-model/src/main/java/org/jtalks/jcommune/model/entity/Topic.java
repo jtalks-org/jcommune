@@ -41,7 +41,7 @@ public class Topic extends Entity {
     private List<Post> posts = new ArrayList<Post>();
     private Branch branch;
     private int postCount;
-
+    private int views;
 
     /**
      * Used only by hibernate.
@@ -70,8 +70,9 @@ public class Topic extends Entity {
      * Constructor used only for the input data in the
      * org.jtalks.jcommune.web.dto.BreadcrumbBuilderTest class.
      * *
+     *
      * @param topicStarter user who create the topic
-     * @param branch topic branch
+     * @param branch       topic branch
      * @param title        topic title
      */
     public Topic(User topicStarter, Branch branch, String title) {
@@ -205,7 +206,7 @@ public class Topic extends Entity {
      *
      * @return last post
      */
-    public Post getLastPost(){
+    public Post getLastPost() {
         return posts.get(postCount() - 1);
     }
 
@@ -290,14 +291,28 @@ public class Topic extends Entity {
      *
      * @return count of post
      */
-    public int getPostCount(){
+    public int getPostCount() {
         return posts.size();
     }
 
     /**
      * @param postCount number of post
      */
-    public void setPostCount(int postCount){
+    public void setPostCount(int postCount) {
         this.postCount = postCount;
+    }
+
+    /**
+     * @return topic page views
+     */
+    public int getViews() {
+        return views;
+    }
+
+    /**
+     * @param views topic page views
+     */
+    public void setViews(int views) {
+        this.views = views;
     }
 }

@@ -171,6 +171,8 @@ public final class TopicController {
 
         List<Post> posts = postService.getPostRangeInTopic(topicId, pag.getStart(), pag.getPageSize());
 
+        topicService.addTopicView(topicId);
+
         return new ModelAndView("postList")
                 .addObject("posts", posts)
                 .addObject("topic", topic)
