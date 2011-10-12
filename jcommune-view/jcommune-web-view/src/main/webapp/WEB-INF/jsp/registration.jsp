@@ -21,58 +21,98 @@
 <html>
 <head>
     <title><spring:message code="label.signup"/></title>
-    <link href="${pageContext.request.contextPath}/resources/css/main.css"
-          type=text/css rel=stylesheet>
 </head>
 
 <body>
-<div id="stylized" class="registration">
-    <form:form id="form" name="form" action='${pageContext.request.contextPath}/users'
-               modelAttribute="newUser" method="POST">
-        <h1><spring:message code="label.signup"/></h1>
+<h1><spring:message code="label.signup"/></h1>
 
-        <p><spring:message code="label.fillmessage"/></p>
+<div class="wrap registration_page">
+    <div class="all_forums">
+        <form:form id="form" name="form" action='${pageContext.request.contextPath}/users'
+                   modelAttribute="newUser" method="POST">
 
-        <form:label path="username"><spring:message code="label.username"/>
-            <span class="small"><spring:message code="label.tip.username"/></span>
-        </form:label>
-        <form:input path="username" type="text" size="20"/>
-        <br/>
-        <form:errors path="username" cssClass="error"/>
+            <p><spring:message code="label.fillmessage"/></p>
 
-        <form:label path="email">Email
-            <span class="small"><spring:message code="label.tip.email"/></span>
-        </form:label>
-        <form:input path="email" type="text" size="25"/>
-        <form:errors path="email" cssClass="error"/>
+            <table>
+                <tr>
+                    <td>
+                        <form:label path="username">
+                            <spring:message code="label.username"/>
+                            <span class="small"><spring:message code="label.tip.username"/></span>
+                        </form:label>
+                    </td>
+                    <td>
+                        <form:input path="username" type="text" size="20"/>
+                        <br/>
+                        <form:errors path="username" cssClass="error"/>
+                    </td>
+                </tr>
 
-        <form:label path="firstName"><spring:message code="label.firstname"/>
-            <span class="small"><spring:message code="label.tip.firstname"/></span>
-        </form:label>
-        <form:input path="firstName" type="text" size="25"/>
-        <form:errors path="firstName" cssClass="error"/>
+                <tr>
+                    <td>
+                        <form:label path="email">Email
+                            <span class="small"><spring:message code="label.tip.email"/></span>
+                        </form:label>
+                    </td>
+                    <td>
+                        <form:input path="email" type="text" size="25"/>
+                        <form:errors path="email" cssClass="error"/>
+                    </td>
+                </tr>
 
-        <form:label path="lastName"><spring:message code="label.lastname"/>
-            <span class="small"><spring:message code="label.tip.lastname"/></span>
-        </form:label>
-        <form:input path="lastName" type="text" size="25"/>
-        <form:errors path="lastName" cssClass="error"/>
+                <tr>
+                    <td>
+                        <form:label path="firstName"><spring:message code="label.firstname"/>
+                            <span class="small"><spring:message code="label.tip.firstname"/></span>
+                        </form:label>
+                    </td>
+                    <td>
+                        <form:input path="firstName" type="text" size="25"/>
+                        <form:errors path="firstName" cssClass="error"/>
+                    </td>
+                </tr>
 
-        <form:label path="password"><spring:message code="label.password"/>
-            <span class="small"><spring:message code="label.tip.password"/></span>
-        </form:label>
-        <form:input path="password" type="password" size="20"/>
-        <form:errors path="password" cssClass="error"/>
+                <tr>
+                    <td>
+                        <form:label path="lastName"><spring:message code="label.lastname"/>
+                            <span class="small"><spring:message code="label.tip.lastname"/></span>
+                        </form:label>
+                    </td>
+                    <td>
+                        <form:input path="lastName" type="text" size="25"/>
+                        <form:errors path="lastName" cssClass="error"/>
+                    </td>
+                </tr>
 
-        <form:label path="passwordConfirm"><spring:message code="label.confirmation"/>
-            <span class="small"><spring:message code="label.tip.confirmation"/></span>
-        </form:label>
-        <form:input path="passwordConfirm" type="password" size="20"/>
-        <form:errors path="passwordConfirm" cssClass="error"/>
+                <tr>
+                    <td>
+                        <form:label path="password"><spring:message code="label.password"/>
+                            <span class="small"><spring:message code="label.tip.password"/></span>
+                        </form:label>
+                    </td>
+                    <td>
+                        <form:input path="password" type="password" size="20"/>
+                        <form:errors path="password" cssClass="error"/>
+                    </td>
+                <tr>
 
-        <button type="submit"><spring:message code="label.signup"/></button>
-        <div class="spacer"></div>
-    </form:form>
+                <tr>
+                    <td>
+                        <form:label path="passwordConfirm"><spring:message code="label.confirmation"/>
+                            <span class="small"><spring:message code="label.tip.confirmation"/></span>
+                        </form:label>
+                    </td>
+                    <td>
+                        <form:input path="passwordConfirm" type="password" size="20"/>
+                        <form:errors path="passwordConfirm" cssClass="error"/>
+                    </td>
+                </tr>
+            </table>
+
+            <button type="submit"><spring:message code="label.signup"/></button>
+            <div class="spacer"></div>
+        </form:form>
+    </div>
 </div>
 
 </body>

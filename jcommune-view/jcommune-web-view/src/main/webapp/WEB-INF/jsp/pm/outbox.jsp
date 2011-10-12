@@ -27,13 +27,13 @@
           type=text/css rel=stylesheet>
 </head>
 <body>
-<div align="left">
+<div class="all_forums">
+    <h1><spring:message code="label.outbox"/></h1>
 
     <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
     <jsp:include page="pmNavigationMenu.jsp"/>
     <div>
-        <h1><spring:message code="label.outbox"/></h1>
         <table>
             <tr>
                 <td><spring:message code="label.recipient"/></td>
