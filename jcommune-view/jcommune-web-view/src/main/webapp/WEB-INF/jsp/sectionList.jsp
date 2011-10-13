@@ -79,7 +79,7 @@
                                 <c:out value="${branch.description}"/>
                                 <a href="#">ЧаВО</a>
                                 <br/>
-                                Модераторы: <a class="moderator" href="#">Vurn</a>
+                                <spring:message code="label.section.moderators"/> <a class="moderator" href="#">Vurn</a>
                             </p>
                         </div>
                         <div class="forum_themes">
@@ -106,29 +106,29 @@
     <div class="users_information">    <!-- Информация о посетителях -->
         <div class="forum_header_table"> <!-- Шапка группы -->
             <div class="forum_header">
-                <h3><a class="users_information_link" href="#">Кто сейчас на форуме?</a></h3>
+                <h3><a class="users_information_link" href="#"><spring:message code="label.onlineUsersInfo"/> </a></h3>
                 <span class="empty_cell"></span> <!-- Необходим для правильного отображения псевдотаблицы -->
             </div>
         </div>
         <div class="forum_table"> <!-- Таблица -->
             <div class="forum_row"> <!-- Отдельный ряд -->
                 <div class="forum_info"> <!-- Содержимое ряда -->
-                    Наши пользователи оставили сообщений: 120693
+                    <spring:message code="label.onlineUsersInfo.messagesCount"/>  120693
                     <br/>
-                    Всего зарегистрированных пользователей: 10478
+                    <spring:message code="label.onlineUsersInfo.registeredUsers.count"/> 10478
                 </div>
                 <div class="empty_cell"></div>
                 <!-- Необходим для правильного отображения псевдотаблицы -->
             </div>
             <div class="forum_row"> <!-- Отдельный ряд -->
                 <div class="forum_info"> <!-- Содержимое ряда -->
-                    Сейчас посетителей на форуме: 35,
-                    из них зарегистрированных: 5,
-                    скрытых: 0
-                    и гостей: 30
+                    <spring:message code="label.onlineUsersInfo.visitors"/>35,
+                    <spring:message code="label.onlineUsersInfo.visitors.registered"/> 5,
+                    <spring:message code="label.onlineUsersInfo.visitors.hidden"/> 0
+                    <spring:message code="label.onlineUsersInfo.visitors.guests"/> 30
                     <span class="admin"> [Администратор] </span> <span class="moderator"> [Модератор]</span>
                     <br/>
-                    Зарегистрированные пользователи:
+                    <spring:message code="label.onlineUsersInfo.registeredUsers"/>
                     <ul class="users_list">
                         <li><a href="#" class="moderator">andreyko</a>,</li>
                         <li><a href="#" class="admin">Староверъ</a>,</li>

@@ -42,10 +42,11 @@
 
     <div class="top_line">
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-            Привет, <a class="currentusername"
-                       href="${pageContext.request.contextPath}/users/${encodedUserName}"
-                       title="Имя пользователя"><sec:authentication
-                property="principal.username"/></a>!
+            <fmt:message key="label.welcomeMessage"/>
+            <a class="currentusername"
+               href="${pageContext.request.contextPath}/users/${encodedUserName}"
+               title="Имя пользователя"><sec:authentication
+                    property="principal.username"/></a>!
         </sec:authorize>
         <ul class="top_menu">
             <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
