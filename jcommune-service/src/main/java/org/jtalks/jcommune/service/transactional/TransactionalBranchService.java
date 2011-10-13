@@ -54,14 +54,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
             throw new NotFoundException("Section with id: " + sectionId + " not found");
         }
 
-        List<Branch> branchList = dao.getBranchesInSection(sectionId);
-
-        for(Branch branch : branchList)
-        {
-            branch.setTopicCount(dao.getTopicInBranchCount(branch));
-        }
-
-        return branchList;
+        return dao.getBranchesInSection(sectionId);//branchList;
     }
 
     /**

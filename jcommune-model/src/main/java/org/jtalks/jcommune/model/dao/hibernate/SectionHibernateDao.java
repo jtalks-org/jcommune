@@ -17,6 +17,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import java.util.List;
 
 import org.jtalks.jcommune.model.dao.SectionDao;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Section;
 
 /**
@@ -31,8 +32,18 @@ public class SectionHibernateDao extends ParentRepositoryImpl<Section> implement
     @Override
     @SuppressWarnings("unchecked")
     public List<Section> getAll() {
-        return getSession().createQuery("from Section s order by s.position asc")
+        List<Section> sectionList = getSession().createQuery("from Section s order by s.position asc")
                 .setCacheable(true).list();
+        for(Section section : sectionList){
+            List<Branch> branchList = section.getBranches();
+            for(Branch branch : branchList)
+            {
+            int count = ((Number) getSession().createQuery("select count(*) from Topic t where t.branch = ?")
+                .setCacheable(true).setLong(0, branch.getId()).uniqueResult()).intValue();
+            branch.setTopicCount(count);
+            }
+        }
+        return sectionList;
     }
 
     /**

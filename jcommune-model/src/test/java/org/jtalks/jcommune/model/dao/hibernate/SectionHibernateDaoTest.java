@@ -27,7 +27,9 @@ import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.dao.SectionDao;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Section;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -171,7 +173,20 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
     public void testIsNotExist() {
         assertFalse(dao.isExist(99999L));
     }
-    
+
+    @Test
+    public void test() {
+        Section section = ObjectsFactory.getDefaultSection();
+        Branch branch = ObjectsFactory.getDefaultBranch();
+        Topic topic = ObjectsFactory.getDefaultTopic();
+        branch.addTopic(topic);
+        section.addBranch(branch);
+        session.save(section);
+
+        List<Section> sectionList = dao.getAll();
+
+        assertEquals(sectionList.get(0).getBranches().get(0).getTopicCount(),1);
+    }
 
     private int getSectionCount() {
         return ((Number) session.createQuery("select count(*) from Section").uniqueResult()).intValue();
