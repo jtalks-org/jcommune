@@ -163,10 +163,43 @@ public class TransactionalUserServiceTest {
         verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
         assertEquals(editedUser.getEmail(), EMAIL, "Email was not changed");
+        assertEquals(editedUser.getSignature(), SIGNATURE, "Signature was not changed");
         assertEquals(editedUser.getFirstName(), FIRST_NAME, "first name was not changed");
         assertEquals(editedUser.getLastName(), LAST_NAME, "last name was not changed");
         assertEquals(editedUser.getPassword(), NEW_PASSWORD, "new password was not accepted");
         assertEquals(editedUser.getAvatar(), newAvatar, "avatar was not changed");
+    }
+
+    @Test
+    public void testSetNullSignature() throws Exception {
+        User user = getUser();
+        when(securityService.getCurrentUser()).thenReturn(user);
+        when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
+
+        byte[] newAvatar = new byte[12];
+
+        User editedUser = userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
+                PASSWORD, NEW_PASSWORD, newAvatar, null);
+
+        verify(securityService).getCurrentUser();
+        verify(userDao).saveOrUpdate(user);
+        assertEquals(editedUser.getSignature(), null, "Signature is not null");
+    }
+
+    @Test
+    public void testSetEmptySignature() throws Exception {
+        User user = getUser();
+        when(securityService.getCurrentUser()).thenReturn(user);
+        when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
+
+        byte[] newAvatar = new byte[12];
+
+        User editedUser = userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
+                PASSWORD, NEW_PASSWORD, newAvatar, "");
+
+        verify(securityService).getCurrentUser();
+        verify(userDao).saveOrUpdate(user);
+        assertEquals(editedUser.getSignature(), null, "Signature is not null");
     }
 
     @Test
@@ -183,6 +216,7 @@ public class TransactionalUserServiceTest {
         verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
         assertEquals(editedUser.getEmail(), EMAIL, "Email was not changed");
+        assertEquals(editedUser.getSignature(), SIGNATURE, "Signature was not changed");
         assertEquals(editedUser.getFirstName(), FIRST_NAME, "first name was not changed");
         assertEquals(editedUser.getLastName(), LAST_NAME, "last name was not changed");
         assertEquals(editedUser.getPassword(), NEW_PASSWORD, "new password was not accepted");
@@ -203,6 +237,7 @@ public class TransactionalUserServiceTest {
         verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
         assertEquals(editedUser.getEmail(), EMAIL, "Email was not changed");
+        assertEquals(editedUser.getSignature(), SIGNATURE, "Signature was not changed");
         assertEquals(editedUser.getFirstName(), FIRST_NAME, "first name was not changed");
         assertEquals(editedUser.getLastName(), LAST_NAME, "last name was not changed");
         assertEquals(editedUser.getPassword(), NEW_PASSWORD, "new password was not accepted");
