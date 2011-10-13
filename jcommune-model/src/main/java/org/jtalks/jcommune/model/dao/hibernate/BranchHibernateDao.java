@@ -50,6 +50,7 @@ public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch>
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getTopicInBranchCount(Branch branch) {
         return ((Number) getSession().getNamedQuery("getTopcInBranchCount")
                 .setCacheable(true)

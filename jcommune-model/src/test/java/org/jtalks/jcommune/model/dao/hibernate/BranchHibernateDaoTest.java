@@ -203,7 +203,6 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     @Test
     public void testDaoTopicInBranchCount() {
         Topic topic = ObjectsFactory.getDefaultTopic();
-        session.save(topic);
         branch.addTopic(topic);
         session.save(branch);
 
