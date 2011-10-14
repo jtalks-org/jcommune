@@ -46,16 +46,4 @@ public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch>
         return ((Number) getSession().createQuery("select count(*) from Branch b where b.section = ?")
                 .setCacheable(true).setLong(0, sectionId).uniqueResult()).intValue();
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getTopicInBranchCount(Branch branch) {
-        return ((Number) getSession().getNamedQuery("getTopcInBranchCount")
-                .setCacheable(true)
-                .setEntity("branch", branch)
-                .uniqueResult())
-                .intValue();
-    }
 }

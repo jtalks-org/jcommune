@@ -34,15 +34,7 @@ public class SectionHibernateDao extends ParentRepositoryImpl<Section> implement
     public List<Section> getAll() {
         List<Section> sectionList = getSession().createQuery("from Section s order by s.position asc")
                 .setCacheable(true).list();
-        for(Section section : sectionList){
-            List<Branch> branchList = section.getBranches();
-            for(Branch branch : branchList)
-            {
-            int count = ((Number) getSession().createQuery("select count(*) from Topic t where t.branch = ?")
-                .setCacheable(true).setLong(0, branch.getId()).uniqueResult()).intValue();
-            branch.setTopicCount(count);
-            }
-        }
+        setCountersTopicInBranch(sectionList);
         return sectionList;
     }
 
@@ -58,6 +50,37 @@ public class SectionHibernateDao extends ParentRepositoryImpl<Section> implement
         }
         getSession().delete(section);
         return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getTopicInBranchCount(Branch branch) {
+        return ((Number) getSession().getNamedQuery("getTopcInBranchCount")
+               .setCacheable(true)
+               .setEntity("branch", branch)
+               .uniqueResult())
+               .intValue();
+    }
+
+    /**
+     * Set topicCount in all branch
+     *
+     * @param sectionList
+     * @return sectionList
+     */
+    protected List<Section> setCountersTopicInBranch(List<Section> sectionList){
+        for(Section section : sectionList){
+            List<Branch> branchList = section.getBranches();
+            for(Branch branch : branchList)
+            {
+            int count = getTopicInBranchCount(branch);
+
+            branch.setTopicCount(count);
+            }
+        }
+        return sectionList;
     }
 
 }

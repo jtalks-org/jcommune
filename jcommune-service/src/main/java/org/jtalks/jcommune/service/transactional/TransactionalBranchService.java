@@ -54,7 +54,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
             throw new NotFoundException("Section with id: " + sectionId + " not found");
         }
 
-        return dao.getBranchesInSection(sectionId);//branchList;
+        return dao.getBranchesInSection(sectionId);
     }
 
     /**
@@ -66,13 +66,5 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
             throw new NotFoundException("Section with id: " + sectionId + " not found");
         }
         return dao.getBranchesInSectionCount(sectionId);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getTopicInBranchCount(Branch branch){
-        return dao.getTopicInBranchCount(branch);
     }
 }

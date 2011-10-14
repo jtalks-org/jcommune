@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service;
 
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Section;
 
 import java.util.List;
@@ -31,4 +32,11 @@ public interface SectionService extends EntityService<Section> {
      * @return - list of the sections.
      */
     List<Section> getAll();
+
+    /**
+     * Get count topics in branch from database
+     * @param branch branch
+     * @return count count
+     */
+    int getTopicInBranchCount(Branch branch);
 }

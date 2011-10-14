@@ -199,15 +199,4 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
 
         assertEquals(count, 5);
     }
-
-    @Test
-    public void testDaoTopicInBranchCount() {
-        Topic topic = ObjectsFactory.getDefaultTopic();
-        branch.addTopic(topic);
-        session.save(branch);
-
-        int result = dao.getTopicInBranchCount(branch);
-
-        assertEquals(result, 1);
-    }
 }

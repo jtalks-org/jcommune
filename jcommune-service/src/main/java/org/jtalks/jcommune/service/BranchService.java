@@ -47,11 +47,4 @@ public interface BranchService extends EntityService<Branch> {
      *          when branch not found
      */
     int getBranchesInSectionCount(long sectionId) throws NotFoundException;
-
-    /**
-     * Get count topics in branch from database
-     * @param branch branch
-     * @return count count
-     */
-    int getTopicInBranchCount(Branch branch);
 }

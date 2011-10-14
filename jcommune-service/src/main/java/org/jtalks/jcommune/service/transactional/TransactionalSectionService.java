@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.jcommune.model.dao.SectionDao;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Section;
 import org.jtalks.jcommune.service.SectionService;
 
@@ -44,5 +45,13 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
     @Override
     public List<Section> getAll() {
         return dao.getAll();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getTopicInBranchCount(Branch branch){
+        return dao.getTopicInBranchCount(branch);
     }
 }

@@ -16,6 +16,7 @@ package org.jtalks.jcommune.model.dao;
 
 import java.util.List;
 
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Section;
 
 /**
@@ -32,5 +33,13 @@ public interface SectionDao extends ParentRepository<Section> {
      * @return list of section
      */
     List<Section> getAll();
+
+    /**
+     * Get topics count in branch.
+     *
+     * @param  branch branch
+     * @return topics count
+     */
+    int getTopicInBranchCount(Branch branch);
 
 }

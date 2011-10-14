@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jtalks.jcommune.model.dao.SectionDao;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Section;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -77,5 +78,15 @@ public class TransactionalSectionServiceTest {
 
         assertEquals(actualSectionList, expectedSectionList);
         verify(sectionDao).getAll();
+    }
+
+     @Test
+    public void testTransactionTopicInBranchCount() throws NotFoundException {
+        Branch branch = new Branch();
+        when(sectionDao.getTopicInBranchCount(branch)).thenReturn(1);
+
+        assertEquals(sectionService.getTopicInBranchCount(branch),1);
+
+        verify(sectionDao).getTopicInBranchCount(branch);
     }
 }
