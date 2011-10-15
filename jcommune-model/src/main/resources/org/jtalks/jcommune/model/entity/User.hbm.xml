@@ -38,5 +38,6 @@
         <property name="avatar" lazy="true">
             <column name="AVATAR" sql-type="blob"/>
         </property>
+        <property column="LANGUAGE" name="language"/>
     </class>
 </hibernate-mapping>
