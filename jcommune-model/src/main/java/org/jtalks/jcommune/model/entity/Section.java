@@ -127,20 +127,4 @@ public class Section extends Entity {
         branch.setSection(this);
         this.branches.add(branch);
     }
-
-    /**
-     * Get count of branch in section.
-     *
-     * @return count of branch
-     */
-    public int getBranchCount(){
-        return branches.size();
-    }
-
-    /**
-     * @param branchCount number of branches
-     */
-    public void setBranchCount(int branchCount){
-        this.branchCount = branchCount;
-    }
 }
