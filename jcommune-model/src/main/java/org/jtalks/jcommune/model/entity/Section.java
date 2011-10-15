@@ -30,7 +30,6 @@ public class Section extends Entity {
     private String description;
     private Long position;
     private List<Branch> branches = new ArrayList<Branch>();
-    private int branchCount;
 
     /**
      * Creates the Section instance. All fields values are null.
