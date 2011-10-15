@@ -59,6 +59,10 @@ public class SuccessfulAuthenticationHandler extends SavedRequestAwareAuthentica
         session.setAttribute("lastlogin", user.getLastLogin());
         userService.updateLastLoginTime(user);
         logger.info("User logged in: " + user.getUsername());
+        String lang = "ru";
+        if (user.getLanguage() != null)
+            lang = user.getLanguage().substring(0,2);
+        setDefaultTargetUrl(getDefaultTargetUrl() + "?lang=" + lang);
         super.onAuthenticationSuccess(request, response, authentication);
     }
 }

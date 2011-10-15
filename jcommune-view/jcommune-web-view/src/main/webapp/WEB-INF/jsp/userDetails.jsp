@@ -64,6 +64,12 @@
                 <span><c:out value="${user.signature}"/></span>
             </li>
         </c:if>
+        <c:if test="${user.language != null}">
+            <li>
+                <label><spring:message code="label.language"/></label>
+                <span><c:out value="${user.language}"/></span>
+            </li>
+        </c:if>
         <li>
             <label><spring:message code="label.lastlogin"/></label>
             <span>

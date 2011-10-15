@@ -22,12 +22,12 @@ import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionContext;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -125,8 +125,8 @@ public class BranchControllerTest {
 
     }
 
-    private HttpSession getFakeSession() {
-        return new HttpSession() {
+    private MockHttpSession getFakeSession() {
+        return new MockHttpSession() {
 
             @Override
             public long getCreationTime() {

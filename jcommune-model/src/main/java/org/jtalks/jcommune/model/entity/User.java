@@ -45,6 +45,7 @@ public class User extends Entity implements UserDetails {
     private String encodedUsername;
     private int userPostCount;
     private byte[] avatar;
+    private String language;
 
     /**
      * Only for hibernate usage.
@@ -287,5 +288,19 @@ public class User extends Entity implements UserDetails {
      */
     public void setUserPostCount(int userPostCount){
         this.userPostCount = userPostCount;
+    }
+
+    /**
+     * @return user language
+     */
+    public String getLanguage() {
+        return language;
+    }
+
+    /**
+     * @param language of user
+     */
+    public void setLanguage(String language) {
+        this.language = language;
     }
 }

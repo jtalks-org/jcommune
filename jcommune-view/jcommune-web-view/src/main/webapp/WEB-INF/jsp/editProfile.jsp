@@ -79,6 +79,11 @@
                 <td><form:errors path="signature" cssClass="error"/></td>
             </tr>
             <tr>
+                <td><label><spring:message code="label.language"/></label></td>
+                <td><form:input path="language" size="50" value="${editedUser.language}"/></td>
+                <td><form:errors path="language" cssClass="error"/></td>
+            </tr>
+            <tr>
                 <td></td>
                 <td><form:input path="avatar" type="file"/></td>
                 <td><form:errors path="avatar" cssClass="error"/></td>

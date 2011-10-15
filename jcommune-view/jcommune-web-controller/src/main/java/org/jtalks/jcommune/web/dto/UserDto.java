@@ -37,6 +37,7 @@ public abstract class UserDto {
     private String firstName;
     private String lastName;
     private String signature;
+    private String language;
 
 
     /**
@@ -105,5 +106,19 @@ public abstract class UserDto {
      */
     public void setSignature(String signature) {
         this.signature = signature;
+    }
+
+    /**
+     * @return user language
+     */
+    public String getLanguage() {
+        return language;
+    }
+
+    /**
+     * @param language of user
+     */
+    public void setLanguage(String language) {
+        this.language = language;
     }
 }
