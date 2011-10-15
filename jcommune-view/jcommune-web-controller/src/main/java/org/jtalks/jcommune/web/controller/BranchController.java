@@ -109,8 +109,6 @@ public final class BranchController {
                              @RequestParam(value = "size", required = false) Integer size, HttpSession session) throws NotFoundException {
 
         DateTime lastLogin = (DateTime) session.getAttribute("lastlogin");
-        if (lastLogin == null)
-            lastLogin = new DateTime().minusDays(1);
         int topicsCount = topicService.getTopicsPastLastDayCount(lastLogin);
         Pagination pag = new Pagination(page, size, topicsCount);
 
