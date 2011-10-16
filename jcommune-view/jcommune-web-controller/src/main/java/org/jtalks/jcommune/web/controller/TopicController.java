@@ -180,8 +180,7 @@ public final class TopicController {
                 .addObject("page", pag.getPage())
                 .addObject(BRANCH_ID, branchId)
                 .addObject(TOPIC_ID, topicId)
-                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic))
-                ;
+                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
     }
 
     /**

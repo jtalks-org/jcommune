@@ -131,8 +131,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      */
     @Override
     public List<Topic> getAllTopicsPastLastDay(int start, int max, DateTime lastLogin) {
-        if (lastLogin == null)
+        if (lastLogin == null) {
             lastLogin = new DateTime().minusDays(1);
+		}	
         return dao.getAllTopicsPastLastDay(start, max, lastLogin);
     }
 
@@ -152,8 +153,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      */
     @Override
     public int getTopicsPastLastDayCount(DateTime lastLogin) {
-        if (lastLogin == null)
+        if (lastLogin == null){
             lastLogin = new DateTime().minusDays(1);
+		}	
         return dao.getTopicsPastLastDayCount(lastLogin);
     }
 

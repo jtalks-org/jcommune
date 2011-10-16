@@ -150,14 +150,18 @@ public class User extends Entity implements UserDetails {
      * @return user avatar
      */
     public byte[] getAvatar() {
-        return (avatar != null) ? avatar.clone() : avatar;
+        return (avatar == null) ? null : avatar.clone();
     }
 
     /**
      * @param avatar user avatar
      */
     public void setAvatar(byte[] avatar) {
-        this.avatar = (avatar != null) ? avatar.clone() : null;
+		if (avatar == null){
+			this.avatar = null;
+		} else {
+			this.avatar = avatar.clone();
+		}
     }
 
 

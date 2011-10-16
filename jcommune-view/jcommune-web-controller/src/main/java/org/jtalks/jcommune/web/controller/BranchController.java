@@ -106,8 +106,8 @@ public final class BranchController {
      */
     @RequestMapping(value = "/topics/recent", method = RequestMethod.GET)
     public ModelAndView show(@RequestParam(value = PAGE, required = false) Integer page,
-                             @RequestParam(value = "size", required = false) Integer size, HttpSession session) throws NotFoundException {
-
+                             @RequestParam(value = "size", required = false) Integer size, HttpSession session)
+							 throws NotFoundException {
         DateTime lastLogin = (DateTime) session.getAttribute("lastlogin");
         int topicsCount = topicService.getTopicsPastLastDayCount(lastLogin);
         Pagination pag = new Pagination(page, size, topicsCount);

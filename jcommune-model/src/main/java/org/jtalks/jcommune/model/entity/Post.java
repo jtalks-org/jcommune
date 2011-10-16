@@ -72,6 +72,8 @@ public class Post extends Entity {
     /**
      * Creates the new instance with the creationDate initialized with current time.***
      *
+	 * @param userCreated author of the post
+	 * @param postContent the post content itself
      * @return new Post instance
      */
     public static Post createNewPost(User userCreated, String postContent) {
@@ -167,6 +169,7 @@ public class Post extends Entity {
     public String getShortContent(){
         String content = this.getPostContent();
         String shortContent = "";
+		// todo: replace with lastIndexOf call
         if (content.length() > 200){
             for (int i = 197; i > 1; i--){
                 if (content.charAt(i) == ' '){
