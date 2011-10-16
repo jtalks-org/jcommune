@@ -105,9 +105,11 @@ public class BranchControllerTest {
         when(topicService.getTopicsPastLastDayCount(now)).thenReturn(10);
         when(topicService.getAllTopicsPastLastDay(startIndex, pageSize, now)).thenReturn(new ArrayList<Topic>());
 
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("lastlogin", now);
 
         //invoke the object under test
-        ModelAndView mav = controller.show(page, pageSize, getFakeSession());
+        ModelAndView mav = controller.show(page, pageSize, session);
 
         //check expectations
         verify(topicService).getAllTopicsPastLastDay(startIndex, pageSize, now);
@@ -124,95 +126,4 @@ public class BranchControllerTest {
         assertEquals((int) actualPage, page);
 
     }
-
-    private MockHttpSession getFakeSession() {
-        return new MockHttpSession() {
-
-            @Override
-            public long getCreationTime() {
-                return 0;  //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            @Override
-            public String getId() {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            @Override
-            public long getLastAccessedTime() {
-                return 0;  //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            @Override
-            public ServletContext getServletContext() {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            @Override
-            public void setMaxInactiveInterval(int i) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            @Override
-            public int getMaxInactiveInterval() {
-                return 0;  //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            @Override
-            public HttpSessionContext getSessionContext() {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            @Override
-            public Object getAttribute(String s) {
-                return now;
-            }
-
-            @Override
-            public Object getValue(String s) {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            @Override
-            public Enumeration getAttributeNames() {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            @Override
-            public String[] getValueNames() {
-                return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            @Override
-            public void setAttribute(String s, Object o) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            @Override
-            public void putValue(String s, Object o) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            @Override
-            public void removeAttribute(String s) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            @Override
-            public void removeValue(String s) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            @Override
-            public void invalidate() {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            @Override
-            public boolean isNew() {
-                return false;  //To change body of implemented methods use File | Settings | File Templates.
-            }
-        };
-    }
-
 }
