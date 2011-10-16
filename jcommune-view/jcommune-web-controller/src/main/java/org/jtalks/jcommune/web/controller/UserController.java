@@ -35,6 +35,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Controller for User related actions: registration.
@@ -49,6 +51,7 @@ public class UserController {
     public static final String EDIT_PROFILE = "editProfile";
     public static final String REGISTRATION = "registration";
     public static final String EDITED_USER = "editedUser";
+    public static final String[] languages = new String[] {"english", "russian"};
 
     public static final int AVATAR_MAX_HEIGHT = 100;
     public static final int AVATAR_MAX_WIDTH = 100;
@@ -154,7 +157,8 @@ public class UserController {
         editedUser.setAvatar(new MockMultipartFile("avatar", "", ImageFormats.JPG.getContentType(), user.getAvatar()));
         return new ModelAndView(EDIT_PROFILE)
                 .addObject(EDITED_USER, editedUser)
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
+                .addObject("languages", languages);
     }
 
     /**
@@ -177,7 +181,7 @@ public class UserController {
             if (user.getAvatar() == null) {
                 userDto.setAvatar(new MockMultipartFile("avatar", "", ImageFormats.JPG.getContentType(), new byte[0]));
             }
-            return new ModelAndView(EDIT_PROFILE, EDITED_USER, userDto);
+            return new ModelAndView(EDIT_PROFILE, EDITED_USER, userDto).addObject("languages", languages);
         }
 
         User editedUser;
@@ -192,7 +196,7 @@ public class UserController {
         } catch (WrongPasswordException e) {
             result.rejectValue("currentUserPassword", "label.incorrectCurrentPassword",
                     "Password does not match to the current password");
-            return new ModelAndView(EDIT_PROFILE);
+            return new ModelAndView(EDIT_PROFILE).addObject("languages", languages);
         } catch (InvalidImageException e) {
             result.rejectValue("avatar", "avatar.wrong.format");
             return new ModelAndView(EDIT_PROFILE);

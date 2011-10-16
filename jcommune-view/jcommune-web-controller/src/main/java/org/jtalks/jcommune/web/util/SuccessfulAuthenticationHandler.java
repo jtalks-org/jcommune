@@ -62,7 +62,14 @@ public class SuccessfulAuthenticationHandler extends SavedRequestAwareAuthentica
         String lang = "ru";
         if (user.getLanguage() != null)
             lang = user.getLanguage().substring(0,2);
-        setDefaultTargetUrl(getDefaultTargetUrl() + "?lang=" + lang);
+        if (getDefaultTargetUrl().contains("?lang=")) {
+            String temp;
+            temp = getDefaultTargetUrl().substring(0, getDefaultTargetUrl().indexOf("?lang=")) +
+                    getDefaultTargetUrl().substring(getDefaultTargetUrl().indexOf("?lang=") + 8);
+            setDefaultTargetUrl(temp + "?lang=" + lang);
+        }
+        else
+            setDefaultTargetUrl(getDefaultTargetUrl() + "?lang=" + lang);
         super.onAuthenticationSuccess(request, response, authentication);
     }
 }

@@ -80,7 +80,9 @@
             </tr>
             <tr>
                 <td><label><spring:message code="label.language"/></label></td>
-                <td><form:input path="language" size="50" value="${editedUser.language}"/></td>
+                <td>
+                    <form:select path="language" items="${languages}" />
+                </td>
                 <td><form:errors path="language" cssClass="error"/></td>
             </tr>
             <tr>
