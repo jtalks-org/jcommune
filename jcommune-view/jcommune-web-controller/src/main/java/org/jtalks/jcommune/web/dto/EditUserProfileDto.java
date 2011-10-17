@@ -35,7 +35,6 @@ public class EditUserProfileDto extends UserDto {
     @Length(min = 4, max = 20)
     private String newUserPassword;
     private String newUserPasswordConfirm;
-    private String language;
     @Avatar
     private MultipartFile avatar;
 
@@ -135,19 +134,5 @@ public class EditUserProfileDto extends UserDto {
      */
     public void setSignature(String signature) {
         this.signature = signature;
-    }
-
-    /**
-     * @return user language
-     */
-    public String getLanguage() {
-        return language;
-    }
-
-    /**
-     * @param language of user
-     */
-    public void setLanguage(String language) {
-        this.language = language;
     }
 }

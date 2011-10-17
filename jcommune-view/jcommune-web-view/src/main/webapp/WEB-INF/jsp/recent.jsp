@@ -85,6 +85,7 @@
                                 <h4><a class="forum_link"
                                        href="${pageContext.request.contextPath}/topics/${topic.id}"><c:out
                                         value="${topic.title}"/></a></h4>
+                                <h5><c:out value="${topic.lastPost.shortContent}" /></h5>
 
                             </div>
                         </c:otherwise>
