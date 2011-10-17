@@ -24,13 +24,17 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.exceptions.InvalidHttpSessionException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import javax.servlet.http.HttpSession;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Topic service class. This class contains method needed to manipulate with Topic persistent entity.
@@ -47,6 +51,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     private final SecurityService securityService;
     private BranchService branchService;
     private BranchDao branchDao;
+    public static String TOPICS_VIEWED_ATTRIBUTE_NAME = "topicsViewed";
 
     /**
      * Create an instance of User entity based service
@@ -131,9 +136,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      */
     @Override
     public List<Topic> getAllTopicsPastLastDay(int start, int max, DateTime lastLogin) {
-        if (lastLogin == null) {
+        if (lastLogin == null)
             lastLogin = new DateTime().minusDays(1);
-		}	
         return dao.getAllTopicsPastLastDay(start, max, lastLogin);
     }
 
@@ -153,9 +157,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      */
     @Override
     public int getTopicsPastLastDayCount(DateTime lastLogin) {
-        if (lastLogin == null){
+        if (lastLogin == null)
             lastLogin = new DateTime().minusDays(1);
-		}	
         return dao.getTopicsPastLastDayCount(lastLogin);
     }
 
@@ -210,9 +213,19 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    public void addTopicView(long topicId) throws NotFoundException {
-        Topic topic = get(topicId);
-        topic.setViews(topic.getViews() + 1);
-        dao.update(topic);
+    public void addTopicView(Topic topic, HttpSession session) throws NotFoundException, InvalidHttpSessionException {
+        if (session == null) {
+            throw new InvalidHttpSessionException("Session cannot be null");
+        }
+        Set<Long> topicIds = (Set<Long>) session.getAttribute(TOPICS_VIEWED_ATTRIBUTE_NAME);
+        if (topicIds == null) {
+            topicIds = new HashSet<Long>();
+        }
+        if (!topicIds.contains(topic.getId())) {
+            topic.setViews(topic.getViews() + 1);
+            dao.update(topic);
+        }
+        topicIds.add(topic.getId());
+        session.setAttribute(TOPICS_VIEWED_ATTRIBUTE_NAME, topicIds);
     }
 }

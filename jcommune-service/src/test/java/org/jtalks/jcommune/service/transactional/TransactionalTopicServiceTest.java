@@ -24,19 +24,23 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.exceptions.InvalidHttpSessionException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.security.AclBuilder;
 import org.jtalks.jcommune.service.security.SecurityConstants;
+import org.springframework.mock.web.MockHttpSession;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 /**
  * This test cover {@code TransactionalTopicService} logic validation.
@@ -322,5 +326,28 @@ public class TransactionalTopicServiceTest {
         when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
         topicService.saveTopic(TOPIC_ID, newTitle, newBody, newWeight, newSticked, newAnnouncement);
+    }
+
+    @Test
+    void testAddTopicView() throws NotFoundException, InvalidHttpSessionException {
+        Topic topic = new Topic(user, "title");
+        topic.setId(TOPIC_ID);
+        int views = topic.getViews();
+        MockHttpSession httpSession = new MockHttpSession();
+
+        topicService.addTopicView(topic, httpSession);
+
+        Set<Long> topicIds = (Set<Long>) httpSession.getAttribute(TransactionalTopicService.TOPICS_VIEWED_ATTRIBUTE_NAME);
+        assertTrue(topicIds.contains(TOPIC_ID));
+
+        topicService.addTopicView(topic, httpSession);
+
+        assertEquals(topic.getViews(), views + 1);
+    }
+
+    @Test(expectedExceptions = {InvalidHttpSessionException.class})
+    void testAddTopicViewInInvalidSession() throws NotFoundException, InvalidHttpSessionException {
+
+        topicService.addTopicView(new Topic(user, "title"), null);
     }
 }

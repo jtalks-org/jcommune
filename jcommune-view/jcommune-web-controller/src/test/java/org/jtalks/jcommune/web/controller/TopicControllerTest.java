@@ -21,10 +21,12 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.exceptions.InvalidHttpSessionException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.TopicDto;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
@@ -104,7 +106,7 @@ public class TopicControllerTest {
     }
 
     @Test
-    public void testShow() throws NotFoundException {
+    public void testShow() throws NotFoundException, InvalidHttpSessionException {
         int page = 2;
         int pageSize = 5;
         int startIndex = page * pageSize - pageSize;
@@ -120,7 +122,7 @@ public class TopicControllerTest {
 
 
         //invoke the object under test
-        ModelAndView mav = controller.show(TOPIC_ID, page, pageSize);
+        ModelAndView mav = controller.show(TOPIC_ID, page, pageSize, new MockHttpSession());
 
 
         //check expectations

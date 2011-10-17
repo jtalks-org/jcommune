@@ -20,6 +20,7 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.exceptions.InvalidHttpSessionException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.TopicDto;
@@ -30,6 +31,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -160,7 +162,8 @@ public final class TopicController {
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.GET)
     public ModelAndView show(@PathVariable(TOPIC_ID) Long topicId,
                              @RequestParam(value = "page", required = false) Integer page,
-                             @RequestParam(value = "size", required = false) Integer size) throws NotFoundException {
+                             @RequestParam(value = "size", required = false) Integer size,
+                             HttpSession session) throws NotFoundException, InvalidHttpSessionException {
 
         Topic topic = topicService.get(topicId);
 
@@ -171,7 +174,7 @@ public final class TopicController {
 
         List<Post> posts = postService.getPostRangeInTopic(topicId, pag.getStart(), pag.getPageSize());
 
-        topicService.addTopicView(topicId);
+        topicService.addTopicView(topic, session);
 
         return new ModelAndView("postList")
                 .addObject("posts", posts)
@@ -180,7 +183,8 @@ public final class TopicController {
                 .addObject("page", pag.getPage())
                 .addObject(BRANCH_ID, branchId)
                 .addObject(TOPIC_ID, topicId)
-                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
+                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic))
+                ;
     }
 
     /**
