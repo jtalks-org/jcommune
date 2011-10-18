@@ -45,7 +45,7 @@ public class User extends Entity implements UserDetails {
     private String encodedUsername;
     private int userPostCount;
     private byte[] avatar;
-    private String language;
+    private String language = "RUSSIAN";
 
     /**
      * Only for hibernate usage.
