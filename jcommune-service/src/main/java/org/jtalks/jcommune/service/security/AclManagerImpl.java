@@ -116,7 +116,7 @@ public class AclManagerImpl implements AclManager {
                         acl.deleteAce(i); // delete from original list
                         logger.debug("Deleted from object {} id {} ACL permission {} for recipient {}",
                                 new Object[]{target.getClass().getSimpleName(), target.getId(),
-                                        permission, recipient});
+                                    permission, recipient});
                         i--; // because list item deleted in original list
                     }
                 }

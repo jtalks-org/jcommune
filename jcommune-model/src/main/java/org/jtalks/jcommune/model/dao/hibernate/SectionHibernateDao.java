@@ -71,13 +71,11 @@ public class SectionHibernateDao extends ParentRepositoryImpl<Section> implement
      * @return sectionList
      */
     protected List<Section> setCountersTopicInBranch(List<Section> sectionList){
-        for(Section section : sectionList){
+        for(Section section : sectionList) {
             List<Branch> branchList = section.getBranches();
-            for(Branch branch : branchList)
-            {
-            int count = getTopicInBranchCount(branch);
-
-            branch.setTopicCount(count);
+            for(Branch branch : branchList) {
+				int count = getTopicInBranchCount(branch);
+				branch.setTopicCount(count);
             }
         }
         return sectionList;

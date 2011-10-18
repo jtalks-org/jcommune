@@ -122,10 +122,10 @@ public class Branch extends Entity {
     /**
      * @return count topics in branch
       */
-     public int getTopicCount()
-     {
+    public int getTopicCount()
+    {
         return this.topicCount;
-     }
+    }
 
     /**
      * @param topicCount count topics to set
