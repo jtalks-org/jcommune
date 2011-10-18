@@ -36,7 +36,7 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
      * @param sectionDao - data access object, which should be able do all CRUD operations.
      */
     public TransactionalSectionService(SectionDao sectionDao) {
-        this.dao = sectionDao;
+        super(sectionDao);
     }
 
     /**
@@ -44,7 +44,7 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
      */
     @Override
     public List<Section> getAll() {
-        return dao.getAll();
+        return this.getDao().getAll();
     }
 
     /**
@@ -52,6 +52,6 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
      */
     @Override
     public int getTopicInBranchCount(Branch branch){
-        return dao.getTopicInBranchCount(branch);
+        return this.getDao().getTopicInBranchCount(branch);
     }
 }

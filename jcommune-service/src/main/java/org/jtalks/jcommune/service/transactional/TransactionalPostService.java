@@ -47,7 +47,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * @param securityService service for authorization
      */
     public TransactionalPostService(PostDao dao, TopicDao topicDao, SecurityService securityService) {
-        this.dao = dao;
+        super(dao);
         this.topicDao = topicDao;
         this.securityService = securityService;
     }
@@ -60,7 +60,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         if (!topicDao.isExist(topicId)) {
             throw new NotFoundException("Topic with id: " + topicId + " not found");
         }
-        return dao.getPostRangeInTopic(topicId, start, max);
+        return this.getDao().getPostRangeInTopic(topicId, start, max);
     }
 
     /**
@@ -71,7 +71,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         if (!topicDao.isExist(topicId)) {
             throw new NotFoundException("Topic with id: " + topicId + " not found");
         }
-        return dao.getPostsInTopicCount(topicId);
+        return this.getDao().getPostsInTopicCount(topicId);
     }
     
      /**
@@ -85,7 +85,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         post.setPostContent(postContent); 
         post.updateModificationDate();
 
-        dao.update(post);
+        this.getDao().update(post);
         logger.debug("Update the post {}", post.getId());
      }
 

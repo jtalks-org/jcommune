@@ -68,9 +68,9 @@ public class SuccessfulAuthenticationHandler extends SavedRequestAwareAuthentica
             temp = getDefaultTargetUrl().substring(0, getDefaultTargetUrl().indexOf("?lang=")) +
                     getDefaultTargetUrl().substring(getDefaultTargetUrl().indexOf("?lang=") + 8);
             setDefaultTargetUrl(temp + "?lang=" + lang);
-        }
-        else
+        } else {
             setDefaultTargetUrl(getDefaultTargetUrl() + "?lang=" + lang);
+        }
         super.onAuthenticationSuccess(request, response, authentication);
     }
 }

@@ -27,12 +27,31 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
  * @author Osadchuck Eugeny
  * @author Kirill Afonin
  */
-public abstract class AbstractTransactionalEntityService<T extends Entity, Y extends ChildRepository>
+public abstract class AbstractTransactionalEntityService<T extends Entity, Y extends ChildRepository<T>>
         implements EntityService<T> {
     /**
      * ChildRepository object implementation.
      */
-    protected Y dao;
+    private Y dao;
+
+    /**
+     * Subclass may use this constructor to store entity DAO or parent
+     * entity DAO if necessary
+     *
+     * @param dao subclass-provided dao object
+     */
+    AbstractTransactionalEntityService(Y dao) {
+        this.dao = dao;
+    }
+
+    /**
+     * Returns the dao set in constructor
+     *
+     * @return dao set in the constructor
+     */
+    Y getDao() {
+        return dao;
+    }
 
     /**
      * {@inheritDoc}
@@ -42,6 +61,6 @@ public abstract class AbstractTransactionalEntityService<T extends Entity, Y ext
         if (!dao.isExist(id)) {
             throw new NotFoundException("Entity with id: " + id + " not found");
         }
-        return (T) dao.get(id);
+        return dao.get(id);
     }
 }

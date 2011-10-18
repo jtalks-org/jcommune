@@ -100,6 +100,7 @@ public final class BranchController {
      *
      * @param page page
      * @param size number of posts on the page
+     * @param session bound http session
      * @return {@code ModelAndView} with topics list and vars for pagination
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
