@@ -22,6 +22,7 @@ import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.util.ImagePreprocessor;
+import org.jtalks.jcommune.web.util.Languages;
 import org.jtalks.jcommune.web.validation.ImageFormats;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -51,7 +52,7 @@ public class UserController {
     public static final String EDIT_PROFILE = "editProfile";
     public static final String REGISTRATION = "registration";
     public static final String EDITED_USER = "editedUser";
-    public static final String[] languages = new String[] {"english", "russian"};
+    public static final Languages[] languages = Languages.values();
 
     public static final int AVATAR_MAX_HEIGHT = 100;
     public static final int AVATAR_MAX_WIDTH = 100;
@@ -141,7 +142,8 @@ public class UserController {
         User user = userService.getByEncodedUsername(encodedUsername);
         return new ModelAndView("userDetails")
                 .addObject("user", user)
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
+                .addObject("language", Languages.valueOf(user.getLanguage()));
     }
 
     /**

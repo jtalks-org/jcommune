@@ -67,7 +67,7 @@
         <c:if test="${user.language != null}">
             <li>
                 <label><spring:message code="label.language"/></label>
-                <span><c:out value="${user.language}"/></span>
+                <span><spring:message code="${language.asText}"/></span>
             </li>
         </c:if>
         <li>
