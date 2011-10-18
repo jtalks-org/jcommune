@@ -30,7 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class EditUserProfileDto extends UserDto {
 
     private String currentUserPassword;
-    private String signature;
 
     @Length(min = 4, max = 20)
     private String newUserPassword;
@@ -121,20 +120,6 @@ public class EditUserProfileDto extends UserDto {
      */
     public void setAvatar(MultipartFile avatar) {
         this.avatar = avatar;
-    }
-
-    /**
-     * @return signature
-     */
-    public String getSignature() {
-        return signature;
-    }
-
-    /**
-     * @param signature user signature
-     */
-    public void setSignature(String signature) {
-        this.signature = signature;
     }
 
     /**
