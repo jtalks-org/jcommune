@@ -17,8 +17,6 @@
                         || breadcrumb.breadcrumbLocation.name == '/outbox'
                         || breadcrumb.breadcrumbLocation.name == '/drafts'
                         || breadcrumb.breadcrumbLocation.name == '/topics/recent'}">
-            <%--TODO Need to define standard URI for most location - ${Entity type}/${Entity ID}.html--%>
-            <%--TODO Need to remove '/pm/' from controller mapping.html--%>
             <a class="forums_list"
                href="${pageContext.request.contextPath}${breadcrumb.breadcrumbLocation.name}">
                 <c:out value="${breadcrumb.breadcrumbLocationValue}"/>

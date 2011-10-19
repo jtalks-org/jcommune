@@ -35,8 +35,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Controller for User related actions: registration.
@@ -51,7 +49,7 @@ public class UserController {
     public static final String EDIT_PROFILE = "editProfile";
     public static final String REGISTRATION = "registration";
     public static final String EDITED_USER = "editedUser";
-    public static final String[] languages = new String[] {"english", "russian"};
+    public static final String[] languages = new String[]{"english", "russian"};
 
     public static final int AVATAR_MAX_HEIGHT = 100;
     public static final int AVATAR_MAX_WIDTH = 100;
@@ -132,13 +130,15 @@ public class UserController {
     /**
      * Show page with user info.
      *
-     * @param encodedUsername {@link User#getEncodedUsername()}
+     * @param username {@link User#getEncodedUsername()}
      * @return user details view with {@link User} object
      * @throws NotFoundException if user with given id not found
      */
     @RequestMapping(value = "/users/{encodedUsername}", method = RequestMethod.GET)
-    public ModelAndView show(@PathVariable("encodedUsername") String encodedUsername) throws NotFoundException {
-        User user = userService.getByEncodedUsername(encodedUsername);
+    //The {encodedUsername} on the JSP view automatically converted to username.
+    // That's why the getByUsername() method is used instead of getByEncodedUsername()
+    public ModelAndView show(@PathVariable("encodedUsername") String username) throws NotFoundException {
+        User user = userService.getByUsername(username);
         return new ModelAndView("userDetails")
                 .addObject("user", user)
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
@@ -189,7 +189,7 @@ public class UserController {
             editedUser = userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                     userDto.getLastName(), userDto.getCurrentUserPassword(), userDto.getNewUserPassword(),
                     imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT),
-					userDto.getSignature(), userDto.getLanguage());
+                    userDto.getSignature(), userDto.getLanguage());
         } catch (DuplicateEmailException e) {
             result.rejectValue("email", "validation.duplicateemail");
             return new ModelAndView(EDIT_PROFILE);

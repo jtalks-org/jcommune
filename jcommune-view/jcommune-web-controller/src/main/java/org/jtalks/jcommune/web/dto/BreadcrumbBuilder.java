@@ -32,8 +32,6 @@ import java.util.List;
 
 @Component
 public class BreadcrumbBuilder {
-       //TODO Need to define standard URI for most location - ${Entity type}/${Entity ID}.html
-
 
     /**
      * Returns the Forum breadcrumbs.
@@ -131,7 +129,7 @@ public class BreadcrumbBuilder {
         List<Breadcrumb> breadcrumbList = getForumBreadcrumb();
         breadcrumbList.add(prepareRecentBreadcrumb());
 
-        return  breadcrumbList;
+        return breadcrumbList;
     }
 
     /**
