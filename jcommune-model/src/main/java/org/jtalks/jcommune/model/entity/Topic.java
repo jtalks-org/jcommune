@@ -286,6 +286,15 @@ public class Topic extends Entity {
     }
 
     /**
+     * Get count of post in topic.
+     *
+     * @return count of post
+     */
+    public int getPostCount() {
+        return posts.size();
+    }
+
+    /**
      * @return topic page views
      */
     public int getViews() {
