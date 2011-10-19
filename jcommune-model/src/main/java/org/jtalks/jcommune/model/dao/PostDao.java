@@ -26,7 +26,7 @@ import java.util.List;
  *
  * @author Pavel Vervenko
  * @author Kirill Afonin
- * @see PostHibernateDao
+ * @see org.jtalks.jcommune.model.dao.hibernate.PostHibernateDao
  */
 public interface PostDao extends ChildRepository<Post> {
 

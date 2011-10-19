@@ -27,12 +27,12 @@ import java.util.List;
  * <b>Examples:</b>
  * <p>You want grant &quot;admin&quot; permission to user with name &quot;jack&quot;
  * on {@code Topic topic = ...;} object. Object must have <b>assigned id</b> and be inherited from
- * {@link org.jtalks.jcommune.model.entity.Entity}.
+ * {@link org.jtalks.common.model.entity.Entity}.
  * Create builder instance({@link AclBuilderImpl}):
  * {@code AclBuilder builder = new AclBuilderImpl(manager, AclBuilderImpl.Action.GRANT); }
  * Granting permissions:
  * {@code builder.user(&quot;jack&quot;).admin().on(topic);}
- * Permissions will be created when you call {@link AclBuilder#on(org.jtalks.jcommune.model.entity.Entity)}
+ * Permissions will be created when you call {@link AclBuilder#on(org.jtalks.common.model.entity.Entity)}
  * </p>
  * <p>
  * You want grant &quot;read&quot; and &quot;delete&quot; permissions to user with name &quot;jack&quot;

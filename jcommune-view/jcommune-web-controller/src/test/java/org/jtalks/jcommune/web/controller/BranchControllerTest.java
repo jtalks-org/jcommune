@@ -27,10 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSessionContext;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 
 import static org.mockito.Mockito.*;

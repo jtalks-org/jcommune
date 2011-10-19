@@ -19,12 +19,12 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 /**
- * DTO for {@link User} object. Required for validation and binding
+ * DTO for {@link org.jtalks.jcommune.model.entity.User} object. Required for validation and binding
  * errors to form.
  *
  * @author Kirill Afonin
  * @author Osadchuck Eugeny
- * @see User
+ * @see org.jtalks.jcommune.model.entity.User
  */
 public abstract class UserDto {
 
