@@ -46,7 +46,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * @param securityService for security
      */
     public TransactionalUserService(UserDao dao, SecurityService securityService) {
-        this.dao = dao;
+       super(dao);
         this.securityService = securityService;
     }
 
@@ -55,13 +55,14 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      */
     @Override
     public User getByUsername(String username) throws NotFoundException {
-        User user = dao.getByUsername(username);
+        User user = this.getDao().getByUsername(username);
         if (user == null) {
             String msg = "User " + username + " not found.";
-            logger.info(msg);
+            logger.warn(msg);
             throw new NotFoundException(msg);
         }
-        user.setUserPostCount(dao.getCountPostOfUser(user));
+        int postCount = this.getDao().getCountPostOfUser(user);
+        user.setUserPostCount(postCount);
         return user;
     }
 
@@ -70,13 +71,13 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      */
     @Override
     public User getByEncodedUsername(String encodedUsername) throws NotFoundException {
-        User user = dao.getByEncodedUsername(encodedUsername);
+        User user = this.getDao().getByEncodedUsername(encodedUsername);
         if (user == null) {
             String msg = "User " + encodedUsername + " not found.";
             logger.info(msg);
             throw new NotFoundException(msg);
         }
-        user.setUserPostCount(dao.getCountPostOfUser(user));
+        user.setUserPostCount(this.getDao().getCountPostOfUser(user));
         return user;
     }
 
@@ -96,7 +97,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
             throw new DuplicateEmailException(msg);
         }
 
-        dao.saveOrUpdate(user);
+        this.getDao().saveOrUpdate(user);
 
         logger.info("User registered: {}", user.getUsername());
         return user;
@@ -108,7 +109,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     @Override
     public void updateLastLoginTime(User user) {
         user.updateLastLoginTime();
-        dao.saveOrUpdate(user);
+        this.getDao().saveOrUpdate(user);
     }
 
     /**
@@ -119,7 +120,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      */
     private boolean isUserExist(User user) {
         return user.getUsername().equals(SecurityConstants.ANONYMOUS_USERNAME)
-                || dao.isUserWithUsernameExist(user.getUsername());
+                || this.getDao().isUserWithUsernameExist(user.getUsername());
     }
 
     /**
@@ -129,7 +130,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * @return {@code true} if email exist
      */
     private boolean isEmailExist(String email) {
-        return dao.isUserWithEmailExist(email);
+        return this.getDao().isUserWithEmailExist(email);
     }
 
     /**
@@ -170,7 +171,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         }
 
 
-        dao.saveOrUpdate(currentUser);
+        this.getDao().saveOrUpdate(currentUser);
         return currentUser;
     }
 
@@ -188,6 +189,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      */
     @Override
     public int getCountPostOfUser(User userCreated) {
-        return dao.getCountPostOfUser(userCreated);
+        return this.getDao().getCountPostOfUser(userCreated);
     }
 }

@@ -41,7 +41,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
      * @param sectionDao - used for checking branch existance.
      */
     public TransactionalBranchService(BranchDao branchDao, SectionDao sectionDao) {
-        this.dao = branchDao;
+        super(branchDao);
         this.sectionDao = sectionDao;
     }
 
@@ -54,7 +54,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
             throw new NotFoundException("Section with id: " + sectionId + " not found");
         }
 
-        return dao.getBranchesInSection(sectionId);
+        return this.getDao().getBranchesInSection(sectionId);
     }
 
     /**
@@ -65,6 +65,6 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
         if (!sectionDao.isExist(sectionId)) {
             throw new NotFoundException("Section with id: " + sectionId + " not found");
         }
-        return dao.getBranchesInSectionCount(sectionId);
+        return this.getDao().getBranchesInSectionCount(sectionId);
     }
 }
