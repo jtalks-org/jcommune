@@ -17,7 +17,11 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.*;
+import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
+import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
+import org.jtalks.jcommune.service.exceptions.InvalidImageException;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
@@ -54,7 +58,7 @@ public class UserController {
     public static final String EDIT_PROFILE = "editProfile";
     public static final String REGISTRATION = "registration";
     public static final String EDITED_USER = "editedUser";
-    public static final Languages[] LANGUAGES = Languages.values();
+    private static final Languages[] LANGUAGES = Languages.values();
 
     public static final int AVATAR_MAX_HEIGHT = 100;
     public static final int AVATAR_MAX_WIDTH = 100;

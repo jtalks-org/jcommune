@@ -42,10 +42,18 @@ public enum Languages {
         }
     }
 
+    /**
+     *
+     * @return  languages
+     */
     public Languages getLanguages() {
         return languages;
     }
 
+    /**
+     *
+     * @param languages  languages
+     */
     public void setLanguages(Languages languages) {
         this.languages = languages;
     }

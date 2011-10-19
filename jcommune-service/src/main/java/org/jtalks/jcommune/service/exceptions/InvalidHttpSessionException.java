@@ -1,5 +1,3 @@
-package org.jtalks.jcommune.service.exceptions;
-
 /**
  * Copyright (C) 2011  JTalks.org Team
  * This library is free software; you can redistribute it and/or
@@ -14,6 +12,7 @@ package org.jtalks.jcommune.service.exceptions;
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+package org.jtalks.jcommune.service.exceptions;
 
 /**
  * Exception for cases when http session is invalid. For example, session is null.

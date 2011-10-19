@@ -72,8 +72,8 @@ public class Post extends Entity {
     /**
      * Creates the new instance with the creationDate initialized with current time.***
      *
-	 * @param userCreated author of the post
-	 * @param postContent the post content itself
+     * @param userCreated author of the post
+     * @param postContent the post content itself
      * @return new Post instance
      */
     public static Post createNewPost(User userCreated, String postContent) {

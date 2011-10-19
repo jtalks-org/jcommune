@@ -16,7 +16,6 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.PostService;
-import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.PostDto;
@@ -47,7 +46,7 @@ public class PostController {
     private BreadcrumbBuilder breadcrumbBuilder;
 
     /**
-     * Constructor. Injects {@link TopicService}.
+     * Constructor. Injects {@link PostService}.
      *
      * @param postService       {@link PostService} instance to be injected
      * @param breadcrumbBuilder the object which provides actions on
