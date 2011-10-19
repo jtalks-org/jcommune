@@ -45,7 +45,7 @@ public class User extends Entity implements UserDetails {
     private String encodedUsername;
     private int userPostCount;
     private byte[] avatar;
-    private String language;
+    private String language = "ENGLISH";
 
     /**
      * Only for hibernate usage.
@@ -157,7 +157,7 @@ public class User extends Entity implements UserDetails {
      * @param avatar user avatar
      */
     public void setAvatar(byte[] avatar) {
-		this.avatar = (avatar == null) ? null : avatar.clone();
+        this.avatar = (avatar == null) ? null : avatar.clone();
     }
 
 
@@ -278,7 +278,7 @@ public class User extends Entity implements UserDetails {
     /**
      * @return count post this user
      */
-    public int getUserPostCount(){
+    public int getUserPostCount() {
         return this.userPostCount;
 
     }
@@ -286,7 +286,7 @@ public class User extends Entity implements UserDetails {
     /**
      * @param userPostCount count posts this user to set
      */
-    public void setUserPostCount(int userPostCount){
+    public void setUserPostCount(int userPostCount) {
         this.userPostCount = userPostCount;
     }
 

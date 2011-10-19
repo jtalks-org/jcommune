@@ -18,8 +18,10 @@ import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.exceptions.InvalidHttpSessionException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -72,11 +74,10 @@ public interface TopicService extends EntityService<Topic> {
     /**
      * Get topic past last 24 hour.
      *
-     * @param start start index of topic
-     * @param max   number of topics
+     * @param start     start index of topic
+     * @param max       number of topics
+     * @param lastLogin last login date
      * @return list of {@code Topic} objects with size {@code max}
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when branch not found
      */
     List<Topic> getAllTopicsPastLastDay(int start, int max, DateTime lastLogin);
 
@@ -93,9 +94,8 @@ public interface TopicService extends EntityService<Topic> {
     /**
      * Get number of topics past last 24 hour.
      *
+     * @param lastLogin last login date
      * @return number of topics
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when branch not found
      */
     int getTopicsPastLastDayCount(DateTime lastLogin);
 
@@ -137,8 +137,11 @@ public interface TopicService extends EntityService<Topic> {
     /**
      * Topic views count increment
      *
-     * @param topicId topic id
+     * @param topic   topic that is viewed now
+     * @param session current session that contains viewed topics Ids
      * @throws NotFoundException when topic not found
+     * @throws org.jtalks.jcommune.service.exceptions.InvalidHttpSessionException
+     *                           when session is null
      */
-    void addTopicView(long topicId) throws NotFoundException;
+    void addTopicView(Topic topic, HttpSession session) throws NotFoundException, InvalidHttpSessionException;
 }

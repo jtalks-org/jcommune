@@ -54,7 +54,7 @@ public class TransactionalPrivateMessageService
                                               SecurityService securityService,
                                               UserService userService,
                                               UserDataCacheService userDataCache) {
-        this.dao = pmDao;
+        super(pmDao);
         this.securityService = securityService;
         this.userService = userService;
         this.userDataCache = userDataCache;
@@ -66,7 +66,7 @@ public class TransactionalPrivateMessageService
     @Override
     public List<PrivateMessage> getInboxForCurrentUser() {
         User currentUser = securityService.getCurrentUser();
-        return dao.getAllForUser(currentUser);
+        return this.getDao().getAllForUser(currentUser);
     }
 
     /**
@@ -75,7 +75,7 @@ public class TransactionalPrivateMessageService
     @Override
     public List<PrivateMessage> getOutboxForCurrentUser() {
         User currentUser = securityService.getCurrentUser();
-        return dao.getAllFromUser(currentUser);
+        return this.getDao().getAllFromUser(currentUser);
     }
 
 
@@ -88,7 +88,7 @@ public class TransactionalPrivateMessageService
         User recipient = userService.getByUsername(recipientUsername);
         PrivateMessage pm = populateMessage(title, body, recipient);
         pm.setStatus(PrivateMessageStatus.NOT_READ);
-        dao.saveOrUpdate(pm);
+        this.getDao().saveOrUpdate(pm);
         userDataCache.incrementNewMessageCountFor(recipientUsername);
 
         securityService.grantToCurrentUser().user(recipientUsername).read().on(pm);
@@ -123,7 +123,7 @@ public class TransactionalPrivateMessageService
             return;
         }
         pm.markAsRead();
-        dao.saveOrUpdate(pm);
+        this.getDao().saveOrUpdate(pm);
         userDataCache.decrementNewMessageCountFor(pm.getUserTo().getUsername());
     }
 
@@ -133,7 +133,7 @@ public class TransactionalPrivateMessageService
     @Override
     public List<PrivateMessage> getDraftsFromCurrentUser() {
         User currentUser = securityService.getCurrentUser();
-        return dao.getDraftsFromUser(currentUser);
+        return this.getDao().getDraftsFromUser(currentUser);
     }
 
     /**
@@ -147,7 +147,7 @@ public class TransactionalPrivateMessageService
         PrivateMessage pm = populateMessage(title, body, recipient);
         pm.setId(id);
         pm.markAsDraft();
-        dao.saveOrUpdate(pm);
+        this.getDao().saveOrUpdate(pm);
 
         securityService.grantToCurrentUser().admin().on(pm);
 
@@ -168,7 +168,7 @@ public class TransactionalPrivateMessageService
         if (count != null) {
             return count;
         }
-        count = dao.getNewMessagesCountFor(username);
+        count = this.getDao().getNewMessagesCountFor(username);
         userDataCache.putNewPmCount(username, count);
         return count;
     }
@@ -185,7 +185,7 @@ public class TransactionalPrivateMessageService
         PrivateMessage pm = populateMessage(title, body, recipient);
         pm.setId(id);
         pm.setStatus(PrivateMessageStatus.NOT_READ);
-        dao.saveOrUpdate(pm);
+        this.getDao().saveOrUpdate(pm);
         userDataCache.incrementNewMessageCountFor(recipientUsername);
 
         securityService.deleteFromAcl(pm);

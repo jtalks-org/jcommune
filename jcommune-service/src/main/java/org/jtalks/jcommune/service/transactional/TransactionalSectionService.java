@@ -23,7 +23,7 @@ import java.util.List;
 
 /**
  * The implementation of SectionService
- * 
+ *
  * @author Max Malakhov
  */
 
@@ -36,7 +36,7 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
      * @param sectionDao - data access object, which should be able do all CRUD operations.
      */
     public TransactionalSectionService(SectionDao sectionDao) {
-        this.dao = sectionDao;
+        super(sectionDao);
     }
 
     /**
@@ -44,14 +44,14 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
      */
     @Override
     public List<Section> getAll() {
-        return dao.getAll();
+        return this.getDao().getAll();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public int getTopicInBranchCount(Branch branch){
-        return dao.getTopicInBranchCount(branch);
+    public int getTopicInBranchCount(Branch branch) {
+        return this.getDao().getTopicInBranchCount(branch);
     }
 }

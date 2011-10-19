@@ -23,7 +23,7 @@ import org.jtalks.jcommune.model.entity.User;
  *
  * @author Pavel Vervenko
  * @author Kirill Afonin
- * @see UserHibernateDao
+ * @see org.jtalks.jcommune.model.dao.hibernate.UserHibernateDao
  */
 public interface UserDao extends ParentRepository<User> {
 

@@ -24,13 +24,17 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
+import org.jtalks.jcommune.service.exceptions.InvalidHttpSessionException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import javax.servlet.http.HttpSession;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Topic service class. This class contains method needed to manipulate with Topic persistent entity.
@@ -47,6 +51,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     private final SecurityService securityService;
     private BranchService branchService;
     private BranchDao branchDao;
+    public static String TOPICS_VIEWED_ATTRIBUTE_NAME = "topicsViewed";
 
     /**
      * Create an instance of User entity based service
@@ -54,12 +59,12 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * @param dao             data access object, which should be able do all CRUD operations with topic entity
      * @param securityService {@link SecurityService} for retrieving current user
      * @param branchService   {@link org.jtalks.jcommune.service.BranchService} instance to be injected
-     * @param branchDao       used for checking branch existance
+     * @param branchDao       used for checking branch existence
      */
     public TransactionalTopicService(TopicDao dao, SecurityService securityService,
                                      BranchService branchService, BranchDao branchDao) {
+        super(dao);
         this.securityService = securityService;
-        this.dao = dao;
         this.branchService = branchService;
         this.branchDao = branchDao;
     }
@@ -81,7 +86,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         topic.addPost(answer);
         topic.updateModificationDate();
 
-        dao.update(topic);
+        this.getDao().update(topic);
         logger.debug("Added answer to topic {}", topicId);
 
         securityService.grantToCurrentUser().role(SecurityConstants.ROLE_ADMIN).admin().on(answer);
@@ -122,7 +127,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         if (!branchDao.isExist(branchId)) {
             throw new NotFoundException("Branch with id: " + branchId + " not found");
         }
-        return dao.getTopicRangeInBranch(branchId, start, max);
+        return this.getDao().getTopicRangeInBranch(branchId, start, max);
 
     }
 
@@ -133,8 +138,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     public List<Topic> getAllTopicsPastLastDay(int start, int max, DateTime lastLogin) {
         if (lastLogin == null) {
             lastLogin = new DateTime().minusDays(1);
-		}	
-        return dao.getAllTopicsPastLastDay(start, max, lastLogin);
+        }
+        return this.getDao().getAllTopicsPastLastDay(start, max, lastLogin);
     }
 
     /**
@@ -145,7 +150,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         if (!branchDao.isExist(branchId)) {
             throw new NotFoundException("Branch with id: " + branchId + " not found");
         }
-        return dao.getTopicsInBranchCount(branchId);
+        return this.getDao().getTopicsInBranchCount(branchId);
     }
 
     /**
@@ -153,10 +158,10 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      */
     @Override
     public int getTopicsPastLastDayCount(DateTime lastLogin) {
-        if (lastLogin == null){
+        if (lastLogin == null) {
             lastLogin = new DateTime().minusDays(1);
-		}	
-        return dao.getTopicsPastLastDayCount(lastLogin);
+        }
+        return this.getDao().getTopicsPastLastDayCount(lastLogin);
     }
 
     /**
@@ -186,7 +191,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         post.setPostContent(bodyText);
         topic.updateModificationDate();
 
-        dao.update(topic);
+        this.getDao().update(topic);
         logger.debug("Update the topic {}", topic.getId());
     }
 
@@ -210,9 +215,19 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    public void addTopicView(long topicId) throws NotFoundException {
-        Topic topic = get(topicId);
-        topic.setViews(topic.getViews() + 1);
-        dao.update(topic);
+    public void addTopicView(Topic topic, HttpSession session) throws NotFoundException, InvalidHttpSessionException {
+        if (session == null) {
+            throw new InvalidHttpSessionException("Session cannot be null");
+        }
+        Set<Long> topicIds = (Set<Long>) session.getAttribute(TOPICS_VIEWED_ATTRIBUTE_NAME);
+        if (topicIds == null) {
+            topicIds = new HashSet<Long>();
+        }
+        if (!topicIds.contains(topic.getId())) {
+            topic.setViews(topic.getViews() + 1);
+            this.getDao().update(topic);
+        }
+        topicIds.add(topic.getId());
+        session.setAttribute(TOPICS_VIEWED_ATTRIBUTE_NAME, topicIds);
     }
 }

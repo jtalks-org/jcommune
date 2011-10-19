@@ -98,8 +98,9 @@ public final class BranchController {
     /**
      * Displays to user a list of topic past last 24 hour.
      *
-     * @param page page
-     * @param size number of posts on the page
+     * @param page    page
+     * @param size    number of posts on the page
+     * @param session bound http session
      * @return {@code ModelAndView} with topics list and vars for pagination
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
@@ -107,7 +108,8 @@ public final class BranchController {
     @RequestMapping(value = "/topics/recent", method = RequestMethod.GET)
     public ModelAndView show(@RequestParam(value = PAGE, required = false) Integer page,
                              @RequestParam(value = "size", required = false) Integer size, HttpSession session)
-							 throws NotFoundException {
+            throws NotFoundException {
+
         DateTime lastLogin = (DateTime) session.getAttribute("lastlogin");
         int topicsCount = topicService.getTopicsPastLastDayCount(lastLogin);
         Pagination pag = new Pagination(page, size, topicsCount);

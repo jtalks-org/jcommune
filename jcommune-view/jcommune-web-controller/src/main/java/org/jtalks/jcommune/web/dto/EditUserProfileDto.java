@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  * This dto used for transferring data in edit {@link User} profile operation.
- * To get more info see {@link UserController#editProfile}.
+ * To get more info see {@link org.jtalks.jcommune.web.controller.UserController#editProfile}.
  *
  * @author Osadchuck Eugeny
  */
@@ -30,7 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class EditUserProfileDto extends UserDto {
 
     private String currentUserPassword;
-    private String signature;
 
     @Length(min = 4, max = 20)
     private String newUserPassword;
@@ -121,20 +120,6 @@ public class EditUserProfileDto extends UserDto {
      */
     public void setAvatar(MultipartFile avatar) {
         this.avatar = avatar;
-    }
-
-    /**
-     * @return signature
-     */
-    public String getSignature() {
-        return signature;
-    }
-
-    /**
-     * @param signature user signature
-     */
-    public void setSignature(String signature) {
-        this.signature = signature;
     }
 
     /**

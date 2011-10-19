@@ -14,15 +14,15 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import java.util.List;
-
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Section;
 
+import java.util.List;
+
 /**
  * Hibernate DAO implementation from the {@link Section}.
- * 
+ *
  * @author Max Malakhov
  */
 public class SectionHibernateDao extends ParentRepositoryImpl<Section> implements SectionDao {
@@ -58,10 +58,10 @@ public class SectionHibernateDao extends ParentRepositoryImpl<Section> implement
     @Override
     public int getTopicInBranchCount(Branch branch) {
         return ((Number) getSession().getNamedQuery("getTopcInBranchCount")
-               .setCacheable(true)
-               .setEntity("branch", branch)
-               .uniqueResult())
-               .intValue();
+                .setCacheable(true)
+                .setEntity("branch", branch)
+                .uniqueResult())
+                .intValue();
     }
 
     /**
@@ -70,14 +70,12 @@ public class SectionHibernateDao extends ParentRepositoryImpl<Section> implement
      * @param sectionList
      * @return sectionList
      */
-    protected List<Section> setCountersTopicInBranch(List<Section> sectionList){
-        for(Section section : sectionList){
+    protected List<Section> setCountersTopicInBranch(List<Section> sectionList) {
+        for (Section section : sectionList) {
             List<Branch> branchList = section.getBranches();
-            for(Branch branch : branchList)
-            {
-            int count = getTopicInBranchCount(branch);
-
-            branch.setTopicCount(count);
+            for (Branch branch : branchList) {
+                int count = getTopicInBranchCount(branch);
+                branch.setTopicCount(count);
             }
         }
         return sectionList;

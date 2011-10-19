@@ -22,7 +22,7 @@ import org.jtalks.jcommune.model.dao.ChildRepository;
 import java.lang.reflect.ParameterizedType;
 
 /**
- * Basic class for access to the {@link org.jtalks.jcommune.model.entity.Entity} objects.
+ * Basic class for access to the {@link org.jtalks.common.model.entity.Entity} objects.
  * Uses to load objects from database, save, update or delete them.
  * The implementation is based on the Hibernate.
  * Has the implementation of some commonly used methods.

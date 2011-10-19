@@ -20,6 +20,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="joda" uri="http://www.joda.org/joda/time/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
+<%@ taglib prefix="fmt" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <sec:authentication property="principal.username" var="auth" scope="request"/>
@@ -81,7 +82,13 @@
             <tr>
                 <td><label><spring:message code="label.language"/></label></td>
                 <td>
-                    <form:select path="language" items="${languages}" />
+                    <form:select path="language">
+                        <c:forEach items="${languages}" var="languageItem">
+                            <form:option value="${languageItem}">
+                                <spring:message code="${languageItem.asText}"/>
+                            </form:option>
+                        </c:forEach>
+                    </form:select>
                 </td>
                 <td><form:errors path="language" cssClass="error"/></td>
             </tr>

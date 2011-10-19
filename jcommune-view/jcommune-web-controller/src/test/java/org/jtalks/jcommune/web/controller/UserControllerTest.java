@@ -158,9 +158,11 @@ public class UserControllerTest {
 
     @Test
     public void testShow() throws Exception {
+        User user = new User("username", "email", "password");
+        user.setLanguage("ENGLISH");
         //set expectations
         when(userService.getByEncodedUsername(ENCODED_USER_NAME))
-                .thenReturn(new User("username", "email", "password"));
+                .thenReturn(user);
         when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
 
 

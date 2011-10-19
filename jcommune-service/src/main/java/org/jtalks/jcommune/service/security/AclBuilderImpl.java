@@ -46,7 +46,7 @@ public class AclBuilderImpl implements AclBuilder {
      *
      * @param aclManager instance of manager
      * @param action     action that will be executed when you call
-     *                   {@link AclBuilder#on(org.jtalks.jcommune.model.entity.Entity)
+     *                   {@link AclBuilder#on(org.jtalks.common.model.entity.Entity)
      */
     public AclBuilderImpl(AclManager aclManager, Action action) {
         this.aclManager = aclManager;

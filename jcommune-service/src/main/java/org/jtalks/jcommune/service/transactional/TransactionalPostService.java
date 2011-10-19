@@ -42,12 +42,12 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     /**
      * Create an instance of Post entity based service
      *
-     * @param dao      data access object, which should be able do all CRUD operations with post entity.
-     * @param topicDao this dao used for checking branch existance
+     * @param dao             data access object, which should be able do all CRUD operations with post entity.
+     * @param topicDao        this dao used for checking branch existance
      * @param securityService service for authorization
      */
     public TransactionalPostService(PostDao dao, TopicDao topicDao, SecurityService securityService) {
-        this.dao = dao;
+        super(dao);
         this.topicDao = topicDao;
         this.securityService = securityService;
     }
@@ -60,7 +60,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         if (!topicDao.isExist(topicId)) {
             throw new NotFoundException("Topic with id: " + topicId + " not found");
         }
-        return dao.getPostRangeInTopic(topicId, start, max);
+        return this.getDao().getPostRangeInTopic(topicId, start, max);
     }
 
     /**
@@ -71,23 +71,23 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         if (!topicDao.isExist(topicId)) {
             throw new NotFoundException("Topic with id: " + topicId + " not found");
         }
-        return dao.getPostsInTopicCount(topicId);
+        return this.getDao().getPostsInTopicCount(topicId);
     }
-    
-     /**
+
+    /**
      * {@inheritDoc}
      */
     @Override
     @PreAuthorize("hasPermission(#postId, 'org.jtalks.jcommune.model.entity.Post', admin)")
-    public void savePost(long postId, String postContent) throws NotFoundException{
+    public void savePost(long postId, String postContent) throws NotFoundException {
         Post post = get(postId);
 
-        post.setPostContent(postContent); 
+        post.setPostContent(postContent);
         post.updateModificationDate();
 
-        dao.update(post);
+        this.getDao().update(post);
         logger.debug("Update the post {}", post.getId());
-     }
+    }
 
     /**
      * {@inheritDoc}
@@ -102,5 +102,5 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         topicDao.update(topic);
         securityService.deleteFromAcl(post);
         logger.debug("Deleted post with id: {}", postId);
-    } 
+    }
 }

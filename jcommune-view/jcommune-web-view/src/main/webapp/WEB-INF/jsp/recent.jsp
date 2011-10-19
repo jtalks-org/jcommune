@@ -34,6 +34,7 @@
     <!-- Начало всех форумов -->
     <div class="all_forums">
         <h2><a class="heading" href="#"><c:out value="${recent}"/></a></h2>
+
         <div class="forum_misc_info">
 
             <span class="nav_top">На страницу: 1, <a href="#">2</a> <a href="#">След.</a></span>
@@ -85,6 +86,7 @@
                                 <h4><a class="forum_link"
                                        href="${pageContext.request.contextPath}/topics/${topic.id}"><c:out
                                         value="${topic.title}"/></a></h4>
+                                <h5><c:out value="${topic.lastPost.shortContent}"/></h5>
 
                             </div>
                         </c:otherwise>

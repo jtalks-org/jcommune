@@ -173,35 +173,22 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void testSetNullSignature() throws Exception {
-        User user = getUser();
-        when(securityService.getCurrentUser()).thenReturn(user);
-        when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
-
-        byte[] newAvatar = new byte[12];
-
-        User editedUser = userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
-                PASSWORD, NEW_PASSWORD, newAvatar, null, LANGUAGE);
-
-        verify(securityService).getCurrentUser();
-        verify(userDao).saveOrUpdate(user);
+    public void testSetEmptySignature() throws Exception {
+        User editedUser = editUserSignature("");
         assertEquals(editedUser.getSignature(), null, "Signature is not null");
     }
 
     @Test
-    public void testSetEmptySignature() throws Exception {
+    public void testSetNullSignature() throws Exception {
+        User editedUser = editUserSignature(null);
+        assertEquals(editedUser.getSignature(), null, "Signature is not null");
+    }
+
+    private User editUserSignature(String signature) throws WrongPasswordException, DuplicateEmailException {
         User user = getUser();
         when(securityService.getCurrentUser()).thenReturn(user);
-        when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
-
-        byte[] newAvatar = new byte[12];
-
-        User editedUser = userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
-                PASSWORD, NEW_PASSWORD, newAvatar, "", LANGUAGE);
-
-        verify(securityService).getCurrentUser();
-        verify(userDao).saveOrUpdate(user);
-        assertEquals(editedUser.getSignature(), null, "Signature is not null");
+        return userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
+                PASSWORD, NEW_PASSWORD, null, signature, LANGUAGE);
     }
 
     @Test
@@ -343,7 +330,7 @@ public class TransactionalUserServiceTest {
         User user = new User(USERNAME, EMAIL, PASSWORD);
         when(userDao.getCountPostOfUser(user)).thenReturn(1);
 
-        assertEquals(userService.getCountPostOfUser(user),1);
+        assertEquals(userService.getCountPostOfUser(user), 1);
 
         verify(userDao).getCountPostOfUser(user);
     }
