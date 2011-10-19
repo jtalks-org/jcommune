@@ -155,9 +155,11 @@ public final class TopicController {
      * @param topicId the id of selected Topic
      * @param page    page
      * @param size    number of posts on the page
+     * @param session current http session
      * @return {@code ModelAndView}
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic or branch not found
+     * @throws org.jtalks.jcommune.service.exceptions.InvalidHttpSessionException when session is invalid
      */
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.GET)
     public ModelAndView show(@PathVariable(TOPIC_ID) Long topicId,

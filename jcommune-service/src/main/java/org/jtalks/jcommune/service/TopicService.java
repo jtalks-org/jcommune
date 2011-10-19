@@ -142,6 +142,7 @@ public interface TopicService extends EntityService<Topic> {
      * @param topic topic that is viewed now
      * @param session current session that contains viewed topics Ids
      * @throws NotFoundException when topic not found
+     * @throws org.jtalks.jcommune.service.exceptions.InvalidHttpSessionException when session is null
      */
     void addTopicView(Topic topic, HttpSession session) throws NotFoundException, InvalidHttpSessionException;
 }
