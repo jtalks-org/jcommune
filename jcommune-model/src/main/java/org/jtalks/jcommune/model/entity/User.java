@@ -47,6 +47,8 @@ public class User extends Entity implements UserDetails {
     private byte[] avatar;
     private String language = "ENGLISH";
 
+    private static final long serialVersionUID = 19981017L;
+
     /**
      * Only for hibernate usage.
      */
@@ -120,6 +122,7 @@ public class User extends Entity implements UserDetails {
 
     /**
      * Set the username and encoded username (based on username)
+     * This method contains certain logic and should not be overridden.
      *
      * @param username the username to set
      */
@@ -157,7 +160,7 @@ public class User extends Entity implements UserDetails {
      * @param avatar user avatar
      */
     public void setAvatar(byte[] avatar) {
-		this.avatar = (avatar == null) ? null : avatar.clone();
+        this.avatar = (avatar == null) ? null : avatar.clone();
     }
 
 
@@ -238,8 +241,6 @@ public class User extends Entity implements UserDetails {
         this.lastLogin = lastLogin;
     }
 
-    private static final long serialVersionUID = 19981017L;
-
     /**
      * Updates login time to current time
      */
@@ -278,7 +279,7 @@ public class User extends Entity implements UserDetails {
     /**
      * @return count post this user
      */
-    public int getUserPostCount(){
+    public int getUserPostCount() {
         return this.userPostCount;
 
     }
@@ -286,7 +287,7 @@ public class User extends Entity implements UserDetails {
     /**
      * @param userPostCount count posts this user to set
      */
-    public void setUserPostCount(int userPostCount){
+    public void setUserPostCount(int userPostCount) {
         this.userPostCount = userPostCount;
     }
 

@@ -169,7 +169,7 @@ public class Post extends Entity {
     public String getShortContent(){
         String content = this.getPostContent();
         String shortContent = "";
-		// todo: replace with lastIndexOf call
+        // todo: replace with lastIndexOf call
         if (content.length() > 200){
             for (int i = 197; i > 1; i--){
                 if (content.charAt(i) == ' '){
@@ -181,7 +181,6 @@ public class Post extends Entity {
         } else {
             shortContent = content;
         }
-
         return shortContent;
     }
 }

@@ -61,8 +61,8 @@ public class SuccessfulAuthenticationHandler extends SavedRequestAwareAuthentica
         logger.info("User logged in: " + user.getUsername());
         String lang = "ru";
         if (user.getLanguage() != null) {
-            lang = user.getLanguage().substring(0,2);
-		}
+            lang = user.getLanguage().substring(0, 2);
+        }
         if (getDefaultTargetUrl().contains("?lang=")) {
             String temp;
             temp = getDefaultTargetUrl().substring(0, getDefaultTargetUrl().indexOf("?lang=")) +

@@ -61,7 +61,7 @@ public interface TopicDao extends ChildRepository<Topic> {
      *
      * @param start start index of topic
      * @param max   number of topics
-	 * @param lastLogin user's last login date and time
+     * @param lastLogin user's last login date and time
      * @return list of topics
      */
     List<Topic> getAllTopicsPastLastDay(int start, int max, DateTime lastLogin);

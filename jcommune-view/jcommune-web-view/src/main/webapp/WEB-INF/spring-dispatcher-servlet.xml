@@ -75,7 +75,6 @@
             <property name="useCacheControlNoStore" value="true"/>
         </bean>
         <bean id="userDataInterceptor" class="org.jtalks.jcommune.web.util.UserDataInterceptor"/>
-        <bean id="timeZoneConversionInterceptor" class="org.jtalks.jcommune.web.util.TimeZoneConversionInterceptor"/>
     </mvc:interceptors>
 
     <!-- simple pages -->

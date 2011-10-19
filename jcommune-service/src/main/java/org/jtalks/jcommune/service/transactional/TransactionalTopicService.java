@@ -51,7 +51,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     private final SecurityService securityService;
     private BranchService branchService;
     private BranchDao branchDao;
-    public static String TOPICS_VIEWED_ATTRIBUTE_NAME = "topicsViewed";
+    public static final String TOPICS_VIEWED_ATTRIBUTE_NAME = "topicsViewed";
 
     /**
      * Create an instance of User entity based service
