@@ -47,6 +47,8 @@ public class User extends Entity implements UserDetails {
     private byte[] avatar;
     private String language = "ENGLISH";
 
+    private static final long serialVersionUID = 19981017L;
+
     /**
      * Only for hibernate usage.
      */
@@ -120,6 +122,7 @@ public class User extends Entity implements UserDetails {
 
     /**
      * Set the username and encoded username (based on username)
+     * This method contains certain logic and should not be overridden.
      *
      * @param username the username to set
      */
@@ -237,8 +240,6 @@ public class User extends Entity implements UserDetails {
     public void setLastLogin(DateTime lastLogin) {
         this.lastLogin = lastLogin;
     }
-
-    private static final long serialVersionUID = 19981017L;
 
     /**
      * Updates login time to current time

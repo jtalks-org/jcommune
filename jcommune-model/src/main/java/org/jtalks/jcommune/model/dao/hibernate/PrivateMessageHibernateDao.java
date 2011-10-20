@@ -35,7 +35,6 @@ public class PrivateMessageHibernateDao extends ParentRepositoryImpl<PrivateMess
      * {@inheritDoc}
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<PrivateMessage> getAllFromUser(User userFrom) {
         return getSession().getNamedQuery("getAllFromUser")
                 .setCacheable(true)
@@ -47,7 +46,6 @@ public class PrivateMessageHibernateDao extends ParentRepositoryImpl<PrivateMess
      * {@inheritDoc}
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<PrivateMessage> getAllForUser(User userTo) {
         return getSession().getNamedQuery("getAllToUser")
                 .setCacheable(true)
@@ -59,7 +57,6 @@ public class PrivateMessageHibernateDao extends ParentRepositoryImpl<PrivateMess
      * {@inheritDoc}
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<PrivateMessage> getDraftsFromUser(User userFrom) {
         return getSession().getNamedQuery("getDraftsFromUser")
                 .setCacheable(true)
@@ -71,7 +68,6 @@ public class PrivateMessageHibernateDao extends ParentRepositoryImpl<PrivateMess
      * {@inheritDoc}
      */
     @Override
-    @SuppressWarnings("unchecked")
     public int getNewMessagesCountFor(String username) {
         return ((Number) getSession().getNamedQuery("getNewMessagesCountFor")
                 .setCacheable(true)

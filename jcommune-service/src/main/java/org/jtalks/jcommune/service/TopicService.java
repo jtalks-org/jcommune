@@ -18,7 +18,6 @@ import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.exceptions.InvalidHttpSessionException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 import javax.servlet.http.HttpSession;
@@ -140,8 +139,6 @@ public interface TopicService extends EntityService<Topic> {
      * @param topic   topic that is viewed now
      * @param session current session that contains viewed topics Ids
      * @throws NotFoundException when topic not found
-     * @throws org.jtalks.jcommune.service.exceptions.InvalidHttpSessionException
-     *                           when session is null
      */
-    void addTopicView(Topic topic, HttpSession session) throws NotFoundException, InvalidHttpSessionException;
+    void addTopicView(Topic topic, HttpSession session) throws NotFoundException;
 }

@@ -17,7 +17,11 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.*;
+import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
+import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
+import org.jtalks.jcommune.service.exceptions.InvalidImageException;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
@@ -30,7 +34,11 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
@@ -50,7 +58,7 @@ public class UserController {
     public static final String EDIT_PROFILE = "editProfile";
     public static final String REGISTRATION = "registration";
     public static final String EDITED_USER = "editedUser";
-    public static final Languages[] languages = Languages.values();
+    private static final Languages[] LANGUAGES = Languages.values();
 
     public static final int AVATAR_MAX_HEIGHT = 100;
     public static final int AVATAR_MAX_WIDTH = 100;
@@ -160,7 +168,7 @@ public class UserController {
         return new ModelAndView(EDIT_PROFILE)
                 .addObject(EDITED_USER, editedUser)
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
-                .addObject("languages", languages);
+                .addObject("languages", LANGUAGES);
     }
 
     /**
@@ -178,14 +186,12 @@ public class UserController {
                                     BindingResult result) throws NotFoundException, IOException {
 
         User user = securityService.getCurrentUser();
-
         if (result.hasErrors()) {
             if (user.getAvatar() == null) {
                 userDto.setAvatar(new MockMultipartFile("avatar", "", ImageFormats.JPG.getContentType(), new byte[0]));
             }
-            return new ModelAndView(EDIT_PROFILE, EDITED_USER, userDto).addObject("languages", languages);
+            return new ModelAndView(EDIT_PROFILE, EDITED_USER, userDto).addObject("languages", LANGUAGES);
         }
-
         User editedUser;
         try {
             editedUser = userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
@@ -198,7 +204,7 @@ public class UserController {
         } catch (WrongPasswordException e) {
             result.rejectValue("currentUserPassword", "label.incorrectCurrentPassword",
                     "Password does not match to the current password");
-            return new ModelAndView(EDIT_PROFILE).addObject("languages", languages);
+            return new ModelAndView(EDIT_PROFILE).addObject("languages", LANGUAGES);
         } catch (InvalidImageException e) {
             result.rejectValue("avatar", "avatar.wrong.format");
             return new ModelAndView(EDIT_PROFILE);
@@ -240,5 +246,4 @@ public class UserController {
         response.setContentLength(avatar.length);
         response.getOutputStream().write(avatar);
     }
-
 }

@@ -65,10 +65,11 @@ public class SectionHibernateDao extends ParentRepositoryImpl<Section> implement
     }
 
     /**
-     * Set topicCount in all branch
+     * Sets topicCount in all branch. All the branches will be updated
+     * to contain right calculable topic count attribute value
      *
-     * @param sectionList
-     * @return sectionList
+     * @param sectionList section list with branches to be updated
+     * @return sectionList section list with the updated branches
      */
     protected List<Section> setCountersTopicInBranch(List<Section> sectionList) {
         for (Section section : sectionList) {

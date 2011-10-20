@@ -22,7 +22,8 @@ import javax.validation.constraints.Size;
 
 /**
  * DTO for {@link User} object. Required for validation and binding
- * errors to form. This dto used for register user operation {@link org.jtalks.jcommune.web.controller.UserController#registerUser}.
+ * errors to form. This dto used for register user operation
+ * {@link org.jtalks.jcommune.web.controller.UserController#registerUser}.
  *
  * @author Osadchuck Eugeny
  */

@@ -20,7 +20,6 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
-import org.jtalks.jcommune.service.exceptions.InvalidHttpSessionException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.TopicDto;
@@ -28,7 +27,11 @@ import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
@@ -159,14 +162,12 @@ public final class TopicController {
      * @return {@code ModelAndView}
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic or branch not found
-     * @throws org.jtalks.jcommune.service.exceptions.InvalidHttpSessionException
-     *          when session is invalid
      */
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.GET)
     public ModelAndView show(@PathVariable(TOPIC_ID) Long topicId,
                              @RequestParam(value = "page", required = false) Integer page,
                              @RequestParam(value = "size", required = false) Integer size,
-                             HttpSession session) throws NotFoundException, InvalidHttpSessionException {
+                             HttpSession session) throws NotFoundException {
 
         Topic topic = topicService.get(topicId);
 

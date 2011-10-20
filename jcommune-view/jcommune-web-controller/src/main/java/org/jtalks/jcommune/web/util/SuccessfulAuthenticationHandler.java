@@ -31,6 +31,8 @@ import java.io.IOException;
  * @author Kirill Afonin
  */
 public class SuccessfulAuthenticationHandler extends SavedRequestAwareAuthenticationSuccessHandler {
+
+    private static final String LANG_PARAM = "?lang=";
     private UserService userService;
 
     /**
@@ -63,13 +65,13 @@ public class SuccessfulAuthenticationHandler extends SavedRequestAwareAuthentica
         if (user.getLanguage() != null) {
             lang = user.getLanguage().substring(0, 2);
         }
-        if (getDefaultTargetUrl().contains("?lang=")) {
+        if (getDefaultTargetUrl().contains(LANG_PARAM)) {
             String temp;
-            temp = getDefaultTargetUrl().substring(0, getDefaultTargetUrl().indexOf("?lang=")) +
-                    getDefaultTargetUrl().substring(getDefaultTargetUrl().indexOf("?lang=") + 8);
-            setDefaultTargetUrl(temp + "?lang=" + lang);
+            temp = getDefaultTargetUrl().substring(0, getDefaultTargetUrl().indexOf(LANG_PARAM)) +
+                    getDefaultTargetUrl().substring(getDefaultTargetUrl().indexOf(LANG_PARAM) + 8);
+            setDefaultTargetUrl(temp + LANG_PARAM + lang);
         } else {
-            setDefaultTargetUrl(getDefaultTargetUrl() + "?lang=" + lang);
+            setDefaultTargetUrl(getDefaultTargetUrl() + LANG_PARAM + lang);
         }
         super.onAuthenticationSuccess(request, response, authentication);
     }

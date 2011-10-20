@@ -24,7 +24,6 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
-import org.jtalks.jcommune.service.exceptions.InvalidHttpSessionException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.security.AclBuilder;
 import org.jtalks.jcommune.service.security.SecurityConstants;
@@ -327,7 +326,7 @@ public class TransactionalTopicServiceTest {
     }
 
     @Test
-    void testAddTopicView() throws NotFoundException, InvalidHttpSessionException {
+    void testAddTopicView() throws NotFoundException {
         Topic topic = new Topic(user, "title");
         topic.setId(TOPIC_ID);
         int views = topic.getViews();
@@ -343,8 +342,8 @@ public class TransactionalTopicServiceTest {
         assertEquals(topic.getViews(), views + 1);
     }
 
-    @Test(expectedExceptions = {InvalidHttpSessionException.class})
-    void testAddTopicViewInInvalidSession() throws NotFoundException, InvalidHttpSessionException {
+    @Test(expectedExceptions = {IllegalArgumentException.class})
+    void testAddTopicViewInInvalidSession() throws NotFoundException {
 
         topicService.addTopicView(new Topic(user, "title"), null);
     }
