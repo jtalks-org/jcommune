@@ -21,7 +21,6 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
-import org.jtalks.jcommune.service.exceptions.InvalidHttpSessionException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
@@ -106,7 +105,7 @@ public class TopicControllerTest {
     }
 
     @Test
-    public void testShow() throws NotFoundException, InvalidHttpSessionException {
+    public void testShow() throws NotFoundException {
         int page = 2;
         int pageSize = 5;
         int startIndex = page * pageSize - pageSize;

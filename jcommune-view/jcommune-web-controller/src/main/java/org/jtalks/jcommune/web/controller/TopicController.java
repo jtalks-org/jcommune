@@ -163,13 +163,12 @@ public final class TopicController {
      * @return {@code ModelAndView}
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic or branch not found
-     * @throws org.jtalks.jcommune.service.exceptions.InvalidHttpSessionException when session is invalid
      */
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.GET)
     public ModelAndView show(@PathVariable(TOPIC_ID) Long topicId,
                              @RequestParam(value = "page", required = false) Integer page,
                              @RequestParam(value = "size", required = false) Integer size,
-                             HttpSession session) throws NotFoundException, InvalidHttpSessionException {
+                             HttpSession session) throws NotFoundException {
 
         Topic topic = topicService.get(topicId);
 

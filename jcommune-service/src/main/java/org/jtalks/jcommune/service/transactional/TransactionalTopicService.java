@@ -24,7 +24,6 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
-import org.jtalks.jcommune.service.exceptions.InvalidHttpSessionException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.slf4j.Logger;
@@ -215,9 +214,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    public void addTopicView(Topic topic, HttpSession session) throws NotFoundException, InvalidHttpSessionException {
+    public void addTopicView(Topic topic, HttpSession session) throws NotFoundException {
         if (session == null) {
-            throw new InvalidHttpSessionException("Session cannot be null");
+            throw new IllegalArgumentException("Session cannot be null");
         }
         Set<Long> topicIds = (Set<Long>) session.getAttribute(TOPICS_VIEWED_ATTRIBUTE_NAME);
         if (topicIds == null) {
