@@ -131,13 +131,13 @@ public class UserController {
     /**
      * Show page with user info.
      *
-     * @param username {@link User#getEncodedUsername()}
-     * @return user details view with {@link User} object
-     * @throws NotFoundException if user with given id not found
+     * @param username the decoded encodedUsername from the JSP view.
+     * @return user details view with {@link User} object.
+     * @throws NotFoundException if user with given id not found.
      */
     @RequestMapping(value = "/users/{encodedUsername}", method = RequestMethod.GET)
-    //The {encodedUsername} on the JSP view automatically converted to username.
-    // That's why the getByUsername() method is used instead of getByEncodedUsername()
+    //The {encodedUsername} from the JSP view automatically converted to username.
+    // That's why the getByUsername() method is used instead of getByEncodedUsername().
     public ModelAndView show(@PathVariable("encodedUsername") String username) throws NotFoundException {
         User user = userService.getByUsername(username);
         return new ModelAndView("userDetails")

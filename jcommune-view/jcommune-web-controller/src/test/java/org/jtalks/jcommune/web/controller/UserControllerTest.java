@@ -161,16 +161,16 @@ public class UserControllerTest {
         User user = new User("username", "email", "password");
         user.setLanguage("ENGLISH");
         //set expectations
-        when(userService.getByEncodedUsername(ENCODED_USER_NAME))
+        when(userService.getByUsername(USER_NAME))
                 .thenReturn(user);
         when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
 
 
         //invoke the object under test
-        ModelAndView mav = controller.show(ENCODED_USER_NAME);
+        ModelAndView mav = controller.show(USER_NAME);
 
         //check expectations
-        verify(userService).getByEncodedUsername(ENCODED_USER_NAME);
+        verify(userService).getByUsername(USER_NAME);
         verify(breadcrumbBuilder).getForumBreadcrumb();
 
         //check result
