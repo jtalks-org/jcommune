@@ -38,7 +38,7 @@
     <div class="all_forums">
         <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/recent"><spring:message
                 code="label.recent"/></a> <br/>
-        <a class="forum_top_right_link" href="#">Сообщения без ответа</a>
+        <a class="forum_top_right_link" href="#"><spring:message code="label.messagesWithoutAnswers"/></a>
 
         <h2><a class="heading" href="#">Java форум JTalks</a></h2>
         <br/>
@@ -113,7 +113,7 @@
         <div class="forum_table"> <!-- Таблица -->
             <div class="forum_row"> <!-- Отдельный ряд -->
                 <div class="forum_info"> <!-- Содержимое ряда -->
-                    <spring:message code="label.onlineUsersInfo.messagesCount"/>  120693
+                    <spring:message code="label.onlineUsersInfo.messagesCount"/> 120693
                     <br/>
                     <spring:message code="label.onlineUsersInfo.registeredUsers.count"/> 10478
                 </div>
