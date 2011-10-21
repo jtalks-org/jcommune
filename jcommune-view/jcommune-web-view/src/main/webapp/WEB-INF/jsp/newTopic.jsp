@@ -34,10 +34,8 @@
             <div class="forum_misc_info">
                 <h2><spring:message code="h.new_topic"/></h2>
             </div>
-            <a class="forums_list" href="#" title="Список форумов">Список форумов</a>
-            <span class="arrow"> > </span>
-            <a class="forums_list" href="#" title="Для новичков">Для новичков</a>
 
+            <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
             <!-- Начало группы форумов -->
             <div class="forum_header_table"> <!-- Шапка топика -->
