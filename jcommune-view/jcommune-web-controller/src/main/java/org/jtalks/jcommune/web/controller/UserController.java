@@ -26,7 +26,7 @@ import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.util.ImagePreprocessor;
-import org.jtalks.jcommune.web.util.Languages;
+import org.jtalks.jcommune.web.util.Language;
 import org.jtalks.jcommune.web.validation.ImageFormats;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -40,7 +40,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -58,7 +60,6 @@ public class UserController {
     public static final String EDIT_PROFILE = "editProfile";
     public static final String REGISTRATION = "registration";
     public static final String EDITED_USER = "editedUser";
-    private static final Languages[] LANGUAGES = Languages.values();
 
     public static final int AVATAR_MAX_HEIGHT = 100;
     public static final int AVATAR_MAX_WIDTH = 100;
@@ -151,7 +152,8 @@ public class UserController {
         return new ModelAndView("userDetails")
                 .addObject("user", user)
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
-                .addObject("language", Languages.valueOf(user.getLanguage()));
+                        // bind separately to get localized value
+                .addObject("language", Language.valueOf(user.getLanguage()));
     }
 
     /**
@@ -168,29 +170,37 @@ public class UserController {
         return new ModelAndView(EDIT_PROFILE)
                 .addObject(EDITED_USER, editedUser)
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
-                .addObject("languages", LANGUAGES);
+                .addObject("languages", Language.values());
     }
 
     /**
      * Update user profile info. Check if the user enter valid data and update profile in database.
      * In error case return into the edit profile page and draw the error.
+     * <p/>
+     * TODO: move logic to service layer
      *
-     * @param userDto dto populated by user
-     * @param result  binding result which contains the validation result
+     * @param userDto  dto populated by user
+     * @param result   binding result which contains the validation result
+     * @param response http servlet response
      * @return in case of errors return back to edit profile page, in another case return to user detalis page
      * @throws NotFoundException - throws if current logged in user was not found
      * @throws IOException       - throws in case of access errors (if the temporary store fails)
      */
     @RequestMapping(value = "/users/update", method = RequestMethod.POST)
     public ModelAndView editProfile(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
-                                    BindingResult result) throws NotFoundException, IOException {
-
+                                    BindingResult result, HttpServletResponse response)
+            throws NotFoundException, IOException {
+        // apply language changes immediately
+        Language language = Language.valueOf(userDto.getLanguage());
+        Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, language.getLanguageCode());
+        response.addCookie(cookie);
+        // validate other fields
         User user = securityService.getCurrentUser();
         if (result.hasErrors()) {
             if (user.getAvatar() == null) {
                 userDto.setAvatar(new MockMultipartFile("avatar", "", ImageFormats.JPG.getContentType(), new byte[0]));
             }
-            return new ModelAndView(EDIT_PROFILE, EDITED_USER, userDto).addObject("languages", LANGUAGES);
+            return new ModelAndView(EDIT_PROFILE, EDITED_USER, userDto).addObject("languages", Language.values());
         }
         User editedUser;
         try {
@@ -204,7 +214,7 @@ public class UserController {
         } catch (WrongPasswordException e) {
             result.rejectValue("currentUserPassword", "label.incorrectCurrentPassword",
                     "Password does not match to the current password");
-            return new ModelAndView(EDIT_PROFILE).addObject("languages", LANGUAGES);
+            return new ModelAndView(EDIT_PROFILE).addObject("languages", Language.values());
         } catch (InvalidImageException e) {
             result.rejectValue("avatar", "avatar.wrong.format");
             return new ModelAndView(EDIT_PROFILE);

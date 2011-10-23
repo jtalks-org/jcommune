@@ -32,10 +32,8 @@ import java.io.IOException;
  */
 public final class ImageUtil {
 
-    public static final int IMAGE_UNKNOWN = -1;
     public static final int IMAGE_JPEG = 0;
     public static final int IMAGE_PNG = 1;
-    public static final int IMAGE_GIF = 2;
 
     private static final int ALPHA_CHANNEL_MASK = 0xFF000000;
     private static final int RED_CHANNEL_MASK = 0x00FF0000;
@@ -202,12 +200,10 @@ public final class ImageUtil {
         int green2 = (value2 & GREEN_CHANNEL_MASK) >> BIT;
         int blue2 = (value2 & BLUE_CHANNEL_MASK);
 
-        int rgb = ((int) (alpha1 * (1.0 - distance) + alpha2 * distance) << THREE_BITS)
+        return ((int) (alpha1 * (1.0 - distance) + alpha2 * distance) << THREE_BITS)
                 | ((int) (red1 * (1.0 - distance) + red2 * distance) << TWO_BITS)
                 | ((int) (green1 * (1.0 - distance) + green2 * distance) << BIT)
                 | (int) (blue1 * (1.0 - distance) + blue2 * distance);
-
-        return rgb;
     }
 
     /**

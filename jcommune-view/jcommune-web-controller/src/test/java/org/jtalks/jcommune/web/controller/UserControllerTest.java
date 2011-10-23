@@ -25,6 +25,7 @@ import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.util.ImagePreprocessor;
 import org.mockito.Matchers;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
@@ -52,6 +53,8 @@ import static org.testng.Assert.assertNull;
 /**
  * @author Kirill Afonin
  * @author Osadchuck Eugeny
+ *
+ * TODO: Split it
  */
 public class UserControllerTest {
     private UserService userService;
@@ -59,14 +62,13 @@ public class UserControllerTest {
     private UserController controller;
 
     private final String USER_NAME = "username";
-    private final String ENCODED_USER_NAME = "encodeUsername";
     private final String FIRST_NAME = "first name";
     private final String LAST_NAME = "last name";
     private final String EMAIL = "mail@mail.com";
     private final String PASSWORD = "password";
     private final String SIGNATURE = "signature";
     private final String NEW_PASSWORD = "newPassword";
-    private final String LANGUAGE = "language";
+    private final String LANGUAGE = "ENGLISH";
     private final int AVATAR_MAX_WIDTH = 100;
     private final int AVATAR_MAX_HEIGHT = 100;
     private MultipartFile avatar;
@@ -220,7 +222,7 @@ public class UserControllerTest {
 
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
-        ModelAndView mav = controller.editProfile(userDto, bindingResult);
+        ModelAndView mav = controller.editProfile(userDto, bindingResult, new MockHttpServletResponse());
 
         String expectedUrl = "redirect:/users/" + user.getEncodedUsername();
         assertViewName(mav, expectedUrl);
@@ -233,17 +235,12 @@ public class UserControllerTest {
     public void testEditProfileWithAvatarFailedValidation() throws Exception {
         User user = getUserWithoutAvatar();
         when(securityService.getCurrentUser()).thenReturn(user);
-        EditUserProfileDto userDto = mock(EditUserProfileDto.class);
-        when(userDto.getEmail()).thenReturn(EMAIL);
-        when(userDto.getFirstName()).thenReturn(FIRST_NAME);
-        when(userDto.getLastName()).thenReturn(LAST_NAME);
-        when(userDto.getCurrentUserPassword()).thenReturn(PASSWORD);
-        when(userDto.getNewUserPassword()).thenReturn(NEW_PASSWORD);
-        when(userDto.getAvatar()).thenReturn(avatar);
+        EditUserProfileDto userDto = spy(getEditUserProfileDto());
+
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        ModelAndView mav = controller.editProfile(userDto, bindingResult);
+        ModelAndView mav = controller.editProfile(userDto, bindingResult, new MockHttpServletResponse());
 
         assertViewName(mav, "editProfile");
         verify(userDto).setAvatar(Matchers.<MultipartFile>anyObject());
@@ -261,7 +258,7 @@ public class UserControllerTest {
                 AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
 
 
-        ModelAndView mav = controller.editProfile(userDto, bindingResult);
+        ModelAndView mav = controller.editProfile(userDto, bindingResult, new MockHttpServletResponse());
 
         assertViewName(mav, "editProfile");
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
@@ -286,7 +283,7 @@ public class UserControllerTest {
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
                 userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE)).thenThrow(new DuplicateEmailException());
 
-        ModelAndView mav = controller.editProfile(userDto, bindingResult);
+        ModelAndView mav = controller.editProfile(userDto, bindingResult, new MockHttpServletResponse());
 
         assertViewName(mav, "editProfile");
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
@@ -312,7 +309,7 @@ public class UserControllerTest {
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
                 userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE)).thenThrow(new WrongPasswordException());
 
-        ModelAndView mav = controller.editProfile(userDto, bindingResult);
+        ModelAndView mav = controller.editProfile(userDto, bindingResult, new MockHttpServletResponse());
 
         assertViewName(mav, "editProfile");
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
@@ -331,7 +328,7 @@ public class UserControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        ModelAndView mav = controller.editProfile(dto, bindingResult);
+        ModelAndView mav = controller.editProfile(dto, bindingResult, new MockHttpServletResponse());
 
         assertViewName(mav, "editProfile");
         verify(userService, never()).editUserProfile(anyString(), anyString(), anyString(),
@@ -352,6 +349,7 @@ public class UserControllerTest {
 
     @Test
     public void testRenderAvatar() throws Exception {
+        String ENCODED_USER_NAME = "encodeUsername";
         when(userService.getByEncodedUsername(ENCODED_USER_NAME))
                 .thenReturn(getUser());
         HttpServletResponse response = mock(HttpServletResponse.class);

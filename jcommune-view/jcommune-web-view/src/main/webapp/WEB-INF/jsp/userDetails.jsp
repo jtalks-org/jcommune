@@ -67,7 +67,7 @@
         <c:if test="${user.language != null}">
             <li>
                 <label><spring:message code="label.language"/></label>
-                <span><spring:message code="${language.asText}"/></span>
+                <span><spring:message code="${language.languageNameLabel}"/></span>
             </li>
         </c:if>
         <li>
@@ -83,7 +83,7 @@
                 <table>
                     <tr>
                         <td width="100" height="100" align="center" valign="middle">
-                            <img src="${pageContext.request.contextPath}/${user.username}/avatar"/>
+                            <img src="${pageContext.request.contextPath}/${user.username}/avatar" alt=""/>
                         </td>
                     </tr>
                 </table>

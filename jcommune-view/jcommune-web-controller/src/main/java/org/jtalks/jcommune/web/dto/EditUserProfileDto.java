@@ -56,6 +56,7 @@ public class EditUserProfileDto extends UserDto {
         this.setLastName(user.getLastName());
         this.setEmail(user.getEmail());
         this.setSignature(user.getSignature());
+        this.language = user.getLanguage();
     }
 
     /**

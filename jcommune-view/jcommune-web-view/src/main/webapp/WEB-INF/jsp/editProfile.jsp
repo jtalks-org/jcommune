@@ -83,10 +83,19 @@
                 <td><label><spring:message code="label.language"/></label></td>
                 <td>
                     <form:select path="language">
-                        <c:forEach items="${languages}" var="languageItem">
-                            <form:option value="${languageItem}">
-                                <spring:message code="${languageItem.asText}"/>
-                            </form:option>
+                        <c:forEach items="${languages}" var="language">
+                            <c:choose>
+                                <c:when test="${language eq editedUser.language}">
+                                    <form:option value="${language}" selected="selected">
+                                        <spring:message code="${language.languageNameLabel}"/>
+                                    </form:option>
+                                </c:when>
+                                <c:otherwise>
+                                    <form:option value="${language}">
+                                        <spring:message code="${language.languageNameLabel}"/>
+                                    </form:option>
+                                </c:otherwise>
+                            </c:choose>
                         </c:forEach>
                     </form:select>
                 </td>
@@ -106,7 +115,7 @@
             <table>
                 <tr>
                     <td width="100" height="100" align="center" valign="middle">
-                        <img src="${pageContext.request.contextPath}/${auth}/avatar"/><br>
+                        <img src="${pageContext.request.contextPath}/${auth}/avatar" alt=""/><br>
                     </td>
                 </tr>
                 <tr>
