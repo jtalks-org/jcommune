@@ -30,8 +30,10 @@
     <title><decorator:title default="JCommune"/></title>
     <link rel="stylesheet" type="text/css" media="screen, projection"
           href="${pageContext.request.contextPath}/resources/css/screen.css"/>
-    <link rel="shortcut icon" type="image/x-icon" href="/resources/images/favicon.ico" />
-    <link rel="icon" type="image/png" href="/resources/images/favicon.png" />
+    <link rel="shortcut icon" type="image/x-icon"
+          href="${pageContext.request.contextPath}/resources/images/favicon.ico" />
+    <link rel="icon" type="image/png"
+          href="${pageContext.request.contextPath}/resources/images/favicon.png" />
 </head>
 <!--Define timezone to adjust date and time values-->
 <body onload='document.cookie="GMT=" + new Date().getTimezoneOffset()'>
