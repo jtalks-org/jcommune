@@ -23,6 +23,7 @@ import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.util.ImagePreprocessor;
+import org.jtalks.jcommune.web.util.Language;
 import org.mockito.Matchers;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -34,6 +35,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -49,12 +51,13 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Kirill Afonin
  * @author Osadchuck Eugeny
- *
- * TODO: Split it
+ *         <p/>
+ *         TODO: Split it
  */
 public class UserControllerTest {
     private UserService userService;
@@ -209,7 +212,7 @@ public class UserControllerTest {
     public void testEditProfile() throws Exception {
         User user = getUser();
         EditUserProfileDto userDto = getEditUserProfileDto();
-
+        MockHttpServletResponse response = new MockHttpServletResponse();
         when(imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH,
                 AVATAR_MAX_HEIGHT)).thenReturn(avatarByteArray);
 
@@ -222,10 +225,12 @@ public class UserControllerTest {
 
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
-        ModelAndView mav = controller.editProfile(userDto, bindingResult, new MockHttpServletResponse());
+        ModelAndView mav = controller.editProfile(userDto, bindingResult, response);
 
         String expectedUrl = "redirect:/users/" + user.getEncodedUsername();
         assertViewName(mav, expectedUrl);
+        assertEquals(response.getCookies()[0].getValue(), Language.ENGLISH.getLanguageCode());
+        assertEquals(response.getCookies()[0].getName(), CookieLocaleResolver.DEFAULT_COOKIE_NAME);
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
                 userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE);

@@ -18,7 +18,13 @@ import org.jtalks.common.model.entity.Entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
-import org.springframework.security.acls.model.*;
+import org.springframework.security.acls.model.AccessControlEntry;
+import org.springframework.security.acls.model.MutableAcl;
+import org.springframework.security.acls.model.MutableAclService;
+import org.springframework.security.acls.model.NotFoundException;
+import org.springframework.security.acls.model.ObjectIdentity;
+import org.springframework.security.acls.model.Permission;
+import org.springframework.security.acls.model.Sid;
 
 import java.util.List;
 
@@ -109,8 +115,7 @@ public class AclManagerImpl implements AclManager {
                             entry.getPermission().equals(permission)) {
                         acl.deleteAce(i); // delete from original list
                         logger.debug("Deleted from object {} id {} ACL permission {} for recipient {}",
-                                new Object[]{target.getClass().getSimpleName(), target.getId(),
-                                        permission, recipient});
+                                new Object[]{target.getClass().getName(),target.getId(), permission, recipient});
                         i--; // because list item deleted in original list
                     }
                 }

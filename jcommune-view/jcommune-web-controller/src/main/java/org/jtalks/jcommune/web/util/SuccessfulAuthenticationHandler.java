@@ -34,7 +34,6 @@ import java.io.IOException;
  */
 public class SuccessfulAuthenticationHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
-    private static final String LANG_PARAM = "?lang=";
     private UserService userService;
 
     /**
@@ -47,7 +46,7 @@ public class SuccessfulAuthenticationHandler extends SavedRequestAwareAuthentica
     }
 
     /**
-     * Handle user's successfull authentication.
+     * Handle user's successful authentication.
      * Updates last login time for authenticated user.
      *
      * @param request        http request

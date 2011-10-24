@@ -189,7 +189,7 @@ public class UserController {
     @RequestMapping(value = "/users/update", method = RequestMethod.POST)
     public ModelAndView editProfile(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
                                     BindingResult result, HttpServletResponse response)
-            throws NotFoundException, IOException {
+        throws NotFoundException, IOException {
         // apply language changes immediately
         Language language = Language.valueOf(userDto.getLanguage());
         Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, language.getLanguageCode());

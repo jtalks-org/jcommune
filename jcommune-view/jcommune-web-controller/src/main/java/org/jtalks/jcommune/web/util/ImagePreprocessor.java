@@ -49,7 +49,7 @@ public class ImagePreprocessor {
         }
         Image image = ImageUtil.convertMultipartFileToImage(multipartFile);
         if (image == null) {
-            throw new InvalidImageException();
+            throw new InvalidImageException("Unable to convert multipart data to image");
         }
         image = ImageUtil.resizeImage((BufferedImage) image, ImageUtil.IMAGE_JPEG, maxWidth, maxHeight);
         return ImageUtil.convertImageToByteArray(image);

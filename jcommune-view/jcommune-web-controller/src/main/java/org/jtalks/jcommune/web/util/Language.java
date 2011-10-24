@@ -66,7 +66,7 @@ public enum Language {
     public abstract String getLanguageNameLabel();
 
     /**
-     * @return
+     * @return language abbreviation used in locale settings, like "en" or "ru"
      */
     public abstract String getLanguageCode();
 
@@ -80,22 +80,6 @@ public enum Language {
      * @return link to the current page with params
      */
     public String buildLink(HttpServletRequest request) {
-        /*StringBuilder builder = new StringBuilder(request.getRequestURL());
-        builder.append("?");
-        for (Object param : request.getParameterMap().keySet()) {
-            if (!param.equals("lang")) {
-                // It may de surprising, but values are stored as one-element arrays
-                String[] value = (String[]) request.getParameterMap().get(param);
-                builder.append(param)
-                        .append("=")
-                        .append(value[0])
-                        .append("&");
-            }
-        }
-        builder.append("lang=")
-                .append(this.getLanguageCode());
-        return builder.toString();*/
-
         StringBuilder builder = new StringBuilder(request.getRequestURL());
         builder.append("?");
         String query = request.getQueryString();
