@@ -35,6 +35,7 @@ public class EditUserProfileDto extends UserDto {
     private String newUserPassword;
     private String newUserPasswordConfirm;
     private String language;
+    private String pageSize;
     @Avatar
     private MultipartFile avatar;
 
@@ -135,5 +136,19 @@ public class EditUserProfileDto extends UserDto {
      */
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    /**
+     * @return user page size
+     */
+    public String getPageSize() {
+        return pageSize;
+    }
+
+    /**
+     * @param pageSize user page size
+     */
+    public void setPageSize(String pageSize) {
+        this.pageSize = pageSize;
     }
 }

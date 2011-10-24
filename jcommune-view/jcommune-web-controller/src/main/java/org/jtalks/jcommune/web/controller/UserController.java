@@ -27,6 +27,7 @@ import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.util.ImagePreprocessor;
 import org.jtalks.jcommune.web.util.Language;
+import org.jtalks.jcommune.web.util.PageSize;
 import org.jtalks.jcommune.web.validation.ImageFormats;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -170,7 +171,8 @@ public class UserController {
         return new ModelAndView(EDIT_PROFILE)
                 .addObject(EDITED_USER, editedUser)
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
-                .addObject("languages", Language.values());
+                .addObject("languages", Language.values())
+                .addObject("pageSizes", PageSize.values());
     }
 
     /**
@@ -207,7 +209,7 @@ public class UserController {
             editedUser = userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                     userDto.getLastName(), userDto.getCurrentUserPassword(), userDto.getNewUserPassword(),
                     imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT),
-                    userDto.getSignature(), userDto.getLanguage());
+                    userDto.getSignature(), userDto.getLanguage(),userDto.getPageSize());
         } catch (DuplicateEmailException e) {
             result.rejectValue("email", "validation.duplicateemail");
             return new ModelAndView(EDIT_PROFILE);

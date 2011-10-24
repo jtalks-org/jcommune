@@ -17,7 +17,11 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.*;
+import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
+import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
+import org.jtalks.jcommune.service.exceptions.InvalidImageException;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
@@ -47,11 +51,18 @@ import java.util.ArrayList;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.ModelAndViewAssert.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
 
 /**
  * @author Kirill Afonin
@@ -72,6 +83,7 @@ public class UserControllerTest {
     private final String SIGNATURE = "signature";
     private final String NEW_PASSWORD = "newPassword";
     private final String LANGUAGE = "ENGLISH";
+    private final String PAGE_SIZE = "FIFTY";
     private final int AVATAR_MAX_WIDTH = 100;
     private final int AVATAR_MAX_HEIGHT = 100;
     private MultipartFile avatar;
@@ -221,7 +233,7 @@ public class UserControllerTest {
 
         when(userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE)).thenReturn(user);
+                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE, PAGE_SIZE)).thenReturn(user);
 
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
@@ -233,7 +245,7 @@ public class UserControllerTest {
         assertEquals(response.getCookies()[0].getName(), CookieLocaleResolver.DEFAULT_COOKIE_NAME);
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE);
+                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE, PAGE_SIZE);
     }
 
     @Test
@@ -251,7 +263,7 @@ public class UserControllerTest {
         verify(userDto).setAvatar(Matchers.<MultipartFile>anyObject());
         verify(userService, never()).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), userDto.getAvatar().getBytes(), SIGNATURE, LANGUAGE);
+                userDto.getNewUserPassword(), userDto.getAvatar().getBytes(), SIGNATURE, LANGUAGE, PAGE_SIZE);
     }
 
     @Test
@@ -286,7 +298,7 @@ public class UserControllerTest {
 
         when(userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE)).thenThrow(new DuplicateEmailException());
+                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE, PAGE_SIZE)).thenThrow(new DuplicateEmailException());
 
         ModelAndView mav = controller.editProfile(userDto, bindingResult, new MockHttpServletResponse());
 
@@ -294,7 +306,7 @@ public class UserControllerTest {
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE);
+                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE, PAGE_SIZE);
 
         assertContainsError(bindingResult, "email");
     }
@@ -312,7 +324,7 @@ public class UserControllerTest {
 
         when(userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE)).thenThrow(new WrongPasswordException());
+                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE, PAGE_SIZE)).thenThrow(new WrongPasswordException());
 
         ModelAndView mav = controller.editProfile(userDto, bindingResult, new MockHttpServletResponse());
 
@@ -320,7 +332,7 @@ public class UserControllerTest {
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE);
+                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE, PAGE_SIZE);
         assertContainsError(bindingResult, "currentUserPassword");
     }
 
@@ -337,7 +349,7 @@ public class UserControllerTest {
 
         assertViewName(mav, "editProfile");
         verify(userService, never()).editUserProfile(anyString(), anyString(), anyString(),
-                anyString(), anyString(), Matchers.<byte[]>anyObject(), anyString(), anyString());
+                anyString(), anyString(), Matchers.<byte[]>anyObject(), anyString(), anyString(), anyString());
     }
 
     @Test
@@ -412,6 +424,7 @@ public class UserControllerTest {
         dto.setNewUserPassword(NEW_PASSWORD);
         dto.setSignature(SIGNATURE);
         dto.setLanguage(LANGUAGE);
+        dto.setPageSize(PAGE_SIZE);
         dto.setNewUserPasswordConfirm(NEW_PASSWORD);
         dto.setAvatar(avatar);
         return dto;

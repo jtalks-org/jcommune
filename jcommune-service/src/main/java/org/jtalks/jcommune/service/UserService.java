@@ -78,12 +78,13 @@ public interface UserService extends EntityService<User> {
      * @param avatar          user avatar
      * @param signature       user signature
      * @param language        user language
+     * @param pageSize        user pageSize
      * @return edited user
      * @throws DuplicateEmailException when user with given email already exist
      * @throws WrongPasswordException  when user enter wrong currentPassword
      */
     User editUserProfile(String email, String firstName, String lastName, String currentPassword,
-                         String newPassword, byte[] avatar, String signature, String language)
+                         String newPassword, byte[] avatar, String signature, String language, String pageSize)
             throws DuplicateEmailException, WrongPasswordException;
 
     /**

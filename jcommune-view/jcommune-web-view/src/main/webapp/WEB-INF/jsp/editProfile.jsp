@@ -102,6 +102,19 @@
                 <td><form:errors path="language" cssClass="error"/></td>
             </tr>
             <tr>
+                <td><label><spring:message code="label.numberOfTopicsOnPage"/></label></td>
+                <td>
+                    <form:select path="pageSize">
+                        <c:forEach items="${pageSizes}" var="pageSizeItem">
+                            <form:option value="${pageSizeItem}">
+                                <spring:message code="${pageSizeItem.label}"/>
+                            </form:option>
+                        </c:forEach>
+                    </form:select>
+                </td>
+                <td><form:errors path="pageSize" cssClass="error"/></td>
+            </tr>
+            <tr>
                 <td></td>
                 <td><form:input path="avatar" type="file"/></td>
                 <td><form:errors path="avatar" cssClass="error"/></td>

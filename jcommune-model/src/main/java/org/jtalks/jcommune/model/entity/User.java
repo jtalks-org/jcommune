@@ -46,6 +46,7 @@ public class User extends Entity implements UserDetails {
     private int userPostCount;
     private byte[] avatar;
     private String language = "ENGLISH";
+    private String pageSize = "FIFTY";
 
     private static final long serialVersionUID = 19981017L;
 
@@ -303,5 +304,19 @@ public class User extends Entity implements UserDetails {
      */
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    /**
+     * @return user page size
+     */
+    public String getPageSize() {
+        return pageSize;
+    }
+
+    /**
+     * @param pageSize user page size
+     */
+    public void setPageSize(String pageSize) {
+        this.pageSize = pageSize;
     }
 }
