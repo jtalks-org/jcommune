@@ -23,7 +23,10 @@ public enum Language {
 
     ENGLISH {
         /**
-         * @inheritDoc
+         * Return resource bundle label for the English language. This method should be used when
+         * you need a localized representation of the current instance
+         *
+         * @return string resource bundle label
          */
         @Override
         public String getLanguageNameLabel() {
@@ -31,7 +34,7 @@ public enum Language {
         }
 
         /**
-         * @inheritDoc
+         * @return language abbreviation used in locale settings
          */
         @Override
         public String getLanguageCode() {
@@ -41,7 +44,10 @@ public enum Language {
 
     RUSSIAN {
         /**
-         * @inheritDoc
+         * Return resource bundle label for the Russian language. This method should be used when
+         * you need a localized representation of the current instance
+         *
+         * @return string resource bundle label
          */
         @Override
         public String getLanguageNameLabel() {
@@ -49,7 +55,7 @@ public enum Language {
         }
 
         /**
-         * @inheritDoc
+         * @return language abbreviation used in locale settings
          */
         @Override
         public String getLanguageCode() {
@@ -58,7 +64,7 @@ public enum Language {
     };
 
     /**
-     * Return resource bundle label for the languge name. This method should be used when
+     * Return resource bundle label for the language name. This method should be used when
      * you need a localized representation of the current instance
      *
      * @return string resource bundle label

@@ -21,6 +21,7 @@
 <html>
 <head></head>
 <body>
+<jsp:include page="../template/topLine.jsp"/>
 <div id="answer">
     <jtalks:form name="editForm" modelAttribute="postDto" method="POST"
                  action="${pageContext.request.contextPath}/posts/${postId}?topicId=${topicId}">

@@ -66,7 +66,7 @@ public class BreadcrumbBuilder {
      */
     public List<Breadcrumb> getForumBreadcrumb(Topic topic) {
         List<Breadcrumb> breadcrumbList = getForumBreadcrumb(topic.getBranch());
-        breadcrumbList.add(prepareTopicBreadcrumb(topic));
+        breadcrumbList.add(prepareTopicBreadcrumb(topic.getBranch()));
 
         return breadcrumbList;
     }
@@ -80,6 +80,19 @@ public class BreadcrumbBuilder {
     public List<Breadcrumb> getForumBreadcrumb(Post post) {
         List<Breadcrumb> breadcrumbList = getForumBreadcrumb(post.getTopic());
         breadcrumbList.add(preparePostBreadcrumb(post));
+
+        return breadcrumbList;
+    }
+
+    /**
+     * Returns the topic breadcrumbs.
+     *
+     * @param branch {@link org.jtalks.jcommune.model.entity.Topic} of the breadcrumbed topic.
+     * @return the breadcrumb list for the current <code>Topic</code> location.
+     */
+    public List<Breadcrumb> getNewTopicBreadcrumb(Branch branch) {
+        List<Breadcrumb> breadcrumbList = getForumBreadcrumb(branch);
+        breadcrumbList.add(prepareTopicBreadcrumb(branch));
 
         return breadcrumbList;
     }
@@ -161,11 +174,10 @@ public class BreadcrumbBuilder {
     /**
      * Fill the branch breadcrumb.
      *
-     * @param topic {@link org.jtalks.jcommune.model.entity.Topic} the breadcrumbed topic.
+     * @param branch {@link org.jtalks.jcommune.model.entity.Branch} of the breadcrumbed topic.
      * @return {@link Breadcrumb} the filled breadcrumb for the Topic location.
      */
-    private Breadcrumb prepareTopicBreadcrumb(Topic topic) {
-        Branch branch = topic.getBranch();
+    private Breadcrumb prepareTopicBreadcrumb(Branch branch) {
         return new Breadcrumb(
                 branch.getId(),
                 Breadcrumb.BreadcrumbLocation.BRANCH,

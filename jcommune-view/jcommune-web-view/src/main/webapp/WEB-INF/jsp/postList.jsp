@@ -30,6 +30,7 @@
 <h1>JTalks</h1>
 
 <div class="wrap topic_page">
+<jsp:include page="../template/topLine.jsp"/>
 <!-- Начало всех форумов -->
 <div class="all_forums">
 <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
@@ -43,18 +44,17 @@
     <a href="#">Следующая тема</a>
 </div>
 <a class="button top_button" href="${pageContext.request.contextPath}/branches/${branchId}">
-    <spring:message code="label.back"/>
-</a>
+    <spring:message code="label.back"/></a>
 <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-    <a class="button top_button" href="#">Новая тема</a>
-    <a class="button top_button"
-       href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}">
-        <spring:message code="label.answer"/>
-    </a>
+    <a class="button top_button" href="${pageContext.request.contextPath}/topics/new?branchId=${branchId}">
+        <spring:message code="label.addtopic"/></a>
+    <a class="button top_button" href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}">
+        <spring:message code="label.answer"/></a>
     <c:set var="authenticated" value="${true}"/>
 </sec:authorize>
 <c:if test="${authenticated==false}">
-    <a class="button top_button disabled" href="#">Новая тема</a>
+    <a class="button top_button disabled" href="${pageContext.request.contextPath}/topics/new?branchId=${branchId}">
+        <spring:message code="label.addtopic"/></a>
     <a class="button top_button disabled"
        href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}">
         <spring:message code="label.answer"/>

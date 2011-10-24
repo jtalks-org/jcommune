@@ -91,7 +91,8 @@ public final class TopicController {
         return new ModelAndView("newTopic")
                 .addObject("topicDto", new TopicDto())
                 .addObject("branchId", branchId)
-                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)));
+                .addObject(BREADCRUMB_LIST,
+                        breadcrumbBuilder.getNewTopicBreadcrumb(branchService.get(branchId)));
     }
 
     /**

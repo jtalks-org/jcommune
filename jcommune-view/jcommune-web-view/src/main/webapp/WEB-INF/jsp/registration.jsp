@@ -24,9 +24,10 @@
 </head>
 
 <body>
-<h1><spring:message code="label.signup"/></h1>
-
 <div class="wrap registration_page">
+    <jsp:include page="../template/topLine.jsp"/>
+    <h1><spring:message code="label.signup"/></h1>
+
     <div class="all_forums">
         <form:form id="form" name="form" action='${pageContext.request.contextPath}/users'
                    modelAttribute="newUser" method="POST">
@@ -114,6 +115,5 @@
         </form:form>
     </div>
 </div>
-
 </body>
 </html>

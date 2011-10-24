@@ -30,7 +30,7 @@
           type=text/css rel=stylesheet>
 </head>
 <body>
-
+<jsp:include page="../template/topLine.jsp"/>
 <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
 <div id="editUserDetails">
