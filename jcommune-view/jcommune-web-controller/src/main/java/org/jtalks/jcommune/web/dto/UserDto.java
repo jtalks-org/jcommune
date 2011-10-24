@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.dto;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 /**
  * DTO for {@link org.jtalks.jcommune.model.entity.User} object. Required for validation and binding
@@ -36,6 +37,7 @@ public abstract class UserDto {
     private String email;
     private String firstName;
     private String lastName;
+    @Size(max = 255, message = "{validation.signature.length}")
     private String signature;
     private String language;
 
