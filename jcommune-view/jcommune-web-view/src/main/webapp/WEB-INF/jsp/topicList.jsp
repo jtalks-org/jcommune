@@ -21,16 +21,14 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
 <html>
 <head>
     <title>Forum</title>
 </head>
 <body>
-<h1>JTalks</h1>
-
 <div class="wrap branch_page">
-
+     <jsp:include page="../template/topLine.jsp"/>
+    <h1>JTalks</h1>
     <!-- Начало всех форумов -->
     <div class="all_forums">
         <h2><a class="heading" href="#"><c:out value="${branch.name}"/></a></h2>
@@ -204,5 +202,3 @@
     <div class="footer_buffer"></div>
     <!-- Несемантичный буфер для прибития подвала -->
 </div>
-</body>
-</html>

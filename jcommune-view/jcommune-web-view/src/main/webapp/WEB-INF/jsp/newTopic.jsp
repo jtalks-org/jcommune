@@ -24,6 +24,7 @@
 <h1>JTalks</h1>
 
 <div class="wrap answer_page">
+    <jsp:include page="../template/topLine.jsp"/>
     <!-- Начало всех форумов -->
     <div class="all_forums">
         <jtalks:form action="${pageContext.request.contextPath}/topics?branchId=${branchId}"

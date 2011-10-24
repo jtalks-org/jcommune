@@ -28,7 +28,7 @@
 </head>
 <body>
 <div align="left">
-
+     <jsp:include page="../../template/topLine.jsp"/>
     <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
     <jsp:include page="pmNavigationMenu.jsp"/>

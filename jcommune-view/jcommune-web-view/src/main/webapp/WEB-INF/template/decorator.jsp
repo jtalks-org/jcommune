@@ -15,14 +15,8 @@
 
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="org.jtalks.jcommune.web.util.Language" %>
 <%@ taglib prefix="decorator" uri="http://www.opensymphony.com/sitemesh/decorator" %>
-<%@ taglib prefix="page" uri="http://www.opensymphony.com/sitemesh/page" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
-<%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <fmt:setBundle basename="org.jtalks.jcommune.web.view.messages"/>
 <fmt:setLocale value="en"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -39,45 +33,6 @@
 </head>
 <!--Define timezone to adjust date and time values-->
 <body onload='document.cookie="GMT=" + new Date().getTimezoneOffset()'>
-
-<div class="top_line">
-    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-        <fmt:message key="label.welcomeMessage"/>
-        <a class="currentusername"
-           href="${pageContext.request.contextPath}/users/${encodedUserName}"
-           title="Имя пользователя"><sec:authentication
-                property="principal.username"/></a>!
-    </sec:authorize>
-    <ul class="top_menu">
-        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-            <li class="no_border"><a href="${pageContext.request.contextPath}/users/${encodedUserName}"
-                                     title="Профиль"><fmt:message key="label.profile"/></a></li>
-            <li><a href="#" title="Настройки"><fmt:message
-                    key="label.settings"/></a></li>
-            <li><a href="${pageContext.request.contextPath}/inbox" title="Сообщения"><fmt:message
-                    key="label.pm"/>(${newPmCount})</a></li>
-            <li><a href="#" title="Пользователи"><fmt:message
-                    key="label.users"/></a></li>
-            <li><a href="#" title="Группы"><fmt:message key="label.groups"/></a></li>
-            <li><a href="#" title="Для чайников"><fmt:message key="label.newbies"/></a></li>
-            <li><a href="${pageContext.request.contextPath}/logout" title="На выход"><fmt:message
-                    key="label.logout"/></a></li>
-        </sec:authorize>
-        <sec:authorize access="hasRole('ROLE_ANONYMOUS')">
-            <li class="no_border"><a href="${pageContext.request.contextPath}/login"><fmt:message
-                    key="label.signin"/></a>
-            </li>
-            <li><a href="${pageContext.request.contextPath}/users/new"><fmt:message
-                    key="label.signup"/></a></li>
-        </sec:authorize>
-        <li class="flag no_border"><a href="<%=Language.RUSSIAN.buildLink(request)%>"><img
-                src="${pageContext.request.contextPath}/resources/images/flag_russia.png" alt=""/></a></li>
-        <li class="flag"><a href="<%=Language.ENGLISH.buildLink(request)%>"><img
-                src="${pageContext.request.contextPath}/resources/images/flag_great_britain.png" alt=""/></a></li>
-    </ul>
-</div>
-
-
 <decorator:body/>
 <div class="footer"> <!-- Подвал -->
     <div class="copyright">

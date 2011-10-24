@@ -30,6 +30,7 @@
 <h1>JTalks</h1>
 
 <div class="wrap topic_page">
+<jsp:include page="../template/topLine.jsp"/>
 <!-- Начало всех форумов -->
 <div class="all_forums">
 <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
