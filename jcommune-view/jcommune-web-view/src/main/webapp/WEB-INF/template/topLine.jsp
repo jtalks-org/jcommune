@@ -16,6 +16,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="org.jtalks.jcommune.web.util.Language" %>
+<%@ page import="org.springframework.web.servlet.i18n.CookieLocaleResolver" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <div class="top_line">
@@ -48,9 +49,12 @@
             <li><a href="${pageContext.request.contextPath}/users/new"><fmt:message
                     key="label.signup"/></a></li>
         </sec:authorize>
-        <li class="flag no_border"><a href="<%=Language.RUSSIAN.buildLink(request)%>"><img
-                src="${pageContext.request.contextPath}/resources/images/flag_russia.png" alt=""/></a></li>
-        <li class="flag"><a href="<%=Language.ENGLISH.buildLink(request)%>"><img
-                src="${pageContext.request.contextPath}/resources/images/flag_great_britain.png" alt=""/></a></li>
+
+        <li class="flag no_border">
+            <a href="#" onclick="document.cookie='<%=CookieLocaleResolver.DEFAULT_COOKIE_NAME%>=ru'; location.reload()">
+            <img src="${pageContext.request.contextPath}/resources/images/flag_russia.png" alt=""/></a></li>
+        <li class="flag">
+            <a href="#" onclick="document.cookie='<%=CookieLocaleResolver.DEFAULT_COOKIE_NAME%>=en'; location.reload()">
+            <img  src="${pageContext.request.contextPath}/resources/images/flag_great_britain.png" alt=""/></a></li>
     </ul>
 </div>

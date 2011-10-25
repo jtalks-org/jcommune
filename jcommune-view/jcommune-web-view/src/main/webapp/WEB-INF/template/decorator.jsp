@@ -40,7 +40,7 @@
 <decorator:body/>
 <div class="footer"> <!-- Подвал -->
     <div class="copyright">
-        Java and all Java-related trademarks and logos are trademarks or registered tradermarks of Oracle
+        Java and all Java-related trademarks and logos are trademarks or registered trademarks of Oracle
         Corporation
         in the United States and other countries.
         <br/>

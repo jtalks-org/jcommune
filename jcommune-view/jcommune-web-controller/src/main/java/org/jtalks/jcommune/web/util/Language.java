@@ -14,10 +14,8 @@
  */
 package org.jtalks.jcommune.web.util;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
- * Holds a list of the language available
+ * Holds a list of the languages available
  */
 public enum Language {
 
@@ -75,32 +73,4 @@ public enum Language {
      * @return language abbreviation used in locale settings, like "en" or "ru"
      */
     public abstract String getLanguageCode();
-
-    /**
-     * Builds the same link as in servlet request passed but with
-     * language parameter added. If the request already have
-     * language defined it should be replaced with the current
-     * Language instance code
-     *
-     * @param request servlet request to gather link information from
-     * @return link to the current page with params
-     */
-    public String buildLink(HttpServletRequest request) {
-        StringBuilder builder = new StringBuilder(request.getRequestURL());
-        builder.append("?");
-        String query = request.getQueryString();
-        if (query == null) {    // no params in URL
-            builder.append("lang=");
-        } else {
-            if (query.contains("lang=")) {
-                // supposing the language is always at the end of the query string
-                builder.append(query.substring(0, query.length() - 2));
-            } else {
-                builder.append(query);
-                builder.append("&lang=");
-            }
-        }
-        builder.append(this.getLanguageCode());
-        return builder.toString();
-    }
 }

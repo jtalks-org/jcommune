@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.MailService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
@@ -70,6 +71,7 @@ public class UserController {
     private final UserService userService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private ImagePreprocessor imagePreprocessor;
+    private MailService mailService;
 
     /**
      * This method turns the trim binder on. Trim bilder
@@ -85,21 +87,23 @@ public class UserController {
     /**
      * Assign {@link UserService} to field.
      *
-     * @param userService       {@link UserService} to be injected
-     * @param securityService   {@link SecurityService} used for accessing to current logged in user
+     * @param userService       {@link org.jtalks.jcommune.service.UserService} to be injected
+     * @param securityService   {@link org.jtalks.jcommune.service.SecurityService} used for accessing to current logged in user
      * @param breadcrumbBuilder the object which provides actions on
-     *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
-     * @param imagePreprocessor {@link ImagePreprocessor} used for preparing image before save
+ *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
+     * @param imagePreprocessor {@link org.jtalks.jcommune.web.util.ImagePreprocessor} used for preparing image before save
+     * @param mailService
      */
     @Autowired
     public UserController(UserService userService,
                           SecurityService securityService,
                           BreadcrumbBuilder breadcrumbBuilder,
-                          ImagePreprocessor imagePreprocessor) {
+                          ImagePreprocessor imagePreprocessor, MailService mailService) {
         this.userService = userService;
         this.securityService = securityService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.imagePreprocessor = imagePreprocessor;
+        this.mailService = mailService;
     }
 
     /**
@@ -258,4 +262,5 @@ public class UserController {
         response.setContentLength(avatar.length);
         response.getOutputStream().write(avatar);
     }
+
 }
