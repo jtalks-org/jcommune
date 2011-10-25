@@ -51,10 +51,10 @@
         </sec:authorize>
 
         <li class="flag no_border">
-            <a href="#" onclick="document.cookie='<%=CookieLocaleResolver.DEFAULT_COOKIE_NAME%>=ru'; location.reload()">
+            <a href="#" onclick="document.cookie='<%=CookieLocaleResolver.DEFAULT_COOKIE_NAME%>=ru;path=/'; location.reload()">
             <img src="${pageContext.request.contextPath}/resources/images/flag_russia.png" alt=""/></a></li>
         <li class="flag">
-            <a href="#" onclick="document.cookie='<%=CookieLocaleResolver.DEFAULT_COOKIE_NAME%>=en'; location.reload()">
+            <a href="#" onclick="document.cookie='<%=CookieLocaleResolver.DEFAULT_COOKIE_NAME%>=en;path=/'; location.reload()">
             <img  src="${pageContext.request.contextPath}/resources/images/flag_great_britain.png" alt=""/></a></li>
     </ul>
 </div>

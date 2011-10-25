@@ -36,7 +36,7 @@
           href="${pageContext.request.contextPath}/resources/images/favicon.png" />
 </head>
 <!--Define timezone to adjust date and time values-->
-<body onload='document.cookie="GMT=" + new Date().getTimezoneOffset()'>
+<body onload='document.cookie="GMT=" + new Date().getTimezoneOffset()+";path=/"'>
 <decorator:body/>
 <div class="footer"> <!-- Подвал -->
     <div class="copyright">
