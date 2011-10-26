@@ -35,7 +35,7 @@
 
 <div id="editUserDetails">
     <form:form id="editProfileForm" name="editProfileForm"
-               action="${pageContext.request.contextPath}/users/update"
+               action="${pageContext.request.contextPath}/users/edit"
                modelAttribute="editedUser" method="POST" enctype="multipart/form-data">
 
         <table>

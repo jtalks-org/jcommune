@@ -192,7 +192,7 @@ public class UserController {
      * @throws NotFoundException - throws if current logged in user was not found
      * @throws IOException       - throws in case of access errors (if the temporary store fails)
      */
-    @RequestMapping(value = "/users/update", method = RequestMethod.POST)
+    @RequestMapping(value = "/users/edit", method = RequestMethod.POST)
     public ModelAndView editProfile(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
                                     BindingResult result, HttpServletResponse response)
         throws NotFoundException, IOException {
