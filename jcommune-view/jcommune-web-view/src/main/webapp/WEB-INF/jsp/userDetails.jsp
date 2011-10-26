@@ -96,7 +96,7 @@
         <li>
             <c:if test="${user.username == auth}">
                 <a href="${pageContext.request.contextPath}/users/edit">
-                    <label>Edit</label>
+                   Edit
                 </a>
             </c:if>
         </li>
