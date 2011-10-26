@@ -33,7 +33,6 @@ import org.springframework.web.servlet.ModelAndView;
  * @author Alexandre Teterin
  */
 @Controller
-@RequestMapping(value = "/posts/new")
 public class TopicAnswerController {
 
     public static final int MIN_ANSWER_LENGTH = 1;
@@ -54,60 +53,5 @@ public class TopicAnswerController {
     }
 
 
-    /**
-     * Creates the answering page with empty answer form.
-     * If the user isn't logged in he will be redirected to the login page.
-     *
-     * @param topicId         the id of the topic for the answer
-     * @param validationError is true when post length is less than 2
-     * @return answering {@code ModelAndView} or redirect to the login page
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when topic not found
-     */
-    @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView getAnswerPage(@RequestParam("topicId") Long topicId,
-                                      @RequestParam(value = "validationError", required = false)
-                                      Boolean validationError) throws NotFoundException {
-        ModelAndView mav = new ModelAndView("answer");
-        Topic answeringTopic = topicService.get(topicId);
-        mav.addObject("topic", answeringTopic);
-        mav.addObject("topicId", topicId);
-        mav.addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(answeringTopic));
-        if (validationError != null && validationError) {
-            mav.addObject("validationError", validationError);
-        }
-        return mav;
-    }
 
-    /**
-     * Process the answer form. Adds new post to the specified topic and redirects to the
-     * topic view page.
-     *
-     * @param topicId  the id of the answered topic
-     * @param bodyText the content of the answer
-     * @return redirect to the topic view
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when topic or branch not found
-     */
-    @RequestMapping(method = RequestMethod.POST)
-    public ModelAndView submitAnswer(@RequestParam("topicId") Long topicId,
-                                     @RequestParam("bodytext") String bodyText) throws NotFoundException {
-        if (isValidAnswer(bodyText)) {
-            topicService.addAnswer(topicId, bodyText);
-            return new ModelAndView("redirect:/topics/" + topicId);
-        } else {
-            return getAnswerPage(topicId, true);
-        }
-
-    }
-
-    /**
-     * Check the answer length.
-     *
-     * @param bodyText answer content
-     * @return true if answer is valid
-     */
-    private boolean isValidAnswer(String bodyText) {
-        return bodyText.trim().length() > MIN_ANSWER_LENGTH;
-    }
 }

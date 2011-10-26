@@ -24,7 +24,7 @@
 <jsp:include page="../template/topLine.jsp"/>
 <div id="answer">
     <jtalks:form name="editForm" modelAttribute="postDto" method="POST"
-                 action="${pageContext.request.contextPath}/posts/${postId}?topicId=${topicId}">
+                 action="${pageContext.request.contextPath}/posts/${postId}/edit?topicId=${topicId}">
         <form:hidden path="id"/>
         <div>
             <form:label path="bodyText"><spring:message code="label.text"/></form:label>
