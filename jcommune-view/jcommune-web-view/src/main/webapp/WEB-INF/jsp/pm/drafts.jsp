@@ -28,6 +28,7 @@
 </head>
 <body>
 <div class="all_forums">
+    <jsp:include page="../../template/topLine.jsp"/>
     <h1><spring:message code="label.drafts"/></h1>
 
     <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>

@@ -23,7 +23,7 @@
 <html>
 <head><title>Branch List</title></head>
 <body>
-
+<jsp:include page="../template/topLine.jsp"/>
 <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
 <form:form method="POST">

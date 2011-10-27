@@ -29,7 +29,10 @@ import org.testng.annotations.Test;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -48,6 +51,7 @@ public class TransactionalUserServiceTest {
     private static final String WRONG_PASSWORD = "abracodabra";
     private static final String NEW_PASSWORD = "newPassword";
     private static final String LANGUAGE = "language";
+    private final String PAGE_SIZE = "FIFTY";
     private byte[] avatar = new byte[10];
     private static final Long USER_ID = 999L;
 
@@ -159,7 +163,7 @@ public class TransactionalUserServiceTest {
         byte[] newAvatar = new byte[12];
 
         User editedUser = userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
-                PASSWORD, NEW_PASSWORD, newAvatar, SIGNATURE, LANGUAGE);
+                PASSWORD, NEW_PASSWORD, newAvatar, SIGNATURE, LANGUAGE, PAGE_SIZE);
 
         verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
@@ -188,7 +192,7 @@ public class TransactionalUserServiceTest {
         User user = getUser();
         when(securityService.getCurrentUser()).thenReturn(user);
         return userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
-                PASSWORD, NEW_PASSWORD, null, signature, LANGUAGE);
+                PASSWORD, NEW_PASSWORD, null, signature, LANGUAGE, PAGE_SIZE);
     }
 
     @Test
@@ -200,7 +204,7 @@ public class TransactionalUserServiceTest {
         byte[] newAvatar = null;
 
         User editedUser = userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
-                PASSWORD, NEW_PASSWORD, newAvatar, SIGNATURE, LANGUAGE);
+                PASSWORD, NEW_PASSWORD, newAvatar, SIGNATURE, LANGUAGE, PAGE_SIZE);
 
         verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
@@ -221,7 +225,7 @@ public class TransactionalUserServiceTest {
         byte[] newAvatar = new byte[0];
 
         User editedUser = userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
-                PASSWORD, NEW_PASSWORD, newAvatar, SIGNATURE, LANGUAGE);
+                PASSWORD, NEW_PASSWORD, newAvatar, SIGNATURE, LANGUAGE, PAGE_SIZE);
 
         verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
@@ -239,7 +243,7 @@ public class TransactionalUserServiceTest {
         when(securityService.getCurrentUser()).thenReturn(user);
 
         userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
-                WRONG_PASSWORD, NEW_PASSWORD, avatar, SIGNATURE, LANGUAGE);
+                WRONG_PASSWORD, NEW_PASSWORD, avatar, SIGNATURE, LANGUAGE, PAGE_SIZE);
 
         verify(securityService).getCurrentUser();
         verify(userDao, never()).isUserWithEmailExist(anyString());
@@ -252,7 +256,7 @@ public class TransactionalUserServiceTest {
         when(securityService.getCurrentUser()).thenReturn(user);
 
         userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
-                null, NEW_PASSWORD, avatar, SIGNATURE, LANGUAGE);
+                null, NEW_PASSWORD, avatar, SIGNATURE, LANGUAGE, PAGE_SIZE);
 
         verify(securityService).getCurrentUser();
         verify(userDao, never()).isUserWithEmailExist(anyString());
@@ -266,7 +270,7 @@ public class TransactionalUserServiceTest {
         when(userDao.isUserWithEmailExist(NEW_EMAIL)).thenReturn(true);
 
         userService.editUserProfile(NEW_EMAIL, FIRST_NAME, LAST_NAME,
-                null, null, avatar, SIGNATURE, LANGUAGE);
+                null, null, avatar, SIGNATURE, LANGUAGE, PAGE_SIZE);
 
         verify(securityService).getCurrentUser();
         verify(userDao).isUserWithEmailExist(NEW_EMAIL);

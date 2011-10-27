@@ -25,6 +25,7 @@
     <title><spring:message code="label.pm_title"/></title>
 </head>
 <body>
+<jsp:include page="../../template/topLine.jsp"/>
 <h1><spring:message code="label.inbox"/></h1>
 
 <div class="all_forums">

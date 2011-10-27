@@ -24,9 +24,10 @@
 <h1>JTalks</h1>
 
 <div class="wrap answer_page">
+    <jsp:include page="../template/topLine.jsp"/>
     <!-- Начало всех форумов -->
     <div class="all_forums">
-        <jtalks:form action="${pageContext.request.contextPath}/topics?branchId=${branchId}"
+        <jtalks:form action="${pageContext.request.contextPath}/topics/new?branchId=${branchId}"
                      modelAttribute="topicDto"
                      method="POST">
             <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
@@ -34,10 +35,8 @@
             <div class="forum_misc_info">
                 <h2><spring:message code="h.new_topic"/></h2>
             </div>
-            <a class="forums_list" href="#" title="Список форумов">Список форумов</a>
-            <span class="arrow"> > </span>
-            <a class="forums_list" href="#" title="Для новичков">Для новичков</a>
 
+            <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
             <!-- Начало группы форумов -->
             <div class="forum_header_table"> <!-- Шапка топика -->

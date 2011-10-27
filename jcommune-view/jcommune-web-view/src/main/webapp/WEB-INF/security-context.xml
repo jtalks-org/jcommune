@@ -22,7 +22,10 @@
        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd
        ">
     <!-- Http Security -->
-    <security:http auto-config="true" use-expressions="true">
+    <security:http auto-config="true" use-expressions="true" create-session="always">
+
+        <security:session-management session-fixation-protection="newSession" />
+
         <security:intercept-url pattern="/topics/new" method="GET" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
 
         <security:intercept-url pattern="/posts/new" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
@@ -52,7 +55,7 @@
         <security:form-login login-page="/login" login-processing-url="/j_spring_security_check"
                              authentication-failure-url="/login?login_error=1" default-target-url="/"
                              authentication-success-handler-ref="successAuthHandler"/>
-        <security:logout logout-url="/logout" logout-success-url="/"/>
+        <security:logout logout-url="/logout" logout-success-url="/" invalidate-session="true"/>
         <security:remember-me user-service-ref="securityService" key="JTalks"/>
     </security:http>
 

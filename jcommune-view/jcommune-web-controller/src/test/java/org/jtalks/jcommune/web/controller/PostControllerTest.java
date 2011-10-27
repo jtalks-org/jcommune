@@ -18,6 +18,7 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
@@ -47,16 +48,21 @@ import static org.testng.Assert.assertEquals;
 public class PostControllerTest {
     private PostService postService;
     private PostController controller;
-    public static final long TOPIC_ID = 1;
+    private TopicService topicService;
+
     public static final long POST_ID = 1;
+    public static final String ANSWER_BODY = "Body Text";
+    public static final String SHORT_ANSWER_BODY = " a  ";
+    public static final long TOPIC_ID = 1L;
     private final String POST_CONTENT = "postContent";
     private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
 
     @BeforeMethod
     public void init() {
         postService = mock(PostService.class);
+        topicService = mock(TopicService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
-        controller = new PostController(postService, breadcrumbBuilder);
+        controller = new PostController(postService, breadcrumbBuilder, topicService);
     }
 
 
@@ -154,6 +160,53 @@ public class PostControllerTest {
         assertEquals(postId, POST_ID);
 
         verify(postService, never()).savePost(anyLong(), anyString());
+    }
+
+    @Test
+    public void testGetAnswerPage() throws NotFoundException {
+        boolean isValid = false;
+        Topic topic = mock(Topic.class);
+
+        //set expectations
+        when(topicService.get(TOPIC_ID)).thenReturn(topic);
+        when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
+
+        //invoke the object under test
+        ModelAndView mav = controller.createPage(TOPIC_ID, isValid);
+
+        //check expectations
+        verify(topicService).get(TOPIC_ID);
+        verify(breadcrumbBuilder).getForumBreadcrumb(topic);
+
+        //check result
+        assertAndReturnModelAttributeOfType(mav, "topic", Topic.class);
+        assertViewName(mav, "answer");
+        assertModelAttributeAvailable(mav, "breadcrumbList");
+    }
+
+    @Test
+    public void testSubmitAnswerValidationPass() throws NotFoundException {
+        //invoke the object under test
+        ModelAndView mav = controller.create(TOPIC_ID, ANSWER_BODY);
+
+        //check expectations
+        verify(topicService).addAnswer(TOPIC_ID, ANSWER_BODY);
+
+        //check result
+        assertViewName(mav, "redirect:/topics/" + TOPIC_ID);
+    }
+
+    @Test
+    public void testSubmitAnswerValidationFail() throws NotFoundException {
+        //invoke the object under test
+        ModelAndView mav = controller.create(TOPIC_ID, SHORT_ANSWER_BODY);
+
+        //check expectations
+        verify(topicService, never()).addAnswer(TOPIC_ID, SHORT_ANSWER_BODY);
+
+        //check result
+        assertViewName(mav, "answer");
+        assertAndReturnModelAttributeOfType(mav, "validationError", Boolean.class);
     }
 
     private PostDto getDto() {

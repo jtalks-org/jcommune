@@ -159,20 +159,10 @@ public class Breadcrumb {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
-        Breadcrumb that = (Breadcrumb) o;
-
-        if (breadcrumbLocation != that.breadcrumbLocation) {
-            return false;
-        }
-        if (!breadcrumbLocationValue.equals(that.breadcrumbLocationValue)) {
-            return false;
-        }
-        if (!id.equals(that.id)) {
-            return false;
-        }
-
-        return true;
+        Breadcrumb other = (Breadcrumb) o;
+        return  breadcrumbLocation == other.breadcrumbLocation && 
+                        breadcrumbLocationValue.equals(other.breadcrumbLocationValue) && 
+                        id.equals(other.id);
     }
 
     /**

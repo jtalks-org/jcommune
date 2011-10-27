@@ -28,7 +28,7 @@
 </head>
 <body>
 <sec:authentication property="principal.username" var="auth" scope="request"/>
-
+ <jsp:include page="../template/topLine.jsp"/>
 <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
 <div id="userdetails">
@@ -67,7 +67,7 @@
         <c:if test="${user.language != null}">
             <li>
                 <label><spring:message code="label.language"/></label>
-                <span><spring:message code="${language.asText}"/></span>
+                <span><spring:message code="${language.languageNameLabel}"/></span>
             </li>
         </c:if>
         <li>
@@ -83,7 +83,7 @@
                 <table>
                     <tr>
                         <td width="100" height="100" align="center" valign="middle">
-                            <img src="${pageContext.request.contextPath}/${user.username}/avatar"/>
+                            <img src="${pageContext.request.contextPath}/${user.username}/avatar" alt=""/>
                         </td>
                     </tr>
                 </table>
@@ -96,7 +96,7 @@
         <li>
             <c:if test="${user.username == auth}">
                 <a href="${pageContext.request.contextPath}/users/edit">
-                    <label>Edit</label>
+                   Edit
                 </a>
             </c:if>
         </li>

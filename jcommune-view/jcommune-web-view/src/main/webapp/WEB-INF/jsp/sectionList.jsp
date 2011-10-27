@@ -21,24 +21,21 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head>
     <title>Форум JTalks</title>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" type="text/css" media="screen, projection"
           href="${pageContext.request.contextPath}/resources/css/screen.css"/>
-    <link rel="shortcut icon" type="image/ico" href="favicon.ico"/>
 </head>
 <body>
-<h1>JTalks</h1>
-
 <div class="wrap main_page">
+    <jsp:include page="../template/topLine.jsp"/>
+    <h1>JTalks</h1>
     <!-- Начало всех форумов -->
     <div class="all_forums">
         <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/recent"><spring:message
                 code="label.recent"/></a> <br/>
-        <a class="forum_top_right_link" href="#">Сообщения без ответа</a>
+        <a class="forum_top_right_link" href="#"><spring:message code="label.messagesWithoutAnswers"/></a>
 
         <h2><a class="heading" href="#">Java форум JTalks</a></h2>
         <br/>
@@ -113,7 +110,7 @@
         <div class="forum_table"> <!-- Таблица -->
             <div class="forum_row"> <!-- Отдельный ряд -->
                 <div class="forum_info"> <!-- Содержимое ряда -->
-                    <spring:message code="label.onlineUsersInfo.messagesCount"/>  120693
+                    <spring:message code="label.onlineUsersInfo.messagesCount"/> 120693
                     <br/>
                     <spring:message code="label.onlineUsersInfo.registeredUsers.count"/> 10478
                 </div>

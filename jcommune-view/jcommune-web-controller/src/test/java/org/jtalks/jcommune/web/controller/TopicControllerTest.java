@@ -193,14 +193,14 @@ public class TopicControllerTest {
 
         //set expectations
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
-        when(breadcrumbBuilder.getForumBreadcrumb(branch)).thenReturn(new ArrayList<Breadcrumb>());
+        when(breadcrumbBuilder.getNewTopicBreadcrumb(branch)).thenReturn(new ArrayList<Breadcrumb>());
 
         //invoke the object under test
         ModelAndView mav = controller.createPage(BRANCH_ID);
 
         //check expectations
         verify(branchService).get(BRANCH_ID);
-        verify(breadcrumbBuilder).getForumBreadcrumb(branch);
+        verify(breadcrumbBuilder).getNewTopicBreadcrumb(branch);
 
         //check result
         assertViewName(mav, "newTopic");

@@ -23,6 +23,7 @@
     <title><spring:message code="label.signin"/></title>
 </head>
 <body>
+<jsp:include page="../template/topLine.jsp"/>
 <c:if test="${not empty param.login_error}">
     <span style="color: red; ">
         <spring:message code="label.login_error"/>

@@ -117,6 +117,23 @@ public class BreadcrumbBuilderTest {
     }
 
     @Test
+    public void testGetNewTopicBreadcrumb() throws Exception {
+        //init
+        Breadcrumb expectedBreadcrumb = new Breadcrumb(
+                ID,
+                Breadcrumb.BreadcrumbLocation.BRANCH,
+                branch.getName());
+        List<Breadcrumb> expectedList = breadcrumbBuilder.getForumBreadcrumb(branch);
+        expectedList.add(expectedBreadcrumb);
+
+        //invoke the object under test
+        List<Breadcrumb> actualList = breadcrumbBuilder.getNewTopicBreadcrumb(branch);
+
+        //check result
+        assertEquals(actualList, expectedList);
+    }
+
+    @Test
     public void testGetPostBreadcrumb() throws Exception {
         //init
         Breadcrumb expectedBreadcrumb = new Breadcrumb(
@@ -166,6 +183,7 @@ public class BreadcrumbBuilderTest {
         //check result
         assertEquals(actualList, expectedList);
     }
+
     @Test
     public void testGetDraftsBreadcrumb() throws Exception {
         //init

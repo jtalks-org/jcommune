@@ -91,7 +91,8 @@ public final class TopicController {
         return new ModelAndView("newTopic")
                 .addObject("topicDto", new TopicDto())
                 .addObject("branchId", branchId)
-                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)));
+                .addObject(BREADCRUMB_LIST,
+                        breadcrumbBuilder.getNewTopicBreadcrumb(branchService.get(branchId)));
     }
 
     /**
@@ -104,7 +105,7 @@ public final class TopicController {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
      */
-    @RequestMapping(value = "/topics", method = RequestMethod.POST)
+    @RequestMapping(value = "/topics/new", method = RequestMethod.POST)
     public ModelAndView create(@Valid @ModelAttribute TopicDto topicDto,
                                BindingResult result,
                                @RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
@@ -225,7 +226,7 @@ public final class TopicController {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic or branch not found
      */
-    @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.POST)
+    @RequestMapping(value = "/topics/{topicId}/edit", method = RequestMethod.POST)
     public ModelAndView save(@Valid @ModelAttribute TopicDto topicDto,
                              BindingResult result,
                              @RequestParam(BRANCH_ID) Long branchId,

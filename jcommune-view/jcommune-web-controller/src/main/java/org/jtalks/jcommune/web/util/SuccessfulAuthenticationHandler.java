@@ -18,8 +18,10 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -32,7 +34,6 @@ import java.io.IOException;
  */
 public class SuccessfulAuthenticationHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
-    private static final String LANG_PARAM = "?lang=";
     private UserService userService;
 
     /**
@@ -45,7 +46,7 @@ public class SuccessfulAuthenticationHandler extends SavedRequestAwareAuthentica
     }
 
     /**
-     * Handle user's successfull authentication.
+     * Handle user's successful authentication.
      * Updates last login time for authenticated user.
      *
      * @param request        http request
@@ -61,18 +62,10 @@ public class SuccessfulAuthenticationHandler extends SavedRequestAwareAuthentica
         session.setAttribute("lastlogin", user.getLastLogin());
         userService.updateLastLoginTime(user);
         logger.info("User logged in: " + user.getUsername());
-        String lang = "ru";
-        if (user.getLanguage() != null) {
-            lang = user.getLanguage().substring(0, 2);
-        }
-        if (getDefaultTargetUrl().contains(LANG_PARAM)) {
-            String temp;
-            temp = getDefaultTargetUrl().substring(0, getDefaultTargetUrl().indexOf(LANG_PARAM)) +
-                    getDefaultTargetUrl().substring(getDefaultTargetUrl().indexOf(LANG_PARAM) + 8);
-            setDefaultTargetUrl(temp + LANG_PARAM + lang);
-        } else {
-            setDefaultTargetUrl(getDefaultTargetUrl() + LANG_PARAM + lang);
-        }
+        //apply language settings assuming CookieLocaleResolver usage
+        Language language = Language.valueOf(user.getLanguage());
+        Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, language.getLanguageCode());
+        response.addCookie(cookie);
         super.onAuthenticationSuccess(request, response, authentication);
     }
 }

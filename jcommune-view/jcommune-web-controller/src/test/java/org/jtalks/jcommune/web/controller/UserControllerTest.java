@@ -15,16 +15,23 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.MailService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.*;
+import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
+import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
+import org.jtalks.jcommune.service.exceptions.InvalidImageException;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.util.ImagePreprocessor;
+import org.jtalks.jcommune.web.util.Language;
 import org.mockito.Matchers;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
@@ -33,6 +40,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -44,14 +52,24 @@ import java.util.ArrayList;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.ModelAndViewAssert.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 
 /**
  * @author Kirill Afonin
  * @author Osadchuck Eugeny
+ *         <p/>
+ *         TODO: Split it
  */
 public class UserControllerTest {
     private UserService userService;
@@ -59,14 +77,14 @@ public class UserControllerTest {
     private UserController controller;
 
     private final String USER_NAME = "username";
-    private final String ENCODED_USER_NAME = "encodeUsername";
     private final String FIRST_NAME = "first name";
     private final String LAST_NAME = "last name";
     private final String EMAIL = "mail@mail.com";
     private final String PASSWORD = "password";
     private final String SIGNATURE = "signature";
     private final String NEW_PASSWORD = "newPassword";
-    private final String LANGUAGE = "language";
+    private final String LANGUAGE = "ENGLISH";
+    private final String PAGE_SIZE = "FIFTY";
     private final int AVATAR_MAX_WIDTH = 100;
     private final int AVATAR_MAX_HEIGHT = 100;
     private MultipartFile avatar;
@@ -85,7 +103,7 @@ public class UserControllerTest {
         securityService = mock(SecurityService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
         imagePreprocessor = mock(ImagePreprocessor.class);
-        controller = new UserController(userService, securityService, breadcrumbBuilder, imagePreprocessor);
+        controller = new UserController(userService, securityService, breadcrumbBuilder, imagePreprocessor, mock(MailService.class));
     }
 
     @Test
@@ -207,7 +225,7 @@ public class UserControllerTest {
     public void testEditProfile() throws Exception {
         User user = getUser();
         EditUserProfileDto userDto = getEditUserProfileDto();
-
+        MockHttpServletResponse response = new MockHttpServletResponse();
         when(imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH,
                 AVATAR_MAX_HEIGHT)).thenReturn(avatarByteArray);
 
@@ -216,40 +234,37 @@ public class UserControllerTest {
 
         when(userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE)).thenReturn(user);
+                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE, PAGE_SIZE)).thenReturn(user);
 
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
-        ModelAndView mav = controller.editProfile(userDto, bindingResult);
+        ModelAndView mav = controller.editProfile(userDto, bindingResult, response);
 
         String expectedUrl = "redirect:/users/" + user.getEncodedUsername();
         assertViewName(mav, expectedUrl);
+        assertEquals(response.getCookies()[0].getValue(), Language.ENGLISH.getLanguageCode());
+        assertEquals(response.getCookies()[0].getName(), CookieLocaleResolver.DEFAULT_COOKIE_NAME);
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE);
+                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE, PAGE_SIZE);
     }
 
     @Test
     public void testEditProfileWithAvatarFailedValidation() throws Exception {
         User user = getUserWithoutAvatar();
         when(securityService.getCurrentUser()).thenReturn(user);
-        EditUserProfileDto userDto = mock(EditUserProfileDto.class);
-        when(userDto.getEmail()).thenReturn(EMAIL);
-        when(userDto.getFirstName()).thenReturn(FIRST_NAME);
-        when(userDto.getLastName()).thenReturn(LAST_NAME);
-        when(userDto.getCurrentUserPassword()).thenReturn(PASSWORD);
-        when(userDto.getNewUserPassword()).thenReturn(NEW_PASSWORD);
-        when(userDto.getAvatar()).thenReturn(avatar);
+        EditUserProfileDto userDto = spy(getEditUserProfileDto());
+
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        ModelAndView mav = controller.editProfile(userDto, bindingResult);
+        ModelAndView mav = controller.editProfile(userDto, bindingResult, new MockHttpServletResponse());
 
         assertViewName(mav, "editProfile");
         verify(userDto).setAvatar(Matchers.<MultipartFile>anyObject());
         verify(userService, never()).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), userDto.getAvatar().getBytes(), SIGNATURE, LANGUAGE);
+                userDto.getNewUserPassword(), userDto.getAvatar().getBytes(), SIGNATURE, LANGUAGE, PAGE_SIZE);
     }
 
     @Test
@@ -261,7 +276,7 @@ public class UserControllerTest {
                 AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
 
 
-        ModelAndView mav = controller.editProfile(userDto, bindingResult);
+        ModelAndView mav = controller.editProfile(userDto, bindingResult, new MockHttpServletResponse());
 
         assertViewName(mav, "editProfile");
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
@@ -284,15 +299,15 @@ public class UserControllerTest {
 
         when(userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE)).thenThrow(new DuplicateEmailException());
+                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE, PAGE_SIZE)).thenThrow(new DuplicateEmailException());
 
-        ModelAndView mav = controller.editProfile(userDto, bindingResult);
+        ModelAndView mav = controller.editProfile(userDto, bindingResult, new MockHttpServletResponse());
 
         assertViewName(mav, "editProfile");
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE);
+                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE, PAGE_SIZE);
 
         assertContainsError(bindingResult, "email");
     }
@@ -310,15 +325,15 @@ public class UserControllerTest {
 
         when(userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE)).thenThrow(new WrongPasswordException());
+                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE, PAGE_SIZE)).thenThrow(new WrongPasswordException());
 
-        ModelAndView mav = controller.editProfile(userDto, bindingResult);
+        ModelAndView mav = controller.editProfile(userDto, bindingResult, new MockHttpServletResponse());
 
         assertViewName(mav, "editProfile");
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE);
+                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE, PAGE_SIZE);
         assertContainsError(bindingResult, "currentUserPassword");
     }
 
@@ -331,11 +346,11 @@ public class UserControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        ModelAndView mav = controller.editProfile(dto, bindingResult);
+        ModelAndView mav = controller.editProfile(dto, bindingResult, new MockHttpServletResponse());
 
         assertViewName(mav, "editProfile");
         verify(userService, never()).editUserProfile(anyString(), anyString(), anyString(),
-                anyString(), anyString(), Matchers.<byte[]>anyObject(), anyString(), anyString());
+                anyString(), anyString(), Matchers.<byte[]>anyObject(), anyString(), anyString(), anyString());
     }
 
     @Test
@@ -352,6 +367,7 @@ public class UserControllerTest {
 
     @Test
     public void testRenderAvatar() throws Exception {
+        String ENCODED_USER_NAME = "encodeUsername";
         when(userService.getByEncodedUsername(ENCODED_USER_NAME))
                 .thenReturn(getUser());
         HttpServletResponse response = mock(HttpServletResponse.class);
@@ -409,6 +425,7 @@ public class UserControllerTest {
         dto.setNewUserPassword(NEW_PASSWORD);
         dto.setSignature(SIGNATURE);
         dto.setLanguage(LANGUAGE);
+        dto.setPageSize(PAGE_SIZE);
         dto.setNewUserPasswordConfirm(NEW_PASSWORD);
         dto.setAvatar(avatar);
         return dto;

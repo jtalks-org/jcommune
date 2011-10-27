@@ -30,12 +30,12 @@
           type=text/css rel=stylesheet>
 </head>
 <body>
-
+<jsp:include page="../template/topLine.jsp"/>
 <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
 <div id="editUserDetails">
     <form:form id="editProfileForm" name="editProfileForm"
-               action="${pageContext.request.contextPath}/users/update"
+               action="${pageContext.request.contextPath}/users/edit"
                modelAttribute="editedUser" method="POST" enctype="multipart/form-data">
 
         <table>
@@ -83,14 +83,45 @@
                 <td><label><spring:message code="label.language"/></label></td>
                 <td>
                     <form:select path="language">
-                        <c:forEach items="${languages}" var="languageItem">
-                            <form:option value="${languageItem}">
-                                <spring:message code="${languageItem.asText}"/>
-                            </form:option>
+                        <c:forEach items="${languages}" var="language">
+                            <c:choose>
+                                <c:when test="${language eq editedUser.language}">
+                                    <form:option value="${language}" selected="selected">
+                                        <spring:message code="${language.languageNameLabel}"/>
+                                    </form:option>
+                                </c:when>
+                                <c:otherwise>
+                                    <form:option value="${language}">
+                                        <spring:message code="${language.languageNameLabel}"/>
+                                    </form:option>
+                                </c:otherwise>
+                            </c:choose>
                         </c:forEach>
                     </form:select>
                 </td>
                 <td><form:errors path="language" cssClass="error"/></td>
+            </tr>
+            <tr>
+                <td><label><spring:message code="label.numberOfTopicsOnPage"/></label></td>
+                <td>
+                    <form:select path="pageSize">
+                        <c:forEach items="${pageSizes}" var="pageSize">
+                            <c:choose>
+                                <c:when test="${pageSize eq editedUser.pageSize}">
+                                    <form:option value="${pageSize}" selected="selected">
+                                        <spring:message code="${pageSize.label}"/>
+                                    </form:option>
+                                </c:when>
+                                <c:otherwise>
+                                    <form:option value="${pageSize}">
+                                        <spring:message code="${pageSize.label}"/>
+                                    </form:option>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                    </form:select>
+                </td>
+                <td><form:errors path="pageSize" cssClass="error"/></td>
             </tr>
             <tr>
                 <td></td>
@@ -106,7 +137,7 @@
             <table>
                 <tr>
                     <td width="100" height="100" align="center" valign="middle">
-                        <img src="${pageContext.request.contextPath}/${auth}/avatar"/><br>
+                        <img src="${pageContext.request.contextPath}/${auth}/avatar" alt=""/><br>
                     </td>
                 </tr>
                 <tr>

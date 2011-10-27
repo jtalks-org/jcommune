@@ -15,7 +15,9 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.PostDto;
@@ -33,6 +35,9 @@ import javax.validation.Valid;
 
 
 /**
+ * Controller for post-related actions
+ *
+ * @author Pavel Vervenko
  * @author Osadchuck Eugeny
  * @author Kravchenko Vitaliy
  * @author Kirill Afonin
@@ -40,23 +45,29 @@ import javax.validation.Valid;
  */
 @Controller
 public class PostController {
+
     public static final String TOPIC_ID = "topicId";
     public static final String POST_ID = "postId";
-    private final PostService postService;
+    public static final int MIN_ANSWER_LENGTH = 1;
+
+    private PostService postService;
     private BreadcrumbBuilder breadcrumbBuilder;
+    private TopicService topicService;
 
     /**
      * Constructor. Injects {@link PostService}.
      *
-     * @param postService       {@link PostService} instance to be injected
+     * @param postService       {@link org.jtalks.jcommune.service.PostService} instance to be injected
      * @param breadcrumbBuilder the object which provides actions on
      *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
+     * @param topicService {@link TopicService} to be injected
      */
     @Autowired
     public PostController(PostService postService,
-                          BreadcrumbBuilder breadcrumbBuilder) {
+                          BreadcrumbBuilder breadcrumbBuilder, TopicService topicService) {
         this.postService = postService;
         this.breadcrumbBuilder = breadcrumbBuilder;
+        this.topicService = topicService;
     }
 
     /**
@@ -126,8 +137,7 @@ public class PostController {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic, branch or post not found
      */
-    @RequestMapping(value = "/posts/{postId}",
-            method = RequestMethod.POST)
+    @RequestMapping(value = "/posts/{postId}/edit", method = RequestMethod.POST)
     public ModelAndView save(@Valid @ModelAttribute PostDto postDto,
                              BindingResult result,
                              @RequestParam(TOPIC_ID) Long topicId,
@@ -141,5 +151,62 @@ public class PostController {
         postService.savePost(postDto.getId(), postDto.getBodyText());
 
         return new ModelAndView("redirect:/topics/" + topicId);
+    }
+
+      /**
+     * Creates the answering page with empty answer form.
+     * If the user isn't logged in he will be redirected to the login page.
+     *
+     * @param topicId         the id of the topic for the answer
+     * @param validationError is true when post length is less than 2
+     * @return answering {@code ModelAndView} or redirect to the login page
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when topic not found
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/posts/new")
+    public ModelAndView createPage(@RequestParam("topicId") Long topicId,
+                                   @RequestParam(value = "validationError", required = false)
+                                   Boolean validationError) throws NotFoundException {
+        ModelAndView mav = new ModelAndView("answer");
+        Topic answeringTopic = topicService.get(topicId);
+        mav.addObject("topic", answeringTopic);
+        mav.addObject("topicId", topicId);
+        mav.addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(answeringTopic));
+        if (validationError != null && validationError) {
+            mav.addObject("validationError", validationError);
+        }
+        return mav;
+    }
+
+    /**
+     * Process the answer form. Adds new post to the specified topic and redirects to the
+     * topic view page.
+     *
+     * @param topicId  the id of the answered topic
+     * @param bodyText the content of the answer
+     * @return redirect to the topic view
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *          when topic or branch not found
+     */
+    @RequestMapping(method = RequestMethod.POST, value = "/posts/new")
+    public ModelAndView create(@RequestParam("topicId") Long topicId,
+                               @RequestParam("bodytext") String bodyText) throws NotFoundException {
+        if (isValidAnswer(bodyText)) {
+            topicService.addAnswer(topicId, bodyText);
+            return new ModelAndView("redirect:/topics/" + topicId);
+        } else {
+            return createPage(topicId, true);
+        }
+
+    }
+
+    /**
+     * Check the answer length.
+     *
+     * @param bodyText answer content
+     * @return true if answer is valid
+     */
+    private boolean isValidAnswer(String bodyText) {
+        return bodyText.trim().length() > MIN_ANSWER_LENGTH;
     }
 }
