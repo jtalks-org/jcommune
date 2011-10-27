@@ -51,10 +51,25 @@
         </sec:authorize>
 
         <li class="flag no_border">
-            <a href="#" onclick="document.cookie='<%=CookieLocaleResolver.DEFAULT_COOKIE_NAME%>=ru; path=/'; window.location.reload();">
-            <img src="${pageContext.request.contextPath}/resources/images/flag_russia.png" alt=""/></a></li>
+            <a href="#" onclick="window.location = getLanguageLink('ru')">
+                <img src="${pageContext.request.contextPath}/resources/images/flag_russia.png" alt=""/></a></li>
         <li class="flag">
-            <a href="#" onclick="document.cookie='<%=CookieLocaleResolver.DEFAULT_COOKIE_NAME%>=en; path=/'; window.location.reload();">
-            <img  src="${pageContext.request.contextPath}/resources/images/flag_great_britain.png" alt=""/></a></li>
+            <a href="#" onclick="window.location = getLanguageLink('en')">
+                <img src="${pageContext.request.contextPath}/resources/images/flag_great_britain.png" alt=""/></a></li>
     </ul>
 </div>
+<script type=text/javascript>
+    function getLanguageLink(lang) {
+        var href = window.location.toString();
+        if (href.indexOf("?") == -1) {
+            href = href + "?lang=";
+        } else {
+            if (href.indexOf("lang=") == -1) {
+                href = href + "&lang=";
+            } else {
+                href = href.substring(0, href.length - 2);
+            }
+        }
+        return href + lang;
+    }
+</script>

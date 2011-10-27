@@ -150,7 +150,7 @@ public class PrivateMessageController {
      * @param result result of {@link PrivateMessageDto} validation
      * @return redirect to /inbox on success or back to "/new_pm" on validation errors
      */
-    @RequestMapping(value = "/pm", method = RequestMethod.POST)
+    @RequestMapping(value = "/pm", method = {RequestMethod.POST, RequestMethod.GET})
     public String send(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
         if (result.hasErrors()) {
             return PM_FORM;
@@ -234,7 +234,7 @@ public class PrivateMessageController {
      * @param result validation result
      * @return redirect to "drafts" folder if saved successfully or show form with error message
      */
-    @RequestMapping(value = "/pm/save", method = RequestMethod.POST)
+    @RequestMapping(value = "/pm/save", method = {RequestMethod.POST, RequestMethod.GET})
     public String save(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
         if (result.hasErrors()) {
             return PM_FORM;
@@ -247,4 +247,5 @@ public class PrivateMessageController {
         }
         return "redirect:/drafts";
     }
+
 }
