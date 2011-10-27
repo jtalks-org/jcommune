@@ -67,6 +67,14 @@ public class Pagination {
     }
 
     /**
+     * @return page count
+     */
+    private int getPageCount(int itemsCount) {
+        return itemsCount / pageSize;
+    }
+
+
+    /**
      * @return total number of pages
      */
     public int getMaxPages() {

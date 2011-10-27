@@ -144,9 +144,9 @@
                         <a class="button" href="#"><spring:message
                                 code="label.quotation"/></a>
                     </sec:authorize>
-                    <spring:message code="label.added"/>&nbsp;<joda:format value="${post.creationDate}"
-                                                                           locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
-                                                                           pattern="dd MMM yyyy HH:mm"/>
+                    <a name="${post.id}" href="#${post.id}"><spring:message code="label.added"/>&nbsp;<joda:format value="${post.creationDate}"
+                                                                               locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
+                                                                               pattern="dd MMM yyyy HH:mm"/></a>
                 </div>
                 <p class="forum_message_cell_text">
                     <c:out value="${post.postContent}"/>
