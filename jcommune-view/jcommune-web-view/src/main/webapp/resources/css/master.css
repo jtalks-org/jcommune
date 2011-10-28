@@ -297,12 +297,18 @@ a.last_message_user {
 	padding-left: 10px;
 	word-wrap: break-word;
 }
-.post_details {
+.post_details, .signature {
 	width: 100%;
 	padding: 5px;
 	border-bottom: 1px solid #b2b2b2;
 	font-size: 11px;
 }
+.signature {
+	margin-top: 10px;
+	border-bottom: none;
+	color: #8e8e8e;
+}
+
 .user_misc_info {
 	padding-top: 5px;
 	text-align: left;
