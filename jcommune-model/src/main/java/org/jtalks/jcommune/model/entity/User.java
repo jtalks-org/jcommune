@@ -238,7 +238,7 @@ public class User extends Entity implements UserDetails {
      *
      * @param lastLogin last login time
      */
-    public void setLastLogin(DateTime lastLogin) {
+    protected void setLastLogin(DateTime lastLogin) {
         this.lastLogin = lastLogin;
     }
 

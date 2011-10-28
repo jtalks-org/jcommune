@@ -83,21 +83,15 @@ public final class ObjectsFactory {
      * @return ready to save instance
      */
     public static PrivateMessage getDefaultPrivateMessage() {
-        PrivateMessage pm = PrivateMessage.createNewPrivateMessage();
-        pm.setUserFrom(persist(getUser("UserFrom", "mail1")));
-        pm.setUserTo(persist(getUser("UserTo", "mail2")));
-        pm.setBody("Private message body");
-        pm.setTitle("Message title");
-        return pm;
+        User userTo = persist(getUser("UserTo", "mail2"));
+        User userFrom = persist(getUser("UserFrom", "mail1"));
+        return new PrivateMessage(userTo, userFrom,
+                "Message title", "Private message body");
     }
 
-    public static PrivateMessage getPrivateMessage(User to, User from) {
-        PrivateMessage pm = PrivateMessage.createNewPrivateMessage();
-        pm.setUserFrom(from);
-        pm.setUserTo(to);
-        pm.setBody("Private message body");
-        pm.setTitle("Message title");
-        return pm;
+    public static PrivateMessage getPrivateMessage(User userTo, User userFrom) {
+        return new PrivateMessage(userTo, userFrom,
+                "Message title", "Private message body");
     }
 
     private static <T> T persist(T entity) {

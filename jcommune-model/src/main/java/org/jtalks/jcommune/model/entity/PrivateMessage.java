@@ -26,8 +26,6 @@ import java.io.StringReader;
 /**
  * Text message to send from one user to another. <br/>
  * All fields are required.
- * Use the static method PrivateMessage.createNewPrivateMessage()
- * to create new PrivateMessage with current creationDate.
  *
  * @author Pavel Vervenko
  * @author Alexandre Teterin
@@ -54,21 +52,19 @@ public class PrivateMessage extends Entity {
     }
 
     /**
-     * Creates the PrivateMessage with the specified creation date.
+     * Constructor with required parameters.
      *
-     * @param creationDate the pm's creation date
+     * @param userTo   recipient
+     * @param userFrom sender
+     * @param title    message title
+     * @param body     message content
      */
-    public PrivateMessage(DateTime creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    /**
-     * Creates a new PrivateMessage with the creationDate initialized with current time.
-     *
-     * @return newly created PrivateMessage
-     */
-    public static PrivateMessage createNewPrivateMessage() {
-        return new PrivateMessage(new DateTime());
+    public PrivateMessage(User userTo, User userFrom, String title, String body) {
+        this.creationDate = new DateTime();
+        this.userFrom = userFrom;
+        this.userTo = userTo;
+        this.title = title;
+        this.body = body;
     }
 
     /**
@@ -103,7 +99,7 @@ public class PrivateMessage extends Entity {
      *
      * @param creationDate datetime to set
      */
-    public void setCreationDate(DateTime creationDate) {
+    protected void setCreationDate(DateTime creationDate) {
         this.creationDate = creationDate;
     }
 
@@ -139,7 +135,7 @@ public class PrivateMessage extends Entity {
      *
      * @param userFrom sender
      */
-    public void setUserFrom(User userFrom) {
+    protected void setUserFrom(User userFrom) {
         this.userFrom = userFrom;
     }
 
@@ -233,7 +229,6 @@ public class PrivateMessage extends Entity {
      *
      * @return quote body
      */
-
     public String prepareBodyForQuote() {
         StringBuilder bodyBuilder = new StringBuilder();
         BufferedReader inputData = new BufferedReader(new StringReader(getBody()));
@@ -261,6 +256,4 @@ public class PrivateMessage extends Entity {
 
         return bodyBuilder.toString();
     }
-
-
 }

@@ -148,7 +148,7 @@ public class Branch extends Entity {
      *
      * @param section for the branch
      */
-    public void setSection(Section section) {
+    protected void setSection(Section section) {
         this.section = section;
     }
 }
