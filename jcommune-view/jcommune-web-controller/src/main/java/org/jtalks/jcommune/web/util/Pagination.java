@@ -23,7 +23,9 @@ public class Pagination {
     private Integer page;
     private int pageSize;
     private int itemsCount;
-    public static final int DEFAULT_PAGE_SIZE = 5;
+    public static int DEFAULT_PAGE_SIZE = 4;
+    public static int ALL_PAGE_SIZE;
+    public static int CURRENT_PAGE_SIZE = 4;
 
     /**
      * Create instance.
@@ -37,6 +39,7 @@ public class Pagination {
         this.pageSize = pageSize == null ? Integer.valueOf(DEFAULT_PAGE_SIZE) : pageSize;
         this.itemsCount = itemsCount;
     }
+
 
     /**
      * @return page
@@ -65,14 +68,6 @@ public class Pagination {
     private int getPageCount() {
         return itemsCount / pageSize;
     }
-
-    /**
-     * @return page count
-     */
-    private int getPageCount(int itemsCount) {
-        return itemsCount / pageSize;
-    }
-
 
     /**
      * @return total number of pages

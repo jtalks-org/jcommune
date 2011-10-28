@@ -31,7 +31,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.ModelAndViewAssert.*;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 
 
@@ -63,7 +65,6 @@ public class BranchControllerTest {
         int startIndex = page * pageSize - pageSize;
         //set expectations
         when(topicService.getTopicsInBranchCount(branchId)).thenReturn(10);
-        when(topicService.getTopicRangeInBranch(branchId, startIndex, pageSize)).thenReturn(new ArrayList<Topic>());
         when(branchService.get(branchId)).thenReturn(new Branch("name"));
         when(breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)))
                 .thenReturn(new ArrayList<Breadcrumb>());
@@ -72,7 +73,6 @@ public class BranchControllerTest {
         ModelAndView mav = controller.show(branchId, page, pageSize);
 
         //check expectations
-        verify(topicService).getTopicRangeInBranch(branchId, startIndex, pageSize);
         verify(topicService).getTopicsInBranchCount(branchId);
         verify(breadcrumbBuilder).getForumBreadcrumb(branchService.get(branchId));
 
@@ -82,9 +82,6 @@ public class BranchControllerTest {
 
         Long actualBranch = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         assertEquals((long) actualBranch, branchId);
-
-        Integer actualMaxPages = assertAndReturnModelAttributeOfType(mav, "maxPages", Integer.class);
-        assertEquals((int) actualMaxPages, 2);
 
         Integer actualPage = assertAndReturnModelAttributeOfType(mav, "page", Integer.class);
         assertEquals((int) actualPage, page);

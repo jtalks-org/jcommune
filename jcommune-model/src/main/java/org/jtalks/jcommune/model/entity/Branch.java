@@ -89,7 +89,7 @@ public class Branch extends Entity {
     /**
      * @return list of topics
      */
-    protected List<Topic> getTopics() {
+    public List<Topic> getTopics() {
         return topics;
     }
 

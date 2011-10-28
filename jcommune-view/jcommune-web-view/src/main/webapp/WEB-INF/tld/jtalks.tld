@@ -215,9 +215,40 @@
         <dynamic-attributes>true</dynamic-attributes>
     </tag>
 
+    <tag>
+    <name>display</name>
+    <tag-class>org.jtalks.jcommune.web.tags.Paginator</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+      <name>uri</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <name>numberElement</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Integer</type>
+    </attribute>
+    <attribute>
+      <name>currentPage</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Integer</type>
+    </attribute>
+    <attribute>
+        <name>list</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+        <type>java.util.List</type>
+    </attribute>
+  </tag>
+
     <tag-file>
         <name>breadcrumb</name>
         <path>/WEB-INF/tags/breadcrumb.tag</path>
     </tag-file>
+
 
 </taglib>

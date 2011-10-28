@@ -80,18 +80,42 @@ public final class BranchController {
                              @RequestParam(value = PAGE, required = false) Integer page,
                              @RequestParam(value = "size", required = false) Integer size) throws NotFoundException {
         int topicsCount = topicService.getTopicsInBranchCount(branchId);
+
         Pagination pag = new Pagination(page, size, topicsCount);
 
-        List<Topic> topics = topicService.getTopicRangeInBranch(branchId, pag.getStart(), pag.getPageSize());
-
         Branch branch = branchService.get(branchId);
+        List<Topic> topics = branch.getTopics();
+        Pagination.ALL_PAGE_SIZE = topics.size();
+        String name_button;
+        if(Pagination.CURRENT_PAGE_SIZE == Pagination.ALL_PAGE_SIZE)
+        {
+            name_button = "Show pages";
+        }
+        else
+        {
+            name_button = "Show all";
+        }
+        if(size==null){size=0;}
+        if(size==1)
+        {
+            name_button="Show pages";
+            Pagination.CURRENT_PAGE_SIZE = Pagination.ALL_PAGE_SIZE;
+
+        }
+        if(size==2)
+        {
+            name_button="Show all";
+            Pagination.CURRENT_PAGE_SIZE = Pagination.DEFAULT_PAGE_SIZE;
+        }
+
 
         return new ModelAndView("topicList")
                 .addObject("branch", branch)
                 .addObject("branchId", branchId)
                 .addObject("topics", topics)
-                .addObject("maxPages", pag.getMaxPages())
-                .addObject("pageSize", pag.getPageSize())
+                .addObject("size",size)
+                .addObject("name_button",name_button)
+                .addObject("default",Pagination.CURRENT_PAGE_SIZE)
                 .addObject(PAGE, pag.getPage())
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)));
     }
