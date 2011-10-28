@@ -31,7 +31,7 @@
 <h1>JTalks</h1>
 
 <div class="wrap branch_page">
-
+     <jsp:include page="../template/topLine.jsp"/>
     <!-- Начало всех форумов -->
     <div class="all_forums">
         <h2><a class="heading" href="#"><c:out value="${branch.name}"/></a></h2>

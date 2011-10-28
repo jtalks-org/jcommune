@@ -281,6 +281,7 @@ a.last_message_user {
 	width: 160px;
 	padding: 10px;
 	background: #c6c6c6;
+    vertical-align: top;
 }
 .forum_message_cell {
 	width: 100%;
@@ -296,12 +297,18 @@ a.last_message_user {
 	padding-left: 10px;
 	word-wrap: break-word;
 }
-.post_details {
+.post_details, .signature {
 	width: 100%;
 	padding: 5px;
 	border-bottom: 1px solid #b2b2b2;
 	font-size: 11px;
 }
+.signature {
+	margin-top: 10px;
+	border-bottom: none;
+	color: #8e8e8e;
+}
+
 .user_misc_info {
 	padding-top: 5px;
 	text-align: left;
@@ -312,6 +319,9 @@ a.last_message_user {
 }
 .avatar {
 	padding-top: 5px;
+    vertical-align: middle;
+    margin-left: auto;
+    margin-right: auto;
 }
 .username {
 	display: block;

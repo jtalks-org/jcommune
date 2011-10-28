@@ -30,6 +30,7 @@
 <h1>JTalks</h1>
 
 <div class="wrap topic_page">
+<jsp:include page="../template/topLine.jsp"/>
 <!-- Начало всех форумов -->
 <div class="all_forums">
 <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
@@ -144,9 +145,10 @@
                         <a class="button" href="#"><spring:message
                                 code="label.quotation"/></a>
                     </sec:authorize>
-                    <a name="${post.id}" href="#${post.id}"><spring:message code="label.added"/>&nbsp;<joda:format value="${post.creationDate}"
-                                                                               locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
-                                                                               pattern="dd MMM yyyy HH:mm"/></a>
+                    <a name="${post.id}" href="#${post.id}"><spring:message code="label.added"/>&nbsp;<joda:format
+                            value="${post.creationDate}"
+                            locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
+                            pattern="dd MMM yyyy HH:mm"/></a>
                 </div>
                 <p class="forum_message_cell_text">
                     <c:out value="${post.postContent}"/>
@@ -159,9 +161,11 @@
                     </c:if>
                 </p>
                 <c:if test="${post.userCreated.signature!=null}">
-                    <p class="forum_message_cell_signature">
+                    <div class="signature">
+                        -------------------------
+                        <br/>
                         <c:out value="${post.userCreated.signature}"/>
-                    </p>
+                    </div>
                 </c:if>
             </div>
         </li>
