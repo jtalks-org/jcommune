@@ -71,7 +71,6 @@ public class UserController {
     private final UserService userService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private ImagePreprocessor imagePreprocessor;
-    private MailService mailService;
 
     /**
      * This method turns the trim binder on. Trim bilder
@@ -88,22 +87,21 @@ public class UserController {
      * Assign {@link UserService} to field.
      *
      * @param userService       {@link org.jtalks.jcommune.service.UserService} to be injected
-     * @param securityService   {@link org.jtalks.jcommune.service.SecurityService} used for accessing to current logged in user
+     * @param securityService   {@link org.jtalks.jcommune.service.SecurityService} used for
+     *                          accessing to current logged in user
      * @param breadcrumbBuilder the object which provides actions on
  *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
-     * @param imagePreprocessor {@link org.jtalks.jcommune.web.util.ImagePreprocessor} used for preparing image before save
-     * @param mailService
+     * @param imagePreprocessor {@link org.jtalks.jcommune.web.util.ImagePreprocessor} used
      */
     @Autowired
     public UserController(UserService userService,
                           SecurityService securityService,
                           BreadcrumbBuilder breadcrumbBuilder,
-                          ImagePreprocessor imagePreprocessor, MailService mailService) {
+                          ImagePreprocessor imagePreprocessor) {
         this.userService = userService;
         this.securityService = securityService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.imagePreprocessor = imagePreprocessor;
-        this.mailService = mailService;
     }
 
     /**
@@ -114,8 +112,7 @@ public class UserController {
      */
     @RequestMapping(value = "/users/new", method = RequestMethod.GET)
     public ModelAndView registrationPage() {
-        RegisterUserDto newUser = new RegisterUserDto();
-        return new ModelAndView(REGISTRATION).addObject("newUser", newUser);
+        return new ModelAndView(REGISTRATION).addObject("newUser", new RegisterUserDto());
     }
 
     /**
@@ -126,7 +123,8 @@ public class UserController {
      * @return redirect to / if registration successful or back to "/registration" if failed
      */
     @RequestMapping(value = "/users", method = RequestMethod.POST)
-    public ModelAndView registerUser(@Valid @ModelAttribute("newUser") RegisterUserDto userDto, BindingResult result) {
+    public ModelAndView registerUser(@Valid @ModelAttribute("newUser") RegisterUserDto userDto,
+                                     BindingResult result) {
         if (result.hasErrors()) {
             return new ModelAndView(REGISTRATION);
         }
@@ -172,10 +170,8 @@ public class UserController {
         User user = securityService.getCurrentUser();
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
         editedUser.setAvatar(new MockMultipartFile("avatar", "", ImageFormats.JPG.getContentType(), user.getAvatar()));
-        return new ModelAndView(EDIT_PROFILE)
-                .addObject(EDITED_USER, editedUser)
+        return editMaV(editedUser)
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
-                .addObject("languages", Language.values())
                 .addObject("pageSizes", PageSize.values());
     }
 
@@ -189,45 +185,67 @@ public class UserController {
      * @param result   binding result which contains the validation result
      * @param response http servlet response
      * @return in case of errors return back to edit profile page, in another case return to user detalis page
-     * @throws NotFoundException - throws if current logged in user was not found
-     * @throws IOException       - throws in case of access errors (if the temporary store fails)
+     * @throws NotFoundException throws if current logged in user was not found
+     * @throws IOException       throws in case of access errors (if the temporary store fails)
      */
     @RequestMapping(value = "/users/edit", method = RequestMethod.POST)
     public ModelAndView editProfile(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
                                     BindingResult result, HttpServletResponse response)
-        throws NotFoundException, IOException {
+            throws NotFoundException, IOException {
+
         // apply language changes immediately
-        Language language = Language.valueOf(userDto.getLanguage());
-        Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, language.getLanguageCode());
-        response.addCookie(cookie);
+        applyLanguage(userDto, response);
+
         // validate other fields
-        User user = securityService.getCurrentUser();
         if (result.hasErrors()) {
-            if (user.getAvatar() == null) {
-                userDto.setAvatar(new MockMultipartFile("avatar", "", ImageFormats.JPG.getContentType(), new byte[0]));
-            }
-            return new ModelAndView(EDIT_PROFILE, EDITED_USER, userDto).addObject("languages", Language.values());
+            return editAgain(userDto);
         }
-        User editedUser;
-        try {
-            editedUser = userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
-                    userDto.getLastName(), userDto.getCurrentUserPassword(), userDto.getNewUserPassword(),
-                    imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT),
-                    userDto.getSignature(), userDto.getLanguage(),userDto.getPageSize());
-        } catch (DuplicateEmailException e) {
-            result.rejectValue("email", "validation.duplicateemail");
-            return new ModelAndView(EDIT_PROFILE);
-        } catch (WrongPasswordException e) {
-            result.rejectValue("currentUserPassword", "label.incorrectCurrentPassword",
-                    "Password does not match to the current password");
-            return new ModelAndView(EDIT_PROFILE).addObject("languages", Language.values());
-        } catch (InvalidImageException e) {
-            result.rejectValue("avatar", "avatar.wrong.format");
-            return new ModelAndView(EDIT_PROFILE);
-        }
+
+        User editedUser = editUserProfile(userDto, result);
+
+        // error occured
+        if (editedUser == null)
+            return editAgain(userDto);
+
         return new ModelAndView(new StringBuilder()
                 .append("redirect:/users/")
                 .append(editedUser.getEncodedUsername()).toString());
+    }
+
+    private User editUserProfile(EditUserProfileDto userDto, BindingResult result) throws IOException {
+        try {
+            return performEditUserProfile(userDto);
+        } catch (DuplicateEmailException e) {
+            result.rejectValue("email", "validation.duplicateemail");
+        } catch (WrongPasswordException e) {
+            result.rejectValue("currentUserPassword", "label.incorrectCurrentPassword",
+                    "Password does not match to the current password");
+        } catch (InvalidImageException e) {
+            result.rejectValue("avatar", "avatar.wrong.format");
+        }
+        return null;
+    }
+
+    private void applyLanguage(EditUserProfileDto userDto, HttpServletResponse response) {
+        Language language = Language.valueOf(userDto.getLanguage());
+        Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, language.getLanguageCode());
+        response.addCookie(cookie);
+    }
+
+    private User performEditUserProfile(EditUserProfileDto userDto) throws DuplicateEmailException,
+            WrongPasswordException, IOException, InvalidImageException {
+        return userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
+                userDto.getLastName(), userDto.getCurrentUserPassword(), userDto.getNewUserPassword(),
+                imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT),
+                userDto.getSignature(), userDto.getLanguage(), userDto.getPageSize());
+    }
+
+    private ModelAndView editAgain(EditUserProfileDto userDto) {
+        User user = securityService.getCurrentUser();
+        if (user.getAvatar() == null) {
+            userDto.setAvatar(new MockMultipartFile("avatar", "", ImageFormats.JPG.getContentType(), new byte[0]));
+        }
+        return editMaV(userDto);
     }
 
 
@@ -241,7 +259,16 @@ public class UserController {
         User user = securityService.getCurrentUser();
         userService.removeAvatarFromCurrentUser();
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
-        return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUser);
+        return editMaV(editedUser);
+    }
+
+    /**
+     * {@code ModelAndView} with dto and languages.
+     *
+     * @return {@code ModelAndView} for edit profile page
+     */
+    private ModelAndView editMaV(EditUserProfileDto dto) {
+        return new ModelAndView(EDIT_PROFILE, EDITED_USER, dto).addObject("languages", Language.values());
     }
 
     /**
@@ -254,8 +281,8 @@ public class UserController {
      */
     @RequestMapping(value = "/{encodedUsername}/avatar", method = RequestMethod.GET)
     public void renderAvatar(HttpServletResponse response,
-                             @PathVariable("encodedUsername") String encodedUsername) throws NotFoundException,
-            IOException {
+                             @PathVariable("encodedUsername") String encodedUsername)
+            throws NotFoundException, IOException {
         User user = userService.getByEncodedUsername(encodedUsername);
         byte[] avatar = user.getAvatar();
         response.setContentType("image/jpeg");

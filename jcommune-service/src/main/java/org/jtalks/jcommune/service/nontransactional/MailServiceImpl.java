@@ -44,7 +44,7 @@ public class MailServiceImpl implements MailService {
         msg.setSubject("Password recovery");
         msg.setText(
                 "Dear " + user.getFirstName() + " This is a greeting email with password " + newPassword +
-        " with a locale " + LocaleContextHolder.getLocale().toString());
+                        " with a locale " + LocaleContextHolder.getLocale().toString());
         try {
             this.mailSender.send(msg);
         } catch (MailException e) {

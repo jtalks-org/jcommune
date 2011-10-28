@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.MailService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
@@ -103,7 +102,7 @@ public class UserControllerTest {
         securityService = mock(SecurityService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
         imagePreprocessor = mock(ImagePreprocessor.class);
-        controller = new UserController(userService, securityService, breadcrumbBuilder, imagePreprocessor, mock(MailService.class));
+        controller = new UserController(userService, securityService, breadcrumbBuilder, imagePreprocessor);
     }
 
     @Test
@@ -214,11 +213,12 @@ public class UserControllerTest {
 
         //check result
         assertViewName(mav, "editProfile");
+        assertModelAttributeAvailable(mav, "languages");
+        assertModelAttributeAvailable(mav, "breadcrumbList");
         EditUserProfileDto dto = assertAndReturnModelAttributeOfType(mav, "editedUser", EditUserProfileDto.class);
         assertEquals(dto.getFirstName(), user.getFirstName(), "First name is not equal");
         assertEquals(dto.getLastName(), user.getLastName(), "Last name is not equal");
         assertEquals(dto.getEmail(), user.getEmail(), "Last name is not equal");
-        assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 
     @Test
@@ -261,6 +261,7 @@ public class UserControllerTest {
         ModelAndView mav = controller.editProfile(userDto, bindingResult, new MockHttpServletResponse());
 
         assertViewName(mav, "editProfile");
+        assertModelAttributeAvailable(mav, "languages");
         verify(userDto).setAvatar(Matchers.<MultipartFile>anyObject());
         verify(userService, never()).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
@@ -269,6 +270,8 @@ public class UserControllerTest {
 
     @Test
     public void testEditProfileAvatarWrongFormat() throws Exception {
+        User user = getUser();
+        when(securityService.getCurrentUser()).thenReturn(user);
         EditUserProfileDto userDto = getEditUserProfileWithWrongFormatDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
@@ -280,14 +283,15 @@ public class UserControllerTest {
 
         assertViewName(mav, "editProfile");
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
-
+        assertModelAttributeAvailable(mav, "languages");
         verify(imagePreprocessor).preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
-
         assertContainsError(bindingResult, "avatar");
     }
 
     @Test
     public void testEditProfileDuplicatedEmail() throws Exception {
+        User user = getUser();
+        when(securityService.getCurrentUser()).thenReturn(user);
         EditUserProfileDto userDto = getEditUserProfileDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
@@ -305,6 +309,7 @@ public class UserControllerTest {
 
         assertViewName(mav, "editProfile");
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
+        assertModelAttributeAvailable(mav, "languages");
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
                 userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE, PAGE_SIZE);
@@ -314,6 +319,8 @@ public class UserControllerTest {
 
     @Test
     public void testEditProfileWrongPassword() throws Exception {
+        User user = getUser();
+        when(securityService.getCurrentUser()).thenReturn(user);
         EditUserProfileDto userDto = getEditUserProfileDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
@@ -330,6 +337,7 @@ public class UserControllerTest {
         ModelAndView mav = controller.editProfile(userDto, bindingResult, new MockHttpServletResponse());
 
         assertViewName(mav, "editProfile");
+        assertModelAttributeAvailable(mav, "languages");
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
@@ -349,6 +357,7 @@ public class UserControllerTest {
         ModelAndView mav = controller.editProfile(dto, bindingResult, new MockHttpServletResponse());
 
         assertViewName(mav, "editProfile");
+        assertModelAttributeAvailable(mav, "languages");
         verify(userService, never()).editUserProfile(anyString(), anyString(), anyString(),
                 anyString(), anyString(), Matchers.<byte[]>anyObject(), anyString(), anyString(), anyString());
     }

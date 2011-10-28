@@ -24,6 +24,10 @@ import org.jtalks.jcommune.model.entity.User;
  * @author Evgeniy Naumenko
  */
 public interface MailService {
-
-    public void sendPasswordRecoveryMail(User user, String newPassword);
+    /**
+     *
+     * @param user
+     * @param newPassword new password
+     */
+    void sendPasswordRecoveryMail(User user, String newPassword);
 }
