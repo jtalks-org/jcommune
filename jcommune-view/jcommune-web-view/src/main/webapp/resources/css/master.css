@@ -281,6 +281,7 @@ a.last_message_user {
 	width: 160px;
 	padding: 10px;
 	background: #c6c6c6;
+    vertical-align: top;
 }
 .forum_message_cell {
 	width: 100%;
@@ -312,6 +313,9 @@ a.last_message_user {
 }
 .avatar {
 	padding-top: 5px;
+    vertical-align: middle;
+    margin-left: auto;
+    margin-right: auto;
 }
 .username {
 	display: block;
