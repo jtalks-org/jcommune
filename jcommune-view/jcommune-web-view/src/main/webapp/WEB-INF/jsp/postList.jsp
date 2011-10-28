@@ -35,10 +35,7 @@
 <div class="all_forums">
 <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
 
-<div class="forum_misc_info">
-    &nbsp;
-    <span class="nav_top">На страницу: 1, <a href="#">2</a> <a href="#">След.</a></span>
-</div>
+
 <div class="forum_top_right_link">
     <a href="#">Предыдущая тема</a> ::
     <a href="#">Следующая тема</a>

@@ -80,9 +80,9 @@ public class Paginator extends BodyTagSupport {
     @Override
     public int doStartTag(){
         pageContext.setAttribute("currentPage",currentPage);
+        getMaxPages(list.size(),numberElement);
       if(list.size()>=1)
       {
-        getMaxPages(list.size(),numberElement);
 
         if(currentPage==maxPages && list.size()%numberElement!=0)
         {
