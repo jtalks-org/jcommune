@@ -106,7 +106,6 @@ public class TopicControllerTest {
         Topic topic = mock(Topic.class);
 
         //set expectations
-        when(postService.getPostRangeInTopic(TOPIC_ID, startIndex, pageSize)).thenReturn(new ArrayList<Post>());
         when(postService.getPostsInTopicCount(TOPIC_ID)).thenReturn(10);
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
@@ -119,7 +118,6 @@ public class TopicControllerTest {
 
 
         //check expectations
-        verify(postService).getPostRangeInTopic(TOPIC_ID, startIndex, pageSize);
         verify(postService).getPostsInTopicCount(TOPIC_ID);
         verify(topicService).get(TOPIC_ID);
         verify(breadcrumbBuilder).getForumBreadcrumb(topic);
@@ -137,9 +135,6 @@ public class TopicControllerTest {
 
         Long actualBranchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         assertEquals((long) actualBranchId, TOPIC_ID);
-
-        Integer actualMaxPages = assertAndReturnModelAttributeOfType(mav, "maxPages", Integer.class);
-        assertEquals((int) actualMaxPages, 2);
 
         Integer actualPage = assertAndReturnModelAttributeOfType(mav, "page", Integer.class);
         assertEquals((int) actualPage, page);

@@ -72,8 +72,8 @@
     </div>
 </div>
 <ul class="forum_table"> <!-- Список сообщений -->
-
-    <c:forEach var="post" items="${posts}" varStatus="i">
+    <jtalks:display uri="${topicId}" currentPage="${page}" numberElement="${default}" list="${posts}">
+    <c:forEach var="post" items="${list}" varStatus="i">
         <li class="forum_row"> <!-- Сообщение -->
             <div class="forum_userinfo">
                 <a class="username"
@@ -166,52 +166,11 @@
             </div>
         </li>
     </c:forEach>
+        <span class="nav_bottom"><spring:message code="label.onPage"/>
+    </jtalks:display>
+        </span>
 </ul>
 
-        <span class="nav_bottom"><spring:message code="label.onPage"/>  <c:if test="${page > 2}">
-            <c:url value="/topics/${topicId}" var="first">
-                <c:param name="page" value="1"/>
-            </c:url>
-            <a href='<c:out value="${first}" />' class="pn next"><spring:message code="pagination.first"/></a>...
-        </c:if>
-
-            <c:choose>
-                <c:when test="${page > 1}">
-                    <c:set var="begin" value="${page - 1}"/>
-                </c:when>
-                <c:otherwise>
-                    <c:set var="begin" value="1"/>
-                </c:otherwise>
-            </c:choose>
-            <c:choose>
-                <c:when test="${page + 1 < maxPages}">
-                    <c:set var="end" value="${page + 1}"/>
-                </c:when>
-                <c:otherwise>
-                    <c:set var="end" value="${maxPages}"/>
-                </c:otherwise>
-            </c:choose>
-
-            <c:forEach begin="${begin}" end="${end}" step="1" varStatus="i">
-                <c:choose>
-                    <c:when test="${page == i.index}">
-                        <span>${i.index}</span>
-                    </c:when>
-                    <c:otherwise>
-                        <c:url value="/topics/${topicId}" var="url">
-                            <c:param name="page" value="${i.index}"/>
-                        </c:url>
-                        <a href='<c:out value="${url}" />'>${i.index}</a>
-                    </c:otherwise>
-                </c:choose>
-            </c:forEach>
-
-            <c:if test="${page + 2 < maxPages+1}">
-                <c:url value="/topics/${topicId}" var="last">
-                    <c:param name="page" value="${maxPages}"/>
-                </c:url>
-                ...<a href='<c:out value="${last}"/>' class="pn next"><spring:message code="pagination.last"/></a>
-            </c:if></span>
 <a class="button" href="${pageContext.request.contextPath}/branches/${branchId}">
     <spring:message code="label.back"/>
 </a>
@@ -229,13 +188,30 @@
         <spring:message code="label.answer"/>
     </a>
 </c:if>
+
+    <c:if test="${size==0 || size==2}">
+        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+            <a class="button"
+               href="?size=1">${name_button}</a>
+            &nbsp; &nbsp; &nbsp;
+        </sec:authorize>
+        </c:if>
+
+        <c:if test="${size == 1}">
+        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+            <a class="button"
+               href="?size=2">${name_button}</a>
+            &nbsp; &nbsp; &nbsp;
+        </sec:authorize>
+        </c:if>
+
 &nbsp; &nbsp; &nbsp;
 
 <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
 <div class="forum_misc_info">
     <spring:message code="label.page"/> <c:out value="${page}"/> <spring:message code="label.of"/> <c:out
-        value="${maxPages}"/>
+        value="${maxPage}"/>
     <br/>
     Модераторы:
     <ul class="users_list">

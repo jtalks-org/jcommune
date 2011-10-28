@@ -40,6 +40,10 @@ public class Paginator extends BodyTagSupport {
         return this.maxPages;
     }
 
+    public void setMaxPages(int maxPages){
+        this.maxPages = maxPages;
+    }
+
 
     public String getUri() {
         return uri;
@@ -76,6 +80,8 @@ public class Paginator extends BodyTagSupport {
     @Override
     public int doStartTag(){
         pageContext.setAttribute("currentPage",currentPage);
+      if(list.size()>=1)
+      {
         getMaxPages(list.size(),numberElement);
 
         if(currentPage==maxPages && list.size()%numberElement!=0)
@@ -87,6 +93,7 @@ public class Paginator extends BodyTagSupport {
         {
             list = list.subList((currentPage-1)*numberElement,currentPage*numberElement);
         }
+      }
         pageContext.setAttribute("list",list);
         return EVAL_BODY_INCLUDE;
     }
@@ -94,26 +101,27 @@ public class Paginator extends BodyTagSupport {
     @Override
     public int doEndTag(){
         JspWriter out = pageContext.getOut();
-        String span_open = new Formatter().format("<div class=\"forum_misc_info\"><span class=\"nav_bottom\"><spring:message code=\"label.onPage\"/>").toString();
-        String str_prevus = new Formatter().format("<c:url var=\"url\" value=\"\"><c:param name=\"page\" value=\"2\"/></c:url><a href=\"%s?page=%d\">prevus</a>",uri,currentPage-1).toString();
+        String span_open = new Formatter().format("<div class=\"forum_misc_info\">").toString();
+        String str_prevus = new Formatter().format("<c:url var=\"url\" value=\"\"><c:param name=\"page\" value=\"2\"/></c:url><a href=\"%s?page=%d\">%d</a>",uri,currentPage-1,currentPage-1).toString();
         String str = new Formatter().format("%d",currentPage).toString();
-        String str_next = new Formatter().format("<c:url var=\"url\" value=\"\"><c:param name=\"page\" value=\"2\"/></c:url><a href=\"%s?page=%d\">next</a>",uri,currentPage+1).toString();
-        String span_close = new Formatter().format("</span></div>").toString();
+        String str_next = new Formatter().format("<c:url var=\"url\" value=\"\"><c:param name=\"page\" value=\"2\"/></c:url><a href=\"%s?page=%d\">%d</a>",uri,currentPage+1,currentPage+1).toString();
+        String span_close = new Formatter().format("</div>").toString();
+
         pageContext.setAttribute("maxPage",maxPages);
         try {
           out.write(span_open);
-          if(currentPage > 1)
+          if(currentPage > 1 && maxPages>0)
           {
             out.write(str_prevus);
           }
 
             out.write("   ");
-          if(maxPages!=1)
+          if(maxPages!=1 && maxPages>0)
           {
             out.write(str);
             out.write("   ");
           }
-          if(currentPage!=maxPages)
+          if(currentPage!=maxPages && maxPages>0)
           {
             out.write(str_next);
           }

@@ -160,7 +160,7 @@ public class Topic extends Entity {
      *
      * @return the list of posts
      */
-    protected List<Post> getPosts() {
+    public List<Post> getPosts() {
         return posts;
     }
 

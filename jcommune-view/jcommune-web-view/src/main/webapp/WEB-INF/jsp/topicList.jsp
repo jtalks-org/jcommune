@@ -1,3 +1,4 @@
+<%@ page import="org.jtalks.jcommune.web.util.Pagination" %>
 <%--
 
     Copyright (C) 2011  JTalks.org Team
@@ -17,7 +18,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt_rt" %>
 <%@ taglib prefix="joda" uri="http://www.joda.org/joda/time/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
@@ -35,7 +35,6 @@
     <!-- Начало всех форумов -->
     <div class="all_forums">
         <h2><a class="heading" href="#"><c:out value="${branch.name}"/></a></h2>
-
         <div class="forum_misc_info">
             <c:out value="${branch.description}"/>
 
@@ -66,7 +65,7 @@
 
         <ul class="forum_table"> <!-- Список топиков -->
             <jtalks:display uri="${branchId}" currentPage="${page}" numberElement="${default}" list="${topics}">
-            <c:forEach var="topic" items="${topics}">
+            <c:forEach var="topic" items="${list}">
                 <li class="forum_row"> <!-- Топик -->
                     <div class="forum_icon"> <!-- Иконка с кофе -->
                         <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png"
@@ -118,35 +117,20 @@
                         <a class="last_message_user"
                            href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
                             <c:out value="${topic.lastPost.userCreated.username}"/></a>
-
-
-
-
-                        <c:choose>
-                            <c:when test="${pageSize > topic.postCount}">
-                                <a href="${pageContext.request.contextPath}/topics/${topic.id}#${topic.lastPost.id}">
-                                    <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif" alt="Последнее сообщение"/>
-                                </a>
-                            </c:when>
-                            <c:otherwise>
-                                <a href="${pageContext.request.contextPath}/topics/${topic.id}?page=<fmt:formatNumber value="${(topic.postCount - topic.postCount%pageSize)/pageSize+1}" maxFractionDigits="0"/>#${topic.lastPost.id}">
-                                    <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif" alt="Последнее сообщение"/>
-                                </a>
-                            </c:otherwise>
-                        </c:choose>
-
-
-
-
-
-
+                        <a href="#"><img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
+                                         alt="Последнее сообщение"/></a>
                     </div>
                 </li>
             </c:forEach>
+                <span class="nav_bottom"><spring:message code="label.onPage"/>
             </jtalks:display>
+                    </span>
         </ul>
 
         <!-- Конец группы форумов -->
+
+
+
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
             <a class="button"
                href="${pageContext.request.contextPath}/topics/new?branchId=${branchId}"><spring:message
@@ -154,12 +138,28 @@
             &nbsp; &nbsp; &nbsp;
         </sec:authorize>
 
+        <c:if test="${size==0 || size==2}">
+        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+            <a class="button"
+               href="?size=1">${name_button}</a>
+            &nbsp; &nbsp; &nbsp;
+        </sec:authorize>
+        </c:if>
+
+        <c:if test="${size == 1}">
+        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+            <a class="button"
+               href="?size=2">${name_button}</a>
+            &nbsp; &nbsp; &nbsp;
+        </sec:authorize>
+        </c:if>
+
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
 
         <div class="forum_misc_info">
             <spring:message code="label.page"/> <c:out value="${page}"/> <spring:message code="label.of"/> <c:out
-                value="${maxPages}"/>
+                value="${maxPage}"/>
             <br/>
             Модераторы:
             <ul class="users_list">
