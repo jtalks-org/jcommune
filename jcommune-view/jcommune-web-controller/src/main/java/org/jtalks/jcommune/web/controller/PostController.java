@@ -48,7 +48,6 @@ public class PostController {
 
     public static final String TOPIC_ID = "topicId";
     public static final String POST_ID = "postId";
-    public static final int MIN_ANSWER_LENGTH = 1;
 
     private PostService postService;
     private BreadcrumbBuilder breadcrumbBuilder;
@@ -60,7 +59,7 @@ public class PostController {
      * @param postService       {@link org.jtalks.jcommune.service.PostService} instance to be injected
      * @param breadcrumbBuilder the object which provides actions on
      *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
-     * @param topicService {@link TopicService} to be injected
+     * @param topicService      {@link TopicService} to be injected
      */
     @Autowired
     public PostController(PostService postService,
@@ -153,60 +152,42 @@ public class PostController {
         return new ModelAndView("redirect:/topics/" + topicId);
     }
 
-      /**
+    /**
      * Creates the answering page with empty answer form.
      * If the user isn't logged in he will be redirected to the login page.
      *
+     *
      * @param topicId         the id of the topic for the answer
-     * @param validationError is true when post length is less than 2
      * @return answering {@code ModelAndView} or redirect to the login page
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic not found
      */
     @RequestMapping(method = RequestMethod.GET, value = "/posts/new")
-    public ModelAndView createPage(@RequestParam("topicId") Long topicId,
-                                   @RequestParam(value = "validationError", required = false)
-                                   Boolean validationError) throws NotFoundException {
-        ModelAndView mav = new ModelAndView("answer");
+    public ModelAndView createPage(@RequestParam("topicId") Long topicId) throws NotFoundException {
         Topic answeringTopic = topicService.get(topicId);
-        mav.addObject("topic", answeringTopic);
-        mav.addObject("topicId", topicId);
-        mav.addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(answeringTopic));
-        if (validationError != null && validationError) {
-            mav.addObject("validationError", validationError);
-        }
-        return mav;
+        return new ModelAndView("answer")
+                .addObject("topic", answeringTopic)
+                .addObject("topicId", topicId)
+                .addObject("postDto", new PostDto())
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(answeringTopic));
     }
 
     /**
      * Process the answer form. Adds new post to the specified topic and redirects to the
      * topic view page.
      *
-     * @param topicId  the id of the answered topic
-     * @param bodyText the content of the answer
-     * @return redirect to the topic view
+     * @param postDto dto that contains data entered in form
+     * @param result validation result
+     * @return redirect to the topic or back to answer pae if validation failed
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic or branch not found
      */
     @RequestMapping(method = RequestMethod.POST, value = "/posts/new")
-    public ModelAndView create(@RequestParam("topicId") Long topicId,
-                               @RequestParam("bodytext") String bodyText) throws NotFoundException {
-        if (isValidAnswer(bodyText)) {
-            topicService.addAnswer(topicId, bodyText);
-            return new ModelAndView("redirect:/topics/" + topicId);
-        } else {
-            return createPage(topicId, true);
+    public String create(@Valid @ModelAttribute PostDto postDto, BindingResult result) throws NotFoundException {
+        if (result.hasErrors()) {
+            return "answer";
         }
-
-    }
-
-    /**
-     * Check the answer length.
-     *
-     * @param bodyText answer content
-     * @return true if answer is valid
-     */
-    private boolean isValidAnswer(String bodyText) {
-        return bodyText.trim().length() > MIN_ANSWER_LENGTH;
+        topicService.addAnswer(postDto.getTopicId(), postDto.getBodyText());
+        return "redirect:/topics/" + postDto.getTopicId();
     }
 }

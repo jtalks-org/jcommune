@@ -33,11 +33,8 @@
     <jsp:include page="../template/topLine.jsp"/>
     <!-- Начало всех форумов -->
     <div class="all_forums">
-        <c:if test="${validationError==true}">
-            <div id="error"><spring:message code="label.answer_error"/></div>
-        </c:if>
         <jtalks:form action="${pageContext.request.contextPath}/posts/new?topicId=${topicId}"
-                     method="POST">
+                     method="POST" modelAttribute="postDto">
             <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
 
             <div class="forum_misc_info">
@@ -45,7 +42,7 @@
             </div>
 
             <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-
+            <form:hidden path="topicId" />
 
             <!-- Начало группы форумов -->
             <div class="forum_header_table"> <!-- Шапка топика -->
@@ -146,8 +143,9 @@
                         <a href="#" onmouseover="helpline('a')">Закрыть теги</a>
 
                         <div id="helpline">Здесь должна быть подсказка</div>
-                        <textarea name="bodytext" id="bodytext" rows="15" cols="35" tabindex="3"
-                                  class="post"></textarea>
+                        <form:textarea path="bodyText" rows="15" cols="35" tabindex="3" cssClass="post" />
+                        <form:errors path="bodyText" />
+
                     </div>
                 </li>
                 <li class="forum_row">

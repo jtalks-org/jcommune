@@ -64,7 +64,7 @@
 
 
         <ul class="forum_table"> <!-- Список топиков -->
-            <jtalks:display uri="${branchId}" currentPage="${page}" numberElement="${default}" list="${topics}">
+            <jtalks:display uri="${branchId}" currentPage="${page}" numberElement="${_default}" list="${topics}">
             <c:forEach var="topic" items="${list}">
                 <li class="forum_row"> <!-- Топик -->
                     <div class="forum_icon"> <!-- Иконка с кофе -->

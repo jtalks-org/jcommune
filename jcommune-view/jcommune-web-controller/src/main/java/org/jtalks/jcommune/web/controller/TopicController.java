@@ -207,7 +207,7 @@ public final class TopicController {
                 .addObject("topic", topic)
                 .addObject("size",size)
                 .addObject("name_button",name_button)
-                .addObject("default",Pagination.CURRENT_PAGE_SIZE)
+                .addObject("_default",Pagination.CURRENT_PAGE_SIZE)
                 .addObject("page", pag.getPage())
                 .addObject(BRANCH_ID, branchId)
                 .addObject(TOPIC_ID, topicId)

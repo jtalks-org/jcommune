@@ -115,7 +115,7 @@ public final class BranchController {
                 .addObject("topics", topics)
                 .addObject("size",size)
                 .addObject("name_button",name_button)
-                .addObject("default",Pagination.CURRENT_PAGE_SIZE)
+                .addObject("_default", Pagination.CURRENT_PAGE_SIZE)
                 .addObject(PAGE, pag.getPage())
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)));
     }
