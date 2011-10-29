@@ -16,6 +16,8 @@ package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.MailService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
@@ -29,26 +31,48 @@ public class MailServiceImpl implements MailService {
     private MailSender mailSender;
     private SimpleMailMessage templateMessage;
 
+    private final Logger logger = LoggerFactory.getLogger(MailServiceImpl.class);
+
+    // todo: apply i18n settings here somehow
+    private static final String PASSWORD_RECOVERY_TEMPLATE =
+            "Dear %s!\n" +
+                    "\n" +
+                    "This is a password recovery mail from JTalks forum.\n" +
+                    "Your new password is: %s\n" +
+                    "\n" +
+                    "Best regards,\n" +
+                    "\n" +
+                    "Jtalks forum.";
+
+    /**
+     * Creates a mailing service with a default template message autowired.
+     * Template message contains sender address and can be configured via spring
+     * xml configuration. Please note, that this address should be valid email address
+     * as most e-mail servers will reject e-mail if sender is not really correlated with
+     * the letters "from" value.
+     *
+     * @param mailSender      spring mailing tool
+     * @param templateMessage blank message with "from" filed preset
+     */
     public MailServiceImpl(MailSender mailSender, SimpleMailMessage templateMessage) {
         this.mailSender = mailSender;
         this.templateMessage = templateMessage;
     }
 
-    /**
-     * @inheritDoc
+     /**
+     * {@inheritDoc}
      */
     @Override
-    public void sendPasswordRecoveryMail(User user, String newPassword) {
+    public void sendPasswordRecoveryMail(String userName, String email, String newPassword) {
         SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
-        msg.setTo(user.getEmail());
+        msg.setTo(email);
         msg.setSubject("Password recovery");
-        msg.setText(
-                "Dear " + user.getFirstName() + " This is a greeting email with password " + newPassword +
-                        " with a locale " + LocaleContextHolder.getLocale().toString());
+        msg.setText(String.format(PASSWORD_RECOVERY_TEMPLATE, userName, newPassword));
         try {
             this.mailSender.send(msg);
+            logger.error("Password recovery email sent for {}", new Object[]{userName});
         } catch (MailException e) {
-            e.printStackTrace();
+            logger.error("Password recovery email sending failed", e);
         }
     }
 }

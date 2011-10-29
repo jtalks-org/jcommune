@@ -19,6 +19,7 @@ import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
 import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
+import org.jtalks.jcommune.service.security.SecurityConstants;
 
 /**
  * This interface should have methods which give us more abilities in manipulating User persistent entity.
@@ -93,11 +94,30 @@ public interface UserService extends EntityService<User> {
     void removeAvatarFromCurrentUser();
 
     /**
-     * Get count posts this user from database
+     * Get post count for this user from database
      *
      * @param userCreated user created
      * @return count count
      */
     int getCountPostOfUser(User userCreated);
 
+    /**
+     * Checks if email has been registered.
+     *
+     * @param email email for check existence
+     * @return {@code true} if email exist
+     */
+    boolean isEmailExist(String email);
+
+    /**
+     * Performs the following:
+     * 2. Checks, checks if this parameter represents known e-mail
+     * 3. If no user is found by e-mail exception is thrown
+     * 4. Alters the password for this user to the random string
+     * 5. Sends an e-mail with new password to this address to notify user
+     *
+     * @param email address to identify user
+     * @throws NotFoundException if there is no user for the email given
+     */
+    void restorePassword(String email) throws NotFoundException;
 }

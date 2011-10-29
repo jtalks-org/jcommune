@@ -51,16 +51,8 @@ import java.util.ArrayList;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 
@@ -394,10 +386,30 @@ public class UserControllerTest {
     @Test
     public void testInitBinder() {
         WebDataBinder binder = mock(WebDataBinder.class);
-
         controller.initBinder(binder);
-
         verify(binder).registerCustomEditor(eq(String.class), any(StringTrimmerEditor.class));
+    }
+
+    @Test
+    public void testRestorePasswordPage() {
+        assertViewName(controller.showRestorePasswordPage(), "restorePassword");
+    }
+
+    @Test
+    public void testRestorePassword() throws IOException, NotFoundException {
+        when(userService.isEmailExist(anyString())).thenReturn(true);
+        ModelAndView mav = controller.restorePassword(EMAIL);
+        verify(userService, times(1)).isEmailExist(EMAIL);
+        verify(userService, times(1)).restorePassword(EMAIL);
+        assertModelAttributeValue(mav, "message", "label.restorePassword.completed");
+    }
+
+    @Test
+    public void testRestorePasswordWithWrongEmail() throws NotFoundException {
+        when(userService.isEmailExist(anyString())).thenReturn(false);
+        ModelAndView mav = controller.restorePassword(EMAIL);
+        verify(userService, times(1)).isEmailExist(EMAIL);
+        assertModelAttributeValue(mav, "error", "email.unknown");
     }
 
     private void assertContainsError(BindingResult bindingResult, String errorName) {

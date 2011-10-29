@@ -17,6 +17,7 @@ package org.jtalks.jcommune.service.transactional;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.MailService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
@@ -63,7 +64,8 @@ public class TransactionalUserServiceTest {
     public void setUp() throws Exception {
         securityService = mock(SecurityService.class);
         userDao = mock(UserDao.class);
-        userService = new TransactionalUserService(userDao, securityService);
+
+        userService = new TransactionalUserService(userDao, securityService, mock(MailService.class));
     }
 
     @Test

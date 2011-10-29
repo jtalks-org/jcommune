@@ -58,7 +58,6 @@ public @interface ImageFormat {
     /**
      * Message for display when validation fails.
      *
-     * @return message when validation fails.
      */
     String message() default "{image.wrong.format}";
 
@@ -66,7 +65,6 @@ public @interface ImageFormat {
      * Groups element that specifies the processing groups with which the
      * constraint declaration is associated.
      *
-     * @return array of groups
      */
     Class<?>[] groups() default {};
 
@@ -74,14 +72,12 @@ public @interface ImageFormat {
      * Payload element that specifies the payload with which the the
      * constraint declaration is associated.
      *
-     * @return payload
      */
     Class<? extends Payload>[] payload() default {};
 
     /**
      * Array of allowable formats for check constraint.
      *
-     * @return enum of allowable formats
      */
     ImageFormats[] format();
 }

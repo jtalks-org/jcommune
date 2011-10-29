@@ -60,38 +60,28 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface Matches {
     /**
      * Message for display when validation fails.
-     *
-     * @return message when validation fails.
      */
     String message() default "{org.jtalks.jcommune.web.validation.Matches.message}";
 
     /**
      * Groups element that specifies the processing groups with which the
      * constraint declaration is associated.
-     *
-     * @return array of groups
      */
     Class<?>[] groups() default {};
 
     /**
      * Payload element that specifies the payload with which the the
      * constraint declaration is associated.
-     *
-     * @return payload
      */
     Class<? extends Payload>[] payload() default {};
 
     /**
      * First property name for check equality.
-     *
-     * @return first property name
      */
     String field();
 
     /**
      * Second property name for check equality.
-     *
-     * @return second property name
      */
     String verifyField();
 }

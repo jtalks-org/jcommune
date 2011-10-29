@@ -23,6 +23,7 @@ import org.jtalks.jcommune.model.entity.User;
  *
  * @author Pavel Vervenko
  * @author Kirill Afonin
+ * @author Evgeniy Naumenko
  * @see org.jtalks.jcommune.model.dao.hibernate.UserHibernateDao
  */
 public interface UserDao extends ParentRepository<User> {
@@ -44,6 +45,15 @@ public interface UserDao extends ParentRepository<User> {
      * @see User
      */
     User getByEncodedUsername(String encodedUsername);
+
+    /**
+     * Get {@link User} with e-mail given.
+     *
+     * @param email e-mail address set in user profile.
+     * @return {@link User} with given encodedUsername.
+     * @see User
+     */
+    User getByEmail(String email);
 
     /**
      * Check if {@link User} with given username exist.

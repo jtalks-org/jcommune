@@ -41,7 +41,7 @@ import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEqua
 
 /**
  * @author Kirill Afonin
- * @author Osadchuck Eugeny 
+ * @author Osadchuck Eugeny
  */
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
@@ -159,7 +159,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         assertNotNull(result);
         assertReflectionEquals(user, result);
     }
-    
+
     @Test
     public void testGetByEncodedUsername() {
         User user = ObjectsFactory.getDefaultUser();
@@ -222,6 +222,13 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     }
 
     @Test
+    public void testFetchByEMail() {
+        User user = ObjectsFactory.getDefaultUser();
+        session.save(user);
+        assertNotNull(dao.getByEmail(user.getEmail()));
+    }
+
+    @Test
     public void testDaoUserPostCountCreateNewPost() {
         Post post = new Post(user, "");
         dao.saveOrUpdate(user);
@@ -232,9 +239,9 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     }
 
     @Test
-    public void testDaoUserPostCountDeleteBranch(){
-        Post post1 = new Post(user,"");
-        Topic topic = new Topic(user,"");
+    public void testDaoUserPostCountDeleteBranch() {
+        Post post1 = new Post(user, "");
+        Topic topic = new Topic(user, "");
         Branch branch = ObjectsFactory.getDefaultBranch();
 
         topic.addPost(post1);
@@ -244,18 +251,18 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         session.save(branch);
 
         int result = dao.getCountPostOfUser(user);
-        assertEquals(result,1);
+        assertEquals(result, 1);
 
         session.delete(branch);
 
         result = dao.getCountPostOfUser(user);
-        assertEquals(result,0);
+        assertEquals(result, 0);
     }
 
     @Test
-    public void testDaoUserPostCountDeleteTopic(){
-        Post post1 = new Post(user,"");
-        Topic topic = new Topic(user,"");
+    public void testDaoUserPostCountDeleteTopic() {
+        Post post1 = new Post(user, "");
+        Topic topic = new Topic(user, "");
         Branch branch = ObjectsFactory.getDefaultBranch();
 
         topic.addPost(post1);
@@ -265,23 +272,23 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         session.save(branch);
 
         int result = dao.getCountPostOfUser(user);
-        assertEquals(result,1);
+        assertEquals(result, 1);
 
         branch.deleteTopic(topic);
 
         result = dao.getCountPostOfUser(user);
-        assertEquals(result,0);
+        assertEquals(result, 0);
     }
 
     @Test
-    public void testDaoUserPostCountRemovePost(){
-        Post post = new Post(user,"");
+    public void testDaoUserPostCountRemovePost() {
+        Post post = new Post(user, "");
 
         dao.saveOrUpdate(user);
         session.save(post);
 
         int result = dao.getCountPostOfUser(user);
-        assertEquals(result,1);
+        assertEquals(result, 1);
 
         session.delete(post);
 

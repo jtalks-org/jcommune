@@ -42,6 +42,7 @@
           class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
         <constructor-arg index="0" ref="userDao"/>
         <constructor-arg index="1" ref="securityService"/>
+        <constructor-arg index="2" ref="mailService"/>
     </bean>
 
     <bean id="postService"
@@ -99,7 +100,7 @@
         </property>
     </bean>
 
-        <!-- this is a template message that we can pre-load with default state -->
+    <!-- this is a template message that we can pre-load with default state -->
     <bean id="templateMessage" class="org.springframework.mail.SimpleMailMessage">
         <property name="from" value="jtalks@inbox.ru"/>
     </bean>

@@ -57,7 +57,6 @@ public @interface ImageSize {
     /**
      * Message for display when validation fails.
      *
-     * @return message when validation fails.
      */
     String message() default "{image.wrong.size}";
 
@@ -65,7 +64,6 @@ public @interface ImageSize {
      * Groups element that specifies the processing groups with which the
      * constraint declaration is associated.
      *
-     * @return array of groups
      */
     Class<?>[] groups() default {};
 
@@ -73,14 +71,12 @@ public @interface ImageSize {
      * Payload element that specifies the payload with which the the
      * constraint declaration is associated.
      *
-     * @return payload
      */
     Class<? extends Payload>[] payload() default {};
 
     /**
      * Size of image for check dimension.
      *
-     * @return size of image in kilobytes
      */
     int size();
 

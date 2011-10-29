@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.MailService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
@@ -56,6 +55,7 @@ import java.io.IOException;
  * @author Alexandre Teterin
  * @author Max Malakhov
  * @author Eugeny Batov
+ * @author Evgeniy Naumenko
  */
 @Controller
 public class UserController {
@@ -90,7 +90,7 @@ public class UserController {
      * @param securityService   {@link org.jtalks.jcommune.service.SecurityService} used for
      *                          accessing to current logged in user
      * @param breadcrumbBuilder the object which provides actions on
- *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
+     *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      * @param imagePreprocessor {@link org.jtalks.jcommune.web.util.ImagePreprocessor} used
      */
     @Autowired
@@ -123,8 +123,7 @@ public class UserController {
      * @return redirect to / if registration successful or back to "/registration" if failed
      */
     @RequestMapping(value = "/users", method = RequestMethod.POST)
-    public ModelAndView registerUser(@Valid @ModelAttribute("newUser") RegisterUserDto userDto,
-                                     BindingResult result) {
+    public ModelAndView registerUser(@Valid @ModelAttribute("newUser") RegisterUserDto userDto, BindingResult result) {
         if (result.hasErrors()) {
             return new ModelAndView(REGISTRATION);
         }
@@ -172,6 +171,7 @@ public class UserController {
         editedUser.setAvatar(new MockMultipartFile("avatar", "", ImageFormats.JPG.getContentType(), user.getAvatar()));
         return editMaV(editedUser)
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
+                .addObject("languages", Language.values())
                 .addObject("pageSizes", PageSize.values());
     }
 
@@ -179,7 +179,6 @@ public class UserController {
      * Update user profile info. Check if the user enter valid data and update profile in database.
      * In error case return into the edit profile page and draw the error.
      * <p/>
-     * TODO: move logic to service layer
      *
      * @param userDto  dto populated by user
      * @param result   binding result which contains the validation result
@@ -194,24 +193,28 @@ public class UserController {
             throws NotFoundException, IOException {
 
         // apply language changes immediately
-        applyLanguage(userDto, response);
-
+        applyLanguage(Language.valueOf(userDto.getLanguage()), response);
         // validate other fields
         if (result.hasErrors()) {
-            return editAgain(userDto);
+            return applyAvatarRemoval(userDto);
         }
-
         User editedUser = editUserProfile(userDto, result);
-
         // error occured
         if (editedUser == null)
-            return editAgain(userDto);
-
+            return applyAvatarRemoval(userDto);
         return new ModelAndView(new StringBuilder()
                 .append("redirect:/users/")
                 .append(editedUser.getEncodedUsername()).toString());
     }
 
+    /**
+     * Convenience method to handle possible errors
+     *
+     * @param userDto form submission result
+     * @param result form validation result, will be filled up with additional errors, if any
+     * @return Edited domain object if no error occure, null otherwise
+     * @throws IOException image stream processing error
+     */
     private User editUserProfile(EditUserProfileDto userDto, BindingResult result) throws IOException {
         try {
             return performEditUserProfile(userDto);
@@ -226,12 +229,29 @@ public class UserController {
         return null;
     }
 
-    private void applyLanguage(EditUserProfileDto userDto, HttpServletResponse response) {
-        Language language = Language.valueOf(userDto.getLanguage());
-        Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, language.getLanguageCode());
+    /**
+     * This method applies language to the response as cookie for CookieLocaleResolver
+     *
+     * @param language language to be applied
+     * @param response response to be filled with new cookie
+     */
+    private void applyLanguage(Language language, HttpServletResponse response) {
+        String code =  language.getLanguageCode();
+        Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, code);
         response.addCookie(cookie);
     }
 
+    /**
+     * todo: refactor it to pass dto to the service layer
+     * Convenience method to pass a dto content toa  service layer
+     *
+     * @param userDto form submission result
+     * @return updated user object
+     * @throws DuplicateEmailException e-maim already registered
+     * @throws WrongPasswordException current password doesn't match with the passed one
+     * @throws IOException avatar upload problems
+     * @throws InvalidImageException avatar image is invalid
+     */
     private User performEditUserProfile(EditUserProfileDto userDto) throws DuplicateEmailException,
             WrongPasswordException, IOException, InvalidImageException {
         return userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
@@ -240,7 +260,15 @@ public class UserController {
                 userDto.getSignature(), userDto.getLanguage(), userDto.getPageSize());
     }
 
-    private ModelAndView editAgain(EditUserProfileDto userDto) {
+    /**
+     *  todo: looks realy odd, we need to somehow refactor all the chain
+     *
+     * Substitues fake avatar value if there was no avatar passed
+     *
+     * @param userDto for submission result
+     * @return  updated model and view containing avatar in any case
+     */
+    private ModelAndView applyAvatarRemoval(EditUserProfileDto userDto) {
         User user = securityService.getCurrentUser();
         if (user.getAvatar() == null) {
             userDto.setAvatar(new MockMultipartFile("avatar", "", ImageFormats.JPG.getContentType(), new byte[0]));
@@ -248,6 +276,15 @@ public class UserController {
         return editMaV(userDto);
     }
 
+    /**
+     * {@code ModelAndView} with dto and languages.
+     *
+     * @param dto edit user dto
+     * @return {@code ModelAndView} for edit profile page
+     */
+    private ModelAndView editMaV(EditUserProfileDto dto) {
+        return new ModelAndView(EDIT_PROFILE, EDITED_USER, dto).addObject("languages", Language.values());
+    }
 
     /**
      * Remove avatar from user profile.
@@ -263,15 +300,6 @@ public class UserController {
     }
 
     /**
-     * {@code ModelAndView} with dto and languages.
-     *
-     * @return {@code ModelAndView} for edit profile page
-     */
-    private ModelAndView editMaV(EditUserProfileDto dto) {
-        return new ModelAndView(EDIT_PROFILE, EDITED_USER, dto).addObject("languages", Language.values());
-    }
-
-    /**
      * Write user avatar  in response for rendering it on html pages.
      *
      * @param response        servlet response
@@ -281,8 +309,8 @@ public class UserController {
      */
     @RequestMapping(value = "/{encodedUsername}/avatar", method = RequestMethod.GET)
     public void renderAvatar(HttpServletResponse response,
-                             @PathVariable("encodedUsername") String encodedUsername)
-            throws NotFoundException, IOException {
+                             @PathVariable("encodedUsername") String encodedUsername) throws NotFoundException,
+            IOException {
         User user = userService.getByEncodedUsername(encodedUsername);
         byte[] avatar = user.getAvatar();
         response.setContentType("image/jpeg");
@@ -290,4 +318,36 @@ public class UserController {
         response.getOutputStream().write(avatar);
     }
 
+    /**
+     * Renders a page to restore user's password.
+     * Registration e-mail is required.
+     *
+     * @return view page name
+     */
+    @RequestMapping(value = "/password/restore", method = RequestMethod.GET)
+    public ModelAndView showRestorePasswordPage() {
+        return new ModelAndView("restorePassword");
+    }
+
+    /**
+     * Tries to restore a password by email.
+     * If e-mail given has not been registered
+     * before view with an error will be returned.
+     *
+     * @param email address ro identify the user
+     * @return view with a parameters bound
+     * @throws NotFoundException current implementation will not throw it anyway
+     */
+    @RequestMapping(value = "/password/restore", method = RequestMethod.POST)
+    public ModelAndView restorePassword(String email) throws NotFoundException {
+        ModelAndView mav = new ModelAndView("restorePassword");
+        mav.addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
+        if (userService.isEmailExist(email)) {
+            userService.restorePassword(email);
+            mav.addObject("message", "label.restorePassword.completed");
+        } else {
+            mav.addObject("error", "email.unknown");
+        }
+        return mav;
+    }
 }

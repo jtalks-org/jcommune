@@ -14,8 +14,6 @@
  */
 package org.jtalks.jcommune.service;
 
-import org.jtalks.jcommune.model.entity.User;
-
 /**
  * This service is focused on sending e-mail to the forum users.
  * Notifications, confirmations or e-mail based subscriptions of a various
@@ -24,10 +22,14 @@ import org.jtalks.jcommune.model.entity.User;
  * @author Evgeniy Naumenko
  */
 public interface MailService {
+
     /**
+     * Sends a password recovery message for the user with a given email.
+     * This method does not generate new password, just sends a message.
      *
-     * @param user
-     * @param newPassword new password
+     * @param userName username to be used in a mail
+     * @param email address to mail to
+     * @param newPassword new user password to be placed in sn email
      */
-    void sendPasswordRecoveryMail(User user, String newPassword);
+   void sendPasswordRecoveryMail(String userName, String email, String newPassword);
 }

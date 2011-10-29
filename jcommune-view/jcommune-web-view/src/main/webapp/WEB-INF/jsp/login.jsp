@@ -37,7 +37,12 @@
         <label for="j_password"><spring:message code="label.password"/></label>
         <input class="textbox" id="j_password" type='password' name='j_password'/>
         <br/>
-        <a href='<c:url value="/users/new" />'><spring:message code="label.register"/></a><br/>
+        <a href='<c:url value="/users/new" />'><spring:message code="label.register"/></a>
+        <br/>
+        <br/>
+        <a href='<c:url value="${pageContext.request.contextPath}/password/restore" />'>
+            <spring:message code="label.restorePassword.prompt"/></a>
+        <br/>
         <br/>
         <input type="submit" value="<spring:message code="label.signin"/>"/>
     </p>
