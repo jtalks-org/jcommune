@@ -36,19 +36,19 @@ public class CustomTagTest {
 
     @BeforeMethod
     protected void setUp() throws Exception {
-	        ServletContext = new MockServletContext();
-	        WebApplicationContext = mock(WebApplicationContext.class);
-	        ServletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE,
-	                                        WebApplicationContext);
-	        PageContext = new MockPageContext(ServletContext);
-	        paginator = new Paginator();
-	        paginator.setPageContext(PageContext);
+        ServletContext = new MockServletContext();
+        WebApplicationContext = mock(WebApplicationContext.class);
+        ServletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE,
+                WebApplicationContext);
+        PageContext = new MockPageContext(ServletContext);
+        paginator = new Paginator();
+        paginator.setPageContext(PageContext);
 
-	        when(WebApplicationContext.getServletContext()).thenReturn(ServletContext);
-	    }
+        when(WebApplicationContext.getServletContext()).thenReturn(ServletContext);
+    }
 
     @Test
-    public void testCustomTag(){
+    public void testCustomTag() {
         List list = new ArrayList();
         list.add(1);
         list.add(2);
@@ -64,6 +64,6 @@ public class CustomTagTest {
 
         paginator.doEndTag();
 
-        assertEquals(PageContext.getAttribute("maxPage"),2);
+        assertEquals(PageContext.getAttribute("maxPage"), 2);
     }
 }
