@@ -132,7 +132,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     @Override
     public User editUserProfile(String email, String firstName, String lastName, String currentPassword,
                                 String newPassword, byte[] avatar, String signature, String language, String pageSize)
-            throws DuplicateEmailException, WrongPasswordException {
+        throws DuplicateEmailException, WrongPasswordException {
 
         User currentUser = securityService.getCurrentUser();
 
@@ -159,15 +159,40 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         return currentUser;
     }
 
+    /**
+     * Checks if e-mail passed differs from the one set in the User object
+     * and new email is valid, i. e. has not been used by any other user
+     *
+     * @param email new address
+     * @param currentUser user object to be checked
+     * @return true, if e-mail has been changed to a valid one
+     */
     private boolean isChangeEmail(String email, User currentUser) {
         return (!currentUser.getEmail().equals(email)) && isEmailExist(email);
     }
 
+    /**
+     * Checks if byte[] passed is not empty, that means user has uploaded
+     * a new avatar image
+     *
+     * @param avatar avatar image representation
+     * @return true if avatar image has been set
+     */
     private boolean isChangeAvatar(byte[] avatar) {
         return avatar != null && avatar.length > 0;
     }
 
-    private void changePassword(String currentPassword, String newPassword, User currentUser) throws WrongPasswordException {
+    /**
+     * Checks if current password was filled up correctly and if so,
+     * alters the current password to the new one
+     *
+     * @param currentPassword existing password to verify identity
+     * @param newPassword new password to be set
+     * @param currentUser user object from a database
+     * @throws WrongPasswordException if current password doesn't match the one stored in database
+     */
+    private void changePassword(String currentPassword, String newPassword, User currentUser)
+        throws WrongPasswordException {
         if (currentPassword == null ||
                 !currentUser.getPassword().equals(currentPassword)) {
             throw new WrongPasswordException();
@@ -176,6 +201,12 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         }
     }
 
+    /**
+     * Returns parameter as is if string passed is not empty
+     *
+     * @param signature  string to be checked
+     * @return parameter value or null, if parameter is null or blank
+     */
     private String getSignature(String signature) {
         if (signature != null && signature.trim().equals("")) {
             return null;

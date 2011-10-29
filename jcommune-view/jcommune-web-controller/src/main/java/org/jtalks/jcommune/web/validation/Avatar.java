@@ -57,7 +57,6 @@ public @interface Avatar {
     /**
      * Message for display when validation fails.
      *
-     * @return message when validation fails.
      */
     String message() default "{avatar.wrong}";
 
@@ -65,7 +64,6 @@ public @interface Avatar {
      * Groups element that specifies the processing groups with which the
      * constraint declaration is associated.
      *
-     * @return array of groups
      */
     Class<?>[] groups() default {};
 
@@ -73,7 +71,6 @@ public @interface Avatar {
      * Payload element that specifies the payload with which the the
      * constraint declaration is associated.
      *
-     * @return payload
      */
     Class<? extends Payload>[] payload() default {};
 

@@ -59,8 +59,8 @@ public class MailServiceImpl implements MailService {
         this.templateMessage = templateMessage;
     }
 
-    /**
-     * @inheritDoc
+     /**
+     * {@inheritDoc}
      */
     @Override
     public void sendPasswordRecoveryMail(String userName, String email, String newPassword) {

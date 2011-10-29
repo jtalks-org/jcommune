@@ -31,5 +31,5 @@ public interface MailService {
      * @param email address to mail to
      * @param newPassword new user password to be placed in sn email
      */
-    public void sendPasswordRecoveryMail(String userName, String email, String newPassword);
+   void sendPasswordRecoveryMail(String userName, String email, String newPassword);
 }
