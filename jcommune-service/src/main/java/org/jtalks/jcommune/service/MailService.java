@@ -27,9 +27,9 @@ public interface MailService {
      * Sends a password recovery message for the user with a given email.
      * This method does not generate new password, just sends a message.
      *
-     * @param userName username to be used in a mail
-     * @param email address to mail to
-     * @param newPassword new user password to be placed in sn email
+     * @param userName    username to be used in a mail
+     * @param email       address to mail to
+     * @param newPassword new user password to be placed in an email
      */
-   void sendPasswordRecoveryMail(String userName, String email, String newPassword);
+    void sendPasswordRecoveryMail(String userName, String email, String newPassword);
 }

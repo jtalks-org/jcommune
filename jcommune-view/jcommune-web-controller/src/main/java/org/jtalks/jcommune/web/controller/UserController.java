@@ -200,8 +200,9 @@ public class UserController {
         }
         User editedUser = editUserProfile(userDto, result);
         // error occured
-        if (editedUser == null)
+        if (editedUser == null) {
             return applyAvatarRemoval(userDto);
+        }
         return new ModelAndView(new StringBuilder()
                 .append("redirect:/users/")
                 .append(editedUser.getEncodedUsername()).toString());
