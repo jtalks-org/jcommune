@@ -34,6 +34,8 @@ public class Paginator extends BodyTagSupport {
     private int maxPages;
 
     /**
+     * @param itemCount     total number of elements
+     * @param numberElement number of pages
      * @return maxPage
      */
     public int getMaxPage(int itemCount, int numberElement) {
@@ -129,9 +131,11 @@ public class Paginator extends BodyTagSupport {
     public int doEndTag() {
         JspWriter out = pageContext.getOut();
         String spanOpen = new Formatter().format("<div class=\"forum_misc_info\">").toString();
-        String strPrevus = new Formatter().format("<c:url var=\"url\" value=\"\"><c:param name=\"page\" value=\"2\"/></c:url><a href=\"%s?page=%d\">%d</a>", uri, currentPage - 1, currentPage - 1).toString();
+        String strPrevus = new Formatter().format("<c:url var=\"url\" value=\"\"><c:param name=\"page\" value=\"2\"/>" +
+                "</c:url><a href=\"%s?page=%d\">%d</a>", uri, currentPage - 1, currentPage - 1).toString();
         String str = new Formatter().format("%d", currentPage).toString();
-        String strNext = new Formatter().format("<c:url var=\"url\" value=\"\"><c:param name=\"page\" value=\"2\"/></c:url><a href=\"%s?page=%d\">%d</a>", uri, currentPage + 1, currentPage + 1).toString();
+        String strNext = new Formatter().format("<c:url var=\"url\" value=\"\"><c:param name=\"page\" value=\"2\"/>" +
+                "</c:url><a href=\"%s?page=%d\">%d</a>", uri, currentPage + 1, currentPage + 1).toString();
         String spanClose = new Formatter().format("</div>").toString();
 
         pageContext.setAttribute("maxPage", maxPages);

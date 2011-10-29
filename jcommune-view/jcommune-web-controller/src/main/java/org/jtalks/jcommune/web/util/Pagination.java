@@ -23,9 +23,9 @@ public class Pagination {
     private Integer page;
     private int pageSize;
     private int itemsCount;
-    public static int DEFAULT_PAGE_SIZE = 4;
-    public static int ALL_PAGE_SIZE;
-    public static int CURRENT_PAGE_SIZE = 4;
+    private int defaultPageSize = 4;
+    private int allPageSize;
+    private int currentPageSize = 4;
 
     /**
      * Create instance.
@@ -36,7 +36,7 @@ public class Pagination {
      */
     public Pagination(Integer page, Integer pageSize, int itemsCount) {
         this.page = page == null ? Integer.valueOf(1) : page;
-        this.pageSize = pageSize == null ? Integer.valueOf(DEFAULT_PAGE_SIZE) : pageSize;
+        this.pageSize = pageSize == null ? Integer.valueOf(defaultPageSize) : pageSize;
         this.itemsCount = itemsCount;
     }
 
@@ -81,5 +81,47 @@ public class Pagination {
      */
     private boolean isRounded() {
         return (itemsCount % pageSize) == 0;
+    }
+
+    /**
+     * @return allPageSize total number of pages
+     */
+    public int getAllPageSize() {
+        return allPageSize;
+    }
+
+    /**
+     * @param allPageSize total number of pages
+     */
+    public void setAllPageSize(int allPageSize) {
+        this.allPageSize = allPageSize;
+    }
+
+    /**
+     * @return total number of pages
+     */
+    public int getCurrentPageSize() {
+        return currentPageSize;
+    }
+
+    /**
+     * @param currentPageSize current page number
+     */
+    public void setCurrentPageSize(int currentPageSize) {
+        this.currentPageSize = currentPageSize;
+    }
+
+    /**
+     * @return total number of pages
+     */
+    public int getDefaultPageSize() {
+        return defaultPageSize;
+    }
+
+    /**
+     * @param defaultPageSize number of pages by default
+     */
+    public void setDefaultPageSize(int defaultPageSize) {
+        this.defaultPageSize = defaultPageSize;
     }
 }

@@ -175,35 +175,34 @@ public final class TopicController {
         int postsCount = postService.getPostsInTopicCount(topicId);
         Pagination pag = new Pagination(page, size, postsCount);
 
-        //List<Post> posts = postService.getPostRangeInTopic(topicId, pag.getStart(), pag.getPageSize());
         List<Post> posts = topic.getPosts();
         topicService.addTopicView(topic, session);
-        String name_button;
-        // what the hell is that!?
-        if (Pagination.CURRENT_PAGE_SIZE == Pagination.ALL_PAGE_SIZE) {
-            name_button = "Show pages";
+        String nameButton;
+
+        if (pag.getCurrentPageSize() == pag.getAllPageSize()) {
+            nameButton = "Show pages";
         } else {
-            name_button = "Show all";
+            nameButton = "Show all";
         }
         if (size == null) {
             size = 0;
         }
         if (size == 1) {
-            name_button = "Show pages";
-            Pagination.CURRENT_PAGE_SIZE = Pagination.ALL_PAGE_SIZE;
+            nameButton = "Show pages";
+            pag.setCurrentPageSize(pag.getAllPageSize());
 
         }
         if (size == 2) {
-            name_button = "Show all";
-            Pagination.CURRENT_PAGE_SIZE = Pagination.DEFAULT_PAGE_SIZE;
+            nameButton = "Show all";
+            pag.setCurrentPageSize(pag.getDefaultPageSize());
         }
 
         return new ModelAndView("postList")
                 .addObject("posts", posts)
                 .addObject("topic", topic)
                 .addObject("size", size)
-                .addObject("name_button", name_button)
-                .addObject("_default", Pagination.CURRENT_PAGE_SIZE)
+                .addObject("name_button", nameButton)
+                .addObject("_default", pag.getCurrentPageSize())
                 .addObject("page", pag.getPage())
                 .addObject(BRANCH_ID, branchId)
                 .addObject(TOPIC_ID, topicId)

@@ -85,27 +85,27 @@ public final class BranchController {
 
         Branch branch = branchService.get(branchId);
         List<Topic> topics = branch.getTopics();
-        Pagination.ALL_PAGE_SIZE = topics.size();
-        String name_button;
-        if(Pagination.CURRENT_PAGE_SIZE == Pagination.ALL_PAGE_SIZE)
+        pag.setAllPageSize(topics.size());
+        String nameButton;
+        if(pag.getCurrentPageSize() == pag.getAllPageSize())
         {
-            name_button = "Show pages";
+            nameButton = "Show pages";
         }
         else
         {
-            name_button = "Show all";
+            nameButton = "Show all";
         }
         if(size==null){size=0;}
         if(size==1)
         {
-            name_button="Show pages";
-            Pagination.CURRENT_PAGE_SIZE = Pagination.ALL_PAGE_SIZE;
+            nameButton="Show pages";
+            pag.setCurrentPageSize(pag.getAllPageSize());
 
         }
         if(size==2)
         {
-            name_button="Show all";
-            Pagination.CURRENT_PAGE_SIZE = Pagination.DEFAULT_PAGE_SIZE;
+            nameButton="Show all";
+            pag.setCurrentPageSize(pag.getDefaultPageSize());
         }
 
 
@@ -114,8 +114,8 @@ public final class BranchController {
                 .addObject("branchId", branchId)
                 .addObject("topics", topics)
                 .addObject("size",size)
-                .addObject("name_button",name_button)
-                .addObject("_default", Pagination.CURRENT_PAGE_SIZE)
+                .addObject("name_button",nameButton)
+                .addObject("_default", pag.getCurrentPageSize())
                 .addObject(PAGE, pag.getPage())
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)));
     }
