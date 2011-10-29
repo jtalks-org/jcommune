@@ -24,7 +24,6 @@ import org.jtalks.common.model.entity.Entity;
  * All fields of this object are required and can't be null.<br/>
  * The topic field will be updated automatically when called Topic.addPost(Post). <br/>
  * The Post deletes automatically if the parent Topic deleted.
- * Use the static method Post.createNewPost() to create new post with current creationDate.
  *
  * @author Pavel Vervenko
  * @author Kirill Afonin
@@ -67,17 +66,6 @@ public class Post extends Entity {
      */
     public Post(Topic topic) {
         this.topic = topic;
-    }
-
-    /**
-     * Creates the new instance with the creationDate initialized with current time.***
-     *
-     * @param userCreated author of the post
-     * @param postContent the post content itself
-     * @return new Post instance
-     */
-    public static Post createNewPost(User userCreated, String postContent) {
-        return new Post(userCreated,postContent);
     }
 
     /**

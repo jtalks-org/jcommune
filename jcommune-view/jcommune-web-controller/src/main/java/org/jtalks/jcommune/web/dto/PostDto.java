@@ -28,6 +28,25 @@ public class PostDto {
     @Size(min = 5, max = MAX_POST_LENGTH)
     private String bodyText;
     private long id;
+    private long topicId;
+
+    /**
+     * Get topic id.
+     *
+     * @return topic id
+     */
+    public long getTopicId() {
+        return topicId;
+    }
+
+    /**
+     * Set topic id.
+     *
+     * @param topicId topic id
+     */
+    public void setTopicId(long topicId) {
+        this.topicId = topicId;
+    }
 
     /**
      * Get post id.
@@ -75,6 +94,7 @@ public class PostDto {
         PostDto dto = new PostDto();
         dto.setBodyText(post.getPostContent());
         dto.setId(post.getId());
+        dto.setTopicId(post.getTopic().getId());
         return dto;
     }    
 }

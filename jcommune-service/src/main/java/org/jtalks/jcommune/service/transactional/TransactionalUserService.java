@@ -135,38 +135,53 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
             throws DuplicateEmailException, WrongPasswordException {
 
         User currentUser = securityService.getCurrentUser();
+
         boolean changePassword = newPassword != null;
         if (changePassword) {
-            if (currentPassword == null ||
-                    !currentUser.getPassword().equals(currentPassword)) {
-                throw new WrongPasswordException();
-            } else {
-                currentUser.setPassword(newPassword);
-            }
+            changePassword(currentPassword, newPassword, currentUser);
         }
 
-        boolean changeEmail = !currentUser.getEmail().equals(email);
-        if (changeEmail && isEmailExist(email)) {
+        if (isChangeEmail(email, currentUser)) {
             throw new DuplicateEmailException();
         }
 
         currentUser.setEmail(email);
-        if (signature != null && signature.trim().equals("")) {
-            currentUser.setSignature(null);
-        } else {
-            currentUser.setSignature(signature);
-        }
+        currentUser.setSignature(getSignature(signature));
         currentUser.setFirstName(firstName);
         currentUser.setLastName(lastName);
         currentUser.setLanguage(language);
         currentUser.setPageSize(pageSize);
-        if (avatar != null && avatar.length > 0) {
+        if (isChangeAvatar(avatar)) {
             currentUser.setAvatar(avatar);
         }
 
-
         this.getDao().saveOrUpdate(currentUser);
         return currentUser;
+    }
+
+    private boolean isChangeEmail(String email, User currentUser) {
+        return (!currentUser.getEmail().equals(email)) && isEmailExist(email);
+    }
+
+    private boolean isChangeAvatar(byte[] avatar) {
+        return avatar != null && avatar.length > 0;
+    }
+
+    private void changePassword(String currentPassword, String newPassword, User currentUser) throws WrongPasswordException {
+        if (currentPassword == null ||
+                !currentUser.getPassword().equals(currentPassword)) {
+            throw new WrongPasswordException();
+        } else {
+            currentUser.setPassword(newPassword);
+        }
+    }
+
+    private String getSignature(String signature) {
+        if (signature != null && signature.trim().equals("")) {
+            return null;
+        } else {
+            return signature;
+        }
     }
 
     /**

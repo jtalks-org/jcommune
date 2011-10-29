@@ -115,7 +115,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
     @Test(expectedExceptions = Exception.class)
     public void testUpdateNotNullViolation() {
         PrivateMessage pm = getSavedPm();
-        pm.setUserFrom(null);
+        pm.setTitle(null);
 
         dao.saveOrUpdate(pm);
     }

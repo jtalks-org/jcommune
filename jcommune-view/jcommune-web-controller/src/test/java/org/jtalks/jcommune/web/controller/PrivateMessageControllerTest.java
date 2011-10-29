@@ -293,10 +293,9 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void testEdit() throws NotFoundException {
-        PrivateMessage pm = PrivateMessage.createNewPrivateMessage();
+        PrivateMessage pm = getPrivateMessage();
         pm.setId(PM_ID);
         pm.markAsDraft();
-        pm.setUserTo(new User("username", "email", "password"));
 
         //set expectations
         when(pmService.get(PM_ID)).thenReturn(pm);
@@ -318,7 +317,8 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void testEditNotDraft() throws NotFoundException {
-        PrivateMessage pm = PrivateMessage.createNewPrivateMessage();
+        PrivateMessage pm = getPrivateMessage();
+
         //set expectations
         when(pmService.get(PM_ID)).thenReturn(pm);
         when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
@@ -378,5 +378,10 @@ public class PrivateMessageControllerTest {
         dto.setTitle("title");
         dto.setRecipient("Recipient");
         return dto;
+    }
+
+    private PrivateMessage getPrivateMessage() {
+        return new PrivateMessage(new User("username", "email", "password"),
+                new User("username2", "email2", "password2"), "title", "body");
     }
 }

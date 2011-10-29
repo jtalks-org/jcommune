@@ -223,7 +223,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
     @Test
     public void testDaoUserPostCountCreateNewPost() {
-        Post post = Post.createNewPost(user, "");
+        Post post = new Post(user, "");
         dao.saveOrUpdate(user);
         session.save(post);
 
@@ -233,7 +233,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
     @Test
     public void testDaoUserPostCountDeleteBranch(){
-        Post post1 = Post.createNewPost(user,"");
+        Post post1 = new Post(user,"");
         Topic topic = new Topic(user,"");
         Branch branch = ObjectsFactory.getDefaultBranch();
 
@@ -254,7 +254,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
     @Test
     public void testDaoUserPostCountDeleteTopic(){
-        Post post1 = Post.createNewPost(user,"");
+        Post post1 = new Post(user,"");
         Topic topic = new Topic(user,"");
         Branch branch = ObjectsFactory.getDefaultBranch();
 
@@ -275,7 +275,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
     @Test
     public void testDaoUserPostCountRemovePost(){
-        Post post = Post.createNewPost(user,"");
+        Post post = new Post(user,"");
 
         dao.saveOrUpdate(user);
         session.save(post);

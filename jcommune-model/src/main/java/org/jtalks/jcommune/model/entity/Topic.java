@@ -66,21 +66,6 @@ public class Topic extends Entity {
     }
 
     /**
-     * Constructor used only for the input data in the
-     * org.jtalks.jcommune.web.dto.BreadcrumbBuilderTest class.
-     * *
-     *
-     * @param topicStarter user who create the topic
-     * @param branch       topic branch
-     * @param title        topic title
-     */
-    public Topic(User topicStarter, Branch branch, String title) {
-        this.topicStarter = topicStarter;
-        this.branch = branch;
-        this.title = title;
-    }
-
-    /**
      * Add new {@link Post} to the topic.
      * The method sets Posts.topic field to this Topic.
      *

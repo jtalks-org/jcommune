@@ -107,12 +107,8 @@ public class TransactionalPrivateMessageService
      */
     private PrivateMessage populateMessage(String title, String body,
                                            User recipient) throws NotFoundException {
-        PrivateMessage pm = PrivateMessage.createNewPrivateMessage();
-        pm.setTitle(title);
-        pm.setBody(body);
-        pm.setUserFrom(securityService.getCurrentUser());
-        pm.setUserTo(recipient);
-        return pm;
+        User userFrom = securityService.getCurrentUser();
+        return new PrivateMessage(recipient, userFrom, title, body);
     }
 
     /**

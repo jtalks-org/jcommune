@@ -164,7 +164,6 @@ public class PostControllerTest {
 
     @Test
     public void testGetAnswerPage() throws NotFoundException {
-        boolean isValid = false;
         Topic topic = mock(Topic.class);
 
         //set expectations
@@ -172,7 +171,7 @@ public class PostControllerTest {
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
 
         //invoke the object under test
-        ModelAndView mav = controller.createPage(TOPIC_ID, isValid);
+        ModelAndView mav = controller.createPage(TOPIC_ID);
 
         //check expectations
         verify(topicService).get(TOPIC_ID);
@@ -186,33 +185,39 @@ public class PostControllerTest {
 
     @Test
     public void testSubmitAnswerValidationPass() throws NotFoundException {
+        BeanPropertyBindingResult resultWithoutErrors = mock(BeanPropertyBindingResult.class);
+        when(resultWithoutErrors.hasErrors()).thenReturn(false);
+
         //invoke the object under test
-        ModelAndView mav = controller.create(TOPIC_ID, ANSWER_BODY);
+        String view = controller.create(getDto(), resultWithoutErrors);
 
         //check expectations
-        verify(topicService).addAnswer(TOPIC_ID, ANSWER_BODY);
+        verify(topicService).addAnswer(TOPIC_ID, POST_CONTENT);
 
         //check result
-        assertViewName(mav, "redirect:/topics/" + TOPIC_ID);
+        assertEquals(view, "redirect:/topics/" + TOPIC_ID);
     }
 
     @Test
     public void testSubmitAnswerValidationFail() throws NotFoundException {
+        BeanPropertyBindingResult resultWithErrors = mock(BeanPropertyBindingResult.class);
+        when(resultWithErrors.hasErrors()).thenReturn(true);
+
         //invoke the object under test
-        ModelAndView mav = controller.create(TOPIC_ID, SHORT_ANSWER_BODY);
+        String view = controller.create(getDto(), resultWithErrors);
 
         //check expectations
-        verify(topicService, never()).addAnswer(TOPIC_ID, SHORT_ANSWER_BODY);
+        verify(topicService, never()).addAnswer(anyLong(), anyString());
 
         //check result
-        assertViewName(mav, "answer");
-        assertAndReturnModelAttributeOfType(mav, "validationError", Boolean.class);
+        assertEquals(view, "answer");
     }
 
     private PostDto getDto() {
         PostDto dto = new PostDto();
         dto.setId(POST_ID);
         dto.setBodyText(POST_CONTENT);
+        dto.setTopicId(TOPIC_ID);
         return dto;
     }
 }

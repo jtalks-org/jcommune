@@ -113,12 +113,10 @@ public final class TopicController {
             return new ModelAndView("newTopic")
                     .addObject(BRANCH_ID, branchId)
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)));
-        } else {
-            Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(),
-                    branchId);
-            return new ModelAndView("redirect:/topics/"
-                    + createdTopic.getId());
         }
+
+        Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(), branchId);
+        return new ModelAndView("redirect:/topics/" + createdTopic.getId());
     }
 
     /**
@@ -178,36 +176,34 @@ public final class TopicController {
         Pagination pag = new Pagination(page, size, postsCount);
 
         //List<Post> posts = postService.getPostRangeInTopic(topicId, pag.getStart(), pag.getPageSize());
-          List<Post> posts = topic.getPosts();
+        List<Post> posts = topic.getPosts();
         topicService.addTopicView(topic, session);
         String name_button;
-        if(Pagination.CURRENT_PAGE_SIZE == Pagination.ALL_PAGE_SIZE)
-        {
+        // what the hell is that!?
+        if (Pagination.CURRENT_PAGE_SIZE == Pagination.ALL_PAGE_SIZE) {
             name_button = "Show pages";
-        }
-        else
-        {
+        } else {
             name_button = "Show all";
         }
-        if(size==null){size=0;}
-        if(size==1)
-        {
-            name_button="Show pages";
+        if (size == null) {
+            size = 0;
+        }
+        if (size == 1) {
+            name_button = "Show pages";
             Pagination.CURRENT_PAGE_SIZE = Pagination.ALL_PAGE_SIZE;
 
         }
-        if(size==2)
-        {
-            name_button="Show all";
+        if (size == 2) {
+            name_button = "Show all";
             Pagination.CURRENT_PAGE_SIZE = Pagination.DEFAULT_PAGE_SIZE;
         }
 
         return new ModelAndView("postList")
                 .addObject("posts", posts)
                 .addObject("topic", topic)
-                .addObject("size",size)
-                .addObject("name_button",name_button)
-                .addObject("default",Pagination.CURRENT_PAGE_SIZE)
+                .addObject("size", size)
+                .addObject("name_button", name_button)
+                .addObject("_default", Pagination.CURRENT_PAGE_SIZE)
                 .addObject("page", pag.getPage())
                 .addObject(BRANCH_ID, branchId)
                 .addObject(TOPIC_ID, topicId)
