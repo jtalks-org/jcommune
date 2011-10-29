@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.MailService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
@@ -26,28 +27,34 @@ import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Random;
+
 /**
  * User service class. This class contains method needed to manipulate with User persistent entity.
  *
  * @author Osadchuck Eugeny
  * @author Kirill Afonin
  * @author Alexandre Teterin
+ * @author Evgeniy Naumenko
  */
 public class TransactionalUserService extends AbstractTransactionalEntityService<User, UserDao>
         implements UserService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private SecurityService securityService;
+    private MailService mailService;
 
     /**
      * Create an instance of User entity based service
      *
      * @param dao             for operations with data storage
      * @param securityService for security
+     * @param mailService     to send e-mails
      */
-    public TransactionalUserService(UserDao dao, SecurityService securityService) {
+    public TransactionalUserService(UserDao dao, SecurityService securityService, MailService mailService) {
         super(dao);
         this.securityService = securityService;
+        this.mailService = mailService;
     }
 
     /**
@@ -86,7 +93,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      */
     @Override
     public User registerUser(User user) throws DuplicateUserException, DuplicateEmailException {
-        if (isUserExist(user)) {
+        if (isUserExist(user.getUsername())) {
             String msg = "User " + user.getUsername() + " already exists!";
             logger.warn(msg);
             throw new DuplicateUserException(msg);
@@ -113,23 +120,9 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     }
 
     /**
-     * Check user for existance.
-     *
-     * @param user user for check existance
-     * @return {@code true} if user with given username exist
+     * {@inheritDoc}
      */
-    private boolean isUserExist(User user) {
-        return user.getUsername().equals(SecurityConstants.ANONYMOUS_USERNAME)
-                || this.getDao().isUserWithUsernameExist(user.getUsername());
-    }
-
-    /**
-     * Check email for existance.
-     *
-     * @param email email for check existance
-     * @return {@code true} if email exist
-     */
-    private boolean isEmailExist(String email) {
+    public boolean isEmailExist(String email) {
         return this.getDao().isUserWithEmailExist(email);
     }
 
@@ -191,5 +184,35 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     @Override
     public int getCountPostOfUser(User userCreated) {
         return this.getDao().getCountPostOfUser(userCreated);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void restorePassword(String email) throws NotFoundException {
+        User user = this.getDao().getByEmail(email);
+        if (user == null) {
+            String message = "No user matches the email " + email;
+            logger.error(message);
+            throw new NotFoundException(message);
+        }
+        String randomPassword = Long.toString(new Random().nextInt(100000000), 36); // 5-6 chars
+        user.setPassword(randomPassword);
+        this.getDao().update(user);
+        logger.info("New random password was set for user {}", new Object[]{user.getUsername()});
+        mailService.sendPasswordRecoveryMail(user.getUsername(), email, randomPassword);
+    }
+
+    /**
+     * Checks whether username passed is associated with any known user.
+     *
+     * @param userName user login to check
+     * @return true is login given matches some user in a database
+     */
+    private boolean isUserExist(String userName) {
+        return SecurityConstants.ANONYMOUS_USERNAME.equals(userName)
+                || this.getDao().isUserWithUsernameExist(userName);
     }
 }

@@ -34,13 +34,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
@@ -56,6 +53,7 @@ import java.io.IOException;
  * @author Alexandre Teterin
  * @author Max Malakhov
  * @author Eugeny Batov
+ * @author Evgeniy Naumenko
  */
 @Controller
 public class UserController {
@@ -90,15 +88,14 @@ public class UserController {
      * @param userService       {@link org.jtalks.jcommune.service.UserService} to be injected
      * @param securityService   {@link org.jtalks.jcommune.service.SecurityService} used for accessing to current logged in user
      * @param breadcrumbBuilder the object which provides actions on
- *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
+     *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      * @param imagePreprocessor {@link org.jtalks.jcommune.web.util.ImagePreprocessor} used for preparing image before save
-     * @param mailService
      */
     @Autowired
     public UserController(UserService userService,
                           SecurityService securityService,
                           BreadcrumbBuilder breadcrumbBuilder,
-                          ImagePreprocessor imagePreprocessor, MailService mailService) {
+                          ImagePreprocessor imagePreprocessor) {
         this.userService = userService;
         this.securityService = securityService;
         this.breadcrumbBuilder = breadcrumbBuilder;
@@ -195,7 +192,7 @@ public class UserController {
     @RequestMapping(value = "/users/edit", method = RequestMethod.POST)
     public ModelAndView editProfile(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
                                     BindingResult result, HttpServletResponse response)
-        throws NotFoundException, IOException {
+            throws NotFoundException, IOException {
         // apply language changes immediately
         Language language = Language.valueOf(userDto.getLanguage());
         Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, language.getLanguageCode());
@@ -213,7 +210,7 @@ public class UserController {
             editedUser = userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                     userDto.getLastName(), userDto.getCurrentUserPassword(), userDto.getNewUserPassword(),
                     imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT),
-                    userDto.getSignature(), userDto.getLanguage(),userDto.getPageSize());
+                    userDto.getSignature(), userDto.getLanguage(), userDto.getPageSize());
         } catch (DuplicateEmailException e) {
             result.rejectValue("email", "validation.duplicateemail");
             return new ModelAndView(EDIT_PROFILE);
@@ -263,4 +260,35 @@ public class UserController {
         response.getOutputStream().write(avatar);
     }
 
+    /**
+     * Renders a page to restore user's password.
+     * Registration e-mail is required.
+     *
+     * @return view page name
+     */
+    @RequestMapping(value = "/password/restore", method = RequestMethod.GET)
+    public ModelAndView showRestorePasswordPage() {
+        return new ModelAndView("restorePassword");
+    }
+
+    /**
+     * Tries to restore a password by email. If e-mail given has not been registered
+     * before view with an error will be returned.
+     *
+     * @param email address ro identify the user
+     * @return view with a parameters bound
+     * @throws NotFoundException current implementation will not throw it anyway
+     */
+    @RequestMapping(value = "/password/restore", method = RequestMethod.POST)
+    public ModelAndView restorePassword(String email) throws NotFoundException {
+        ModelAndView mav = new ModelAndView("restorePassword");
+        mav.addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
+        if (userService.isEmailExist(email)) {
+            userService.restorePassword(email);
+            mav.addObject("message","label.restorePassword.completed");
+        } else {
+            mav.addObject("error", "email.unknown");
+        }
+        return mav;
+    }
 }

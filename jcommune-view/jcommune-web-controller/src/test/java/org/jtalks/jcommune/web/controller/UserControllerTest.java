@@ -103,7 +103,7 @@ public class UserControllerTest {
         securityService = mock(SecurityService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
         imagePreprocessor = mock(ImagePreprocessor.class);
-        controller = new UserController(userService, securityService, breadcrumbBuilder, imagePreprocessor, mock(MailService.class));
+        controller = new UserController(userService, securityService, breadcrumbBuilder, imagePreprocessor);
     }
 
     @Test

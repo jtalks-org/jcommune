@@ -1,0 +1,68 @@
+<%--
+
+    Copyright (C) 2011  JTalks.org Team
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+--%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<head>
+    <title><spring:message code="label.restorePassword.header"/></title>
+</head>
+<div class="wrap registration_page">
+    <jsp:include page="../template/topLine.jsp"/>
+    <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
+    <h1><spring:message code="label.restorePassword.header"/></h1>
+
+    <div class="all_forums">
+        <form:form id="form" name="form"
+                   action='${pageContext.request.contextPath}/password/restore' method="POST">
+
+            <p><spring:message code="label.restorePassword.text"/></p>
+
+            <table>
+                <tr>
+                    <td>
+
+                        <spring:message code="label.email"/>
+                        <span class="small"><spring:message code="label.tip.email"/></span>
+
+                    </td>
+                    <td>
+                        <input name="email" type="text" size="20"/>
+                        <br/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <c:if test="${not empty error}">
+                            <span style="color: red; ">
+                                <spring:message code="${error}"/>
+                            </span>
+                        </c:if>
+                        <c:if test="${not empty message}">
+                                <spring:message code="${message}"/>
+                        </c:if>
+                    </td>
+                </tr>
+
+            </table>
+
+            <button type="submit"><spring:message code="label.send"/></button>
+            <div class="spacer"></div>
+        </form:form>
+    </div>
+</div>

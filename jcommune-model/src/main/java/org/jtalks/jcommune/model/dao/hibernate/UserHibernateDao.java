@@ -21,6 +21,7 @@ import org.jtalks.jcommune.model.entity.User;
  * Hibernate implementation of UserDao.
  *
  * @author Pavel Vervenko
+ * @author Evgeniy Naumenko
  * @author Kirill Afonin
  */
 public class UserHibernateDao extends ParentRepositoryImpl<User> implements UserDao {
@@ -52,6 +53,18 @@ public class UserHibernateDao extends ParentRepositoryImpl<User> implements User
      * {@inheritDoc}
      */
     @Override
+    public User getByEmail(String email) {
+            return (User) getSession()
+                .createQuery("from User u where u.email = ?")
+                .setCacheable(true)
+                .setString(0, email)
+                .uniqueResult();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean isUserWithUsernameExist(String username) {
         return ((Number) getSession()
                 .createQuery("select count(*) from User u where u.username = ?")
@@ -76,10 +89,10 @@ public class UserHibernateDao extends ParentRepositoryImpl<User> implements User
      * {@inheritDoc}
      */
     @Override
-    public int getCountPostOfUser(User userCreated){
+    public int getCountPostOfUser(User userCreated) {
         return ((Number) getSession().getNamedQuery("getCountPostOfUser")
                 .setCacheable(true)
-                .setEntity("userCreated",userCreated)
+                .setEntity("userCreated", userCreated)
                 .uniqueResult())
                 .intValue();
     }
