@@ -337,16 +337,15 @@ public class UserController {
      *
      * @param email address ro identify the user
      * @return view with a parameters bound
-     * @throws NotFoundException current implementation will not throw it anyway
      */
     @RequestMapping(value = "/password/restore", method = RequestMethod.POST)
-    public ModelAndView restorePassword(String email) throws NotFoundException {
+    public ModelAndView restorePassword(String email) {
         ModelAndView mav = new ModelAndView("restorePassword");
         mav.addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
-        if (userService.isEmailExist(email)) {
+        try {
             userService.restorePassword(email);
             mav.addObject("message", "label.restorePassword.completed");
-        } else {
+        } catch (NotFoundException e) {
             mav.addObject("error", "email.unknown");
         }
         return mav;

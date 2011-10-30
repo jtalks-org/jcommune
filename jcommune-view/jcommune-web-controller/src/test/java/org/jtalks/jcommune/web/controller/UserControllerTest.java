@@ -397,18 +397,16 @@ public class UserControllerTest {
 
     @Test
     public void testRestorePassword() throws IOException, NotFoundException {
-        when(userService.isEmailExist(anyString())).thenReturn(true);
         ModelAndView mav = controller.restorePassword(EMAIL);
-        verify(userService, times(1)).isEmailExist(EMAIL);
         verify(userService, times(1)).restorePassword(EMAIL);
         assertModelAttributeValue(mav, "message", "label.restorePassword.completed");
     }
 
     @Test
     public void testRestorePasswordWithWrongEmail() throws NotFoundException {
-        when(userService.isEmailExist(anyString())).thenReturn(false);
+        doThrow(new NotFoundException()).when(userService).restorePassword(anyString());
         ModelAndView mav = controller.restorePassword(EMAIL);
-        verify(userService, times(1)).isEmailExist(EMAIL);
+        verify(userService, times(1)).restorePassword(EMAIL);
         assertModelAttributeValue(mav, "error", "email.unknown");
     }
 
