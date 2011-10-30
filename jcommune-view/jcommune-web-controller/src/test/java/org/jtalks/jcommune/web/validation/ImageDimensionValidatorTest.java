@@ -24,7 +24,11 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import java.io.IOException;
 import java.util.Set;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Eugeny Batov
@@ -110,6 +114,18 @@ public class ImageDimensionValidatorTest {
         Assert.assertNotNull(constraintViolations.iterator().next().getMessage());
     }
 
+    @Test
+    public void testBrokenMultipartFile() throws IOException {
+        MockMultipartFile mockMultipartFile = mock(MockMultipartFile.class);
+        when(mockMultipartFile.isEmpty()).thenReturn(false);
+        when(mockMultipartFile.getInputStream()).thenReturn(null);
+
+        Set<ConstraintViolation<TestObject>> constraintViolations =
+                validator.validate(new TestObject(mockMultipartFile));
+
+        Assert.assertEquals(constraintViolations.size(), 1, "Validation without errors");
+        Assert.assertNotNull(constraintViolations.iterator().next().getMessage());
+    }
 
     private byte[] normalAvatarByteArray = new byte[]{-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0,
             0, 0, 4, 0, 0, 0, 4, 1, 0, 0, 0, 0, -127, -118, -93, -45, 0, 0, 0, 9, 112, 72, 89, 115, 0, 0, 1,

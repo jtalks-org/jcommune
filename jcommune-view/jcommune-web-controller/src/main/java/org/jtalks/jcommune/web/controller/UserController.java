@@ -155,7 +155,8 @@ public class UserController {
                 .addObject("user", user)
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
                         // bind separately to get localized value
-                .addObject("language", Language.valueOf(user.getLanguage()));
+                .addObject("language", Language.valueOf(user.getLanguage()))
+                .addObject("pageSize",PageSize.valueOf(user.getPageSize()));                
     }
 
     /**

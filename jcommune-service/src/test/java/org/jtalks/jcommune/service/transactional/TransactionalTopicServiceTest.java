@@ -27,6 +27,7 @@ import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.security.AclBuilder;
 import org.jtalks.jcommune.service.security.SecurityConstants;
+import org.mockito.ArgumentCaptor;
 import org.springframework.mock.web.MockHttpSession;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -36,8 +37,15 @@ import java.util.List;
 import java.util.Set;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
-import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 /**
  * This test cover {@code TransactionalTopicService} logic validation.
@@ -190,6 +198,26 @@ public class TransactionalTopicServiceTest {
 
         assertNotNull(topics);
         assertEquals(topics.size(), max);
+        verify(topicDao).getAllTopicsPastLastDay(start, max, now);
+    }
+
+    @Test
+    public void testGetAllTopicsPastLastDayNullLastLoginDate() {
+        int start = 1;
+        int max = 2;
+        List<Topic> expectedList = new ArrayList<Topic>();
+        expectedList.add(new Topic(user, "title"));
+        expectedList.add(new Topic(user, "title"));
+        ArgumentCaptor<DateTime> captor = ArgumentCaptor.forClass(DateTime.class);
+        when(topicDao.getAllTopicsPastLastDay(eq(start), eq(max), any(DateTime.class))).thenReturn(expectedList);
+
+        List<Topic> topics = topicService.getAllTopicsPastLastDay(start, max, null);
+
+        assertNotNull(topics);
+        assertEquals(topics.size(), max);
+        verify(topicDao).getAllTopicsPastLastDay(eq(start), eq(max), captor.capture());
+        int yesterday = new DateTime().minusDays(1).getDayOfYear();
+        assertEquals(captor.getValue().getDayOfYear(), yesterday);
     }
 
     @Test
@@ -201,6 +229,21 @@ public class TransactionalTopicServiceTest {
         int count = topicService.getTopicsPastLastDayCount(now);
 
         assertEquals(expectedCount, count);
+        verify(topicDao).getTopicsPastLastDayCount(now);
+    }
+
+    @Test
+    public void testGetTopicsPastLastDayCountNullLastLoginDate() {
+        int expectedCount = 10;
+        ArgumentCaptor<DateTime> captor = ArgumentCaptor.forClass(DateTime.class);
+        when(topicDao.getTopicsPastLastDayCount(any(DateTime.class))).thenReturn(expectedCount);
+
+        int count = topicService.getTopicsPastLastDayCount(null);
+
+        assertEquals(expectedCount, count);
+        verify(topicDao).getTopicsPastLastDayCount(captor.capture());
+        int yesterday = new DateTime().minusDays(1).getDayOfYear();
+        assertEquals(captor.getValue().getDayOfYear(), yesterday);
     }
 
     @Test(expectedExceptions = {NotFoundException.class})

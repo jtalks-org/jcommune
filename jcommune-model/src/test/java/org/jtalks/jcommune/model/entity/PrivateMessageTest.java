@@ -18,6 +18,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Alexandre Teterin
@@ -74,5 +75,19 @@ public class PrivateMessageTest {
                                 + PrivateMessage.QUOTE_SEPARATOR + "Line2" + PrivateMessage.NEW_LINE}
         };
 
+    }
+
+    @Test
+    public void testIsRead() {
+        pm.markAsRead();
+
+        assertTrue(pm.isRead());
+    }
+
+    @Test
+    public void testIsDraft() {
+        pm.markAsDraft();
+
+        assertTrue(pm.isDraft());
     }
 }

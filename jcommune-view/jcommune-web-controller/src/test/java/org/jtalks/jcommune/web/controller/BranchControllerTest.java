@@ -103,7 +103,7 @@ public class BranchControllerTest {
         session.setAttribute("lastlogin", now);
 
         //invoke the object under test
-        ModelAndView mav = controller.show(page, pageSize, session);
+        ModelAndView mav = controller.recentTopics(page, pageSize, session);
 
         //check expectations
         verify(topicService).getAllTopicsPastLastDay(startIndex, pageSize, now);
