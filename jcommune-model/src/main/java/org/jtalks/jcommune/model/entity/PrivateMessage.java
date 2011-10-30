@@ -19,9 +19,7 @@ import org.jtalks.common.model.entity.Entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
+import java.util.StringTokenizer;
 
 /**
  * Text message to send from one user to another. <br/>
@@ -231,29 +229,20 @@ public class PrivateMessage extends Entity {
      */
     public String prepareBodyForQuote() {
         StringBuilder bodyBuilder = new StringBuilder();
-        BufferedReader inputData = new BufferedReader(new StringReader(getBody()));
-        try {
-            String line;
-            while ((line = inputData.readLine()) != null) {
-                if (line.startsWith(QUOTE_PREFIX)) {
-                    //create quote line from the quoted line
-                    bodyBuilder.append(QUOTE_PREFIX);
-                    bodyBuilder.append(line);
-                    bodyBuilder.append(NEW_LINE);
-                } else {
-                    //create quote line from the unquoted line
-                    bodyBuilder.append(QUOTE_PREFIX);
-                    bodyBuilder.append(QUOTE_SEPARATOR);
-                    bodyBuilder.append(line);
-                    bodyBuilder.append(NEW_LINE);
-                }
-
+        StringTokenizer st = new StringTokenizer(getBody(), NEW_LINE);
+        while (st.hasMoreTokens()) {
+            String line = st.nextToken();
+            bodyBuilder.append(QUOTE_PREFIX);
+            if (line.startsWith(QUOTE_PREFIX)) {
+                //create quote line from the quoted line
+                bodyBuilder.append(line);
+            } else {
+                //create quote line from the unquoted line
+                bodyBuilder.append(QUOTE_SEPARATOR);
+                bodyBuilder.append(line);
             }
-        } catch (IOException e) {
-            logger.error("Invalid message body data " + e.getMessage());
+            bodyBuilder.append(NEW_LINE);
         }
-
-
         return bodyBuilder.toString();
     }
 }
