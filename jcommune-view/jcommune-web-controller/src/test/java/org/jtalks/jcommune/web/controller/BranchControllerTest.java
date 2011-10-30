@@ -120,4 +120,28 @@ public class BranchControllerTest {
         assertEquals((int) actualPage, page);
 
     }
+
+    @Test
+    public void test() throws NotFoundException {
+        long branchId = 1L;
+        int page = 7;
+        int size = 1;
+
+        when(topicService.getTopicsInBranchCount(branchId)).thenReturn(10);
+        when(branchService.get(branchId)).thenReturn(new Branch("name"));
+        when(breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)))
+                .thenReturn(new ArrayList<Breadcrumb>());
+
+        ModelAndView mav = controller.show(branchId, page, size);
+
+        String actualNameButton = assertAndReturnModelAttributeOfType(mav, "nameButton", String.class);
+        assertEquals((String) actualNameButton, "Show pages");
+
+        size = 2;
+        mav = controller.show(branchId, page, size);
+
+        actualNameButton = assertAndReturnModelAttributeOfType(mav, "nameButton", String.class);
+        assertEquals((String) actualNameButton, "Show all");
+
+    }
 }
