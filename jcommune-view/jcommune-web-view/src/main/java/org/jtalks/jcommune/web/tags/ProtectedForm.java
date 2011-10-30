@@ -23,6 +23,11 @@ import org.springframework.web.servlet.tags.form.FormTag;
  */
 public class ProtectedForm extends FormTag {
 
+    /**
+     * Serialixable class should define it
+     */
+    private static final long serialVersionUID = 34588L;
+
     private static final String MULTIPOST_BLOCKING_JS = "if (this.getAttribute('submitted')) return false; "
             + "this.setAttribute('submitted','true');";
 
@@ -32,6 +37,4 @@ public class ProtectedForm extends FormTag {
     public ProtectedForm() {
         setOnsubmit(MULTIPOST_BLOCKING_JS);
     }
-
-    private static final long serialVersionUID = 34588L;
 }

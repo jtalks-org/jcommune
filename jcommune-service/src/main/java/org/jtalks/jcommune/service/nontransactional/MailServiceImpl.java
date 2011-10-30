@@ -29,7 +29,7 @@ public class MailServiceImpl implements MailService {
     private MailSender mailSender;
     private SimpleMailMessage templateMessage;
 
-    private final Logger logger = LoggerFactory.getLogger(MailServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(MailServiceImpl.class);
 
     // todo: apply i18n settings here somehow
     private static final String PASSWORD_RECOVERY_TEMPLATE =

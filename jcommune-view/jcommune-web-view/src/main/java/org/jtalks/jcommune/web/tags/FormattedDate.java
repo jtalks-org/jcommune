@@ -18,6 +18,7 @@ package org.jtalks.jcommune.web.tags;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.contrib.jsptag.FormatTag;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
@@ -25,6 +26,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
+import java.util.logging.Logger;
 
 /**
  * This tag replaces the existing Joda Time format tag to take
@@ -44,19 +46,19 @@ import javax.servlet.jsp.PageContext;
 public class FormattedDate extends FormatTag {
 
     /**
-     * Cookie name to search for time offset
+     * Serialixable class should define it
      */
-    public static final String GMT_PARAM_NAME = "GMT";
+    private static final long serialVersionUID = 34588L;
 
-    /**
-     * Unified data formatting pattern
-     */
+    public static final String GMT_COOKIE_NAME = "GMT";
+
     public static final String DATE_FORMAT_PATTERN = "dd MMM yyyy HH:mm";
 
-    /**
-     * Millisecond offset from UTC to local time
-     */
-    private int offset = 0;
+    private int offset = DEFAULT_OFFSET;
+
+    public static final int DEFAULT_OFFSET = 0;
+
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(FormattedDate.class);
 
     /**
      * @inheritDoc
@@ -66,7 +68,7 @@ public class FormattedDate extends FormatTag {
         Cookie[] cookies = ((HttpServletRequest) pageContext.getRequest()).getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals(GMT_PARAM_NAME)) {
+                if (cookie.getName().equals(GMT_COOKIE_NAME)) {
                     offset = this.convertTimeZoneOffset(cookie.getValue());
                     break;
                 }
@@ -86,13 +88,11 @@ public class FormattedDate extends FormatTag {
      */
     @Override
     public void setValue(Object value) throws JspTagException {
-        if (value instanceof DateTime) {
-            DateTime time = (DateTime) value;
-            DateTimeZone zone = time.getZone();
-            long utcTime = zone.convertLocalToUTC(time.getMillis(), true);
-            value = new DateTime(utcTime + offset);
-        }
-        super.setValue(value);
+        DateTime time = (DateTime) value;
+        DateTimeZone zone = time.getZone();
+        long utcTime = zone.convertLocalToUTC(time.getMillis(), true);
+        time = new DateTime(utcTime + offset);
+        super.setValue(time);
     }
 
     /**
@@ -109,7 +109,7 @@ public class FormattedDate extends FormatTag {
             return -Integer.parseInt(jsRepresentation) * 60 * 1000;
         } catch (NumberFormatException e) {
             // someone has passed wrong GMT in cookie, use GMT
-            return 0;
+            return DEFAULT_OFFSET;
         }
     }
 
@@ -124,7 +124,7 @@ public class FormattedDate extends FormatTag {
             this.setLocale(localeResolver.resolveLocale(request));
             this.setPattern(DATE_FORMAT_PATTERN);
         } catch (JspTagException e) {
-            System.out.println("Nothing meaningful here");
+            logger.error("Error while rendering the date", e);
         }
     }
 }

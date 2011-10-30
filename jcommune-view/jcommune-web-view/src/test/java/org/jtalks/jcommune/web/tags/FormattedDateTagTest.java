@@ -1,4 +1,4 @@
- /**
+/**
  * Copyright (C) 2011  JTalks.org Team
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -12,9 +12,94 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
- package org.jtalks.jcommune.web.tags;
+package org.jtalks.jcommune.web.tags;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockPageContext;
+import org.springframework.mock.web.MockServletContext;
+import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.i18n.FixedLocaleResolver;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Locale;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
+
 /**
  * @author Evgeniy Naumenko
  */
 public class FormattedDateTagTest {
+
+    private PageContext context;
+    private HttpServletRequest request;
+    private Cookie[] cookies;
+    private LocaleResolver resolver;
+    private DateTime localDate = new DateTime(2011, 10, 30, 20, 15, 10, 5);
+    private DateTime utcDate = new DateTime(localDate.getZone().convertLocalToUTC(localDate.getMillis(), true));
+    private DateTimeFormatter formatter = DateTimeFormat.forPattern(FormattedDate.DATE_FORMAT_PATTERN);
+    private Locale locale = Locale.ENGLISH;
+
+    private FormattedDate tag;
+
+    @BeforeMethod
+    public void setUp() {
+        request = mock(HttpServletRequest.class);
+        context = new MockPageContext(new MockServletContext(), request);
+        resolver = new FixedLocaleResolver(locale);
+        when(request.getAttribute(DispatcherServlet.LOCALE_RESOLVER_ATTRIBUTE)).thenReturn(resolver);
+        tag = new FormattedDate();
+    }
+
+    @Test
+    public void testRenderDateWithCookiesSet() throws JspException, UnsupportedEncodingException {
+        cookies = new Cookie[]{new Cookie(FormattedDate.GMT_COOKIE_NAME, "60")};
+        when(request.getCookies()).thenReturn(cookies);
+        String output = this.render();
+        assertEquals(output, formatter.withLocale(locale).print(utcDate.minusHours(1)));
+    }
+
+    @Test
+    public void testRenderDateWithoutCookies() throws JspException, UnsupportedEncodingException {
+        cookies = new Cookie[]{};
+        when(request.getCookies()).thenReturn(cookies);
+        String output = this.render();
+        assertEquals(output, formatter.withLocale(locale).print(utcDate));
+    }
+
+    @Test
+    public void testRenderDateWithNullCookies() throws JspException, UnsupportedEncodingException {
+        when(request.getCookies()).thenReturn(null);
+        String output = this.render();
+        assertEquals(output, formatter.withLocale(locale).print(utcDate));
+    }
+
+    @Test
+    public void testRenderDateWithWrongCookiesSet() throws JspException, UnsupportedEncodingException {
+        cookies = new Cookie[]{new Cookie(FormattedDate.GMT_COOKIE_NAME, "lol")};
+        when(request.getCookies()).thenReturn(cookies);
+        String output = this.render();
+        assertEquals(output, formatter.withLocale(locale).print(utcDate));
+    }
+
+    private String render() throws JspException, UnsupportedEncodingException {
+        tag.setPageContext(context);
+        tag.setValue(localDate);
+        tag.doStartTag();
+        tag.doEndTag();
+        return ((MockHttpServletResponse) context.getResponse()).getContentAsString();
+    }
 }
