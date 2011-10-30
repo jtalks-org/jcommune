@@ -69,6 +69,12 @@ public class SectionControllerTest {
         assertViewName(mav, "sectionList");
         assertModelAttributeAvailable(mav, "sectionList");
         assertModelAttributeAvailable(mav, "breadcrumbList");
+        assertModelAttributeAvailable(mav, "messagesCount");
+        assertModelAttributeAvailable(mav, "registeredUsersCount");
+        assertModelAttributeAvailable(mav, "visitors");
+        assertModelAttributeAvailable(mav, "usersRegistered");
+        assertModelAttributeAvailable(mav, "visitorsRegistered");
+        assertModelAttributeAvailable(mav, "visitorsGuests");
     }
 
     private void expectationsForAllSections() {

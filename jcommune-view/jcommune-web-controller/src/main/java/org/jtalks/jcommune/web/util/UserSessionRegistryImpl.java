@@ -12,45 +12,42 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service;
+package org.jtalks.jcommune.web.util;
 
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.Section;
+import org.springframework.security.core.session.SessionRegistryImpl;
 
-import java.util.List;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
 
 /**
- * The interface to manipulate with sections
+ * Custom session registry implementation to track active user sessions
  *
- * @author Max Malakhov
+ * @author Elena Lepaeva
  */
+public class UserSessionRegistryImpl extends SessionRegistryImpl implements HttpSessionListener {
 
-public interface SectionService extends EntityService<Section> {
-    /**
-     * Get list of all sections.
-     *
-     * @return - list of the sections.
-     */
-    List<Section> getAll();
+    private static long totalActiveSessions;
 
     /**
-     * Get count topics in branch from database
-     * @param branch branch
-     * @return count count
+     * @return active sessions count
      */
-    int getTopicInBranchCount(Branch branch);
+    public static long getTotalActiveSessions() {
+        return totalActiveSessions;
+    }
 
     /**
-     * Get total count of messages on the forum
-     *
-     * @return number of posts on the forum.
+     * {@inheritDoc}
      */
-    int getPostsOnForumCount();
+    @Override
+    public void sessionCreated(HttpSessionEvent se) {
+        totalActiveSessions++;
+    }
 
     /**
-     * Return total count of registred user's accounts
-     *
-     * @return count of registred user's accounts
+     * {@inheritDoc}
      */
-    int getUsersCount();
+    @Override
+    public void sessionDestroyed(HttpSessionEvent se) {
+        totalActiveSessions--;
+    }
 }

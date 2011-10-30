@@ -137,6 +137,14 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         assertEquals(count, 5);
     }
 
+    @Test
+    public void testGetPostsOnForumCount() {
+        int postCount = 5;
+        createAndSavePostList(postCount);
+        int result = dao.getPostsOnForumCount();
+        assertEquals(result, postCount);
+    }
+
     private int getCount() {
         return ((Number) session.createQuery("select count(*) from Post").uniqueResult()).intValue();
     }

@@ -66,4 +66,11 @@ public interface PostService extends EntityService<Post> {
      *          when topic or post not found
      */
     void deletePost(long postId) throws NotFoundException;
+
+    /**
+     * Get total count of messages on the forum
+     *
+     * @return number of posts on the forum.
+     */
+    int getPostsOnForumCount();
 }

@@ -51,4 +51,13 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
         return ((Number) getSession().createQuery("select count(*) from Post p where p.topic = ?")
                 .setCacheable(true).setLong(0, topicId).uniqueResult()).intValue();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getPostsOnForumCount() {
+        return ((Number) getSession().createQuery("select count(*) from Post p")
+                .setCacheable(true).uniqueResult()).intValue();
+    }
 }

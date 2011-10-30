@@ -171,4 +171,13 @@ public class TransactionalPostServiceTest {
 
         postService.deletePost(POST_ID);
     }
+
+    @Test
+    public void testGetPostsOnForumCount() throws NotFoundException {
+        int expectedCount = 10;
+        when(postDao.getPostsOnForumCount()).thenReturn(expectedCount);
+
+        assertEquals(postService.getPostsOnForumCount(), expectedCount);
+        verify(postDao).getPostsOnForumCount();
+    }
 }

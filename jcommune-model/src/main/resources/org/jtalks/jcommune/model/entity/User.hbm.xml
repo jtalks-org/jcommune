@@ -16,29 +16,32 @@
 
 -->
 <!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-  <class name="org.jtalks.jcommune.model.entity.User" table="USER">
-    <cache usage="nonstrict-read-write"/>
-    <id column="ID" name="id" unsaved-value="0">
-      <generator class="native"/>
-    </id>
-    <property column="UUID" name="uuid" unique="true" not-null="true"/>
-    <property column="FIRST_NAME" name="firstName"/>
-    <property column="LAST_NAME" name="lastName"/>
-    <property column="USERNAME" name="username" unique="true" not-null="true"/>
-    <property column="ENCODED_USERNAME" name="encodedUsername" not-null="true"/>
-    <property column="EMAIL" name="email" unique="true" not-null="true"/>
-    <property column="PASSWORD" name="password" not-null="true"/>
-    <property column="ROLE" name="role"/>
-    <property column="SIGNATURE" name="signature"/>
-    <property column="LAST_LOGIN" name="lastLogin"
-              type="org.joda.time.contrib.hibernate.PersistentDateTime" not-null="false"/>
-    <property name="avatar" lazy="true">
-      <column name="AVATAR" sql-type="blob"/>
-    </property>
-    <property column="LANGUAGE" name="language"/>
-    <property column="PAGE_SIZE" name="pageSize"/>
-  </class>
+    <class name="org.jtalks.jcommune.model.entity.User" table="USER">
+        <cache usage="nonstrict-read-write"/>
+        <id column="ID" name="id" unsaved-value="0">
+            <generator class="native"/>
+        </id>
+        <property column="UUID" name="uuid" unique="true" not-null="true"/>
+        <property column="FIRST_NAME" name="firstName"/>
+        <property column="LAST_NAME" name="lastName"/>
+        <property column="USERNAME" name="username" unique="true" not-null="true"/>
+        <property column="ENCODED_USERNAME" name="encodedUsername" not-null="true"/>
+        <property column="EMAIL" name="email" unique="true" not-null="true"/>
+        <property column="PASSWORD" name="password" not-null="true"/>
+        <property column="ROLE" name="role"/>
+        <property column="SIGNATURE" name="signature"/>
+        <property column="LAST_LOGIN" name="lastLogin"
+                  type="org.joda.time.contrib.hibernate.PersistentDateTime" not-null="false"/>
+        <property name="avatar" lazy="true">
+            <column name="AVATAR" sql-type="blob"/>
+        </property>
+        <property column="LANGUAGE" name="language"/>
+        <property column="PAGE_SIZE" name="pageSize"/>
+    </class>
+
+    <query name="getCountOfUsers" cacheable="false"><![CDATA[ SELECT count(*) FROM User]]></query>
+
 </hibernate-mapping>

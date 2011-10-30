@@ -24,7 +24,7 @@
     <!-- Http Security -->
     <security:http auto-config="true" use-expressions="true" create-session="always">
 
-        <security:session-management session-fixation-protection="newSession" />
+        <security:session-management session-authentication-strategy-ref="concurrentSessionControlStrategy"/>
 
         <security:intercept-url pattern="/topics/new" method="GET" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
 
@@ -62,4 +62,12 @@
     <bean id="successAuthHandler" class="org.jtalks.jcommune.web.util.SuccessfulAuthenticationHandler">
         <constructor-arg ref="userService"/>
     </bean>
+
+    <bean id="concurrentSessionControlStrategy" class="org.springframework.security.web.authentication.session.ConcurrentSessionControlStrategy">
+        <constructor-arg name="sessionRegistry" ref="sessionRegistry"/>
+        <property name="maximumSessions" value="1"/>
+    </bean>
+
+    <bean id="sessionRegistry" class="org.jtalks.jcommune.web.util.UserSessionRegistryImpl"/>
+
 </beans>

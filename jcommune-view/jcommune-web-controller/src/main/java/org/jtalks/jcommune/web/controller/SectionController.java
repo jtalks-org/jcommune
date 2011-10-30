@@ -15,15 +15,21 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Section;
+import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
+import org.jtalks.jcommune.web.util.UserSessionRegistryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Displays to user page contains section list with related branch lists
@@ -38,6 +44,9 @@ public final class SectionController {
 
     private SectionService sectionService;
     private BreadcrumbBuilder breadcrumbBuilder;
+
+    @Resource(name = "sessionRegistry")
+    private UserSessionRegistryImpl sessionRegistry = new UserSessionRegistryImpl();
 
     /**
      * Constructor creates MVC controller with specified SectionService
@@ -59,9 +68,22 @@ public final class SectionController {
      */
     @RequestMapping(value = "/sections", method = RequestMethod.GET)
     public ModelAndView sectionList() {
+        List<User> users = null;
+        if (sessionRegistry.getAllPrincipals().size() > 0) {
+            users = new ArrayList<User>();
+            for (Object user : sessionRegistry.getAllPrincipals()) {
+                users.add((User) user);
+            }
+        }
         return new ModelAndView("sectionList")
                 .addObject("sectionList", sectionService.getAll())
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
+                .addObject("messagesCount", sectionService.getPostsOnForumCount())
+                .addObject("registeredUsersCount", sectionService.getUsersCount())
+                .addObject("visitors", UserSessionRegistryImpl.getTotalActiveSessions())
+                .addObject("usersRegistered", users)
+                .addObject("visitorsRegistered", sessionRegistry.getAllPrincipals().size())
+                .addObject("visitorsGuests", UserSessionRegistryImpl.getTotalActiveSessions() - sessionRegistry.getAllPrincipals().size());
     }
 
     /**

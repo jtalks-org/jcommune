@@ -366,4 +366,13 @@ public class TransactionalUserServiceTest {
 
         userService.restorePassword(EMAIL);
     }
+
+    @Test
+    public void testGetUsersCount() throws Exception {
+        int userCount = 5;
+        when(userDao.getUsersCount()).thenReturn(userCount);
+        int result = userService.getUsersCount();
+        assertEquals(result, userCount);
+        verify(userDao).getUsersCount();
+    }
 }
