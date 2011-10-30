@@ -277,4 +277,32 @@ public class TopicControllerTest {
         dto.setTopicName(TOPIC_THEME);
         return dto;
     }
+
+    @Test
+    public void testShowEnyBranch() throws NotFoundException {
+        int page = 2;
+        int size = 1;
+        Topic topic = mock(Topic.class);
+
+        //set expectations
+        when(postService.getPostsInTopicCount(TOPIC_ID)).thenReturn(10);
+        when(topicService.get(TOPIC_ID)).thenReturn(topic);
+        when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
+        when(topic.getBranch()).thenReturn(branch);
+        when(branch.getId()).thenReturn(1L);
+
+
+        //invoke the object under test
+        ModelAndView mav = controller.show(TOPIC_ID, page, size, new MockHttpSession());
+
+        String actualNameButton = assertAndReturnModelAttributeOfType(mav, "nameButton", String.class);
+        assertEquals((String) actualNameButton, "Show pages");
+
+        size = 2;
+        mav = controller.show(TOPIC_ID, page, size, new MockHttpSession());
+
+        actualNameButton = assertAndReturnModelAttributeOfType(mav, "nameButton", String.class);
+        assertEquals((String) actualNameButton, "Show all");
+
+    }
 }

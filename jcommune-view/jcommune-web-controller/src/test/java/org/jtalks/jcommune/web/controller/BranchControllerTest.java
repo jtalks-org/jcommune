@@ -122,7 +122,7 @@ public class BranchControllerTest {
     }
 
     @Test
-    public void test() throws NotFoundException {
+    public void testShowEnyBranch() throws NotFoundException {
         long branchId = 1L;
         int page = 7;
         int size = 1;
