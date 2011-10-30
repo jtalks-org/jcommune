@@ -110,27 +110,33 @@
         <div class="forum_table"> <!-- Таблица -->
             <div class="forum_row"> <!-- Отдельный ряд -->
                 <div class="forum_info"> <!-- Содержимое ряда -->
-                    <spring:message code="label.onlineUsersInfo.messagesCount"/> 120693
+                    <spring:message code="label.onlineUsersInfo.messagesCount"/> <c:out value="${messagesCount}"/>
                     <br/>
-                    <spring:message code="label.onlineUsersInfo.registeredUsers.count"/> 10478
+                    <spring:message code="label.onlineUsersInfo.registeredUsers.count"/> <c:out value="${registeredUsersCount}"/>
                 </div>
                 <div class="empty_cell"></div>
                 <!-- Необходим для правильного отображения псевдотаблицы -->
             </div>
             <div class="forum_row"> <!-- Отдельный ряд -->
                 <div class="forum_info"> <!-- Содержимое ряда -->
-                    <spring:message code="label.onlineUsersInfo.visitors"/>35,
-                    <spring:message code="label.onlineUsersInfo.visitors.registered"/> 5,
-                    <spring:message code="label.onlineUsersInfo.visitors.hidden"/> 0
-                    <spring:message code="label.onlineUsersInfo.visitors.guests"/> 30
+                    <spring:message code="label.onlineUsersInfo.visitors"/> <c:out value="${visitors}"/>,
+                    <spring:message code="label.onlineUsersInfo.visitors.registered"/> <c:out value="${visitorsRegistered}"/>,
+                    <%--<spring:message code="label.onlineUsersInfo.visitors.hidden"/> 0--%>
+                    <spring:message code="label.onlineUsersInfo.visitors.guests"/>  <c:out value="${visitorsGuests}"/>
                     <span class="admin"> [Администратор] </span> <span class="moderator"> [Модератор]</span>
                     <br/>
-                    <spring:message code="label.onlineUsersInfo.registeredUsers"/>
-                    <ul class="users_list">
-                        <li><a href="#" class="moderator">andreyko</a>,</li>
-                        <li><a href="#" class="admin">Староверъ</a>,</li>
-                        <li><a href="#" class="user">Вася</a>.</li>
-                    </ul>
+                    <c:if test="${usersRegistered!=null}">
+                        <spring:message code="label.onlineUsersInfo.registeredUsers"/>
+                        <ul class="users_list">
+                            <c:forEach items="${usersRegistered}" var="user">
+                                <li><a href="${pageContext.request.contextPath}/users/${user.username}">
+                                    <c:out value="${user.username}"/></a>, </li>
+                            </c:forEach>
+                            <%--<li><a href="#" class="moderator">andreyko</a>,</li>
+                            <li><a href="#" class="admin">Староверъ</a>,</li>
+                            <li><a href="#" class="user">Вася</a>.</li>--%>
+                        </ul>
+                    </c:if>
                 </div>
                 <div class="empty_cell"></div>
                 <!-- Необходим для правильного отображения псевдотаблицы -->

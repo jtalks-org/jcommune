@@ -61,6 +61,8 @@
     <bean id="branchSectionService"
           class="org.jtalks.jcommune.service.transactional.TransactionalSectionService">
         <constructor-arg index="0" ref="branchSectionDao"/>
+        <constructor-arg index="1" ref="postService"/>
+        <constructor-arg index="2" ref="userService"/>
     </bean>
 
     <bean id="pmService"

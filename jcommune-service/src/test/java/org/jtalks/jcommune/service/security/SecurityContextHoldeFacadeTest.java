@@ -12,24 +12,22 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service;
+package org.jtalks.jcommune.service.security;
 
-/**
- * This service is focused on sending e-mail to the forum users.
- * Notifications, confirmations or e-mail based subscriptions of a various
- * kind should use this service to perform e-mail sending.
- *
- * @author Evgeniy Naumenko
- */
-public interface MailService {
+import org.springframework.security.core.context.SecurityContext;
+import org.testng.annotations.Test;
 
-    /**
-     * Sends a password recovery message for the user with a given email.
-     * This method does not generate new password, just sends a message.
-     *
-     * @param userName    username to be used in a mail
-     * @param email       address to mail to
-     * @param newPassword new user password to be placed in an email
-     */
-    void sendPasswordRecoveryMail(String userName, String email, String newPassword);
+import static org.mockito.Mockito.mock;
+import static org.testng.Assert.assertTrue;
+
+public class SecurityContextHoldeFacadeTest {
+    @Test
+    public void testSetGet() {
+        SecurityContextFacade facade = new SecurityContextHolderFacade();
+        SecurityContext context = mock(SecurityContext.class);
+
+        facade.setContext(context);
+
+        assertTrue(context == facade.getContext());
+    }
 }

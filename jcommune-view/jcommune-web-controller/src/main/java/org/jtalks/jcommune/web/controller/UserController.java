@@ -155,7 +155,8 @@ public class UserController {
                 .addObject("user", user)
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
                         // bind separately to get localized value
-                .addObject("language", Language.valueOf(user.getLanguage()));
+                .addObject("language", Language.valueOf(user.getLanguage()))
+                .addObject("pageSize",PageSize.valueOf(user.getPageSize()));                
     }
 
     /**
@@ -200,8 +201,9 @@ public class UserController {
         }
         User editedUser = editUserProfile(userDto, result);
         // error occured
-        if (editedUser == null)
+        if (editedUser == null) {
             return applyAvatarRemoval(userDto);
+        }
         return new ModelAndView(new StringBuilder()
                 .append("redirect:/users/")
                 .append(editedUser.getEncodedUsername()).toString());
@@ -336,16 +338,15 @@ public class UserController {
      *
      * @param email address ro identify the user
      * @return view with a parameters bound
-     * @throws NotFoundException current implementation will not throw it anyway
      */
     @RequestMapping(value = "/password/restore", method = RequestMethod.POST)
-    public ModelAndView restorePassword(String email) throws NotFoundException {
+    public ModelAndView restorePassword(String email) {
         ModelAndView mav = new ModelAndView("restorePassword");
         mav.addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
-        if (userService.isEmailExist(email)) {
+        try {
             userService.restorePassword(email);
             mav.addObject("message", "label.restorePassword.completed");
-        } else {
+        } catch (NotFoundException e) {
             mav.addObject("error", "email.unknown");
         }
         return mav;

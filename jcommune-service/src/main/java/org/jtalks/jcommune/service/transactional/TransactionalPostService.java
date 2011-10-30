@@ -103,4 +103,12 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         securityService.deleteFromAcl(post);
         logger.debug("Deleted post with id: {}", postId);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getPostsOnForumCount() {
+        return this.getDao().getPostsOnForumCount();
+    }
 }

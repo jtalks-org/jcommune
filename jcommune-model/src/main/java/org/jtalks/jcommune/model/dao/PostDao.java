@@ -47,4 +47,11 @@ public interface PostDao extends ChildRepository<Post> {
      * @return number of posts in topic
      */
     int getPostsInTopicCount(long topicId);
+
+    /**
+     * Get total count of messages on the forum
+     *
+     * @return number of posts on the forum.
+     */
+    int getPostsOnForumCount();
 }

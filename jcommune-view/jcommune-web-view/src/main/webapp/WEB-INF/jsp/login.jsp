@@ -40,7 +40,7 @@
         <a href='<c:url value="/users/new" />'><spring:message code="label.register"/></a>
         <br/>
         <br/>
-        <a href='<c:url value="${pageContext.request.contextPath}/password/restore" />'>
+        <a href='<c:url value="/password/restore" />'>
             <spring:message code="label.restorePassword.prompt"/></a>
         <br/>
         <br/>

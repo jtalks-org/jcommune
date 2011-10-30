@@ -63,7 +63,7 @@ public class ImageDimensionValidator implements ConstraintValidator<ImageDimensi
         } catch (Exception e) {
             return false;
         }
-        return (image == null) ? false : image.getWidth(null) == imageWidth &&
+        return (image != null) && image.getWidth(null) == imageWidth &&
                 image.getHeight(null) == imageHeight;
     }
 }

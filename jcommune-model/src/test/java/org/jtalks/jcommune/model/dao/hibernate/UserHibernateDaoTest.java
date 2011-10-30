@@ -16,6 +16,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -296,6 +297,11 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         assertEquals(result, 0);
     }
 
+    @Test
+    public void testGetUserCount() {
+        session.save(ObjectsFactory.getUser("firstUser","firstUserMail@mail.ru"));
+        assertReflectionEquals(1, dao.getUsersCount());
+    }
 
     private int getCount() {
         return ((Number) session.createQuery("select count(*) from User").uniqueResult()).intValue();

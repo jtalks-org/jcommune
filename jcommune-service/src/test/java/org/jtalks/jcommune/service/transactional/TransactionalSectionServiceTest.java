@@ -22,10 +22,14 @@ import static org.testng.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
+import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Section;
+import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.SectionService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -40,12 +44,16 @@ public class TransactionalSectionServiceTest {
     final String SECTION_NAME = "section name";
 
     private SectionDao sectionDao;
+    private PostService postService;
+    private UserService userService;
     private SectionService sectionService;
 
     @BeforeMethod
     public void setUp() throws Exception {
         sectionDao = mock(SectionDao.class);
-        sectionService = new TransactionalSectionService(sectionDao);
+        postService = mock(PostService.class);
+        userService = mock(UserService.class);
+        sectionService = new TransactionalSectionService(sectionDao, postService, userService);
     }
 
     @Test
@@ -80,12 +88,12 @@ public class TransactionalSectionServiceTest {
         verify(sectionDao).getAll();
     }
 
-     @Test
+    @Test
     public void testTransactionTopicInBranchCount() throws NotFoundException {
         Branch branch = new Branch();
         when(sectionDao.getTopicInBranchCount(branch)).thenReturn(1);
 
-        assertEquals(sectionService.getTopicInBranchCount(branch),1);
+        assertEquals(sectionService.getTopicInBranchCount(branch), 1);
 
         verify(sectionDao).getTopicInBranchCount(branch);
     }

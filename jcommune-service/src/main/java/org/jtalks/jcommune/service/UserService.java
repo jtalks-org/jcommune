@@ -120,4 +120,11 @@ public interface UserService extends EntityService<User> {
      * @throws NotFoundException if there is no user for the email given
      */
     void restorePassword(String email) throws NotFoundException;
+
+    /**
+     * Return total count of registred user's accounts
+     *
+     * @return count of registred user's accounts
+     */
+    int getUsersCount();
 }

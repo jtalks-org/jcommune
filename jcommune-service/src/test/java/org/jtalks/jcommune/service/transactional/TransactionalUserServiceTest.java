@@ -25,20 +25,21 @@ import org.jtalks.jcommune.service.exceptions.DuplicateException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.service.security.SecurityConstants;
+import org.mockito.ArgumentCaptor;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.*;
 
 /**
  * @author Kirill Afonin
  * @author Osadchuck Eugeny
+ * @author Evgeniy Naumenko
  */
 public class TransactionalUserServiceTest {
     private static final String USERNAME = "username";
@@ -59,13 +60,14 @@ public class TransactionalUserServiceTest {
     private UserService userService;
     private UserDao userDao;
     private SecurityService securityService;
+    private MailService mailService;
 
     @BeforeMethod
     public void setUp() throws Exception {
         securityService = mock(SecurityService.class);
         userDao = mock(UserDao.class);
-
-        userService = new TransactionalUserService(userDao, securityService, mock(MailService.class));
+        mailService = mock(MailService.class);
+        userService = new TransactionalUserService(userDao, securityService, mailService);
     }
 
     @Test
@@ -339,5 +341,38 @@ public class TransactionalUserServiceTest {
         assertEquals(userService.getCountPostOfUser(user), 1);
 
         verify(userDao).getCountPostOfUser(user);
+    }
+
+    @Test
+    public void testRestorePassword() throws NotFoundException {
+        User user = new User(USERNAME, EMAIL, PASSWORD);
+        when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(true);
+        when(userDao.getByEmail(EMAIL)).thenReturn(user);
+
+        userService.restorePassword(EMAIL);
+
+        verify(mailService).sendPasswordRecoveryMail(eq(USERNAME), eq(EMAIL), matches("^[a-zA-Z0-9]*$"));
+        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+        verify(userDao).update(captor.capture());
+        assertEquals(captor.getValue().getUsername(), USERNAME);
+        assertEquals(captor.getValue().getEmail(), EMAIL);
+        assertFalse(PASSWORD.equals(captor.getValue().getPassword()));
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void testRestorePasswordWithWrongEmail() throws NotFoundException {
+        User user = new User(USERNAME, EMAIL, PASSWORD);
+        when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
+
+        userService.restorePassword(EMAIL);
+    }
+
+    @Test
+    public void testGetUsersCount() throws Exception {
+        int userCount = 5;
+        when(userDao.getUsersCount()).thenReturn(userCount);
+        int result = userService.getUsersCount();
+        assertEquals(result, userCount);
+        verify(userDao).getUsersCount();
     }
 }
