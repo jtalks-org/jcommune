@@ -87,24 +87,21 @@ public final class BranchController {
         List<Topic> topics = branch.getTopics();
         pag.setAllPageSize(topics.size());
         String nameButton;
-        if(pag.getCurrentPageSize() == pag.getAllPageSize())
-        {
+        if (pag.getCurrentPageSize() == pag.getAllPageSize()) {
             nameButton = "Show pages";
-        }
-        else
-        {
+        } else {
             nameButton = "Show all";
         }
-        if(size==null){size=0;}
-        if(size==1)
-        {
-            nameButton="Show pages";
+        if (size == null) {
+            size = 0;
+        }
+        if (size == 1) {
+            nameButton = "Show pages";
             pag.setCurrentPageSize(pag.getAllPageSize());
 
         }
-        if(size==2)
-        {
-            nameButton="Show all";
+        if (size == 2) {
+            nameButton = "Show all";
             pag.setCurrentPageSize(pag.getDefaultPageSize());
         }
 
@@ -113,8 +110,8 @@ public final class BranchController {
                 .addObject("branch", branch)
                 .addObject("branchId", branchId)
                 .addObject("topics", topics)
-                .addObject("size",size)
-                .addObject("name_button",nameButton)
+                .addObject("size", size)
+                .addObject("name_button", nameButton)
                 .addObject("_default", pag.getCurrentPageSize())
                 .addObject(PAGE, pag.getPage())
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)));
@@ -131,9 +128,9 @@ public final class BranchController {
      *          when branch not found
      */
     @RequestMapping(value = "/topics/recent", method = RequestMethod.GET)
-    public ModelAndView show(@RequestParam(value = PAGE, required = false) Integer page,
-                             @RequestParam(value = "size", required = false) Integer size, HttpSession session)
-        throws NotFoundException {
+    public ModelAndView recentTopics(@RequestParam(value = PAGE, required = false) Integer page,
+                                     @RequestParam(value = "size", required = false) Integer size, HttpSession session)
+            throws NotFoundException {
 
         DateTime lastLogin = (DateTime) session.getAttribute("lastlogin");
         int topicsCount = topicService.getTopicsPastLastDayCount(lastLogin);

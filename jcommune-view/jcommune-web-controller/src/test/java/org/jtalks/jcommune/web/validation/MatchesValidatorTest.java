@@ -18,7 +18,11 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import javax.validation.*;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.ValidationException;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.util.Set;
 
 /**
@@ -103,6 +107,14 @@ public class MatchesValidatorTest {
         Set<ConstraintViolation<TestObjectBadProperties>> constraintViolations =
                 validator.validate(new TestObjectBadProperties("1", "2"));
 
+    }
+
+    @Test
+    public void testOneFieldIsNull() {
+        Set<ConstraintViolation<TestObject>> constraintViolations =
+                validator.validate(new TestObject("value", null));
+
+        Assert.assertEquals(constraintViolations.size(), 1);
     }
 
 }

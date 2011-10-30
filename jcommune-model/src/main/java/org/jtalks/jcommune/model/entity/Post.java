@@ -154,14 +154,15 @@ public class Post extends Entity {
      *
      * @return shortContent
      */
-    public String getShortContent(){
+    public String getShortContent() {
         String content = this.getPostContent();
         String shortContent = "";
         // todo: replace with lastIndexOf call
-        if (content.length() > 200){
-            for (int i = 197; i > 1; i--){
-                if (content.charAt(i) == ' '){
-                    shortContent = content.substring(0,i);
+        final int maxLength = 200;
+        if (content.length() > maxLength) {
+            for (int i = 197; i > 1; i--) {
+                if (content.charAt(i) == ' ') {
+                    shortContent = content.substring(0, i);
                     shortContent = shortContent + "...";
                     break;
                 }

@@ -156,8 +156,7 @@ public class PostController {
      * Creates the answering page with empty answer form.
      * If the user isn't logged in he will be redirected to the login page.
      *
-     *
-     * @param topicId         the id of the topic for the answer
+     * @param topicId the id of the topic for the answer
      * @return answering {@code ModelAndView} or redirect to the login page
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic not found
@@ -177,7 +176,7 @@ public class PostController {
      * topic view page.
      *
      * @param postDto dto that contains data entered in form
-     * @param result validation result
+     * @param result  validation result
      * @return redirect to the topic or back to answer pae if validation failed
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic or branch not found

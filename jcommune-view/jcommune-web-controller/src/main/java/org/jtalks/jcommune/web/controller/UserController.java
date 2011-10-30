@@ -212,7 +212,7 @@ public class UserController {
      * Convenience method to handle possible errors
      *
      * @param userDto form submission result
-     * @param result form validation result, will be filled up with additional errors, if any
+     * @param result  form validation result, will be filled up with additional errors, if any
      * @return Edited domain object if no error occure, null otherwise
      * @throws IOException image stream processing error
      */
@@ -237,7 +237,7 @@ public class UserController {
      * @param response response to be filled with new cookie
      */
     private void applyLanguage(Language language, HttpServletResponse response) {
-        String code =  language.getLanguageCode();
+        String code = language.getLanguageCode();
         Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, code);
         response.addCookie(cookie);
     }
@@ -249,9 +249,9 @@ public class UserController {
      * @param userDto form submission result
      * @return updated user object
      * @throws DuplicateEmailException e-maim already registered
-     * @throws WrongPasswordException current password doesn't match with the passed one
-     * @throws IOException avatar upload problems
-     * @throws InvalidImageException avatar image is invalid
+     * @throws WrongPasswordException  current password doesn't match with the passed one
+     * @throws IOException             avatar upload problems
+     * @throws InvalidImageException   avatar image is invalid
      */
     private User performEditUserProfile(EditUserProfileDto userDto) throws DuplicateEmailException,
             WrongPasswordException, IOException, InvalidImageException {
@@ -262,12 +262,12 @@ public class UserController {
     }
 
     /**
-     *  todo: looks realy odd, we need to somehow refactor all the chain
-     *
+     * todo: looks realy odd, we need to somehow refactor all the chain
+     * <p/>
      * Substitues fake avatar value if there was no avatar passed
      *
      * @param userDto for submission result
-     * @return  updated model and view containing avatar in any case
+     * @return updated model and view containing avatar in any case
      */
     private ModelAndView applyAvatarRemoval(EditUserProfileDto userDto) {
         User user = securityService.getCurrentUser();

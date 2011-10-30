@@ -63,7 +63,6 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
         Number big = (Number) getSession()
                 .createQuery("select count(*) FROM Topic WHERE modificationDate > :maxModDate")
                 .setParameter("maxModDate", time)
-                .setCacheable(false)
                 .uniqueResult();
         return big.intValue();
 
@@ -73,11 +72,11 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public List<Topic> getAllTopicsPastLastDay(int start, int max, DateTime lastLogin) {
         DateTime time = lastLogin.toDateTime();
         return getSession().createQuery("FROM Topic WHERE modificationDate > :maxModDate")
                 .setParameter("maxModDate", time)
-                .setCacheable(false)
                 .setFirstResult(start)
                 .setMaxResults(max)
                 .list();
