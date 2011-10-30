@@ -65,11 +65,27 @@ public class FormattedDateTagTest {
     }
 
     @Test
-    public void testRenderDateWithCookiesSet() throws JspException, UnsupportedEncodingException {
-        cookies = new Cookie[]{new Cookie(FormattedDate.GMT_COOKIE_NAME, "60")};
+    public void testRenderDateWithPositiveOffset() throws JspException, UnsupportedEncodingException {
+        cookies = new Cookie[]{new Cookie("foo", "bar"), new Cookie(FormattedDate.GMT_COOKIE_NAME, "60")};
         when(request.getCookies()).thenReturn(cookies);
         String output = this.render();
         assertEquals(output, formatter.withLocale(locale).print(utcDate.minusHours(1)));
+    }
+
+    @Test
+    public void testRenderDateWithNegativeOffset() throws JspException, UnsupportedEncodingException {
+        cookies = new Cookie[]{new Cookie(FormattedDate.GMT_COOKIE_NAME, "-60")};
+        when(request.getCookies()).thenReturn(cookies);
+        String output = this.render();
+        assertEquals(output, formatter.withLocale(locale).print(utcDate.plusHours(1)));
+    }
+
+    @Test
+    public void testRenderDateWithZeroOffset() throws JspException, UnsupportedEncodingException {
+        cookies = new Cookie[]{new Cookie(FormattedDate.GMT_COOKIE_NAME, "0")};
+        when(request.getCookies()).thenReturn(cookies);
+        String output = this.render();
+        assertEquals(output, formatter.withLocale(locale).print(utcDate));
     }
 
     @Test

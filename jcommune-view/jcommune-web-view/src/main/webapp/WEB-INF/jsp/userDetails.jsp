@@ -17,7 +17,6 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@ taglib prefix="joda" uri="http://www.joda.org/joda/time/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -79,9 +78,7 @@
         <li>
             <label><spring:message code="label.lastlogin"/></label>
             <span>
-                <joda:format value="${user.lastLogin}"
-                             locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
-                             pattern="dd MMM yyyy HH:mm"/>
+                <jtalks:format value="${user.lastLogin}"/>
             </span>
         </li>
         <c:if test="${user.avatar != null}">

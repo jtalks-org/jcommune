@@ -17,7 +17,6 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
-<%@taglib prefix="joda" uri="http://www.joda.org/joda/time/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -37,9 +36,7 @@
             <h3><c:out value="${pm.title}"/></h3>
         </div>
         <div style="float: right">
-            <h3><joda:format value="${pm.creationDate}"
-                             locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
-                             pattern="dd MMM yyyy HH:mm"/></h3>
+            <h3><jtalks:format value="${pm.creationDate}"/></h3>
         </div>
         <div style="clear:right;"></div>
         <table cellspacing=0 cellpadding=5 border="1">

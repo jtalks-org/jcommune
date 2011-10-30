@@ -18,7 +18,6 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@ taglib prefix="joda" uri="http://www.joda.org/joda/time/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
@@ -142,19 +141,15 @@
                         <a class="button" href="#"><spring:message
                                 code="label.quotation"/></a>
                     </sec:authorize>
-                    <a name="${post.id}" href="#${post.id}"><spring:message code="label.added"/>&nbsp;<joda:format
-                            value="${post.creationDate}"
-                            locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
-                            pattern="dd MMM yyyy HH:mm"/></a>
+                    <a name="${post.id}" href="#${post.id}"><spring:message code="label.added"/>&nbsp;<jtalks:format
+                            value="${post.creationDate}"/></a>
                 </div>
                 <p class="forum_message_cell_text">
                     <c:out value="${post.postContent}"/>
                     <br/><br/><br/>
                     <c:if test="${post.modificationDate!=null}">
                         <spring:message code="label.modify"/>
-                        <joda:format value="${post.modificationDate}"
-                                     locale="${sessionScope['org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE']}"
-                                     pattern="dd MMM yyyy HH:mm"/>
+                        <jtalks:format value="${post.modificationDate}"/>
                     </c:if>
                 </p>
                 <c:if test="${post.userCreated.signature!=null}">
