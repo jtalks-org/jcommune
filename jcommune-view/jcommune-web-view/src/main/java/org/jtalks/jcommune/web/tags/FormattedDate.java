@@ -61,7 +61,7 @@ public class FormattedDate extends FormatTag {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(FormattedDate.class);
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public void setPageContext(PageContext pageContext) {
