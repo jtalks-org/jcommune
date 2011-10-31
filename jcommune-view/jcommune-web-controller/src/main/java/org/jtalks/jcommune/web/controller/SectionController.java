@@ -45,8 +45,7 @@ public final class SectionController {
     private SectionService sectionService;
     private BreadcrumbBuilder breadcrumbBuilder;
 
-    @Resource(name = "sessionRegistry")
-    private UserSessionRegistryImpl sessionRegistry = new UserSessionRegistryImpl();
+    private UserSessionRegistryImpl sessionRegistry;
 
     /**
      * Constructor creates MVC controller with specified SectionService
@@ -54,11 +53,14 @@ public final class SectionController {
      * @param sectionService    autowired object from Spring Context
      * @param breadcrumbBuilder the object which provides actions on
      *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
+     * @param sessionRegistry   autowired object from Spring Security Context
      */
     @Autowired
-    public SectionController(SectionService sectionService, BreadcrumbBuilder breadcrumbBuilder) {
+    public SectionController(SectionService sectionService, BreadcrumbBuilder breadcrumbBuilder,
+                             UserSessionRegistryImpl sessionRegistry) {
         this.sectionService = sectionService;
         this.breadcrumbBuilder = breadcrumbBuilder;
+        this.sessionRegistry = sessionRegistry;
     }
 
     /**
