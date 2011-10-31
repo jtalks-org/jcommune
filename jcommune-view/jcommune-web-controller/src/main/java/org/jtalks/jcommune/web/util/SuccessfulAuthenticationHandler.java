@@ -65,6 +65,7 @@ public class SuccessfulAuthenticationHandler extends SavedRequestAwareAuthentica
         //apply language settings assuming CookieLocaleResolver usage
         Language language = Language.valueOf(user.getLanguage());
         Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, language.getLanguageCode());
+        cookie.setPath("/");
         response.addCookie(cookie);
         super.onAuthenticationSuccess(request, response, authentication);
     }
