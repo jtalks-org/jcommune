@@ -108,12 +108,12 @@
                             <c:choose>
                                 <c:when test="${pageSize eq editedUser.pageSize}">
                                     <form:option value="${pageSize}" selected="selected">
-                                        <spring:message code="${pageSize.label}"/>
+                                        <c:out value="${pageSize.size}"/>
                                     </form:option>
                                 </c:when>
                                 <c:otherwise>
                                     <form:option value="${pageSize}">
-                                        <spring:message code="${pageSize.label}"/>
+                                        <c:out value="${pageSize.size}"/>
                                     </form:option>
                                 </c:otherwise>
                             </c:choose>

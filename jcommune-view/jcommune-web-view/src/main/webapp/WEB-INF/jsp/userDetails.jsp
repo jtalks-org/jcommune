@@ -72,7 +72,7 @@
         <c:if test="${user.pageSize != null}">
             <li>
                 <label><spring:message code="label.numberOfTopicsOnPage"/></label>
-                <span><spring:message code="${pageSize.label}"/></span>
+                <span><c:out value="${pageSize.size}"/></span>
             </li>
         </c:if>
         <li>

@@ -21,40 +21,29 @@ package org.jtalks.jcommune.web.util;
  */
 public enum PageSize {
 
-    FIVE(5, "label.pageSize.five"),
-    TEN(10, "label.pageSize.ten"),
-    TWENTY(20, "label.pageSize.twenty"),
-    FIFTY(50, "label.pageSize.fifty"),
-    HUNDRED(100, "label.pageSize.hundred"),
-    TWO_HUNDRED_FIFTY(250, "label.pageSize.twoHundredFifty");
+    FIVE(5),
+    TEN(10),
+    TWENTY(20),
+    FIFTY(50),
+    HUNDRED(100),
+    TWO_HUNDRED_FIFTY(250);
 
-
-    private final int pageSize;
-    private final String label;
+    private final int size;
 
     /**
-     * Constructor that accepts pageSize and label.
+     * Constructor that accepts size.
      *
-     * @param pageSize - amount of items on the page
-     * @param label    - string resource bundle label
+     * @param size - amount of items on the page
      */
-    PageSize(int pageSize, String label) {
-        this.pageSize = pageSize;
-        this.label = label;
+    PageSize(int size) {
+        this.size = size;
     }
 
     /**
      * @return pageSize
      */
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    /**
-     * @return label
-     */
-    public String getLabel() {
-        return label;
+    public int getSize() {
+        return size;
     }
 
 }
