@@ -111,7 +111,7 @@ public final class BranchController {
                 .addObject("branch", branch)
                 .addObject("branchId", branchId)
                 .addObject("topics", topics)
-                .addObject(SIZE,size)
+                .addObject(SIZE, size)
                 .addObject("default", pag.getCurrentPageSize())
                 .addObject("nameButton", nameButton)
                 .addObject(PAGE, pag.getPage())
