@@ -176,9 +176,9 @@ public final class TopicController {
         Pagination pag = new Pagination(page, size, postsCount);
 
         List<Post> posts = topic.getPosts();
+        pag.setAllPageSize(posts.size());
         topicService.addTopicView(topic, session);
         String nameButton;
-
         if (pag.getCurrentPageSize() == pag.getAllPageSize()) {
             nameButton = "Show pages";
         } else {
@@ -196,7 +196,6 @@ public final class TopicController {
             nameButton = "Show all";
             pag.setCurrentPageSize(pag.getDefaultPageSize());
         }
-
         return new ModelAndView("postList")
                 .addObject("posts", posts)
                 .addObject("topic", topic)

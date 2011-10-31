@@ -44,6 +44,7 @@ import java.util.List;
 public final class BranchController {
 
     public static final String PAGE = "page";
+    public static final String SIZE = "size";
     private BranchService branchService;
     private TopicService topicService;
     private BreadcrumbBuilder breadcrumbBuilder;
@@ -78,7 +79,7 @@ public final class BranchController {
     @RequestMapping(value = "/branches/{branchId}", method = RequestMethod.GET)
     public ModelAndView show(@PathVariable("branchId") long branchId,
                              @RequestParam(value = PAGE, required = false) Integer page,
-                             @RequestParam(value = "size", required = false) Integer size) throws NotFoundException {
+                             @RequestParam(value = SIZE, required = false) Integer size) throws NotFoundException {
         int topicsCount = topicService.getTopicsInBranchCount(branchId);
 
         Pagination pag = new Pagination(page, size, topicsCount);
@@ -110,9 +111,8 @@ public final class BranchController {
                 .addObject("branch", branch)
                 .addObject("branchId", branchId)
                 .addObject("topics", topics)
-                .addObject("size",size)
+                .addObject(SIZE,size)
                 .addObject("default", pag.getCurrentPageSize())
-                .addObject("size", size)
                 .addObject("nameButton", nameButton)
                 .addObject(PAGE, pag.getPage())
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)));
@@ -130,7 +130,7 @@ public final class BranchController {
      */
     @RequestMapping(value = "/topics/recent", method = RequestMethod.GET)
     public ModelAndView recentTopics(@RequestParam(value = PAGE, required = false) Integer page,
-                                     @RequestParam(value = "size", required = false) Integer size, HttpSession session)
+                                     @RequestParam(value = SIZE, required = false) Integer size, HttpSession session)
             throws NotFoundException {
 
         DateTime lastLogin = (DateTime) session.getAttribute("lastlogin");

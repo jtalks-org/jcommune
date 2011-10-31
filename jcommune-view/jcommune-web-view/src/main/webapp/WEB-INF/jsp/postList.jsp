@@ -69,7 +69,7 @@
     </div>
 </div>
 <ul class="forum_table"> <!-- Список сообщений -->
-    <jtalks:display uri="${topicId}" currentPage="${page}" numberElement="${_default}" list="${posts}">
+    <jtalks:display uri="${topicId}" currentPage="${page}" numberElement="${default}" list="${posts}">
     <c:forEach var="post" items="${list}" varStatus="i">
         <li class="forum_row"> <!-- Сообщение -->
             <div class="forum_userinfo">
