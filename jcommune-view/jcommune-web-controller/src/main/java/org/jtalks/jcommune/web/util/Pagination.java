@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.web.util;
 
+import java.util.List;
+
 /**
  * Class for pagination.
  *
@@ -24,7 +26,6 @@ public class Pagination {
     private int pageSize;
     private int itemsCount;
     private int defaultPageSize = 4;
-    private int allPageSize;
     private int currentPageSize = 4;
 
     /**
@@ -84,20 +85,6 @@ public class Pagination {
     }
 
     /**
-     * @return allPageSize total number of pages
-     */
-    public int getAllPageSize() {
-        return allPageSize;
-    }
-
-    /**
-     * @param allPageSize total number of pages
-     */
-    public void setAllPageSize(int allPageSize) {
-        this.allPageSize = allPageSize;
-    }
-
-    /**
      * @return total number of pages
      */
     public int getCurrentPageSize() {
@@ -123,5 +110,17 @@ public class Pagination {
      */
     public void setDefaultPageSize(int defaultPageSize) {
         this.defaultPageSize = defaultPageSize;
+    }
+
+    /**
+     * @param size flag for display buttons Show all and Show pages
+     * @param countElementList number elements
+     * @return number of items to be displayed
+     */
+    public int sizeDetector(Integer size, List countElementList) {
+        if (size == 1) {
+            return countElementList.size();
+        }
+        return defaultPageSize;
     }
 }

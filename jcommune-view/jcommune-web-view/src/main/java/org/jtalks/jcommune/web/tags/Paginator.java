@@ -25,6 +25,7 @@ import java.util.List;
  * Class for custom tag.
  *
  * @author Andrey Kluev
+ * @version 1.0
  */
 public class Paginator extends BodyTagSupport {
     private String uri;

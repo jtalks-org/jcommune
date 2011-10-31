@@ -86,26 +86,10 @@ public final class BranchController {
 
         Branch branch = branchService.get(branchId);
         List<Topic> topics = branch.getTopics();
-        pag.setAllPageSize(topics.size());
-        String nameButton;
-        if (pag.getCurrentPageSize() == pag.getAllPageSize()) {
-            nameButton = "Show pages";
-        } else {
-            nameButton = "Show all";
-        }
         if (size == null) {
             size = 0;
         }
-        if (size == 1) {
-            nameButton = "Show pages";
-            pag.setCurrentPageSize(pag.getAllPageSize());
-
-        }
-        if (size == 2) {
-            nameButton = "Show all";
-            pag.setCurrentPageSize(pag.getDefaultPageSize());
-        }
-
+        pag.setCurrentPageSize(pag.sizeDetector(size, topics));
 
         return new ModelAndView("topicList")
                 .addObject("branch", branch)
@@ -113,7 +97,6 @@ public final class BranchController {
                 .addObject("topics", topics)
                 .addObject(SIZE, size)
                 .addObject("default", pag.getCurrentPageSize())
-                .addObject("nameButton", nameButton)
                 .addObject(PAGE, pag.getPage())
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)));
     }

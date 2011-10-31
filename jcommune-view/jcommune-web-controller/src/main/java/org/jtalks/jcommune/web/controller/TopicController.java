@@ -176,31 +176,17 @@ public final class TopicController {
         Pagination pag = new Pagination(page, size, postsCount);
 
         List<Post> posts = topic.getPosts();
-        pag.setAllPageSize(posts.size());
         topicService.addTopicView(topic, session);
-        String nameButton;
-        if (pag.getCurrentPageSize() == pag.getAllPageSize()) {
-            nameButton = "Show pages";
-        } else {
-            nameButton = "Show all";
-        }
+
         if (size == null) {
             size = 0;
         }
-        if (size == 1) {
-            nameButton = "Show pages";
-            pag.setCurrentPageSize(pag.getAllPageSize());
+        pag.setCurrentPageSize(pag.sizeDetector(size, posts));
 
-        }
-        if (size == 2) {
-            nameButton = "Show all";
-            pag.setCurrentPageSize(pag.getDefaultPageSize());
-        }
         return new ModelAndView("postList")
                 .addObject("posts", posts)
                 .addObject("topic", topic)
                 .addObject("size", size)
-                .addObject("nameButton", nameButton)
                 .addObject("default", pag.getCurrentPageSize())
                 .addObject("page", pag.getPage())
                 .addObject(BRANCH_ID, branchId)

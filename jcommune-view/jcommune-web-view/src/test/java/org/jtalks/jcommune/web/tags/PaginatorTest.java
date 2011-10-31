@@ -12,8 +12,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+package org.jtalks.jcommune.web.tags;
 
-import org.jtalks.jcommune.web.tags.Paginator;
 import org.springframework.mock.web.MockPageContext;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.web.context.WebApplicationContext;
@@ -24,11 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
-public class CustomTagTest {
+public class PaginatorTest {
 
     private Paginator paginator;
     private MockServletContext ServletContext;
@@ -49,7 +48,7 @@ public class CustomTagTest {
     }
 
     @Test
-    public void testCustomTag() {
+    public void testElementsOfPage() {
         List list = new ArrayList();
         list.add(1);
         list.add(2);
@@ -77,7 +76,7 @@ public class CustomTagTest {
     }
 
     @Test
-    public void testDoStartTag() {
+    public void testLastPage() {
         List list1 = new ArrayList();
         list1.add(3);
         List list = new ArrayList();
