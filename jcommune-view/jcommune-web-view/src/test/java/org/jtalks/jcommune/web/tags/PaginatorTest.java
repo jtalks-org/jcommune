@@ -14,13 +14,20 @@
  */
 package org.jtalks.jcommune.web.tags;
 
+import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.SecurityService;
 import org.springframework.mock.web.MockPageContext;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.web.context.WebApplicationContext;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.testng.AssertJUnit.assertEquals;
 
 public class PaginatorTest {
 
@@ -42,20 +49,27 @@ public class PaginatorTest {
         when(WebApplicationContext.getServletContext()).thenReturn(ServletContext);
     }
 
-    /*@Test
+    @Test
     public void testElementsOfPage() {
+        SecurityService securityService = mock(SecurityService.class);
+        User user = new User("", "", "");
+        user.setPageSize("FIVE");
         List list = new ArrayList();
         list.add(1);
         list.add(2);
         list.add(3);
+        list.add(4);
+        list.add(5);
+        list.add(6);
 
         paginator.setList(list);
         paginator.setCurrentPage(1);
-        paginator.setNumberElement(2);
+        when(WebApplicationContext.getBean("securityService")).thenReturn(securityService);
+        when(securityService.getCurrentUser()).thenReturn(user);
 
         paginator.doStartTag();
 
-        assertEquals(PageContext.getAttribute("list"), list.subList(0, 2));
+        assertEquals(PageContext.getAttribute("list"), list.subList(0, 5));
 
         paginator.doEndTag();
 
@@ -72,16 +86,23 @@ public class PaginatorTest {
 
     @Test
     public void testLastPage() {
+        SecurityService securityService = mock(SecurityService.class);
+        User user = new User("", "", "");
+        user.setPageSize("FIVE");
+        when(WebApplicationContext.getBean("securityService")).thenReturn(securityService);
+        when(securityService.getCurrentUser()).thenReturn(user);
         List list1 = new ArrayList();
-        list1.add(3);
+        list1.add(6);
         List list = new ArrayList();
         list.add(1);
         list.add(2);
         list.add(3);
+        list.add(4);
+        list.add(5);
+        list.add(6);
 
         paginator.setList(list);
         paginator.setCurrentPage(2);
-        paginator.setNumberElement(2);
         paginator.setMaxPages(2);
 
         paginator.doStartTag();
@@ -89,11 +110,12 @@ public class PaginatorTest {
         assertEquals(PageContext.getAttribute("list"), list1);
     }
 
+
     @Test
     public void testDoEndTag() {
         paginator.setCurrentPage(2);
         paginator.setMaxPages(3);
 
         assertEquals(paginator.doEndTag(), 6);
-    } */
+    }
 }
