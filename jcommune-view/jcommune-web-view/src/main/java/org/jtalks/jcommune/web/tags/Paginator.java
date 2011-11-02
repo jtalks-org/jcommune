@@ -44,10 +44,8 @@ public class Paginator extends BodyTagSupport {
 
     private static final long serialVersionUID = 1L;
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Paginator.class);
-
     /**
-     * @return numberElement
+     * The method for working with the settings of the current user
      */
     public void getNumberElement() {
         ServletContext servletContext = pageContext.getServletContext();
@@ -150,9 +148,11 @@ public class Paginator extends BodyTagSupport {
     public int doEndTag() {
         JspWriter out = pageContext.getOut();
         String spanOpen = new Formatter().format("<div class=\"forum_misc_info\">").toString();
-        String strPrevus = new Formatter().format("<a href=\"%s?page=%d\">%d</a>", uri, currentPage - 1, currentPage - 1).toString();
+        String strPrevus = new Formatter().format("<a href=\"%s?page=%d\">%d</a>",
+                uri, currentPage - 1, currentPage - 1).toString();
         String str = new Formatter().format("%d", currentPage).toString();
-        String strNext = new Formatter().format("<a href=\"%s?page=%d\">%d</a>", uri, currentPage + 1, currentPage + 1).toString();
+        String strNext = new Formatter().format("<a href=\"%s?page=%d\">%d</a>",
+                uri, currentPage + 1, currentPage + 1).toString();
         String spanClose = new Formatter().format("</div>").toString();
 
         pageContext.setAttribute("maxPage", maxPages);
@@ -172,15 +172,23 @@ public class Paginator extends BodyTagSupport {
             }
             out.write(spanClose);
         } catch (IOException e) {
-           //logger
+            //logger
         }
         return EVAL_PAGE;
     }
 
+    /**
+     *
+     * @return size is flag
+     */
     public int getSize() {
         return size;
     }
 
+    /**
+     *
+     * @param size is flag
+     */
     public void setSize(int size) {
         this.size = size;
     }
