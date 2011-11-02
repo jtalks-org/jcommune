@@ -19,7 +19,7 @@ import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
-import org.jtalks.jcommune.web.util.UserSessionRegistryImpl;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -40,7 +40,7 @@ import static org.testng.Assert.assertEquals;
  */
 public class SectionControllerTest {
     private SectionService sectionService;
-    private UserSessionRegistryImpl sessionRegistry;
+    private SessionRegistryImpl sessionRegistry;
     private SectionController controller;
     private BreadcrumbBuilder breadcrumbBuilder;
 
@@ -48,7 +48,7 @@ public class SectionControllerTest {
     public void init() {
         sectionService = mock(SectionService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
-        sessionRegistry = mock(UserSessionRegistryImpl.class);
+        sessionRegistry = mock(SessionRegistryImpl.class);
         controller = new SectionController(sectionService, breadcrumbBuilder, sessionRegistry);
     }
 

@@ -121,16 +121,15 @@
                 <div class="forum_info"> <!-- Содержимое ряда -->
                     <spring:message code="label.onlineUsersInfo.visitors"/> <c:out value="${visitors}"/>,
                     <spring:message code="label.onlineUsersInfo.visitors.registered"/> <c:out value="${visitorsRegistered}"/>,
-                    <%--<spring:message code="label.onlineUsersInfo.visitors.hidden"/> 0--%>
                     <spring:message code="label.onlineUsersInfo.visitors.guests"/>  <c:out value="${visitorsGuests}"/>
-                    <span class="admin"> [Администратор] </span> <span class="moderator"> [Модератор]</span>
                     <br/>
                     <c:if test="${usersRegistered!=null}">
                         <spring:message code="label.onlineUsersInfo.registeredUsers"/>
                         <ul class="users_list">
                             <c:forEach items="${usersRegistered}" var="user">
-                                <li><a href="${pageContext.request.contextPath}/users/${user.username}">
-                                    <c:out value="${user.username}"/></a>, </li>
+                                <li><a href="${pageContext.request.contextPath}/users/${user.username}"
+                                        class="<spring:message code="${user.role}"/>">
+                                    <c:out value="${user.username}"/></a>&nbsp;&nbsp;</li>
                             </c:forEach>
                             <%--<li><a href="#" class="moderator">andreyko</a>,</li>
                             <li><a href="#" class="admin">Староверъ</a>,</li>

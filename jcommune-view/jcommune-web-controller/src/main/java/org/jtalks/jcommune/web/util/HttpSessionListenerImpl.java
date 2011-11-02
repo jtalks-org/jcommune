@@ -15,16 +15,18 @@
 package org.jtalks.jcommune.web.util;
 
 import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 /**
- * Custom session registry implementation to track active user sessions
+ * Custom session listener implementation to track active user sessions
  *
  * @author Elena Lepaeva
  */
-public class UserSessionRegistryImpl extends SessionRegistryImpl implements HttpSessionListener {
+public class HttpSessionListenerImpl implements HttpSessionListener {
 
     private static long totalActiveSessions;
 
@@ -48,6 +50,10 @@ public class UserSessionRegistryImpl extends SessionRegistryImpl implements Http
      */
     @Override
     public void sessionDestroyed(HttpSessionEvent se) {
+        WebApplicationContext wac = WebApplicationContextUtils.
+                getRequiredWebApplicationContext(se.getSession().getServletContext());
+        SessionRegistryImpl sessionRegistry = (SessionRegistryImpl) wac.getBean("sessionRegistry");
+        sessionRegistry.removeSessionInformation(se.getSession().getId());
         totalActiveSessions--;
     }
 }
