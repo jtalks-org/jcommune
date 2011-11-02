@@ -181,13 +181,11 @@ public final class TopicController {
         if (size == null) {
             size = 0;
         }
-        pag.setCurrentPageSize(pag.sizeDetector(size, posts));
 
         return new ModelAndView("postList")
                 .addObject("posts", posts)
                 .addObject("topic", topic)
                 .addObject("size", size)
-                .addObject("default", pag.getCurrentPageSize())
                 .addObject("page", pag.getPage())
                 .addObject(BRANCH_ID, branchId)
                 .addObject(TOPIC_ID, topicId)

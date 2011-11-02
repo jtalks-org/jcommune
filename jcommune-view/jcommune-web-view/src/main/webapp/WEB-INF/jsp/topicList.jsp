@@ -63,7 +63,7 @@
 
 
         <ul class="forum_table"> <!-- Список топиков -->
-            <jtalks:display uri="${branchId}" currentPage="${page}" numberElement="${default}" list="${topics}">
+            <jtalks:display uri="${branchId}" currentPage="${page}" size="${size}" list="${topics}">
             <c:forEach var="topic" items="${list}">
                 <li class="forum_row"> <!-- Топик -->
                     <div class="forum_icon"> <!-- Иконка с кофе -->
@@ -135,20 +135,21 @@
             &nbsp; &nbsp; &nbsp;
         </sec:authorize>
 
-        <c:if test="${size==0 || size==2}">
-        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-            <a class="button"
-               href="?size=1"><spring:message code="label.showAll"/></a>
-            &nbsp; &nbsp; &nbsp;
-        </sec:authorize>
+        <c:if test="${maxPage>1}">
+            <c:if test="${size==0 || size==2}">
+                <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                    <a class="button"
+                       href="?size=1"><spring:message code="label.showAll"/></a>
+                    &nbsp; &nbsp; &nbsp;
+                </sec:authorize>
+            </c:if>
         </c:if>
-
         <c:if test="${size == 1}">
-        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-            <a class="button"
-               href="?size=2"><spring:message code="label.showPages"/></a>
-            &nbsp; &nbsp; &nbsp;
-        </sec:authorize>
+            <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                <a class="button"
+                   href="?size=2"><spring:message code="label.showPages"/></a>
+                &nbsp; &nbsp; &nbsp;
+            </sec:authorize>
         </c:if>
 
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>

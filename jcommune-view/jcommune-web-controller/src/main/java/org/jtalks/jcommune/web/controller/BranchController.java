@@ -89,14 +89,12 @@ public final class BranchController {
         if (size == null) {
             size = 0;
         }
-        pag.setCurrentPageSize(pag.sizeDetector(size, topics));
 
         return new ModelAndView("topicList")
                 .addObject("branch", branch)
                 .addObject("branchId", branchId)
                 .addObject("topics", topics)
                 .addObject(SIZE, size)
-                .addObject("default", pag.getCurrentPageSize())
                 .addObject(PAGE, pag.getPage())
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)));
     }

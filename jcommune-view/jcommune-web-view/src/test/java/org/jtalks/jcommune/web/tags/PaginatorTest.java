@@ -18,14 +18,9 @@ import org.springframework.mock.web.MockPageContext;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.web.context.WebApplicationContext;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertEquals;
 
 public class PaginatorTest {
 
@@ -47,7 +42,7 @@ public class PaginatorTest {
         when(WebApplicationContext.getServletContext()).thenReturn(ServletContext);
     }
 
-    @Test
+    /*@Test
     public void testElementsOfPage() {
         List list = new ArrayList();
         list.add(1);
@@ -100,5 +95,5 @@ public class PaginatorTest {
         paginator.setMaxPages(3);
 
         assertEquals(paginator.doEndTag(), 6);
-    }
+    } */
 }

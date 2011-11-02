@@ -15,6 +15,14 @@
 
 package org.jtalks.jcommune.web.tags;
 
+import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.SecurityService;
+import org.jtalks.jcommune.web.util.PageSize;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
@@ -25,7 +33,6 @@ import java.util.List;
  * Class for custom tag.
  *
  * @author Andrey Kluev
- * @version 1.0
  */
 public class Paginator extends BodyTagSupport {
     private String uri;
@@ -33,6 +40,26 @@ public class Paginator extends BodyTagSupport {
     private int numberElement;
     private List list;
     private int maxPages;
+    private int size;
+
+    private static final long serialVersionUID = 1L;
+
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Paginator.class);
+
+    /**
+     * @return numberElement
+     */
+    public void getNumberElement() {
+        ServletContext servletContext = pageContext.getServletContext();
+        WebApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(servletContext);
+        SecurityService securityService = (SecurityService) context.getBean("securityService");
+        User currentUser = securityService.getCurrentUser();
+        if (currentUser == null) {
+            numberElement = PageSize.FIFTY.getSize();
+        } else {
+            numberElement = PageSize.valueOf(currentUser.getPageSize()).getSize();
+        }
+    }
 
     /**
      * @param itemCount     total number of elements
@@ -97,23 +124,14 @@ public class Paginator extends BodyTagSupport {
         return this.list;
     }
 
-    /**
-     * @return numberElement
-     */
-    public int getNumberElement() {
-        return numberElement;
-    }
-
-    /**
-     * @param numberElement number of elements
-     */
-    public void setNumberElement(int numberElement) {
-        this.numberElement = numberElement;
-    }
-
     @Override
     public int doStartTag() {
         pageContext.setAttribute("currentPage", currentPage);
+        if (size == 1) {
+            numberElement = list.size();
+        } else {
+            getNumberElement();
+        }
         getMaxPage(list.size(), numberElement);
         if (list.size() >= 1) {
 
@@ -132,11 +150,9 @@ public class Paginator extends BodyTagSupport {
     public int doEndTag() {
         JspWriter out = pageContext.getOut();
         String spanOpen = new Formatter().format("<div class=\"forum_misc_info\">").toString();
-        String strPrevus = new Formatter().format("<c:url var=\"url\" value=\"\"><c:param name=\"page\" value=\"2\"/>" +
-                "</c:url><a href=\"%s?page=%d\">%d</a>", uri, currentPage - 1, currentPage - 1).toString();
+        String strPrevus = new Formatter().format("<a href=\"%s?page=%d\">%d</a>", uri, currentPage - 1, currentPage - 1).toString();
         String str = new Formatter().format("%d", currentPage).toString();
-        String strNext = new Formatter().format("<c:url var=\"url\" value=\"\"><c:param name=\"page\" value=\"2\"/>" +
-                "</c:url><a href=\"%s?page=%d\">%d</a>", uri, currentPage + 1, currentPage + 1).toString();
+        String strNext = new Formatter().format("<a href=\"%s?page=%d\">%d</a>", uri, currentPage + 1, currentPage + 1).toString();
         String spanClose = new Formatter().format("</div>").toString();
 
         pageContext.setAttribute("maxPage", maxPages);
@@ -156,8 +172,16 @@ public class Paginator extends BodyTagSupport {
             }
             out.write(spanClose);
         } catch (IOException e) {
-            e.printStackTrace();
+           //logger
         }
         return EVAL_PAGE;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 }
