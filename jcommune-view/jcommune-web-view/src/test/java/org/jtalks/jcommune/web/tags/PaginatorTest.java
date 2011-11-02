@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.AssertJUnit.assertEquals;
 
@@ -117,5 +118,28 @@ public class PaginatorTest {
         paginator.setMaxPages(3);
 
         assertEquals(paginator.doEndTag(), 6);
+    }
+
+    @Test
+    public void testUserAnonimus() {
+        SecurityService securityService = mock(SecurityService.class);
+        when(WebApplicationContext.getBean("securityService")).thenReturn(securityService);
+        when(securityService.getCurrentUser()).thenReturn(null);
+
+        List list = new ArrayList();
+        for(int i=0;i<55;i++)
+        {
+            list.add(1);
+        }
+
+        paginator.setList(list);
+        paginator.setCurrentPage(2);
+        paginator.setMaxPages(2);
+
+        paginator.doStartTag();
+
+        assertEquals(PageContext.getAttribute("list"), list.subList(50,55));
+
+        verify(securityService).getCurrentUser();
     }
 }
