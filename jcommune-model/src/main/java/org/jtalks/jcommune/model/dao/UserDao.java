@@ -78,11 +78,4 @@ public interface UserDao extends ParentRepository<User> {
      * @return count posts of user
      */
     int getCountPostOfUser(User userCreated);
-
-    /**
-     * Return total count of registred user's accounts
-     *
-     * @return count of registred user's accounts
-     */
-    int getUsersCount();
 }

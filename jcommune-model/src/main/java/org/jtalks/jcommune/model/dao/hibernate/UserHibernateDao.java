@@ -96,15 +96,4 @@ public class UserHibernateDao extends ParentRepositoryImpl<User> implements User
                 .uniqueResult())
                 .intValue();
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getUsersCount() {
-        return ((Number) getSession().getNamedQuery("getCountOfUsers")
-                .setCacheable(true)
-                .uniqueResult())
-                .intValue();
-    }
 }

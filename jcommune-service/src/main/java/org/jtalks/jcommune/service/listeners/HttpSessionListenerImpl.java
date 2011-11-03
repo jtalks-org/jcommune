@@ -12,7 +12,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.util;
+package org.jtalks.jcommune.service.listeners;
 
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.web.context.WebApplicationContext;
@@ -31,6 +31,13 @@ public class HttpSessionListenerImpl implements HttpSessionListener {
     private static long totalActiveSessions;
 
     /**
+     * Constructor for listener refresh totalActiveSessions variable.
+     */
+    public HttpSessionListenerImpl() {
+        totalActiveSessions = 0;
+    }
+
+    /**
      * @return active sessions count
      */
     public static long getTotalActiveSessions() {
@@ -41,7 +48,7 @@ public class HttpSessionListenerImpl implements HttpSessionListener {
      * {@inheritDoc}
      */
     @Override
-    public void sessionCreated(HttpSessionEvent se) {
+    public synchronized void sessionCreated(HttpSessionEvent se) {
         totalActiveSessions++;
     }
 
@@ -49,7 +56,7 @@ public class HttpSessionListenerImpl implements HttpSessionListener {
      * {@inheritDoc}
      */
     @Override
-    public void sessionDestroyed(HttpSessionEvent se) {
+    public synchronized void sessionDestroyed(HttpSessionEvent se) {
         WebApplicationContext wac = WebApplicationContextUtils.
                 getRequiredWebApplicationContext(se.getSession().getServletContext());
         SessionRegistryImpl sessionRegistry = (SessionRegistryImpl) wac.getBean("sessionRegistry");

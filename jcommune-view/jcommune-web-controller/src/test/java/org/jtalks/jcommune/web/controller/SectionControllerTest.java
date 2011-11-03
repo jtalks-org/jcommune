@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Section;
+import org.jtalks.jcommune.service.ForumStatisticsService;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
@@ -40,7 +41,6 @@ import static org.testng.Assert.assertEquals;
  */
 public class SectionControllerTest {
     private SectionService sectionService;
-    private SessionRegistryImpl sessionRegistry;
     private SectionController controller;
     private BreadcrumbBuilder breadcrumbBuilder;
 
@@ -48,8 +48,8 @@ public class SectionControllerTest {
     public void init() {
         sectionService = mock(SectionService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
-        sessionRegistry = mock(SessionRegistryImpl.class);
-        controller = new SectionController(sectionService, breadcrumbBuilder, sessionRegistry);
+        ForumStatisticsService statisticsService = mock(ForumStatisticsService.class);
+        controller = new SectionController(sectionService, breadcrumbBuilder, statisticsService);
     }
 
     @Test
@@ -106,7 +106,7 @@ public class SectionControllerTest {
         assertViewName(mav, "branchList");
         assertModelAttributeAvailable(mav, "section");
         Section actualSection = assertAndReturnModelAttributeOfType(mav, "section", Section.class);
-        assertEquals((long) actualSection.getId(), sectionId);
+        assertEquals(actualSection.getId(), sectionId);
         assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 

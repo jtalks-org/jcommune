@@ -261,12 +261,4 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         return SecurityConstants.ANONYMOUS_USERNAME.equals(userName)
                 || this.getDao().isUserWithUsernameExist(userName);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getUsersCount() {
-        return this.getDao().getUsersCount();
-    }
 }

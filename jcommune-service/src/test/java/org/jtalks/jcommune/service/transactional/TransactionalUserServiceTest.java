@@ -103,7 +103,7 @@ public class TransactionalUserServiceTest {
     public void testGetByEncodedUsernamenotFound() throws Exception {
         when(userDao.getByEncodedUsername(ENCODED_USERNAME)).thenReturn(null);
 
-        User actualUser = userService.getByEncodedUsername(ENCODED_USERNAME);
+        userService.getByEncodedUsername(ENCODED_USERNAME);
 
         verify(userDao).getByEncodedUsername(anyString());
     }
@@ -361,18 +361,9 @@ public class TransactionalUserServiceTest {
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testRestorePasswordWithWrongEmail() throws NotFoundException {
-        User user = new User(USERNAME, EMAIL, PASSWORD);
+        new User(USERNAME, EMAIL, PASSWORD);
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
 
         userService.restorePassword(EMAIL);
-    }
-
-    @Test
-    public void testGetUsersCount() throws Exception {
-        int userCount = 5;
-        when(userDao.getUsersCount()).thenReturn(userCount);
-        int result = userService.getUsersCount();
-        assertEquals(result, userCount);
-        verify(userDao).getUsersCount();
     }
 }

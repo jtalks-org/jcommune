@@ -12,31 +12,28 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service;
-
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.Section;
-
-import java.util.List;
+package org.jtalks.jcommune.model.dao;
 
 /**
- * The interface to manipulate with sections
+ * DAO interface for getting forum statistic information.
  *
- * @author Max Malakhov
+ * @author Elena Lepaeva
+ * @see org.jtalks.jcommune.model.dao.hibernate.ForumStatisticsHibernateDAO
  */
+public interface ForumStatisticsDAO {
 
-public interface SectionService extends EntityService<Section> {
     /**
-     * Get list of all sections.
+     * Get total count of messages on the forum
      *
-     * @return - list of the sections.
+     * @return number of posts on the forum.
      */
-    List<Section> getAll();
+    int getPostsOnForumCount();
 
     /**
-     * Get count topics in branch from database
-     * @param branch branch
-     * @return count count
+     * Return total count of registred user's accounts
+     *
+     * @return count of registred user's accounts
      */
-    int getTopicInBranchCount(Branch branch);
+    int getUsersCount();
 }
+

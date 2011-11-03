@@ -15,11 +15,11 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Section;
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.ForumStatisticsService;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.listeners.HttpSessionListenerImpl;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
-import org.jtalks.jcommune.web.util.HttpSessionListenerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.stereotype.Controller;
@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,24 +42,24 @@ import java.util.List;
 public final class SectionController {
 
     private SectionService sectionService;
+    private ForumStatisticsService forumStatisticsService;
     private BreadcrumbBuilder breadcrumbBuilder;
-
-    private SessionRegistryImpl sessionRegistry;
 
     /**
      * Constructor creates MVC controller with specified SectionService
      *
-     * @param sectionService    autowired object from Spring Context
-     * @param breadcrumbBuilder the object which provides actions on
-     *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
-     * @param sessionRegistry   autowired object from Spring Security Context
+     * @param sectionService         autowired object from Spring Context
+     * @param breadcrumbBuilder      the object which provides actions on
+     *                               {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
+     * @param forumStatisticsService autowired object from Spring Context which provides methods for getting
+     *                               forum statistic information
      */
     @Autowired
     public SectionController(SectionService sectionService, BreadcrumbBuilder breadcrumbBuilder,
-                             SessionRegistryImpl sessionRegistry) {
+                             ForumStatisticsService forumStatisticsService) {
         this.sectionService = sectionService;
         this.breadcrumbBuilder = breadcrumbBuilder;
-        this.sessionRegistry = sessionRegistry;
+        this.forumStatisticsService = forumStatisticsService;
     }
 
     /**
@@ -70,22 +69,15 @@ public final class SectionController {
      */
     @RequestMapping(value = "/sections", method = RequestMethod.GET)
     public ModelAndView sectionList() {
-        List users = null;
-        if (sessionRegistry.getAllPrincipals().size() > 0) {
-            users = sessionRegistry.getAllPrincipals();
-        }
-        long visitors = HttpSessionListenerImpl.getTotalActiveSessions();
-        int visitorsRegistered = sessionRegistry.getAllPrincipals().size();
-        long visitorsGuests = visitors - visitorsRegistered;
         return new ModelAndView("sectionList")
                 .addObject("sectionList", sectionService.getAll())
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
-                .addObject("messagesCount", sectionService.getPostsOnForumCount())
-                .addObject("registeredUsersCount", sectionService.getUsersCount())
-                .addObject("visitors", visitors)
-                .addObject("usersRegistered", users)
-                .addObject("visitorsRegistered", visitorsRegistered)
-                .addObject("visitorsGuests", visitorsGuests);
+                .addObject("messagesCount", forumStatisticsService.getPostsOnForumCount())
+                .addObject("registeredUsersCount", forumStatisticsService.getUsersCount())
+                .addObject("visitors", forumStatisticsService.getOnlineUsersCount())
+                .addObject("usersRegistered", forumStatisticsService.getOnlineRegisteredUsers())
+                .addObject("visitorsRegistered", forumStatisticsService.getOnlineRegisteredUsersCount())
+                .addObject("visitorsGuests", forumStatisticsService.getOnlineAnonymoustUsersCount());
     }
 
     /**

@@ -19,8 +19,6 @@ import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -29,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.testng.Assert.assertEquals;
@@ -99,26 +96,13 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         dao.update(post);
     }
 
-    private List<Post> createAndSavePostList(int size) {
-        List<Post> posts = new ArrayList<Post>();
-        Topic topic = ObjectsFactory.getDefaultTopic();
-        User author = topic.getTopicStarter();
-        for (int i = 0; i < size - 1; i++) {
-            Post newPost = new Post(author, "content " + i);
-            topic.addPost(newPost);
-            posts.add(newPost);
-        }
-        session.save(topic);
-        return posts;
-    }
-
     /* PostDao specific methods */
 
     @Test
     public void testGetPostRangeInTopic() {
         int start = 1;
         int max = 2;
-        List<Post> persistedPosts = createAndSavePostList(5);
+        List<Post> persistedPosts = ObjectsFactory.createAndSavePostList(5);
         long topicId = persistedPosts.get(0).getTopic().getId();
 
         List<Post> posts = dao.getPostRangeInTopic(topicId, start, max);
@@ -129,23 +113,11 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
     @Test
     public void testGetPostsInTopicCount() {
-        List<Post> persistedPosts = createAndSavePostList(5);
+        List<Post> persistedPosts = ObjectsFactory.createAndSavePostList(5);
         long topicId = persistedPosts.get(0).getTopic().getId();
 
         int count = dao.getPostsInTopicCount(topicId);
 
         assertEquals(count, 5);
-    }
-
-    @Test
-    public void testGetPostsOnForumCount() {
-        int postCount = 5;
-        createAndSavePostList(postCount);
-        int result = dao.getPostsOnForumCount();
-        assertEquals(result, postCount);
-    }
-
-    private int getCount() {
-        return ((Number) session.createQuery("select count(*) from Post").uniqueResult()).intValue();
     }
 }
