@@ -22,15 +22,16 @@ import org.jtalks.jcommune.model.dao.ChildRepository;
 import java.lang.reflect.ParameterizedType;
 
 /**
- * Basic class for access to the {@link org.jtalks.common.model.entity.Entity} objects.
- * Uses to load objects from database, save, update or delete them.
- * The implementation is based on the Hibernate.
- * Has the implementation of some commonly used methods.
- *
+ * Basic class for access to the {@link org.jtalks.common.model.entity.Entity}
+ * objects. Uses to load objects from database, save, update or delete them. The
+ * implementation is based on the Hibernate. Has the implementation of some
+ * commonly used methods.
+ * 
  * @author Pavel Vervenko
  * @author Kirill Afonin
  */
-public abstract class AbstractHibernateChildRepository<T extends Entity> implements ChildRepository<T> {
+public abstract class AbstractHibernateChildRepository<T extends Entity>
+        implements ChildRepository<T> {
 
     /**
      * Hibernate SessionFactory
@@ -44,20 +45,19 @@ public abstract class AbstractHibernateChildRepository<T extends Entity> impleme
 
     /**
      * Retrieves parametrized type of entity using reflection.
-     *
+     * 
      * @return type of entity
      */
-    
+
     @SuppressWarnings("unchecked")
-	protected Class<T> getType() {
+    protected Class<T> getType() {
         return (Class<T>) ((ParameterizedType) getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
-
     /**
      * Get current Hibernate session.
-     *
+     * 
      * @return current Session
      */
     protected Session getSession() {
@@ -66,8 +66,9 @@ public abstract class AbstractHibernateChildRepository<T extends Entity> impleme
 
     /**
      * Setter for Hibernate SessionFactory.
-     *
-     * @param sessionFactory the sessionFactory to set
+     * 
+     * @param sessionFactory
+     *            the sessionFactory to set
      */
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
@@ -80,7 +81,8 @@ public abstract class AbstractHibernateChildRepository<T extends Entity> impleme
     public void update(T entity) {
         Session session = getSession();
         session.saveOrUpdate(entity);
-        session.flush();   //TODO: WOW, this shouldn't be here, it's related only to tests,
+        session.flush(); // TODO: WOW, this shouldn't be here, it's related only
+                         // to tests,
     }
 
     /**

@@ -105,7 +105,9 @@ public class FormattedDate extends FormatTag {
      */
     private int convertTimeZoneOffset(String jsRepresentation) {
         try {
-            return -Integer.parseInt(jsRepresentation) * 60 * 1000;
+            final int min = 60;
+            int millisec = 1000;
+            return -Integer.parseInt(jsRepresentation) * min * millisec;
         } catch (NumberFormatException e) {
             // someone has passed wrong GMT in cookie, use GMT
             return DEFAULT_OFFSET;

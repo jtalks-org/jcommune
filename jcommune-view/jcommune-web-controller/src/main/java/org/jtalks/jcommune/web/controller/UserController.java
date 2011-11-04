@@ -189,8 +189,9 @@ public class UserController {
      * @throws IOException       throws in case of access errors (if the temporary store fails)
      */
     @RequestMapping(value = "/users/edit", method = RequestMethod.POST)
-    public ModelAndView editProfile(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
-                                    BindingResult result, HttpServletResponse response)
+    public ModelAndView editProfile(
+            @Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
+            BindingResult result, HttpServletResponse response)
             throws NotFoundException, IOException {
 
         // apply language changes immediately
@@ -204,8 +205,7 @@ public class UserController {
         if (editedUser == null) {
             return applyAvatarRemoval(userDto);
         }
-        return new ModelAndView(new StringBuilder()
-                .append("redirect:/users/")
+        return new ModelAndView(new StringBuilder().append("redirect:/users/")
                 .append(editedUser.getEncodedUsername()).toString());
     }
 

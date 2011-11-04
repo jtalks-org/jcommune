@@ -173,8 +173,9 @@ public class Breadcrumb {
     @Override
     public int hashCode() {
         int result = id.hashCode();
-        result = 31 * result + breadcrumbLocation.hashCode();
-        result = 31 * result + breadcrumbLocationValue.hashCode();
+        final int x = 31;
+        result = x * result + breadcrumbLocation.hashCode();
+        result = x * result + breadcrumbLocationValue.hashCode();
         return result;
     }
 }

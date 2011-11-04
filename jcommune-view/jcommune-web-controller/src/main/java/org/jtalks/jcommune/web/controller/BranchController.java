@@ -110,21 +110,24 @@ public final class BranchController {
      *          when branch not found
      */
     @RequestMapping(value = "/topics/recent", method = RequestMethod.GET)
-    public ModelAndView recentTopics(@RequestParam(value = PAGE, required = false) Integer page,
-                                     @RequestParam(value = SIZE, required = false) Integer size, HttpSession session)
-            throws NotFoundException {
+    public ModelAndView recentTopics(
+            @RequestParam(value = PAGE, required = false) Integer page,
+            @RequestParam(value = SIZE, required = false) Integer size,
+            HttpSession session) throws NotFoundException {
 
         DateTime lastLogin = (DateTime) session.getAttribute("lastlogin");
         int topicsCount = topicService.getTopicsPastLastDayCount(lastLogin);
         Pagination pag = new Pagination(page, size, topicsCount);
 
-        List<Topic> topics = topicService.getAllTopicsPastLastDay(pag.getStart(), pag.getPageSize(), lastLogin);
+        List<Topic> topics = topicService.getAllTopicsPastLastDay(
+                pag.getStart(), pag.getPageSize(), lastLogin);
 
         return new ModelAndView("recent")
                 .addObject("topics", topics)
                 .addObject("maxPages", pag.getMaxPages())
                 .addObject(PAGE, pag.getPage())
-                .addObject("breadcrumbList", breadcrumbBuilder.getRecentBreadcrumb());
+                .addObject("breadcrumbList",
+                        breadcrumbBuilder.getRecentBreadcrumb());
     }
 
 }
