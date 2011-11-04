@@ -89,7 +89,7 @@
     <bean id="forumStatisticsService"
           class="org.jtalks.jcommune.service.nontransactional.ForumStatisticsServiceImpl">
         <constructor-arg index="0" ref="forumStatisticsDAO"/>
-        <constructor-arg index="1" ref="sessionRegistry"/>
+        <constructor-arg index="1" ref="httpSessionListener"/>
     </bean>
 
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
@@ -103,6 +103,12 @@
                 <prop key="mail.smtp.auth">true</prop>
             </props>
         </property>
+    </bean>
+
+    <bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl"/>
+
+    <bean id="httpSessionListener" class="org.jtalks.jcommune.service.listeners.HttpSessionStatisticListenerImpl">
+        <property name="sessionRegistry" ref="sessionRegistry"/>
     </bean>
 
     <!-- this is a template message that we can pre-load with default state -->

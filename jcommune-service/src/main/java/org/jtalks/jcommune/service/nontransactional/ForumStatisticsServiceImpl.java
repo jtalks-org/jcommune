@@ -16,8 +16,8 @@ package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.model.dao.ForumStatisticsDAO;
 import org.jtalks.jcommune.service.ForumStatisticsService;
-import org.jtalks.jcommune.service.listeners.HttpSessionListenerImpl;
-import org.springframework.security.core.session.SessionRegistryImpl;
+import org.jtalks.jcommune.service.listeners.HttpSessionStatisticListener;
+import org.springframework.security.core.session.SessionRegistry;
 
 import java.util.List;
 
@@ -29,18 +29,20 @@ import java.util.List;
 public class ForumStatisticsServiceImpl implements ForumStatisticsService {
 
     private ForumStatisticsDAO statisticsDAO;
-    private SessionRegistryImpl sessionRegistry;
+    private SessionRegistry sessionRegistry;
+    private HttpSessionStatisticListener sessionStatisticListener;
 
     /**
      * Create an instance of transactional forum statistics service
      *
-     * @param statisticsDAO   for operations with data storage
-     * @param sessionRegistry autowired object from Spring Security Context
+     * @param statisticsDAO            for operations with data storage
+     * @param sessionStatisticListener autowired object from Spring Context
      */
     public ForumStatisticsServiceImpl(ForumStatisticsDAO statisticsDAO,
-                                      SessionRegistryImpl sessionRegistry) {
+                                      HttpSessionStatisticListener sessionStatisticListener) {
         this.statisticsDAO = statisticsDAO;
-        this.sessionRegistry = sessionRegistry;
+        this.sessionStatisticListener = sessionStatisticListener;
+        this.sessionRegistry = sessionStatisticListener.getSessionRegistry();
     }
 
     /**
@@ -72,7 +74,7 @@ public class ForumStatisticsServiceImpl implements ForumStatisticsService {
      */
     @Override
     public long getOnlineUsersCount() {
-        return HttpSessionListenerImpl.getTotalActiveSessions();
+        return sessionStatisticListener.getTotalActiveSessions();
     }
 
     /**
@@ -88,7 +90,7 @@ public class ForumStatisticsServiceImpl implements ForumStatisticsService {
      */
     @Override
     public long getOnlineAnonymoustUsersCount() {
-        return HttpSessionListenerImpl.getTotalActiveSessions()
+        return sessionStatisticListener.getTotalActiveSessions()
                 - sessionRegistry.getAllPrincipals().size();
     }
 }

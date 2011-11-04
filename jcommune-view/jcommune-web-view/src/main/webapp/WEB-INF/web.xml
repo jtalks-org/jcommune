@@ -99,7 +99,7 @@
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
     <listener>
-        <listener-class>org.jtalks.jcommune.service.listeners.HttpSessionListenerImpl</listener-class>
+        <listener-class>org.jtalks.jcommune.service.listeners.HttpSessionStatisticListenerImpl</listener-class>
     </listener>
 
 

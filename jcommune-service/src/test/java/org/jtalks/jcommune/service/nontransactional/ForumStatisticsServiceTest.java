@@ -18,13 +18,10 @@ import org.jtalks.jcommune.model.dao.ForumStatisticsDAO;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.ForumStatisticsService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.listeners.HttpSessionListenerImpl;
-import org.springframework.security.core.session.SessionRegistryImpl;
+import org.jtalks.jcommune.service.listeners.HttpSessionStatisticListener;
+import org.springframework.security.core.session.SessionRegistry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import javax.servlet.http.HttpSessionEvent;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,19 +47,19 @@ public class ForumStatisticsServiceTest {
 
     @BeforeClass
     public void setUp() {
-        HttpSessionListenerImpl listener = new HttpSessionListenerImpl();
         statisticsDAO = mock(ForumStatisticsDAO.class);
-        SessionRegistryImpl sessionRegistry = mock(SessionRegistryImpl.class);
-        statisticsService = new ForumStatisticsServiceImpl(statisticsDAO, sessionRegistry);
 
+        SessionRegistry sessionRegistry = mock(SessionRegistry.class);
         users = new ArrayList<Object>();
         for (int i = 1; i <= userCount; i++)
             users.add(mock(User.class));
         when(sessionRegistry.getAllPrincipals()).thenReturn(users);
 
-        HttpSessionEvent event = mock(HttpSessionEvent.class);
-        for (int i = 1; i <= sessionCount; i++)
-            listener.sessionCreated(event);
+        HttpSessionStatisticListener listener = mock(HttpSessionStatisticListener.class);
+        when(listener.getSessionRegistry()).thenReturn(sessionRegistry);
+        when(listener.getTotalActiveSessions()).thenReturn(sessionCount);
+
+        statisticsService = new ForumStatisticsServiceImpl(statisticsDAO, listener);
     }
 
     @Test
@@ -76,10 +73,9 @@ public class ForumStatisticsServiceTest {
 
     @Test
     public void testGetUsersCount() throws Exception {
-        int userCount = 5;
         when(statisticsDAO.getUsersCount()).thenReturn(userCount);
-        int result = statisticsService.getUsersCount();
-        assertEquals(result, userCount);
+
+        assertEquals(statisticsService.getUsersCount(), userCount);
         verify(statisticsDAO).getUsersCount();
     }
 

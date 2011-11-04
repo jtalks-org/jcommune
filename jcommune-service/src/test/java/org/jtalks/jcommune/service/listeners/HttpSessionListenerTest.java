@@ -14,29 +14,57 @@
  */
 package org.jtalks.jcommune.service.listeners;
 
-import static org.mockito.Mockito.mock;
+import org.springframework.security.core.session.SessionRegistry;
+import org.testng.annotations.*;
+
+import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
 
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
-
-import org.testng.annotations.Test;
 
 /**
  * @author Elena Lepaeva
  */
 public class HttpSessionListenerTest {
 
-    private static HttpSessionListenerImpl listener;
-    private static HttpSessionEvent event = mock(HttpSessionEvent.class);
+    private HttpSessionStatisticListenerImpl listener;
+    private HttpSessionEvent event;
+    private long sessionCount = 3;
+
+    @BeforeClass
+    public void init() {
+        String sessionId = "123";
+        event = mock(HttpSessionEvent.class);
+        HttpSession session = mock(HttpSession.class);
+        when(session.getId()).thenReturn(sessionId);
+        when(event.getSession()).thenReturn(session);
+        listener = new HttpSessionStatisticListenerImpl();
+        SessionRegistry sessionRegistry = mock(SessionRegistry.class);
+        listener.setSessionRegistry(sessionRegistry);
+    }
+
+    @BeforeMethod
+    public void initMethod() {
+        for (int i = 1; i <= sessionCount; i++)
+            listener.sessionCreated(event);
+    }
+
+    @AfterMethod
+    public void destroyMethod() {
+        long count = listener.getTotalActiveSessions();
+        for (int i = 1; i <= count; i++)
+            listener.sessionDestroyed(event);
+    }
 
     @Test
     public void confirmIncrementSessionCountTest() {
-        listener = new HttpSessionListenerImpl();
-        long sessionCount = 3;
-        for (int i = 1; i <= sessionCount; i++)
-            listener.sessionCreated(event);
-        assertEquals(HttpSessionListenerImpl.getTotalActiveSessions(), sessionCount);
+        assertEquals(listener.getTotalActiveSessions(), sessionCount);
     }
 
-    //todo confirmDeletingSessionInformationTest
+    @Test
+    public void confirmDeletingSessionInformationTest() {
+        listener.sessionDestroyed(event);
+        assertEquals(listener.getTotalActiveSessions(), sessionCount - 1);
+    }
 }

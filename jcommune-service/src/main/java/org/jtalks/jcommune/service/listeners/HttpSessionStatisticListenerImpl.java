@@ -14,33 +14,40 @@
  */
 package org.jtalks.jcommune.service.listeners;
 
-import org.springframework.security.core.session.SessionRegistryImpl;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.security.core.session.SessionRegistry;
 
 import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
 
 /**
  * Custom session listener implementation to track active user sessions
  *
  * @author Elena Lepaeva
  */
-public class HttpSessionListenerImpl implements HttpSessionListener {
+public class HttpSessionStatisticListenerImpl implements HttpSessionStatisticListener {
 
     private static long totalActiveSessions;
+    private static SessionRegistry sessionRegistry;
 
     /**
-     * Constructor for listener refresh totalActiveSessions variable.
+     * {@inheritDoc}
      */
-    public HttpSessionListenerImpl() {
-        totalActiveSessions = 0;
+    public SessionRegistry getSessionRegistry() {
+        return sessionRegistry;
+    }
+
+    /**
+     * Set current session registry
+     *
+     * @param registry current session registry
+     */
+    public void setSessionRegistry(SessionRegistry registry) {
+        sessionRegistry = registry;
     }
 
     /**
      * @return active sessions count
      */
-    public static long getTotalActiveSessions() {
+    public long getTotalActiveSessions() {
         return totalActiveSessions;
     }
 
@@ -57,9 +64,6 @@ public class HttpSessionListenerImpl implements HttpSessionListener {
      */
     @Override
     public synchronized void sessionDestroyed(HttpSessionEvent se) {
-        WebApplicationContext wac = WebApplicationContextUtils.
-                getRequiredWebApplicationContext(se.getSession().getServletContext());
-        SessionRegistryImpl sessionRegistry = (SessionRegistryImpl) wac.getBean("sessionRegistry");
         sessionRegistry.removeSessionInformation(se.getSession().getId());
         totalActiveSessions--;
     }
