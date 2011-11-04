@@ -190,8 +190,6 @@ public class PrivateMessageController {
             breadcrumbList = breadcrumbBuilder.getOutboxBreadcrumb();
         } else if ("drafts".equals(folder)) {
             breadcrumbList = breadcrumbBuilder.getDraftsBreadcrumb();
-        } else {
-            breadcrumbList = breadcrumbBuilder.getForumBreadcrumb();
         }
 
         return new ModelAndView("pm/showPm")
