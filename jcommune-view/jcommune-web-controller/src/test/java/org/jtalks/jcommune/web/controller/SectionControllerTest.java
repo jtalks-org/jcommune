@@ -14,19 +14,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.Section;
-import org.jtalks.jcommune.service.ForumStatisticsService;
-import org.jtalks.jcommune.service.SectionService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.web.dto.Breadcrumb;
-import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
-import org.springframework.security.core.session.SessionRegistryImpl;
-import org.springframework.web.servlet.ModelAndView;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,6 +21,18 @@ import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnMod
 import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
+
+import java.util.ArrayList;
+
+import org.jtalks.jcommune.model.entity.Section;
+import org.jtalks.jcommune.service.ForumStatisticsService;
+import org.jtalks.jcommune.service.SectionService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.Breadcrumb;
+import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
+import org.springframework.web.servlet.ModelAndView;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 /**
  * @author Max Malakhov

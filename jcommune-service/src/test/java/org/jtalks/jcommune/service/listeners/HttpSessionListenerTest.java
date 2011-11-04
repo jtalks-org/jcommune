@@ -14,14 +14,12 @@
  */
 package org.jtalks.jcommune.service.listeners;
 
-import org.jtalks.jcommune.service.listeners.HttpSessionListenerImpl;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertEquals;
 
 import javax.servlet.http.HttpSessionEvent;
+
+import org.testng.annotations.Test;
 
 /**
  * @author Elena Lepaeva

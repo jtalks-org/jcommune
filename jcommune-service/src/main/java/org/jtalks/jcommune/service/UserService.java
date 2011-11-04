@@ -19,7 +19,6 @@ import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
 import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
-import org.jtalks.jcommune.service.security.SecurityConstants;
 
 /**
  * This interface should have methods which give us more abilities in manipulating User persistent entity.

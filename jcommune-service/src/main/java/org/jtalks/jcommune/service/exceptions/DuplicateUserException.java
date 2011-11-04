@@ -20,6 +20,9 @@ package org.jtalks.jcommune.service.exceptions;
  * @author Eugeny Batov
  */
 public class DuplicateUserException extends DuplicateException {
+
+    private static final long serialVersionUID = -8305905530683512434L;
+
     /**
      * Create exception with specific message.
      *

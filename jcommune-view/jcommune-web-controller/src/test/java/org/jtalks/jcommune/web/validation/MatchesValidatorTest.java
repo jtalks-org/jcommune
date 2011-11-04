@@ -104,9 +104,7 @@ public class MatchesValidatorTest {
 
     @Test(expectedExceptions = ValidationException.class)
     public void testPropertiesNotExist() {
-        Set<ConstraintViolation<TestObjectBadProperties>> constraintViolations =
-                validator.validate(new TestObjectBadProperties("1", "2"));
-
+        validator.validate(new TestObjectBadProperties("1", "2"));
     }
 
     @Test

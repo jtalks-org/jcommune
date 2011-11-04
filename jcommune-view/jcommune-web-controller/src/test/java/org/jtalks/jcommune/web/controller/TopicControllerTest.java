@@ -102,7 +102,6 @@ public class TopicControllerTest {
     public void testShow() throws NotFoundException {
         int page = 2;
         int pageSize = 5;
-        int startIndex = page * pageSize - pageSize;
         Topic topic = mock(Topic.class);
 
         //set expectations

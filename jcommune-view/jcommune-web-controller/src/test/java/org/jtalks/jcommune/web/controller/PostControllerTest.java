@@ -69,7 +69,6 @@ public class PostControllerTest {
     @Test
     public void confirmTest() {
         long topicId = 1;
-        long branchId = 1;
         long postId = 5;
 
         ModelAndView actualMav = controller.deleteConfirmPage(topicId, postId);
@@ -86,7 +85,6 @@ public class PostControllerTest {
     public void deleteTest() throws NotFoundException {
         long topicId = 1;
         long postId = 5;
-        long branchId = 1;
 
         //invoke the object under test
         ModelAndView actualMav = controller.delete(topicId, postId);

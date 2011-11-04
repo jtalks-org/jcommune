@@ -14,14 +14,12 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import java.util.List;
+
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Section;
-import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.SectionService;
-import org.jtalks.jcommune.service.UserService;
-
-import java.util.List;
 
 /**
  * The implementation of SectionService

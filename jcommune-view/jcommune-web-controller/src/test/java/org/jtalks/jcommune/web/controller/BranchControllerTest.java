@@ -62,7 +62,6 @@ public class BranchControllerTest {
         long branchId = 1L;
         int page = 2;
         int pageSize = 5;
-        int startIndex = page * pageSize - pageSize;
         //set expectations
         when(topicService.getTopicsInBranchCount(branchId)).thenReturn(10);
         when(branchService.get(branchId)).thenReturn(new Branch("name"));

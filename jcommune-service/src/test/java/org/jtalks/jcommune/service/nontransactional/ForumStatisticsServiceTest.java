@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
-import org.aspectj.lang.annotation.Before;
 import org.jtalks.jcommune.model.dao.ForumStatisticsDAO;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.ForumStatisticsService;
@@ -22,7 +21,6 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.listeners.HttpSessionListenerImpl;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpSessionEvent;

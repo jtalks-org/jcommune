@@ -14,19 +14,17 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
-import org.jtalks.jcommune.service.MailService;
-import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatcher;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
-import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
+
+import org.jtalks.jcommune.service.MailService;
+import org.mockito.ArgumentCaptor;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 /**
  * Test for {@link MailServiceImpl}.

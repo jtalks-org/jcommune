@@ -14,12 +14,10 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import java.util.StringTokenizer;
+
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.StringTokenizer;
 
 /**
  * Text message to send from one user to another. <br/>
@@ -34,7 +32,6 @@ public class PrivateMessage extends Entity {
     public static final String QUOTE_SEPARATOR = " ";
     public static final String NEW_LINE = System.getProperty("line.separator");
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
     private DateTime creationDate;
     private User userFrom;
     private User userTo;

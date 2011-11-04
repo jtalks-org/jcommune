@@ -73,7 +73,6 @@ public class UserDataInterceptorTest {
 
     @Test
     public void testPostHandleWithoutCurrentUser() throws Exception {
-        User user = getUser();
         when(service.currentUserNewPmCount()).thenReturn(0);
         when(securityService.getCurrentUser()).thenReturn(null);
 

@@ -14,6 +14,13 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
@@ -30,13 +37,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
 
 /**
  * @author Kirill Afonin
@@ -166,11 +166,6 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         List<Topic> result = dao.getAllTopicsPastLastDay(start, max, lastLogin);
 
         assertEquals(result.size(), max);
-    }
-
-    private int getCount() {
-        return ((Number) session.createQuery("select count(*) from Topic").uniqueResult()).intValue();
-    }
-    
+    }    
        
 }

@@ -34,8 +34,6 @@ public class BreadcrumbBuilderTest {
     private final String SECTION_NAME = "Section Name";
     private final String BRANCH_NAME = "Branch Name";
     private final String TOPIC_NAME = "Topic Name";
-    private final String POST_NAME = "Post Name";
-
     private BreadcrumbBuilder breadcrumbBuilder;
     private User user;
     private Section section;

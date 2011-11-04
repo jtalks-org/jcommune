@@ -18,17 +18,13 @@ import org.jtalks.jcommune.model.entity.Section;
 import org.jtalks.jcommune.service.ForumStatisticsService;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.listeners.HttpSessionListenerImpl;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.List;
 
 /**
  * Displays to user page contains section list with related branch lists
