@@ -182,7 +182,7 @@ public class PrivateMessageController {
                              @PathVariable(PM_ID) Long id) throws NotFoundException {
 
         PrivateMessage pm = pmService.get(id);
-        List<Breadcrumb> breadcrumbList;
+        List<Breadcrumb> breadcrumbList = null;
         if ("inbox".equals(folder)) {
             pmService.markAsRead(pm);
             breadcrumbList = breadcrumbBuilder.getInboxBreadcrumb();
