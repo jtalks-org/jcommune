@@ -40,8 +40,6 @@ public class HttpSessionListenerTest {
         when(session.getId()).thenReturn(sessionId);
         when(event.getSession()).thenReturn(session);
         listener = new HttpSessionStatisticListenerImpl();
-        SessionRegistry sessionRegistry = mock(SessionRegistry.class);
-        listener.setSessionRegistry(sessionRegistry);
     }
 
     @BeforeMethod

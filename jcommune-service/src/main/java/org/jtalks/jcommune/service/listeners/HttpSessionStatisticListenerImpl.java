@@ -14,8 +14,6 @@
  */
 package org.jtalks.jcommune.service.listeners;
 
-import org.springframework.security.core.session.SessionRegistry;
-
 import javax.servlet.http.HttpSessionEvent;
 
 /**
@@ -26,23 +24,6 @@ import javax.servlet.http.HttpSessionEvent;
 public class HttpSessionStatisticListenerImpl implements HttpSessionStatisticListener {
 
     private static long totalActiveSessions;
-    private static SessionRegistry sessionRegistry;
-
-    /**
-     * {@inheritDoc}
-     */
-    public SessionRegistry getSessionRegistry() {
-        return sessionRegistry;
-    }
-
-    /**
-     * Set current session registry
-     *
-     * @param registry current session registry
-     */
-    public void setSessionRegistry(SessionRegistry registry) {
-        sessionRegistry = registry;
-    }
 
     /**
      * @return active sessions count
@@ -64,7 +45,6 @@ public class HttpSessionStatisticListenerImpl implements HttpSessionStatisticLis
      */
     @Override
     public synchronized void sessionDestroyed(HttpSessionEvent se) {
-        sessionRegistry.removeSessionInformation(se.getSession().getId());
         totalActiveSessions--;
     }
 }

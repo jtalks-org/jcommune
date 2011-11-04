@@ -14,8 +14,6 @@
  */
 package org.jtalks.jcommune.service.listeners;
 
-import org.springframework.security.core.session.SessionRegistry;
-
 import javax.servlet.http.HttpSessionListener;
 
 /**
@@ -29,9 +27,4 @@ public interface HttpSessionStatisticListener extends HttpSessionListener {
      * @return active sessions count
      */
     long getTotalActiveSessions();
-
-    /**
-     * @return current session registry
-     */
-    SessionRegistry getSessionRegistry();
 }

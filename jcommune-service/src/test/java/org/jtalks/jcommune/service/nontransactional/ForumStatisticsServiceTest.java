@@ -56,10 +56,9 @@ public class ForumStatisticsServiceTest {
         when(sessionRegistry.getAllPrincipals()).thenReturn(users);
 
         HttpSessionStatisticListener listener = mock(HttpSessionStatisticListener.class);
-        when(listener.getSessionRegistry()).thenReturn(sessionRegistry);
         when(listener.getTotalActiveSessions()).thenReturn(sessionCount);
 
-        statisticsService = new ForumStatisticsServiceImpl(statisticsDAO, listener);
+        statisticsService = new ForumStatisticsServiceImpl(statisticsDAO, listener, sessionRegistry);
     }
 
     @Test

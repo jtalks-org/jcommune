@@ -36,13 +36,15 @@ public class ForumStatisticsServiceImpl implements ForumStatisticsService {
      * Create an instance of transactional forum statistics service
      *
      * @param statisticsDAO            for operations with data storage
-     * @param sessionStatisticListener autowired object from Spring Context
+     * @param sessionStatisticListener for getting active users count
+     * @param sessionRegistry          for getting active users information
      */
     public ForumStatisticsServiceImpl(ForumStatisticsDAO statisticsDAO,
-                                      HttpSessionStatisticListener sessionStatisticListener) {
+                                      HttpSessionStatisticListener sessionStatisticListener,
+                                      SessionRegistry sessionRegistry) {
         this.statisticsDAO = statisticsDAO;
         this.sessionStatisticListener = sessionStatisticListener;
-        this.sessionRegistry = sessionStatisticListener.getSessionRegistry();
+        this.sessionRegistry = sessionRegistry;
     }
 
     /**

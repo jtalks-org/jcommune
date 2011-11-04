@@ -101,6 +101,9 @@
     <listener>
         <listener-class>org.jtalks.jcommune.service.listeners.HttpSessionStatisticListenerImpl</listener-class>
     </listener>
+    <listener>
+        <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
+    </listener>
 
 
     <!-- Errors -->
