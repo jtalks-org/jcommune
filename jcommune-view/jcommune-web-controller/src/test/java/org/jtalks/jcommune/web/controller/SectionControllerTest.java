@@ -34,6 +34,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * @author Max Malakhov
  * @author Alexandre Teterin
@@ -48,7 +50,7 @@ public class SectionControllerTest {
         sectionService = mock(SectionService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
         ForumStatisticsService statisticsService = mock(ForumStatisticsService.class);
-        controller = new SectionController(sectionService, breadcrumbBuilder, statisticsService);
+        controller = new SectionController(sectionService, breadcrumbBuilder, statisticsService,mock(HttpSession.class));
     }
 
     @Test
