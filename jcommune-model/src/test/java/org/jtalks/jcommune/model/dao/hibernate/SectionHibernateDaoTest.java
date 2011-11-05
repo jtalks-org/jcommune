@@ -176,21 +176,7 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
     }
 
     @Test
-    public void testDaoTopicInBranchCount() {
-        Section section = ObjectsFactory.getDefaultSection();
-        Branch branch = ObjectsFactory.getDefaultBranch();
-        Topic topic = ObjectsFactory.getDefaultTopic();
-        branch.addTopic(topic);
-        section.addBranch(branch);
-        session.save(section);
-
-        int result = dao.getTopicInBranchCount(branch);
-
-        assertEquals(result, 1);
-    }
-
-    @Test
-    public void test() {
+    public void testGetAllTopicInBranchCount() {
         Section section = ObjectsFactory.getDefaultSection();
         Branch branch = ObjectsFactory.getDefaultBranch();
         Topic topic = ObjectsFactory.getDefaultTopic();
@@ -200,7 +186,7 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
 
         List<Section> sectionList = dao.getAll();
 
-        assertEquals(sectionList.get(0).getBranches().get(0).getTopicCount(),1);
+        assertEquals(sectionList.get(0).getBranches().get(0).getTopicCount(), 1);
     }
 
     private int getSectionCount() {

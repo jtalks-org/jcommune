@@ -79,14 +79,4 @@ public class TransactionalSectionServiceTest {
         assertEquals(actualSectionList, expectedSectionList);
         verify(sectionDao).getAll();
     }
-
-    @Test
-    public void testTransactionTopicInBranchCount() throws NotFoundException {
-        Branch branch = new Branch();
-        when(sectionDao.getTopicInBranchCount(branch)).thenReturn(1);
-
-        assertEquals(sectionService.getTopicInBranchCount(branch), 1);
-
-        verify(sectionDao).getTopicInBranchCount(branch);
-    }
 }

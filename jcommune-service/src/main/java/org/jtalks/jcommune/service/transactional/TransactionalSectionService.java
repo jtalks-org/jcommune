@@ -46,12 +46,4 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
     public List<Section> getAll() {
         return this.getDao().getAll();
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getTopicInBranchCount(Branch branch) {
-        return this.getDao().getTopicInBranchCount(branch);
-    }
 }

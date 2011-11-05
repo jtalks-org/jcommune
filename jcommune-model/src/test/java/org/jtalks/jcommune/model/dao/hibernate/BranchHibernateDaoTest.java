@@ -190,14 +190,4 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
 
         assertEquals(sectionId, branches.get(0).getSection().getId(), "Incorrect section");
     }
-    
-    @Test
-    public void testGetBranchesInSectionCount() {
-        List<Branch> persistedBranches = createAndSaveBranchList(5);
-        long sectionId = persistedBranches.get(0).getSection().getId();
-
-        int count = dao.getBranchesInSectionCount(sectionId);
-
-        assertEquals(count, 5);
-    }
 }

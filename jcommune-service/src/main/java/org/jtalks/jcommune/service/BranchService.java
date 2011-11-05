@@ -37,14 +37,4 @@ public interface BranchService extends EntityService<Branch> {
      *          when section not found
      */
     List<Branch> getBranchesInSection(long sectionId) throws NotFoundException;
-
-    /**
-     * Get number of branches in section.
-     *
-     * @param sectionId section id where you have to count branches
-     * @return number of branches in section
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when branch not found
-     */
-    int getBranchesInSectionCount(long sectionId) throws NotFoundException;
 }

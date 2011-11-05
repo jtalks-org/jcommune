@@ -33,13 +33,4 @@ public interface SectionDao extends ParentRepository<Section> {
      * @return list of section
      */
     List<Section> getAll();
-
-    /**
-     * Get topics count in branch.
-     *
-     * @param  branch branch
-     * @return topics count
-     */
-    int getTopicInBranchCount(Branch branch);
-
 }

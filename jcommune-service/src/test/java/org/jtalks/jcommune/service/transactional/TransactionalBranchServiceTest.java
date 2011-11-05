@@ -70,45 +70,4 @@ public class TransactionalBranchServiceTest {
 
         branchService.get(BRANCH_ID);
     }
-
-    @Test
-    public void testGetBranchesInSection() throws NotFoundException {
-        List<Branch> expectedList = new ArrayList<Branch>();
-        expectedList.add(new Branch(BRANCH_NAME));
-        when(sectionDao.isExist(SECTION_ID)).thenReturn(true);
-        when(branchDao.getBranchesInSection(SECTION_ID)).thenReturn(expectedList);
-
-        List<Branch> branches = branchService.getBranchesInSection(SECTION_ID);
-
-        assertNotNull(branches);
-        verify(branchDao).getBranchesInSection(SECTION_ID);
-        verify(sectionDao).isExist(SECTION_ID);
-    }
-
-    @Test(expectedExceptions = {NotFoundException.class})
-    public void testGetBranchesInNonExistentSection() throws NotFoundException {
-        when(sectionDao.isExist(SECTION_ID)).thenReturn(false);
-
-        branchService.getBranchesInSection(SECTION_ID);
-    }
-
-    @Test
-    public void testGetBranchesInSectionCount() throws NotFoundException {
-        int expectedCount = 10;
-        when(sectionDao.isExist(SECTION_ID)).thenReturn(true);
-        when(branchDao.getBranchesInSectionCount(SECTION_ID)).thenReturn(expectedCount);
-
-        int count = branchService.getBranchesInSectionCount(SECTION_ID);
-
-        assertEquals(count, expectedCount);
-        verify(sectionDao).isExist(SECTION_ID);
-        verify(branchDao).getBranchesInSectionCount(SECTION_ID);
-    }
-
-    @Test(expectedExceptions = {NotFoundException.class})
-    public void testGetBranchesCountInNonExistentSection() throws NotFoundException {
-        when(sectionDao.isExist(SECTION_ID)).thenReturn(false);
-
-        branchService.getBranchesInSectionCount(SECTION_ID);
-    }
 }

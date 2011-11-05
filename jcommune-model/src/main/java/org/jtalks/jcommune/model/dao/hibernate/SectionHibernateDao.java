@@ -53,11 +53,13 @@ public class SectionHibernateDao extends ParentRepositoryImpl<Section> implement
     }
 
     /**
-     * {@inheritDoc}
+     * Get number of topic in branch.
+     * 
+     * @param branch branch
+     * @return number of topic in branch
      */
-    @Override
-    public int getTopicInBranchCount(Branch branch) {
-        return ((Number) getSession().getNamedQuery("getTopcInBranchCount")
+    private int getTopicInBranchCount(Branch branch) {
+        return ((Number) getSession().getNamedQuery("getTopicInBranchCount")
                 .setCacheable(true)
                 .setEntity("branch", branch)
                 .uniqueResult())
