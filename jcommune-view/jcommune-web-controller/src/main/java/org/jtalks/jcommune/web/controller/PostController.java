@@ -186,7 +186,7 @@ public class PostController {
         if (result.hasErrors()) {
             return "answer";
         }
-        topicService.addAnswer(postDto.getTopicId(), postDto.getBodyText());
+        topicService.replyToTopic(postDto.getTopicId(), postDto.getBodyText());
         return "redirect:/topics/" + postDto.getTopicId();
     }
 }

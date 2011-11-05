@@ -190,7 +190,7 @@ public class PostControllerTest {
         String view = controller.create(getDto(), resultWithoutErrors);
 
         //check expectations
-        verify(topicService).addAnswer(TOPIC_ID, POST_CONTENT);
+        verify(topicService).replyToTopic(TOPIC_ID, POST_CONTENT);
 
         //check result
         assertEquals(view, "redirect:/topics/" + TOPIC_ID);
@@ -205,7 +205,7 @@ public class PostControllerTest {
         String view = controller.create(getDto(), resultWithErrors);
 
         //check expectations
-        verify(topicService, never()).addAnswer(anyLong(), anyString());
+        verify(topicService, never()).replyToTopic(anyLong(), anyString());
 
         //check result
         assertEquals(view, "answer");
