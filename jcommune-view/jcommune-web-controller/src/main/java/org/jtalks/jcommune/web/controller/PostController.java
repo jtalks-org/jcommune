@@ -70,7 +70,7 @@ public class PostController {
     }
 
     /**
-     * Redirect user to confirmation page.
+     * Show confirmation page.
      *
      * @param topicId topic id, this in topic which contains post which should be deleted
      * @param postId  post id to delete
@@ -104,7 +104,7 @@ public class PostController {
     }
 
     /**
-     * Edit post by given id.
+     * Edit post page filled with data from post with given id.
      *
      * @param topicId topic id
      * @param postId  post id
@@ -113,7 +113,7 @@ public class PostController {
      *          when topic or post not found
      */
     @RequestMapping(value = "/posts/{postId}/edit", method = RequestMethod.GET)
-    public ModelAndView edit(@RequestParam(TOPIC_ID) Long topicId,
+    public ModelAndView editPage(@RequestParam(TOPIC_ID) Long topicId,
                              @PathVariable(POST_ID) Long postId) throws NotFoundException {
         Post post = postService.get(postId);
 
@@ -125,7 +125,7 @@ public class PostController {
     }
 
     /**
-     * Save post.
+     * Update existing post.
      *
      * @param postDto Dto populated in form
      * @param result  validation result
@@ -137,7 +137,7 @@ public class PostController {
      *          when topic, branch or post not found
      */
     @RequestMapping(value = "/posts/{postId}/edit", method = RequestMethod.POST)
-    public ModelAndView save(@Valid @ModelAttribute PostDto postDto,
+    public ModelAndView update(@Valid @ModelAttribute PostDto postDto,
                              BindingResult result,
                              @RequestParam(TOPIC_ID) Long topicId,
                              @PathVariable(POST_ID) Long postId) throws NotFoundException {
@@ -147,14 +147,13 @@ public class PostController {
                     .addObject(POST_ID, postId);
         }
 
-        postService.savePost(postDto.getId(), postDto.getBodyText());
+        postService.updatePost(postDto.getId(), postDto.getBodyText());
 
         return new ModelAndView("redirect:/topics/" + topicId);
     }
 
     /**
      * Creates the answering page with empty answer form.
-     * If the user isn't logged in he will be redirected to the login page.
      *
      * @param topicId the id of the topic for the answer
      * @return answering {@code ModelAndView} or redirect to the login page
@@ -172,7 +171,7 @@ public class PostController {
     }
 
     /**
-     * Process the answer form. Adds new post to the specified topic and redirects to the
+     * Process the reply form. Adds new post to the specified topic and redirects to the
      * topic view page.
      *
      * @param postDto dto that contains data entered in form

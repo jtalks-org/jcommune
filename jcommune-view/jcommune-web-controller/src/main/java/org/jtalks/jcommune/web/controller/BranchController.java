@@ -77,7 +77,7 @@ public final class BranchController {
      *          when branch not found
      */
     @RequestMapping(value = "/branches/{branchId}", method = RequestMethod.GET)
-    public ModelAndView show(@PathVariable("branchId") long branchId,
+    public ModelAndView showPage(@PathVariable("branchId") long branchId,
                              @RequestParam(value = PAGE, required = false) Integer page,
                              @RequestParam(value = SIZE, required = false) Integer size) throws NotFoundException {
         int topicsCount = topicService.getTopicsInBranchCount(branchId);
@@ -110,7 +110,7 @@ public final class BranchController {
      *          when branch not found
      */
     @RequestMapping(value = "/topics/recent", method = RequestMethod.GET)
-    public ModelAndView recentTopics(
+    public ModelAndView recentTopicsPage(
             @RequestParam(value = PAGE, required = false) Integer page,
             @RequestParam(value = SIZE, required = false) Integer size,
             HttpSession session) throws NotFoundException {

@@ -14,6 +14,23 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeValues;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
@@ -28,16 +45,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.ModelAndViewAssert.*;
-import static org.testng.Assert.assertEquals;
 
 /**
  * This is test for <code>PostController<code> class.
@@ -67,7 +74,7 @@ public class PostControllerTest {
 
 
     @Test
-    public void confirmTest() {
+    public void deleteConfirmPage() {
         long topicId = 1;
         long postId = 5;
 
@@ -82,7 +89,7 @@ public class PostControllerTest {
     }
 
     @Test
-    public void deleteTest() throws NotFoundException {
+    public void delete() throws NotFoundException {
         long topicId = 1;
         long postId = 5;
 
@@ -97,7 +104,7 @@ public class PostControllerTest {
     }
 
     @Test
-    public void editTest() throws NotFoundException {
+    public void editPage() throws NotFoundException {
         User user = new User("username", "email@mail.com", "password");
         Topic topic = new Topic(user, "title");
         topic.setId(TOPIC_ID);
@@ -110,7 +117,7 @@ public class PostControllerTest {
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
 
         //invoke the object under test
-        ModelAndView actualMav = controller.edit(TOPIC_ID, POST_ID);
+        ModelAndView actualMav = controller.editPage(TOPIC_ID, POST_ID);
 
         //check expectations
         verify(postService).get(POST_ID);
@@ -131,25 +138,25 @@ public class PostControllerTest {
     }
 
     @Test
-    public void saveTest() throws NotFoundException {
+    public void update() throws NotFoundException {
         PostDto dto = getDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "postDto");
 
-        ModelAndView mav = controller.save(dto, bindingResult, TOPIC_ID, POST_ID);
+        ModelAndView mav = controller.update(dto, bindingResult, TOPIC_ID, POST_ID);
         assertViewName(mav, "redirect:/topics/" + TOPIC_ID);
 
-        verify(postService).savePost(POST_ID, POST_CONTENT);
+        verify(postService).updatePost(POST_ID, POST_CONTENT);
 
     }
 
     @Test
-    public void testSaveWithError() throws NotFoundException {
+    public void updateWithError() throws NotFoundException {
         PostDto dto = getDto();
         BeanPropertyBindingResult resultWithErrors = mock(BeanPropertyBindingResult.class);
 
         when(resultWithErrors.hasErrors()).thenReturn(true);
 
-        ModelAndView mav = controller.save(dto, resultWithErrors, TOPIC_ID, POST_ID);
+        ModelAndView mav = controller.update(dto, resultWithErrors, TOPIC_ID, POST_ID);
 
         assertViewName(mav, "postForm");
         long topicId = assertAndReturnModelAttributeOfType(mav, "topicId", Long.class);
@@ -157,11 +164,11 @@ public class PostControllerTest {
         assertEquals(topicId, TOPIC_ID);
         assertEquals(postId, POST_ID);
 
-        verify(postService, never()).savePost(anyLong(), anyString());
+        verify(postService, never()).updatePost(anyLong(), anyString());
     }
 
     @Test
-    public void testGetAnswerPage() throws NotFoundException {
+    public void createPage() throws NotFoundException {
         Topic topic = mock(Topic.class);
 
         //set expectations
@@ -176,8 +183,13 @@ public class PostControllerTest {
         verify(breadcrumbBuilder).getForumBreadcrumb(topic);
 
         //check result
-        assertAndReturnModelAttributeOfType(mav, "topic", Topic.class);
         assertViewName(mav, "answer");
+        assertAndReturnModelAttributeOfType(mav, "topic", Topic.class);
+        long topicId = assertAndReturnModelAttributeOfType(mav, "topicId", Long.class);
+        assertEquals(topicId, TOPIC_ID);
+        PostDto dto = assertAndReturnModelAttributeOfType(mav, "postDto", PostDto.class);
+        assertEquals(dto.getId(), 0);
+        assertNull(dto.getBodyText());
         assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 

@@ -150,7 +150,7 @@ public class UserController {
     @RequestMapping(value = "/users/{encodedUsername}", method = RequestMethod.GET)
     //The {encodedUsername} from the JSP view automatically converted to username.
     // That's why the getByUsername() method is used instead of getByEncodedUsername().
-    public ModelAndView show(@PathVariable("encodedUsername") String username) throws NotFoundException {
+    public ModelAndView showProfilePage(@PathVariable("encodedUsername") String username) throws NotFoundException {
         User user = userService.getByUsername(username);
         return new ModelAndView("userDetails")
                 .addObject("user", user)
@@ -190,7 +190,7 @@ public class UserController {
      * @throws IOException       throws in case of access errors (if the temporary store fails)
      */
     @RequestMapping(value = "/users/edit", method = RequestMethod.POST)
-    public ModelAndView editProfile(
+    public ModelAndView editProfile( // TODO: this method is too complex
             @Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
             BindingResult result, HttpServletResponse response)
         throws NotFoundException, IOException {
@@ -250,16 +250,17 @@ public class UserController {
      *
      * @param userDto form submission result
      * @return updated user object
-     * @throws DuplicateEmailException e-maim already registered
+     * @throws DuplicateEmailException e-mail already registered
      * @throws WrongPasswordException current password doesn't match with the passed one
      * @throws IOException avatar upload problems
      * @throws InvalidImageException avatar image is invalid
      */
     private User performEditUserProfile(EditUserProfileDto userDto) throws DuplicateEmailException,
             WrongPasswordException, IOException, InvalidImageException {
+        byte[] avatar = imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
         return userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(), userDto.getNewUserPassword(),
-                imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT),
+                avatar,
                 userDto.getSignature(), userDto.getLanguage(), userDto.getPageSize());
     }
 
@@ -303,12 +304,12 @@ public class UserController {
     }
 
     /**
-     * Write user avatar  in response for rendering it on html pages.
+     * Write user avatar in response for rendering it on html pages.
      *
      * @param response        servlet response
      * @param encodedUsername {@link User#getEncodedUsername()}
-     * @throws NotFoundException - throws if user with given encodedUsername not found
-     * @throws IOException       - throws if an output exception occurred
+     * @throws NotFoundException throws if user with given encodedUsername not found
+     * @throws IOException       throws if an output exception occurred
      */
     @RequestMapping(value = "/{encodedUsername}/avatar", method = RequestMethod.GET)
     public void renderAvatar(HttpServletResponse response,
@@ -337,7 +338,7 @@ public class UserController {
      * If e-mail given has not been registered
      * before view with an error will be returned.
      *
-     * @param email address ro identify the user
+     * @param email address to identify the user
      * @return view with a parameters bound
      */
     @RequestMapping(value = "/password/restore", method = RequestMethod.POST)

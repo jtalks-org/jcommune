@@ -172,7 +172,7 @@ public class UserControllerTest {
 
 
         //invoke the object under test
-        ModelAndView mav = controller.show(USER_NAME);
+        ModelAndView mav = controller.showProfilePage(USER_NAME);
 
         //check expectations
         verify(userService).getByUsername(USER_NAME);

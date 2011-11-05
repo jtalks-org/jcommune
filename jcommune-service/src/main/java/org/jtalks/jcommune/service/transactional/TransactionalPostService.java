@@ -80,7 +80,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      */
     @Override
     @PreAuthorize("hasPermission(#postId, 'org.jtalks.jcommune.model.entity.Post', admin)")
-    public void savePost(long postId, String postContent) throws NotFoundException {
+    public void updatePost(long postId, String postContent) throws NotFoundException {
         Post post = get(postId);
         post.setPostContent(postContent);
         post.updateModificationDate();

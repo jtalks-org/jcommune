@@ -79,9 +79,9 @@ public final class TopicController {
     }
 
     /**
-     * Method handles newTopic.html GET request and display page for creation new topic
+     * Shows page with form for new topic.
      *
-     * @param branchId {@link org.jtalks.jcommune.model.entity.Branch} id
+     * @param branchId {@link org.jtalks.jcommune.model.entity.Branch} branch, where topic will be created
      * @return {@code ModelAndView} object with "newTopic" view, new {@link TopicDto} and branch id
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
@@ -96,11 +96,11 @@ public final class TopicController {
     }
 
     /**
-     * This method handles POST requests, it will be always activated when the user pressing "Submit topic"
+     * Create topic from data entered in form.
      *
-     * @param topicDto the object that provides communication between spring form and controller
-     * @param result   {@link BindingResult} object for spring validation
-     * @param branchId hold the current branchId
+     * @param topicDto object with data from form
+     * @param result   {@link BindingResult} validation result
+     * @param branchId branch, where topic will be created
      * @return {@code ModelAndView} object which will be redirect to forum.html
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
@@ -120,7 +120,7 @@ public final class TopicController {
     }
 
     /**
-     * Redirect user to confirmation page.
+     * Page with confirmation.
      *
      * @param topicId  topic id, this is the topic which contains the first post which should be deleted
      * @param branchId branch containing topic
@@ -135,7 +135,7 @@ public final class TopicController {
     }
 
     /**
-     * Handle delete action. User deleteConfirmPage the first post (topic) deletion.
+     * Delete topic.
      *
      * @param topicId  topic id, this is the topic which contains the first post which should be deleted
      * @param branchId branch containing the first topic
@@ -143,7 +143,7 @@ public final class TopicController {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic not found
      */
-    @RequestMapping(method = RequestMethod.DELETE, value = "/topics/{topicId}")
+    @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.DELETE)
     public ModelAndView delete(@PathVariable(TOPIC_ID) Long topicId,
                                @RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
         topicService.deleteTopic(topicId);
@@ -151,8 +151,7 @@ public final class TopicController {
     }
 
     /**
-     * Method handles GET requests with URI /topic/{topicId}
-     * Displays to user a list of messages from the chosen theme with pagination.
+     * Displays to user a list of messages from the topic with pagination.
      *
      * @param topicId the id of selected Topic
      * @param page    page
@@ -163,7 +162,7 @@ public final class TopicController {
      *          when topic or branch not found
      */
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.GET)
-    public ModelAndView show(@PathVariable(TOPIC_ID) Long topicId,
+    public ModelAndView showTopicPage(@PathVariable(TOPIC_ID) Long topicId,
                              @RequestParam(value = "page", required = false) Integer page,
                              @RequestParam(value = "size", required = false) Integer size,
                              HttpSession session) throws NotFoundException {
@@ -189,13 +188,11 @@ public final class TopicController {
                 .addObject("page", pag.getPage())
                 .addObject(BRANCH_ID, branchId)
                 .addObject(TOPIC_ID, topicId)
-                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic))
-                ;
+                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
     }
 
     /**
-     * Method handles GET requests with URI /topic/{topicId}/edit
-     * Get edit topic view.
+     * Edit page with form, populated with fields from topic.
      *
      * @param topicId  the id of selected Topic
      * @param branchId the id of selected topic branch
@@ -204,7 +201,7 @@ public final class TopicController {
      *          when topic or branch not found
      */
     @RequestMapping(value = "/topics/{topicId}/edit", method = RequestMethod.GET)
-    public ModelAndView edit(@RequestParam(BRANCH_ID) Long branchId,
+    public ModelAndView editTopicPage(@RequestParam(BRANCH_ID) Long branchId,
                              @PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         Topic topic = topicService.get(topicId);
 
@@ -228,7 +225,7 @@ public final class TopicController {
      *          when topic or branch not found
      */
     @RequestMapping(value = "/topics/{topicId}/edit", method = RequestMethod.POST)
-    public ModelAndView save(@Valid @ModelAttribute TopicDto topicDto,
+    public ModelAndView editTopic(@Valid @ModelAttribute TopicDto topicDto,
                              BindingResult result,
                              @RequestParam(BRANCH_ID) Long branchId,
                              @PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
