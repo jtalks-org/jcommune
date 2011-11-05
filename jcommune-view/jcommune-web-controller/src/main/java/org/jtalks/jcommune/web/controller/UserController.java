@@ -172,9 +172,7 @@ public class UserController {
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
         editedUser.setAvatar(new MockMultipartFile("avatar", "", ImageFormats.JPG.getContentType(), user.getAvatar()));
         return editMaV(editedUser)
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
-                .addObject("languages", Language.values())
-                .addObject("pageSizes", PageSize.values());
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
     }
 
     /**
@@ -287,7 +285,9 @@ public class UserController {
      * @return {@code ModelAndView} for edit profile page
      */
     private ModelAndView editMaV(EditUserProfileDto dto) {
-        return new ModelAndView(EDIT_PROFILE, EDITED_USER, dto).addObject("languages", Language.values());
+        return new ModelAndView(EDIT_PROFILE, EDITED_USER, dto)
+                .addObject("languages", Language.values())
+                .addObject("pageSizes", PageSize.values());
     }
 
     /**
