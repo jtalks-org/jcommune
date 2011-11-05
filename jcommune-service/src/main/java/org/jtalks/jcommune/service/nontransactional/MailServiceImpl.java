@@ -30,7 +30,7 @@ public class MailServiceImpl implements MailService {
     private MailSender mailSender;
     private SimpleMailMessage templateMessage;
 
-    private static final Logger logger = LoggerFactory.getLogger(MailServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MailServiceImpl.class);
 
     // todo: apply i18n settings here somehow
     private static final String PASSWORD_RECOVERY_TEMPLATE =
@@ -71,10 +71,10 @@ public class MailServiceImpl implements MailService {
         msg.setText(String.format(PASSWORD_RECOVERY_TEMPLATE, userName, newPassword));
         try {
             this.mailSender.send(msg);
-            logger.info("Password recovery email sent for {}", userName);
+            LOGGER.info("Password recovery email sent for {}", userName);
         } catch (MailException e) {
             String message = "Password recovery email sending failed";
-            logger.error(message , e);
+            LOGGER.error(message , e);
             throw new MailingFailedException("Password recovery email sending failed", e);
         }
     }

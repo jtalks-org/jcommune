@@ -16,7 +16,6 @@ package org.jtalks.jcommune.model.dao;
 
 import java.util.List;
 
-import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Section;
 
 /**
