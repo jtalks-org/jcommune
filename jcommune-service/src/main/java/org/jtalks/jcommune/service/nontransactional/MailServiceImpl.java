@@ -68,7 +68,7 @@ public class MailServiceImpl implements MailService {
         msg.setText(String.format(PASSWORD_RECOVERY_TEMPLATE, userName, newPassword));
         try {
             this.mailSender.send(msg);
-            logger.error("Password recovery email sent for {}", new Object[]{userName});
+            logger.info("Password recovery email sent for {}", userName);
         } catch (MailException e) {
             logger.error("Password recovery email sending failed", e);
         }

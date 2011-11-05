@@ -45,7 +45,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 public class FormattedDate extends FormatTag {
 
     /**
-     * Serialixable class should define it
+     * Serializable class should define it
      */
     private static final long serialVersionUID = 34588L;
 
@@ -56,8 +56,6 @@ public class FormattedDate extends FormatTag {
     private int offset = DEFAULT_OFFSET;
 
     public static final int DEFAULT_OFFSET = 0;
-
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(FormattedDate.class);
 
     /**
      * {@inheritDoc}
@@ -125,7 +123,7 @@ public class FormattedDate extends FormatTag {
             this.setLocale(localeResolver.resolveLocale(request));
             this.setPattern(DATE_FORMAT_PATTERN);
         } catch (JspTagException e) {
-            logger.error("Error while rendering the date", e);
+            throw new RuntimeException("Error while rendering the date", e);
         }
     }
 }

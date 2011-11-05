@@ -94,13 +94,13 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     @Override
     public User registerUser(User user) throws DuplicateUserException, DuplicateEmailException {
         if (isUserExist(user.getUsername())) {
-            String msg = "User " + user.getUsername() + " already exists!";
-            logger.warn(msg);
+            String msg = "Failed to register user. User " + user.getUsername() + " already exists!";
+            logger.info(msg);
             throw new DuplicateUserException(msg);
         }
         if (isEmailExist(user.getEmail())) {
-            String msg = "E-mail " + user.getEmail() + " already exists!";
-            logger.warn(msg);
+            String msg = "Failed to register user. E-mail " + user.getEmail() + " already exists!";
+            logger.info(msg);
             throw new DuplicateEmailException(msg);
         }
 
@@ -156,6 +156,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         }
 
         this.getDao().saveOrUpdate(currentUser);
+        
+        logger.info("Updated user profile. Username: {}", currentUser.getUsername());
         return currentUser;
     }
 
@@ -241,13 +243,15 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         User user = this.getDao().getByEmail(email);
         if (user == null) {
             String message = "No user matches the email " + email;
-            logger.error(message);
+            logger.info(message);
             throw new NotFoundException(message);
         }
         String randomPassword = Long.toString(new Random().nextInt(100000000), 36); // 5-6 chars
         user.setPassword(randomPassword);
         this.getDao().update(user);
-        logger.info("New random password was set for user {}", new Object[]{user.getUsername()});
+        
+        logger.info("New random password was set for user {}", user.getUsername());
+        
         mailService.sendPasswordRecoveryMail(user.getUsername(), email, randomPassword);
     }
 

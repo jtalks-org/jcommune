@@ -46,11 +46,13 @@ import java.util.Set;
  */
 public class TransactionalTopicService extends AbstractTransactionalEntityService<Topic, TopicDao>
         implements TopicService {
+    
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    public static final String TOPICS_VIEWED_ATTRIBUTE_NAME = "topicsViewed";
+    
     private final SecurityService securityService;
     private BranchService branchService;
     private BranchDao branchDao;
-    public static final String TOPICS_VIEWED_ATTRIBUTE_NAME = "topicsViewed";
 
     /**
      * Create an instance of User entity based service
@@ -73,22 +75,25 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      */
     @Override
     @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
-    public Post addAnswer(long topicId, String answerBody) throws NotFoundException {
+    public Post replyToTopic(long topicId, String answerBody) throws NotFoundException {
         User currentUser = securityService.getCurrentUser();
-        if (currentUser == null) {
-            throw new IllegalStateException("User should log in to post answers.");
+        if (currentUser == null) { // it shouldn't happen because only registered user can have this roles
+            String msg = "User should log in to post answers.";
+            logger.error(msg);
+            throw new IllegalStateException(msg);
         }
 
         Topic topic = get(topicId);
-
         Post answer = new Post(currentUser, answerBody);
         topic.addPost(answer);
         topic.updateModificationDate();
-
         this.getDao().update(topic);
-        logger.debug("Added answer to topic {}", topicId);
 
         securityService.grantToCurrentUser().role(SecurityConstants.ROLE_ADMIN).admin().on(answer);
+
+        logger.debug("New post in topic. Topic id={}, Post id={}, Post author={}", 
+                new Object[]{ topicId, answer.getId(), currentUser.getUsername() });
+        
         return answer;
     }
 
@@ -99,8 +104,10 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
     public Topic createTopic(String topicName, String bodyText, long branchId) throws NotFoundException {
         User currentUser = securityService.getCurrentUser();
-        if (currentUser == null) {
-            throw new IllegalStateException("User should log in to post answers.");
+        if (currentUser == null) { // it shouldn't happen because only registered user can have this roles
+            String msg = "User should log in to create topic.";
+            logger.error(msg);
+            throw new IllegalStateException(msg);
         }
 
         Branch branch = branchService.get(branchId);
@@ -108,13 +115,16 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         Post first = new Post(currentUser, bodyText);
         topic.addPost(first);
         branch.addTopic(topic);
-
         branchDao.update(branch);
-        logger.debug("Created new topic {}", topic.getId());
 
         securityService.grantToCurrentUser().role(SecurityConstants.ROLE_ADMIN).admin().on(topic)
                 .user(currentUser.getUsername()).role(SecurityConstants.ROLE_ADMIN).admin().on(first);
-
+        
+        if (logger.isDebugEnabled() && !logger.isInfoEnabled())
+            logger.debug("Created new topic id={}, branch id={}, author={}", 
+                    new Object[]{ topic.getId(), branchId, currentUser.getUsername() });
+        logger.info("Created new topic: \"{}\". Author: {}", topicName, currentUser.getUsername());
+        
         return topic;
     }
 
@@ -168,9 +178,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      */
     @Override
     @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', admin)")
-    public void saveTopic(long topicId, String topicName, String bodyText)
+    public void updateTopic(long topicId, String topicName, String bodyText)
             throws NotFoundException {
-        saveTopic(topicId, topicName, bodyText, 0, false, false);
+        updateTopic(topicId, topicName, bodyText, 0, false, false);
     }
 
     /**
@@ -178,7 +188,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      */
     @Override
     @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', admin)")
-    public void saveTopic(long topicId, String topicName, String bodyText, int topicWeight,
+    public void updateTopic(long topicId, String topicName, String bodyText, int topicWeight,
                           boolean sticked, boolean announcement)
             throws NotFoundException {
         Topic topic = get(topicId);
@@ -189,9 +199,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         Post post = topic.getFirstPost();
         post.setPostContent(bodyText);
         topic.updateModificationDate();
-
         this.getDao().update(topic);
-        logger.debug("Update the topic {}", topic.getId());
+        
+        logger.debug("Topic id={} updated", topic.getId());
     }
 
     /**
@@ -207,6 +217,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         branchDao.update(branch);
 
         securityService.deleteFromAcl(Topic.class, topicId);
+        
+        logger.info("Deleted topic \"{}\". Topic id: {}", topic.getTitle(), topicId);
+        
         return branch;
     }
 
