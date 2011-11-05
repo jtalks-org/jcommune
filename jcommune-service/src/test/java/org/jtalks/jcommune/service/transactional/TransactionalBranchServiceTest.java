@@ -14,6 +14,11 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
+
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -21,13 +26,6 @@ import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.mockito.Mockito.*;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
 
 /**
  * This test class is intended to test all topic-related forum branch facilities
@@ -37,7 +35,6 @@ import static org.testng.Assert.assertNotNull;
  */
 public class TransactionalBranchServiceTest {
     private long BRANCH_ID = 1L;
-    private long SECTION_ID = 2L;
     final String BRANCH_NAME = "branch name";
 
     private BranchDao branchDao;
