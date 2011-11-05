@@ -23,6 +23,7 @@ import javax.servlet.jsp.PageContext;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.contrib.jsptag.FormatTag;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.support.RequestContextUtils;
@@ -57,7 +58,7 @@ public class FormattedDate extends FormatTag {
 
     public static final int DEFAULT_OFFSET = 0;
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(FormattedDate.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FormattedDate.class);
 
     /**
      * {@inheritDoc}
@@ -125,7 +126,7 @@ public class FormattedDate extends FormatTag {
             this.setLocale(localeResolver.resolveLocale(request));
             this.setPattern(DATE_FORMAT_PATTERN);
         } catch (JspTagException e) {
-            logger.error("Error while rendering the date", e);
+            LOGGER.error("Error while rendering the date", e);
         }
     }
 }
