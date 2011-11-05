@@ -17,11 +17,7 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
-import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
-import org.jtalks.jcommune.service.exceptions.InvalidImageException;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
+import org.jtalks.jcommune.service.exceptions.*;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
@@ -396,18 +392,27 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testRestorePassword() throws IOException, NotFoundException {
+    public void testRestorePassword() throws IOException, NotFoundException, MailingFailedException {
         ModelAndView mav = controller.restorePassword(EMAIL);
         verify(userService, times(1)).restorePassword(EMAIL);
         assertModelAttributeValue(mav, "message", "label.restorePassword.completed");
     }
 
     @Test
-    public void testRestorePasswordWithWrongEmail() throws NotFoundException {
+    public void testRestorePasswordWithWrongEmail() throws NotFoundException, MailingFailedException {
         doThrow(new NotFoundException()).when(userService).restorePassword(anyString());
         ModelAndView mav = controller.restorePassword(EMAIL);
         verify(userService, times(1)).restorePassword(EMAIL);
         assertModelAttributeValue(mav, "error", "email.unknown");
+    }
+
+    @Test
+    public void testRestorePasswordFail() throws NotFoundException, MailingFailedException {
+        Exception fail = new MailingFailedException("", new RuntimeException());
+        doThrow(fail).when(userService).restorePassword(anyString());
+        ModelAndView mav = controller.restorePassword(EMAIL);
+        verify(userService, times(1)).restorePassword(EMAIL);
+        assertModelAttributeValue(mav, "error", "email.failed");
     }
 
     private void assertContainsError(BindingResult bindingResult, String errorName) {

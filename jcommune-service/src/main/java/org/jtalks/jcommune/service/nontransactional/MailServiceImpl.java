@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.service.MailService;
+import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.MailException;
@@ -61,7 +62,9 @@ public class MailServiceImpl implements MailService {
      * {@inheritDoc}
      */
     @Override
-    public void sendPasswordRecoveryMail(String userName, String email, String newPassword) {
+    public void sendPasswordRecoveryMail(String userName, String email, String newPassword)
+        throws MailingFailedException {
+
         SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
         msg.setTo(email);
         msg.setSubject("Password recovery");
@@ -70,7 +73,9 @@ public class MailServiceImpl implements MailService {
             this.mailSender.send(msg);
             logger.info("Password recovery email sent for {}", userName);
         } catch (MailException e) {
-            logger.error("Password recovery email sending failed", e);
+            String message = "Password recovery email sending failed";
+            logger.error(message , e);
+            throw new MailingFailedException("Password recovery email sending failed", e);
         }
     }
 }

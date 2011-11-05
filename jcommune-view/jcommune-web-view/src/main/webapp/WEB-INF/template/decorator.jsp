@@ -27,7 +27,8 @@
     <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0"/>
     <meta http-equiv="Expires" content="-1"/>
 
-    <title><decorator:title default="JCommune"/></title>
+    <title><decorator:title default="JCommune"/>
+    </title>
     <link rel="stylesheet" type="text/css" media="screen, projection"
           href="${pageContext.request.contextPath}/resources/css/screen.css"/>
     <link rel="shortcut icon" type="image/x-icon"
