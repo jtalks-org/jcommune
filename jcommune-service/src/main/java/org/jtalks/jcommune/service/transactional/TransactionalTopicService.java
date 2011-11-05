@@ -120,8 +120,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         securityService.grantToCurrentUser().role(SecurityConstants.ROLE_ADMIN).admin().on(topic)
                 .user(currentUser.getUsername()).role(SecurityConstants.ROLE_ADMIN).admin().on(first);
         
-        if (logger.isDebugEnabled() && !logger.isInfoEnabled())
-            logger.debug("Created new topic id={}, branch id={}, author={}", 
+        logger.debug("Created new topic id={}, branch id={}, author={}", 
                     new Object[]{ topic.getId(), branchId, currentUser.getUsername() });
         logger.info("Created new topic: \"{}\". Author: {}", topicName, currentUser.getUsername());
         
