@@ -19,10 +19,7 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.MailService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
-import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
+import org.jtalks.jcommune.service.exceptions.*;
 import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -237,7 +234,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public void restorePassword(String email) throws NotFoundException {
+    public void restorePassword(String email) throws NotFoundException, MailingFailedException {
         User user = this.getDao().getByEmail(email);
         if (user == null) {
             String message = "No user matches the email " + email;
@@ -245,10 +242,12 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
             throw new NotFoundException(message);
         }
         String randomPassword = Long.toString(new Random().nextInt(100000000), 36); // 5-6 chars
+        // first - mail attempt, then - database changes
+        mailService.sendPasswordRecoveryMail(user.getUsername(), email, randomPassword);
         user.setPassword(randomPassword);
         this.getDao().update(user);
         logger.info("New random password was set for user {}", new Object[]{user.getUsername()});
-        mailService.sendPasswordRecoveryMail(user.getUsername(), email, randomPassword);
+
     }
 
     /**

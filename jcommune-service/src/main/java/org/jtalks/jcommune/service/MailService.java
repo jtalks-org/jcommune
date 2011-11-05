@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.service;
 
+import org.jtalks.jcommune.service.exceptions.MailingFailedException;
+
 /**
  * This service is focused on sending e-mail to the forum users.
  * Notifications, confirmations or e-mail based subscriptions of a various
@@ -30,6 +32,7 @@ public interface MailService {
      * @param userName    username to be used in a mail
      * @param email       address to mail to
      * @param newPassword new user password to be placed in an email
+     * @throws org.jtalks.jcommune.service.exceptions.MailingFailedException when mailing failed
      */
-    void sendPasswordRecoveryMail(String userName, String email, String newPassword);
+    void sendPasswordRecoveryMail(String userName, String email, String newPassword) throws MailingFailedException;
 }
