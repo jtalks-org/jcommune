@@ -252,15 +252,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         mailService.sendPasswordRecoveryMail(user.getUsername(), email, randomPassword);
         user.setPassword(randomPassword);
         this.getDao().update(user);
-<<<<<<< HEAD
         
         logger.info("New random password was set for user {}", user.getUsername());
-        
-        mailService.sendPasswordRecoveryMail(user.getUsername(), email, randomPassword);
-=======
-        logger.info("New random password was set for user {}", new Object[]{user.getUsername()});
-
->>>>>>> 2439593829b43e03fbc1178838fe8390214ec084
     }
 
     /**
