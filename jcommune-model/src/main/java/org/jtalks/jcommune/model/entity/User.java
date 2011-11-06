@@ -259,7 +259,7 @@ public class User extends Entity implements UserDetails {
     /**
      * @param encodedUsername encoded username to set
      */
-    protected void setEncodedUsername(String encodedUsername) {
+    protected final void setEncodedUsername(String encodedUsername) {
         this.encodedUsername = encodedUsername;
     }
 

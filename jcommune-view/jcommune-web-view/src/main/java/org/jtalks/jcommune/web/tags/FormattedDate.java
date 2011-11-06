@@ -122,7 +122,7 @@ public class FormattedDate extends FormatTag {
             this.setLocale(localeResolver.resolveLocale(request));
             this.setPattern(DATE_FORMAT_PATTERN);
         } catch (JspTagException e) {
-            throw new RuntimeException("Error while rendering the date", e);
+            throw new IllegalStateException("Error while rendering the date", e);
         }
     }
 }

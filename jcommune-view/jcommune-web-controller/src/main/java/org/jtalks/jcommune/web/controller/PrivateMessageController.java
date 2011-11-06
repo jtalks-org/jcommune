@@ -154,7 +154,7 @@ public class PrivateMessageController {
      * Create {@code ModelAndView} for reply to pm page.
      * 
      * @param object new populated with data dto
-     * @return
+     * @return reply page view
      */
     private ModelAndView replyMAV(PrivateMessageDto object) {
         return new ModelAndView(PM_FORM)

@@ -29,6 +29,7 @@ public class MailingFailedException extends Exception {
      *
      * @param   message   the detail message. The detail message is saved for
      *          later retrieval by the {@link #getMessage()} method.
+     * @param cause root exception
      */
     public MailingFailedException(String message, Throwable cause) {
         super(message, cause);

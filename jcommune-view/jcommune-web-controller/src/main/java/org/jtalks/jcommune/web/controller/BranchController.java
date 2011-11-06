@@ -86,9 +86,6 @@ public final class BranchController {
 
         Branch branch = branchService.get(branchId);
         List<Topic> topics = branch.getTopics();
-        if (size == null) {
-            size = 0;
-        }
 
         return new ModelAndView("topicList")
                 .addObject("branch", branch)

@@ -177,10 +177,6 @@ public final class TopicController {
         List<Post> posts = topic.getPosts();
         topicService.addTopicView(topic, session);
 
-        if (size == null) {
-            size = 0;
-        }
-
         return new ModelAndView("postList")
                 .addObject("posts", posts)
                 .addObject("topic", topic)

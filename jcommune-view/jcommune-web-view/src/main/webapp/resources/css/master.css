@@ -79,6 +79,10 @@ li.no_border {
     border: none;
 }
 
+span.version {
+    text-align: left
+}
+
 /* Forums */
 .all_forums {
     margin: 140px 0 0;
