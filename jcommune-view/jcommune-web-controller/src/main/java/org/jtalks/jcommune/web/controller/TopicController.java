@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.controller;
 
 
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
@@ -168,8 +169,7 @@ public final class TopicController {
                              HttpSession session) throws NotFoundException {
 
         Topic topic = topicService.get(topicId);
-
-        Long branchId = topic.getBranch().getId();
+        Branch branch =  topic.getBranch();
 
         int postsCount = postService.getPostsInTopicCount(topicId);
         Pagination pag = new Pagination(page, size, postsCount);
@@ -182,7 +182,9 @@ public final class TopicController {
                 .addObject("topic", topic)
                 .addObject("size", size)
                 .addObject("page", pag.getPage())
-                .addObject(BRANCH_ID, branchId)
+                .addObject("nextTopic", branch.getNextTopic(topic))
+                .addObject("previousTopic", branch.getPreviousTopic(topic))
+                .addObject(BRANCH_ID, branch.getId())
                 .addObject(TOPIC_ID, topicId)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
     }

@@ -20,7 +20,6 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <div class="top_line">
-    <span class="version">JCommune ${project.version}</span>
     <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
         <fmt:message key="label.welcomeMessage"/>
         <a class="currentusername"
@@ -61,7 +60,7 @@
 </div>
 <script type=text/javascript>
     function getLanguageLink(lang) {
-        var href = window.location.toString().split("#",1)[0];
+        var href = window.location.toString().split("#", 1)[0];
 
         if (href.indexOf("?") == -1) {
             href = href + "?lang=";

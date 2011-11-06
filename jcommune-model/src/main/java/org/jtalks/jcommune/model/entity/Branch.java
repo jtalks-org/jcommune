@@ -41,6 +41,55 @@ public class Branch extends Entity {
     }
 
     /**
+     * Returns the next topic for the topic given.
+     * This method is sorting aware, i. e. all the sorting applied
+     * in topic selection query will be taken into account.
+     *
+     * @param topic a topic to found the next one for
+     * @return next topic or null, if the argument is the last topic in the branch
+     */
+    public Topic getNextTopic(Topic topic) {
+        int index = this.getTopicIndexInList(topic);
+        if (index == topics.size() - 1) {
+            return null;
+        } else {
+            return topics.get(index + 1);
+        }
+    }
+
+    /**
+     * Returns the prevoius topic for the topic given.
+     * This method is sorting aware, i. e. all the sorting applied
+     * in topic selection query will be be taken into account.
+     *
+     * @param topic a topic to found predecessor for
+     * @return prevoius topic or null, if the argument is the first topic in the branch
+     */
+    public Topic getPreviousTopic(Topic topic) {
+        int index = this.getTopicIndexInList(topic);
+        if (index == 0) {
+            return null;
+        } else {
+            return topics.get(index - 1);
+        }
+    }
+
+    /**
+     * Gets topic index in the branch or throws an exception if there is no such
+     * a topic in the branch
+     * @param topic topic to find index for
+     * @return index of the topic branch's collection
+     */
+    private int getTopicIndexInList(Topic topic) {
+        int index = topics.indexOf(topic);
+        if (index == -1) {
+            throw new IllegalArgumentException("There is no such topic in the branch");
+        } else {
+            return index;
+        }
+    }
+
+    /**
      * Creates the Branch instance with required fields.
      *
      * @param name branch name
