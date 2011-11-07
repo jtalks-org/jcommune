@@ -48,7 +48,7 @@
     <bean id="branchSectionDao" class="org.jtalks.jcommune.model.dao.hibernate.SectionHibernateDao"
           parent="abstractHibernateDao"/>
     <bean id="forumStatisticsDAO" class="org.jtalks.jcommune.model.dao.hibernate.ForumStatisticsHibernateDAO">
-        <property name="sessionFactory" ref="sessionFactory"/>
+        <constructor-arg index="0" ref="sessionFactory"/>
     </bean>
     <!--Injecting sessionFactory bean to class AbstractHibernateChildRepository, this way
 resolves a problem of multiple DAO beans definition -->

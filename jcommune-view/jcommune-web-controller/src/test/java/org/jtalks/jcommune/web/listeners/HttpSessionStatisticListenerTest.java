@@ -12,25 +12,26 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service.listeners;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertEquals;
-
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionEvent;
+package org.jtalks.jcommune.web.listeners;
 
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSessionEvent;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
+
 /**
+ * Test for {@link HttpSessionStatisticListenerImpl}.
+ *
  * @author Elena Lepaeva
  */
-public class HttpSessionListenerTest {
-
+public class HttpSessionStatisticListenerTest {
     private HttpSessionStatisticListenerImpl listener;
     private HttpSessionEvent event;
     private long sessionCount = 3;

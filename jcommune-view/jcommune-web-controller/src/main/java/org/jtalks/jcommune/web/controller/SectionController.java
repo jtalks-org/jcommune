@@ -15,10 +15,10 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Section;
-import org.jtalks.jcommune.service.ForumStatisticsService;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
+import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,7 +40,7 @@ import javax.servlet.http.HttpSession;
 public final class SectionController {
 
     private SectionService sectionService;
-    private ForumStatisticsService forumStatisticsService;
+    private ForumStatisticsProvider forumStaticsProvider;
     private BreadcrumbBuilder breadcrumbBuilder;
     private HttpSession session;
 
@@ -50,17 +50,17 @@ public final class SectionController {
      * @param sectionService         autowired object from Spring Context
      * @param breadcrumbBuilder      the object which provides actions on
      *                               {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
-     * @param forumStatisticsService autowired object from Spring Context which provides methods for getting
+     * @param forumStaticsProvider   autowired object from Spring Context which provides methods for getting
      *                               forum statistic information
      * @param session                http session that will be initiated
      */
     @Autowired
     public SectionController(SectionService sectionService, BreadcrumbBuilder breadcrumbBuilder,
-                             ForumStatisticsService forumStatisticsService,
+                             ForumStatisticsProvider forumStaticsProvider,
                              HttpSession session) {
         this.sectionService = sectionService;
         this.breadcrumbBuilder = breadcrumbBuilder;
-        this.forumStatisticsService = forumStatisticsService;
+        this.forumStaticsProvider = forumStaticsProvider;
         this.session = session;
     }
 
@@ -83,12 +83,12 @@ public final class SectionController {
         return new ModelAndView("sectionList")
                 .addObject("sectionList", sectionService.getAll())
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
-                .addObject("messagesCount", forumStatisticsService.getPostsOnForumCount())
-                .addObject("registeredUsersCount", forumStatisticsService.getUsersCount())
-                .addObject("visitors", forumStatisticsService.getOnlineUsersCount())
-                .addObject("usersRegistered", forumStatisticsService.getOnlineRegisteredUsers())
-                .addObject("visitorsRegistered", forumStatisticsService.getOnlineRegisteredUsersCount())
-                .addObject("visitorsGuests", forumStatisticsService.getOnlineAnonymoustUsersCount());
+                .addObject("messagesCount", forumStaticsProvider.getPostsOnForumCount())
+                .addObject("registeredUsersCount", forumStaticsProvider.getUsersCount())
+                .addObject("visitors", forumStaticsProvider.getOnlineUsersCount())
+                .addObject("usersRegistered", forumStaticsProvider.getOnlineRegisteredUsers())
+                .addObject("visitorsRegistered", forumStaticsProvider.getOnlineRegisteredUsersCount())
+                .addObject("visitorsGuests", forumStaticsProvider.getOnlineAnonymousUsersCount());
     }
 
     /**

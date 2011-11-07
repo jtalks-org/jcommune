@@ -16,10 +16,6 @@ package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.model.dao.ForumStatisticsDAO;
 import org.jtalks.jcommune.service.ForumStatisticsService;
-import org.jtalks.jcommune.service.listeners.HttpSessionStatisticListener;
-import org.springframework.security.core.session.SessionRegistry;
-
-import java.util.List;
 
 /**
  * This class contains methods for getting forum statistic information.
@@ -29,22 +25,14 @@ import java.util.List;
 public class ForumStatisticsServiceImpl implements ForumStatisticsService {
 
     private ForumStatisticsDAO statisticsDAO;
-    private SessionRegistry sessionRegistry;
-    private HttpSessionStatisticListener sessionStatisticListener;
 
     /**
      * Create an instance of transactional forum statistics service
      *
      * @param statisticsDAO            for operations with data storage
-     * @param sessionStatisticListener for getting active users count
-     * @param sessionRegistry          for getting active users information
      */
-    public ForumStatisticsServiceImpl(ForumStatisticsDAO statisticsDAO,
-                                      HttpSessionStatisticListener sessionStatisticListener,
-                                      SessionRegistry sessionRegistry) {
+    public ForumStatisticsServiceImpl(ForumStatisticsDAO statisticsDAO) {
         this.statisticsDAO = statisticsDAO;
-        this.sessionStatisticListener = sessionStatisticListener;
-        this.sessionRegistry = sessionRegistry;
     }
 
     /**
@@ -61,38 +49,5 @@ public class ForumStatisticsServiceImpl implements ForumStatisticsService {
     @Override
     public int getUsersCount() {
         return statisticsDAO.getUsersCount();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Object> getOnlineRegisteredUsers() {
-        return sessionRegistry.getAllPrincipals();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public long getOnlineUsersCount() {
-        return sessionStatisticListener.getTotalActiveSessions();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public long getOnlineRegisteredUsersCount() {
-        return sessionRegistry.getAllPrincipals().size();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public long getOnlineAnonymoustUsersCount() {
-        return sessionStatisticListener.getTotalActiveSessions()
-                - sessionRegistry.getAllPrincipals().size();
     }
 }

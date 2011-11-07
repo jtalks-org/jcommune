@@ -27,6 +27,7 @@
             classpath:org/jtalks/jcommune/model/entity/applicationContext-dao.xml
             classpath:org/jtalks/jcommune/service/applicationContext-service.xml
             classpath:org/jtalks/jcommune/service/security-service-context.xml
+            classpath:org/jtalks/jcommune/web/applicationContext-controller.xml
             /WEB-INF/security-context.xml
         </param-value>
     </context-param>
@@ -99,7 +100,7 @@
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
     <listener>
-        <listener-class>org.jtalks.jcommune.service.listeners.HttpSessionStatisticListenerImpl</listener-class>
+        <listener-class>org.jtalks.jcommune.web.listeners.HttpSessionStatisticListenerImpl</listener-class>
     </listener>
     <listener>
         <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>

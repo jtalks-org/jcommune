@@ -15,7 +15,8 @@
 package org.jtalks.jcommune.model.dao;
 
 /**
- * DAO interface for getting forum statistic information.
+ * DAO interface for getting forum statistic information
+ * (e.c. total count of registered user's accounts, total count of messages on the forum).
  *
  * @author Elena Lepaeva
  * @see org.jtalks.jcommune.model.dao.hibernate.ForumStatisticsHibernateDAO

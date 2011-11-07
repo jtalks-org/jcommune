@@ -12,39 +12,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service.listeners;
-
-import javax.servlet.http.HttpSessionEvent;
-
 /**
- * Custom session listener implementation to track active user sessions
- *
- * @author Elena Lepaeva
+ * Package for listener classes.
  */
-public class HttpSessionStatisticListenerImpl implements HttpSessionStatisticListener {
-
-    private static long totalActiveSessions;
-
-    /**
-     * @return active sessions count
-     */
-    public long getTotalActiveSessions() {
-        return totalActiveSessions;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public synchronized void sessionCreated(HttpSessionEvent se) {
-        totalActiveSessions++;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public synchronized void sessionDestroyed(HttpSessionEvent se) {
-        totalActiveSessions--;
-    }
-}
+package org.jtalks.jcommune.web.listeners;

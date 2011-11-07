@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jtalks.jcommune.model.dao.SectionDao;
-import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Section;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;

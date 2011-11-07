@@ -14,8 +14,6 @@
  */
 package org.jtalks.jcommune.service;
 
-import java.util.List;
-
 /**
  * This interface declare methods for getting forum statistic information.
  *
@@ -35,33 +33,4 @@ public interface ForumStatisticsService {
      * @return count of registred user's accounts
      */
     int getUsersCount();
-
-    /**
-     * Return list of registered users who is online now
-     *
-     * @return list of users
-     */
-    List<Object> getOnlineRegisteredUsers();
-
-    /**
-     * Return total number of online users
-     *
-     * @return total number of online users
-     */
-    long getOnlineUsersCount();
-
-    /**
-     * Return number of online registered users
-     *
-     * @return number of users
-     */
-    long getOnlineRegisteredUsersCount();
-
-    /**
-     * Return number of online anonymous users
-     *
-     * @return number of users
-     */
-    long getOnlineAnonymoustUsersCount();
-
 }

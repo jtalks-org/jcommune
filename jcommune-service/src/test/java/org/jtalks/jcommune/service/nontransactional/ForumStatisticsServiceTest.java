@@ -15,20 +15,12 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.model.dao.ForumStatisticsDAO;
-import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.ForumStatisticsService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.listeners.HttpSessionStatisticListener;
-import org.springframework.security.core.session.SessionRegistry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -41,24 +33,10 @@ public class ForumStatisticsServiceTest {
     private ForumStatisticsService statisticsService;
     private ForumStatisticsDAO statisticsDAO;
 
-    private int userCount = 5;
-    private long sessionCount = 7;
-    private List<Object> users;
-
     @BeforeClass
     public void setUp() {
         statisticsDAO = mock(ForumStatisticsDAO.class);
-
-        SessionRegistry sessionRegistry = mock(SessionRegistry.class);
-        users = new ArrayList<Object>();
-        for (int i = 1; i <= userCount; i++)
-            users.add(mock(User.class));
-        when(sessionRegistry.getAllPrincipals()).thenReturn(users);
-
-        HttpSessionStatisticListener listener = mock(HttpSessionStatisticListener.class);
-        when(listener.getTotalActiveSessions()).thenReturn(sessionCount);
-
-        statisticsService = new ForumStatisticsServiceImpl(statisticsDAO, listener, sessionRegistry);
+        statisticsService = new ForumStatisticsServiceImpl(statisticsDAO);
     }
 
     @Test
@@ -72,29 +50,10 @@ public class ForumStatisticsServiceTest {
 
     @Test
     public void testGetUsersCount() throws Exception {
+        int userCount = 5;
         when(statisticsDAO.getUsersCount()).thenReturn(userCount);
 
         assertEquals(statisticsService.getUsersCount(), userCount);
         verify(statisticsDAO).getUsersCount();
-    }
-
-    @Test
-    public void getOnlineRegisteredUsersTest() throws Exception {
-        assertEquals(statisticsService.getOnlineRegisteredUsers(), users);
-    }
-
-    @Test
-    public void getOnlineUsersCountTest() throws Exception {
-        assertEquals(statisticsService.getOnlineUsersCount(), sessionCount);
-    }
-
-    @Test
-    public void getOnlineRegisteredUsersCountTest() throws Exception {
-        assertEquals(statisticsService.getOnlineRegisteredUsersCount(), userCount);
-    }
-
-    @Test
-    public void getOnlineAnonymoustUsersCountTest() throws Exception {
-        assertEquals(statisticsService.getOnlineAnonymoustUsersCount(), sessionCount - userCount);
     }
 }

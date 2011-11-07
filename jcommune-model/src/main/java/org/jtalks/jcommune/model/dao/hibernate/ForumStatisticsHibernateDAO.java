@@ -32,21 +32,21 @@ public class ForumStatisticsHibernateDAO implements ForumStatisticsDAO {
     private SessionFactory sessionFactory;
 
     /**
+     * Create an instance of ForumStatisticsHibernateDAO
+     *
+     * @param sessionFactory Hibernate SessionFactory.
+     */
+    public ForumStatisticsHibernateDAO(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    /**
      * Get current Hibernate session.
      *
      * @return current Session
      */
     protected Session getSession() {
         return sessionFactory.getCurrentSession();
-    }
-
-    /**
-     * Setter for Hibernate SessionFactory.
-     *
-     * @param sessionFactory the sessionFactory to set
-     */
-    public void setSessionFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
     }
 
     /**
