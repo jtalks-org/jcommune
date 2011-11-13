@@ -14,16 +14,15 @@
  */
 package org.jtalks.jcommune.web.util;
 
+import static org.testng.Assert.assertTrue;
+
+import java.io.IOException;
+
 import org.jtalks.jcommune.service.exceptions.InvalidImageException;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import java.io.IOException;
-
-import static org.mockito.Mockito.mock;
-import static org.testng.Assert.assertTrue;
 
 /**
  * @author Eugeny Batov

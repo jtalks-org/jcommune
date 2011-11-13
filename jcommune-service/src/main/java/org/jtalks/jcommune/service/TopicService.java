@@ -43,7 +43,7 @@ public interface TopicService extends EntityService<Topic> {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic not found
      */
-    Post addAnswer(long topicId, String answerBody) throws NotFoundException;
+    Post replyToTopic(long topicId, String answerBody) throws NotFoundException;
 
     /**
      * Add new topic with given title and body.
@@ -107,7 +107,7 @@ public interface TopicService extends EntityService<Topic> {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic not found
      */
-    void saveTopic(long topicId, String topicName, String bodyText) throws NotFoundException;
+    void updateTopic(long topicId, String topicName, String bodyText) throws NotFoundException;
 
     /**
      * Update current topic with given title and body.
@@ -121,7 +121,7 @@ public interface TopicService extends EntityService<Topic> {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic not found
      */
-    void saveTopic(long topicId, String topicName, String bodyText, int topicWeight,
+    void updateTopic(long topicId, String topicName, String bodyText, int topicWeight,
                    boolean sticked, boolean announcement) throws NotFoundException;
 
     /**

@@ -128,7 +128,7 @@ public class TransactionalPostServiceTest {
     }
     
     @Test
-    void testSavePost() throws NotFoundException {
+    void updatePost() throws NotFoundException {
         String newBody = "new body";
         Post post = new Post(user, "content");
         post.setId(POST_ID);
@@ -136,7 +136,7 @@ public class TransactionalPostServiceTest {
         when(postDao.isExist(POST_ID)).thenReturn(true);      
         when(postService.get(POST_ID)).thenReturn(post); 
         
-        postService.savePost(POST_ID,newBody);
+        postService.updatePost(POST_ID,newBody);
         
         assertEquals(post.getPostContent(), newBody);
         
@@ -170,14 +170,5 @@ public class TransactionalPostServiceTest {
         when(postDao.isExist(POST_ID)).thenReturn(false);
 
         postService.deletePost(POST_ID);
-    }
-
-    @Test
-    public void testGetPostsOnForumCount() throws NotFoundException {
-        int expectedCount = 10;
-        when(postDao.getPostsOnForumCount()).thenReturn(expectedCount);
-
-        assertEquals(postService.getPostsOnForumCount(), expectedCount);
-        verify(postDao).getPostsOnForumCount();
     }
 }

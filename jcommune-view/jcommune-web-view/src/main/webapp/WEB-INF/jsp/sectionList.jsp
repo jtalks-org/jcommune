@@ -112,7 +112,8 @@
                 <div class="forum_info"> <!-- Содержимое ряда -->
                     <spring:message code="label.onlineUsersInfo.messagesCount"/> <c:out value="${messagesCount}"/>
                     <br/>
-                    <spring:message code="label.onlineUsersInfo.registeredUsers.count"/> <c:out value="${registeredUsersCount}"/>
+                    <spring:message code="label.onlineUsersInfo.registeredUsers.count"/> <c:out
+                            value="${registeredUsersCount}"/>
                 </div>
                 <div class="empty_cell"></div>
                 <!-- Необходим для правильного отображения псевдотаблицы -->
@@ -120,20 +121,30 @@
             <div class="forum_row"> <!-- Отдельный ряд -->
                 <div class="forum_info"> <!-- Содержимое ряда -->
                     <spring:message code="label.onlineUsersInfo.visitors"/> <c:out value="${visitors}"/>,
-                    <spring:message code="label.onlineUsersInfo.visitors.registered"/> <c:out value="${visitorsRegistered}"/>,
-                    <spring:message code="label.onlineUsersInfo.visitors.guests"/>  <c:out value="${visitorsGuests}"/>
+                    <spring:message code="label.onlineUsersInfo.visitors.registered"/> <c:out
+                            value="${visitorsRegistered}"/>,
+                    <spring:message code="label.onlineUsersInfo.visitors.guests"/> <c:out value="${visitorsGuests}"/>
                     <br/>
-                    <c:if test="${usersRegistered!=null}">
+                    <c:if test="${!(empty usersRegistered)}">
                         <spring:message code="label.onlineUsersInfo.registeredUsers"/>
                         <ul class="users_list">
                             <c:forEach items="${usersRegistered}" var="user">
-                                <li><a href="${pageContext.request.contextPath}/users/${user.username}"
-                                        class="<spring:message code="${user.role}"/>">
-                                    <c:out value="${user.username}"/></a>&nbsp;&nbsp;</li>
+                                <c:choose>
+                                    <c:when test="${user.role=='ROLE_ADMIN'}">
+                                        <li><a href="${pageContext.request.contextPath}/users/${user.username}"
+                                               class="admin">
+                                            <c:out value="${user.username}"/></a>&nbsp;&nbsp;</li>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <li><a href="${pageContext.request.contextPath}/users/${user.username}"
+                                               class="user">
+                                            <c:out value="${user.username}"/></a>&nbsp;&nbsp;</li>
+                                    </c:otherwise>
+                                </c:choose>
                             </c:forEach>
-                            <%--<li><a href="#" class="moderator">andreyko</a>,</li>
-                            <li><a href="#" class="admin">Староверъ</a>,</li>
-                            <li><a href="#" class="user">Вася</a>.</li>--%>
+                                <%--<li><a href="#" class="moderator">andreyko</a>,</li>
+                              <li><a href="#" class="admin">Староверъ</a>,</li>
+                              <li><a href="#" class="user">Вася</a>.</li>--%>
                         </ul>
                     </c:if>
                 </div>

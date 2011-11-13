@@ -19,19 +19,16 @@ import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
-import org.springframework.security.core.session.SessionRegistryImpl;
+import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -40,7 +37,6 @@ import static org.testng.Assert.assertEquals;
  */
 public class SectionControllerTest {
     private SectionService sectionService;
-    private SessionRegistryImpl sessionRegistry;
     private SectionController controller;
     private BreadcrumbBuilder breadcrumbBuilder;
 
@@ -48,8 +44,8 @@ public class SectionControllerTest {
     public void init() {
         sectionService = mock(SectionService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
-        sessionRegistry = mock(SessionRegistryImpl.class);
-        controller = new SectionController(sectionService, breadcrumbBuilder, sessionRegistry);
+        ForumStatisticsProvider statisticsProvider = mock(ForumStatisticsProvider.class);
+        controller = new SectionController(sectionService, breadcrumbBuilder, statisticsProvider, mock(HttpSession.class));
     }
 
     @Test
@@ -106,7 +102,7 @@ public class SectionControllerTest {
         assertViewName(mav, "branchList");
         assertModelAttributeAvailable(mav, "section");
         Section actualSection = assertAndReturnModelAttributeOfType(mav, "section", Section.class);
-        assertEquals((long) actualSection.getId(), sectionId);
+        assertEquals(actualSection.getId(), sectionId);
         assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 

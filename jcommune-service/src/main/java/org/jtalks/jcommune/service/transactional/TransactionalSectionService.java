@@ -14,14 +14,11 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.jcommune.model.dao.SectionDao;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.Section;
-import org.jtalks.jcommune.service.PostService;
-import org.jtalks.jcommune.service.SectionService;
-import org.jtalks.jcommune.service.UserService;
-
 import java.util.List;
+
+import org.jtalks.jcommune.model.dao.SectionDao;
+import org.jtalks.jcommune.model.entity.Section;
+import org.jtalks.jcommune.service.SectionService;
 
 /**
  * The implementation of SectionService
@@ -32,20 +29,13 @@ import java.util.List;
 public class TransactionalSectionService extends AbstractTransactionalEntityService<Section, SectionDao>
         implements SectionService {
 
-    private PostService postService;
-    private UserService userService;
-
     /**
      * Create an instance of entity based service
      *
-     * @param dao         data access object, which should be able do all CRUD operations.
-     * @param postService for post info getting
-     * @param userService for user info getting
+     * @param dao data access object, which should be able do all CRUD operations.
      */
-    public TransactionalSectionService(SectionDao dao, PostService postService, UserService userService) {
+    public TransactionalSectionService(SectionDao dao) {
         super(dao);
-        this.postService = postService;
-        this.userService = userService;
     }
 
     /**
@@ -54,29 +44,5 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
     @Override
     public List<Section> getAll() {
         return this.getDao().getAll();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getTopicInBranchCount(Branch branch) {
-        return this.getDao().getTopicInBranchCount(branch);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getPostsOnForumCount() {
-        return this.postService.getPostsOnForumCount();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getUsersCount() {
-        return this.userService.getUsersCount();
     }
 }

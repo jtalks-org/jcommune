@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.service.MailService;
+import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.MailException;
@@ -29,7 +30,7 @@ public class MailServiceImpl implements MailService {
     private MailSender mailSender;
     private SimpleMailMessage templateMessage;
 
-    private static final Logger logger = LoggerFactory.getLogger(MailServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MailServiceImpl.class);
 
     // todo: apply i18n settings here somehow
     private static final String PASSWORD_RECOVERY_TEMPLATE =
@@ -61,16 +62,20 @@ public class MailServiceImpl implements MailService {
      * {@inheritDoc}
      */
     @Override
-    public void sendPasswordRecoveryMail(String userName, String email, String newPassword) {
+    public void sendPasswordRecoveryMail(String userName, String email, String newPassword)
+        throws MailingFailedException {
+
         SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
         msg.setTo(email);
         msg.setSubject("Password recovery");
         msg.setText(String.format(PASSWORD_RECOVERY_TEMPLATE, userName, newPassword));
         try {
             this.mailSender.send(msg);
-            logger.error("Password recovery email sent for {}", new Object[]{userName});
+            LOGGER.info("Password recovery email sent for {}", userName);
         } catch (MailException e) {
-            logger.error("Password recovery email sending failed", e);
+            String message = "Password recovery email sending failed";
+            LOGGER.error(message , e);
+            throw new MailingFailedException("Password recovery email sending failed", e);
         }
     }
 }

@@ -56,7 +56,7 @@ public interface PostService extends EntityService<Post> {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when post not found
      */
-    void savePost(long postId,String postContent) throws NotFoundException;
+    void updatePost(long postId,String postContent) throws NotFoundException;
 
     /**
      * Delete post  by id.
@@ -66,11 +66,4 @@ public interface PostService extends EntityService<Post> {
      *          when topic or post not found
      */
     void deletePost(long postId) throws NotFoundException;
-
-    /**
-     * Get total count of messages on the forum
-     *
-     * @return number of posts on the forum.
-     */
-    int getPostsOnForumCount();
 }

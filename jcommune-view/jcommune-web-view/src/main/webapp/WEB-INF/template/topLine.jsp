@@ -60,7 +60,7 @@
 </div>
 <script type=text/javascript>
     function getLanguageLink(lang) {
-        var href = window.location.toString().split("#",1)[0];
+        var href = window.location.toString().split("#", 1)[0];
 
         if (href.indexOf("?") == -1) {
             href = href + "?lang=";

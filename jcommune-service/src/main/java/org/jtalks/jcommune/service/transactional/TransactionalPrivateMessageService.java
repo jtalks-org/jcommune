@@ -24,6 +24,8 @@ import org.jtalks.jcommune.service.UserDataCacheService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.security.SecurityConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
@@ -38,6 +40,8 @@ import java.util.List;
 public class TransactionalPrivateMessageService
         extends AbstractTransactionalEntityService<PrivateMessage, PrivateMessageDao> implements PrivateMessageService {
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+    
     private final SecurityService securityService;
     private final UserService userService;
     private final UserDataCacheService userDataCache;
@@ -89,10 +93,13 @@ public class TransactionalPrivateMessageService
         PrivateMessage pm = populateMessage(title, body, recipient);
         pm.setStatus(PrivateMessageStatus.NOT_READ);
         this.getDao().saveOrUpdate(pm);
+        
         userDataCache.incrementNewMessageCountFor(recipientUsername);
 
         securityService.grantToCurrentUser().user(recipientUsername).read().on(pm);
-
+        
+        logger.debug("Private message to user {} was sent. Message id={}", recipientUsername, pm.getId());
+        
         return pm;
     }
 
@@ -146,7 +153,9 @@ public class TransactionalPrivateMessageService
         this.getDao().saveOrUpdate(pm);
 
         securityService.grantToCurrentUser().admin().on(pm);
-
+        
+        logger.debug("Updated private message draft. Message id={}", pm.getId());
+        
         return pm;
     }
 
@@ -182,11 +191,15 @@ public class TransactionalPrivateMessageService
         pm.setId(id);
         pm.setStatus(PrivateMessageStatus.NOT_READ);
         this.getDao().saveOrUpdate(pm);
+        
         userDataCache.incrementNewMessageCountFor(recipientUsername);
 
         securityService.deleteFromAcl(pm);
         securityService.grantToCurrentUser().user(recipientUsername).read().on(pm);
 
+        logger.debug("Private message(was draft) to user {} was sent. Message id={}", 
+                recipientUsername, pm.getId());
+        
         return pm;
     }
 

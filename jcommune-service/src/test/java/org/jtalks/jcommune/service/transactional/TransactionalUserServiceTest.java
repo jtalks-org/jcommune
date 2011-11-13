@@ -20,20 +20,15 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.MailService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
-import org.jtalks.jcommune.service.exceptions.DuplicateException;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
+import org.jtalks.jcommune.service.exceptions.*;
 import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+
+import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
 
 /**
@@ -103,7 +98,7 @@ public class TransactionalUserServiceTest {
     public void testGetByEncodedUsernamenotFound() throws Exception {
         when(userDao.getByEncodedUsername(ENCODED_USERNAME)).thenReturn(null);
 
-        User actualUser = userService.getByEncodedUsername(ENCODED_USERNAME);
+        userService.getByEncodedUsername(ENCODED_USERNAME);
 
         verify(userDao).getByEncodedUsername(anyString());
     }
@@ -344,7 +339,7 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void testRestorePassword() throws NotFoundException {
+    public void testRestorePassword() throws NotFoundException, MailingFailedException {
         User user = new User(USERNAME, EMAIL, PASSWORD);
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(true);
         when(userDao.getByEmail(EMAIL)).thenReturn(user);
@@ -360,19 +355,27 @@ public class TransactionalUserServiceTest {
     }
 
     @Test(expectedExceptions = NotFoundException.class)
-    public void testRestorePasswordWithWrongEmail() throws NotFoundException {
-        User user = new User(USERNAME, EMAIL, PASSWORD);
+    public void testRestorePasswordWithWrongEmail() throws NotFoundException, MailingFailedException {
+        new User(USERNAME, EMAIL, PASSWORD);
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
 
         userService.restorePassword(EMAIL);
     }
 
-    @Test
-    public void testGetUsersCount() throws Exception {
-        int userCount = 5;
-        when(userDao.getUsersCount()).thenReturn(userCount);
-        int result = userService.getUsersCount();
-        assertEquals(result, userCount);
-        verify(userDao).getUsersCount();
+    @Test(expectedExceptions = MailingFailedException.class)
+    public void testRestorePasswordFail() throws NotFoundException, MailingFailedException {
+        User user = new User(USERNAME, EMAIL, PASSWORD);
+        Exception fail = new MailingFailedException("", new RuntimeException());
+        doThrow(fail).when(mailService).sendPasswordRecoveryMail(anyString(), anyString(), anyString());
+        when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(true);
+        when(userDao.getByEmail(EMAIL)).thenReturn(user);
+
+        try {
+            userService.restorePassword(EMAIL);
+        }  catch (MailingFailedException e) {
+           // ensure db modification haven't been done if mailing failed
+           verify(userDao, never()).update(Matchers.<User>any());
+           throw e;
+        }
     }
 }

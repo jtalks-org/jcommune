@@ -160,7 +160,8 @@ public class Post extends Entity {
         // todo: replace with lastIndexOf call
         final int maxLength = 200;
         if (content.length() > maxLength) {
-            for (int i = 197; i > 1; i--) {
+            int maxLengthWithoutDots = 197;
+            for (int i = maxLengthWithoutDots; i > 1; i--) {
                 if (content.charAt(i) == ' ') {
                     shortContent = content.substring(0, i);
                     shortContent = shortContent + "...";

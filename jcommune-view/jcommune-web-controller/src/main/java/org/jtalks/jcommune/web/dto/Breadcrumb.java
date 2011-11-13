@@ -132,7 +132,11 @@ public class Breadcrumb {
      * @return breadcrumbLocationValue the display breadcrumb name.
      */
     public String getBreadcrumbLocationValue() {
-        return breadcrumbLocationValue;
+        if (breadcrumbLocationValue.length() < 40) {
+            return breadcrumbLocationValue;
+        } else {
+            return breadcrumbLocationValue.substring(0, 37) + "...";
+        }
     }
 
     /**
@@ -160,9 +164,9 @@ public class Breadcrumb {
             return false;
         }
         Breadcrumb other = (Breadcrumb) o;
-        return  breadcrumbLocation == other.breadcrumbLocation && 
-                        breadcrumbLocationValue.equals(other.breadcrumbLocationValue) && 
-                        id.equals(other.id);
+        return breadcrumbLocation == other.breadcrumbLocation &&
+                breadcrumbLocationValue.equals(other.breadcrumbLocationValue) &&
+                id.equals(other.id);
     }
 
     /**
@@ -173,8 +177,9 @@ public class Breadcrumb {
     @Override
     public int hashCode() {
         int result = id.hashCode();
-        result = 31 * result + breadcrumbLocation.hashCode();
-        result = 31 * result + breadcrumbLocationValue.hashCode();
+        final int x = 31;
+        result = x * result + breadcrumbLocation.hashCode();
+        result = x * result + breadcrumbLocationValue.hashCode();
         return result;
     }
 }

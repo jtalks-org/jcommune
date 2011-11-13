@@ -63,7 +63,7 @@
   </logger>
 
   <logger name="net.sf.ehcache">
-    <level value="debug"/>
+    <level value="WARN"/>
     <appender-ref ref="CONSOLE"/>
   </logger>
 

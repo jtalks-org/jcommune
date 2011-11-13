@@ -22,8 +22,6 @@
 <html>
 <head>
     <title><spring:message code="label.pm_title"/></title>
-    <link href="${pageContext.request.contextPath}/resources/css/main.css"
-          type=text/css rel=stylesheet>
 </head>
 <body>
 <div class="wrap pm_page">

@@ -22,6 +22,9 @@ import org.jtalks.jcommune.model.entity.Section;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Kirill Afonin
  * @author Alexandre Teterin
@@ -97,6 +100,19 @@ public final class ObjectsFactory {
     private static <T> T persist(T entity) {
         session.save(entity);
         return entity;
+    }
+
+    public static List<Post> createAndSavePostList(int size) {
+        List<Post> posts = new ArrayList<Post>();
+        Topic topic = ObjectsFactory.getDefaultTopic();
+        User author = topic.getTopicStarter();
+        for (int i = 0; i < size - 1; i++) {
+            Post newPost = new Post(author, "content " + i);
+            topic.addPost(newPost);
+            posts.add(newPost);
+        }
+        session.save(topic);
+        return posts;
     }
 
 }

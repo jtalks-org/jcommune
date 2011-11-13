@@ -21,6 +21,8 @@ package org.jtalks.jcommune.service.exceptions;
  */
 public class InvalidImageException extends Exception {
 
+    private static final long serialVersionUID = -4015705012130741453L;
+
     /**
      * Default constructor.
      */

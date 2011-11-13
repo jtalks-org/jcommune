@@ -23,11 +23,12 @@ import java.util.List;
 
 /**
  * Hibernate implementation of PrivateMessageDao
- *
+ * 
  * @author Pavel Vervenko
  * @author Kirill Afonin
  */
-public class PrivateMessageHibernateDao extends ParentRepositoryImpl<PrivateMessage> implements PrivateMessageDao {
+public class PrivateMessageHibernateDao extends
+        ParentRepositoryImpl<PrivateMessage> implements PrivateMessageDao {
 
     public static final String STATUS = "status";
 
@@ -35,9 +36,9 @@ public class PrivateMessageHibernateDao extends ParentRepositoryImpl<PrivateMess
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public List<PrivateMessage> getAllFromUser(User userFrom) {
-        return getSession().getNamedQuery("getAllFromUser")
-                .setCacheable(true)
+        return getSession().getNamedQuery("getAllFromUser").setCacheable(true)
                 .setParameter(STATUS, PrivateMessageStatus.DRAFT)
                 .setEntity("user", userFrom).list();
     }
@@ -46,9 +47,9 @@ public class PrivateMessageHibernateDao extends ParentRepositoryImpl<PrivateMess
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public List<PrivateMessage> getAllForUser(User userTo) {
-        return getSession().getNamedQuery("getAllToUser")
-                .setCacheable(true)
+        return getSession().getNamedQuery("getAllToUser").setCacheable(true)
                 .setParameter(STATUS, PrivateMessageStatus.DRAFT)
                 .setEntity("user", userTo).list();
     }
@@ -57,6 +58,7 @@ public class PrivateMessageHibernateDao extends ParentRepositoryImpl<PrivateMess
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public List<PrivateMessage> getDraftsFromUser(User userFrom) {
         return getSession().getNamedQuery("getDraftsFromUser")
                 .setCacheable(true)

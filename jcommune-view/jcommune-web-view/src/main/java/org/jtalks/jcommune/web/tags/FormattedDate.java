@@ -15,18 +15,16 @@
 package org.jtalks.jcommune.web.tags;
 
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.contrib.jsptag.FormatTag;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.support.RequestContextUtils;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
-import java.util.logging.Logger;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.contrib.jsptag.FormatTag;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 /**
  * This tag replaces the existing Joda Time format tag to take
@@ -46,7 +44,7 @@ import java.util.logging.Logger;
 public class FormattedDate extends FormatTag {
 
     /**
-     * Serialixable class should define it
+     * Serializable class should define it
      */
     private static final long serialVersionUID = 34588L;
 
@@ -57,8 +55,6 @@ public class FormattedDate extends FormatTag {
     private int offset = DEFAULT_OFFSET;
 
     public static final int DEFAULT_OFFSET = 0;
-
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(FormattedDate.class);
 
     /**
      * {@inheritDoc}
@@ -106,7 +102,9 @@ public class FormattedDate extends FormatTag {
      */
     private int convertTimeZoneOffset(String jsRepresentation) {
         try {
-            return -Integer.parseInt(jsRepresentation) * 60 * 1000;
+            final int min = 60;
+            int millisec = 1000;
+            return -Integer.parseInt(jsRepresentation) * min * millisec;
         } catch (NumberFormatException e) {
             // someone has passed wrong GMT in cookie, use GMT
             return DEFAULT_OFFSET;
@@ -124,7 +122,7 @@ public class FormattedDate extends FormatTag {
             this.setLocale(localeResolver.resolveLocale(request));
             this.setPattern(DATE_FORMAT_PATTERN);
         } catch (JspTagException e) {
-            logger.error("Error while rendering the date", e);
+            throw new IllegalStateException("Error while rendering the date", e);
         }
     }
 }

@@ -19,12 +19,13 @@ import org.jtalks.jcommune.model.entity.User;
 
 /**
  * Hibernate implementation of UserDao.
- *
+ * 
  * @author Pavel Vervenko
  * @author Evgeniy Naumenko
  * @author Kirill Afonin
  */
 public class UserHibernateDao extends ParentRepositoryImpl<User> implements UserDao {
+    
     /**
      * {@inheritDoc}
      */
@@ -32,9 +33,7 @@ public class UserHibernateDao extends ParentRepositoryImpl<User> implements User
     public User getByUsername(String username) {
         return (User) getSession()
                 .createQuery("from User u where u.username = ?")
-                .setCacheable(true)
-                .setString(0, username)
-                .uniqueResult();
+                .setCacheable(true).setString(0, username).uniqueResult();
     }
 
     /**
@@ -44,8 +43,7 @@ public class UserHibernateDao extends ParentRepositoryImpl<User> implements User
     public User getByEncodedUsername(String encodedUsername) {
         return (User) getSession()
                 .createQuery("from User u where u.encodedUsername = ?")
-                .setCacheable(true)
-                .setString(0, encodedUsername)
+                .setCacheable(true).setString(0, encodedUsername)
                 .uniqueResult();
     }
 
@@ -54,11 +52,8 @@ public class UserHibernateDao extends ParentRepositoryImpl<User> implements User
      */
     @Override
     public User getByEmail(String email) {
-            return (User) getSession()
-                .createQuery("from User u where u.email = ?")
-                .setCacheable(true)
-                .setString(0, email)
-                .uniqueResult();
+        return (User) getSession().createQuery("from User u where u.email = ?")
+                .setCacheable(true).setString(0, email).uniqueResult();
     }
 
     /**
@@ -68,9 +63,8 @@ public class UserHibernateDao extends ParentRepositoryImpl<User> implements User
     public boolean isUserWithUsernameExist(String username) {
         return ((Number) getSession()
                 .createQuery("select count(*) from User u where u.username = ?")
-                .setCacheable(true)
-                .setString(0, username)
-                .uniqueResult()).intValue() != 0;
+                .setCacheable(true).setString(0, username).uniqueResult())
+                .intValue() != 0;
     }
 
     /**
@@ -80,9 +74,8 @@ public class UserHibernateDao extends ParentRepositoryImpl<User> implements User
     public boolean isUserWithEmailExist(String email) {
         return ((Number) getSession()
                 .createQuery("select count(*) from User u where u.email = ?")
-                .setCacheable(true)
-                .setString(0, email)
-                .uniqueResult()).intValue() != 0;
+                .setCacheable(true).setString(0, email).uniqueResult())
+                .intValue() != 0;
     }
 
     /**
@@ -91,20 +84,7 @@ public class UserHibernateDao extends ParentRepositoryImpl<User> implements User
     @Override
     public int getCountPostOfUser(User userCreated) {
         return ((Number) getSession().getNamedQuery("getCountPostOfUser")
-                .setCacheable(true)
-                .setEntity("userCreated", userCreated)
-                .uniqueResult())
-                .intValue();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getUsersCount() {
-        return ((Number) getSession().getNamedQuery("getCountOfUsers")
-                .setCacheable(true)
-                .uniqueResult())
-                .intValue();
+                .setCacheable(true).setEntity("userCreated", userCreated)
+                .uniqueResult()).intValue();
     }
 }

@@ -61,8 +61,6 @@
     <bean id="branchSectionService"
           class="org.jtalks.jcommune.service.transactional.TransactionalSectionService">
         <constructor-arg index="0" ref="branchSectionDao"/>
-        <constructor-arg index="1" ref="postService"/>
-        <constructor-arg index="2" ref="userService"/>
     </bean>
 
     <bean id="pmService"
@@ -88,17 +86,21 @@
         <constructor-arg index="2" ref="aclManager"/>
     </bean>
 
+    <bean id="forumStatisticsService"
+          class="org.jtalks.jcommune.service.nontransactional.ForumStatisticsServiceImpl">
+        <constructor-arg index="0" ref="forumStatisticsDAO"/>
+    </bean>
 
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-         <!--todo:  make it configurable -->
+        <!--todo:  make it configurable -->
         <property name="host" value="smtp.mail.ru"/>
         <property name="port" value="25"/>
         <property name="username" value="jtalks@inbox.ru"/>
         <property name="password" value="javatalks"/>
         <property name="javaMailProperties">
-          <props>
-              <prop key="mail.smtp.auth">true</prop>
-          </props>
+            <props>
+                <prop key="mail.smtp.auth">true</prop>
+            </props>
         </property>
     </bean>
 

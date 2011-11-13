@@ -28,7 +28,8 @@
     <meta http-equiv="Expires" content="-1"/>
     <meta charset="UTF-8">
 
-    <title><decorator:title default="JCommune"/></title>
+    <title><decorator:title default="JCommune"/>
+    </title>
     <link rel="stylesheet" type="text/css" media="screen, projection"
           href="${pageContext.request.contextPath}/resources/css/screen.css"/>
     <link rel="shortcut icon" type="image/x-icon"
@@ -48,7 +49,8 @@
         Этот сайт не относится к фирме Oracle Corporation и не поддерживается ею.
         <br/>
         © 2011 www.jtalks.org: <a href="#">форум java программистов</a>
-        <br/>
+        <br/> <br/>
+        <span class="version">Powered by JCommune ${project.version}</span>
     </div>
 </div>
 </body>

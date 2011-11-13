@@ -35,13 +35,4 @@ public interface BranchDao extends ChildRepository<Branch> {
      * @return list of {@code Branch} objects
      */
     List<Branch> getBranchesInSection(Long sectionId);
-
-    /**
-     * Get number of branches in section.
-     *
-     * @param sectionId section id where you have to count branches
-     * @return number of branches in section
-     */
-    int getBranchesInSectionCount(Long sectionId);
-
 }

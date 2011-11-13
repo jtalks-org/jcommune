@@ -49,7 +49,7 @@
                     </c:otherwise>
                 </c:choose>
                 <td><c:out value="${pm.userFrom.username}"/></td>
-                <td><a href="${pageContext.request.contextPath}/pm/${pm.id}">
+                <td><a href="${pageContext.request.contextPath}/inbox/${pm.id}">
                     <c:out value="${pm.title}"/></a></td>
                 <td><jtalks:format value="${pm.creationDate}"/></td>
                 </tr>

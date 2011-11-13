@@ -53,7 +53,7 @@
              WHERE topic.branch_id = :branchId
              ORDER BY topic.sticked DESC, topic.topic_weight DESC, topic.modification_date DESC]]>
     </sql-query>
-    <query name="getTopcInBranchCount">
+    <query name="getTopicInBranchCount">
          <![CDATA[SELECT count(*) FROM Topic WHERE branch = :branch]]>
     </query>
 

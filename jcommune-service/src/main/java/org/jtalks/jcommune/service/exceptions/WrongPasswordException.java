@@ -24,6 +24,8 @@ package org.jtalks.jcommune.service.exceptions;
  */
 public class WrongPasswordException extends Exception {
 
+    private static final long serialVersionUID = -3910130747458365228L;
+
     /**
      * Default constructor.
      * <p/>

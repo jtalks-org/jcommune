@@ -37,13 +37,4 @@ public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch>
                 .setLong(0, sectionId)
                 .list();
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getBranchesInSectionCount(Long sectionId) {
-        return ((Number) getSession().createQuery("select count(*) from Branch b where b.section = ?")
-                .setCacheable(true).setLong(0, sectionId).uniqueResult()).intValue();
-    }
 }

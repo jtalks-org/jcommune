@@ -61,7 +61,7 @@ public class BranchControllerTest {
     }
 
     @Test
-    public void testTopicsInBranch() throws NotFoundException {
+    public void showPage() throws NotFoundException {
         long branchId = 1L;
         int page = 2;
         boolean pagingEnabled = true;
@@ -71,7 +71,7 @@ public class BranchControllerTest {
                 .thenReturn(new ArrayList<Breadcrumb>());
 
         //invoke the object under test
-        ModelAndView mav = controller.show(branchId, page, pagingEnabled);
+        ModelAndView mav = controller.showPage(branchId, page, pagingEnabled);
 
         //check expectations
         verify(breadcrumbBuilder).getForumBreadcrumb(branchService.get(branchId));
@@ -91,7 +91,7 @@ public class BranchControllerTest {
     }
 
     @Test
-    public void testRecent() throws NotFoundException {
+    public void recentTopicsPage() throws NotFoundException {
         int page = 2;
         int pageSize = 50;
         int startIndex = page * pageSize - pageSize;
@@ -103,7 +103,7 @@ public class BranchControllerTest {
         session.setAttribute("lastlogin", now);
 
         //invoke the object under test
-        ModelAndView mav = controller.recentTopics(page, session);
+        ModelAndView mav = controller.recentTopicsPage(page, session);
 
         //check expectations
         verify(topicService).getAllTopicsPastLastDay(startIndex, pageSize, now);

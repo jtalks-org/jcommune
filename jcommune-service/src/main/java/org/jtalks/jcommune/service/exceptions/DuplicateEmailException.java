@@ -21,6 +21,8 @@ package org.jtalks.jcommune.service.exceptions;
  */
 public class DuplicateEmailException extends DuplicateException {
 
+    private static final long serialVersionUID = -1871559056638512329L;
+
     /**
      * Default constructor.
      */

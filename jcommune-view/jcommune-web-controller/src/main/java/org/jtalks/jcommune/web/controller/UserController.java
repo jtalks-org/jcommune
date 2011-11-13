@@ -20,6 +20,7 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
 import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
 import org.jtalks.jcommune.service.exceptions.InvalidImageException;
+import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
@@ -149,7 +150,7 @@ public class UserController {
     @RequestMapping(value = "/users/{encodedUsername}", method = RequestMethod.GET)
     //The {encodedUsername} from the JSP view automatically converted to username.
     // That's why the getByUsername() method is used instead of getByEncodedUsername().
-    public ModelAndView show(@PathVariable("encodedUsername") String username) throws NotFoundException {
+    public ModelAndView showProfilePage(@PathVariable("encodedUsername") String username) throws NotFoundException {
         User user = userService.getByUsername(username);
         return new ModelAndView("userDetails")
                 .addObject("user", user)
@@ -171,9 +172,7 @@ public class UserController {
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
         editedUser.setAvatar(new MockMultipartFile("avatar", "", ImageFormats.JPG.getContentType(), user.getAvatar()));
         return editMaV(editedUser)
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
-                .addObject("languages", Language.values())
-                .addObject("pageSizes", PageSize.values());
+                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
     }
 
     /**
@@ -189,9 +188,10 @@ public class UserController {
      * @throws IOException       throws in case of access errors (if the temporary store fails)
      */
     @RequestMapping(value = "/users/edit", method = RequestMethod.POST)
-    public ModelAndView editProfile(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
-                                    BindingResult result, HttpServletResponse response)
-            throws NotFoundException, IOException {
+    public ModelAndView editProfile( // TODO: this method is too complex
+            @Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
+            BindingResult result, HttpServletResponse response)
+        throws NotFoundException, IOException {
 
         // apply language changes immediately
         applyLanguage(Language.valueOf(userDto.getLanguage()), response);
@@ -204,8 +204,7 @@ public class UserController {
         if (editedUser == null) {
             return applyAvatarRemoval(userDto);
         }
-        return new ModelAndView(new StringBuilder()
-                .append("redirect:/users/")
+        return new ModelAndView(new StringBuilder().append("redirect:/users/")
                 .append(editedUser.getEncodedUsername()).toString());
     }
 
@@ -249,16 +248,17 @@ public class UserController {
      *
      * @param userDto form submission result
      * @return updated user object
-     * @throws DuplicateEmailException e-maim already registered
+     * @throws DuplicateEmailException e-mail already registered
      * @throws WrongPasswordException current password doesn't match with the passed one
      * @throws IOException avatar upload problems
      * @throws InvalidImageException avatar image is invalid
      */
     private User performEditUserProfile(EditUserProfileDto userDto) throws DuplicateEmailException,
             WrongPasswordException, IOException, InvalidImageException {
+        byte[] avatar = imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
         return userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(), userDto.getNewUserPassword(),
-                imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT),
+                avatar,
                 userDto.getSignature(), userDto.getLanguage(), userDto.getPageSize());
     }
 
@@ -285,7 +285,9 @@ public class UserController {
      * @return {@code ModelAndView} for edit profile page
      */
     private ModelAndView editMaV(EditUserProfileDto dto) {
-        return new ModelAndView(EDIT_PROFILE, EDITED_USER, dto).addObject("languages", Language.values());
+        return new ModelAndView(EDIT_PROFILE, EDITED_USER, dto)
+                .addObject("languages", Language.values())
+                .addObject("pageSizes", PageSize.values());
     }
 
     /**
@@ -302,12 +304,12 @@ public class UserController {
     }
 
     /**
-     * Write user avatar  in response for rendering it on html pages.
+     * Write user avatar in response for rendering it on html pages.
      *
      * @param response        servlet response
      * @param encodedUsername {@link User#getEncodedUsername()}
-     * @throws NotFoundException - throws if user with given encodedUsername not found
-     * @throws IOException       - throws if an output exception occurred
+     * @throws NotFoundException throws if user with given encodedUsername not found
+     * @throws IOException       throws if an output exception occurred
      */
     @RequestMapping(value = "/{encodedUsername}/avatar", method = RequestMethod.GET)
     public void renderAvatar(HttpServletResponse response,
@@ -336,7 +338,7 @@ public class UserController {
      * If e-mail given has not been registered
      * before view with an error will be returned.
      *
-     * @param email address ro identify the user
+     * @param email address to identify the user
      * @return view with a parameters bound
      */
     @RequestMapping(value = "/password/restore", method = RequestMethod.POST)
@@ -348,6 +350,8 @@ public class UserController {
             mav.addObject("message", "label.restorePassword.completed");
         } catch (NotFoundException e) {
             mav.addObject("error", "email.unknown");
+        } catch (MailingFailedException e) {
+            mav.addObject("error", "email.failed");
         }
         return mav;
     }

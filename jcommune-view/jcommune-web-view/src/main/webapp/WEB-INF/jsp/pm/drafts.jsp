@@ -22,14 +22,12 @@
 <html>
 <head>
     <title><spring:message code="label.pm_title"/></title>
-    <link href="${pageContext.request.contextPath}/resources/css/main.css"
-          type=text/css rel=stylesheet>
 </head>
 <body>
-<div class="all_forums">
-    <jsp:include page="../../template/topLine.jsp"/>
-    <h1><spring:message code="label.drafts"/></h1>
+<jsp:include page="../../template/topLine.jsp"/>
+<h1><spring:message code="label.drafts"/></h1>
 
+<div class="all_forums">
     <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
     <jsp:include page="pmNavigationMenu.jsp"/>

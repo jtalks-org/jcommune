@@ -15,21 +15,18 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Section;
-import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
-import org.jtalks.jcommune.web.util.HttpSessionListenerImpl;
+import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.servlet.http.HttpSession;
 
 /**
  * Displays to user page contains section list with related branch lists
@@ -43,24 +40,28 @@ import java.util.List;
 public final class SectionController {
 
     private SectionService sectionService;
+    private ForumStatisticsProvider forumStaticsProvider;
     private BreadcrumbBuilder breadcrumbBuilder;
-
-    private SessionRegistryImpl sessionRegistry;
+    private HttpSession session;
 
     /**
      * Constructor creates MVC controller with specified SectionService
      *
-     * @param sectionService    autowired object from Spring Context
-     * @param breadcrumbBuilder the object which provides actions on
-     *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
-     * @param sessionRegistry   autowired object from Spring Security Context
+     * @param sectionService         autowired object from Spring Context
+     * @param breadcrumbBuilder      the object which provides actions on
+     *                               {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
+     * @param forumStaticsProvider   autowired object from Spring Context which provides methods for getting
+     *                               forum statistic information
+     * @param session                http session that will be initiated
      */
     @Autowired
     public SectionController(SectionService sectionService, BreadcrumbBuilder breadcrumbBuilder,
-                             SessionRegistryImpl sessionRegistry) {
+                             ForumStatisticsProvider forumStaticsProvider,
+                             HttpSession session) {
         this.sectionService = sectionService;
         this.breadcrumbBuilder = breadcrumbBuilder;
-        this.sessionRegistry = sessionRegistry;
+        this.forumStaticsProvider = forumStaticsProvider;
+        this.session = session;
     }
 
     /**
@@ -70,22 +71,24 @@ public final class SectionController {
      */
     @RequestMapping(value = "/sections", method = RequestMethod.GET)
     public ModelAndView sectionList() {
-        List users = null;
-        if (sessionRegistry.getAllPrincipals().size() > 0) {
-            users = sessionRegistry.getAllPrincipals();
-        }
-        long visitors = HttpSessionListenerImpl.getTotalActiveSessions();
-        int visitorsRegistered = sessionRegistry.getAllPrincipals().size();
-        long visitorsGuests = visitors - visitorsRegistered;
+        // Counting the number of active users based on the number of sessions.
+        // By default, the session will be initialized after controller's invocation,
+        // so at the time of request processing, we can miss the session
+        // if the current request is the first one for a particular user.
+        // To change a default behavior we call getId() method
+        // that initializes the session right now.
+        // If a request from the user is not the first one this method will have no effect.
+        session.getId();
+        
         return new ModelAndView("sectionList")
                 .addObject("sectionList", sectionService.getAll())
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
-                .addObject("messagesCount", sectionService.getPostsOnForumCount())
-                .addObject("registeredUsersCount", sectionService.getUsersCount())
-                .addObject("visitors", visitors)
-                .addObject("usersRegistered", users)
-                .addObject("visitorsRegistered", visitorsRegistered)
-                .addObject("visitorsGuests", visitorsGuests);
+                .addObject("messagesCount", forumStaticsProvider.getPostsOnForumCount())
+                .addObject("registeredUsersCount", forumStaticsProvider.getUsersCount())
+                .addObject("visitors", forumStaticsProvider.getOnlineUsersCount())
+                .addObject("usersRegistered", forumStaticsProvider.getOnlineRegisteredUsers())
+                .addObject("visitorsRegistered", forumStaticsProvider.getOnlineRegisteredUsersCount())
+                .addObject("visitorsGuests", forumStaticsProvider.getOnlineAnonymousUsersCount());
     }
 
     /**

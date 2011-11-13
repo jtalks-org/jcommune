@@ -23,29 +23,49 @@
     <title><spring:message code="label.signin"/></title>
 </head>
 <body>
-<jsp:include page="../template/topLine.jsp"/>
-<c:if test="${not empty param.login_error}">
+<div class="wrap login_page">
+    <jsp:include page="../template/topLine.jsp"/>
+    <h1>JTalks</h1>
+    <c:if test="${not empty param.login_error}">
     <span style="color: red; ">
         <spring:message code="label.login_error"/>
     </span>
-</c:if>
-<form action='<c:url value="/j_spring_security_check"/>' method="POST">
-    <p>
-        <label for="j_username"><spring:message code="label.username"/></label>
-        <input class="textbox" id="j_username" type='text' name='j_username'/>
-        <br/>
-        <label for="j_password"><spring:message code="label.password"/></label>
-        <input class="textbox" id="j_password" type='password' name='j_password'/>
-        <br/>
-        <a href='<c:url value="/users/new" />'><spring:message code="label.register"/></a>
-        <br/>
-        <br/>
-        <a href='<c:url value="/password/restore" />'>
-            <spring:message code="label.restorePassword.prompt"/></a>
-        <br/>
-        <br/>
-        <input type="submit" value="<spring:message code="label.signin"/>"/>
-    </p>
-</form>
+    </c:if>
+    <form action='<c:url value="/j_spring_security_check"/>' method="POST" name="form" id="form">
+        <div class="all_forums">
+           <div style="width: 400px">
+            <div class="forum_header">
+                <span class="forum_header_answer"><spring:message code="label.signin"/></span>
+                <span class="empty_cell"></span> <!-- Необходима для корректного отображения псевдотаблицы -->
+            </div>
+            <div class="forum_row">
+                <label for="j_username"><spring:message code="label.username"/> </label>
+                <input type="text" size="30" name="j_username" id="j_username">
+
+            </div>
+            <div class="forum_row">
+                <label for="j_password"><spring:message code="label.password"/> </label>
+                <input type="password" size="30" name="j_password" id="j_password">
+
+            </div>
+            <div class="forum_row">
+
+                <input type="checkbox" name="staylogged">Автоматически входить
+                при каждом посещении
+                <span class="empty_cell"></span> <!-- Необходима для корректного отображения псевдотаблицы -->
+            </div>
+
+            <div class="form_controls">
+                <input type="submit" value="<spring:message code="label.signin"/>"></input><br/><br/>
+                <a href='<c:url value="/password/restore"/>'><spring:message code="label.restorePassword.prompt"/></a>
+            </div>
+           </div>
+        </div>
+    </form>
+    <!-- Конец всех форумов -->
+    <div class="footer_buffer"></div>
+    <!-- Несемантичный буфер для прибития подвала -->
+</div>
+
 </body>
 </html>

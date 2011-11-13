@@ -98,7 +98,7 @@ public class TopicControllerTest {
     }
 
     @Test
-    public void testShow() throws NotFoundException {
+    public void showTopicPage() throws NotFoundException {
         int page = 2;
         boolean pagingEnabled = true;
         Topic topic = mock(Topic.class);
@@ -111,7 +111,7 @@ public class TopicControllerTest {
 
 
         //invoke the object under test
-        ModelAndView mav = controller.show(TOPIC_ID, page, pagingEnabled, new MockHttpSession());
+        ModelAndView mav = controller.showTopicPage(TOPIC_ID, page, pagingEnabled, new MockHttpSession());
 
 
         //check expectations
@@ -202,7 +202,7 @@ public class TopicControllerTest {
     }
 
     @Test
-    public void testEdit() throws NotFoundException {
+    public void editTopicPage() throws NotFoundException {
         Topic topic = new Topic(user, "title");
         topic.setId(TOPIC_ID);
         Post post = new Post(user, "content");
@@ -213,7 +213,7 @@ public class TopicControllerTest {
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
 
         //invoke the object under test
-        ModelAndView mav = controller.edit(BRANCH_ID, TOPIC_ID);
+        ModelAndView mav = controller.editTopicPage(BRANCH_ID, TOPIC_ID);
 
         //check expectations
         verify(topicService).get(TOPIC_ID);
@@ -239,10 +239,10 @@ public class TopicControllerTest {
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "topicDto");
 
         //invoke the object under test
-        ModelAndView mav = controller.save(dto, bindingResult, BRANCH_ID, TOPIC_ID);
+        ModelAndView mav = controller.editTopic(dto, bindingResult, BRANCH_ID, TOPIC_ID);
 
         //check expectations
-        verify(topicService).saveTopic(TOPIC_ID, TOPIC_THEME, TOPIC_CONTENT, TOPIC_WEIGHT, STICKED, ANNOUNCEMENT);
+        verify(topicService).updateTopic(TOPIC_ID, TOPIC_THEME, TOPIC_CONTENT, TOPIC_WEIGHT, STICKED, ANNOUNCEMENT);
 
         //check result
         assertViewName(mav, "redirect:/topics/" + TOPIC_ID);
@@ -255,7 +255,7 @@ public class TopicControllerTest {
 
         when(resultWithErrors.hasErrors()).thenReturn(true);
 
-        ModelAndView mav = controller.save(dto, resultWithErrors, BRANCH_ID, TOPIC_ID);
+        ModelAndView mav = controller.editTopic(dto, resultWithErrors, BRANCH_ID, TOPIC_ID);
 
         assertViewName(mav, "topicForm");
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
@@ -263,7 +263,7 @@ public class TopicControllerTest {
         assertEquals(branchId, BRANCH_ID);
         assertEquals(topicId, TOPIC_ID);
 
-        verify(topicService, never()).saveTopic(anyLong(), anyString(), anyString(), anyInt(), anyBoolean(), anyBoolean());
+        verify(topicService, never()).updateTopic(anyLong(), anyString(), anyString(), anyInt(), anyBoolean(), anyBoolean());
     }
 
     private TopicDto getDto() {

@@ -34,8 +34,9 @@ import java.util.List;
  */
 public class TransactionalPostService extends AbstractTransactionalEntityService<Post, PostDao> implements PostService {
 
-    private TopicDao topicDao;
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    
+    private TopicDao topicDao;
     private SecurityService securityService;
 
 
@@ -79,14 +80,14 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      */
     @Override
     @PreAuthorize("hasPermission(#postId, 'org.jtalks.jcommune.model.entity.Post', admin)")
-    public void savePost(long postId, String postContent) throws NotFoundException {
+    public void updatePost(long postId, String postContent) throws NotFoundException {
         Post post = get(postId);
-
         post.setPostContent(postContent);
         post.updateModificationDate();
 
         this.getDao().update(post);
-        logger.debug("Update the post {}", post.getId());
+        
+        logger.debug("Post id={} updated.", post.getId());
     }
 
     /**
@@ -100,15 +101,9 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         Topic topic = post.getTopic();
         topic.removePost(post);
         topicDao.update(topic);
+        
         securityService.deleteFromAcl(post);
-        logger.debug("Deleted post with id: {}", postId);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getPostsOnForumCount() {
-        return this.getDao().getPostsOnForumCount();
+        
+        logger.debug("Deleted post id={}", postId);
     }
 }
