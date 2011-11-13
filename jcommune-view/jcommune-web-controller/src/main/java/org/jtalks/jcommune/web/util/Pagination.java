@@ -14,6 +14,10 @@
  */
 package org.jtalks.jcommune.web.util;
 
+import org.jtalks.jcommune.model.entity.User;
+
+import java.util.List;
+
 /**
  * Class for pagination.
  *
@@ -21,30 +25,48 @@ package org.jtalks.jcommune.web.util;
  * @author Andrey Kluev
  */
 public class Pagination {
-    private Integer page;
+    private int page;
     private int pageSize;
+    private int maxPages;
     private int itemsCount;
-    private int defaultPageSize = 4;
+    private boolean pagingEnabled;
+    private int defaultPageSize = 50;
 
     /**
      * Create instance.
      *
-     * @param page       page (default 1)
-     * @param pageSize   number of items on the page (default 5)
-     * @param itemsCount total number of items
+     * @param page        page (default 1)
+     * @param currentUser current user
+     * @param itemsCount  total number of items
      */
-    public Pagination(Integer page, Integer pageSize, int itemsCount) {
-        this.page = page == null ? Integer.valueOf(1) : page;
-        this.pageSize = pageSize == null ? Integer.valueOf(defaultPageSize) : pageSize;
+    public Pagination(Integer page, User currentUser, int itemsCount) {
+        this.page = page;
+        this.pageSize = currentUser == null ? Integer.valueOf(defaultPageSize) :
+                PageSize.valueOf(currentUser.getPageSize()).getSize();
         this.itemsCount = itemsCount;
+    }
+
+    public Pagination(Integer page, User currentUser, int itemsCount, boolean pagingEnabled) {
+        this.page = page;
+        this.pageSize = currentUser == null ? Integer.valueOf(defaultPageSize) :
+                PageSize.valueOf(currentUser.getPageSize()).getSize();
+        this.itemsCount = itemsCount;
+        this.pagingEnabled = pagingEnabled;
     }
 
 
     /**
-     * @return page
+     * @return page number of current page
      */
     public Integer getPage() {
         return page;
+    }
+
+    /**
+     * @param pageSize number of items on the page
+     */
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
     }
 
     /**
@@ -69,16 +91,83 @@ public class Pagination {
     }
 
     /**
+     * @param maxPages total number of pages
+     */
+    public void setMaxPages(int maxPages) {
+        this.maxPages = maxPages;
+    }
+
+    /**
      * @return total number of pages
      */
     public int getMaxPages() {
-        return isRounded() ? getPageCount() : getPageCount() + 1;
+        maxPages = isRounded() ? getPageCount() : getPageCount() + 1;
+        return maxPages;
     }
 
     /**
      * @return {@code true} if number of pages rounded else {@code false}
      */
-    private boolean isRounded() {
+    public boolean isRounded() {
         return (itemsCount % pageSize) == 0;
+    }
+
+    /**
+     * @return true if current page is last
+     */
+    public boolean isLastPages() {
+        return page == getMaxPages();
+    }
+
+    /**
+     * @return pagingEnabled is flag for the button Show all/Show pages
+     */
+    public boolean isPagingEnabled() {
+        return pagingEnabled;
+    }
+
+    /**
+     * @param numberLink number of links on pages
+     * @param link       pattern of building links
+     * @param uri        uri
+     * @return completed links
+     */
+    public String createPagingLink(int numberLink, String link, String uri) {
+        StringBuffer buffer = new StringBuffer();
+        if (isPagingEnabled() == true) {
+            for (int i = numberLink; i > 0; i--) {
+                if (getPage() > i) {
+                    buffer.append(String.format(link, uri, getPage() - i, getPage() - i).toString());
+                }
+            }
+            if (getMaxPages() > 1) {
+                buffer.append(getPage() + "      ");
+            }
+            for (int i = 0; i < numberLink; i++) {
+                if (getPage() + i < getMaxPages()) {
+                    buffer.append(String.format(link, uri, getPage() + i + 1, getPage() + i + 1).toString());
+                }
+            }
+        }
+        return buffer.toString();
+    }
+
+    /**
+     * used if the total number of items
+     * divided by the number of elements on a page without a trace
+     */
+    public List integerNumberOfPages(List list) {
+        list = list.subList((getPage() - 1) * pageSize, getPage() * pageSize);
+        return list;
+    }
+
+    /**
+     * used if the total number of items
+     * divided by the number of elements on the page with the remainder
+     */
+    public List notIntegerNumberOfPages(List list) {
+        list = list.subList((getPage() - 1) * pageSize,
+                (getPage() - 1) * pageSize + list.size() % pageSize);
+        return list;
     }
 }

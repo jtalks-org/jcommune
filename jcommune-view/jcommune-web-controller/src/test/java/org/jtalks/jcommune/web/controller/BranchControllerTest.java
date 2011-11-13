@@ -18,6 +18,7 @@ import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
@@ -44,6 +45,7 @@ import static org.testng.Assert.assertEquals;
 public class BranchControllerTest {
     private BranchService branchService;
     private TopicService topicService;
+    private SecurityService securityService;
     private BranchController controller;
     private BreadcrumbBuilder breadcrumbBuilder;
 
@@ -53,27 +55,25 @@ public class BranchControllerTest {
     public void init() {
         branchService = mock(BranchService.class);
         topicService = mock(TopicService.class);
+        securityService = mock(SecurityService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
-        controller = new BranchController(branchService, topicService, breadcrumbBuilder);
+        controller = new BranchController(branchService, topicService, securityService, breadcrumbBuilder);
     }
 
     @Test
     public void testTopicsInBranch() throws NotFoundException {
         long branchId = 1L;
         int page = 2;
-        int pageSize = 5;
-        int startIndex = page * pageSize - pageSize;
+        boolean pagingEnabled = true;
         //set expectations
-        when(topicService.getTopicsInBranchCount(branchId)).thenReturn(10);
         when(branchService.get(branchId)).thenReturn(new Branch("name"));
         when(breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)))
                 .thenReturn(new ArrayList<Breadcrumb>());
 
         //invoke the object under test
-        ModelAndView mav = controller.show(branchId, page, pageSize);
+        ModelAndView mav = controller.show(branchId, page, pagingEnabled);
 
         //check expectations
-        verify(topicService).getTopicsInBranchCount(branchId);
         verify(breadcrumbBuilder).getForumBreadcrumb(branchService.get(branchId));
 
         //check result
@@ -93,7 +93,7 @@ public class BranchControllerTest {
     @Test
     public void testRecent() throws NotFoundException {
         int page = 2;
-        int pageSize = 5;
+        int pageSize = 50;
         int startIndex = page * pageSize - pageSize;
         //set expectations
         when(topicService.getTopicsPastLastDayCount(now)).thenReturn(10);
@@ -103,7 +103,7 @@ public class BranchControllerTest {
         session.setAttribute("lastlogin", now);
 
         //invoke the object under test
-        ModelAndView mav = controller.recentTopics(page, pageSize, session);
+        ModelAndView mav = controller.recentTopics(page, session);
 
         //check expectations
         verify(topicService).getAllTopicsPastLastDay(startIndex, pageSize, now);
@@ -114,34 +114,10 @@ public class BranchControllerTest {
         assertAndReturnModelAttributeOfType(mav, "topics", List.class);
 
         Integer actualMaxPages = assertAndReturnModelAttributeOfType(mav, "maxPages", Integer.class);
-        assertEquals((int) actualMaxPages, 2);
+        assertEquals((int) actualMaxPages, 1);
 
         Integer actualPage = assertAndReturnModelAttributeOfType(mav, "page", Integer.class);
         assertEquals((int) actualPage, page);
 
     }
-
-    /*@Test
-    public void testShowEnyBranch() throws NotFoundException {
-        long branchId = 1L;
-        int page = 7;
-        int size = 1;
-
-        when(topicService.getTopicsInBranchCount(branchId)).thenReturn(10);
-        when(branchService.get(branchId)).thenReturn(new Branch("name"));
-        when(breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)))
-                .thenReturn(new ArrayList<Breadcrumb>());
-
-        ModelAndView mav = controller.show(branchId, page, size);
-
-        String actualNameButton = assertAndReturnModelAttributeOfType(mav, "nameButton", String.class);
-        assertEquals((String) actualNameButton, "Show pages");
-
-        size = 2;
-        mav = controller.show(branchId, page, size);
-
-        actualNameButton = assertAndReturnModelAttributeOfType(mav, "nameButton", String.class);
-        assertEquals((String) actualNameButton, "Show all");
-
-    }*/
 }

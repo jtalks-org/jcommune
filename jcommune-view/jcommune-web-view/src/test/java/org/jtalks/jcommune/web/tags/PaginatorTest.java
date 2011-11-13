@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.web.tags;
 
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.SecurityService;
+import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.mock.web.MockPageContext;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.web.context.WebApplicationContext;
@@ -23,12 +23,12 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 public class PaginatorTest {
 
@@ -36,6 +36,8 @@ public class PaginatorTest {
     private MockServletContext ServletContext;
     private MockPageContext PageContext;
     private WebApplicationContext WebApplicationContext;
+    private User user;
+    private List list;// generify
 
     @BeforeMethod
     protected void setUp() throws Exception {
@@ -48,25 +50,27 @@ public class PaginatorTest {
         paginator.setPageContext(PageContext);
 
         when(WebApplicationContext.getServletContext()).thenReturn(ServletContext);
-    }
 
-    @Test
-    public void testElementsOfPage() {
-        SecurityService securityService = mock(SecurityService.class);
-        User user = new User("", "", "");
+        user = new User("", "", "");
         user.setPageSize("FIVE");
-        List list = new ArrayList();
+
+        list = new ArrayList();
         list.add(1);
         list.add(2);
         list.add(3);
         list.add(4);
         list.add(5);
         list.add(6);
+    }
+
+    @Test
+    public void testElementsOfPage() {
+        User user = new User("","","");
+        user.setPageSize("FIVE");
+        Pagination pagination = new Pagination(1,user,6,true);
+        paginator.setPagination(pagination);
 
         paginator.setList(list);
-        paginator.setCurrentPage(1);
-        when(WebApplicationContext.getBean("securityService")).thenReturn(securityService);
-        when(securityService.getCurrentUser()).thenReturn(user);
 
         paginator.doStartTag();
 
@@ -74,72 +78,73 @@ public class PaginatorTest {
 
         paginator.doEndTag();
 
-        assertEquals(PageContext.getAttribute("maxPage"), 2);
-    }
-
-    @Test
-    public void testGetMaxPage() {
-        int itemCount = 5;
-        int numberElement = 5;
-
-        assertEquals(paginator.getMaxPage(itemCount, numberElement), 1);
+        assertEquals(pagination.getMaxPages(), 2);
     }
 
     @Test
     public void testLastPage() {
-        SecurityService securityService = mock(SecurityService.class);
-        User user = new User("", "", "");
-        user.setPageSize("FIVE");
-        when(WebApplicationContext.getBean("securityService")).thenReturn(securityService);
-        when(securityService.getCurrentUser()).thenReturn(user);
+        Pagination pagination = new Pagination(2,user,6,true);
+        paginator.setPagination(pagination);
         List list1 = new ArrayList();
         list1.add(6);
-        List list = new ArrayList();
-        list.add(1);
-        list.add(2);
-        list.add(3);
-        list.add(4);
-        list.add(5);
-        list.add(6);
 
         paginator.setList(list);
-        paginator.setCurrentPage(2);
-        paginator.setMaxPages(2);
 
         paginator.doStartTag();
 
         assertEquals(PageContext.getAttribute("list"), list1);
     }
 
-
     @Test
-    public void testDoEndTag() {
-        paginator.setCurrentPage(2);
-        paginator.setMaxPages(3);
-
-        assertEquals(paginator.doEndTag(), 6);
-    }
-
-    @Test
-    public void testUserAnonimus() {
-        SecurityService securityService = mock(SecurityService.class);
-        when(WebApplicationContext.getBean("securityService")).thenReturn(securityService);
-        when(securityService.getCurrentUser()).thenReturn(null);
-
-        List list = new ArrayList();
-        for(int i=0;i<55;i++)
-        {
-            list.add(1);
-        }
+    public void testUserAnonymous() {
+        Pagination pagination = new Pagination(2,null,55,true);
+        paginator.setPagination(pagination);
+        List list = Collections.nCopies(55, 1);
 
         paginator.setList(list);
-        paginator.setCurrentPage(2);
-        paginator.setMaxPages(2);
 
         paginator.doStartTag();
 
         assertEquals(PageContext.getAttribute("list"), list.subList(50,55));
+    }
 
-        verify(securityService).getCurrentUser();
+    @Test
+    public void testSizeOne() {
+        Pagination pagination = new Pagination(1,user,6,false);
+        paginator.setPagination(pagination);
+
+        paginator.setList(list);
+
+        paginator.doStartTag();
+
+        assertEquals(PageContext.getAttribute("list"), list);
+    }
+
+    @Test
+    public void testEmptyList() {
+        Pagination pagination = new Pagination(1,user,6,true);
+        paginator.setPagination(pagination);
+        List list = new ArrayList();
+
+        paginator.setList(list);
+
+        paginator.doStartTag();
+
+        paginator.doEndTag();
+
+        assertEquals(PageContext.getAttribute("list"), null);
+    }
+
+    @Test
+    public void testDisablePaging() {
+        Pagination pagination = new Pagination(1,null,55,false);
+        paginator.setPagination(pagination);
+        List list = Collections.nCopies(55, 1);
+
+        paginator.setList(list);
+
+        paginator.doStartTag();
+
+        assertEquals(PageContext.getAttribute("list"), list);
     }
 }

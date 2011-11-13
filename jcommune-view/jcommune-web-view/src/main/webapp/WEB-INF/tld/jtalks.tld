@@ -226,16 +226,16 @@
       <type>java.lang.String</type>
     </attribute>
     <attribute>
-      <name>size</name>
-      <required>true</required>
+      <name>numberLink</name>
+      <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <type>java.lang.Integer</type>
     </attribute>
     <attribute>
-      <name>currentPage</name>
+      <name>pagination</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
-      <type>java.lang.Integer</type>
+      <type>org.jtalks.jcommune.web.util.Pagination</type>
     </attribute>
     <attribute>
         <name>list</name>

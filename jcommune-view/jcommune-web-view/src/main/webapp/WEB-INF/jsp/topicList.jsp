@@ -36,17 +36,26 @@
         <h2><a class="heading" href="#"><c:out value="${branch.name}"/></a></h2>
         <div class="forum_misc_info">
             <c:out value="${branch.description}"/>
-
-            <span class="nav_top">На страницу: 1, <a href="#">2</a> <a href="#">След.</a></span>
+            <span class="nav_bottom" >
+                <a class="forum_top_right_link" href="#">Отметить все темы как прочтенные</a>
+            </span>
+            <br>
         </div>
-        <a class="forum_top_right_link" href="#">Отметить все темы как прочтенные</a>
+        <jtalks:display uri="${branchId}" pagination="${pag}" list="${topics}" >
+            <nobr>
+            <span class="nav_bottom" >
+                <c:if test="${pag.maxPages>1}">
+                <spring:message code="label.onPage"/>
+                </c:if>
+            </jtalks:display>
+            </span>
+            </nobr>
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
             <a class="button top_button"
                href="${pageContext.request.contextPath}/topics/new?branchId=${branchId}"><spring:message
                     code="label.addtopic"/></a>
             &nbsp; &nbsp; &nbsp;
         </sec:authorize>
-
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
 
@@ -63,7 +72,7 @@
 
 
         <ul class="forum_table"> <!-- Список топиков -->
-            <jtalks:display uri="${branchId}" currentPage="${page}" size="${size}" list="${topics}">
+            <jtalks:display uri="${branchId}" pagination="${pag}" numberLink="3" list="${topics}">
             <c:forEach var="topic" items="${list}">
                 <li class="forum_row"> <!-- Топик -->
                     <div class="forum_icon"> <!-- Иконка с кофе -->
@@ -119,11 +128,16 @@
                     </div>
                 </li>
             </c:forEach>
-                <span class="nav_bottom"><spring:message code="label.onPage"/>
-            </jtalks:display>
-                    </span>
-        </ul>
 
+        </ul>
+         <nobr>
+            <span class="nav_bottom" >
+                <c:if test="${pag.maxPages>1}">
+                <spring:message code="label.onPage"/>
+                </c:if>
+            </jtalks:display>
+            </span>
+            </nobr>
         <!-- Конец группы форумов -->
 
 
@@ -134,22 +148,17 @@
                     code="label.addtopic"/></a>
             &nbsp; &nbsp; &nbsp;
         </sec:authorize>
-
-        <c:if test="${maxPage>1}">
-            <c:if test="${size==0 || size==2}">
-                <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+        <c:if test="${pag.maxPages>1}">
+            <c:if test="${pag.pagingEnabled == true}">
                     <a class="button"
-                       href="?size=1"><spring:message code="label.showAll"/></a>
+                       href="?pagingEnabled=false"><spring:message code="label.showAll"/></a>
                     &nbsp; &nbsp; &nbsp;
-                </sec:authorize>
             </c:if>
         </c:if>
-        <c:if test="${size == 1}">
-            <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+        <c:if test="${pag.pagingEnabled == false}">
                 <a class="button"
-                   href="?size=2"><spring:message code="label.showPages"/></a>
+                   href="?pagingEnabled=true"><spring:message code="label.showPages"/></a>
                 &nbsp; &nbsp; &nbsp;
-            </sec:authorize>
         </c:if>
 
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
@@ -157,7 +166,7 @@
 
         <div class="forum_misc_info">
             <spring:message code="label.page"/> <c:out value="${page}"/> <spring:message code="label.of"/> <c:out
-                value="${maxPage}"/>
+                value="${pag.maxPages}"/>
             <br/>
             Модераторы:
             <ul class="users_list">

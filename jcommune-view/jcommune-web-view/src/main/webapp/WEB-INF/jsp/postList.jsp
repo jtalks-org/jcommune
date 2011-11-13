@@ -33,11 +33,22 @@
 <!-- Начало всех форумов -->
 <div class="all_forums">
 <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
+<span class="nav_bottom" >
+<a href="#">Предыдущая тема</a>::<a href="#">Следующая тема</a>
+</span>
+<br>
 
+    <div class="forum_top_right_link">
 
-        <div class="forum_top_right_link">
-            <a href="#">Предыдущая тема</a> ::
-            <a href="#">Следующая тема</a>
+        <jtalks:display uri="${topicId}" pagination="${pag}" numberLink="3" list="${posts}">
+        <nobr>
+            <span class="nav_bottom" >
+                <c:if test="${pag.maxPages>1}">
+                <spring:message code="label.onPage"/>
+                </c:if>
+            </jtalks:display>
+            </span>
+        </nobr>
         </div>
         <a class="button top_button" href="${pageContext.request.contextPath}/branches/${branchId}">
             <spring:message code="label.back"/>
@@ -60,7 +71,7 @@
         &nbsp; &nbsp; &nbsp;
 
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-
+        <br>
         <!-- Начало группы форумов -->
         <div class="forum_header_table"> <!-- Шапка топика -->
             <div class="forum_header">
@@ -69,7 +80,7 @@
             </div>
         </div>
         <ul class="forum_table"> <!-- Список сообщений -->
-            <jtalks:display uri="${topicId}" currentPage="${page}" size="${size}" list="${posts}">
+            <jtalks:display uri="${topicId}" pagination="${pag}" numberLink="3" list="${posts}">
             <c:forEach var="post" items="${list}" varStatus="i">
                 <li class="forum_row"> <!-- Сообщение -->
                     <div class="forum_userinfo">
@@ -163,10 +174,14 @@
                     </div>
                 </li>
             </c:forEach>
+        </ul>
+     <nobr>
+        <c:if test="${pag.maxPages>1}">
         <span class="nav_bottom"><spring:message code="label.onPage"/>
+        </c:if>
     </jtalks:display>
         </span>
-        </ul>
+        </nobr>
 
         <a class="button" href="${pageContext.request.contextPath}/branches/${branchId}">
             <spring:message code="label.back"/>
@@ -185,19 +200,19 @@
                 <spring:message code="label.answer"/>
             </a>
         </c:if>
-        <c:if test="${maxPage>1}">
-            <c:if test="${size==0 || size==2}">
+        <c:if test="${pag.maxPages>1}">
+            <c:if test="${pag.pagingEnabled==true}">
                 <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
                     <a class="button"
-                       href="?size=1"><spring:message code="label.showAll"/></a>
+                       href="?pagingEnabled=false"><spring:message code="label.showAll"/></a>
                     &nbsp; &nbsp; &nbsp;
                 </sec:authorize>
             </c:if>
         </c:if>
-        <c:if test="${size == 1}">
+        <c:if test="${pag.pagingEnabled == false}">
             <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
                 <a class="button"
-                   href="?size=2"><spring:message code="label.showPages"/></a>
+                   href="?pagingEnabled=true"><spring:message code="label.showPages"/></a>
                 &nbsp; &nbsp; &nbsp;
             </sec:authorize>
         </c:if>
@@ -208,7 +223,7 @@
 
         <div class="forum_misc_info">
             <spring:message code="label.page"/> <c:out value="${page}"/> <spring:message code="label.of"/> <c:out
-                value="${maxPage}"/>
+                value="${pag.maxPages}"/>
             <br/>
             Модераторы:
             <ul class="users_list">

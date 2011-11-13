@@ -17,8 +17,10 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
@@ -52,10 +54,12 @@ public final class TopicController {
     public static final String TOPIC_ID = "topicId";
     public static final String BRANCH_ID = "branchId";
     public static final String BREADCRUMB_LIST = "breadcrumbList";
+    private static final String PAGING_ENABLED = "pagingEnabled";
 
     private TopicService topicService;
     private PostService postService;
     private BranchService branchService;
+    private SecurityService securityService;
     private BreadcrumbBuilder breadcrumbBuilder;
 
     /**
@@ -64,6 +68,7 @@ public final class TopicController {
      * @param topicService      the object which provides actions on {@link Topic} entity
      * @param postService       the object which provides actions on {@link Post} entity
      * @param branchService     the object which provides actions on
+     * @param securityService   autowired object from Spring Context
      *                          {@link org.jtalks.jcommune.model.entity.Branch} entity
      * @param breadcrumbBuilder the object which provides actions on
      *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
@@ -71,10 +76,12 @@ public final class TopicController {
     @Autowired
     public TopicController(TopicService topicService, PostService postService,
                            BranchService branchService,
+                           SecurityService securityService,
                            BreadcrumbBuilder breadcrumbBuilder) {
         this.topicService = topicService;
         this.postService = postService;
         this.branchService = branchService;
+        this.securityService = securityService;
         this.breadcrumbBuilder = breadcrumbBuilder;
     }
 
@@ -154,39 +161,38 @@ public final class TopicController {
      * Method handles GET requests with URI /topic/{topicId}
      * Displays to user a list of messages from the chosen theme with pagination.
      *
-     * @param topicId the id of selected Topic
-     * @param page    page
-     * @param size    number of posts on the page
-     * @param session current http session
+     * @param topicId       the id of selected Topic
+     * @param page          page
+     * @param pagingEnabled number of posts on the page
+     * @param session       current http session
      * @return {@code ModelAndView}
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic or branch not found
      */
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.GET)
     public ModelAndView show(@PathVariable(TOPIC_ID) Long topicId,
-                             @RequestParam(value = "page", required = false) Integer page,
-                             @RequestParam(value = "size", required = false) Integer size,
-                             HttpSession session) throws NotFoundException {
+                             @RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
+                             @RequestParam(value = PAGING_ENABLED, defaultValue = "true",
+                                     required = false) Boolean pagingEnabled, HttpSession session
+    ) throws NotFoundException {
 
         Topic topic = topicService.get(topicId);
 
+        User currentUser = securityService.getCurrentUser();
+
         Long branchId = topic.getBranch().getId();
 
-        int postsCount = postService.getPostsInTopicCount(topicId);
-        Pagination pag = new Pagination(page, size, postsCount);
-
         List<Post> posts = topic.getPosts();
-        topicService.addTopicView(topic, session);
+        Pagination pag = new Pagination(page, currentUser, posts.size(), pagingEnabled);
 
-        if (size == null) {
-            size = 0;
-        }
+
+        topicService.addTopicView(topic, session);
 
         return new ModelAndView("postList")
                 .addObject("posts", posts)
                 .addObject("topic", topic)
-                .addObject("size", size)
                 .addObject("page", pag.getPage())
+                .addObject("pag", pag)
                 .addObject(BRANCH_ID, branchId)
                 .addObject(TOPIC_ID, topicId)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic))

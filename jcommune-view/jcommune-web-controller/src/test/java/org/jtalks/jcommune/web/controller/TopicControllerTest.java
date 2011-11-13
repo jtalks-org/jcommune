@@ -20,6 +20,7 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
@@ -36,10 +37,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
@@ -60,6 +57,7 @@ public class TopicControllerTest {
     private TopicService topicService;
     private PostService postService;
     private BranchService branchService;
+    private SecurityService securityService;
     private TopicController controller;
     private BreadcrumbBuilder breadcrumbBuilder;
     private Branch branch;
@@ -70,9 +68,10 @@ public class TopicControllerTest {
         topicService = mock(TopicService.class);
         postService = mock(PostService.class);
         branchService = mock(BranchService.class);
+        securityService =  mock(SecurityService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
         branch = mock(Branch.class);
-        controller = new TopicController(topicService, postService, branchService, breadcrumbBuilder);
+        controller = new TopicController(topicService, postService, branchService, securityService, breadcrumbBuilder);
         user = new User("username", "email@mail.com", "password");
     }
 
@@ -101,12 +100,10 @@ public class TopicControllerTest {
     @Test
     public void testShow() throws NotFoundException {
         int page = 2;
-        int pageSize = 5;
-        int startIndex = page * pageSize - pageSize;
+        boolean pagingEnabled = true;
         Topic topic = mock(Topic.class);
 
         //set expectations
-        when(postService.getPostsInTopicCount(TOPIC_ID)).thenReturn(10);
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
         when(topic.getBranch()).thenReturn(branch);
@@ -114,11 +111,10 @@ public class TopicControllerTest {
 
 
         //invoke the object under test
-        ModelAndView mav = controller.show(TOPIC_ID, page, pageSize, new MockHttpSession());
+        ModelAndView mav = controller.show(TOPIC_ID, page, pagingEnabled, new MockHttpSession());
 
 
         //check expectations
-        verify(postService).getPostsInTopicCount(TOPIC_ID);
         verify(topicService).get(TOPIC_ID);
         verify(breadcrumbBuilder).getForumBreadcrumb(topic);
 
@@ -277,32 +273,4 @@ public class TopicControllerTest {
         dto.setTopicName(TOPIC_THEME);
         return dto;
     }
-
-    /*@Test
-    public void testShowEnyBranch() throws NotFoundException {
-        int page = 2;
-        int size = 1;
-        Topic topic = mock(Topic.class);
-
-        //set expectations
-        when(postService.getPostsInTopicCount(TOPIC_ID)).thenReturn(10);
-        when(topicService.get(TOPIC_ID)).thenReturn(topic);
-        when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
-        when(topic.getBranch()).thenReturn(branch);
-        when(branch.getId()).thenReturn(1L);
-
-
-        //invoke the object under test
-        ModelAndView mav = controller.show(TOPIC_ID, page, size, new MockHttpSession());
-
-        String actualNameButton = assertAndReturnModelAttributeOfType(mav, "nameButton", String.class);
-        assertEquals((String) actualNameButton, "Show pages");
-
-        size = 2;
-        mav = controller.show(TOPIC_ID, page, size, new MockHttpSession());
-
-        actualNameButton = assertAndReturnModelAttributeOfType(mav, "nameButton", String.class);
-        assertEquals((String) actualNameButton, "Show all");
-
-    }*/
 }
