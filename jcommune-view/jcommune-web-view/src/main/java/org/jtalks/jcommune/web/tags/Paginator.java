@@ -64,7 +64,7 @@ public class Paginator extends BodyTagSupport {
     @Override
     public int doStartTag() {
 
-        if (pagination.isPagingEnabled() == false) {
+        if (!pagination.isPagingEnabled()) {
             pagination.setPageSize(list.size());
         }
 

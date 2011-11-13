@@ -46,6 +46,14 @@ public class Pagination {
         this.itemsCount = itemsCount;
     }
 
+    /**
+     * Create instance.
+     *
+     * @param page        page (default 1)
+     * @param currentUser current user
+     * @param itemsCount  total number of items
+     * @param pagingEnabled paging status
+     */
     public Pagination(Integer page, User currentUser, int itemsCount, boolean pagingEnabled) {
         this.page = page;
         this.pageSize = currentUser == null ? Integer.valueOf(defaultPageSize) :
@@ -134,14 +142,15 @@ public class Pagination {
      */
     public String createPagingLink(int numberLink, String link, String uri) {
         StringBuffer buffer = new StringBuffer();
-        if (isPagingEnabled() == true) {
+        if (isPagingEnabled()) {
             for (int i = numberLink; i > 0; i--) {
                 if (getPage() > i) {
                     buffer.append(String.format(link, uri, getPage() - i, getPage() - i).toString());
                 }
             }
             if (getMaxPages() > 1) {
-                buffer.append(getPage() + "      ");
+                buffer.append(getPage());
+                buffer.append("      ");
             }
             for (int i = 0; i < numberLink; i++) {
                 if (getPage() + i < getMaxPages()) {
@@ -155,6 +164,8 @@ public class Pagination {
     /**
      * used if the total number of items
      * divided by the number of elements on a page without a trace
+     * @param list list of items
+     * @return list new list of items
      */
     public List integerNumberOfPages(List list) {
         list = list.subList((getPage() - 1) * pageSize, getPage() * pageSize);
@@ -164,6 +175,8 @@ public class Pagination {
     /**
      * used if the total number of items
      * divided by the number of elements on the page with the remainder
+     * @param list list of items
+     * @return list new list of items
      */
     public List notIntegerNumberOfPages(List list) {
         list = list.subList((getPage() - 1) * pageSize,
