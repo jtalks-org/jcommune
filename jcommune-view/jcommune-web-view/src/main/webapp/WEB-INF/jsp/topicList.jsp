@@ -21,6 +21,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <html>
 <head>
@@ -129,7 +130,7 @@
                                                  alt="Последнее сообщение"/></a>
                             </c:when>
                             <c:otherwise>
-                                <a href="${pageContext.request.contextPath}/topics/${topic.id}?page=<fmt:formatNumber value="${(topic.postCount - topic.postCount%pag.maxPages)/pag.maxPages+1}">
+                                <a href="${pageContext.request.contextPath}/topics/${topic.id}?page= <fmt:formatNumber value="${(topic.postCount - topic.postCount%pag.maxPages)/pag.maxPages+1}"/>">
                                     <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif" alt="Последнее сообщение"/>
                                 </a>
                             </c:otherwise>
