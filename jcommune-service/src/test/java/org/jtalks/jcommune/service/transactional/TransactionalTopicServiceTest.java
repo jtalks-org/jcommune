@@ -316,10 +316,6 @@ public class TransactionalTopicServiceTest {
         assertEquals(topic.getTopicWeight(), newWeight);
         assertEquals(topic.isSticked(), newSticked);
         assertEquals(topic.isAnnouncement(), newAnnouncement);
-
-        verify(topicDao).isExist(TOPIC_ID);
-        verify(topicDao).get(TOPIC_ID);
-        verify(topicDao).update(topic);
     }
 
     @Test
