@@ -28,24 +28,17 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.security.AclBuilder;
 import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.mockito.ArgumentCaptor;
-import org.springframework.mock.web.MockHttpSession;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
 
 /**
  * This test cover {@code TransactionalTopicService} logic validation.
@@ -91,8 +84,11 @@ public class TransactionalTopicServiceTest {
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(expectedTopic);
 
+        int viewsCount = expectedTopic.getViews();
+
         Topic actualTopic = topicService.get(TOPIC_ID);
 
+        assertEquals(actualTopic.getViews(), viewsCount + 1);
         assertEquals(actualTopic, expectedTopic, "Topics aren't equals");
         verify(topicDao).isExist(TOPIC_ID);
         verify(topicDao).get(TOPIC_ID);
@@ -366,28 +362,5 @@ public class TransactionalTopicServiceTest {
         when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
         topicService.updateTopic(TOPIC_ID, newTitle, newBody, newWeight, newSticked, newAnnouncement);
-    }
-
-    @Test
-    void testAddTopicView() throws NotFoundException {
-        Topic topic = new Topic(user, "title");
-        topic.setId(TOPIC_ID);
-        int views = topic.getViews();
-        MockHttpSession httpSession = new MockHttpSession();
-
-        topicService.addTopicView(topic, httpSession);
-
-        Set<Long> topicIds = (Set<Long>) httpSession.getAttribute(TransactionalTopicService.TOPICS_VIEWED_ATTRIBUTE_NAME);
-        assertTrue(topicIds.contains(TOPIC_ID));
-
-        topicService.addTopicView(topic, httpSession);
-
-        assertEquals(topic.getViews(), views + 1);
-    }
-
-    @Test(expectedExceptions = {IllegalArgumentException.class})
-    void testAddTopicViewInInvalidSession() throws NotFoundException {
-
-        topicService.addTopicView(new Topic(user, "title"), null);
     }
 }

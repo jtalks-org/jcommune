@@ -20,7 +20,6 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -30,14 +29,9 @@ import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -58,7 +52,6 @@ public final class TopicController {
     private static final String PAGING_ENABLED = "pagingEnabled";
 
     private TopicService topicService;
-    private PostService postService;
     private BranchService branchService;
     private SecurityService securityService;
     private BreadcrumbBuilder breadcrumbBuilder;
@@ -67,7 +60,6 @@ public final class TopicController {
      * Constructor creates controller with objects injected via autowiring.
      *
      * @param topicService      the object which provides actions on {@link Topic} entity
-     * @param postService       the object which provides actions on {@link Post} entity
      * @param branchService     the object which provides actions on
      * @param securityService   autowired object from Spring Context
      *                          {@link org.jtalks.jcommune.model.entity.Branch} entity
@@ -75,12 +67,11 @@ public final class TopicController {
      *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      */
     @Autowired
-    public TopicController(TopicService topicService, PostService postService,
+    public TopicController(TopicService topicService,
                            BranchService branchService,
                            SecurityService securityService,
                            BreadcrumbBuilder breadcrumbBuilder) {
         this.topicService = topicService;
-        this.postService = postService;
         this.branchService = branchService;
         this.securityService = securityService;
         this.breadcrumbBuilder = breadcrumbBuilder;
@@ -164,7 +155,6 @@ public final class TopicController {
      * @param topicId       the id of selected Topic
      * @param page          page
      * @param pagingEnabled number of posts on the page
-     * @param session       current http session
      * @return {@code ModelAndView}
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic or branch not found
@@ -173,21 +163,15 @@ public final class TopicController {
     public ModelAndView showTopicPage(@PathVariable(TOPIC_ID) Long topicId,
                              @RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
                              @RequestParam(value = PAGING_ENABLED, defaultValue = "true",
-                                     required = false) Boolean pagingEnabled, HttpSession session
-    ) throws NotFoundException {
+                                     required = false) Boolean pagingEnabled) throws NotFoundException {
 
         Topic topic = topicService.get(topicId);
         Branch branch =  topic.getBranch();
 
         User currentUser = securityService.getCurrentUser();
 
-        Long branchId = topic.getBranch().getId();
-
         List<Post> posts = topic.getPosts();
         Pagination pag = new Pagination(page, currentUser, posts.size(), pagingEnabled);
-
-
-        topicService.addTopicView(topic, session);
 
         return new ModelAndView("postList")
                 .addObject("posts", posts)

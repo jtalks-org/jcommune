@@ -84,9 +84,9 @@ public final class BranchController {
      */
     @RequestMapping(value = "/branches/{branchId}", method = RequestMethod.GET)
     public ModelAndView showPage(@PathVariable("branchId") long branchId,
-                             @RequestParam(value = PAGE, defaultValue = "1", required = false) Integer page,
-                             @RequestParam(value = PAGING_ENABLED, defaultValue = "true",
-                                     required = false) Boolean pagingEnabled
+                                 @RequestParam(value = PAGE, defaultValue = "1", required = false) Integer page,
+                                 @RequestParam(value = PAGING_ENABLED, defaultValue = "true",
+                                         required = false) Boolean pagingEnabled
     ) throws NotFoundException {
 
         Branch branch = branchService.get(branchId);
@@ -110,12 +110,10 @@ public final class BranchController {
      * @param page    page
      * @param session bound http session
      * @return {@code ModelAndView} with topics list and vars for pagination
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when branch not found
      */
     @RequestMapping(value = "/topics/recent", method = RequestMethod.GET)
-    public ModelAndView recentTopicsPage(@RequestParam(value = PAGE, required = false) Integer page, HttpSession session)
-            throws NotFoundException {
+    public ModelAndView recentTopicsPage(@RequestParam(value = PAGE, required = false) Integer page,
+                                         HttpSession session) {
 
         DateTime lastLogin = (DateTime) session.getAttribute("lastlogin");
         int topicsCount = topicService.getTopicsPastLastDayCount(lastLogin);

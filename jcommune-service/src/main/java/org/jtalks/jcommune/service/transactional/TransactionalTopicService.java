@@ -30,10 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import javax.servlet.http.HttpSession;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Topic service class. This class contains method needed to manipulate with Topic persistent entity.
@@ -46,10 +43,10 @@ import java.util.Set;
  */
 public class TransactionalTopicService extends AbstractTransactionalEntityService<Topic, TopicDao>
         implements TopicService {
-    
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
     public static final String TOPICS_VIEWED_ATTRIBUTE_NAME = "topicsViewed";
-    
+
     private final SecurityService securityService;
     private BranchService branchService;
     private BranchDao branchDao;
@@ -91,9 +88,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
 
         securityService.grantToCurrentUser().role(SecurityConstants.ROLE_ADMIN).admin().on(answer);
 
-        logger.debug("New post in topic. Topic id={}, Post id={}, Post author={}", 
-                new Object[]{ topicId, answer.getId(), currentUser.getUsername() });
-        
+        logger.debug("New post in topic. Topic id={}, Post id={}, Post author={}",
+                new Object[]{topicId, answer.getId(), currentUser.getUsername()});
+
         return answer;
     }
 
@@ -119,11 +116,11 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
 
         securityService.grantToCurrentUser().role(SecurityConstants.ROLE_ADMIN).admin().on(topic)
                 .user(currentUser.getUsername()).role(SecurityConstants.ROLE_ADMIN).admin().on(first);
-        
-        logger.debug("Created new topic id={}, branch id={}, author={}", 
-                    new Object[]{ topic.getId(), branchId, currentUser.getUsername() });
+
+        logger.debug("Created new topic id={}, branch id={}, author={}",
+                new Object[]{topic.getId(), branchId, currentUser.getUsername()});
         logger.info("Created new topic: \"{}\". Author: {}", topicName, currentUser.getUsername());
-        
+
         return topic;
     }
 
@@ -188,7 +185,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @Override
     @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', admin)")
     public void updateTopic(long topicId, String topicName, String bodyText, int topicWeight,
-                          boolean sticked, boolean announcement)
+                            boolean sticked, boolean announcement)
             throws NotFoundException {
         Topic topic = get(topicId);
         topic.setTitle(topicName);
@@ -199,7 +196,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         post.setPostContent(bodyText);
         topic.updateModificationDate();
         this.getDao().update(topic);
-        
+
         logger.debug("Topic id={} updated", topic.getId());
     }
 
@@ -216,9 +213,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         branchDao.update(branch);
 
         securityService.deleteFromAcl(Topic.class, topicId);
-        
+
         logger.info("Deleted topic \"{}\". Topic id: {}", topic.getTitle(), topicId);
-        
+
         return branch;
     }
 
@@ -226,19 +223,12 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    public void addTopicView(Topic topic, HttpSession session) throws NotFoundException {
-        if (session == null) {
-            throw new IllegalArgumentException("Session cannot be null");
-        }
-        Set<Long> topicIds = (Set<Long>) session.getAttribute(TOPICS_VIEWED_ATTRIBUTE_NAME);
-        if (topicIds == null) {
-            topicIds = new HashSet<Long>();
-        }
-        if (!topicIds.contains(topic.getId())) {
-            topic.setViews(topic.getViews() + 1);
-            this.getDao().update(topic);
-        }
-        topicIds.add(topic.getId());
-        session.setAttribute(TOPICS_VIEWED_ATTRIBUTE_NAME, topicIds);
+    public Topic get(Long id) throws NotFoundException {
+        Topic topic = super.get(id);
+
+        topic.setViews(topic.getViews() + 1);
+        this.getDao().update(topic);
+
+        return topic;
     }
 }

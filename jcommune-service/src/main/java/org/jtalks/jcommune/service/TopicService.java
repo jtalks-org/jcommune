@@ -20,7 +20,6 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -132,13 +131,4 @@ public interface TopicService extends EntityService<Topic> {
      * @throws NotFoundException when topic not found
      */
     Branch deleteTopic(long topicId) throws NotFoundException;
-
-    /**
-     * Topic views count increment
-     *
-     * @param topic   topic that is viewed now
-     * @param session current session that contains viewed topics Ids
-     * @throws NotFoundException when topic not found
-     */
-    void addTopicView(Topic topic, HttpSession session) throws NotFoundException;
 }

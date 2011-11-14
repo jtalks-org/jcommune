@@ -19,14 +19,12 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.TopicDto;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
@@ -55,7 +53,6 @@ public class TopicControllerTest {
     private final boolean ANNOUNCEMENT = false;
     private User user;
     private TopicService topicService;
-    private PostService postService;
     private BranchService branchService;
     private SecurityService securityService;
     private TopicController controller;
@@ -66,12 +63,11 @@ public class TopicControllerTest {
     @BeforeMethod
     public void init() {
         topicService = mock(TopicService.class);
-        postService = mock(PostService.class);
         branchService = mock(BranchService.class);
         securityService =  mock(SecurityService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
         branch = mock(Branch.class);
-        controller = new TopicController(topicService, postService, branchService, securityService, breadcrumbBuilder);
+        controller = new TopicController(topicService, branchService, securityService, breadcrumbBuilder);
         user = new User("username", "email@mail.com", "password");
     }
 
@@ -111,7 +107,7 @@ public class TopicControllerTest {
 
 
         //invoke the object under test
-        ModelAndView mav = controller.showTopicPage(TOPIC_ID, page, pagingEnabled, new MockHttpSession());
+        ModelAndView mav = controller.showTopicPage(TOPIC_ID, page, pagingEnabled);
 
 
         //check expectations

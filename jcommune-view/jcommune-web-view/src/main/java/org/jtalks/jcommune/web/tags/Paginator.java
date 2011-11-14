@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Class for custom tag jtalsk:display
+ * Class for custom tag jtalks:display
  *
  * @author Andrey Kluev
  */

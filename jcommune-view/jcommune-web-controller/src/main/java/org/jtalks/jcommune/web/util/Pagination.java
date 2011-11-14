@@ -56,7 +56,7 @@ public class Pagination {
      */
     public Pagination(Integer page, User currentUser, int itemsCount, boolean pagingEnabled) {
         this.page = page;
-        this.pageSize = currentUser == null ? Integer.valueOf(defaultPageSize) :
+        this.pageSize = currentUser == null ? defaultPageSize :
                 PageSize.valueOf(currentUser.getPageSize()).getSize();
         this.itemsCount = itemsCount;
         this.pagingEnabled = pagingEnabled;
@@ -145,7 +145,7 @@ public class Pagination {
         if (isPagingEnabled()) {
             for (int i = numberLink; i > 0; i--) {
                 if (getPage() > i) {
-                    buffer.append(String.format(link, uri, getPage() - i, getPage() - i).toString());
+                    buffer.append(String.format(link, uri, getPage() - i, getPage() - i));
                 }
             }
             if (getMaxPages() > 1) {
@@ -154,7 +154,7 @@ public class Pagination {
             }
             for (int i = 0; i < numberLink; i++) {
                 if (getPage() + i < getMaxPages()) {
-                    buffer.append(String.format(link, uri, getPage() + i + 1, getPage() + i + 1).toString());
+                    buffer.append(String.format(link, uri, getPage() + i + 1, getPage() + i + 1));
                 }
             }
         }
@@ -168,8 +168,7 @@ public class Pagination {
      * @return list new list of items
      */
     public List integerNumberOfPages(List list) {
-        list = list.subList((getPage() - 1) * pageSize, getPage() * pageSize);
-        return list;
+        return list.subList((getPage() - 1) * pageSize, getPage() * pageSize);
     }
 
     /**
@@ -179,8 +178,7 @@ public class Pagination {
      * @return list new list of items
      */
     public List notIntegerNumberOfPages(List list) {
-        list = list.subList((getPage() - 1) * pageSize,
+        return list.subList((getPage() - 1) * pageSize,
                 (getPage() - 1) * pageSize + list.size() % pageSize);
-        return list;
     }
 }
