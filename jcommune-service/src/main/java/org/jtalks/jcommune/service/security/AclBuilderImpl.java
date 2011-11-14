@@ -148,14 +148,11 @@ public class AclBuilderImpl implements AclBuilder {
     @Override
     public boolean containsSid(String name) {
         for (Sid sid : sids) {
-            if (sid instanceof PrincipalSid) {
-                if (((PrincipalSid) sid).getPrincipal().equals(name)) {
-                    return true;
-                }
-            } else if (sid instanceof GrantedAuthoritySid) {
-                if (((GrantedAuthoritySid) sid).getGrantedAuthority().equals(name)) {
-                    return true;
-                }
+            if (sid instanceof PrincipalSid && ((PrincipalSid) sid).getPrincipal().equals(name)) {
+                return true;
+            } else if (sid instanceof GrantedAuthoritySid
+                    && ((GrantedAuthoritySid) sid).getGrantedAuthority().equals(name)) {
+                return true;
             }
         }
         return false;
