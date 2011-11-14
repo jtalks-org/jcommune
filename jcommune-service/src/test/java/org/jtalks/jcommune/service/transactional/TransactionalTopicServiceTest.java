@@ -114,6 +114,8 @@ public class TransactionalTopicServiceTest {
         assertEquals(createdPost.getPostContent(), ANSWER_BODY);
         assertEquals(createdPost.getUserCreated(), user);
         verify(securityService).getCurrentUser();
+        verify(topicDao).update(answeredTopic);
+        verify(topicDao).get(TOPIC_ID);
         verify(securityService).grantToCurrentUser();
         verify(aclBuilder).role(SecurityConstants.ROLE_ADMIN);
         verify(aclBuilder).admin();
@@ -314,6 +316,10 @@ public class TransactionalTopicServiceTest {
         assertEquals(topic.getTopicWeight(), newWeight);
         assertEquals(topic.isSticked(), newSticked);
         assertEquals(topic.isAnnouncement(), newAnnouncement);
+
+        verify(topicDao).isExist(TOPIC_ID);
+        verify(topicDao).update(topic);
+        verify(topicDao).get(TOPIC_ID);
     }
 
     @Test
@@ -340,6 +346,9 @@ public class TransactionalTopicServiceTest {
         assertEquals(topic.getTopicWeight(), newWeight);
         assertEquals(topic.isSticked(), newSticked);
         assertEquals(topic.isAnnouncement(), newAnnouncement);
+
+        verify(topicDao).isExist(TOPIC_ID);
+        verify(topicDao).get(TOPIC_ID);
     }
 
     @Test(expectedExceptions = {NotFoundException.class})
