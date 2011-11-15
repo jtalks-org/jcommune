@@ -130,7 +130,7 @@
                                                  alt="Последнее сообщение"/></a>
                             </c:when>
                             <c:otherwise>
-                                <a href="${pageContext.request.contextPath}/topics/${topic.id}?page= <fmt:formatNumber value="${(topic.postCount - topic.postCount%pag.maxPages)/pag.maxPages+1}"/>">
+                                <a href="${pageContext.request.contextPath}/topics/${topic.id}?page= <fmt:formatNumber value="${(topic.postCount - topic.postCount%pag.pageSize)/pag.pageSize}"/>#${topic.lastPost.id}">
                                     <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif" alt="Последнее сообщение"/>
                                 </a>
                             </c:otherwise>
