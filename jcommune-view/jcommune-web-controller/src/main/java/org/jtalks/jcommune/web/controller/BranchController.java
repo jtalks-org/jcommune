@@ -112,7 +112,7 @@ public final class BranchController {
      * @return {@code ModelAndView} with topics list and vars for pagination
      */
     @RequestMapping(value = "/topics/recent", method = RequestMethod.GET)
-    public ModelAndView recentTopicsPage(@RequestParam(value = PAGE, required = false) Integer page,
+    public ModelAndView recentTopicsPage(@RequestParam(value = PAGE, defaultValue = "1", required = false) Integer page,
                                          HttpSession session) {
 
         DateTime lastLogin = (DateTime) session.getAttribute("lastlogin");
