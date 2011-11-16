@@ -1,4 +1,4 @@
-﻿﻿html {
+﻿html {
     height: 100%;
     background: url(../images/pattern.jpg);
 }
@@ -136,11 +136,10 @@ a.heading:hover {
 }
 
 .nav_bottom {
-	float: right;
-	padding-top: 5px;
-	font-size: 11px;
+    float: right;
+    padding-top: 5px;
+    font-size: 11px;
 }
-
 
 /*Forum Header */
 .forum_header_table {
