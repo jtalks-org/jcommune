@@ -38,7 +38,6 @@
                     <td>
 
                         <spring:message code="label.email"/>
-                        <span class="small"><spring:message code="label.tip.email"/></span>
 
                     </td>
                     <td>
