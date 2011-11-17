@@ -138,7 +138,7 @@
                                 <c:if test="${topic.postCount % pag.pageSize == 0}">
                                     <c:set var="additionalPage" value="${0}"/>
                                 </c:if>
-                                <a href="${pageContext.request.contextPath}/topics/${topic.id}?page=<fmt:formatNumber value="${topic.postCount div pag.pageSize + additionalPage}" maxFractionDigits="0"/>#${topic.lastPost.id}">
+                                <a href="${pageContext.request.contextPath}/topics/${topic.id}?page=<fmt:formatNumber value="${(topic.postCount - (topic.postCount mod pag.pageSize)) div pag.pageSize + additionalPage}"/>#${topic.lastPost.id}">
                                     <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
                                          alt="Последнее сообщение"/>
                                 </a>
