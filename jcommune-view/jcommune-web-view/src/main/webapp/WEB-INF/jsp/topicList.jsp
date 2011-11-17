@@ -125,12 +125,12 @@
                            href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
                             <c:out value="${topic.lastPost.userCreated.username}"/></a>
                         <c:choose>
-                            <c:when test="${pag.pageSize > topic.postCount}">
+                            <c:when test="${pag.pageSize >= topic.postCount}">
                                 <a href="${pageContext.request.contextPath}/topics/${topic.id}#${topic.lastPost.id}"><img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
                                                  alt="Последнее сообщение"/></a>
                             </c:when>
                             <c:otherwise>
-                                <a href="${pageContext.request.contextPath}/topics/${topic.id}?page= <fmt:formatNumber value="${(topic.postCount - topic.postCount%pag.pageSize)/pag.pageSize}"/>#${topic.lastPost.id}">
+                                <a href="${pageContext.request.contextPath}/topics/${topic.id}?page=<fmt:formatNumber value="${topic.postCount div pag.pageSize +1}" maxFractionDigits="0"/>#${topic.lastPost.id}">
                                     <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif" alt="Последнее сообщение"/>
                                 </a>
                             </c:otherwise>
