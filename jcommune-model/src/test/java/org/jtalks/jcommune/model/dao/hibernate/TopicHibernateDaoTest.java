@@ -156,14 +156,12 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
     @Test
     public void testGetAllTopicsPastLastDay() {
-        int start = 1;
-        int max = 2;
         createAndSaveTopicList(5);
         DateTime lastLogin = new DateTime().minusDays(1);
 
-        List<Topic> result = dao.getAllTopicsPastLastDay(start, max, lastLogin);
+        List<Topic> result = dao.getAllTopicsPastLastDay(lastLogin);
 
-        assertEquals(result.size(), max);
+        assertEquals(result.size(), 5);
     }    
        
 }

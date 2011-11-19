@@ -34,14 +34,17 @@
     <div class="all_forums">
         <h2><a class="heading" href="#"><c:out value="${recent}"/></a></h2>
 
-        <div class="forum_misc_info">
-
-            <span class="nav_top">На страницу: 1, <a href="#">2</a> <a href="#">След.</a></span>
-        </div>
-        <a class="forum_top_right_link" href="#">Отметить все темы как прочтенные</a>
+        <jtalks:display uri="" pagination="${pag}" list="${topics}">
+        <nobr>
+            <span class="nav_bottom">
+                <c:if test="${pag.maxPages>1}">
+                    <spring:message code="label.onPage"/>
+                </c:if>
+            </jtalks:display>
+            </span>
+        </nobr>
 
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-
 
         <!-- Начало группы форумов -->
         <div class="forum_header_table"> <!-- Шапка бранча -->
@@ -54,9 +57,9 @@
             </div>
         </div>
 
-
         <ul class="forum_table"> <!-- Список топиков -->
-            <c:forEach var="topic" items="${topics}">
+            <jtalks:display uri="" pagination="${pag}" numberLink="3" list="${topics}">
+            <c:forEach var="topic" items="${list}">
                 <li class="forum_row"> <!-- Топик -->
                     <div class="forum_icon"> <!-- Иконка с кофе -->
                         <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png"
@@ -115,58 +118,14 @@
         </ul>
 
         <!-- Конец группы форумов -->
-        <span class="nav_bottom"><spring:message code="label.onPage"/>
-                <c:if test="${maxPages > 1}">
-
-                    <c:if test="${page > 2}">
-                        <c:url value="/topics/recent" var="first">
-                            <c:param name="page" value="1"/>
-                        </c:url>
-                        <a href='<c:out value="${first}" />' class="pn next"><spring:message
-                                code="pagination.first"/></a>...
-                    </c:if>
-
-                    <c:choose>
-                        <c:when test="${page > 1}">
-                            <c:set var="begin" value="${page - 1}"/>
-                        </c:when>
-                        <c:otherwise>
-                            <c:set var="begin" value="1"/>
-                        </c:otherwise>
-                    </c:choose>
-                    <c:choose>
-                        <c:when test="${page + 1 < maxPages}">
-                            <c:set var="end" value="${page + 1}"/>
-                        </c:when>
-                        <c:otherwise>
-                            <c:set var="end" value="${maxPages}"/>
-                        </c:otherwise>
-                    </c:choose>
-
-                    <c:forEach begin="${begin}" end="${end}" step="1" varStatus="i">
-                        <c:choose>
-                            <c:when test="${page == i.index}">
-                                <span>${i.index}</span>
-                            </c:when>
-                            <c:otherwise>
-                                <c:url value="/topics/recent" var="url">
-                                    <c:param name="page" value="${i.index}"/>
-                                </c:url>
-                                <a href='<c:out value="${url}" />'>${i.index}</a>
-                            </c:otherwise>
-                        </c:choose>
-                    </c:forEach>
-
-                    <c:if test="${page + 2 < maxPages+1}">
-                        <c:url value="/topics/recent" var="last">
-                            <c:param name="page" value="${maxPages}"/>
-                        </c:url>
-                        ...<a href='<c:out value="${last}"/>' class="pn next"><spring:message code="pagination.last"/></a>
-                    </c:if>
-
+        <nobr>
+            <span class="nav_bottom">
+                <c:if test="${pag.maxPages>1}">
+                    <spring:message code="label.onPage"/>
                 </c:if>
+            </jtalks:display>
             </span>
-
+        </nobr>
 
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 

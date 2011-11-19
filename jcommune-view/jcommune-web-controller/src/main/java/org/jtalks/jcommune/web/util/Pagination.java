@@ -41,7 +41,7 @@ public class Pagination {
      */
     public Pagination(Integer page, User currentUser, int itemsCount) {
         this.page = page;
-        this.pageSize = currentUser == null ? Integer.valueOf(defaultPageSize) :
+        this.pageSize = currentUser == null ? defaultPageSize :
                 PageSize.valueOf(currentUser.getPageSize()).getSize();
         this.itemsCount = itemsCount;
     }

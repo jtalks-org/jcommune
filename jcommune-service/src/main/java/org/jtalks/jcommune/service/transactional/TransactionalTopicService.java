@@ -140,11 +140,11 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    public List<Topic> getAllTopicsPastLastDay(int start, int max, DateTime lastLogin) {
+    public List<Topic> getAllTopicsPastLastDay(DateTime lastLogin) {
         if (lastLogin == null) {
             lastLogin = new DateTime().minusDays(1);
         }
-        return this.getDao().getAllTopicsPastLastDay(start, max, lastLogin);
+        return this.getDao().getAllTopicsPastLastDay(lastLogin);
     }
 
     /**

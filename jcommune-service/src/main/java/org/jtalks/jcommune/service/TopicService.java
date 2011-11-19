@@ -70,12 +70,10 @@ public interface TopicService extends EntityService<Topic> {
     /**
      * Get topic past last 24 hour.
      *
-     * @param start     start index of topic
-     * @param max       number of topics
      * @param lastLogin last login date
      * @return list of {@code Topic} objects with size {@code max}
      */
-    List<Topic> getAllTopicsPastLastDay(int start, int max, DateTime lastLogin);
+    List<Topic> getAllTopicsPastLastDay(DateTime lastLogin);
 
     /**
      * Get number of topics in branch.

@@ -71,12 +71,11 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<Topic> getAllTopicsPastLastDay(int start, int max, DateTime lastLogin) {
+    public List<Topic> getAllTopicsPastLastDay(DateTime lastLogin) {
         DateTime time = lastLogin.toDateTime();
-        return getSession().createQuery("FROM Topic WHERE modificationDate > :maxModDate")
+        return (List<Topic>) getSession().createQuery("FROM Topic WHERE modificationDate > :maxModDate " +
+                "ORDER BY modificationDate DESC")
                 .setParameter("maxModDate", time)
-                .setFirstResult(start)
-                .setMaxResults(max)
                 .list();
     }
 }
