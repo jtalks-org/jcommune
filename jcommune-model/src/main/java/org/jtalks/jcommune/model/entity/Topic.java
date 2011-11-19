@@ -76,6 +76,7 @@ public class Topic extends Entity {
      */
     public void addPost(Post post) {
         post.setTopic(this);
+        updateModificationDate();
         this.posts.add(post);
     }
 
