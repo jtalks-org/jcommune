@@ -45,6 +45,7 @@ public class BranchTest {
         topics.add(second);
         topics.add(third);
         branch.setTopics(topics);
+        branch.setTopicCount(topics.size());
     }
 
     @Test
@@ -69,5 +70,21 @@ public class BranchTest {
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testNextTopicRetrievalError() {
         branch.getPreviousTopic(new Topic(null, null));
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        BranchTest test = new BranchTest();
+        test.setUp();
+        test.testLastUpdatedTopic();
+    }
+
+    @Test
+    public void testLastUpdatedTopic() throws InterruptedException {
+        Thread.sleep(25);
+        second.addPost(new Post());
+        System.out.println(first.getModificationDate());
+        System.out.println(second.getModificationDate());
+        System.out.println(third.getModificationDate());
+        assertEquals(branch.getLastUpdatedTopic(), second);
     }
 }

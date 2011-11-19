@@ -30,7 +30,6 @@ public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch>
      * {@inheritDoc}
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<Branch> getBranchesInSection(Long sectionId) {
         return getSession().createQuery("from Branch b where b.section = ?")
                 .setCacheable(true)

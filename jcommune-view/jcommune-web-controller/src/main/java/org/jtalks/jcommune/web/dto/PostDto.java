@@ -22,10 +22,10 @@ import javax.validation.constraints.Size;
  * DTO for {@link Post} objects. Used for validation and binding to form.
  */
 public class PostDto {
-    private static final int MAX_POST_LENGTH = 2000;
+
 
     @NotBlank
-    @Size(min = 5, max = MAX_POST_LENGTH)
+    @Size(min = Post.MIN_LENGTH, max = Post.MAX_LENGTH)
     private String bodyText;
     private long id;
     private long topicId;
@@ -65,7 +65,7 @@ public class PostDto {
     public void setId(long id) {
         this.id = id;
     }
-    
+
     /**
      * Get post content.
      *

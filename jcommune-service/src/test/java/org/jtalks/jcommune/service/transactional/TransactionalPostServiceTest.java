@@ -132,14 +132,14 @@ public class TransactionalPostServiceTest {
         String newBody = "new body";
         Post post = new Post(user, "content");
         post.setId(POST_ID);
-        
+        Topic topic = new Topic(user, "title");
+        topic.addPost(post);
         when(postDao.isExist(POST_ID)).thenReturn(true);      
         when(postService.get(POST_ID)).thenReturn(post); 
         
         postService.updatePost(POST_ID,newBody);
         
         assertEquals(post.getPostContent(), newBody);
-        
         verify(postDao).get(POST_ID);
         verify(postDao).update(post);        
     }

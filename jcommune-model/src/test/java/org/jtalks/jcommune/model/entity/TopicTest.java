@@ -16,6 +16,7 @@ package org.jtalks.jcommune.model.entity;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotSame;
+import static org.testng.Assert.assertTrue;
 
 import org.joda.time.DateTime;
 import org.testng.annotations.BeforeMethod;
@@ -25,25 +26,25 @@ public class TopicTest {
     private Topic topic;
     Post post1 = new Post();
     Post post2 = new Post();
-    
+
     @BeforeMethod
     public void setUp() {
         topic = new Topic(new User(), "title");
         topic.addPost(post1);
         topic.addPost(post2);
     }
-    
+
     @Test
     public void getFirstPost() {
         Post firstPost = topic.getFirstPost();
-        
+
         assertEquals(firstPost, post1);
     }
 
     @Test
     public void getLastPost() {
         Post lastPost = topic.getLastPost();
-        
+
         assertEquals(lastPost, post2);
     }
 
@@ -53,39 +54,57 @@ public class TopicTest {
     }
 
     @Test
-    public void removePost() {
+    public void addPost() throws InterruptedException {
         DateTime prevDate = topic.getModificationDate();
-        
+        Thread.sleep(25); // milisecond precise is a kind of fiction
+        topic.addPost(new Post());
+
+        assertTrue(topic.getModificationDate().isAfter(prevDate));
+    }
+
+    @Test
+    public void updatePost() throws InterruptedException {
+        DateTime prevDate = topic.getModificationDate();
+        Thread.sleep(25); // milisecond precise is a kind of fiction
+        post1.updateModificationDate();
+
+        assertTrue(topic.getModificationDate().isAfter(prevDate));
+    }
+
+    @Test
+    public void removePost() throws InterruptedException {
+        DateTime prevDate = topic.getModificationDate();
+        Thread.sleep(25); // milisecond precise is a kind of fiction
         topic.removePost(post1);
-        
+
         assertEquals(topic.getPostCount(), 1);
-        assertNotSame(topic.getModificationDate(), prevDate);
+        assertTrue(topic.getModificationDate().isAfter(prevDate));
     }
 
     @Test
     public void updateModificationDate() {
         DateTime prevDate = topic.getModificationDate();
-        
+
         DateTime modDate = topic.updateModificationDate();
-        
+
         assertNotSame(modDate, prevDate);
     }
-    
+
     @Test
     public void testSetStickedResetWeight() {
         topic.setTopicWeight(10);
-        
+
         topic.setSticked(false);
-        
+
         assertEquals(topic.getTopicWeight(), 0);
     }
-    
+
     @Test
     public void testSetStickedNotResetWeight() {
         topic.setTopicWeight(10);
-        
+
         topic.setSticked(true);
-        
+
         assertEquals(topic.getTopicWeight(), 10);
     }
 }
