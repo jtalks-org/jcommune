@@ -83,6 +83,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         Topic topic = get(topicId);
         Post answer = new Post(currentUser, answerBody);
         topic.addPost(answer);
+        topic.updateModificationDate();
         this.getDao().update(topic);
 
         securityService.grantToCurrentUser().role(SecurityConstants.ROLE_ADMIN).admin().on(answer);
@@ -139,11 +140,11 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    public List<Topic> getAllTopicsPastLastDay(int start, int max, DateTime lastLogin) {
+    public List<Topic> getAllTopicsPastLastDay(DateTime lastLogin) {
         if (lastLogin == null) {
             lastLogin = new DateTime().minusDays(1);
         }
-        return this.getDao().getAllTopicsPastLastDay(start, max, lastLogin);
+        return this.getDao().getAllTopicsPastLastDay(lastLogin);
     }
 
     /**

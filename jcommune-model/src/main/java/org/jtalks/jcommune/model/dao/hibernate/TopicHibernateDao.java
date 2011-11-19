@@ -33,6 +33,7 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public List<Topic> getTopicsInBranch(Long branchId) {
         return getSession().getNamedQuery("getAllTopicsInBranch")
                 .setCacheable(true)
@@ -69,12 +70,12 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      * {@inheritDoc}
      */
     @Override
-    public List<Topic> getAllTopicsPastLastDay(int start, int max, DateTime lastLogin) {
+    @SuppressWarnings("unchecked")
+    public List<Topic> getAllTopicsPastLastDay(DateTime lastLogin) {
         DateTime time = lastLogin.toDateTime();
-        return getSession().createQuery("FROM Topic WHERE modificationDate > :maxModDate")
+        return (List<Topic>) getSession().createQuery("FROM Topic WHERE modificationDate > :maxModDate " +
+                "ORDER BY modificationDate DESC")
                 .setParameter("maxModDate", time)
-                .setFirstResult(start)
-                .setMaxResults(max)
                 .list();
     }
 }

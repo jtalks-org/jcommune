@@ -33,6 +33,7 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public List<Post> getPostRangeInTopic(long topicId, int start, int max) {
         return getSession().getNamedQuery("getAllPostsInTopic")
                 .setCacheable(true)

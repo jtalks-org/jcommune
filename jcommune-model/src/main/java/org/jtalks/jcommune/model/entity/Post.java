@@ -107,7 +107,7 @@ public class Post extends Entity {
      *
      * @return new modification date
      */
-    public DateTime updateModificationDate() {
+    public DateTime updateModificationDate()  {
         this.modificationDate = new DateTime();
         this.topic.updateModificationDate();
         return this.modificationDate;

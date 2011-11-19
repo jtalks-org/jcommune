@@ -89,22 +89,22 @@
                         </div>
                         <div class="forum_last_message">
                             <c:if test="${branch.topicCount>0}">
-                                <span><jtalks:format value="${branch.lastUpdatedTopic.lastPost.creationDate}"/></span>
+                                <span><jtalks:format value="${branch.lastTopic.lastPost.creationDate}"/></span>
                                 <br/>
-                                <a href="${pageContext.request.contextPath}/users/${branch.lastUpdatedTopic.lastPost.userCreated.encodedUsername}">${branch.lastUpdatedTopic.lastPost.userCreated.username}</a>
+                                <a href="${pageContext.request.contextPath}/users/${branch.lastTopic.lastPost.userCreated.encodedUsername}">${branch.lastTopic.lastPost.userCreated.username}</a>
                                 <c:choose>
-                                    <c:when test="${pageSize >= branch.lastUpdatedTopic.postCount}">
-                                        <a href="${pageContext.request.contextPath}/topics/${branch.lastUpdatedTopic.id}#${branch.lastUpdatedTopic.lastPost.id}"><img
+                                    <c:when test="${pageSize >= branch.lastTopic.postCount}">
+                                        <a href="${pageContext.request.contextPath}/topics/${branch.lastTopic.id}#${branch.lastTopic.lastPost.id}"><img
                                                 src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif" alt="Последнее сообщение"/></a>
                                     </c:when>
                                     <c:otherwise>
-                                        <c:if test="${branch.lastUpdatedTopic.postCount % pageSize > 0}">
+                                        <c:if test="${branch.lastTopic.postCount % pageSize > 0}">
                                             <c:set var="additionalPage" value="${1}"/>
                                         </c:if>
-                                        <c:if test="${branch.lastUpdatedTopic.postCount % pageSize == 0}">
+                                        <c:if test="${branch.lastTopic.postCount % pageSize == 0}">
                                             <c:set var="additionalPage" value="${0}"/>
                                         </c:if>
-                                        <a href="${pageContext.request.contextPath}/topics/${branch.lastUpdatedTopic.id}?page=<fmt:formatNumber value="${(branch.lastUpdatedTopic.postCount - (branch.lastUpdatedTopic.postCount mod pageSize)) div pageSize + additionalPage}"/>#${branch.lastUpdatedTopic.lastPost.id}">
+                                        <a href="${pageContext.request.contextPath}/topics/${branch.lastTopic.id}?page=<fmt:formatNumber value="${(branch.lastTopic.postCount - (branch.lastTopic.postCount mod pageSize)) div pageSize + additionalPage}"/>#${branch.lastTopic.lastPost.id}">
                                             <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif" alt="Последнее сообщение"/>
                                         </a>
                                     </c:otherwise>

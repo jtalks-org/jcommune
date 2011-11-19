@@ -48,6 +48,8 @@ public abstract class AbstractHibernateChildRepository<T extends Entity>
      * 
      * @return type of entity
      */
+
+    @SuppressWarnings("unchecked")
     protected Class<T> getType() {
         return (Class<T>) ((ParameterizedType) getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[0];
@@ -87,6 +89,7 @@ public abstract class AbstractHibernateChildRepository<T extends Entity>
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public T get(Long id) {
         return (T) getSession().get(type, id);
     }

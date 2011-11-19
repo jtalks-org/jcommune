@@ -119,14 +119,15 @@ public final class BranchController {
         int topicsCount = topicService.getTopicsPastLastDayCount(lastLogin);
         User currentUser = securityService.getCurrentUser();
 
-        Pagination pag = new Pagination(page, currentUser, topicsCount);
+        Pagination pag = new Pagination(page, currentUser, topicsCount, true);
 
-        List<Topic> topics = topicService.getAllTopicsPastLastDay(pag.getStart(), pag.getPageSize(), lastLogin);
+        List<Topic> topics = topicService.getAllTopicsPastLastDay(lastLogin);
 
         return new ModelAndView("recent")
                 .addObject("topics", topics)
                 .addObject("maxPages", pag.getMaxPages())
                 .addObject(PAGE, pag.getPage())
+                .addObject("pag", pag)
                 .addObject("breadcrumbList",
                         breadcrumbBuilder.getRecentBreadcrumb());
     }

@@ -179,36 +179,32 @@ public class TransactionalTopicServiceTest {
 
     @Test
     public void testGetAllTopicsPastLastDay() throws NotFoundException {
-        int start = 1;
-        int max = 2;
         DateTime now = new DateTime();
         List<Topic> expectedList = new ArrayList<Topic>();
         expectedList.add(new Topic(user, "title"));
         expectedList.add(new Topic(user, "title"));
-        when(topicDao.getAllTopicsPastLastDay(start, max, now)).thenReturn(expectedList);
+        when(topicDao.getAllTopicsPastLastDay(now)).thenReturn(expectedList);
 
-        List<Topic> topics = topicService.getAllTopicsPastLastDay(start, max, now);
+        List<Topic> topics = topicService.getAllTopicsPastLastDay(now);
 
         assertNotNull(topics);
-        assertEquals(topics.size(), max);
-        verify(topicDao).getAllTopicsPastLastDay(start, max, now);
+        assertEquals(topics.size(), 2);
+        verify(topicDao).getAllTopicsPastLastDay(now);
     }
 
     @Test
     public void testGetAllTopicsPastLastDayNullLastLoginDate() {
-        int start = 1;
-        int max = 2;
         List<Topic> expectedList = new ArrayList<Topic>();
         expectedList.add(new Topic(user, "title"));
         expectedList.add(new Topic(user, "title"));
         ArgumentCaptor<DateTime> captor = ArgumentCaptor.forClass(DateTime.class);
-        when(topicDao.getAllTopicsPastLastDay(eq(start), eq(max), any(DateTime.class))).thenReturn(expectedList);
+        when(topicDao.getAllTopicsPastLastDay(any(DateTime.class))).thenReturn(expectedList);
 
-        List<Topic> topics = topicService.getAllTopicsPastLastDay(start, max, null);
+        List<Topic> topics = topicService.getAllTopicsPastLastDay(null);
 
         assertNotNull(topics);
-        assertEquals(topics.size(), max);
-        verify(topicDao).getAllTopicsPastLastDay(eq(start), eq(max), captor.capture());
+        assertEquals(topics.size(), 2);
+        verify(topicDao).getAllTopicsPastLastDay(captor.capture());
         int yesterday = new DateTime().minusDays(1).getDayOfYear();
         assertEquals(captor.getValue().getDayOfYear(), yesterday);
     }

@@ -91,17 +91,14 @@ public class Branch extends Entity {
 
 
     /**
-     * Get the branch last updated topic.
-     * Updates include post addition/update/removal or changes in the topic itself.
-     * @return last topic or null if there are no topics in the branch
+     * Get the branch last topic.
+     *
+     * @return last topic
      */
-    public Topic getLastUpdatedTopic() {
-        if (topics.isEmpty()){
-            return null;
-        }
+    public Topic getLastTopic() {
         int lastTopicIndex = 0;
         for(int i=1; i < topicCount; i++){
-            if(topics.get(i).getModificationDate().isAfter(topics.get(lastTopicIndex).getModificationDate())){
+            if(topics.get(i).getLastPost().getCreationDate().isAfter(topics.get(lastTopicIndex).getLastPost().getCreationDate())){
                 lastTopicIndex = i;
             }
         }
