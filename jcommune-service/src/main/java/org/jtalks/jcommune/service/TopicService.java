@@ -61,13 +61,11 @@ public interface TopicService extends EntityService<Topic> {
      * Get posts range from branch.
      *
      * @param branchId branch id from which we obtain topics
-     * @param start    start index of topic
-     * @param max      number of topics
      * @return list of {@code Topic} objects with size {@code max}
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
      */
-    List<Topic> getTopicRangeInBranch(long branchId, int start, int max) throws NotFoundException;
+    List<Topic> getTopicsInBranch(long branchId) throws NotFoundException;
 
     /**
      * Get topic past last 24 hour.

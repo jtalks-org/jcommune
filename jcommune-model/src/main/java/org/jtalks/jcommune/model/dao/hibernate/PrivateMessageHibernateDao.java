@@ -36,7 +36,6 @@ public class PrivateMessageHibernateDao extends
      * {@inheritDoc}
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<PrivateMessage> getAllFromUser(User userFrom) {
         return getSession().getNamedQuery("getAllFromUser").setCacheable(true)
                 .setParameter(STATUS, PrivateMessageStatus.DRAFT)
@@ -47,7 +46,6 @@ public class PrivateMessageHibernateDao extends
      * {@inheritDoc}
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<PrivateMessage> getAllForUser(User userTo) {
         return getSession().getNamedQuery("getAllToUser").setCacheable(true)
                 .setParameter(STATUS, PrivateMessageStatus.DRAFT)
@@ -58,7 +56,6 @@ public class PrivateMessageHibernateDao extends
      * {@inheritDoc}
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<PrivateMessage> getDraftsFromUser(User userFrom) {
         return getSession().getNamedQuery("getDraftsFromUser")
                 .setCacheable(true)

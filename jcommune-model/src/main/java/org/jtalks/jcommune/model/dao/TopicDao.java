@@ -34,11 +34,9 @@ public interface TopicDao extends ChildRepository<Topic> {
      * Get posts range from branch.
      *
      * @param branchId branch id from which we obtain topics
-     * @param start    start index of topic
-     * @param max      number of topics
      * @return list of {@code Topic} objects with size {@code max}
      */
-    List<Topic> getTopicRangeInBranch(Long branchId, int start, int max);
+    List<Topic> getTopicsInBranch(Long branchId);
 
     /**
      * Get number of topics in branch.
