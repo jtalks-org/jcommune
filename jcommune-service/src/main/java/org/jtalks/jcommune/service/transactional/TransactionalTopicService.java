@@ -83,7 +83,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         Topic topic = get(topicId);
         Post answer = new Post(currentUser, answerBody);
         topic.addPost(answer);
-        topic.updateModificationDate();
         this.getDao().update(topic);
 
         securityService.grantToCurrentUser().role(SecurityConstants.ROLE_ADMIN).admin().on(answer);
