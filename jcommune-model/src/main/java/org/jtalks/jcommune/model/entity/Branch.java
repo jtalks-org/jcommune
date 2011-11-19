@@ -98,7 +98,7 @@ public class Branch extends Entity {
     public Topic getLastTopic() {
         int lastTopicIndex = 0;
         for(int i=1; i < topicCount; i++){
-            if(topics.get(i).getCreationDate().isAfter(topics.get(lastTopicIndex).getCreationDate())){
+            if(topics.get(i).getLastPost().getCreationDate().isAfter(topics.get(lastTopicIndex).getLastPost().getCreationDate())){
                 lastTopicIndex = i;
             }
         }
