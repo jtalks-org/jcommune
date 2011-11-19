@@ -49,6 +49,7 @@
         <!-- Начало группы форумов -->
         <div class="forum_header_table"> <!-- Шапка бранча -->
             <div class="forum_header">
+                <span class="forum_header_icon"></span>
                 <span class="forum_header_topics"><spring:message code="label.branch.header.topics"/></span>
                 <span class="forum_header_answers"><spring:message code="label.branch.header.answers"/></span>
                 <span class="forum_header_author"><spring:message code="label.branch.header.author"/></span>
