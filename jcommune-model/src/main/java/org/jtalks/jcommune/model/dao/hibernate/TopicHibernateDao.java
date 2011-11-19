@@ -34,12 +34,10 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<Topic> getTopicRangeInBranch(Long branchId, int start, int max) {
+    public List<Topic> getTopicsInBranch(Long branchId) {
         return getSession().getNamedQuery("getAllTopicsInBranch")
                 .setCacheable(true)
                 .setLong("branchId", branchId)
-                .setFirstResult(start)
-                .setMaxResults(max)
                 .list();
     }
 

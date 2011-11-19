@@ -119,14 +119,12 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
     @Test
     public void testGetTopicRangeInBranch() {
-        int start = 1;
-        int max = 2;
         List<Topic> persistedTopics = createAndSaveTopicList(5);
         long branchId = persistedTopics.get(0).getBranch().getId();
 
-        List<Topic> topics = dao.getTopicRangeInBranch(branchId, start, max);
+        List<Topic> topics = dao.getTopicsInBranch(branchId);
 
-        assertEquals(max, topics.size(), "Unexpected list size");
+        assertEquals(5, topics.size());
         assertEquals(branchId, topics.get(0).getBranch().getId(), "Incorrect branch");
     }
 
