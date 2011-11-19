@@ -71,6 +71,6 @@ public class TransactionalBranchServiceTest {
     @Test(expectedExceptions = {NotFoundException.class})
     public void testGetBrancesInSectionFail() throws NotFoundException {
        when(sectionDao.isExist(Matchers.<Long>any())).thenReturn(false);
-       branchService.get(BRANCH_ID);
+       branchService.getBranchesInSection(BRANCH_ID);
     }
 }

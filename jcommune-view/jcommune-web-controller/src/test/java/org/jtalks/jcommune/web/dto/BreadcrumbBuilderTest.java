@@ -59,7 +59,8 @@ public class BreadcrumbBuilderTest {
         topic.setId(ID);
         branch.addTopic(topic);
 
-        post = new Post(topic);
+        post = new Post(user, "");
+        topic.addPost(post);
         post.setId(ID);
     }
 

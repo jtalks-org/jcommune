@@ -64,16 +64,6 @@ public class Post extends Entity {
     }
 
     /**
-     * Constructor used only for the input data in the testGetPostBreadcrumb method
-     * org.jtalks.jcommune.web.dto.BreadcrumbBuilderTest class.
-     *
-     * @param topic to be used as input data
-     */
-    public Post(Topic topic) {
-        this.topic = topic;
-    }
-
-    /**
      * @return the postDate
      */
     public DateTime getCreationDate() {
