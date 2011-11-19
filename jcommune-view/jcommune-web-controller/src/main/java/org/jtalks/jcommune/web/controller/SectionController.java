@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Section;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SectionService;
@@ -31,7 +30,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  * Displays to user page contains section list with related branch lists

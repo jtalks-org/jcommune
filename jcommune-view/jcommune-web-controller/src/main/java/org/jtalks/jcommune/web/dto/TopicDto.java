@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 
 import javax.validation.constraints.Size;
@@ -27,14 +28,12 @@ import javax.validation.constraints.Size;
  */
 public class TopicDto {
 
-    private static final int MAX_POST_LENGTH = 2000;
-
     @NotBlank
     @Size(min = Topic.MIN_NAME_SIZE, max = Topic.MAX_NAME_SIZE)
     private String topicName;
 
     @NotBlank
-    @Size(min = 5, max = MAX_POST_LENGTH)
+    @Size(min = Post.MIN_LENGTH, max = Post.MAX_LENGTH)
     private String bodyText;
 
     private int topicWeight;
