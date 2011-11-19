@@ -430,7 +430,6 @@ a.last_message_user {
     text-align: center;
     line-height: 0.8;
     text-decoration: none;
-    background:;
 }
 
 .forum_header_menu:hover {
@@ -473,7 +472,7 @@ a.last_message_user {
 
 .answer_page .button,
 .pm_page .button {
-    border: 1px solid grey;
+    border: 1px solid gray;
 !important
 }
 
