@@ -97,7 +97,7 @@ public class BranchControllerTest {
         int startIndex = page * pageSize - pageSize;
         //set expectations
         when(topicService.getTopicsPastLastDayCount(now)).thenReturn(10);
-        when(topicService.getAllTopicsPastLastDay( now)).thenReturn(new ArrayList<Topic>());
+        when(topicService.getAllTopicsPastLastDay(now)).thenReturn(new ArrayList<Topic>());
 
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("lastlogin", now);
@@ -106,7 +106,7 @@ public class BranchControllerTest {
         ModelAndView mav = controller.recentTopicsPage(page, session);
 
         //check expectations
-        verify(topicService).getAllTopicsPastLastDay( now);
+        verify(topicService).getAllTopicsPastLastDay(now);
         verify(topicService).getTopicsPastLastDayCount(now);
 
         //check result
