@@ -16,6 +16,7 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Section;
 import org.jtalks.jcommune.service.SectionService;
+import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
@@ -25,6 +26,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpSession;
+import java.security.Security;
 import java.util.ArrayList;
 
 import static org.mockito.Mockito.*;
@@ -36,6 +38,7 @@ import static org.testng.Assert.assertEquals;
  * @author Alexandre Teterin
  */
 public class SectionControllerTest {
+    private SecurityService securityService;
     private SectionService sectionService;
     private SectionController controller;
     private BreadcrumbBuilder breadcrumbBuilder;
@@ -43,9 +46,10 @@ public class SectionControllerTest {
     @BeforeMethod
     public void init() {
         sectionService = mock(SectionService.class);
+        securityService = mock(SecurityService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
         ForumStatisticsProvider statisticsProvider = mock(ForumStatisticsProvider.class);
-        controller = new SectionController(sectionService, breadcrumbBuilder, statisticsProvider, mock(HttpSession.class));
+        controller = new SectionController(securityService, sectionService, breadcrumbBuilder, statisticsProvider, mock(HttpSession.class));
     }
 
     @Test
@@ -66,6 +70,7 @@ public class SectionControllerTest {
 
         //check result
         assertViewName(mav, "sectionList");
+        assertModelAttributeAvailable(mav, "pageSize");
         assertModelAttributeAvailable(mav, "sectionList");
         assertModelAttributeAvailable(mav, "breadcrumbList");
         assertModelAttributeAvailable(mav, "messagesCount");

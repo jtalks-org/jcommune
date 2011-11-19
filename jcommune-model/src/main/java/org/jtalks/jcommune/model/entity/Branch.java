@@ -89,6 +89,17 @@ public class Branch extends Entity {
         }
     }
 
+
+    /**
+     * Get the branch last topic.
+     *
+     * @return last topic
+     */
+    public Topic getLastTopic() {
+        return topics.get(getTopics().size() - 1);
+    }
+
+
     /**
      * Creates the Branch instance with required fields.
      *

@@ -14,11 +14,15 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Section;
+import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SectionService;
+import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
+import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  * Displays to user page contains section list with related branch lists
@@ -39,6 +44,7 @@ import javax.servlet.http.HttpSession;
 @Controller
 public final class SectionController {
 
+    private SecurityService securityService;
     private SectionService sectionService;
     private ForumStatisticsProvider forumStaticsProvider;
     private BreadcrumbBuilder breadcrumbBuilder;
@@ -47,17 +53,19 @@ public final class SectionController {
     /**
      * Constructor creates MVC controller with specified SectionService
      *
+     * @param securityService         autowired object from Spring Context
      * @param sectionService         autowired object from Spring Context
      * @param breadcrumbBuilder      the object which provides actions on
-     *                               {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
+ *                               {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      * @param forumStaticsProvider   autowired object from Spring Context which provides methods for getting
-     *                               forum statistic information
+*                               forum statistic information
      * @param session                http session that will be initiated
      */
     @Autowired
-    public SectionController(SectionService sectionService, BreadcrumbBuilder breadcrumbBuilder,
+    public SectionController(SecurityService securityService, SectionService sectionService, BreadcrumbBuilder breadcrumbBuilder,
                              ForumStatisticsProvider forumStaticsProvider,
                              HttpSession session) {
+        this.securityService = securityService;
         this.sectionService = sectionService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.forumStaticsProvider = forumStaticsProvider;
@@ -79,8 +87,10 @@ public final class SectionController {
         // that initializes the session right now.
         // If a request from the user is not the first one this method will have no effect.
         session.getId();
-        
+        User currentUser = securityService.getCurrentUser();
+        Pagination pag = new Pagination(1, currentUser, 1, false);
         return new ModelAndView("sectionList")
+                .addObject("pageSize", pag.getPageSize())
                 .addObject("sectionList", sectionService.getAll())
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
                 .addObject("messagesCount", forumStaticsProvider.getPostsOnForumCount())
