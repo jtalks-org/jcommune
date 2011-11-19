@@ -130,7 +130,8 @@ public class TransactionalPostServiceTest {
     @Test
     void updatePost() throws NotFoundException {
         String newBody = "new body";
-        Post post = new Post(user, "content");
+        Topic topic = new Topic(user, "title");
+        Post post = new Post(topic);          
         post.setId(POST_ID);
         
         when(postDao.isExist(POST_ID)).thenReturn(true);      
