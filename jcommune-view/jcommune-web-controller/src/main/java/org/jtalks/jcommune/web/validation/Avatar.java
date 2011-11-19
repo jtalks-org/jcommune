@@ -46,7 +46,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *
  * @author Eugeny Batov
  */
-@ImageSize(size = 4096)
+@ImageSize(size = Avatar.MAX_AVATAR_SIZE)
 @ImageFormat(format = {ImageFormats.JPG, ImageFormats.PNG, ImageFormats.GIF}, message = "{avatar.wrong.format}")
 @Target({FIELD, ANNOTATION_TYPE})
 @Retention(RUNTIME)
@@ -54,23 +54,22 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 public @interface Avatar {
 
+    public static final int MAX_AVATAR_SIZE = 4096;
+
     /**
      * Message for display when validation fails.
-     *
      */
     String message() default "{avatar.wrong}";
 
     /**
      * Groups element that specifies the processing groups with which the
      * constraint declaration is associated.
-     *
      */
     Class<?>[] groups() default {};
 
     /**
      * Payload element that specifies the payload with which the the
      * constraint declaration is associated.
-     *
      */
     Class<? extends Payload>[] payload() default {};
 

@@ -42,6 +42,9 @@ public class Topic extends Entity {
     private Branch branch;
     private int views;
 
+    public static final int MIN_NAME_SIZE = 5;
+    public static final int MAX_NAME_SIZE = 255;
+
     /**
      * Used only by hibernate.
      */

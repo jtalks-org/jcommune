@@ -31,12 +31,14 @@ import java.util.List;
  */
 public class Paginator extends BodyTagSupport {
     private String uri;
-    private int numberLink = 3;
+    private int numberLink = DEFAULT_LINK_COUNT;
     private List list;
-    private Pagination pagination;
-    private static final String link = "<a href=\"%s?page=%d\">%d</a>      ";
+    private transient Pagination pagination;
+    private static final String LINK_PATTERN = "<a href=\"%s?page=%d\">%d</a>      ";
 
-    private static final Logger logger = LoggerFactory.getLogger(Paginator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Paginator.class);
+
+    public static final int DEFAULT_LINK_COUNT = 3;
 
     private static final long serialVersionUID = 1L;
 
@@ -82,9 +84,9 @@ public class Paginator extends BodyTagSupport {
     public int doEndTag() {
         JspWriter out = pageContext.getOut();
         try {
-            out.write(pagination.createPagingLink(numberLink, link, uri));
+            out.write(pagination.createPagingLink(numberLink, LINK_PATTERN, uri));
         } catch (IOException e) {
-            logger.error("There was an error writing formed links for paging!", e);
+            LOGGER.error("There was an error writing formed links for paging!", e);
         }
         return EVAL_PAGE;
     }

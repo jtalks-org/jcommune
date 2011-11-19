@@ -31,7 +31,7 @@ public class EditUserProfileDto extends UserDto {
 
     private String currentUserPassword;
 
-    @Length(min = 4, max = 20)
+    @Length(min = User.MIN_PASS_SIZE, max = User.MAX_PASS_SIZE)
     private String newUserPassword;
     private String newUserPasswordConfirm;
     private String language;
@@ -50,7 +50,7 @@ public class EditUserProfileDto extends UserDto {
      * Constructor which fills dto fields from user.
      * Fields {@link User#getFirstName()}, {@link User#getLastName()}, {@link User#getEmail() will be copied.
      *
-     * @param user - copying source
+     * @param user copying source
      */
     public EditUserProfileDto(User user) {
         this.setFirstName(user.getFirstName());

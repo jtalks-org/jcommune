@@ -30,7 +30,8 @@ public class Pagination {
     private int maxPages;
     private int itemsCount;
     private boolean pagingEnabled;
-    private int defaultPageSize = 50;
+
+    public static final int DEFAULT_PAGE_SIZE = 50;
 
     /**
      * Create instance.
@@ -41,7 +42,7 @@ public class Pagination {
      */
     public Pagination(Integer page, User currentUser, int itemsCount) {
         this.page = page;
-        this.pageSize = currentUser == null ? Integer.valueOf(defaultPageSize) :
+        this.pageSize = currentUser == null ? Integer.valueOf(DEFAULT_PAGE_SIZE) :
                 PageSize.valueOf(currentUser.getPageSize()).getSize();
         this.itemsCount = itemsCount;
     }
@@ -56,7 +57,7 @@ public class Pagination {
      */
     public Pagination(Integer page, User currentUser, int itemsCount, boolean pagingEnabled) {
         this.page = page;
-        this.pageSize = currentUser == null ? defaultPageSize :
+        this.pageSize = currentUser == null ? DEFAULT_PAGE_SIZE :
                 PageSize.valueOf(currentUser.getPageSize()).getSize();
         this.itemsCount = itemsCount;
         this.pagingEnabled = pagingEnabled;

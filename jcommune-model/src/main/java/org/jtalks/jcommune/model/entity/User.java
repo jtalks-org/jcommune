@@ -48,6 +48,12 @@ public class User extends Entity implements UserDetails {
     private String language = "ENGLISH";
     private String pageSize = "FIFTY";
 
+    public static final int MIN_NAME_SIZE = 4;
+    public static final int MAX_NAME_SIZE = 20;
+    public static final int MAX_LAST_NAME_SIZE = 255;
+    public static final int MIN_PASS_SIZE = 3;
+    public static final int MAX_PASS_SIZE = 20;
+
     private static final long serialVersionUID = 19981017L;
 
     /**

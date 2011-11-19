@@ -167,7 +167,7 @@ public class Post extends Entity {
         if (this.postContent.length() > ABBREVIATED_LENGTH) {
             int trimSize = ABBREVIATED_LENGTH - ABBREVIATION_SIGN.length();
             String shortContent = this.postContent.substring(0, trimSize);
-            shortContent = shortContent.substring(0, shortContent.lastIndexOf(" "));
+            shortContent = shortContent.substring(0, shortContent.lastIndexOf(' '));
             return shortContent + ABBREVIATION_SIGN;
         } else {
             return this.postContent;

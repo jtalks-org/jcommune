@@ -62,7 +62,9 @@ public final class SectionController {
      * @param session                http session that will be initiated
      */
     @Autowired
-    public SectionController(SecurityService securityService, SectionService sectionService, BreadcrumbBuilder breadcrumbBuilder,
+    public SectionController(SecurityService securityService,
+                             SectionService sectionService,
+                             BreadcrumbBuilder breadcrumbBuilder,
                              ForumStatisticsProvider forumStaticsProvider,
                              HttpSession session) {
         this.securityService = securityService;

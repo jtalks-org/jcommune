@@ -30,7 +30,7 @@ public class TopicDto {
 
 
     @NotBlank
-    @Size(min = 5, max = 255)
+    @Size(min = Topic.MIN_NAME_SIZE, max = Topic.MAX_NAME_SIZE)
     private String topicName;
 
     @NotBlank

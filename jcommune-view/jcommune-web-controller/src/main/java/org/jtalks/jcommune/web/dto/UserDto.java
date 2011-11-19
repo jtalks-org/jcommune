@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.jtalks.jcommune.model.entity.User;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -37,7 +38,7 @@ public abstract class UserDto {
     private String email;
     private String firstName;
     private String lastName;
-    @Size(max = 255, message = "{validation.signature.length}")
+    @Size(max = User.MAX_LAST_NAME_SIZE, message = "{validation.signature.length}")
     private String signature;
     private String language;
 
