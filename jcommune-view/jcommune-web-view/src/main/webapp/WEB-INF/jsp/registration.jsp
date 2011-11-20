@@ -51,7 +51,7 @@
 
                 <tr>
                     <td>
-                        <form:label path="email">Email
+                        <form:label path="email"><spring:message code="label.email"/>
                             <span class="small"><spring:message code="label.tip.email"/></span>
                         </form:label>
                     </td>

@@ -25,7 +25,7 @@
 
 <html>
 <head>
-    <title>Форум JTalks</title>
+    <title><spring:message code="label.section.jtalks_forum"/></title>
     <link rel="stylesheet" type="text/css" media="screen, projection"
           href="${pageContext.request.contextPath}/resources/css/screen.css"/>
 </head>
@@ -39,11 +39,11 @@
                 code="label.recent"/></a> <br/>
         <a class="forum_top_right_link" href="#"><spring:message code="label.messagesWithoutAnswers"/></a>
 
-        <h2><a class="heading" href="#">Java форум JTalks</a></h2>
+        <h2><a class="heading" href="#"><spring:message code="label.section.jtalks_forum"/></a></h2>
         <br/>
 
         <div class="forum_misc_info">
-            форум программистов
+            <spring:message code="label.section.prog_forum"/>
         </div>
 
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
@@ -68,7 +68,7 @@
                         <div class="forum_icon"> <!-- Иконка с кофе -->
                             <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png"
                                  alt=""
-                                 title="Форум закрыт"/>
+                                 title="<spring:message code="label.section.close_forum"/>"/>
                         </div>
                         <div class="forum_info"> <!-- Информация о форуме -->
                             <h4><a class="forum_link"
@@ -76,7 +76,7 @@
                                 <c:out value="${branch.name}"/></a></h4> <!-- Ссылка на форум -->
                             <p>
                                 <c:out value="${branch.description}"/>
-                                <a href="#">ЧаВО</a>
+                                <a href="#"><spring:message code="label.section.faq"/></a>
                                 <br/>
                                 <spring:message code="label.section.moderators"/> <a class="moderator" href="#">Vurn</a>
                             </p>
@@ -95,7 +95,7 @@
                                 <c:choose>
                                     <c:when test="${pageSize >= branch.lastTopic.postCount}">
                                         <a href="${pageContext.request.contextPath}/topics/${branch.lastTopic.id}#${branch.lastTopic.lastPost.id}"><img
-                                                src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif" alt="Последнее сообщение"/></a>
+                                                src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif" alt="<spring:message code="label.section.header.lastMessage"/>"/></a>
                                     </c:when>
                                     <c:otherwise>
                                         <c:if test="${branch.lastTopic.postCount % pageSize > 0}">
@@ -105,7 +105,7 @@
                                             <c:set var="additionalPage" value="${0}"/>
                                         </c:if>
                                         <a href="${pageContext.request.contextPath}/topics/${branch.lastTopic.id}?page=<fmt:formatNumber value="${(branch.lastTopic.postCount - (branch.lastTopic.postCount mod pageSize)) div pageSize + additionalPage}"/>#${branch.lastTopic.lastPost.id}">
-                                            <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif" alt="Последнее сообщение"/>
+                                            <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif" alt="<spring:message code="label.section.header.lastMessage"/>"/>
                                         </a>
                                     </c:otherwise>
                                 </c:choose>

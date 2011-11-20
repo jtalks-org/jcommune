@@ -50,8 +50,7 @@
             </div>
             <div class="forum_row">
 
-                <input type="checkbox" name="staylogged">Автоматически входить
-                при каждом посещении
+                <input type="checkbox" name="staylogged"><spring:message code="label.auto_logon"/>
                 <span class="empty_cell"></span> <!-- Необходима для корректного отображения псевдотаблицы -->
             </div>
 

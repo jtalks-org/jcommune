@@ -36,9 +36,9 @@
 
         <div class="forum_misc_info">
 
-            <span class="nav_top">На страницу: 1, <a href="#">2</a> <a href="#">След.</a></span>
+            <span class="nav_top"><spring:message code="label.onPage"/> 1, <a href="#">2</a> <a href="#"><spring:message code="label.next_page"/></a></span>
         </div>
-        <a class="forum_top_right_link" href="#">Отметить все темы как прочтенные</a>
+        <a class="forum_top_right_link" href="#"><spring:message code="label.mark_all_topics"/></a>
 
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
@@ -95,7 +95,7 @@
                     </div>
                     <div class="forum_author">
                         <a href="${pageContext.request.contextPath}/users/${topic.topicStarter.encodedUsername}"
-                           title="Автор темы"><c:out value="${topic.topicStarter.username}"/></a>
+                           title="<spring:message code="label.topic.header.author"/>"><c:out value="${topic.topicStarter.username}"/></a>
                     </div>
                     <div class="forum_clicks">
                         <c:out value="${topic.views}"/>
@@ -108,7 +108,7 @@
                            href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
                             <c:out value="${topic.lastPost.userCreated.username}"/></a>
                         <a href="#"><img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
-                                         alt="Последнее сообщение"/></a>
+                                         alt="<spring:message code="label.section.header.lastMessage"/>"/></a>
                     </div>
                 </li>
             </c:forEach>

@@ -99,7 +99,7 @@
         <li>
             <c:if test="${user.username == auth}">
                 <a href="${pageContext.request.contextPath}/users/edit">
-                   Edit
+                   <spring:message code="label.edit_profile"/>
                 </a>
             </c:if>
         </li>

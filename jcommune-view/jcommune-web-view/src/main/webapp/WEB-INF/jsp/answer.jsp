@@ -38,7 +38,7 @@
             <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
 
             <div class="forum_misc_info">
-                Ответ!
+                <spring:message code="label.answer.title_label"/>
             </div>
 
             <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
@@ -128,21 +128,21 @@
                                    value="URL"/>
                         </div>
 						<span class="genmed">
-							Цвет шрифта:
+							<spring:message code="label.answer.font_color"/>
 							<select id="select_color" name="select_color">
-                                <option>Чорный</option>
-                                <option>Белiй</option>
+                                <option><spring:message code="label.answer.font_color.black"/></option>
+                                <option><spring:message code="label.answer.font_color.white"/></option>
                             </select>
-							Размер шрифта:
+							<spring:message code="label.answer.font_size"/>
 							<select id="select_size" name="select_size">
-                                <option>Mali</option>
-                                <option>Bolsho</option>
-                                <option>Oche Bolsho</option>
+                                <option><spring:message code="label.answer.font_size.small"/></option>
+                                <option><spring:message code="label.answer.font_size.large"/></option>
+                                <option><spring:message code="label.answer.font_size.king_size"/></option>
                             </select>
 						</span>
-                        <a href="#" onmouseover="helpline('a')">Закрыть теги</a>
+                        <a href="#" onmouseover="helpline('a')"><spring:message code="label.answer.close_tags"/></a>
 
-                        <div id="helpline">Здесь должна быть подсказка</div>
+                        <div id="helpline"><spring:message code="label.answer.tooltip"/></div>
                         <form:textarea path="bodyText" rows="15" cols="35" tabindex="3" cssClass="post" />
                         <form:errors path="bodyText" />
 
@@ -153,14 +153,13 @@
                         <spring:message code="label.answer.options"/>
                     </div>
                     <div class="forum_answer_right options">
-                        <input id="notify" type="checkbox" name="notify" checked="checked"/> Сообщать мне о получении
-                        ответа
+                        <input id="notify" type="checkbox" name="notify" checked="checked"/><spring:message code="label.answer.notify_message"/>
                         <br/>
-                        <input id="nosmiles" type="checkbox" name="nosmiles" checked="checked"/> Не отображать смайлы
+                        <input id="nosmiles" type="checkbox" name="nosmiles" checked="checked"/><spring:message code="label.answer.no_smiles"/>
                     </div>
                 </li>
             </ul>
-            <input id="preview" type="submit" class="button" tabindex="5" name="preview" value="Предв. просмотр"/>
+            <input id="preview" type="submit" class="button" tabindex="5" name="preview" value="<spring:message code="label.answer.preview"/>"/>
             <input id="post" type="submit" class="button" accesskey="s" tabindex="6" name="post"
                    value="<spring:message code="label.answer"/>"/>
         </jtalks:form>

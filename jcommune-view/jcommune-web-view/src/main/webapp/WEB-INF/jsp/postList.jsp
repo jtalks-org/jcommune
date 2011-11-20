@@ -34,7 +34,7 @@
 <div class="all_forums">
 <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
 <span class="nav_bottom" >
-<a href="#">Предыдущая тема</a>::<a href="#">Следующая тема</a>
+<a href="#"><spring:message code="label.topic.previous"/></a>::<a href="#"><spring:message code="label.topic.next"/></a>
 </span>
 <br>
 
@@ -54,7 +54,7 @@
             <spring:message code="label.back"/>
         </a>
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-            <a class="button top_button" href="#">Новая тема</a>
+            <a class="button top_button" href="#"><spring:message code="label.topic.new_topic"/></a>
             <a class="button top_button"
                href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}">
                 <spring:message code="label.answer"/>
@@ -62,7 +62,7 @@
             <c:set var="authenticated" value="${true}"/>
         </sec:authorize>
         <c:if test="${authenticated==false}">
-            <a class="button top_button disabled" href="#">Новая тема</a>
+            <a class="button top_button disabled" href="#"><spring:message code="label.topic.new_topic"/></a>
             <a class="button top_button disabled"
                href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}">
                 <spring:message code="label.answer"/>
@@ -88,7 +88,7 @@
                            href="${pageContext.request.contextPath}/users/${post.userCreated.encodedUsername}">
                             <c:out value="${post.userCreated.username}"/></a>
 
-                        <div class="status">Онлайн</div>
+                        <div class="status"><spring:message code="label.topic.online_users"/></div>
 
                         <c:if test="${post.userCreated.avatar != null}">
                             <%--    <table>
@@ -104,9 +104,9 @@
                         <br/>
 
                         <div class="user_misc_info">
-                            Зарегистрирован: 13.04.09 <br/>
-                            Сообщения: 661 <br/>
-                            Откуда: good ol' 60s
+                            <spring:message code="label.topic.registered"/> 13.04.09 <br/>
+                            <spring:message code="label.topic.message_count"/> 661 <br/>
+                            <spring:message code="label.topic.from_whence"/> good ol' 60s
                         </div>
                     </div>
                     <div class="forum_message_cell">
@@ -127,8 +127,7 @@
                                                value="${pageContext.request.contextPath}/posts/${post.id}/delete?topicId=${topicId}"/>
                                     </c:otherwise>
                                 </c:choose>
-                                <a class="button" href="${delete_url}"><spring:message
-                                        code="label.delete"/></a>
+                                <a class="button" href="${delete_url}"><spring:message code="label.delete"/></a>
                             </sec:accesscontrollist>
 
 
@@ -145,8 +144,7 @@
                                                value="${pageContext.request.contextPath}/posts/${post.id}/edit?topicId=${topicId}"/>
                                     </c:otherwise>
                                 </c:choose>
-                                <a class="button" href="${edit_url}"><spring:message
-                                        code="label.edit"/></a>
+                                <a class="button" href="${edit_url}"><spring:message code="label.edit"/></a>
                             </sec:accesscontrollist>
                             <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
                                 <a class="button" href="#"><spring:message
@@ -187,14 +185,14 @@
             <spring:message code="label.back"/>
         </a>
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-            <a class="button" href="#">Новая тема</a>
+            <a class="button" href="#"><spring:message code="label.topic.new_topic"/></a>
             <a class="button"
                href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}">
                 <spring:message code="label.answer"/>
             </a>
         </sec:authorize>
         <c:if test="${authenticated==false}">
-            <a class="button disabled" href="#">Новая тема</a>
+            <a class="button disabled" href="#"><spring:message code="label.topic.new_topic"/></a>
             <a class="button disabled"
                href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}">
                 <spring:message code="label.answer"/>
@@ -225,14 +223,14 @@
             <spring:message code="label.page"/> <c:out value="${page}"/> <spring:message code="label.of"/> <c:out
                 value="${pag.maxPages}"/>
             <br/>
-            Модераторы:
+            <spring:message code="label.topic.moderators"/>
             <ul class="users_list">
                 <li><a href="#">andreyko</a>,</li>
                 <li><a href="#">Староверъ</a>,</li>
                 <li><a href="#">Вася</a>.</li>
             </ul>
             <br/>
-            Сейчас эту тему просматривают: Нет
+            <spring:message code="label.topic.now_browsing"/> Нет
         </div>
     </div>
     <!-- Конец всех форумов -->
