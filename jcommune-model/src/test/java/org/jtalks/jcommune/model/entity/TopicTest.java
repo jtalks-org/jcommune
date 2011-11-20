@@ -16,6 +16,7 @@ package org.jtalks.jcommune.model.entity;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotSame;
+import static org.testng.Assert.assertTrue;
 
 import org.joda.time.DateTime;
 import org.testng.annotations.BeforeMethod;
@@ -52,14 +53,32 @@ public class TopicTest {
         assertEquals(topic.getPostCount(), 2);
     }
 
-    @Test
-    public void removePost() {
+   @Test
+    public void addPost() throws InterruptedException {
         DateTime prevDate = topic.getModificationDate();
-        
+        Thread.sleep(25); // milisecond precise is a kind of fiction
+        topic.addPost(new Post());
+
+        assertTrue(topic.getModificationDate().isAfter(prevDate));
+    }
+
+    @Test
+    public void updatePost() throws InterruptedException {
+        DateTime prevDate = topic.getModificationDate();
+        Thread.sleep(25); // milisecond precise is a kind of fiction
+        post1.updateModificationDate();
+
+        assertTrue(topic.getModificationDate().isAfter(prevDate));
+    }
+
+    @Test
+    public void removePost() throws InterruptedException {
+        DateTime prevDate = topic.getModificationDate();
+        Thread.sleep(25); // milisecond precise is a kind of fiction
         topic.removePost(post1);
-        
+
         assertEquals(topic.getPostCount(), 1);
-        assertNotSame(topic.getModificationDate(), prevDate);
+        assertTrue(topic.getModificationDate().isAfter(prevDate));
     }
 
     @Test

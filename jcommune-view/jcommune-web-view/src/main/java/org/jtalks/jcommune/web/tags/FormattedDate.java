@@ -26,6 +26,8 @@ import org.joda.time.contrib.jsptag.FormatTag;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * This tag replaces the existing Joda Time format tag to take
  * into account the local time offset set in cookies.
@@ -52,7 +54,7 @@ public class FormattedDate extends FormatTag {
 
     public static final String DATE_FORMAT_PATTERN = "dd MMM yyyy HH:mm";
 
-    private int offset = DEFAULT_OFFSET;
+    private long offset = DEFAULT_OFFSET;
 
     public static final int DEFAULT_OFFSET = 0;
 
@@ -100,11 +102,10 @@ public class FormattedDate extends FormatTag {
      *                         local time, in minutes. Example: "-120"
      * @return signed millisecond timezone offset
      */
-    private int convertTimeZoneOffset(String jsRepresentation) {
+    private long convertTimeZoneOffset(String jsRepresentation) {
         try {
-            final int min = 60;
-            int millisec = 1000;
-            return -Integer.parseInt(jsRepresentation) * min * millisec;
+            int offsetInMinutes = -Integer.parseInt(jsRepresentation);
+            return TimeUnit.MINUTES.toMillis(offsetInMinutes);
         } catch (NumberFormatException e) {
             // someone has passed wrong GMT in cookie, use GMT
             return DEFAULT_OFFSET;

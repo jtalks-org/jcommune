@@ -77,6 +77,7 @@ public class Branch extends Entity {
     /**
      * Gets topic index in the branch or throws an exception if there is no such
      * a topic in the branch
+     *
      * @param topic topic to find index for
      * @return index of the topic branch's collection
      */
@@ -91,14 +92,18 @@ public class Branch extends Entity {
 
 
     /**
-     * Get the branch last topic.
+     * Get the branch last updated topic.
+     * Updates include post addition/update/removal or changes in the topic itself.
      *
-     * @return last topic
+     * @return last topic or null if there are no topics in the branch
      */
-    public Topic getLastTopic() {
+    public Topic getLastUpdatedTopic() {
+        if (topics.isEmpty()) {
+            return null;
+        }
         int lastTopicIndex = 0;
-        for(int i=1; i < topicCount; i++){
-            if(topics.get(i).getLastPost().getCreationDate().isAfter(topics.get(lastTopicIndex).getLastPost().getCreationDate())){
+        for (int i = 1; i < topicCount; i++) {
+            if (topics.get(i).getModificationDate().isAfter(topics.get(lastTopicIndex).getModificationDate())) {
                 lastTopicIndex = i;
             }
         }

@@ -31,10 +31,10 @@ import javax.validation.constraints.Size;
 public class RegisterUserDto extends UserDto {
 
     @NotBlank(message = "{validation.username.notblank}")
-    @Size(min = 3, max = 20, message = "{validation.username.length}")
+    @Size(min = User.MIN_NAME_SIZE, max = User.MAX_NAME_SIZE, message = "{validation.username.length}")
     private String username;
     @NotBlank(message = "{validation.password.notblank}")
-    @Size(min = 4, max = 20)
+    @Size(min = User.MIN_PASS_SIZE, max = User.MAX_PASS_SIZE)
     private String password;
     @NotBlank(message = "{validation.password.confirm.notblank}")
     private String passwordConfirm;

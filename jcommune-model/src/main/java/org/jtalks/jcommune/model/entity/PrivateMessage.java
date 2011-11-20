@@ -31,6 +31,10 @@ public class PrivateMessage extends Entity {
     public static final String QUOTE_PREFIX = ">";
     public static final String QUOTE_SEPARATOR = " ";
     public static final String NEW_LINE = System.getProperty("line.separator");
+    public static final int MAX_MESSAGE_LENGTH = 1000;
+    public static final int MIN_MESSAGE_LENGTH = 2;
+    public static final int MAX_TITLE_LENGTH = 22;
+    public static final int MIN_TITLE_LENGTH = 2;
 
     private DateTime creationDate;
     private User userFrom;

@@ -182,6 +182,7 @@ a.heading:hover {
 }
 
 .forum_header_themes,
+.forum_header_icon,
 .forum_header_messages,
 .forum_header_last_message,
 .forum_header_answers,
@@ -200,6 +201,10 @@ a.heading:hover {
 
 .forum_header_last_message {
     min-width: 130px;
+}
+
+.forum_header_icon{
+   min-width: 30px;
 }
 
 .forum_header_topic, .forum_header_answer {
@@ -425,7 +430,6 @@ a.last_message_user {
     text-align: center;
     line-height: 0.8;
     text-decoration: none;
-    background:;
 }
 
 .forum_header_menu:hover {
@@ -468,7 +472,7 @@ a.last_message_user {
 
 .answer_page .button,
 .pm_page .button {
-    border: 1px solid grey;
+    border: 1px solid gray;
 !important
 }
 

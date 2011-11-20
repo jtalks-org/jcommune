@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import org.joda.time.DateTime;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
@@ -59,6 +60,15 @@ public class PostTest {
         String shortContent = post.getShortContent();
 
         assertEquals(shortContent, SHORT_TEXT);
+    }
+
+    public void testSetTopicModificationDateWhenPostIsUpdated() throws InterruptedException {
+        Topic topic = new Topic();
+        DateTime prevoius = topic.getModificationDate();
+        Thread.sleep(25);
+        topic.addPost(post);
+
+
     }
 
 }

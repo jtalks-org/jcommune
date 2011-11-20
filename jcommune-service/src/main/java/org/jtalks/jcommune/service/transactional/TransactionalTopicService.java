@@ -83,7 +83,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         Topic topic = get(topicId);
         Post answer = new Post(currentUser, answerBody);
         topic.addPost(answer);
-        topic.updateModificationDate();
         this.getDao().update(topic);
 
         securityService.grantToCurrentUser().role(SecurityConstants.ROLE_ADMIN).admin().on(answer);
@@ -128,11 +127,11 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    public List<Topic> getTopicRangeInBranch(long branchId, int start, int max) throws NotFoundException {
+    public List<Topic> getTopicsInBranch(long branchId) throws NotFoundException {
         if (!branchDao.isExist(branchId)) {
             throw new NotFoundException("Branch with id: " + branchId + " not found");
         }
-        return this.getDao().getTopicRangeInBranch(branchId, start, max);
+        return this.getDao().getTopicsInBranch(branchId);
 
     }
 
@@ -140,11 +139,11 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    public List<Topic> getAllTopicsPastLastDay(int start, int max, DateTime lastLogin) {
+    public List<Topic> getAllTopicsPastLastDay(DateTime lastLogin) {
         if (lastLogin == null) {
             lastLogin = new DateTime().minusDays(1);
         }
-        return this.getDao().getAllTopicsPastLastDay(start, max, lastLogin);
+        return this.getDao().getAllTopicsPastLastDay(lastLogin);
     }
 
     /**

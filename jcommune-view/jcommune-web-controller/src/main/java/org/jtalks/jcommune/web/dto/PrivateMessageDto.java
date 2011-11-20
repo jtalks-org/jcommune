@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.jtalks.jcommune.model.entity.PrivateMessage;
 
 import javax.validation.constraints.Size;
 
@@ -27,14 +28,14 @@ import javax.validation.constraints.Size;
  */
 public class PrivateMessageDto {
 
-    private static final int MAX_MESSAGE_LENGTH = 1000;
+
 
     @NotBlank
-    @Size(min = 2, max = 22, message = "{title.length}")
+    @Size(min = PrivateMessage.MIN_MESSAGE_LENGTH, max = PrivateMessage.MAX_MESSAGE_LENGTH, message = "{title.length}")
     private String title;
 
     @NotBlank
-    @Size(min = 2, max = MAX_MESSAGE_LENGTH, message = "{body.length}")
+    @Size(min = PrivateMessage.MIN_TITLE_LENGTH, max = PrivateMessage.MAX_TITLE_LENGTH, message = "{body.length}")
     private String body;
 
     @NotBlank

@@ -338,15 +338,6 @@
                 <version>2.9</version>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>native2ascii-maven-plugin</artifactId>
-                <version>1.0-alpha-1</version>
-                <configuration>
-                    <src>src/main/resources</src>
-                    <includes>**/*.properties</includes>
-                </configuration>
-            </plugin>
-            <plugin>
               <groupId>com.mycila.maven-license-plugin</groupId>
               <artifactId>maven-license-plugin</artifactId>
               <version>1.9.0</version>
