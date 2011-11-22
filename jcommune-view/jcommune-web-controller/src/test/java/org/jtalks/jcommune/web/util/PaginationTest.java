@@ -80,4 +80,16 @@ public class PaginationTest {
         assertEquals(lists,list.subList(5,7));
 
     }
+
+    @Test
+    public void testConstructor(){
+        pagination = new Pagination(1,user,10);
+
+        assertEquals((int)pagination.getPage(),1);
+        assertEquals((int)pagination.getPageSize(),5);
+
+        pagination = new Pagination(1,null,10);
+
+        assertEquals((int)pagination.getPageSize(),50);
+    }
 }
