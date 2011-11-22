@@ -14,13 +14,6 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
@@ -37,6 +30,11 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.testng.Assert.*;
 
 /**
  * @author Kirill Afonin
@@ -129,16 +127,6 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     }
 
     @Test
-    public void testGetTopicsInBranchCount() {
-        List<Topic> persistedTopics = createAndSaveTopicList(5);
-        long branchId = persistedTopics.get(0).getBranch().getId();
-
-        int count = dao.getTopicsInBranchCount(branchId);
-
-        assertEquals(count, 5);
-    }
-
-    @Test
     public void testGetTopicsPastLastDayCount() {
         User author = ObjectsFactory.getDefaultUser();
         session.save(author);
@@ -162,6 +150,6 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         List<Topic> result = dao.getAllTopicsPastLastDay(lastLogin);
 
         assertEquals(result.size(), 5);
-    }    
-       
+    }
+
 }

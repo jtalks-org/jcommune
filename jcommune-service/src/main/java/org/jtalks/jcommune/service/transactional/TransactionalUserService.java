@@ -69,8 +69,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
             logger.warn(msg);
             throw new NotFoundException(msg);
         }
-        int postCount = this.getDao().getCountPostOfUser(user);
-        user.setUserPostCount(postCount);
         return user;
     }
 
@@ -85,7 +83,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
             logger.info(msg);
             throw new NotFoundException(msg);
         }
-        user.setUserPostCount(this.getDao().getCountPostOfUser(user));
         return user;
     }
 
@@ -226,15 +223,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         User user = securityService.getCurrentUser();
         user.setAvatar(null);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getCountPostOfUser(User userCreated) {
-        return this.getDao().getCountPostOfUser(userCreated);
-    }
-
 
     /**
      * {@inheritDoc}

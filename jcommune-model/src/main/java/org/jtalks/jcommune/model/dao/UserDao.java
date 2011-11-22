@@ -72,10 +72,4 @@ public interface UserDao extends ParentRepository<User> {
      *         <code>false</code>
      */
     boolean isUserWithEmailExist(String email);
-
-    /**
-     * @param userCreated user created
-     * @return count posts of user
-     */
-    int getCountPostOfUser(User userCreated);
 }

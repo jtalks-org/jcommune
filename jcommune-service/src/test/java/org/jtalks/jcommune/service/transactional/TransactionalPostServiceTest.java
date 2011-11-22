@@ -106,26 +106,6 @@ public class TransactionalPostServiceTest {
 
         postService.getPostRangeInTopic(TOPIC_ID, 1, 5);
     }
-
-    @Test
-    public void testGetPostsInTopicCount() throws NotFoundException {
-        int expectedCount = 10;
-        when(postDao.getPostsInTopicCount(TOPIC_ID)).thenReturn(expectedCount);
-        when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
-
-        int count = postService.getPostsInTopicCount(TOPIC_ID);
-
-        assertEquals(count, expectedCount);
-        verify(postDao).getPostsInTopicCount(TOPIC_ID);
-        verify(topicDao).isExist(TOPIC_ID);
-    }
-
-    @Test(expectedExceptions = {NotFoundException.class})
-    public void testGetPostsCountInNonExistentTopic() throws NotFoundException {
-        when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
-
-        postService.getPostsInTopicCount(TOPIC_ID);
-    }
     
     @Test
     void updatePost() throws NotFoundException {
@@ -161,7 +141,6 @@ public class TransactionalPostServiceTest {
 
         postService.deletePost(POST_ID);
 
-        assertEquals(topic.postCount(), 1, "Post not deleted from list");
         verify(postDao).get(POST_ID);
         verify(topicDao).update(topic);
         verify(securityService).deleteFromAcl(postForDelete);

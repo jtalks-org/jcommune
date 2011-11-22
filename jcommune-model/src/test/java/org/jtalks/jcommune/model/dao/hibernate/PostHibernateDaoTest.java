@@ -110,14 +110,4 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         assertEquals(max, posts.size(), "Unexpected list size");
         assertEquals(topicId, posts.get(0).getTopic().getId(), "Incorrect topic");
     }
-
-    @Test
-    public void testGetPostsInTopicCount() {
-        List<Post> persistedPosts = ObjectsFactory.createAndSavePostList(5);
-        long topicId = persistedPosts.get(0).getTopic().getId();
-
-        int count = dao.getPostsInTopicCount(topicId);
-
-        assertEquals(count, 5);
-    }
 }

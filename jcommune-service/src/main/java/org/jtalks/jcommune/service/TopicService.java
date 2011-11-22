@@ -76,16 +76,6 @@ public interface TopicService extends EntityService<Topic> {
     List<Topic> getAllTopicsPastLastDay(DateTime lastLogin);
 
     /**
-     * Get number of topics in branch.
-     *
-     * @param branchId branch id where you have to count topics
-     * @return number of topics in branch
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when branch not found
-     */
-    int getTopicsInBranchCount(long branchId) throws NotFoundException;
-
-    /**
      * Get number of topics past last 24 hour.
      *
      * @param lastLogin last login date

@@ -329,16 +329,6 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void testTransactionUserPostCount() throws NotFoundException {
-        User user = new User(USERNAME, EMAIL, PASSWORD);
-        when(userDao.getCountPostOfUser(user)).thenReturn(1);
-
-        assertEquals(userService.getCountPostOfUser(user), 1);
-
-        verify(userDao).getCountPostOfUser(user);
-    }
-
-    @Test
     public void testRestorePassword() throws NotFoundException, MailingFailedException {
         User user = new User(USERNAME, EMAIL, PASSWORD);
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(true);

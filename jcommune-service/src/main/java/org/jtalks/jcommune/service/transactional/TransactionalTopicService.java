@@ -150,17 +150,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    public int getTopicsInBranchCount(long branchId) throws NotFoundException {
-        if (!branchDao.isExist(branchId)) {
-            throw new NotFoundException("Branch with id: " + branchId + " not found");
-        }
-        return this.getDao().getTopicsInBranchCount(branchId);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public int getTopicsPastLastDayCount(DateTime lastLogin) {
         if (lastLogin == null) {
             lastLogin = new DateTime().minusDays(1);

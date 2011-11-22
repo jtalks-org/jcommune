@@ -41,6 +41,7 @@ public class Topic extends Entity {
     private List<Post> posts = new ArrayList<Post>();
     private Branch branch;
     private int views;
+    private int postCount;
 
     public static final int MIN_NAME_SIZE = 5;
     public static final int MAX_NAME_SIZE = 255;
@@ -195,14 +196,7 @@ public class Topic extends Entity {
      * @return last post
      */
     public Post getLastPost() {
-        return posts.get(postCount() - 1);
-    }
-
-    /**
-     * @return number of posts in topic
-     */
-    public int postCount() {
-        return posts.size();
+        return posts.get(posts.size() - 1);
     }
 
     /**
@@ -280,7 +274,7 @@ public class Topic extends Entity {
      * @return count of post
      */
     public int getPostCount() {
-        return posts.size();
+        return this.postCount;
     }
 
     /**
@@ -295,5 +289,14 @@ public class Topic extends Entity {
      */
     public void setViews(int views) {
         this.views = views;
+    }
+
+    /**
+     * Set number post in topic
+     *
+     * @param postCount count post
+     */
+    public void setPostCount(int postCount) {
+        this.postCount = postCount;
     }
 }

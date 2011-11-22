@@ -68,17 +68,6 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public int getPostsInTopicCount(long topicId) throws NotFoundException {
-        if (!topicDao.isExist(topicId)) {
-            throw new NotFoundException("Topic with id: " + topicId + " not found");
-        }
-        return this.getDao().getPostsInTopicCount(topicId);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     @PreAuthorize("hasPermission(#postId, 'org.jtalks.jcommune.model.entity.Post', admin)")
     public void updatePost(long postId, String postContent) throws NotFoundException {
         Post post = get(postId);

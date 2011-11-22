@@ -39,14 +39,6 @@ public interface TopicDao extends ChildRepository<Topic> {
     List<Topic> getTopicsInBranch(Long branchId);
 
     /**
-     * Get number of topics in branch.
-     *
-     * @param branchId branch id where you have to count topics
-     * @return number of topics in branch
-     */
-    int getTopicsInBranchCount(long branchId);
-
-    /**
      * Get count of topics past last 24 hour.
      *
      * @param lastLogin user's last login date and time

@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
@@ -240,26 +239,6 @@ public class TransactionalTopicServiceTest {
         when(branchDao.isExist(BRANCH_ID)).thenReturn(false);
 
         topicService.getTopicsInBranch(BRANCH_ID);
-    }
-
-    @Test
-    public void testGetTopicsInBranchCount() throws NotFoundException {
-        int expectedCount = 10;
-        when(branchDao.isExist(BRANCH_ID)).thenReturn(true);
-        when(topicDao.getTopicsInBranchCount(BRANCH_ID)).thenReturn(expectedCount);
-
-        int count = topicService.getTopicsInBranchCount(BRANCH_ID);
-
-        assertEquals(count, expectedCount);
-        verify(topicDao).getTopicsInBranchCount(BRANCH_ID);
-        verify(branchDao).isExist(BRANCH_ID);
-    }
-
-    @Test(expectedExceptions = {NotFoundException.class})
-    public void testGetTopicsCountInNonExistentBranch() throws NotFoundException {
-        when(branchDao.isExist(BRANCH_ID)).thenReturn(false);
-
-        topicService.getTopicsInBranchCount(BRANCH_ID);
     }
 
     @Test

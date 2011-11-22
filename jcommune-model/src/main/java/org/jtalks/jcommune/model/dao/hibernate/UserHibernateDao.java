@@ -31,9 +31,11 @@ public class UserHibernateDao extends ParentRepositoryImpl<User> implements User
      */
     @Override
     public User getByUsername(String username) {
-        return (User) getSession()
+        User user = (User) getSession()
                 .createQuery("from User u where u.username = ?")
                 .setCacheable(true).setString(0, username).uniqueResult();
+        if(user != null){user.setUserPostCount(getCountPostOfUser(user));}
+        return user;
     }
 
     /**
@@ -79,10 +81,11 @@ public class UserHibernateDao extends ParentRepositoryImpl<User> implements User
     }
 
     /**
-     * {@inheritDoc}
+     *
+     * @param userCreated user created of post
+     * @return count posts of user
      */
-    @Override
-    public int getCountPostOfUser(User userCreated) {
+    private int getCountPostOfUser(User userCreated) {
         return ((Number) getSession().getNamedQuery("getCountPostOfUser")
                 .setCacheable(true).setEntity("userCreated", userCreated)
                 .uniqueResult()).intValue();
