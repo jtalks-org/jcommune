@@ -97,7 +97,7 @@ public class Post extends Entity {
      *
      * @return new modification date
      */
-    public DateTime updateModificationDate()  {
+    public DateTime updateModificationDate() {
         this.modificationDate = new DateTime();
         this.topic.updateModificationDate();
         return this.modificationDate;
@@ -159,10 +159,6 @@ public class Post extends Entity {
             String shortContent = this.postContent.substring(0, trimSize);
             if (shortContent.contains(" ")) {
                 shortContent = shortContent.substring(0, shortContent.lastIndexOf(' '));
-            } else {
-                if (shortContent.length() > 50) {
-                    shortContent = shortContent.substring(0, 50);
-                }
             }
             return shortContent + ABBREVIATION_SIGN;
         } else {
