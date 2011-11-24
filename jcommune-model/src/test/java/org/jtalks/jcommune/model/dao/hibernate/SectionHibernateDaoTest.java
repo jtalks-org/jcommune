@@ -71,6 +71,7 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
 
         assertReflectionEquals(section, result);
     }
+
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void testSaveSectionWithNameNotNullViolation() {
         Section section = ObjectsFactory.getDefaultSection();

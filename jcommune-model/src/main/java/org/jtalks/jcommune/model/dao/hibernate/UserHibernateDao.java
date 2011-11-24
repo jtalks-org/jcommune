@@ -22,6 +22,7 @@ import java.util.List;
 
 /**
  * Hibernate implementation of UserDao.
+ * Mainly intended for quering users from DB based on different criteria.
  *
  * @author Pavel Vervenko
  * @author Evgeniy Naumenko
@@ -87,6 +88,11 @@ public class UserHibernateDao extends ParentRepositoryImpl<User> implements User
     }
 
     /**
+     * Counts post for the user passed.
+     *
+     * We've tried to apply formula property instead of that, but
+     * it is affected by l2cahce showing old results
+     *
      * @param userCreated user created of post
      * @return count posts of user
      */
