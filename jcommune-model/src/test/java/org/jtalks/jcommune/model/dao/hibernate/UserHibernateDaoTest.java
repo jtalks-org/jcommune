@@ -31,6 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
@@ -225,6 +228,31 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         User user = ObjectsFactory.getDefaultUser();
         session.save(user);
         assertNotNull(dao.getByEmail(user.getEmail()));
+    }
+
+    @Test
+    public void testNullPostsOfUser(){
+        session.save(ObjectsFactory.getDefaultUser());
+
+        User user = dao.getByEncodedUsername("username");
+
+        assertEquals(user.getPosts(),null);
+        assertEquals(user.getUserPostCount(),0);
+    }
+
+    @Test
+    public void testPostsOfUser(){
+        User user = ObjectsFactory.getDefaultUser();
+        Post post = new Post(user,"first");
+        List<Post> posts = new ArrayList<Post>();
+        posts.add(post);
+        session.save(user);
+        session.save(post);
+
+        User userForDao = dao.getByUsername("username");
+
+        assertEquals(userForDao.getPosts(),posts);
+        assertEquals(userForDao.getUserPostCount(),1);
     }
 
     private int getCount() {

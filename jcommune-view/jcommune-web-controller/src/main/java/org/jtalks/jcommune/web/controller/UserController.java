@@ -17,18 +17,14 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
-import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
-import org.jtalks.jcommune.service.exceptions.InvalidImageException;
-import org.jtalks.jcommune.service.exceptions.MailingFailedException;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
+import org.jtalks.jcommune.service.exceptions.*;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.util.ImagePreprocessor;
 import org.jtalks.jcommune.web.util.Language;
 import org.jtalks.jcommune.web.util.PageSize;
+import org.jtalks.jcommune.web.util.Pagination;
 import org.jtalks.jcommune.web.validation.ImageFormats;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -36,11 +32,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
@@ -63,6 +55,7 @@ public class UserController {
     public static final String EDIT_PROFILE = "editProfile";
     public static final String REGISTRATION = "registration";
     public static final String EDITED_USER = "editedUser";
+    public static final String BREADCRUMB_LIST = "breadcrumbList";
 
     public static final int AVATAR_MAX_HEIGHT = 100;
     public static final int AVATAR_MAX_WIDTH = 100;
@@ -150,14 +143,16 @@ public class UserController {
     @RequestMapping(value = "/users/{encodedUsername}", method = RequestMethod.GET)
     //The {encodedUsername} from the JSP view automatically converted to username.
     // That's why the getByUsername() method is used instead of getByEncodedUsername().
-    public ModelAndView showProfilePage(@PathVariable("encodedUsername") String username) throws NotFoundException {
+    public ModelAndView showProfilePage(@PathVariable("encodedUsername") String username
+    ) throws NotFoundException {
         User user = userService.getByUsername(username);
         return new ModelAndView("userDetails")
                 .addObject("user", user)
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
+                .addObject("posts", user.getPosts())
+                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb())
                         // bind separately to get localized value
                 .addObject("language", Language.valueOf(user.getLanguage()))
-                .addObject("pageSize",PageSize.valueOf(user.getPageSize()));                
+                .addObject("pageSize", PageSize.valueOf(user.getPageSize()));
     }
 
     /**
@@ -172,7 +167,7 @@ public class UserController {
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
         editedUser.setAvatar(new MockMultipartFile("avatar", "", ImageFormats.JPG.getContentType(), user.getAvatar()));
         return editMaV(editedUser)
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
+                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
     }
 
     /**
@@ -189,9 +184,9 @@ public class UserController {
      */
     @RequestMapping(value = "/users/edit", method = RequestMethod.POST)
     public ModelAndView editProfile( // TODO: this method is too complex
-            @Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
-            BindingResult result, HttpServletResponse response)
-        throws NotFoundException, IOException {
+                                     @Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
+                                     BindingResult result, HttpServletResponse response)
+            throws NotFoundException, IOException {
 
         // apply language changes immediately
         applyLanguage(Language.valueOf(userDto.getLanguage()), response);
@@ -212,7 +207,7 @@ public class UserController {
      * Convenience method to handle possible errors
      *
      * @param userDto form submission result
-     * @param result form validation result, will be filled up with additional errors, if any
+     * @param result  form validation result, will be filled up with additional errors, if any
      * @return Edited domain object if no error occure, null otherwise
      * @throws IOException image stream processing error
      */
@@ -237,7 +232,7 @@ public class UserController {
      * @param response response to be filled with new cookie
      */
     private void applyLanguage(Language language, HttpServletResponse response) {
-        String code =  language.getLanguageCode();
+        String code = language.getLanguageCode();
         Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, code);
         response.addCookie(cookie);
     }
@@ -249,9 +244,9 @@ public class UserController {
      * @param userDto form submission result
      * @return updated user object
      * @throws DuplicateEmailException e-mail already registered
-     * @throws WrongPasswordException current password doesn't match with the passed one
-     * @throws IOException avatar upload problems
-     * @throws InvalidImageException avatar image is invalid
+     * @throws WrongPasswordException  current password doesn't match with the passed one
+     * @throws IOException             avatar upload problems
+     * @throws InvalidImageException   avatar image is invalid
      */
     private User performEditUserProfile(EditUserProfileDto userDto) throws DuplicateEmailException,
             WrongPasswordException, IOException, InvalidImageException {
@@ -263,12 +258,12 @@ public class UserController {
     }
 
     /**
-     *  todo: looks realy odd, we need to somehow refactor all the chain
-     *
+     * todo: looks realy odd, we need to somehow refactor all the chain
+     * <p/>
      * Substitues fake avatar value if there was no avatar passed
      *
      * @param userDto for submission result
-     * @return  updated model and view containing avatar in any case
+     * @return updated model and view containing avatar in any case
      */
     private ModelAndView applyAvatarRemoval(EditUserProfileDto userDto) {
         User user = securityService.getCurrentUser();
@@ -344,7 +339,7 @@ public class UserController {
     @RequestMapping(value = "/password/restore", method = RequestMethod.POST)
     public ModelAndView restorePassword(String email) {
         ModelAndView mav = new ModelAndView("restorePassword");
-        mav.addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
+        mav.addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
         try {
             userService.restorePassword(email);
             mav.addObject("message", "label.restorePassword.completed");
@@ -354,5 +349,30 @@ public class UserController {
             mav.addObject("error", "email.failed");
         }
         return mav;
+    }
+
+    /**
+     * Show page with post of user.
+     *
+     * @param page          number current page
+     * @param pagingEnabled flag on/OffScreenImage paging
+     * @return post list of user
+     * @throws NotFoundException if user with given id not found.
+     */
+    @RequestMapping(value = "/users/postList", method = RequestMethod.GET)
+    public ModelAndView showUserPostList(@RequestParam(value = "page", defaultValue = "1",
+                                         required = false) Integer page,
+                                         @RequestParam(value = "pagingEnabled", defaultValue = "true", required = false
+                                         ) Boolean pagingEnabled
+    ) throws NotFoundException {
+        User user = securityService.getCurrentUser();
+        Pagination pag = new Pagination(page, user, user.getUserPostCount(), pagingEnabled);
+        return new ModelAndView("userPostList")
+                .addObject("user", user)
+                .addObject("pag", pag)
+                .addObject("posts", user.getPosts())
+                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb())
+                .addObject("language", Language.valueOf(user.getLanguage()))
+                .addObject("pageSize", PageSize.valueOf(user.getPageSize()));
     }
 }

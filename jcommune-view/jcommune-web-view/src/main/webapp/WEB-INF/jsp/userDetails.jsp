@@ -104,6 +104,10 @@
             </c:if>
         </li>
     </ul>
+    <a class="button"
+               href="${pageContext.request.contextPath}/users/postList">
+                <spring:message code="label.postList"/>
+    </a>
 </div>
 </body>
 </html>

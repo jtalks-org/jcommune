@@ -152,4 +152,17 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         assertEquals(result.size(), 5);
     }
 
+    @Test
+    public void testPostsInTopic(){
+        User user = ObjectsFactory.getDefaultUser();
+        Branch branch = ObjectsFactory.getDefaultBranch();
+        Topic topic = ObjectsFactory.getDefaultTopic();
+        branch.addTopic(topic);
+
+        session.save(branch);
+
+        int count = dao.getTopicsInBranch(branch.getId()).get(0).getPostCount();
+
+        assertEquals(count, 1);
+    }
 }

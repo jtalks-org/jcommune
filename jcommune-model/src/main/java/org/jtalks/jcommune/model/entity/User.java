@@ -24,6 +24,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Stores information about the forum user.
@@ -47,6 +48,7 @@ public class User extends Entity implements UserDetails {
     private byte[] avatar;
     private String language = "ENGLISH";
     private String pageSize = "FIFTY";
+    private List<Post> posts;
 
     public static final int MIN_NAME_SIZE = 4;
     public static final int MAX_NAME_SIZE = 20;
@@ -324,5 +326,19 @@ public class User extends Entity implements UserDetails {
      */
     public void setPageSize(String pageSize) {
         this.pageSize = pageSize;
+    }
+
+    /**
+     * @return posts post list of user
+     */
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    /**
+     * @param posts post list of user
+     */
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
     }
 }

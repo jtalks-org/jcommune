@@ -86,7 +86,7 @@ public class PaginationTest {
         pagination = new Pagination(1,user,10);
 
         assertEquals((int)pagination.getPage(),1);
-        assertEquals((int)pagination.getPageSize(),5);
+        assertEquals(pagination.getPageSize(),5);
 
         pagination = new Pagination(1,null,10);
 
