@@ -377,6 +377,12 @@ a.last_message_user {
     font-size: 11px;
 }
 
+.user_info {
+    padding-top: 5px;
+    text-align: center;
+    font-size: 15px;
+}
+
 .status {
     font-size: 11px;
 }

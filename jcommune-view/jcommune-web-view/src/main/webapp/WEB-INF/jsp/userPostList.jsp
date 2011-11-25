@@ -38,7 +38,7 @@
 
     <div class="forum_top_right_link">
 
-        <jtalks:display uri="${topicId}" pagination="${pag}" numberLink="3" list="${posts}">
+        <jtalks:display uri="" pagination="${pag}" numberLink="3" list="${posts}">
         <nobr>
             <span class="nav_bottom" >
                 <c:if test="${pag.maxPages>1}">
@@ -72,17 +72,15 @@
             <c:forEach var="post" items="${list}" varStatus="i">
                 <li class="forum_row"> <!-- Сообщение -->
                     <div class="forum_userinfo">
+                        <div class="user_info">Branch</div>
+                        <a class="username"
+                           href="${pageContext.request.contextPath}/branches/${post.topic.branch.id}">
+                            <c:out value="${post.topic.branch.name}"/></a>
+                        <br>
+                        <div class="user_info">Topic</div>
                         <a class="username"
                            href="${pageContext.request.contextPath}/topics/${post.topic.id}">
                             <c:out value="${post.topic.title}"/></a>
-                         <br>
-                        <div class="user_misc_info">
-                            <spring:message code="label.created"/>: <jtalks:format value="${post.creationDate}"/><br/>
-                        <c:if test="${post.modificationDate!=null}">
-                            <br>
-                            <spring:message code="label.changed"/>: <jtalks:format value="${post.modificationDate}"/><br/>
-                        </c:if>
-                        </div>
                     </div>
                     <div class="forum_message_cell">
                         <div class="post_details">
@@ -162,13 +160,6 @@
                 <spring:message code="label.backToProfile"/>
             </a>
         </sec:authorize>
-        <c:if test="${authenticated==false}">
-            <a class="button disabled" href="#"><spring:message code="label.topic.new_topic"/></a>
-            <a class="button disabled"
-               href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}">
-                <spring:message code="label.answer"/>
-            </a>
-        </c:if>
         <c:if test="${pag.maxPages>1}">
             <c:if test="${pag.pagingEnabled==true}">
                 <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
@@ -188,19 +179,6 @@
 
         &nbsp; &nbsp; &nbsp;
 
-        <div class="forum_misc_info">
-            <spring:message code="label.page"/> <c:out value="${pag.page}"/> <spring:message code="label.of"/> <c:out
-                value="${pag.maxPages}"/>
-            <br/>
-            <spring:message code="label.topic.moderators"/>
-            <ul class="users_list">
-                <li><a href="#">andreyko</a>,</li>
-                <li><a href="#">Староверъ</a>,</li>
-                <li><a href="#">Вася</a>.</li>
-            </ul>
-            <br/>
-            <spring:message code="label.topic.now_browsing"/> Нет
-        </div>
     </div>
     <!-- Конец всех форумов -->
     <div class="footer_buffer"></div>
