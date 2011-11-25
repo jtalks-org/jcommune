@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
@@ -40,6 +41,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Controller for User related actions: registration.
@@ -359,18 +361,20 @@ public class UserController {
      * @return post list of user
      * @throws NotFoundException if user with given id not found.
      */
-    @RequestMapping(value = "/users/postList", method = RequestMethod.GET)
-    public ModelAndView showUserPostList(@RequestParam(value = "page", defaultValue = "1",
+    @RequestMapping(value = "/users/{encodedUsername}/postList", method = RequestMethod.GET)
+    public ModelAndView showUserPostList(@PathVariable("encodedUsername") String encodedUsername,
+                                         @RequestParam(value = "page", defaultValue = "1",
                                          required = false) Integer page,
                                          @RequestParam(value = "pagingEnabled", defaultValue = "true", required = false
                                          ) Boolean pagingEnabled
     ) throws NotFoundException {
-        User user = securityService.getCurrentUser();
-        Pagination pag = new Pagination(page, user, user.getUserPostCount(), pagingEnabled);
+        User user = userService.getByEncodedUsername(encodedUsername);
+        List<Post> posts = userService.getPostsOfUser(user);
+        Pagination pag = new Pagination(page, user, posts.size(), pagingEnabled);
         return new ModelAndView("userPostList")
                 .addObject("user", user)
                 .addObject("pag", pag)
-                .addObject("posts", user.getPosts())
+                .addObject("posts", posts)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb())
                 .addObject("language", Language.valueOf(user.getLanguage()))
                 .addObject("pageSize", PageSize.valueOf(user.getPageSize()));

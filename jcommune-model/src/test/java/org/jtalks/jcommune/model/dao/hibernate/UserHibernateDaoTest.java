@@ -231,17 +231,16 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     }
 
     @Test
-    public void testNullPostsOfUser(){
+    public void testNullPostsOfUserCount(){
         session.save(ObjectsFactory.getDefaultUser());
 
         User user = dao.getByEncodedUsername("username");
 
-        assertEquals(user.getPosts(),null);
         assertEquals(user.getUserPostCount(),0);
     }
 
     @Test
-    public void testPostsOfUser(){
+    public void testPostsOfUserCount(){
         User user = ObjectsFactory.getDefaultUser();
         Post post = new Post(user,"first");
         List<Post> posts = new ArrayList<Post>();
@@ -251,8 +250,31 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
         User userForDao = dao.getByUsername("username");
 
-        assertEquals(userForDao.getPosts(),posts);
         assertEquals(userForDao.getUserPostCount(),1);
+    }
+
+    @Test
+    public void  testPostOfUser(){
+        User user = ObjectsFactory.getDefaultUser();
+        Post post = new Post(user,"first");
+        List<Post> posts = new ArrayList<Post>();
+        posts.add(post);
+        session.save(user);
+        session.save(post);
+
+        List<Post> postsTwo = dao.getPostsOfUser(user);
+
+        assertEquals(postsTwo,posts);
+    }
+
+    @Test
+    public void  testNullPostOfUser(){
+        User user = ObjectsFactory.getDefaultUser();
+        session.save(user);
+
+        List<Post> posts = dao.getPostsOfUser(user);
+
+        assertEquals(posts,new ArrayList<Post>());
     }
 
     private int getCount() {

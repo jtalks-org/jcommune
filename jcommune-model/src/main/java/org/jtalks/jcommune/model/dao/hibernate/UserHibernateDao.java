@@ -40,7 +40,6 @@ public class UserHibernateDao extends ParentRepositoryImpl<User> implements User
                 .setCacheable(true).setString(0, username).uniqueResult();
         if (user != null) {
             user.setUserPostCount(getCountPostOfUser(user));
-            user.setPosts(getPostsOfUser(user));
         }
         return user;
     }
@@ -89,7 +88,7 @@ public class UserHibernateDao extends ParentRepositoryImpl<User> implements User
 
     /**
      * Counts post for the user passed.
-     *
+     * <p/>
      * We've tried to apply formula property instead of that, but
      * it is affected by l2cahce showing old results
      *
@@ -103,10 +102,9 @@ public class UserHibernateDao extends ParentRepositoryImpl<User> implements User
     }
 
     /**
-     * @param userCreated user
-     * @return post list of user
+     * {@inheritDoc}
      */
-    private List<Post> getPostsOfUser(User userCreated) {
+    public List<Post> getPostsOfUser(User userCreated) {
         return (List<Post>) getSession().createQuery("FROM Post p WHERE p.userCreated = ? ORDER BY creationDate DESC")
                 .setParameter(0, userCreated)
                 .list();

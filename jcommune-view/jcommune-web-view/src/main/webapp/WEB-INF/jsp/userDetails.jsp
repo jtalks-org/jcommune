@@ -105,7 +105,7 @@
         </li>
     </ul>
     <a class="button"
-               href="${pageContext.request.contextPath}/users/postList">
+               href="${pageContext.request.contextPath}/users/${user.encodedUsername}/postList">
                 <spring:message code="label.postList"/>
     </a>
 </div>

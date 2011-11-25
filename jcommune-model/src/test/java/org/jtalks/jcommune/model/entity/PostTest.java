@@ -32,7 +32,18 @@ public class PostTest {
             "dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non " +
             "proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
     private static final String SHORT_TEXT = "labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud";
-
+    private static final String LONG_NOT_SPACE_TEXT = "Loremipsumdolorsitamet," +
+            "consecteturadipisicinelit,seddoeiusmodtemporincididuntut" +
+            "laboreetdoloremagnaaliqua.Utenimadminimveniam,quisnostrud" +
+            "exercitationullamcolaborisnisiutaliquipexeacommodoconsequat." +
+            "Duisauteirurdolorinreprehenderitinvoluptatevelitessecillum" +
+            "doloreeufugiatnullapariatur.Excepteursintoccaecatcupidatatnon" +
+            "proident,suntinculpaquiofficiadeseruntmollitanimidestlaborum.";
+    private static final String SHORT_LONG_NOT_SPACE_TEXT = "Loremipsumdolorsitamet," +
+            "consecteturadipisicinelit,seddoeiusmodtemporincididuntut" +
+            "laboreetdoloremagnaaliqua.Utenimadminimveniam,quisnostrud" +
+            "exercitationullamcolaborisnisiutaliquipexeacommodoconsequat." +
+            "D...";
     Post post = new Post();
 
     @Test
@@ -60,6 +71,15 @@ public class PostTest {
         String shortContent = post.getShortContent();
 
         assertEquals(shortContent, SHORT_TEXT);
+    }
+
+    @Test
+    public void shortContentLongText() {
+        post.setPostContent(LONG_NOT_SPACE_TEXT);
+
+        String shortContent = post.getShortContent();
+
+        assertEquals(shortContent, SHORT_LONG_NOT_SPACE_TEXT);
     }
 
     public void testSetTopicModificationDateWhenPostIsUpdated() throws InterruptedException {

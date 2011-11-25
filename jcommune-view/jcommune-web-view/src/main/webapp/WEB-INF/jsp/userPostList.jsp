@@ -23,7 +23,9 @@
 
 
 <html>
-<head></head>
+<head>
+    <title><spring:message code="label.postListOfUser"/> <c:out value="${user.username}"/></title>
+</head>
 <body>
 <c:set var="authenticated" value="${false}"/>
 <h1><spring:message code="label.postListOfUser"/> ${user.username}</h1>
@@ -61,7 +63,7 @@
         <!-- Начало группы форумов -->
         <div class="forum_header_table"> <!-- Шапка топика -->
             <div class="forum_header">
-                <span class="forum_header_userinfo"><spring:message code="label.topic.header.author"/></span>
+                <span class="forum_header_userinfo"><spring:message code="label.info"/></span>
                 <span class="forum_header_topic"><spring:message code="label.topic.header.message"/></span>
             </div>
         </div>
@@ -71,28 +73,15 @@
                 <li class="forum_row"> <!-- Сообщение -->
                     <div class="forum_userinfo">
                         <a class="username"
-                           href="${pageContext.request.contextPath}/users/${post.userCreated.encodedUsername}">
+                           href="${pageContext.request.contextPath}/topics/${post.topic.id}">
                             <c:out value="${post.topic.title}"/></a>
-
-                        <div class="status"><spring:message code="label.topic.online_users"/></div>
-
-                        <c:if test="${post.userCreated.avatar != null}">
-                            <%--    <table>
-                    <tr>
-                        <td width="100" height="100" align="center" valign="middle">--%>
-                            <img src="${pageContext.request.contextPath}/${post.userCreated.encodedUsername}/avatar"
-                                 alt="Аватар" class="avatar"/>
-                            <%-- </td>
-                               </tr>
-                           </table> --%>
-                        </c:if>
-
-                        <br/>
-
+                         <br>
                         <div class="user_misc_info">
-                            <spring:message code="label.topic.registered"/> 13.04.09 <br/>
-                            <spring:message code="label.topic.message_count"/> 661 <br/>
-                            <spring:message code="label.topic.from_whence"/> good ol' 60s
+                            <spring:message code="label.created"/>: <jtalks:format value="${post.creationDate}"/><br/>
+                        <c:if test="${post.modificationDate!=null}">
+                            <br>
+                            <spring:message code="label.changed"/>: <jtalks:format value="${post.modificationDate}"/><br/>
+                        </c:if>
                         </div>
                     </div>
                     <div class="forum_message_cell">
@@ -103,12 +92,12 @@
                             <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
                                 <c:choose>
                                     <c:when test="${page == 1 && i.index == 0}">
-                                        <%-- first post - url to delete topic --%>
+
                                         <c:set var="delete_url"
                                                value="${pageContext.request.contextPath}/topics/${topicId}/delete?branchId=${branchId}"/>
                                     </c:when>
                                     <c:otherwise>
-                                        <%-- url to delete post --%>
+
                                         <c:set var="delete_url"
                                                value="${pageContext.request.contextPath}/posts/${post.id}/delete?topicId=${topicId}"/>
                                     </c:otherwise>
@@ -120,12 +109,12 @@
                             <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
                                 <c:choose>
                                     <c:when test="${page == 1 && i.index == 0}">
-                                        <%-- first post - url to edit topic --%>
+
                                         <c:set var="edit_url"
                                                value="${pageContext.request.contextPath}/topics/${topicId}/edit?branchId=${branchId}"/>
                                     </c:when>
                                     <c:otherwise>
-                                        <%-- url to edit post --%>
+
                                         <c:set var="edit_url"
                                                value="${pageContext.request.contextPath}/posts/${post.id}/edit?topicId=${topicId}"/>
                                     </c:otherwise>
@@ -215,15 +204,6 @@
     </div>
     <!-- Конец всех форумов -->
     <div class="footer_buffer"></div>
-    <!-- Несемантичный буфер для прибития подвала -->
 </div>
-
-
-<!-- content -->
-<script type="text/javascript">
-    function copyLink(postId) {
-        prompt("Link to copy", document.location.href + "#" + postId);
-    }
-</script>
 </body>
 </html>

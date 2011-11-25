@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.MailService;
 import org.jtalks.jcommune.service.SecurityService;
@@ -28,6 +29,7 @@ import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -242,6 +244,14 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         this.getDao().update(user);
         
         logger.info("New random password was set for user {}", user.getUsername());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Post> getPostsOfUser(User userCreated) {
+        return this.getDao().getPostsOfUser(userCreated);
     }
 
     /**
