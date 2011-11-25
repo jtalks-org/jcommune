@@ -92,12 +92,12 @@
                                     <c:when test="${page == 1 && i.index == 0}">
 
                                         <c:set var="delete_url"
-                                               value="${pageContext.request.contextPath}/topics/${topicId}/delete?branchId=${branchId}"/>
+                                               value="${pageContext.request.contextPath}/topics/${topicId}/delete?branchId=${post.topic.branch.id}"/>
                                     </c:when>
                                     <c:otherwise>
 
                                         <c:set var="delete_url"
-                                               value="${pageContext.request.contextPath}/posts/${post.id}/delete?topicId=${topicId}"/>
+                                               value="${pageContext.request.contextPath}/posts/${post.id}/delete?topicId=${post.topic.id}"/>
                                     </c:otherwise>
                                 </c:choose>
                                 <a class="button" href="${delete_url}"><spring:message code="label.delete"/></a>
@@ -109,12 +109,12 @@
                                     <c:when test="${page == 1 && i.index == 0}">
 
                                         <c:set var="edit_url"
-                                               value="${pageContext.request.contextPath}/topics/${topicId}/edit?branchId=${branchId}"/>
+                                               value="${pageContext.request.contextPath}/topics/${topicId}/edit?branchId=${post.topic.branch.id}"/>
                                     </c:when>
                                     <c:otherwise>
 
                                         <c:set var="edit_url"
-                                               value="${pageContext.request.contextPath}/posts/${post.id}/edit?topicId=${topicId}"/>
+                                               value="${pageContext.request.contextPath}/posts/${post.id}/edit?topicId=${post.topic.id}"/>
                                     </c:otherwise>
                                 </c:choose>
                                 <a class="button" href="${edit_url}"><spring:message code="label.edit"/></a>

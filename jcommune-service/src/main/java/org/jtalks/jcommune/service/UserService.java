@@ -117,5 +117,11 @@ public interface UserService extends EntityService<User> {
      */
     void restorePassword(String email) throws NotFoundException, MailingFailedException;
 
+    /**
+     * List posts of user
+     *
+     * @param userCreated user created post
+     * @return post list
+     */
     public List<Post> getPostsOfUser(User userCreated);
 }

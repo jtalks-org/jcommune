@@ -358,6 +358,7 @@ public class UserController {
      *
      * @param page          number current page
      * @param pagingEnabled flag on/OffScreenImage paging
+     * @param encodedUsername encodedUsername
      * @return post list of user
      * @throws NotFoundException if user with given id not found.
      */
