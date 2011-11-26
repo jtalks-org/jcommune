@@ -36,9 +36,9 @@ import static org.testng.Assert.assertEquals;
 /**
  * @author Max Malakhov
  * @author Alexandre Teterin
+ * @author Evgeniy Naumenko
  */
 public class SectionControllerTest {
-    private SecurityService securityService;
     private SectionService sectionService;
     private SectionController controller;
     private BreadcrumbBuilder breadcrumbBuilder;
@@ -46,10 +46,11 @@ public class SectionControllerTest {
     @BeforeMethod
     public void init() {
         sectionService = mock(SectionService.class);
-        securityService = mock(SecurityService.class);
+        SecurityService securityService = mock(SecurityService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
         ForumStatisticsProvider statisticsProvider = mock(ForumStatisticsProvider.class);
-        controller = new SectionController(securityService, sectionService, breadcrumbBuilder, statisticsProvider, mock(HttpSession.class));
+        controller = new SectionController(securityService, sectionService, breadcrumbBuilder,
+                statisticsProvider, mock(HttpSession.class));
     }
 
     @Test
@@ -111,15 +112,4 @@ public class SectionControllerTest {
         assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 
-    @Test
-    public void testRoot() {
-        //set expectations
-        expectationsForAllSections();
-
-        //invoke the object under test
-        ModelAndView mav = controller.root();
-
-        //check expectations
-        verifyAndAssertAllSections(mav);
-    }
 }

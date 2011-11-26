@@ -37,6 +37,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Max Malakhov
  * @author Alexandre Teterin
+ * @author Evgeniy Naumenko
  */
 
 @Controller
@@ -77,7 +78,7 @@ public final class SectionController {
      *
      * @return {@link ModelAndView} with view name as renderAllSection
      */
-    @RequestMapping(value = "/sections", method = RequestMethod.GET)
+    @RequestMapping(value = {"/", "/sections"}, method = RequestMethod.GET)
     public ModelAndView sectionList() {
         // Counting the number of active users based on the number of sessions.
         // By default, the session will be initialized after controller's invocation,
@@ -99,16 +100,6 @@ public final class SectionController {
                 .addObject("usersRegistered", forumStaticsProvider.getOnlineRegisteredUsers())
                 .addObject("visitorsRegistered", forumStaticsProvider.getOnlineRegisteredUsersCount())
                 .addObject("visitorsGuests", forumStaticsProvider.getOnlineAnonymousUsersCount());
-    }
-
-    /**
-     * Action for root path. Do same as SectionController#sectionList()
-     *
-     * @return populated {@code ModelAndView}
-     */
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ModelAndView root() {
-        return sectionList();
     }
 
     /**
