@@ -29,14 +29,13 @@ import static org.testng.Assert.assertTrue;
 
 /**
  * @author Eugeny Batov
+ * @author Alexandre Teterin
  */
 public class ImageUtilTest {
 
-    private MultipartFile multipartFile;
-
     @BeforeClass
     public void mockAvatar() throws IOException {
-        multipartFile = new MockMultipartFile("test_avatar.png", "test_avatar.png", "image/png",
+        MultipartFile multipartFile = new MockMultipartFile("test_avatar.png", "test_avatar.png", "image/png",
                 originalImageByteArray);
     }
 
@@ -52,17 +51,12 @@ public class ImageUtilTest {
     }
 
     @Test
-    public void testConvertMultipartFileToImage() throws IOException {
-        Image image = ImageUtil.convertMultipartFileToImage(multipartFile);
-        assertTrue(image instanceof BufferedImage);
-        assertTrue(image != null);
-    }
-
-    @Test
     public void testConvertImageToByteArray() throws IOException {
-        Image image = ImageUtil.convertMultipartFileToImage(multipartFile);
+        //init
+        Image image = new BufferedImage(100, 100, BufferedImage.TYPE_3BYTE_BGR);
+        //invoke object under test
         byte[] imageByteArray = ImageUtil.convertImageToByteArray(image);
-        assertTrue(imageByteArray instanceof byte[]);
+        //check result
         assertTrue(imageByteArray != null);
         assertTrue(imageByteArray.length != 0);
     }

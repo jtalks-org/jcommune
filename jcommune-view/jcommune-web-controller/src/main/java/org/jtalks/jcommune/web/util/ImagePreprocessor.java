@@ -14,11 +14,11 @@
  */
 package org.jtalks.jcommune.web.util;
 
-import org.jtalks.jcommune.service.exceptions.InvalidImageException;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
-import java.awt.Image;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -30,28 +30,35 @@ import java.io.IOException;
 @Component
 public class ImagePreprocessor {
 
-    /**
-     * Prepares image to save- converts multipart file to image, resizes image to required dimension, converts image to
-     * byte array.
-     *
-     * @param multipartFile input multipart file
-     * @param  maxWidth max width of modified image
-     * @param  maxHeight max height of modified image
-     * @return prepared image byte array
-     * @throws java.io.IOException - throws if an I/O error occurs
-     * @throws InvalidImageException - throws if image is invalid or image's format is not allowable
-     */
-    public byte[] preprocessImage(MultipartFile multipartFile, int maxWidth, int maxHeight) throws IOException,
-            InvalidImageException {
-        if (multipartFile.isEmpty()) {
-            //assume that empty multipart file is valid to avoid validation message when user doesn't load nothing
-            return null;
-        }
-        Image image = ImageUtil.convertMultipartFileToImage(multipartFile);
-        if (image == null) {
-            throw new InvalidImageException("Unable to convert multipart data to image");
-        }
-        image = ImageUtil.resizeImage((BufferedImage) image, ImageUtil.IMAGE_JPEG, maxWidth, maxHeight);
+    public static final String HTML_SRC_TAG_PREFIX = "data:image/jpeg;base64,";
+    public static final int AVATAR_MAX_HEIGHT = 100;
+    public static final int AVATAR_MAX_WIDTH = 100;
+
+    public byte[] preprocessImage(Image image) throws IOException {
+        image = ImageUtil.resizeImage((BufferedImage) image, ImageUtil.IMAGE_JPEG, AVATAR_MAX_HEIGHT, AVATAR_MAX_WIDTH);
         return ImageUtil.convertImageToByteArray(image);
     }
+
+    public String base64Coder(byte[] bytes) {
+        return new BASE64Encoder().encode(bytes);
+    }
+
+    public byte[] base64Decoder(String encodedBytes) throws IOException {
+        byte[] result;
+
+        if (encodedBytes == null) {
+            result = null;
+        } else {
+            BASE64Decoder base64 = new BASE64Decoder();
+            result = base64.decodeBuffer(encodedBytes);
+        }
+
+        return result;
+    }
+
+    public String prepareHtmlImgSrc(String encodedImgBytes) {
+        return HTML_SRC_TAG_PREFIX + encodedImgBytes;
+    }
+
+
 }

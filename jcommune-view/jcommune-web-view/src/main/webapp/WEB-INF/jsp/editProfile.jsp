@@ -37,6 +37,9 @@
                action="${pageContext.request.contextPath}/users/edit"
                modelAttribute="editedUser" method="POST" enctype="multipart/form-data">
 
+        <form:hidden id="avatar" path="avatar"/>
+        <input id="avatarTempValue" type="hidden"/>
+
         <table>
             <tr>
                 <td><label><spring:message code="label.username"/></label></td>
@@ -123,20 +126,27 @@
                 <td><form:errors path="pageSize" cssClass="error"/></td>
             </tr>
             <tr>
-                <td></td>
-                <td><form:input path="avatar" type="file"/></td>
-                <td><form:errors path="avatar" cssClass="error"/></td>
+                <td><label><spring:message code="label.avatar.preview"/></label></td>
+                <td width="100" height="100" align="center" valign="middle">
+                    <img id="avatarPreview" src="" alt=""/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div id="upload"><input type="button" value="<spring:message code="label.avatar.load"/>"/></div>
+                </td>
             </tr>
         </table>
     </form:form>
 
     <form action="${pageContext.request.contextPath}/users/edit/avatar" id="removeAvatarForm"
           name="removeAvatarForm" method="POST">
-        <c:if test="${editedUser.avatar.size>0}">
+        <c:if test="${editedUser.avatar != null}">
             <table>
                 <tr>
+                    <td><label><spring:message code="label.avatar.current"/></label></td>
                     <td width="100" height="100" align="center" valign="middle">
-                        <img src="${pageContext.request.contextPath}/${auth}/avatar" alt=""/><br>
+                        <img src="${editedUser.avatar}" alt=""/><br>
                     </td>
                 </tr>
                 <tr>
@@ -168,8 +178,45 @@
 
 <script type="text/javascript">
     function submitForm(formName) {
+
+        if (formName == "editProfileForm") {
+            document.getElementById('avatar').setAttribute('value',
+                    document.getElementById('avatarTempValue').value);
+        } else {
+            document.getElementById('avatar').setAttribute('value', null);
+        }
+
         document.forms[formName].submit();
+
     }
+
+    function createUploader() {
+        var action = '${pageContext.request.contextPath}/users/avatarpreview';
+
+        console.log('Action: %s', action);
+        var uploader = new qq.FileUploaderBasic({
+            button:  $("#upload").get(0),
+            action: action,
+            multiple: false,
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'],
+            sizeLimit: 4194304, // max size
+            onSubmit: function(id, filename) {
+                console.log('File upload: %s, ID: %s', filename, id);
+            },
+            onProgress: function(id, filename, loaded, total) {
+                console.log('Progress for file: %s, ID: %s, loaded: %s, total: %s', filename, id, loaded, total);
+            },
+            onComplete : function(id, filename, responseJSON) {
+                console.log('File upload for file %s, id %s done with status %s', filename, id, responseJSON);
+                document.getElementById('avatarPreview').setAttribute('src', responseJSON.srcPrefix + responseJSON.srcImage);
+                document.getElementById('avatarTempValue').setAttribute('value', responseJSON.srcImage);
+            },
+            debug: true
+        });
+
+    }
+
+    $(document).ready(createUploader());
 </script>
 
 </body>

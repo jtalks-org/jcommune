@@ -27,13 +27,11 @@ import org.jtalks.jcommune.web.util.Language;
 import org.mockito.Matchers;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.testng.annotations.BeforeClass;
@@ -72,16 +70,13 @@ public class UserControllerTest {
     private final String NEW_PASSWORD = "newPassword";
     private final String LANGUAGE = "ENGLISH";
     private final String PAGE_SIZE = "FIFTY";
-    private final int AVATAR_MAX_WIDTH = 100;
-    private final int AVATAR_MAX_HEIGHT = 100;
-    private MultipartFile avatar;
     private BreadcrumbBuilder breadcrumbBuilder;
     private ImagePreprocessor imagePreprocessor;
+    private String avatar;
 
     @BeforeClass
     public void mockAvatar() throws IOException {
-        avatar = new MockMultipartFile("test_avatar.jpg", "test_avatar.jpg", "image/jpeg",
-                avatarByteArray);
+        avatar = new ImagePreprocessor().base64Coder(avatarByteArray);
     }
 
     @BeforeMethod
@@ -209,20 +204,18 @@ public class UserControllerTest {
         assertEquals(dto.getEmail(), user.getEmail(), "Last name is not equal");
     }
 
+
     @Test
     public void testEditProfile() throws Exception {
         User user = getUser();
         EditUserProfileDto userDto = getEditUserProfileDto();
         MockHttpServletResponse response = new MockHttpServletResponse();
-        when(imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH,
-                AVATAR_MAX_HEIGHT)).thenReturn(avatarByteArray);
-
-        byte[] resizedAvatar = imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH,
-                AVATAR_MAX_HEIGHT);
 
         when(userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE, PAGE_SIZE)).thenReturn(user);
+                userDto.getNewUserPassword(),
+                imagePreprocessor.base64Decoder(userDto.getAvatar()),
+                SIGNATURE, LANGUAGE, PAGE_SIZE)).thenReturn(user);
 
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
@@ -234,46 +227,8 @@ public class UserControllerTest {
         assertEquals(response.getCookies()[0].getName(), CookieLocaleResolver.DEFAULT_COOKIE_NAME);
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE, PAGE_SIZE);
-    }
-
-    @Test
-    public void testEditProfileWithAvatarFailedValidation() throws Exception {
-        User user = getUserWithoutAvatar();
-        when(securityService.getCurrentUser()).thenReturn(user);
-        EditUserProfileDto userDto = spy(getEditUserProfileDto());
-
-        BindingResult bindingResult = mock(BindingResult.class);
-        when(bindingResult.hasErrors()).thenReturn(true);
-
-        ModelAndView mav = controller.editProfile(userDto, bindingResult, new MockHttpServletResponse());
-
-        assertViewName(mav, "editProfile");
-        assertModelAttributeAvailable(mav, "languages");
-        verify(userDto).setAvatar(Matchers.<MultipartFile>anyObject());
-        verify(userService, never()).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
-                userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), userDto.getAvatar().getBytes(), SIGNATURE, LANGUAGE, PAGE_SIZE);
-    }
-
-    @Test
-    public void testEditProfileAvatarWrongFormat() throws Exception {
-        User user = getUser();
-        when(securityService.getCurrentUser()).thenReturn(user);
-        EditUserProfileDto userDto = getEditUserProfileWithWrongFormatDto();
-        BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
-
-        doThrow(new InvalidImageException()).when(imagePreprocessor).preprocessImage(userDto.getAvatar(),
-                AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
-
-
-        ModelAndView mav = controller.editProfile(userDto, bindingResult, new MockHttpServletResponse());
-
-        assertViewName(mav, "editProfile");
-        assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
-        assertModelAttributeAvailable(mav, "languages");
-        verify(imagePreprocessor).preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
-        assertContainsError(bindingResult, "avatar");
+                userDto.getNewUserPassword(), imagePreprocessor.base64Decoder(userDto.getAvatar()),
+                SIGNATURE, LANGUAGE, PAGE_SIZE);
     }
 
     @Test
@@ -283,15 +238,11 @@ public class UserControllerTest {
         EditUserProfileDto userDto = getEditUserProfileDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
-        when(imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH,
-                AVATAR_MAX_HEIGHT)).thenReturn(avatarByteArray);
-
-        byte[] resizedAvatar = imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH,
-                AVATAR_MAX_HEIGHT);
-
         when(userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE, PAGE_SIZE)).thenThrow(new DuplicateEmailException());
+                userDto.getNewUserPassword(),
+                imagePreprocessor.base64Decoder(userDto.getAvatar()),
+                SIGNATURE, LANGUAGE, PAGE_SIZE)).thenThrow(new DuplicateEmailException());
 
         ModelAndView mav = controller.editProfile(userDto, bindingResult, new MockHttpServletResponse());
 
@@ -300,7 +251,8 @@ public class UserControllerTest {
         assertModelAttributeAvailable(mav, "languages");
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE, PAGE_SIZE);
+                userDto.getNewUserPassword(), imagePreprocessor.base64Decoder(userDto.getAvatar()),
+                SIGNATURE, LANGUAGE, PAGE_SIZE);
 
         assertContainsError(bindingResult, "email");
     }
@@ -312,15 +264,11 @@ public class UserControllerTest {
         EditUserProfileDto userDto = getEditUserProfileDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
-        when(imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH,
-                AVATAR_MAX_HEIGHT)).thenReturn(avatarByteArray);
-
-        byte[] resizedAvatar = imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH,
-                AVATAR_MAX_HEIGHT);
-
         when(userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE, PAGE_SIZE)).thenThrow(new WrongPasswordException());
+                userDto.getNewUserPassword(),
+                imagePreprocessor.base64Decoder(userDto.getAvatar()),
+                SIGNATURE, LANGUAGE, PAGE_SIZE)).thenThrow(new WrongPasswordException());
 
         ModelAndView mav = controller.editProfile(userDto, bindingResult, new MockHttpServletResponse());
 
@@ -329,7 +277,8 @@ public class UserControllerTest {
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), resizedAvatar, SIGNATURE, LANGUAGE, PAGE_SIZE);
+                userDto.getNewUserPassword(), imagePreprocessor.base64Decoder(userDto.getAvatar()),
+                SIGNATURE, LANGUAGE, PAGE_SIZE);
         assertContainsError(bindingResult, "currentUserPassword");
     }
 
@@ -374,9 +323,9 @@ public class UserControllerTest {
         controller.renderAvatar(response, ENCODED_USER_NAME);
 
         verify(response).setContentType("image/jpeg");
-        verify(response).setContentLength(avatar.getBytes().length);
+        verify(response).setContentLength(avatarByteArray.length);
         verify(response).getOutputStream();
-        verify(servletOutputStream).write(avatar.getBytes());
+        verify(servletOutputStream).write(avatarByteArray);
     }
 
     @Test
@@ -455,30 +404,11 @@ public class UserControllerTest {
         return dto;
     }
 
-    /**
-     * @return {@link EditUserProfileDto} with default values
-     */
-    private EditUserProfileDto getEditUserProfileWithWrongFormatDto() {
-        MultipartFile wrongFormatAvatar = new MockMultipartFile("test_avatar.bmp", "test_avatar.bmp", "image/bmp",
-                new byte[0]);
-        EditUserProfileDto dto = new EditUserProfileDto();
-        dto.setEmail(EMAIL);
-        dto.setFirstName(FIRST_NAME);
-        dto.setLastName(LAST_NAME);
-        dto.setCurrentUserPassword(PASSWORD);
-        dto.setNewUserPassword(NEW_PASSWORD);
-        dto.setNewUserPasswordConfirm(NEW_PASSWORD);
-        dto.setSignature(SIGNATURE);
-        dto.setLanguage(LANGUAGE);
-        dto.setAvatar(wrongFormatAvatar);
-        return dto;
-    }
-
     private User getUser() throws IOException {
         User newUser = new User(USER_NAME, EMAIL, PASSWORD);
         newUser.setFirstName(FIRST_NAME);
         newUser.setLastName(LAST_NAME);
-        newUser.setAvatar(avatar.getBytes());
+        newUser.setAvatar(avatarByteArray);
         return newUser;
     }
 

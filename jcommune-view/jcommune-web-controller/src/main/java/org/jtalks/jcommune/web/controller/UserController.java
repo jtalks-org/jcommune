@@ -14,40 +14,39 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.json.simple.JSONObject;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
-import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
-import org.jtalks.jcommune.service.exceptions.InvalidImageException;
-import org.jtalks.jcommune.service.exceptions.MailingFailedException;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
+import org.jtalks.jcommune.service.exceptions.*;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.util.ImagePreprocessor;
 import org.jtalks.jcommune.web.util.Language;
 import org.jtalks.jcommune.web.util.PageSize;
-import org.jtalks.jcommune.web.validation.ImageFormats;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
+import javax.imageio.ImageIO;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequestWrapper;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
 
 /**
  * Controller for User related actions: registration.
@@ -64,14 +63,12 @@ public class UserController {
     public static final String REGISTRATION = "registration";
     public static final String EDITED_USER = "editedUser";
 
-    public static final int AVATAR_MAX_HEIGHT = 100;
-    public static final int AVATAR_MAX_WIDTH = 100;
-
 
     private final SecurityService securityService;
     private final UserService userService;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final ImagePreprocessor imagePreprocessor;
     private BreadcrumbBuilder breadcrumbBuilder;
-    private ImagePreprocessor imagePreprocessor;
 
     /**
      * This method turns the trim binder on. Trim bilder
@@ -157,7 +154,7 @@ public class UserController {
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
                         // bind separately to get localized value
                 .addObject("language", Language.valueOf(user.getLanguage()))
-                .addObject("pageSize",PageSize.valueOf(user.getPageSize()));                
+                .addObject("pageSize", PageSize.valueOf(user.getPageSize()));
     }
 
     /**
@@ -170,7 +167,12 @@ public class UserController {
     public ModelAndView editProfilePage() throws NotFoundException {
         User user = securityService.getCurrentUser();
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
-        editedUser.setAvatar(new MockMultipartFile("avatar", "", ImageFormats.JPG.getContentType(), user.getAvatar()));
+        byte[] avatar = user.getAvatar();
+        if (avatar != null) {
+            editedUser.setAvatar(imagePreprocessor.prepareHtmlImgSrc(
+                    imagePreprocessor.base64Coder(avatar)
+            ));
+        }
         return editMaV(editedUser)
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
     }
@@ -189,9 +191,9 @@ public class UserController {
      */
     @RequestMapping(value = "/users/edit", method = RequestMethod.POST)
     public ModelAndView editProfile( // TODO: this method is too complex
-            @Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
-            BindingResult result, HttpServletResponse response)
-        throws NotFoundException, IOException {
+                                     @Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
+                                     BindingResult result, HttpServletResponse response)
+            throws NotFoundException, IOException {
 
         // apply language changes immediately
         applyLanguage(Language.valueOf(userDto.getLanguage()), response);
@@ -200,10 +202,12 @@ public class UserController {
             return applyAvatarRemoval(userDto);
         }
         User editedUser = editUserProfile(userDto, result);
+
         // error occured
         if (editedUser == null) {
             return applyAvatarRemoval(userDto);
         }
+
         return new ModelAndView(new StringBuilder().append("redirect:/users/")
                 .append(editedUser.getEncodedUsername()).toString());
     }
@@ -212,13 +216,14 @@ public class UserController {
      * Convenience method to handle possible errors
      *
      * @param userDto form submission result
-     * @param result form validation result, will be filled up with additional errors, if any
+     * @param result  form validation result, will be filled up with additional errors, if any
      * @return Edited domain object if no error occure, null otherwise
      * @throws IOException image stream processing error
      */
     private User editUserProfile(EditUserProfileDto userDto, BindingResult result) throws IOException {
+        User returnValue = null;
         try {
-            return performEditUserProfile(userDto);
+            returnValue = performEditUserProfile(userDto);
         } catch (DuplicateEmailException e) {
             result.rejectValue("email", "validation.duplicateemail");
         } catch (WrongPasswordException e) {
@@ -227,7 +232,7 @@ public class UserController {
         } catch (InvalidImageException e) {
             result.rejectValue("avatar", "avatar.wrong.format");
         }
-        return null;
+        return returnValue;
     }
 
     /**
@@ -237,7 +242,7 @@ public class UserController {
      * @param response response to be filled with new cookie
      */
     private void applyLanguage(Language language, HttpServletResponse response) {
-        String code =  language.getLanguageCode();
+        String code = language.getLanguageCode();
         Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, code);
         response.addCookie(cookie);
     }
@@ -249,32 +254,43 @@ public class UserController {
      * @param userDto form submission result
      * @return updated user object
      * @throws DuplicateEmailException e-mail already registered
-     * @throws WrongPasswordException current password doesn't match with the passed one
-     * @throws IOException avatar upload problems
-     * @throws InvalidImageException avatar image is invalid
+     * @throws WrongPasswordException  current password doesn't match with the passed one
+     * @throws IOException             avatar upload problems
+     * @throws InvalidImageException   avatar image is invalid
      */
     private User performEditUserProfile(EditUserProfileDto userDto) throws DuplicateEmailException,
             WrongPasswordException, IOException, InvalidImageException {
-        byte[] avatar = imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
-        return userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
-                userDto.getLastName(), userDto.getCurrentUserPassword(), userDto.getNewUserPassword(),
-                avatar,
-                userDto.getSignature(), userDto.getLanguage(), userDto.getPageSize());
+
+        User result;
+
+        String email = userDto.getEmail();
+        String firstName = userDto.getFirstName();
+        String lastName = userDto.getLastName();
+        String currentUserPassword = userDto.getCurrentUserPassword();
+        String newUserPassword = userDto.getNewUserPassword();
+        String encodedBytes = userDto.getAvatar();
+        byte[] avatar = imagePreprocessor.base64Decoder(encodedBytes);
+        String signature = userDto.getSignature();
+        String language = userDto.getLanguage();
+        String pageSize = userDto.getPageSize();
+
+        result = userService.editUserProfile(email, firstName,
+                lastName, currentUserPassword, newUserPassword,
+                avatar, signature, language, pageSize);
+
+        return result;
     }
 
     /**
-     *  todo: looks realy odd, we need to somehow refactor all the chain
-     *
+     * todo: looks realy odd, we need to somehow refactor all the chain
+     * <p/>
      * Substitues fake avatar value if there was no avatar passed
      *
      * @param userDto for submission result
-     * @return  updated model and view containing avatar in any case
+     * @return updated model and view containing avatar in any case
      */
     private ModelAndView applyAvatarRemoval(EditUserProfileDto userDto) {
         User user = securityService.getCurrentUser();
-        if (user.getAvatar() == null) {
-            userDto.setAvatar(new MockMultipartFile("avatar", "", ImageFormats.JPG.getContentType(), new byte[0]));
-        }
         return editMaV(userDto);
     }
 
@@ -354,5 +370,85 @@ public class UserController {
             mav.addObject("error", "email.failed");
         }
         return mav;
+    }
+
+
+    /**
+     * Proccess avatar file from request and return avatar preview in response
+     *
+     * @param request  servlet request
+     * @param response servlet response
+     * @throws ServletException avatar processing problem
+     */
+    @RequestMapping(value = "/users/avatarpreview", method = RequestMethod.POST)
+    public void uploadAvatar(ServletRequestWrapper request, HttpServletResponse
+            response) throws ServletException {
+
+        PrintWriter writer = null;
+        InputStream inputStream = null;
+        JSONObject json = new JSONObject();
+
+        try {
+            writer = response.getWriter();
+        } catch (IOException e) {
+            logger.error(UserController.class.getName() + "has thrown an exception: " + e.getMessage());
+        }
+
+        try {
+            inputStream = request.getInputStream();
+            inputStream = new BufferedInputStream(inputStream);
+            BufferedImage inputAvatar = ImageIO.read(inputStream);
+            prepareOutputAvatar(response, writer, json, inputAvatar);
+        } catch (IOException e) {
+            prepareErrorServerResponse(response, writer, json, e);
+        } finally {
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+
+                if (writer != null) {
+                    writer.flush();
+                    writer.close();
+                }
+
+            } catch (IOException e) {
+                logger.error(UserController.class.getName() + "has thrown an exception: " + e.getMessage());
+            }
+        }
+
+    }
+
+    /**
+     * Prepare the error server response if the avatar processing error occurred
+     *
+     * @param response servlet response
+     * @param writer   writer for response
+     * @param json     JSON container for response content
+     * @param e        avatar processing problem
+     */
+    private void prepareErrorServerResponse(HttpServletResponse response, PrintWriter writer, JSONObject json, IOException e) {
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        json.put("success", "false");
+        writer.print(json.toJSONString());
+        logger.error(UserController.class.getName() + "has thrown an exception: " + e.getMessage());
+    }
+
+    /**
+     * Prepare the error server response if the avatar processing error occurred
+     *
+     * @param response    servlet response
+     * @param writer      writer for response
+     * @param json        JSON container for response content
+     * @param inputAvatar avatar for the processing
+     */
+    private void prepareOutputAvatar(HttpServletResponse response, PrintWriter writer, JSONObject json, BufferedImage inputAvatar) throws IOException {
+        byte[] outputAvatar = imagePreprocessor.preprocessImage(inputAvatar);
+        String srcImage = imagePreprocessor.base64Coder(outputAvatar);
+        response.setStatus(HttpServletResponse.SC_OK);
+        json.put("success", "true");
+        json.put("srcPrefix", ImagePreprocessor.HTML_SRC_TAG_PREFIX);
+        json.put("srcImage", srcImage);
+        writer.print(json.toJSONString());
     }
 }

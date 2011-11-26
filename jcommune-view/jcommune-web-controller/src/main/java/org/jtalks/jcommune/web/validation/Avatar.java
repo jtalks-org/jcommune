@@ -47,7 +47,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @author Eugeny Batov
  */
 @ImageSize(size = 4096)
-@ImageFormat(format = {ImageFormats.JPG, ImageFormats.PNG, ImageFormats.GIF}, message = "{avatar.wrong.format}")
 @Target({FIELD, ANNOTATION_TYPE})
 @Retention(RUNTIME)
 @Constraint(validatedBy = {})
@@ -56,21 +55,18 @@ public @interface Avatar {
 
     /**
      * Message for display when validation fails.
-     *
      */
     String message() default "{avatar.wrong}";
 
     /**
      * Groups element that specifies the processing groups with which the
      * constraint declaration is associated.
-     *
      */
     Class<?>[] groups() default {};
 
     /**
      * Payload element that specifies the payload with which the the
      * constraint declaration is associated.
-     *
      */
     Class<? extends Payload>[] payload() default {};
 

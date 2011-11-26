@@ -14,8 +14,6 @@
  */
 package org.jtalks.jcommune.web.validation;
 
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -28,6 +26,7 @@ import java.util.Set;
 
 /**
  * @author Eugeny Batov
+ * @author Alexandre Teterin
  */
 public class ImageSizeValidatorTest {
     /**
@@ -36,9 +35,9 @@ public class ImageSizeValidatorTest {
     public class TestObject {
 
         @ImageSize(size = 65)
-        private MultipartFile avatar;
+        private byte[] avatar;
 
-        public TestObject(MockMultipartFile avatar) {
+        public TestObject(byte[] avatar) {
             this.avatar = avatar;
         }
     }
@@ -54,8 +53,7 @@ public class ImageSizeValidatorTest {
     @Test
     public void testValidatorSuccess() {
         Set<ConstraintViolation<TestObject>> constraintViolations =
-                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "test_avatar", "image/jpeg",
-                        new byte[1024])));
+                validator.validate(new TestObject(new byte[1024]));
 
         Assert.assertEquals(constraintViolations.size(), 0, "Validation errors");
     }
@@ -63,8 +61,7 @@ public class ImageSizeValidatorTest {
     @Test
     public void testValidatorFail() {
         Set<ConstraintViolation<TestObject>> constraintViolations =
-                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "test_avatar", "image/jpeg",
-                        new byte[102400])));
+                validator.validate(new TestObject(new byte[102400]));
 
         Assert.assertEquals(constraintViolations.size(), 1, "Validation without errors");
         Assert.assertNotNull(constraintViolations.iterator().next().getMessage());
@@ -73,8 +70,7 @@ public class ImageSizeValidatorTest {
     @Test
     public void testValidatorImageNull() {
         Set<ConstraintViolation<TestObject>> constraintViolations =
-                validator.validate(new TestObject(new MockMultipartFile("test_avatar", "", "application/octet-stream",
-                        new byte[0])));
+                validator.validate(new TestObject(new byte[0]));
 
         Assert.assertEquals(constraintViolations.size(), 0, "Validation errors");
     }
