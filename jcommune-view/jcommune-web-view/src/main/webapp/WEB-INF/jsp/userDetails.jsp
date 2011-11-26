@@ -22,8 +22,6 @@
 <html>
 <head>
     <title><spring:message code="label.user"/> - ${user.username}</title>
-    <link href="${pageContext.request.contextPath}/resources/css/main.css"
-          type=text/css rel=stylesheet>
 </head>
 <body>
 <sec:authentication property="principal.username" var="auth" scope="request"/>
