@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.json.simple.JSONObject;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
@@ -25,6 +26,7 @@ import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.util.ImagePreprocessor;
 import org.jtalks.jcommune.web.util.Language;
 import org.jtalks.jcommune.web.util.PageSize;
+import org.jtalks.jcommune.web.util.Pagination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.List;
 
 /**
  * Controller for User related actions: registration.
@@ -62,6 +65,7 @@ public class UserController {
     public static final String EDIT_PROFILE = "editProfile";
     public static final String REGISTRATION = "registration";
     public static final String EDITED_USER = "editedUser";
+    public static final String BREADCRUMB_LIST = "breadcrumbList";
 
 
     private final SecurityService securityService;
@@ -147,11 +151,13 @@ public class UserController {
     @RequestMapping(value = "/users/{encodedUsername}", method = RequestMethod.GET)
     //The {encodedUsername} from the JSP view automatically converted to username.
     // That's why the getByUsername() method is used instead of getByEncodedUsername().
-    public ModelAndView showProfilePage(@PathVariable("encodedUsername") String username) throws NotFoundException {
+    public ModelAndView showProfilePage(@PathVariable("encodedUsername") String username
+    ) throws NotFoundException {
         User user = userService.getByUsername(username);
         return new ModelAndView("userDetails")
                 .addObject("user", user)
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
+                .addObject("posts", user.getPosts())
+                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb())
                         // bind separately to get localized value
                 .addObject("language", Language.valueOf(user.getLanguage()))
                 .addObject("pageSize", PageSize.valueOf(user.getPageSize()));
@@ -174,7 +180,7 @@ public class UserController {
             ));
         }
         return editMaV(editedUser)
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
+                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
     }
 
     /**
@@ -360,7 +366,7 @@ public class UserController {
     @RequestMapping(value = "/password/restore", method = RequestMethod.POST)
     public ModelAndView restorePassword(String email) {
         ModelAndView mav = new ModelAndView("restorePassword");
-        mav.addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
+        mav.addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
         try {
             userService.restorePassword(email);
             mav.addObject("message", "label.restorePassword.completed");
@@ -450,5 +456,33 @@ public class UserController {
         json.put("srcPrefix", ImagePreprocessor.HTML_SRC_TAG_PREFIX);
         json.put("srcImage", srcImage);
         writer.print(json.toJSONString());
+    }
+
+    /**
+     * Show page with post of user.
+     *
+     * @param page            number current page
+     * @param pagingEnabled   flag on/OffScreenImage paging
+     * @param encodedUsername encodedUsername
+     * @return post list of user
+     * @throws NotFoundException if user with given id not found.
+     */
+    @RequestMapping(value = "/users/{encodedUsername}/postList", method = RequestMethod.GET)
+    public ModelAndView showUserPostList(@PathVariable("encodedUsername") String encodedUsername,
+                                         @RequestParam(value = "page", defaultValue = "1",
+                                                 required = false) Integer page,
+                                         @RequestParam(value = "pagingEnabled", defaultValue = "true", required = false
+                                         ) Boolean pagingEnabled
+    ) throws NotFoundException {
+        User user = userService.getByEncodedUsername(encodedUsername);
+        List<Post> posts = userService.getPostsOfUser(user);
+        Pagination pag = new Pagination(page, user, posts.size(), pagingEnabled);
+        return new ModelAndView("userPostList")
+                .addObject("user", user)
+                .addObject("pag", pag)
+                .addObject("posts", posts)
+                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb())
+                .addObject("language", Language.valueOf(user.getLanguage()))
+                .addObject("pageSize", PageSize.valueOf(user.getPageSize()));
     }
 }

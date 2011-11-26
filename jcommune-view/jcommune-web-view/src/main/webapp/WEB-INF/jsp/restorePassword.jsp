@@ -38,7 +38,6 @@
                     <td>
 
                         <spring:message code="label.email"/>
-                        <span class="small"><spring:message code="label.tip.email"/></span>
 
                     </td>
                     <td>
@@ -54,7 +53,7 @@
                             </span>
                         </c:if>
                         <c:if test="${not empty message}">
-                                <spring:message code="${message}"/>
+                            <spring:message code="${message}"/>
                         </c:if>
                     </td>
                 </tr>

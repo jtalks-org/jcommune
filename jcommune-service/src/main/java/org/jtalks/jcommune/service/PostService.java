@@ -39,16 +39,6 @@ public interface PostService extends EntityService<Post> {
     List<Post> getPostRangeInTopic(long topicId, int start, int max) throws NotFoundException;
 
     /**
-     * Get number of posts in topic.
-     *
-     * @param topicId topic id where you have to count posts
-     * @return number of posts in topic
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when topic not found
-     */
-    int getPostsInTopicCount(long topicId) throws NotFoundException;
-
-    /**
      * Update current post with given content, add the modification date.
      *
      * @param postId      post id
@@ -56,7 +46,7 @@ public interface PostService extends EntityService<Post> {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when post not found
      */
-    void updatePost(long postId,String postContent) throws NotFoundException;
+    void updatePost(long postId, String postContent) throws NotFoundException;
 
     /**
      * Delete post  by id.

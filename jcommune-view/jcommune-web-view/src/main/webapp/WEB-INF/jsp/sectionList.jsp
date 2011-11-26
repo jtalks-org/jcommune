@@ -19,11 +19,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+
 <html>
 <head>
-    <title>Форум JTalks</title>
+    <title><spring:message code="label.section.jtalks_forum"/></title>
     <link rel="stylesheet" type="text/css" media="screen, projection"
           href="${pageContext.request.contextPath}/resources/css/screen.css"/>
 </head>
@@ -37,11 +39,11 @@
                 code="label.recent"/></a> <br/>
         <a class="forum_top_right_link" href="#"><spring:message code="label.messagesWithoutAnswers"/></a>
 
-        <h2><a class="heading" href="#">Java форум JTalks</a></h2>
+        <h2><a class="heading" href="#"><spring:message code="label.section.jtalks_forum"/></a></h2>
         <br/>
 
         <div class="forum_misc_info">
-            форум программистов
+            <spring:message code="label.section.prog_forum"/>
         </div>
 
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
@@ -66,7 +68,7 @@
                         <div class="forum_icon"> <!-- Иконка с кофе -->
                             <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png"
                                  alt=""
-                                 title="Форум закрыт"/>
+                                 title="<spring:message code="label.section.close_forum"/>"/>
                         </div>
                         <div class="forum_info"> <!-- Информация о форуме -->
                             <h4><a class="forum_link"
@@ -74,7 +76,7 @@
                                 <c:out value="${branch.name}"/></a></h4> <!-- Ссылка на форум -->
                             <p>
                                 <c:out value="${branch.description}"/>
-                                <a href="#">ЧаВО</a>
+                                <a href="#"><spring:message code="label.section.faq"/></a>
                                 <br/>
                                 <spring:message code="label.section.moderators"/> <a class="moderator" href="#">Vurn</a>
                             </p>
@@ -83,15 +85,33 @@
                             <c:out value="${branch.topicCount}"/>
                         </div>
                         <div class="forum_messages">
-                            6574
+                                ${messagesCount}
                         </div>
                         <div class="forum_last_message">
-                            <span>Июл 04, 2011 23:54</span>
-                            <br/>
-                            <a href="#">Pahan</a>
-                            <a href="#"><img
-                                    src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
-                                    alt="Последнее сообщение"/></a>
+                            <c:if test="${branch.topicCount>0}">
+                                <span><jtalks:format value="${branch.lastUpdatedTopic.lastPost.creationDate}"/></span>
+                                <br/>
+                                <a href="${pageContext.request.contextPath}/users/${branch.lastUpdatedTopic.lastPost.userCreated.encodedUsername}">${branch.lastUpdatedTopic.lastPost.userCreated.username}</a>
+                                <c:choose>
+                                    <c:when test="${pageSize >= branch.lastUpdatedTopic.postCount}">
+                                        <a href="${pageContext.request.contextPath}/topics/${branch.lastUpdatedTopic.id}#${branch.lastUpdatedTopic.lastPost.id}"><img
+                                                src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
+                                                alt="<spring:message code="label.section.header.lastMessage"/>"/></a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:if test="${branch.lastUpdatedTopic.postCount % pageSize > 0}">
+                                            <c:set var="additionalPage" value="${1}"/>
+                                        </c:if>
+                                        <c:if test="${branch.lastUpdatedTopic.postCount % pageSize == 0}">
+                                            <c:set var="additionalPage" value="${0}"/>
+                                        </c:if>
+                                        <a href="${pageContext.request.contextPath}/topics/${branch.lastUpdatedTopic.id}?page=<fmt:formatNumber value="${(branch.lastUpdatedTopic.postCount - (branch.lastUpdatedTopic.postCount mod pageSize)) div pageSize + additionalPage}"/>#${branch.lastUpdatedTopic.lastPost.id}">
+                                            <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
+                                                 alt="<spring:message code="label.section.header.lastMessage"/>"/>
+                                        </a>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:if>
                         </div>
                     </li>
                 </c:forEach>

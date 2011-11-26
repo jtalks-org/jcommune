@@ -14,13 +14,6 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
@@ -37,6 +30,11 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.testng.Assert.*;
 
 /**
  * @author Kirill Afonin
@@ -119,25 +117,13 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
     @Test
     public void testGetTopicRangeInBranch() {
-        int start = 1;
-        int max = 2;
         List<Topic> persistedTopics = createAndSaveTopicList(5);
         long branchId = persistedTopics.get(0).getBranch().getId();
 
-        List<Topic> topics = dao.getTopicRangeInBranch(branchId, start, max);
+        List<Topic> topics = dao.getTopicsInBranch(branchId);
 
-        assertEquals(max, topics.size(), "Unexpected list size");
+        assertEquals(5, topics.size());
         assertEquals(branchId, topics.get(0).getBranch().getId(), "Incorrect branch");
-    }
-
-    @Test
-    public void testGetTopicsInBranchCount() {
-        List<Topic> persistedTopics = createAndSaveTopicList(5);
-        long branchId = persistedTopics.get(0).getBranch().getId();
-
-        int count = dao.getTopicsInBranchCount(branchId);
-
-        assertEquals(count, 5);
     }
 
     @Test
@@ -158,14 +144,25 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
     @Test
     public void testGetAllTopicsPastLastDay() {
-        int start = 1;
-        int max = 2;
         createAndSaveTopicList(5);
         DateTime lastLogin = new DateTime().minusDays(1);
 
-        List<Topic> result = dao.getAllTopicsPastLastDay(start, max, lastLogin);
+        List<Topic> result = dao.getAllTopicsPastLastDay(lastLogin);
 
-        assertEquals(result.size(), max);
-    }    
-       
+        assertEquals(result.size(), 5);
+    }
+
+    @Test
+    public void testPostsInTopic() {
+        User user = ObjectsFactory.getDefaultUser();
+        Branch branch = ObjectsFactory.getDefaultBranch();
+        Topic topic = ObjectsFactory.getDefaultTopic();
+        branch.addTopic(topic);
+
+        session.save(branch);
+
+        int count = dao.getTopicsInBranch(branch.getId()).get(0).getPostCount();
+
+        assertEquals(count, 1);
+    }
 }

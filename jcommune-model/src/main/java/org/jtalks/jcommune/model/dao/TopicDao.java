@@ -34,19 +34,9 @@ public interface TopicDao extends ChildRepository<Topic> {
      * Get posts range from branch.
      *
      * @param branchId branch id from which we obtain topics
-     * @param start    start index of topic
-     * @param max      number of topics
      * @return list of {@code Topic} objects with size {@code max}
      */
-    List<Topic> getTopicRangeInBranch(Long branchId, int start, int max);
-
-    /**
-     * Get number of topics in branch.
-     *
-     * @param branchId branch id where you have to count topics
-     * @return number of topics in branch
-     */
-    int getTopicsInBranchCount(long branchId);
+    List<Topic> getTopicsInBranch(Long branchId);
 
     /**
      * Get count of topics past last 24 hour.
@@ -59,10 +49,8 @@ public interface TopicDao extends ChildRepository<Topic> {
     /**
      * Get all topics past last 24 hour.
      *
-     * @param start start index of topic
-     * @param max   number of topics
      * @param lastLogin user's last login date and time
      * @return list of topics
      */
-    List<Topic> getAllTopicsPastLastDay(int start, int max, DateTime lastLogin);
+    List<Topic> getAllTopicsPastLastDay(DateTime lastLogin);
 }

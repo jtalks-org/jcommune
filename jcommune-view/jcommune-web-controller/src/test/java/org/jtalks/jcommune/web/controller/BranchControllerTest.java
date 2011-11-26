@@ -32,9 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
 
 
@@ -97,7 +95,7 @@ public class BranchControllerTest {
         int startIndex = page * pageSize - pageSize;
         //set expectations
         when(topicService.getTopicsPastLastDayCount(now)).thenReturn(10);
-        when(topicService.getAllTopicsPastLastDay(startIndex, pageSize, now)).thenReturn(new ArrayList<Topic>());
+        when(topicService.getAllTopicsPastLastDay(now)).thenReturn(new ArrayList<Topic>());
 
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("lastlogin", now);
@@ -106,7 +104,7 @@ public class BranchControllerTest {
         ModelAndView mav = controller.recentTopicsPage(page, session);
 
         //check expectations
-        verify(topicService).getAllTopicsPastLastDay(startIndex, pageSize, now);
+        verify(topicService).getAllTopicsPastLastDay(now);
         verify(topicService).getTopicsPastLastDayCount(now);
 
         //check result

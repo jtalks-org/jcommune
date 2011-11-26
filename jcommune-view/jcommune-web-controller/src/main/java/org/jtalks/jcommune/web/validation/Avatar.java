@@ -53,6 +53,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 public @interface Avatar {
 
+    int MAX_AVATAR_SIZE = 4096;
+
     /**
      * Message for display when validation fails.
      */

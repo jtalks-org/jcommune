@@ -33,33 +33,33 @@
     </c:if>
     <form action='<c:url value="/j_spring_security_check"/>' method="POST" name="form" id="form">
         <div class="all_forums">
-           <div style="width: 400px">
-            <div class="forum_header">
-                <span class="forum_header_answer"><spring:message code="label.signin"/></span>
-                <span class="empty_cell"></span> <!-- Необходима для корректного отображения псевдотаблицы -->
-            </div>
-            <div class="forum_row">
-                <label for="j_username"><spring:message code="label.username"/> </label>
-                <input type="text" size="30" name="j_username" id="j_username">
+            <div style="width: 400px">
+                <div class="forum_header">
+                    <span class="forum_header_answer"><spring:message code="label.signin"/></span>
+                    <span class="empty_cell"></span> <!-- Необходима для корректного отображения псевдотаблицы -->
+                </div>
+                <div class="forum_row">
+                    <label for="j_username"><spring:message code="label.username"/> </label>
+                    <input type="text" size="30" name="j_username" id="j_username">
 
-            </div>
-            <div class="forum_row">
-                <label for="j_password"><spring:message code="label.password"/> </label>
-                <input type="password" size="30" name="j_password" id="j_password">
+                </div>
+                <div class="forum_row">
+                    <label for="j_password"><spring:message code="label.password"/> </label>
+                    <input type="password" size="30" name="j_password" id="j_password">
 
-            </div>
-            <div class="forum_row">
+                </div>
+                <div class="forum_row">
 
-                <input type="checkbox" name="staylogged">Автоматически входить
-                при каждом посещении
-                <span class="empty_cell"></span> <!-- Необходима для корректного отображения псевдотаблицы -->
-            </div>
+                    <input type="checkbox" name="staylogged"><spring:message code="label.auto_logon"/>
+                    <span class="empty_cell"></span> <!-- Необходима для корректного отображения псевдотаблицы -->
+                </div>
 
-            <div class="form_controls">
-                <input type="submit" value="<spring:message code="label.signin"/>"></input><br/><br/>
-                <a href='<c:url value="/password/restore"/>'><spring:message code="label.restorePassword.prompt"/></a>
+                <div class="form_controls">
+                    <input type="submit" value="<spring:message code="label.signin"/>"></input><br/><br/>
+                    <a href='<c:url value="/password/restore"/>'><spring:message
+                            code="label.restorePassword.prompt"/></a>
+                </div>
             </div>
-           </div>
         </div>
     </form>
     <!-- Конец всех форумов -->

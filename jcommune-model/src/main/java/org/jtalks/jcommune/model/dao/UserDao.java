@@ -14,7 +14,10 @@
  */
 package org.jtalks.jcommune.model.dao;
 
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.User;
+
+import java.util.List;
 
 /**
  * This interface provides persistence operations for
@@ -74,8 +77,8 @@ public interface UserDao extends ParentRepository<User> {
     boolean isUserWithEmailExist(String email);
 
     /**
-     * @param userCreated user created
-     * @return count posts of user
+     * @param userCreated user
+     * @return post list of user
      */
-    int getCountPostOfUser(User userCreated);
+    public List<Post> getPostsOfUser(User userCreated);
 }

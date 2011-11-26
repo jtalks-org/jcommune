@@ -22,12 +22,10 @@
 <html>
 <head>
     <title><spring:message code="label.user"/> - ${user.username}</title>
-    <link href="${pageContext.request.contextPath}/resources/css/main.css"
-          type=text/css rel=stylesheet>
 </head>
 <body>
 <sec:authentication property="principal.username" var="auth" scope="request"/>
- <jsp:include page="../template/topLine.jsp"/>
+<jsp:include page="../template/topLine.jsp"/>
 <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
 <div id="userdetails">
@@ -99,11 +97,15 @@
         <li>
             <c:if test="${user.username == auth}">
                 <a href="${pageContext.request.contextPath}/users/edit">
-                   Edit
+                    <spring:message code="label.edit_profile"/>
                 </a>
             </c:if>
         </li>
     </ul>
+    <a class="button"
+       href="${pageContext.request.contextPath}/users/${user.encodedUsername}/postList">
+        <spring:message code="label.postList"/>
+    </a>
 </div>
 </body>
 </html>

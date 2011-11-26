@@ -38,7 +38,12 @@ public class Post extends Entity {
     private User userCreated;
     private String postContent;
     private Topic topic;
-    
+
+    public static final int MAX_LENGTH = 20000;
+    public static final int MIN_LENGTH = 5;
+    private static final int ABBREVIATED_LENGTH = 200;
+    private static final String ABBREVIATION_SIGN = "...";
+
     /**
      * Constructs the instance with initialized fields.
      */
@@ -59,22 +64,13 @@ public class Post extends Entity {
     }
 
     /**
-     * Constructor used only for the input data in the testGetPostBreadcrumb method
-     * org.jtalks.jcommune.web.dto.BreadcrumbBuilderTest class.
-     *
-     * @param topic to be used as input data
-     */
-    public Post(Topic topic) {
-        this.topic = topic;
-    }
-
-    /**
      * @return the postDate
      */
     public DateTime getCreationDate() {
         return creationDate;
     }
-     /**
+
+    /**
      * @return date and time when the post was changed last time
      */
     public DateTime getModificationDate() {
@@ -96,12 +92,14 @@ public class Post extends Entity {
     }
 
     /**
-     * Set modification date to now.
+     * Set modification date to now. The post's topic's
+     * modification date will be also set to now
      *
      * @return new modification date
      */
-    public DateTime updateModificationDate()  {
+    public DateTime updateModificationDate() {
         this.modificationDate = new DateTime();
+        this.topic.updateModificationDate();
         return this.modificationDate;
     }
 
@@ -151,26 +149,20 @@ public class Post extends Entity {
 
     /**
      * Get a short version of topic content for preview in recent messages (max 200 character).
+     * Preserves the last word, that fits 200 chars and replasev others with "..." sign
      *
      * @return shortContent
      */
     public String getShortContent() {
-        String content = this.getPostContent();
-        String shortContent = "";
-        // todo: replace with lastIndexOf call
-        final int maxLength = 200;
-        if (content.length() > maxLength) {
-            int maxLengthWithoutDots = 197;
-            for (int i = maxLengthWithoutDots; i > 1; i--) {
-                if (content.charAt(i) == ' ') {
-                    shortContent = content.substring(0, i);
-                    shortContent = shortContent + "...";
-                    break;
-                }
+        if (this.postContent.length() > ABBREVIATED_LENGTH) {
+            int trimSize = ABBREVIATED_LENGTH - ABBREVIATION_SIGN.length();
+            String shortContent = this.postContent.substring(0, trimSize);
+            if (shortContent.contains(" ")) {
+                shortContent = shortContent.substring(0, shortContent.lastIndexOf(' '));
             }
+            return shortContent + ABBREVIATION_SIGN;
         } else {
-            shortContent = content;
+            return this.postContent;
         }
-        return shortContent;
     }
 }

@@ -18,9 +18,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.UserDao;
-import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -31,12 +29,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNotSame;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.testng.Assert.*;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
@@ -228,73 +224,51 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     }
 
     @Test
-    public void testDaoUserPostCountCreateNewPost() {
-        Post post = new Post(user, "");
-        dao.saveOrUpdate(user);
+    public void testNullPostsOfUserCount() {
+        session.save(ObjectsFactory.getDefaultUser());
+
+        User user = dao.getByEncodedUsername("username");
+
+        assertEquals(user.getUserPostCount(), 0);
+    }
+
+    @Test
+    public void testPostsOfUserCount() {
+        User user = ObjectsFactory.getDefaultUser();
+        Post post = new Post(user, "first");
+        List<Post> posts = new ArrayList<Post>();
+        posts.add(post);
+        session.save(user);
         session.save(post);
 
-        int result = dao.getCountPostOfUser(user);
-        assertEquals(result, 1);
+        User userForDao = dao.getByUsername("username");
+
+        assertEquals(userForDao.getUserPostCount(), 1);
     }
 
     @Test
-    public void testDaoUserPostCountDeleteBranch() {
-        Post post1 = new Post(user, "");
-        Topic topic = new Topic(user, "");
-        Branch branch = ObjectsFactory.getDefaultBranch();
-
-        topic.addPost(post1);
-        branch.addTopic(topic);
-
-        dao.saveOrUpdate(user);
-        session.save(branch);
-
-        int result = dao.getCountPostOfUser(user);
-        assertEquals(result, 1);
-
-        session.delete(branch);
-
-        result = dao.getCountPostOfUser(user);
-        assertEquals(result, 0);
-    }
-
-    @Test
-    public void testDaoUserPostCountDeleteTopic() {
-        Post post1 = new Post(user, "");
-        Topic topic = new Topic(user, "");
-        Branch branch = ObjectsFactory.getDefaultBranch();
-
-        topic.addPost(post1);
-        branch.addTopic(topic);
-
-        dao.saveOrUpdate(user);
-        session.save(branch);
-
-        int result = dao.getCountPostOfUser(user);
-        assertEquals(result, 1);
-
-        branch.deleteTopic(topic);
-
-        result = dao.getCountPostOfUser(user);
-        assertEquals(result, 0);
-    }
-
-    @Test
-    public void testDaoUserPostCountRemovePost() {
-        Post post = new Post(user, "");
-
-        dao.saveOrUpdate(user);
+    public void testPostOfUser() {
+        User user = ObjectsFactory.getDefaultUser();
+        Post post = new Post(user, "first");
+        List<Post> posts = new ArrayList<Post>();
+        posts.add(post);
+        session.save(user);
         session.save(post);
 
-        int result = dao.getCountPostOfUser(user);
-        assertEquals(result, 1);
+        List<Post> postsTwo = dao.getPostsOfUser(user);
 
-        session.delete(post);
-
-        result = dao.getCountPostOfUser(user);
-        assertEquals(result, 0);
+        assertEquals(postsTwo, posts);
     }
 
+    @Test
+    public void testNullPostOfUser() {
+        User user = ObjectsFactory.getDefaultUser();
+        session.save(user);
+
+        List<Post> posts = dao.getPostsOfUser(user);
+
+        assertEquals(posts, new ArrayList<Post>());
+    }
 
     private int getCount() {
         return ((Number) session.createQuery("select count(*) from User").uniqueResult()).intValue();

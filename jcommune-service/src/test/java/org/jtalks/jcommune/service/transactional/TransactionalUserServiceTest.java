@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.MailService;
 import org.jtalks.jcommune.service.SecurityService;
@@ -27,9 +28,12 @@ import org.mockito.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 
 /**
  * @author Kirill Afonin
@@ -329,16 +333,6 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void testTransactionUserPostCount() throws NotFoundException {
-        User user = new User(USERNAME, EMAIL, PASSWORD);
-        when(userDao.getCountPostOfUser(user)).thenReturn(1);
-
-        assertEquals(userService.getCountPostOfUser(user), 1);
-
-        verify(userDao).getCountPostOfUser(user);
-    }
-
-    @Test
     public void testRestorePassword() throws NotFoundException, MailingFailedException {
         User user = new User(USERNAME, EMAIL, PASSWORD);
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(true);
@@ -372,10 +366,34 @@ public class TransactionalUserServiceTest {
 
         try {
             userService.restorePassword(EMAIL);
-        }  catch (MailingFailedException e) {
-           // ensure db modification haven't been done if mailing failed
-           verify(userDao, never()).update(Matchers.<User>any());
-           throw e;
+        } catch (MailingFailedException e) {
+            // ensure db modification haven't been done if mailing failed
+            verify(userDao, never()).update(Matchers.<User>any());
+            throw e;
         }
+    }
+
+    @Test
+    public void testNullPostsOfUser() {
+        User user = new User(USERNAME, EMAIL, PASSWORD);
+        List<Post> posts = new ArrayList<Post>();
+        when(userDao.getPostsOfUser(user)).thenReturn(posts);
+
+        assertEquals(userService.getPostsOfUser(user), new ArrayList<Post>());
+
+        verify(userDao).getPostsOfUser(user);
+    }
+
+    @Test
+    public void testPostsOfUser() {
+        User user = new User(USERNAME, EMAIL, PASSWORD);
+        List<Post> posts = new ArrayList<Post>();
+        Post post = new Post(user, "");
+        posts.add(post);
+        when(userDao.getPostsOfUser(user)).thenReturn(posts);
+
+        assertEquals(userService.getPostsOfUser(user), posts);
+
+        verify(userDao).getPostsOfUser(user);
     }
 }

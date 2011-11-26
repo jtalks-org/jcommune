@@ -54,7 +54,7 @@ public class SectionHibernateDao extends ParentRepositoryImpl<Section> implement
 
     /**
      * Get number of topic in branch.
-     * 
+     *
      * @param branch branch
      * @return number of topic in branch
      */
@@ -77,11 +77,26 @@ public class SectionHibernateDao extends ParentRepositoryImpl<Section> implement
         for (Section section : sectionList) {
             List<Branch> branchList = section.getBranches();
             for (Branch branch : branchList) {
-                int count = getTopicInBranchCount(branch);
-                branch.setTopicCount(count);
+                branch.setTopicCount(getTopicInBranchCount(branch));
             }
         }
         return sectionList;
+    }
+
+    /**
+     * Return section found for this id
+     *
+     * @param sectionId section id
+     * @return section section
+     */
+    public Section get(Long sectionId) {
+        Section section = (Section) super.get(sectionId);
+        if (section != null) {
+            for (Branch branch : section.getBranches()) {
+                branch.setTopicCount(getTopicInBranchCount(branch));
+            }
+        }
+        return section;
     }
 
 }

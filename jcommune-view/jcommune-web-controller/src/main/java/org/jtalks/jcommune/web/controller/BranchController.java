@@ -84,13 +84,13 @@ public final class BranchController {
      */
     @RequestMapping(value = "/branches/{branchId}", method = RequestMethod.GET)
     public ModelAndView showPage(@PathVariable("branchId") long branchId,
-                             @RequestParam(value = PAGE, defaultValue = "1", required = false) Integer page,
-                             @RequestParam(value = PAGING_ENABLED, defaultValue = "true",
-                                     required = false) Boolean pagingEnabled
+                                 @RequestParam(value = PAGE, defaultValue = "1", required = false) Integer page,
+                                 @RequestParam(value = PAGING_ENABLED, defaultValue = "true",
+                                         required = false) Boolean pagingEnabled
     ) throws NotFoundException {
 
         Branch branch = branchService.get(branchId);
-        List<Topic> topics = branch.getTopics();
+        List<Topic> topics = topicService.getTopicsInBranch(branchId);
         User currentUser = securityService.getCurrentUser();
 
         Pagination pag = new Pagination(page, currentUser, topics.size(), pagingEnabled);
@@ -110,25 +110,24 @@ public final class BranchController {
      * @param page    page
      * @param session bound http session
      * @return {@code ModelAndView} with topics list and vars for pagination
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when branch not found
      */
     @RequestMapping(value = "/topics/recent", method = RequestMethod.GET)
-    public ModelAndView recentTopicsPage(@RequestParam(value = PAGE, required = false) Integer page, HttpSession session)
-            throws NotFoundException {
+    public ModelAndView recentTopicsPage(@RequestParam(value = PAGE, defaultValue = "1", required = false) Integer page,
+                                         HttpSession session) {
 
         DateTime lastLogin = (DateTime) session.getAttribute("lastlogin");
         int topicsCount = topicService.getTopicsPastLastDayCount(lastLogin);
         User currentUser = securityService.getCurrentUser();
 
-        Pagination pag = new Pagination(page, currentUser, topicsCount);
+        Pagination pag = new Pagination(page, currentUser, topicsCount, true);
 
-        List<Topic> topics = topicService.getAllTopicsPastLastDay(pag.getStart(), pag.getPageSize(), lastLogin);
+        List<Topic> topics = topicService.getAllTopicsPastLastDay(lastLogin);
 
         return new ModelAndView("recent")
                 .addObject("topics", topics)
                 .addObject("maxPages", pag.getMaxPages())
                 .addObject(PAGE, pag.getPage())
+                .addObject("pag", pag)
                 .addObject("breadcrumbList",
                         breadcrumbBuilder.getRecentBreadcrumb());
     }

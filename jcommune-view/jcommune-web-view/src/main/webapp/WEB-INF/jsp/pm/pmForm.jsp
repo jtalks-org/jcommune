@@ -27,6 +27,7 @@
 <div class="wrap pm_page">
     <jsp:include page="../../template/topLine.jsp"/>
     <h1>JTalks</h1>
+
     <div class="all_forums">
         <h2><a class="heading" href="#"><spring:message code="label.new_pm"/></a></h2>
 
@@ -124,33 +125,35 @@
                                    value="URL"/>
                         </div>
 						<span class="genmed">
-							Цвет шрифта:
+							<spring:message code="label.topic.font_color"/>
 							<select id="select_color" name="select_color">
-                                <option>Чорный</option>
-                                <option>Белiй</option>
+                                <option><spring:message code="label.topic.font_color.black"/></option>
+                                <option><spring:message code="label.topic.font_color.white"/></option>
                             </select>
-							Размер шрифта:
+							<spring:message code="label.topic.font_size"/>
 							<select id="select_size" name="select_size">
-                                <option>Mali</option>
-                                <option>Bolsho</option>
-                                <option>Oche Bolsho</option>
+                                <option><spring:message code="label.topic.font_size.small"/></option>
+                                <option><spring:message code="label.topic.font_size.large"/></option>
+                                <option><spring:message code="label.topic.font_size.king_size"/></option>
                             </select>
 						</span>
-                        <a href="#" onmouseover="helpline('a')">Закрыть теги</a>
+                        <a href="#" onmouseover="helpline('a')"><spring:message code="label.topic.close_tags"/></a>
 
-                        <div id="helpline">Здесь должна быть подсказка</div>
+                        <div id="helpline"><spring:message code="label.topic.notify_message"/></div>
                         <form:textarea path="body" rows="15" cols="35" tabindex="3" class="post"/>
                         <form:errors path="body"/>
                     </div>
                 </li>
                 <li class="forum_row">
                     <div class="forum_answer_left">
-                        Опции
+                        <spring:message code="label.topic.options"/>
                     </div>
                     <div class="forum_answer_right options">
-                        <input id="notify" type="checkbox" name="notify"/> Сообщать мне о получении ответа
+                        <input id="notify" type="checkbox" name="notify"/> <spring:message
+                            code="label.topic.notify_message"/>
                         <br/>
-                        <input id="nosmiles" type="checkbox" name="nosmiles"/> Не отображать смайлы
+                        <input id="nosmiles" type="checkbox" name="nosmiles"/> <spring:message
+                            code="label.topic.no_smiles"/>
                     </div>
                 </li>
             </ul>

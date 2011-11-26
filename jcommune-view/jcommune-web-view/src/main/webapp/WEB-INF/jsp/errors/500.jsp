@@ -17,9 +17,10 @@
 <html>
 
 <head>
-    <title>404 Error - Page not found!</title>
+    <title>500 Error - Request processing failed!</title>
 </head>
 <body>
-Error 404: Page not found!
+Error 500: Server encountered an internal error while processing the request.
+Please check if the URL is valid and try again.
 </body>
 </html>

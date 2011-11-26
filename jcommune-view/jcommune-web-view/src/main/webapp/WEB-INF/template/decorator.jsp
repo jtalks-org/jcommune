@@ -19,7 +19,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <fmt:setBundle basename="org.jtalks.jcommune.web.view.messages"/>
 <fmt:setLocale value="en"/>
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html>
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>

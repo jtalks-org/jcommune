@@ -27,7 +27,10 @@ public class Breadcrumb {
     public static final String OUTBOX_BREADCRUMB_LOCATION_VALUE = "Outbox";
     public static final String DRAFTS_BREADCRUMB_LOCATION_VALUE = "Drafts";
     public static final String RECENT_BREADCRUMB_LOCATION_VALUE = "Recent";
-    public static final Long STUB_BREADCRUMB_ID = 1L;
+    public static final Long STUB_BREADCRUMB_ID = 1L; // used when node have no ID, e.g. folder
+
+    private static final int SIZE_LIMIT = 40;
+    private static final String ABBREVIATION_SIGN = "...";
 
     /**
      * Enumerates all possible location on the forum
@@ -132,10 +135,11 @@ public class Breadcrumb {
      * @return breadcrumbLocationValue the display breadcrumb name.
      */
     public String getBreadcrumbLocationValue() {
-        if (breadcrumbLocationValue.length() < 40) {
+        if (breadcrumbLocationValue.length() < SIZE_LIMIT) {
             return breadcrumbLocationValue;
         } else {
-            return breadcrumbLocationValue.substring(0, 37) + "...";
+            int barrier = SIZE_LIMIT - ABBREVIATION_SIGN.length();
+            return breadcrumbLocationValue.substring(0, barrier) + ABBREVIATION_SIGN;
         }
     }
 

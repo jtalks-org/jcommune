@@ -28,24 +28,16 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.security.AclBuilder;
 import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.mockito.ArgumentCaptor;
-import org.springframework.mock.web.MockHttpSession;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
 
 /**
  * This test cover {@code TransactionalTopicService} logic validation.
@@ -91,8 +83,11 @@ public class TransactionalTopicServiceTest {
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(expectedTopic);
 
+        int viewsCount = expectedTopic.getViews();
+
         Topic actualTopic = topicService.get(TOPIC_ID);
 
+        assertEquals(actualTopic.getViews(), viewsCount + 1);
         assertEquals(actualTopic, expectedTopic, "Topics aren't equals");
         verify(topicDao).isExist(TOPIC_ID);
         verify(topicDao).get(TOPIC_ID);
@@ -119,7 +114,6 @@ public class TransactionalTopicServiceTest {
         assertEquals(createdPost.getUserCreated(), user);
         verify(securityService).getCurrentUser();
         verify(topicDao).get(TOPIC_ID);
-        verify(topicDao).update(answeredTopic);
         verify(securityService).grantToCurrentUser();
         verify(aclBuilder).role(SecurityConstants.ROLE_ADMIN);
         verify(aclBuilder).admin();
@@ -167,55 +161,49 @@ public class TransactionalTopicServiceTest {
     }
 
     @Test
-    public void testGetTopicsRangeInBranch() throws NotFoundException {
-        int start = 1;
-        int max = 2;
+    public void testGetTopicsInBranch() throws NotFoundException {
         List<Topic> expectedList = new ArrayList<Topic>();
         expectedList.add(new Topic(user, "title"));
         expectedList.add(new Topic(user, "title"));
         when(branchDao.isExist(BRANCH_ID)).thenReturn(true);
-        when(topicDao.getTopicRangeInBranch(BRANCH_ID, start, max)).thenReturn(expectedList);
+        when(topicDao.getTopicsInBranch(BRANCH_ID)).thenReturn(expectedList);
 
-        List<Topic> topics = topicService.getTopicRangeInBranch(BRANCH_ID, start, max);
+        List<Topic> topics = topicService.getTopicsInBranch(BRANCH_ID);
 
         assertNotNull(topics);
-        assertEquals(topics.size(), max, "Unexpected list size");
-        verify(topicDao).getTopicRangeInBranch(BRANCH_ID, start, max);
+        assertEquals(topics.size(), 2);
+        verify(topicDao).getTopicsInBranch(BRANCH_ID);
         verify(branchDao).isExist(BRANCH_ID);
     }
 
     @Test
     public void testGetAllTopicsPastLastDay() throws NotFoundException {
-        int start = 1;
-        int max = 2;
         DateTime now = new DateTime();
         List<Topic> expectedList = new ArrayList<Topic>();
         expectedList.add(new Topic(user, "title"));
         expectedList.add(new Topic(user, "title"));
-        when(topicDao.getAllTopicsPastLastDay(start, max, now)).thenReturn(expectedList);
+        when(topicDao.getAllTopicsPastLastDay(now)).thenReturn(expectedList);
 
-        List<Topic> topics = topicService.getAllTopicsPastLastDay(start, max, now);
+        List<Topic> topics = topicService.getAllTopicsPastLastDay(now);
 
         assertNotNull(topics);
-        assertEquals(topics.size(), max);
-        verify(topicDao).getAllTopicsPastLastDay(start, max, now);
+        assertEquals(topics.size(), 2);
+        verify(topicDao).getAllTopicsPastLastDay(now);
     }
 
     @Test
     public void testGetAllTopicsPastLastDayNullLastLoginDate() {
-        int start = 1;
-        int max = 2;
         List<Topic> expectedList = new ArrayList<Topic>();
         expectedList.add(new Topic(user, "title"));
         expectedList.add(new Topic(user, "title"));
         ArgumentCaptor<DateTime> captor = ArgumentCaptor.forClass(DateTime.class);
-        when(topicDao.getAllTopicsPastLastDay(eq(start), eq(max), any(DateTime.class))).thenReturn(expectedList);
+        when(topicDao.getAllTopicsPastLastDay(any(DateTime.class))).thenReturn(expectedList);
 
-        List<Topic> topics = topicService.getAllTopicsPastLastDay(start, max, null);
+        List<Topic> topics = topicService.getAllTopicsPastLastDay(null);
 
         assertNotNull(topics);
-        assertEquals(topics.size(), max);
-        verify(topicDao).getAllTopicsPastLastDay(eq(start), eq(max), captor.capture());
+        assertEquals(topics.size(), 2);
+        verify(topicDao).getAllTopicsPastLastDay(captor.capture());
         int yesterday = new DateTime().minusDays(1).getDayOfYear();
         assertEquals(captor.getValue().getDayOfYear(), yesterday);
     }
@@ -247,30 +235,10 @@ public class TransactionalTopicServiceTest {
     }
 
     @Test(expectedExceptions = {NotFoundException.class})
-    public void testGetTopicsRangeInNonExistentBranch() throws NotFoundException {
+    public void testGetTopicsInNonExistentBranch() throws NotFoundException {
         when(branchDao.isExist(BRANCH_ID)).thenReturn(false);
 
-        topicService.getTopicRangeInBranch(BRANCH_ID, 1, 5);
-    }
-
-    @Test
-    public void testGetTopicsInBranchCount() throws NotFoundException {
-        int expectedCount = 10;
-        when(branchDao.isExist(BRANCH_ID)).thenReturn(true);
-        when(topicDao.getTopicsInBranchCount(BRANCH_ID)).thenReturn(expectedCount);
-
-        int count = topicService.getTopicsInBranchCount(BRANCH_ID);
-
-        assertEquals(count, expectedCount);
-        verify(topicDao).getTopicsInBranchCount(BRANCH_ID);
-        verify(branchDao).isExist(BRANCH_ID);
-    }
-
-    @Test(expectedExceptions = {NotFoundException.class})
-    public void testGetTopicsCountInNonExistentBranch() throws NotFoundException {
-        when(branchDao.isExist(BRANCH_ID)).thenReturn(false);
-
-        topicService.getTopicsInBranchCount(BRANCH_ID);
+        topicService.getTopicsInBranch(BRANCH_ID);
     }
 
     @Test
@@ -323,7 +291,6 @@ public class TransactionalTopicServiceTest {
 
         verify(topicDao).isExist(TOPIC_ID);
         verify(topicDao).get(TOPIC_ID);
-        verify(topicDao).update(topic);
     }
 
     @Test
@@ -353,7 +320,6 @@ public class TransactionalTopicServiceTest {
 
         verify(topicDao).isExist(TOPIC_ID);
         verify(topicDao).get(TOPIC_ID);
-        verify(topicDao).update(topic);
     }
 
     @Test(expectedExceptions = {NotFoundException.class})
@@ -366,28 +332,5 @@ public class TransactionalTopicServiceTest {
         when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
         topicService.updateTopic(TOPIC_ID, newTitle, newBody, newWeight, newSticked, newAnnouncement);
-    }
-
-    @Test
-    void testAddTopicView() throws NotFoundException {
-        Topic topic = new Topic(user, "title");
-        topic.setId(TOPIC_ID);
-        int views = topic.getViews();
-        MockHttpSession httpSession = new MockHttpSession();
-
-        topicService.addTopicView(topic, httpSession);
-
-        Set<Long> topicIds = (Set<Long>) httpSession.getAttribute(TransactionalTopicService.TOPICS_VIEWED_ATTRIBUTE_NAME);
-        assertTrue(topicIds.contains(TOPIC_ID));
-
-        topicService.addTopicView(topic, httpSession);
-
-        assertEquals(topic.getViews(), views + 1);
-    }
-
-    @Test(expectedExceptions = {IllegalArgumentException.class})
-    void testAddTopicViewInInvalidSession() throws NotFoundException {
-
-        topicService.addTopicView(new Topic(user, "title"), null);
     }
 }

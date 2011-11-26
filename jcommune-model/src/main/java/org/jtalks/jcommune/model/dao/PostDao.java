@@ -39,12 +39,4 @@ public interface PostDao extends ChildRepository<Post> {
      * @return list of {@code Topic} objects with size {@code max}
      */
     List<Post> getPostRangeInTopic(long topicId, int start, int max);
-
-    /**
-     * Get number of posts in topic.
-     *
-     * @param topicId topic id where you have to count posts
-     * @return number of posts in topic
-     */
-    int getPostsInTopicCount(long topicId);
 }

@@ -1,4 +1,3 @@
-<%@ page import="org.jtalks.jcommune.web.util.Pagination" %>
 <%--
 
     Copyright (C) 2011  JTalks.org Team
@@ -21,35 +20,37 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <html>
 <head>
-    <title>Forum</title>
+    <title><spring:message code="label.section.jtalks_forum"/></title>
 </head>
 <body>
 <h1>JTalks</h1>
 
 <div class="wrap branch_page">
-     <jsp:include page="../template/topLine.jsp"/>
+    <jsp:include page="../template/topLine.jsp"/>
     <!-- Начало всех форумов -->
     <div class="all_forums">
         <h2><a class="heading" href="#"><c:out value="${branch.name}"/></a></h2>
+
         <div class="forum_misc_info">
             <c:out value="${branch.description}"/>
-            <span class="nav_bottom" >
-                <a class="forum_top_right_link" href="#">Отметить все темы как прочтенные</a>
+            <span class="nav_bottom">
+                <a class="forum_top_right_link" href="#"><spring:message code="label.mark_all_topics"/></a>
             </span>
             <br>
         </div>
-        <jtalks:display uri="${branchId}" pagination="${pag}" list="${topics}" >
-            <nobr>
-            <span class="nav_bottom" >
+        <jtalks:display uri="${branchId}" pagination="${pag}" list="${topics}">
+        <nobr>
+            <span class="nav_bottom">
                 <c:if test="${pag.maxPages>1}">
-                <spring:message code="label.onPage"/>
+                    <spring:message code="label.onPage"/>
                 </c:if>
             </jtalks:display>
             </span>
-            </nobr>
+        </nobr>
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
             <a class="button top_button"
                href="${pageContext.request.contextPath}/topics/new?branchId=${branchId}"><spring:message
@@ -78,7 +79,7 @@
                     <div class="forum_icon"> <!-- Иконка с кофе -->
                         <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png"
                              alt=""
-                             title="Форум закрыт"/>
+                             title="<spring:message code="label.section.close_forum"/>"/>
                     </div>
                     <c:choose>
                         <c:when test="${topic.announcement=='true'}">
@@ -91,7 +92,7 @@
                         </c:when>
                         <c:when test="${topic.sticked=='true'}">
                             <div class="forum_info"> <!-- Ссылка на тему -->
-                                <h4><span class="sticky"><spring:message code="label.marked_as_sticked"/> </span><a
+                                <h4><span class="sticky"><spring:message code="label.marked_as_sticked"/></span><a
                                         class="forum_link"
                                         href="${pageContext.request.contextPath}/topics/${topic.id}">
                                     <c:out value="${topic.title}"/></a></h4>
@@ -111,7 +112,8 @@
                     </div>
                     <div class="forum_author">
                         <a href="${pageContext.request.contextPath}/users/${topic.topicStarter.encodedUsername}"
-                           title="Автор темы"><c:out value="${topic.topicStarter.username}"/></a>
+                           title="<spring:message code="label.topic.header.author"/>"><c:out
+                                value="${topic.topicStarter.username}"/></a>
                     </div>
                     <div class="forum_clicks">
                         <c:out value="${topic.views}"/>
@@ -123,23 +125,39 @@
                         <a class="last_message_user"
                            href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
                             <c:out value="${topic.lastPost.userCreated.username}"/></a>
-                        <a href="#"><img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
-                                         alt="Последнее сообщение"/></a>
+                        <c:choose>
+                            <c:when test="${pag.pageSize >= topic.postCount}">
+                                <a href="${pageContext.request.contextPath}/topics/${topic.id}#${topic.lastPost.id}"><img
+                                        src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
+                                        alt="<spring:message code="label.section.header.lastMessage"/>"/></a>
+                            </c:when>
+                            <c:otherwise>
+                                <c:if test="${topic.postCount % pag.pageSize > 0}">
+                                    <c:set var="additionalPage" value="${1}"/>
+                                </c:if>
+                                <c:if test="${topic.postCount % pag.pageSize == 0}">
+                                    <c:set var="additionalPage" value="${0}"/>
+                                </c:if>
+                                <a href="${pageContext.request.contextPath}/topics/${topic.id}?page=<fmt:formatNumber value="${(topic.postCount - (topic.postCount mod pag.pageSize)) div pag.pageSize + additionalPage}"/>#${topic.lastPost.id}">
+                                    <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
+                                         alt="<spring:message code="label.section.header.lastMessage"/>"/>
+                                </a>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </li>
             </c:forEach>
 
         </ul>
-         <nobr>
-            <span class="nav_bottom" >
+        <nobr>
+            <span class="nav_bottom">
                 <c:if test="${pag.maxPages>1}">
-                <spring:message code="label.onPage"/>
+                    <spring:message code="label.onPage"/>
                 </c:if>
             </jtalks:display>
             </span>
-            </nobr>
+        </nobr>
         <!-- Конец группы форумов -->
-
 
 
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
@@ -150,15 +168,15 @@
         </sec:authorize>
         <c:if test="${pag.maxPages>1}">
             <c:if test="${pag.pagingEnabled == true}">
-                    <a class="button"
-                       href="?pagingEnabled=false"><spring:message code="label.showAll"/></a>
-                    &nbsp; &nbsp; &nbsp;
+                <a class="button"
+                   href="?pagingEnabled=false"><spring:message code="label.showAll"/></a>
+                &nbsp; &nbsp; &nbsp;
             </c:if>
         </c:if>
         <c:if test="${pag.pagingEnabled == false}">
-                <a class="button"
-                   href="?pagingEnabled=true"><spring:message code="label.showPages"/></a>
-                &nbsp; &nbsp; &nbsp;
+            <a class="button"
+               href="?pagingEnabled=true"><spring:message code="label.showPages"/></a>
+            &nbsp; &nbsp; &nbsp;
         </c:if>
 
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
@@ -168,14 +186,14 @@
             <spring:message code="label.page"/> <c:out value="${page}"/> <spring:message code="label.of"/> <c:out
                 value="${pag.maxPages}"/>
             <br/>
-            Модераторы:
+            <spring:message code="label.topic.moderators"/>
             <ul class="users_list">
                 <li><a href="#">andreyko</a>,</li>
                 <li><a href="#">Староверъ</a>,</li>
                 <li><a href="#">Вася</a>.</li>
             </ul>
             <br/>
-            Сейчас этот форум просматривают: Нет
+            <spring:message code="label.topic.now_browsing"/>Нет
 
         </div>
     </div>

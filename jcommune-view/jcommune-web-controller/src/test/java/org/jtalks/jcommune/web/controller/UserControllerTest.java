@@ -43,8 +43,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
@@ -363,6 +361,32 @@ public class UserControllerTest {
         verify(userService, times(1)).restorePassword(EMAIL);
         assertModelAttributeValue(mav, "error", "email.failed");
     }
+
+    /*@Test
+    public void testShowUserPostList() throws NotFoundException {
+        User user = new User("username", "email", "password");
+        user.setLanguage("ENGLISH");
+        user.setPageSize("FIVE");
+
+        //set expectations
+        when(securityService.getCurrentUser()).thenReturn(user);
+        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
+
+
+        //invoke the object under test
+        ModelAndView mav = controller.showUserPostList(user.getEncodedUsername(), 1,true);
+
+        //check expectations
+        verify(securityService).getCurrentUser();
+        verify(breadcrumbBuilder).getForumBreadcrumb();
+
+        //check result
+        assertModelAttributeAvailable(mav, "pageSize");
+        assertModelAttributeAvailable(mav, "user");
+        assertModelAttributeAvailable(mav, "breadcrumbList");
+        assertModelAttributeAvailable(mav,"user");
+        assertModelAttributeAvailable(mav,"language");
+    } */
 
     private void assertContainsError(BindingResult bindingResult, String errorName) {
         for (ObjectError error : bindingResult.getAllErrors()) {

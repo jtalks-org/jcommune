@@ -34,24 +34,15 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<Topic> getTopicRangeInBranch(Long branchId, int start, int max) {
-        return getSession().getNamedQuery("getAllTopicsInBranch")
+    public List<Topic> getTopicsInBranch(Long branchId) {
+        List<Topic> topics = getSession().getNamedQuery("getAllTopicsInBranch")
                 .setCacheable(true)
                 .setLong("branchId", branchId)
-                .setFirstResult(start)
-                .setMaxResults(max)
                 .list();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getTopicsInBranchCount(long branchId) {
-        return ((Number) getSession().createQuery("select count(*) from Topic t where t.branch = ?")
-                .setCacheable(true).setLong(0, branchId)
-                .uniqueResult())
-                .intValue();
+        for (Topic topic : topics) {
+            topic.setPostCount(getPostInTopicCount(topic));
+        }
+        return topics;
     }
 
     /**
@@ -73,12 +64,25 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<Topic> getAllTopicsPastLastDay(int start, int max, DateTime lastLogin) {
+    public List<Topic> getAllTopicsPastLastDay(DateTime lastLogin) {
         DateTime time = lastLogin.toDateTime();
-        return getSession().createQuery("FROM Topic WHERE modificationDate > :maxModDate")
+        return (List<Topic>) getSession().createQuery("FROM Topic WHERE modificationDate > :maxModDate " +
+                "ORDER BY modificationDate DESC")
                 .setParameter("maxModDate", time)
-                .setFirstResult(start)
-                .setMaxResults(max)
                 .list();
+    }
+
+    /**
+     * Get number of post in topic.
+     *
+     * @param topic topic
+     * @return number of post in topic
+     */
+    private int getPostInTopicCount(Topic topic) {
+        return ((Number) getSession().getNamedQuery("getCountPostOfTopic")
+                .setCacheable(true)
+                .setEntity("topic", topic)
+                .uniqueResult())
+                .intValue();
     }
 }

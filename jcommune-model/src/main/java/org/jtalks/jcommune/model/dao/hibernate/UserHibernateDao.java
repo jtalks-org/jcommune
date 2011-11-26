@@ -15,25 +15,33 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.User;
+
+import java.util.List;
 
 /**
  * Hibernate implementation of UserDao.
- * 
+ * Mainly intended for quering users from DB based on different criteria.
+ *
  * @author Pavel Vervenko
  * @author Evgeniy Naumenko
  * @author Kirill Afonin
  */
 public class UserHibernateDao extends ParentRepositoryImpl<User> implements UserDao {
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public User getByUsername(String username) {
-        return (User) getSession()
+        User user = (User) getSession()
                 .createQuery("from User u where u.username = ?")
                 .setCacheable(true).setString(0, username).uniqueResult();
+        if (user != null) {
+            user.setUserPostCount(getCountPostOfUser(user));
+        }
+        return user;
     }
 
     /**
@@ -79,12 +87,26 @@ public class UserHibernateDao extends ParentRepositoryImpl<User> implements User
     }
 
     /**
-     * {@inheritDoc}
+     * Counts post for the user passed.
+     * <p/>
+     * We've tried to apply formula property instead of that, but
+     * it is affected by l2cahce showing old results
+     *
+     * @param userCreated user created of post
+     * @return count posts of user
      */
-    @Override
-    public int getCountPostOfUser(User userCreated) {
+    private int getCountPostOfUser(User userCreated) {
         return ((Number) getSession().getNamedQuery("getCountPostOfUser")
                 .setCacheable(true).setEntity("userCreated", userCreated)
                 .uniqueResult()).intValue();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Post> getPostsOfUser(User userCreated) {
+        return (List<Post>) getSession().createQuery("FROM Post p WHERE p.userCreated = ? ORDER BY creationDate DESC")
+                .setParameter(0, userCreated)
+                .list();
     }
 }

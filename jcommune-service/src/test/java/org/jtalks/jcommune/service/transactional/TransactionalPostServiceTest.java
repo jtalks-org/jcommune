@@ -29,9 +29,7 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
@@ -102,46 +100,28 @@ public class TransactionalPostServiceTest {
 
     @Test(expectedExceptions = {NotFoundException.class})
     public void testGetPostsRangeInNonExistentTopic() throws NotFoundException {
-         when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
+        when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
         postService.getPostRangeInTopic(TOPIC_ID, 1, 5);
     }
 
     @Test
-    public void testGetPostsInTopicCount() throws NotFoundException {
-        int expectedCount = 10;
-        when(postDao.getPostsInTopicCount(TOPIC_ID)).thenReturn(expectedCount);
-        when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
-
-        int count = postService.getPostsInTopicCount(TOPIC_ID);
-
-        assertEquals(count, expectedCount);
-        verify(postDao).getPostsInTopicCount(TOPIC_ID);
-        verify(topicDao).isExist(TOPIC_ID);
-    }
-
-    @Test(expectedExceptions = {NotFoundException.class})
-    public void testGetPostsCountInNonExistentTopic() throws NotFoundException {
-        when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
-
-        postService.getPostsInTopicCount(TOPIC_ID);
-    }
-    
-    @Test
     void updatePost() throws NotFoundException {
         String newBody = "new body";
-        Post post = new Post(user, "content");
+        Topic topic = new Topic(user, "title");
+        Post post = new Post(user, "");
+        topic.addPost(post);
         post.setId(POST_ID);
-        
-        when(postDao.isExist(POST_ID)).thenReturn(true);      
-        when(postService.get(POST_ID)).thenReturn(post); 
-        
-        postService.updatePost(POST_ID,newBody);
-        
+        topic.addPost(post);
+        when(postDao.isExist(POST_ID)).thenReturn(true);
+        when(postService.get(POST_ID)).thenReturn(post);
+
+        postService.updatePost(POST_ID, newBody);
+
         assertEquals(post.getPostContent(), newBody);
-        
+
         verify(postDao).get(POST_ID);
-        verify(postDao).update(post);        
+        verify(postDao).update(post);
     }
 
 
@@ -159,7 +139,6 @@ public class TransactionalPostServiceTest {
 
         postService.deletePost(POST_ID);
 
-        assertEquals(topic.postCount(), 1, "Post not deleted from list");
         verify(postDao).get(POST_ID);
         verify(topicDao).update(topic);
         verify(securityService).deleteFromAcl(postForDelete);

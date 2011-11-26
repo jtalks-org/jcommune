@@ -15,19 +15,17 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.MailService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
-import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
-import org.jtalks.jcommune.service.exceptions.MailingFailedException;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
+import org.jtalks.jcommune.service.exceptions.*;
 import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -69,8 +67,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
             logger.warn(msg);
             throw new NotFoundException(msg);
         }
-        int postCount = this.getDao().getCountPostOfUser(user);
-        user.setUserPostCount(postCount);
         return user;
     }
 
@@ -85,7 +81,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
             logger.info(msg);
             throw new NotFoundException(msg);
         }
-        user.setUserPostCount(this.getDao().getCountPostOfUser(user));
         return user;
     }
 
@@ -133,7 +128,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     @Override
     public User editUserProfile(String email, String firstName, String lastName, String currentPassword,
                                 String newPassword, byte[] avatar, String signature, String language, String pageSize)
-        throws DuplicateEmailException, WrongPasswordException {
+            throws DuplicateEmailException, WrongPasswordException {
 
         User currentUser = securityService.getCurrentUser();
 
@@ -157,7 +152,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         }
 
         this.getDao().saveOrUpdate(currentUser);
-        
+
         logger.info("Updated user profile. Username: {}", currentUser.getUsername());
         return currentUser;
     }
@@ -166,7 +161,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * Checks if e-mail passed differs from the one set in the User object
      * and new email is valid, i. e. has not been used by any other user
      *
-     * @param email new address
+     * @param email       new address
      * @param currentUser user object to be checked
      * @return true, if e-mail has been changed to a valid one
      */
@@ -190,12 +185,12 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * alters the current password to the new one
      *
      * @param currentPassword existing password to verify identity
-     * @param newPassword new password to be set
-     * @param currentUser user object from a database
+     * @param newPassword     new password to be set
+     * @param currentUser     user object from a database
      * @throws WrongPasswordException if current password doesn't match the one stored in database
      */
     private void changePassword(String currentPassword, String newPassword, User currentUser)
-        throws WrongPasswordException {
+            throws WrongPasswordException {
         if (currentPassword == null ||
                 !currentUser.getPassword().equals(currentPassword)) {
             throw new WrongPasswordException();
@@ -207,7 +202,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     /**
      * Returns parameter as is if string passed is not empty
      *
-     * @param signature  string to be checked
+     * @param signature string to be checked
      * @return parameter value or null, if parameter is null or blank
      */
     private String getSignature(String signature) {
@@ -231,15 +226,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public int getCountPostOfUser(User userCreated) {
-        return this.getDao().getCountPostOfUser(userCreated);
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void restorePassword(String email) throws NotFoundException, MailingFailedException {
         User user = this.getDao().getByEmail(email);
         if (user == null) {
@@ -252,8 +238,16 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         mailService.sendPasswordRecoveryMail(user.getUsername(), email, randomPassword);
         user.setPassword(randomPassword);
         this.getDao().update(user);
-        
+
         logger.info("New random password was set for user {}", user.getUsername());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Post> getPostsOfUser(User userCreated) {
+        return this.getDao().getPostsOfUser(userCreated);
     }
 
     /**

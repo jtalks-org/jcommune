@@ -15,10 +15,13 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Section;
+import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SectionService;
+import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
+import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,11 +37,13 @@ import javax.servlet.http.HttpSession;
  *
  * @author Max Malakhov
  * @author Alexandre Teterin
+ * @author Evgeniy Naumenko
  */
 
 @Controller
 public final class SectionController {
 
+    private SecurityService securityService;
     private SectionService sectionService;
     private ForumStatisticsProvider forumStaticsProvider;
     private BreadcrumbBuilder breadcrumbBuilder;
@@ -47,17 +52,21 @@ public final class SectionController {
     /**
      * Constructor creates MVC controller with specified SectionService
      *
-     * @param sectionService         autowired object from Spring Context
-     * @param breadcrumbBuilder      the object which provides actions on
-     *                               {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
-     * @param forumStaticsProvider   autowired object from Spring Context which provides methods for getting
-     *                               forum statistic information
-     * @param session                http session that will be initiated
+     * @param securityService      autowired object from Spring Context
+     * @param sectionService       autowired object from Spring Context
+     * @param breadcrumbBuilder    the object which provides actions on
+     *                             {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
+     * @param forumStaticsProvider autowired object from Spring Context which provides methods for getting
+     *                             forum statistic information
+     * @param session              http session that will be initiated
      */
     @Autowired
-    public SectionController(SectionService sectionService, BreadcrumbBuilder breadcrumbBuilder,
+    public SectionController(SecurityService securityService,
+                             SectionService sectionService,
+                             BreadcrumbBuilder breadcrumbBuilder,
                              ForumStatisticsProvider forumStaticsProvider,
                              HttpSession session) {
+        this.securityService = securityService;
         this.sectionService = sectionService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.forumStaticsProvider = forumStaticsProvider;
@@ -69,7 +78,7 @@ public final class SectionController {
      *
      * @return {@link ModelAndView} with view name as renderAllSection
      */
-    @RequestMapping(value = "/sections", method = RequestMethod.GET)
+    @RequestMapping(value = {"/", "/sections"}, method = RequestMethod.GET)
     public ModelAndView sectionList() {
         // Counting the number of active users based on the number of sessions.
         // By default, the session will be initialized after controller's invocation,
@@ -79,8 +88,10 @@ public final class SectionController {
         // that initializes the session right now.
         // If a request from the user is not the first one this method will have no effect.
         session.getId();
-        
+        User currentUser = securityService.getCurrentUser();
+        Pagination pag = new Pagination(1, currentUser, 1, false);
         return new ModelAndView("sectionList")
+                .addObject("pageSize", pag.getPageSize())
                 .addObject("sectionList", sectionService.getAll())
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
                 .addObject("messagesCount", forumStaticsProvider.getPostsOnForumCount())
@@ -89,16 +100,6 @@ public final class SectionController {
                 .addObject("usersRegistered", forumStaticsProvider.getOnlineRegisteredUsers())
                 .addObject("visitorsRegistered", forumStaticsProvider.getOnlineRegisteredUsersCount())
                 .addObject("visitorsGuests", forumStaticsProvider.getOnlineAnonymousUsersCount());
-    }
-
-    /**
-     * Action for root path. Do same as SectionController#sectionList()
-     *
-     * @return populated {@code ModelAndView}
-     */
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ModelAndView root() {
-        return sectionList();
     }
 
     /**

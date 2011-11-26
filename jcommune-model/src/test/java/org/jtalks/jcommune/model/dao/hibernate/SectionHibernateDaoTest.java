@@ -14,16 +14,6 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNotSame;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
-import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
-
-import java.util.List;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.ObjectsFactory;
@@ -39,6 +29,11 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.List;
+
+import static org.testng.Assert.*;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
  * @author Max Malakhov
@@ -75,6 +70,7 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
 
         assertReflectionEquals(section, result);
     }
+
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void testSaveSectionWithNameNotNullViolation() {
         Section section = ObjectsFactory.getDefaultSection();
@@ -94,6 +90,7 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
         assertNotNull(result);
         assertEquals(result.getId(), section.getId());
     }
+
     @Test
     public void testGetInvalidId() {
         Section result = dao.get(-567890L);
@@ -187,6 +184,20 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
         List<Section> sectionList = dao.getAll();
 
         assertEquals(sectionList.get(0).getBranches().get(0).getTopicCount(), 1);
+    }
+
+    @Test
+    public void testTopicInBranch() {
+        Section section = ObjectsFactory.getDefaultSection();
+        Branch branch = ObjectsFactory.getDefaultBranch();
+        Topic topic = ObjectsFactory.getDefaultTopic();
+        section.addBranch(branch);
+        session.save(section);
+
+        Section sectionTwo = dao.get(1L);
+        Branch branchTwo = section.getBranches().get(0);
+
+        assertEquals(branchTwo.getTopicCount(), 0);
     }
 
     private int getSectionCount() {

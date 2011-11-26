@@ -30,7 +30,8 @@ public class Pagination {
     private int maxPages;
     private int itemsCount;
     private boolean pagingEnabled;
-    private int defaultPageSize = 50;
+
+    public static final int DEFAULT_PAGE_SIZE = 50;
 
     /**
      * Create instance.
@@ -41,7 +42,7 @@ public class Pagination {
      */
     public Pagination(Integer page, User currentUser, int itemsCount) {
         this.page = page;
-        this.pageSize = currentUser == null ? Integer.valueOf(defaultPageSize) :
+        this.pageSize = currentUser == null ? DEFAULT_PAGE_SIZE :
                 PageSize.valueOf(currentUser.getPageSize()).getSize();
         this.itemsCount = itemsCount;
     }
@@ -49,14 +50,14 @@ public class Pagination {
     /**
      * Create instance.
      *
-     * @param page        page (default 1)
-     * @param currentUser current user
-     * @param itemsCount  total number of items
+     * @param page          page (default 1)
+     * @param currentUser   current user
+     * @param itemsCount    total number of items
      * @param pagingEnabled paging status
      */
     public Pagination(Integer page, User currentUser, int itemsCount, boolean pagingEnabled) {
         this.page = page;
-        this.pageSize = currentUser == null ? Integer.valueOf(defaultPageSize) :
+        this.pageSize = currentUser == null ? DEFAULT_PAGE_SIZE :
                 PageSize.valueOf(currentUser.getPageSize()).getSize();
         this.itemsCount = itemsCount;
         this.pagingEnabled = pagingEnabled;
@@ -145,7 +146,7 @@ public class Pagination {
         if (isPagingEnabled()) {
             for (int i = numberLink; i > 0; i--) {
                 if (getPage() > i) {
-                    buffer.append(String.format(link, uri, getPage() - i, getPage() - i).toString());
+                    buffer.append(String.format(link, uri, getPage() - i, getPage() - i));
                 }
             }
             if (getMaxPages() > 1) {
@@ -154,7 +155,7 @@ public class Pagination {
             }
             for (int i = 0; i < numberLink; i++) {
                 if (getPage() + i < getMaxPages()) {
-                    buffer.append(String.format(link, uri, getPage() + i + 1, getPage() + i + 1).toString());
+                    buffer.append(String.format(link, uri, getPage() + i + 1, getPage() + i + 1));
                 }
             }
         }
@@ -164,23 +165,23 @@ public class Pagination {
     /**
      * used if the total number of items
      * divided by the number of elements on a page without a trace
+     *
      * @param list list of items
      * @return list new list of items
      */
     public List integerNumberOfPages(List list) {
-        list = list.subList((getPage() - 1) * pageSize, getPage() * pageSize);
-        return list;
+        return list.subList((getPage() - 1) * pageSize, getPage() * pageSize);
     }
 
     /**
      * used if the total number of items
      * divided by the number of elements on the page with the remainder
+     *
      * @param list list of items
      * @return list new list of items
      */
     public List notIntegerNumberOfPages(List list) {
-        list = list.subList((getPage() - 1) * pageSize,
+        return list.subList((getPage() - 1) * pageSize,
                 (getPage() - 1) * pageSize + list.size() % pageSize);
-        return list;
     }
 }

@@ -55,11 +55,12 @@ public class BreadcrumbBuilderTest {
         branch.setId(ID);
         section.addBranch(branch);
 
-        topic = new Topic(user,TOPIC_NAME);
+        topic = new Topic(user, TOPIC_NAME);
         topic.setId(ID);
         branch.addTopic(topic);
 
-        post = new Post(topic);
+        post = new Post(user, "");
+        topic.addPost(post);
         post.setId(ID);
     }
 

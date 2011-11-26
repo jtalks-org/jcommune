@@ -36,7 +36,9 @@ public class ForumStatisticsProvider {
      * @param sessionStatisticListener for getting active users count
      * @param statisticsService        for getting active users information
      */
-    public ForumStatisticsProvider(SessionRegistry sessionRegistry, HttpSessionStatisticListener sessionStatisticListener, ForumStatisticsService statisticsService) {
+    public ForumStatisticsProvider(SessionRegistry sessionRegistry,
+                                   HttpSessionStatisticListener sessionStatisticListener,
+                                   ForumStatisticsService statisticsService) {
         this.sessionRegistry = sessionRegistry;
         this.sessionStatisticListener = sessionStatisticListener;
         this.statisticsService = statisticsService;

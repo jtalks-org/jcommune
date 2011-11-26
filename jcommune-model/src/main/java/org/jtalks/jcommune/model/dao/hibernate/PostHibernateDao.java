@@ -42,13 +42,4 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
                 .setMaxResults(max)
                 .list();
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getPostsInTopicCount(long topicId) {
-        return ((Number) getSession().createQuery("select count(*) from Post p where p.topic = ?")
-                .setCacheable(true).setLong(0, topicId).uniqueResult()).intValue();
-    }
 }
