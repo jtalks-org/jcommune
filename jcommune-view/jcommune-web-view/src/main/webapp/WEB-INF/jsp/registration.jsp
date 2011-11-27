@@ -31,89 +31,82 @@
     <div class="all_forums">
         <form:form id="form" name="form" action='${pageContext.request.contextPath}/users'
                    modelAttribute="newUser" method="POST">
+            <div class="forum_header_table">
+                <div class="forum_header">
+                    <span class="forum_header_answer"><spring:message code="label.fillmessage"/></span>
+                    <span class="empty_cell"></span> <!-- Необходима для корректного отображения псевдотаблицы -->
+                </div>
+            </div>
+            <div class="forum_table" id="stylized">
 
-            <p><spring:message code="label.fillmessage"/></p>
-
-            <table>
-                <tr>
-                    <td>
-                        <form:label path="username">
-                            <spring:message code="label.username"/>
-                            <span class="small"><spring:message code="label.tip.username"/></span>
-                        </form:label>
-                    </td>
-                    <td>
-                        <form:input path="username" type="text" size="20"/>
-                        <br/>
+                <div class="forum_row">
+                    <form:label path="username"> <spring:message code="label.username"/></form:label>
+                    <div>
+                        <form:input path="username" class="reg_input" type="text" size="20"/>
                         <form:errors path="username" cssClass="error"/>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <form:label path="email"><spring:message code="label.email"/>
-                            <span class="small"><spring:message code="label.tip.email"/></span>
-                        </form:label>
-                    </td>
-                    <td>
-                        <form:input path="email" type="text" size="25"/>
+                    </div>
+                    <span class="reg_info"><spring:message code="label.tip.username"/></span>
+                </div>
+                <div class="forum_row">
+                    <form:label path="email"><spring:message code="label.email"/></form:label>
+                    <div>
+                        <form:input path="email" class="reg_input" type="text" size="25" />
                         <form:errors path="email" cssClass="error"/>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <form:label path="firstName"><spring:message code="label.firstname"/>
-                            <span class="small"><spring:message code="label.tip.firstname"/></span>
-                        </form:label>
-                    </td>
-                    <td>
-                        <form:input path="firstName" type="text" size="25"/>
+                    </div>
+                    <span class="reg_info"><spring:message code="label.tip.email"/></span>
+                </div>
+                <div class="forum_row">
+                    <form:label path="firstName"><spring:message code="label.firstname"/></form:label>
+                    <div>
+                        <form:input path="firstName" class="reg_input" type="text" size="25"
+                                    />
                         <form:errors path="firstName" cssClass="error"/>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <form:label path="lastName"><spring:message code="label.lastname"/>
-                            <span class="small"><spring:message code="label.tip.lastname"/></span>
-                        </form:label>
-                    </td>
-                    <td>
-                        <form:input path="lastName" type="text" size="25"/>
+                    </div>
+                    <span class="reg_info"><spring:message code="label.tip.firstname"/></span>
+                </div>
+                <div class="forum_row">
+                    <form:label path="lastName"><spring:message code="label.lastname"/></form:label>
+                    <div>
+                        <form:input path="lastName" class="reg_input" type="text" size="25"
+                                   />
                         <form:errors path="lastName" cssClass="error"/>
-                    </td>
-                </tr>
+                    </div>
+                    <span class="reg_info"><spring:message code="label.tip.lastname"/></span>
+                </div>
+                <div class="forum_row">
+                    <form:label path="password"><spring:message code="label.password"/></form:label>
 
-                <tr>
-                    <td>
-                        <form:label path="password"><spring:message code="label.password"/>
-                            <span class="small"><spring:message code="label.tip.password"/></span>
-                        </form:label>
-                    </td>
-                    <td>
-                        <form:input path="password" type="password" size="20"/>
+                    <div>
+                        <form:input path="password" class="reg_input" type="password" size="20"
+                                    />
                         <form:errors path="password" cssClass="error"/>
-                    </td>
-                <tr>
+                    </div>
+                    <span class="reg_info"><spring:message code="label.tip.password"/></span>
+                </div>
+                <div class="forum_row">
+                    <form:label path="passwordConfirm"><spring:message code="label.confirmation"/></form:label>
 
-                <tr>
-                    <td>
-                        <form:label path="passwordConfirm"><spring:message code="label.confirmation"/>
-                            <span class="small"><spring:message code="label.tip.confirmation"/></span>
-                        </form:label>
-                    </td>
-                    <td>
-                        <form:input path="passwordConfirm" type="password" size="20"/>
+                    <div>
+                        <form:input path="passwordConfirm" class="reg_input" type="password" size="20"
+                                   />
                         <form:errors path="passwordConfirm" cssClass="error"/>
-                    </td>
-                </tr>
-            </table>
-
-            <button type="submit"><spring:message code="label.signup"/></button>
-            <div class="spacer"></div>
+                    </div>
+                    <span class="reg_info"><spring:message code="label.tip.confirmation"/></span>
+                </div>
+                <div class="forum_row">
+                    <div><input type="checkbox" name="iagree" id="iagree"/>
+                        Я принимаю условия <a href="#">пользовательского соглашения</a>.
+                        </input></div>
+                </div>
+            </div>
+            <div class="form_controls">
+                <button type="submit"><spring:message code="label.signup"/></button>
+            </div>
         </form:form>
     </div>
+    <div class="footer_buffer"></div>
+    <!-- Несемантичный буфер для прибития подвала -->
 </div>
+
 </body>
 </html>

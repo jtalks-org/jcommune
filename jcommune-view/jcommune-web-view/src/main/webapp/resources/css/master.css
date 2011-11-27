@@ -228,6 +228,9 @@ a.heading:hover {
     width: 100%;
     color: #3e3e3e;
     line-height: 1;
+    -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
 }
 
 .forum_table a {
@@ -479,7 +482,7 @@ a.last_message_user {
 .answer_page .button,
 .pm_page .button {
     border: 1px solid gray;
-!important
+
 }
 
 .answer_page .button:active,
@@ -523,40 +526,59 @@ a.disabled {
     width: 95%;
 }
 
-/* Registration */
-.registration_page h1 {
+/* Registration & Login */
+.registration_page h1, .login_page h1 {
     left: 40%;
 }
 
-.registration_page .forum_table {
+.registration_page .forum_table, .login_page .forum_table {
     margin: 0 auto;
     width: auto;
 }
 
-.registration_page .forum_header_table {
-    width: 567px;
+.registration_page .forum_header_table, .login_page .forum_header_table {
+    width: 824px;
     margin: 0 auto;
 }
 
-.forum_table label, .reg_table_cell {
-    display: table-cell;
-    width: 125px;
+.registration_page .forum_table label,
+.registration_page .forum_row div,
+.login_page .forum_table label,
+.login_page .forum_row div,
+.reg_info {
+    display: block;
+    width: 800px;
     padding: 5px 10px;
     border-bottom: 1px solid #b2b2b2;
     vertical-align: middle;
-    text-align: right;
 }
 
-.reg_table_cell {
-    width: 400px;
+.registration_page .forum_table label,
+.login_page .forum_table label {
+    width: 125px;
+    font-weight: bold;
 }
 
-.registration_page .forum_table div {
+.registration_page .forum_row,
+.login_page .forum_row {
     display: table-row;
 }
 
-.reg_table_cell input {
-    width: 390px;
+.reg_input {
+    width: 99%;
+    font-size: 3em;
+}
+
+.reg_info {
+    font-size: 11px;
+}
+
+.registration_page button, .login_page button {
+    margin: 10px 0;
+}
+
+input[type='checkbox'] {
+    vertical-align: sub;
 }
 
 /* Users Numbers */
@@ -621,8 +643,34 @@ a.admin, a.user {
     color: #535353;
 }
 
+/* Error 404 */
+.text_404 {
+    margin: 0 auto;
+    text-align: center;
+    font-size: 2em;
+    font-family: Georgia, Arial, sans-serif;
+}
+
+.text_404 h1 {
+    font-size: 5em;
+    position: static;
+    font-family: Georgia, Arial, sans-serif;
+}
+
+.error_404 {
+    font-size: 0.6em;
+}
+
 /* Various */
 .empty_cell {
     display: table-cell;
     min-width: 1px;
+}
+
+.form_controls {
+    text-align: center;
+}
+
+.error {
+    color: #FF0000;
 }
