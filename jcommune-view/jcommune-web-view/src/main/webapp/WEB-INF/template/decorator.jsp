@@ -54,7 +54,7 @@
         Этот сайт не относится к фирме Oracle Corporation и не поддерживается ею.
         <br/>
         © 2011 www.jtalks.org: <a href="#">форум java программистов</a>
-        <br/> <br/>
+        <br/>
         <span class="version">Powered by JCommune ${project.version}</span>
     </div>
 </div>

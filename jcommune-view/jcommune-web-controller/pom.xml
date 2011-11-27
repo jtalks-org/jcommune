@@ -55,6 +55,7 @@
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
+            <!--todo: type and scope here? wtf?-->
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -62,11 +63,6 @@
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
             <version>1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-            <version>1.2.1</version>
         </dependency>
     </dependencies>
 
