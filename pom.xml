@@ -65,7 +65,6 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>4.1.0.Final</version>
-                <type>jar</type>
                 <scope>compile</scope>
             </dependency>
             <!-- JDBC -->
@@ -150,7 +149,6 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
                 <version>${springVersion}</version>
-                <type>jar</type>
                 <scope>compile</scope>
             </dependency>
             <!-- Spring Security -->
@@ -218,8 +216,7 @@
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-all</artifactId>
                 <version>1.8.5</version>
-                <type>jar</type>
-                <scope>compile</scope>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.hsqldb</groupId>
@@ -261,7 +258,6 @@
                 <groupId>commons-beanutils</groupId>
                 <artifactId>commons-beanutils</artifactId>
                 <version>1.8.3</version>
-                <type>jar</type>
                 <scope>compile</scope>
             </dependency>
             <dependency>

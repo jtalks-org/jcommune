@@ -55,9 +55,6 @@
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
-            <!--todo: type and scope here? wtf?-->
-            <type>jar</type>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>
