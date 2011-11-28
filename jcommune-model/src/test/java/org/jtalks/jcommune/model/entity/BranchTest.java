@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import org.jtalks.jcommune.model.ObjectsFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -72,7 +71,7 @@ public class BranchTest {
         branch.getPreviousTopic(new Topic(null, null));
     }
 
-     @Test
+    @Test
     public void testLastUpdatedTopic() throws InterruptedException {
         Thread.sleep(25);
         second.addPost(new Post());

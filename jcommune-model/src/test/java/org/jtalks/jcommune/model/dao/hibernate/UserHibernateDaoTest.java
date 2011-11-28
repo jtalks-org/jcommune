@@ -18,9 +18,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.UserDao;
-import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -34,12 +32,7 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNotSame;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
@@ -231,18 +224,18 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     }
 
     @Test
-    public void testNullPostsOfUserCount(){
+    public void testNullPostsOfUserCount() {
         session.save(ObjectsFactory.getDefaultUser());
 
         User user = dao.getByEncodedUsername("username");
 
-        assertEquals(user.getUserPostCount(),0);
+        assertEquals(user.getUserPostCount(), 0);
     }
 
     @Test
-    public void testPostsOfUserCount(){
+    public void testPostsOfUserCount() {
         User user = ObjectsFactory.getDefaultUser();
-        Post post = new Post(user,"first");
+        Post post = new Post(user, "first");
         List<Post> posts = new ArrayList<Post>();
         posts.add(post);
         session.save(user);
@@ -250,7 +243,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
         User userForDao = dao.getByUsername("username");
 
-        assertEquals(userForDao.getUserPostCount(),1);
+        assertEquals(userForDao.getUserPostCount(), 1);
     }
 
     private int getCount() {

@@ -182,13 +182,13 @@ public class TransactionalTopicServiceTest {
         List<Topic> expectedList = new ArrayList<Topic>();
         expectedList.add(new Topic(user, "title"));
         expectedList.add(new Topic(user, "title"));
-        when(topicDao.getAllTopicsPastLastDay(now)).thenReturn(expectedList);
+        when(topicDao.getTopicsUpdatedSince(now)).thenReturn(expectedList);
 
-        List<Topic> topics = topicService.getAllTopicsPastLastDay(now);
+        List<Topic> topics = topicService.getRecentTopics(now);
 
         assertNotNull(topics);
         assertEquals(topics.size(), 2);
-        verify(topicDao).getAllTopicsPastLastDay(now);
+        verify(topicDao).getTopicsUpdatedSince(now);
     }
 
     @Test
@@ -197,39 +197,13 @@ public class TransactionalTopicServiceTest {
         expectedList.add(new Topic(user, "title"));
         expectedList.add(new Topic(user, "title"));
         ArgumentCaptor<DateTime> captor = ArgumentCaptor.forClass(DateTime.class);
-        when(topicDao.getAllTopicsPastLastDay(any(DateTime.class))).thenReturn(expectedList);
+        when(topicDao.getTopicsUpdatedSince(any(DateTime.class))).thenReturn(expectedList);
 
-        List<Topic> topics = topicService.getAllTopicsPastLastDay(null);
+        List<Topic> topics = topicService.getRecentTopics(null);
 
         assertNotNull(topics);
         assertEquals(topics.size(), 2);
-        verify(topicDao).getAllTopicsPastLastDay(captor.capture());
-        int yesterday = new DateTime().minusDays(1).getDayOfYear();
-        assertEquals(captor.getValue().getDayOfYear(), yesterday);
-    }
-
-    @Test
-    public void testGetTopicsPastLastDayCount() throws NotFoundException {
-        int expectedCount = 10;
-        DateTime now = new DateTime();
-        when(topicDao.getTopicsPastLastDayCount(now)).thenReturn(expectedCount);
-
-        int count = topicService.getTopicsPastLastDayCount(now);
-
-        assertEquals(expectedCount, count);
-        verify(topicDao).getTopicsPastLastDayCount(now);
-    }
-
-    @Test
-    public void testGetTopicsPastLastDayCountNullLastLoginDate() {
-        int expectedCount = 10;
-        ArgumentCaptor<DateTime> captor = ArgumentCaptor.forClass(DateTime.class);
-        when(topicDao.getTopicsPastLastDayCount(any(DateTime.class))).thenReturn(expectedCount);
-
-        int count = topicService.getTopicsPastLastDayCount(null);
-
-        assertEquals(expectedCount, count);
-        verify(topicDao).getTopicsPastLastDayCount(captor.capture());
+        verify(topicDao).getTopicsUpdatedSince(captor.capture());
         int yesterday = new DateTime().minusDays(1).getDayOfYear();
         assertEquals(captor.getValue().getDayOfYear(), yesterday);
     }

@@ -23,6 +23,7 @@ import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
+import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
@@ -32,20 +33,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
-import static org.testng.Assert.assertEquals;
+import static org.springframework.test.web.ModelAndViewAssert.*;
+import static org.testng.Assert.*;
 
 
 /**
  * @author Kravchenko Vitaliy
  * @author Alexandre Teterin
+ * @author Evdeniy Naumenko
  */
 public class BranchControllerTest {
     private BranchService branchService;
     private TopicService topicService;
-    private SecurityService securityService;
     private BranchController controller;
     private BreadcrumbBuilder breadcrumbBuilder;
 
@@ -55,7 +54,7 @@ public class BranchControllerTest {
     public void init() {
         branchService = mock(BranchService.class);
         topicService = mock(TopicService.class);
-        securityService = mock(SecurityService.class);
+        SecurityService securityService = mock(SecurityService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
         controller = new BranchController(branchService, topicService, securityService, breadcrumbBuilder);
     }
@@ -65,8 +64,10 @@ public class BranchControllerTest {
         long branchId = 1L;
         int page = 2;
         boolean pagingEnabled = true;
+        Branch branch = new Branch("name");
+        branch.setId(branchId);
         //set expectations
-        when(branchService.get(branchId)).thenReturn(new Branch("name"));
+        when(branchService.get(branchId)).thenReturn(branch);
         when(breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)))
                 .thenReturn(new ArrayList<Breadcrumb>());
 
@@ -80,12 +81,11 @@ public class BranchControllerTest {
         assertViewName(mav, "topicList");
         assertAndReturnModelAttributeOfType(mav, "topics", List.class);
 
-        Long actualBranch = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
-        assertEquals((long) actualBranch, branchId);
+        Branch actualBranch = assertAndReturnModelAttributeOfType(mav, "branch", Branch.class);
+        assertEquals(actualBranch.getId(), branchId);
 
-        Integer actualPage = assertAndReturnModelAttributeOfType(mav, "page", Integer.class);
-        assertEquals((int) actualPage, page);
-
+        Pagination pagination = assertAndReturnModelAttributeOfType(mav, "pagination", Pagination.class);
+        assertEquals(pagination.getPage().intValue(), page);
         assertModelAttributeAvailable(mav, "breadcrumbList");
 
     }
@@ -93,11 +93,8 @@ public class BranchControllerTest {
     @Test
     public void recentTopicsPage() throws NotFoundException {
         int page = 2;
-        int pageSize = 50;
-        int startIndex = page * pageSize - pageSize;
         //set expectations
-        when(topicService.getTopicsPastLastDayCount(now)).thenReturn(10);
-        when(topicService.getAllTopicsPastLastDay(now)).thenReturn(new ArrayList<Topic>());
+        when(topicService.getRecentTopics(now)).thenReturn(new ArrayList<Topic>());
 
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("lastlogin", now);
@@ -106,18 +103,15 @@ public class BranchControllerTest {
         ModelAndView mav = controller.recentTopicsPage(page, session);
 
         //check expectations
-        verify(topicService).getAllTopicsPastLastDay(now);
-        verify(topicService).getTopicsPastLastDayCount(now);
+        verify(topicService).getRecentTopics(now);
 
         //check result
         assertViewName(mav, "recent");
         assertAndReturnModelAttributeOfType(mav, "topics", List.class);
 
-        Integer actualMaxPages = assertAndReturnModelAttributeOfType(mav, "maxPages", Integer.class);
-        assertEquals((int) actualMaxPages, 1);
-
-        Integer actualPage = assertAndReturnModelAttributeOfType(mav, "page", Integer.class);
-        assertEquals((int) actualPage, page);
+        Pagination pagination = assertAndReturnModelAttributeOfType(mav, "pagination", Pagination.class);
+        assertEquals(pagination.getMaxPages(), 0);
+        assertEquals(pagination.getPage().intValue(), page);
 
     }
 }

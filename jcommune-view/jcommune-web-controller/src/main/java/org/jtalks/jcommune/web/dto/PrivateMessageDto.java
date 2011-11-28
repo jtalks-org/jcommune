@@ -29,7 +29,6 @@ import javax.validation.constraints.Size;
 public class PrivateMessageDto {
 
 
-
     @NotBlank
     @Size(min = PrivateMessage.MIN_MESSAGE_LENGTH, max = PrivateMessage.MAX_MESSAGE_LENGTH, message = "{title.length}")
     private String title;
@@ -45,7 +44,7 @@ public class PrivateMessageDto {
      * @return pm id
      */
     public long getId() {
-        return id ;
+        return id;
     }
 
     /**

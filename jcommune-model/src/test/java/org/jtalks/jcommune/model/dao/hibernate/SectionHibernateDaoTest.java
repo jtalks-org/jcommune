@@ -21,7 +21,6 @@ import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Section;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -91,6 +90,7 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
         assertNotNull(result);
         assertEquals(result.getId(), section.getId());
     }
+
     @Test
     public void testGetInvalidId() {
         Section result = dao.get(-567890L);
@@ -187,7 +187,7 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
     }
 
     @Test
-    public void testTopicInBranch(){
+    public void testTopicInBranch() {
         Section section = ObjectsFactory.getDefaultSection();
         Branch branch = ObjectsFactory.getDefaultBranch();
         Topic topic = ObjectsFactory.getDefaultTopic();
@@ -197,7 +197,7 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
         Section sectionTwo = dao.get(1L);
         Branch branchTwo = section.getBranches().get(0);
 
-        assertEquals(branchTwo.getTopicCount(),0);
+        assertEquals(branchTwo.getTopicCount(), 0);
     }
 
     private int getSectionCount() {

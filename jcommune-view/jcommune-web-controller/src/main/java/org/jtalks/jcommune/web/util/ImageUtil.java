@@ -14,11 +14,8 @@
  */
 package org.jtalks.jcommune.web.util;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import javax.imageio.ImageIO;
-import java.awt.Dimension;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
 import java.awt.image.RenderedImage;
@@ -49,17 +46,6 @@ public final class ImageUtil {
      */
     private ImageUtil() {
         //Utility classes should not have a public or default constructor
-    }
-
-    /**
-     * Converts multipart file to image.
-     *
-     * @param multipartFile input multipart file
-     * @return image obtained from multipart file
-     * @throws IOException throws if an error occurs during reading
-     */
-    public static Image convertMultipartFileToImage(MultipartFile multipartFile) throws IOException {
-        return ImageIO.read(multipartFile.getInputStream());
     }
 
     /**

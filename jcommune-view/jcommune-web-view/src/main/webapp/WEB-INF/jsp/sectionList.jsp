@@ -57,7 +57,8 @@
                         <c:out value="${section.name}"/></a></h3>
                     <span class="forum_header_themes"><spring:message code="label.section.header.topics"/></span>
                     <span class="forum_header_messages"><spring:message code="label.section.header.messages"/></span>
-                    <span class="forum_header_last_message"><spring:message code="label.section.header.lastMessage"/></span>
+                    <span class="forum_header_last_message"><spring:message
+                            code="label.section.header.lastMessage"/></span>
                 </div>
             </div>
 
@@ -84,7 +85,7 @@
                             <c:out value="${branch.topicCount}"/>
                         </div>
                         <div class="forum_messages">
-                            ${messagesCount}
+                               FIX_ME!
                         </div>
                         <div class="forum_last_message">
                             <c:if test="${branch.topicCount>0}">
@@ -94,7 +95,8 @@
                                 <c:choose>
                                     <c:when test="${pageSize >= branch.lastUpdatedTopic.postCount}">
                                         <a href="${pageContext.request.contextPath}/topics/${branch.lastUpdatedTopic.id}#${branch.lastUpdatedTopic.lastPost.id}"><img
-                                                src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif" alt="<spring:message code="label.section.header.lastMessage"/>"/></a>
+                                                src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
+                                                alt="<spring:message code="label.section.header.lastMessage"/>"/></a>
                                     </c:when>
                                     <c:otherwise>
                                         <c:if test="${branch.lastUpdatedTopic.postCount % pageSize > 0}">
@@ -104,7 +106,8 @@
                                             <c:set var="additionalPage" value="${0}"/>
                                         </c:if>
                                         <a href="${pageContext.request.contextPath}/topics/${branch.lastUpdatedTopic.id}?page=<fmt:formatNumber value="${(branch.lastUpdatedTopic.postCount - (branch.lastUpdatedTopic.postCount mod pageSize)) div pageSize + additionalPage}"/>#${branch.lastUpdatedTopic.lastPost.id}">
-                                            <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif" alt="<spring:message code="label.section.header.lastMessage"/>"/>
+                                            <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
+                                                 alt="<spring:message code="label.section.header.lastMessage"/>"/>
                                         </a>
                                     </c:otherwise>
                                 </c:choose>

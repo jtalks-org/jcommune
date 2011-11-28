@@ -27,14 +27,13 @@ import java.util.List;
 public class Pagination {
     private int page;
     private int pageSize;
-    private int maxPages;
     private int itemsCount;
     private boolean pagingEnabled;
 
     public static final int DEFAULT_PAGE_SIZE = 50;
 
     /**
-     * Create instance.
+     * Create instance
      *
      * @param page        page (default 1)
      * @param currentUser current user
@@ -50,9 +49,9 @@ public class Pagination {
     /**
      * Create instance.
      *
-     * @param page        page (default 1)
-     * @param currentUser current user
-     * @param itemsCount  total number of items
+     * @param page          page (default 1)
+     * @param currentUser   current user
+     * @param itemsCount    total number of items
      * @param pagingEnabled paging status
      */
     public Pagination(Integer page, User currentUser, int itemsCount, boolean pagingEnabled) {
@@ -72,6 +71,8 @@ public class Pagination {
     }
 
     /**
+     * todo: looks odd, do we necessary need it?
+     *
      * @param pageSize number of items on the page
      */
     public void setPageSize(int pageSize) {
@@ -85,14 +86,11 @@ public class Pagination {
         return pageSize;
     }
 
-    /**
-     * @return index with which a page starts
-     */
-    public int getStart() {
-        return (getPage() - 1) * getPageSize();
-    }
+
 
     /**
+     * Returns page count.
+     *
      * @return page count
      */
     private int getPageCount() {
@@ -100,18 +98,10 @@ public class Pagination {
     }
 
     /**
-     * @param maxPages total number of pages
-     */
-    public void setMaxPages(int maxPages) {
-        this.maxPages = maxPages;
-    }
-
-    /**
      * @return total number of pages
      */
     public int getMaxPages() {
-        maxPages = isRounded() ? getPageCount() : getPageCount() + 1;
-        return maxPages;
+        return isRounded() ? getPageCount() : getPageCount() + 1;
     }
 
     /**
@@ -165,6 +155,7 @@ public class Pagination {
     /**
      * used if the total number of items
      * divided by the number of elements on a page without a trace
+     *
      * @param list list of items
      * @return list new list of items
      */
@@ -175,6 +166,7 @@ public class Pagination {
     /**
      * used if the total number of items
      * divided by the number of elements on the page with the remainder
+     *
      * @param list list of items
      * @return list new list of items
      */

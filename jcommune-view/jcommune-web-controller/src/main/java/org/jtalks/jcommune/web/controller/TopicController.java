@@ -29,11 +29,7 @@ import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -165,12 +161,12 @@ public final class TopicController {
      */
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.GET)
     public ModelAndView showTopicPage(@PathVariable(TOPIC_ID) Long topicId,
-                             @RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
-                             @RequestParam(value = PAGING_ENABLED, defaultValue = "true",
-                                     required = false) Boolean pagingEnabled) throws NotFoundException {
+                                      @RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
+                                      @RequestParam(value = PAGING_ENABLED, defaultValue = "true",
+                                              required = false) Boolean pagingEnabled) throws NotFoundException {
 
         Topic topic = topicService.get(topicId);
-        Branch branch =  topic.getBranch();
+        Branch branch = topic.getBranch();
 
         User currentUser = securityService.getCurrentUser();
 
@@ -200,7 +196,7 @@ public final class TopicController {
      */
     @RequestMapping(value = "/topics/{topicId}/edit", method = RequestMethod.GET)
     public ModelAndView editTopicPage(@RequestParam(BRANCH_ID) Long branchId,
-                             @PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
+                                      @PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         Topic topic = topicService.get(topicId);
 
         return new ModelAndView("topicForm")
@@ -224,9 +220,9 @@ public final class TopicController {
      */
     @RequestMapping(value = "/topics/{topicId}/edit", method = RequestMethod.POST)
     public ModelAndView editTopic(@Valid @ModelAttribute TopicDto topicDto,
-                             BindingResult result,
-                             @RequestParam(BRANCH_ID) Long branchId,
-                             @PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
+                                  BindingResult result,
+                                  @RequestParam(BRANCH_ID) Long branchId,
+                                  @PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         if (result.hasErrors()) {
             return new ModelAndView("topicForm")
                     .addObject(BRANCH_ID, branchId)

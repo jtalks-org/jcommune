@@ -24,29 +24,29 @@ public class TopicTest {
     private Topic topic;
     Post post1 = new Post();
     Post post2 = new Post();
-    
+
     @BeforeMethod
     public void setUp() {
         topic = new Topic(new User(), "title");
         topic.addPost(post1);
         topic.addPost(post2);
     }
-    
+
     @Test
     public void getFirstPost() {
         Post firstPost = topic.getFirstPost();
-        
+
         assertEquals(firstPost, post1);
     }
 
     @Test
     public void getLastPost() {
         Post lastPost = topic.getLastPost();
-        
+
         assertEquals(lastPost, post2);
     }
 
-   @Test
+    @Test
     public void addPost() throws InterruptedException {
         DateTime prevDate = topic.getModificationDate();
         Thread.sleep(25); // milisecond precise is a kind of fiction
@@ -67,27 +67,27 @@ public class TopicTest {
     @Test
     public void updateModificationDate() {
         DateTime prevDate = topic.getModificationDate();
-        
+
         DateTime modDate = topic.updateModificationDate();
-        
+
         assertNotSame(modDate, prevDate);
     }
-    
+
     @Test
     public void testSetStickedResetWeight() {
         topic.setTopicWeight(10);
-        
+
         topic.setSticked(false);
-        
+
         assertEquals(topic.getTopicWeight(), 0);
     }
-    
+
     @Test
     public void testSetStickedNotResetWeight() {
         topic.setTopicWeight(10);
-        
+
         topic.setSticked(true);
-        
+
         assertEquals(topic.getTopicWeight(), 10);
     }
 }

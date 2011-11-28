@@ -29,9 +29,7 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
@@ -105,28 +103,28 @@ public class TransactionalPostServiceTest {
 
     @Test(expectedExceptions = {NotFoundException.class})
     public void testGetPostsRangeInNonExistentTopic() throws NotFoundException {
-         when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
+        when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
         postService.getPostRangeInTopic(TOPIC_ID, 1, 5);
     }
-    
+
     @Test
     void updatePost() throws NotFoundException {
         String newBody = "new body";
         Topic topic = new Topic(user, "title");
-        Post post = new Post(user,"");
+        Post post = new Post(user, "");
         topic.addPost(post);
         post.setId(POST_ID);
         topic.addPost(post);
-        when(postDao.isExist(POST_ID)).thenReturn(true);      
-        when(postService.get(POST_ID)).thenReturn(post); 
-        
+        when(postDao.isExist(POST_ID)).thenReturn(true);
+        when(postService.get(POST_ID)).thenReturn(post);
+
         postService.updatePost(POST_ID, newBody);
-        
+
         assertEquals(post.getPostContent(), newBody);
-        
+
         verify(postDao).get(POST_ID);
-        verify(postDao).update(post);        
+        verify(postDao).update(post);
     }
 
 

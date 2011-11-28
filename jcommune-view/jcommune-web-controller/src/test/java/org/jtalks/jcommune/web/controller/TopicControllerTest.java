@@ -64,7 +64,7 @@ public class TopicControllerTest {
     public void init() {
         topicService = mock(TopicService.class);
         branchService = mock(BranchService.class);
-        securityService =  mock(SecurityService.class);
+        securityService = mock(SecurityService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
         branch = mock(Branch.class);
         controller = new TopicController(topicService, branchService, securityService, breadcrumbBuilder);

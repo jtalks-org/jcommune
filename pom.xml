@@ -65,7 +65,6 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>4.1.0.Final</version>
-                <type>jar</type>
                 <scope>compile</scope>
             </dependency>
             <!-- JDBC -->
@@ -150,7 +149,6 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
                 <version>${springVersion}</version>
-                <type>jar</type>
                 <scope>compile</scope>
             </dependency>
             <!-- Spring Security -->
@@ -218,8 +216,7 @@
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-all</artifactId>
                 <version>1.8.5</version>
-                <type>jar</type>
-                <scope>compile</scope>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.hsqldb</groupId>
@@ -261,7 +258,6 @@
                 <groupId>commons-beanutils</groupId>
                 <artifactId>commons-beanutils</artifactId>
                 <version>1.8.3</version>
-                <type>jar</type>
                 <scope>compile</scope>
             </dependency>
             <dependency>
@@ -338,39 +334,48 @@
                 <version>2.9</version>
             </plugin>
             <plugin>
-              <groupId>com.mycila.maven-license-plugin</groupId>
-              <artifactId>maven-license-plugin</artifactId>
-              <version>1.9.0</version>
-              <inherited>false</inherited>
-              <configuration>
-                <header>${basedir}/header.txt</header>
-                <aggregate>true</aggregate>
-                <includes>
-                  <include>src/**</include>
-                  <include>**/*.java</include>
-                  <include>**/test/**</include>
-                  <include>**/main/**</include>
-                </includes>
-                <excludes>
-                  <exclude>target/**</exclude>
-                  <exclude>**/*.properties</exclude>
-                  <exclude>**/*.sql</exclude>
-                  <exclude>**/*.css</exclude>
-                  <exclude>**/.*</exclude>
-                  <exclude>**/empty</exclude>
-                  <exclude>**/jquery*.*</exclude>
-                </excludes>
-                <useDefaultExcludes>true</useDefaultExcludes>
-                <strictCheck>true</strictCheck>
-              </configuration>
-              <executions>
-                <execution>
-                  <phase>verify</phase>
-                  <goals>
-                    <goal>check</goal>
-                  </goals>
-                </execution>
-              </executions>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>native2ascii-maven-plugin</artifactId>
+                <version>1.0-alpha-1</version>
+                <configuration>
+                    <src>src/main/resources</src>
+                    <includes>**/*.properties</includes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>1.9.0</version>
+                <inherited>false</inherited>
+                <configuration>
+                    <header>${basedir}/header.txt</header>
+                    <aggregate>true</aggregate>
+                    <includes>
+                        <include>src/**</include>
+                        <include>**/*.java</include>
+                        <include>**/test/**</include>
+                        <include>**/main/**</include>
+                    </includes>
+                    <excludes>
+                        <exclude>target/**</exclude>
+                        <exclude>**/*.properties</exclude>
+                        <exclude>**/*.sql</exclude>
+                        <exclude>**/*.css</exclude>
+                        <exclude>**/.*</exclude>
+                        <exclude>**/empty</exclude>
+                        <exclude>**/licensed/**</exclude>
+                    </excludes>
+                    <useDefaultExcludes>true</useDefaultExcludes>
+                    <strictCheck>true</strictCheck>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

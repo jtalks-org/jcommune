@@ -14,11 +14,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertEquals;
-
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -27,6 +22,9 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import static org.mockito.Mockito.*;
+import static org.testng.Assert.assertEquals;
 
 /**
  * This test class is intended to test all topic-related forum branch facilities
@@ -70,7 +68,7 @@ public class TransactionalBranchServiceTest {
 
     @Test(expectedExceptions = {NotFoundException.class})
     public void testGetBrancesInSectionFail() throws NotFoundException {
-       when(sectionDao.isExist(Matchers.<Long>any())).thenReturn(false);
-       branchService.getBranchesInSection(BRANCH_ID);
+        when(sectionDao.isExist(Matchers.<Long>any())).thenReturn(false);
+        branchService.getBranchesInSection(BRANCH_ID);
     }
 }

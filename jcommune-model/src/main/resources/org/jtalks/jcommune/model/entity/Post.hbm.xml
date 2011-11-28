@@ -16,36 +16,41 @@
 
 -->
 <!DOCTYPE hibernate-mapping PUBLIC
-  "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-  "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
-  <class name="Post" table="POST">
-    <cache usage="read-write"/>
-    <id name="id" column="POST_ID" unsaved-value="0">
-      <generator class="native"/>
-    </id>
-    <property name="uuid" column="UUID" unique="true" not-null="true"/>
-    <property name="creationDate" column="POST_DATE"
-              type="org.joda.time.contrib.hibernate.PersistentDateTime"
-              not-null="true"/>
-    <property name="modificationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
-              column="MODIFICATION_DATE" not-null="false"/>
-    <property name="postContent" type="text" column="POST_CONTENT" not-null="true"/>
+    <class name="Post" table="POST">
+        <cache usage="read-write"/>
+        <id name="id" column="POST_ID" unsaved-value="0">
+            <generator class="native"/>
+        </id>
+        <property name="uuid" column="UUID" unique="true" not-null="true"/>
+        <property name="creationDate" column="POST_DATE"
+                  type="org.joda.time.contrib.hibernate.PersistentDateTime"
+                  not-null="true"/>
+        <property name="modificationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
+                  column="MODIFICATION_DATE" not-null="false"/>
+        <property name="postContent" type="text" column="POST_CONTENT" not-null="true"/>
 
-    <many-to-one name="userCreated" column="USER_CREATED" class="User" fetch="join"
-                 foreign-key="FK_USER" lazy="false" not-null="true"/>
-    <many-to-one name="topic" column="TOPIC_ID" not-null="false"/>
-  </class>
-  <query name="getAllPostsInTopic">
-    <![CDATA[FROM Post as post
+        <many-to-one name="userCreated" column="USER_CREATED" class="User" fetch="join"
+                     foreign-key="FK_USER" lazy="false" not-null="true"/>
+        <many-to-one name="topic" column="TOPIC_ID" not-null="false"/>
+    </class>
+    <query name="getAllPostsInTopic">
+        <![CDATA[FROM Post as post
              WHERE post.topic = :topicId ORDER BY post.creationDate]]>
-  </query>
+    </query>
 
-  <query name="getCountPostOfUser">
-    <![CDATA[SELECT count(*) FROM Post WHERE userCreated = :userCreated]]>
-  </query>
+    <query name="getCountPostOfUser">
+        <![CDATA[SELECT count(*) FROM Post WHERE userCreated = :userCreated]]>
+    </query>
 
-  <query name="getCountPostOfTopic">
-    <![CDATA[SELECT count(*) FROM Post WHERE topic = :topic]]>
-  </query>
+    <query name="getCountPostOfTopic">
+        <![CDATA[SELECT count(*) FROM Post WHERE topic = :topic]]>
+    </query>
+
+    <query name="getPostCountForBranch">
+        <![CDATA[SELECT count(*) FROM Post post WHERE post.topic.branch = :branch]]>
+    </query>
+
 </hibernate-mapping>

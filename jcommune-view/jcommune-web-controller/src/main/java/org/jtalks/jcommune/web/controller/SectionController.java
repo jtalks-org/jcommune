@@ -37,6 +37,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Max Malakhov
  * @author Alexandre Teterin
+ * @author Evgeniy Naumenko
  */
 
 @Controller
@@ -46,18 +47,19 @@ public final class SectionController {
     private SectionService sectionService;
     private ForumStatisticsProvider forumStaticsProvider;
     private BreadcrumbBuilder breadcrumbBuilder;
+    //todo: replace injection with method parameter
     private HttpSession session;
 
     /**
      * Constructor creates MVC controller with specified SectionService
      *
-     * @param securityService         autowired object from Spring Context
-     * @param sectionService         autowired object from Spring Context
-     * @param breadcrumbBuilder      the object which provides actions on
- *                               {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
-     * @param forumStaticsProvider   autowired object from Spring Context which provides methods for getting
-*                               forum statistic information
-     * @param session                http session that will be initiated
+     * @param securityService      autowired object from Spring Context
+     * @param sectionService       autowired object from Spring Context
+     * @param breadcrumbBuilder    the object which provides actions on
+     *                             {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
+     * @param forumStaticsProvider autowired object from Spring Context which provides methods for getting
+     *                             forum statistic information
+     * @param session              http session that will be initiated
      */
     @Autowired
     public SectionController(SecurityService securityService,
@@ -77,7 +79,7 @@ public final class SectionController {
      *
      * @return {@link ModelAndView} with view name as renderAllSection
      */
-    @RequestMapping(value = "/sections", method = RequestMethod.GET)
+    @RequestMapping(value = {"/", "/sections"}, method = RequestMethod.GET)
     public ModelAndView sectionList() {
         // Counting the number of active users based on the number of sessions.
         // By default, the session will be initialized after controller's invocation,
@@ -102,16 +104,6 @@ public final class SectionController {
     }
 
     /**
-     * Action for root path. Do same as SectionController#sectionList()
-     *
-     * @return populated {@code ModelAndView}
-     */
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ModelAndView root() {
-        return sectionList();
-    }
-
-    /**
      * Displays to user a list of branches from the chosen section.
      *
      * @param sectionId section for display
@@ -122,9 +114,11 @@ public final class SectionController {
     @RequestMapping(value = "/sections/{sectionId}", method = RequestMethod.GET)
     public ModelAndView branchList(@PathVariable("sectionId") long sectionId) throws NotFoundException {
         Section section = sectionService.get(sectionId);
-
+        User currentUser = securityService.getCurrentUser();
+        Pagination pag = new Pagination(1, currentUser, 1, false);
         return new ModelAndView("branchList")
                 .addObject("section", section)
+                .addObject("pageSize", pag.getPageSize())
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
     }
 }

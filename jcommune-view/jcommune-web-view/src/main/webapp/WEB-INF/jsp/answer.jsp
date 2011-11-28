@@ -42,7 +42,7 @@
             </div>
 
             <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-            <form:hidden path="topicId" />
+            <form:hidden path="topicId"/>
 
             <!-- Начало группы форумов -->
             <div class="forum_header_table"> <!-- Шапка топика -->
@@ -143,8 +143,8 @@
                         <a href="#" onmouseover="helpline('a')"><spring:message code="label.answer.close_tags"/></a>
 
                         <div id="helpline"><spring:message code="label.answer.tooltip"/></div>
-                        <form:textarea path="bodyText" rows="15" cols="35" tabindex="3" cssClass="post" />
-                        <form:errors path="bodyText" />
+                        <form:textarea path="bodyText" rows="15" cols="35" tabindex="3" cssClass="post"/>
+                        <form:errors path="bodyText"/>
 
                     </div>
                 </li>
@@ -153,13 +153,16 @@
                         <spring:message code="label.answer.options"/>
                     </div>
                     <div class="forum_answer_right options">
-                        <input id="notify" type="checkbox" name="notify" checked="checked"/><spring:message code="label.answer.notify_message"/>
+                        <input id="notify" type="checkbox" name="notify" checked="checked"/><spring:message
+                            code="label.answer.notify_message"/>
                         <br/>
-                        <input id="nosmiles" type="checkbox" name="nosmiles" checked="checked"/><spring:message code="label.answer.no_smiles"/>
+                        <input id="nosmiles" type="checkbox" name="nosmiles" checked="checked"/><spring:message
+                            code="label.answer.no_smiles"/>
                     </div>
                 </li>
             </ul>
-            <input id="preview" type="submit" class="button" tabindex="5" name="preview" value="<spring:message code="label.answer.preview"/>"/>
+            <input id="preview" type="submit" class="button" tabindex="5" name="preview"
+                   value="<spring:message code="label.answer.preview"/>"/>
             <input id="post" type="submit" class="button" accesskey="s" tabindex="6" name="post"
                    value="<spring:message code="label.answer"/>"/>
         </jtalks:form>

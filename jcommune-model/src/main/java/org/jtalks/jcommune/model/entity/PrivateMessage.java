@@ -14,10 +14,10 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import java.util.StringTokenizer;
-
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
+
+import java.util.StringTokenizer;
 
 /**
  * Text message to send from one user to another. <br/>

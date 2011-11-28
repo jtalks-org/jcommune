@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.json.simple.JSONObject;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PostService;
@@ -27,10 +28,10 @@ import org.jtalks.jcommune.web.util.ImagePreprocessor;
 import org.jtalks.jcommune.web.util.Language;
 import org.jtalks.jcommune.web.util.PageSize;
 import org.jtalks.jcommune.web.util.Pagination;
-import org.jtalks.jcommune.web.validation.ImageFormats;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -38,10 +39,17 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
+import javax.imageio.ImageIO;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequestWrapper;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.List;
 
 /**
@@ -60,12 +68,10 @@ public class UserController {
     public static final String EDITED_USER = "editedUser";
     public static final String BREADCRUMB_LIST = "breadcrumbList";
 
-    public static final int AVATAR_MAX_HEIGHT = 100;
-    public static final int AVATAR_MAX_WIDTH = 100;
-
 
     private final SecurityService securityService;
     private final UserService userService;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private BreadcrumbBuilder breadcrumbBuilder;
     private ImagePreprocessor imagePreprocessor;
     private PostService postService;
@@ -172,7 +178,12 @@ public class UserController {
     public ModelAndView editProfilePage() throws NotFoundException {
         User user = securityService.getCurrentUser();
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
-        editedUser.setAvatar(new MockMultipartFile("avatar", "", ImageFormats.JPG.getContentType(), user.getAvatar()));
+        byte[] avatar = user.getAvatar();
+        if (avatar != null) {
+            editedUser.setAvatar(imagePreprocessor.prepareHtmlImgSrc(
+                    imagePreprocessor.base64Coder(avatar)
+            ));
+        }
         return editMaV(editedUser)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
     }
@@ -202,10 +213,12 @@ public class UserController {
             return applyAvatarRemoval(userDto);
         }
         User editedUser = editUserProfile(userDto, result);
+
         // error occured
         if (editedUser == null) {
             return applyAvatarRemoval(userDto);
         }
+
         return new ModelAndView(new StringBuilder().append("redirect:/users/")
                 .append(editedUser.getEncodedUsername()).toString());
     }
@@ -219,8 +232,9 @@ public class UserController {
      * @throws IOException image stream processing error
      */
     private User editUserProfile(EditUserProfileDto userDto, BindingResult result) throws IOException {
+        User returnValue = null;
         try {
-            return performEditUserProfile(userDto);
+            returnValue = performEditUserProfile(userDto);
         } catch (DuplicateEmailException e) {
             result.rejectValue("email", "validation.duplicateemail");
         } catch (WrongPasswordException e) {
@@ -229,7 +243,7 @@ public class UserController {
         } catch (InvalidImageException e) {
             result.rejectValue("avatar", "avatar.wrong.format");
         }
-        return null;
+        return returnValue;
     }
 
     /**
@@ -257,11 +271,25 @@ public class UserController {
      */
     private User performEditUserProfile(EditUserProfileDto userDto) throws DuplicateEmailException,
             WrongPasswordException, IOException, InvalidImageException {
-        byte[] avatar = imagePreprocessor.preprocessImage(userDto.getAvatar(), AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
-        return userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
-                userDto.getLastName(), userDto.getCurrentUserPassword(), userDto.getNewUserPassword(),
-                avatar,
-                userDto.getSignature(), userDto.getLanguage(), userDto.getPageSize());
+
+        User result;
+
+        String email = userDto.getEmail();
+        String firstName = userDto.getFirstName();
+        String lastName = userDto.getLastName();
+        String currentUserPassword = userDto.getCurrentUserPassword();
+        String newUserPassword = userDto.getNewUserPassword();
+        String encodedBytes = userDto.getAvatar();
+        byte[] avatar = imagePreprocessor.base64Decoder(encodedBytes);
+        String signature = userDto.getSignature();
+        String language = userDto.getLanguage();
+        String pageSize = userDto.getPageSize();
+
+        result = userService.editUserProfile(email, firstName,
+                lastName, currentUserPassword, newUserPassword,
+                avatar, signature, language, pageSize);
+
+        return result;
     }
 
     /**
@@ -274,9 +302,6 @@ public class UserController {
      */
     private ModelAndView applyAvatarRemoval(EditUserProfileDto userDto) {
         User user = securityService.getCurrentUser();
-        if (user.getAvatar() == null) {
-            userDto.setAvatar(new MockMultipartFile("avatar", "", ImageFormats.JPG.getContentType(), new byte[0]));
-        }
         return editMaV(userDto);
     }
 
@@ -358,11 +383,91 @@ public class UserController {
         return mav;
     }
 
+
+    /**
+     * Proccess avatar file from request and return avatar preview in response
+     *
+     * @param request  servlet request
+     * @param response servlet response
+     * @throws ServletException avatar processing problem
+     */
+    @RequestMapping(value = "/users/avatarpreview", method = RequestMethod.POST)
+    public void uploadAvatar(ServletRequestWrapper request, HttpServletResponse
+            response) throws ServletException {
+
+        PrintWriter writer = null;
+        InputStream inputStream = null;
+        JSONObject json = new JSONObject();
+
+        try {
+            writer = response.getWriter();
+        } catch (IOException e) {
+            logger.error(UserController.class.getName() + "has thrown an exception: " + e.getMessage());
+        }
+
+        try {
+            inputStream = request.getInputStream();
+            inputStream = new BufferedInputStream(inputStream);
+            BufferedImage inputAvatar = ImageIO.read(inputStream);
+            prepareOutputAvatar(response, writer, json, inputAvatar);
+        } catch (IOException e) {
+            prepareErrorServerResponse(response, writer, json, e);
+        } finally {
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+
+                if (writer != null) {
+                    writer.flush();
+                    writer.close();
+                }
+
+            } catch (IOException e) {
+                logger.error(UserController.class.getName() + "has thrown an exception: " + e.getMessage());
+            }
+        }
+
+    }
+
+    /**
+     * Prepare the error server response if the avatar processing error occurred
+     *
+     * @param response servlet response
+     * @param writer   writer for response
+     * @param json     JSON container for response content
+     * @param e        avatar processing problem
+     */
+    private void prepareErrorServerResponse(HttpServletResponse response, PrintWriter writer, JSONObject json, IOException e) {
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        json.put("success", "false");
+        writer.print(json.toJSONString());
+        logger.error(UserController.class.getName() + "has thrown an exception: " + e.getMessage());
+    }
+
+    /**
+     * Prepare the error server response if the avatar processing error occurred
+     *
+     * @param response    servlet response
+     * @param writer      writer for response
+     * @param json        JSON container for response content
+     * @param inputAvatar avatar for the processing
+     */
+    private void prepareOutputAvatar(HttpServletResponse response, PrintWriter writer, JSONObject json, BufferedImage inputAvatar) throws IOException {
+        byte[] outputAvatar = imagePreprocessor.preprocessImage(inputAvatar);
+        String srcImage = imagePreprocessor.base64Coder(outputAvatar);
+        response.setStatus(HttpServletResponse.SC_OK);
+        json.put("success", "true");
+        json.put("srcPrefix", ImagePreprocessor.HTML_SRC_TAG_PREFIX);
+        json.put("srcImage", srcImage);
+        writer.print(json.toJSONString());
+    }
+
     /**
      * Show page with post of user.
      *
-     * @param page          number current page
-     * @param pagingEnabled flag on/OffScreenImage paging
+     * @param page            number current page
+     * @param pagingEnabled   flag on/OffScreenImage paging
      * @param encodedUsername encodedUsername
      * @return post list of user
      * @throws NotFoundException if user with given id not found.
@@ -370,7 +475,7 @@ public class UserController {
     @RequestMapping(value = "/users/{encodedUsername}/postList", method = RequestMethod.GET)
     public ModelAndView showUserPostList(@PathVariable("encodedUsername") String encodedUsername,
                                          @RequestParam(value = "page", defaultValue = "1",
-                                         required = false) Integer page,
+                                                 required = false) Integer page,
                                          @RequestParam(value = "pagingEnabled", defaultValue = "true", required = false
                                          ) Boolean pagingEnabled
     ) throws NotFoundException {

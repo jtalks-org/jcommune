@@ -47,7 +47,7 @@ public interface PostService extends EntityService<Post> {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when post not found
      */
-    void updatePost(long postId,String postContent) throws NotFoundException;
+    void updatePost(long postId, String postContent) throws NotFoundException;
 
     /**
      * Delete post  by id.

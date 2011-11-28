@@ -14,7 +14,8 @@
  */
 package org.jtalks.jcommune.web.validation;
 
-import org.springframework.web.multipart.MultipartFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -23,12 +24,14 @@ import javax.validation.ConstraintValidatorContext;
  * Validator for {@link ImageSize}. Checks that image has allowable size.
  *
  * @author Eugeny Batov
+ * @author Alexandre Teterin
  * @see ImageSize
  */
-public class ImageSizeValidator implements ConstraintValidator<ImageSize, MultipartFile> {
+public class ImageSizeValidator implements ConstraintValidator<ImageSize, byte[]> {
 
     private int imageSize;
-    private static final int BYTES_IN_KILOBYTE=1024;
+    private static final int BYTES_IN_KILOBYTE = 1024;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * Initialize validator fields from annotation instance.
@@ -44,16 +47,18 @@ public class ImageSizeValidator implements ConstraintValidator<ImageSize, Multip
     /**
      * Check that file's size no more imageSize.
      *
-     * @param multipartFile image that user want upload as avatar
-     * @param context       validation context
+     * @param context validation context
      * @return {@code true} if validation successfull or false if fails
      */
     @Override
-    public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext context) {
-        if (multipartFile.isEmpty()) {
-            //assume that empty multipart file is valid to avoid validation message when user doesn't load nothing
+    public boolean isValid(byte[] bytes, ConstraintValidatorContext context) {
+        boolean result = false;
+
+        if (bytes == null) {
+            //assume that empty avatar is valid to avoid validation message when user doesn't load nothing
             return true;
         }
-        return multipartFile.getSize()/BYTES_IN_KILOBYTE < imageSize;
+
+        return result = bytes.length / BYTES_IN_KILOBYTE < imageSize;
     }
 }

@@ -16,9 +16,7 @@ package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.Length;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.web.validation.Avatar;
 import org.jtalks.jcommune.web.validation.Matches;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * This dto used for transferring data in edit {@link User} profile operation.
@@ -36,8 +34,7 @@ public class EditUserProfileDto extends UserDto {
     private String newUserPasswordConfirm;
     private String language;
     private String pageSize;
-    @Avatar
-    private MultipartFile avatar;
+    private String avatar;
 
     /**
      * Default constructor
@@ -58,7 +55,7 @@ public class EditUserProfileDto extends UserDto {
         this.setEmail(user.getEmail());
         this.setSignature(user.getSignature());
         this.language = user.getLanguage();
-        this.pageSize=user.getPageSize();
+        this.pageSize = user.getPageSize();
     }
 
     /**
@@ -112,7 +109,7 @@ public class EditUserProfileDto extends UserDto {
     /**
      * @return - user avatar
      */
-    public MultipartFile getAvatar() {
+    public String getAvatar() {
         return avatar;
     }
 
@@ -121,7 +118,7 @@ public class EditUserProfileDto extends UserDto {
      *
      * @param avatar - user avatar
      */
-    public void setAvatar(MultipartFile avatar) {
+    public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
 

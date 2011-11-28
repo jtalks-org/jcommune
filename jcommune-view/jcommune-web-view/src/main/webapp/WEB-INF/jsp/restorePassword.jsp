@@ -53,7 +53,7 @@
                             </span>
                         </c:if>
                         <c:if test="${not empty message}">
-                                <spring:message code="${message}"/>
+                            <spring:message code="${message}"/>
                         </c:if>
                     </td>
                 </tr>

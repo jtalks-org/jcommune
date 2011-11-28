@@ -27,6 +27,7 @@
 <div class="wrap pm_page">
     <jsp:include page="../../template/topLine.jsp"/>
     <h1>JTalks</h1>
+
     <div class="all_forums">
         <h2><a class="heading" href="#"><spring:message code="label.new_pm"/></a></h2>
 
@@ -148,9 +149,11 @@
                         <spring:message code="label.topic.options"/>
                     </div>
                     <div class="forum_answer_right options">
-                        <input id="notify" type="checkbox" name="notify"/> <spring:message code="label.topic.notify_message"/>
+                        <input id="notify" type="checkbox" name="notify"/> <spring:message
+                            code="label.topic.notify_message"/>
                         <br/>
-                        <input id="nosmiles" type="checkbox" name="nosmiles"/> <spring:message code="label.topic.no_smiles"/>
+                        <input id="nosmiles" type="checkbox" name="nosmiles"/> <spring:message
+                            code="label.topic.no_smiles"/>
                     </div>
                 </li>
             </ul>

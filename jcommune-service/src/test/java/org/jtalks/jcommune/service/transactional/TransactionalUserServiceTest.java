@@ -362,10 +362,10 @@ public class TransactionalUserServiceTest {
 
         try {
             userService.restorePassword(EMAIL);
-        }  catch (MailingFailedException e) {
-           // ensure db modification haven't been done if mailing failed
-           verify(userDao, never()).update(Matchers.<User>any());
-           throw e;
+        } catch (MailingFailedException e) {
+            // ensure db modification haven't been done if mailing failed
+            verify(userDao, never()).update(Matchers.<User>any());
+            throw e;
         }
     }
 }

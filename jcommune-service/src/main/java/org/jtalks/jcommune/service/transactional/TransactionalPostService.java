@@ -36,7 +36,7 @@ import java.util.List;
 public class TransactionalPostService extends AbstractTransactionalEntityService<Post, PostDao> implements PostService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    
+
     private TopicDao topicDao;
     private SecurityService securityService;
 
@@ -76,7 +76,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         post.updateModificationDate();
 
         this.getDao().update(post);
-        
+
         logger.debug("Post id={} updated.", post.getId());
     }
 
@@ -91,9 +91,9 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         Topic topic = post.getTopic();
         topic.removePost(post);
         topicDao.update(topic);
-        
+
         securityService.deleteFromAcl(post);
-        
+
         logger.debug("Deleted post id={}", postId);
     }
 
