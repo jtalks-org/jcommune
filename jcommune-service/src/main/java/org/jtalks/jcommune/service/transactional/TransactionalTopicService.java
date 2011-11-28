@@ -45,7 +45,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         implements TopicService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    public static final String TOPICS_VIEWED_ATTRIBUTE_NAME = "topicsViewed";
 
     private final SecurityService securityService;
     private BranchService branchService;
@@ -139,22 +138,11 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    public List<Topic> getAllTopicsPastLastDay(DateTime lastLogin) {
-        if (lastLogin == null) {
-            lastLogin = new DateTime().minusDays(1);
+    public List<Topic> getRecentTopics(DateTime date) {
+        if (date == null) {
+            date = new DateTime().minusDays(1);
         }
-        return this.getDao().getAllTopicsPastLastDay(lastLogin);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getTopicsPastLastDayCount(DateTime lastLogin) {
-        if (lastLogin == null) {
-            lastLogin = new DateTime().minusDays(1);
-        }
-        return this.getDao().getTopicsPastLastDayCount(lastLogin);
+        return this.getDao().getTopicsUpdatedSince(date);
     }
 
     /**

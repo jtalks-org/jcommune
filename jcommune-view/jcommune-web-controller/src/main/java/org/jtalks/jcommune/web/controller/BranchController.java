@@ -23,6 +23,7 @@ import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,7 @@ import java.util.List;
  * @author Vitaliy kravchenko
  * @author Kirill Afonin
  * @author Alexandre Teterin
+ * @author Evgeniy Naumenko
  */
 
 @Controller
@@ -94,18 +96,18 @@ public final class BranchController {
         User currentUser = securityService.getCurrentUser();
 
         Pagination pag = new Pagination(page, currentUser, topics.size(), pagingEnabled);
-
+        List<Breadcrumb> breadcrumbs = breadcrumbBuilder.getForumBreadcrumb(branch);
         return new ModelAndView("topicList")
                 .addObject("branch", branch)
-                .addObject("branchId", branchId)
                 .addObject("topics", topics)
-                .addObject(PAGE, pag.getPage())
-                .addObject("pag", pag)
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)));
+                .addObject("pagination", pag)
+                .addObject("breadcrumbList", breadcrumbs);
     }
 
     /**
-     * Displays to user a list of topic past last 24 hour.
+     * Displays to user a list of topic updated since last login.
+     * For anonymous user this method will display topics
+     * updated during last 24 hours.
      *
      * @param page    page
      * @param session bound http session
@@ -116,20 +118,15 @@ public final class BranchController {
                                          HttpSession session) {
 
         DateTime lastLogin = (DateTime) session.getAttribute("lastlogin");
-        int topicsCount = topicService.getTopicsPastLastDayCount(lastLogin);
         User currentUser = securityService.getCurrentUser();
+        List<Topic> topics = topicService.getRecentTopics(lastLogin);
+        Pagination pagination = new Pagination(page, currentUser, topics.size(), true);
 
-        Pagination pag = new Pagination(page, currentUser, topicsCount, true);
-
-        List<Topic> topics = topicService.getAllTopicsPastLastDay(lastLogin);
-
+        List<Breadcrumb> breadcrumbs =  breadcrumbBuilder.getRecentBreadcrumb();
         return new ModelAndView("recent")
                 .addObject("topics", topics)
-                .addObject("maxPages", pag.getMaxPages())
-                .addObject(PAGE, pag.getPage())
-                .addObject("pag", pag)
-                .addObject("breadcrumbList",
-                        breadcrumbBuilder.getRecentBreadcrumb());
+                .addObject("pagination", pagination)
+                .addObject("breadcrumbList",breadcrumbs);
     }
 
 }

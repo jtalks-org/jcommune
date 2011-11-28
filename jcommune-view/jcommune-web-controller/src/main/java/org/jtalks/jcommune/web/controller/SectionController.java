@@ -47,6 +47,7 @@ public final class SectionController {
     private SectionService sectionService;
     private ForumStatisticsProvider forumStaticsProvider;
     private BreadcrumbBuilder breadcrumbBuilder;
+    //todo: replace injection with method parameter
     private HttpSession session;
 
     /**
@@ -113,9 +114,11 @@ public final class SectionController {
     @RequestMapping(value = "/sections/{sectionId}", method = RequestMethod.GET)
     public ModelAndView branchList(@PathVariable("sectionId") long sectionId) throws NotFoundException {
         Section section = sectionService.get(sectionId);
-
+        User currentUser = securityService.getCurrentUser();
+        Pagination pag = new Pagination(1, currentUser, 1, false);
         return new ModelAndView("branchList")
                 .addObject("section", section)
+                .addObject("pageSize", pag.getPageSize())
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
     }
 }

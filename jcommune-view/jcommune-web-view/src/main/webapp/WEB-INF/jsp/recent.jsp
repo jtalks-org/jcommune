@@ -21,7 +21,6 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<html>
 <head>
     <title>Forum</title>
 </head>
@@ -34,10 +33,10 @@
     <div class="all_forums">
         <h2><a class="heading" href="#"><c:out value="${recent}"/></a></h2>
 
-        <jtalks:display uri="" pagination="${pag}" list="${topics}">
+        <jtalks:display uri="" pagination="${pagination}" list="${topics}">
         <nobr>
             <span class="nav_bottom">
-                <c:if test="${pag.maxPages>1}">
+                <c:if test="${pagination.maxPages>1}">
                     <spring:message code="label.onPage"/>
                 </c:if>
             </jtalks:display>
@@ -59,7 +58,7 @@
         </div>
 
         <ul class="forum_table"> <!-- Список топиков -->
-            <jtalks:display uri="" pagination="${pag}" numberLink="3" list="${topics}">
+            <jtalks:display uri="" pagination="${pagination}" numberLink="3" list="${topics}">
             <c:forEach var="topic" items="${list}">
                 <li class="forum_row"> <!-- Топик -->
                     <div class="forum_icon"> <!-- Иконка с кофе -->
@@ -122,7 +121,7 @@
         <!-- Конец группы форумов -->
         <nobr>
             <span class="nav_bottom">
-                <c:if test="${pag.maxPages>1}">
+                <c:if test="${pagination.maxPages>1}">
                     <spring:message code="label.onPage"/>
                 </c:if>
             </jtalks:display>
@@ -133,9 +132,10 @@
 
 
         <div class="forum_misc_info">
-            <spring:message code="label.page"/> <c:out value="${page}"/> <spring:message code="label.of"/> <c:out
-                value="${maxPages}"/>
-
+            <spring:message code="label.page"/>
+            <c:out value="${pagination.page}"/>
+            <spring:message code="label.of"/>
+            <c:out value="${pagination.maxPages}"/>
         </div>
     </div>
     <!-- Конец всех форумов -->
@@ -143,4 +143,3 @@
     <!-- Несемантичный буфер для прибития подвала -->
 </div>
 </body>
-</html>

@@ -42,10 +42,10 @@
             </span>
             <br>
         </div>
-        <jtalks:display uri="${branchId}" pagination="${pag}" list="${topics}">
+        <jtalks:display uri="${branch.id}" pagination="${pagination}" list="${topics}">
         <nobr>
             <span class="nav_bottom">
-                <c:if test="${pag.maxPages>1}">
+                <c:if test="${pagination.maxPages>1}">
                     <spring:message code="label.onPage"/>
                 </c:if>
             </jtalks:display>
@@ -53,7 +53,7 @@
         </nobr>
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
             <a class="button top_button"
-               href="${pageContext.request.contextPath}/topics/new?branchId=${branchId}"><spring:message
+               href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"><spring:message
                     code="label.addtopic"/></a>
             &nbsp; &nbsp; &nbsp;
         </sec:authorize>
@@ -73,8 +73,8 @@
 
 
         <ul class="forum_table"> <!-- Список топиков -->
-            <jtalks:display uri="${branchId}" pagination="${pag}" numberLink="3" list="${topics}">
-            <c:forEach var="topic" items="${list}">
+            <jtalks:display uri="${branch.id}" pagination="${pagination}" numberLink="3" list="${topics}">
+            <c:forEach var="topic" items="${topics}">
                 <li class="forum_row"> <!-- Топик -->
                     <div class="forum_icon"> <!-- Иконка с кофе -->
                         <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png"
@@ -126,19 +126,19 @@
                            href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
                             <c:out value="${topic.lastPost.userCreated.username}"/></a>
                         <c:choose>
-                            <c:when test="${pag.pageSize >= topic.postCount}">
+                            <c:when test="${pagination.pageSize >= topic.postCount}">
                                 <a href="${pageContext.request.contextPath}/topics/${topic.id}#${topic.lastPost.id}"><img
                                         src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
                                         alt="<spring:message code="label.section.header.lastMessage"/>"/></a>
                             </c:when>
                             <c:otherwise>
-                                <c:if test="${topic.postCount % pag.pageSize > 0}">
+                                <c:if test="${topic.postCount % pagination.pageSize > 0}">
                                     <c:set var="additionalPage" value="${1}"/>
                                 </c:if>
-                                <c:if test="${topic.postCount % pag.pageSize == 0}">
+                                <c:if test="${topic.postCount % pagination.pageSize == 0}">
                                     <c:set var="additionalPage" value="${0}"/>
                                 </c:if>
-                                <a href="${pageContext.request.contextPath}/topics/${topic.id}?page=<fmt:formatNumber value="${(topic.postCount - (topic.postCount mod pag.pageSize)) div pag.pageSize + additionalPage}"/>#${topic.lastPost.id}">
+                                <a href="${pageContext.request.contextPath}/topics/${topic.id}?page=<fmt:formatNumber value="${(topic.postCount - (topic.postCount mod pagination.pageSize)) div pagination.pageSize + additionalPage}"/>#${topic.lastPost.id}">
                                     <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
                                          alt="<spring:message code="label.section.header.lastMessage"/>"/>
                                 </a>
@@ -151,7 +151,7 @@
         </ul>
         <nobr>
             <span class="nav_bottom">
-                <c:if test="${pag.maxPages>1}">
+                <c:if test="${pagination.maxPages>1}">
                     <spring:message code="label.onPage"/>
                 </c:if>
             </jtalks:display>
@@ -162,18 +162,18 @@
 
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
             <a class="button"
-               href="${pageContext.request.contextPath}/topics/new?branchId=${branchId}"><spring:message
+               href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"><spring:message
                     code="label.addtopic"/></a>
             &nbsp; &nbsp; &nbsp;
         </sec:authorize>
-        <c:if test="${pag.maxPages>1}">
-            <c:if test="${pag.pagingEnabled == true}">
+        <c:if test="${pagination.maxPages>1}">
+            <c:if test="${pagination.pagingEnabled == true}">
                 <a class="button"
                    href="?pagingEnabled=false"><spring:message code="label.showAll"/></a>
                 &nbsp; &nbsp; &nbsp;
             </c:if>
         </c:if>
-        <c:if test="${pag.pagingEnabled == false}">
+        <c:if test="${pagination.pagingEnabled == false}">
             <a class="button"
                href="?pagingEnabled=true"><spring:message code="label.showPages"/></a>
             &nbsp; &nbsp; &nbsp;
@@ -183,8 +183,8 @@
 
 
         <div class="forum_misc_info">
-            <spring:message code="label.page"/> <c:out value="${page}"/> <spring:message code="label.of"/> <c:out
-                value="${pag.maxPages}"/>
+            <spring:message code="label.page"/> <c:out value="${pagination.page}"/> <spring:message code="label.of"/> <c:out
+                value="${pagination.maxPages}"/>
             <br/>
             <spring:message code="label.topic.moderators"/>
             <ul class="users_list">
