@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.json.simple.JSONObject;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
@@ -23,10 +22,7 @@ import org.jtalks.jcommune.service.exceptions.*;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
-import org.jtalks.jcommune.web.util.ImagePreprocessor;
-import org.jtalks.jcommune.web.util.Language;
-import org.jtalks.jcommune.web.util.PageSize;
-import org.jtalks.jcommune.web.util.Pagination;
+import org.jtalks.jcommune.web.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,18 +34,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
-import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequestWrapper;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Controller for User related actions: registration.
@@ -382,80 +375,32 @@ public class UserController {
     /**
      * Proccess avatar file from request and return avatar preview in response
      *
-     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException avatar processing problem
      */
     @RequestMapping(value = "/users/avatarpreview", method = RequestMethod.POST)
-    public void uploadAvatar(ServletRequestWrapper request, HttpServletResponse
+    public
+    @ResponseBody
+    Map<String, String> uploadAvatar(@RequestBody byte[] bytes, HttpServletResponse
             response) throws ServletException {
 
-        PrintWriter writer = null;
-        InputStream inputStream = null;
-        JSONObject json = new JSONObject();
+        Map responseContent = new HashMap<String, String>();
 
         try {
-            writer = response.getWriter();
+            BufferedImage inputAvatar = ImageUtil.convertByteArrayToImage(bytes);
+            byte[] outputAvatar = imagePreprocessor.preprocessImage(inputAvatar);
+            String srcImage = imagePreprocessor.base64Coder(outputAvatar);
+            response.setStatus(HttpServletResponse.SC_OK);
+            responseContent.put("success", "true");
+            responseContent.put("srcPrefix", ImagePreprocessor.HTML_SRC_TAG_PREFIX);
+            responseContent.put("srcImage", srcImage);
         } catch (IOException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            responseContent.put("success", "false");
             logger.error(UserController.class.getName() + "has thrown an exception: " + e.getMessage());
         }
 
-        try {
-            inputStream = request.getInputStream();
-            inputStream = new BufferedInputStream(inputStream);
-            BufferedImage inputAvatar = ImageIO.read(inputStream);
-            prepareOutputAvatar(response, writer, json, inputAvatar);
-        } catch (IOException e) {
-            prepareErrorServerResponse(response, writer, json, e);
-        } finally {
-            try {
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-
-                if (writer != null) {
-                    writer.flush();
-                    writer.close();
-                }
-
-            } catch (IOException e) {
-                logger.error(UserController.class.getName() + "has thrown an exception: " + e.getMessage());
-            }
-        }
-
-    }
-
-    /**
-     * Prepare the error server response if the avatar processing error occurred
-     *
-     * @param response servlet response
-     * @param writer   writer for response
-     * @param json     JSON container for response content
-     * @param e        avatar processing problem
-     */
-    private void prepareErrorServerResponse(HttpServletResponse response, PrintWriter writer, JSONObject json, IOException e) {
-        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        json.put("success", "false");
-        writer.print(json.toJSONString());
-        logger.error(UserController.class.getName() + "has thrown an exception: " + e.getMessage());
-    }
-
-    /**
-     * Prepare the error server response if the avatar processing error occurred
-     *
-     * @param response    servlet response
-     * @param writer      writer for response
-     * @param json        JSON container for response content
-     * @param inputAvatar avatar for the processing
-     */
-    private void prepareOutputAvatar(HttpServletResponse response, PrintWriter writer, JSONObject json, BufferedImage inputAvatar) throws IOException {
-        byte[] outputAvatar = imagePreprocessor.preprocessImage(inputAvatar);
-        String srcImage = imagePreprocessor.base64Coder(outputAvatar);
-        response.setStatus(HttpServletResponse.SC_OK);
-        json.put("success", "true");
-        json.put("srcPrefix", ImagePreprocessor.HTML_SRC_TAG_PREFIX);
-        json.put("srcImage", srcImage);
-        writer.print(json.toJSONString());
+        return responseContent;
     }
 
     /**

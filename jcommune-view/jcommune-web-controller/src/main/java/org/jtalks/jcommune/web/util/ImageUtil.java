@@ -19,6 +19,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
 import java.awt.image.RenderedImage;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -62,6 +64,11 @@ public final class ImageUtil {
         byte[] bytes = baos.toByteArray();
         baos.close();
         return bytes;
+    }
+
+    public static BufferedImage convertByteArrayToImage(byte[] bytes) throws IOException {
+        BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(bytes));
+        return ImageIO.read(bis);
     }
 
 

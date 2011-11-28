@@ -286,6 +286,11 @@
                 <artifactId>mail</artifactId>
                 <version>1.4</version>
             </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-mapper-asl</artifactId>
+                <version>1.9.2</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -391,6 +396,13 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+
+        <repository>
+            <id>codehaus-snapshots</id>
+            <url>http://snapshots.repository.codehaus.org</url>
+        </repository>
+
+
     </repositories>
     <distributionManagement>
         <repository>
