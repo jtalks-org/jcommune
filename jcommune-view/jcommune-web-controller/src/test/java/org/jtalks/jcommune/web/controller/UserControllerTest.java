@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.SecurityService;
@@ -369,19 +370,21 @@ public class UserControllerTest {
     @Test
     public void testShowUserPostList() throws NotFoundException {
         User user = new User("username", "email", "password");
+
         user.setLanguage("ENGLISH");
         user.setPageSize("FIVE");
 
         //set expectations
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(userService.getByEncodedUsername("username")).thenReturn(user);
         when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
+        when(postService.getPostsOfUser(user)).thenReturn(new ArrayList<Post>());
 
 
         //invoke the object under test
-        ModelAndView mav = controller.showUserPostList(user.getEncodedUsername(), 1,true);
+        ModelAndView mav = controller.showUserPostList("username", 1,true);
 
         //check expectations
-        verify(securityService).getCurrentUser();
+        verify(userService).getByEncodedUsername("username");
         verify(breadcrumbBuilder).getForumBreadcrumb();
 
         //check result
