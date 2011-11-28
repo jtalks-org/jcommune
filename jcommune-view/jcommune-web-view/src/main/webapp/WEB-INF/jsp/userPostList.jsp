@@ -116,9 +116,9 @@
                                 </c:choose>
                                 <a class="button" href="${edit_url}"><spring:message code="label.edit"/></a>
                             </sec:accesscontrollist>
-                            <a name="${post.id}" href="${pageContext.request.contextPath}/topics/${post.topic.id}?pagingEnabled=false#${post.id}"><spring:message
+                            <spring:message
                                     code="label.added"/>&nbsp;<jtalks:format
-                                    value="${post.creationDate}"/></a>
+                                    value="${post.creationDate}"/>
                         </div>
                         <p class="forum_message_cell_text">
                             <c:out value="${post.postContent}"/>
