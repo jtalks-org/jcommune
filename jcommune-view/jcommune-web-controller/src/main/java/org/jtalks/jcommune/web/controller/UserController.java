@@ -89,7 +89,6 @@ public class UserController {
      * @param breadcrumbBuilder the object which provides actions on
      *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      * @param imagePreprocessor {@link org.jtalks.jcommune.web.util.ImagePreprocessor} used
-     *
      * @param postService       {@link org.jtalks.jcommune.service.PostService} used
      */
     @Autowired
