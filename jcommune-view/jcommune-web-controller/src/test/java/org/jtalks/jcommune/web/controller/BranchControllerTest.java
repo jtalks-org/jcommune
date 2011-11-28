@@ -110,7 +110,7 @@ public class BranchControllerTest {
         assertAndReturnModelAttributeOfType(mav, "topics", List.class);
 
         Pagination pagination = assertAndReturnModelAttributeOfType(mav, "pagination", Pagination.class);
-        assertEquals(pagination.getMaxPages(), 0);
+        assertEquals(pagination.getMaxPages(), 1);
         assertEquals(pagination.getPage().intValue(), page);
 
     }
