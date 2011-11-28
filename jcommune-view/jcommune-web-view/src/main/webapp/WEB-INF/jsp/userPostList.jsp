@@ -31,22 +31,22 @@
 <h1><spring:message code="label.postListOfUser"/> ${user.username}</h1>
 
 <div class="wrap topic_page">
-    <jsp:include page="../template/topLine.jsp"/>
-    <!-- Начало всех форумов -->
-    <div class="all_forums">
-        <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
+<jsp:include page="../template/topLine.jsp"/>
 
-        <div class="forum_top_right_link">
+<div class="all_forums">
+<h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
 
-            <jtalks:display uri="" pagination="${pag}" numberLink="3" list="${posts}">
-            <nobr>
-            <span class="nav_bottom">
+    <div class="forum_top_right_link">
+
+        <jtalks:display uri="" pagination="${pag}" numberLink="3" list="${posts}">
+        <nobr>
+            <span class="nav_bottom" >
                 <c:if test="${pag.maxPages>1}">
-                    <spring:message code="label.onPage"/>
+                <spring:message code="label.onPage"/>
                 </c:if>
             </jtalks:display>
             </span>
-            </nobr>
+        </nobr>
         </div>
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
             <c:set var="authenticated" value="${true}"/>
@@ -60,24 +60,22 @@
         <br>
         &nbsp; &nbsp; &nbsp;
 
-        <!-- Начало группы форумов -->
-        <div class="forum_header_table"> <!-- Шапка топика -->
+        <div class="forum_header_table">
             <div class="forum_header">
                 <span class="forum_header_userinfo"><spring:message code="label.info"/></span>
                 <span class="forum_header_topic"><spring:message code="label.topic.header.message"/></span>
             </div>
         </div>
-        <ul class="forum_table"> <!-- Список сообщений -->
+        <ul class="forum_table">
             <jtalks:display uri="${topicId}" pagination="${pag}" numberLink="3" list="${posts}">
             <c:forEach var="post" items="${list}" varStatus="i">
-                <li class="forum_row"> <!-- Сообщение -->
+                <li class="forum_row">
                     <div class="forum_userinfo">
                         <div class="user_info">Branch</div>
                         <a class="username"
                            href="${pageContext.request.contextPath}/branches/${post.topic.branch.id}">
                             <c:out value="${post.topic.branch.name}"/></a>
                         <br>
-
                         <div class="user_info">Topic</div>
                         <a class="username"
                            href="${pageContext.request.contextPath}/topics/${post.topic.id}">
@@ -85,9 +83,7 @@
                     </div>
                     <div class="forum_message_cell">
                         <div class="post_details">
-                            <a class="button" href="javascript:copyLink(${post.id})">
-                                <spring:message code="label.link"/>
-                            </a>
+                            <a class="button" href="${pageContext.request.contextPath}/topics/${post.topic.id}?pagingEnabled=false#${post.id}"><spring:message code="label.goToPost"/></a>
                             <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
                                 <c:choose>
                                     <c:when test="${page == 1 && i.index == 0}">
@@ -120,13 +116,9 @@
                                 </c:choose>
                                 <a class="button" href="${edit_url}"><spring:message code="label.edit"/></a>
                             </sec:accesscontrollist>
-                            <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                                <a class="button" href="#"><spring:message
-                                        code="label.quotation"/></a>
-                            </sec:authorize>
-                            <a name="${post.id}" href="#${post.id}"><spring:message
+                            <spring:message
                                     code="label.added"/>&nbsp;<jtalks:format
-                                    value="${post.creationDate}"/></a>
+                                    value="${post.creationDate}"/>
                         </div>
                         <p class="forum_message_cell_text">
                             <c:out value="${post.postContent}"/>
@@ -147,8 +139,8 @@
                 </li>
             </c:forEach>
         </ul>
-        <nobr>
-            <c:if test="${pag.maxPages>1}">
+     <nobr>
+        <c:if test="${pag.maxPages>1}">
         <span class="nav_bottom"><spring:message code="label.onPage"/>
         </c:if>
     </jtalks:display>
@@ -181,7 +173,6 @@
         &nbsp; &nbsp; &nbsp;
 
     </div>
-    <!-- Конец всех форумов -->
     <div class="footer_buffer"></div>
 </div>
 </body>

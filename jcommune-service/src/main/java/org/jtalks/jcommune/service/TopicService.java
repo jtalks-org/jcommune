@@ -68,20 +68,14 @@ public interface TopicService extends EntityService<Topic> {
     List<Topic> getTopicsInBranch(long branchId) throws NotFoundException;
 
     /**
-     * Get topic past last 24 hour.
+     * Get topic updated since the date passed.
      *
-     * @param lastLogin last login date
-     * @return list of {@code Topic} objects with size {@code max}
+     * @param date to return the topic updated after
+     * @return list of {@code Topic} objects with modificationDate > date (parameter)
      */
-    List<Topic> getAllTopicsPastLastDay(DateTime lastLogin);
+    List<Topic> getRecentTopics(DateTime date);
 
-    /**
-     * Get number of topics past last 24 hour.
-     *
-     * @param lastLogin last login date
-     * @return number of topics
-     */
-    int getTopicsPastLastDayCount(DateTime lastLogin);
+
 
     /**
      * Update current topic with given title and body.

@@ -16,6 +16,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.User;
 
 import java.util.List;
 
@@ -40,6 +41,15 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
                 .setLong("topicId", topicId)
                 .setFirstResult(start)
                 .setMaxResults(max)
+                .list();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Post> getPostsOfUser(User userCreated) {
+        return (List<Post>) getSession().createQuery("FROM Post p WHERE p.userCreated = ? ORDER BY creationDate DESC")
+                .setParameter(0, userCreated)
                 .list();
     }
 }

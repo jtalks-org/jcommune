@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.User;
 
 import java.util.List;
 
@@ -39,4 +40,10 @@ public interface PostDao extends ChildRepository<Post> {
      * @return list of {@code Topic} objects with size {@code max}
      */
     List<Post> getPostRangeInTopic(long topicId, int start, int max);
+
+    /**
+     * @param userCreated user
+     * @return post list of user
+     */
+    List<Post> getPostsOfUser(User userCreated);
 }

@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -126,35 +125,19 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         assertEquals(branchId, topics.get(0).getBranch().getId(), "Incorrect branch");
     }
 
-    @Test
-    public void testGetTopicsPastLastDayCount() {
-        User author = ObjectsFactory.getDefaultUser();
-        session.save(author);
-        Topic newTopic = new Topic(author, "title1");
-        session.save(newTopic);
-        Topic oldTopic = new Topic(author, "title2");
-        ReflectionTestUtils.setField(oldTopic, "modificationDate", new DateTime().minusDays(2), DateTime.class);
-        session.save(oldTopic);
-        DateTime lastLogin = new DateTime().minusDays(1);
-
-        int count = dao.getTopicsPastLastDayCount(lastLogin);
-
-        assertEquals(count, 1);
-    }
 
     @Test
-    public void testGetAllTopicsPastLastDay() {
+    public void testGetTopicsUpdatedSince() {
         createAndSaveTopicList(5);
         DateTime lastLogin = new DateTime().minusDays(1);
 
-        List<Topic> result = dao.getAllTopicsPastLastDay(lastLogin);
+        List<Topic> result = dao.getTopicsUpdatedSince(lastLogin);
 
         assertEquals(result.size(), 5);
     }
 
     @Test
     public void testPostsInTopic() {
-        User user = ObjectsFactory.getDefaultUser();
         Branch branch = ObjectsFactory.getDefaultBranch();
         Topic topic = ObjectsFactory.getDefaultTopic();
         branch.addTopic(topic);

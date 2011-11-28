@@ -85,7 +85,7 @@
                             <c:out value="${branch.topicCount}"/>
                         </div>
                         <div class="forum_messages">
-                                ${messagesCount}
+                               FIX_ME!
                         </div>
                         <div class="forum_last_message">
                             <c:if test="${branch.topicCount>0}">

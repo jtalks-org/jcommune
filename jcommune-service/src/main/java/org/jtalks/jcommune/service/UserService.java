@@ -14,11 +14,8 @@
  */
 package org.jtalks.jcommune.service;
 
-import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.exceptions.*;
-
-import java.util.List;
 
 /**
  * This interface should have methods which give us more abilities in manipulating User persistent entity.
@@ -109,16 +106,7 @@ public interface UserService extends EntityService<User> {
      *
      * @param email address to identify user
      * @throws NotFoundException if there is no user for the email given
-     * @throws org.jtalks.jcommune.service.exceptions.MailingFailedException
-     *                           if mailing failed
+     * @throws org.jtalks.jcommune.service.exceptions.MailingFailedException if mailing failed
      */
     void restorePassword(String email) throws NotFoundException, MailingFailedException;
-
-    /**
-     * List posts of user
-     *
-     * @param userCreated user created post
-     * @return post list
-     */
-    public List<Post> getPostsOfUser(User userCreated);
 }

@@ -38,13 +38,6 @@ public interface TopicDao extends ChildRepository<Topic> {
      */
     List<Topic> getTopicsInBranch(Long branchId);
 
-    /**
-     * Get count of topics past last 24 hour.
-     *
-     * @param lastLogin user's last login date and time
-     * @return count of topics
-     */
-    int getTopicsPastLastDayCount(DateTime lastLogin);
 
     /**
      * Get all topics past last 24 hour.
@@ -52,5 +45,5 @@ public interface TopicDao extends ChildRepository<Topic> {
      * @param lastLogin user's last login date and time
      * @return list of topics
      */
-    List<Topic> getAllTopicsPastLastDay(DateTime lastLogin);
+    List<Topic> getTopicsUpdatedSince(DateTime lastLogin);
 }

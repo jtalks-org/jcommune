@@ -14,7 +14,9 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.*;
@@ -32,6 +34,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.testng.annotations.BeforeClass;
@@ -68,9 +71,10 @@ public class UserControllerTest {
     private final String NEW_PASSWORD = "newPassword";
     private final String LANGUAGE = "ENGLISH";
     private final String PAGE_SIZE = "FIFTY";
+    private String avatar;
     private BreadcrumbBuilder breadcrumbBuilder;
     private ImagePreprocessor imagePreprocessor;
-    private String avatar;
+    private PostService postService;
 
     @BeforeClass
     public void mockAvatar() throws IOException {
@@ -83,7 +87,8 @@ public class UserControllerTest {
         securityService = mock(SecurityService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
         imagePreprocessor = mock(ImagePreprocessor.class);
-        controller = new UserController(userService, securityService, breadcrumbBuilder, imagePreprocessor);
+        postService = mock(PostService.class);
+        controller = new UserController(userService, securityService, breadcrumbBuilder, imagePreprocessor, postService);
     }
 
     @Test
@@ -362,22 +367,24 @@ public class UserControllerTest {
         assertModelAttributeValue(mav, "error", "email.failed");
     }
 
-    /*@Test
+    @Test
     public void testShowUserPostList() throws NotFoundException {
         User user = new User("username", "email", "password");
+
         user.setLanguage("ENGLISH");
         user.setPageSize("FIVE");
 
         //set expectations
-        when(securityService.getCurrentUser()).thenReturn(user);
+        when(userService.getByEncodedUsername("username")).thenReturn(user);
         when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
+        when(postService.getPostsOfUser(user)).thenReturn(new ArrayList<Post>());
 
 
         //invoke the object under test
-        ModelAndView mav = controller.showUserPostList(user.getEncodedUsername(), 1,true);
+        ModelAndView mav = controller.showUserPostList("username", 1,true);
 
         //check expectations
-        verify(securityService).getCurrentUser();
+        verify(userService).getByEncodedUsername("username");
         verify(breadcrumbBuilder).getForumBreadcrumb();
 
         //check result
@@ -386,7 +393,7 @@ public class UserControllerTest {
         assertModelAttributeAvailable(mav, "breadcrumbList");
         assertModelAttributeAvailable(mav,"user");
         assertModelAttributeAvailable(mav,"language");
-    } */
+    }
 
     private void assertContainsError(BindingResult bindingResult, String errorName) {
         for (ObjectError error : bindingResult.getAllErrors()) {

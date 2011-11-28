@@ -100,13 +100,4 @@ public class UserHibernateDao extends ParentRepositoryImpl<User> implements User
                 .setCacheable(true).setEntity("userCreated", userCreated)
                 .uniqueResult()).intValue();
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public List<Post> getPostsOfUser(User userCreated) {
-        return (List<Post>) getSession().createQuery("FROM Post p WHERE p.userCreated = ? ORDER BY creationDate DESC")
-                .setParameter(0, userCreated)
-                .list();
-    }
 }
