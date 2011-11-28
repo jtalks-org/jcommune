@@ -18,6 +18,7 @@ import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -94,5 +95,13 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         securityService.deleteFromAcl(post);
         
         logger.debug("Deleted post id={}", postId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Post> getPostsOfUser(User userCreated) {
+        return this.getDao().getPostsOfUser(userCreated);
     }
 }

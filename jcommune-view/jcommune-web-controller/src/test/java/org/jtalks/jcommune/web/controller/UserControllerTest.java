@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.*;
@@ -75,6 +76,7 @@ public class UserControllerTest {
     private MultipartFile avatar;
     private BreadcrumbBuilder breadcrumbBuilder;
     private ImagePreprocessor imagePreprocessor;
+    private PostService postService;
 
     @BeforeClass
     public void mockAvatar() throws IOException {
@@ -88,7 +90,8 @@ public class UserControllerTest {
         securityService = mock(SecurityService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
         imagePreprocessor = mock(ImagePreprocessor.class);
-        controller = new UserController(userService, securityService, breadcrumbBuilder, imagePreprocessor);
+        postService = mock(PostService.class);
+        controller = new UserController(userService, securityService, breadcrumbBuilder, imagePreprocessor, postService);
     }
 
     @Test

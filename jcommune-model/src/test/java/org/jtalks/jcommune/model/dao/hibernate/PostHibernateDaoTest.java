@@ -19,6 +19,7 @@ import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -27,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.testng.Assert.assertEquals;
@@ -109,5 +111,29 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
         assertEquals(max, posts.size(), "Unexpected list size");
         assertEquals(topicId, posts.get(0).getTopic().getId(), "Incorrect topic");
+    }
+
+        @Test
+    public void  testPostOfUser(){
+        User user = ObjectsFactory.getDefaultUser();
+        Post post = new Post(user,"first");
+        List<Post> posts = new ArrayList<Post>();
+        posts.add(post);
+        session.save(user);
+        session.save(post);
+
+        List<Post> postsTwo = dao.getPostsOfUser(user);
+
+        assertEquals(postsTwo,posts);
+    }
+
+    @Test
+    public void  testNullPostOfUser(){
+        User user = ObjectsFactory.getDefaultUser();
+        session.save(user);
+
+        List<Post> posts = dao.getPostsOfUser(user);
+
+        assertEquals(posts,new ArrayList<Post>());
     }
 }

@@ -16,6 +16,7 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.*;
@@ -67,6 +68,7 @@ public class UserController {
     private final UserService userService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private ImagePreprocessor imagePreprocessor;
+    private PostService postService;
 
     /**
      * This method turns the trim binder on. Trim bilder
@@ -88,16 +90,20 @@ public class UserController {
      * @param breadcrumbBuilder the object which provides actions on
      *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      * @param imagePreprocessor {@link org.jtalks.jcommune.web.util.ImagePreprocessor} used
+     *
+     * @param postService       {@link org.jtalks.jcommune.service.PostService} used
      */
     @Autowired
     public UserController(UserService userService,
                           SecurityService securityService,
                           BreadcrumbBuilder breadcrumbBuilder,
-                          ImagePreprocessor imagePreprocessor) {
+                          ImagePreprocessor imagePreprocessor,
+                          PostService postService) {
         this.userService = userService;
         this.securityService = securityService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.imagePreprocessor = imagePreprocessor;
+        this.postService = postService;
     }
 
     /**
@@ -150,7 +156,6 @@ public class UserController {
         User user = userService.getByUsername(username);
         return new ModelAndView("userDetails")
                 .addObject("user", user)
-                .addObject("posts", user.getPosts())
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb())
                         // bind separately to get localized value
                 .addObject("language", Language.valueOf(user.getLanguage()))
@@ -370,7 +375,7 @@ public class UserController {
                                          ) Boolean pagingEnabled
     ) throws NotFoundException {
         User user = userService.getByEncodedUsername(encodedUsername);
-        List<Post> posts = userService.getPostsOfUser(user);
+        List<Post> posts = postService.getPostsOfUser(user);
         Pagination pag = new Pagination(page, user, posts.size(), pagingEnabled);
         return new ModelAndView("userPostList")
                 .addObject("user", user)

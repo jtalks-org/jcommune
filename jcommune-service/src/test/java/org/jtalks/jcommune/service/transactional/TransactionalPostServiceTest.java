@@ -46,6 +46,9 @@ public class TransactionalPostServiceTest {
 
     final long POST_ID = 9L;
     final long TOPIC_ID = 1L;
+    private static final String USERNAME = "username";
+    private static final String EMAIL = "username@mail.com";
+    private static final String PASSWORD = "password";
 
     private PostService postService;
     private PostDao postDao;
@@ -151,5 +154,29 @@ public class TransactionalPostServiceTest {
         when(postDao.isExist(POST_ID)).thenReturn(false);
 
         postService.deletePost(POST_ID);
+    }
+
+        @Test
+    public void testNullPostsOfUser(){
+        User user = new User(USERNAME, EMAIL, PASSWORD);
+        List<Post> posts = new ArrayList<Post>();
+        when(postDao.getPostsOfUser(user)).thenReturn(posts);
+
+        assertEquals(postService.getPostsOfUser(user),new ArrayList<Post>());
+
+        verify(postDao).getPostsOfUser(user);
+    }
+
+    @Test
+    public void testPostsOfUser(){
+        User user = new User(USERNAME, EMAIL, PASSWORD);
+        List<Post> posts = new ArrayList<Post>();
+        Post post = new Post(user,"");
+        posts.add(post);
+        when(postDao.getPostsOfUser(user)).thenReturn(posts);
+
+        assertEquals(postService.getPostsOfUser(user),posts);
+
+        verify(postDao).getPostsOfUser(user);
     }
 }

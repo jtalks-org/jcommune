@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 import java.util.List;
@@ -56,4 +57,12 @@ public interface PostService extends EntityService<Post> {
      *          when topic or post not found
      */
     void deletePost(long postId) throws NotFoundException;
+
+    /**
+     * List posts of user
+     *
+     * @param userCreated user created post
+     * @return post list
+     */
+    List<Post> getPostsOfUser(User userCreated);
 }

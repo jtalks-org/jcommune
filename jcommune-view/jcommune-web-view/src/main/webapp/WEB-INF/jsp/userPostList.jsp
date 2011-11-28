@@ -32,7 +32,7 @@
 
 <div class="wrap topic_page">
 <jsp:include page="../template/topLine.jsp"/>
-<!-- Начало всех форумов -->
+
 <div class="all_forums">
 <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
 
@@ -60,17 +60,16 @@
         <br>
         &nbsp; &nbsp; &nbsp;
 
-        <!-- Начало группы форумов -->
-        <div class="forum_header_table"> <!-- Шапка топика -->
+        <div class="forum_header_table">
             <div class="forum_header">
                 <span class="forum_header_userinfo"><spring:message code="label.info"/></span>
                 <span class="forum_header_topic"><spring:message code="label.topic.header.message"/></span>
             </div>
         </div>
-        <ul class="forum_table"> <!-- Список сообщений -->
+        <ul class="forum_table">
             <jtalks:display uri="${topicId}" pagination="${pag}" numberLink="3" list="${posts}">
             <c:forEach var="post" items="${list}" varStatus="i">
-                <li class="forum_row"> <!-- Сообщение -->
+                <li class="forum_row">
                     <div class="forum_userinfo">
                         <div class="user_info">Branch</div>
                         <a class="username"
@@ -84,9 +83,7 @@
                     </div>
                     <div class="forum_message_cell">
                         <div class="post_details">
-                            <a class="button" href="javascript:copyLink(${post.id})">
-                                <spring:message code="label.link"/>
-                            </a>
+                            <a class="button" href="${pageContext.request.contextPath}/topics/${post.topic.id}?pagingEnabled=false#${post.id}"><spring:message code="label.goToPost"/></a>
                             <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
                                 <c:choose>
                                     <c:when test="${page == 1 && i.index == 0}">
@@ -119,11 +116,7 @@
                                 </c:choose>
                                 <a class="button" href="${edit_url}"><spring:message code="label.edit"/></a>
                             </sec:accesscontrollist>
-                            <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                                <a class="button" href="#"><spring:message
-                                        code="label.quotation"/></a>
-                            </sec:authorize>
-                            <a name="${post.id}" href="#${post.id}"><spring:message
+                            <a name="${post.id}" href="${pageContext.request.contextPath}/topics/${post.topic.id}?pagingEnabled=false#${post.id}"><spring:message
                                     code="label.added"/>&nbsp;<jtalks:format
                                     value="${post.creationDate}"/></a>
                         </div>
@@ -180,7 +173,6 @@
         &nbsp; &nbsp; &nbsp;
 
     </div>
-    <!-- Конец всех форумов -->
     <div class="footer_buffer"></div>
 </div>
 </body>
