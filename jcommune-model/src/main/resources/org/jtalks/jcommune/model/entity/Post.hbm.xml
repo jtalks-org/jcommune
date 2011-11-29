@@ -45,12 +45,4 @@
         <![CDATA[SELECT count(*) FROM Post WHERE userCreated = :userCreated]]>
     </query>
 
-    <query name="getCountPostOfTopic">
-        <![CDATA[SELECT count(*) FROM Post WHERE topic = :topic]]>
-    </query>
-
-    <query name="getPostCountForBranch">
-        <![CDATA[SELECT count(*) FROM Post post WHERE post.topic.branch = :branch]]>
-    </query>
-
 </hibernate-mapping>

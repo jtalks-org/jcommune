@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Section;
@@ -26,6 +27,8 @@ import java.util.List;
  * @author Max Malakhov
  */
 public class SectionHibernateDao extends ParentRepositoryImpl<Section> implements SectionDao {
+
+
     /**
      * {@inheritDoc}
      */
@@ -34,7 +37,6 @@ public class SectionHibernateDao extends ParentRepositoryImpl<Section> implement
     public List<Section> getAll() {
         List<Section> sectionList = getSession().createQuery("from Section s order by s.position asc")
                 .setCacheable(true).list();
-        setCountersTopicInBranch(sectionList);
         return sectionList;
     }
 
@@ -43,60 +45,13 @@ public class SectionHibernateDao extends ParentRepositoryImpl<Section> implement
      */
     @Override
     public boolean delete(Long id) {
-        //TODO: not efficient solution. See more info on the next link http://bit.ly/m85eLs
+        //TODO: inefficient solution. See more info on the next link http://bit.ly/m85eLs
         Section section = get(id);
         if (section == null) {
             return false;
         }
         getSession().delete(section);
         return true;
-    }
-
-    /**
-     * Get number of topic in branch.
-     *
-     * @param branch branch
-     * @return number of topic in branch
-     */
-    private int getTopicInBranchCount(Branch branch) {
-        return ((Number) getSession().getNamedQuery("getTopicInBranchCount")
-                .setCacheable(true)
-                .setEntity("branch", branch)
-                .uniqueResult())
-                .intValue();
-    }
-
-    /**
-     * Sets topicCount in all branch. All the branches will be updated
-     * to contain right calculable topic count attribute value
-     *
-     * @param sectionList section list with branches to be updated
-     * @return sectionList section list with the updated branches
-     */
-    protected List<Section> setCountersTopicInBranch(List<Section> sectionList) {
-        for (Section section : sectionList) {
-            List<Branch> branchList = section.getBranches();
-            for (Branch branch : branchList) {
-                branch.setTopicCount(getTopicInBranchCount(branch));
-            }
-        }
-        return sectionList;
-    }
-
-    /**
-     * Return section found for this id
-     *
-     * @param sectionId section id
-     * @return section section
-     */
-    public Section get(Long sectionId) {
-        Section section = (Section) super.get(sectionId);
-        if (section != null) {
-            for (Branch branch : section.getBranches()) {
-                branch.setTopicCount(getTopicInBranchCount(branch));
-            }
-        }
-        return section;
     }
 
 }

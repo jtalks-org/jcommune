@@ -20,9 +20,10 @@ import java.util.List;
 
 /**
  * DAO for the {@link Branch} objects.
- * 
+ *
  * @author Vitaliy Kravchenko
  * @author Max Malakhov
+ * @author Evgeniy Naumenko
  * @see org.jtalks.jcommune.model.dao.hibernate.BranchHibernateDao
  */
 
@@ -35,4 +36,5 @@ public interface BranchDao extends ChildRepository<Branch> {
      * @return list of {@code Branch} objects
      */
     List<Branch> getBranchesInSection(Long sectionId);
+
 }

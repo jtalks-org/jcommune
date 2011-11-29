@@ -21,9 +21,6 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
-
-<html>
 <head>
     <title><spring:message code="label.section.jtalks_forum"/></title>
     <link rel="stylesheet" type="text/css" media="screen, projection"
@@ -85,7 +82,7 @@
                             <c:out value="${branch.topicCount}"/>
                         </div>
                         <div class="forum_messages">
-                               FIX_ME!
+                               <c:out value="${branch.postCount}"/>
                         </div>
                         <div class="forum_last_message">
                             <c:if test="${branch.topicCount>0}">
@@ -177,4 +174,3 @@
     <!-- Несемантичный буфер для прибития подвала -->
 </div>
 </body>
-</html>

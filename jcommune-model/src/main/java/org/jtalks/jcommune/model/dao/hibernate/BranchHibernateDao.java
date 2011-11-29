@@ -26,15 +26,17 @@ import java.util.List;
  * @author Max Malakhov
  */
 public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch> implements BranchDao {
+
     /**
      * {@inheritDoc}
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<Branch> getBranchesInSection(Long sectionId) {
-        return getSession().createQuery("from Branch b where b.section = ?")
+        List<Branch> branches = getSession().createQuery("from Branch b where b.section = ?")
                 .setCacheable(true)
                 .setLong(0, sectionId)
                 .list();
+        return branches;
     }
+
 }

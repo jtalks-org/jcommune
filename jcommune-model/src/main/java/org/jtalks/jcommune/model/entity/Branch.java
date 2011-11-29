@@ -32,7 +32,6 @@ public class Branch extends Entity {
     private String description;
     private List<Topic> topics = new ArrayList<Topic>();
     private Section section;
-    private int topicCount;
 
     /**
      * Creates the Branch instance. All fields values are null.
@@ -102,7 +101,7 @@ public class Branch extends Entity {
             return null;
         }
         int lastTopicIndex = 0;
-        for (int i = 1; i < topicCount; i++) {
+        for (int i = 1; i < this.getTopicCount(); i++) {
             if (topics.get(i).getModificationDate().isAfter(topics.get(lastTopicIndex).getModificationDate())) {
                 lastTopicIndex = i;
             }
@@ -194,15 +193,7 @@ public class Branch extends Entity {
      * @return count topics in branch
      */
     public int getTopicCount() {
-        return this.topicCount;
-    }
-
-    /**
-     * @param topicCount count topics to set
-     */
-    public void setTopicCount(int topicCount) {
-        this.topicCount = topicCount;
-
+        return topics.size();
     }
 
     /**
@@ -222,4 +213,18 @@ public class Branch extends Entity {
     protected void setSection(Section section) {
         this.section = section;
     }
+
+    /**
+     * Returns a summ of all topic's post count for that branch
+     *
+     * @return sum of post count for all the topics in this branch
+     */
+    public int getPostCount() {
+        int postCount = 0;
+        for (Topic topic : topics) {
+            postCount += topic.getPostCount();
+        }
+        return postCount;
+    }
+
 }

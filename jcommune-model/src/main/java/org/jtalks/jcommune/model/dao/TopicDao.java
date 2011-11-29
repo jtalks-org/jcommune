@@ -46,4 +46,5 @@ public interface TopicDao extends ChildRepository<Topic> {
      * @return list of topics
      */
     List<Topic> getTopicsUpdatedSince(DateTime lastLogin);
+
 }
