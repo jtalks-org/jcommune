@@ -44,7 +44,7 @@ public class BranchTest {
         topics.add(second);
         topics.add(third);
         branch.setTopics(topics);
-        branch.setTopicCount(topics.size());
+
     }
 
     @Test

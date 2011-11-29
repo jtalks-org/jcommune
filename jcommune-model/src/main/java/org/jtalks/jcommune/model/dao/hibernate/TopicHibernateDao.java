@@ -33,23 +33,19 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      * {@inheritDoc}
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<Topic> getTopicsInBranch(Long branchId) {
         List<Topic> topics = getSession().getNamedQuery("getAllTopicsInBranch")
                 .setCacheable(true)
                 .setLong("branchId", branchId)
                 .list();
-        for (Topic topic : topics) {
-            topic.setPostCount(getPostInTopicCount(topic));
-        }
         return topics;
     }
+
 
     /**
      * {@inheritDoc}
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<Topic> getTopicsUpdatedSince(DateTime lastLogin) {
         DateTime time = lastLogin.toDateTime();
         return (List<Topic>) getSession().createQuery("FROM Topic WHERE modificationDate > :maxModDate " +
@@ -58,17 +54,4 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
                 .list();
     }
 
-    /**
-     * Get number of post in topic.
-     *
-     * @param topic topic
-     * @return number of post in topic
-     */
-    private int getPostInTopicCount(Topic topic) {
-        return ((Number) getSession().getNamedQuery("getCountPostOfTopic")
-                .setCacheable(true)
-                .setEntity("topic", topic)
-                .uniqueResult())
-                .intValue();
-    }
 }

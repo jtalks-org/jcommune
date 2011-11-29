@@ -18,6 +18,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <head>
     <title><spring:message code="label.section.jtalks_forum"/></title>
@@ -63,7 +64,7 @@
                         <c:out value="${branch.topicCount}"/>
                     </div>
                     <div class="forum_messages">
-                        LOL
+                        <c:out value="${branch.postCount}"/>
                     </div>
                     <div class="forum_last_message">
                         <c:if test="${branch.topicCount>0}">
