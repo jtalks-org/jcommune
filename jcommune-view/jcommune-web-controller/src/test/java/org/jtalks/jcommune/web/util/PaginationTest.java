@@ -92,4 +92,12 @@ public class PaginationTest {
 
         assertEquals((int) pagination.getPageSize(), 50);
     }
+
+    @Test
+    public void testMaxPages()
+    {
+        pagination = new Pagination(1, user, 10);
+
+        assertEquals(pagination.getMaxPages(),2);
+    }
 }

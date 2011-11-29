@@ -101,7 +101,9 @@ public class Pagination {
      */
     public int getMaxPages() {
         int maxPages = isRounded() ? getPageCount() : getPageCount() + 1;
-        if (maxPages == 0) maxPages = 1;
+        if (maxPages == 0) {
+            maxPages = 1;
+        }
         return maxPages;
 
     }
