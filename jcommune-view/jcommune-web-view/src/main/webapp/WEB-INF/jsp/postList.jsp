@@ -20,10 +20,9 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
-
-<html>
-<head></head>
+<head>
+    <title><c:out value="${topic.title}"/></title>
+</head>
 <body>
 <c:set var="authenticated" value="${false}"/>
 <h1>JTalks</h1>
@@ -113,7 +112,7 @@
 
                 <div class="user_misc_info">
                     <spring:message code="label.topic.registered"/> 13.04.09 <br/>
-                    <spring:message code="label.topic.message_count"/> 661 <br/>
+                    <spring:message code="label.topic.message_count"/> post.userCreated.userPostCount <br/>
                     <spring:message code="label.topic.from_whence"/> good ol' 60s
                 </div>
             </div>
@@ -124,15 +123,15 @@
                     </a>
                     <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
                         <c:choose>
-                            <c:when test="${page == 1 && i.index == 0}">
+                            <c:when test="${pag.page == 1 && i.index == 0}">
                                 <%-- first post - url to delete topic --%>
                                 <c:set var="delete_url"
-                                       value="${pageContext.request.contextPath}/topics/${topicId}/delete?branchId=${branchId}"/>
+                                       value="${pageContext.request.contextPath}/topics/${topic.id}/delete?branchId=${branchId}"/>
                             </c:when>
                             <c:otherwise>
                                 <%-- url to delete post --%>
                                 <c:set var="delete_url"
-                                       value="${pageContext.request.contextPath}/posts/${post.id}/delete?topicId=${topicId}"/>
+                                       value="${pageContext.request.contextPath}/posts/${post.id}/delete?topicId=${topic.id}"/>
                             </c:otherwise>
                         </c:choose>
                         <a class="button" href="${delete_url}"><spring:message code="label.delete"/></a>
@@ -141,29 +140,41 @@
 
                     <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
                         <c:choose>
-                            <c:when test="${page == 1 && i.index == 0}">
+                            <c:when test="${pag.page == 1 && i.index == 0}">
                                 <%-- first post - url to edit topic --%>
                                 <c:set var="edit_url"
-                                       value="${pageContext.request.contextPath}/topics/${topicId}/edit?branchId=${branchId}"/>
+                                       value="${pageContext.request.contextPath}/topics/${topic.id}/edit?branchId=${branchId}"/>
                             </c:when>
                             <c:otherwise>
                                 <%-- url to edit post --%>
                                 <c:set var="edit_url"
-                                       value="${pageContext.request.contextPath}/posts/${post.id}/edit?topicId=${topicId}"/>
+                                       value="${pageContext.request.contextPath}/posts/${post.id}/edit?topicId=${topic.id}"/>
                             </c:otherwise>
                         </c:choose>
                         <a class="button" href="${edit_url}"><spring:message code="label.edit"/></a>
                     </sec:accesscontrollist>
                     <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                        <a class="button" href="#"><spring:message
-                                code="label.quotation"/></a>
+                        <a class="button" href="javascript:
+                                setSelection(${post.id});
+                                document.forms['quoteForm${post.id}'].submit();">
+                            <spring:message code="label.quotation"/>
+                        </a>
+
+                        <form action="${pageContext.request.contextPath}/posts/quote"
+                              method="post" id='quoteForm${post.id}'>
+                            <input name='selection' id='selection${post.id}' type='hidden' value='1'/>
+                            <input name='topicId' id='topicId' type='hidden' value='${topic.id}'/>
+                        </form>
                     </sec:authorize>
-                    <a name="${post.id}" href="#${post.id}"><spring:message
-                            code="label.added"/>&nbsp;<jtalks:format
-                            value="${post.creationDate}"/></a>
+                    <a name="${post.id}" href="#${post.id}">
+                        <spring:message code="label.added"/>&nbsp;
+                        <jtalks:format value="${post.creationDate}"/>
+                    </a>
                 </div>
                 <p class="forum_message_cell_text">
-                    <c:out value="${post.postContent}"/>
+                    <span id='${post.id}'>
+                        <c:out value="${post.postContent}"/>
+                    </span>
                     <br/><br/><br/>
                     <c:if test="${post.modificationDate!=null}">
                         <spring:message code="label.modify"/>
@@ -193,16 +204,17 @@
     <spring:message code="label.back"/>
 </a>
 <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-    <a class="button" href="#"><spring:message code="label.topic.new_topic"/></a>
-    <a class="button"
-       href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}">
-        <spring:message code="label.answer"/>
-    </a>
+    <a class="button top_button" href="${pageContext.request.contextPath}/topics/new?branchId=${branchId}">
+        <spring:message code="label.topic.new_topic"/></a>
+    <a class="button top_button" href="${pageContext.request.contextPath}/posts/new?topicId=${topic.id}">
+        <spring:message code="label.answer"/></a>
+    <c:set var="authenticated" value="${true}"/>
 </sec:authorize>
 <c:if test="${authenticated==false}">
-    <a class="button disabled" href="#"><spring:message code="label.topic.new_topic"/></a>
-    <a class="button disabled"
-       href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}">
+    <a class="button top_button disabled" href="${pageContext.request.contextPath}/topics/new?branchId=${branchId}">
+        <spring:message code="label.topic.new_topic"/></a>
+    <a class="button top_button disabled"
+       href="${pageContext.request.contextPath}/posts/new?topicId=${topic.id}">
         <spring:message code="label.answer"/>
     </a>
 </c:if>
@@ -228,7 +240,7 @@
 <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
 <div class="forum_misc_info">
-    <spring:message code="label.page"/> <c:out value="${page}"/> <spring:message code="label.of"/> <c:out
+    <spring:message code="label.page"/> <c:out value="${pag.page}"/> <spring:message code="label.of"/> <c:out
         value="${pag.maxPages}"/>
     <br/>
     <spring:message code="label.topic.moderators"/>
@@ -252,6 +264,19 @@
     function copyLink(postId) {
         prompt("Link to copy", document.location.href + "#" + postId);
     }
+
+    function setSelection(postId) {
+        var txt = '';
+        if (window.getSelection) {
+            txt = window.getSelection();
+        } else if (document.getSelection) {
+            txt = document.getSelection();
+        }
+        if (txt == '') {
+            // nothing is selected, using post content
+            txt = document.getElementById(postId).innerText;
+        }
+        document.getElementById('selection' + postId).value = txt;
+    }
 </script>
 </body>
-</html>
