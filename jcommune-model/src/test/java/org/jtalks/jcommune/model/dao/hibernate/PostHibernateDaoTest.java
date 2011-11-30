@@ -99,22 +99,9 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     /* PostDao specific methods */
 
     @Test
-    public void testGetPostRangeInTopic() {
-        int start = 1;
-        int max = 2;
-        List<Post> persistedPosts = ObjectsFactory.createAndSavePostList(5);
-        long topicId = persistedPosts.get(0).getTopic().getId();
-
-        List<Post> posts = dao.getPostRangeInTopic(topicId, start, max);
-
-        assertEquals(max, posts.size(), "Unexpected list size");
-        assertEquals(topicId, posts.get(0).getTopic().getId(), "Incorrect topic");
-    }
-
-        @Test
-    public void  testPostOfUser(){
+    public void testPostOfUser() {
         User user = ObjectsFactory.getDefaultUser();
-        Post post = new Post(user,"first");
+        Post post = new Post(user, "first");
         List<Post> posts = new ArrayList<Post>();
         posts.add(post);
         session.save(user);
@@ -122,16 +109,16 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
         List<Post> postsTwo = dao.getPostsOfUser(user);
 
-        assertEquals(postsTwo,posts);
+        assertEquals(postsTwo, posts);
     }
 
     @Test
-    public void  testNullPostOfUser(){
+    public void testNullPostOfUser() {
         User user = ObjectsFactory.getDefaultUser();
         session.save(user);
 
         List<Post> posts = dao.getPostsOfUser(user);
 
-        assertEquals(posts,new ArrayList<Post>());
+        assertEquals(posts, new ArrayList<Post>());
     }
 }

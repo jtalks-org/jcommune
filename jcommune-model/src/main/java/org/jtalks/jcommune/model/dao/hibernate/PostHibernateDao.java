@@ -33,20 +33,6 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
     /**
      * {@inheritDoc}
      */
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<Post> getPostRangeInTopic(long topicId, int start, int max) {
-        return getSession().getNamedQuery("getAllPostsInTopic")
-                .setCacheable(true)
-                .setLong("topicId", topicId)
-                .setFirstResult(start)
-                .setMaxResults(max)
-                .list();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public List<Post> getPostsOfUser(User userCreated) {
         return (List<Post>) getSession().createQuery("FROM Post p WHERE p.userCreated = ? ORDER BY creationDate DESC")
                 .setParameter(0, userCreated)

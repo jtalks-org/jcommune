@@ -31,7 +31,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+
 
 /**
  * This test cover {@code TransactionalPostService} logic validation.
@@ -43,7 +43,6 @@ import static org.testng.Assert.assertNotNull;
 public class TransactionalPostServiceTest {
 
     final long POST_ID = 9L;
-    final long TOPIC_ID = 1L;
     private static final String USERNAME = "username";
     private static final String EMAIL = "username@mail.com";
     private static final String PASSWORD = "password";
@@ -81,31 +80,6 @@ public class TransactionalPostServiceTest {
         when(postDao.isExist(POST_ID)).thenReturn(false);
 
         postService.get(POST_ID);
-    }
-
-    @Test
-    public void testGetPostRangeInTopic() throws NotFoundException {
-        int start = 1;
-        int max = 2;
-        List<Post> expectedList = new ArrayList<Post>();
-        expectedList.add(new Post(user, "content"));
-        expectedList.add(new Post(user, "content"));
-        when(postDao.getPostRangeInTopic(TOPIC_ID, start, max)).thenReturn(expectedList);
-        when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
-
-        List<Post> posts = postService.getPostRangeInTopic(TOPIC_ID, start, max);
-
-        assertNotNull(posts);
-        assertEquals(posts, expectedList, "Unexpected list size");
-        verify(postDao).getPostRangeInTopic(TOPIC_ID, start, max);
-        verify(topicDao).isExist(TOPIC_ID);
-    }
-
-    @Test(expectedExceptions = {NotFoundException.class})
-    public void testGetPostsRangeInNonExistentTopic() throws NotFoundException {
-        when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
-
-        postService.getPostRangeInTopic(TOPIC_ID, 1, 5);
     }
 
     @Test

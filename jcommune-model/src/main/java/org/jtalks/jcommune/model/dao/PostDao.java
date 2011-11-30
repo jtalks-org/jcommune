@@ -32,16 +32,6 @@ import java.util.List;
 public interface PostDao extends ChildRepository<Post> {
 
     /**
-     * Get posts range from topic.
-     *
-     * @param topicId topic id from which we obtain posts
-     * @param start   start index of post
-     * @param max     number of posts
-     * @return list of {@code Topic} objects with size {@code max}
-     */
-    List<Post> getPostRangeInTopic(long topicId, int start, int max);
-
-    /**
      * @param userCreated user
      * @return post list of user
      */

@@ -42,6 +42,7 @@ import javax.validation.Valid;
  * @author Kravchenko Vitaliy
  * @author Kirill Afonin
  * @author Alexandre Teterin
+ * @author Evgeniy Naumenko
  */
 @Controller
 public class PostController {
@@ -114,7 +115,7 @@ public class PostController {
      */
     @RequestMapping(value = "/posts/{postId}/edit", method = RequestMethod.GET)
     public ModelAndView editPage(@RequestParam(TOPIC_ID) Long topicId,
-                             @PathVariable(POST_ID) Long postId) throws NotFoundException {
+                                 @PathVariable(POST_ID) Long postId) throws NotFoundException {
         Post post = postService.get(postId);
 
         return new ModelAndView("postForm")
@@ -138,9 +139,9 @@ public class PostController {
      */
     @RequestMapping(value = "/posts/{postId}/edit", method = RequestMethod.POST)
     public ModelAndView update(@Valid @ModelAttribute PostDto postDto,
-                             BindingResult result,
-                             @RequestParam(TOPIC_ID) Long topicId,
-                             @PathVariable(POST_ID) Long postId) throws NotFoundException {
+                               BindingResult result,
+                               @RequestParam(TOPIC_ID) Long topicId,
+                               @PathVariable(POST_ID) Long postId) throws NotFoundException {
         if (result.hasErrors()) {
             return new ModelAndView("postForm")
                     .addObject(TOPIC_ID, topicId)
@@ -161,13 +162,37 @@ public class PostController {
      *          when topic not found
      */
     @RequestMapping(method = RequestMethod.GET, value = "/posts/new")
-    public ModelAndView createPage(@RequestParam("topicId") Long topicId) throws NotFoundException {
+    public ModelAndView addPost(@RequestParam("topicId") Long topicId) throws NotFoundException {
         Topic answeringTopic = topicService.get(topicId);
         return new ModelAndView("answer")
                 .addObject("topic", answeringTopic)
                 .addObject("topicId", topicId)
                 .addObject("postDto", new PostDto())
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(answeringTopic));
+    }
+
+
+    /**
+     * Creates the answering page with qutation.
+     * If user select nothing JS will substitute whole post contents here
+     * <p/>
+     * Supports post method to pass large quotations.
+     * Supports get method as language switching always use get requests.
+     *
+     * @param topicId   topic id to answer to
+     * @param selection text selected by user for the quotation.
+     * @return the same view as topic answerring page with textarea prefilled with quted text
+     * @throws NotFoundException when topic was not found
+     */
+    @RequestMapping(method = {RequestMethod.POST, RequestMethod.GET}, value = "/posts/quote")
+    public ModelAndView addPostWithQuote(@RequestParam("topicId") Long topicId,
+                                         @RequestParam("selection") String selection) throws NotFoundException {
+        // todo: move these constants to BB converter when ready
+        String quote = "[quote]" + selection + "[/quote]";
+        ModelAndView mav = addPost(topicId);
+        PostDto dto = (PostDto) mav.getModel().get("postDto");
+        dto.setBodyText(quote);
+        return mav;
     }
 
     /**
