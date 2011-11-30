@@ -112,7 +112,7 @@
 
                 <div class="user_misc_info">
                     <spring:message code="label.topic.registered"/> 13.04.09 <br/>
-                    <spring:message code="label.topic.message_count"/> post.userCreated.userPostCount <br/>
+                    <spring:message code="label.topic.message_count"/> 661 <br/>
                     <spring:message code="label.topic.from_whence"/> good ol' 60s
                 </div>
             </div>
