@@ -45,8 +45,8 @@ public class User extends Entity implements UserDetails {
     private String encodedUsername;
     private int userPostCount;
     private byte[] avatar;
-    private String language = "ENGLISH";
-    private String pageSize = "FIFTY";
+    private String language = Language.ENGLISH.toString();
+    private int pageSize;
 
     public static final int MIN_NAME_SIZE = 4;
     public static final int MAX_NAME_SIZE = 20;
@@ -315,14 +315,14 @@ public class User extends Entity implements UserDetails {
     /**
      * @return user page size
      */
-    public String getPageSize() {
+    public int getPageSize() {
         return pageSize;
     }
 
     /**
      * @param pageSize user page size
      */
-    public void setPageSize(String pageSize) {
+    public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
     }
 }

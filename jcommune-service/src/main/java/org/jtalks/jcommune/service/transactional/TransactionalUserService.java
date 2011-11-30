@@ -125,7 +125,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      */
     @Override
     public User editUserProfile(String email, String firstName, String lastName, String currentPassword,
-                                String newPassword, byte[] avatar, String signature, String language, String pageSize)
+                                String newPassword, byte[] avatar, String signature, String language, int pageSize)
             throws DuplicateEmailException, WrongPasswordException {
 
         User currentUser = securityService.getCurrentUser();

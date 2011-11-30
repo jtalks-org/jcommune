@@ -30,6 +30,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
+// todo: refactor this bullshit
 public class PaginatorTest {
 
     private Paginator paginator;
@@ -52,7 +53,7 @@ public class PaginatorTest {
         when(WebApplicationContext.getServletContext()).thenReturn(ServletContext);
 
         user = new User("", "", "");
-        user.setPageSize("FIVE");
+        user.setPageSize(5);
 
         list = new ArrayList();
         list.add(1);
@@ -66,7 +67,7 @@ public class PaginatorTest {
     @Test
     public void testElementsOfPage() {
         User user = new User("","","");
-        user.setPageSize("FIVE");
+        user.setPageSize(5);
         Pagination pagination = new Pagination(1,user,6,true);
         paginator.setPagination(pagination);
 

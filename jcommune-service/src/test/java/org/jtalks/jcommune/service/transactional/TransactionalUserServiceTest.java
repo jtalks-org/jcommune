@@ -48,7 +48,7 @@ public class TransactionalUserServiceTest {
     private static final String WRONG_PASSWORD = "abracodabra";
     private static final String NEW_PASSWORD = "newPassword";
     private static final String LANGUAGE = "language";
-    private final String PAGE_SIZE = "FIFTY";
+    private static final int PAGE_SIZE = 50;
     private byte[] avatar = new byte[10];
     private static final Long USER_ID = 999L;
 

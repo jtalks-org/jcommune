@@ -21,8 +21,6 @@ import org.testng.annotations.Test;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
 public class PaginationTest {
@@ -30,12 +28,11 @@ public class PaginationTest {
     private String link;
     private String uri;
     private User user;
-    private List list;
 
     @BeforeMethod
     protected void setUp() {
-        user = mock(User.class);
-        when(user.getPageSize()).thenReturn("FIVE");
+        user = new User("", "", "");
+        user.setPageSize(5);
         uri = "1";
         link = "<a href=\"%s?page=%d\">%d</a>";
     }
@@ -65,7 +62,7 @@ public class PaginationTest {
     public void testNumberOfPages() {
         pagination = new Pagination(1, user, 10, true);
 
-        list = Collections.nCopies(10, 1);
+        List list = Collections.nCopies(10, 1);
 
         List lists = pagination.integerNumberOfPages(list);
 
@@ -83,21 +80,20 @@ public class PaginationTest {
 
     @Test
     public void testConstructor() {
-        pagination = new Pagination(1, user, 10);
+        pagination = new Pagination(1, user, 10, true);
 
         assertEquals((int) pagination.getPage(), 1);
         assertEquals(pagination.getPageSize(), 5);
 
-        pagination = new Pagination(1, null, 10);
+        pagination = new Pagination(1, null, 10, true);
 
-        assertEquals((int) pagination.getPageSize(), 50);
+        assertEquals(pagination.getPageSize(), 50);
     }
 
     @Test
-    public void testMaxPages()
-    {
-        pagination = new Pagination(1, user, 10);
+    public void testMaxPages() {
+        pagination = new Pagination(1, user, 10, true);
 
-        assertEquals(pagination.getMaxPages(),2);
+        assertEquals(pagination.getMaxPages(), 2);
     }
 }

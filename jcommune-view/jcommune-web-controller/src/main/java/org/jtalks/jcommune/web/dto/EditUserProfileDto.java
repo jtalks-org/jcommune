@@ -16,7 +16,11 @@ package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.Length;
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.web.util.Pagination;
 import org.jtalks.jcommune.web.validation.Matches;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 /**
  * This dto used for transferring data in edit {@link User} profile operation.
@@ -33,7 +37,9 @@ public class EditUserProfileDto extends UserDto {
     private String newUserPassword;
     private String newUserPasswordConfirm;
     private String language;
-    private String pageSize;
+    @Min(Pagination.MIN_PAGE_SIZE)
+    @Max(Pagination.MAX_PAGE_SIZE)
+    private int pageSize;
     private String avatar;
 
     /**
@@ -139,14 +145,14 @@ public class EditUserProfileDto extends UserDto {
     /**
      * @return user page size
      */
-    public String getPageSize() {
+    public int getPageSize() {
         return pageSize;
     }
 
     /**
      * @param pageSize user page size
      */
-    public void setPageSize(String pageSize) {
+    public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
     }
 }

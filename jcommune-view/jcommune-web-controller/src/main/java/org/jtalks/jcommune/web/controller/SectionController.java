@@ -89,10 +89,9 @@ public final class SectionController {
         // that initializes the session right now.
         // If a request from the user is not the first one this method will have no effect.
         session.getId();
-        User currentUser = securityService.getCurrentUser();
-        Pagination pag = new Pagination(1, currentUser, 1, false);
+        User user = securityService.getCurrentUser();
         return new ModelAndView("sectionList")
-                .addObject("pageSize", pag.getPageSize())
+                .addObject("pageSize", Pagination.getPageSizeFor(user))
                 .addObject("sectionList", sectionService.getAll())
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
                 .addObject("messagesCount", forumStaticsProvider.getPostsOnForumCount())
@@ -114,11 +113,10 @@ public final class SectionController {
     @RequestMapping(value = "/sections/{sectionId}", method = RequestMethod.GET)
     public ModelAndView branchList(@PathVariable("sectionId") long sectionId) throws NotFoundException {
         Section section = sectionService.get(sectionId);
-        User currentUser = securityService.getCurrentUser();
-        Pagination pag = new Pagination(1, currentUser, 1, false);
+        User user = securityService.getCurrentUser();
         return new ModelAndView("branchList")
                 .addObject("section", section)
-                .addObject("pageSize", pag.getPageSize())
+                .addObject("pageSize", Pagination.getPageSizeFor(user))
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
     }
 }

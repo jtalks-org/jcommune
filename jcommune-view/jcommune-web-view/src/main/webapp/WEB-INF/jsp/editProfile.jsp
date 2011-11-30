@@ -106,22 +106,7 @@
             <tr>
                 <td><label><spring:message code="label.numberOfTopicsOnPage"/></label></td>
                 <td>
-                    <form:select path="pageSize">
-                        <c:forEach items="${pageSizes}" var="pageSize">
-                            <c:choose>
-                                <c:when test="${pageSize eq editedUser.pageSize}">
-                                    <form:option value="${pageSize}" selected="selected">
-                                        <c:out value="${pageSize.size}"/>
-                                    </form:option>
-                                </c:when>
-                                <c:otherwise>
-                                    <form:option value="${pageSize}">
-                                        <c:out value="${pageSize.size}"/>
-                                    </form:option>
-                                </c:otherwise>
-                            </c:choose>
-                        </c:forEach>
-                    </form:select>
+                    <form:input path="pageSize" value ="${editedUser.pageSize}"/>
                 </td>
                 <td><form:errors path="pageSize" cssClass="error"/></td>
             </tr>

@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PostService;
@@ -155,9 +156,9 @@ public class UserController {
         return new ModelAndView("userDetails")
                 .addObject("user", user)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb())
-                        // bind separately to get localized value
+                 // bind separately to get localized value
                 .addObject("language", Language.valueOf(user.getLanguage()))
-                .addObject("pageSize", PageSize.valueOf(user.getPageSize()));
+                .addObject("pageSize", Pagination.getPageSizeFor(user));
     }
 
     /**
@@ -202,13 +203,13 @@ public class UserController {
         applyLanguage(Language.valueOf(userDto.getLanguage()), response);
         // validate other fields
         if (result.hasErrors()) {
-            return applyAvatarRemoval(userDto);
+            return editMaV(userDto);
         }
         User editedUser = editUserProfile(userDto, result);
 
         // error occured
         if (editedUser == null) {
-            return applyAvatarRemoval(userDto);
+            return editMaV(userDto);
         }
 
         return new ModelAndView(new StringBuilder().append("redirect:/users/")
@@ -275,26 +276,13 @@ public class UserController {
         byte[] avatar = imagePreprocessor.base64Decoder(encodedBytes);
         String signature = userDto.getSignature();
         String language = userDto.getLanguage();
-        String pageSize = userDto.getPageSize();
+        int pageSize = userDto.getPageSize();
 
         result = userService.editUserProfile(email, firstName,
                 lastName, currentUserPassword, newUserPassword,
                 avatar, signature, language, pageSize);
 
         return result;
-    }
-
-    /**
-     * todo: looks realy odd, we need to somehow refactor all the chain
-     * <p/>
-     * Substitues fake avatar value if there was no avatar passed
-     *
-     * @param userDto for submission result
-     * @return updated model and view containing avatar in any case
-     */
-    private ModelAndView applyAvatarRemoval(EditUserProfileDto userDto) {
-        User user = securityService.getCurrentUser();
-        return editMaV(userDto);
     }
 
     /**
@@ -305,8 +293,7 @@ public class UserController {
      */
     private ModelAndView editMaV(EditUserProfileDto dto) {
         return new ModelAndView(EDIT_PROFILE, EDITED_USER, dto)
-                .addObject("languages", Language.values())
-                .addObject("pageSizes", PageSize.values());
+                .addObject("languages", Language.values());
     }
 
     /**
@@ -430,8 +417,6 @@ public class UserController {
                 .addObject("user", user)
                 .addObject("pag", pag)
                 .addObject("posts", posts)
-                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb())
-                .addObject("language", Language.valueOf(user.getLanguage()))
-                .addObject("pageSize", PageSize.valueOf(user.getPageSize()));
+                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
     }
 }

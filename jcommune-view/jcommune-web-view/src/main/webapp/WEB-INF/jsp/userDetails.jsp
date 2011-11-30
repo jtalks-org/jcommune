@@ -67,12 +67,10 @@
                 <span><spring:message code="${language.languageNameLabel}"/></span>
             </li>
         </c:if>
-        <c:if test="${user.pageSize != null}">
-            <li>
-                <label><spring:message code="label.numberOfTopicsOnPage"/></label>
-                <span><c:out value="${pageSize.size}"/></span>
-            </li>
-        </c:if>
+        <li>
+            <label><spring:message code="label.numberOfTopicsOnPage"/></label>
+            <span><c:out value="${pageSize}"/></span>
+        </li>
         <li>
             <label><spring:message code="label.lastlogin"/></label>
             <span>

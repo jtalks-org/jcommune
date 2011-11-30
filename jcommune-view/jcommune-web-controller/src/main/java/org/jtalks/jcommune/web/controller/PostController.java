@@ -162,11 +162,11 @@ public class PostController {
      *          when topic not found
      */
     @RequestMapping(method = RequestMethod.GET, value = "/posts/new")
-    public ModelAndView addPost(@RequestParam("topicId") Long topicId) throws NotFoundException {
+    public ModelAndView addPost(@RequestParam(TOPIC_ID) Long topicId) throws NotFoundException {
         Topic answeringTopic = topicService.get(topicId);
         return new ModelAndView("answer")
                 .addObject("topic", answeringTopic)
-                .addObject("topicId", topicId)
+                .addObject(TOPIC_ID, topicId)
                 .addObject("postDto", new PostDto())
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(answeringTopic));
     }
@@ -185,7 +185,7 @@ public class PostController {
      * @throws NotFoundException when topic was not found
      */
     @RequestMapping(method = {RequestMethod.POST, RequestMethod.GET}, value = "/posts/quote")
-    public ModelAndView addPostWithQuote(@RequestParam("topicId") Long topicId,
+    public ModelAndView addPostWithQuote(@RequestParam(TOPIC_ID) Long topicId,
                                          @RequestParam("selection") String selection) throws NotFoundException {
         // todo: move these constants to BB converter when ready
         String quote = "[quote]" + selection + "[/quote]";

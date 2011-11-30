@@ -26,25 +26,13 @@ import java.util.List;
  */
 public class Pagination {
     private int page;
-    private int pageSize;
+    private int pageSize = DEFAULT_PAGE_SIZE;
     private int itemsCount;
     private boolean pagingEnabled;
 
+    public static final int MIN_PAGE_SIZE = 5;
     public static final int DEFAULT_PAGE_SIZE = 50;
-
-    /**
-     * Create instance
-     *
-     * @param page        page (default 1)
-     * @param currentUser current user
-     * @param itemsCount  total number of items
-     */
-    public Pagination(Integer page, User currentUser, int itemsCount) {
-        this.page = page;
-        this.pageSize = currentUser == null ? DEFAULT_PAGE_SIZE :
-                PageSize.valueOf(currentUser.getPageSize()).getSize();
-        this.itemsCount = itemsCount;
-    }
+    public static final int MAX_PAGE_SIZE = 500;
 
     /**
      * Create instance.
@@ -56,8 +44,7 @@ public class Pagination {
      */
     public Pagination(Integer page, User currentUser, int itemsCount, boolean pagingEnabled) {
         this.page = page;
-        this.pageSize = currentUser == null ? DEFAULT_PAGE_SIZE :
-                PageSize.valueOf(currentUser.getPageSize()).getSize();
+        this.pageSize = Pagination.getPageSizeFor(currentUser);
         this.itemsCount = itemsCount;
         this.pagingEnabled = pagingEnabled;
     }
@@ -177,5 +164,14 @@ public class Pagination {
     public List notIntegerNumberOfPages(List list) {
         return list.subList((getPage() - 1) * pageSize,
                 (getPage() - 1) * pageSize + list.size() % pageSize);
+    }
+
+    /**
+     *
+     * @param user
+     * @return
+     */
+    public static int getPageSizeFor(User user) {
+        return (user == null) ? DEFAULT_PAGE_SIZE : user.getPageSize();
     }
 }

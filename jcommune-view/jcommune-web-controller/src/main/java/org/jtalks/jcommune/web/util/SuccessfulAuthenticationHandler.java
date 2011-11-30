@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.util;
 
+import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
 import org.springframework.security.core.Authentication;

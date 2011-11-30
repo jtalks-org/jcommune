@@ -31,22 +31,21 @@
 <h1><spring:message code="label.postListOfUser"/> ${user.username}</h1>
 
 <div class="wrap topic_page">
-<jsp:include page="../template/topLine.jsp"/>
+    <jsp:include page="../template/topLine.jsp"/>
 
-<div class="all_forums">
-<h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
+    <div class="all_forums">
 
-    <div class="forum_top_right_link">
+        <div class="forum_top_right_link">
 
-        <jtalks:display uri="" pagination="${pag}" numberLink="3" list="${posts}">
-        <nobr>
-            <span class="nav_bottom" >
+            <jtalks:display uri="" pagination="${pag}" numberLink="3" list="${posts}">
+            <nobr>
+            <span class="nav_bottom">
                 <c:if test="${pag.maxPages>1}">
-                <spring:message code="label.onPage"/>
+                    <spring:message code="label.onPage"/>
                 </c:if>
             </jtalks:display>
             </span>
-        </nobr>
+            </nobr>
         </div>
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
             <c:set var="authenticated" value="${true}"/>
@@ -76,6 +75,7 @@
                            href="${pageContext.request.contextPath}/branches/${post.topic.branch.id}">
                             <c:out value="${post.topic.branch.name}"/></a>
                         <br>
+
                         <div class="user_info">Topic</div>
                         <a class="username"
                            href="${pageContext.request.contextPath}/topics/${post.topic.id}">
@@ -83,42 +83,12 @@
                     </div>
                     <div class="forum_message_cell">
                         <div class="post_details">
-                            <a class="button" href="${pageContext.request.contextPath}/topics/${post.topic.id}?pagingEnabled=false#${post.id}"><spring:message code="label.goToPost"/></a>
-                            <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
-                                <c:choose>
-                                    <c:when test="${page == 1 && i.index == 0}">
-
-                                        <c:set var="delete_url"
-                                               value="${pageContext.request.contextPath}/topics/${topicId}/delete?branchId=${post.topic.branch.id}"/>
-                                    </c:when>
-                                    <c:otherwise>
-
-                                        <c:set var="delete_url"
-                                               value="${pageContext.request.contextPath}/posts/${post.id}/delete?topicId=${post.topic.id}"/>
-                                    </c:otherwise>
-                                </c:choose>
-                                <a class="button" href="${delete_url}"><spring:message code="label.delete"/></a>
-                            </sec:accesscontrollist>
-
-
-                            <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
-                                <c:choose>
-                                    <c:when test="${page == 1 && i.index == 0}">
-
-                                        <c:set var="edit_url"
-                                               value="${pageContext.request.contextPath}/topics/${topicId}/edit?branchId=${post.topic.branch.id}"/>
-                                    </c:when>
-                                    <c:otherwise>
-
-                                        <c:set var="edit_url"
-                                               value="${pageContext.request.contextPath}/posts/${post.id}/edit?topicId=${post.topic.id}"/>
-                                    </c:otherwise>
-                                </c:choose>
-                                <a class="button" href="${edit_url}"><spring:message code="label.edit"/></a>
-                            </sec:accesscontrollist>
-                            <spring:message
-                                    code="label.added"/>&nbsp;<jtalks:format
-                                    value="${post.creationDate}"/>
+                            <a class="button"
+                               href="${pageContext.request.contextPath}/topics/${post.topic.id}?pagingEnabled=false#${post.id}">
+                                <spring:message code="label.goToPost"/>
+                            </a>
+                            <spring:message code="label.added"/>&nbsp;
+                            <jtalks:format value="${post.creationDate}"/>
                         </div>
                         <p class="forum_message_cell_text">
                             <c:out value="${post.postContent}"/>
@@ -128,50 +98,31 @@
                                 <jtalks:format value="${post.modificationDate}"/>
                             </c:if>
                         </p>
-                        <c:if test="${post.userCreated.signature!=null}">
-                            <div class="signature">
-                                -------------------------
-                                <br/>
-                                <c:out value="${post.userCreated.signature}"/>
-                            </div>
-                        </c:if>
                     </div>
                 </li>
             </c:forEach>
         </ul>
-     <nobr>
-        <c:if test="${pag.maxPages>1}">
+        <nobr>
+            <c:if test="${pag.maxPages>1}">
         <span class="nav_bottom"><spring:message code="label.onPage"/>
         </c:if>
     </jtalks:display>
         </span>
         </nobr>
-
-        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-            <a class="button"
-               href="${pageContext.request.contextPath}/users/${user.encodedUsername}">
-                <spring:message code="label.backToProfile"/>
-            </a>
-        </sec:authorize>
+        <a class="button"
+           href="${pageContext.request.contextPath}/users/${user.encodedUsername}">
+            <spring:message code="label.backToProfile"/>
+        </a>
         <c:if test="${pag.maxPages>1}">
             <c:if test="${pag.pagingEnabled==true}">
-                <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                    <a class="button"
-                       href="?pagingEnabled=false"><spring:message code="label.showAll"/></a>
-                    &nbsp; &nbsp; &nbsp;
-                </sec:authorize>
+                <a class="button"
+                   href="?pagingEnabled=false"><spring:message code="label.showAll"/></a>
+                &nbsp; &nbsp; &nbsp;
             </c:if>
         </c:if>
         <c:if test="${pag.pagingEnabled == false}">
-            <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                <a class="button"
-                   href="?pagingEnabled=true"><spring:message code="label.showPages"/></a>
-                &nbsp; &nbsp; &nbsp;
-            </sec:authorize>
+            <a class="button" href="?pagingEnabled=true"><spring:message code="label.showPages"/></a>
         </c:if>
-
-        &nbsp; &nbsp; &nbsp;
-
     </div>
     <div class="footer_buffer"></div>
 </div>

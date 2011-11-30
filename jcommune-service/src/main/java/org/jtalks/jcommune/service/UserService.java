@@ -81,7 +81,7 @@ public interface UserService extends EntityService<User> {
      * @throws WrongPasswordException  when user enter wrong currentPassword
      */
     User editUserProfile(String email, String firstName, String lastName, String currentPassword,
-                         String newPassword, byte[] avatar, String signature, String language, String pageSize)
+                         String newPassword, byte[] avatar, String signature, String language, int pageSize)
             throws DuplicateEmailException, WrongPasswordException;
 
     /**
