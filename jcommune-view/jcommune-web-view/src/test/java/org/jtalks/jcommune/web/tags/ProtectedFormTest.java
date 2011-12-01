@@ -15,26 +15,23 @@
 package org.jtalks.jcommune.web.tags;
 
 import org.springframework.web.servlet.tags.form.FormTag;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import java.lang.reflect.Field;
+
+import static org.testng.Assert.assertEquals;
 
 /**
- * Extension of Spring form tag. This tag automatically put necessary JavaScript to prevent form's multiposting.
- *
- * @author Pavel Vervenko
+ * @author Evgeniy Naumenko
  */
-public class ProtectedForm extends FormTag {
+public class ProtectedFormTest {
 
-    /**
-     * Serialixable class should define it
-     */
-    private static final long serialVersionUID = 34588L;
-
-    public static final String MULTIPOST_BLOCKING_JS = "if (this.getAttribute('submitted')) return false; "
-            + "this.setAttribute('submitted','true');";
-
-    /**
-     * Default tag constructor.
-     */
-    public ProtectedForm() {
-        setOnsubmit(MULTIPOST_BLOCKING_JS);
+    @Test
+    public void testMultipostBlockingJSPresent() throws NoSuchFieldException, IllegalAccessException {
+        ProtectedForm form = new ProtectedForm();
+        Field field = FormTag.class.getDeclaredField("onsubmit");
+        field.setAccessible(true);
+        assertEquals(field.get(form), ProtectedForm.MULTIPOST_BLOCKING_JS);
     }
 }

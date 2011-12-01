@@ -46,7 +46,6 @@ public class FormattedDateTagTest {
     private PageContext context;
     private HttpServletRequest request;
     private Cookie[] cookies;
-    private LocaleResolver resolver;
     private DateTime localDate = new DateTime(2011, 10, 30, 20, 15, 10, 5);
     private DateTime utcDate = new DateTime(localDate.getZone().convertLocalToUTC(localDate.getMillis(), true));
     private DateTimeFormatter formatter = DateTimeFormat.forPattern(FormattedDate.DATE_FORMAT_PATTERN);
@@ -58,7 +57,7 @@ public class FormattedDateTagTest {
     public void setUp() {
         request = mock(HttpServletRequest.class);
         context = new MockPageContext(new MockServletContext(), request);
-        resolver = new FixedLocaleResolver(locale);
+        LocaleResolver resolver = new FixedLocaleResolver(locale);
         when(request.getAttribute(DispatcherServlet.LOCALE_RESOLVER_ATTRIBUTE)).thenReturn(resolver);
         tag = new FormattedDate();
     }
@@ -111,6 +110,7 @@ public class FormattedDateTagTest {
     }
 
     private String render() throws JspException, UnsupportedEncodingException {
+        //cannot move it to @Before as cookies should be set first
         tag.setPageContext(context);
         tag.setValue(localDate);
         tag.doStartTag();

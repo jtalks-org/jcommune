@@ -122,7 +122,7 @@ public final class BranchController {
         List<Topic> topics = topicService.getRecentTopics(lastLogin);
         Pagination pagination = new Pagination(page, currentUser, topics.size(), true);
 
-        List<Breadcrumb> breadcrumbs =  breadcrumbBuilder.getRecentBreadcrumb();
+        List<Breadcrumb> breadcrumbs =  breadcrumbBuilder.getForumBreadcrumb();
         return new ModelAndView("recent")
                 .addObject("topics", topics)
                 .addObject("pagination", pagination)

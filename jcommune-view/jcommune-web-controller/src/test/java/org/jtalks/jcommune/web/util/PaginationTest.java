@@ -29,10 +29,12 @@ public class PaginationTest {
     private String uri;
     private User user;
 
+    private static final int PAGE_SIZE = 5;
+
     @BeforeMethod
     protected void setUp() {
         user = new User("", "", "");
-        user.setPageSize(5);
+        user.setPageSize(PAGE_SIZE);
         uri = "1";
         link = "<a href=\"%s?page=%d\">%d</a>";
     }
@@ -41,21 +43,17 @@ public class PaginationTest {
     public void testCreatePagingLink() {
         pagination = new Pagination(1, user, 10, true);
 
-        String comletedLinks = pagination.createPagingLink(5, link, uri);
-
-        assertEquals(comletedLinks, "1      <a href=\"1?page=2\">2</a>");
+        assertEquals(pagination.createPagingLink(5, link, uri), "1      <a href=\"1?page=2\">2</a>");
 
         pagination = new Pagination(1, user, 10, false);
 
-        comletedLinks = pagination.createPagingLink(5, link, uri);
-
-        assertEquals(comletedLinks, "");
+        assertEquals(pagination.createPagingLink(5, link, uri), "");
 
         pagination = new Pagination(2, user, 15, true);
 
-        comletedLinks = pagination.createPagingLink(5, link, uri);
-
-        assertEquals(comletedLinks, "<a href=\"1?page=1\">1</a>2      <a href=\"1?page=3\">3</a>");
+        assertEquals(
+                pagination.createPagingLink(5, link, uri),
+                "<a href=\"1?page=1\">1</a>2      <a href=\"1?page=3\">3</a>");
     }
 
     @Test
@@ -95,5 +93,17 @@ public class PaginationTest {
         pagination = new Pagination(1, user, 10, true);
 
         assertEquals(pagination.getMaxPages(), 2);
+    }
+
+    @Test
+    public void testReturnUserPageSize() {
+        int pageSize = Pagination.getPageSizeFor(user);
+        assertEquals(pageSize, PAGE_SIZE);
+    }
+
+    @Test
+    public void testReturnDefaultPageSizeForNullUser() {
+        int pageSize = Pagination.getPageSizeFor(null);
+        assertEquals(pageSize, Pagination.DEFAULT_PAGE_SIZE);
     }
 }

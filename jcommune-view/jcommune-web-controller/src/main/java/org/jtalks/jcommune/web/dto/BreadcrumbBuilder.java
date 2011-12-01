@@ -134,18 +134,6 @@ public class BreadcrumbBuilder {
     }
 
     /**
-     * Returns the Recent breadcrumbs.
-     *
-     * @return the breadcrumb list for the Recent location.
-     */
-    public List<Breadcrumb> getRecentBreadcrumb() {
-        List<Breadcrumb> breadcrumbList = getForumBreadcrumb();
-        breadcrumbList.add(prepareRecentBreadcrumb());
-
-        return breadcrumbList;
-    }
-
-    /**
      * Fill the forum breadcrumb.
      *
      * @return {@link Breadcrumb} the filled breadcrumb for the Forum location.
