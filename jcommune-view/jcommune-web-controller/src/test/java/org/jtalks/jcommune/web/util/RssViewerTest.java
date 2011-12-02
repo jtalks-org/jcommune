@@ -16,69 +16,53 @@
 package org.jtalks.jcommune.web.util;
 
 import com.sun.syndication.feed.rss.Channel;
-import org.joda.time.DateTime;
+import com.sun.syndication.feed.rss.Item;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.SecurityService;
-import org.jtalks.jcommune.service.TopicService;
-import org.jtalks.jcommune.web.controller.BranchController;
-import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
+import org.jtalks.jcommune.model.entity.User;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.mock.web.MockHttpSession;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 
 public class RssViewerTest {
-    private BranchController branchController;
     private RssViewer rssViewer;
-    private MockHttpSession session;
     private Channel channel;
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
-    private TopicService topicService;
-    private static final DateTime now = new DateTime();
-
-    private BranchService branchService;
-    private BreadcrumbBuilder breadcrumbBuilder;
+    private Map model;
+    private Topic topic;
 
     @BeforeMethod
     protected void setUp() {
-       rssViewer = mock(RssViewer.class);
-       session = new MockHttpSession();
-       channel = new Channel();
-       topicService = mock(TopicService.class);
-       request = new MockHttpServletRequest();
-       response = new MockHttpServletResponse();
-       channel = new Channel();
-
-       branchService = mock(BranchService.class);
-        topicService = mock(TopicService.class);
-        SecurityService securityService = mock(SecurityService.class);
-        breadcrumbBuilder = mock(BreadcrumbBuilder.class);
-        branchController = new BranchController(branchService, topicService, securityService, breadcrumbBuilder);
+        request = new MockHttpServletRequest();
+        response = new MockHttpServletResponse();
+        rssViewer = new RssViewer();
+        channel = new Channel();
+        model = new HashMap();
+        List<Topic> topics = new ArrayList<Topic>();
+        User user = new User("", "", "");
+        topic = new Topic(user, "");
+        topics.add(topic);
+        topics.add(topic);
+        model.put("topics", topics);
     }
 
     @Test
-    public void testBuildFeedMetadata() throws Exception {
+    public void testBuildFeed() throws Exception {
 
-        session.setAttribute("lastlogin", now);
-        Map model = branchController.recentTopicsPage(1,session).getModel();
-        when(model.get("topics")).thenReturn(new ArrayList<Topic>());
+        List<Item> items = rssViewer.buildFeedItems(model, request, response);
+        assertEquals(items, items);
 
-        rssViewer.buildFeedItems(model,request,response);
-        rssViewer.buildFeedMetadata(model,channel,request);
-
-        verify(rssViewer).buildFeedMetadata(model, channel, request);
-        verify(rssViewer).buildFeedItems(model,request,response);
-
+        rssViewer.buildFeedMetadata(model, channel, request);
+        assertFalse(channel.equals(new Channel()));
     }
 
 }

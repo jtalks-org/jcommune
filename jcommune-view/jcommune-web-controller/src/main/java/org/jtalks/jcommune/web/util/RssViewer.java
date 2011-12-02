@@ -60,7 +60,6 @@ public class RssViewer extends AbstractRssFeedView {
                                         HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
-        @SuppressWarnings("unchecked")
         List<Topic> listContent = (List<Topic>) model.get("topics");
         List<Item> items = new ArrayList<Item>(listContent.size());
 
