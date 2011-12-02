@@ -85,16 +85,6 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-    <filter>
-        <filter-name>httpMethodFilter</filter-name>
-        <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>httpMethodFilter</filter-name>
-        <servlet-name>spring-dispatcher</servlet-name>
-    </filter-mapping>
-
-
     <!-- Listeners -->
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
@@ -106,16 +96,9 @@
         <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
     </listener>
 
-
-    <!-- Errors -->
     <error-page>
-        <exception-type>org.jtalks.jcommune.service.exceptions.NotFoundException</exception-type>
-        <location>/WEB-INF/jsp/errors/404.jsp</location>
+        <error-code>404</error-code>
+        <location>/errors/redirect404</location>
     </error-page>
-    <error-page>
-        <error-code>500</error-code>
-        <location>/WEB-INF/jsp/errors/500.jsp</location>
-    </error-page>
-
 </web-app>
 

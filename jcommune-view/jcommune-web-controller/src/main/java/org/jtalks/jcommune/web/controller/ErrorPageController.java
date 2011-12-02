@@ -16,7 +16,6 @@ package org.jtalks.jcommune.web.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * Controlles serving different error pages.
@@ -34,11 +33,23 @@ public class ErrorPageController {
      * we can't override this behavior. We can, however, provide DispacherServlet
      * with this fake mapping to handle all unmapped requests.
      *
-     *
      * @return 404 page view
      */
     @RequestMapping(value = "/errors/404")
-    public String return404Page() {
+    public String get404Page() {
         return NOT_FOUND_PAGE_VIEW;
+    }
+
+    /**
+     * This controller redirects all 404-code responses to the method above.
+     * We need an explicit redirect since default web.xml error code forwarding
+     * bypasses filters, interceptors and so on, which is inappropriate as we
+     * want our filter to be applied even to the error pages.
+     *
+     * @return ErrorPageController.NOT_FOUND_PAGE_VIEW redirect url
+     */
+    @RequestMapping(value = "/errors/redirect404")
+    public String redirect404() {
+        return "redirect:" + NOT_FOUND_PAGE_VIEW;
     }
 }

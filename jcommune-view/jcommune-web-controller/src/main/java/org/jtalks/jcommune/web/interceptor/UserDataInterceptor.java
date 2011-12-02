@@ -26,6 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Add user data that should be available on all pages.
+ * todo: it is invoked every time even for resource requests
+ * todo: configure it to be invoked only on appropriate handler
  *
  * @author Kirill Afonin
  */
@@ -59,11 +61,15 @@ public class UserDataInterceptor extends HandlerInterceptorAdapter {
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
                            ModelAndView modelAndView) {
-        int newPmCount = service.currentUserNewPmCount();
-        request.setAttribute("newPmCount", newPmCount);
-        User user = securityService.getCurrentUser();
+        //do not apply to the redirected requests
+        if (!response.containsHeader("Location")) {
+            //todo: revise the common information we actualy need here
+            int newPmCount = service.currentUserNewPmCount();
+            request.setAttribute("newPmCount", newPmCount);
+            User user = securityService.getCurrentUser();
 
-        String encodedUserName = user != null ? user.getEncodedUsername() : null;
-        request.setAttribute("encodedUserName", encodedUserName);
+            String encodedUserName = user != null ? user.getEncodedUsername() : null;
+            request.setAttribute("encodedUserName", encodedUserName);
+        }
     }
 }
