@@ -674,3 +674,7 @@ a.admin, a.user {
 .error {
     color: #FF0000;
 }
+
+.keep_newlines {
+    white-space: pre;
+}

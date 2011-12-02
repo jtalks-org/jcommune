@@ -162,7 +162,7 @@
 
                         <form action="${pageContext.request.contextPath}/posts/quote"
                               method="post" id='quoteForm${post.id}'>
-                            <input name='selection' id='selection${post.id}' type='hidden' value='1'/>
+                            <input name='selection' id='selection${post.id}' type='hidden'/>
                             <input name='topicId' id='topicId' type='hidden' value='${topic.id}'/>
                         </form>
                     </sec:authorize>
@@ -172,9 +172,7 @@
                     </a>
                 </div>
                 <p class="forum_message_cell_text">
-                    <span id='${post.id}'>
-                        <c:out value="${post.postContent}"/>
-                    </span>
+                    <span id='${post.id}' class="keep_newlines"><c:out value="${post.postContent}"/></span>
                     <br/><br/><br/>
                     <c:if test="${post.modificationDate!=null}">
                         <spring:message code="label.modify"/>
@@ -185,7 +183,7 @@
                     <div class="signature">
                         -------------------------
                         <br/>
-                        <c:out value="${post.userCreated.signature}"/>
+                        <span class="keep_newlines"><c:out value="${post.userCreated.signature}"/></span>
                     </div>
                 </c:if>
             </div>

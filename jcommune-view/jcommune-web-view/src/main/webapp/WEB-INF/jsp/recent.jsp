@@ -69,15 +69,20 @@
                     <c:choose>
                         <c:when test="${topic.announcement=='true'}">
                             <div class="forum_info"> <!-- Ссылка на тему -->
-                                <h4><span class="sticky"><spring:message code="label.marked_as_announcement"/> </span><a
-                                        class="forum_link"
-                                        href="${pageContext.request.contextPath}/topics/${topic.id}">
-                                    <c:out value="${topic.title}"/></a></h4>
+                                <h4>
+                                    <span class="sticky">
+                                        <spring:message code="label.marked_as_announcement"/>
+                                    </span>
+                                    <a class="forum_link" href="${pageContext.request.contextPath}/topics/${topic.id}">
+                                        <c:out value="${topic.title}"/>
+                                    </a>
+                                </h4>
                             </div>
                         </c:when>
                         <c:when test="${topic.sticked=='true'}">
                             <div class="forum_info"> <!-- Ссылка на тему -->
-                                <h4><span class="sticky"><spring:message code="label.marked_as_sticked"/> </span><a
+                                <h4><span class="sticky">
+                                    <spring:message code="label.marked_as_sticked"/> </span><a
                                         class="forum_link"
                                         href="${pageContext.request.contextPath}/topics/${topic.id}">
                                     <c:out value="${topic.title}"/></a></h4>
@@ -88,7 +93,9 @@
                                 <h4><a class="forum_link"
                                        href="${pageContext.request.contextPath}/topics/${topic.id}"><c:out
                                         value="${topic.title}"/></a></h4>
-                                <h5><c:out value="${topic.lastPost.shortContent}"/></h5>
+                                <h5>
+                                    <span class="keep_newlines"><c:out value="${topic.lastPost.shortContent}"/></span>
+                                </h5>
 
                             </div>
                         </c:otherwise>

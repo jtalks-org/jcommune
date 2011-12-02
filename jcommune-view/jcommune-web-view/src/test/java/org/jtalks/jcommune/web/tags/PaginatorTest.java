@@ -23,6 +23,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,38 +31,27 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
-// todo: refactor this bullshit
 public class PaginatorTest {
 
     private Paginator paginator;
-    private MockServletContext ServletContext;
-    private MockPageContext PageContext;
-    private WebApplicationContext WebApplicationContext;
+    private MockPageContext pageContext;
     private User user;
-    private List list;// generify
+    private List list;
 
     @BeforeMethod
     protected void setUp() throws Exception {
-        ServletContext = new MockServletContext();
-        WebApplicationContext = mock(WebApplicationContext.class);
-        ServletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE,
-                WebApplicationContext);
-        PageContext = new MockPageContext(ServletContext);
+        MockServletContext servletContext = new MockServletContext();
+        WebApplicationContext context = mock(WebApplicationContext.class);
+        servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, context);
+        pageContext = new MockPageContext(servletContext);
         paginator = new Paginator();
-        paginator.setPageContext(PageContext);
+        paginator.setPageContext(pageContext);
 
-        when(WebApplicationContext.getServletContext()).thenReturn(ServletContext);
+        when(context.getServletContext()).thenReturn(servletContext);
 
         user = new User("", "", "");
         user.setPageSize(5);
-
-        list = new ArrayList();
-        list.add(1);
-        list.add(2);
-        list.add(3);
-        list.add(4);
-        list.add(5);
-        list.add(6);
+        list = Arrays.asList(1,2,3,4,5,6);
     }
 
     @Test
@@ -75,7 +65,7 @@ public class PaginatorTest {
 
         paginator.doStartTag();
 
-        assertEquals(PageContext.getAttribute("list"), list.subList(0, 5));
+        assertEquals(pageContext.getAttribute("list"), list.subList(0, 5));
 
         paginator.doEndTag();
 
@@ -86,14 +76,11 @@ public class PaginatorTest {
     public void testLastPage() {
         Pagination pagination = new Pagination(2,user,6,true);
         paginator.setPagination(pagination);
-        List list1 = new ArrayList();
-        list1.add(6);
-
         paginator.setList(list);
 
         paginator.doStartTag();
 
-        assertEquals(PageContext.getAttribute("list"), list1);
+        assertEquals(pageContext.getAttribute("list"), Collections.singletonList(6));
     }
 
     @Test
@@ -106,7 +93,7 @@ public class PaginatorTest {
 
         paginator.doStartTag();
 
-        assertEquals(PageContext.getAttribute("list"), list.subList(50,55));
+        assertEquals(pageContext.getAttribute("list"), list.subList(50,55));
     }
 
     @Test
@@ -118,7 +105,7 @@ public class PaginatorTest {
 
         paginator.doStartTag();
 
-        assertEquals(PageContext.getAttribute("list"), list);
+        assertEquals(pageContext.getAttribute("list"), list);
     }
 
     @Test
@@ -133,7 +120,7 @@ public class PaginatorTest {
 
         paginator.doEndTag();
 
-        assertEquals(PageContext.getAttribute("list"), null);
+        assertEquals(pageContext.getAttribute("list"), null);
     }
 
     @Test
@@ -146,6 +133,6 @@ public class PaginatorTest {
 
         paginator.doStartTag();
 
-        assertEquals(PageContext.getAttribute("list"), list);
+        assertEquals(pageContext.getAttribute("list"), list);
     }
 }

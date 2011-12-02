@@ -289,4 +289,21 @@ public class Topic extends Entity {
     public void setViews(int views) {
         this.views = views;
     }
+
+    /**
+     * Calculates last page number for a given pagesize.
+     * Will work incorrectly if topic has no posts
+     * (impossible at the moment)
+     *
+     * @param pageSize size of a page
+     * @return number of the page where last post is located
+     */
+    public int getLastPageNumber(int pageSize) {
+        int pageNum = posts.size() / pageSize;
+        if (posts.size() % pageSize == 0) {
+            return pageNum;
+        } else {
+            return pageNum + 1;
+        }
+    }
 }
