@@ -98,7 +98,7 @@
 
     <error-page>
         <error-code>404</error-code>
-        <location>/errors/redirect404</location>
+        <location>/errors/redirect/404</location>
     </error-page>
 </web-app>
 

@@ -72,7 +72,7 @@
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/resources/**"/>
-            <bean class="org.jtalks.jcommune.web.interceptor.ResourceHandlerInterceptor"/>
+            <bean class="org.jtalks.jcommune.web.interceptors.ChainBreakingInterceptor"/>
         </mvc:interceptor>
         <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
             <property name="paramName" value="lang"/>
@@ -84,7 +84,7 @@
             <property name="useCacheControlHeader" value="true"/>
             <property name="useCacheControlNoStore" value="true"/>
         </bean>
-        <bean id="userDataInterceptor" class="org.jtalks.jcommune.web.interceptor.UserDataInterceptor"/>
+        <bean id="userDataInterceptor" class="org.jtalks.jcommune.web.interceptors.UserDataInterceptor"/>
     </mvc:interceptors>
 
     <!-- simple pages -->

@@ -17,9 +17,10 @@ package org.jtalks.jcommune.web.util;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.SecurityService;
-import org.jtalks.jcommune.web.interceptor.UserDataInterceptor;
+import org.jtalks.jcommune.web.interceptors.UserDataInterceptor;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -64,7 +65,7 @@ public class UserDataInterceptorTest {
         when(service.currentUserNewPmCount()).thenReturn(USER_NEW_PM_COUNT);
         when(securityService.getCurrentUser()).thenReturn(user);
 
-        interceptor.postHandle(request, response, null, null);
+        interceptor.postHandle(request, response, null, new ModelAndView("view"));
 
         assertEquals(request.getAttribute("newPmCount"), USER_NEW_PM_COUNT);
         assertEquals(request.getAttribute("encodedUserName"), ENCODED_USER_NAME);
@@ -77,7 +78,7 @@ public class UserDataInterceptorTest {
         when(service.currentUserNewPmCount()).thenReturn(0);
         when(securityService.getCurrentUser()).thenReturn(null);
 
-        interceptor.postHandle(request, response, null, null);
+        interceptor.postHandle(request, response, null, new ModelAndView("view"));
 
         assertEquals(request.getAttribute("newPmCount"), 0);
         assertEquals(request.getAttribute("encodedUserName"), null);

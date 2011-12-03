@@ -48,7 +48,7 @@ public class ErrorPageController {
      *
      * @return ErrorPageController.NOT_FOUND_PAGE_VIEW redirect url
      */
-    @RequestMapping(value = "/errors/redirect404")
+    @RequestMapping(value = "/errors/redirect/404")
     public String redirect404() {
         return "redirect:" + NOT_FOUND_PAGE_VIEW;
     }
