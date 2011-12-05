@@ -56,7 +56,7 @@ public class RssViewerTest {
     }
 
     @Test
-    public void testBuildFeed() throws Exception {
+    public void testRssFeed() throws Exception {
 
         List<Item> items = rssViewer.buildFeedItems(model, request, response);
         assertEquals(items, items);
