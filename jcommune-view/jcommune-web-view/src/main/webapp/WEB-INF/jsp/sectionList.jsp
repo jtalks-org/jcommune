@@ -30,6 +30,7 @@
     <h1>JTalks</h1>
     <!-- Начало всех форумов -->
     <div class="all_forums">
+        <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/recent.rss">&nbsp;  [RSS]</a>
         <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/recent"><spring:message
                 code="label.recent"/></a> <br/>
         <a class="forum_top_right_link" href="#"><spring:message code="label.messagesWithoutAnswers"/></a>

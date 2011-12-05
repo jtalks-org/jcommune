@@ -93,4 +93,25 @@
     <!-- static resources -->
     <mvc:resources mapping="/resources/**" location="/resources/"/>
 
+    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="order" value="1"/>
+        <property name="mediaTypes">
+            <map>
+                <entry key="json" value="application/json"/>
+                <entry key="xml" value="application/xml"/>
+                <entry key="rss" value="application/rss+xml"/>
+            </map>
+        </property>
+
+        <property name="defaultViews">
+            <list>
+
+                <!-- RSS View -->
+                <bean class="org.jtalks.jcommune.web.util.RssViewer"/>
+            </list>
+        </property>
+        <property name="ignoreAcceptHeader" value="true"/>
+
+    </bean>
+
 </beans>
