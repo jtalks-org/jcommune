@@ -23,8 +23,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <head>
     <title><spring:message code="label.section.jtalks_forum"/></title>
-    <link rel="stylesheet" type="text/css" media="screen, projection"
-          href="${pageContext.request.contextPath}/resources/css/screen.css"/>
 </head>
 <body>
 <div class="wrap main_page">

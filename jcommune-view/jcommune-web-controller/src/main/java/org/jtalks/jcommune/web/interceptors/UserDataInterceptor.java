@@ -12,7 +12,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.util;
+package org.jtalks.jcommune.web.interceptors;
 
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PrivateMessageService;
@@ -59,11 +59,15 @@ public class UserDataInterceptor extends HandlerInterceptorAdapter {
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
                            ModelAndView modelAndView) {
-        int newPmCount = service.currentUserNewPmCount();
-        request.setAttribute("newPmCount", newPmCount);
-        User user = securityService.getCurrentUser();
+        //do not apply to the redirected requests: it's unnecessary and may cause error pages to work incorrectly
+        if (!modelAndView.getViewName().contains("redirect:")) {
+            //todo: revise the common information we actualy need here
+            int newPmCount = service.currentUserNewPmCount();
+            request.setAttribute("newPmCount", newPmCount);
+            User user = securityService.getCurrentUser();
 
-        String encodedUserName = user != null ? user.getEncodedUsername() : null;
-        request.setAttribute("encodedUserName", encodedUserName);
+            String encodedUserName = user != null ? user.getEncodedUsername() : null;
+            request.setAttribute("encodedUserName", encodedUserName);
+        }
     }
 }
