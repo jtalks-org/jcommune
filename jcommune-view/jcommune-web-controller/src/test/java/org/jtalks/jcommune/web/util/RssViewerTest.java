@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 
@@ -48,21 +50,43 @@ public class RssViewerTest {
         channel = new Channel();
         model = new HashMap();
         List<Topic> topics = new ArrayList<Topic>();
-        User user = new User("", "", "");
+        User user = new User("username", "email", "password");
+        user.setSignature("Signature");
         topic = new Topic(user, "");
+        topic.setId(1L);
         topics.add(topic);
         topics.add(topic);
         model.put("topics", topics);
     }
 
     @Test
-    public void testRssFeed() throws Exception {
+    public void testBuildFeedItems() throws Exception {
 
         List<Item> items = rssViewer.buildFeedItems(model, request, response);
-        assertEquals(items, items);
+        assertEquals(items.get(0).getAuthor(), "username");
+        assertEquals(items.get(0).getLink(), "http://deploy.jtalks.org/jcommune/topics/1");
+        assertEquals(items.get(0).getComments(), "Signature");
+    }
+
+    @Test
+    public void testBuildFeedMetadata() throws Exception {
 
         rssViewer.buildFeedMetadata(model, channel, request);
         assertFalse(channel.equals(new Channel()));
+        assertEquals(channel.getDescription(), "Programmers forum");
+        assertEquals(channel.getLink(), "http://deploy.jtalks.org/jcommune");
+    }
+
+    @Test
+    public void testRssFeed() throws Exception {
+
+        rssViewer = mock(RssViewer.class);
+
+        rssViewer.buildFeedMetadata(model, channel, request);
+        rssViewer.buildFeedItems(model, request, response);
+
+        verify(rssViewer).buildFeedMetadata(model, channel, request);
+        verify(rssViewer).buildFeedItems(model, request, response);
     }
 
 }
