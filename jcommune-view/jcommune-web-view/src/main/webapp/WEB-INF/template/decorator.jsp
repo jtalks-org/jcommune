@@ -36,7 +36,7 @@
           href="${pageContext.request.contextPath}/resources/images/favicon.ico"/>
     <link rel="icon" type="image/png"
           href="${pageContext.request.contextPath}/resources/images/favicon.png"/>
-
+	<script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js" type="text/javascript"></script>
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-1.7.min.js"></script>
     <script type="text/javascript"

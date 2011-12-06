@@ -33,8 +33,9 @@
     <jsp:include page="../template/topLine.jsp"/>
     <!-- Начало всех форумов -->
     <div class="all_forums">
+
         <jtalks:form action="${pageContext.request.contextPath}/posts/new?topicId=${topicId}"
-                     method="POST" modelAttribute="postDto">
+                     method="POST" modelAttribute="postDto" onsubmit="doCheck();return true;">
             <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
 
             <div class="forum_misc_info">
@@ -109,41 +110,40 @@
                     <div class="forum_answer_right">
                         <div class="formatting_buttons">
                             <input id="format_b" type="button" class="button" accesskey="b" name="format_b"
-                                   value=" B "/>
+                                   value=" B "onclick="doClick('bold');"/>
                             <input id="format_i" type="button" class="button" accesskey="i" name="format_i"
-                                   value=" i "/>
+                                   value=" i " onclick="doClick('italic');"/>
                             <input id="format_u" type="button" class="button" accesskey="u" name="format_u"
-                                   value=" u "/>
+                                   value=" u " onclick="doClick('underline');"/>
+                            <input id="select_color" type="button" class="button" name="select_color"
+                                   value="Color" onclick="showColorGrid2('none')"/>
+                            <span id="colorpicker201" class="colorpicker201"></span>
                             <input id="format_quote" type="button" class="button" accesskey="q" name="format_quote"
-                                   value="Quote"/>
+                                   value="Quote" onclick="doQuote();"/>
                             <input id="format_code" type="button" class="button" accesskey="c" name="format_code"
-                                   value="Code"/>
+                                   value="Code"  onclick="doClick('code');"/>
                             <input id="format_list" type="button" class="button" accesskey="l" name="format_list"
-                                   value="List"/>
+                                   value="List" onclick="doClick('InsertUnorderedList');"/>
                             <input id="format_listeq" type="button" class="button" accesskey="o" name="format_listeq"
                                    value="List="/>
                             <input id="format_img" type="button" class="button" accesskey="p" name="format_img"
-                                   value="Img"/>
+                                   value="Img" onclick="doImage();"/>
                             <input id="format_url" type="button" class="button" accesskey="w" name="format_url"
-                                   value="URL"/>
+                                   value="URL" onclick="doLink();"/>
                         </div>
 						<span class="genmed">
-							<spring:message code="label.answer.font_color"/>
-							<select id="select_color" name="select_color">
-                                <option><spring:message code="label.answer.font_color.black"/></option>
-                                <option><spring:message code="label.answer.font_color.white"/></option>
-                            </select>
+
 							<spring:message code="label.answer.font_size"/>
-							<select id="select_size" name="select_size">
-                                <option><spring:message code="label.answer.font_size.small"/></option>
-                                <option><spring:message code="label.answer.font_size.large"/></option>
-                                <option><spring:message code="label.answer.font_size.king_size"/></option>
+							<select id="select_size" name="select_size" onchange="doSize();">
+                                <option value="10"><spring:message code="label.answer.font_size.small"/></option>
+                                <option value="15"><spring:message code="label.answer.font_size.large"/></option>
+                                <option value="20"><spring:message code="label.answer.font_size.king_size"/></option>
                             </select>
 						</span>
                         <a href="#" onmouseover="helpline('a')"><spring:message code="label.answer.close_tags"/></a>
 
                         <div id="helpline"><spring:message code="label.answer.tooltip"/></div>
-                        <form:textarea path="bodyText" rows="15" cols="35" tabindex="3" cssClass="post"/>
+                        <form:textarea id="tbMsg" path="bodyText" rows="15" cols="35" tabindex="3" cssClass="post"/>
                         <form:errors path="bodyText"/>
 
                     </div>
@@ -161,10 +161,13 @@
                     </div>
                 </li>
             </ul>
-            <input id="preview" type="submit" class="button" tabindex="5" name="preview"
-                   value="<spring:message code="label.answer.preview"/>"/>
+            <input id="preview" type="button" class="button" tabindex="5" name="preview"
+                   value="<spring:message code="label.answer.preview"/>" onclick="javascript:SwitchEditor()"/>
+            <script type="text/javascript">
+                initEditor("tbMsg", true);
+            </script>
             <input id="post" type="submit" class="button" accesskey="s" tabindex="6" name="post"
-                   value="<spring:message code="label.answer"/>"/>
+                   value="<spring:message code="label.answer"/>" onclick="doCheck();return true;"/>
         </jtalks:form>
     </div>
     <!-- Конец всех форумов -->
