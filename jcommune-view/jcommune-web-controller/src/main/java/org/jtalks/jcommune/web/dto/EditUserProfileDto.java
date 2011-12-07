@@ -16,7 +16,6 @@ package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.Length;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.web.util.Pagination;
 import org.jtalks.jcommune.web.validation.Matches;
 
 import javax.validation.constraints.Max;
@@ -37,8 +36,8 @@ public class EditUserProfileDto extends UserDto {
     private String newUserPassword;
     private String newUserPasswordConfirm;
     private String language;
-    @Min(Pagination.MIN_PAGE_SIZE)
-    @Max(Pagination.MAX_PAGE_SIZE)
+    @Min(User.MIN_PAGE_SIZE)
+    @Max(User.MAX_PAGE_SIZE)
     private int pageSize;
     private String avatar;
 

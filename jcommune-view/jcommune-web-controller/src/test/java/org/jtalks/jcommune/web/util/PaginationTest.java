@@ -104,6 +104,6 @@ public class PaginationTest {
     @Test
     public void testReturnDefaultPageSizeForNullUser() {
         int pageSize = Pagination.getPageSizeFor(null);
-        assertEquals(pageSize, Pagination.DEFAULT_PAGE_SIZE);
+        assertEquals(pageSize, User.DEFAULT_PAGE_SIZE);
     }
 }
