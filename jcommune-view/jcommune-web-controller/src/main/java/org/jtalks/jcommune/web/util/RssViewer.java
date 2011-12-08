@@ -60,34 +60,35 @@ public class RssViewer extends AbstractRssFeedView {
      * @param request  http request
      * @param response http response
      * @return list items
-     * @throws Exception all exception
+     * @throws IOException i/o exception
+     * @throws NullPointerException null value
      */
     @Override
     protected List<Item> buildFeedItems(Map<String, Object> model,
-                                        HttpServletRequest request, HttpServletResponse response) throws IOException, NullPointerException {
+                                        HttpServletRequest request, HttpServletResponse response)
+                                        throws IOException, NullPointerException {
 
-            List<Topic> listContent = (List<Topic>) model.get("topics");
-            if(listContent == null)
-            {
-                response.sendRedirect("/jcommune/errors/404");
-                return null;
-            }
-            List<Item> items = new ArrayList<Item>(listContent.size());
+        List<Topic> listContent = (List<Topic>) model.get("topics");
+        if (listContent == null) {
+            response.sendRedirect("/jcommune/errors/404");
+            return null;
+        }
+        List<Item> items = new ArrayList<Item>(listContent.size());
 
-            for (Topic topic : listContent) {
+        for (Topic topic : listContent) {
 
-                Item item = new Item();
+            Item item = new Item();
 
-                Content content = new Content();
-                item.setContent(content);
+            Content content = new Content();
+            item.setContent(content);
 
-                item.setTitle(topic.getTitle());
-                item.setAuthor(topic.getTopicStarter().getEncodedUsername());
-                item.setLink("http://deploy.jtalks.org/jcommune/topics/" + topic.getId());
-                item.setComments(topic.getTopicStarter().getSignature());
+            item.setTitle(topic.getTitle());
+            item.setAuthor(topic.getTopicStarter().getEncodedUsername());
+            item.setLink("http://deploy.jtalks.org/jcommune/topics/" + topic.getId());
+            item.setComments(topic.getTopicStarter().getSignature());
 
-                items.add(item);
-            }
+            items.add(item);
+        }
 
         return items;
     }

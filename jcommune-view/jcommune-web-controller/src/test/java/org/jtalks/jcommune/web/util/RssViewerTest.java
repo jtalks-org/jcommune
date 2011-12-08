@@ -73,7 +73,7 @@ public class RssViewerTest {
     public void testRedirect() throws IOException {
         model.put("topics", null);
         rssViewer.buildFeedItems(model, request, response);
-        assertEquals(response.getRedirectedUrl(),"/jcommune/errors/404");
+        assertEquals(response.getRedirectedUrl(), "/jcommune/errors/404");
     }
 
     @Test
