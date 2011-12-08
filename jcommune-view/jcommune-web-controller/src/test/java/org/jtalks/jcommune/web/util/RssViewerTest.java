@@ -24,6 +24,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,6 +67,13 @@ public class RssViewerTest {
         assertEquals(items.get(0).getAuthor(), "username");
         assertEquals(items.get(0).getLink(), "http://deploy.jtalks.org/jcommune/topics/1");
         assertEquals(items.get(0).getComments(), "Signature");
+    }
+
+    @Test
+    public void testRedirect() throws IOException {
+        model.put("topics", null);
+        rssViewer.buildFeedItems(model, request, response);
+        assertEquals(response.getRedirectedUrl(),"/jcommune/errors/404");
     }
 
     @Test
