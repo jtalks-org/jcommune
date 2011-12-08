@@ -32,7 +32,7 @@
     <div class="all_forums">
         <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/recent.rss">
             &nbsp;
-            <img src="${pageContext.request.contextPath}/resources/images/RSS.png" alt="">
+            <img src="${pageContext.request.contextPath}/resources/images/RSS.png">
         </a>
         <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/recent"><spring:message
                 code="label.recent"/></a> <br/>

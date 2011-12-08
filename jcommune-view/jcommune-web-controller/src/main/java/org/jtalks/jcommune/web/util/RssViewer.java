@@ -23,16 +23,21 @@ import org.springframework.web.servlet.view.feed.AbstractRssFeedView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
+ * Class forms a RSS feed
+ *
  * @author Andrey Kluev
  */
 public class RssViewer extends AbstractRssFeedView {
 
     /**
+     * Set meta data for all RSS feed
+     *
      * @param model   news model
      * @param feed    news feed
      * @param request http request
@@ -49,6 +54,8 @@ public class RssViewer extends AbstractRssFeedView {
     }
 
     /**
+     * Set list data item news in RSS feed
+     *
      * @param model    news model
      * @param request  http request
      * @param response http response
@@ -58,26 +65,29 @@ public class RssViewer extends AbstractRssFeedView {
     @Override
     protected List<Item> buildFeedItems(Map<String, Object> model,
                                         HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
+                                        throws IOException {
+        List<Item> items = null;
+        try {
+            List<Topic> listContent = (List<Topic>) model.get("topics");
+            items = new ArrayList<Item>(listContent.size());
 
-        List<Topic> listContent = (List<Topic>) model.get("topics");
-        List<Item> items = new ArrayList<Item>(listContent.size());
+            for (Topic topic : listContent) {
 
-        for (Topic topic : listContent) {
+                Item item = new Item();
 
-            Item item = new Item();
+                Content content = new Content();
+                item.setContent(content);
 
-            Content content = new Content();
-            item.setContent(content);
+                item.setTitle(topic.getTitle());
+                item.setAuthor(topic.getTopicStarter().getEncodedUsername());
+                item.setLink("http://deploy.jtalks.org/jcommune/topics/" + topic.getId());
+                item.setComments(topic.getTopicStarter().getSignature());
 
-            item.setTitle(topic.getTitle());
-            item.setAuthor(topic.getTopicStarter().getEncodedUsername());
-            item.setLink("http://deploy.jtalks.org/jcommune/topics/" + topic.getId());
-            item.setComments(topic.getTopicStarter().getSignature());
-
-            items.add(item);
+                items.add(item);
+            }
+        } catch (Exception ex) {
+                response.sendRedirect("/jcommune/errors/404");
         }
-
         return items;
     }
 

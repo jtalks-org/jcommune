@@ -39,7 +39,7 @@ public class RssViewerTest {
     private Channel channel;
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
-    private Map model;
+    private Map<String, Object> model;
     private Topic topic;
 
     @BeforeMethod
@@ -48,7 +48,7 @@ public class RssViewerTest {
         response = new MockHttpServletResponse();
         rssViewer = new RssViewer();
         channel = new Channel();
-        model = new HashMap();
+        model = new HashMap<String, Object>();
         List<Topic> topics = new ArrayList<Topic>();
         User user = new User("username", "email", "password");
         user.setSignature("Signature");
