@@ -36,7 +36,7 @@ public class EditUserProfileDto extends UserDto {
     private int pageSize;
     private String avatar;
 
-    private static final int[] pageSizesAvailable = new int[]{5, 10, 20, 50, 100, 500};
+    private static final int[] pageSizesAvailable = new int[]{5, 10, 20, 50, 100, 250};
 
     /**
      * Default constructor
