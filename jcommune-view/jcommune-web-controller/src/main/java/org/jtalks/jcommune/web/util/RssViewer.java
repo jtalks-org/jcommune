@@ -23,7 +23,6 @@ import org.springframework.web.servlet.view.feed.AbstractRssFeedView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +64,7 @@ public class RssViewer extends AbstractRssFeedView {
     @Override
     protected List<Item> buildFeedItems(Map<String, Object> model,
                                         HttpServletRequest request, HttpServletResponse response)
-                                        throws IOException {
+            throws Exception {
         List<Item> items = null;
         try {
             List<Topic> listContent = (List<Topic>) model.get("topics");
@@ -86,7 +85,7 @@ public class RssViewer extends AbstractRssFeedView {
                 items.add(item);
             }
         } catch (Exception ex) {
-                response.sendRedirect("/jcommune/errors/404");
+            response.sendRedirect("/jcommune/errors/404");
         }
         return items;
     }
