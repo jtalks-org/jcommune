@@ -84,20 +84,11 @@
             <tr>
                 <td><label><spring:message code="label.language"/></label></td>
                 <td>
-                    <form:select path="language">
-                        <c:forEach items="${languages}" var="language">
-                            <c:choose>
-                                <c:when test="${language eq editedUser.language}">
-                                    <form:option value="${language}" selected="selected">
-                                        <spring:message code="${language.languageNameLabel}"/>
-                                    </form:option>
-                                </c:when>
-                                <c:otherwise>
-                                    <form:option value="${language}">
-                                        <spring:message code="${language.languageNameLabel}"/>
-                                    </form:option>
-                                </c:otherwise>
-                            </c:choose>
+                    <form:select path="language" value="${editedUser.language}">
+                        <c:forEach items="${editedUser.languagesAvailable}" var="language">
+                            <form:option value="${language}">
+                                <spring:message code="${language.languageNameLabel}"/>
+                            </form:option>
                         </c:forEach>
                     </form:select>
                 </td>
@@ -106,7 +97,8 @@
             <tr>
                 <td><label><spring:message code="label.numberOfTopicsOnPage"/></label></td>
                 <td>
-                    <form:input path="pageSize" value ="${editedUser.pageSize}"/>
+                    <form:select path="pageSize" value="${editedUser.pageSize}"
+                                 items="${editedUser.pageSizesAvailable}"/>
                 </td>
                 <td><form:errors path="pageSize" cssClass="error"/></td>
             </tr>
@@ -180,23 +172,23 @@
 
         console.log('Action: %s', action);
         var uploader = new qq.FileUploaderBasic({
-            button:  $("#upload").get(0),
-            action: action,
-            multiple: false,
-            allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'],
-            sizeLimit: 4194304, // max size
-            onSubmit: function(id, filename) {
+            button:$("#upload").get(0),
+            action:action,
+            multiple:false,
+            allowedExtensions:['jpg', 'jpeg', 'png', 'gif'],
+            sizeLimit:4194304, // max size
+            onSubmit:function (id, filename) {
                 console.log('File upload: %s, ID: %s', filename, id);
             },
-            onProgress: function(id, filename, loaded, total) {
+            onProgress:function (id, filename, loaded, total) {
                 console.log('Progress for file: %s, ID: %s, loaded: %s, total: %s', filename, id, loaded, total);
             },
-            onComplete : function(id, filename, responseJSON) {
+            onComplete:function (id, filename, responseJSON) {
                 console.log('File upload for file %s, id %s done with status %s', filename, id, responseJSON);
                 document.getElementById('avatarPreview').setAttribute('src', responseJSON.srcPrefix + responseJSON.srcImage);
                 document.getElementById('avatarTempValue').setAttribute('value', responseJSON.srcImage);
             },
-            debug: true
+            debug:true
         });
 
     }

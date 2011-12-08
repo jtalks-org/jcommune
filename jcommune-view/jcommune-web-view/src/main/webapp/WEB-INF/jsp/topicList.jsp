@@ -74,7 +74,7 @@
 
         <ul class="forum_table"> <!-- Список топиков -->
             <jtalks:display uri="${branch.id}" pagination="${pagination}" numberLink="3" list="${topics}">
-            <c:forEach var="topic" items="${topics}">
+            <c:forEach var="topic" items="${list}">
                 <li class="forum_row"> <!-- Топик -->
                     <div class="forum_icon"> <!-- Иконка с кофе -->
                         <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png"

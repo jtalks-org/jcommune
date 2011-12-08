@@ -177,7 +177,7 @@ public class UserController {
                     imagePreprocessor.base64Coder(avatar)
             ));
         }
-        return editMaV(editedUser)
+        return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUser)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
     }
 
@@ -203,13 +203,13 @@ public class UserController {
         applyLanguage(Language.valueOf(userDto.getLanguage()), response);
         // validate other fields
         if (result.hasErrors()) {
-            return editMaV(userDto);
+            return new ModelAndView(EDIT_PROFILE, EDITED_USER, userDto);
         }
         User editedUser = editUserProfile(userDto, result);
 
-        // error occured
+        // error occurred
         if (editedUser == null) {
-            return editMaV(userDto);
+            return new ModelAndView(EDIT_PROFILE, EDITED_USER, userDto);
         }
 
         return new ModelAndView(new StringBuilder().append("redirect:/users/")
@@ -286,17 +286,6 @@ public class UserController {
     }
 
     /**
-     * {@code ModelAndView} with dto and languages.
-     *
-     * @param dto edit user dto
-     * @return {@code ModelAndView} for edit profile page
-     */
-    private ModelAndView editMaV(EditUserProfileDto dto) {
-        return new ModelAndView(EDIT_PROFILE, EDITED_USER, dto)
-                .addObject("languages", Language.values());
-    }
-
-    /**
      * Remove avatar from user profile.
      *
      * @return edit user profile page
@@ -306,7 +295,7 @@ public class UserController {
         User user = securityService.getCurrentUser();
         userService.removeAvatarFromCurrentUser();
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
-        return editMaV(editedUser);
+        return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUser);
     }
 
     /**

@@ -55,9 +55,7 @@ public class User extends Entity implements UserDetails {
     public static final int MIN_PASS_SIZE = 3;
     public static final int MAX_PASS_SIZE = 20;
 
-    public static final int MIN_PAGE_SIZE = 5;
     public static final int DEFAULT_PAGE_SIZE = 50;
-    public static final int MAX_PAGE_SIZE = 500;
 
     private static final long serialVersionUID = 19981017L;
 
