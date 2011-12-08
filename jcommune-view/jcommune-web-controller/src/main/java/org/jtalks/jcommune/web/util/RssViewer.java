@@ -66,7 +66,7 @@ public class RssViewer extends AbstractRssFeedView {
     @Override
     protected List<Item> buildFeedItems(Map<String, Object> model,
                                         HttpServletRequest request, HttpServletResponse response)
-                                        throws IOException, NullPointerException {
+        throws IOException, NullPointerException {
 
         List<Topic> listContent = (List<Topic>) model.get("topics");
         if (listContent == null) {

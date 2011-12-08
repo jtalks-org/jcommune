@@ -197,7 +197,7 @@ public class UserController {
     public ModelAndView editProfile( // TODO: this method is too complex
                                      @Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
                                      BindingResult result, HttpServletResponse response)
-            throws NotFoundException, IOException {
+        throws NotFoundException, IOException {
 
         // apply language changes immediately
         applyLanguage(Language.valueOf(userDto.getLanguage()), response);
