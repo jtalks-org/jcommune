@@ -67,7 +67,6 @@ public class UserControllerTest {
     private final String EMAIL = "mail@mail.com";
     private final String PASSWORD = "password";
     private final String SIGNATURE = "signature";
-    private final String NEW_PASSWORD = "newPassword";
     private final String LANGUAGE = "ENGLISH";
     private final int PAGE_SIZE = 50;
     private String avatar;
@@ -198,7 +197,6 @@ public class UserControllerTest {
 
         //check result
         assertViewName(mav, "editProfile");
-        assertModelAttributeAvailable(mav, "languages");
         assertModelAttributeAvailable(mav, "breadcrumbList");
         EditUserProfileDto dto = assertAndReturnModelAttributeOfType(mav, "editedUser", EditUserProfileDto.class);
         assertEquals(dto.getFirstName(), user.getFirstName(), "First name is not equal");
@@ -250,7 +248,6 @@ public class UserControllerTest {
 
         assertViewName(mav, "editProfile");
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
-        assertModelAttributeAvailable(mav, "languages");
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
                 userDto.getNewUserPassword(), imagePreprocessor.base64Decoder(userDto.getAvatar()),
@@ -275,7 +272,6 @@ public class UserControllerTest {
         ModelAndView mav = controller.editProfile(userDto, bindingResult, new MockHttpServletResponse());
 
         assertViewName(mav, "editProfile");
-        assertModelAttributeAvailable(mav, "languages");
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
         verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
@@ -296,7 +292,6 @@ public class UserControllerTest {
         ModelAndView mav = controller.editProfile(dto, bindingResult, new MockHttpServletResponse());
 
         assertViewName(mav, "editProfile");
-        assertModelAttributeAvailable(mav, "languages");
         verify(userService, never()).editUserProfile(anyString(), anyString(), anyString(),
                 anyString(), anyString(), Matchers.<byte[]>anyObject(), anyString(), anyString(), anyInt());
     }
@@ -416,7 +411,9 @@ public class UserControllerTest {
      * @return {@link EditUserProfileDto} with default values
      */
     private EditUserProfileDto getEditUserProfileDto() {
+        String NEW_PASSWORD = "newPassword";
         EditUserProfileDto dto = new EditUserProfileDto();
+
         dto.setEmail(EMAIL);
         dto.setFirstName(FIRST_NAME);
         dto.setLastName(LAST_NAME);

@@ -28,15 +28,15 @@
     <meta http-equiv="Expires" content="-1"/>
     <meta charset="UTF-8">
 
-    <title><decorator:title default="JCommune"/>
-    </title>
+    <title><decorator:title default="JCommune"/></title>
     <link rel="stylesheet" type="text/css" media="screen, projection"
           href="${pageContext.request.contextPath}/resources/css/screen.css"/>
     <link rel="shortcut icon" type="image/x-icon"
           href="${pageContext.request.contextPath}/resources/images/favicon.ico"/>
     <link rel="icon" type="image/png"
           href="${pageContext.request.contextPath}/resources/images/favicon.png"/>
-	<script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js" type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
+            type="text/javascript"></script>
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-1.7.min.js"></script>
     <script type="text/javascript"
@@ -47,15 +47,10 @@
 <decorator:body/>
 <div class="footer"> <!-- Подвал -->
     <div class="copyright">
-        Java and all Java-related trademarks and logos are trademarks or registered trademarks of Oracle
-        Corporation
-        in the United States and other countries.
-        <br/>
-        Этот сайт не относится к фирме Oracle Corporation и не поддерживается ею.
-        <br/>
-        © 2011 www.jtalks.org: <a href="#">форум java программистов</a>
         <br/>
         <span class="version">Powered by JCommune ${project.version}</span>
+        <br/>
+        © 2011 www.jtalks.org
     </div>
 </div>
 </body>
