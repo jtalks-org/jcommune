@@ -105,7 +105,6 @@
 
         <property name="defaultViews">
             <list>
-
                 <!-- RSS View -->
                 <bean class="org.jtalks.jcommune.web.util.RssViewer"/>
             </list>

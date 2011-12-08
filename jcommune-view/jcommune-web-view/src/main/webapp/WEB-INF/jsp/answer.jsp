@@ -110,22 +110,34 @@
                     <div class="forum_answer_right">
                         <div class="formatting_buttons">
                             <input id="format_b" type="button" class="button" accesskey="b" name="format_b"
-                                   value=" B "onclick="doClick('bold');"/>
+                                   value=" B " onclick="doClick('bold');"/>
                             <input id="format_i" type="button" class="button" accesskey="i" name="format_i"
                                    value=" i " onclick="doClick('italic');"/>
                             <input id="format_u" type="button" class="button" accesskey="u" name="format_u"
                                    value=" u " onclick="doClick('underline');"/>
+                            <input id="format_s" type="button" class="button" accesskey="s" name="format_s"
+                                   value=" s " onclick="doClick('line-through');"/>
+                            <input id="format_highlight" type="button" class="button" accesskey="highlight"
+                                   name="format_highlight"
+                                   value=" Highlight " onclick="doClick('highlight');"/>
+                            <input id="format_left" type="button" class="button" accesskey="left" name="format_left"
+                                   value=" Left " onclick="doClick('left');"/>
+                            <input id="format_center" type="button" class="button" accesskey="center"
+                                   name="format_center" value=" Center " onclick="doClick('center');"/>
+                            <input id="format_right" type="button" class="button" accesskey="right" name="format_right"
+                                   value=" Right " onclick="doClick('right');"/>
+                            </br>
                             <input id="select_color" type="button" class="button" name="select_color"
                                    value="Color" onclick="showColorGrid2('none')"/>
                             <span id="colorpicker201" class="colorpicker201"></span>
                             <input id="format_quote" type="button" class="button" accesskey="q" name="format_quote"
                                    value="Quote" onclick="doQuote();"/>
                             <input id="format_code" type="button" class="button" accesskey="c" name="format_code"
-                                   value="Code"  onclick="doClick('code');"/>
+                                   value="Code" onclick="doClick('code');"/>
                             <input id="format_list" type="button" class="button" accesskey="l" name="format_list"
                                    value="List" onclick="doClick('InsertUnorderedList');"/>
                             <input id="format_listeq" type="button" class="button" accesskey="o" name="format_listeq"
-                                   value="List="/>
+                                   value="List=" onclick="doClick('listElement');"/>
                             <input id="format_img" type="button" class="button" accesskey="p" name="format_img"
                                    value="Img" onclick="doImage();"/>
                             <input id="format_url" type="button" class="button" accesskey="w" name="format_url"
@@ -135,15 +147,26 @@
 
 							<spring:message code="label.answer.font_size"/>
 							<select id="select_size" name="select_size" onchange="doSize();">
+                                <option value="0" selected="selected">
+                                    <spring:message code="label.answer.none"/></option>
                                 <option value="10"><spring:message code="label.answer.font_size.small"/></option>
                                 <option value="15"><spring:message code="label.answer.font_size.large"/></option>
                                 <option value="20"><spring:message code="label.answer.font_size.king_size"/></option>
+                            </select>
+                            <spring:message code="label.answer.indent"/>
+							<select id="select_indent" name="select_indent" onchange="doIndent();">
+                                <option value="0" selected="selected">
+                                    <spring:message code="label.answer.none"/></option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                                <option value="25">25</option>
                             </select>
 						</span>
                         <a href="#" onmouseover="helpline('a')"><spring:message code="label.answer.close_tags"/></a>
 
                         <div id="helpline"><spring:message code="label.answer.tooltip"/></div>
-                        <form:textarea id="tbMsg" path="bodyText" rows="15" cols="35" tabindex="3" cssClass="post"/>
+                        <form:textarea id="tbMsg" path="bodyText" rows="30" cols="80" tabindex="3" cssClass="post"
+                                onclick="resetSizeSelector();resetIndentSelector();"/>
                         <form:errors path="bodyText"/>
 
                     </div>
@@ -162,9 +185,10 @@
                 </li>
             </ul>
             <input id="preview" type="button" class="button" tabindex="5" name="preview"
-                   value="<spring:message code="label.answer.preview"/>" onclick="javascript:SwitchEditor()"/>
+                   value="<spring:message code="label.answer.preview"/>" <%--onclick="javascript:SwitchEditor()"--%>/>
             <script type="text/javascript">
                 initEditor("tbMsg", true);
+                SwitchEditor();
             </script>
             <input id="post" type="submit" class="button" accesskey="s" tabindex="6" name="post"
                    value="<spring:message code="label.answer"/>" onclick="doCheck();return true;"/>
