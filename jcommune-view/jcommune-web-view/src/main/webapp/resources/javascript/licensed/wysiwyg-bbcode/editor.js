@@ -55,7 +55,7 @@ function initEditor(textarea_id, wysiwyg) {
     if (enableWysiwyg) {
         ifm = document.createElement("iframe");
         ifm.setAttribute("id", "rte");
-        //ifm.setAttribute("frameborder", "0");
+        ifm.setAttribute("frameborder", "1");
         ifm.style.width = textboxelement.style.width;
         ifm.style.height = textboxelement.style.height;
         textboxelement.parentNode.insertBefore(ifm, textboxelement);
@@ -330,8 +330,26 @@ function doClick(command) {
             case 'underline':
                 AddTag('[u]', '[/u]');
                 break;
+            case 'line-through':
+                AddTag('[s]', '[/s]');
+                break;
+            case 'highlight':
+                AddTag('[highlight]', '[/highlight]');
+                break;
+            case 'left':
+                AddTag('[left]', '[/left]');
+                break;
+            case 'right':
+                AddTag('[right]', '[/right]');
+                break;
+            case 'center':
+                AddTag('[center]', '[/center]');
+                break;
             case 'InsertUnorderedList':
-                AddTag('[list][*]', '[/*][/list]');
+                AddTag('\n[list]\n[*]', '\n[/list]\n');
+                break;
+            case 'listElement':
+                AddTag('\n[*]', '');
                 break;
         }
     }
@@ -355,7 +373,33 @@ function doSize() {
         if (editorVisible) {
             myeditor.execCommand('FontSize', false, size);
         } else {
-            AddTag('[size=' + size + ']', '[/size]');
+            if (size > 0)
+                AddTag('[size=' + size + ']', '[/size]');
+        }
+    }
+}
+
+function resetSizeSelector(){
+   var listSizes = document.getElementById("select_size");
+   listSizes.options[0].selected='selected';
+}
+
+function resetIndentSelector(){
+   var listIndents = document.getElementById("select_indent");
+   listIndents.options[0].selected='selected';
+}
+
+function doIndent() {
+    var listIndents = document.getElementById("select_indent");
+    var selectedIndex = listIndents.selectedIndex;
+    if (selectedIndex >= 0) {
+        var indent = listIndents.options[selectedIndex].value;
+        ifm.contentWindow.focus();
+        if (editorVisible) {
+            myeditor.execCommand('FontIndent', false, indent);
+        } else {
+            if (indent > 0)
+                AddTag('[indent=' + indent + ']', '[/indent]');
         }
     }
 }
