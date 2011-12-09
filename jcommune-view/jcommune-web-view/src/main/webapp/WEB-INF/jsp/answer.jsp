@@ -20,10 +20,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<html>
 <head>
     <title><spring:message code="label.answer_to"/>: <c:out value="${topic.title}"/></title>
-
 </head>
 <body>
 
@@ -126,7 +124,7 @@
                                    name="format_center" value=" Center " onclick="doClick('center');"/>
                             <input id="format_right" type="button" class="button" accesskey="right" name="format_right"
                                    value=" Right " onclick="doClick('right');"/>
-                            </br>
+                            <br>
                             <input id="select_color" type="button" class="button" name="select_color"
                                    value="Color" onclick="showColorGrid2('none')"/>
                             <span id="colorpicker201" class="colorpicker201"></span>
@@ -198,7 +196,4 @@
     <div class="footer_buffer"></div>
     <!-- Несемантичный буфер для прибития подвала -->
 </div>
-
-
 </body>
-</html>
