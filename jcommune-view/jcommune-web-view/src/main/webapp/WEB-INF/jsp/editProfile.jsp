@@ -106,7 +106,7 @@
             <tr>
                 <td><label><spring:message code="label.numberOfTopicsOnPage"/></label></td>
                 <td>
-                    <form:input path="pageSize" value ="${editedUser.pageSize}"/>
+                    <form:input path="pageSize" value="${editedUser.pageSize}"/>
                 </td>
                 <td><form:errors path="pageSize" cssClass="error"/></td>
             </tr>
@@ -176,7 +176,15 @@
     }
 
     function createUploader() {
-        var action = '${pageContext.request.contextPath}/users/avatarpreview';
+        var action;
+
+        if ((navigator.appName.indexOf("Microsoft") != -1) ||
+                (navigator.appName.indexOf("Opera") != -1)) {
+            action = '${pageContext.request.contextPath}/users/ieAvatarpreview';
+        }
+        else {
+            action = '${pageContext.request.contextPath}/users/avatarpreview';
+        }
 
         console.log('Action: %s', action);
         var uploader = new qq.FileUploaderBasic({

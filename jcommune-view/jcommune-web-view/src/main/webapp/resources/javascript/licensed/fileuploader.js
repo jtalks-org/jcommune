@@ -1082,18 +1082,17 @@ qq.extend(qq.UploadHandlerForm.prototype, {
      */
     _getIframeContentJSON: function(iframe) {
         // iframe.contentWindow.document - for IE<7
-        var doc = iframe.contentDocument ? iframe.contentDocument : iframe.contentWindow.document,
-            response;
-
-        this.log("converting iframe's innerHTML to JSON");
-        this.log("innerHTML = " + doc.body.innerHTML);
-
+        var doc = iframe.contentDocument ? iframe.contentDocument : iframe.contentWindow.document, response;
+        // XXX: Added HTML in response does not parse
+        // correctly when added directly to an iframe body
+        responseText = doc.getElementById('json-response') ? doc.getElementById('json-response').innerHTML : doc.body.innerHTML;
         try {
-            response = eval("(" + doc.body.innerHTML + ")");
+            //response = eval("(" + doc.body.innerHTML + ")");
+            //response = jQuery.parseJSON(responseText);  // Safer way parse JSON
+            response = jQuery.parseJSON(doc.body.textContent || doc.body.innerText);
         } catch(err) {
             response = {};
         }
-
         return response;
     },
     /**

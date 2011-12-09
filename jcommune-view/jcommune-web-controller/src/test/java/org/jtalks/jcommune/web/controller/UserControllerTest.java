@@ -21,11 +21,11 @@ import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.*;
+import org.jtalks.jcommune.service.util.ImagePreprocessor;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
-import org.jtalks.jcommune.web.util.ImagePreprocessor;
 import org.mockito.Matchers;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -378,7 +378,7 @@ public class UserControllerTest {
 
 
         //invoke the object under test
-        ModelAndView mav = controller.showUserPostList("username", 1,true);
+        ModelAndView mav = controller.showUserPostList("username", 1, true);
 
         //check expectations
         verify(userService).getByEncodedUsername("username");
@@ -387,7 +387,7 @@ public class UserControllerTest {
         //check result
         assertModelAttributeAvailable(mav, "user");
         assertModelAttributeAvailable(mav, "breadcrumbList");
-        assertModelAttributeAvailable(mav,"user");
+        assertModelAttributeAvailable(mav, "user");
     }
 
     private void assertContainsError(BindingResult bindingResult, String errorName) {

@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.util;
 
+import org.jtalks.jcommune.service.util.ImagePreprocessor;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

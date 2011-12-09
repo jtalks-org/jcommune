@@ -38,6 +38,14 @@
 
     <!--Decalaration services bean -->
 
+    <bean id="avatarService"
+          class="org.jtalks.jcommune.service.nontransactional.AvatarServiceImpl">
+        <constructor-arg index="0" ref="imagePreprocessor"/>
+    </bean>
+
+    <bean id="imagePreprocessor"
+          class="org.jtalks.jcommune.service.util.ImagePreprocessor"/>
+
     <bean id="userService"
           class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
         <constructor-arg index="0" ref="userDao"/>

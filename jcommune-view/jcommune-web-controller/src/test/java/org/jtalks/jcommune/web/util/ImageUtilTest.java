@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.util;
 
+import org.jtalks.jcommune.service.util.ImageUtil;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.testng.annotations.BeforeClass;

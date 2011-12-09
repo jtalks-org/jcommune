@@ -21,12 +21,11 @@ import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.*;
+import org.jtalks.jcommune.service.util.ImagePreprocessor;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
-import org.jtalks.jcommune.web.util.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
@@ -36,15 +35,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Controller for User related actions: registration.
@@ -65,7 +60,6 @@ public class UserController {
 
     private final SecurityService securityService;
     private final UserService userService;
-    private final Logger logger = LoggerFactory.getLogger(getClass());
     private BreadcrumbBuilder breadcrumbBuilder;
     private ImagePreprocessor imagePreprocessor;
     private PostService postService;
@@ -89,7 +83,7 @@ public class UserController {
      *                          accessing to current logged in user
      * @param breadcrumbBuilder the object which provides actions on
      *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
-     * @param imagePreprocessor {@link org.jtalks.jcommune.web.util.ImagePreprocessor} used
+     * @param imagePreprocessor {@link org.jtalks.jcommune.service.util.ImagePreprocessor} used
      * @param postService       {@link org.jtalks.jcommune.service.PostService} used
      */
     @Autowired
@@ -156,7 +150,7 @@ public class UserController {
         return new ModelAndView("userDetails")
                 .addObject("user", user)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb())
-                 // bind separately to get localized value
+                        // bind separately to get localized value
                 .addObject("language", Language.valueOf(user.getLanguage()))
                 .addObject("pageSize", Pagination.getPageSizeFor(user));
     }
@@ -362,37 +356,6 @@ public class UserController {
         return mav;
     }
 
-
-    /**
-     * Proccess avatar file from request and return avatar preview in response
-     *
-     * @param response servlet response
-     * @throws ServletException avatar processing problem
-     */
-    @RequestMapping(value = "/users/avatarpreview", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    Map<String, String> uploadAvatar(@RequestBody byte[] bytes, HttpServletResponse
-            response) throws ServletException {
-
-        Map responseContent = new HashMap<String, String>();
-
-        try {
-            BufferedImage inputAvatar = ImageUtil.convertByteArrayToImage(bytes);
-            byte[] outputAvatar = imagePreprocessor.preprocessImage(inputAvatar);
-            String srcImage = imagePreprocessor.base64Coder(outputAvatar);
-            response.setStatus(HttpServletResponse.SC_OK);
-            responseContent.put("success", "true");
-            responseContent.put("srcPrefix", ImagePreprocessor.HTML_SRC_TAG_PREFIX);
-            responseContent.put("srcImage", srcImage);
-        } catch (IOException e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            responseContent.put("success", "false");
-            logger.error(UserController.class.getName() + "has thrown an exception: " + e.getMessage());
-        }
-
-        return responseContent;
-    }
 
     /**
      * Show page with post of user.
