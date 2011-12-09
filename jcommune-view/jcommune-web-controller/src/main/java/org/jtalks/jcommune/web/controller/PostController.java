@@ -213,8 +213,9 @@ public class PostController {
     @RequestMapping(method = RequestMethod.POST, value = "/posts/new")
     public ModelAndView create(@Valid @ModelAttribute PostDto postDto, BindingResult result) throws NotFoundException {
         if (result.hasErrors()) {
-            ModelAndView mav = new ModelAndView("answer");
-            mav.addObject(postDto);
+            // refill the form fields
+            ModelAndView mav = this.addPost(postDto.getTopicId());
+            mav.addObject("postDto", postDto);
             return mav;
         }
         Post newbie = topicService.replyToTopic(postDto.getTopicId(), postDto.getBodyText());

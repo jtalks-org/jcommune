@@ -52,16 +52,6 @@
             </div>
             <ul class="forum_table"> <!-- Форма ответа -->
                 <li class="forum_row">
-                    <div class="forum_answer_left">
-                        <spring:message code="label.answer.topic"/>
-                    </div>
-                    <div class="forum_answer_right">
-                        <input id="subject" type="text" name="subject" size="45" maxlength="60" tabindex="1"
-                               class="post"
-                               value="RE: <c:out value="${topic.title}"/>"/>
-                    </div>
-                </li>
-                <li class="forum_row">
                     <div class="forum_answer_left align-top">
                         <spring:message code="label.answer.message"/>
                         <table class="smiles_table">
@@ -165,7 +155,8 @@
                         <div id="helpline"><spring:message code="label.answer.tooltip"/></div>
                         <form:textarea id="tbMsg" path="bodyText" rows="30" cols="80" tabindex="3" cssClass="post"
                                 onclick="resetSizeSelector();resetIndentSelector();"/>
-                        <form:errors path="bodyText"/>
+                        <br>
+                        <form:errors path="bodyText" cssClass="error"/>
 
                     </div>
                 </li>
