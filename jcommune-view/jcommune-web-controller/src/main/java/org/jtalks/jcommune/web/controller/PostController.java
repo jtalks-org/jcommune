@@ -17,18 +17,16 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.PostDto;
+import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -53,6 +51,7 @@ public class PostController {
     private PostService postService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private TopicService topicService;
+    private SecurityService securityService;
 
     /**
      * Constructor. Injects {@link PostService}.
@@ -61,13 +60,15 @@ public class PostController {
      * @param breadcrumbBuilder the object which provides actions on
      *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      * @param topicService      {@link TopicService} to be injected
+     * @param securityService   {@link SecurityService} to retrieve current logged in user
      */
     @Autowired
-    public PostController(PostService postService,
-                          BreadcrumbBuilder breadcrumbBuilder, TopicService topicService) {
+    public PostController(PostService postService, BreadcrumbBuilder breadcrumbBuilder,
+                          TopicService topicService, SecurityService securityService) {
         this.postService = postService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.topicService = topicService;
+        this.securityService = securityService;
     }
 
     /**
@@ -210,7 +211,17 @@ public class PostController {
         if (result.hasErrors()) {
             return "answer";
         }
-        topicService.replyToTopic(postDto.getTopicId(), postDto.getBodyText());
-        return "redirect:/topics/" + postDto.getTopicId();
+        Post newbie = topicService.replyToTopic(postDto.getTopicId(), postDto.getBodyText());
+        int pagesize = Pagination.getPageSizeFor(securityService.getCurrentUser());
+        int lastPage = newbie.getTopic().getLastPageNumber(pagesize);
+        return new StringBuilder("redirect:/topics/")
+                .append(postDto.getTopicId())
+                .append("?page=")
+                .append(lastPage)
+                .append("#")
+                .append(newbie.getId())
+                .toString();
     }
+
+
 }

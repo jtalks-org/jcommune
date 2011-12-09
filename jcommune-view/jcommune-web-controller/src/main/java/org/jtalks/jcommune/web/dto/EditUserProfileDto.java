@@ -15,12 +15,9 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.Length;
+import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.web.util.Pagination;
 import org.jtalks.jcommune.web.validation.Matches;
-
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 
 /**
  * This dto used for transferring data in edit {@link User} profile operation.
@@ -32,15 +29,14 @@ import javax.validation.constraints.Min;
 public class EditUserProfileDto extends UserDto {
 
     private String currentUserPassword;
-
     @Length(min = User.MIN_PASS_SIZE, max = User.MAX_PASS_SIZE)
     private String newUserPassword;
     private String newUserPasswordConfirm;
     private String language;
-    @Min(Pagination.MIN_PAGE_SIZE)
-    @Max(Pagination.MAX_PAGE_SIZE)
     private int pageSize;
     private String avatar;
+
+    private static final int[] pageSizesAvailable = new int[]{5, 10, 20, 50, 100, 250};
 
     /**
      * Default constructor
@@ -154,5 +150,25 @@ public class EditUserProfileDto extends UserDto {
      */
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
+    }
+
+    /**
+     * Returns all the page size values available for the user
+     * to choose from.
+     *
+     * @return array of page sizes available
+     */
+    public int[] getPageSizesAvailable() {
+        return pageSizesAvailable;
+    }
+
+    /**
+     * Returns all the languages available for the user
+     * to choose from.
+     *
+     * @return array of languages for user to choose
+     */
+    public Language[] getLanguagesAvailable() {
+        return Language.values();
     }
 }

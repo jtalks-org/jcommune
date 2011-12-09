@@ -14,25 +14,11 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeValues;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
@@ -45,6 +31,17 @@ import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.ModelAndViewAssert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+
 /**
  * This is test for <code>PostController<code> class.
  * Test should cover view resolution and logic validation.
@@ -56,6 +53,7 @@ public class PostControllerTest {
     private PostService postService;
     private PostController controller;
     private TopicService topicService;
+    private SecurityService securityService;
 
     public static final long POST_ID = 1;
     public static final long TOPIC_ID = 1L;
@@ -68,7 +66,8 @@ public class PostControllerTest {
         postService = mock(PostService.class);
         topicService = mock(TopicService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
-        controller = new PostController(postService, breadcrumbBuilder, topicService);
+        securityService = mock(SecurityService.class);
+        controller = new PostController(postService, breadcrumbBuilder, topicService, securityService);
 
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
@@ -199,7 +198,9 @@ public class PostControllerTest {
     public void testSubmitAnswerValidationPass() throws NotFoundException {
         BeanPropertyBindingResult resultWithoutErrors = mock(BeanPropertyBindingResult.class);
         when(resultWithoutErrors.hasErrors()).thenReturn(false);
-
+        Post post = new Post(null, null);
+        topic.addPost(post);
+        when(topicService.replyToTopic(anyLong(), Matchers.<String>any())).thenReturn(post);
         //invoke the object under test
         String view = controller.create(getDto(), resultWithoutErrors);
 
@@ -207,14 +208,13 @@ public class PostControllerTest {
         verify(topicService).replyToTopic(TOPIC_ID, POST_CONTENT);
 
         //check result
-        assertEquals(view, "redirect:/topics/" + TOPIC_ID);
+        assertTrue(view.contains("redirect:/topics/" + TOPIC_ID));
     }
 
     @Test
     public void testSubmitAnswerValidationFail() throws NotFoundException {
         BeanPropertyBindingResult resultWithErrors = mock(BeanPropertyBindingResult.class);
         when(resultWithErrors.hasErrors()).thenReturn(true);
-
         //invoke the object under test
         String view = controller.create(getDto(), resultWithErrors);
 

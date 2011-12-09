@@ -23,8 +23,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <head>
     <title><spring:message code="label.section.jtalks_forum"/></title>
-    <link rel="stylesheet" type="text/css" media="screen, projection"
-          href="${pageContext.request.contextPath}/resources/css/screen.css"/>
 </head>
 <body>
 <div class="wrap main_page">
@@ -32,6 +30,10 @@
     <h1>JTalks</h1>
     <!-- Начало всех форумов -->
     <div class="all_forums">
+        <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/recent.rss">
+            &nbsp;
+            <img src="${pageContext.request.contextPath}/resources/images/RSS.png">
+        </a>
         <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/recent"><spring:message
                 code="label.recent"/></a> <br/>
         <a class="forum_top_right_link" href="#"><spring:message code="label.messagesWithoutAnswers"/></a>
@@ -82,7 +84,7 @@
                             <c:out value="${branch.topicCount}"/>
                         </div>
                         <div class="forum_messages">
-                               <c:out value="${branch.postCount}"/>
+                            <c:out value="${branch.postCount}"/>
                         </div>
                         <div class="forum_last_message">
                             <c:if test="${branch.topicCount>0}">

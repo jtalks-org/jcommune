@@ -14,13 +14,23 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
-<html>
-
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <head>
-    <title>500 Error - Request processing failed!</title>
+    <title><spring:message code="label.500.title"/></title>
 </head>
 <body>
-Error 500: Server encountered an internal error while processing the request.
-Please check if the URL is valid and try again.
+<div class="wrap main_page">
+    <jsp:include page="../../template/topLine.jsp"/>
+    <div class="all_forums">
+        <div class="text_404">
+            <h1><span class="error_404"><spring:message code="label.error"/></span> 500</h1>
+            <spring:message code="label.500.detail"/>
+            <br/>
+            <spring:message code="label.500.refresh"/>&nbsp;
+            <a href="${pageContext.request.contextPath}"><spring:message code="label.back2main"/></a>
+        </div>
+    </div>
+    <div class="footer_buffer"></div>
+</div>
 </body>
-</html>

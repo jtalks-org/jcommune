@@ -49,7 +49,7 @@ public class SectionControllerTest {
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
         ForumStatisticsProvider statisticsProvider = mock(ForumStatisticsProvider.class);
         controller = new SectionController(securityService, sectionService, breadcrumbBuilder,
-                statisticsProvider, mock(HttpSession.class));
+                statisticsProvider);
     }
 
     @Test
@@ -58,7 +58,7 @@ public class SectionControllerTest {
         expectationsForAllSections();
 
         //invoke the object under test
-        ModelAndView mav = controller.sectionList();
+        ModelAndView mav = controller.sectionList(mock(HttpSession.class));
 
         //check expectations
         verifyAndAssertAllSections(mav);

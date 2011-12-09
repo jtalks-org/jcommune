@@ -26,13 +26,9 @@ import java.util.List;
  */
 public class Pagination {
     private int page;
-    private int pageSize = DEFAULT_PAGE_SIZE;
+    private int pageSize = User.DEFAULT_PAGE_SIZE;
     private int itemsCount;
     private boolean pagingEnabled;
-
-    public static final int MIN_PAGE_SIZE = 5;
-    public static final int DEFAULT_PAGE_SIZE = 50;
-    public static final int MAX_PAGE_SIZE = 500;
 
     /**
      * Create instance.
@@ -167,11 +163,14 @@ public class Pagination {
     }
 
     /**
+     * Returns page size applicable for the current user. If for some reasons
+     * this implementation is unable to determaine this parameter the default
+     * value will be used.
      *
-     * @param user
-     * @return
+     * @param user current user representation, may be null
+     * @return page size for the current user or default if there is no user
      */
     public static int getPageSizeFor(User user) {
-        return (user == null) ? DEFAULT_PAGE_SIZE : user.getPageSize();
+        return (user == null) ? User.DEFAULT_PAGE_SIZE : user.getPageSize();
     }
 }

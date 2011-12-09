@@ -33,7 +33,11 @@ import javax.servlet.http.HttpSession;
 
 /**
  * Displays to user page contains section list with related branch lists
- * and page contains branch list from the chosen section
+ * and page contains branch list from the chosen section.
+ * <p/>
+ * This is also the main forum page, mapped on url root. Section management is out
+ * of scope of forum development, section operations are to be implemented in
+ * a admin panel (separate Poulpe project)
  *
  * @author Max Malakhov
  * @author Alexandre Teterin
@@ -47,8 +51,6 @@ public final class SectionController {
     private SectionService sectionService;
     private ForumStatisticsProvider forumStaticsProvider;
     private BreadcrumbBuilder breadcrumbBuilder;
-    //todo: replace injection with method parameter
-    private HttpSession session;
 
     /**
      * Constructor creates MVC controller with specified SectionService
@@ -59,39 +61,38 @@ public final class SectionController {
      *                             {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      * @param forumStaticsProvider autowired object from Spring Context which provides methods for getting
      *                             forum statistic information
-     * @param session              http session that will be initiated
      */
     @Autowired
     public SectionController(SecurityService securityService,
                              SectionService sectionService,
                              BreadcrumbBuilder breadcrumbBuilder,
-                             ForumStatisticsProvider forumStaticsProvider,
-                             HttpSession session) {
+                             ForumStatisticsProvider forumStaticsProvider) {
         this.securityService = securityService;
         this.sectionService = sectionService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.forumStaticsProvider = forumStaticsProvider;
-        this.session = session;
     }
 
     /**
      * This method handles GET request and produces JSP page with all branch sections
      *
+     * @param session http session that will be initiated
      * @return {@link ModelAndView} with view name as renderAllSection
      */
     @RequestMapping(value = {"/", "/sections"}, method = RequestMethod.GET)
-    public ModelAndView sectionList() {
-        // Counting the number of active users based on the number of sessions.
-        // By default, the session will be initialized after controller's invocation,
-        // so at the time of request processing, we can miss the session
-        // if the current request is the first one for a particular user.
-        // To change a default behavior we call getId() method
-        // that initializes the session right now.
-        // If a request from the user is not the first one this method will have no effect.
+    public ModelAndView sectionList(HttpSession session) {
+        /*
+        Counting the number of active users based on the number of sessions.
+        By default, the session will be initialized after controller's invocation,
+        so at the time of request processing, we can miss the session
+        if the current request is the first one for a particular user.
+        To change a default behavior we call getId() method
+        that initializes the session right now.
+        If a request from the user is not the first one getId() call will have no effect.
+        */
         session.getId();
-        User user = securityService.getCurrentUser();
         return new ModelAndView("sectionList")
-                .addObject("pageSize", Pagination.getPageSizeFor(user))
+                .addObject("pageSize", Pagination.getPageSizeFor(securityService.getCurrentUser()))
                 .addObject("sectionList", sectionService.getAll())
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
                 .addObject("messagesCount", forumStaticsProvider.getPostsOnForumCount())

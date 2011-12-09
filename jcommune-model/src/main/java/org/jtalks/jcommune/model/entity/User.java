@@ -34,6 +34,7 @@ import java.util.Collection;
  * @author Alexandre Teterin
  */
 public class User extends Entity implements UserDetails {
+
     private String lastName;
     private String firstName;
     private String username;
@@ -45,7 +46,7 @@ public class User extends Entity implements UserDetails {
     private String encodedUsername;
     private int userPostCount;
     private byte[] avatar;
-    private String language = Language.ENGLISH.toString();
+    private String language;
     private int pageSize;
 
     public static final int MIN_NAME_SIZE = 4;
@@ -54,22 +55,27 @@ public class User extends Entity implements UserDetails {
     public static final int MIN_PASS_SIZE = 3;
     public static final int MAX_PASS_SIZE = 20;
 
+    public static final int DEFAULT_PAGE_SIZE = 50;
+
     private static final long serialVersionUID = 19981017L;
 
     /**
      * Only for hibernate usage.
      */
     protected User() {
+        language = Language.ENGLISH.toString();
+        pageSize = DEFAULT_PAGE_SIZE;
     }
 
     /**
-     * Create instance with requiered fields.
+     * Create instance with required fields.
      *
      * @param username username
      * @param email    email
      * @param password password
      */
     public User(String username, String email, String password) {
+        this();
         this.setUsername(username);
         this.email = email;
         this.password = password;
