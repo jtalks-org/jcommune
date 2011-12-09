@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.util;
 
 import com.sun.syndication.feed.rss.Channel;
 import com.sun.syndication.feed.rss.Content;
+import com.sun.syndication.feed.rss.Description;
 import com.sun.syndication.feed.rss.Item;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.web.servlet.view.feed.AbstractRssFeedView;
@@ -48,7 +49,7 @@ public class RssViewer extends AbstractRssFeedView {
 
         feed.setTitle("Java forum JTalks ");
         feed.setDescription("Programmers forum");
-        feed.setLink("http://deploy.jtalks.org/jcommune");
+        feed.setLink(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 
         super.buildFeedMetadata(model, feed, request);
     }
@@ -78,14 +79,19 @@ public class RssViewer extends AbstractRssFeedView {
         for (Topic topic : listContent) {
 
             Item item = new Item();
+            Description description = new Description();
+            description.setType("text");
+            description.setValue(topic.getLastPost().getShortContent());
 
             Content content = new Content();
             item.setContent(content);
 
             item.setTitle(topic.getTitle());
             item.setAuthor(topic.getTopicStarter().getEncodedUsername());
-            item.setLink("http://deploy.jtalks.org/jcommune/topics/" + topic.getId());
+            item.setLink(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/topics/" + topic.getId());
             item.setComments(topic.getTopicStarter().getSignature());
+            item.setDescription(description);
+            item.setPubDate(topic.getModificationDate().toDate());
 
             items.add(item);
         }
