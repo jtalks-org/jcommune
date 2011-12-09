@@ -49,7 +49,10 @@ public class RssViewer extends AbstractRssFeedView {
 
         feed.setTitle("Java forum JTalks ");
         feed.setDescription("Programmers forum");
-        feed.setLink(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
+        feed.setLink(request.getScheme()
+                + "://" + request.getServerName()
+                + ":" + request.getServerPort()
+                + request.getContextPath());
 
         super.buildFeedMetadata(model, feed, request);
     }
@@ -88,7 +91,11 @@ public class RssViewer extends AbstractRssFeedView {
 
             item.setTitle(topic.getTitle());
             item.setAuthor(topic.getLastPost().getUserCreated().getEncodedUsername());
-            item.setLink(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/topics/" + topic.getId());
+            item.setLink(request.getScheme()
+                    + "://" + request.getServerName()
+                    + ":" + request.getServerPort()
+                    + request.getContextPath()
+                    + "/topics/" + topic.getId());
             item.setComments(topic.getTopicStarter().getSignature());
             item.setDescription(description);
             item.setPubDate(topic.getModificationDate().toDate());
