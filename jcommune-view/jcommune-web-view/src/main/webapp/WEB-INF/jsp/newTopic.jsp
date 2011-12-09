@@ -19,8 +19,9 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-<head></head>
+<head>
+<title><spring:message code="h.new_topic"/></title>    
+</head>
 <body>
 <h1>JTalks</h1>
 
@@ -56,9 +57,10 @@
                         <form:input path="topicName" id="subject" type="text" name="subject" size="45"
                                     maxlength="60" tabindex="1"
                                     class="post"/>
+                        <br>
                         <form:errors path="topicName" id="subject" type="text" name="subject" size="45"
                                      maxlength="60" tabindex="1"
-                                     class="post"/>
+                                     class="post" cssClass="error"/>
                     </div>
                 </li>
                 <li class="forum_row">
@@ -149,8 +151,9 @@
                         <form:textarea path="bodyText" name="bodytext" id="bodytext" rows="15" cols="35"
                                        tabindex="3"
                                        class="post"/>
+                        <br>
                         <form:errors path="bodyText" name="bodytext" id="bodytext" rows="15" cols="35" tabindex="3"
-                                     class="post"/>
+                                     class="post" cssClass="error"/>
                     </div>
                 </li>
                 <li class="forum_row">
@@ -176,4 +179,3 @@
     <!-- Несемантичный буфер для прибития подвала -->
 </div>
 </body>
-</html>
