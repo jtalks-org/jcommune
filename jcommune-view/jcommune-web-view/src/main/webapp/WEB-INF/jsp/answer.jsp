@@ -155,7 +155,8 @@
                         <div id="helpline"><spring:message code="label.answer.tooltip"/></div>
                         <form:textarea id="tbMsg" path="bodyText" rows="30" cols="80" tabindex="3" cssClass="post"
                                        onclick="resetSizeSelector();resetIndentSelector();"/>
-                        <form:errors path="bodyText"/>
+                        <br>
+                        <form:errors path="bodyText" cssClass="error"/>
 
                     </div>
                 </li>

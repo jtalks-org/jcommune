@@ -24,8 +24,10 @@ import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 import org.jtalks.jcommune.web.dto.PrivateMessageDtoBuilder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -59,6 +61,13 @@ public class PrivateMessageControllerTest {
     public void init() {
         MockitoAnnotations.initMocks(this);
         controller = new PrivateMessageController(pmService, breadcrumbBuilder, pmDtoBuilder);
+    }
+
+    @Test
+    public void testInitBinder() {
+        WebDataBinder binder = mock(WebDataBinder.class);
+        controller.initBinder(binder);
+        verify(binder).registerCustomEditor(eq(String.class), any(StringTrimmerEditor.class));
     }
 
     @Test
@@ -96,7 +105,7 @@ public class PrivateMessageControllerTest {
         assertAndReturnModelAttributeOfType(mav, "pmList", List.class);
         assertModelAttributeAvailable(mav, "breadcrumbList");
     }
-    
+
     @Test
     public void draftsPage() {
         //set expectations
@@ -114,7 +123,7 @@ public class PrivateMessageControllerTest {
         assertAndReturnModelAttributeOfType(mav, "pmList", List.class);
         assertModelAttributeAvailable(mav, "breadcrumbList");
     }
-    
+
     @Test
     public void newPmPage() {
         //set expectations
@@ -294,10 +303,10 @@ public class PrivateMessageControllerTest {
     @Test(expectedExceptions = NotFoundException.class)
     public void showPmPageIncorrectFolder() throws NotFoundException {
         String box = "dick";
-        
+
         controller.showPmPage(box, PM_ID);
     }
-    
+
     @Test
     public void editDraftPage() throws NotFoundException {
         PrivateMessage pm = getPrivateMessage();

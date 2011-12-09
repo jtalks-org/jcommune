@@ -24,8 +24,10 @@ import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.PostDto;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -52,6 +54,19 @@ public class PostController {
     private BreadcrumbBuilder breadcrumbBuilder;
     private TopicService topicService;
     private SecurityService securityService;
+
+    /**
+     * This method turns the trim binder on. Trim bilder
+     * removes leading and trailing spaces from the submitted fields.
+     * So, it ensures, that all validations will be applied to
+     * trimmed field values only.
+     *
+     * @param binder Binder object to be injected
+     */
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+    }
 
     /**
      * Constructor. Injects {@link PostService}.

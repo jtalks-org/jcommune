@@ -67,6 +67,8 @@ public class UserController {
     /**
      * This method turns the trim binder on. Trim bilder
      * removes leading and trailing spaces from the submitted fields.
+     * So, it ensures, that all validations will be applied to
+     * trimmed field values only.
      *
      * @param binder Binder object to be injected
      */

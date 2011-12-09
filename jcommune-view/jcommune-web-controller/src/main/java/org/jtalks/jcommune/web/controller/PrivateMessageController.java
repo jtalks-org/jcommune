@@ -22,12 +22,11 @@ import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 import org.jtalks.jcommune.web.dto.PrivateMessageDtoBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -53,6 +52,19 @@ public class PrivateMessageController {
     private static final String PM_FORM = "pm/pmForm";
     private static final String PM_ID = "pmId";
     private static final String DTO = "privateMessageDto";
+
+    /**
+     * This method turns the trim binder on. Trim bilder
+     * removes leading and trailing spaces from the submitted fields.
+     * So, it ensures, that all validations will be applied to
+     * trimmed field values only.
+     *
+     * @param binder Binder object to be injected
+     */
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+    }
 
     /**
      * @param pmService         the PrivateMessageService instance
@@ -105,7 +117,7 @@ public class PrivateMessageController {
                 .addObject("pmList", pmService.getDraftsFromCurrentUser())
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
     }
-    
+
     /**
      * Render the page with a form for creation new Private Message with empty binded {@link PrivateMessageDto}.
      *
@@ -152,7 +164,7 @@ public class PrivateMessageController {
 
     /**
      * Create {@code ModelAndView} for reply to pm page.
-     * 
+     *
      * @param object new populated with data dto
      * @return reply page view
      */
@@ -161,7 +173,7 @@ public class PrivateMessageController {
                 .addObject(DTO, object)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
     }
-    
+
     /**
      * Save the PrivateMessage for the filled in PrivateMessageDto.
      *
@@ -198,12 +210,11 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/{folder}/{pmId}", method = RequestMethod.GET)
     public ModelAndView showPmPage(@PathVariable("folder") String folder,
-                             @PathVariable(PM_ID) Long id) throws NotFoundException {
+                                   @PathVariable(PM_ID) Long id) throws NotFoundException {
 
-        PrivateMessage pm = null;
+        PrivateMessage pm = pmService.get(id);
         List<Breadcrumb> breadcrumbList = null;
         if ("inbox".equals(folder)) {
-            pm = pmService.get(id);
             pmService.markAsRead(pm);
             breadcrumbList = breadcrumbBuilder.getInboxBreadcrumb();
         } else if ("outbox".equals(folder)) {
@@ -213,11 +224,6 @@ public class PrivateMessageController {
         } else {
             throw new NotFoundException("Incorrect folder");
         }
-        
-        // not inbox
-        if (pm == null) {
-            pm = pmService.get(id);
-        }
 
         return new ModelAndView("pm/showPm")
                 .addObject("pm", pm)
@@ -226,7 +232,7 @@ public class PrivateMessageController {
 
     /**
      * Edit private message page.
-     * 
+     *
      * @param id {@link PrivateMessage} id
      * @return private message form view and populated form dto
      * @throws NotFoundException when message not found
@@ -235,6 +241,7 @@ public class PrivateMessageController {
     public ModelAndView editDraftPage(@PathVariable(PM_ID) Long id) throws NotFoundException {
         PrivateMessage pm = pmService.get(id);
         if (!pm.isDraft()) {
+            // todo: 404? we need something more meaninful here
             throw new NotFoundException("Edit allowed only for draft messages.");
         }
         return new ModelAndView(PM_FORM)

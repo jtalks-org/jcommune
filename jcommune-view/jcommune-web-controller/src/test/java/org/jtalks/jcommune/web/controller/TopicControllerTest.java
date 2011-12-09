@@ -25,8 +25,10 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.TopicDto;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -71,6 +73,12 @@ public class TopicControllerTest {
         user = new User("username", "email@mail.com", "password");
     }
 
+    @Test
+    public void testInitBinder() {
+        WebDataBinder binder = mock(WebDataBinder.class);
+        controller.initBinder(binder);
+        verify(binder).registerCustomEditor(eq(String.class), any(StringTrimmerEditor.class));
+    }
 
     @Test
     public void testDeleteConfirmPage() {
