@@ -49,7 +49,7 @@ public class RssViewer extends AbstractRssFeedView {
 
         feed.setTitle("Java forum JTalks ");
         feed.setDescription("Programmers forum");
-        feed.setLink("http://deploy.jtalks.org/jcommune");
+        feed.setLink(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath());
 
         super.buildFeedMetadata(model, feed, request);
     }
