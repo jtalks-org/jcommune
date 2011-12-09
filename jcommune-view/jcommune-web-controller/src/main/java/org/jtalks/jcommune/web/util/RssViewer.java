@@ -87,7 +87,7 @@ public class RssViewer extends AbstractRssFeedView {
             item.setContent(content);
 
             item.setTitle(topic.getTitle());
-            item.setAuthor(topic.getTopicStarter().getEncodedUsername());
+            item.setAuthor(topic.getLastPost().getUserCreated().getEncodedUsername());
             item.setLink(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/topics/" + topic.getId());
             item.setComments(topic.getTopicStarter().getSignature());
             item.setDescription(description);
