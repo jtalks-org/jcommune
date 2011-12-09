@@ -242,7 +242,7 @@ public class PostControllerTest {
     }
 
     private void assertEditPostFormMavIsCorrect(ModelAndView mav) {
-        assertViewName(mav, "postForm");
+        assertViewName(mav, "editForm");
         long topicId = assertAndReturnModelAttributeOfType(mav, "topicId", Long.class);
         long postId = assertAndReturnModelAttributeOfType(mav, "postId", Long.class);
         assertEquals(topicId, TOPIC_ID);
