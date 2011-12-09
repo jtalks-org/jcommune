@@ -177,7 +177,15 @@
     }
 
     function createUploader() {
-        var action = '${pageContext.request.contextPath}/users/avatarpreview';
+        var action;
+
+        if ((navigator.appName.indexOf("Microsoft") != -1) ||
+                (navigator.appName.indexOf("Opera") != -1)) {
+            action = '${pageContext.request.contextPath}/users/ieAvatarpreview';
+        }
+        else {
+            action = '${pageContext.request.contextPath}/users/avatarpreview';
+        }
 
         console.log('Action: %s', action);
         var uploader = new qq.FileUploaderBasic({
