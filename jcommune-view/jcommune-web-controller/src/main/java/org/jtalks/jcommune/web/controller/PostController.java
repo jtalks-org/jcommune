@@ -174,7 +174,7 @@ public class PostController {
 
 
     /**
-     * Creates the answering page with qutation.
+     * Creates the answering page with quotation.
      * If user select nothing JS will substitute whole post contents here
      * <p/>
      * Supports post method to pass large quotations.
@@ -207,20 +207,22 @@ public class PostController {
      *          when topic or branch not found
      */
     @RequestMapping(method = RequestMethod.POST, value = "/posts/new")
-    public String create(@Valid @ModelAttribute PostDto postDto, BindingResult result) throws NotFoundException {
+    public ModelAndView create(@Valid @ModelAttribute PostDto postDto, BindingResult result) throws NotFoundException {
         if (result.hasErrors()) {
-            return "answer";
+            ModelAndView mav = new ModelAndView("answer");
+            mav.addObject(postDto);
+            return mav;
         }
         Post newbie = topicService.replyToTopic(postDto.getTopicId(), postDto.getBodyText());
         int pagesize = Pagination.getPageSizeFor(securityService.getCurrentUser());
         int lastPage = newbie.getTopic().getLastPageNumber(pagesize);
-        return new StringBuilder("redirect:/topics/")
+        return new ModelAndView(new StringBuilder("redirect:/topics/")
                 .append(postDto.getTopicId())
                 .append("?page=")
                 .append(lastPage)
                 .append("#")
                 .append(newbie.getId())
-                .toString();
+                .toString());
     }
 
 

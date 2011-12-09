@@ -40,7 +40,6 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
 /**
  * This is test for <code>PostController<code> class.
@@ -53,7 +52,6 @@ public class PostControllerTest {
     private PostService postService;
     private PostController controller;
     private TopicService topicService;
-    private SecurityService securityService;
 
     public static final long POST_ID = 1;
     public static final long TOPIC_ID = 1L;
@@ -66,7 +64,7 @@ public class PostControllerTest {
         postService = mock(PostService.class);
         topicService = mock(TopicService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
-        securityService = mock(SecurityService.class);
+        SecurityService securityService = mock(SecurityService.class);
         controller = new PostController(postService, breadcrumbBuilder, topicService, securityService);
 
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
@@ -202,13 +200,13 @@ public class PostControllerTest {
         topic.addPost(post);
         when(topicService.replyToTopic(anyLong(), Matchers.<String>any())).thenReturn(post);
         //invoke the object under test
-        String view = controller.create(getDto(), resultWithoutErrors);
+        ModelAndView mav = controller.create(getDto(), resultWithoutErrors);
 
         //check expectations
         verify(topicService).replyToTopic(TOPIC_ID, POST_CONTENT);
 
         //check result
-        assertTrue(view.contains("redirect:/topics/" + TOPIC_ID));
+        assertViewName(mav, "redirect:/topics/" + TOPIC_ID + "?page=1#0");
     }
 
     @Test
@@ -216,13 +214,13 @@ public class PostControllerTest {
         BeanPropertyBindingResult resultWithErrors = mock(BeanPropertyBindingResult.class);
         when(resultWithErrors.hasErrors()).thenReturn(true);
         //invoke the object under test
-        String view = controller.create(getDto(), resultWithErrors);
+        ModelAndView mav = controller.create(getDto(), resultWithErrors);
 
         //check expectations
         verify(topicService, never()).replyToTopic(anyLong(), anyString());
 
         //check result
-        assertEquals(view, "answer");
+        assertViewName(mav, "answer");
     }
 
     private void assertAnswerMavIsCorrect(ModelAndView mav) {
