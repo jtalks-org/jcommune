@@ -35,6 +35,6 @@ public class ConverterBB2HTML extends SimpleTagSupport implements JspTag {
     @Override
     public void doTag() throws JspException, IOException {
         TextProcessor processor = BBProcessorFactory.getInstance().create();
-        getJspContext().getOut().print(processor.process(bbCode));
+        getJspContext().getOut().print(processor.process(bbCode)+"\n[test]");
     }
 }
