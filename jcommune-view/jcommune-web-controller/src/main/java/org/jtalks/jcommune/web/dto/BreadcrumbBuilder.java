@@ -210,18 +210,6 @@ public class BreadcrumbBuilder {
                 Breadcrumb.OUTBOX_BREADCRUMB_LOCATION_VALUE);
     }
 
-    /**
-     * Fill the recent breadcrumb.
-     *
-     * @return {@link Breadcrumb} the filled breadcrumb for the recent location.
-     */
-    private Breadcrumb prepareRecentBreadcrumb() {
-        return new Breadcrumb(
-                Breadcrumb.STUB_BREADCRUMB_ID,
-                Breadcrumb.BreadcrumbLocation.RECENT,
-                Breadcrumb.RECENT_BREADCRUMB_LOCATION_VALUE);
-    }
-
 
     /**
      * Fill the drafts breadcrumb.

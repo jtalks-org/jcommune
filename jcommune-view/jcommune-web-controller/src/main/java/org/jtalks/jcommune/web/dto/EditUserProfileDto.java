@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.dto;
 import org.hibernate.validator.constraints.Length;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.web.validation.Matches;
 
 /**
@@ -58,6 +59,18 @@ public class EditUserProfileDto extends UserDto {
         this.setSignature(user.getSignature());
         this.language = user.getLanguage();
         this.pageSize = user.getPageSize();
+    }
+
+    /**
+     * Transforms DTO into container object - convenience implementation to
+     * be passed to the service layer.
+     *
+     * @return user profile modification info for the service tier
+     */
+    public UserInfoContainer getUserInfoContainer(){
+      return new UserInfoContainer(this.getFirstName(), this.getLastName(), this.getEmail(),
+              this.getCurrentUserPassword(), this.getNewUserPassword(), this.getSignature(),
+              this.getAvatar(), this.getLanguage(), this.getPageSize());
     }
 
     /**

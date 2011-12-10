@@ -49,9 +49,7 @@ public class ImageSizeValidator implements ConstraintValidator<ImageSize, byte[]
      */
     @Override
     public boolean isValid(byte[] bytes, ConstraintValidatorContext context) {
-        boolean result = false;
-
-        return bytes == null || (result = bytes.length / BYTES_IN_KILOBYTE < imageSize);
+        return bytes == null || (bytes.length / BYTES_IN_KILOBYTE < imageSize);
 
     }
 }

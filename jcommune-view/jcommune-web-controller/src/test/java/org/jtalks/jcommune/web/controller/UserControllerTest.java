@@ -20,6 +20,7 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.*;
 import org.jtalks.jcommune.service.util.ImagePreprocessor;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
@@ -211,11 +212,10 @@ public class UserControllerTest {
         EditUserProfileDto userDto = getEditUserProfileDto();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        when(userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
-                userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(),
-                imagePreprocessor.base64Decoder(userDto.getAvatar()),
-                SIGNATURE, LANGUAGE, PAGE_SIZE)).thenReturn(user);
+        when(userService.editUserProfile(new UserInfoContainer(userDto.getFirstName(),
+                userDto.getLastName(), userDto.getEmail(), userDto.getCurrentUserPassword(),
+                userDto.getNewUserPassword(), SIGNATURE,
+                anyString(), LANGUAGE, PAGE_SIZE))).thenReturn(user);
 
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
@@ -225,10 +225,10 @@ public class UserControllerTest {
         assertViewName(mav, expectedUrl);
         assertEquals(response.getCookies()[0].getValue(), Language.ENGLISH.getLanguageCode());
         assertEquals(response.getCookies()[0].getName(), CookieLocaleResolver.DEFAULT_COOKIE_NAME);
-        verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
+        verify(userService).editUserProfile(new UserInfoContainer(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), imagePreprocessor.base64Decoder(userDto.getAvatar()),
-                SIGNATURE, LANGUAGE, PAGE_SIZE);
+                userDto.getNewUserPassword(), anyString(),
+                SIGNATURE, LANGUAGE, PAGE_SIZE));
     }
 
     @Test
@@ -238,20 +238,13 @@ public class UserControllerTest {
         EditUserProfileDto userDto = getEditUserProfileDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
-        when(userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
-                userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(),
-                imagePreprocessor.base64Decoder(userDto.getAvatar()),
-                SIGNATURE, LANGUAGE, PAGE_SIZE)).thenThrow(new DuplicateEmailException());
+        when(userService.editUserProfile(Matchers.<UserInfoContainer>any())).thenThrow(new DuplicateEmailException());
 
         ModelAndView mav = controller.editProfile(userDto, bindingResult, new MockHttpServletResponse());
 
         assertViewName(mav, "editProfile");
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
-        verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
-                userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), imagePreprocessor.base64Decoder(userDto.getAvatar()),
-                SIGNATURE, LANGUAGE, PAGE_SIZE);
+        verify(userService).editUserProfile(Matchers.<UserInfoContainer>any());
 
         assertContainsError(bindingResult, "email");
     }
@@ -263,20 +256,20 @@ public class UserControllerTest {
         EditUserProfileDto userDto = getEditUserProfileDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 
-        when(userService.editUserProfile(userDto.getEmail(), userDto.getFirstName(),
+        when(userService.editUserProfile(new UserInfoContainer(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
                 userDto.getNewUserPassword(),
-                imagePreprocessor.base64Decoder(userDto.getAvatar()),
-                SIGNATURE, LANGUAGE, PAGE_SIZE)).thenThrow(new WrongPasswordException());
+                anyString(),
+                SIGNATURE, LANGUAGE, PAGE_SIZE))).thenThrow(new WrongPasswordException());
 
         ModelAndView mav = controller.editProfile(userDto, bindingResult, new MockHttpServletResponse());
 
         assertViewName(mav, "editProfile");
         assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
-        verify(userService).editUserProfile(userDto.getEmail(), userDto.getFirstName(),
+        verify(userService).editUserProfile(new UserInfoContainer(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), imagePreprocessor.base64Decoder(userDto.getAvatar()),
-                SIGNATURE, LANGUAGE, PAGE_SIZE);
+                userDto.getNewUserPassword(), anyString(),
+                SIGNATURE, LANGUAGE, PAGE_SIZE));
         assertContainsError(bindingResult, "currentUserPassword");
     }
 
@@ -292,8 +285,7 @@ public class UserControllerTest {
         ModelAndView mav = controller.editProfile(dto, bindingResult, new MockHttpServletResponse());
 
         assertViewName(mav, "editProfile");
-        verify(userService, never()).editUserProfile(anyString(), anyString(), anyString(),
-                anyString(), anyString(), Matchers.<byte[]>anyObject(), anyString(), anyString(), anyInt());
+        verify(userService, never()).editUserProfile(Matchers.<UserInfoContainer>any());
     }
 
     @Test

@@ -51,6 +51,7 @@
         <constructor-arg index="0" ref="userDao"/>
         <constructor-arg index="1" ref="securityService"/>
         <constructor-arg index="2" ref="mailService"/>
+        <constructor-arg index="3" ref="imagePreprocessor"/>
     </bean>
 
     <bean id="postService"
