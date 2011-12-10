@@ -50,20 +50,31 @@ public class AvatarController {
     private final AvatarService avatarService;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    /**
+     * Constructor for controller instantiating, dependencies injected via autowiring.
+     *
+     * @param avatarService for avatar manipulation
+     */
     @Autowired
     public AvatarController(AvatarService avatarService) {
         this.avatarService = avatarService;
     }
 
-/*    @InitBinder
-    protected void initBinder(ServletRequestDataBinder binder) {
-        binder.registerCustomEditor(byte[].class, new ByteArrayMultipartFileEditor());
-    }*/
-
+    /**
+     * Process avatar file from request and return avatar preview in response.
+     * Used for IE, Opera specific request processing
+     *
+     * @param request  incoming request
+     * @param response outcoming response
+     * @return response content
+     * @throws javax.servlet.ServletException avatar processing problem
+     */
     @RequestMapping(value = "/users/ieAvatarpreview", method = RequestMethod.POST)
     public
     @ResponseBody
-    Map<String, String> uploadAvatarFromIE(DefaultMultipartHttpServletRequest request, HttpServletResponse response) throws ServletException {
+    Map<String, String>
+    uploadAvatarFromIE(DefaultMultipartHttpServletRequest request,
+                       HttpServletResponse response) throws ServletException {
 
         Map<String, MultipartFile> fileMap = request.getFileMap();
         Collection<MultipartFile> fileCollection = fileMap.values();
@@ -82,18 +93,20 @@ public class AvatarController {
     }
 
     /**
-     * Proccess avatar file from request and return avatar preview in response
+     * Process avatar file from request and return avatar preview in response.
+     * Used for FF, Chrome specific request processing
      *
-     * @param bytes
+     * @param bytes    input avatar data
      * @param response servlet response
-     * @return
+     * @return response content
      * @throws javax.servlet.ServletException avatar processing problem
      */
     @RequestMapping(value = "/users/avatarpreview", method = RequestMethod.POST)
     public
     @ResponseBody
-    Map<String, String> uploadAvatar(@RequestBody byte[] bytes, HttpServletResponse
-            response) throws ServletException {
+    Map<String, String>
+    uploadAvatar(@RequestBody byte[] bytes,
+                 HttpServletResponse response) throws ServletException {
 
         Map<String, String> responseContent = new HashMap<String, String>();
         try {
@@ -105,7 +118,17 @@ public class AvatarController {
         return responseContent;
     }
 
-    private void prepareNormalResponse(byte[] bytes, HttpServletResponse response, Map<String, String> responseContent) throws IOException {
+    /**
+     * Used for prepare normal response
+     *
+     * @param bytes           input avatar data
+     * @param response        output response
+     * @param responseContent response payload
+     * @throws IOException avatar processing problem
+     */
+    private void prepareNormalResponse(byte[] bytes,
+                                       HttpServletResponse response,
+                                       Map<String, String> responseContent) throws IOException {
         String srcImage = avatarService.convertAvatarToString(bytes);
         response.setStatus(HttpServletResponse.SC_OK);
         responseContent.put("success", "true");
@@ -113,7 +136,15 @@ public class AvatarController {
         responseContent.put("srcImage", srcImage);
     }
 
-    private void prepareErrorResponse(HttpServletResponse response, Map<String, String> responseContent, IOException e) {
+    /**
+     * Used for prepare error response
+     *
+     * @param response        output response
+     * @param responseContent response payload
+     * @param e               avatar processing problem
+     */
+    private void prepareErrorResponse(HttpServletResponse response,
+                                      Map<String, String> responseContent, IOException e) {
         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         responseContent.put("success", "false");
         logger.error(UserController.class.getName() + "has thrown an exception: " + e.getMessage());

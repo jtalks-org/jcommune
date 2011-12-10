@@ -38,6 +38,7 @@ import static org.testng.Assert.assertFalse;
 
 public class RssViewerTest {
     private RssViewer rssViewer;
+    private RssViewer rssViewerMock;
     private Channel channel;
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
@@ -49,6 +50,7 @@ public class RssViewerTest {
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
         rssViewer = new RssViewer();
+        rssViewerMock = mock(RssViewer.class);
         channel = new Channel();
         model = new HashMap<String, Object>();
         List<Topic> topics = new ArrayList<Topic>();
@@ -68,15 +70,15 @@ public class RssViewerTest {
 
         List<Item> items = rssViewer.buildFeedItems(model, request, response);
         assertEquals(items.get(0).getAuthor(), "username");
-        //assertEquals(items.get(0).getLink(), "http://deploy.jtalks.org/jcommune/topics/1");
         assertEquals(items.get(0).getComments(), "Signature");
     }
 
     @Test
     public void testRedirect() throws IOException {
+
         model.put("topics", null);
-        rssViewer.buildFeedItems(model, request, response);
-        assertEquals(response.getRedirectedUrl(), "/jcommune/errors/404");
+
+        assertEquals(rssViewer.buildFeedItems(model, request, response), null);
     }
 
     @Test
@@ -85,19 +87,16 @@ public class RssViewerTest {
         rssViewer.buildFeedMetadata(model, channel, request);
         assertFalse(channel.equals(new Channel()));
         assertEquals(channel.getDescription(), "Programmers forum");
-        //assertEquals(channel.getLink(), "http://deploy.jtalks.org/jcommune");
     }
 
     @Test
     public void testRssFeed() throws Exception {
 
-        rssViewer = mock(RssViewer.class);
+        rssViewerMock.buildFeedMetadata(model, channel, request);
+        rssViewerMock.buildFeedItems(model, request, response);
 
-        rssViewer.buildFeedMetadata(model, channel, request);
-        rssViewer.buildFeedItems(model, request, response);
-
-        verify(rssViewer).buildFeedMetadata(model, channel, request);
-        verify(rssViewer).buildFeedItems(model, request, response);
+        verify(rssViewerMock).buildFeedMetadata(model, channel, request);
+        verify(rssViewerMock).buildFeedItems(model, request, response);
     }
 
 }

@@ -26,6 +26,7 @@ import java.io.IOException;
  * Class for preparing image to save.
  *
  * @author Eugeny Batov
+ * @author Alexandre Teterin
  */
 @Component
 public class ImagePreprocessor {
@@ -34,15 +35,35 @@ public class ImagePreprocessor {
     public static final int AVATAR_MAX_HEIGHT = 100;
     public static final int AVATAR_MAX_WIDTH = 100;
 
+    /**
+     * Perform image resizing and processing
+     *
+     * @param image for processing
+     * @return processed image bytes
+     * @throws IOException image processing problem
+     */
     public byte[] preprocessImage(Image image) throws IOException {
-        image = ImageUtil.resizeImage((BufferedImage) image, ImageUtil.IMAGE_JPEG, AVATAR_MAX_HEIGHT, AVATAR_MAX_WIDTH);
-        return ImageUtil.convertImageToByteArray(image);
+        byte[] result;
+        Image outputImage = ImageUtil.resizeImage((BufferedImage) image, ImageUtil.IMAGE_JPEG, AVATAR_MAX_HEIGHT, AVATAR_MAX_WIDTH);
+        result = ImageUtil.convertImageToByteArray(outputImage);
+        return result;
     }
 
+    /**
+     * Perform base64 binary data to string conversion
+     *
+     * @param bytes for processing
+     * @return converted binary data string
+     */
     public String base64Coder(byte[] bytes) {
         return new BASE64Encoder().encode(bytes);
     }
-
+         /**
+     * Perform base64 string to binary data conversion
+     *
+     * @param encodedBytes string representation for processing
+     * @return converted binary data
+     */
     public byte[] decodeB64(String encodedBytes) {
         byte[] result = null;
         try {
@@ -56,6 +77,12 @@ public class ImagePreprocessor {
         return result;
     }
 
+    /**
+     * Perform preparing content for SRC attribute of the IMG HTML tag
+     *
+     * @param encodedImgBytes image payload
+     * @return SRC attribute content
+     */
     public String prepareHtmlImgSrc(String encodedImgBytes) {
         return HTML_SRC_TAG_PREFIX + encodedImgBytes;
     }
