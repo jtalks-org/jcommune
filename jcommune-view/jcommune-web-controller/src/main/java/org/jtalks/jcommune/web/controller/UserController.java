@@ -109,7 +109,9 @@ public class UserController {
      */
     @RequestMapping(value = "/users/new", method = RequestMethod.GET)
     public ModelAndView registrationPage() {
-        return new ModelAndView(REGISTRATION).addObject("newUser", new RegisterUserDto());
+        return new ModelAndView(REGISTRATION)
+                .addObject("newUser", new RegisterUserDto())
+                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
     }
 
     /**
@@ -124,7 +126,6 @@ public class UserController {
         if (result.hasErrors()) {
             return new ModelAndView(REGISTRATION);
         }
-
         try {
             userService.registerUser(userDto.createUser());
             return new ModelAndView("redirect:/");
@@ -186,53 +187,27 @@ public class UserController {
      * @param result   binding result which contains the validation result
      * @param response http servlet response
      * @return in case of errors return back to edit profile page, in another case return to user detalis page
-     * @throws NotFoundException throws if current logged in user was not found
-     * @throws IOException       throws in case of access errors (if the temporary store fails)
      */
     @RequestMapping(value = "/users/edit", method = RequestMethod.POST)
-    public ModelAndView editProfile( // TODO: this method is too complex
-                                     @Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
-                                     BindingResult result, HttpServletResponse response)
-            throws NotFoundException, IOException {
-
-        // apply language changes immediately
-        applyLanguage(Language.valueOf(userDto.getLanguage()), response);
-        // validate other fields
+    public ModelAndView editProfile(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
+                                    BindingResult result, HttpServletResponse response) {
+        // some fields are validated via JSR-303 in DTO
         if (result.hasErrors()) {
             return new ModelAndView(EDIT_PROFILE, EDITED_USER, userDto);
         }
-        User editedUser = editUserProfile(userDto, result);
-
-        // error occurred
-        if (editedUser == null) {
-            return new ModelAndView(EDIT_PROFILE, EDITED_USER, userDto);
-        }
-
-        return new ModelAndView(new StringBuilder().append("redirect:/users/")
-                .append(editedUser.getEncodedUsername()).toString());
-    }
-
-    /**
-     * Convenience method to handle possible errors
-     *
-     * @param userDto form submission result
-     * @param result  form validation result, will be filled up with additional errors, if any
-     * @return Edited domain object if no error occure, null otherwise
-     * @throws IOException image stream processing error
-     */
-    private User editUserProfile(EditUserProfileDto userDto, BindingResult result) throws IOException {
-        User returnValue = null;
+        // while the others need to be validated in service layer
         try {
-            returnValue = performEditUserProfile(userDto);
+            User user = userService.editUserProfile(userDto.getUserInfoContainer());
+            // apply language changes immediately
+            applyLanguage(Language.valueOf(userDto.getLanguage()), response);
+            return new ModelAndView("redirect:/users/" + user.getEncodedUsername());
         } catch (DuplicateEmailException e) {
             result.rejectValue("email", "validation.duplicateemail");
         } catch (WrongPasswordException e) {
             result.rejectValue("currentUserPassword", "label.incorrectCurrentPassword",
                     "Password does not match to the current password");
-        } catch (InvalidImageException e) {
-            result.rejectValue("avatar", "avatar.wrong.format");
         }
-        return returnValue;
+        return new ModelAndView(EDIT_PROFILE, EDITED_USER, userDto);
     }
 
     /**
@@ -245,40 +220,6 @@ public class UserController {
         String code = language.getLanguageCode();
         Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, code);
         response.addCookie(cookie);
-    }
-
-    /**
-     * todo: refactor it to pass dto to the service layer
-     * Convenience method to pass a dto content toa  service layer
-     *
-     * @param userDto form submission result
-     * @return updated user object
-     * @throws DuplicateEmailException e-mail already registered
-     * @throws WrongPasswordException  current password doesn't match with the passed one
-     * @throws IOException             avatar upload problems
-     * @throws InvalidImageException   avatar image is invalid
-     */
-    private User performEditUserProfile(EditUserProfileDto userDto) throws DuplicateEmailException,
-            WrongPasswordException, IOException, InvalidImageException {
-
-        User result;
-
-        String email = userDto.getEmail();
-        String firstName = userDto.getFirstName();
-        String lastName = userDto.getLastName();
-        String currentUserPassword = userDto.getCurrentUserPassword();
-        String newUserPassword = userDto.getNewUserPassword();
-        String encodedBytes = userDto.getAvatar();
-        byte[] avatar = imagePreprocessor.base64Decoder(encodedBytes);
-        String signature = userDto.getSignature();
-        String language = userDto.getLanguage();
-        int pageSize = userDto.getPageSize();
-
-        result = userService.editUserProfile(email, firstName,
-                lastName, currentUserPassword, newUserPassword,
-                avatar, signature, language, pageSize);
-
-        return result;
     }
 
     /**

@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.*;
 
 /**
@@ -67,22 +68,12 @@ public interface UserService extends EntityService<User> {
     /**
      * Update user entity.
      *
-     * @param email           email
-     * @param firstName       first name
-     * @param lastName        last name
-     * @param currentPassword current user password, could be NULL
-     * @param newPassword     new user password, could be NULL
-     * @param avatar          user avatar
-     * @param signature       user signature
-     * @param language        user language
-     * @param pageSize        user pageSize
+     * @param info modified profile info holder
      * @return edited user
      * @throws DuplicateEmailException when user with given email already exist
      * @throws WrongPasswordException  when user enter wrong currentPassword
      */
-    User editUserProfile(String email, String firstName, String lastName, String currentPassword,
-                         String newPassword, byte[] avatar, String signature, String language, int pageSize)
-            throws DuplicateEmailException, WrongPasswordException;
+    User editUserProfile(UserInfoContainer info) throws DuplicateEmailException, WrongPasswordException;
 
     /**
      * Remove current user's avatar.

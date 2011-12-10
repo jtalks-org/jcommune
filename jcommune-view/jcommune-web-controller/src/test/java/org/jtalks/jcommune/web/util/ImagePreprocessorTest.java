@@ -70,7 +70,7 @@ public class ImagePreprocessorTest {
     @Test(dataProvider = "string-byte-provider")
     public void testBase64Decoder(String inputData, byte[] expectedData) throws IOException {
         //invoke object under test
-        byte[] result = imagePreprocessor.base64Decoder(inputData);
+        byte[] result = imagePreprocessor.decodeB64(inputData);
 
         //check result
         assertEquals(result, expectedData);

@@ -26,7 +26,7 @@
 <div class="wrap login_page">
     <jsp:include page="../template/topLine.jsp"/>
     <h1>JTalks</h1>
-
+    <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
     <form action='<c:url value="/j_spring_security_check"/>' method="POST" name="form" id="form">
         <div class="all_forums">
             <div class="forum_header_table">
@@ -45,6 +45,7 @@
                 </div>
                 <div class="forum_row">
                     <label for="j_password"><spring:message code="label.password"/> </label>
+
                     <div>
                         <input class="reg_input" type="password" name="j_password" id="j_password">
                         <c:if test="${not empty param.login_error}">

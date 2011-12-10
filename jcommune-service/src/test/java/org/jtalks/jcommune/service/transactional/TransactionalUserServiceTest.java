@@ -20,10 +20,13 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.MailService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.*;
 import org.jtalks.jcommune.service.security.SecurityConstants;
+import org.jtalks.jcommune.service.util.ImagePreprocessor;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
+import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -52,22 +55,30 @@ public class TransactionalUserServiceTest {
     private byte[] avatar = new byte[10];
     private static final Long USER_ID = 999L;
 
+    @Mock
     private UserService userService;
+    @Mock
     private UserDao userDao;
+    @Mock
     private SecurityService securityService;
+    @Mock
     private MailService mailService;
+    @Mock
+    private ImagePreprocessor processor;
 
     @BeforeMethod
     public void setUp() throws Exception {
-        securityService = mock(SecurityService.class);
+        userService = mock(UserService.class);
         userDao = mock(UserDao.class);
+        securityService = mock(SecurityService.class);
         mailService = mock(MailService.class);
-        userService = new TransactionalUserService(userDao, securityService, mailService);
+        processor = mock(ImagePreprocessor.class);
+        userService = new TransactionalUserService(userDao, securityService, mailService, processor);
     }
 
     @Test
     public void testGetByUsername() throws Exception {
-        User expectedUser = getUser();
+        User expectedUser = getUser(USERNAME);
         when(userDao.getByUsername(USERNAME)).thenReturn(expectedUser);
 
         User result = userService.getByUsername(USERNAME);
@@ -85,7 +96,7 @@ public class TransactionalUserServiceTest {
 
     @Test
     public void testGetByEncodedUsername() throws Exception {
-        User user = getUser();
+        User user = getUser(USERNAME);
         when(userDao.getByEncodedUsername(ENCODED_USERNAME)).thenReturn(user);
 
         User actualUser = userService.getByEncodedUsername(ENCODED_USERNAME);
@@ -105,7 +116,7 @@ public class TransactionalUserServiceTest {
 
     @Test
     public void testRegisterUser() throws Exception {
-        User user = getUser();
+        User user = getUser(USERNAME);
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
         when(userDao.isUserWithUsernameExist(USERNAME)).thenReturn(false);
 
@@ -121,7 +132,7 @@ public class TransactionalUserServiceTest {
 
     @Test(expectedExceptions = {DuplicateException.class})
     public void testRegisterUserUsernameExist() throws Exception {
-        User user = getUser();
+        User user = getUser(USERNAME);
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
         when(userDao.isUserWithUsernameExist(USERNAME)).thenReturn(true);
 
@@ -130,7 +141,7 @@ public class TransactionalUserServiceTest {
 
     @Test(expectedExceptions = {DuplicateException.class})
     public void testRegisterUserEmailExist() throws Exception {
-        User user = getUser();
+        User user = getUser(USERNAME);
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(true);
         when(userDao.isUserWithUsernameExist(USERNAME)).thenReturn(false);
 
@@ -139,7 +150,7 @@ public class TransactionalUserServiceTest {
 
     @Test(expectedExceptions = {DuplicateException.class})
     public void testRegisterUserBothExist() throws Exception {
-        User user = getUser();
+        User user = getUser(USERNAME);
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(true);
         when(userDao.isUserWithUsernameExist(USERNAME)).thenReturn(true);
 
@@ -155,14 +166,14 @@ public class TransactionalUserServiceTest {
 
     @Test
     public void testEditUserProfile() throws Exception {
-        User user = getUser();
+        User user = getUser(USERNAME);
         when(securityService.getCurrentUser()).thenReturn(user);
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
 
-        byte[] newAvatar = new byte[12];
+        String newAvatar = new String(new byte[12]);
 
-        User editedUser = userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
-                PASSWORD, NEW_PASSWORD, newAvatar, SIGNATURE, LANGUAGE, PAGE_SIZE);
+        User editedUser = userService.editUserProfile(new UserInfoContainer( FIRST_NAME, LAST_NAME, EMAIL,
+                PASSWORD, NEW_PASSWORD,SIGNATURE, newAvatar,  LANGUAGE, PAGE_SIZE));
 
         verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
@@ -171,39 +182,26 @@ public class TransactionalUserServiceTest {
         assertEquals(editedUser.getFirstName(), FIRST_NAME, "first name was not changed");
         assertEquals(editedUser.getLastName(), LAST_NAME, "last name was not changed");
         assertEquals(editedUser.getPassword(), NEW_PASSWORD, "new password was not accepted");
-        assertEquals(editedUser.getAvatar(), newAvatar, "avatar was not changed");
         assertEquals(editedUser.getLanguage(), LANGUAGE, "language was not changed");
     }
 
-    @Test
-    public void testSetEmptySignature() throws Exception {
-        User editedUser = editUserSignature("");
-        assertEquals(editedUser.getSignature(), null, "Signature is not null");
-    }
 
-    @Test
-    public void testSetNullSignature() throws Exception {
-        User editedUser = editUserSignature(null);
-        assertEquals(editedUser.getSignature(), null, "Signature is not null");
-    }
 
     private User editUserSignature(String signature) throws WrongPasswordException, DuplicateEmailException {
-        User user = getUser();
+        User user = getUser(USERNAME);
         when(securityService.getCurrentUser()).thenReturn(user);
-        return userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
-                PASSWORD, NEW_PASSWORD, null, signature, LANGUAGE, PAGE_SIZE);
+        return userService.editUserProfile(new UserInfoContainer(EMAIL, FIRST_NAME, LAST_NAME,
+                PASSWORD, NEW_PASSWORD, signature, null,  LANGUAGE, PAGE_SIZE));
     }
 
     @Test
     public void testEditUserProfileNullAvatar() throws Exception {
-        User user = getUser();
+        User user = getUser(USERNAME);
         when(securityService.getCurrentUser()).thenReturn(user);
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
 
-        byte[] newAvatar = null;
-
-        User editedUser = userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
-                PASSWORD, NEW_PASSWORD, newAvatar, SIGNATURE, LANGUAGE, PAGE_SIZE);
+        User editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
+                PASSWORD, NEW_PASSWORD, SIGNATURE, null,  LANGUAGE, PAGE_SIZE));
 
         verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
@@ -217,14 +215,14 @@ public class TransactionalUserServiceTest {
 
     @Test
     public void testEditUserProfileEmptyAvatar() throws Exception {
-        User user = getUser();
+        User user = getUser(USERNAME);
         when(securityService.getCurrentUser()).thenReturn(user);
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
 
-        byte[] newAvatar = new byte[0];
+        String newAvatar = new String(new byte[0]);
 
-        User editedUser = userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
-                PASSWORD, NEW_PASSWORD, newAvatar, SIGNATURE, LANGUAGE, PAGE_SIZE);
+        User editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
+                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE));
 
         verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
@@ -238,11 +236,11 @@ public class TransactionalUserServiceTest {
 
     @Test(expectedExceptions = WrongPasswordException.class)
     public void testEditUserProfileWrongPassword() throws Exception {
-        User user = getUser();
+        User user = getUser(USERNAME);
         when(securityService.getCurrentUser()).thenReturn(user);
 
-        userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
-                WRONG_PASSWORD, NEW_PASSWORD, avatar, SIGNATURE, LANGUAGE, PAGE_SIZE);
+        userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
+                WRONG_PASSWORD, NEW_PASSWORD, SIGNATURE, null,  LANGUAGE, PAGE_SIZE));
 
         verify(securityService).getCurrentUser();
         verify(userDao, never()).isUserWithEmailExist(anyString());
@@ -250,12 +248,12 @@ public class TransactionalUserServiceTest {
     }
 
     @Test(expectedExceptions = WrongPasswordException.class)
-    public void testEditUserProfilecurrentPasswordNull() throws Exception {
-        User user = getUser();
+    public void testEditUserProfileCurrentPasswordNull() throws Exception {
+        User user = getUser(USERNAME);
         when(securityService.getCurrentUser()).thenReturn(user);
 
-        userService.editUserProfile(EMAIL, FIRST_NAME, LAST_NAME,
-                null, NEW_PASSWORD, avatar, SIGNATURE, LANGUAGE, PAGE_SIZE);
+        userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
+                null, NEW_PASSWORD, SIGNATURE, null,  LANGUAGE, PAGE_SIZE));
 
         verify(securityService).getCurrentUser();
         verify(userDao, never()).isUserWithEmailExist(anyString());
@@ -264,34 +262,16 @@ public class TransactionalUserServiceTest {
 
     @Test(expectedExceptions = DuplicateEmailException.class)
     public void testEditUserProfileDublicateEmail() throws Exception {
-        User user = getUser();
+        User user = getUser(USERNAME);
         when(securityService.getCurrentUser()).thenReturn(user);
         when(userDao.isUserWithEmailExist(NEW_EMAIL)).thenReturn(true);
 
-        userService.editUserProfile(NEW_EMAIL, FIRST_NAME, LAST_NAME,
-                null, null, avatar, SIGNATURE, LANGUAGE, PAGE_SIZE);
+        userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, NEW_EMAIL,
+                null, null, SIGNATURE, null,  LANGUAGE, PAGE_SIZE));
 
         verify(securityService).getCurrentUser();
         verify(userDao).isUserWithEmailExist(NEW_EMAIL);
         verify(userDao, never()).saveOrUpdate(any(User.class));
-    }
-
-
-    /**
-     * @param username username
-     * @return create and return {@link User} with default username, encodedUsername,
-     *         first name, last name,  email and password
-     */
-    private User getUser(String username) {
-        User user = new User(username, EMAIL, PASSWORD);
-        user.setFirstName(FIRST_NAME);
-        user.setLastName(LAST_NAME);
-        user.setAvatar(avatar);
-        return user;
-    }
-
-    private User getUser() {
-        return getUser(USERNAME);
     }
 
     @Test
@@ -322,7 +302,7 @@ public class TransactionalUserServiceTest {
 
     @Test
     public void testRemoveAvatar() {
-        User user = getUser();
+        User user = getUser(USERNAME);
         when(securityService.getCurrentUser()).thenReturn(user);
         userService.removeAvatarFromCurrentUser();
         assertEquals(user.getAvatar(), null, "Avatar after remove should be null");
@@ -367,5 +347,18 @@ public class TransactionalUserServiceTest {
             verify(userDao, never()).update(Matchers.<User>any());
             throw e;
         }
+    }
+
+    /**
+     * @param username username
+     * @return create and return {@link User} with default username, encodedUsername,
+     *         first name, last name,  email and password
+     */
+    private User getUser(String username) {
+        User user = new User(username, EMAIL, PASSWORD);
+        user.setFirstName(FIRST_NAME);
+        user.setLastName(LAST_NAME);
+        user.setAvatar(avatar);
+        return user;
     }
 }

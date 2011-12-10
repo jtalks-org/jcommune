@@ -19,8 +19,10 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.MailService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.*;
 import org.jtalks.jcommune.service.security.SecurityConstants;
+import org.jtalks.jcommune.service.util.ImagePreprocessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +42,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private SecurityService securityService;
     private MailService mailService;
+    private ImagePreprocessor imagePreprocessor;
 
     /**
      * Create an instance of User entity based service
@@ -47,11 +50,14 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * @param dao             for operations with data storage
      * @param securityService for security
      * @param mailService     to send e-mails
+     * @param imagePreprocessor  for avatar image-related operations
      */
-    public TransactionalUserService(UserDao dao, SecurityService securityService, MailService mailService) {
+    public TransactionalUserService(UserDao dao, SecurityService securityService,
+                                    MailService mailService, ImagePreprocessor imagePreprocessor) {
         super(dao);
         this.securityService = securityService;
         this.mailService = mailService;
+        this.imagePreprocessor = imagePreprocessor;
     }
 
     /**
@@ -87,12 +93,12 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      */
     @Override
     public User registerUser(User user) throws DuplicateUserException, DuplicateEmailException {
-        if (isUserExist(user.getUsername())) {
+        if (this.isUserExist(user.getUsername())) {
             String msg = "Failed to register user. User " + user.getUsername() + " already exists!";
             logger.info(msg);
             throw new DuplicateUserException(msg);
         }
-        if (isEmailExist(user.getEmail())) {
+        if (this.isEmailExist(user.getEmail())) {
             String msg = "Failed to register user. E-mail " + user.getEmail() + " already exists!";
             logger.info(msg);
             throw new DuplicateEmailException(msg);
@@ -116,98 +122,77 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     /**
      * {@inheritDoc}
      */
-    public boolean isEmailExist(String email) {
-        return this.getDao().isUserWithEmailExist(email);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public User editUserProfile(String email, String firstName, String lastName, String currentPassword,
-                                String newPassword, byte[] avatar, String signature, String language, int pageSize)
-            throws DuplicateEmailException, WrongPasswordException {
+    public User editUserProfile(UserInfoContainer info) throws DuplicateEmailException, WrongPasswordException {
 
         User currentUser = securityService.getCurrentUser();
+        byte[] decodedAvatar = imagePreprocessor.decodeB64(info.getB64EncodedAvatar());
 
-        boolean changePassword = newPassword != null;
-        if (changePassword) {
-            changePassword(currentPassword, newPassword, currentUser);
-        }
-
-        if (isChangeEmail(email, currentUser)) {
-            throw new DuplicateEmailException();
-        }
-
-        currentUser.setEmail(email);
-        currentUser.setSignature(getSignature(signature));
-        currentUser.setFirstName(firstName);
-        currentUser.setLastName(lastName);
-        currentUser.setLanguage(language);
-        currentUser.setPageSize(pageSize);
-        if (isChangeAvatar(avatar)) {
-            currentUser.setAvatar(avatar);
-        }
+        this.changePassword(info.getCurrentPassword(), info.getNewPassword(), currentUser);
+        this.changeEmail(info.getEmail(), currentUser);
+        this.changeAvatar(decodedAvatar, currentUser);
+        currentUser.setSignature(info.getSignature());
+        currentUser.setFirstName(info.getFirstName());
+        currentUser.setLastName(info.getLastName());
+        currentUser.setLanguage(info.getLanguage());
+        currentUser.setPageSize(info.getPageSize());
 
         this.getDao().saveOrUpdate(currentUser);
-
         logger.info("Updated user profile. Username: {}", currentUser.getUsername());
         return currentUser;
     }
 
     /**
      * Checks if e-mail passed differs from the one set in the User object
-     * and new email is valid, i. e. has not been used by any other user
+     * and new email is valid, i. e. has not been used by any other user.
+     * <p/>
+     * If no violations found, this method then wiil set new email value
+     * to the User object passed.
      *
-     * @param email       new address
+     * @param email       new address to be validated and set
      * @param currentUser user object to be checked
-     * @return true, if e-mail has been changed to a valid one
+     * @throws org.jtalks.jcommune.service.exceptions.DuplicateEmailException
+     *          if email set is already in use
      */
-    private boolean isChangeEmail(String email, User currentUser) {
-        return (!currentUser.getEmail().equals(email)) && isEmailExist(email);
-    }
-
-    /**
-     * Checks if byte[] passed is not empty, that means user has uploaded
-     * a new avatar image
-     *
-     * @param avatar avatar image representation
-     * @return true if avatar image has been set
-     */
-    private boolean isChangeAvatar(byte[] avatar) {
-        return avatar != null && avatar.length > 0;
+    private void changeEmail(String email, User currentUser) throws DuplicateEmailException {
+        if (!currentUser.getEmail().equals(email)) {
+            if (this.isEmailExist(email)) {
+                throw new DuplicateEmailException();
+            } else {
+                currentUser.setEmail(email);
+            }
+        }
     }
 
     /**
      * Checks if current password was filled up correctly and if so,
      * alters the current password to the new one
      *
-     * @param currentPassword existing password to verify identity
-     * @param newPassword     new password to be set
-     * @param currentUser     user object from a database
+     * @param currentPass existing password from the form to verify identity
+     * @param newPass     new password to be set
+     * @param current     user object from a database
      * @throws WrongPasswordException if current password doesn't match the one stored in database
      */
-    private void changePassword(String currentPassword, String newPassword, User currentUser)
-            throws WrongPasswordException {
-        if (currentPassword == null ||
-                !currentUser.getPassword().equals(currentPassword)) {
-            throw new WrongPasswordException();
-        } else {
-            currentUser.setPassword(newPassword);
+    private void changePassword(String currentPass, String newPass, User current) throws WrongPasswordException {
+        if (newPass != null) {
+            if (current.getPassword().equals(currentPass)) {
+                current.setPassword(newPass);
+            } else {
+                throw new WrongPasswordException();
+            }
         }
     }
 
     /**
-     * Returns parameter as is if string passed is not empty
+     * Checks if byte[] passed is not empty, that means user has uploaded
+     * a new avatar image. If so, user passed will be assigned this new image.
      *
-     * @param signature string to be checked
-     * @return parameter value or null, if parameter is null or blank
+     * @param avatar      avatar image representation
+     * @param currentUser user to be set with new avatar image
      */
-    private String getSignature(String signature) {
-        if (signature != null && signature.trim().equals("")) {
-            return null;
-        } else {
-            return signature;
+    private void changeAvatar(byte[] avatar, User currentUser) {
+        if (avatar != null && avatar.length > 0) {
+            currentUser.setAvatar(avatar);
         }
     }
 
@@ -247,7 +232,13 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * @return true is login given matches some user in a database
      */
     private boolean isUserExist(String userName) {
-        return SecurityConstants.ANONYMOUS_USERNAME.equals(userName)
-                || this.getDao().isUserWithUsernameExist(userName);
+        return SecurityConstants.ANONYMOUS_USERNAME.equals(userName) || this.getDao().isUserWithUsernameExist(userName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isEmailExist(String email) {
+        return this.getDao().isUserWithEmailExist(email);
     }
 }

@@ -49,10 +49,7 @@ public class RssViewer extends AbstractRssFeedView {
 
         feed.setTitle("Java forum JTalks ");
         feed.setDescription("Programmers forum");
-        feed.setLink(request.getScheme()
-                + "://" + request.getServerName()
-                + ":" + request.getServerPort()
-                + request.getContextPath());
+        feed.setLink(buildURL(request));
 
         super.buildFeedMetadata(model, feed, request);
     }
@@ -64,8 +61,7 @@ public class RssViewer extends AbstractRssFeedView {
      * @param request  http request
      * @param response http response
      * @return list items
-     * @throws IOException          i/o exception
-     * @throws NullPointerException null value
+     * @throws IOException i/o exception
      */
     @Override
     protected List<Item> buildFeedItems(Map<String, Object> model,
@@ -74,36 +70,54 @@ public class RssViewer extends AbstractRssFeedView {
 
         List<Topic> listContent = (List<Topic>) model.get("topics");
         if (listContent == null) {
-            response.sendRedirect("/jcommune/errors/404");
+            response.sendRedirect(request.getContextPath() + "/errors/404");
             return null;
         }
         List<Item> items = new ArrayList<Item>(listContent.size());
 
         for (Topic topic : listContent) {
 
-            Item item = new Item();
-            Description description = new Description();
-            description.setType("text");
-            description.setValue(topic.getLastPost().getShortContent());
-
-            Content content = new Content();
-            item.setContent(content);
-
-            item.setTitle(topic.getTitle());
-            item.setAuthor(topic.getLastPost().getUserCreated().getEncodedUsername());
-            item.setLink(request.getScheme()
-                    + "://" + request.getServerName()
-                    + ":" + request.getServerPort()
-                    + request.getContextPath()
-                    + "/topics/" + topic.getId());
-            item.setComments(topic.getTopicStarter().getSignature());
-            item.setDescription(description);
-            item.setPubDate(topic.getModificationDate().toDate());
-
-            items.add(item);
+            items.add(createFeedItem(topic, request));
         }
 
         return items;
+    }
+
+    /**
+     *
+     * @param topic news topic
+     * @param request HttpServletRequest
+     * @return item for news feed
+     */
+    private Item createFeedItem(Topic topic, HttpServletRequest request) {
+
+        Item item = new Item();
+        Description description = new Description();
+        description.setType("text");
+        description.setValue(topic.getLastPost().getShortContent());
+
+        Content content = new Content();
+        item.setContent(content);
+
+        item.setTitle(topic.getTitle());
+        item.setAuthor(topic.getLastPost().getUserCreated().getEncodedUsername());
+        item.setLink(buildURL(request) + "/topics/" + topic.getId());
+        item.setComments(topic.getTopicStarter().getSignature());
+        item.setDescription(description);
+        item.setPubDate(topic.getModificationDate().toDate());
+        return item;
+    }
+
+    /**
+     *
+     * @param request HttpServletRequest
+     * @return url
+     */
+    public String buildURL(HttpServletRequest request){
+        return request.getScheme()
+                + "://" + request.getServerName()
+                + ":" + request.getServerPort()
+                + request.getContextPath();
     }
 
 }
