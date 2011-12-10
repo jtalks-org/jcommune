@@ -44,8 +44,8 @@ public class ImagePreprocessor {
      */
     public byte[] preprocessImage(Image image) throws IOException {
         byte[] result;
-        image = ImageUtil.resizeImage((BufferedImage) image, ImageUtil.IMAGE_JPEG, AVATAR_MAX_HEIGHT, AVATAR_MAX_WIDTH);
-        result = ImageUtil.convertImageToByteArray(image);
+        Image outputImage = ImageUtil.resizeImage((BufferedImage) image, ImageUtil.IMAGE_JPEG, AVATAR_MAX_HEIGHT, AVATAR_MAX_WIDTH);
+        result = ImageUtil.convertImageToByteArray(outputImage);
         return result;
     }
 

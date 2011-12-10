@@ -43,7 +43,8 @@ public class ImageSizeValidator implements ConstraintValidator<ImageSize, byte[]
     /**
      * Check that file's size no more imageSize.
      *
-     * @param bytes for validation
+     * @param bytes   for validation
+     * @param context for validation
      * @return {@code true} if validation successful or false if fails
      */
     @Override

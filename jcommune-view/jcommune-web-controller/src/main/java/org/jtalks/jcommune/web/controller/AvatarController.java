@@ -53,7 +53,7 @@ public class AvatarController {
     /**
      * Constructor for controller instantiating, dependencies injected via autowiring.
      *
-     * @param avatarService
+     * @param avatarService for avatar manipulation
      */
     @Autowired
     public AvatarController(AvatarService avatarService) {
@@ -72,8 +72,9 @@ public class AvatarController {
     @RequestMapping(value = "/users/ieAvatarpreview", method = RequestMethod.POST)
     public
     @ResponseBody
-    Map<String, String> uploadAvatarFromIE(DefaultMultipartHttpServletRequest request, HttpServletResponse response)
-            throws ServletException {
+    Map<String, String>
+    uploadAvatarFromIE(DefaultMultipartHttpServletRequest request,
+                       HttpServletResponse response) throws ServletException {
 
         Map<String, MultipartFile> fileMap = request.getFileMap();
         Collection<MultipartFile> fileCollection = fileMap.values();
