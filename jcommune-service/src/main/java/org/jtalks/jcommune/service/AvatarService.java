@@ -25,7 +25,21 @@ import java.io.IOException;
  * @author Alexandre Teterin
  */
 public interface AvatarService {
+
+    /**
+     * Perform bytes data to string conversion
+     *
+     * @param bytes for conversion
+     * @return result string
+     * @throws IOException conversion problem
+     */
     String convertAvatarToString(byte[] bytes) throws IOException;
 
+    /**
+     * Perform multipart file conversion to string
+     *
+     * @param file for conversion
+     * @return result string
+     */
     String convertAvatarToString(MultipartFile file);
 }
