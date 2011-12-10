@@ -19,6 +19,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>kefir-bb</groupId>
+            <artifactId>kefir-bb</artifactId>
+            <version>0.6</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
         </dependency>

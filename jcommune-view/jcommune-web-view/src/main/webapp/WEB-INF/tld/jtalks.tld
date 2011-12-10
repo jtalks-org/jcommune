@@ -243,12 +243,7 @@
         <rtexprvalue>true</rtexprvalue>
         <type>java.util.List</type>
     </attribute>
-  </tag>
-
-    <tag-file>
-        <name>breadcrumb</name>
-        <path>/WEB-INF/tags/breadcrumb.tag</path>
-    </tag-file>
+    </tag>
 
      <tag>
         <description>
@@ -296,4 +291,24 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+
+    <tag>
+        <description>
+            Formats a Joda Date with a fixed pattern and assuming timezone offset
+        </description>
+        <name>bb2html</name>
+        <tag-class>org.jtalks.jcommune.web.tags.ConverterBB2HTML</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>bbCode</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag-file>
+        <name>breadcrumb</name>
+        <path>/WEB-INF/tags/breadcrumb.tag</path>
+    </tag-file>
+
 </taglib>
