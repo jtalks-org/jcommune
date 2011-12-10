@@ -43,16 +43,16 @@ public class ImagePreprocessor {
         return new BASE64Encoder().encode(bytes);
     }
 
-    public byte[] base64Decoder(String encodedBytes) throws IOException {
-        byte[] result;
-
-        if (encodedBytes == null) {
-            result = null;
-        } else {
-            BASE64Decoder base64 = new BASE64Decoder();
-            result = base64.decodeBuffer(encodedBytes);
+    public byte[] decodeB64(String encodedBytes) {
+        byte[] result = null;
+        try {
+            if (encodedBytes != null) {
+                BASE64Decoder base64 = new BASE64Decoder();
+                result = base64.decodeBuffer(encodedBytes);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-
         return result;
     }
 

@@ -101,7 +101,11 @@ public abstract class UserDto {
      * @return signature
      */
     public String getSignature() {
-        return signature;
+        if (signature == null || signature.trim().isEmpty()) {
+            return null;
+        } else {
+            return signature;
+        }
     }
 
     /**

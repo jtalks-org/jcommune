@@ -48,7 +48,7 @@
                 <tr>
                     <td colspan="2">
                         <c:if test="${not empty error}">
-                            <span style="color: red; ">
+                            <span class="error">
                                 <spring:message code="${error}"/>
                             </span>
                         </c:if>
