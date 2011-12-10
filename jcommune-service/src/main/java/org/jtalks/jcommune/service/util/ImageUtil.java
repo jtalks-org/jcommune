@@ -66,6 +66,13 @@ public final class ImageUtil {
         return bytes;
     }
 
+    /**
+     * Perform byte data conversion to BufferedImage.
+     *
+     * @param bytes for conversion.
+     * @return image result.
+     * @throws IOException image conversion problem.
+     */
     public static BufferedImage convertByteArrayToImage(byte[] bytes) throws IOException {
         BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(bytes));
         return ImageIO.read(bis);

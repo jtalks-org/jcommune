@@ -14,9 +14,6 @@
  */
 package org.jtalks.jcommune.web.validation;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
@@ -31,7 +28,6 @@ public class ImageSizeValidator implements ConstraintValidator<ImageSize, byte[]
 
     private int imageSize;
     private static final int BYTES_IN_KILOBYTE = 1024;
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * Initialize validator fields from annotation instance.
@@ -47,18 +43,14 @@ public class ImageSizeValidator implements ConstraintValidator<ImageSize, byte[]
     /**
      * Check that file's size no more imageSize.
      *
-     * @param context validation context
-     * @return {@code true} if validation successfull or false if fails
+     * @param bytes for validation
+     * @return {@code true} if validation successful or false if fails
      */
     @Override
     public boolean isValid(byte[] bytes, ConstraintValidatorContext context) {
         boolean result = false;
 
-        if (bytes == null) {
-            //assume that empty avatar is valid to avoid validation message when user doesn't load nothing
-            return true;
-        }
+        return bytes == null || (result = bytes.length / BYTES_IN_KILOBYTE < imageSize);
 
-        return result = bytes.length / BYTES_IN_KILOBYTE < imageSize;
     }
 }

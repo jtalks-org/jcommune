@@ -31,18 +31,37 @@ public class AvatarServiceImpl implements AvatarService {
     private final ImagePreprocessor imagePreprocessor;
 
 
+    /**
+     * Create AvatarServiceImpl instance
+     *
+     * @param imagePreprocessor object for image processing
+     */
     public AvatarServiceImpl(ImagePreprocessor imagePreprocessor) {
         this.imagePreprocessor = imagePreprocessor;
     }
 
+    /**
+     * Perform bytes data to string conversion
+     *
+     * @param bytes for conversion
+     * @return result string
+     * @throws IOException conversion problem
+     */
     public String convertAvatarToString(byte[] bytes) throws IOException {
         BufferedImage inputAvatar = ImageUtil.convertByteArrayToImage(bytes);
         byte[] outputAvatar = imagePreprocessor.preprocessImage(inputAvatar);
         return imagePreprocessor.base64Coder(outputAvatar);
     }
 
+
+    /**
+     * Perform multipart file conversion to string
+     *
+     * @param file for conversion
+     * @return result string
+     */
     @Override
     public String convertAvatarToString(MultipartFile file) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 }
