@@ -86,7 +86,7 @@ public class RssViewer extends AbstractRssFeedView {
     /**
      *
      * @param topic news topic
-     * @param request HttpRequest
+     * @param request HttpServletRequest
      * @return item for news feed
      */
     private Item createFeedItem(Topic topic, HttpServletRequest request) {
@@ -107,7 +107,12 @@ public class RssViewer extends AbstractRssFeedView {
         item.setPubDate(topic.getModificationDate().toDate());
         return item;
     }
-    
+
+    /**
+     *
+     * @param request HttpServletRequest
+     * @return url
+     */
     public String buildURL(HttpServletRequest request){
         return request.getScheme()
                 + "://" + request.getServerName()
