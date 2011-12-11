@@ -94,7 +94,7 @@
                                        href="${pageContext.request.contextPath}/topics/${topic.id}"><c:out
                                         value="${topic.title}"/></a></h4>
                                 <h5>
-                                    <span class="keep_newlines"><c:out value="${topic.lastPost.shortContent}"/></span>
+                                    <span><jtalks:bb2html bbCode="${topic.lastPost.shortContent}"/></span>
                                 </h5>
 
                             </div>
