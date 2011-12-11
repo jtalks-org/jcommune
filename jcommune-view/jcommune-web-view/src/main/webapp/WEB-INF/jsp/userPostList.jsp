@@ -91,7 +91,7 @@
                             <jtalks:format value="${post.creationDate}"/>
                         </div>
                         <p class="forum_message_cell_text">
-                            <span class="keep_newlines"><c:out value="${post.postContent}"/></span>
+                            <span><jtalks:bb2html bbCode="${post.postContent}"/></span>
                             <br/><br/><br/>
                             <c:if test="${post.modificationDate!=null}">
                                 <spring:message code="label.modify"/>
