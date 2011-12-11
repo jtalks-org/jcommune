@@ -98,14 +98,8 @@
                 <div class="status"><spring:message code="label.topic.online_users"/></div>
 
                 <c:if test="${post.userCreated.avatar != null}">
-                    <%--    <table>
-            <tr>
-                <td width="100" height="100" align="center" valign="middle">--%>
                     <img src="${pageContext.request.contextPath}/${post.userCreated.encodedUsername}/avatar"
                          alt="Аватар" class="avatar"/>
-                    <%-- </td>
-                       </tr>
-                   </table> --%>
                 </c:if>
 
                 <br/>
@@ -172,7 +166,7 @@
                     </a>
                 </div>
                 <p class="forum_message_cell_text">
-                    <span id='${post.id}' class="keep_newlines"><jtalks:bb2html bbCode="${post.postContent}"/></span>
+                    <span id='${post.id}'><jtalks:bb2html bbCode="${post.postContent}"/></span>
                     <br/><br/><br/>
                     <c:if test="${post.modificationDate!=null}">
                         <spring:message code="label.modify"/>
@@ -183,7 +177,7 @@
                     <div class="signature">
                         -------------------------
                         <br/>
-                        <span class="keep_newlines"><c:out value="${post.userCreated.signature}"/></span>
+                        <span><c:out value="${post.userCreated.signature}"/></span>
                     </div>
                 </c:if>
             </div>

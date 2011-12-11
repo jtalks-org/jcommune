@@ -25,16 +25,20 @@ import ru.perm.kefir.bbcode.TextProcessor;
 
 
 public class ConverterBB2HTML extends SimpleTagSupport implements JspTag {
-    
-    String bbCode;
 
-    public void setBbCode(String bbCode){
-        this.bbCode = bbCode;
-    }
-    
+    private String bbCode;
+
     @Override
     public void doTag() throws JspException, IOException {
+        getJspContext().getOut().print(bbCode);
+    }
+
+    public void setBbCode(String bbCode){
         TextProcessor processor = BBProcessorFactory.getInstance().create();
-        getJspContext().getOut().print(processor.process(bbCode));
+        this.bbCode = processor.process(bbCode);
+    }
+
+    public String getBbCode() {
+        return bbCode;
     }
 }
