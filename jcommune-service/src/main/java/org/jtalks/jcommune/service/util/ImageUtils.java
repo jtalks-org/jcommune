@@ -176,6 +176,15 @@ public class ImageUtils {
         return HTML_SRC_TAG_PREFIX + encodedImgBytes;
     }
 
+    /**
+     * Create parameterized image from original image
+     *
+     * @param source original image
+     * @param type   result image type
+     * @param width  result image width
+     * @param height result image height
+     * @return result image
+     */
     private BufferedImage createBufferedImage(BufferedImage source, int type, int width, int height) {
         int imageType = BufferedImage.TYPE_INT_RGB;
         if (type == IMAGE_PNG && hasAlpha(source)) {
