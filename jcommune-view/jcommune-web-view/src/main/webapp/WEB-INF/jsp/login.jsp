@@ -26,7 +26,6 @@
 <div class="wrap login_page">
     <jsp:include page="../template/topLine.jsp"/>
     <h1>JTalks</h1>
-    <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
     <form action='<c:url value="/j_spring_security_check"/>' method="POST" name="form" id="form">
         <div class="all_forums">
             <div class="forum_header_table">
