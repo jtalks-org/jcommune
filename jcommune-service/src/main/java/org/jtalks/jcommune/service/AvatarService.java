@@ -33,7 +33,7 @@ public interface AvatarService {
      * @return result string
      * @throws IOException conversion problem
      */
-    String convertAvatarToString(byte[] bytes) throws IOException;
+    String convertAvatarToBase64String(byte[] bytes) throws IOException;
 
     /**
      * Perform multipart file conversion to string
@@ -41,5 +41,5 @@ public interface AvatarService {
      * @param file for conversion
      * @return result string
      */
-    String convertAvatarToString(MultipartFile file);
+    String convertAvatarToBase64String(MultipartFile file);
 }

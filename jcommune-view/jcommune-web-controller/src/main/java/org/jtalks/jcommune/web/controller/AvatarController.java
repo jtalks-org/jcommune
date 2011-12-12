@@ -129,7 +129,7 @@ public class AvatarController {
     private void prepareNormalResponse(byte[] bytes,
                                        HttpServletResponse response,
                                        Map<String, String> responseContent) throws IOException {
-        String srcImage = avatarService.convertAvatarToString(bytes);
+        String srcImage = avatarService.convertAvatarToBase64String(bytes);
         response.setStatus(HttpServletResponse.SC_OK);
         responseContent.put("success", "true");
         responseContent.put("srcPrefix", ImageUtils.HTML_SRC_TAG_PREFIX);

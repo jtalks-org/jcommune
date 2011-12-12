@@ -46,7 +46,7 @@ public class AvatarServiceImpl implements AvatarService {
      * @return result string
      * @throws IOException conversion problem
      */
-    public String convertAvatarToString(byte[] bytes) throws IOException {
+    public String convertAvatarToBase64String(byte[] bytes) throws IOException {
         BufferedImage inputAvatar = imageUtils.convertByteArrayToImage(bytes);
         byte[] outputAvatar = imageUtils.preprocessImage(inputAvatar);
         return imageUtils.base64Coder(outputAvatar);
@@ -60,7 +60,7 @@ public class AvatarServiceImpl implements AvatarService {
      * @return result string
      */
     @Override
-    public String convertAvatarToString(MultipartFile file) {
+    public String convertAvatarToBase64String(MultipartFile file) {
         return null;
     }
 }

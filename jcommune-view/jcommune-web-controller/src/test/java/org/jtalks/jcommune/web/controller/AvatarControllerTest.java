@@ -54,7 +54,7 @@ public class AvatarControllerTest {
     @Test(dataProvider = "normal-byte-ServletResponse-provider")
     public void testNormalUploadAvatar(byte[] avatar, Map<String, String> expectedData) throws Exception {
         //set expectations
-        when(avatarService.convertAvatarToString(avatar)).thenReturn(SRC_IMG);
+        when(avatarService.convertAvatarToBase64String(avatar)).thenReturn(SRC_IMG);
 
         HttpServletResponse response = new MockHttpServletResponse();
 
@@ -68,7 +68,7 @@ public class AvatarControllerTest {
     @Test(dataProvider = "error-byte-ServletResponse-provider")
     public void testErrorUploadAvatar(byte[] avatar, Map<String, String> expectedData) throws Exception {
         //set expectations
-        when(avatarService.convertAvatarToString(avatar)).thenThrow(new IOException());
+        when(avatarService.convertAvatarToBase64String(avatar)).thenThrow(new IOException());
 
         HttpServletResponse response = new MockHttpServletResponse();
 
