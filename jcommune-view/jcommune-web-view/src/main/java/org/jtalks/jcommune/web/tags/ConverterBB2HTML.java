@@ -15,29 +15,47 @@
 
 package org.jtalks.jcommune.web.tags;
 
+import ru.perm.kefir.bbcode.BBProcessorFactory;
+import ru.perm.kefir.bbcode.TextProcessor;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.JspTag;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
-import ru.perm.kefir.bbcode.BBProcessorFactory;
-import ru.perm.kefir.bbcode.TextProcessor;
 
 
-
+/**
+ * Converts BB-codes into html representation.
+ * Tis tag also replaces newline symbols with html
+ * line break tag <br>
+ */
 public class ConverterBB2HTML extends SimpleTagSupport implements JspTag {
 
     private String bbCode;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void doTag() throws JspException, IOException {
         getJspContext().getOut().print(bbCode);
     }
 
+    /**
+     * Sets BB-encoded text to be formatted as HTML.
+     *
+     * @param bbCode bb-encoded text
+     */
     public void setBbCode(String bbCode){
         TextProcessor processor = BBProcessorFactory.getInstance().create();
         this.bbCode = processor.process(bbCode);
     }
 
+    /**
+     * Returns text passed formatted with HTML instead of bb-codes
+     *
+     * @return html representation of bb-encoded text passed
+     */
     public String getBbCode() {
         return bbCode;
     }

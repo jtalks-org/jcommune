@@ -93,6 +93,15 @@ public class PaginationTest {
         pagination = new Pagination(1, user, 10, true);
 
         assertEquals(pagination.getMaxPages(), 2);
+        assertEquals(pagination.isLastPages(), false);
+    }
+
+    @Test
+    public void testMaxPagesNotEqual() {
+        pagination = new Pagination(1, user, 4, true);
+
+        assertEquals(pagination.getMaxPages(), 1);
+        assertEquals(pagination.isLastPages(), true);
     }
 
     @Test

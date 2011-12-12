@@ -174,7 +174,7 @@
                 </li>
             </ul>
             <input id="preview" type="button" class="button" tabindex="5" name="preview"
-                   value="<spring:message code="label.answer.preview"/>" <%--onclick="javascript:SwitchEditor()"--%>/>
+                   value="<spring:message code="label.answer.preview"/>" onclick="javascript:SwitchEditor()"/>
             <script type="text/javascript">
                 initEditor("tbMsg", true);
                 SwitchEditor();

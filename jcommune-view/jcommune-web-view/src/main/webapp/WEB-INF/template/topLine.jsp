@@ -22,37 +22,60 @@
 <div class="top_line">
     <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
         <fmt:message key="label.welcomeMessage"/>
-        <a class="currentusername"
-           href="${pageContext.request.contextPath}/users/${encodedUserName}"
-           title="Имя пользователя"><sec:authentication
-                property="principal.username"/></a>!
+        <a class="currentusername" href="${pageContext.request.contextPath}/users/${encodedUserName}">
+            <sec:authentication property="principal.username"/>
+        </a>!
     </sec:authorize>
     <ul class="top_menu">
-        <li class="no_border"><a href="${pageContext.request.contextPath}" title="На главную"><fmt:message
-                key="label.forum"/></a></li>
+        <li class="no_border">
+            <a href="${pageContext.request.contextPath}">
+                <fmt:message key="label.forum"/>
+            </a>
+        </li>
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-            <li><a href="${pageContext.request.contextPath}/users/${encodedUserName}"
-                                     title="Профиль"><fmt:message key="label.profile"/></a></li>
-            <li><a href="${pageContext.request.contextPath}/inbox" title="Сообщения"><fmt:message
-                    key="label.pm"/>(${newPmCount})</a></li>
-            <li><a href="#" title="Для чайников"><fmt:message key="label.newbies"/></a></li>
-            <li><a href="${pageContext.request.contextPath}/logout" title="На выход"><fmt:message
-                    key="label.logout"/></a></li>
+            <li>
+                <a href="${pageContext.request.contextPath}/users/${encodedUserName}">
+                    <fmt:message key="label.profile"/>
+                </a>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/inbox">
+                    <fmt:message key="label.pm"/>(${newPmCount})
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <fmt:message key="label.newbies"/>
+                </a>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/logout">
+                    <fmt:message key="label.logout"/>
+                </a>
+            </li>
         </sec:authorize>
         <sec:authorize access="hasRole('ROLE_ANONYMOUS')">
-            <li><a href="${pageContext.request.contextPath}/login"><fmt:message
-                    key="label.signin"/></a>
+            <li>
+                <a href="${pageContext.request.contextPath}/login">
+                    <fmt:message key="label.signin"/>
+                </a>
             </li>
-            <li><a href="${pageContext.request.contextPath}/users/new"><fmt:message
-                    key="label.signup"/></a></li>
+            <li>
+                <a href="${pageContext.request.contextPath}/users/new">
+                    <fmt:message key="label.signup"/>
+                </a>
+            </li>
         </sec:authorize>
-
         <li class="flag no_border">
             <a href="#" onclick="window.location = getLanguageLink('ru')">
-                <img src="${pageContext.request.contextPath}/resources/images/flag_russia.png" alt=""/></a></li>
+                <img src="${pageContext.request.contextPath}/resources/images/flag_russia.png" alt=""/>
+            </a>
+        </li>
         <li class="flag">
             <a href="#" onclick="window.location = getLanguageLink('en')">
-                <img src="${pageContext.request.contextPath}/resources/images/flag_great_britain.png" alt=""/></a></li>
+                <img src="${pageContext.request.contextPath}/resources/images/flag_great_britain.png" alt=""/>
+            </a>
+        </li>
     </ul>
 </div>
 <script type=text/javascript>

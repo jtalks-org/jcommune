@@ -58,6 +58,12 @@ public class ConverterBB2HTMLTest {
     }
 
     @Test
+    public void bbCodeColorCode(){
+        tag.setBbCode("[color=FF0000]Colored text[/color]");
+        assertEquals(tag.getBbCode(), "<span style=\"color:#FF0000;\">Colored text</span>");
+    }
+
+    @Test
     public void bbCodeSize(){
         tag.setBbCode("[size=18]Large text[/size]");
         assertEquals(tag.getBbCode(), "<span style=\"font-size:18;\">Large text</span>");
