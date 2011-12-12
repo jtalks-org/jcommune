@@ -110,8 +110,7 @@ public class UserController {
     @RequestMapping(value = "/users/new", method = RequestMethod.GET)
     public ModelAndView registrationPage() {
         return new ModelAndView(REGISTRATION)
-                .addObject("newUser", new RegisterUserDto())
-                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
+                .addObject("newUser", new RegisterUserDto());
     }
 
     /**

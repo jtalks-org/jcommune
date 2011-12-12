@@ -36,7 +36,7 @@
         </tx:attributes>
     </tx:advice>
 
-    <!--Decalaration services bean -->
+    <!--Declaration services bean -->
 
     <bean id="avatarService"
           class="org.jtalks.jcommune.service.nontransactional.AvatarServiceImpl">
