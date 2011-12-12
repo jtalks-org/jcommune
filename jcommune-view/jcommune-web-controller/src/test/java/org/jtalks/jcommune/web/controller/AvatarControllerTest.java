@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.service.AvatarService;
-import org.jtalks.jcommune.service.util.ImagePreprocessor;
+import org.jtalks.jcommune.service.util.ImageUtils;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -43,7 +43,6 @@ public class AvatarControllerTest {
     public void setUp() throws Exception {
         avatarService = mock(AvatarService.class);
         avatarController = new AvatarController(avatarService);
-
 
     }
 
@@ -94,7 +93,7 @@ public class AvatarControllerTest {
 
         Map<String, String> normalResponseContent = new HashMap<String, String>() {{
             put("success", "true");
-            put("srcPrefix", ImagePreprocessor.HTML_SRC_TAG_PREFIX);
+            put("srcPrefix", ImageUtils.HTML_SRC_TAG_PREFIX);
             put("srcImage", SRC_IMG);
         }};
 

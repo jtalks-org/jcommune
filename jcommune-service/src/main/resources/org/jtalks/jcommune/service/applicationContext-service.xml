@@ -44,7 +44,7 @@
     </bean>
 
     <bean id="imagePreprocessor"
-          class="org.jtalks.jcommune.service.util.ImagePreprocessor"/>
+          class="org.jtalks.jcommune.service.util.ImageUtils"/>
 
     <bean id="userService"
           class="org.jtalks.jcommune.service.transactional.TransactionalUserService">

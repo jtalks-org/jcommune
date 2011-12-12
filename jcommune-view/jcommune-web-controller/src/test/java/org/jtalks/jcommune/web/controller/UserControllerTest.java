@@ -22,7 +22,7 @@ import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.*;
-import org.jtalks.jcommune.service.util.ImagePreprocessor;
+import org.jtalks.jcommune.service.util.ImageUtils;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
@@ -72,12 +72,12 @@ public class UserControllerTest {
     private final int PAGE_SIZE = 50;
     private String avatar;
     private BreadcrumbBuilder breadcrumbBuilder;
-    private ImagePreprocessor imagePreprocessor;
+    private ImageUtils imageUtils;
     private PostService postService;
 
     @BeforeClass
     public void mockAvatar() throws IOException {
-        avatar = new ImagePreprocessor().base64Coder(avatarByteArray);
+        avatar = new ImageUtils().base64Coder(avatarByteArray);
     }
 
     @BeforeMethod
@@ -85,9 +85,9 @@ public class UserControllerTest {
         userService = mock(UserService.class);
         securityService = mock(SecurityService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
-        imagePreprocessor = mock(ImagePreprocessor.class);
+        imageUtils = mock(ImageUtils.class);
         postService = mock(PostService.class);
-        controller = new UserController(userService, securityService, breadcrumbBuilder, imagePreprocessor, postService);
+        controller = new UserController(userService, securityService, breadcrumbBuilder, imageUtils, postService);
     }
 
     @Test

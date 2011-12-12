@@ -16,7 +16,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.service.AvatarService;
-import org.jtalks.jcommune.service.util.ImagePreprocessor;
+import org.jtalks.jcommune.service.util.ImageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,7 +132,7 @@ public class AvatarController {
         String srcImage = avatarService.convertAvatarToString(bytes);
         response.setStatus(HttpServletResponse.SC_OK);
         responseContent.put("success", "true");
-        responseContent.put("srcPrefix", ImagePreprocessor.HTML_SRC_TAG_PREFIX);
+        responseContent.put("srcPrefix", ImageUtils.HTML_SRC_TAG_PREFIX);
         responseContent.put("srcImage", srcImage);
     }
 

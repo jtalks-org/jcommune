@@ -21,7 +21,7 @@ import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.*;
-import org.jtalks.jcommune.service.util.ImagePreprocessor;
+import org.jtalks.jcommune.service.util.ImageUtils;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
@@ -61,7 +61,7 @@ public class UserController {
     private final SecurityService securityService;
     private final UserService userService;
     private BreadcrumbBuilder breadcrumbBuilder;
-    private ImagePreprocessor imagePreprocessor;
+    private ImageUtils imageUtils;
     private PostService postService;
 
     /**
@@ -85,19 +85,19 @@ public class UserController {
      *                          accessing to current logged in user
      * @param breadcrumbBuilder the object which provides actions on
      *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
-     * @param imagePreprocessor {@link org.jtalks.jcommune.service.util.ImagePreprocessor} used
+     * @param imageUtils        {@link org.jtalks.jcommune.service.util.ImageUtils} used
      * @param postService       {@link org.jtalks.jcommune.service.PostService} used
      */
     @Autowired
     public UserController(UserService userService,
                           SecurityService securityService,
                           BreadcrumbBuilder breadcrumbBuilder,
-                          ImagePreprocessor imagePreprocessor,
+                          ImageUtils imageUtils,
                           PostService postService) {
         this.userService = userService;
         this.securityService = securityService;
         this.breadcrumbBuilder = breadcrumbBuilder;
-        this.imagePreprocessor = imagePreprocessor;
+        this.imageUtils = imageUtils;
         this.postService = postService;
     }
 
@@ -170,8 +170,8 @@ public class UserController {
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
         byte[] avatar = user.getAvatar();
         if (avatar != null) {
-            editedUser.setAvatar(imagePreprocessor.prepareHtmlImgSrc(
-                    imagePreprocessor.base64Coder(avatar)
+            editedUser.setAvatar(imageUtils.prepareHtmlImgSrc(
+                    imageUtils.base64Coder(avatar)
             ));
         }
         return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUser)

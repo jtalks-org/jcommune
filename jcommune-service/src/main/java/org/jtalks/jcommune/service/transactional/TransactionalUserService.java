@@ -22,7 +22,7 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.*;
 import org.jtalks.jcommune.service.security.SecurityConstants;
-import org.jtalks.jcommune.service.util.ImagePreprocessor;
+import org.jtalks.jcommune.service.util.ImageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +42,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private SecurityService securityService;
     private MailService mailService;
-    private ImagePreprocessor imagePreprocessor;
+    private ImageUtils imageUtils;
 
     /**
      * Create an instance of User entity based service
@@ -50,14 +50,14 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * @param dao             for operations with data storage
      * @param securityService for security
      * @param mailService     to send e-mails
-     * @param imagePreprocessor  for avatar image-related operations
+     * @param imageUtils      for avatar image-related operations
      */
     public TransactionalUserService(UserDao dao, SecurityService securityService,
-                                    MailService mailService, ImagePreprocessor imagePreprocessor) {
+                                    MailService mailService, ImageUtils imageUtils) {
         super(dao);
         this.securityService = securityService;
         this.mailService = mailService;
-        this.imagePreprocessor = imagePreprocessor;
+        this.imageUtils = imageUtils;
     }
 
     /**
@@ -126,7 +126,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     public User editUserProfile(UserInfoContainer info) throws DuplicateEmailException, WrongPasswordException {
 
         User currentUser = securityService.getCurrentUser();
-        byte[] decodedAvatar = imagePreprocessor.decodeB64(info.getB64EncodedAvatar());
+        byte[] decodedAvatar = imageUtils.decodeB64(info.getB64EncodedAvatar());
 
         this.changePassword(info.getCurrentPassword(), info.getNewPassword(), currentUser);
         this.changeEmail(info.getEmail(), currentUser);
