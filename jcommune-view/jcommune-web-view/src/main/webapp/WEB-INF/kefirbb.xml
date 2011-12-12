@@ -115,7 +115,8 @@
         <coderef name="u"/>
         <coderef name="s"/>
         <coderef name="i"/>
-        <coderef name="color"/>
+        <coderef name="color_code"/>
+        <coderef name="color_name"/>
         <coderef name="size"/>
         <coderef name="font"/>
         <coderef name="highlight"/>
@@ -165,9 +166,14 @@
     </code>
 
     <!-- Font color -->
-    <code name="color">
-        <pattern>[color=<var name="color" scope="escapeXml"/>]<var name="text" inherit="true"/>[/color]</pattern>
+    <code name="color_name">
+        <pattern>[color=<var name="color"  regex="\D*"  scope="escapeXml"/>]<var name="text" inherit="true"/>[/color]</pattern>
         <template>&lt;span style=&quot;color:<var name="color"/>;&quot;&gt;<var name="text"/>&lt;/span&gt;</template>
+    </code>
+
+    <code name="color_code">
+        <pattern>[color=<var name="color" regex="[A-F0-9]{6}" scope="escapeXml"/>]<var name="text" inherit="true"/>[/color]</pattern>
+        <template>&lt;span style=&quot;color:#<var name="color"/>;&quot;&gt;<var name="text"/>&lt;/span&gt;</template>
     </code>
 
     <!-- Font size -->
@@ -175,11 +181,6 @@
         <pattern>[size=<var name="size" scope="escapeXml"/>]<var name="text" inherit="true"/>[/size]</pattern>
         <template>&lt;span style=&quot;font-size:<var name="size"/>;&quot;&gt;<var name="text"/>&lt;/span&gt;</template>
     </code>
-
-
-
-
-
 
     <!-- Font family -->
     <code name="font">
@@ -253,7 +254,8 @@
         <coderef name="u"/>
         <coderef name="s"/>
         <coderef name="i"/>
-        <coderef name="color"/>
+        <coderef name="color_name"/>
+        <coderef name="color_code"/>
         <coderef name="size"/>
 
         <coderef name="img1"/>

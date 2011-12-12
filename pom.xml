@@ -278,7 +278,7 @@
             <dependency>
                 <groupId>kefir-bb</groupId>
                 <artifactId>kefir-bb</artifactId>
-                <version>0.6.1</version>
+                <version>0.6</version>
             </dependency>
             <!--Mail-->
             <dependency>

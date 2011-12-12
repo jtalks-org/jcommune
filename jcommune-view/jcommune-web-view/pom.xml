@@ -21,7 +21,6 @@
         <dependency>
             <groupId>kefir-bb</groupId>
             <artifactId>kefir-bb</artifactId>
-            <version>0.6.1</version>
         </dependency>
 
         <dependency>
