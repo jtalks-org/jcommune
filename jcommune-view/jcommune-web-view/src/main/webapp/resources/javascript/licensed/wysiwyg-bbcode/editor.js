@@ -132,8 +132,8 @@ function html2bbcode() {
     rep(/<s(\s[^<>]*)?>/gi, "[s]");
     rep(/<div><br(\s[^<>]*)?>/gi, "<div>");//chrome-safari fix to prevent double linefeeds
     rep(/<br(\s[^<>]*)?>/gi, "\n");
-    rep(/<p(\s[^<>]*)?>/gi, "");
-    rep(/<\/p>/gi, "\n");
+/*    rep(/<p(\s[^<>]*)?>/gi, "");*/
+   /* rep(/<\/p>/gi, "\n");*/
     rep(/<ul>/gi, "[list]");
     rep(/<\/ul>/gi, "[/list]");
     rep(/<li>/gi, "[*]");
@@ -142,19 +142,25 @@ function html2bbcode() {
     rep(/<div([^<>]*)>/gi, "\n<span$1>");
     rep(/<\/div>/gi, "</span>\n");
     rep(/&nbsp;/gi, " ");
-    rep(/&quot;/gi, "\"");
+    rep(/&quot;/gi, "\"");                //ep(/\[highlight\]/gi, '<font style="background-color: silver;">');
     rep(/&amp;/gi, "&");
     var sc, sc2;
     do {
         sc = content;
         rep(/<font\s[^<>]*?color=\"?([^<>]*?)\"?(\s[^<>]*)?>([^<>]*?)<\/font>/gi, "[color=$1]$3[/color]");
+        rep(/<font\s[^<>]*?size=\"?([^<>]*?)\"?(\s[^<>]*)?>([^<>]*?)<\/font>/gi, "[size=$1]$3[/size]");
+        rep(/<p\s[^<>]*?style=\"?text-align: ?left;?\"([^<>]*)?>([^<>]*?)<\/p>/gi, "[left]$2[/left]");
+        rep(/<p\s[^<>]*?style=\"?text-align: ?right;?\"([^<>]*)?>([^<>]*?)<\/p>/gi, "[right]$2[/right]");
+        rep(/<p\s[^<>]*?style=\"?text-align: ?center;?\"([^<>]*)?>([^<>]*?)<\/p>/gi, "[center]$2[/center]");
+        rep(/<font\s[^<>]*?style=\"?background-color: ?silver;?\"([^<>]*)?>([^<>]*?)<\/font>/gi, "[highlight]$2[/highlight]");
+        rep(/<p\s[^<>]*?class=\"code\"([^<>]*)?>([^<>]*?)<\/p>/gi, "[code]$2[/code]");
+        rep(/<p\s[^<>]*?class=\"quote\"([^<>]*)?>([^<>]*?)<\/p>/gi, "[quote]$2[/quote]");
         if (sc == content)
             rep(/<font[^<>]*>([^<>]*?)<\/font>/gi, "$1");
         rep(/<a\s[^<>]*?href=\"?([^<>]*?)\"?(\s[^<>]*)?>([^<>]*?)<\/a>/gi, "[url=$1]$3[/url]");
         sc2 = content;
         rep(/<(span|blockquote|pre)\s[^<>]*?style=\"?font-weight: ?bold;?\"?\s*([^<]*?)<\/\1>/gi, "[b]<$1 style=$2</$1>[/b]");
         rep(/<(span|blockquote|pre)\s[^<>]*?style=\"?font-size: ?([^<>]*?);?\"?\s*([^<]*?)<\/\1>/gi, "[size=<$1 style=$2</$1>][/size]");
-        rep(/<p style="text-align: left;">([^<>]*?)<\/p>/gi, "[left]$1[/left]");
 
         rep(/<(span|blockquote|pre)\s[^<>]*?style=\"?font-weight: ?normal;?\"?\s*([^<]*?)<\/\1>/gi, "<$1 style=$2</$1>");
         rep(/<(span|blockquote|pre)\s[^<>]*?style=\"?font-style: ?italic;?\"?\s*([^<]*?)<\/\1>/gi, "[i]<$1 style=$2</$1>[/i]");
@@ -164,7 +170,6 @@ function html2bbcode() {
         rep(/<(span|blockquote|pre)\s[^<>]*?style=\"?color: ?([^<>]*?);\"?\s*([^<]*?)<\/\1>/gi, "[color=$2]<$1 style=$3</$1>[/color]");
         rep(/<(span|blockquote|pre)\s[^<>]*?style=\"?font-family: ?([^<>]*?);\"?\s*([^<]*?)<\/\1>/gi, "[font=$2]<$1 style=$3</$1>[/font]");
         rep(/<(blockquote|pre)\s[^<>]*?style=\"?\"? (class=|id=)([^<>]*)>([^<>]*?)<\/\1>/gi, "<$1 $2$3>$4</$1>");
-        rep(/<pre>([^<>]*?)<\/pre>/gi, "[code]$1[/code]");
         rep(/<span\s[^<>]*?style=\"?\"?>([^<>]*?)<\/span>/gi, "$1");
         if (sc2 == content) {
             rep(/<span[^<>]*>([^<>]*?)<\/span>/gi, "$1");
@@ -227,8 +232,8 @@ function bbcode2html() {
     rep(/\[left\]/gi, '<p style="text-align: left;">');
     rep(/\[right\]/gi, '<p style="text-align: right;">');
     rep(/\[center\]/gi, '<p style="text-align: center;">');
-    rep(/\[quote\]/gi, '<p style="font-style: italic;font-variant:inherit;">');
-    rep(/\[code\]/gi, '<p style="font-style: italic;font-weight: bolder;">');
+    rep(/\[quote\]/gi, '<p class="quote" style="font-style: italic;font-variant:inherit;">');
+    rep(/\[code\]/gi, '<p class="code" style="font-style: italic;font-weight: bolder;">');
     rep(/\[\/(left|right|center|quote|code)\]/gi, "</p>");
 
     rep(/\[highlight\]/gi, '<font style="background-color: silver;">');
@@ -240,7 +245,7 @@ function bbcode2html() {
         sc = content;
         rep(/\[url=([^\]]+)\]([\s\S]*?)\[\/url\]/gi, "<a href=\"$1\">$2</a>");
         rep(/\[url\]([\s\S]*?)\[\/url\]/gi, "<a href=\"$1\">$1</a>");
-        rep(/\[size=([^\]]+)\]([\s\S]*?)\[\/size\]/gi, '<font size="$1 px;">$2</font>');
+        rep(/\[size=([^\]]+)\]([\s\S]*?)\[\/size\]/gi, '<font size="$1">$2</font>');
         rep(/\[indent=([^\]]+)\]([\s\S]*?)\[\/indent\]/gi, '<font style="margin-left:$1 px;">$2</font>');
         if (browser) {
             rep(/\[color=([^\]]*?)\]([\s\S]*?)\[\/color\]/gi, "<font color=\"$1\">$2</font>");
@@ -249,7 +254,6 @@ function bbcode2html() {
             rep(/\[color=([^\]]*?)\]([\s\S]*?)\[\/color\]/gi, "<span style=\"color: $1;\">$2</span>");
             rep(/\[font=([^\]]*?)\]([\s\S]*?)\[\/font\]/gi, "<span style=\"font-family: $1;\">$2</span>");
         }
-        rep(/\[code\]([\s\S]*?)\[\/code\]/gi, "<pre>$1</pre>&nbsp;");
     } while (sc != content);
 }
 
