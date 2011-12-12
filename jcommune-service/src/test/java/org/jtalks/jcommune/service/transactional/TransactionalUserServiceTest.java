@@ -23,7 +23,7 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.*;
 import org.jtalks.jcommune.service.security.SecurityConstants;
-import org.jtalks.jcommune.service.util.ImagePreprocessor;
+import org.jtalks.jcommune.service.util.ImageUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -64,7 +64,7 @@ public class TransactionalUserServiceTest {
     @Mock
     private MailService mailService;
     @Mock
-    private ImagePreprocessor processor;
+    private ImageUtils processor;
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -72,7 +72,7 @@ public class TransactionalUserServiceTest {
         userDao = mock(UserDao.class);
         securityService = mock(SecurityService.class);
         mailService = mock(MailService.class);
-        processor = mock(ImagePreprocessor.class);
+        processor = mock(ImageUtils.class);
         userService = new TransactionalUserService(userDao, securityService, mailService, processor);
     }
 
@@ -172,8 +172,8 @@ public class TransactionalUserServiceTest {
 
         String newAvatar = new String(new byte[12]);
 
-        User editedUser = userService.editUserProfile(new UserInfoContainer( FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, NEW_PASSWORD,SIGNATURE, newAvatar,  LANGUAGE, PAGE_SIZE));
+        User editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
+                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE));
 
         verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
@@ -186,12 +186,11 @@ public class TransactionalUserServiceTest {
     }
 
 
-
     private User editUserSignature(String signature) throws WrongPasswordException, DuplicateEmailException {
         User user = getUser(USERNAME);
         when(securityService.getCurrentUser()).thenReturn(user);
         return userService.editUserProfile(new UserInfoContainer(EMAIL, FIRST_NAME, LAST_NAME,
-                PASSWORD, NEW_PASSWORD, signature, null,  LANGUAGE, PAGE_SIZE));
+                PASSWORD, NEW_PASSWORD, signature, null, LANGUAGE, PAGE_SIZE));
     }
 
     @Test
@@ -201,7 +200,7 @@ public class TransactionalUserServiceTest {
         when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
 
         User editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, NEW_PASSWORD, SIGNATURE, null,  LANGUAGE, PAGE_SIZE));
+                PASSWORD, NEW_PASSWORD, SIGNATURE, null, LANGUAGE, PAGE_SIZE));
 
         verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
@@ -240,7 +239,7 @@ public class TransactionalUserServiceTest {
         when(securityService.getCurrentUser()).thenReturn(user);
 
         userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                WRONG_PASSWORD, NEW_PASSWORD, SIGNATURE, null,  LANGUAGE, PAGE_SIZE));
+                WRONG_PASSWORD, NEW_PASSWORD, SIGNATURE, null, LANGUAGE, PAGE_SIZE));
 
         verify(securityService).getCurrentUser();
         verify(userDao, never()).isUserWithEmailExist(anyString());
@@ -253,7 +252,7 @@ public class TransactionalUserServiceTest {
         when(securityService.getCurrentUser()).thenReturn(user);
 
         userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                null, NEW_PASSWORD, SIGNATURE, null,  LANGUAGE, PAGE_SIZE));
+                null, NEW_PASSWORD, SIGNATURE, null, LANGUAGE, PAGE_SIZE));
 
         verify(securityService).getCurrentUser();
         verify(userDao, never()).isUserWithEmailExist(anyString());
@@ -267,7 +266,7 @@ public class TransactionalUserServiceTest {
         when(userDao.isUserWithEmailExist(NEW_EMAIL)).thenReturn(true);
 
         userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, NEW_EMAIL,
-                null, null, SIGNATURE, null,  LANGUAGE, PAGE_SIZE));
+                null, null, SIGNATURE, null, LANGUAGE, PAGE_SIZE));
 
         verify(securityService).getCurrentUser();
         verify(userDao).isUserWithEmailExist(NEW_EMAIL);

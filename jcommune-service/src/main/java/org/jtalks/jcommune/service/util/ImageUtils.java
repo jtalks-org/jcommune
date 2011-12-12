@@ -14,6 +14,10 @@
  */
 package org.jtalks.jcommune.service.util;
 
+import org.springframework.stereotype.Component;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -25,15 +29,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
- * Class that consists util methods for working with images.
+ * Class for preparing image to save.
  *
+ * @author JForum
  * @author Eugeny Batov
+ * @author Alexandre Teterin
  */
-public final class ImageUtil {
+@Component
+public class ImageUtils {
 
+    public static final String HTML_SRC_TAG_PREFIX = "data:image/jpeg;base64,";
+    public static final int AVATAR_MAX_HEIGHT = 100;
+    public static final int AVATAR_MAX_WIDTH = 100;
     public static final int IMAGE_JPEG = 0;
     public static final int IMAGE_PNG = 1;
-
     private static final int ALPHA_CHANNEL_MASK = 0xFF000000;
     private static final int RED_CHANNEL_MASK = 0x00FF0000;
     private static final int GREEN_CHANNEL_MASK = 0x0000FF00;
@@ -42,22 +51,14 @@ public final class ImageUtil {
     private static final int TWO_BITS = 16;
     private static final int THREE_BITS = 24;
 
-
-    /**
-     * Empty constructor.
-     */
-    private ImageUtil() {
-        //Utility classes should not have a public or default constructor
-    }
-
     /**
      * Converts image to byte array.
      *
      * @param image input image
      * @return byte array obtained from image
-     * @throws IOException if an I/O error occurs
+     * @throws java.io.IOException if an I/O error occurs
      */
-    public static byte[] convertImageToByteArray(Image image) throws IOException {
+    public byte[] convertImageToByteArray(Image image) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write((RenderedImage) image, "jpeg", baos);
         baos.flush();
@@ -71,13 +72,12 @@ public final class ImageUtil {
      *
      * @param bytes for conversion.
      * @return image result.
-     * @throws IOException image conversion problem.
+     * @throws java.io.IOException image conversion problem.
      */
-    public static BufferedImage convertByteArrayToImage(byte[] bytes) throws IOException {
+    public BufferedImage convertByteArrayToImage(byte[] bytes) throws IOException {
         BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(bytes));
         return ImageIO.read(bis);
     }
-
 
     /**
      * Resizes an image.
@@ -88,7 +88,7 @@ public final class ImageUtil {
      * @param type      int code jpeg, png or gif
      * @return A resized <code>BufferedImage</code>
      */
-    public static BufferedImage resizeImage(BufferedImage image, int type, int maxWidth, int maxHeight) {
+    public BufferedImage resizeImage(BufferedImage image, int type, int maxWidth, int maxHeight) {
         Dimension largestDimension = new Dimension(maxWidth, maxHeight);
 
         // Original size
@@ -123,9 +123,62 @@ public final class ImageUtil {
      * @param type   int code jpeg, png or gif
      * @return bufferedImage The resized image
      */
-    private static BufferedImage createBufferedImage(BufferedImage source, int type, int width, int height) {
+    /**
+     * Perform image resizing and processing
+     *
+     * @param image for processing
+     * @return processed image bytes
+     * @throws IOException image processing problem
+     */
+    public byte[] preprocessImage(Image image) throws IOException {
+        byte[] result;
+        Image outputImage = resizeImage((BufferedImage) image, IMAGE_JPEG, AVATAR_MAX_HEIGHT, AVATAR_MAX_WIDTH);
+        result = convertImageToByteArray(outputImage);
+        return result;
+    }
+
+    /**
+     * Perform base64 binary data to string conversion
+     *
+     * @param bytes for processing
+     * @return converted binary data string
+     */
+    public String base64Coder(byte[] bytes) {
+        return new BASE64Encoder().encode(bytes);
+    }
+
+    /**
+     * Perform base64 string to binary data conversion
+     *
+     * @param encodedBytes string representation for processing
+     * @return converted binary data
+     */
+    public byte[] decodeB64(String encodedBytes) {
+        byte[] result = null;
+        try {
+            if (encodedBytes != null) {
+                BASE64Decoder base64 = new BASE64Decoder();
+                result = base64.decodeBuffer(encodedBytes);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
+    /**
+     * Perform preparing content for SRC attribute of the IMG HTML tag
+     *
+     * @param encodedImgBytes image payload
+     * @return SRC attribute content
+     */
+    public String prepareHtmlImgSrc(String encodedImgBytes) {
+        return HTML_SRC_TAG_PREFIX + encodedImgBytes;
+    }
+
+    private BufferedImage createBufferedImage(BufferedImage source, int type, int width, int height) {
         int imageType = BufferedImage.TYPE_INT_RGB;
-        if (type == ImageUtil.IMAGE_PNG && hasAlpha(source)) {
+        if (type == IMAGE_PNG && hasAlpha(source)) {
             imageType = BufferedImage.TYPE_INT_ARGB;
         }
 
@@ -177,7 +230,7 @@ public final class ImageUtil {
      * @param scale scale
      * @return scaled point
      */
-    private static double scale(int point, double scale) {
+    private double scale(int point, double scale) {
         return point / scale;
     }
 
@@ -189,7 +242,7 @@ public final class ImageUtil {
      * @param distance distance between values
      * @return rgb an integer pixel in the ARGB color model
      */
-    private static int getRGBInterpolation(int value1, int value2, double distance) {
+    private int getRGBInterpolation(int value1, int value2, double distance) {
         int alpha1 = (value1 & ALPHA_CHANNEL_MASK) >>> THREE_BITS;
         int red1 = (value1 & RED_CHANNEL_MASK) >> TWO_BITS;
         int green1 = (value1 & GREEN_CHANNEL_MASK) >> BIT;
@@ -212,7 +265,7 @@ public final class ImageUtil {
      * @param image The image to check for transparent pixel.s
      * @return <code>true</code> of <code>false</code>, according to the result
      */
-    private static boolean hasAlpha(Image image) {
+    private boolean hasAlpha(Image image) {
         try {
             PixelGrabber pg = new PixelGrabber(image, 0, 0, 1, 1, false);
             pg.grabPixels();
@@ -222,4 +275,6 @@ public final class ImageUtil {
             return false;
         }
     }
+
+
 }

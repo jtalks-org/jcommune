@@ -16,8 +16,7 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.service.AvatarService;
-import org.jtalks.jcommune.service.util.ImagePreprocessor;
-import org.jtalks.jcommune.service.util.ImageUtil;
+import org.jtalks.jcommune.service.util.ImageUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.image.BufferedImage;
@@ -28,16 +27,16 @@ import java.io.IOException;
  */
 public class AvatarServiceImpl implements AvatarService {
 
-    private final ImagePreprocessor imagePreprocessor;
+    private final ImageUtils imageUtils;
 
 
     /**
      * Create AvatarServiceImpl instance
      *
-     * @param imagePreprocessor object for image processing
+     * @param imageUtils object for image processing
      */
-    public AvatarServiceImpl(ImagePreprocessor imagePreprocessor) {
-        this.imagePreprocessor = imagePreprocessor;
+    public AvatarServiceImpl(ImageUtils imageUtils) {
+        this.imageUtils = imageUtils;
     }
 
     /**
@@ -48,9 +47,9 @@ public class AvatarServiceImpl implements AvatarService {
      * @throws IOException conversion problem
      */
     public String convertAvatarToString(byte[] bytes) throws IOException {
-        BufferedImage inputAvatar = ImageUtil.convertByteArrayToImage(bytes);
-        byte[] outputAvatar = imagePreprocessor.preprocessImage(inputAvatar);
-        return imagePreprocessor.base64Coder(outputAvatar);
+        BufferedImage inputAvatar = imageUtils.convertByteArrayToImage(bytes);
+        byte[] outputAvatar = imageUtils.preprocessImage(inputAvatar);
+        return imageUtils.base64Coder(outputAvatar);
     }
 
 

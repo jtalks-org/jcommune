@@ -36,7 +36,7 @@
         </tx:attributes>
     </tx:advice>
 
-    <!--Decalaration services bean -->
+    <!--Declaration services bean -->
 
     <bean id="avatarService"
           class="org.jtalks.jcommune.service.nontransactional.AvatarServiceImpl">
@@ -44,7 +44,7 @@
     </bean>
 
     <bean id="imagePreprocessor"
-          class="org.jtalks.jcommune.service.util.ImagePreprocessor"/>
+          class="org.jtalks.jcommune.service.util.ImageUtils"/>
 
     <bean id="userService"
           class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
