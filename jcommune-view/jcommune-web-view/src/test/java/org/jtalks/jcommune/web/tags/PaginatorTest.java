@@ -51,14 +51,14 @@ public class PaginatorTest {
 
         user = new User("", "", "");
         user.setPageSize(5);
-        list = Arrays.asList(1,2,3,4,5,6);
+        list = Arrays.asList(1, 2, 3, 4, 5, 6);
     }
 
     @Test
     public void testElementsOfPage() {
-        User user = new User("","","");
+        User user = new User("", "", "");
         user.setPageSize(5);
-        Pagination pagination = new Pagination(1,user,6,true);
+        Pagination pagination = new Pagination(1, user, 6, true);
         paginator.setPagination(pagination);
 
         paginator.setList(list);
@@ -74,7 +74,7 @@ public class PaginatorTest {
 
     @Test
     public void testLastPage() {
-        Pagination pagination = new Pagination(2,user,6,true);
+        Pagination pagination = new Pagination(2, user, 6, true);
         paginator.setPagination(pagination);
         paginator.setList(list);
 
@@ -85,7 +85,7 @@ public class PaginatorTest {
 
     @Test
     public void testUserAnonymous() {
-        Pagination pagination = new Pagination(2,null,55,true);
+        Pagination pagination = new Pagination(2, null, 55, true);
         paginator.setPagination(pagination);
         List list = Collections.nCopies(55, 1);
 
@@ -93,12 +93,12 @@ public class PaginatorTest {
 
         paginator.doStartTag();
 
-        assertEquals(pageContext.getAttribute("list"), list.subList(50,55));
+        assertEquals(pageContext.getAttribute("list"), list.subList(50, 55));
     }
 
     @Test
     public void testSizeOne() {
-        Pagination pagination = new Pagination(1,user,6,false);
+        Pagination pagination = new Pagination(1, user, 6, false);
         paginator.setPagination(pagination);
 
         paginator.setList(list);
@@ -110,7 +110,7 @@ public class PaginatorTest {
 
     @Test
     public void testEmptyList() {
-        Pagination pagination = new Pagination(1,user,6,true);
+        Pagination pagination = new Pagination(1, user, 6, true);
         paginator.setPagination(pagination);
         List list = new ArrayList();
 
@@ -125,7 +125,7 @@ public class PaginatorTest {
 
     @Test
     public void testDisablePaging() {
-        Pagination pagination = new Pagination(1,null,55,false);
+        Pagination pagination = new Pagination(1, null, 55, false);
         paginator.setPagination(pagination);
         List list = Collections.nCopies(55, 1);
 
