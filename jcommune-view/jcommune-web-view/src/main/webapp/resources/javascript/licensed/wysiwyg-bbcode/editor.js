@@ -56,7 +56,7 @@ function initEditor(textarea_id, wysiwyg) {
         ifm = document.createElement("iframe");
         ifm.setAttribute("id", "rte");
         ifm.setAttribute("class", "editorBBCODE");
-        //ifm.setAttribute("frameborder", "1");
+        ifm.setAttribute("frameborder", "1");
         ifm.width = '90%';
         ifm.height = 400;
         textboxelement.parentNode.insertBefore(ifm, textboxelement);
@@ -85,8 +85,8 @@ function ShowEditor() {
     bbcode2html();
     myeditor.designMode = "on";
     myeditor.open();
-    myeditor.write('<html><head><link href="../../../css/editor.css" rel="Stylesheet" type="text/css" /></head>');
-    myeditor.write('<body style="height: 100%;width: 100%;margin:0px 0px 0px 0px;background: #f8f8f8;border: 1px solid #b2b2b2;" class="editorWYSIWYG">');
+    myeditor.write('<html><head><link href="/jcommune/resources/css/editor.css" rel="Stylesheet" type="text/css" /></head>');
+    myeditor.write('<body style="height: 100%;width: 100%;margin:0px 0px 0px 0px;background: #f8f8f8" class="editorWYSIWYG">');
     myeditor.write(content);
     myeditor.write('</body></html>');
     myeditor.close();
@@ -131,38 +131,34 @@ function html2bbcode() {
     rep(/\r/gi, " ");
     rep(/<u(\s[^<>]*)?>/gi, "[u]");
     rep(/<s(\s[^<>]*)?>/gi, "[s]");
-    rep(/<div><br(\s[^<>]*)?>/gi, "<div>");//chrome-safari fix to prevent double linefeeds
+
     rep(/<br(\s[^<>]*)?>/gi, "\n");
-    /*    rep(/<p(\s[^<>]*)?>/gi, "");*/
-    /* rep(/<\/p>/gi, "\n");*/
+    /*rep(/<p(\s[^<>]*)?>/gi, "");
+    rep(/<\/p>/gi, "\n");*/
     rep(/<ul>/gi, "[list]");
     rep(/<\/ul>/gi, "[/list]");
     rep(/<li>/gi, "[*]");
     rep(/<\/li>/gi, "");
-    rep(/<\/div>\s*<div([^<>]*)>/gi, "</span>\n<span$1>");//chrome-safari fix to prevent double linefeeds
-    rep(/<div([^<>]*)>/gi, "\n<span$1>");
-    rep(/<\/div>/gi, "</span>\n");
     rep(/&nbsp;/gi, " ");
-    rep(/&quot;/gi, "\"");                //ep(/\[highlight\]/gi, '<font style="background-color: silver;">');
+    rep(/&quot;/gi, "\"");
     rep(/&amp;/gi, "&");
     var sc, sc2;
     do {
         sc = content;
         rep(/<font\s[^<>]*?color=\"?([^<>]*?)\"?(\s[^<>]*)?>([^<>]*?)<\/font>/gi, "[color=$1]$3[/color]");
-        rep(/<font\s[^<>]*?size=\"?([^<>]*?)\"?(\s[^<>]*)?>([^<>]*?)<\/font>/gi, "[size=$1]$3[/size]");
-        rep(/<p\s[^<>]*?style=\"?text-align: ?left;?\"([^<>]*)?>([^<>]*?)<\/p>/gi, "[left]$2[/left]");
-        rep(/<p\s[^<>]*?style=\"?text-align: ?right;?\"([^<>]*)?>([^<>]*?)<\/p>/gi, "[right]$2[/right]");
-        rep(/<p\s[^<>]*?style=\"?text-align: ?center;?\"([^<>]*)?>([^<>]*?)<\/p>/gi, "[center]$2[/center]");
-        rep(/<font\s[^<>]*?style=\"?background-color: ?silver;?\"([^<>]*)?>([^<>]*?)<\/font>/gi, "[highlight]$2[/highlight]");
-        rep(/<p\s[^<>]*?class=\"code\"([^<>]*)?>([^<>]*?)<\/p>/gi, "[code]$2[/code]");
-        rep(/<p\s[^<>]*?class=\"quote\"([^<>]*)?>([^<>]*?)<\/p>/gi, "[quote]$2[/quote]");
+        rep(/<font\s[^<>]*?class=\"textSize(\d*)\"[^<>]*?>([^<>]*?)<\/font>/gi, "[size=$1]$2[/size]");
+        rep(/<font\s[^<>]*?class=\"marginLeft(\d*)\"[^<>]*?>([^<>]*?)<\/font>/gi, "[indent=$1]$2[/indent]");
+        rep(/<p\s[^<>]*?class=\"leftText\"([^<>]*)?>([^<>]*?)<\/p>/gi, "[left]$2[/left]");
+        rep(/<p\s[^<>]*?class=\"rightText\"([^<>]*)?>([^<>]*?)<\/p>/gi, "[right]$2[/right]");
+        rep(/<p\s[^<>]*?class=\"centerText\"([^<>]*)?>([^<>]*?)<\/p>/gi, "[center]$2[/center]");
+        rep(/<font\s[^<>]*?class=\"highlight\"([^<>]*)?>([^<>]*?)<\/font>/gi, "[highlight]$2[/highlight]");
+        rep(/<div\s[^<>]*?class=\"code\"([^<>]*)?>([^<>]*?)<\/div>/gi, "[code]$2[/code]");
+        rep(/<div\s[^<>]*?class=\"quote\"([^<>]*)?>([^<>]*?)<\/div>/gi, "[quote]$2[/quote]");
         if (sc == content)
             rep(/<font[^<>]*>([^<>]*?)<\/font>/gi, "$1");
         rep(/<a\s[^<>]*?href=\"?([^<>]*?)\"?(\s[^<>]*)?>([^<>]*?)<\/a>/gi, "[url=$1]$3[/url]");
         sc2 = content;
         rep(/<(span|blockquote|pre)\s[^<>]*?style=\"?font-weight: ?bold;?\"?\s*([^<]*?)<\/\1>/gi, "[b]<$1 style=$2</$1>[/b]");
-        rep(/<(span|blockquote|pre)\s[^<>]*?style=\"?font-size: ?([^<>]*?)\s?p?x?;?\"?\s*([^<]*?)<\/\1>/gi, "[size=<$1 style=$2</$1>][/size]");
-
         rep(/<(span|blockquote|pre)\s[^<>]*?style=\"?font-weight: ?normal;?\"?\s*([^<]*?)<\/\1>/gi, "<$1 style=$2</$1>");
         rep(/<(span|blockquote|pre)\s[^<>]*?style=\"?font-style: ?italic;?\"?\s*([^<]*?)<\/\1>/gi, "[i]<$1 style=$2</$1>[/i]");
         rep(/<(span|blockquote|pre)\s[^<>]*?style=\"?font-style: ?normal;?\"?\s*([^<]*?)<\/\1>/gi, "<$1 style=$2</$1>");
@@ -177,6 +173,12 @@ function html2bbcode() {
             sc2 = content;
         }
     } while (sc != content)
+
+    rep(/<div><br(\s[^<>]*)?>/gi, "<div>");//chrome-safari fix to prevent double linefeeds
+    rep(/<\/div>\s*<div([^<>]*)>/gi, "</span>\n<span$1>");//chrome-safari fix to prevent double linefeeds
+    rep(/<div([^<>]*)>/gi, "\n<span$1>");
+    rep(/<\/div>/gi, "</span>\n");
+
     rep(/<[^<>]*>/gi, "");
     rep(/&lt;/gi, "<");
     rep(/&gt;/gi, ">");
@@ -231,13 +233,17 @@ function bbcode2html() {
         rep(/\[\/(b|i|u|s)\]/gi, "</span>");
     }
 
-    rep(/\[left\]/gi, '<font class="leftText">');
-    rep(/\[right\]/gi, '<font class="rightText">');
-    rep(/\[center\]/gi, '<font class="centerText">');
-    rep(/\[quote\]/gi, '<font class="quote">');
-    rep(/\[code\]/gi, '<font class="code">');
+    rep(/\[left\]/gi, '<p class="leftText">');
+    rep(/\[right\]/gi, '<p class="rightText">');
+    rep(/\[center\]/gi, '<p class="centerText">');
+    rep(/\[\/(left|right|center)\]/gi, "</p>");
+
+    rep(/\[quote\]/gi, '<div class="quote">');
+    rep(/\[code\]/gi, '<div class="code">');
+    rep(/\[\/(quote|code)\]/gi, "</div>");
+
     rep(/\[highlight\]/gi, '<font class="highlight">');
-    rep(/\[\/(left|right|center|quote|code|highlight)\]/gi, "</font>");
+    rep(/\[\/highlight\]/gi, "</font>");
 
     rep(/\[img\]([^\"]*?)\[\/img\]/gi, "<img src=\"$1\" />");
     var sc;

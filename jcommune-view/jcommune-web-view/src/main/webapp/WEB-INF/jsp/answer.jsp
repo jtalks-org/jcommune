@@ -153,7 +153,8 @@
                         <a href="#" onmouseover="helpline('a')"><spring:message code="label.answer.close_tags"/></a>
 
                         <div id="helpline"><spring:message code="label.answer.tooltip"/></div>
-                        <form:textarea id="tbMsg" path="bodyText" rows="30" cols="80" tabindex="3" cssClass="post"
+                        <form:textarea id="tbMsg" path="bodyText" cssStyle="width:90%; height:400px;" tabindex="3"
+                                       cssClass="post"
                                        onclick="resetSizeSelector();resetIndentSelector();"/>
                         <br>
                         <form:errors path="bodyText" cssClass="error"/>

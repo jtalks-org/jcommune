@@ -1,10 +1,10 @@
 ﻿.editorWYSIWYG {
-    /*font: 10pt Tahoma;
+   /* font: 10pt Tahoma;
     border-bottom: 1px solid #b2b2b2;*/
 }
 
 .editorBBCODE {
-    /*font: 9pt "Courier New";*/
+/*font: 9pt "Courier New";*/
 }
 
 div.richeditor div.editbar {
@@ -47,4 +47,53 @@ div.richeditor textarea {
 div.richeditor iframe {
     background-color: #ffffff;
     border: none;
+}
+
+.leftText {
+    text-align: left;
+}
+
+.rightText {
+    text-align: right;
+}
+
+.centerText {
+    text-align: center;
+}
+
+.highlight {
+    background-color: silver;
+}
+
+.textSize10 {
+    font-size: 14pt;
+}
+
+.textSize15 {
+    font-size: 22pt;
+}
+
+.textSize20 {
+    font-size: 33pt;
+}
+
+.marginLeft15 {
+    margin-left: 15px;
+}
+
+.marginLeft20 {
+    margin-left: 20px;
+}
+
+.marginLeft25 {
+    margin-left: 25px;
+}
+
+.quote {
+    font-style: italic;
+    font: "'andale mono'";
+}
+
+.code {
+    border: 1px #5f9ea0 solid;
 }
