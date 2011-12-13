@@ -16,7 +16,6 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.service.AvatarService;
-import org.jtalks.jcommune.service.util.ImageUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.image.BufferedImage;

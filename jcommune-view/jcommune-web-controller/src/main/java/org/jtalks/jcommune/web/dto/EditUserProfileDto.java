@@ -37,8 +37,6 @@ public class EditUserProfileDto extends UserDto {
     private int pageSize;
     private String avatar;
 
-    private static final int[] pageSizesAvailable = new int[]{5, 10, 20, 50, 100, 250};
-
     /**
      * Default constructor
      */
@@ -67,10 +65,10 @@ public class EditUserProfileDto extends UserDto {
      *
      * @return user profile modification info for the service tier
      */
-    public UserInfoContainer getUserInfoContainer(){
-      return new UserInfoContainer(this.getFirstName(), this.getLastName(), this.getEmail(),
-              this.getCurrentUserPassword(), this.getNewUserPassword(), this.getSignature(),
-              this.getAvatar(), this.getLanguage(), this.getPageSize());
+    public UserInfoContainer getUserInfoContainer() {
+        return new UserInfoContainer(this.getFirstName(), this.getLastName(), this.getEmail(),
+                this.getCurrentUserPassword(), this.getNewUserPassword(), this.getSignature(),
+                this.getAvatar(), this.getLanguage(), this.getPageSize());
     }
 
     /**
@@ -172,7 +170,7 @@ public class EditUserProfileDto extends UserDto {
      * @return array of page sizes available
      */
     public int[] getPageSizesAvailable() {
-        return pageSizesAvailable;
+        return new int[]{5, 10, 20, 50, 100, 250};
     }
 
     /**

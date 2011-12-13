@@ -20,9 +20,13 @@ import org.jtalks.jcommune.service.MailService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
-import org.jtalks.jcommune.service.exceptions.*;
+import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
+import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
+import org.jtalks.jcommune.service.exceptions.MailingFailedException;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
+import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.service.security.SecurityConstants;
-import org.jtalks.jcommune.service.util.ImageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

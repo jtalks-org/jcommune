@@ -15,10 +15,7 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.jtalks.jcommune.model.dao.UserDao;
-import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.User;
-
-import java.util.List;
 
 /**
  * Hibernate implementation of UserDao.

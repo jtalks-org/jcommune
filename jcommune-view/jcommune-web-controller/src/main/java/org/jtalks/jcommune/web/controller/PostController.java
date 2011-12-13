@@ -28,7 +28,12 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -49,6 +54,7 @@ public class PostController {
 
     public static final String TOPIC_ID = "topicId";
     public static final String POST_ID = "postId";
+    public static final String POST_DTO = "postDto";
 
     private PostService postService;
     private BreadcrumbBuilder breadcrumbBuilder;
@@ -135,7 +141,7 @@ public class PostController {
         Post post = postService.get(postId);
 
         return new ModelAndView("editForm")
-                .addObject("postDto", PostDto.getDtoFor(post))
+                .addObject(POST_DTO, PostDto.getDtoFor(post))
                 .addObject(TOPIC_ID, topicId)
                 .addObject(POST_ID, postId)
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(post.getTopic()));
@@ -183,7 +189,7 @@ public class PostController {
         return new ModelAndView("answer")
                 .addObject("topic", answeringTopic)
                 .addObject(TOPIC_ID, topicId)
-                .addObject("postDto", new PostDto())
+                .addObject(POST_DTO, new PostDto())
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(answeringTopic));
     }
 
@@ -206,7 +212,7 @@ public class PostController {
         // todo: move these constants to BB converter when ready
         String quote = "[quote]" + selection + "[/quote]";
         ModelAndView mav = addPost(topicId);
-        PostDto dto = (PostDto) mav.getModel().get("postDto");
+        PostDto dto = (PostDto) mav.getModel().get(POST_DTO);
         dto.setBodyText(quote);
         return mav;
     }
@@ -226,7 +232,7 @@ public class PostController {
         if (result.hasErrors()) {
             // refill the form fields
             ModelAndView mav = this.addPost(postDto.getTopicId());
-            mav.addObject("postDto", postDto);
+            mav.addObject(POST_DTO, postDto);
             return mav;
         }
         Post newbie = topicService.replyToTopic(postDto.getTopicId(), postDto.getBodyText());

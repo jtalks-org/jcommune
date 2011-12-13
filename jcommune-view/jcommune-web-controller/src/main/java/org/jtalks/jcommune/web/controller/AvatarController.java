@@ -20,13 +20,17 @@ import org.jtalks.jcommune.service.AvatarService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.util.ImageUtils;
+import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest;
@@ -50,7 +54,7 @@ import java.util.Map;
 public class AvatarController {
 
 
-    private final AvatarService avatarService;
+    private AvatarService avatarService;
     private SecurityService securityService;
     private UserService userService;
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -79,10 +83,9 @@ public class AvatarController {
      * @throws javax.servlet.ServletException avatar processing problem
      */
     @RequestMapping(value = "/users/ieAvatarpreview", method = RequestMethod.POST)
-    public
     @ResponseBody
-    Map<String, String> uploadAvatarFromIE(DefaultMultipartHttpServletRequest request,
-                                           HttpServletResponse response) throws ServletException {
+    public Map<String, String> uploadAvatarFromIE(DefaultMultipartHttpServletRequest request,
+                                                  HttpServletResponse response) throws ServletException {
 
         Map<String, MultipartFile> fileMap = request.getFileMap();
         Collection<MultipartFile> fileCollection = fileMap.values();
@@ -110,10 +113,8 @@ public class AvatarController {
      * @throws javax.servlet.ServletException avatar processing problem
      */
     @RequestMapping(value = "/users/avatarpreview", method = RequestMethod.POST)
-    public
     @ResponseBody
-    Map<String, String>
-    uploadAvatar(@RequestBody byte[] bytes,
+    public Map<String, String> uploadAvatar(@RequestBody byte[] bytes,
                  HttpServletResponse response) throws ServletException {
 
         Map<String, String> responseContent = new HashMap<String, String>();
@@ -150,7 +151,7 @@ public class AvatarController {
      */
     @RequestMapping(value = "/{encodedUsername}/avatar", method = RequestMethod.GET)
     public void renderAvatar(HttpServletResponse response, @PathVariable("encodedUsername") String encodedUsername)
-            throws NotFoundException, IOException {
+        throws NotFoundException, IOException {
         User user = userService.getByEncodedUsername(encodedUsername);
         byte[] avatar = user.getAvatar();
         response.setContentType("image/jpeg");

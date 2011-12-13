@@ -18,7 +18,7 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.AvatarService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.util.ImageUtils;
+import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.mockito.Matchers;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;

@@ -12,14 +12,15 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service.util;
+package org.jtalks.jcommune.service.nontransactional;
 
 import org.springframework.stereotype.Component;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
 import java.awt.image.RenderedImage;
@@ -161,7 +162,7 @@ public class ImageUtils {
                 result = base64.decodeBuffer(encodedBytes);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
         return result;
     }

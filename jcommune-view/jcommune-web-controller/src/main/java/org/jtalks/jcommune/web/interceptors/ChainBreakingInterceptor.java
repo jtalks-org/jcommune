@@ -17,8 +17,10 @@ package org.jtalks.jcommune.web.interceptors;
 import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * This interceptor simply breaks interceptor chain and forwards request to
@@ -36,7 +38,7 @@ public class ChainBreakingInterceptor extends HandlerInterceptorAdapter {
      */
     @Override
     public boolean preHandle(HttpServletRequest request,
-                             HttpServletResponse response, Object handler) throws Exception {
+                             HttpServletResponse response, Object handler) throws IOException, ServletException {
         HttpRequestHandler resourcehandler = ((HttpRequestHandler) handler);
         resourcehandler.handleRequest(request, response);
         //break interceptor chain

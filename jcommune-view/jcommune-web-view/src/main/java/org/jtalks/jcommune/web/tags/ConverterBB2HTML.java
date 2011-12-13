@@ -29,7 +29,7 @@ import java.io.IOException;
  * Tis tag also replaces newline symbols with html
  * line break tag <br>
  */
-public class ConverterBB2HTML extends SimpleTagSupport implements JspTag {
+public class ConverterBB2HTML extends SimpleTagSupport {
 
     private String bbCode;
 

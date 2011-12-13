@@ -14,9 +14,7 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
-import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Section;
 
 import java.util.List;

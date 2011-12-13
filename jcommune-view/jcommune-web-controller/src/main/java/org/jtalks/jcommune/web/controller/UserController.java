@@ -20,8 +20,12 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.*;
-import org.jtalks.jcommune.service.util.ImageUtils;
+import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
+import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
+import org.jtalks.jcommune.service.exceptions.MailingFailedException;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
+import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
@@ -31,7 +35,12 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
@@ -84,7 +93,7 @@ public class UserController {
      *                          accessing to current logged in user
      * @param breadcrumbBuilder the object which provides actions on
      *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
-     * @param imageUtils        {@link org.jtalks.jcommune.service.util.ImageUtils} used
+     * @param imageUtils        {@link org.jtalks.jcommune.service.nontransactional.ImageUtils} used
      * @param postService       {@link org.jtalks.jcommune.service.PostService} used
      */
     @Autowired
