@@ -179,7 +179,7 @@
     <!-- Font size -->
     <code name="size">
         <pattern>[size=<var name="size" scope="escapeXml"/>]<var name="text" inherit="true"/>[/size]</pattern>
-        <template>&lt;span style=&quot;font-size:<var name="size"/>;&quot;&gt;<var name="text"/>&lt;/span&gt;</template>
+        <template>&lt;span class=&quot;textSize<var name="size"/>&quot;&gt;<var name="text"/>&lt;/span&gt;</template>
     </code>
 
     <!-- Font family -->
@@ -191,37 +191,37 @@
     <!-- Text highlight -->
     <code name="highlight">
         <pattern>[highlight]<var name="text" inherit="true"/>[/highlight]</pattern>
-        <template>&lt;span style=&quot;background-color: silver;&quot;&gt;<var name="text"/>&lt;/span&gt;</template>
+        <template>&lt;span class=&quot;highlight&quot;&gt;<var name="text"/>&lt;/span&gt;</template>
     </code>
 
     <!-- Text, align to left -->
     <code name="left">
         <pattern>[left]<var name="text" inherit="true"/>[/left]</pattern>
-        <template>&lt;p style=&quot;text-align: left;&quot;&gt;<var name="text"/>&lt;/p&gt;</template>
+        <template>&lt;p class=&quot;leftText&quot;&gt;<var name="text"/>&lt;/p&gt;</template>
     </code>
 
     <!-- Text, align to right -->
     <code name="right">
         <pattern>[right]<var name="text" inherit="true"/>[/right]</pattern>
-        <template>&lt;p style=&quot;text-align: right;&quot;&gt;<var name="text"/>&lt;/p&gt;</template>
+        <template>&lt;p class=&quot;rightText&quot;&gt;<var name="text"/>&lt;/p&gt;</template>
     </code>
 
     <!-- Text, align to center -->
     <code name="center">
         <pattern>[center]<var name="text" inherit="true"/>[/center]</pattern>
-        <template>&lt;p style=&quot;text-align: center;&quot;&gt;<var name="text"/>&lt;/p&gt;</template>
+        <template>&lt;p class=&quot;centerText&quot;&gt;<var name="text"/>&lt;/p&gt;</template>
     </code>
 
     <!-- Text indent -->
     <code name="indent">
         <pattern>[indent=<var name="size" scope="escapeXml"/>]<var name="text" inherit="true"/>[/indent]</pattern>
-        <template>&lt;p style=&quot;margin-left: <var name="size"/>;&quot;&gt;<var name="text"/>&lt;/p&gt;</template>
+        <template>&lt;p class=&quot;marginLeft<var name="size"/>&quot;&gt;<var name="text"/>&lt;/p&gt;</template>
     </code>
 
     <!-- List -->
     <code name="list">
         <pattern>[list]<var scope="listScope"/>[/list]</pattern>
-        <template>&lt;ul class=&quot;bb_list&quot;&gt;<var/>&lt;/ul&gt;</template>
+        <template>&lt;ul class=&quot;list&quot;&gt;<var/>&lt;/ul&gt;</template>
     </code>
     <scope name="listScope" ignoreText="true">
         <code name="li">
@@ -229,14 +229,6 @@
             <template>&lt;li&gt;<var/>&lt;/li&gt;</template>
         </code>
     </scope>
-
-
-    [list][*]1й пункт[*]2й пункт[/list]
-    <ul class="bb_list"><li>1й пункт</li><li>2й пункт</li></ul>
-
-
-
-
 
     <!-- Insert image -->
     <code name="img1" priority="2">
@@ -293,13 +285,13 @@
     <!-- Qote block -->
     <code name="quote">
         <pattern>[quote]<var inherit="true"/>[/quote]</pattern>
-        <template>&lt;blockquote&gt;<var/>&lt;/blockquote&gt;</template>
+        <template>&lt;span class=&quot;quote&quot;&gt;<var/>&lt;/span&gt;</template>
     </code>
 
     <!-- Quote code block -->
     <code name="code">
         <pattern>[code]<var scope="basic"/>[/code]</pattern>
-        <template>&lt;pre&gt;<var/>&lt;/pre&gt;</template>
+        <template>&lt;span class=&quot;code&quot;&gt;<var/>&lt;/span&gt;</template>
     </code>
 
     <!-- Simple table -->

@@ -66,7 +66,7 @@ public class ConverterBB2HTMLTest {
     @Test
     public void bbCodeSize(){
         tag.setBbCode("[size=18]Large text[/size]");
-        assertEquals(tag.getBbCode(), "<span style=\"font-size:18;\">Large text</span>");
+        assertEquals(tag.getBbCode(), "<span class=\"textSize18\">Large text</span>");
     }
 
     @Test
@@ -78,30 +78,30 @@ public class ConverterBB2HTMLTest {
     @Test
     public void bbCodeHighlight(){
         tag.setBbCode("[highlight]Highlited text[/highlight]");
-        assertEquals(tag.getBbCode(), "<span style=\"background-color: silver;\">Highlited text</span>");
+        assertEquals(tag.getBbCode(), "<span class=\"highlight\">Highlited text</span>");
     }
     @Test
     public void bbCodeLeft(){
         tag.setBbCode("[left]Left aligned text[/left]");
-        assertEquals(tag.getBbCode(), "<p style=\"text-align: left;\">Left aligned text</p>");
+        assertEquals(tag.getBbCode(), "<p class=\"leftText\">Left aligned text</p>");
     }
 
     @Test
     public void bbCodeRight(){
         tag.setBbCode("[right]Right aligned text[/right]");
-        assertEquals(tag.getBbCode(), "<p style=\"text-align: right;\">Right aligned text</p>");
+        assertEquals(tag.getBbCode(), "<p class=\"rightText\">Right aligned text</p>");
     }
 
     @Test
     public void bbCodeCenter(){
         tag.setBbCode("[center]Center aligned text[/center]");
-        assertEquals(tag.getBbCode(), "<p style=\"text-align: center;\">Center aligned text</p>");
+        assertEquals(tag.getBbCode(), "<p class=\"centerText\">Center aligned text</p>");
     }
 
     @Test
     public void bbCodeIndent(){
         tag.setBbCode("[indent=25]Indent text[/indent]");
-        assertEquals(tag.getBbCode(), "<p style=\"margin-left: 25;\">Indent text</p>");
+        assertEquals(tag.getBbCode(), "<p class=\"marginLeft25\">Indent text</p>");
     }
 
     @Test
@@ -113,7 +113,7 @@ public class ConverterBB2HTMLTest {
     @Test
     public void bbCodeList(){
         tag.setBbCode("[list][*]1й пункт[*]2й пункт[/list]");
-        assertEquals(tag.getBbCode(), "<ul class=\"bb_list\"><li>1й пункт</li><li>2й пункт</li></ul>");
+        assertEquals(tag.getBbCode(), "<ul class=\"list\"><li>1й пункт</li><li>2й пункт</li></ul>");
     }
 
     @Test
@@ -125,6 +125,6 @@ public class ConverterBB2HTMLTest {
     @Test
     public void bbCodeCode(){
         tag.setBbCode("[code]System.out.println(\"Hi!\");[/code]");
-        assertEquals(tag.getBbCode(), "<pre>System.out.println(&quot;Hi!&quot;);</pre>");
+        assertEquals(tag.getBbCode(), "<span class=\"code\">System.out.println(&quot;Hi!&quot;);</span>");
     }
 }
