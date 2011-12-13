@@ -19,7 +19,6 @@ import ru.perm.kefir.bbcode.BBProcessorFactory;
 import ru.perm.kefir.bbcode.TextProcessor;
 
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.JspTag;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
 

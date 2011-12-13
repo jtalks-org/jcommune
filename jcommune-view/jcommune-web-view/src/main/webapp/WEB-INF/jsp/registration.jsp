@@ -57,22 +57,6 @@
                     <span class="reg_info"><spring:message code="label.tip.email"/></span>
                 </div>
                 <div class="forum_row">
-                    <form:label path="firstName"><spring:message code="label.firstname"/></form:label>
-                    <div>
-                        <form:input path="firstName" class="reg_input" type="text"/>
-                        <form:errors path="firstName" cssClass="error"/>
-                    </div>
-                    <span class="reg_info"><spring:message code="label.tip.firstname"/></span>
-                </div>
-                <div class="forum_row">
-                    <form:label path="lastName"><spring:message code="label.lastname"/></form:label>
-                    <div>
-                        <form:input path="lastName" class="reg_input" type="text"/>
-                        <form:errors path="lastName" cssClass="error"/>
-                    </div>
-                    <span class="reg_info"><spring:message code="label.tip.lastname"/></span>
-                </div>
-                <div class="forum_row">
                     <form:label path="password"><spring:message code="label.password"/></form:label>
 
                     <div>
