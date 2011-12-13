@@ -55,6 +55,7 @@ function initEditor(textarea_id, wysiwyg) {
     if (enableWysiwyg) {
         ifm = document.createElement("iframe");
         ifm.setAttribute("id", "rte");
+        ifm.setAttribute("class", "editorBBCODE");
         //ifm.setAttribute("frameborder", "1");
         ifm.width = '90%';
         ifm.height = 400;
@@ -85,7 +86,7 @@ function ShowEditor() {
     myeditor.designMode = "on";
     myeditor.open();
     myeditor.write('<html><head><link href="../../../css/editor.css" rel="Stylesheet" type="text/css" /></head>');
-    myeditor.write('<body style="height: 100%;width: 100%;margin:0px 0px 0px 0px;background: #f8f8f8;border-bottom: #999999;border-style: ridge;" class="editorWYSIWYG">');
+    myeditor.write('<body style="height: 100%;width: 100%;margin:0px 0px 0px 0px;background: #f8f8f8;border: 1px solid #b2b2b2;" class="editorWYSIWYG">');
     myeditor.write(content);
     myeditor.write('</body></html>');
     myeditor.close();
@@ -132,8 +133,8 @@ function html2bbcode() {
     rep(/<s(\s[^<>]*)?>/gi, "[s]");
     rep(/<div><br(\s[^<>]*)?>/gi, "<div>");//chrome-safari fix to prevent double linefeeds
     rep(/<br(\s[^<>]*)?>/gi, "\n");
-/*    rep(/<p(\s[^<>]*)?>/gi, "");*/
-   /* rep(/<\/p>/gi, "\n");*/
+    /*    rep(/<p(\s[^<>]*)?>/gi, "");*/
+    /* rep(/<\/p>/gi, "\n");*/
     rep(/<ul>/gi, "[list]");
     rep(/<\/ul>/gi, "[/list]");
     rep(/<li>/gi, "[*]");
@@ -160,7 +161,7 @@ function html2bbcode() {
         rep(/<a\s[^<>]*?href=\"?([^<>]*?)\"?(\s[^<>]*)?>([^<>]*?)<\/a>/gi, "[url=$1]$3[/url]");
         sc2 = content;
         rep(/<(span|blockquote|pre)\s[^<>]*?style=\"?font-weight: ?bold;?\"?\s*([^<]*?)<\/\1>/gi, "[b]<$1 style=$2</$1>[/b]");
-        rep(/<(span|blockquote|pre)\s[^<>]*?style=\"?font-size: ?([^<>]*?);?\"?\s*([^<]*?)<\/\1>/gi, "[size=<$1 style=$2</$1>][/size]");
+        rep(/<(span|blockquote|pre)\s[^<>]*?style=\"?font-size: ?([^<>]*?)\s?p?x?;?\"?\s*([^<]*?)<\/\1>/gi, "[size=<$1 style=$2</$1>][/size]");
 
         rep(/<(span|blockquote|pre)\s[^<>]*?style=\"?font-weight: ?normal;?\"?\s*([^<]*?)<\/\1>/gi, "<$1 style=$2</$1>");
         rep(/<(span|blockquote|pre)\s[^<>]*?style=\"?font-style: ?italic;?\"?\s*([^<]*?)<\/\1>/gi, "[i]<$1 style=$2</$1>[/i]");
@@ -204,15 +205,15 @@ function html2bbcode() {
 }
 
 function bbcode2html() {
-    // example: [b] to <strong>
-    rep(/\</gi, "&lt;"); //removing html tags
+    // removing html tags
+    rep(/\</gi, "&lt;");
     rep(/\>/gi, "&gt;");
 
+    rep(/\[\*\]([\s\S]*?)\s*\[\*\]/gi, "<li>$1</li>[*]");
+    rep(/\[\*\]([\s\S]*?)\s*\[\/list\]/gi, "<li>$1</li>[/list]");
     rep(/\n/gi, "<br />");
     rep(/\[list\]/gi, "<ul>");
     rep(/\[\/list\]/gi, "</ul>");
-    rep(/\[\*\]/gi, "<li>");
-    rep(/\[\/\*\]/gi, "</li>");
     if (browser) {
         rep(/\[b\]/gi, "<strong>");
         rep(/\[\/b\]/gi, "</strong>");
@@ -220,24 +221,23 @@ function bbcode2html() {
         rep(/\[\/i\]/gi, "</em>");
         rep(/\[u\]/gi, "<u>");
         rep(/\[\/u\]/gi, "</u>");
+        rep(/\[s\]/gi, "<s>");
+        rep(/\[\/s\]/gi, "</s>");
     } else {
         rep(/\[b\]/gi, "<span style=\"font-weight: bold;\">");
         rep(/\[i\]/gi, "<span style=\"font-style: italic;\">");
         rep(/\[u\]/gi, "<span style=\"text-decoration: underline;\">");
-        rep(/\[\/(b|i|u)\]/gi, "</span>");
+        rep(/\[s\]/gi, "<span style=\"text-decoration: line-through;\">");
+        rep(/\[\/(b|i|u|s)\]/gi, "</span>");
     }
-    rep(/\[s\]/gi, "<s>");
-    rep(/\[\/s\]/gi, "</s>");
 
-    rep(/\[left\]/gi, '<p style="text-align: left;">');
-    rep(/\[right\]/gi, '<p style="text-align: right;">');
-    rep(/\[center\]/gi, '<p style="text-align: center;">');
-    rep(/\[quote\]/gi, '<p class="quote" style="font-style: italic;font-variant:inherit;">');
-    rep(/\[code\]/gi, '<p class="code" style="font-style: italic;font-weight: bolder;">');
-    rep(/\[\/(left|right|center|quote|code)\]/gi, "</p>");
-
-    rep(/\[highlight\]/gi, '<font style="background-color: silver;">');
-    rep(/\[\/highlight\]/gi, "</font>");
+    rep(/\[left\]/gi, '<font class="leftText">');
+    rep(/\[right\]/gi, '<font class="rightText">');
+    rep(/\[center\]/gi, '<font class="centerText">');
+    rep(/\[quote\]/gi, '<font class="quote">');
+    rep(/\[code\]/gi, '<font class="code">');
+    rep(/\[highlight\]/gi, '<font class="highlight">');
+    rep(/\[\/(left|right|center|quote|code|highlight)\]/gi, "</font>");
 
     rep(/\[img\]([^\"]*?)\[\/img\]/gi, "<img src=\"$1\" />");
     var sc;
@@ -245,8 +245,8 @@ function bbcode2html() {
         sc = content;
         rep(/\[url=([^\]]+)\]([\s\S]*?)\[\/url\]/gi, "<a href=\"$1\">$2</a>");
         rep(/\[url\]([\s\S]*?)\[\/url\]/gi, "<a href=\"$1\">$1</a>");
-        rep(/\[size=([^\]]+)\]([\s\S]*?)\[\/size\]/gi, '<font size="$1">$2</font>');
-        rep(/\[indent=([^\]]+)\]([\s\S]*?)\[\/indent\]/gi, '<font style="margin-left:$1 px;">$2</font>');
+        rep(/\[size=([^\]]+)\]([\s\S]*?)\[\/size\]/gi, '<font class="textSize$1">$2</font>');
+        rep(/\[indent=([^\]]+)\]([\s\S]*?)\[\/indent\]/gi, '<font class="marginLeft$1">$2</font>');
         if (browser) {
             rep(/\[color=([^\]]*?)\]([\s\S]*?)\[\/color\]/gi, "<font color=\"$1\">$2</font>");
             rep(/\[font=([^\]]*?)\]([\s\S]*?)\[\/font\]/gi, "<font face=\"$1\">$2</font>");
@@ -368,10 +368,10 @@ function doClick(command) {
                 AddTag('[center]', '[/center]');
                 break;
             case 'InsertUnorderedList':
-                AddTag('\n[list]\n[*]', '\n[/list]\n');
+                AddTag('[list][*]', '[/list]');
                 break;
             case 'listElement':
-                AddTag('\n[*]', '');
+                AddTag('[*]', '');
                 break;
         }
     }
