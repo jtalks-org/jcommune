@@ -38,11 +38,10 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.List;
 
 /**
- * Controller for User related actions: registration.
+ * Controller for User related actions: registration, user profile operations and so on.
  *
  * @author Kirill Afonin
  * @author Alexandre Teterin
@@ -65,7 +64,7 @@ public class UserController {
     private PostService postService;
 
     /**
-     * This method turns the trim binder on. Trim bilder
+     * This method turns the trim binder on. Trim binder
      * removes leading and trailing spaces from the submitted fields.
      * So, it ensures, that all validations will be applied to
      * trimmed field values only.
@@ -219,38 +218,6 @@ public class UserController {
         String code = language.getLanguageCode();
         Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, code);
         response.addCookie(cookie);
-    }
-
-    /**
-     * Remove avatar from user profile.
-     *
-     * @return edit user profile page
-     */
-    @RequestMapping(value = "/users/edit/avatar", method = RequestMethod.POST)
-    public ModelAndView removeAvatarFromCurrentUser() {
-        User user = securityService.getCurrentUser();
-        userService.removeAvatarFromCurrentUser();
-        EditUserProfileDto editedUser = new EditUserProfileDto(user);
-        return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUser);
-    }
-
-    /**
-     * Write user avatar in response for rendering it on html pages.
-     *
-     * @param response        servlet response
-     * @param encodedUsername {@link User#getEncodedUsername()}
-     * @throws NotFoundException throws if user with given encodedUsername not found
-     * @throws IOException       throws if an output exception occurred
-     */
-    @RequestMapping(value = "/{encodedUsername}/avatar", method = RequestMethod.GET)
-    public void renderAvatar(HttpServletResponse response,
-                             @PathVariable("encodedUsername") String encodedUsername) throws NotFoundException,
-            IOException {
-        User user = userService.getByEncodedUsername(encodedUsername);
-        byte[] avatar = user.getAvatar();
-        response.setContentType("image/jpeg");
-        response.setContentLength(avatar.length);
-        response.getOutputStream().write(avatar);
     }
 
     /**

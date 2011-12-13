@@ -15,19 +15,22 @@
 
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.AvatarService;
+import org.jtalks.jcommune.service.SecurityService;
+import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.util.ImageUtils;
+import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
@@ -48,16 +51,22 @@ public class AvatarController {
 
 
     private final AvatarService avatarService;
+    private SecurityService securityService;
+    private UserService userService;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * Constructor for controller instantiating, dependencies injected via autowiring.
      *
-     * @param avatarService for avatar manipulation
+     * @param avatarService   for avatar manipulation
+     * @param securityService for current user-related operations
+     * @param userService     to manipulate user-related data
      */
     @Autowired
-    public AvatarController(AvatarService avatarService) {
+    public AvatarController(AvatarService avatarService, SecurityService securityService, UserService userService) {
         this.avatarService = avatarService;
+        this.securityService = securityService;
+        this.userService = userService;
     }
 
     /**
@@ -72,9 +81,8 @@ public class AvatarController {
     @RequestMapping(value = "/users/ieAvatarpreview", method = RequestMethod.POST)
     public
     @ResponseBody
-    Map<String, String>
-    uploadAvatarFromIE(DefaultMultipartHttpServletRequest request,
-                       HttpServletResponse response) throws ServletException {
+    Map<String, String> uploadAvatarFromIE(DefaultMultipartHttpServletRequest request,
+                                           HttpServletResponse response) throws ServletException {
 
         Map<String, MultipartFile> fileMap = request.getFileMap();
         Collection<MultipartFile> fileCollection = fileMap.values();
@@ -116,6 +124,38 @@ public class AvatarController {
         }
 
         return responseContent;
+    }
+
+    /**
+     * Remove avatar from user profile.
+     *
+     * @return edit user profile page
+     */
+    @RequestMapping(value = "/users/edit/avatar", method = RequestMethod.POST)
+    public ModelAndView removeAvatarFromCurrentUser() {
+        User user = securityService.getCurrentUser();
+        userService.removeAvatarFromCurrentUser();
+        EditUserProfileDto editedUser = new EditUserProfileDto(user);
+        return new ModelAndView("editProfile", "editedUser", editedUser);
+    }
+
+    /**
+     * Write user avatar in response for rendering it on html pages.
+     *
+     * @param response        servlet response
+     * @param encodedUsername {@link User#getEncodedUsername()}
+     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     *                     if user with given encodedUsername not found
+     * @throws IOException throws if an output exception occurred
+     */
+    @RequestMapping(value = "/{encodedUsername}/avatar", method = RequestMethod.GET)
+    public void renderAvatar(HttpServletResponse response, @PathVariable("encodedUsername") String encodedUsername)
+            throws NotFoundException, IOException {
+        User user = userService.getByEncodedUsername(encodedUsername);
+        byte[] avatar = user.getAvatar();
+        response.setContentType("image/jpeg");
+        response.setContentLength(avatar.length);
+        response.getOutputStream().write(avatar);
     }
 
     /**

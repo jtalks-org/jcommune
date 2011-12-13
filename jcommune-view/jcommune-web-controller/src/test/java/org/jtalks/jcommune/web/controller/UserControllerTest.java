@@ -41,8 +41,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -54,8 +52,6 @@ import static org.testng.Assert.assertNull;
 /**
  * @author Kirill Afonin
  * @author Osadchuck Eugeny
- *         <p/>
- *         TODO: Split it
  */
 public class UserControllerTest {
     private UserService userService;
@@ -289,35 +285,6 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testRemoveAvatar() throws IOException {
-        User user = getUser();
-        when(securityService.getCurrentUser()).thenReturn(user);
-
-        ModelAndView mav = controller.removeAvatarFromCurrentUser();
-
-        assertViewName(mav, "editProfile");
-        verify(securityService).getCurrentUser();
-        verify(userService).removeAvatarFromCurrentUser();
-    }
-
-    @Test
-    public void testRenderAvatar() throws Exception {
-        String ENCODED_USER_NAME = "encodeUsername";
-        when(userService.getByEncodedUsername(ENCODED_USER_NAME))
-                .thenReturn(getUser());
-        HttpServletResponse response = mock(HttpServletResponse.class);
-        ServletOutputStream servletOutputStream = mock(ServletOutputStream.class);
-        when(response.getOutputStream()).thenReturn(servletOutputStream);
-
-        controller.renderAvatar(response, ENCODED_USER_NAME);
-
-        verify(response).setContentType("image/jpeg");
-        verify(response).setContentLength(avatarByteArray.length);
-        verify(response).getOutputStream();
-        verify(servletOutputStream).write(avatarByteArray);
-    }
-
-    @Test
     public void testInitBinder() {
         WebDataBinder binder = mock(WebDataBinder.class);
         controller.initBinder(binder);
@@ -424,14 +391,6 @@ public class UserControllerTest {
         newUser.setFirstName(FIRST_NAME);
         newUser.setLastName(LAST_NAME);
         newUser.setAvatar(avatarByteArray);
-        return newUser;
-    }
-
-    private User getUserWithoutAvatar() throws IOException {
-        User newUser = new User(USER_NAME, EMAIL, PASSWORD);
-        newUser.setFirstName(FIRST_NAME);
-        newUser.setLastName(LAST_NAME);
-        newUser.setAvatar(null);
         return newUser;
     }
 
