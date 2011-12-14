@@ -125,6 +125,6 @@ public class ConverterBB2HTMLTest {
     @Test
     public void bbCodeCode(){
         tag.setBbCode("[code]System.out.println(\"Hi!\");[/code]");
-        assertEquals(tag.getBbCode(), "<span class=\"code\">System.out.println(&quot;Hi!&quot;);</span>");
+        assertEquals(tag.getBbCode(), "<p class=\"code\">System.out.println(&quot;Hi!&quot;);</p>");
     }
 }
