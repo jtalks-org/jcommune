@@ -21,17 +21,17 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
 <sec:authentication property="principal.username" var="auth" scope="request"/>
 <head>
     <title><spring:message code="label.user"/> - "${auth}"</title>
-    <link href="${pageContext.request.contextPath}/resources/css/main.css"
-          type=text/css rel=stylesheet>
+    <script language="javascript"
+            src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-1.7.min.js"></script>
+    <script type="text/javascript"
+            src="${pageContext.request.contextPath}/resources/javascript/licensed/fileuploader.js"></script>
 </head>
 <body>
 <jsp:include page="../template/topLine.jsp"/>
 <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-
 <div id="editUserDetails">
     <form:form id="editProfileForm" name="editProfileForm"
                action="${pageContext.request.contextPath}/users/edit"
@@ -168,35 +168,27 @@
     }
 
     function createUploader() {
-        var action;
-
-        if ((navigator.appName.indexOf("Microsoft") != -1) ||
-                (navigator.appName.indexOf("Opera") != -1)) {
-            action = '${pageContext.request.contextPath}/users/ieAvatarpreview';
-        }
-        else {
-            action = '${pageContext.request.contextPath}/users/avatarpreview';
-        }
+        var action = '${pageContext.request.contextPath}/users/avatarpreview';
 
         console.log('Action: %s', action);
         var uploader = new qq.FileUploaderBasic({
-            button:$("#upload").get(0),
-            action:action,
-            multiple:false,
-            allowedExtensions:['jpg', 'jpeg', 'png', 'gif'],
-            sizeLimit:4194304, // max size
-            onSubmit:function (id, filename) {
+            button:  $("#upload").get(0),
+            action: action,
+            multiple: false,
+            allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'],
+            sizeLimit: 4194304, // max size
+            onSubmit: function(id, filename) {
                 console.log('File upload: %s, ID: %s', filename, id);
             },
-            onProgress:function (id, filename, loaded, total) {
+            onProgress: function(id, filename, loaded, total) {
                 console.log('Progress for file: %s, ID: %s, loaded: %s, total: %s', filename, id, loaded, total);
             },
-            onComplete:function (id, filename, responseJSON) {
+            onComplete : function(id, filename, responseJSON) {
                 console.log('File upload for file %s, id %s done with status %s', filename, id, responseJSON);
                 document.getElementById('avatarPreview').setAttribute('src', responseJSON.srcPrefix + responseJSON.srcImage);
                 document.getElementById('avatarTempValue').setAttribute('value', responseJSON.srcImage);
             },
-            debug:true
+            debug: true
         });
 
     }
@@ -205,4 +197,3 @@
 </script>
 
 </body>
-</html>

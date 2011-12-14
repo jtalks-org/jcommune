@@ -112,7 +112,7 @@
             </div>
             <div class="forum_message_cell">
                 <div class="post_details">
-                    <a class="button" href="javascript:copyLink(${post.id})">
+                    <a class="button" href="javascript:createAndPromptPostLink(${post.id})">
                         <spring:message code="label.link"/>
                     </a>
                     <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
@@ -149,15 +149,14 @@
                     </sec:accesscontrollist>
                     <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
                         <a class="button" href="javascript:
-                                setSelection(${post.id});
+                                document.getElementById('selection' + postId).value = getSelection(${post.id});
                                 document.forms['quoteForm${post.id}'].submit();">
                             <spring:message code="label.quotation"/>
                         </a>
 
-                        <form action="${pageContext.request.contextPath}/posts/quote"
+                        <form action="${pageContext.request.contextPath}/posts/${post.id}/quote"
                               method="post" id='quoteForm${post.id}'>
                             <input name='selection' id='selection${post.id}' type='hidden'/>
-                            <input name='topicId' id='topicId' type='hidden' value='${topic.id}'/>
                         </form>
                     </sec:authorize>
                     <a name="${post.id}" href="#${post.id}">
@@ -213,16 +212,14 @@
 <c:if test="${pag.maxPages>1}">
     <c:if test="${pag.pagingEnabled==true}">
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-            <a class="button"
-               href="?pagingEnabled=false"><spring:message code="label.showAll"/></a>
+            <a class="button" href="?pagingEnabled=false"><spring:message code="label.showAll"/></a>
             &nbsp; &nbsp; &nbsp;
         </sec:authorize>
     </c:if>
 </c:if>
 <c:if test="${pag.pagingEnabled == false}">
     <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-        <a class="button"
-           href="?pagingEnabled=true"><spring:message code="label.showPages"/></a>
+        <a class="button" href="?pagingEnabled=true"><spring:message code="label.showPages"/></a>
         &nbsp; &nbsp; &nbsp;
     </sec:authorize>
 </c:if>
@@ -249,26 +246,4 @@
 <div class="footer_buffer"></div>
 <!-- Несемантичный буфер для прибития подвала -->
 </div>
-
-
-<!-- content -->
-<script type="text/javascript">
-    function copyLink(postId) {
-        prompt("Link to copy", document.location.href + "#" + postId);
-    }
-
-    function setSelection(postId) {
-        var txt = '';
-        if (window.getSelection) {
-            txt = window.getSelection();
-        } else if (document.getSelection) {
-            txt = document.getSelection();
-        }
-        if (txt == '') {
-            // nothing is selected, using post content
-            txt = document.getElementById(postId).innerText;
-        }
-        document.getElementById('selection' + postId).value = txt;
-    }
-</script>
 </body>
