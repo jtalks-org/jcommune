@@ -211,8 +211,9 @@ function bbcode2html() {
     rep(/\</gi, "&lt;");
     rep(/\>/gi, "&gt;");
 
-    rep(/\[\*\]([\s\S]*?)\s*\[\*\]/gi, "<li>$1</li>[*]");
-    rep(/\[\*\]([\s\S]*?)\s*\[\/list\]/gi, "<li>$1</li>[/list]");
+    rep(/([\s\S]*?)\s*\[\/list\]/gi, "$1</li>[/list]");
+    rep(/\[\*\]([\s\S]*?)\s*\[\*\]/gi, "<li>$1</li><li>");
+    rep(/\[\*\]([\s\S]*?)\s*<\/li>/gi, "<li>$1</li>");
     rep(/\n/gi, "<br />");
     rep(/\[list\]/gi, "<ul>");
     rep(/\[\/list\]/gi, "</ul>");
