@@ -27,20 +27,15 @@
     <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0"/>
     <meta http-equiv="Expires" content="-1"/>
     <meta charset="UTF-8">
-
-    <title><decorator:title default="JCommune"/></title>
     <link rel="stylesheet" type="text/css" media="screen, projection"
           href="${pageContext.request.contextPath}/resources/css/screen.css"/>
     <link rel="shortcut icon" type="image/x-icon"
           href="${pageContext.request.contextPath}/resources/images/favicon.ico"/>
     <link rel="icon" type="image/png"
           href="${pageContext.request.contextPath}/resources/images/favicon.png"/>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
-            type="text/javascript"></script>
     <script language="javascript"
-            src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-1.7.min.js"></script>
-    <script type="text/javascript"
-            src="${pageContext.request.contextPath}/resources/javascript/licensed/fileuploader.js"></script>
+            src="${pageContext.request.contextPath}/resources/javascript/custom/URLBuilder.js"></script>
+    <decorator:head/>
 </head>
 <!--Define timezone to adjust date and time values-->
 <body onload='document.cookie="GMT=" + new Date().getTimezoneOffset()+"; path=/"'>
