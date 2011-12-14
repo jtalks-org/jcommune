@@ -253,7 +253,8 @@
 <!-- content -->
 <script type="text/javascript">
     function copyLink(postId) {
-        prompt("Link to copy", document.location.href + "#" + postId);
+        var href = window.location.toString().split("#", 1)[0];
+        prompt("Link to copy", href + "#" + postId);
     }
 
     function setSelection(postId) {
