@@ -186,17 +186,34 @@ public class PostControllerTest {
 
     @Test
     public void testQuotedAnswer() throws NotFoundException {
-        ModelAndView mav = controller.addPostWithQuote(TOPIC_ID, POST_CONTENT);
+        Post post = new Post(null, POST_CONTENT);
+        topic.addPost(post);
+        when(postService.get(anyLong())).thenReturn(post);
+
+        ModelAndView mav = controller.addPostWithQuote(post.getId(), null);
         //check expectations
-        this.assertAnswerMavIsCorrect(mav);
         String expected = "[quote]" + POST_CONTENT + "[/quote]";
+        PostDto actual = assertAndReturnModelAttributeOfType(mav, "postDto", PostDto.class);
+        assertEquals(actual.getBodyText(), expected);
+    }
+
+    @Test
+    public void testPartialQuotedAnswer() throws NotFoundException {
+        String selection = "selected content";
+        Post post = new Post(null, POST_CONTENT);
+        topic.addPost(post);
+        when(postService.get(anyLong())).thenReturn(post);
+
+        ModelAndView mav = controller.addPostWithQuote(TOPIC_ID, selection);
+        //check expectations
+        String expected = "[quote]" + selection + "[/quote]";
         PostDto actual = assertAndReturnModelAttributeOfType(mav, "postDto", PostDto.class);
         assertEquals(actual.getBodyText(), expected);
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testQuotedAnswerForUnexistingTopic() throws NotFoundException {
-        doThrow(new NotFoundException()).when(topicService).get(TOPIC_ID);
+        doThrow(new NotFoundException()).when(postService).get(anyLong());
         controller.addPostWithQuote(TOPIC_ID, "");
     }
 

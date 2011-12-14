@@ -154,10 +154,9 @@
                             <spring:message code="label.quotation"/>
                         </a>
 
-                        <form action="${pageContext.request.contextPath}/posts/quote/${post.id}"
+                        <form action="${pageContext.request.contextPath}/posts/${post.id}/quote"
                               method="post" id='quoteForm${post.id}'>
                             <input name='selection' id='selection${post.id}' type='hidden'/>
-                            <input name='topicId' id='topicId' type='hidden' value='${topic.id}'/>
                         </form>
                     </sec:authorize>
                     <a name="${post.id}" href="#${post.id}">
@@ -260,9 +259,11 @@
     function setSelection(postId) {
         var txt = '';
         if (window.getSelection) {
-            txt = window.getSelection();
+            txt = window.getSelection().toString();
         } else if (document.getSelection) {
             txt = document.getSelection();
+        } else if (document.selection) {
+            txt = document.selection.createRange().text;
         }
         document.getElementById('selection' + postId).value = txt;
     }
