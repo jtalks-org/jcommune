@@ -206,6 +206,48 @@ function html2bbcode() {
     } while (sc != content)
 }
 
+function closeAllTags(text, tag) {
+    var currentText = text;
+
+    var regPrefix = new RegExp('\\[' + tag + '[^\\[^\\]]*\\]', 'ig');
+
+    var regTags = new RegExp('(\\[' + tag + '[^\\[^\\]]*\\])(.*)(\\[\\/' + tag + '\\])(.*)', 'ig');
+
+    var openTag = new RegExp('\\[' + tag + '[^\\[^\\]]*\\]', 'ig');
+    var closeTag = new RegExp('\\[\\/' + tag + '\\]', 'ig');
+
+    var prefIndex = currentText.search(regPrefix);
+    var prefix = "";
+    var postfix = "";
+
+    var result = regTags.exec(currentText);
+    if (result != null) {
+        postfix = closeAllTags(result[4], tag);
+        prefix = closeAllTags(currentText.substring(0, prefIndex), tag);
+        while (result != null) {
+            currentText = result[1] + closeAllTags(result[2], tag) + result[3] ;
+            result = regTags.exec(currentText);
+        }
+        currentText = prefix + currentText + postfix;
+    } else {
+
+        var closeTagResult = closeTag.exec(currentText);
+        if (closeTagResult != null) {
+            while (closeTagResult != null) {
+                currentText = "[" + tag + "]" + currentText;
+                closeTagResult = closeTag.exec(currentText);
+            }
+        } else {
+            var openTagResult = openTag.exec(currentText);
+            while (openTagResult != null) {
+                currentText = currentText + "[/" + tag + "]";
+                openTagResult = openTag.exec(currentText);
+            }
+        }
+    }
+    return currentText;
+}
+
 function bbcode2html() {
     // removing html tags
     rep(/\</gi, "&lt;");
@@ -510,16 +552,6 @@ function AddTag(t1, t2) {
             else {
                 element.value = txt + t1 + t2;
             }
-
-            if (t1.indexOf("[list]") > 0) {
-                var value1 = str.text;
-                var nPos1 = value1.indexOf("\n");
-                if (nPos1 > 0) {
-                    value1 = value1.replace(/\n/gi, "[*]");
-                }
-                str.text = value1;
-            }
-
             str.select();
         }
     }
@@ -528,14 +560,6 @@ function AddTag(t1, t2) {
         var sel_end = element.selectionEnd;
         MozillaInsertText(element, t1, sel_start);
         MozillaInsertText(element, t2, sel_end + t1.length);
-        if (t1.indexOf("[list]") > 0) {
-            var value = element.value;
-            var nPos = value.indexOf("\n");
-            if (nPos > 0) {
-                value = value.replace(/\n/gi, "[*]");
-            }
-            element.value = value;
-        }
         element.selectionStart = sel_start;
         element.selectionEnd = sel_end + t1.length + t2.length;
         element.focus();
@@ -628,7 +652,7 @@ function getTop2() {
     return ctop;
 }
 var nocol1 = "&#78;&#79;&#32;&#67;&#79;&#76;&#79;&#82;",
-        clos1 = "X";
+    clos1 = "X";
 
 function getLeft2() {
     var csBrWt = 0;
