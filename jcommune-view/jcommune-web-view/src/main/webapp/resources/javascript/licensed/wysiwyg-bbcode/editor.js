@@ -134,7 +134,7 @@ function html2bbcode() {
 
     rep(/<br(\s[^<>]*)?>/gi, "\n");
     /*rep(/<p(\s[^<>]*)?>/gi, "");
-    rep(/<\/p>/gi, "\n");*/
+     rep(/<\/p>/gi, "\n");*/
     rep(/<ul>/gi, "[list]");
     rep(/<\/ul>/gi, "[/list]");
     rep(/<li>/gi, "[*]");
@@ -214,9 +214,9 @@ function bbcode2html() {
     rep(/([\s\S]*?)\s*\[\/list\]/gi, "$1</li>[/list]");
     rep(/\[\*\]([\s\S]*?)\s*\[\*\]/gi, "<li>$1</li><li>");
     rep(/\[\*\]([\s\S]*?)\s*<\/li>/gi, "<li>$1</li>");
-    rep(/\n/gi, "<br />");
     rep(/\[list\]/gi, "<ul>");
     rep(/\[\/list\]/gi, "</ul>");
+    rep(/\n/gi, "<br />");
     if (browser) {
         rep(/\[b\]/gi, "<strong>");
         rep(/\[\/b\]/gi, "</strong>");
@@ -375,7 +375,7 @@ function doClick(command) {
                 AddTag('[center]', '[/center]');
                 break;
             case 'InsertUnorderedList':
-                AddTag('[list][*]', '[/list]');
+                AddList('[list][*]', '[/list]');
                 break;
             case 'listElement':
                 AddTag('[*]', '');
@@ -510,6 +510,16 @@ function AddTag(t1, t2) {
             else {
                 element.value = txt + t1 + t2;
             }
+
+            if (t1.indexOf("[list]") > 0) {
+                var value1 = str.text;
+                var nPos1 = value1.indexOf("\n");
+                if (nPos1 > 0) {
+                    value1 = value1.replace(/\n/gi, "[*]");
+                }
+                str.text = value1;
+            }
+
             str.select();
         }
     }
@@ -518,6 +528,66 @@ function AddTag(t1, t2) {
         var sel_end = element.selectionEnd;
         MozillaInsertText(element, t1, sel_start);
         MozillaInsertText(element, t2, sel_end + t1.length);
+        if (t1.indexOf("[list]") > 0) {
+            var value = element.value;
+            var nPos = value.indexOf("\n");
+            if (nPos > 0) {
+                value = value.replace(/\n/gi, "[*]");
+            }
+            element.value = value;
+        }
+        element.selectionStart = sel_start;
+        element.selectionEnd = sel_end + t1.length + t2.length;
+        element.focus();
+    }
+    else {
+        element.value = element.value + t1 + t2;
+    }
+}
+
+function AddList(t1, t2) {
+    var element = textboxelement;
+    if (isIE) {
+        if (document.selection) {
+            element.focus();
+
+            var txt = element.value;
+            var str = document.selection.createRange();
+
+            if (str.text == "") {
+                str.text = t1 + t2;
+            }
+            else if (txt.indexOf(str.text) >= 0) {
+                str.text = t1 + str.text + t2;
+            }
+            else {
+                element.value = txt + t1 + t2;
+            }
+
+            var value1 = str.text;
+            var nPos1 = value1.indexOf("\n");
+            if (nPos1 > 0) {
+                value1 = value1.replace(/\n/gi, "[*]");
+            }
+            str.text = value1;
+
+
+            str.select();
+        }
+    }
+    else if (typeof(element.selectionStart) != 'undefined') {
+        var sel_start = element.selectionStart;
+        var sel_end = element.selectionEnd;
+        MozillaInsertText(element, t1, sel_start);
+        MozillaInsertText(element, t2, sel_end + t1.length);
+
+        var value = element.value;
+        var nPos = value.indexOf("\n");
+        if (nPos > 0) {
+            value = value.replace(/\n/gi, "[*]");
+        }
+        element.value = value;
+
         element.selectionStart = sel_start;
         element.selectionEnd = sel_end + t1.length + t2.length;
         element.focus();
