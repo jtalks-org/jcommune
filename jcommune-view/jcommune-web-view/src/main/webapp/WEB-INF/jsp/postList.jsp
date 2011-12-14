@@ -154,7 +154,7 @@
                             <spring:message code="label.quotation"/>
                         </a>
 
-                        <form action="${pageContext.request.contextPath}/posts/quote"
+                        <form action="${pageContext.request.contextPath}/posts/quote/${post.id}"
                               method="post" id='quoteForm${post.id}'>
                             <input name='selection' id='selection${post.id}' type='hidden'/>
                             <input name='topicId' id='topicId' type='hidden' value='${topic.id}'/>
@@ -263,10 +263,6 @@
             txt = window.getSelection();
         } else if (document.getSelection) {
             txt = document.getSelection();
-        }
-        if (txt == '') {
-            // nothing is selected, using post content
-            txt = document.getElementById(postId).innerText;
         }
         document.getElementById('selection' + postId).value = txt;
     }

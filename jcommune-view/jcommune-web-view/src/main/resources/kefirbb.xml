@@ -294,4 +294,27 @@
         <template>&lt;p class=&quot;code&quot;&gt;<var/>&lt;/p&gt;</template>
     </code>
 
+    <!-- Simple table -->
+    <code name="table">
+        <pattern>[table]<var scope="tableScope"/>[/table]</pattern>
+        <template>&lt;table&gt;<var/>&lt;/table&gt;</template>
+    </code>
+    <scope name="tableScope" ignoreText="true">
+        <code name="tr">
+            <pattern>[tr]<var scope="trScope"/>[/tr]</pattern>
+            <template>&lt;tr&gt;<var/>&lt;/tr&gt;</template>
+        </code>
+        <coderef name="comment"/>
+    </scope>
+    <scope name="trScope" ignoreText="true">
+        <code name="th">
+            <pattern>[th]<var/>[/th]</pattern>
+            <template>&lt;th&gt;<var/>&lt;/th&gt;</template>
+        </code>
+        <code name="td">
+            <pattern>[td]<var/>[/td]</pattern>
+            <template>&lt;td&gt;<var/>&lt;/td&gt;</template>
+        </code>
+        <coderef name="comment"/>
+    </scope>
 </configuration>
