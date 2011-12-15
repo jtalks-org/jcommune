@@ -154,7 +154,7 @@
                                 <option value="25">25</option>
                             </select>
 						</span>
-                        <a href="#" onmouseover="helpline('a')"><spring:message code="label.answer.close_tags"/></a>
+                        <a href="" onclick="closeTags();"><spring:message code="label.answer.close_tags"/></a>
 
                         <div id="helpline"><spring:message code="label.answer.tooltip"/></div>
                         <form:textarea id="tbMsg" path="bodyText" cssStyle="width:90%; height:400px;" tabindex="3"

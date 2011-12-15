@@ -206,14 +206,41 @@ function html2bbcode() {
     } while (sc != content)
 }
 
+function closeTags() {
+    var currentContent = document.getElementById(body_id).value;
+    currentContent = closeAllTags(currentContent, 'b');
+    currentContent = closeAllTags(currentContent, 'i');
+    currentContent = closeAllTags(currentContent, 'u');
+    currentContent = closeAllTags(currentContent, 's');
+    currentContent = closeAllTags(currentContent, 'left');
+    currentContent = closeAllTags(currentContent, 'center');
+    currentContent = closeAllTags(currentContent, 'rigth');
+    currentContent = closeAllTags(currentContent, 'quote');
+    currentContent = closeAllTags(currentContent, 'code');
+    currentContent = closeAllTags(currentContent, 'img');
+    currentContent = closeAllTags(currentContent, 'highlight');
+
+    currentContent = closeAllTags(currentContent, 'color');
+    currentContent = closeAllTags(currentContent, 'size');
+    currentContent = closeAllTags(currentContent, 'indent');
+    currentContent = closeAllTags(currentContent, 'url');
+    currentContent = currentContent.replace(/\[size\]/gi, '[size=10]');
+    currentContent = currentContent.replace(/\[color\]/gi, '[color=000000]');
+    currentContent = currentContent.replace(/\[url\]/gi, '[url=]');
+    currentContent = currentContent.replace(/\[indent\]/gi, '[indent=15]');
+
+    content = currentContent;
+    document.getElementById(body_id).value = content;
+}
+
 function closeAllTags(text, tag) {
     var currentText = text;
 
     var regPrefix = new RegExp('\\[' + tag + '[^\\[^\\]]*\\]', 'ig');
 
-    var regTags = new RegExp('(\\[' + tag + '[^\\[^\\]]*\\])(.*)(\\[\\/' + tag + '\\])(.*)', 'ig');
+    var regTags = new RegExp('(\\[' + tag + '[^\\[^\\]]*\\])([\\s\\S]*)(\\[\\/' + tag + '\\])([\\s\\S]*)', 'ig');
 
-    var openTag = new RegExp('\\[' + tag + '[^\\[^\\]]*\\]', 'ig');
+    var openTag = new RegExp('\\[' + tag + '(=[^\\[^\\]]*)?\\]', 'ig');
     var closeTag = new RegExp('\\[\\/' + tag + '\\]', 'ig');
 
     var prefIndex = currentText.search(regPrefix);
@@ -225,7 +252,7 @@ function closeAllTags(text, tag) {
         postfix = closeAllTags(result[4], tag);
         prefix = closeAllTags(currentText.substring(0, prefIndex), tag);
         while (result != null) {
-            currentText = result[1] + closeAllTags(result[2], tag) + result[3] ;
+            currentText = result[1] + closeAllTags(result[2], tag) + result[3];
             result = regTags.exec(currentText);
         }
         currentText = prefix + currentText + postfix;
@@ -589,7 +616,7 @@ function AddList(t1, t2) {
             }
 
             var value1 = str.text;
-            var nPos1 = value1.indexOf("\n");
+            var nPos1 = value1.indexOf("\n", '[list]'.length);
             if (nPos1 > 0) {
                 value1 = value1.replace(/\n/gi, "[*]");
             }
@@ -605,15 +632,23 @@ function AddList(t1, t2) {
         MozillaInsertText(element, t1, sel_start);
         MozillaInsertText(element, t2, sel_end + t1.length);
 
-        var value = element.value;
-        var nPos = value.indexOf("\n");
+        element.selectionStart = sel_start;
+        element.selectionEnd = sel_end + t1.length + t2.length;
+
+        sel_start = element.selectionStart;
+        sel_end = element.selectionEnd;
+
+        var value = element.value.substring(sel_start, sel_end);
+        var nPos = value.indexOf("\n", '[list]'.length);
         if (nPos > 0) {
             value = value.replace(/\n/gi, "[*]");
         }
-        element.value = value;
+        var elvalue = element.value;
+        value=value.replace(/\[list\]\[\*\]/gi,'[list]\n[*]');
+        value=value.replace(/\[\/list\]/gi,'\n[/list]');
+        element.value = elvalue.substring(0, sel_start) + value + elvalue.substring(sel_end, elvalue.length);
 
-        element.selectionStart = sel_start;
-        element.selectionEnd = sel_end + t1.length + t2.length;
+
         element.focus();
     }
     else {
@@ -652,7 +687,7 @@ function getTop2() {
     return ctop;
 }
 var nocol1 = "&#78;&#79;&#32;&#67;&#79;&#76;&#79;&#82;",
-    clos1 = "X";
+        clos1 = "X";
 
 function getLeft2() {
     var csBrWt = 0;
