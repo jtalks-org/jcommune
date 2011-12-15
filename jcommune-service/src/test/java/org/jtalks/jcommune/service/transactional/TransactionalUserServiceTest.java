@@ -26,7 +26,6 @@ import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
-import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -55,15 +54,10 @@ public class TransactionalUserServiceTest {
     private byte[] avatar = new byte[10];
     private static final Long USER_ID = 999L;
 
-    @Mock
     private UserService userService;
-    @Mock
     private UserDao userDao;
-    @Mock
     private SecurityService securityService;
-    @Mock
     private MailService mailService;
-    @Mock
     private ImageUtils processor;
 
     @BeforeMethod
@@ -106,7 +100,7 @@ public class TransactionalUserServiceTest {
     }
 
     @Test(expectedExceptions = NotFoundException.class)
-    public void testGetByEncodedUsernamenotFound() throws Exception {
+    public void testGetByEncodedUsernameNotFound() throws Exception {
         when(userDao.getByEncodedUsername(ENCODED_USERNAME)).thenReturn(null);
 
         userService.getByEncodedUsername(ENCODED_USERNAME);
@@ -172,12 +166,12 @@ public class TransactionalUserServiceTest {
 
         String newAvatar = new String(new byte[12]);
 
-        User editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
+        User editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, NEW_EMAIL,
                 PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE));
 
         verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
-        assertEquals(editedUser.getEmail(), EMAIL, "Email was not changed");
+        assertEquals(editedUser.getEmail(), NEW_EMAIL, "Email was not changed");
         assertEquals(editedUser.getSignature(), SIGNATURE, "Signature was not changed");
         assertEquals(editedUser.getFirstName(), FIRST_NAME, "first name was not changed");
         assertEquals(editedUser.getLastName(), LAST_NAME, "last name was not changed");
@@ -185,12 +179,20 @@ public class TransactionalUserServiceTest {
         assertEquals(editedUser.getLanguage(), LANGUAGE, "language was not changed");
     }
 
-
-    private User editUserSignature(String signature) throws WrongPasswordException, DuplicateEmailException {
+    @Test
+    public void testEditUserProfileSameEmail() throws Exception {
         User user = getUser(USERNAME);
         when(securityService.getCurrentUser()).thenReturn(user);
-        return userService.editUserProfile(new UserInfoContainer(EMAIL, FIRST_NAME, LAST_NAME,
-                PASSWORD, NEW_PASSWORD, signature, null, LANGUAGE, PAGE_SIZE));
+        when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
+
+        String newAvatar = new String(new byte[0]);
+
+        User editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
+                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE));
+
+        verify(securityService).getCurrentUser();
+        verify(userDao).saveOrUpdate(user);
+        assertEquals(editedUser.getEmail(), EMAIL, "Email was changed");
     }
 
     @Test
@@ -260,7 +262,7 @@ public class TransactionalUserServiceTest {
     }
 
     @Test(expectedExceptions = DuplicateEmailException.class)
-    public void testEditUserProfileDublicateEmail() throws Exception {
+    public void testEditUserProfileDuplicateEmail() throws Exception {
         User user = getUser(USERNAME);
         when(securityService.getCurrentUser()).thenReturn(user);
         when(userDao.isUserWithEmailExist(NEW_EMAIL)).thenReturn(true);
@@ -290,7 +292,7 @@ public class TransactionalUserServiceTest {
     public void testUpdateLastLoginTime() throws Exception {
         User user = new User(USERNAME, EMAIL, PASSWORD);
         DateTime dateTimeBefore = new DateTime();
-        Thread.sleep(1000);
+        Thread.sleep(25);
 
         userService.updateLastLoginTime(user);
 

@@ -22,6 +22,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <head>
     <title><c:out value="${topic.title}"/></title>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/utils.js"
+            type="text/javascript"></script>
 </head>
 <body>
 <c:set var="authenticated" value="${false}"/>
@@ -149,7 +151,7 @@
                     </sec:accesscontrollist>
                     <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
                         <a class="button" href="javascript:
-                                document.getElementById('selection' + postId).value = getSelection(${post.id});
+                                document.getElementById('selection${post.id}').value = getSelectedText(${post.id});
                                 document.forms['quoteForm${post.id}'].submit();">
                             <spring:message code="label.quotation"/>
                         </a>

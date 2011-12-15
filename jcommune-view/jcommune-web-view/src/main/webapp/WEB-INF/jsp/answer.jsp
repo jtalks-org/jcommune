@@ -24,8 +24,6 @@
     <title><spring:message code="label.answer_to"/>: <c:out value="${topic.title}"/></title>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/utils.js"
-            type="text/javascript"></script>
 </head>
 <body>
 
