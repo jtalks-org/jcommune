@@ -219,6 +219,7 @@ function closeTags() {
     currentContent = closeAllTags(currentContent, 'code');
     currentContent = closeAllTags(currentContent, 'img');
     currentContent = closeAllTags(currentContent, 'highlight');
+    currentContent = closeAllTags(currentContent, 'list');
 
     currentContent = closeAllTags(currentContent, 'color');
     currentContent = closeAllTags(currentContent, 'size');
@@ -261,13 +262,46 @@ function closeAllTags(text, tag) {
         var closeTagResult = closeTag.exec(currentText);
         if (closeTagResult != null) {
             while (closeTagResult != null) {
-                currentText = "[" + tag + "]" + currentText;
+
+                var regAbstactTag = /\[[^\[^\]]*\]/gi;
+
+                var intInd = closeTag.lastIndex;
+                var tempText = currentText.substring(0, intInd - 3 - tag.length);
+                var regAbstactTagRes = regAbstactTag.exec(tempText);
+                if (regAbstactTagRes != null) {
+                    while (regAbstactTagRes != null) {
+                        var regAbstactTagIndex = regAbstactTag.lastIndex;
+                        var regAbstactTagRes2 = regAbstactTag.exec(tempText);
+                        if (regAbstactTagRes != null && regAbstactTagRes2 == null) {
+                            var prefAndTag = tempText.substring(0, regAbstactTagIndex);
+                            var cont = tempText.substring(regAbstactTagIndex, intInd - 3 - tag.length);
+                            var postText = currentText.substring(intInd - 3 - tag.length, currentText.length);
+                            currentText = prefAndTag + "[" + tag + "]" + cont + postText;
+                        }
+                        regAbstactTagRes = regAbstactTagRes2;
+                    }
+                } else {
+                    currentText = "[" + tag + "]" + currentText;
+                }
                 closeTagResult = closeTag.exec(currentText);
             }
         } else {
             var openTagResult = openTag.exec(currentText);
-            while (openTagResult != null) {
-                currentText = currentText + "[/" + tag + "]";
+            if (openTagResult != null) {
+                var regAbstactTag1 = /\[[^\[^\]]*\]/gi;
+                var intInd1 = openTag.lastIndex;
+                var tempText1 = currentText.substring(intInd1, currentText.length);
+                var regAbstactTagRes1 = regAbstactTag1.exec(tempText1);
+                if (regAbstactTagRes1 != null) {
+                    var regAbstactTagIndex1 = regAbstactTag1.lastIndex;
+                    var prefAndTag1 = tempText1.substring(0, intInd1-2-tag.length);
+                    var cont1 = tempText1.substring(intInd1, regAbstactTagIndex1-regAbstactTagRes1[0].length);
+                    var postText1 = currentText.substring(regAbstactTagIndex1, currentText.length);
+                    currentText = prefAndTag1  + cont1 + "[/" + tag + "]"+ postText1;
+
+                } else {
+                    currentText = currentText + "[/" + tag + "]";
+                }
                 openTagResult = openTag.exec(currentText);
             }
         }
@@ -644,8 +678,8 @@ function AddList(t1, t2) {
             value = value.replace(/\n/gi, "[*]");
         }
         var elvalue = element.value;
-        value=value.replace(/\[list\]\[\*\]/gi,'[list]\n[*]');
-        value=value.replace(/\[\/list\]/gi,'\n[/list]');
+        value = value.replace(/\[list\]\[\*\]/gi, '[list]\n[*]');
+        value = value.replace(/\[\/list\]/gi, '\n[/list]');
         element.value = elvalue.substring(0, sel_start) + value + elvalue.substring(sel_end, elvalue.length);
 
 
