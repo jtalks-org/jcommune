@@ -20,6 +20,7 @@ import com.sun.syndication.feed.rss.Item;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.SecurityService;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.testng.annotations.BeforeMethod;
@@ -43,13 +44,15 @@ public class RssViewerTest {
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
     private Map<String, Object> model;
+    private SecurityService securityService;
     private Topic topic;
 
     @BeforeMethod
     protected void setUp() {
         request = new MockHttpServletRequest();
+        securityService = mock(SecurityService.class);
         response = new MockHttpServletResponse();
-        rssViewer = new RssViewer();
+        rssViewer = new RssViewer(securityService);
         rssViewerMock = mock(RssViewer.class);
         channel = new Channel();
         model = new HashMap<String, Object>();
