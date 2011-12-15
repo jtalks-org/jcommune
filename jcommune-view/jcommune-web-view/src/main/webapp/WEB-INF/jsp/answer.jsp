@@ -1,4 +1,4 @@
-<%--
+﻿<%--
 
     Copyright (C) 2011  JTalks.org Team
     This library is free software; you can redistribute it and/or
@@ -152,7 +152,7 @@
                                 <option value="25">25</option>
                             </select>
 						</span>
-                        <a href="" onclick="closeTags();"><spring:message code="label.answer.close_tags"/></a>
+                        <a href="" onclick="closeTags();return false;"><spring:message code="label.answer.close_tags"/></a>
 
                         <div id="helpline"><spring:message code="label.answer.tooltip"/></div>
                         <form:textarea id="tbMsg" path="bodyText" cssStyle="width:90%; height:400px;" tabindex="3"
