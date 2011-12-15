@@ -287,17 +287,16 @@ function closeAllTags(text, tag) {
             }
         } else {
             var openTagResult = openTag.exec(currentText);
-            if (openTagResult != null) {
+            while (openTagResult != null) {
                 var regAbstactTag1 = /\[[^\[^\]]*\]/gi;
                 var intInd1 = openTag.lastIndex;
                 var tempText1 = currentText.substring(intInd1, currentText.length);
                 var regAbstactTagRes1 = regAbstactTag1.exec(tempText1);
                 if (regAbstactTagRes1 != null) {
                     var regAbstactTagIndex1 = regAbstactTag1.lastIndex;
-                    var prefAndTag1 = tempText1.substring(0, intInd1-2-tag.length);
-                    var cont1 = tempText1.substring(intInd1, regAbstactTagIndex1-regAbstactTagRes1[0].length);
-                    var postText1 = currentText.substring(regAbstactTagIndex1, currentText.length);
-                    currentText = prefAndTag1  + cont1 + "[/" + tag + "]"+ postText1;
+                    var prefAndTag1 = currentText.substring(0, regAbstactTagIndex1-regAbstactTagRes1[0].length);
+                    var cont1 = tempText1.substring(regAbstactTagIndex1-regAbstactTagRes1[0].length, tempText1.length);
+                    currentText = prefAndTag1  + "[/" + tag + "]"+ cont1;
 
                 } else {
                     currentText = currentText + "[/" + tag + "]";
