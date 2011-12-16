@@ -14,13 +14,18 @@
  */
 package org.jtalks.jcommune.web.util;
 
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
 public class PaginationTest {
@@ -114,5 +119,18 @@ public class PaginationTest {
     public void testReturnDefaultPageSizeForNullUser() {
         int pageSize = Pagination.getPageSizeFor(null);
         assertEquals(pageSize, User.DEFAULT_PAGE_SIZE);
+    }
+
+    @Test
+    public void test(){
+        Post post = mock(Post.class);
+        Topic topic = mock(Topic.class);
+        List<Post> posts = mock(ArrayList.class);
+        posts.add(post);
+        when(post.getTopic()).thenReturn(topic);
+        when(topic.getPosts()).thenReturn(posts);
+        when(posts.indexOf(post)).thenReturn(2);
+        pagination = new Pagination(1, user, 10, true);
+        pagination.definitionPostInTopic(post);
     }
 }

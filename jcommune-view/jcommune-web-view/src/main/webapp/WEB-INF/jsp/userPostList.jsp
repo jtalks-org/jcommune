@@ -84,14 +84,14 @@
                     <div class="forum_message_cell">
                         <div class="post_details">
                             <a class="button"
-                               href="${pageContext.request.contextPath}/topics/${post.topic.id}?pagingEnabled=false#${post.id}">
+                               href="${pageContext.request.contextPath}/topics/${post.topic.id}?page=${post.page}#${post.id}">
                                 <spring:message code="label.goToPost"/>
                             </a>
                             <spring:message code="label.added"/>&nbsp;
                             <jtalks:format value="${post.creationDate}"/>
                         </div>
                         <p class="forum_message_cell_text">
-                            <span><jtalks:bb2html bbCode="${post.postContent}"/></span>
+                            <span><jtalks:bb2html bbCode="${post.shortContent}"/></span>
                             <br/><br/><br/>
                             <c:if test="${post.modificationDate!=null}">
                                 <spring:message code="label.modify"/>
