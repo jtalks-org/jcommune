@@ -6,7 +6,7 @@
     <groupId>org.jtalks.jcommune</groupId>
     <artifactId>jcommune</artifactId>
     <packaging>pom</packaging>
-    <version>0.9-SNAPSHOT</version>
+    <version>0.9</version>
     <name>${project.artifactId}</name>
     <modules>
         <module>jcommune-model</module>
@@ -37,7 +37,7 @@
             <dependency>
                 <groupId>org.jtalks.common</groupId>
                 <artifactId>jtalks-common-model</artifactId>
-                <version>0.6</version>
+                <version>0.8</version>
             </dependency>
             <!-- Hibernate -->
             <dependency>
