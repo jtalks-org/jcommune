@@ -64,8 +64,7 @@
                         <c:out value="${branch.topicCount}"/>
                     </div>
                     <div class="forum_messages">
-                        <%--<c:out value="${branch.postCount}"/>--%>
-                            <c:out value="${branch.topicCount}"/>
+                        <c:out value="${branch.postCount}"/>
                     </div>
                     <div class="forum_last_message">
                         <c:if test="${branch.topicCount>0}">

@@ -41,12 +41,6 @@ public class RssViewer extends AbstractRssFeedView {
     private SecurityService securityService;
 
     /**
-     * Default constructor
-     */
-    public RssViewer() {
-    }
-
-    /**
      * Need for get current user
      *
      * @param securityService security service
