@@ -14,9 +14,8 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.stereotype.Component;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 import javax.imageio.ImageIO;
 import java.awt.Dimension;
@@ -145,7 +144,7 @@ public class ImageUtils {
      * @return converted binary data string
      */
     public String base64Coder(byte[] bytes) {
-        return new BASE64Encoder().encode(bytes);
+        return Base64.encodeBase64String(bytes);
     }
 
     /**
@@ -156,14 +155,10 @@ public class ImageUtils {
      */
     public byte[] decodeB64(String encodedBytes) {
         byte[] result = null;
-        try {
-            if (encodedBytes != null) {
-                BASE64Decoder base64 = new BASE64Decoder();
-                result = base64.decodeBuffer(encodedBytes);
-            }
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
+        if (encodedBytes != null) {
+            result = Base64.decodeBase64(encodedBytes);
         }
+
         return result;
     }
 
