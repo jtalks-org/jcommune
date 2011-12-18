@@ -14,14 +14,13 @@
  */
 package org.jtalks.jcommune.service.util;
 
+import org.apache.commons.codec.binary.Base64;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -117,7 +116,7 @@ public class ImageUtilsTest {
 
     @DataProvider(name = "byte-string-provider")
     private Object[][] rangeByteStringData() {
-        String outputData = new BASE64Encoder().encode(byteArray);
+        String outputData = Base64.encodeBase64String(byteArray);
 
         return new Object[][]{
                 {byteArray, outputData}
@@ -127,8 +126,8 @@ public class ImageUtilsTest {
 
     @DataProvider(name = "string-byte-provider")
     private Object[][] rangeStringByteData() throws IOException {
-        String inputData = new BASE64Encoder().encode(byteArray);
-        byte[] outputData = new BASE64Decoder().decodeBuffer(inputData);
+        String inputData = Base64.encodeBase64String(byteArray);
+        byte[] outputData = Base64.decodeBase64(inputData);
 
         return new Object[][]{
                 {inputData, outputData},
