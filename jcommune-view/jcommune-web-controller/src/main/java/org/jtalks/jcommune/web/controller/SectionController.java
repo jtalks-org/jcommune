@@ -19,7 +19,6 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,26 +49,21 @@ public final class SectionController {
     private SecurityService securityService;
     private SectionService sectionService;
     private ForumStatisticsProvider forumStaticsProvider;
-    private BreadcrumbBuilder breadcrumbBuilder;
 
     /**
      * Constructor creates MVC controller with specified SectionService
      *
      * @param securityService      autowired object from Spring Context
      * @param sectionService       autowired object from Spring Context
-     * @param breadcrumbBuilder    the object which provides actions on
-     *                             {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      * @param forumStaticsProvider autowired object from Spring Context which provides methods for getting
      *                             forum statistic information
      */
     @Autowired
     public SectionController(SecurityService securityService,
                              SectionService sectionService,
-                             BreadcrumbBuilder breadcrumbBuilder,
                              ForumStatisticsProvider forumStaticsProvider) {
         this.securityService = securityService;
         this.sectionService = sectionService;
-        this.breadcrumbBuilder = breadcrumbBuilder;
         this.forumStaticsProvider = forumStaticsProvider;
     }
 
@@ -94,7 +88,6 @@ public final class SectionController {
         return new ModelAndView("sectionList")
                 .addObject("pageSize", Pagination.getPageSizeFor(securityService.getCurrentUser()))
                 .addObject("sectionList", sectionService.getAll())
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
                 .addObject("messagesCount", forumStaticsProvider.getPostsOnForumCount())
                 .addObject("registeredUsersCount", forumStaticsProvider.getUsersCount())
                 .addObject("visitors", forumStaticsProvider.getOnlineUsersCount())
@@ -117,7 +110,6 @@ public final class SectionController {
         User user = securityService.getCurrentUser();
         return new ModelAndView("branchList")
                 .addObject("section", section)
-                .addObject("pageSize", Pagination.getPageSizeFor(user))
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
+                .addObject("pageSize", Pagination.getPageSizeFor(user));
     }
 }

@@ -18,8 +18,6 @@ import org.jtalks.jcommune.model.entity.Section;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.web.dto.Breadcrumb;
-import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
@@ -40,22 +38,19 @@ import static org.testng.Assert.assertEquals;
 public class SectionControllerTest {
     private SectionService sectionService;
     private SectionController controller;
-    private BreadcrumbBuilder breadcrumbBuilder;
 
     @BeforeMethod
     public void init() {
         sectionService = mock(SectionService.class);
         SecurityService securityService = mock(SecurityService.class);
-        breadcrumbBuilder = mock(BreadcrumbBuilder.class);
         ForumStatisticsProvider statisticsProvider = mock(ForumStatisticsProvider.class);
-        controller = new SectionController(securityService, sectionService, breadcrumbBuilder,
-                statisticsProvider);
+        controller = new SectionController(securityService, sectionService, statisticsProvider);
     }
 
     @Test
     public void testDisplayAllSections() {
         //set expectations
-        expectationsForAllSections();
+        when(sectionService.getAll()).thenReturn(new ArrayList<Section>());
 
         //invoke the object under test
         ModelAndView mav = controller.sectionList(mock(HttpSession.class));
@@ -66,24 +61,17 @@ public class SectionControllerTest {
 
     private void verifyAndAssertAllSections(ModelAndView mav) {
         verify(sectionService).getAll();
-        verify(breadcrumbBuilder).getForumBreadcrumb();
 
         //check result
         assertViewName(mav, "sectionList");
         assertModelAttributeAvailable(mav, "pageSize");
         assertModelAttributeAvailable(mav, "sectionList");
-        assertModelAttributeAvailable(mav, "breadcrumbList");
         assertModelAttributeAvailable(mav, "messagesCount");
         assertModelAttributeAvailable(mav, "registeredUsersCount");
         assertModelAttributeAvailable(mav, "visitors");
         assertModelAttributeAvailable(mav, "usersRegistered");
         assertModelAttributeAvailable(mav, "visitorsRegistered");
         assertModelAttributeAvailable(mav, "visitorsGuests");
-    }
-
-    private void expectationsForAllSections() {
-        when(sectionService.getAll()).thenReturn(new ArrayList<Section>());
-        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
     }
 
     @Test
@@ -94,21 +82,18 @@ public class SectionControllerTest {
 
         //set expectations
         when(sectionService.get(sectionId)).thenReturn(section);
-        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
 
         //invoke the object under test
         ModelAndView mav = controller.branchList(sectionId);
 
         //check expectations
         verify(sectionService).get(sectionId);
-        verify(breadcrumbBuilder).getForumBreadcrumb();
 
         //check result
         assertViewName(mav, "branchList");
         assertModelAttributeAvailable(mav, "section");
         Section actualSection = assertAndReturnModelAttributeOfType(mav, "section", Section.class);
         assertEquals(actualSection.getId(), sectionId);
-        assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 
 }

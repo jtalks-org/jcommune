@@ -31,7 +31,6 @@
 </head>
 <body>
 <jsp:include page="../template/topLine.jsp"/>
-<jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 <div id="editUserDetails">
     <form:form id="editProfileForm" name="editProfileForm"
                action="${pageContext.request.contextPath}/users/edit"
@@ -67,7 +66,7 @@
                 <td><form:errors path="newUserPassword" cssClass="error"/></td>
             </tr>
             <tr>
-                <td><label><spring:message code="label.newPasswordConfiration"/></label></td>
+                <td><label><spring:message code="label.newPasswordConfirmation"/></label></td>
                 <td><form:input path="newUserPasswordConfirm" size="25" type="password"/></td>
                 <td><form:errors path="newUserPasswordConfirm" cssClass="error"/></td>
             </tr>
