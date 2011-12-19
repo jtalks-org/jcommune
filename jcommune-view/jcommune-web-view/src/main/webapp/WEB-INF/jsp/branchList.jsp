@@ -98,8 +98,11 @@
                 </li>
             </c:forEach>
         </ul>
+        <spring:message code="label.topic.now_browsing"/>
         <c:forEach var="innerUser" items="${viewList}">
-                    <c:out value="${innerUser}"/>
+            <a href="${pageContext.request.contextPath}/users/${innerUser}">
+                <c:out value="${innerUser}"/>
+            </a>
         </c:forEach>
     </div>
     <div class="footer_buffer"></div>

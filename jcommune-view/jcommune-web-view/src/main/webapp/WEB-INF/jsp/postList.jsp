@@ -241,12 +241,14 @@
         <li><a href="#">Вася</a>.</li>
     </ul>
     <br/>
-    <spring:message code="label.topic.now_browsing"/> Нет
+    <spring:message code="label.topic.now_browsing"/>
+    <c:forEach var="innerUser" items="${viewList}">
+          <a href="${pageContext.request.contextPath}/users/${innerUser}">
+               <c:out value="${innerUser}"/>
+          </a>
+    </c:forEach>
 </div>
 </div>
-        <c:forEach var="innerUser" items="${viewList}">
-        <c:out value="${innerUser}"/>
-</c:forEach>
 <!-- Конец всех форумов -->
 <div class="footer_buffer"></div>
 <!-- Несемантичный буфер для прибития подвала -->
