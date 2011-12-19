@@ -151,39 +151,4 @@ public class Breadcrumb {
     public void setBreadcrumbLocationValue(String breadcrumbLocationValue) {
         this.breadcrumbLocationValue = breadcrumbLocationValue;
     }
-
-
-    /**
-     * Check the equality <code>Breadcrumb</code> instances
-     *
-     * @param o the checked for equality object.
-     * @return true if this <code>Breadcrumb</code> instance is equal to the specified object.
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Breadcrumb other = (Breadcrumb) o;
-        return breadcrumbLocation == other.breadcrumbLocation &&
-                breadcrumbLocationValue.equals(other.breadcrumbLocationValue) &&
-                id.equals(other.id);
-    }
-
-    /**
-     * Returns a hash code for this object.
-     *
-     * @return an integer hash code for this object.
-     */
-    @Override
-    public int hashCode() {
-        int result = id.hashCode();
-        final int x = 31;
-        result = x * result + breadcrumbLocation.hashCode();
-        result = x * result + breadcrumbLocationValue.hashCode();
-        return result;
-    }
 }

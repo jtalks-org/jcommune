@@ -20,6 +20,8 @@ import com.sun.syndication.feed.rss.Content;
 import com.sun.syndication.feed.rss.Description;
 import com.sun.syndication.feed.rss.Item;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.SecurityService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.view.feed.AbstractRssFeedView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +37,18 @@ import java.util.Map;
  * @author Andrey Kluev
  */
 public class RssViewer extends AbstractRssFeedView {
+
+    private SecurityService securityService;
+
+    /**
+     * Need for get current user
+     *
+     * @param securityService security service
+     */
+    @Autowired
+    public RssViewer(SecurityService securityService) {
+        this.securityService = securityService;
+    }
 
     /**
      * Set meta data for all RSS feed
@@ -84,8 +98,7 @@ public class RssViewer extends AbstractRssFeedView {
     }
 
     /**
-     *
-     * @param topic news topic
+     * @param topic   news topic
      * @param request HttpServletRequest
      * @return item for news feed
      */
@@ -98,10 +111,16 @@ public class RssViewer extends AbstractRssFeedView {
 
         Content content = new Content();
         item.setContent(content);
+        Pagination pag = new Pagination(1, securityService.getCurrentUser(), topic.getPosts().size(), true);
 
         item.setTitle(topic.getTitle());
         item.setAuthor(topic.getLastPost().getUserCreated().getEncodedUsername());
-        item.setLink(buildURL(request) + "/topics/" + topic.getId());
+
+        item.setLink(buildURL(request)
+                + "/topics/" + topic.getId()
+                + "?page=" + pag.getMaxPages()
+                + "#" + topic.getLastPost().getId());
+
         item.setComments(topic.getTopicStarter().getSignature());
         item.setDescription(description);
         item.setPubDate(topic.getModificationDate().toDate());
@@ -109,11 +128,10 @@ public class RssViewer extends AbstractRssFeedView {
     }
 
     /**
-     *
      * @param request HttpServletRequest
      * @return url
      */
-    public String buildURL(HttpServletRequest request){
+    public String buildURL(HttpServletRequest request) {
         return request.getScheme()
                 + "://" + request.getServerName()
                 + ":" + request.getServerPort()

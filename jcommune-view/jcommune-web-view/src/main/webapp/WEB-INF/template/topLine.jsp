@@ -19,6 +19,9 @@
 <%@ page import="org.springframework.web.servlet.i18n.CookieLocaleResolver" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<head>
+
+</head>
 <div class="top_line">
     <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
         <fmt:message key="label.welcomeMessage"/>
@@ -78,19 +81,3 @@
         </li>
     </ul>
 </div>
-<script type=text/javascript>
-    function getLanguageLink(lang) {
-        var href = window.location.toString().split("#", 1)[0];
-
-        if (href.indexOf("?") == -1) {
-            href = href + "?lang=";
-        } else {
-            if (href.indexOf("lang=") == -1) {
-                href = href + "&lang=";
-            } else {
-                href = href.substring(0, href.length - 2);
-            }
-        }
-        return href + lang;
-    }
-</script>

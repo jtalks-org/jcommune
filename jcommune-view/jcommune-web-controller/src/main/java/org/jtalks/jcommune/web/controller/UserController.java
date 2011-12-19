@@ -282,6 +282,12 @@ public class UserController {
     ) throws NotFoundException {
         User user = userService.getByEncodedUsername(encodedUsername);
         List<Post> posts = postService.getPostsOfUser(user);
+        for(Post post : posts){
+            Pagination pag = new Pagination(1, securityService.getCurrentUser(),
+                    post.getTopic().getPostCount(),
+                    pagingEnabled);
+            post.setPage(pag.definitionPostInTopic(post));
+        }
         Pagination pag = new Pagination(page, user, posts.size(), pagingEnabled);
         return new ModelAndView("userPostList")
                 .addObject("user", user)

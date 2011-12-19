@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 
 /**
  * @author Alexandre Teterin
@@ -67,10 +68,8 @@ public class BreadcrumbBuilderTest {
     @Test
     public void testGetForumBreadcrumb() throws Exception {
         //init
-        Breadcrumb expectedBreadcrumb = new Breadcrumb(
-                Breadcrumb.STUB_BREADCRUMB_ID,
-                Breadcrumb.BreadcrumbLocation.FORUM,
-                Breadcrumb.ROOT_BREADCRUMB_LOCATION_VALUE);
+        Breadcrumb expectedBreadcrumb = new Breadcrumb(Breadcrumb.STUB_BREADCRUMB_ID,
+                Breadcrumb.BreadcrumbLocation.FORUM,  Breadcrumb.ROOT_BREADCRUMB_LOCATION_VALUE);
         List<Breadcrumb> expectedResult = new ArrayList<Breadcrumb>();
         expectedResult.add(expectedBreadcrumb);
 
@@ -78,17 +77,14 @@ public class BreadcrumbBuilderTest {
         List<Breadcrumb> actualResult = breadcrumbBuilder.getForumBreadcrumb();
 
         //check result
-        assertEquals(actualResult, expectedResult);
+        assertBreadcrumbs(actualResult, expectedResult);
 
     }
 
     @Test
     public void testGetBranchBreadcrumb() throws Exception {
         //init
-        Breadcrumb expectedBreadcrumb = new Breadcrumb(
-                ID,
-                Breadcrumb.BreadcrumbLocation.SECTION,
-                section.getName());
+        Breadcrumb expectedBreadcrumb = new Breadcrumb(ID, Breadcrumb.BreadcrumbLocation.SECTION, section.getName());
         List<Breadcrumb> expectedList = breadcrumbBuilder.getForumBreadcrumb();
         expectedList.add(expectedBreadcrumb);
 
@@ -96,16 +92,13 @@ public class BreadcrumbBuilderTest {
         List<Breadcrumb> actualList = breadcrumbBuilder.getForumBreadcrumb(branch);
 
         //check result
-        assertEquals(actualList, expectedList);
+        assertBreadcrumbs(actualList, expectedList);
     }
 
     @Test
     public void testGetTopicBreadcrumb() throws Exception {
         //init
-        Breadcrumb expectedBreadcrumb = new Breadcrumb(
-                ID,
-                Breadcrumb.BreadcrumbLocation.BRANCH,
-                branch.getName());
+        Breadcrumb expectedBreadcrumb = new Breadcrumb(ID, Breadcrumb.BreadcrumbLocation.BRANCH, branch.getName());
         List<Breadcrumb> expectedList = breadcrumbBuilder.getForumBreadcrumb(branch);
         expectedList.add(expectedBreadcrumb);
 
@@ -113,16 +106,13 @@ public class BreadcrumbBuilderTest {
         List<Breadcrumb> actualList = breadcrumbBuilder.getForumBreadcrumb(topic);
 
         //check result
-        assertEquals(actualList, expectedList);
+        assertBreadcrumbs(actualList, expectedList);
     }
 
     @Test
     public void testGetNewTopicBreadcrumb() throws Exception {
         //init
-        Breadcrumb expectedBreadcrumb = new Breadcrumb(
-                ID,
-                Breadcrumb.BreadcrumbLocation.BRANCH,
-                branch.getName());
+        Breadcrumb expectedBreadcrumb = new Breadcrumb(ID, Breadcrumb.BreadcrumbLocation.BRANCH, branch.getName());
         List<Breadcrumb> expectedList = breadcrumbBuilder.getForumBreadcrumb(branch);
         expectedList.add(expectedBreadcrumb);
 
@@ -130,16 +120,13 @@ public class BreadcrumbBuilderTest {
         List<Breadcrumb> actualList = breadcrumbBuilder.getNewTopicBreadcrumb(branch);
 
         //check result
-        assertEquals(actualList, expectedList);
+        assertBreadcrumbs(actualList, expectedList);
     }
 
     @Test
     public void testGetPostBreadcrumb() throws Exception {
         //init
-        Breadcrumb expectedBreadcrumb = new Breadcrumb(
-                ID,
-                Breadcrumb.BreadcrumbLocation.TOPIC,
-                topic.getTitle());
+        Breadcrumb expectedBreadcrumb = new Breadcrumb(ID,Breadcrumb.BreadcrumbLocation.TOPIC, topic.getTitle());
         List<Breadcrumb> expectedList = breadcrumbBuilder.getForumBreadcrumb(topic);
         expectedList.add(expectedBreadcrumb);
 
@@ -147,16 +134,14 @@ public class BreadcrumbBuilderTest {
         List<Breadcrumb> actualList = breadcrumbBuilder.getForumBreadcrumb(post);
 
         //check result
-        assertEquals(actualList, expectedList);
+        assertBreadcrumbs(actualList, expectedList);
     }
 
     @Test
     public void testGetInboxBreadcrumb() throws Exception {
         //init
-        Breadcrumb expectedBreadcrumb = new Breadcrumb(
-                Breadcrumb.STUB_BREADCRUMB_ID,
-                Breadcrumb.BreadcrumbLocation.INBOX,
-                Breadcrumb.INBOX_BREADCRUMB_LOCATION_VALUE);
+        Breadcrumb expectedBreadcrumb = new Breadcrumb(Breadcrumb.STUB_BREADCRUMB_ID,
+                Breadcrumb.BreadcrumbLocation.INBOX, Breadcrumb.INBOX_BREADCRUMB_LOCATION_VALUE);
         List<Breadcrumb> expectedList = breadcrumbBuilder.getForumBreadcrumb();
         expectedList.add(expectedBreadcrumb);
 
@@ -164,16 +149,14 @@ public class BreadcrumbBuilderTest {
         List<Breadcrumb> actualList = breadcrumbBuilder.getInboxBreadcrumb();
 
         //check result
-        assertEquals(actualList, expectedList);
+        assertBreadcrumbs(actualList, expectedList);
     }
 
     @Test
     public void testGetOutboxBreadcrumb() throws Exception {
         //init
-        Breadcrumb expectedBreadcrumb = new Breadcrumb(
-                Breadcrumb.STUB_BREADCRUMB_ID,
-                Breadcrumb.BreadcrumbLocation.OUTBOX,
-                Breadcrumb.OUTBOX_BREADCRUMB_LOCATION_VALUE);
+        Breadcrumb expectedBreadcrumb = new Breadcrumb(Breadcrumb.STUB_BREADCRUMB_ID,
+                Breadcrumb.BreadcrumbLocation.OUTBOX, Breadcrumb.OUTBOX_BREADCRUMB_LOCATION_VALUE);
         List<Breadcrumb> expectedList = breadcrumbBuilder.getForumBreadcrumb();
         expectedList.add(expectedBreadcrumb);
 
@@ -181,16 +164,14 @@ public class BreadcrumbBuilderTest {
         List<Breadcrumb> actualList = breadcrumbBuilder.getOutboxBreadcrumb();
 
         //check result
-        assertEquals(actualList, expectedList);
+        assertBreadcrumbs(actualList, expectedList);
     }
 
     @Test
     public void testGetDraftsBreadcrumb() throws Exception {
         //init
-        Breadcrumb expectedBreadcrumb = new Breadcrumb(
-                Breadcrumb.STUB_BREADCRUMB_ID,
-                Breadcrumb.BreadcrumbLocation.DRAFTS,
-                Breadcrumb.DRAFTS_BREADCRUMB_LOCATION_VALUE);
+        Breadcrumb expectedBreadcrumb = new Breadcrumb(Breadcrumb.STUB_BREADCRUMB_ID,
+                Breadcrumb.BreadcrumbLocation.DRAFTS, Breadcrumb.DRAFTS_BREADCRUMB_LOCATION_VALUE);
         List<Breadcrumb> expectedList = breadcrumbBuilder.getForumBreadcrumb();
         expectedList.add(expectedBreadcrumb);
 
@@ -198,6 +179,20 @@ public class BreadcrumbBuilderTest {
         List<Breadcrumb> actualList = breadcrumbBuilder.getDraftsBreadcrumb();
 
         //check result
-        assertEquals(actualList, expectedList);
+        assertBreadcrumbs(actualList, expectedList);
+    }
+
+    private void assertBreadcrumbs(List<Breadcrumb> actualList, List<Breadcrumb> expectedList) {
+        if (actualList.size() == expectedList.size()) {
+            for (int i = 0; i < actualList.size(); i++) {
+                Breadcrumb actual = actualList.get(i);
+                Breadcrumb expected = expectedList.get(i);
+                assertEquals(actual.getId(), expected.getId());
+                assertEquals(actual.getBreadcrumbLocation(), expected.getBreadcrumbLocation());
+                assertEquals(actual.getBreadcrumbLocationValue(), expected.getBreadcrumbLocationValue());
+            }
+        } else {
+            fail("Actual and expect breadcrumbs must be of the same length");
+        }
     }
 }

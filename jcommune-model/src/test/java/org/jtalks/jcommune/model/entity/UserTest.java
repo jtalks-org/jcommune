@@ -14,8 +14,10 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import org.joda.time.DateTime;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertTrue;
@@ -24,7 +26,13 @@ import static org.testng.Assert.assertTrue;
  * @author Kirill Afonin
  */
 public class UserTest {
-    User user = new User("username", "email@mail.com", "pass");
+
+    User user;
+
+    @BeforeMethod
+    public void setUp(){
+        user = new User("username", "email@mail.com", "pass");
+    }
 
     @Test
     public void testSpringSecurityDefaults() {
@@ -37,7 +45,17 @@ public class UserTest {
     @Test
     public void testUserDefaultAuthority() {
         GrantedAuthority expectedAuthority = new GrantedAuthorityImpl("ROLE_USER");
-
         assertTrue(user.getAuthorities().contains(expectedAuthority));
     }
+
+    @Test
+    public void testUpdateLastLogin() throws InterruptedException {
+        DateTime current = new DateTime();
+        Thread.sleep(25);
+
+        user.updateLastLoginTime();
+
+        assertTrue(user.getLastLogin().isAfter(current));
+    }
+
 }

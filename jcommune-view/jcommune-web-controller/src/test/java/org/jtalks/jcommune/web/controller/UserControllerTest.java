@@ -16,6 +16,7 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.SecurityService;
@@ -43,6 +44,7 @@ import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.ModelAndViewAssert.*;
@@ -324,11 +326,18 @@ public class UserControllerTest {
     public void testShowUserPostList() throws NotFoundException {
         User user = new User("username", "email", "password");
         user.setPageSize(5);
+        Post post = mock(Post.class);
+        Topic topic = mock(Topic.class);
+        List<Post> posts = new ArrayList<Post>();
+        posts.add(post);
 
         //set expectations
         when(userService.getByEncodedUsername("username")).thenReturn(user);
         when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
         when(postService.getPostsOfUser(user)).thenReturn(new ArrayList<Post>());
+        when(securityService.getCurrentUser()).thenReturn(user);
+        when(postService.getPostsOfUser(user)).thenReturn(posts);
+        when(post.getTopic()).thenReturn(topic);
 
 
         //invoke the object under test

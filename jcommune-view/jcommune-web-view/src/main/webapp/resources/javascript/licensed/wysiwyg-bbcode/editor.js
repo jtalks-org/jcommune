@@ -134,7 +134,7 @@ function html2bbcode() {
 
     rep(/<br(\s[^<>]*)?>/gi, "\n");
     /*rep(/<p(\s[^<>]*)?>/gi, "");
-    rep(/<\/p>/gi, "\n");*/
+     rep(/<\/p>/gi, "\n");*/
     rep(/<ul>/gi, "[list]");
     rep(/<\/ul>/gi, "[/list]");
     rep(/<li>/gi, "[*]");
@@ -206,16 +206,119 @@ function html2bbcode() {
     } while (sc != content)
 }
 
+function closeTags() {
+    var currentContent = document.getElementById(body_id).value;
+    currentContent = closeAllTags(currentContent, 'b');
+    currentContent = closeAllTags(currentContent, 'i');
+    currentContent = closeAllTags(currentContent, 'u');
+    currentContent = closeAllTags(currentContent, 's');
+    currentContent = closeAllTags(currentContent, 'left');
+    currentContent = closeAllTags(currentContent, 'center');
+    currentContent = closeAllTags(currentContent, 'rigth');
+    currentContent = closeAllTags(currentContent, 'quote');
+    currentContent = closeAllTags(currentContent, 'code');
+    currentContent = closeAllTags(currentContent, 'img');
+    currentContent = closeAllTags(currentContent, 'highlight');
+    currentContent = closeAllTags(currentContent, 'list');
+
+    currentContent = closeAllTags(currentContent, 'color');
+    currentContent = closeAllTags(currentContent, 'size');
+    currentContent = closeAllTags(currentContent, 'indent');
+    currentContent = closeAllTags(currentContent, 'url');
+    currentContent = currentContent.replace(/\[size\]/gi, '[size=10]');
+    currentContent = currentContent.replace(/\[color\]/gi, '[color=000000]');
+    currentContent = currentContent.replace(/\[url\]/gi, '[url=]');
+    currentContent = currentContent.replace(/\[indent\]/gi, '[indent=15]');
+
+    content = currentContent;
+    document.getElementById(body_id).value = content;
+}
+
+function closeAllTags(text, tag) {
+    var currentText = text;
+
+    var regPrefix = new RegExp('\\[' + tag + '[^\\[^\\]]*\\]', 'ig');
+
+    var regTags = new RegExp('(\\[' + tag + '[^\\[^\\]]*\\])([\\s\\S]*)(\\[\\/' + tag + '\\])([\\s\\S]*)', 'ig');
+
+    var openTag = new RegExp('\\[' + tag + '(=[^\\[^\\]]*)?\\]', 'ig');
+    var closeTag = new RegExp('\\[\\/' + tag + '\\]', 'ig');
+
+    var prefIndex = currentText.search(regPrefix);
+    var prefix = "";
+    var postfix = "";
+
+    var result = regTags.exec(currentText);
+    if (result != null) {
+        postfix = closeAllTags(result[4], tag);
+        prefix = closeAllTags(currentText.substring(0, prefIndex), tag);
+        while (result != null) {
+            currentText = result[1] + closeAllTags(result[2], tag) + result[3];
+            result = regTags.exec(currentText);
+        }
+        currentText = prefix + currentText + postfix;
+    } else {
+
+        var closeTagResult = closeTag.exec(currentText);
+        if (closeTagResult != null) {
+            while (closeTagResult != null) {
+
+                var regAbstactTag = /\[[^\[^\]]*\]/gi;
+
+                var intInd = closeTag.lastIndex;
+                var tempText = currentText.substring(0, intInd - 3 - tag.length);
+                var regAbstactTagRes = regAbstactTag.exec(tempText);
+                if (regAbstactTagRes != null) {
+                    while (regAbstactTagRes != null) {
+                        var regAbstactTagIndex = regAbstactTag.lastIndex;
+                        var regAbstactTagRes2 = regAbstactTag.exec(tempText);
+                        if (regAbstactTagRes != null && regAbstactTagRes2 == null) {
+                            var prefAndTag = tempText.substring(0, regAbstactTagIndex);
+                            var cont = tempText.substring(regAbstactTagIndex, intInd - 3 - tag.length);
+                            var postText = currentText.substring(intInd - 3 - tag.length, currentText.length);
+                            currentText = prefAndTag + "[" + tag + "]" + cont + postText;
+                        }
+                        regAbstactTagRes = regAbstactTagRes2;
+                    }
+                } else {
+                    currentText = "[" + tag + "]" + currentText;
+                }
+                closeTagResult = closeTag.exec(currentText);
+            }
+        } else {
+            var openTagResult = openTag.exec(currentText);
+            while (openTagResult != null) {
+                var regAbstactTag1 = /\[[^\[^\]]*\]/gi;
+                var intInd1 = openTag.lastIndex;
+                var tempText1 = currentText.substring(intInd1, currentText.length);
+                var regAbstactTagRes1 = regAbstactTag1.exec(tempText1);
+                if (regAbstactTagRes1 != null) {
+                    var regAbstactTagIndex1 = regAbstactTag1.lastIndex;
+                    var prefAndTag1 = currentText.substring(0, regAbstactTagIndex1-regAbstactTagRes1[0].length);
+                    var cont1 = tempText1.substring(regAbstactTagIndex1-regAbstactTagRes1[0].length, tempText1.length);
+                    currentText = prefAndTag1  + "[/" + tag + "]"+ cont1;
+
+                } else {
+                    currentText = currentText + "[/" + tag + "]";
+                }
+                openTagResult = openTag.exec(currentText);
+            }
+        }
+    }
+    return currentText;
+}
+
 function bbcode2html() {
     // removing html tags
     rep(/\</gi, "&lt;");
     rep(/\>/gi, "&gt;");
 
-    rep(/\[\*\]([\s\S]*?)\s*\[\*\]/gi, "<li>$1</li>[*]");
-    rep(/\[\*\]([\s\S]*?)\s*\[\/list\]/gi, "<li>$1</li>[/list]");
-    rep(/\n/gi, "<br />");
+    rep(/([\s\S]*?)\s*\[\/list\]/gi, "$1</li>[/list]");
+    rep(/\[\*\]([\s\S]*?)\s*\[\*\]/gi, "<li>$1</li><li>");
+    rep(/\[\*\]([\s\S]*?)\s*<\/li>/gi, "<li>$1</li>");
     rep(/\[list\]/gi, "<ul>");
     rep(/\[\/list\]/gi, "</ul>");
+    rep(/\n/gi, "<br />");
     if (browser) {
         rep(/\[b\]/gi, "<strong>");
         rep(/\[\/b\]/gi, "</strong>");
@@ -374,7 +477,7 @@ function doClick(command) {
                 AddTag('[center]', '[/center]');
                 break;
             case 'InsertUnorderedList':
-                AddTag('[list][*]', '[/list]');
+                AddList('[list][*]', '[/list]');
                 break;
             case 'listElement':
                 AddTag('[*]', '');
@@ -519,6 +622,66 @@ function AddTag(t1, t2) {
         MozillaInsertText(element, t2, sel_end + t1.length);
         element.selectionStart = sel_start;
         element.selectionEnd = sel_end + t1.length + t2.length;
+        element.focus();
+    }
+    else {
+        element.value = element.value + t1 + t2;
+    }
+}
+
+function AddList(t1, t2) {
+    var element = textboxelement;
+    if (isIE) {
+        if (document.selection) {
+            element.focus();
+
+            var txt = element.value;
+            var str = document.selection.createRange();
+
+            if (str.text == "") {
+                str.text = t1 + t2;
+            }
+            else if (txt.indexOf(str.text) >= 0) {
+                str.text = t1 + str.text + t2;
+            }
+            else {
+                element.value = txt + t1 + t2;
+            }
+
+            var value1 = str.text;
+            var nPos1 = value1.indexOf("\n", '[list]'.length);
+            if (nPos1 > 0) {
+                value1 = value1.replace(/\n/gi, "[*]");
+            }
+            str.text = value1;
+
+
+            str.select();
+        }
+    }
+    else if (typeof(element.selectionStart) != 'undefined') {
+        var sel_start = element.selectionStart;
+        var sel_end = element.selectionEnd;
+        MozillaInsertText(element, t1, sel_start);
+        MozillaInsertText(element, t2, sel_end + t1.length);
+
+        element.selectionStart = sel_start;
+        element.selectionEnd = sel_end + t1.length + t2.length;
+
+        sel_start = element.selectionStart;
+        sel_end = element.selectionEnd;
+
+        var value = element.value.substring(sel_start, sel_end);
+        var nPos = value.indexOf("\n", '[list]'.length);
+        if (nPos > 0) {
+            value = value.replace(/\n/gi, "[*]");
+        }
+        var elvalue = element.value;
+        value = value.replace(/\[list\]\[\*\]/gi, '[list]\n[*]');
+        value = value.replace(/\[\/list\]/gi, '\n[/list]');
+        element.value = elvalue.substring(0, sel_start) + value + elvalue.substring(sel_end, elvalue.length);
+
+
         element.focus();
     }
     else {

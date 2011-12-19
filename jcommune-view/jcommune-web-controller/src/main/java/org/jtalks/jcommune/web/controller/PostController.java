@@ -201,19 +201,25 @@ public class PostController {
      * Supports post method to pass large quotations.
      * Supports get method as language switching always use get requests.
      *
-     * @param topicId   topic id to answer to
+     * @param postId identifier os the post we're quoting
      * @param selection text selected by user for the quotation.
      * @return the same view as topic answerring page with textarea prefilled with quted text
      * @throws NotFoundException when topic was not found
      */
-    @RequestMapping(method = {RequestMethod.POST, RequestMethod.GET}, value = "/posts/quote")
-    public ModelAndView addPostWithQuote(@RequestParam(TOPIC_ID) Long topicId,
+    @RequestMapping(method = {RequestMethod.POST, RequestMethod.GET}, value = "/posts/{postId}/quote")
+    public ModelAndView addPostWithQuote(@PathVariable(POST_ID) Long postId,
                                          @RequestParam("selection") String selection) throws NotFoundException {
-        // todo: move these constants to BB converter when ready
-        String quote = "[quote]" + selection + "[/quote]";
-        ModelAndView mav = addPost(topicId);
+        Post source = postService.get(postId);
+        ModelAndView mav = addPost(source.getTopic().getId());
         PostDto dto = (PostDto) mav.getModel().get(POST_DTO);
-        dto.setBodyText(quote);
+        String content;
+        if (selection == null){
+            content = source.getPostContent();
+        } else {
+            content = selection;
+        }
+        // todo: move these constants to BB converter
+        dto.setBodyText("[quote]" + content + "[/quote]");
         return mav;
     }
 

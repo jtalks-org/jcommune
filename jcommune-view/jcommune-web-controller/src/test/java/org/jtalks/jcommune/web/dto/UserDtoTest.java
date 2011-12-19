@@ -31,6 +31,11 @@ public class UserDtoTest {
     public void setUp(){
        dto = new EditUserProfileDto(new User("","",""));
     }
+    @Test
+    public void testSetSignature() throws Exception {
+        dto.setSignature("Signature");
+        assertEquals(dto.getSignature(), "Signature", "Signature is not null");
+    }
 
     @Test
     public void testSetEmptySignature() throws Exception {
@@ -38,4 +43,9 @@ public class UserDtoTest {
         assertEquals(dto.getSignature(), null, "Signature is not null");
     }
 
+    @Test
+    public void testSetNullSignature() throws Exception {
+        dto.setSignature(null);
+        assertEquals(dto.getSignature(), null, "Signature is not null");
+    }
 }

@@ -55,14 +55,14 @@ public class BranchTest {
     }
 
     @Test
-    public void testPrevoiusTopicRetrieval() {
+    public void testPreviousTopicRetrieval() {
         assertEquals(branch.getPreviousTopic(first), null);
         assertEquals(branch.getPreviousTopic(second), first);
         assertEquals(branch.getPreviousTopic(third), second);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void testPrevoiusTopicRetrievalError() {
+    public void testPreviousTopicRetrievalError() {
         branch.getNextTopic(new Topic(null, null));
     }
 
@@ -75,9 +75,26 @@ public class BranchTest {
     public void testLastUpdatedTopic() throws InterruptedException {
         Thread.sleep(25);
         second.addPost(new Post());
-        System.out.println(first.getModificationDate());
-        System.out.println(second.getModificationDate());
-        System.out.println(third.getModificationDate());
         assertEquals(branch.getLastUpdatedTopic(), second);
+    }
+
+    @Test
+    public void testLastUpdatedTopicWithoutTopics()  {
+        branch.setTopics(new ArrayList<Topic>());
+        assertEquals(branch.getLastUpdatedTopic(), null);
+    }
+
+    @Test
+    public void testPostCount(){
+        first.addPost(new Post());
+        second.addPost(new Post());
+        third.addPost(new Post());
+        assertEquals(branch.getPostCount(), 3);
+    }
+
+    @Test
+    public void testPostCountWithoutTopics(){
+        branch.setTopics(new ArrayList<Topic>());
+        assertEquals(branch.getPostCount(), 0);
     }
 }

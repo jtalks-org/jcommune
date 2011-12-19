@@ -1,4 +1,4 @@
-<%--
+﻿<%--
 
     Copyright (C) 2011  JTalks.org Team
     This library is free software; you can redistribute it and/or
@@ -22,6 +22,8 @@
 
 <head>
     <title><spring:message code="label.answer_to"/>: <c:out value="${topic.title}"/></title>
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
+            type="text/javascript"></script>
 </head>
 <body>
 
@@ -150,7 +152,7 @@
                                 <option value="25">25</option>
                             </select>
 						</span>
-                        <a href="#" onmouseover="helpline('a')"><spring:message code="label.answer.close_tags"/></a>
+                        <a href="" onclick="closeTags();return false;"><spring:message code="label.answer.close_tags"/></a>
 
                         <div id="helpline"><spring:message code="label.answer.tooltip"/></div>
                         <form:textarea id="tbMsg" path="bodyText" cssStyle="width:90%; height:400px;" tabindex="3"
