@@ -17,7 +17,6 @@ package org.jtalks.jcommune.web.util;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.SecurityService;
-import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.interceptors.UserDataInterceptor;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -48,14 +47,12 @@ public class UserDataInterceptorTest {
     private HttpServletResponse response;
     private PrivateMessageService service;
     private SecurityService securityService;
-    private LocationService locationService;
 
     @BeforeMethod
     public void setUp() throws Exception {
         service = mock(PrivateMessageService.class);
         securityService = mock(SecurityService.class);
-        locationService = mock(LocationService.class);
-        interceptor = new UserDataInterceptor(service, securityService, locationService);
+        interceptor = new UserDataInterceptor(service, securityService);
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
     }
