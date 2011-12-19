@@ -29,10 +29,10 @@ public interface LocationService {
     /**
      * @return map registry user
      */
-    public Map<User, String> getRegisterUserMap();
+    Map<User, String> getRegisterUserMap();
 
     /**
      * @param registerUserMap map registry user
      */
-    public void setRegisterUserMap(Map<User, String> registerUserMap);
+    void setRegisterUserMap(Map<User, String> registerUserMap);
 }

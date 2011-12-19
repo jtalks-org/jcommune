@@ -22,10 +22,7 @@ import org.jtalks.jcommune.service.nontransactional.LocationServiceImpl;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -141,24 +138,30 @@ public class PaginationTest {
         when(posts.indexOf(post)).thenReturn(2);
         pagination = new Pagination(1, user, 10, true);
         pagination.definitionPostInTopic(post);
+
+        when(posts.indexOf(post)).thenReturn(300);
+        pagination = new Pagination(1, user, 10, true);
+        pagination.definitionPostInTopic(post);
     }
 
     @Test
     public void testActiveRegistryUserList() {
-
+        User currentUser = new User("","","");
         List<Object> list = new ArrayList<Object>();
         list.add(user);
+        Map<User, String> map = new HashMap<User, String>();
+        map.put(user, "");
 
         when(entity.getUuid()).thenReturn("");
-        when(locationServiceImpl.getRegisterUserMap()).thenReturn(new HashMap<User, String>());
+        when(locationServiceImpl.getRegisterUserMap()).thenReturn(map);
         when(forumStatisticsProvider.getOnlineRegisteredUsers()).thenReturn(list);
-
         pagination = new Pagination(1, user, 10, true);
+
+        locationServiceImpl.getRegisterUserMap().put(user,"1");
         pagination.activeRegistryUserList(locationServiceImpl, user, entity, forumStatisticsProvider);
 
         locationServiceImpl.getRegisterUserMap().put(user, entity.getUuid());
-        assertEquals(locationServiceImpl.getRegisterUserMap().containsKey(user),true);
-        assertEquals(locationServiceImpl.getRegisterUserMap().get(user).equals(entity.getUuid()),true);
+        pagination.activeRegistryUserList(locationServiceImpl, user, entity, forumStatisticsProvider);
 
         pagination.activeRegistryUserList(locationServiceImpl, user, entity, forumStatisticsProvider);
     }
