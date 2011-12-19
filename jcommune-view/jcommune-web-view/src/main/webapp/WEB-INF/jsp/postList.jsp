@@ -245,6 +245,9 @@
     <spring:message code="label.topic.now_browsing"/> Нет
 </div>
 </div>
+        <c:forEach var="innerUser" items="${viewList}">
+        <c:out value="${innerUser}"/>
+</c:forEach>
 <!-- Конец всех форумов -->
 <div class="footer_buffer"></div>
 <!-- Несемантичный буфер для прибития подвала -->

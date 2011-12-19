@@ -15,9 +15,11 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Section;
+import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
@@ -27,6 +29,7 @@ import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.ModelAndViewAssert.*;
@@ -41,15 +44,18 @@ public class SectionControllerTest {
     private SectionService sectionService;
     private SectionController controller;
     private BreadcrumbBuilder breadcrumbBuilder;
+    private ForumStatisticsProvider statisticsProvider;
+    private LocationService locationService;
 
     @BeforeMethod
     public void init() {
         sectionService = mock(SectionService.class);
         SecurityService securityService = mock(SecurityService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
-        ForumStatisticsProvider statisticsProvider = mock(ForumStatisticsProvider.class);
+        statisticsProvider = mock(ForumStatisticsProvider.class);
+        locationService = mock(LocationService.class);
         controller = new SectionController(securityService, sectionService, breadcrumbBuilder,
-                statisticsProvider);
+                statisticsProvider, locationService);
     }
 
     @Test
@@ -95,6 +101,7 @@ public class SectionControllerTest {
         //set expectations
         when(sectionService.get(sectionId)).thenReturn(section);
         when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
+        when(locationService.getRegisterUserMap()).thenReturn(new HashMap<User, String>());
 
         //invoke the object under test
         ModelAndView mav = controller.branchList(sectionId);

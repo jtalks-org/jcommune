@@ -81,6 +81,7 @@
             <property name="useCacheControlNoStore" value="true"/>
         </bean>
         <bean id="userDataInterceptor" class="org.jtalks.jcommune.web.interceptors.UserDataInterceptor"/>
+        <bean id="clearInterceptor" class="org.jtalks.jcommune.web.interceptors.ClearInterceptor"/>
     </mvc:interceptors>
 
     <!-- simple pages -->

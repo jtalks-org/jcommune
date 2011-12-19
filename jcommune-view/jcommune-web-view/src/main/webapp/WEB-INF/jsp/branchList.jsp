@@ -99,6 +99,9 @@
                 </li>
             </c:forEach>
         </ul>
+        <c:forEach var="innerUser" items="${viewList}">
+                    <c:out value="${innerUser}"/>
+        </c:forEach>
     </div>
     <div class="footer_buffer"></div>
     <!-- Несемантичный буфер для прибития подвала -->

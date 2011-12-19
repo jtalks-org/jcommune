@@ -23,8 +23,10 @@ import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
+import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -53,6 +55,8 @@ public final class BranchController {
     private TopicService topicService;
     private SecurityService securityService;
     private BreadcrumbBuilder breadcrumbBuilder;
+    private LocationService locationService;
+    private ForumStatisticsProvider forumStatisticsProvider;
 
     /**
      * Constructor creates MVC controller with specified BranchService
@@ -67,11 +71,15 @@ public final class BranchController {
     public BranchController(BranchService branchService,
                             TopicService topicService,
                             SecurityService securityService,
-                            BreadcrumbBuilder breadcrumbBuilder) {
+                            BreadcrumbBuilder breadcrumbBuilder,
+                            LocationService locationService,
+                            ForumStatisticsProvider forumStatisticsProvider) {
         this.branchService = branchService;
         this.topicService = topicService;
         this.securityService = securityService;
         this.breadcrumbBuilder = breadcrumbBuilder;
+        this.locationService = locationService;
+        this.forumStatisticsProvider = forumStatisticsProvider;
     }
 
     /**
@@ -97,7 +105,11 @@ public final class BranchController {
 
         Pagination pag = new Pagination(page, currentUser, topics.size(), pagingEnabled);
         List<Breadcrumb> breadcrumbs = breadcrumbBuilder.getForumBreadcrumb(branch);
+
+        List<String> viewList = pag.activeRegistryUserList(locationService, currentUser, branch, forumStatisticsProvider);
+      
         return new ModelAndView("topicList")
+                .addObject("viewList", viewList)
                 .addObject("branch", branch)
                 .addObject("topics", topics)
                 .addObject("pagination", pag)
@@ -122,11 +134,11 @@ public final class BranchController {
         List<Topic> topics = topicService.getRecentTopics(lastLogin);
         Pagination pagination = new Pagination(page, currentUser, topics.size(), true);
 
-        List<Breadcrumb> breadcrumbs =  breadcrumbBuilder.getForumBreadcrumb();
+        List<Breadcrumb> breadcrumbs = breadcrumbBuilder.getForumBreadcrumb();
         return new ModelAndView("recent")
                 .addObject("topics", topics)
                 .addObject("pagination", pagination)
-                .addObject("breadcrumbList",breadcrumbs);
+                .addObject("breadcrumbList", breadcrumbs);
     }
 
 }

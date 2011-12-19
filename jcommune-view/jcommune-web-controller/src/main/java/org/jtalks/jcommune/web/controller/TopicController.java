@@ -23,8 +23,10 @@ import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.TopicDto;
+import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -62,6 +64,8 @@ public final class TopicController {
     private BranchService branchService;
     private SecurityService securityService;
     private BreadcrumbBuilder breadcrumbBuilder;
+    private LocationService locationService;
+    private ForumStatisticsProvider forumStatisticsProvider;
 
     /**
      * This method turns the trim binder on. Trim bilder
@@ -90,11 +94,15 @@ public final class TopicController {
     public TopicController(TopicService topicService,
                            BranchService branchService,
                            SecurityService securityService,
-                           BreadcrumbBuilder breadcrumbBuilder) {
+                           BreadcrumbBuilder breadcrumbBuilder,
+                           LocationService locationService,
+                           ForumStatisticsProvider forumStatisticsProvider) {
         this.topicService = topicService;
         this.branchService = branchService;
         this.securityService = securityService;
         this.breadcrumbBuilder = breadcrumbBuilder;
+        this.locationService = locationService;
+        this.forumStatisticsProvider = forumStatisticsProvider;
     }
 
     /**
@@ -193,7 +201,10 @@ public final class TopicController {
         List<Post> posts = topic.getPosts();
         Pagination pag = new Pagination(page, currentUser, posts.size(), pagingEnabled);
 
+        List<String> viewList = pag.activeRegistryUserList(locationService, currentUser, topic, forumStatisticsProvider);
+       
         return new ModelAndView("postList")
+                .addObject("viewList", viewList)
                 .addObject("posts", posts)
                 .addObject("topic", topic)
                 .addObject("pag", pag)
