@@ -159,8 +159,7 @@ public class UserController {
         User user = userService.getByUsername(username);
         return new ModelAndView("userDetails")
                 .addObject("user", user)
-                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb())
-                        // bind separately to get localized value
+                 // bind separately to get localized value
                 .addObject("language", Language.valueOf(user.getLanguage()))
                 .addObject("pageSize", Pagination.getPageSizeFor(user));
     }
@@ -181,8 +180,7 @@ public class UserController {
                     imageUtils.base64Coder(avatar)
             ));
         }
-        return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUser)
-                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
+        return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUser);
     }
 
     /**

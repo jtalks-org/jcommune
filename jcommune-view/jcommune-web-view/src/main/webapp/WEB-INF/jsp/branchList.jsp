@@ -29,7 +29,6 @@
     <h1>JTalks</h1>
 
     <div class="all_forums">
-        <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
         <div class="forum_header_table"> <!-- Шапка группы форумов -->
             <div class="forum_header">
                 <h3><a class="forum_header_link"

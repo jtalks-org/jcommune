@@ -20,7 +20,6 @@ import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationServiceImpl;
-import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,8 +50,7 @@ public final class SectionController {
 
     private SecurityService securityService;
     private SectionService sectionService;
-    private ForumStatisticsProvider forumStaticsProvider;
-    private BreadcrumbBuilder breadcrumbBuilder;
+    private ForumStatisticsProvider forumStaticsProvider;   
     private LocationServiceImpl locationServiceImpl;
 
     /**
@@ -60,20 +58,16 @@ public final class SectionController {
      *
      * @param securityService      autowired object from Spring Context
      * @param sectionService       autowired object from Spring Context
-     * @param breadcrumbBuilder    the object which provides actions on
-     *                             {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      * @param forumStaticsProvider autowired object from Spring Context which provides methods for getting
      *                             forum statistic information
      */
     @Autowired
     public SectionController(SecurityService securityService,
-                             SectionService sectionService,
-                             BreadcrumbBuilder breadcrumbBuilder,
+                             SectionService sectionService,                             
                              ForumStatisticsProvider forumStaticsProvider,
                              LocationServiceImpl locationServiceImpl) {
         this.securityService = securityService;
-        this.sectionService = sectionService;
-        this.breadcrumbBuilder = breadcrumbBuilder;
+        this.sectionService = sectionService;        
         this.forumStaticsProvider = forumStaticsProvider;
         this.locationServiceImpl = locationServiceImpl;
     }
@@ -101,7 +95,6 @@ public final class SectionController {
         return new ModelAndView("sectionList")
                 .addObject("pageSize", Pagination.getPageSizeFor(securityService.getCurrentUser()))
                 .addObject("sectionList", sectionService.getAll())
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
                 .addObject("messagesCount", forumStaticsProvider.getPostsOnForumCount())
                 .addObject("registeredUsersCount", forumStaticsProvider.getUsersCount())
                 .addObject("visitors", forumStaticsProvider.getOnlineUsersCount())
@@ -130,7 +123,6 @@ public final class SectionController {
         return new ModelAndView("branchList")
                 .addObject("viewList", viewList)
                 .addObject("section", section)
-                .addObject("pageSize", Pagination.getPageSizeFor(currentUser))
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
+                .addObject("pageSize", Pagination.getPageSizeFor(currentUser));
     }
 }

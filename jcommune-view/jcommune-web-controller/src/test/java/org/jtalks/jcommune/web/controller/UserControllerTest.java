@@ -161,23 +161,17 @@ public class UserControllerTest {
         User user = new User("username", "email", "password");
         user.setLanguage("ENGLISH");
         //set expectations
-        when(userService.getByUsername(USER_NAME))
-                .thenReturn(user);
-        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
-
+        when(userService.getByUsername(USER_NAME)).thenReturn(user);
 
         //invoke the object under test
         ModelAndView mav = controller.showProfilePage(USER_NAME);
 
         //check expectations
         verify(userService).getByUsername(USER_NAME);
-        verify(breadcrumbBuilder).getForumBreadcrumb();
 
         //check result
         assertViewName(mav, "userDetails");
         assertModelAttributeAvailable(mav, "user");
-        assertModelAttributeAvailable(mav, "breadcrumbList");
-
     }
 
     @Test
@@ -185,18 +179,15 @@ public class UserControllerTest {
         User user = getUser();
         //set expectations
         when(securityService.getCurrentUser()).thenReturn(user);
-        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
 
         //invoke the object under test
         ModelAndView mav = controller.editProfilePage();
 
         //check expectations
         verify(securityService).getCurrentUser();
-        verify(breadcrumbBuilder).getForumBreadcrumb();
 
         //check result
         assertViewName(mav, "editProfile");
-        assertModelAttributeAvailable(mav, "breadcrumbList");
         EditUserProfileDto dto = assertAndReturnModelAttributeOfType(mav, "editedUser", EditUserProfileDto.class);
         assertEquals(dto.getFirstName(), user.getFirstName(), "First name is not equal");
         assertEquals(dto.getLastName(), user.getLastName(), "Last name is not equal");

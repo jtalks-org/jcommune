@@ -54,14 +54,14 @@ public class SectionControllerTest {
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
         statisticsProvider = mock(ForumStatisticsProvider.class);
         locationServiceImpl = mock(LocationServiceImpl.class);
-        controller = new SectionController(securityService, sectionService, breadcrumbBuilder,
+        controller = new SectionController(securityService, sectionService,
                 statisticsProvider, locationServiceImpl);
     }
 
     @Test
     public void testDisplayAllSections() {
         //set expectations
-        expectationsForAllSections();
+        when(sectionService.getAll()).thenReturn(new ArrayList<Section>());
 
         //invoke the object under test
         ModelAndView mav = controller.sectionList(mock(HttpSession.class));
@@ -72,24 +72,17 @@ public class SectionControllerTest {
 
     private void verifyAndAssertAllSections(ModelAndView mav) {
         verify(sectionService).getAll();
-        verify(breadcrumbBuilder).getForumBreadcrumb();
 
         //check result
         assertViewName(mav, "sectionList");
         assertModelAttributeAvailable(mav, "pageSize");
         assertModelAttributeAvailable(mav, "sectionList");
-        assertModelAttributeAvailable(mav, "breadcrumbList");
         assertModelAttributeAvailable(mav, "messagesCount");
         assertModelAttributeAvailable(mav, "registeredUsersCount");
         assertModelAttributeAvailable(mav, "visitors");
         assertModelAttributeAvailable(mav, "usersRegistered");
         assertModelAttributeAvailable(mav, "visitorsRegistered");
         assertModelAttributeAvailable(mav, "visitorsGuests");
-    }
-
-    private void expectationsForAllSections() {
-        when(sectionService.getAll()).thenReturn(new ArrayList<Section>());
-        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
     }
 
     @Test
@@ -108,14 +101,11 @@ public class SectionControllerTest {
 
         //check expectations
         verify(sectionService).get(sectionId);
-        verify(breadcrumbBuilder).getForumBreadcrumb();
-
         //check result
         assertViewName(mav, "branchList");
         assertModelAttributeAvailable(mav, "section");
         Section actualSection = assertAndReturnModelAttributeOfType(mav, "section", Section.class);
         assertEquals(actualSection.getId(), sectionId);
-        assertModelAttributeAvailable(mav, "breadcrumbList");
     }
 
 }

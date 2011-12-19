@@ -26,8 +26,6 @@
 <body>
 <sec:authentication property="principal.username" var="auth" scope="request"/>
 <jsp:include page="../template/topLine.jsp"/>
-<jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-
 <div id="userdetails">
     <ul>
         <li>

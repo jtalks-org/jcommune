@@ -43,8 +43,6 @@
             </span>
         </nobr>
 
-        <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-
         <!-- Начало группы форумов -->
         <div class="forum_header_table"> <!-- Шапка бранча -->
             <div class="forum_header">

@@ -39,14 +39,11 @@
         <a class="forum_top_right_link" href="#"><spring:message code="label.messagesWithoutAnswers"/></a>
 
         <h2><a class="heading" href="#"><spring:message code="label.section.jtalks_forum"/></a></h2>
-        <br/>
 
         <div class="forum_misc_info">
             <spring:message code="label.section.prog_forum"/>
         </div>
-
-        <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-
+        <br/>
         <c:forEach var="section" items="${sectionList}">
             <!-- Начало группы форумов -->
             <div class="forum_header_table"> <!-- Шапка группы форумов -->

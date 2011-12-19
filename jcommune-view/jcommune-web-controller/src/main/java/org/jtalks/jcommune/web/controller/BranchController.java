@@ -133,12 +133,10 @@ public final class BranchController {
         User currentUser = securityService.getCurrentUser();
         List<Topic> topics = topicService.getRecentTopics(lastLogin);
         Pagination pagination = new Pagination(page, currentUser, topics.size(), true);
-
-        List<Breadcrumb> breadcrumbs = breadcrumbBuilder.getForumBreadcrumb();
+        
         return new ModelAndView("recent")
                 .addObject("topics", topics)
-                .addObject("pagination", pagination)
-                .addObject("breadcrumbList", breadcrumbs);
+                .addObject("pagination", pagination);
     }
 
 }
