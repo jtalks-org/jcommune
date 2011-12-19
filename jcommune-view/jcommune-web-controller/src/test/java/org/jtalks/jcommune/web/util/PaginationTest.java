@@ -14,14 +14,17 @@
  */
 package org.jtalks.jcommune.web.util;
 
+import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.nontransactional.LocationServiceImpl;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.mockito.Mockito.mock;
@@ -33,11 +36,17 @@ public class PaginationTest {
     private String link;
     private String uri;
     private User user;
+    private LocationServiceImpl locationServiceImpl;
+    private ForumStatisticsProvider forumStatisticsProvider;
+    private Entity entity;
 
     private static final int PAGE_SIZE = 5;
 
     @BeforeMethod
     protected void setUp() {
+        entity = mock(Entity.class);
+        locationServiceImpl = mock(LocationServiceImpl.class);
+        forumStatisticsProvider = mock(ForumStatisticsProvider.class);
         user = new User("", "", "");
         user.setPageSize(PAGE_SIZE);
         uri = "1";
@@ -122,7 +131,7 @@ public class PaginationTest {
     }
 
     @Test
-    public void test(){
+    public void testDefinitionPostInTopic() {
         Post post = mock(Post.class);
         Topic topic = mock(Topic.class);
         List<Post> posts = mock(ArrayList.class);
@@ -132,5 +141,25 @@ public class PaginationTest {
         when(posts.indexOf(post)).thenReturn(2);
         pagination = new Pagination(1, user, 10, true);
         pagination.definitionPostInTopic(post);
+    }
+
+    @Test
+    public void testActiveRegistryUserList() {
+
+        List<Object> list = new ArrayList<Object>();
+        list.add(user);
+
+        when(entity.getUuid()).thenReturn("");
+        when(locationServiceImpl.getRegisterUserMap()).thenReturn(new HashMap<User, String>());
+        when(forumStatisticsProvider.getOnlineRegisteredUsers()).thenReturn(list);
+
+        pagination = new Pagination(1, user, 10, true);
+        pagination.activeRegistryUserList(locationServiceImpl, user, entity, forumStatisticsProvider);
+
+        locationServiceImpl.getRegisterUserMap().put(user, entity.getUuid());
+        assertEquals(locationServiceImpl.getRegisterUserMap().containsKey(user),true);
+        assertEquals(locationServiceImpl.getRegisterUserMap().get(user).equals(entity.getUuid()),true);
+
+        pagination.activeRegistryUserList(locationServiceImpl, user, entity, forumStatisticsProvider);
     }
 }

@@ -17,7 +17,7 @@ package org.jtalks.jcommune.web.interceptors;
 
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SecurityService;
-import org.jtalks.jcommune.service.nontransactional.LocationService;
+import org.jtalks.jcommune.service.nontransactional.LocationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -29,11 +29,11 @@ import java.io.IOException;
 public class ClearInterceptor extends HandlerInterceptorAdapter {
 
     private final SecurityService securityService;
-    private final LocationService locationService;
+    private final LocationServiceImpl locationServiceImpl;
 
     @Autowired
-    public ClearInterceptor(LocationService locationService, SecurityService securityService) {
-        this.locationService = locationService;
+    public ClearInterceptor(LocationServiceImpl locationServiceImpl, SecurityService securityService) {
+        this.locationServiceImpl = locationServiceImpl;
         this.securityService = securityService;
     }
 
@@ -42,7 +42,7 @@ public class ClearInterceptor extends HandlerInterceptorAdapter {
                              HttpServletResponse response, Object handler) throws IOException, ServletException {
 
         User currentUser = securityService.getCurrentUser();
-        locationService.getRegisterUserMap().put(currentUser, "");
+        locationServiceImpl.getRegisterUserMap().put(currentUser, "");
 
         return true;
     }

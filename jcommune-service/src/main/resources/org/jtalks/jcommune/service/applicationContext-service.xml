@@ -45,7 +45,7 @@
 
     <bean id="imagePreprocessor"
           class="org.jtalks.jcommune.service.nontransactional.ImageUtils"/>
-    <bean id="locationService" class="org.jtalks.jcommune.service.nontransactional.LocationService"/>
+    <bean id="locationService" class="org.jtalks.jcommune.service.nontransactional.LocationServiceImpl"/>
 
     <bean id="userService"
           class="org.jtalks.jcommune.service.transactional.TransactionalUserService">

@@ -19,7 +19,7 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.LocationService;
+import org.jtalks.jcommune.service.nontransactional.LocationServiceImpl;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
@@ -45,7 +45,7 @@ public class SectionControllerTest {
     private SectionController controller;
     private BreadcrumbBuilder breadcrumbBuilder;
     private ForumStatisticsProvider statisticsProvider;
-    private LocationService locationService;
+    private LocationServiceImpl locationServiceImpl;
 
     @BeforeMethod
     public void init() {
@@ -53,9 +53,9 @@ public class SectionControllerTest {
         SecurityService securityService = mock(SecurityService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
         statisticsProvider = mock(ForumStatisticsProvider.class);
-        locationService = mock(LocationService.class);
+        locationServiceImpl = mock(LocationServiceImpl.class);
         controller = new SectionController(securityService, sectionService, breadcrumbBuilder,
-                statisticsProvider, locationService);
+                statisticsProvider, locationServiceImpl);
     }
 
     @Test
@@ -101,7 +101,7 @@ public class SectionControllerTest {
         //set expectations
         when(sectionService.get(sectionId)).thenReturn(section);
         when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
-        when(locationService.getRegisterUserMap()).thenReturn(new HashMap<User, String>());
+        when(locationServiceImpl.getRegisterUserMap()).thenReturn(new HashMap<User, String>());
 
         //invoke the object under test
         ModelAndView mav = controller.branchList(sectionId);

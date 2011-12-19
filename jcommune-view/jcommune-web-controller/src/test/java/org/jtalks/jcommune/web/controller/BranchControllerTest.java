@@ -15,12 +15,15 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.joda.time.DateTime;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.LocationService;
+import org.jtalks.jcommune.service.nontransactional.LocationServiceImpl;
+import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.jtalks.jcommune.web.util.Pagination;
@@ -30,11 +33,12 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
 
 
@@ -48,7 +52,7 @@ public class BranchControllerTest {
     private TopicService topicService;
     private BranchController controller;
     private BreadcrumbBuilder breadcrumbBuilder;
-    private LocationService locationService;
+    private LocationServiceImpl locationServiceImpl;
     private ForumStatisticsProvider forumStatisticsProvider;
 
 
@@ -56,6 +60,7 @@ public class BranchControllerTest {
 
     @BeforeMethod
     public void init() {
+        locationServiceImpl = mock(LocationServiceImpl.class);
         branchService = mock(BranchService.class);
         topicService = mock(TopicService.class);
         SecurityService securityService = mock(SecurityService.class);
@@ -63,11 +68,14 @@ public class BranchControllerTest {
         forumStatisticsProvider = mock(ForumStatisticsProvider.class);
         controller = new BranchController(branchService, topicService,
                 securityService, breadcrumbBuilder,
-                locationService, forumStatisticsProvider);
+                locationServiceImpl, forumStatisticsProvider);
     }
 
-    /*@Test
+    @Test
     public void showPage() throws NotFoundException {
+        User user = new User("","","");
+        Map map = new HashMap<User, String>();
+        map.put(user, "");
         long branchId = 1L;
         int page = 2;
         boolean pagingEnabled = true;
@@ -77,7 +85,8 @@ public class BranchControllerTest {
         when(branchService.get(branchId)).thenReturn(branch);
         when(breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)))
                 .thenReturn(new ArrayList<Breadcrumb>());
-        when(locationService.getMap()).thenReturn(new HashMap<User, String>());
+        when(locationServiceImpl.getRegisterUserMap()).thenReturn(map);
+        when(forumStatisticsProvider.getOnlineRegisteredUsers()).thenReturn(new ArrayList<Object>());
 
         //invoke the object under test
         ModelAndView mav = controller.showPage(branchId, page, pagingEnabled);
@@ -96,7 +105,7 @@ public class BranchControllerTest {
         assertEquals(pagination.getPage().intValue(), page);
         assertModelAttributeAvailable(mav, "breadcrumbList");
 
-    }*/
+    }
 
     @Test
     public void recentTopicsPage() throws NotFoundException {

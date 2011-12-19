@@ -13,23 +13,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.jtalks.jcommune.service.nontransactional;
+package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.User;
-import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.Map;
 
-@Component
-public class LocationService {
-private Map<User, String> RegisterUserMap = new HashMap<User, String>();
+/**
+ * class to store user map.
+ *
+ * @author Andrey Kluev
+ */
+public interface LocationService {
 
-    public Map<User, String> getRegisterUserMap() {
-        return RegisterUserMap;
-    }
+    /**
+     * @return map registry user
+     */
+    public Map<User, String> getRegisterUserMap();
 
-    public void setRegisterUserMap(Map<User, String> registerUserMap) {
-        RegisterUserMap = registerUserMap;
-    }
+    /**
+     * @param registerUserMap map registry user
+     */
+    public void setRegisterUserMap(Map<User, String> registerUserMap);
 }

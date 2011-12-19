@@ -17,7 +17,7 @@ package org.jtalks.jcommune.web.util;
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.nontransactional.LocationService;
+import org.jtalks.jcommune.service.nontransactional.LocationServiceImpl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -194,22 +194,30 @@ public class Pagination {
         return res;
     }
 
-    public List<String> activeRegistryUserList(LocationService locationService,
-                                               User currentUser, Entity section,
+    /**
+     *
+     * @param locationServiceImpl locationService
+     * @param currentUser current user
+     * @param entity entity
+     * @param forumStatisticsProvider forumStatisticsProvider
+     * @return lis name user active these page
+     */
+    public List<String> activeRegistryUserList(LocationServiceImpl locationServiceImpl,
+                                               User currentUser, Entity entity,
                                                ForumStatisticsProvider forumStatisticsProvider) {
-        Map globalUserMap = locationService.getRegisterUserMap();
-        globalUserMap.put(currentUser, section.getUuid());
+        Map globalUserMap = locationServiceImpl.getRegisterUserMap();
+        globalUserMap.put(currentUser, entity.getUuid());
 
         Map<User, String> innerMap = new HashMap<User, String>();
         List<String> viewList = new ArrayList<String>();
         for (Object o : forumStatisticsProvider.getOnlineRegisteredUsers()) {
             User user = (User) o;
-            if (globalUserMap.containsKey(user) && globalUserMap.get(user).equals(section.getUuid())) {
-                innerMap.put(user, section.getUuid());
+            if (globalUserMap.containsKey(user) && globalUserMap.get(user).equals(entity.getUuid())) {
+                innerMap.put(user, entity.getUuid());
                 viewList.add(user.getEncodedUsername());
             }
         }
-        locationService.setRegisterUserMap(innerMap);
+        locationServiceImpl.setRegisterUserMap(innerMap);
         return viewList;
     }
 }

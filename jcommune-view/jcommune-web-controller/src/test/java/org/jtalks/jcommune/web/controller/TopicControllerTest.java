@@ -22,7 +22,7 @@ import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.LocationService;
+import org.jtalks.jcommune.service.nontransactional.LocationServiceImpl;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.TopicDto;
@@ -61,13 +61,14 @@ public class TopicControllerTest {
     private SecurityService securityService;
     private TopicController controller;
     private BreadcrumbBuilder breadcrumbBuilder;
-    private LocationService locationService;
     private Branch branch;
     public static final long TOPIC_ID = 1;
     private ForumStatisticsProvider forumStatisticsProvider;
+    private LocationServiceImpl locationServiceImpl;
 
     @BeforeMethod
     public void init() {
+        locationServiceImpl = mock(LocationServiceImpl.class);
         topicService = mock(TopicService.class);
         branchService = mock(BranchService.class);
         securityService = mock(SecurityService.class);
@@ -75,7 +76,7 @@ public class TopicControllerTest {
         branch = mock(Branch.class);
         forumStatisticsProvider = mock(ForumStatisticsProvider.class);
         controller = new TopicController(topicService,branchService,
-                securityService, breadcrumbBuilder, locationService,
+                securityService, breadcrumbBuilder, locationServiceImpl,
                 forumStatisticsProvider);
         user = new User("username", "email@mail.com", "password");
     }
@@ -108,7 +109,7 @@ public class TopicControllerTest {
         verify(topicService).deleteTopic(TOPIC_ID);
     }
 
-   /* @Test
+    @Test
     public void showTopicPage() throws NotFoundException {
         int page = 2;
         boolean pagingEnabled = true;
@@ -147,7 +148,7 @@ public class TopicControllerTest {
         assertEquals((int) actualPage, page);
 
         assertModelAttributeAvailable(mav, "breadcrumbList");
-    }*/
+    }
 
     @Test
     public void testCreateValidationPass() throws Exception {

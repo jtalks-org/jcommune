@@ -23,7 +23,7 @@ import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.LocationService;
+import org.jtalks.jcommune.service.nontransactional.LocationServiceImpl;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
@@ -55,7 +55,7 @@ public final class BranchController {
     private TopicService topicService;
     private SecurityService securityService;
     private BreadcrumbBuilder breadcrumbBuilder;
-    private LocationService locationService;
+    private LocationServiceImpl locationServiceImpl;
     private ForumStatisticsProvider forumStatisticsProvider;
 
     /**
@@ -72,13 +72,13 @@ public final class BranchController {
                             TopicService topicService,
                             SecurityService securityService,
                             BreadcrumbBuilder breadcrumbBuilder,
-                            LocationService locationService,
+                            LocationServiceImpl locationServiceImpl,
                             ForumStatisticsProvider forumStatisticsProvider) {
         this.branchService = branchService;
         this.topicService = topicService;
         this.securityService = securityService;
         this.breadcrumbBuilder = breadcrumbBuilder;
-        this.locationService = locationService;
+        this.locationServiceImpl = locationServiceImpl;
         this.forumStatisticsProvider = forumStatisticsProvider;
     }
 
@@ -106,7 +106,7 @@ public final class BranchController {
         Pagination pag = new Pagination(page, currentUser, topics.size(), pagingEnabled);
         List<Breadcrumb> breadcrumbs = breadcrumbBuilder.getForumBreadcrumb(branch);
 
-        List<String> viewList = pag.activeRegistryUserList(locationService, currentUser, branch, forumStatisticsProvider);
+        List<String> viewList = pag.activeRegistryUserList(locationServiceImpl, currentUser, branch, forumStatisticsProvider);
       
         return new ModelAndView("topicList")
                 .addObject("viewList", viewList)

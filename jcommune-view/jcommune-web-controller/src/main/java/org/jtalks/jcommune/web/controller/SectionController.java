@@ -19,7 +19,7 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.LocationService;
+import org.jtalks.jcommune.service.nontransactional.LocationServiceImpl;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.jtalks.jcommune.web.util.Pagination;
@@ -53,7 +53,7 @@ public final class SectionController {
     private SectionService sectionService;
     private ForumStatisticsProvider forumStaticsProvider;
     private BreadcrumbBuilder breadcrumbBuilder;
-    private LocationService locationService;
+    private LocationServiceImpl locationServiceImpl;
 
     /**
      * Constructor creates MVC controller with specified SectionService
@@ -70,12 +70,12 @@ public final class SectionController {
                              SectionService sectionService,
                              BreadcrumbBuilder breadcrumbBuilder,
                              ForumStatisticsProvider forumStaticsProvider,
-                             LocationService locationService) {
+                             LocationServiceImpl locationServiceImpl) {
         this.securityService = securityService;
         this.sectionService = sectionService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.forumStaticsProvider = forumStaticsProvider;
-        this.locationService = locationService;
+        this.locationServiceImpl = locationServiceImpl;
     }
 
 
@@ -124,7 +124,7 @@ public final class SectionController {
         User currentUser = securityService.getCurrentUser();
         
         Pagination pag = new Pagination(1, currentUser, 10,true);
-        List<String> viewList = pag.activeRegistryUserList(locationService, currentUser, section, forumStaticsProvider);
+        List<String> viewList = pag.activeRegistryUserList(locationServiceImpl, currentUser, section, forumStaticsProvider);
         
 
         return new ModelAndView("branchList")
