@@ -58,16 +58,17 @@ public final class SectionController {
      *
      * @param securityService      autowired object from Spring Context
      * @param sectionService       autowired object from Spring Context
+     * @param locationServiceImpl autowired object from Spring Context
      * @param forumStaticsProvider autowired object from Spring Context which provides methods for getting
      *                             forum statistic information
      */
     @Autowired
     public SectionController(SecurityService securityService,
-                             SectionService sectionService,                             
+                             SectionService sectionService,
                              ForumStatisticsProvider forumStaticsProvider,
                              LocationServiceImpl locationServiceImpl) {
         this.securityService = securityService;
-        this.sectionService = sectionService;        
+        this.sectionService = sectionService;
         this.forumStaticsProvider = forumStaticsProvider;
         this.locationServiceImpl = locationServiceImpl;
     }
@@ -117,7 +118,8 @@ public final class SectionController {
         User currentUser = securityService.getCurrentUser();
         
         Pagination pag = new Pagination(1, currentUser, 10,true);
-        List<String> viewList = pag.activeRegistryUserList(locationServiceImpl, currentUser, section, forumStaticsProvider);
+        List<String> viewList = pag.activeRegistryUserList(locationServiceImpl,
+                currentUser, section, forumStaticsProvider);
         
 
         return new ModelAndView("branchList")

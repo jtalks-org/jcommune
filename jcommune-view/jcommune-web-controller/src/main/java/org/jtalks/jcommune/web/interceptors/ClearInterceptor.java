@@ -31,6 +31,12 @@ public class ClearInterceptor extends HandlerInterceptorAdapter {
     private final SecurityService securityService;
     private final LocationServiceImpl locationServiceImpl;
 
+    /**
+     * Constructor clearInterceptor
+     *
+     * @param locationServiceImpl autowired object from Spring Context
+     * @param securityService autowired object from Spring Context
+     */
     @Autowired
     public ClearInterceptor(LocationServiceImpl locationServiceImpl, SecurityService securityService) {
         this.locationServiceImpl = locationServiceImpl;

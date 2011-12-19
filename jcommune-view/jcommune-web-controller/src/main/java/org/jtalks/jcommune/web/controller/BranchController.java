@@ -64,6 +64,8 @@ public final class BranchController {
      * @param branchService     autowired object from Spring Context
      * @param topicService      autowired object from Spring Context
      * @param securityService   autowired object from Spring Context
+     * @param locationServiceImpl autowired object from Spring Context
+     * @param forumStatisticsProvider autowired object from Spring Context
      * @param breadcrumbBuilder the object which provides actions on
      *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      */
@@ -106,7 +108,8 @@ public final class BranchController {
         Pagination pag = new Pagination(page, currentUser, topics.size(), pagingEnabled);
         List<Breadcrumb> breadcrumbs = breadcrumbBuilder.getForumBreadcrumb(branch);
 
-        List<String> viewList = pag.activeRegistryUserList(locationServiceImpl, currentUser, branch, forumStatisticsProvider);
+        List<String> viewList = pag.activeRegistryUserList(locationServiceImpl,
+                currentUser, branch, forumStatisticsProvider);
       
         return new ModelAndView("topicList")
                 .addObject("viewList", viewList)

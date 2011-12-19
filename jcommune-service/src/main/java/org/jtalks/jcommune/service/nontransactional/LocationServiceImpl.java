@@ -29,19 +29,19 @@ import java.util.Map;
  */
 @Component
 public class LocationServiceImpl implements LocationService {
-    private Map<User, String> RegisterUserMap = new HashMap<User, String>();
+    private Map<User, String> registerUserMap = new HashMap<User, String>();
 
     /**
      * {@inheritDoc}
      */
     public Map<User, String> getRegisterUserMap() {
-        return RegisterUserMap;
+        return registerUserMap;
     }
 
     /**
      * {@inheritDoc}
      */
     public void setRegisterUserMap(Map<User, String> registerUserMap) {
-        RegisterUserMap = registerUserMap;
+        this.registerUserMap = registerUserMap;
     }
 }

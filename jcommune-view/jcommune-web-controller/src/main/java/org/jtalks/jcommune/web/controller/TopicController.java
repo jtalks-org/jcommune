@@ -85,6 +85,8 @@ public final class TopicController {
      *
      * @param topicService      the object which provides actions on {@link Topic} entity
      * @param branchService     the object which provides actions on
+     * @param locationServiceImpl autowired object from Spring Context
+     * @param forumStatisticsProvider autowired object from Spring Context
      * @param securityService   autowired object from Spring Context
      *                          {@link org.jtalks.jcommune.model.entity.Branch} entity
      * @param breadcrumbBuilder the object which provides actions on
@@ -201,7 +203,8 @@ public final class TopicController {
         List<Post> posts = topic.getPosts();
         Pagination pag = new Pagination(page, currentUser, posts.size(), pagingEnabled);
 
-        List<String> viewList = pag.activeRegistryUserList(locationServiceImpl, currentUser, topic, forumStatisticsProvider);
+        List<String> viewList = pag.activeRegistryUserList(locationServiceImpl,
+                currentUser, topic, forumStatisticsProvider);
        
         return new ModelAndView("postList")
                 .addObject("viewList", viewList)
