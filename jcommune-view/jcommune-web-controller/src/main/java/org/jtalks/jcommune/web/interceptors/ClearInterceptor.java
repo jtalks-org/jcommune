@@ -55,16 +55,15 @@ public class ClearInterceptor extends HandlerInterceptorAdapter {
      * @param response HttpServletResponse
      * @param handler  handler
      * @return true
-     * @throws IOException
-     * @throws ServletException
+     * @throws IOException exception I/O
+     * @throws ServletException servlet exception
      */
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) throws IOException, ServletException {
 
         User currentUser = securityService.getCurrentUser();
-        LocationServiceImpl locationService = new LocationServiceImpl();
-        locationService.clear(currentUser);
+        locationServiceImpl.clear(currentUser);
 
         return true;
     }

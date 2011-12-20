@@ -108,8 +108,7 @@ public final class BranchController {
         Pagination pag = new Pagination(page, currentUser, topics.size(), pagingEnabled);
         List<Breadcrumb> breadcrumbs = breadcrumbBuilder.getForumBreadcrumb(branch);
 
-        LocationServiceImpl locationService = new LocationServiceImpl();
-        List<String> viewList = locationService.activeRegistryUserList(currentUser, branch,
+        List<String> viewList = locationServiceImpl.activeRegistryUserList(currentUser, branch,
                 forumStatisticsProvider.getOnlineRegisteredUsers());
       
         return new ModelAndView("topicList")

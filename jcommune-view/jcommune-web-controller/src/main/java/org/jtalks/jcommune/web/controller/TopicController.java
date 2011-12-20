@@ -203,8 +203,7 @@ public final class TopicController {
         List<Post> posts = topic.getPosts();
         Pagination pag = new Pagination(page, currentUser, posts.size(), pagingEnabled);
 
-        LocationServiceImpl locationService = new LocationServiceImpl();
-        List<String> viewList = locationService.activeRegistryUserList(currentUser, topic,
+        List<String> viewList = locationServiceImpl.activeRegistryUserList(currentUser, topic,
                 forumStatisticsProvider.getOnlineRegisteredUsers());
        
         return new ModelAndView("postList")

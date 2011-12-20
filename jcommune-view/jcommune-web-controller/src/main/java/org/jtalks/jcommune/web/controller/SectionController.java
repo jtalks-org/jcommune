@@ -117,8 +117,7 @@ public final class SectionController {
         Section section = sectionService.get(sectionId);
         User currentUser = securityService.getCurrentUser();
 
-        LocationServiceImpl locationService = new LocationServiceImpl();
-        List<String> viewList = locationService.activeRegistryUserList(currentUser, section,
+        List<String> viewList = locationServiceImpl.activeRegistryUserList(currentUser, section,
                 forumStaticsProvider.getOnlineRegisteredUsers());
         
 

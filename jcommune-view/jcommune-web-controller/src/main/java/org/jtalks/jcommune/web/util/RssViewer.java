@@ -82,7 +82,7 @@ public class RssViewer extends AbstractRssFeedView {
                                         HttpServletRequest request, HttpServletResponse response)
         throws IOException {
 
-        String URL = buildURL(request);
+        String url = buildURL(request);
         List<Topic> listContent = (List<Topic>) model.get("topics");
         if (listContent == null) {
             response.sendRedirect(request.getContextPath() + "/errors/404");
@@ -92,7 +92,7 @@ public class RssViewer extends AbstractRssFeedView {
 
         for (Topic topic : listContent) {
 
-            items.add(createFeedItem(topic, URL));
+            items.add(createFeedItem(topic, url));
         }
 
         return items;
@@ -102,10 +102,10 @@ public class RssViewer extends AbstractRssFeedView {
      * Create news item
      *
      * @param topic   news topic
-     * @param URL building URL
+     * @param url building URL
      * @return item for news feed
      */
-    private Item createFeedItem(Topic topic, String URL) {
+    private Item createFeedItem(Topic topic, String url) {
 
         Item item = new Item();
         Description description = new Description();
@@ -119,7 +119,7 @@ public class RssViewer extends AbstractRssFeedView {
         item.setTitle(topic.getTitle());
         item.setAuthor(topic.getLastPost().getUserCreated().getEncodedUsername());
 
-        item.setLink(URL
+        item.setLink(url
                 + "/topics/" + topic.getId()
                 + "?page=" + pag.getMaxPages()
                 + "#" + topic.getLastPost().getId());
