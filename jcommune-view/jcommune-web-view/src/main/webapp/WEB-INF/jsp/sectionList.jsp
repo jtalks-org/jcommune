@@ -14,12 +14,12 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <head>
     <title><spring:message code="label.section.jtalks_forum"/></title>
@@ -160,9 +160,6 @@
                                     </c:otherwise>
                                 </c:choose>
                             </c:forEach>
-                                <%--<li><a href="#" class="moderator">andreyko</a>,</li>
-                              <li><a href="#" class="admin">Староверъ</a>,</li>
-                              <li><a href="#" class="user">Вася</a>.</li>--%>
                         </ul>
                     </c:if>
                 </div>

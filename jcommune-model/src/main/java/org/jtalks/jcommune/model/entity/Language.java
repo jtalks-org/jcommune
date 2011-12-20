@@ -19,16 +19,16 @@ package org.jtalks.jcommune.model.entity;
  */
 public enum Language {
 
-    ENGLISH("label.english","ru"),
-    RUSSIAN("label.russian","ru"),
-    SPANISH("label.spanish","es");
+    ENGLISH("label.english", "ru"),
+    RUSSIAN("label.russian", "ru"),
+    SPANISH("label.spanish", "es");
 
     private String label;
     private String code;
 
     /**
      * @param label same as in resource bundle
-     * @param code locale code for this language
+     * @param code  locale code for this language
      */
     private Language(String label, String code) {
         this.label = label;
@@ -41,14 +41,14 @@ public enum Language {
      *
      * @return string resource bundle label
      */
-    public String getLanguageNameLabel(){
-       return label;
+    public String getLanguageNameLabel() {
+        return label;
     }
 
     /**
      * @return language abbreviation used in locale settings, like "en" or "ru"
      */
-    public String getLanguageCode(){
-       return code;
+    public String getLanguageCode() {
+        return code;
     }
 }
