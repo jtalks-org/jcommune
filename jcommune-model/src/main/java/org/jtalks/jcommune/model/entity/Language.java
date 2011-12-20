@@ -19,47 +19,21 @@ package org.jtalks.jcommune.model.entity;
  */
 public enum Language {
 
-    ENGLISH {
-        /**
-         * Return resource bundle label for the English language. This method should be used when
-         * you need a localized representation of the current instance
-         *
-         * @return string resource bundle label
-         */
-        @Override
-        public String getLanguageNameLabel() {
-            return "label.english";
-        }
+    ENGLISH("label.english","ru"),
+    RUSSIAN("label.russian","ru"),
+    SPANISH("label.spanish","es");
 
-        /**
-         * @return language abbreviation used in locale settings
-         */
-        @Override
-        public String getLanguageCode() {
-            return "en";
-        }
-    },
+    private String label;
+    private String code;
 
-    RUSSIAN {
-        /**
-         * Return resource bundle label for the Russian language. This method should be used when
-         * you need a localized representation of the current instance
-         *
-         * @return string resource bundle label
-         */
-        @Override
-        public String getLanguageNameLabel() {
-            return "label.russian";
-        }
-
-        /**
-         * @return language abbreviation used in locale settings
-         */
-        @Override
-        public String getLanguageCode() {
-            return "ru";
-        }
-    };
+    /**
+     * @param label same as in resource bundle
+     * @param code locale code for this language
+     */
+    private Language(String label, String code) {
+        this.label = label;
+        this.code = code;
+    }
 
     /**
      * Return resource bundle label for the language name. This method should be used when
@@ -67,10 +41,14 @@ public enum Language {
      *
      * @return string resource bundle label
      */
-    public abstract String getLanguageNameLabel();
+    public String getLanguageNameLabel(){
+       return label;
+    }
 
     /**
      * @return language abbreviation used in locale settings, like "en" or "ru"
      */
-    public abstract String getLanguageCode();
+    public String getLanguageCode(){
+       return code;
+    }
 }

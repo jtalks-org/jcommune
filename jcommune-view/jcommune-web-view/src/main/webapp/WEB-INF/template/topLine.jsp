@@ -79,5 +79,10 @@
                 <img src="${pageContext.request.contextPath}/resources/images/flag_great_britain.png" alt=""/>
             </a>
         </li>
+        <li class="flag">
+            <a href="#" onclick="window.location = getLanguageLink('es')">
+                <img src="${pageContext.request.contextPath}/resources/images/flag_spain.png" alt=""/>
+            </a>
+        </li>
     </ul>
 </div>
