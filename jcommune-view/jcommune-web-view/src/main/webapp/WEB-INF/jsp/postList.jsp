@@ -121,16 +121,18 @@
                         <c:choose>
                             <c:when test="${pag.page == 1 && i.index == 0}">
                                 <%-- first post - url to delete topic --%>
-                                <c:set var="delete_url"
-                                       value="${pageContext.request.contextPath}/topics/${topic.id}/delete?branchId=${branchId}"/>
+                                <c:set var="delete_url" value="${pageContext.request.contextPath}/topics/${topic.id}"/>
                             </c:when>
                             <c:otherwise>
                                 <%-- url to delete post --%>
-                                <c:set var="delete_url"
-                                       value="${pageContext.request.contextPath}/posts/${post.id}/delete?topicId=${topic.id}"/>
+                                <c:set var="delete_url" value="${pageContext.request.contextPath}/posts/${post.id}"/>
                             </c:otherwise>
                         </c:choose>
-                        <a class="button" href="${delete_url}"><spring:message code="label.delete"/></a>
+                        <form:form id="delete${post.id}" action="${delete_url}" method="DELETE"
+                                   onsubmit="return confirm('Are you sure you want to delete?')"/>
+                        <a class="button" href="javascript:document.getElementById('delete${post.id}').submit()">
+                            <spring:message code="label.delete"/>
+                        </a>
                     </sec:accesscontrollist>
 
 
@@ -243,9 +245,9 @@
     <br/>
     <spring:message code="label.topic.now_browsing"/>
     <c:forEach var="innerUser" items="${viewList}">
-          <a href="${pageContext.request.contextPath}/users/${innerUser}">
-               <c:out value="${innerUser}"/>
-          </a>
+        <a href="${pageContext.request.contextPath}/users/${innerUser}">
+            <c:out value="${innerUser}"/>
+        </a>
     </c:forEach>
 </div>
 </div>

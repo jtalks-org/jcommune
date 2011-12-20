@@ -110,20 +110,16 @@ public class PostController {
     /**
      * Delete post by given id.
      *
-     * @param topicId topic id, this in topic which contains post which should be deleted
-     *                also used for redirection back to topic.
      * @param postId  post
      * @return redirect to topic page
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic or post not found
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/posts/{postId}")
-    public ModelAndView delete(@RequestParam(TOPIC_ID) Long topicId,
-                               @PathVariable(POST_ID) Long postId) throws NotFoundException {
+    public String delete(@PathVariable(POST_ID) Long postId) throws NotFoundException {
+        Post post = postService.get(postId);
         postService.deletePost(postId);
-        return new ModelAndView(new StringBuilder()
-                .append("redirect:/topics/")
-                .append(topicId).toString());
+        return "redirect:/topics/" + post.getTopic().getId();
     }
 
     /**
