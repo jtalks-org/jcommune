@@ -149,34 +149,18 @@ public final class TopicController {
     }
 
     /**
-     * Page with confirmation.
-     *
-     * @param topicId  topic id, this is the topic which contains the first post which should be deleted
-     * @param branchId branch containing topic
-     * @return {@code ModelAndView} with to parameters branchId and topicId
-     */
-    @RequestMapping(method = RequestMethod.GET, value = "/topics/{topicId}/delete")
-    public ModelAndView deleteConfirmPage(@PathVariable(TOPIC_ID) Long topicId,
-                                          @RequestParam(BRANCH_ID) Long branchId) {
-        return new ModelAndView("deleteTopic")
-                .addObject(TOPIC_ID, topicId)
-                .addObject(BRANCH_ID, branchId);
-    }
-
-    /**
      * Delete topic.
      *
      * @param topicId  topic id, this is the topic which contains the first post which should be deleted
-     * @param branchId branch containing the first topic
      * @return redirect to branch page
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic not found
      */
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.DELETE)
-    public ModelAndView delete(@PathVariable(TOPIC_ID) Long topicId,
-                               @RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
+    public ModelAndView delete(@PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
+        Topic topic = topicService.get(topicId);
         topicService.deleteTopic(topicId);
-        return new ModelAndView("redirect:/branches/" + branchId);
+        return new ModelAndView("redirect:/branches/" + topic.getBranch().getId());
     }
 
     /**

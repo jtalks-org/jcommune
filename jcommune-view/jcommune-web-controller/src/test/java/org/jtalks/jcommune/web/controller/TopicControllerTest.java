@@ -36,8 +36,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.ModelAndViewAssert.*;
@@ -49,35 +47,44 @@ import static org.testng.Assert.assertEquals;
  * @author Max Malakhov
  */
 public class TopicControllerTest {
-    public static final long BRANCH_ID = 1L;
-    private final String TOPIC_CONTENT = "content here";
-    private final String TOPIC_THEME = "Topic theme";
-    private final int TOPIC_WEIGHT = 0;
-    private final boolean STICKED = false;
-    private final boolean ANNOUNCEMENT = false;
+    public  long BRANCH_ID = 1L;
+    private long TOPIC_ID = 1L;
+    private int TOPIC_WEIGHT = 0;
+    
+    private String TOPIC_CONTENT = "content here";
+    private String TOPIC_THEME = "Topic theme";
+
+    private boolean STICKED = false;
+    private boolean ANNOUNCEMENT = false;
+    
     private User user;
+    private Branch branch;
+    
     private TopicService topicService;
     private BranchService branchService;
     private SecurityService securityService;
     private TopicController controller;
     private BreadcrumbBuilder breadcrumbBuilder;
-    private Branch branch;
-    public static final long TOPIC_ID = 1;
     private ForumStatisticsProvider forumStatisticsProvider;
     private LocationServiceImpl locationServiceImpl;
 
     @BeforeMethod
-    public void init() {
+    public void initEnvironment() {
         locationServiceImpl = mock(LocationServiceImpl.class);
         topicService = mock(TopicService.class);
         branchService = mock(BranchService.class);
         securityService = mock(SecurityService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
-        branch = mock(Branch.class);
         forumStatisticsProvider = mock(ForumStatisticsProvider.class);
         controller = new TopicController(topicService,branchService,
                 securityService, breadcrumbBuilder, locationServiceImpl,
                 forumStatisticsProvider);
+    }
+
+    @BeforeMethod
+    public void prepareTestData(){
+        branch = new Branch();
+        branch.setId(BRANCH_ID);
         user = new User("username", "email@mail.com", "password");
     }
 
@@ -89,21 +96,12 @@ public class TopicControllerTest {
     }
 
     @Test
-    public void testDeleteConfirmPage() {
-
-        ModelAndView actualMav = controller.deleteConfirmPage(TOPIC_ID, BRANCH_ID);
-
-        assertViewName(actualMav, "deleteTopic");
-        Map<String, Object> expectedModel = new HashMap<String, Object>();
-        expectedModel.put("topicId", TOPIC_ID);
-        expectedModel.put("branchId", BRANCH_ID);
-        assertModelAttributeValues(actualMav, expectedModel);
-
-    }
-
-    @Test
     public void testDelete() throws NotFoundException {
-        ModelAndView actualMav = controller.delete(TOPIC_ID, BRANCH_ID);
+        Topic topic = new Topic(null, null);
+        branch.addTopic(topic);
+        when(topicService.get(anyLong())).thenReturn(topic);
+        
+        ModelAndView actualMav = controller.delete(TOPIC_ID);
 
         assertViewName(actualMav, "redirect:/branches/" + BRANCH_ID);
         verify(topicService).deleteTopic(TOPIC_ID);
@@ -113,14 +111,12 @@ public class TopicControllerTest {
     public void showTopicPage() throws NotFoundException {
         int page = 2;
         boolean pagingEnabled = true;
-        Topic topic = mock(Topic.class);
+        Topic topic = new Topic(null, null);
+        branch.addTopic(topic);
 
         //set expectations
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
-        when(topic.getBranch()).thenReturn(branch);
-        when(branch.getId()).thenReturn(1L);
-
 
         //invoke the object under test
         ModelAndView mav = controller.showTopicPage(TOPIC_ID, page, pagingEnabled);

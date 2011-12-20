@@ -122,15 +122,17 @@
                             <c:when test="${pag.page == 1 && i.index == 0}">
                                 <%-- first post - url to delete topic --%>
                                 <c:set var="delete_url" value="${pageContext.request.contextPath}/topics/${topic.id}"/>
+                                <c:set var="confirm_message" value="label.deleteTopicConfirmation"/>
                             </c:when>
                             <c:otherwise>
                                 <%-- url to delete post --%>
                                 <c:set var="delete_url" value="${pageContext.request.contextPath}/posts/${post.id}"/>
+                                <c:set var="confirm_message" value="label.deletePostConfirmation"/>
                             </c:otherwise>
                         </c:choose>
                         <form:form id="delete${post.id}" action="${delete_url}" method="DELETE"
-                                   onsubmit="return confirm('Are you sure you want to delete?')"/>
-                        <a class="button" href="javascript:document.getElementById('delete${post.id}').submit()">
+                                   onsubmit="return confirm('Are you sure you want to delete?')? true: false;"/>
+                        <a class="button" href="javascript:confirmAndDelete(${post.id}, '<spring:message code="${confirm_message}"/>')">
                             <spring:message code="label.delete"/>
                         </a>
                     </sec:accesscontrollist>

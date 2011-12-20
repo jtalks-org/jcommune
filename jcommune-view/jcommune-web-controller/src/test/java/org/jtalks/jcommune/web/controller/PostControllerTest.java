@@ -34,8 +34,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
@@ -79,18 +77,6 @@ public class PostControllerTest {
         WebDataBinder binder = mock(WebDataBinder.class);
         controller.initBinder(binder);
         verify(binder).registerCustomEditor(eq(String.class), any(StringTrimmerEditor.class));
-    }
-
-    @Test
-    public void testDeletionConfirmPage() {
-        ModelAndView actualMav = controller.deleteConfirmPage(TOPIC_ID, POST_ID);
-
-        assertViewName(actualMav, "deletePost");
-        Map<String, Object> expectedModel = new HashMap<String, Object>();
-        expectedModel.put("topicId", TOPIC_ID);
-        expectedModel.put("postId", POST_ID);
-        assertModelAttributeValues(actualMav, expectedModel);
-
     }
 
     @Test

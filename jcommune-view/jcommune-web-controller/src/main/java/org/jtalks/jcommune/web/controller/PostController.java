@@ -93,21 +93,6 @@ public class PostController {
     }
 
     /**
-     * Show confirmation page.
-     *
-     * @param topicId topic id, this in topic which contains post which should be deleted
-     * @param postId  post id to delete
-     * @return {@code ModelAndView} with to parameter topicId and postId
-     */
-    @RequestMapping(method = RequestMethod.GET, value = "/posts/{postId}/delete")
-    public ModelAndView deleteConfirmPage(@RequestParam(TOPIC_ID) Long topicId,
-                                          @PathVariable(POST_ID) Long postId) {
-        return new ModelAndView("deletePost")
-                .addObject(TOPIC_ID, topicId)
-                .addObject(POST_ID, postId);
-    }
-
-    /**
      * Delete post by given id.
      *
      * @param postId  post
