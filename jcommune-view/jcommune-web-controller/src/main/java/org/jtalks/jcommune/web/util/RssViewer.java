@@ -82,7 +82,7 @@ public class RssViewer extends AbstractRssFeedView {
                                         HttpServletRequest request, HttpServletResponse response)
         throws IOException {
 
-        String building = buildURL(request);
+        String URL = buildURL(request);
         List<Topic> listContent = (List<Topic>) model.get("topics");
         if (listContent == null) {
             response.sendRedirect(request.getContextPath() + "/errors/404");
@@ -92,18 +92,20 @@ public class RssViewer extends AbstractRssFeedView {
 
         for (Topic topic : listContent) {
 
-            items.add(createFeedItem(topic, building));
+            items.add(createFeedItem(topic, URL));
         }
 
         return items;
     }
 
     /**
+     * Create news item
+     *
      * @param topic   news topic
-     * @param buildingURL building URL
+     * @param URL building URL
      * @return item for news feed
      */
-    private Item createFeedItem(Topic topic, String buildingURL) {
+    private Item createFeedItem(Topic topic, String URL) {
 
         Item item = new Item();
         Description description = new Description();
@@ -117,7 +119,7 @@ public class RssViewer extends AbstractRssFeedView {
         item.setTitle(topic.getTitle());
         item.setAuthor(topic.getLastPost().getUserCreated().getEncodedUsername());
 
-        item.setLink(buildingURL
+        item.setLink(URL
                 + "/topics/" + topic.getId()
                 + "?page=" + pag.getMaxPages()
                 + "#" + topic.getLastPost().getId());
@@ -129,6 +131,8 @@ public class RssViewer extends AbstractRssFeedView {
     }
 
     /**
+     * The implementation of building url
+     *
      * @param request HttpServletRequest
      * @return url
      */

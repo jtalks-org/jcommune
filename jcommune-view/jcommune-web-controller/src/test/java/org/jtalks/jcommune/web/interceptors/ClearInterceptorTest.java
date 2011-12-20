@@ -26,14 +26,12 @@ import org.testng.annotations.Test;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.util.HashMap;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Andrey Kluev
@@ -54,15 +52,16 @@ public class ClearInterceptorTest {
         response = new MockHttpServletResponse();
         locationServiceImpl = mock(LocationServiceImpl.class);
         securityService = mock(SecurityService.class);
+        interceptor = new ClearInterceptor(locationServiceImpl, securityService);
     }
     
     @Test
-    public void tsetPreHandler() throws IOException, ServletException {
+    public void testPreHandler() throws IOException, ServletException {
 
         when(locationServiceImpl.getRegisterUserMap()).thenReturn(new HashMap<User, String>());
 
-        interceptor = new ClearInterceptor(locationServiceImpl, securityService);
+        boolean result = interceptor.preHandle(request, response, handler);
 
-        interceptor.preHandle(request, response, handler);
+        assertTrue(result);
     }
 }

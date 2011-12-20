@@ -14,15 +14,10 @@
  */
 package org.jtalks.jcommune.web.util;
 
-import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.nontransactional.LocationServiceImpl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Class for pagination.
@@ -192,32 +187,5 @@ public class Pagination {
         for (res = 1; res * pageSize <= number; res++) {
         }
         return res;
-    }
-
-    /**
-     *
-     * @param locationServiceImpl locationService
-     * @param currentUser current user
-     * @param entity entity
-     * @param forumStatisticsProvider forumStatisticsProvider
-     * @return lis name user active these page
-     */
-    public List<String> activeRegistryUserList(LocationServiceImpl locationServiceImpl,
-                                               User currentUser, Entity entity,
-                                               ForumStatisticsProvider forumStatisticsProvider) {
-        Map globalUserMap = locationServiceImpl.getRegisterUserMap();
-        globalUserMap.put(currentUser, entity.getUuid());
-
-        Map<User, String> innerMap = new HashMap<User, String>();
-        List<String> viewList = new ArrayList<String>();
-        for (Object o : forumStatisticsProvider.getOnlineRegisteredUsers()) {
-            User user = (User) o;
-            if (globalUserMap.containsKey(user) && globalUserMap.get(user).equals(entity.getUuid())) {
-                innerMap.put(user, entity.getUuid());
-                viewList.add(user.getEncodedUsername());
-            }
-        }
-        locationServiceImpl.setRegisterUserMap(innerMap);
-        return viewList;
     }
 }

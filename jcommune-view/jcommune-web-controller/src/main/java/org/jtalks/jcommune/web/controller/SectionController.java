@@ -116,10 +116,10 @@ public final class SectionController {
     public ModelAndView branchList(@PathVariable("sectionId") long sectionId) throws NotFoundException {
         Section section = sectionService.get(sectionId);
         User currentUser = securityService.getCurrentUser();
-        
-        Pagination pag = new Pagination(1, currentUser, 10,true);
-        List<String> viewList = pag.activeRegistryUserList(locationServiceImpl,
-                currentUser, section, forumStaticsProvider);
+
+        LocationServiceImpl locationService = new LocationServiceImpl();
+        List<String> viewList = locationService.activeRegistryUserList(currentUser, section,
+                forumStaticsProvider.getOnlineRegisteredUsers());
         
 
         return new ModelAndView("branchList")

@@ -30,6 +30,7 @@ import org.testng.annotations.Test;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.ModelAndViewAssert.*;
@@ -106,6 +107,24 @@ public class SectionControllerTest {
         assertModelAttributeAvailable(mav, "section");
         Section actualSection = assertAndReturnModelAttributeOfType(mav, "section", Section.class);
         assertEquals(actualSection.getId(), sectionId);
+    }
+
+    @Test
+    public void testViewList() throws NotFoundException {
+        long sectionId = 1L;
+        Section section = new Section("section name");
+        section.setId(sectionId);
+
+        when(sectionService.get(sectionId)).thenReturn(section);
+        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
+        when(locationServiceImpl.getRegisterUserMap()).thenReturn(new HashMap<User, String>());
+
+        ModelAndView mav = controller.branchList(sectionId);
+
+        assertModelAttributeAvailable(mav, "viewList");
+
+        List<String> actualViewList = assertAndReturnModelAttributeOfType(mav, "viewList", List.class);
+        assertEquals(actualViewList, new ArrayList<String>());
     }
 
 }

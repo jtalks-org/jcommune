@@ -73,7 +73,7 @@ public class BranchControllerTest {
 
     @Test
     public void showPage() throws NotFoundException {
-        User user = new User("","","");
+        User user = new User("", "", "");
         Map map = new HashMap<User, String>();
         map.put(user, "");
         long branchId = 1L;
@@ -130,5 +130,28 @@ public class BranchControllerTest {
         assertEquals(pagination.getMaxPages(), 1);
         assertEquals(pagination.getPage().intValue(), page);
 
+    }
+
+    @Test
+    public void testViewList() throws NotFoundException {
+        User user = new User("", "", "");
+        Map map = new HashMap<User, String>();
+        map.put(user, "");
+        long branchId = 1L;
+        int page = 2;
+        boolean pagingEnabled = true;
+        Branch branch = new Branch("name");
+        branch.setId(branchId);
+        //set expectations
+        when(branchService.get(branchId)).thenReturn(branch);
+        when(breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)))
+                .thenReturn(new ArrayList<Breadcrumb>());
+        when(locationServiceImpl.getRegisterUserMap()).thenReturn(map);
+        when(forumStatisticsProvider.getOnlineRegisteredUsers()).thenReturn(new ArrayList<Object>());
+
+        ModelAndView mav = controller.showPage(branchId, page, pagingEnabled);
+
+        List<String> actualViewList = assertAndReturnModelAttributeOfType(mav, "viewList", List.class);
+        assertEquals(actualViewList, new ArrayList<String>());
     }
 }

@@ -26,6 +26,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Global interceptor works for all pages.
+ *
+ * @author Andrey Kluev
+ */
 public class ClearInterceptor extends HandlerInterceptorAdapter {
 
     private final SecurityService securityService;
@@ -43,12 +48,23 @@ public class ClearInterceptor extends HandlerInterceptorAdapter {
         this.securityService = securityService;
     }
 
+    /**
+     * Drops location current user in forum
+     *
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @param handler  handler
+     * @return true
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) throws IOException, ServletException {
 
         User currentUser = securityService.getCurrentUser();
-        locationServiceImpl.getRegisterUserMap().put(currentUser, "");
+        LocationServiceImpl locationService = new LocationServiceImpl();
+        locationService.clear(currentUser);
 
         return true;
     }

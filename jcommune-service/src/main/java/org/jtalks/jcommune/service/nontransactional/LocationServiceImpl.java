@@ -15,15 +15,18 @@
 
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.LocationService;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
- * class to store user map.
+ * Class for storing and tracking of users on the forum.
  *
  * @author Andrey Kluev
  */
@@ -43,5 +46,34 @@ public class LocationServiceImpl implements LocationService {
      */
     public void setRegisterUserMap(Map<User, String> registerUserMap) {
         this.registerUserMap = registerUserMap;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<String> activeRegistryUserList(User currentUser, Entity entity,
+                                               List<Object> onlineRegisteredUsers) {
+        Map globalUserMap = getRegisterUserMap();
+        globalUserMap.put(currentUser, entity.getUuid());
+
+        Map<User, String> innerMap = new HashMap<User, String>();
+        List<String> viewList = new ArrayList<String>();
+        for (Object o : onlineRegisteredUsers) {
+            User user = (User) o;
+            if (globalUserMap.containsKey(user) && globalUserMap.get(user).equals(entity.getUuid())) {
+                innerMap.put(user, entity.getUuid());
+                viewList.add(user.getEncodedUsername());
+            }
+        }
+        setRegisterUserMap(innerMap);
+        return viewList;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void clear(User user) {
+        getRegisterUserMap().put(user, "");
     }
 }

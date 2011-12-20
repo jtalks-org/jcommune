@@ -143,26 +143,4 @@ public class PaginationTest {
         pagination = new Pagination(1, user, 10, true);
         pagination.definitionPostInTopic(post);
     }
-
-    @Test
-    public void testActiveRegistryUserList() {
-        User currentUser = new User("","","");
-        List<Object> list = new ArrayList<Object>();
-        list.add(user);
-        Map<User, String> map = new HashMap<User, String>();
-        map.put(user, "");
-
-        when(entity.getUuid()).thenReturn("");
-        when(locationServiceImpl.getRegisterUserMap()).thenReturn(map);
-        when(forumStatisticsProvider.getOnlineRegisteredUsers()).thenReturn(list);
-        pagination = new Pagination(1, user, 10, true);
-
-        locationServiceImpl.getRegisterUserMap().put(user,"1");
-        pagination.activeRegistryUserList(locationServiceImpl, user, entity, forumStatisticsProvider);
-
-        locationServiceImpl.getRegisterUserMap().put(user, entity.getUuid());
-        pagination.activeRegistryUserList(locationServiceImpl, user, entity, forumStatisticsProvider);
-
-        pagination.activeRegistryUserList(locationServiceImpl, user, entity, forumStatisticsProvider);
-    }
 }
