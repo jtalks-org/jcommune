@@ -95,20 +95,24 @@ public class PostControllerTest {
 
     @Test
     public void testDeletePost() throws NotFoundException {
+        Post post = new Post(null, null);
+        topic.setId(TOPIC_ID);
+        topic.addPost(post);
+        when(postService.get(Matchers.<Long>any())).thenReturn(post);
         //invoke the object under test
-        ModelAndView actualMav = controller.delete(TOPIC_ID, POST_ID);
+        String view = controller.delete(POST_ID);
 
         //check expectations
         verify(postService).deletePost(POST_ID);
 
         //check result
-        assertViewName(actualMav, "redirect:/topics/" + TOPIC_ID);
+        assertEquals(view, "redirect:/topics/" + TOPIC_ID);
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testDeleteUnexistingPost() throws NotFoundException {
         doThrow(new NotFoundException()).when(postService).deletePost(POST_ID);
-        controller.delete(TOPIC_ID, POST_ID);
+        controller.delete(POST_ID);
     }
 
     @Test
