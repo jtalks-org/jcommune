@@ -14,12 +14,12 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <head>
     <title><c:out value="${topic.title}"/></title>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/utils.js"

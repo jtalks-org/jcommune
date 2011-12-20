@@ -14,12 +14,10 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
-
 <div class="forum_header_table">
     <div class="forum_header">
         <a class="forum_header_menu" id="inbox_link" href="${pageContext.request.contextPath}/inbox">
@@ -31,7 +29,7 @@
         <a class="forum_header_menu" id="draft_link"
            href="${pageContext.request.contextPath}/drafts">
             <spring:message code="label.drafts"/></a>
-        <span class="empty_cell"></span> <!-- Необходима для корректного отображения псевдотаблицы -->
+        <span class="empty_cell"></span>
     </div>
 </div>
 
