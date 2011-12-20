@@ -74,11 +74,11 @@
                     </div>
                     <span class="reg_info"><spring:message code="label.tip.confirmation"/></span>
                 </div>
-                <div class="forum_row">
+<%--                <div class="forum_row">
                     <div><input type="checkbox" name="iagree" id="iagree"/>
                         Я принимаю условия <a href="#">пользовательского соглашения</a>.
                         </input></div>
-                </div>
+                </div>--%>
             </div>
             <div class="form_controls">
                 <button type="submit"><spring:message code="label.signup"/></button>

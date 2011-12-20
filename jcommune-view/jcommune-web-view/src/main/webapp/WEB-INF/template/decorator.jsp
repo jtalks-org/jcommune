@@ -45,7 +45,7 @@
         <br/>
         <span class="version">Powered by JCommune ${project.version}</span>
         <br/>
-        © 2011 www.jtalks.org
+        &copy; 2011 www.jtalks.org
     </div>
 </div>
 </body>
