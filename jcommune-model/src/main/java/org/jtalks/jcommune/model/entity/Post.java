@@ -185,6 +185,7 @@ public class Post extends Entity {
      * Specifies the page number on which the post
      *
      * @param post post
+     * @param pageSize number items of page
      * @return page number on which the post
      */
     public int getNumberPagePostInTopic(Post post, int pageSize) {
