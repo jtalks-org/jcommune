@@ -246,10 +246,10 @@
     </tag>
 
     <tag>
-        <name>format</name>
         <description>
             Formats a Joda Date with a fixed pattern and assuming timezone offset
         </description>
+        <name>format</name>
         <tag-class>org.jtalks.jcommune.web.tags.FormattedDate</tag-class>
         <body-content>empty</body-content>
         <attribute>
@@ -304,8 +304,14 @@
     </tag>
 
     <tag-file>
+        <name>bbeditor</name>
+        <path>/WEB-INF/tags/bbeditor.tag</path>
+    </tag-file>
+
+    <tag-file>
         <name>breadcrumb</name>
         <path>/WEB-INF/tags/breadcrumb.tag</path>
     </tag-file>
+
 
 </taglib>

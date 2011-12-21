@@ -95,7 +95,7 @@ public class PostController {
     /**
      * Delete post by given id.
      *
-     * @param postId  post
+     * @param postId post
      * @return redirect to topic page
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic or post not found
@@ -152,8 +152,15 @@ public class PostController {
         }
 
         postService.updatePost(postDto.getId(), postDto.getBodyText());
-
-        return new ModelAndView("redirect:/topics/" + topicId);
+        int pagesize = Pagination.getPageSizeFor(securityService.getCurrentUser());
+        int lastPage = topicService.get(postDto.getTopicId()).getLastPageNumber(pagesize);
+        return new ModelAndView(new StringBuilder("redirect:/topics/")
+                .append(postDto.getTopicId())
+                .append("?page=")
+                .append(lastPage)
+                .append("#")
+                .append(postDto.getId())
+                .toString());
     }
 
     /**
@@ -182,7 +189,7 @@ public class PostController {
      * Supports post method to pass large quotations.
      * Supports get method as language switching always use get requests.
      *
-     * @param postId identifier os the post we're quoting
+     * @param postId    identifier os the post we're quoting
      * @param selection text selected by user for the quotation.
      * @return the same view as topic answerring page with textarea prefilled with quted text
      * @throws NotFoundException when topic was not found
@@ -194,7 +201,7 @@ public class PostController {
         ModelAndView mav = addPost(source.getTopic().getId());
         PostDto dto = (PostDto) mav.getModel().get(POST_DTO);
         String content;
-        if (selection == null){
+        if (selection == null) {
             content = source.getPostContent();
         } else {
             content = selection;
