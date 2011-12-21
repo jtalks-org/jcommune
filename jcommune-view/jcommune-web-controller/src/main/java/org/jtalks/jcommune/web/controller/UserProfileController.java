@@ -179,6 +179,7 @@ public class UserProfileController {
     private void applyLanguage(Language language, HttpServletResponse response) {
         String code = language.getLanguageCode();
         Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, code);
+        cookie.setPath("/");
         response.addCookie(cookie);
     }
 

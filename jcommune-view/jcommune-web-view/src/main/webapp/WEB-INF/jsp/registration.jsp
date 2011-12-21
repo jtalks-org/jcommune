@@ -30,7 +30,7 @@
     <h1><spring:message code="label.signup"/></h1>
 
     <div class="all_forums">
-        <jtalks:form id="form" name="form" action='${pageContext.request.contextPath}/users'
+        <jtalks:form id="form" name="form" action='${pageContext.request.contextPath}/user/new'
                      modelAttribute="newUser" method="POST">
             <div class="forum_header_table">
                 <div class="forum_header">

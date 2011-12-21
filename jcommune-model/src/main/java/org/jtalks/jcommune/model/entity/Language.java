@@ -19,7 +19,7 @@ package org.jtalks.jcommune.model.entity;
  */
 public enum Language {
 
-    ENGLISH("label.english", "ru"),
+    ENGLISH("label.english", "en"),
     RUSSIAN("label.russian", "ru"),
     SPANISH("label.spanish", "es");
 
