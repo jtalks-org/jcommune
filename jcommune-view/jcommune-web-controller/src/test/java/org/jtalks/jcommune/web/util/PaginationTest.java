@@ -126,21 +126,4 @@ public class PaginationTest {
         int pageSize = Pagination.getPageSizeFor(null);
         assertEquals(pageSize, User.DEFAULT_PAGE_SIZE);
     }
-
-    @Test
-    public void testDefinitionPostInTopic() {
-        Post post = mock(Post.class);
-        Topic topic = mock(Topic.class);
-        List<Post> posts = mock(ArrayList.class);
-        posts.add(post);
-        when(post.getTopic()).thenReturn(topic);
-        when(topic.getPosts()).thenReturn(posts);
-        when(posts.indexOf(post)).thenReturn(2);
-        pagination = new Pagination(1, user, 10, true);
-        pagination.definitionPostInTopic(post);
-
-        when(posts.indexOf(post)).thenReturn(300);
-        pagination = new Pagination(1, user, 10, true);
-        pagination.definitionPostInTopic(post);
-    }
 }

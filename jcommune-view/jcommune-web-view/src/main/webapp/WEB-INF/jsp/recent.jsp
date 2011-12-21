@@ -14,12 +14,13 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <body>
 <h1>JTalks</h1>
 
@@ -112,8 +113,25 @@
                         <a class="last_message_user"
                            href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
                             <c:out value="${topic.lastPost.userCreated.username}"/></a>
-                        <a href="#"><img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
-                                         alt="<spring:message code="label.section.header.lastMessage"/>"/></a>
+                        <c:choose>
+                            <c:when test="${pagination.pageSize >= topic.postCount}">
+                                <a href="${pageContext.request.contextPath}/topics/${topic.id}#${topic.lastPost.id}"><img
+                                        src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
+                                        alt="<spring:message code="label.section.header.lastMessage"/>"/></a>
+                            </c:when>
+                            <c:otherwise>
+                                <c:if test="${topic.postCount % pagination.pageSize > 0}">
+                                    <c:set var="additionalPage" value="${1}"/>
+                                </c:if>
+                                <c:if test="${topic.postCount % pagination.pageSize == 0}">
+                                    <c:set var="additionalPage" value="${0}"/>
+                                </c:if>
+                                <a href="${pageContext.request.contextPath}/topics/${topic.id}?page=<fmt:formatNumber value="${(topic.postCount - (topic.postCount mod pagination.pageSize)) div pagination.pageSize + additionalPage}"/>#${topic.lastPost.id}">
+                                <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
+                                     alt="<spring:message code="label.section.header.lastMessage"/>"/>
+                                </a>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </li>
             </c:forEach>
