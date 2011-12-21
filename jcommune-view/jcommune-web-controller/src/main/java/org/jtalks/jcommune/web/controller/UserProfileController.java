@@ -204,7 +204,7 @@ public class UserProfileController {
             Pagination pag = new Pagination(1, securityService.getCurrentUser(),
                     post.getTopic().getPostCount(),
                     pagingEnabled);
-            post.setPage(pag.definitionPostInTopic(post));
+            post.setPage(post.getNumberPagePostInTopic(post, pag.getPageSize()));
         }
         Pagination pag = new Pagination(page, user, posts.size(), pagingEnabled);
         return new ModelAndView("userPostList")

@@ -17,6 +17,7 @@ package org.jtalks.jcommune.model.entity;
 import org.joda.time.DateTime;
 import org.testng.annotations.Test;
 
+import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -87,6 +88,20 @@ public class PostTest {
         DateTime prevoius = topic.getModificationDate();
         Thread.sleep(25);
         topic.addPost(post);
+
+
+    }
+
+    @Test
+    public void testDefinitionPostInTopic() {
+        User user = mock(User.class);
+        Post post1 = mock(Post.class);
+        Topic topic = new Topic(user, "");
+        topic.addPost(post1);
+        topic.addPost(post1);
+        topic.addPost(post);
+
+        post.getNumberPagePostInTopic(post, 2);
 
 
     }

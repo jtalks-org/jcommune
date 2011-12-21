@@ -174,18 +174,4 @@ public class Pagination {
     public static int getPageSizeFor(User user) {
         return (user == null) ? User.DEFAULT_PAGE_SIZE : user.getPageSize();
     }
-
-    /**
-     * Specifies the page number on which the post
-     *
-     * @param post post
-     * @return page number on which the post
-     */
-    public int definitionPostInTopic(Post post) {
-        int number = post.getTopic().getPosts().indexOf(post);
-        int res;
-        for (res = 1; res * pageSize <= number; res++) {
-        }
-        return res;
-    }
 }
