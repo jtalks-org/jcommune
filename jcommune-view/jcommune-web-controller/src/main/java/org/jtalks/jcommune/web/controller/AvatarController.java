@@ -188,7 +188,7 @@ public class AvatarController {
                                       Map<String, String> responseContent, IOException e) {
         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         responseContent.put("success", "false");
-        logger.error(UserController.class.getName() + "has thrown an exception: " + e.getMessage());
+        logger.error(UserProfileController.class.getName() + "has thrown an exception: " + e.getMessage());
     }
 
 

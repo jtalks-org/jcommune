@@ -14,217 +14,43 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.Language;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.PostService;
-import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
 import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
-import org.jtalks.jcommune.service.nontransactional.ImageUtils;
-import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
-import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
-import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.StringTrimmerEditor;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.List;
 
 /**
- * Controller for User related actions: registration, user profile operations and so on.
+ *  This controller handles custom authentication actions
+ *  like user registration or password restore.
  *
- * @author Kirill Afonin
- * @author Alexandre Teterin
- * @author Max Malakhov
- * @author Eugeny Batov
- * @author Evgeniy Naumenko
+ *  Basic actions like username/password verification are
+ *  to be performed by Spring Security
+ *
+ *  @author Evgeniy Naumenko
  */
-@Controller
 public class UserController {
-    public static final String EDIT_PROFILE = "editProfile";
+
     public static final String REGISTRATION = "registration";
-    public static final String EDITED_USER = "editedUser";
-    public static final String BREADCRUMB_LIST = "breadcrumbList";
 
-
-    private final SecurityService securityService;
-    private final UserService userService;
-    private BreadcrumbBuilder breadcrumbBuilder;
-    private ImageUtils imageUtils;
-    private PostService postService;
+    private UserService userService;
 
     /**
-     * This method turns the trim binder on. Trim binder
-     * removes leading and trailing spaces from the submitted fields.
-     * So, it ensures, that all validations will be applied to
-     * trimmed field values only.
      *
-     * @param binder Binder object to be injected
-     */
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
-    }
-
-    /**
-     * Assign {@link UserService} to field.
-     *
-     * @param userService       {@link org.jtalks.jcommune.service.UserService} to be injected
-     * @param securityService   {@link org.jtalks.jcommune.service.SecurityService} used for
-     *                          accessing to current logged in user
-     * @param breadcrumbBuilder the object which provides actions on
-     *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
-     * @param imageUtils        {@link org.jtalks.jcommune.service.nontransactional.ImageUtils} used
-     * @param postService       {@link org.jtalks.jcommune.service.PostService} used
+     * @param userService to delegate business logic invocation
      */
     @Autowired
-    public UserController(UserService userService,
-                          SecurityService securityService,
-                          BreadcrumbBuilder breadcrumbBuilder,
-                          ImageUtils imageUtils,
-                          PostService postService) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.securityService = securityService;
-        this.breadcrumbBuilder = breadcrumbBuilder;
-        this.imageUtils = imageUtils;
-        this.postService = postService;
-    }
-
-    /**
-     * Render registration page with binded object to form.
-     *
-     * @return {@code ModelAndView} with "registration" view and empty
-     *         {@link RegisterUserDto} with name "newUser
-     */
-    @RequestMapping(value = "/users/new", method = RequestMethod.GET)
-    public ModelAndView registrationPage() {
-        return new ModelAndView(REGISTRATION)
-                .addObject("newUser", new RegisterUserDto());
-    }
-
-    /**
-     * Register {@link User} from populated in form {@link RegisterUserDto}.
-     *
-     * @param userDto {@link RegisterUserDto} populated in form
-     * @param result  result of {@link RegisterUserDto} validation
-     * @return redirect to / if registration successful or back to "/registration" if failed
-     */
-    @RequestMapping(value = "/users", method = RequestMethod.POST)
-    public ModelAndView registerUser(@Valid @ModelAttribute("newUser") RegisterUserDto userDto, BindingResult result) {
-        if (result.hasErrors()) {
-            return new ModelAndView(REGISTRATION);
-        }
-        try {
-            userService.registerUser(userDto.createUser());
-            return new ModelAndView("redirect:/");
-        } catch (DuplicateUserException e) {
-            result.rejectValue("username", "validation.duplicateuser");
-        } catch (DuplicateEmailException e) {
-            result.rejectValue("email", "validation.duplicateemail");
-        }
-        return new ModelAndView(REGISTRATION);
-    }
-
-    /**
-     * Show page with user info.
-     *
-     * @param username the decoded encodedUsername from the JSP view.
-     * @return user details view with {@link User} object.
-     * @throws NotFoundException if user with given id not found.
-     */
-    @RequestMapping(value = "/users/{encodedUsername}", method = RequestMethod.GET)
-    //The {encodedUsername} from the JSP view automatically converted to username.
-    // That's why the getByUsername() method is used instead of getByEncodedUsername().
-    public ModelAndView showProfilePage(@PathVariable("encodedUsername") String username
-    ) throws NotFoundException {
-        User user = userService.getByUsername(username);
-        return new ModelAndView("userDetails")
-                .addObject("user", user)
-                 // bind separately to get localized value
-                .addObject("language", Language.valueOf(user.getLanguage()))
-                .addObject("pageSize", Pagination.getPageSizeFor(user));
-    }
-
-    /**
-     * Show edit user profile page for current logged in user.
-     *
-     * @return edit user profile page
-     * @throws NotFoundException throws if current logged in user was not found
-     */
-    @RequestMapping(value = "/users/edit", method = RequestMethod.GET)
-    public ModelAndView editProfilePage() throws NotFoundException {
-        User user = securityService.getCurrentUser();
-        EditUserProfileDto editedUser = new EditUserProfileDto(user);
-        byte[] avatar = user.getAvatar();
-        if (avatar != null) {
-            editedUser.setAvatar(imageUtils.prepareHtmlImgSrc(
-                    imageUtils.base64Coder(avatar)
-            ));
-        }
-        return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUser);
-    }
-
-    /**
-     * Update user profile info. Check if the user enter valid data and update profile in database.
-     * In error case return into the edit profile page and draw the error.
-     * <p/>
-     *
-     * @param userDto  dto populated by user
-     * @param result   binding result which contains the validation result
-     * @param response http servlet response
-     * @return in case of errors return back to edit profile page, in another case return to user detalis page
-     */
-    @RequestMapping(value = "/users/edit", method = RequestMethod.POST)
-    public ModelAndView editProfile(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
-                                    BindingResult result, HttpServletResponse response) {
-        // some fields are validated via JSR-303 in DTO
-        if (result.hasErrors()) {
-            return new ModelAndView(EDIT_PROFILE, EDITED_USER, userDto);
-        }
-        // while the others need to be validated in service layer
-        try {
-            User user = userService.editUserProfile(userDto.getUserInfoContainer());
-            // apply language changes immediately
-            applyLanguage(Language.valueOf(userDto.getLanguage()), response);
-            return new ModelAndView("redirect:/users/" + user.getEncodedUsername());
-        } catch (DuplicateEmailException e) {
-            result.rejectValue("email", "validation.duplicateemail");
-        } catch (WrongPasswordException e) {
-            result.rejectValue("currentUserPassword", "label.incorrectCurrentPassword",
-                    "Password does not match to the current password");
-        }
-        return new ModelAndView(EDIT_PROFILE, EDITED_USER, userDto);
-    }
-
-    /**
-     * This method applies language to the response as cookie for CookieLocaleResolver
-     *
-     * @param language language to be applied
-     * @param response response to be filled with new cookie
-     */
-    private void applyLanguage(Language language, HttpServletResponse response) {
-        String code = language.getLanguageCode();
-        Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, code);
-        response.addCookie(cookie);
     }
 
     /**
@@ -249,7 +75,6 @@ public class UserController {
     @RequestMapping(value = "/password/restore", method = RequestMethod.POST)
     public ModelAndView restorePassword(String email) {
         ModelAndView mav = new ModelAndView("restorePassword");
-        mav.addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
         try {
             userService.restorePassword(email);
             mav.addObject("message", "label.restorePassword.completed");
@@ -261,36 +86,39 @@ public class UserController {
         return mav;
     }
 
+    /**
+     * Render registration page with bind objects to form.
+     *
+     * @return {@code ModelAndView} with "registration" view and empty
+     *         {@link org.jtalks.jcommune.web.dto.RegisterUserDto} with name "newUser
+     */
+    @RequestMapping(value = "/users/new", method = RequestMethod.GET)
+    public ModelAndView registrationPage() {
+        return new ModelAndView(REGISTRATION)
+                .addObject("newUser", new RegisterUserDto());
+    }
 
     /**
-     * Show page with post of user.
+     * Register {@link org.jtalks.jcommune.model.entity.User} from populated in form {@link RegisterUserDto}.
      *
-     * @param page            number current page
-     * @param pagingEnabled   flag on/OffScreenImage paging
-     * @param encodedUsername encodedUsername
-     * @return post list of user
-     * @throws NotFoundException if user with given id not found.
+     * todo: redirect to the latest url we came from instead of root
+     * @param userDto {@link RegisterUserDto} populated in form
+     * @param result  result of {@link RegisterUserDto} validation
+     * @return redirect to / if registration successful or back to "/registration" if failed
      */
-    @RequestMapping(value = "/users/{encodedUsername}/postList", method = RequestMethod.GET)
-    public ModelAndView showUserPostList(@PathVariable("encodedUsername") String encodedUsername,
-                                         @RequestParam(value = "page", defaultValue = "1",
-                                                 required = false) Integer page,
-                                         @RequestParam(value = "pagingEnabled", defaultValue = "true", required = false
-                                         ) Boolean pagingEnabled
-    ) throws NotFoundException {
-        User user = userService.getByEncodedUsername(encodedUsername);
-        List<Post> posts = postService.getPostsOfUser(user);
-        for(Post post : posts){
-            Pagination pag = new Pagination(1, securityService.getCurrentUser(),
-                    post.getTopic().getPostCount(),
-                    pagingEnabled);
-            post.setPage(pag.definitionPostInTopic(post));
+    @RequestMapping(value = "/users", method = RequestMethod.POST)
+    public ModelAndView registerUser(@Valid @ModelAttribute("newUser") RegisterUserDto userDto, BindingResult result) {
+        if (result.hasErrors()) {
+            return new ModelAndView(REGISTRATION);
         }
-        Pagination pag = new Pagination(page, user, posts.size(), pagingEnabled);
-        return new ModelAndView("userPostList")
-                .addObject("user", user)
-                .addObject("pag", pag)
-                .addObject("posts", posts)
-                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
+        try {
+            userService.registerUser(userDto.createUser());
+            return new ModelAndView("redirect:/");
+        } catch (DuplicateUserException e) {
+            result.rejectValue("username", "validation.duplicateuser");
+        } catch (DuplicateEmailException e) {
+            result.rejectValue("email", "validation.duplicateemail");
+        }
+        return new ModelAndView(REGISTRATION);
     }
 }
