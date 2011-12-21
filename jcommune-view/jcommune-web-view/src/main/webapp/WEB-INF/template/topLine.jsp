@@ -61,7 +61,7 @@
                 </a>
             </li>
             <li>
-                <a href="${pageContext.request.contextPath}/users/new">
+                <a href="${pageContext.request.contextPath}/user/new">
                     <fmt:message key="label.signup"/>
                 </a>
             </li>

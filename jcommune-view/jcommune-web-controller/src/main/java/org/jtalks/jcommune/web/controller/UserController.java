@@ -21,6 +21,7 @@ import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +39,7 @@ import javax.validation.Valid;
  *
  *  @author Evgeniy Naumenko
  */
+@Controller
 public class UserController {
 
     public static final String REGISTRATION = "registration";
@@ -92,7 +94,7 @@ public class UserController {
      * @return {@code ModelAndView} with "registration" view and empty
      *         {@link org.jtalks.jcommune.web.dto.RegisterUserDto} with name "newUser
      */
-    @RequestMapping(value = "/users/new", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/new", method = RequestMethod.GET)
     public ModelAndView registrationPage() {
         return new ModelAndView(REGISTRATION)
                 .addObject("newUser", new RegisterUserDto());
@@ -106,7 +108,7 @@ public class UserController {
      * @param result  result of {@link RegisterUserDto} validation
      * @return redirect to / if registration successful or back to "/registration" if failed
      */
-    @RequestMapping(value = "/users", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/new", method = RequestMethod.POST)
     public ModelAndView registerUser(@Valid @ModelAttribute("newUser") RegisterUserDto userDto, BindingResult result) {
         if (result.hasErrors()) {
             return new ModelAndView(REGISTRATION);
