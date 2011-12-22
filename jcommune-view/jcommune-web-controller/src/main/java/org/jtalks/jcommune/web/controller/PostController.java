@@ -55,6 +55,7 @@ public class PostController {
     public static final String TOPIC_ID = "topicId";
     public static final String POST_ID = "postId";
     public static final String POST_DTO = "postDto";
+    public static final String PAGE = "page";
 
     private PostService postService;
     private BreadcrumbBuilder breadcrumbBuilder;
@@ -95,7 +96,7 @@ public class PostController {
     /**
      * Delete post by given id.
      *
-     * @param postId  post
+     * @param postId post
      * @return redirect to topic page
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic or post not found
@@ -111,6 +112,7 @@ public class PostController {
      * Edit post page filled with data from post with given id.
      *
      * @param topicId topic id
+     * @param page    current page number
      * @param postId  post id
      * @return redirect to post form page
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
@@ -118,6 +120,7 @@ public class PostController {
      */
     @RequestMapping(value = "/posts/{postId}/edit", method = RequestMethod.GET)
     public ModelAndView editPage(@RequestParam(TOPIC_ID) Long topicId,
+                                 @RequestParam(PAGE) Long page,
                                  @PathVariable(POST_ID) Long postId) throws NotFoundException {
         Post post = postService.get(postId);
 
@@ -125,6 +128,7 @@ public class PostController {
                 .addObject(POST_DTO, PostDto.getDtoFor(post))
                 .addObject(TOPIC_ID, topicId)
                 .addObject(POST_ID, postId)
+                .addObject(PAGE, page)
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(post.getTopic()));
     }
 
@@ -134,6 +138,7 @@ public class PostController {
      * @param postDto Dto populated in form
      * @param result  validation result
      * @param topicId the current topicId
+     * @param page    current page number
      * @param postId  the current postId
      * @return {@code ModelAndView} object which will be redirect to topic page
      *         if saved successfully or show form with error message
@@ -144,16 +149,21 @@ public class PostController {
     public ModelAndView update(@Valid @ModelAttribute PostDto postDto,
                                BindingResult result,
                                @RequestParam(TOPIC_ID) Long topicId,
+                               @RequestParam(PAGE) Long page,
                                @PathVariable(POST_ID) Long postId) throws NotFoundException {
         if (result.hasErrors()) {
             return new ModelAndView("editForm")
                     .addObject(TOPIC_ID, topicId)
                     .addObject(POST_ID, postId);
         }
-
         postService.updatePost(postDto.getId(), postDto.getBodyText());
-
-        return new ModelAndView("redirect:/topics/" + topicId);
+        return new ModelAndView(new StringBuilder("redirect:/topics/")
+                .append(postDto.getTopicId())
+                .append("?page=")
+                .append(page)
+                .append("#")
+                .append(postDto.getId())
+                .toString());
     }
 
     /**
@@ -182,7 +192,7 @@ public class PostController {
      * Supports post method to pass large quotations.
      * Supports get method as language switching always use get requests.
      *
-     * @param postId identifier os the post we're quoting
+     * @param postId    identifier os the post we're quoting
      * @param selection text selected by user for the quotation.
      * @return the same view as topic answerring page with textarea prefilled with quted text
      * @throws NotFoundException when topic was not found
@@ -194,7 +204,7 @@ public class PostController {
         ModelAndView mav = addPost(source.getTopic().getId());
         PostDto dto = (PostDto) mav.getModel().get(POST_DTO);
         String content;
-        if (selection == null){
+        if (selection == null) {
             content = source.getPostContent();
         } else {
             content = selection;

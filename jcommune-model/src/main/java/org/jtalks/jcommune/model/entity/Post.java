@@ -184,15 +184,10 @@ public class Post extends Entity {
     /**
      * Specifies the page number on which the post
      *
-     * @param post post
      * @param pageSize number items of page
      * @return page number on which the post
      */
-    public int getNumberPagePostInTopic(Post post, int pageSize) {
-        int number = post.getTopic().getPosts().indexOf(post);
-        int res;
-        for (res = 1; res * pageSize <= number; res++) {
-        }
-        return res;
+    public int getNumberPagePostInTopic(int pageSize) {
+        return (getTopic().getPosts().indexOf(this) / pageSize) + 1;
     }
 }

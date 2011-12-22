@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.model.entity;
 
 import org.joda.time.DateTime;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.mockito.Mockito.mock;
@@ -46,6 +47,16 @@ public class PostTest {
             "exercitationullamcolaborisnisiutaliquipexeacommodoconsequat." +
             "D...";
     Post post = new Post();
+    Post post1;
+    Topic topic;
+    User user;
+
+    @BeforeMethod
+    public void init() {
+        user = mock(User.class);
+        post1 = mock(Post.class);
+        topic = new Topic(user, "");
+    }
 
     @Test
     public void shortContentShouldBeMax200Symbols() {
@@ -93,7 +104,7 @@ public class PostTest {
     }
 
     @Test
-    public void testDefinitionPostInTopic() {
+    public void testLastPostInTopic() {
         User user = mock(User.class);
         Post post1 = mock(Post.class);
         Topic topic = new Topic(user, "");
@@ -101,9 +112,46 @@ public class PostTest {
         topic.addPost(post1);
         topic.addPost(post);
 
-        post.getNumberPagePostInTopic(post, 2);
+        post.getNumberPagePostInTopic(2);
+        assertEquals(post.getNumberPagePostInTopic(2), 2);
 
 
     }
 
+    @Test
+    public void testFirstPostOfPage() {
+        topic.addPost(post);
+
+        post.getNumberPagePostInTopic(2);
+        assertEquals(post.getNumberPagePostInTopic(2), 1);
+
+
+    }
+
+    @Test
+    public void testLastPostOfPage() {
+        User user = mock(User.class);
+        Post post1 = mock(Post.class);
+        Topic topic = new Topic(user, "");
+        topic.addPost(post1);
+        topic.addPost(post);
+
+        post.getNumberPagePostInTopic(2);
+        assertEquals(post.getNumberPagePostInTopic(2), 1);
+    }
+
+    @Test
+    public void testPostInCenterOfTopic() {
+        User user = mock(User.class);
+        Post post1 = mock(Post.class);
+        Topic topic = new Topic(user, "");
+        topic.addPost(post1);
+        topic.addPost(post);
+        topic.addPost(post1);
+
+        post.getNumberPagePostInTopic(2);
+        assertEquals(post.getNumberPagePostInTopic(2), 1);
+
+
+    }
 }

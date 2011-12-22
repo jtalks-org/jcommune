@@ -14,7 +14,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
@@ -193,11 +193,13 @@
                 <li><a href="#">Вася</a>.</li>
             </ul>
             <br/>
-            <spring:message code="label.topic.now_browsing"/>
+            <c:if test="${!noUsers}">
+                <spring:message code="label.topic.now_browsing"/>
+            </c:if>
             <c:forEach var="innerUser" items="${viewList}">
-                 <a href="${pageContext.request.contextPath}/users/${innerUser}">
-                      <c:out value="${innerUser}"/>
-                 </a>
+                <a href="${pageContext.request.contextPath}/users/${innerUser}">
+                    <c:out value="${innerUser}"/>
+                </a>
             </c:forEach>
 
         </div>

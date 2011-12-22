@@ -37,6 +37,7 @@ public class LocationServiceImpl implements LocationService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Map<User, String> getRegisterUserMap() {
         return registerUserMap;
     }
@@ -44,6 +45,7 @@ public class LocationServiceImpl implements LocationService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setRegisterUserMap(Map<User, String> registerUserMap) {
         this.registerUserMap = registerUserMap;
     }
@@ -51,21 +53,18 @@ public class LocationServiceImpl implements LocationService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<String> activeRegistryUserList(User currentUser, Entity entity,
                                                List<Object> onlineRegisteredUsers) {
-        Map globalUserMap = getRegisterUserMap();
-        globalUserMap.put(currentUser, entity.getUuid());
+        registerUserMap.put(currentUser, entity.getUuid());
 
-        Map<User, String> innerMap = new HashMap<User, String>();
         List<String> viewList = new ArrayList<String>();
         for (Object o : onlineRegisteredUsers) {
             User user = (User) o;
-            if (globalUserMap.containsKey(user) && globalUserMap.get(user).equals(entity.getUuid())) {
-                innerMap.put(user, entity.getUuid());
+            if (registerUserMap.containsKey(user) && registerUserMap.get(user).equals(entity.getUuid())) {
                 viewList.add(user.getEncodedUsername());
             }
         }
-        setRegisterUserMap(innerMap);
         return viewList;
     }
 

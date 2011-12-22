@@ -201,13 +201,10 @@ public class UserProfileController {
     ) throws NotFoundException {
         User user = userService.getByEncodedUsername(encodedUsername);
         List<Post> posts = postService.getPostsOfUser(user);
-        for(Post post : posts){
-            Pagination pag = new Pagination(1, securityService.getCurrentUser(),
-                    post.getTopic().getPostCount(),
-                    pagingEnabled);
-            post.setPage(post.getNumberPagePostInTopic(post, pag.getPageSize()));
-        }
         Pagination pag = new Pagination(page, user, posts.size(), pagingEnabled);
+        for(Post post : posts){
+            post.setPage(post.getNumberPagePostInTopic(pag.getPageSize()));
+        }
         return new ModelAndView("userPostList")
                 .addObject("user", user)
                 .addObject("pag", pag)

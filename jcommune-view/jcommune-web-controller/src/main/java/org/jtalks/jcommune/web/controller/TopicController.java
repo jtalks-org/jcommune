@@ -192,6 +192,7 @@ public final class TopicController {
        
         return new ModelAndView("postList")
                 .addObject("viewList", viewList)
+                .addObject("noUsers", viewList.isEmpty())
                 .addObject("posts", posts)
                 .addObject("topic", topic)
                 .addObject("pag", pag)

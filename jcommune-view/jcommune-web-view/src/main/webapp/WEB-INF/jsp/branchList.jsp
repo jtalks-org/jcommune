@@ -14,7 +14,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
@@ -87,8 +87,8 @@
                                     </c:if>
                                     <%--Oh shi...--%>
                                     <a href="${pageContext.request.contextPath}/topics/${branch.lastUpdatedTopic.id}?page=<fmt:formatNumber value="${(branch.lastUpdatedTopic.postCount - (branch.lastUpdatedTopic.postCount mod pageSize)) div pageSize + additionalPage}"/>#${branch.lastUpdatedTopic.lastPost.id}">
-                                    <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
-                                         alt="<spring:message code="label.section.header.lastMessage"/>"/>
+                                        <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
+                                             alt="<spring:message code="label.section.header.lastMessage"/>"/>
                                     </a>
                                 </c:otherwise>
                             </c:choose>
@@ -97,7 +97,9 @@
                 </li>
             </c:forEach>
         </ul>
-        <spring:message code="label.topic.now_browsing"/>
+        <c:if test="${!noUsers}">
+            <spring:message code="label.topic.now_browsing"/>
+        </c:if>
         <c:forEach var="innerUser" items="${viewList}">
             <a href="${pageContext.request.contextPath}/users/${innerUser}">
                 <c:out value="${innerUser}"/>
