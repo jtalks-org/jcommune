@@ -135,7 +135,7 @@ public class PostControllerTest {
         PostDto dto = getDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "postDto");
         ModelAndView mav = controller.update(dto, bindingResult, TOPIC_ID, PAGE, POST_ID);
-        assertViewName(mav, "redirect:/topics/" + TOPIC_ID + "?page="+PAGE+"#1");
+        assertViewName(mav, "redirect:/topics/" + TOPIC_ID + "?page=" + PAGE + "#1");
         verify(postService).updatePost(POST_ID, POST_CONTENT);
     }
 
@@ -174,13 +174,14 @@ public class PostControllerTest {
 
     @Test
     public void testQuotedAnswer() throws NotFoundException {
-        Post post = new Post(null, POST_CONTENT);
+        User user = new User("user", null, null);
+        Post post = new Post(user, POST_CONTENT);
         topic.addPost(post);
         when(postService.get(anyLong())).thenReturn(post);
 
         ModelAndView mav = controller.addPostWithQuote(post.getId(), null);
         //check expectations
-        String expected = "[quote]" + POST_CONTENT + "[/quote]";
+        String expected = "[quote=\"user\"]" + POST_CONTENT + "[/quote]";
         PostDto actual = assertAndReturnModelAttributeOfType(mav, "postDto", PostDto.class);
         assertEquals(actual.getBodyText(), expected);
     }
@@ -188,13 +189,14 @@ public class PostControllerTest {
     @Test
     public void testPartialQuotedAnswer() throws NotFoundException {
         String selection = "selected content";
-        Post post = new Post(null, POST_CONTENT);
+        User user = new User("user", null, null);
+        Post post = new Post(user, POST_CONTENT);
         topic.addPost(post);
         when(postService.get(anyLong())).thenReturn(post);
 
         ModelAndView mav = controller.addPostWithQuote(TOPIC_ID, selection);
         //check expectations
-        String expected = "[quote]" + selection + "[/quote]";
+        String expected = "[quote=\"user\"]" + selection + "[/quote]";
         PostDto actual = assertAndReturnModelAttributeOfType(mav, "postDto", PostDto.class);
         assertEquals(actual.getBodyText(), expected);
     }

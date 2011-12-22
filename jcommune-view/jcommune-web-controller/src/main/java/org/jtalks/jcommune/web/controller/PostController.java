@@ -210,7 +210,7 @@ public class PostController {
             content = selection;
         }
         // todo: move these constants to BB converter
-        dto.setBodyText("[quote]" + content + "[/quote]");
+        dto.setBodyText("[quote=\""+ source.getUserCreated().getUsername()+"\"]" + content + "[/quote]");
         return mav;
     }
 
