@@ -144,12 +144,12 @@
                             <c:when test="${pag.page == 1 && i.index == 0}">
                                 <%-- first post - url to edit topic --%>
                                 <c:set var="edit_url"
-                                       value="${pageContext.request.contextPath}/topics/${topic.id}/edit?branchId=${branchId}"/>
+                                       value="${pageContext.request.contextPath}/topics/${topic.id}/edit?branchId=${branchId}&page=${pag.page}"/>
                             </c:when>
                             <c:otherwise>
                                 <%-- url to edit post --%>
                                 <c:set var="edit_url"
-                                       value="${pageContext.request.contextPath}/posts/${post.id}/edit?topicId=${topic.id}"/>
+                                       value="${pageContext.request.contextPath}/posts/${post.id}/edit?topicId=${topic.id}&page=${pag.page}"/>
                             </c:otherwise>
                         </c:choose>
                         <a class="button" href="${edit_url}"><spring:message code="label.edit"/></a>

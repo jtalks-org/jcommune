@@ -55,6 +55,7 @@ public class PostControllerTest {
 
     public static final long POST_ID = 1;
     public static final long TOPIC_ID = 1L;
+    public static final long PAGE = 1L;
     private final String POST_CONTENT = "postContent";
     private BreadcrumbBuilder breadcrumbBuilder;
     private Topic topic;
@@ -115,7 +116,7 @@ public class PostControllerTest {
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
 
         //invoke the object under test
-        ModelAndView actualMav = controller.editPage(TOPIC_ID, POST_ID);
+        ModelAndView actualMav = controller.editPage(TOPIC_ID, POST_ID, PAGE);
 
         //check expectations
         verify(postService).get(POST_ID);
@@ -133,11 +134,8 @@ public class PostControllerTest {
     public void testUpdatePost() throws NotFoundException {
         PostDto dto = getDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "postDto");
-        Post post = new Post(null, null);
-        topic.addPost(post);
-        when(topicService.get(anyLong())).thenReturn(topic);
-        ModelAndView mav = controller.update(dto, bindingResult, TOPIC_ID, POST_ID);
-        assertViewName(mav, "redirect:/topics/" + TOPIC_ID + "?page=1#1");
+        ModelAndView mav = controller.update(dto, bindingResult, TOPIC_ID, PAGE, POST_ID);
+        assertViewName(mav, "redirect:/topics/" + TOPIC_ID + "?page="+PAGE+"#1");
         verify(postService).updatePost(POST_ID, POST_CONTENT);
     }
 
@@ -148,7 +146,7 @@ public class PostControllerTest {
 
         when(resultWithErrors.hasErrors()).thenReturn(true);
 
-        ModelAndView mav = controller.update(dto, resultWithErrors, TOPIC_ID, POST_ID);
+        ModelAndView mav = controller.update(dto, resultWithErrors, TOPIC_ID, PAGE, POST_ID);
 
         this.assertEditPostFormMavIsCorrect(mav);
 

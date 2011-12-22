@@ -41,7 +41,7 @@
 
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
-        <jtalks:bbeditor action="${pageContext.request.contextPath}/posts/new?topicId=${topicId}"
+        <jtalks:bbeditor action="${pageContext.request.contextPath}/posts/new?topicId=${topicId}&page=${page}"
                          labelForAction="label.answer"
                          back="${pageContext.request.contextPath}/topics/${topicId}"/>
 
