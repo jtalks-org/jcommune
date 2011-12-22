@@ -14,7 +14,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
@@ -132,7 +132,8 @@
                         </c:choose>
                         <form:form id="delete${post.id}" action="${delete_url}" method="DELETE"
                                    onsubmit="return confirm('Are you sure you want to delete?')? true: false;"/>
-                        <a class="button" href="javascript:confirmAndDelete(${post.id}, '<spring:message code="${confirm_message}"/>')">
+                        <a class="button"
+                           href="javascript:confirmAndDelete(${post.id}, '<spring:message code="${confirm_message}"/>')">
                             <spring:message code="label.delete"/>
                         </a>
                     </sec:accesscontrollist>
@@ -245,7 +246,9 @@
         <li><a href="#">Вася</a>.</li>
     </ul>
     <br/>
-    <spring:message code="label.topic.now_browsing"/>
+    <c:if test="${!noUsers}">
+        <spring:message code="label.topic.now_browsing"/>
+    </c:if>
     <c:forEach var="innerUser" items="${viewList}">
         <a href="${pageContext.request.contextPath}/users/${innerUser}">
             <c:out value="${innerUser}"/>

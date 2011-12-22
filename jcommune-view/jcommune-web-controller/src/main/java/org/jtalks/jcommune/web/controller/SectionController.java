@@ -123,6 +123,7 @@ public final class SectionController {
 
         return new ModelAndView("branchList")
                 .addObject("viewList", viewList)
+                .addObject("noUsers", viewList.isEmpty())
                 .addObject("section", section)
                 .addObject("pageSize", Pagination.getPageSizeFor(currentUser));
     }

@@ -113,6 +113,7 @@ public final class BranchController {
       
         return new ModelAndView("topicList")
                 .addObject("viewList", viewList)
+                .addObject("noUsers", viewList.isEmpty())
                 .addObject("branch", branch)
                 .addObject("topics", topics)
                 .addObject("pagination", pag)
