@@ -110,8 +110,8 @@ span.version {
     float: right;
     padding-top: 5px;
 }
-
-.main_page .forum_top_right_link {
+.main_page .forum_top_right_link,
+.section_page .forum_top_right_link {
     position: relative;
     top: 48px;
     padding: 0;
@@ -137,6 +137,7 @@ a.heading:hover {
 
 .nav_bottom {
     float: right;
+	margin-top: 5px;
     padding-top: 5px;
     font-size: 11px;
 }
@@ -481,7 +482,7 @@ a.last_message_user {
 
 .answer_page .button,
 .pm_page .button {
-    border: 1px solid gray;
+    border: 1px solid grey; !important
 
 }
 
