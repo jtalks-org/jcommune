@@ -41,6 +41,7 @@ public class LocationServiceImplTest {
     private SessionRegistry sessionRegistry;
     private User user;
     List list;
+    Map<User, String> map;
 
 
     @BeforeMethod
@@ -52,14 +53,13 @@ public class LocationServiceImplTest {
         topic = new Topic(user, "");
         topic.setUuid("uuid");
         list = new ArrayList<Object>();
+        map = new HashMap<User, String>();
     }
 
     @Test
     public void testUsersViewing() {
         when(securityService.getCurrentUser()).thenReturn(user);
-        List<Object> list = new ArrayList<Object>();
         list.add(user);
-        Map<User, String> map = new HashMap<User, String>();
         map.put(user, "");
         locationService.getRegisterUserMap().put(user, "");
         when(sessionRegistry.getAllPrincipals()).thenReturn(list);
@@ -76,11 +76,18 @@ public class LocationServiceImplTest {
     }
 
     @Test
-    public void testUserNotOnline(){
+    public void testUserNotOnline() {
         when(securityService.getCurrentUser()).thenReturn(user);
-        User user1 = new User("","","");
+        User user1 = new User("", "", "");
         list.add(user1);
         when(sessionRegistry.getAllPrincipals()).thenReturn(list);
+
+        locationService.getUsersViewing(topic);
+    }
+
+    @Test
+    public void testCurrentUserIsAnonymous() {
+        when(securityService.getCurrentUser()).thenReturn(null);
 
         locationService.getUsersViewing(topic);
     }
