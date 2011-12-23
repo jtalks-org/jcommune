@@ -67,9 +67,5 @@
         <constructor-arg name="sessionRegistry" ref="sessionRegistry"/>
         <property name="maximumSessions" value="1"/>
     </bean>
-    <bean id="locationService" class="org.jtalks.jcommune.service.nontransactional.LocationServiceImpl">
-        <constructor-arg name="sessionRegistry" ref="sessionRegistry"/>
-        <constructor-arg name="securityService" ref="securityService"/>
-    </bean>
 
 </beans>
