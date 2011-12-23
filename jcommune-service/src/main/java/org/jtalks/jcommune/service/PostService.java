@@ -55,4 +55,12 @@ public interface PostService extends EntityService<Post> {
      * @return post list
      */
     List<Post> getPostsOfUser(User userCreated);
+
+    /**
+     * Calculates page number for post based on the current user
+     * paging settings and total post amount in the topic
+     * @param post post to find a page for
+     * @return number of the page where the post will actually be
+     */
+    int getPageForPost(Post post);
 }

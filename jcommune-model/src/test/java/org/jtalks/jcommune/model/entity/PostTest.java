@@ -102,48 +102,4 @@ public class PostTest {
 
 
     }
-
-    @Test
-    public void testLastPostInTopic() {
-        Topic topic = new Topic(user, "");
-        topic.addPost(post1);
-        topic.addPost(post1);
-        topic.addPost(post);
-
-        post.getNumberPagePost(2);
-        assertEquals(post.getNumberPagePost(2), 2);
-
-
-    }
-
-    @Test
-    public void testFirstPostOfPage() {
-        topic.addPost(post);
-
-        post.getNumberPagePost(2);
-        assertEquals(post.getNumberPagePost(2), 1);
-
-
-    }
-
-    @Test
-    public void testLastPostOfPage() {
-        topic.addPost(post1);
-        topic.addPost(post);
-
-        post.getNumberPagePost(2);
-        assertEquals(post.getNumberPagePost(2), 1);
-    }
-
-    @Test
-    public void testPostInCenterOfTopic() {
-        topic.addPost(post1);
-        topic.addPost(post);
-        topic.addPost(post1);
-
-        post.getNumberPagePost(2);
-        assertEquals(post.getNumberPagePost(2), 1);
-
-
-    }
 }

@@ -17,12 +17,10 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.PostService;
-import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.PostDto;
-import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
@@ -60,7 +58,6 @@ public class PostController {
     private PostService postService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private TopicService topicService;
-    private SecurityService securityService;
 
     /**
      * This method turns the trim binder on. Trim bilder
@@ -82,15 +79,13 @@ public class PostController {
      * @param breadcrumbBuilder the object which provides actions on
      *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      * @param topicService      {@link TopicService} to be injected
-     * @param securityService   {@link SecurityService} to retrieve current logged in user
      */
     @Autowired
     public PostController(PostService postService, BreadcrumbBuilder breadcrumbBuilder,
-                          TopicService topicService, SecurityService securityService) {
+                          TopicService topicService) {
         this.postService = postService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.topicService = topicService;
-        this.securityService = securityService;
     }
 
     /**
@@ -210,7 +205,7 @@ public class PostController {
             content = selection;
         }
         // todo: move these constants to BB converter
-        dto.setBodyText("[quote]" + content + "[/quote]");
+        dto.setBodyText("[quote=\""+ source.getUserCreated().getUsername()+"\"]" + content + "[/quote]");
         return mav;
     }
 
@@ -233,16 +228,28 @@ public class PostController {
             return mav;
         }
         Post newbie = topicService.replyToTopic(postDto.getTopicId(), postDto.getBodyText());
-        int pagesize = Pagination.getPageSizeFor(securityService.getCurrentUser());
-        int lastPage = newbie.getTopic().getLastPageNumber(pagesize);
-        return new ModelAndView(new StringBuilder("redirect:/topics/")
-                .append(postDto.getTopicId())
-                .append("?page=")
-                .append(lastPage)
-                .append("#")
-                .append(newbie.getId())
-                .toString());
+        return new ModelAndView(this.redirectToPageWithPost(newbie.getId()));
     }
 
-
+    /**
+     * Redirects user to the topic view with the appropriate page selected.
+     * Method clients should not wary about paging at all, post id
+     * is enough to be transferred to the proper page.
+     *
+     * @param postId unique post identifier
+     * @return redirect view to the certain topic page
+     * @throws NotFoundException is the is no post for the identifier given
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/posts/{postId}")
+    public String redirectToPageWithPost(@PathVariable Long postId) throws NotFoundException {
+        Post post = postService.get(postId);
+        int page = postService.getPageForPost(post);
+        return new StringBuilder("redirect:/topics/")
+                .append(post.getTopic().getId())
+                .append("?page=")
+                .append(page)
+                .append("#")
+                .append(postId)
+                .toString();
+    }
 }

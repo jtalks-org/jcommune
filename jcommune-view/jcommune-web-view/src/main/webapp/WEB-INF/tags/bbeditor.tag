@@ -28,14 +28,13 @@
         <form:hidden path="topicId"/>
         <form:hidden path="id"/>
     <%--</c:if>--%>
-    <!-- Начало группы форумов -->
-    <div class="forum_header_table"> <!-- Шапка топика -->
+    <div class="forum_header_table">
         <div class="forum_header">
             <span class="forum_header_answer"><spring:message code="${labelForAction}"/></span>
-            <span class="empty_cell"></span> <!-- Необходима для корректного отображения псевдотаблицы -->
+            <span class="empty_cell"></span>
         </div>
     </div>
-    <ul class="forum_table"> <!-- Форма ответа -->
+    <ul class="forum_table">
         <li class="forum_row">
             <div class="forum_answer_left align-top">
                 <spring:message code="label.answer.message"/>
@@ -138,7 +137,7 @@
 				</span>
                 <a href="" onclick="closeTags();return false;"><spring:message code="label.answer.close_tags"/></a>
 
-                <div id="helpline"><spring:message code="label.answer.tooltip"/></div>
+               <%-- <div id="helpline"><spring:message code="label.answer.tooltip"/></div>--%>
                 <textarea id="tbMsg" name="bodyText" class="editorBBCODE"
                           style="width: 90%; height: 400px;" tabindex="3"
                           onclick="resetSizeSelector();resetIndentSelector();">${postDto.bodyText}</textarea>

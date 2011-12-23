@@ -65,8 +65,7 @@ public class PostControllerTest {
         postService = mock(PostService.class);
         topicService = mock(TopicService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
-        SecurityService securityService = mock(SecurityService.class);
-        controller = new PostController(postService, breadcrumbBuilder, topicService, securityService);
+        controller = new PostController(postService, breadcrumbBuilder, topicService);
 
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
@@ -135,7 +134,7 @@ public class PostControllerTest {
         PostDto dto = getDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "postDto");
         ModelAndView mav = controller.update(dto, bindingResult, TOPIC_ID, PAGE, POST_ID);
-        assertViewName(mav, "redirect:/topics/" + TOPIC_ID + "?page="+PAGE+"#1");
+        assertViewName(mav, "redirect:/topics/" + TOPIC_ID + "?page=" + PAGE + "#1");
         verify(postService).updatePost(POST_ID, POST_CONTENT);
     }
 
@@ -174,13 +173,14 @@ public class PostControllerTest {
 
     @Test
     public void testQuotedAnswer() throws NotFoundException {
-        Post post = new Post(null, POST_CONTENT);
+        User user = new User("user", null, null);
+        Post post = new Post(user, POST_CONTENT);
         topic.addPost(post);
         when(postService.get(anyLong())).thenReturn(post);
 
         ModelAndView mav = controller.addPostWithQuote(post.getId(), null);
         //check expectations
-        String expected = "[quote]" + POST_CONTENT + "[/quote]";
+        String expected = "[quote=\"user\"]" + POST_CONTENT + "[/quote]";
         PostDto actual = assertAndReturnModelAttributeOfType(mav, "postDto", PostDto.class);
         assertEquals(actual.getBodyText(), expected);
     }
@@ -188,13 +188,14 @@ public class PostControllerTest {
     @Test
     public void testPartialQuotedAnswer() throws NotFoundException {
         String selection = "selected content";
-        Post post = new Post(null, POST_CONTENT);
+        User user = new User("user", null, null);
+        Post post = new Post(user, POST_CONTENT);
         topic.addPost(post);
         when(postService.get(anyLong())).thenReturn(post);
 
         ModelAndView mav = controller.addPostWithQuote(TOPIC_ID, selection);
         //check expectations
-        String expected = "[quote]" + selection + "[/quote]";
+        String expected = "[quote=\"user\"]" + selection + "[/quote]";
         PostDto actual = assertAndReturnModelAttributeOfType(mav, "postDto", PostDto.class);
         assertEquals(actual.getBodyText(), expected);
     }
@@ -211,7 +212,10 @@ public class PostControllerTest {
         when(resultWithoutErrors.hasErrors()).thenReturn(false);
         Post post = new Post(null, null);
         topic.addPost(post);
+        topic.setId(TOPIC_ID);
         when(topicService.replyToTopic(anyLong(), Matchers.<String>any())).thenReturn(post);
+        when(postService.getPageForPost(post)).thenReturn(1);
+        when(postService.get(Matchers.<Long>any())).thenReturn(post);
         //invoke the object under test
         ModelAndView mav = controller.create(getDto(), resultWithoutErrors);
 
@@ -234,6 +238,26 @@ public class PostControllerTest {
 
         //check result
         assertViewName(mav, "answer");
+    }
+
+    @Test
+    public void testRedirectToPageWithPost() throws NotFoundException {
+        Post post = new Post(null, null);
+        topic.addPost(post);
+        topic.setId(TOPIC_ID);
+        when(postService.getPageForPost(post)).thenReturn(5);
+        when(postService.get(POST_ID)).thenReturn(post);
+
+        String result = controller.redirectToPageWithPost(POST_ID);
+
+        assertEquals(result, "redirect:/topics/" + TOPIC_ID + "?page=5#" + POST_ID);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void testRedirectToPageWithPostNotFound() throws NotFoundException {
+        doThrow(new NotFoundException()).when(postService).get(anyLong());
+
+        controller.redirectToPageWithPost(POST_ID);
     }
 
     private void assertAnswerMavIsCorrect(ModelAndView mav) {

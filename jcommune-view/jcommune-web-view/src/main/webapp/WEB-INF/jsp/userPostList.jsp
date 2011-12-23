@@ -82,7 +82,7 @@
                     <div class="forum_message_cell">
                         <div class="post_details">
                             <a class="button"
-                               href="${pageContext.request.contextPath}/topics/${post.topic.id}?page=${post.page}#${post.id}">
+                               href="${pageContext.request.contextPath}/posts/${post.id}">
                                 <spring:message code="label.goToPost"/>
                             </a>
                             <spring:message code="label.added"/>&nbsp;

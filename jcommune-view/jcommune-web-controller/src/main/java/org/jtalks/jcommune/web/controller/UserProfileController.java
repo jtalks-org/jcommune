@@ -202,9 +202,6 @@ public class UserProfileController {
         User user = userService.getByEncodedUsername(encodedUsername);
         List<Post> posts = postService.getPostsOfUser(user);
         Pagination pag = new Pagination(page, user, posts.size(), pagingEnabled);
-        for(Post post : posts){
-            post.setPage(post.getNumberPagePost(pag.getPageSize()));
-        }
         return new ModelAndView("userPostList")
                 .addObject("user", user)
                 .addObject("pag", pag)

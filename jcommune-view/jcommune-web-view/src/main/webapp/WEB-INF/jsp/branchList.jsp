@@ -72,26 +72,10 @@
                             <a href="${pageContext.request.contextPath}/users/${branch.lastUpdatedTopic.lastPost.userCreated.encodedUsername}">
                                     ${branch.lastUpdatedTopic.lastPost.userCreated.username}
                             </a>
-                            <c:choose>
-                                <c:when test="${pageSize >= branch.lastUpdatedTopic.postCount}">
-                                    <a href="${pageContext.request.contextPath}/topics/${branch.lastUpdatedTopic.id}#${branch.lastUpdatedTopic.lastPost.id}"><img
-                                            src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
-                                            alt="<spring:message code="label.section.header.lastMessage"/>"/></a>
-                                </c:when>
-                                <c:otherwise>
-                                    <c:if test="${branch.lastUpdatedTopic.postCount % pageSize > 0}">
-                                        <c:set var="additionalPage" value="${1}"/>
-                                    </c:if>
-                                    <c:if test="${branch.lastUpdatedTopic.postCount % pageSize == 0}">
-                                        <c:set var="additionalPage" value="${0}"/>
-                                    </c:if>
-                                    <%--Oh shi...--%>
-                                    <a href="${pageContext.request.contextPath}/topics/${branch.lastUpdatedTopic.id}?page=<fmt:formatNumber value="${(branch.lastUpdatedTopic.postCount - (branch.lastUpdatedTopic.postCount mod pageSize)) div pageSize + additionalPage}"/>#${branch.lastUpdatedTopic.lastPost.id}">
-                                        <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
-                                             alt="<spring:message code="label.section.header.lastMessage"/>"/>
-                                    </a>
-                                </c:otherwise>
-                            </c:choose>
+                            <a href="${pageContext.request.contextPath}/posts/${branch.lastUpdatedTopic.lastPost.id}">
+                                <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
+                                     alt="<spring:message code="label.section.header.lastMessage"/>"/>
+                            </a>
                         </c:if>
                     </div>
                 </li>
