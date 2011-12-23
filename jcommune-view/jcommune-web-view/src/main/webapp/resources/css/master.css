@@ -124,6 +124,7 @@ span.version {
 .heading {
     font-size: 25px;
     text-decoration: none;
+    white-space: pre-wrap;
 }
 
 a.heading:hover {
