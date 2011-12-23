@@ -26,11 +26,11 @@
     <title><spring:message code="label.section.jtalks_forum"/></title>
 </head>
 <body>
-<h1>JTalks</h1>
-
 <div class="wrap branch_page">
+    <h1><a href="${pageContext.request.contextPath}">
+        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+    </a></h1>
     <jsp:include page="../template/topLine.jsp"/>
-    <!-- Начало всех форумов -->
     <div class="all_forums">
         <h2><a class="heading" href="#"><c:out value="${branch.name}"/></a></h2>
 
@@ -57,10 +57,7 @@
             &nbsp; &nbsp; &nbsp;
         </sec:authorize>
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-
-
-        <!-- Начало группы форумов -->
-        <div class="forum_header_table"> <!-- Шапка бранча -->
+        <div class="forum_header_table">
             <div class="forum_header">
                 <span class="forum_header_topics"><spring:message code="label.branch.header.topics"/></span>
                 <span class="forum_header_answers"><spring:message code="label.section.header.messages"/></span>
@@ -69,20 +66,18 @@
                 <span class="forum_header_last_message"><spring:message code="label.branch.header.lastMessage"/></span>
             </div>
         </div>
-
-
-        <ul class="forum_table"> <!-- Список топиков -->
+        <ul class="forum_table">
             <jtalks:display uri="${branch.id}" pagination="${pagination}" numberLink="3" list="${topics}">
             <c:forEach var="topic" items="${list}">
-                <li class="forum_row"> <!-- Топик -->
-                    <div class="forum_icon"> <!-- Иконка с кофе -->
+                <li class="forum_row">
+                    <div class="forum_icon">
                         <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png"
                              alt=""
                              title="<spring:message code="label.section.close_forum"/>"/>
                     </div>
                     <c:choose>
                         <c:when test="${topic.announcement=='true'}">
-                            <div class="forum_info"> <!-- Ссылка на тему -->
+                            <div class="forum_info">
                                 <h4><span class="sticky"><spring:message code="label.marked_as_announcement"/> </span><a
                                         class="forum_link"
                                         href="${pageContext.request.contextPath}/topics/${topic.id}">
@@ -90,7 +85,7 @@
                             </div>
                         </c:when>
                         <c:when test="${topic.sticked=='true'}">
-                            <div class="forum_info"> <!-- Ссылка на тему -->
+                            <div class="forum_info">
                                 <h4><span class="sticky"><spring:message code="label.marked_as_sticked"/></span><a
                                         class="forum_link"
                                         href="${pageContext.request.contextPath}/topics/${topic.id}">
@@ -98,7 +93,7 @@
                             </div>
                         </c:when>
                         <c:otherwise>
-                            <div class="forum_info"> <!-- Ссылка на тему -->
+                            <div class="forum_info">
                                 <h4><a class="forum_link"
                                        href="${pageContext.request.contextPath}/topics/${topic.id}"><c:out
                                         value="${topic.title}"/></a></h4>
@@ -156,9 +151,6 @@
             </jtalks:display>
             </span>
         </nobr>
-        <!-- Конец группы форумов -->
-
-
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
             <a class="button"
                href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"><spring:message
@@ -177,10 +169,7 @@
                href="?pagingEnabled=true"><spring:message code="label.showPages"/></a>
             &nbsp; &nbsp; &nbsp;
         </c:if>
-
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-
-
         <div class="forum_misc_info">
             <spring:message code="label.page"/> <c:out value="${pagination.page}"/> <spring:message code="label.of"/>
             <c:out
@@ -205,9 +194,7 @@
 
         </div>
     </div>
-    <!-- Конец всех форумов -->
     <div class="footer_buffer"></div>
-    <!-- Несемантичный буфер для прибития подвала -->
 </div>
 </body>
 </html>

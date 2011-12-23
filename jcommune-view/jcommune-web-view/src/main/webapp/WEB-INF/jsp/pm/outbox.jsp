@@ -14,44 +14,50 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
-<html>
 <head>
-    <title><spring:message code="label.pm_title"/></title>
+    <title><spring:message code="label.outbox"/></title>
 </head>
 <body>
-<jsp:include page="../../template/topLine.jsp"/>
-<h1><spring:message code="label.outbox"/></h1>
-<div class="all_forums">
-    <jsp:include page="pmNavigationMenu.jsp"/>
-    <div>
-        <table>
-            <tr>
-                <td><spring:message code="label.recipient"/></td>
-                <td><spring:message code="label.title"/></td>
-                <td><spring:message code="label.sending_date"/></td>
-            </tr>
-            <c:forEach var="pm" items="${pmList}">
-                <c:choose>
-                    <c:when test="${pm.read}">
-                        <tr>
-                    </c:when>
-                    <c:otherwise>
-                        <tr bgcolor="#b0c4de">
-                    </c:otherwise>
-                </c:choose>
-                <td><c:out value="${pm.userTo.username}"/></td>
-                <td><a href="${pageContext.request.contextPath}/outbox/${pm.id}">
-                    <c:out value="${pm.title}"/></a></td>
-                <td><jtalks:format value="${pm.creationDate}"/></td>
+<div class="wrap pm_page">
+    <jsp:include page="../../template/topLine.jsp"/>
+    <h1><a href="${pageContext.request.contextPath}">
+        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+    </a></h1>
+
+    <div class="all_forums">
+
+        <h2><a class="heading" href="#"><spring:message code="label.outbox"/></a></h2>
+        <jsp:include page="../../template/pmNavigationMenu.jsp"/>
+        <div>
+            <table>
+                <tr>
+                    <td><spring:message code="label.recipient"/></td>
+                    <td><spring:message code="label.title"/></td>
+                    <td><spring:message code="label.sending_date"/></td>
                 </tr>
-            </c:forEach>
-        </table>
+                <c:forEach var="pm" items="${pmList}">
+                    <c:choose>
+                        <c:when test="${pm.read}">
+                            <tr>
+                        </c:when>
+                        <c:otherwise>
+                            <tr bgcolor="#b0c4de">
+                        </c:otherwise>
+                    </c:choose>
+                    <td><c:out value="${pm.userTo.username}"/></td>
+                    <td><a href="${pageContext.request.contextPath}/outbox/${pm.id}">
+                        <c:out value="${pm.title}"/></a></td>
+                    <td><jtalks:format value="${pm.creationDate}"/></td>
+                    </tr>
+                </c:forEach>
+            </table>
+        </div>
     </div>
+    <div class="footer_buffer"></div>
 </div>
 </body>
-</html>

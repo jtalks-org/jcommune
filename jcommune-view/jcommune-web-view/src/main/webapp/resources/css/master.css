@@ -529,9 +529,9 @@ a.disabled {
 }
 
 /* Registration & Login */
-.registration_page h1, .login_page h1 {
+/*.registration_page h1, .login_page h1 {
     left: 40%;
-}
+}*/
 
 .registration_page .forum_table, .login_page .forum_table {
     margin: 0 auto;

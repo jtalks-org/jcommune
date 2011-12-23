@@ -17,7 +17,6 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 import org.jtalks.jcommune.web.dto.PrivateMessageDtoBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +32,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * MVC controller for Private Messaging. Handles request for inbox, outbox and new private messages.

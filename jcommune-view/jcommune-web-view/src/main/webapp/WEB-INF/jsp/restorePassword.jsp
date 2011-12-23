@@ -14,7 +14,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
@@ -24,10 +24,14 @@
 </head>
 <div class="wrap registration_page">
     <jsp:include page="../template/topLine.jsp"/>
-    <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-    <h1><spring:message code="label.restorePassword.header"/></h1>
+    <h1><a href="${pageContext.request.contextPath}">
+        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+    </a></h1>
+
 
     <div class="all_forums">
+        <h2 class="heading"><spring:message code="label.restorePassword.header"/></h2>
+        <br>
         <form:form id="form" name="form"
                    action='${pageContext.request.contextPath}/password/restore' method="POST">
 

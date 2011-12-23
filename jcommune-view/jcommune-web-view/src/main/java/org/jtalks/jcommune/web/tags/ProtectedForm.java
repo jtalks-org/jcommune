@@ -18,6 +18,7 @@ import org.springframework.web.servlet.tags.form.FormTag;
 
 /**
  * Extension of Spring form tag. This tag automatically put necessary JavaScript to prevent form's multiposting.
+ * todo: replace it with jquery event
  *
  * @author Pavel Vervenko
  */
@@ -28,8 +29,8 @@ public class ProtectedForm extends FormTag {
      */
     private static final long serialVersionUID = 34588L;
 
-    public static final String MULTIPOST_BLOCKING_JS = "if (this.getAttribute('submitted')) return false; "
-            + "this.setAttribute('submitted','true');";
+    public static final String MULTIPOST_BLOCKING_JS =
+            "if (this.getAttribute('submitted')) return false; this.setAttribute('submitted','true');";
 
     /**
      * Default tag constructor.

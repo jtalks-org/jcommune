@@ -27,11 +27,12 @@
 </head>
 <body>
 <c:set var="authenticated" value="${false}"/>
-<h1>JTalks</h1>
+<h1><a href="${pageContext.request.contextPath}">
+    <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+</a></h1>
 
 <div class="wrap topic_page">
 <jsp:include page="../template/topLine.jsp"/>
-<!-- Начало всех форумов -->
 <div class="all_forums">
 <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
 <span class="nav_bottom">
@@ -81,17 +82,16 @@
 
 <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 <br>
-<!-- Начало группы форумов -->
-<div class="forum_header_table"> <!-- Шапка топика -->
+<div class="forum_header_table">
     <div class="forum_header">
         <span class="forum_header_userinfo"><spring:message code="label.topic.header.author"/></span>
         <span class="forum_header_topic"><spring:message code="label.topic.header.message"/></span>
     </div>
 </div>
-<ul class="forum_table"> <!-- Список сообщений -->
+<ul class="forum_table">
     <jtalks:display uri="${topicId}" pagination="${pag}" numberLink="3" list="${posts}">
     <c:forEach var="post" items="${list}" varStatus="i">
-        <li class="forum_row"> <!-- Сообщение -->
+        <li class="forum_row">
             <div class="forum_userinfo">
                 <a class="username"
                    href="${pageContext.request.contextPath}/users/${post.userCreated.encodedUsername}">
@@ -258,8 +258,6 @@
     </c:forEach>
 </div>
 </div>
-<!-- Конец всех форумов -->
 <div class="footer_buffer"></div>
-<!-- Несемантичный буфер для прибития подвала -->
 </div>
 </body>

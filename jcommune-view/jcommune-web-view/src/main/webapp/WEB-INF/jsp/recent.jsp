@@ -22,10 +22,11 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <body>
-<h1>JTalks</h1>
-
 <div class="wrap branch_page">
     <jsp:include page="../template/topLine.jsp"/>
+    <h1><a href="${pageContext.request.contextPath}">
+        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+    </a></h1>
     <div class="all_forums">
         <h2><a class="heading" href="#"><c:out value="${recent}"/></a></h2>
 

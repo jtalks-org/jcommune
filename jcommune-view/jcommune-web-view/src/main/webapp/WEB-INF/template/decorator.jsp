@@ -35,6 +35,7 @@
           href="${pageContext.request.contextPath}/resources/images/favicon.png"/>
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/URLBuilder.js"></script>
+    <title><decorator:title/></title>
     <decorator:head/>
 </head>
 <!--Define timezone to adjust date and time values-->

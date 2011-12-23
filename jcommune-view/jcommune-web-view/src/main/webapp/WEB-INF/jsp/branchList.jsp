@@ -26,7 +26,9 @@
 <body>
 <div class="wrap section_page">
     <jsp:include page="../template/topLine.jsp"/>
-    <h1>JTalks</h1>
+    <h1><a href="${pageContext.request.contextPath}">
+        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+    </a></h1>
 
     <div class="all_forums">
         <div class="forum_header_table"> <!-- Шапка группы форумов -->
