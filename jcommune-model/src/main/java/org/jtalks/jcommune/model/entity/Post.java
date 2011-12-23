@@ -187,7 +187,7 @@ public class Post extends Entity {
      * @param pageSize number items of page
      * @return page number on which the post
      */
-    public int getNumberPagePostInTopic(int pageSize) {
+    public int getNumberPagePost(int pageSize) {
         return (getTopic().getPosts().indexOf(this) / pageSize) + 1;
     }
 }

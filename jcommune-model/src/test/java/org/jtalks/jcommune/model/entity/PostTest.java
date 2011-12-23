@@ -18,7 +18,6 @@ import org.joda.time.DateTime;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -46,15 +45,16 @@ public class PostTest {
             "laboreetdoloremagnaaliqua.Utenimadminimveniam,quisnostrud" +
             "exercitationullamcolaborisnisiutaliquipexeacommodoconsequat." +
             "D...";
-    Post post = new Post();
+    Post post;
     Post post1;
     Topic topic;
     User user;
 
     @BeforeMethod
     public void init() {
-        user = mock(User.class);
-        post1 = mock(Post.class);
+        user = new User("username","email","password");
+        post = new Post(user, "post");
+        post1 = new Post(user, "post1");
         topic = new Topic(user, "");
     }
 
@@ -105,15 +105,13 @@ public class PostTest {
 
     @Test
     public void testLastPostInTopic() {
-        User user = mock(User.class);
-        Post post1 = mock(Post.class);
         Topic topic = new Topic(user, "");
         topic.addPost(post1);
         topic.addPost(post1);
         topic.addPost(post);
 
-        post.getNumberPagePostInTopic(2);
-        assertEquals(post.getNumberPagePostInTopic(2), 2);
+        post.getNumberPagePost(2);
+        assertEquals(post.getNumberPagePost(2), 2);
 
 
     }
@@ -122,35 +120,29 @@ public class PostTest {
     public void testFirstPostOfPage() {
         topic.addPost(post);
 
-        post.getNumberPagePostInTopic(2);
-        assertEquals(post.getNumberPagePostInTopic(2), 1);
+        post.getNumberPagePost(2);
+        assertEquals(post.getNumberPagePost(2), 1);
 
 
     }
 
     @Test
     public void testLastPostOfPage() {
-        User user = mock(User.class);
-        Post post1 = mock(Post.class);
-        Topic topic = new Topic(user, "");
         topic.addPost(post1);
         topic.addPost(post);
 
-        post.getNumberPagePostInTopic(2);
-        assertEquals(post.getNumberPagePostInTopic(2), 1);
+        post.getNumberPagePost(2);
+        assertEquals(post.getNumberPagePost(2), 1);
     }
 
     @Test
     public void testPostInCenterOfTopic() {
-        User user = mock(User.class);
-        Post post1 = mock(Post.class);
-        Topic topic = new Topic(user, "");
         topic.addPost(post1);
         topic.addPost(post);
         topic.addPost(post1);
 
-        post.getNumberPagePostInTopic(2);
-        assertEquals(post.getNumberPagePostInTopic(2), 1);
+        post.getNumberPagePost(2);
+        assertEquals(post.getNumberPagePost(2), 1);
 
 
     }

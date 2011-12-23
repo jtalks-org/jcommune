@@ -14,8 +14,11 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
-import org.jtalks.common.model.entity.Entity;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.LocationService;
+import org.jtalks.jcommune.service.SecurityService;
+import org.springframework.security.core.session.SessionRegistry;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -26,40 +29,55 @@ import java.util.Map;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
 
 /**
  *
  * @author Andrey Kluev
  */
 public class LocationServiceImplTest {
-    private Entity entity;
-    private LocationServiceImpl locationServiceImpl;
+    private Topic topic;
+    private LocationService locationService;
+    private SecurityService securityService;
+    private SessionRegistry sessionRegistry;
     private User user;
 
 
     @BeforeMethod
     protected void setUp() {
-        entity = mock(Entity.class);
-        locationServiceImpl = new LocationServiceImpl();
+        securityService = mock(SecurityService.class);
+        sessionRegistry = mock(SessionRegistry.class);
+        locationService = new LocationServiceImpl(securityService, sessionRegistry);
         user = new User("", "", "");
+        topic = new Topic(user, "");
     }
 
     @Test
-    public void testActiveRegistryUserList() {
+    public void testUsersViewing() {
         List<Object> list = new ArrayList<Object>();
         list.add(user);
         Map<User, String> map = new HashMap<User, String>();
         map.put(user, "");
-        locationServiceImpl.setRegisterUserMap(map);
+        locationService.getRegisterUserMap().put(user, "");
 
-        when(entity.getUuid()).thenReturn("");
+        topic.setUuid("");
 
-        locationServiceImpl.getRegisterUserMap().put(user, "1");
-        locationServiceImpl.activeRegistryUserList(user, entity, list);
+        locationService.getRegisterUserMap().put(user, "1");
+        locationService.getUsersViewing(topic);
 
-        locationServiceImpl.getRegisterUserMap().put(user, entity.getUuid());
-        locationServiceImpl.activeRegistryUserList(user, entity, list);
+        locationService.getRegisterUserMap().put(user, topic.getUuid());
+        locationService.getUsersViewing(topic);
 
-        locationServiceImpl.activeRegistryUserList(user, entity, list);
+        locationService.getUsersViewing(topic);
+    }
+
+    @Test
+    public void testClearUserLocation(){
+        locationService.getRegisterUserMap().put(user,"");
+        when(securityService.getCurrentUser()).thenReturn(user);
+        
+        locationService.clearUserLocation();
+
+        assertEquals(locationService.getRegisterUserMap(),new HashMap<User, String>());
     }
 }

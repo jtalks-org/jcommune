@@ -15,15 +15,15 @@
 
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.aspectj.lang.annotation.Before;
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.LocationService;
+import org.jtalks.jcommune.service.SecurityService;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Class for storing and tracking of users on the forum.
@@ -32,34 +32,33 @@ import java.util.Map;
  */
 @Component
 public class LocationServiceImpl implements LocationService {
-    private Map<User, String> registerUserMap = new HashMap<User, String>();
+    private SecurityService securityService;
+    private SessionRegistry sessionRegistry;
+    private Map<User, String> registerUserMap = Collections.synchronizedMap(new HashMap<User, String>());
+
+    public LocationServiceImpl(SecurityService securityService, SessionRegistry sessionRegistry) {
+        this.securityService = securityService;
+        this.sessionRegistry = sessionRegistry;
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Map<User, String> getRegisterUserMap() {
+    public synchronized Map<User, String> getRegisterUserMap() {
         return registerUserMap;
     }
 
     /**
+     * Modification map to active user, and create list of user name users on the current page
      * {@inheritDoc}
      */
     @Override
-    public void setRegisterUserMap(Map<User, String> registerUserMap) {
-        this.registerUserMap = registerUserMap;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<String> activeRegistryUserList(User currentUser, Entity entity,
-                                               List<Object> onlineRegisteredUsers) {
-        registerUserMap.put(currentUser, entity.getUuid());
+    public synchronized List<String> getUsersViewing(Entity entity) {
+        registerUserMap.put(securityService.getCurrentUser(), entity.getUuid());
 
         List<String> viewList = new ArrayList<String>();
-        for (Object o : onlineRegisteredUsers) {
+        for (Object o : sessionRegistry.getAllPrincipals()) {
             User user = (User) o;
             if (registerUserMap.containsKey(user) && registerUserMap.get(user).equals(entity.getUuid())) {
                 viewList.add(user.getEncodedUsername());
@@ -72,7 +71,7 @@ public class LocationServiceImpl implements LocationService {
      * {@inheritDoc}
      */
     @Override
-    public void clear(User user) {
-        getRegisterUserMap().put(user, "");
+    public void clearUserLocation() {
+        getRegisterUserMap().remove(securityService.getCurrentUser());
     }
 }
