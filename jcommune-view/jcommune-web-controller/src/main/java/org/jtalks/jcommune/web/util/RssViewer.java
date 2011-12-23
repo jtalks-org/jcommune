@@ -117,7 +117,7 @@ public class RssViewer extends AbstractRssFeedView {
      * @param request HttpServletRequest
      * @return url
      */
-    public String buildURL(HttpServletRequest request) {
+    private String buildURL(HttpServletRequest request) {
         return request.getScheme()
                 + "://" + request.getServerName()
                 + ":" + request.getServerPort()

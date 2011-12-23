@@ -68,7 +68,7 @@ public class BranchControllerTest {
         forumStatisticsProvider = mock(ForumStatisticsProvider.class);
         controller = new BranchController(branchService, topicService,
                 securityService, breadcrumbBuilder,
-                locationServiceImpl, forumStatisticsProvider);
+                locationServiceImpl);
     }
 
     @Test

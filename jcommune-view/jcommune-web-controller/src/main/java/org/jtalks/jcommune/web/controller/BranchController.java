@@ -20,13 +20,12 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.LocationService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.LocationServiceImpl;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
-import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -55,8 +54,7 @@ public final class BranchController {
     private TopicService topicService;
     private SecurityService securityService;
     private BreadcrumbBuilder breadcrumbBuilder;
-    private LocationServiceImpl locationServiceImpl;
-    private ForumStatisticsProvider forumStatisticsProvider;
+    private LocationService locationService;
 
     /**
      * Constructor creates MVC controller with specified BranchService
@@ -64,8 +62,7 @@ public final class BranchController {
      * @param branchService     autowired object from Spring Context
      * @param topicService      autowired object from Spring Context
      * @param securityService   autowired object from Spring Context
-     * @param locationServiceImpl autowired object from Spring Context
-     * @param forumStatisticsProvider autowired object from Spring Context
+     * @param locationService autowired object from Spring Context
      * @param breadcrumbBuilder the object which provides actions on
      *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      */
@@ -74,14 +71,12 @@ public final class BranchController {
                             TopicService topicService,
                             SecurityService securityService,
                             BreadcrumbBuilder breadcrumbBuilder,
-                            LocationServiceImpl locationServiceImpl,
-                            ForumStatisticsProvider forumStatisticsProvider) {
+                            LocationService locationService) {
         this.branchService = branchService;
         this.topicService = topicService;
         this.securityService = securityService;
         this.breadcrumbBuilder = breadcrumbBuilder;
-        this.locationServiceImpl = locationServiceImpl;
-        this.forumStatisticsProvider = forumStatisticsProvider;
+        this.locationService = locationService;
     }
 
     /**
@@ -108,12 +103,10 @@ public final class BranchController {
         Pagination pag = new Pagination(page, currentUser, topics.size(), pagingEnabled);
         List<Breadcrumb> breadcrumbs = breadcrumbBuilder.getForumBreadcrumb(branch);
 
-        List<String> viewList = locationServiceImpl.activeRegistryUserList(currentUser, branch,
-                forumStatisticsProvider.getOnlineRegisteredUsers());
+        List<String> viewList = locationService.getUsersViewing(branch);
       
         return new ModelAndView("topicList")
                 .addObject("viewList", viewList)
-                .addObject("noUsers", viewList.isEmpty())
                 .addObject("branch", branch)
                 .addObject("topics", topics)
                 .addObject("pagination", pag)

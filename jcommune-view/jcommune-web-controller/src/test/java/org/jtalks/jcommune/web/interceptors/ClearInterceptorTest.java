@@ -52,7 +52,7 @@ public class ClearInterceptorTest {
         response = new MockHttpServletResponse();
         locationServiceImpl = mock(LocationServiceImpl.class);
         securityService = mock(SecurityService.class);
-        interceptor = new ClearInterceptor(locationServiceImpl, securityService);
+        interceptor = new ClearInterceptor(locationServiceImpl);
     }
     
     @Test
