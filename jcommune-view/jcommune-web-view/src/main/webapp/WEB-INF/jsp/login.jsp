@@ -31,7 +31,7 @@
             <div class="forum_header_table">
                 <div class="forum_header">
                     <span class="forum_header_answer"><spring:message code="label.signin"/></span>
-                    <span class="empty_cell"></span> <!-- Необходима для корректного отображения псевдотаблицы -->
+                    <span class="empty_cell"></span>
                 </div>
             </div>
             <div class="forum_table" id="stylized">
@@ -55,8 +55,8 @@
                     </div>
                 </div>
                 <div class="forum_row">
-                    <input type="checkbox" name="staylogged"><spring:message code="label.auto_logon"/>
-                    <span class="empty_cell"></span> <!-- Необходима для корректного отображения псевдотаблицы -->
+                    <input type="checkbox" name="_spring_security_remember_me"><spring:message code="label.auto_logon"/>
+                    <span class="empty_cell"></span>
                 </div>
             </div>
 
@@ -68,7 +68,6 @@
         </div>
     </form>
     <div class="footer_buffer"></div>
-    <!-- Несемантичный буфер для прибития подвала -->
 </div>
 
 </body>
