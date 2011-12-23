@@ -76,7 +76,7 @@ public class LocationServiceImplTest {
     }
 
     @Test
-    public void test1(){
+    public void testUserNotOnline(){
         when(securityService.getCurrentUser()).thenReturn(user);
         User user1 = new User("","","");
         list.add(user1);
