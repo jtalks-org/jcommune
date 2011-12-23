@@ -213,7 +213,10 @@ public class PostControllerTest {
         when(resultWithoutErrors.hasErrors()).thenReturn(false);
         Post post = new Post(null, null);
         topic.addPost(post);
+        topic.setId(TOPIC_ID);
         when(topicService.replyToTopic(anyLong(), Matchers.<String>any())).thenReturn(post);
+        when(postService.getPageForPost(post)).thenReturn(1);
+        when(postService.get(Matchers.<Long>any())).thenReturn(post);
         //invoke the object under test
         ModelAndView mav = controller.create(getDto(), resultWithoutErrors);
 
@@ -236,6 +239,26 @@ public class PostControllerTest {
 
         //check result
         assertViewName(mav, "answer");
+    }
+
+    @Test
+    public void testRedirectToPageWithPost() throws NotFoundException {
+        Post post = new Post(null, null);
+        topic.addPost(post);
+        topic.setId(TOPIC_ID);
+        when(postService.getPageForPost(post)).thenReturn(5);
+        when(postService.get(POST_ID)).thenReturn(post);
+
+        String result = controller.redirectToPageWithPost(POST_ID);
+
+        assertEquals(result, "redirect:/topics/" + TOPIC_ID + "?page=5#" + POST_ID);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void testRedirectToPageWithPostNotFound() throws NotFoundException {
+        doThrow(new NotFoundException()).when(postService).get(anyLong());
+
+        controller.redirectToPageWithPost(POST_ID);
     }
 
     private void assertAnswerMavIsCorrect(ModelAndView mav) {

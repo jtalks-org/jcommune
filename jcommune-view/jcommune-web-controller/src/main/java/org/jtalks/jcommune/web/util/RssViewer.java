@@ -114,15 +114,11 @@ public class RssViewer extends AbstractRssFeedView {
 
         Content content = new Content();
         item.setContent(content);
-        Pagination pag = new Pagination(1, securityService.getCurrentUser(), topic.getPosts().size(), true);
 
         item.setTitle(topic.getTitle());
         item.setAuthor(topic.getLastPost().getUserCreated().getEncodedUsername());
 
-        item.setLink(url
-                + "/topics/" + topic.getId()
-                + "?page=" + pag.getMaxPages()
-                + "#" + topic.getLastPost().getId());
+        item.setLink(url + "/posts/" + topic.getLastPost().getId());
 
         item.setComments(topic.getTopicStarter().getSignature());
         item.setDescription(description);

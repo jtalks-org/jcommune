@@ -233,16 +233,28 @@ public class PostController {
             return mav;
         }
         Post newbie = topicService.replyToTopic(postDto.getTopicId(), postDto.getBodyText());
-        int pagesize = Pagination.getPageSizeFor(securityService.getCurrentUser());
-        int lastPage = newbie.getTopic().getLastPageNumber(pagesize);
-        return new ModelAndView(new StringBuilder("redirect:/topics/")
-                .append(postDto.getTopicId())
-                .append("?page=")
-                .append(lastPage)
-                .append("#")
-                .append(newbie.getId())
-                .toString());
+        return new ModelAndView(this.redirectToPageWithPost(newbie.getId()));
     }
 
-
+    /**
+     * Redirects user to the topic view with the appropriate page selected.
+     * Method clients should not wary about paging at all, post id
+     * is enough to be transferred to the proper page.
+     *
+     * @param postId unique post identifier
+     * @return redirect view to the certain topic page
+     * @throws NotFoundException is the is no post for the identifier given
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/posts/{postId}")
+    public String redirectToPageWithPost(@PathVariable Long postId) throws NotFoundException {
+        Post post = postService.get(postId);
+        int page = postService.getPageForPost(post);
+        return new StringBuilder("redirect:/topics/")
+                .append(post.getTopic().getId())
+                .append("?page=")
+                .append(page)
+                .append("#")
+                .append(postId)
+                .toString();
+    }
 }
