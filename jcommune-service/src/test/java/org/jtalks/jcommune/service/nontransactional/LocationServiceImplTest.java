@@ -54,6 +54,7 @@ public class LocationServiceImplTest {
 
     @Test
     public void testUsersViewing() {
+        when(securityService.getCurrentUser()).thenReturn(user);
         List<Object> list = new ArrayList<Object>();
         list.add(user);
         Map<User, String> map = new HashMap<User, String>();
@@ -73,6 +74,7 @@ public class LocationServiceImplTest {
 
     @Test
     public void testClearUserLocation(){
+        when(securityService.getCurrentUser()).thenReturn(user);
         locationService.getRegisterUserMap().put(user,"");
         when(securityService.getCurrentUser()).thenReturn(user);
         
@@ -80,4 +82,14 @@ public class LocationServiceImplTest {
 
         assertEquals(locationService.getRegisterUserMap(),new HashMap<User, String>());
     }
+
+    @Test
+        public void testClearUserLocationAnonymous(){
+            locationService.getRegisterUserMap().put(user,"");
+            when(securityService.getCurrentUser()).thenReturn(user);
+
+            locationService.clearUserLocation();
+
+            assertEquals(locationService.getRegisterUserMap(),new HashMap<User, String>());
+        }
 }

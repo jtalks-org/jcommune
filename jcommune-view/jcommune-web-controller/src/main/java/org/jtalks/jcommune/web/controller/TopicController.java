@@ -26,7 +26,6 @@ import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.TopicDto;
-import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -65,7 +64,6 @@ public final class TopicController {
     private SecurityService securityService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private LocationService locationService;
-    private ForumStatisticsProvider forumStatisticsProvider;
 
     /**
      * This method turns the trim binder on. Trim bilder
@@ -86,7 +84,6 @@ public final class TopicController {
      * @param topicService      the object which provides actions on {@link Topic} entity
      * @param branchService     the object which provides actions on
      * @param locationService autowired object from Spring Context
-     * @param forumStatisticsProvider autowired object from Spring Context
      * @param securityService   autowired object from Spring Context
      *                          {@link org.jtalks.jcommune.model.entity.Branch} entity
      * @param breadcrumbBuilder the object which provides actions on
@@ -97,14 +94,12 @@ public final class TopicController {
                            BranchService branchService,
                            SecurityService securityService,
                            BreadcrumbBuilder breadcrumbBuilder,
-                           LocationService locationService,
-                           ForumStatisticsProvider forumStatisticsProvider) {
+                           LocationService locationService) {
         this.topicService = topicService;
         this.branchService = branchService;
         this.securityService = securityService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.locationService = locationService;
-        this.forumStatisticsProvider = forumStatisticsProvider;
     }
 
     /**

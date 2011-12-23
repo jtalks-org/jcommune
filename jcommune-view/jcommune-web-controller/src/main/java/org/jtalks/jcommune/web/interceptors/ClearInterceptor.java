@@ -15,16 +15,12 @@
 
 package org.jtalks.jcommune.web.interceptors;
 
-import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.nontransactional.LocationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * Global interceptor works for all pages,

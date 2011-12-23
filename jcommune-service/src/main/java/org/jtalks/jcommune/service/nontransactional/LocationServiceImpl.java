@@ -15,7 +15,6 @@
 
 package org.jtalks.jcommune.service.nontransactional;
 
-import org.aspectj.lang.annotation.Before;
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.LocationService;
@@ -38,6 +37,11 @@ public class LocationServiceImpl implements LocationService {
     private SessionRegistry sessionRegistry;
     private Map<User, String> registerUserMap = Collections.synchronizedMap(new HashMap<User, String>());
 
+    /**
+     *
+     * @param securityService security service
+     * @param sessionRegistry session registry
+     */
     public LocationServiceImpl(SecurityService securityService, SessionRegistry sessionRegistry) {
         this.securityService = securityService;
         this.sessionRegistry = sessionRegistry;
