@@ -26,8 +26,7 @@
             <spring:message code="label.outbox"/></a>
         <a class="forum_header_menu" id="newmsg_link" href="${pageContext.request.contextPath}/pm/new">
             <spring:message code="label.new_pm"/></a>
-        <a class="forum_header_menu" id="draft_link"
-           href="${pageContext.request.contextPath}/drafts">
+        <a class="forum_header_menu" id="draft_link"  href="${pageContext.request.contextPath}/drafts">
             <spring:message code="label.drafts"/></a>
         <span class="empty_cell"></span>
     </div>

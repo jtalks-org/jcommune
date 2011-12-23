@@ -34,8 +34,6 @@
         <div class="forum_misc_info">
         </div>
 
-        <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-
         <jsp:include page="pmNavigationMenu.jsp"/>
         <form:form action="${pageContext.request.contextPath}/pm" modelAttribute="privateMessageDto"
                    method="POST"

@@ -28,7 +28,6 @@
 <h1><spring:message code="label.drafts"/></h1>
 
 <div class="all_forums">
-    <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
     <jsp:include page="pmNavigationMenu.jsp"/>
     <div>

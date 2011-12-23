@@ -29,8 +29,6 @@
 
 <div class="all_forums">
 
-    <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-
     <jsp:include page="pmNavigationMenu.jsp"/>
     <div>
         <table>
