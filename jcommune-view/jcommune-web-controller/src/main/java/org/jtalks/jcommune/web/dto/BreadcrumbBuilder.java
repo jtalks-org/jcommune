@@ -98,42 +98,6 @@ public class BreadcrumbBuilder {
     }
 
     /**
-     * Return the Inbox breadcrumbs.
-     *
-     * @return the breadcrumb list for the Inbox location.
-     */
-    public List<Breadcrumb> getInboxBreadcrumb() {
-        List<Breadcrumb> breadcrumbList = getForumBreadcrumb();
-        breadcrumbList.add(prepareInboxBreadcrumb());
-
-        return breadcrumbList;
-    }
-
-    /**
-     * Returns the Outbox breadcrumbs.
-     *
-     * @return the breadcrumb list for the Outbox location.
-     */
-    public List<Breadcrumb> getOutboxBreadcrumb() {
-        List<Breadcrumb> breadcrumbList = getForumBreadcrumb();
-        breadcrumbList.add(prepareOutboxBreadcrumb());
-
-        return breadcrumbList;
-    }
-
-    /**
-     * Returns the Drafts breadcrumbs.
-     *
-     * @return the breadcrumb list for the Drafts location.
-     */
-    public List<Breadcrumb> getDraftsBreadcrumb() {
-        List<Breadcrumb> breadcrumbList = getForumBreadcrumb();
-        breadcrumbList.add(prepareDraftsBreadcrumb());
-
-        return breadcrumbList;
-    }
-
-    /**
      * Fill the forum breadcrumb.
      *
      * @return {@link Breadcrumb} the filled breadcrumb for the Forum location.
@@ -185,43 +149,4 @@ public class BreadcrumbBuilder {
                 Breadcrumb.BreadcrumbLocation.TOPIC,
                 topic.getTitle());
     }
-
-    /**
-     * Fill the inbox breadcrumb.
-     *
-     * @return {@link Breadcrumb} the filled breadcrumb for the inbox location.
-     */
-    private Breadcrumb prepareInboxBreadcrumb() {
-        return new Breadcrumb(
-                Breadcrumb.STUB_BREADCRUMB_ID,
-                Breadcrumb.BreadcrumbLocation.INBOX,
-                Breadcrumb.INBOX_BREADCRUMB_LOCATION_VALUE);
-    }
-
-    /**
-     * Fill the outbox breadcrumb.
-     *
-     * @return {@link Breadcrumb} the filled breadcrumb for the outbox location.
-     */
-    private Breadcrumb prepareOutboxBreadcrumb() {
-        return new Breadcrumb(
-                Breadcrumb.STUB_BREADCRUMB_ID,
-                Breadcrumb.BreadcrumbLocation.OUTBOX,
-                Breadcrumb.OUTBOX_BREADCRUMB_LOCATION_VALUE);
-    }
-
-
-    /**
-     * Fill the drafts breadcrumb.
-     *
-     * @return {@link Breadcrumb} the filled breadcrumb for the drafts location.
-     */
-    private Breadcrumb prepareDraftsBreadcrumb() {
-        return new Breadcrumb(
-                Breadcrumb.STUB_BREADCRUMB_ID,
-                Breadcrumb.BreadcrumbLocation.DRAFTS,
-                Breadcrumb.DRAFTS_BREADCRUMB_LOCATION_VALUE);
-    }
-
-
 }

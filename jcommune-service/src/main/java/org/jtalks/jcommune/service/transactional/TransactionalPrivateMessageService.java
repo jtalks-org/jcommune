@@ -41,7 +41,7 @@ public class TransactionalPrivateMessageService
         extends AbstractTransactionalEntityService<PrivateMessage, PrivateMessageDao> implements PrivateMessageService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    
+
     private final SecurityService securityService;
     private final UserService userService;
     private final UserDataCacheService userDataCache;
@@ -93,13 +93,13 @@ public class TransactionalPrivateMessageService
         PrivateMessage pm = populateMessage(title, body, recipient);
         pm.setStatus(PrivateMessageStatus.NOT_READ);
         this.getDao().saveOrUpdate(pm);
-        
+
         userDataCache.incrementNewMessageCountFor(recipientUsername);
 
         securityService.grantToCurrentUser().user(recipientUsername).read().on(pm);
-        
+
         logger.debug("Private message to user {} was sent. Message id={}", recipientUsername, pm.getId());
-        
+
         return pm;
     }
 
@@ -112,8 +112,7 @@ public class TransactionalPrivateMessageService
      * @return created {@link PrivateMessage}
      * @throws NotFoundException if current user of recipient not found
      */
-    private PrivateMessage populateMessage(String title, String body,
-                                           User recipient) throws NotFoundException {
+    private PrivateMessage populateMessage(String title, String body, User recipient) throws NotFoundException {
         User userFrom = securityService.getCurrentUser();
         return new PrivateMessage(recipient, userFrom, title, body);
     }
@@ -122,12 +121,11 @@ public class TransactionalPrivateMessageService
      * {@inheritDoc}
      */
     public void markAsRead(PrivateMessage pm) {
-        if (pm.isRead()) {
-            return;
+        if (!pm.isRead()) {
+            pm.markAsRead();
+            this.getDao().saveOrUpdate(pm);
+            userDataCache.decrementNewMessageCountFor(pm.getUserTo().getUsername());
         }
-        pm.markAsRead();
-        this.getDao().saveOrUpdate(pm);
-        userDataCache.decrementNewMessageCountFor(pm.getUserTo().getUsername());
     }
 
     /**
@@ -153,9 +151,9 @@ public class TransactionalPrivateMessageService
         this.getDao().saveOrUpdate(pm);
 
         securityService.grantToCurrentUser().admin().on(pm);
-        
+
         logger.debug("Updated private message draft. Message id={}", pm.getId());
-        
+
         return pm;
     }
 
@@ -191,15 +189,15 @@ public class TransactionalPrivateMessageService
         pm.setId(id);
         pm.setStatus(PrivateMessageStatus.NOT_READ);
         this.getDao().saveOrUpdate(pm);
-        
+
         userDataCache.incrementNewMessageCountFor(recipientUsername);
 
         securityService.deleteFromAcl(pm);
         securityService.grantToCurrentUser().user(recipientUsername).read().on(pm);
 
-        logger.debug("Private message(was draft) to user {} was sent. Message id={}", 
+        logger.debug("Private message(was draft) to user {} was sent. Message id={}",
                 recipientUsername, pm.getId());
-        
+
         return pm;
     }
 

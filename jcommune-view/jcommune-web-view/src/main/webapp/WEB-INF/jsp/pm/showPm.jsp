@@ -26,7 +26,6 @@
 <body>
 <div align="left">
      <jsp:include page="../../template/topLine.jsp"/>
-    <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
     <jsp:include page="pmNavigationMenu.jsp"/>
     <div>
@@ -56,16 +55,12 @@
             <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
                 <tr>
                     <td>
-                        <form:form
-                                action="${pageContext.request.contextPath}/reply/${pm.id}"
-                                method="GET">
+                        <form:form action="${pageContext.request.contextPath}/reply/${pm.id}" method="GET">
                             <input type="submit" value="<spring:message code="label.reply"/>"/>
                         </form:form>
                     </td>
                     <td>
-                        <form:form
-                                action="${pageContext.request.contextPath}/quote/${pm.id}"
-                                method="GET">
+                        <form:form action="${pageContext.request.contextPath}/quote/${pm.id}" method="GET">
                             <input type="submit" value="<spring:message code="label.quote"/>"/>
                         </form:form>
                     </td>
