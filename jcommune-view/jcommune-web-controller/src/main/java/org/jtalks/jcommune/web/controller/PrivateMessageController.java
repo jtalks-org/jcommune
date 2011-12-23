@@ -57,8 +57,6 @@ public class PrivateMessageController {
     private static final String PM_ID = "pmId";
     private static final String DTO = "privateMessageDto";
 
-    private static final Set FODLERS= new HashSet();
-
     /**
      * This method turns the trim binder on. Trim bilder
      * removes leading and trailing spaces from the submitted fields.
@@ -194,13 +192,11 @@ public class PrivateMessageController {
     public ModelAndView showPmPage(@PathVariable("folder") String folder,
                                    @PathVariable(PM_ID) Long id) throws NotFoundException {
         PrivateMessage pm = pmService.get(id);
-        List<Breadcrumb> breadcrumbList = null;
         if ("inbox".equals(folder)) {
             pmService.markAsRead(pm);
         }
         return new ModelAndView("pm/showPm")
-                .addObject("pm", pm)
-                .addObject(BREADCRUMB_LIST, breadcrumbList);
+                .addObject("pm", pm);
     }
 
     /**
