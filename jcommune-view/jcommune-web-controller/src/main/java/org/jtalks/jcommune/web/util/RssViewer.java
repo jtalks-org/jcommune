@@ -20,8 +20,6 @@ import com.sun.syndication.feed.rss.Content;
 import com.sun.syndication.feed.rss.Description;
 import com.sun.syndication.feed.rss.Item;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.SecurityService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.view.feed.AbstractRssFeedView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -79,7 +77,6 @@ public class RssViewer extends AbstractRssFeedView {
         List<Item> items = new ArrayList<Item>(listContent.size());
 
         for (Topic topic : listContent) {
-
             items.add(createFeedItem(topic, url));
         }
 
