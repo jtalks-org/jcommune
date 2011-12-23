@@ -38,18 +38,6 @@ import java.util.Map;
  */
 public class RssViewer extends AbstractRssFeedView {
 
-    private SecurityService securityService;
-
-    /**
-     * Need for get current user
-     *
-     * @param securityService security service
-     */
-    @Autowired
-    public RssViewer(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
     /**
      * Set meta data for all RSS feed
      *

@@ -22,7 +22,6 @@ import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.PostDto;
-import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
@@ -60,7 +59,6 @@ public class PostController {
     private PostService postService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private TopicService topicService;
-    private SecurityService securityService;
 
     /**
      * This method turns the trim binder on. Trim bilder
@@ -82,15 +80,13 @@ public class PostController {
      * @param breadcrumbBuilder the object which provides actions on
      *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      * @param topicService      {@link TopicService} to be injected
-     * @param securityService   {@link SecurityService} to retrieve current logged in user
      */
     @Autowired
     public PostController(PostService postService, BreadcrumbBuilder breadcrumbBuilder,
-                          TopicService topicService, SecurityService securityService) {
+                          TopicService topicService) {
         this.postService = postService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.topicService = topicService;
-        this.securityService = securityService;
     }
 
     /**
