@@ -27,6 +27,8 @@ import java.util.*;
 
 /**
  * Class for storing and tracking of users on the forum.
+ * Realizes the possibility of receiving map stores the user and his location,
+ * the list of user names on this page and delete the current user of map
  *
  * @author Andrey Kluev
  */
@@ -55,13 +57,15 @@ public class LocationServiceImpl implements LocationService {
      */
     @Override
     public synchronized List<String> getUsersViewing(Entity entity) {
-        registerUserMap.put(securityService.getCurrentUser(), entity.getUuid());
-
         List<String> viewList = new ArrayList<String>();
-        for (Object o : sessionRegistry.getAllPrincipals()) {
-            User user = (User) o;
-            if (registerUserMap.containsKey(user) && registerUserMap.get(user).equals(entity.getUuid())) {
-                viewList.add(user.getEncodedUsername());
+        if (securityService.getCurrentUser() != null) {
+            registerUserMap.put(securityService.getCurrentUser(), entity.getUuid());
+
+            for (Object o : sessionRegistry.getAllPrincipals()) {
+                User user = (User) o;
+                if (registerUserMap.containsKey(user) && registerUserMap.get(user).equals(entity.getUuid())) {
+                    viewList.add(user.getEncodedUsername());
+                }
             }
         }
         return viewList;

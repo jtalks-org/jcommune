@@ -34,7 +34,7 @@ import java.io.IOException;
  */
 public class ClearInterceptor extends HandlerInterceptorAdapter {
 
-    private final LocationServiceImpl locationServiceImpl;
+    private LocationServiceImpl locationServiceImpl;
 
     /**
      * Constructor clearInterceptor

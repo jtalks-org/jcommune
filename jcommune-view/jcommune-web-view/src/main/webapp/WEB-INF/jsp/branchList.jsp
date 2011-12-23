@@ -97,13 +97,14 @@
                 </li>
             </c:forEach>
         </ul>
-        <c:if test="${!noUsers}">
+        <c:if test="${!(empty viewList)}">
             <spring:message code="label.topic.now_browsing"/>
         </c:if>
         <c:forEach var="innerUser" items="${viewList}">
             <a href="${pageContext.request.contextPath}/users/${innerUser}">
                 <c:out value="${innerUser}"/>
             </a>
+            &nbsp;&nbsp;
         </c:forEach>
     </div>
     <div class="footer_buffer"></div>

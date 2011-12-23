@@ -24,7 +24,6 @@ import org.jtalks.jcommune.service.LocationService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.LocationServiceImpl;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.Pagination;
@@ -72,7 +71,7 @@ public final class BranchController {
                             TopicService topicService,
                             SecurityService securityService,
                             BreadcrumbBuilder breadcrumbBuilder,
-                            LocationServiceImpl locationService) {
+                            LocationService locationService) {
         this.branchService = branchService;
         this.topicService = topicService;
         this.securityService = securityService;
@@ -108,7 +107,6 @@ public final class BranchController {
       
         return new ModelAndView("topicList")
                 .addObject("viewList", viewList)
-                .addObject("noUsers", viewList.isEmpty())
                 .addObject("branch", branch)
                 .addObject("topics", topics)
                 .addObject("pagination", pag)

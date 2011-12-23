@@ -20,10 +20,10 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.LocationService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.LocationServiceImpl;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
@@ -64,7 +64,7 @@ public final class TopicController {
     private BranchService branchService;
     private SecurityService securityService;
     private BreadcrumbBuilder breadcrumbBuilder;
-    private LocationServiceImpl locationServiceImpl;
+    private LocationService locationService;
     private ForumStatisticsProvider forumStatisticsProvider;
 
     /**
@@ -85,7 +85,7 @@ public final class TopicController {
      *
      * @param topicService      the object which provides actions on {@link Topic} entity
      * @param branchService     the object which provides actions on
-     * @param locationServiceImpl autowired object from Spring Context
+     * @param locationService autowired object from Spring Context
      * @param forumStatisticsProvider autowired object from Spring Context
      * @param securityService   autowired object from Spring Context
      *                          {@link org.jtalks.jcommune.model.entity.Branch} entity
@@ -97,13 +97,13 @@ public final class TopicController {
                            BranchService branchService,
                            SecurityService securityService,
                            BreadcrumbBuilder breadcrumbBuilder,
-                           LocationServiceImpl locationServiceImpl,
+                           LocationService locationService,
                            ForumStatisticsProvider forumStatisticsProvider) {
         this.topicService = topicService;
         this.branchService = branchService;
         this.securityService = securityService;
         this.breadcrumbBuilder = breadcrumbBuilder;
-        this.locationServiceImpl = locationServiceImpl;
+        this.locationService = locationService;
         this.forumStatisticsProvider = forumStatisticsProvider;
     }
 
@@ -187,11 +187,10 @@ public final class TopicController {
         List<Post> posts = topic.getPosts();
         Pagination pag = new Pagination(page, currentUser, posts.size(), pagingEnabled);
 
-        List<String> viewList = locationServiceImpl.getUsersViewing(currentUser);
+        List<String> viewList = locationService.getUsersViewing(currentUser);
        
         return new ModelAndView("postList")
                 .addObject("viewList", viewList)
-                .addObject("noUsers", viewList.isEmpty())
                 .addObject("posts", posts)
                 .addObject("topic", topic)
                 .addObject("pag", pag)
