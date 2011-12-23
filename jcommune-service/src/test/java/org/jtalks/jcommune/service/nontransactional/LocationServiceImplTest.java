@@ -32,7 +32,6 @@ import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
 /**
- *
  * @author Andrey Kluev
  */
 public class LocationServiceImplTest {
@@ -41,6 +40,7 @@ public class LocationServiceImplTest {
     private SecurityService securityService;
     private SessionRegistry sessionRegistry;
     private User user;
+    List list;
 
 
     @BeforeMethod
@@ -50,6 +50,8 @@ public class LocationServiceImplTest {
         locationService = new LocationServiceImpl(securityService, sessionRegistry);
         user = new User("", "", "");
         topic = new Topic(user, "");
+        topic.setUuid("uuid");
+        list = new ArrayList<Object>();
     }
 
     @Test
@@ -60,6 +62,7 @@ public class LocationServiceImplTest {
         Map<User, String> map = new HashMap<User, String>();
         map.put(user, "");
         locationService.getRegisterUserMap().put(user, "");
+        when(sessionRegistry.getAllPrincipals()).thenReturn(list);
 
         topic.setUuid("");
 
@@ -73,23 +76,23 @@ public class LocationServiceImplTest {
     }
 
     @Test
-    public void testClearUserLocation(){
+    public void test1(){
         when(securityService.getCurrentUser()).thenReturn(user);
-        locationService.getRegisterUserMap().put(user,"");
-        when(securityService.getCurrentUser()).thenReturn(user);
-        
-        locationService.clearUserLocation();
+        User user1 = new User("","","");
+        list.add(user1);
+        when(sessionRegistry.getAllPrincipals()).thenReturn(list);
 
-        assertEquals(locationService.getRegisterUserMap(),new HashMap<User, String>());
+        locationService.getUsersViewing(topic);
     }
 
     @Test
-        public void testClearUserLocationAnonymous(){
-            locationService.getRegisterUserMap().put(user,"");
-            when(securityService.getCurrentUser()).thenReturn(user);
+    public void testClearUserLocation() {
+        when(securityService.getCurrentUser()).thenReturn(user);
+        locationService.getRegisterUserMap().put(user, "");
+        when(securityService.getCurrentUser()).thenReturn(user);
 
-            locationService.clearUserLocation();
+        locationService.clearUserLocation();
 
-            assertEquals(locationService.getRegisterUserMap(),new HashMap<User, String>());
-        }
+        assertEquals(locationService.getRegisterUserMap(), new HashMap<User, String>());
+    }
 }
