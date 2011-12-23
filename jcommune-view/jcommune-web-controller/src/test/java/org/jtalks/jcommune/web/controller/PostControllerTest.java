@@ -65,8 +65,7 @@ public class PostControllerTest {
         postService = mock(PostService.class);
         topicService = mock(TopicService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
-        SecurityService securityService = mock(SecurityService.class);
-        controller = new PostController(postService, breadcrumbBuilder, topicService, securityService);
+        controller = new PostController(postService, breadcrumbBuilder, topicService);
 
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());

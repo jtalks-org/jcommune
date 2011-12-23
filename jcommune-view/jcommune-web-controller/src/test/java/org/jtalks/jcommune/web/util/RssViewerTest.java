@@ -44,15 +44,13 @@ public class RssViewerTest {
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
     private Map<String, Object> model;
-    private SecurityService securityService;
     private Topic topic;
 
     @BeforeMethod
     protected void setUp() {
         request = new MockHttpServletRequest();
-        securityService = mock(SecurityService.class);
         response = new MockHttpServletResponse();
-        rssViewer = new RssViewer(securityService);
+        rssViewer = new RssViewer();
         rssViewerMock = mock(RssViewer.class);
         channel = new Channel();
         model = new HashMap<String, Object>();
