@@ -361,6 +361,7 @@ a.last_message_user {
 .forum_message_cell p {
     padding-left: 10px;
     word-wrap: break-word;
+	line-height: 1.2;
 }
 
 .post_details, .signature {
