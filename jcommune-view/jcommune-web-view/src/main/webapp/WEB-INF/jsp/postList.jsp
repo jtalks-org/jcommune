@@ -26,13 +26,12 @@
             type="text/javascript"></script>
 </head>
 <body>
+<div class="wrap topic_page">
+<jsp:include page="../template/topLine.jsp"/>
 <c:set var="authenticated" value="${false}"/>
 <h1><a href="${pageContext.request.contextPath}">
     <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
 </a></h1>
-
-<div class="wrap topic_page">
-<jsp:include page="../template/topLine.jsp"/>
 <div class="all_forums">
 <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
 <span class="nav_bottom">
@@ -82,6 +81,7 @@
 
 <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 <br>
+
 <div class="forum_header_table">
     <div class="forum_header">
         <span class="forum_header_userinfo"><spring:message code="label.topic.header.author"/></span>

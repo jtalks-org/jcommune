@@ -38,11 +38,12 @@
             &nbsp;
             <img src="${pageContext.request.contextPath}/resources/images/RSS.png">
         </a>
-        <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/recent"><spring:message
-                code="label.recent"/></a> <br/>
+        <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/recent">
+            <spring:message code="label.recent"/>
+        </a><br/>
         <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/unanswered">
-            <spring:message code="label.messagesWithoutAnswers"/></a>
-
+            <spring:message code="label.messagesWithoutAnswers"/>
+        </a>
         <h2><a class="heading" href="#"><spring:message code="label.section.jtalks_forum"/></a></h2>
 
         <div class="forum_misc_info">
@@ -77,7 +78,6 @@
 
                             <p>
                                 <c:out value="${branch.description}"/>
-                                <a href="#"><spring:message code="label.section.faq"/></a>
                                 <br/>
                                 <spring:message code="label.section.moderators"/> <a class="moderator" href="#">Vurn</a>
                             </p>
@@ -108,7 +108,7 @@
     <div class="users_information">
         <div class="forum_header_table">
             <div class="forum_header">
-                <h3><a class="users_information_link" href="#"><spring:message code="label.onlineUsersInfo"/> </a></h3>
+                <h3><span class="users_information_link"><spring:message code="label.onlineUsersInfo"/> </span></h3>
                 <span class="empty_cell"></span>
             </div>
         </div>

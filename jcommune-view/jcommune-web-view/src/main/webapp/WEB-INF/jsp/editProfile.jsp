@@ -14,7 +14,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
@@ -24,8 +24,6 @@
 <sec:authentication property="principal.username" var="auth" scope="request"/>
 <head>
     <title><spring:message code="label.user"/> - "${auth}"</title>
-    <script language="javascript"
-            src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-1.7.min.js"></script>
     <script type="text/javascript"
             src="${pageContext.request.contextPath}/resources/javascript/licensed/fileuploader.js"></script>
 </head>
@@ -61,6 +59,11 @@
                 <td><form:errors path="lastName" cssClass="error"/></td>
             </tr>
             <tr>
+                <td><label><spring:message code="label.currentPassword"/></label></td>
+                <td><form:input path="currentUserPassword" size="25" type="password"/></td>
+                <td><form:errors path="currentUserPassword" cssClass="error"/></td>
+            </tr>
+            <tr>
                 <td><label><spring:message code="label.newPassword"/></label></td>
                 <td><form:input path="newUserPassword" size="25" type="password"/></td>
                 <td><form:errors path="newUserPassword" cssClass="error"/></td>
@@ -69,11 +72,6 @@
                 <td><label><spring:message code="label.newPasswordConfirmation"/></label></td>
                 <td><form:input path="newUserPasswordConfirm" size="25" type="password"/></td>
                 <td><form:errors path="newUserPasswordConfirm" cssClass="error"/></td>
-            </tr>
-            <tr>
-                <td><label><spring:message code="label.currentPassword"/></label></td>
-                <td><form:input path="currentUserPassword" size="25" type="password"/></td>
-                <td><form:errors path="currentUserPassword" cssClass="error"/></td>
             </tr>
             <tr>
                 <td><label><spring:message code="label.signature"/></label></td>

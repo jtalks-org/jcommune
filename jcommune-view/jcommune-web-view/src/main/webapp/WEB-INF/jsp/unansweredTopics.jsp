@@ -23,16 +23,16 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <head>
-    <title>Forum</title>
+    <spring:message code="label.messagesWithoutAnswers"/>
 </head>
 <body>
-<h1>JTalks</h1>
-
 <div class="wrap branch_page">
     <jsp:include page="../template/topLine.jsp"/>
-    <!-- Начало всех форумов -->
+    <h1><a href="${pageContext.request.contextPath}">
+        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+    </a></h1>
     <div class="all_forums">
-        <h2><a class="heading" href="#"><c:out value="${recent}"/></a></h2>
+        <h2><a class="heading" href="#"><spring:message code="label.messagesWithoutAnswers"/></a></h2>
 
         <jtalks:display uri="" pagination="${pagination}" list="${topics}">
         <nobr>
@@ -43,9 +43,7 @@
             </jtalks:display>
             </span>
         </nobr>
-
-        <!-- Начало группы форумов -->
-        <div class="forum_header_table"> <!-- Шапка бранча -->
+        <div class="forum_header_table">
             <div class="forum_header">
                 <span class="forum_header_icon"></span>
                 <span class="forum_header_topics"><spring:message code="label.branch.header.topics"/></span>
@@ -54,12 +52,11 @@
                 <span class="forum_header_last_message"><spring:message code="label.branch.header.lastMessage"/></span>
             </div>
         </div>
-
-        <ul class="forum_table"> <!-- Список топиков -->
+        <ul class="forum_table">
             <jtalks:display uri="" pagination="${pagination}" numberLink="3" list="${topics}">
             <c:forEach var="topic" items="${list}">
-                <li class="forum_row"> <!-- Топик -->
-                    <div class="forum_icon"> <!-- Иконка с кофе -->
+                <li class="forum_row">
+                    <div class="forum_icon">
                         <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png"
                              alt=""
                              title="Форум закрыт"/>
@@ -113,14 +110,14 @@
                         <a class="last_message_user"
                            href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
                             <c:out value="${topic.lastPost.userCreated.username}"/></a>
-                        <a href="#"><img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
-                                         alt="<spring:message code="label.section.header.lastMessage"/>"/></a>
+                        <a href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}">
+                            <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
+                                 alt="<spring:message code="label.section.header.lastMessage"/>"/>
+                        </a>
                     </div>
                 </li>
             </c:forEach>
         </ul>
-
-        <!-- Конец группы форумов -->
         <nobr>
             <span class="nav_bottom">
                 <c:if test="${pagination.maxPages>1}">
@@ -129,10 +126,6 @@
             </jtalks:display>
             </span>
         </nobr>
-
-        <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-
-
         <div class="forum_misc_info">
             <spring:message code="label.page"/>
             <c:out value="${pagination.page}"/>
@@ -140,8 +133,6 @@
             <c:out value="${pagination.maxPages}"/>
         </div>
     </div>
-    <!-- Конец всех форумов -->
     <div class="footer_buffer"></div>
-    <!-- Несемантичный буфер для прибития подвала -->
 </div>
 </body>
