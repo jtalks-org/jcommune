@@ -40,7 +40,8 @@
         </a>
         <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/recent"><spring:message
                 code="label.recent"/></a> <br/>
-        <a class="forum_top_right_link" href="#"><spring:message code="label.messagesWithoutAnswers"/></a>
+        <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/unanswered">
+            <spring:message code="label.messagesWithoutAnswers"/></a>
 
         <h2><a class="heading" href="#"><spring:message code="label.section.jtalks_forum"/></a></h2>
 

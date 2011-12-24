@@ -46,6 +46,7 @@ import static org.testng.Assert.assertEquals;
  * @author Kravchenko Vitaliy
  * @author Alexandre Teterin
  * @author Evdeniy Naumenko
+ * @author Eugeny Batov
  */
 public class BranchControllerTest {
     private BranchService branchService;
@@ -130,6 +131,27 @@ public class BranchControllerTest {
         assertEquals(pagination.getMaxPages(), 1);
         assertEquals(pagination.getPage().intValue(), page);
 
+    }
+
+    @Test
+    public void unansweredTopicsPage() {
+        int page = 1;
+        //set expectations
+        when(topicService.getUnansweredTopics()).thenReturn(new ArrayList<Topic>());
+
+        //invoke the object under test
+        ModelAndView mav = controller.unansweredTopicsPage(page);
+
+        //check expectations
+        verify(topicService).getUnansweredTopics();
+
+        //check result
+        assertViewName(mav, "unansweredTopics");
+        assertAndReturnModelAttributeOfType(mav, "topics", List.class);
+
+        Pagination pagination = assertAndReturnModelAttributeOfType(mav, "pagination", Pagination.class);
+        assertEquals(pagination.getMaxPages(), 1);
+        assertEquals(pagination.getPage().intValue(), page);
     }
 
     @Test

@@ -40,6 +40,7 @@ import java.util.List;
  * @author Kirill Afonin
  * @author Vitaliy Kravchenko
  * @author Max Malakhov
+ * @author Eugeny Batov
  */
 public class TransactionalTopicService extends AbstractTransactionalEntityService<Topic, TopicDao>
         implements TopicService {
@@ -144,6 +145,15 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         }
         return this.getDao().getTopicsUpdatedSince(date);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Topic> getUnansweredTopics() {
+        return this.getDao().getUnansweredTopics();
+    }
+
 
     /**
      * {@inheritDoc}

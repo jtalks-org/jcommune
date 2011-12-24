@@ -43,6 +43,7 @@ import java.util.List;
  * @author Kirill Afonin
  * @author Alexandre Teterin
  * @author Evgeniy Naumenko
+ * @author Eugeny Batov
  */
 
 @Controller
@@ -62,7 +63,7 @@ public final class BranchController {
      * @param branchService     autowired object from Spring Context
      * @param topicService      autowired object from Spring Context
      * @param securityService   autowired object from Spring Context
-     * @param locationService autowired object from Spring Context
+     * @param locationService   autowired object from Spring Context
      * @param breadcrumbBuilder the object which provides actions on
      *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      */
@@ -104,7 +105,7 @@ public final class BranchController {
         List<Breadcrumb> breadcrumbs = breadcrumbBuilder.getForumBreadcrumb(branch);
 
         List<String> viewList = locationService.getUsersViewing(branch);
-      
+
         return new ModelAndView("topicList")
                 .addObject("viewList", viewList)
                 .addObject("branch", branch)
@@ -130,10 +131,27 @@ public final class BranchController {
         User currentUser = securityService.getCurrentUser();
         List<Topic> topics = topicService.getRecentTopics(lastLogin);
         Pagination pagination = new Pagination(page, currentUser, topics.size(), true);
-        
+
         return new ModelAndView("recent")
                 .addObject("topics", topics)
                 .addObject("pagination", pagination);
     }
 
+    /**
+     * Displays to user a list of topics without answers(topics which has only 1 post added during topic creation).
+     *
+     * @param page page
+     * @return {@code ModelAndView} with topics list and vars for pagination
+     */
+    @RequestMapping(value = "/topics/unanswered", method = RequestMethod.GET)
+    public ModelAndView unansweredTopicsPage(@RequestParam(value = PAGE, defaultValue = "1", required = false)
+                                             Integer page) {
+        User currentUser = securityService.getCurrentUser();
+        List<Topic> topics = topicService.getUnansweredTopics();
+        Pagination pagination = new Pagination(page, currentUser, topics.size(), true);
+
+        return new ModelAndView("unansweredTopics")
+                .addObject("topics", topics)
+                .addObject("pagination", pagination);
+    }
 }
