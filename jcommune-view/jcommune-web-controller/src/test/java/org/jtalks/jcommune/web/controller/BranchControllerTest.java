@@ -86,7 +86,6 @@ public class BranchControllerTest {
         when(branchService.get(branchId)).thenReturn(branch);
         when(breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)))
                 .thenReturn(new ArrayList<Breadcrumb>());
-        when(locationServiceImpl.getRegisterUserMap()).thenReturn(map);
         when(forumStatisticsProvider.getOnlineRegisteredUsers()).thenReturn(new ArrayList<Object>());
 
         //invoke the object under test
@@ -168,7 +167,6 @@ public class BranchControllerTest {
         when(branchService.get(branchId)).thenReturn(branch);
         when(breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)))
                 .thenReturn(new ArrayList<Breadcrumb>());
-        when(locationServiceImpl.getRegisterUserMap()).thenReturn(map);
         when(forumStatisticsProvider.getOnlineRegisteredUsers()).thenReturn(new ArrayList<Object>());
 
         ModelAndView mav = controller.showPage(branchId, page, pagingEnabled);

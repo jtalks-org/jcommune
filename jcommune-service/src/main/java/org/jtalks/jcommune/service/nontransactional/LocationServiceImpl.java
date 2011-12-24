@@ -48,14 +48,6 @@ public class LocationServiceImpl implements LocationService {
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public synchronized Map<User, String> getRegisterUserMap() {
-        return registerUserMap;
-    }
-
-    /**
      * Modification map to active user, and create list of user name users on the current page
      * {@inheritDoc}
      */
@@ -80,6 +72,6 @@ public class LocationServiceImpl implements LocationService {
      */
     @Override
     public void clearUserLocation() {
-        getRegisterUserMap().remove(securityService.getCurrentUser());
+        registerUserMap.remove(securityService.getCurrentUser());
     }
 }

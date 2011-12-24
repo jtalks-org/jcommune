@@ -29,13 +29,6 @@ import java.util.Map;
 public interface LocationService {
 
     /**
-     * Get map to active users
-     *
-     * @return map registry user
-     */
-    Map<User, String> getRegisterUserMap();
-
-    /**
      * Get lis name user active these page
      *
      * @param entity                entity

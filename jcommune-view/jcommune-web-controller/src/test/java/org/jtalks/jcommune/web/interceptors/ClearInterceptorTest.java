@@ -58,8 +58,6 @@ public class ClearInterceptorTest {
     @Test
     public void testPreHandler() throws IOException, ServletException {
 
-        when(locationServiceImpl.getRegisterUserMap()).thenReturn(new HashMap<User, String>());
-
         boolean result = interceptor.preHandle(request, response, handler);
 
         assertTrue(result);

@@ -61,15 +61,12 @@ public class LocationServiceImplTest {
         when(securityService.getCurrentUser()).thenReturn(user);
         list.add(user);
         map.put(user, "");
-        locationService.getRegisterUserMap().put(user, "");
         when(sessionRegistry.getAllPrincipals()).thenReturn(list);
 
         topic.setUuid("");
 
-        locationService.getRegisterUserMap().put(user, "1");
         locationService.getUsersViewing(topic);
 
-        locationService.getRegisterUserMap().put(user, topic.getUuid());
         locationService.getUsersViewing(topic);
 
         locationService.getUsersViewing(topic);
@@ -95,11 +92,8 @@ public class LocationServiceImplTest {
     @Test
     public void testClearUserLocation() {
         when(securityService.getCurrentUser()).thenReturn(user);
-        locationService.getRegisterUserMap().put(user, "");
         when(securityService.getCurrentUser()).thenReturn(user);
 
         locationService.clearUserLocation();
-
-        assertEquals(locationService.getRegisterUserMap(), new HashMap<User, String>());
     }
 }
