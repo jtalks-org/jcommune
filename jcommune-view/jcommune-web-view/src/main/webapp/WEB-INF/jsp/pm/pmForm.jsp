@@ -14,19 +14,20 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
 <head>
-    <title><spring:message code="label.pm_title"/></title>
+    <title><spring:message code="label.new_pm"/></title>
 </head>
 <body>
 <div class="wrap pm_page">
     <jsp:include page="../../template/topLine.jsp"/>
-    <h1>JTalks</h1>
+    <h1><a href="${pageContext.request.contextPath}">
+        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+    </a></h1>
 
     <div class="all_forums">
         <h2><a class="heading" href="#"><spring:message code="label.new_pm"/></a></h2>
@@ -34,13 +35,9 @@
         <div class="forum_misc_info">
         </div>
 
-        <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-
-        <jsp:include page="pmNavigationMenu.jsp"/>
-        <form:form action="${pageContext.request.contextPath}/pm" modelAttribute="privateMessageDto"
-                   method="POST"
-                   onsubmit="this.getAttribute('submitted')" name="editForm">
-            <ul class="forum_table"> <!-- Форма ответа -->
+        <jsp:include page="../../template/pmNavigationMenu.jsp"/>
+        <form:form action="${pageContext.request.contextPath}/pm" modelAttribute="privateMessageDto" method="POST">
+            <ul class="forum_table">
                 <li class="forum_row">
                     <div class="forum_answer_left">
                         <spring:message code="label.recipient"/>
@@ -167,9 +164,5 @@
         </form:form>
     </div>
     <div class="footer_buffer"></div>
-    <!-- Несемантичный буфер для прибития подвала -->
-
 </div>
 </body>
-</html>
-

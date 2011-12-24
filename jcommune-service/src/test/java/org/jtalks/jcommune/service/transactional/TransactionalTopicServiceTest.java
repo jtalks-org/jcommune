@@ -47,6 +47,7 @@ import static org.testng.Assert.assertNotNull;
  * @author Kravchenko Vitaliy
  * @author Kirill Afonin
  * @author Max Malakhov
+ * @author Eugeny Batov
  */
 public class TransactionalTopicServiceTest {
 
@@ -206,6 +207,18 @@ public class TransactionalTopicServiceTest {
         verify(topicDao).getTopicsUpdatedSince(captor.capture());
         int yesterday = new DateTime().minusDays(1).getDayOfYear();
         assertEquals(captor.getValue().getDayOfYear(), yesterday);
+    }
+
+    @Test
+    public void testGetUnansweredTopics() {
+        List<Topic> expectedList = new ArrayList<Topic>();
+        expectedList.add(new Topic(user, "title"));
+        expectedList.add(new Topic(user, "title"));
+        when(topicDao.getUnansweredTopics()).thenReturn(expectedList);
+
+        List<Topic> topics = topicService.getUnansweredTopics();
+        assertNotNull(topics);
+        assertEquals(topics.size(), 2);
     }
 
     @Test(expectedExceptions = {NotFoundException.class})

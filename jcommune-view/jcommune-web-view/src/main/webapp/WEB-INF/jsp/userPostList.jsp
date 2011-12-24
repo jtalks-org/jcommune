@@ -14,27 +14,26 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
-
 <html>
 <head>
     <title><spring:message code="label.postListOfUser"/> <c:out value="${user.username}"/></title>
 </head>
 <body>
 <c:set var="authenticated" value="${false}"/>
-<h1><spring:message code="label.postListOfUser"/> ${user.username}</h1>
-
 <div class="wrap topic_page">
     <jsp:include page="../template/topLine.jsp"/>
-
+    <h1><a href="${pageContext.request.contextPath}">
+        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+    </a></h1>
     <div class="all_forums">
-
+        <h2 class="heading"><spring:message code="label.postListOfUser"/> ${user.username}</h2>
+        <br>
         <div class="forum_top_right_link">
 
             <jtalks:display uri="" pagination="${pag}" numberLink="3" list="${posts}">
@@ -84,7 +83,7 @@
                     <div class="forum_message_cell">
                         <div class="post_details">
                             <a class="button"
-                               href="${pageContext.request.contextPath}/topics/${post.topic.id}?page=${post.page}#${post.id}">
+                               href="${pageContext.request.contextPath}/posts/${post.id}">
                                 <spring:message code="label.goToPost"/>
                             </a>
                             <spring:message code="label.added"/>&nbsp;

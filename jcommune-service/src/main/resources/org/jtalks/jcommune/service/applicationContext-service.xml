@@ -45,6 +45,10 @@
 
     <bean id="imagePreprocessor"
           class="org.jtalks.jcommune.service.nontransactional.ImageUtils"/>
+    <bean id="locationService" class="org.jtalks.jcommune.service.nontransactional.LocationServiceImpl">
+        <constructor-arg name="sessionRegistry" ref="sessionRegistry"/>
+        <constructor-arg name="securityService" ref="securityService"/>
+    </bean>
 
     <bean id="userService"
           class="org.jtalks.jcommune.service.transactional.TransactionalUserService">

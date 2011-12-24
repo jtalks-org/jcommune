@@ -38,7 +38,6 @@ public class Post extends Entity {
     private User userCreated;
     private String postContent;
     private Topic topic;
-    private int page;
 
     public static final int MAX_LENGTH = 20000;
     public static final int MIN_LENGTH = 5;
@@ -165,21 +164,5 @@ public class Post extends Entity {
         } else {
             return this.postContent;
         }
-    }
-
-    /**
-     *
-     * @param page page number
-     */
-    public void setPage(int page) {
-        this.page = page;
-    }
-
-    /**
-     *
-     * @return page page number on which the post
-     */
-    public int getPage() {
-        return page;
     }
 }

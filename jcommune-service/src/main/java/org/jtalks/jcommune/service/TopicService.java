@@ -29,6 +29,7 @@ import java.util.List;
  * @author Vervenko Pavel
  * @author Kirill Afonin
  * @author Vitaliy Kravchenko
+ * @author Eugeny Batov
  */
 public interface TopicService extends EntityService<Topic> {
 
@@ -75,7 +76,12 @@ public interface TopicService extends EntityService<Topic> {
      */
     List<Topic> getRecentTopics(DateTime date);
 
-
+    /**
+     * Get unanswered topics(topics which has only 1 post added during topic creation).
+     *
+     * @return list of {@code Topic} objects without answers
+     */
+    List<Topic> getUnansweredTopics();
 
     /**
      * Update current topic with given title and body.

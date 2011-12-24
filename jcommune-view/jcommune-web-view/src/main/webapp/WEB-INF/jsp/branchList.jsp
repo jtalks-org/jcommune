@@ -14,22 +14,23 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <head>
     <title><spring:message code="label.section.jtalks_forum"/></title>
 </head>
 <body>
 <div class="wrap section_page">
     <jsp:include page="../template/topLine.jsp"/>
-    <h1>JTalks</h1>
+    <h1><a href="${pageContext.request.contextPath}">
+        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+    </a></h1>
 
     <div class="all_forums">
-        <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
         <div class="forum_header_table"> <!-- Шапка группы форумов -->
             <div class="forum_header">
                 <h3><a class="forum_header_link"
@@ -73,31 +74,24 @@
                             <a href="${pageContext.request.contextPath}/users/${branch.lastUpdatedTopic.lastPost.userCreated.encodedUsername}">
                                     ${branch.lastUpdatedTopic.lastPost.userCreated.username}
                             </a>
-                            <c:choose>
-                                <c:when test="${pageSize >= branch.lastUpdatedTopic.postCount}">
-                                    <a href="${pageContext.request.contextPath}/topics/${branch.lastUpdatedTopic.id}#${branch.lastUpdatedTopic.lastPost.id}"><img
-                                            src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
-                                            alt="<spring:message code="label.section.header.lastMessage"/>"/></a>
-                                </c:when>
-                                <c:otherwise>
-                                    <c:if test="${branch.lastUpdatedTopic.postCount % pageSize > 0}">
-                                        <c:set var="additionalPage" value="${1}"/>
-                                    </c:if>
-                                    <c:if test="${branch.lastUpdatedTopic.postCount % pageSize == 0}">
-                                        <c:set var="additionalPage" value="${0}"/>
-                                    </c:if>
-                                    <%--Oh shi...--%>
-                                    <a href="${pageContext.request.contextPath}/topics/${branch.lastUpdatedTopic.id}?page=<fmt:formatNumber value="${(branch.lastUpdatedTopic.postCount - (branch.lastUpdatedTopic.postCount mod pageSize)) div pageSize + additionalPage}"/>#${branch.lastUpdatedTopic.lastPost.id}">
-                                    <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
-                                         alt="<spring:message code="label.section.header.lastMessage"/>"/>
-                                    </a>
-                                </c:otherwise>
-                            </c:choose>
+                            <a href="${pageContext.request.contextPath}/posts/${branch.lastUpdatedTopic.lastPost.id}">
+                                <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
+                                     alt="<spring:message code="label.section.header.lastMessage"/>"/>
+                            </a>
                         </c:if>
                     </div>
                 </li>
             </c:forEach>
         </ul>
+        <c:if test="${!(empty viewList)}">
+            <spring:message code="label.topic.now_browsing"/>
+        </c:if>
+        <c:forEach var="innerUser" items="${viewList}">
+            <a href="${pageContext.request.contextPath}/users/${innerUser}">
+                <c:out value="${innerUser}"/>
+            </a>
+            &nbsp;&nbsp;
+        </c:forEach>
     </div>
     <div class="footer_buffer"></div>
     <!-- Несемантичный буфер для прибития подвала -->

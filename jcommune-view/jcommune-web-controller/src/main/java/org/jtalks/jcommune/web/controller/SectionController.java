@@ -16,10 +16,10 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Section;
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.LocationService;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  * Displays to user page contains section list with related branch lists
@@ -49,29 +50,30 @@ public final class SectionController {
 
     private SecurityService securityService;
     private SectionService sectionService;
-    private ForumStatisticsProvider forumStaticsProvider;
-    private BreadcrumbBuilder breadcrumbBuilder;
+    private ForumStatisticsProvider forumStaticsProvider;   
+    private LocationService locationService;
 
     /**
      * Constructor creates MVC controller with specified SectionService
      *
      * @param securityService      autowired object from Spring Context
      * @param sectionService       autowired object from Spring Context
-     * @param breadcrumbBuilder    the object which provides actions on
-     *                             {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
+     * @param locationService autowired object from Spring Context
      * @param forumStaticsProvider autowired object from Spring Context which provides methods for getting
      *                             forum statistic information
      */
     @Autowired
     public SectionController(SecurityService securityService,
                              SectionService sectionService,
-                             BreadcrumbBuilder breadcrumbBuilder,
-                             ForumStatisticsProvider forumStaticsProvider) {
+                             ForumStatisticsProvider forumStaticsProvider,
+                             LocationService locationService) {
         this.securityService = securityService;
         this.sectionService = sectionService;
-        this.breadcrumbBuilder = breadcrumbBuilder;
         this.forumStaticsProvider = forumStaticsProvider;
+        this.locationService = locationService;
     }
+
+
 
     /**
      * This method handles GET request and produces JSP page with all branch sections
@@ -94,7 +96,6 @@ public final class SectionController {
         return new ModelAndView("sectionList")
                 .addObject("pageSize", Pagination.getPageSizeFor(securityService.getCurrentUser()))
                 .addObject("sectionList", sectionService.getAll())
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb())
                 .addObject("messagesCount", forumStaticsProvider.getPostsOnForumCount())
                 .addObject("registeredUsersCount", forumStaticsProvider.getUsersCount())
                 .addObject("visitors", forumStaticsProvider.getOnlineUsersCount())
@@ -114,10 +115,14 @@ public final class SectionController {
     @RequestMapping(value = "/sections/{sectionId}", method = RequestMethod.GET)
     public ModelAndView branchList(@PathVariable("sectionId") long sectionId) throws NotFoundException {
         Section section = sectionService.get(sectionId);
-        User user = securityService.getCurrentUser();
+        User currentUser = securityService.getCurrentUser();
+
+        List<String> viewList = locationService.getUsersViewing(section);
+        
+
         return new ModelAndView("branchList")
+                .addObject("viewList", viewList)
                 .addObject("section", section)
-                .addObject("pageSize", Pagination.getPageSizeFor(user))
-                .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb());
+                .addObject("pageSize", Pagination.getPageSizeFor(currentUser));
     }
 }

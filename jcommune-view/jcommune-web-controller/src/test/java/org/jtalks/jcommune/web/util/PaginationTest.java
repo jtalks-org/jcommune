@@ -14,15 +14,15 @@
  */
 package org.jtalks.jcommune.web.util;
 
+import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.nontransactional.LocationServiceImpl;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -33,11 +33,17 @@ public class PaginationTest {
     private String link;
     private String uri;
     private User user;
+    private LocationServiceImpl locationServiceImpl;
+    private ForumStatisticsProvider forumStatisticsProvider;
+    private Entity entity;
 
     private static final int PAGE_SIZE = 5;
 
     @BeforeMethod
     protected void setUp() {
+        entity = mock(Entity.class);
+        locationServiceImpl = mock(LocationServiceImpl.class);
+        forumStatisticsProvider = mock(ForumStatisticsProvider.class);
         user = new User("", "", "");
         user.setPageSize(PAGE_SIZE);
         uri = "1";
@@ -119,18 +125,5 @@ public class PaginationTest {
     public void testReturnDefaultPageSizeForNullUser() {
         int pageSize = Pagination.getPageSizeFor(null);
         assertEquals(pageSize, User.DEFAULT_PAGE_SIZE);
-    }
-
-    @Test
-    public void test(){
-        Post post = mock(Post.class);
-        Topic topic = mock(Topic.class);
-        List<Post> posts = mock(ArrayList.class);
-        posts.add(post);
-        when(post.getTopic()).thenReturn(topic);
-        when(topic.getPosts()).thenReturn(posts);
-        when(posts.indexOf(post)).thenReturn(2);
-        pagination = new Pagination(1, user, 10, true);
-        pagination.definitionPostInTopic(post);
     }
 }

@@ -93,4 +93,21 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     public List<Post> getPostsOfUser(User userCreated) {
         return this.getDao().getPostsOfUser(userCreated);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getPageForPost(Post post) {
+        Topic topic = post.getTopic();
+        User user = securityService.getCurrentUser();
+        int index = topic.getPosts().indexOf(post) + 1;
+        int pageSize = (user == null) ? User.DEFAULT_PAGE_SIZE : user.getPageSize();
+        int pageNum = index / pageSize;
+        if (index % pageSize == 0) {
+            return pageNum;
+        } else {
+            return pageNum + 1;
+        }
+    }
 }

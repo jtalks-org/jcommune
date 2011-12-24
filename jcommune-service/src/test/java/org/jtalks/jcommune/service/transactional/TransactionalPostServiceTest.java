@@ -59,7 +59,8 @@ public class TransactionalPostServiceTest {
         topicDao = mock(TopicDao.class);
         securityService = mock(SecurityService.class);
         postService = new TransactionalPostService(postDao, topicDao, securityService);
-        user = new User("username", "email@mail.com", "password");
+        user = new User(USERNAME, EMAIL, PASSWORD);
+        when(securityService.getCurrentUser()).thenReturn(user);
     }
 
     @Test
@@ -105,11 +106,11 @@ public class TransactionalPostServiceTest {
     @Test
     public void testDeletePost() throws NotFoundException {
         Topic topic = new Topic(user, "title");
-        Post post1 = new Post(user, "content");
-        post1.setId(1L);
+        Post post = new Post(user, "content");
+        post.setId(1L);
         Post postForDelete = new Post(user, "content");
         postForDelete.setId(POST_ID);
-        topic.addPost(post1);
+        topic.addPost(post);
         topic.addPost(postForDelete);
         when(postDao.isExist(POST_ID)).thenReturn(true);
         when(postDao.get(POST_ID)).thenReturn(postForDelete);
@@ -128,27 +129,93 @@ public class TransactionalPostServiceTest {
         postService.deletePost(POST_ID);
     }
 
-        @Test
-    public void testNullPostsOfUser(){
-        User user = new User(USERNAME, EMAIL, PASSWORD);
+    @Test
+    public void testNullPostsOfUser() {
         List<Post> posts = new ArrayList<Post>();
         when(postDao.getPostsOfUser(user)).thenReturn(posts);
 
-        assertEquals(postService.getPostsOfUser(user),new ArrayList<Post>());
+        assertEquals(postService.getPostsOfUser(user), new ArrayList<Post>());
 
         verify(postDao).getPostsOfUser(user);
     }
 
     @Test
-    public void testPostsOfUser(){
-        User user = new User(USERNAME, EMAIL, PASSWORD);
+    public void testPostsOfUser() {
         List<Post> posts = new ArrayList<Post>();
-        Post post = new Post(user,"");
+        Post post = new Post(user, "");
         posts.add(post);
         when(postDao.getPostsOfUser(user)).thenReturn(posts);
 
-        assertEquals(postService.getPostsOfUser(user),posts);
+        assertEquals(postService.getPostsOfUser(user), posts);
 
         verify(postDao).getPostsOfUser(user);
+    }
+
+    @Test
+    public void testLastPostInTopicPageCalculation() {
+        user.setPageSize(2);
+        Topic topic = new Topic(user, "");
+        Post post = new Post(user, "");
+        topic.addPost(new Post(null, null));
+        topic.addPost(new Post(null, null));
+        topic.addPost(post);
+
+        assertEquals(postService.getPageForPost(post), 2);
+    }
+
+    @Test
+    public void testFirstPostInTopicPageCalculation() {
+        user.setPageSize(2);
+        Topic topic = new Topic(user, "");
+        Post post = new Post(user, "");
+        topic.addPost(post);
+
+        assertEquals(postService.getPageForPost(post), 1);
+    }
+
+    @Test
+    public void testFirstPostInTopicPageCalculationWithNoUser() {
+        when(securityService.getCurrentUser()).thenReturn(null);
+        Topic topic = new Topic(user, "");
+        Post post = new Post(user, "");
+        topic.addPost(post);
+
+        assertEquals(postService.getPageForPost(post), 1);
+    }
+
+    @Test
+    public void testLastPostOnFirstPagePageCalculation() {
+        user.setPageSize(2);
+        Topic topic = new Topic(user, "");
+        Post post = new Post(user, "");
+        topic.addPost(new Post(null, null));
+        topic.addPost(post);
+
+        assertEquals(postService.getPageForPost(post), 1);
+    }
+
+    @Test
+    public void testLastPostOnPagePageCalculation() {
+        user.setPageSize(2);
+        Topic topic = new Topic(user, "");
+        Post post = new Post(user, "");
+        topic.addPost(new Post(null, null));
+        topic.addPost(new Post(null, null));
+        topic.addPost(new Post(null, null));
+        topic.addPost(post);
+
+        assertEquals(postService.getPageForPost(post), 2);
+    }
+
+    @Test
+    public void testPostInCenterOfTopicPageCalculation() {
+        user.setPageSize(2);
+        Topic topic = new Topic(user, "");
+        Post post = new Post(user, "");
+        topic.addPost(new Post(null, null));
+        topic.addPost(post);
+        topic.addPost(new Post(null, null));
+
+        assertEquals(postService.getPageForPost(post), 1);
     }
 }

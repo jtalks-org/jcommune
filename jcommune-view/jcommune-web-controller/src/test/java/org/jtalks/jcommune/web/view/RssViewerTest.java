@@ -13,14 +13,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.jtalks.jcommune.web.util;
+package org.jtalks.jcommune.web.view;
 
 import com.sun.syndication.feed.rss.Channel;
 import com.sun.syndication.feed.rss.Item;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.SecurityService;
+import org.jtalks.jcommune.web.view.RssViewer;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.testng.annotations.BeforeMethod;
@@ -44,15 +44,13 @@ public class RssViewerTest {
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
     private Map<String, Object> model;
-    private SecurityService securityService;
     private Topic topic;
 
     @BeforeMethod
     protected void setUp() {
         request = new MockHttpServletRequest();
-        securityService = mock(SecurityService.class);
         response = new MockHttpServletResponse();
-        rssViewer = new RssViewer(securityService);
+        rssViewer = new RssViewer();
         rssViewerMock = mock(RssViewer.class);
         channel = new Channel();
         model = new HashMap<String, Object>();

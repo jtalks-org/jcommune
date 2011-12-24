@@ -22,7 +22,7 @@ import org.jtalks.jcommune.web.validation.Matches;
 
 /**
  * This dto used for transferring data in edit {@link User} profile operation.
- * To get more info see {@link org.jtalks.jcommune.web.controller.UserController#editProfile}.
+ * To get more info see {@link org.jtalks.jcommune.web.controller.UserProfileController#editProfile}.
  *
  * @author Osadchuck Eugeny
  */

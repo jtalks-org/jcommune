@@ -14,20 +14,20 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <head>
     <title><spring:message code="h.new_topic"/></title>
 </head>
 <body>
-<h1>JTalks</h1>
-
 <div class="wrap answer_page">
     <jsp:include page="../template/topLine.jsp"/>
-    <!-- Начало всех форумов -->
+    <h1><a href="${pageContext.request.contextPath}">
+        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+    </a></h1>
     <div class="all_forums">
         <jtalks:form action="${pageContext.request.contextPath}/topics/new?branchId=${branchId}"
                      modelAttribute="topicDto"
@@ -37,18 +37,14 @@
             <div class="forum_misc_info">
                 <h2><spring:message code="h.new_topic"/></h2>
             </div>
-
             <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-
-            <!-- Начало группы форумов -->
             <div class="forum_header_table"> <!-- Шапка топика -->
                 <div class="forum_header">
                     <span class="forum_header_answer"><spring:message code="h.new_topic"/></span>
                     <span class="empty_cell"></span>
-                    <!-- Необходима для корректного отображения псевдотаблицы -->
                 </div>
             </div>
-            <ul class="forum_table"> <!-- Форма ответа -->
+            <ul class="forum_table">
                 <li class="forum_row">
                     <div class="forum_answer_left">
                         <spring:message code="label.topic.title"/>
@@ -174,8 +170,6 @@
                 <spring:message code='label.back'/></a>
         </jtalks:form>
     </div>
-    <!-- Конец всех форумов -->
     <div class="footer_buffer"></div>
-    <!-- Несемантичный буфер для прибития подвала -->
 </div>
 </body>

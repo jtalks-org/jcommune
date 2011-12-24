@@ -6,7 +6,7 @@
     <groupId>org.jtalks.jcommune</groupId>
     <artifactId>jcommune</artifactId>
     <packaging>pom</packaging>
-    <version>0.9</version>
+    <version>0.10-SNAPSHOT</version>
     <name>${project.artifactId}</name>
     <modules>
         <module>jcommune-model</module>
@@ -353,6 +353,7 @@
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
             <plugin>

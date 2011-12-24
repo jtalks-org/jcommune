@@ -19,9 +19,6 @@
 <%@ page import="org.springframework.web.servlet.i18n.CookieLocaleResolver" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
-<head>
-
-</head>
 <div class="top_line">
     <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
         <fmt:message key="label.welcomeMessage"/>
@@ -64,19 +61,29 @@
                 </a>
             </li>
             <li>
-                <a href="${pageContext.request.contextPath}/users/new">
+                <a href="${pageContext.request.contextPath}/user/new">
                     <fmt:message key="label.signup"/>
                 </a>
             </li>
         </sec:authorize>
         <li class="flag no_border">
-            <a href="#" onclick="window.location = getLanguageLink('ru')">
-                <img src="${pageContext.request.contextPath}/resources/images/flag_russia.png" alt=""/>
+            <a href="#" onclick="window.location = getLanguageLink('en')">
+                <img src="${pageContext.request.contextPath}/resources/images/flags/great britain.png" alt=""/>
             </a>
         </li>
         <li class="flag">
-            <a href="#" onclick="window.location = getLanguageLink('en')">
-                <img src="${pageContext.request.contextPath}/resources/images/flag_great_britain.png" alt=""/>
+            <a href="#" onclick="window.location = getLanguageLink('ru')">
+                <img src="${pageContext.request.contextPath}/resources/images/flags/russia.png" alt=""/>
+            </a>
+        </li>
+        <li class="flag">
+            <a href="#" onclick="window.location = getLanguageLink('uk')">
+                <img src="${pageContext.request.contextPath}/resources/images/flags/ukraine.png" alt=""/>
+            </a>
+        </li>
+        <li class="flag">
+            <a href="#" onclick="window.location = getLanguageLink('es')">
+                <img src="${pageContext.request.contextPath}/resources/images/flags/spain.png" alt=""/>
             </a>
         </li>
     </ul>

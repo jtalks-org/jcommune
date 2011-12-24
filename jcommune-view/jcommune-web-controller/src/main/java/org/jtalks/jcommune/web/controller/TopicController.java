@@ -20,6 +20,7 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.LocationService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -62,6 +63,7 @@ public final class TopicController {
     private BranchService branchService;
     private SecurityService securityService;
     private BreadcrumbBuilder breadcrumbBuilder;
+    private LocationService locationService;
 
     /**
      * This method turns the trim binder on. Trim bilder
@@ -81,6 +83,7 @@ public final class TopicController {
      *
      * @param topicService      the object which provides actions on {@link Topic} entity
      * @param branchService     the object which provides actions on
+     * @param locationService autowired object from Spring Context
      * @param securityService   autowired object from Spring Context
      *                          {@link org.jtalks.jcommune.model.entity.Branch} entity
      * @param breadcrumbBuilder the object which provides actions on
@@ -90,11 +93,13 @@ public final class TopicController {
     public TopicController(TopicService topicService,
                            BranchService branchService,
                            SecurityService securityService,
-                           BreadcrumbBuilder breadcrumbBuilder) {
+                           BreadcrumbBuilder breadcrumbBuilder,
+                           LocationService locationService) {
         this.topicService = topicService;
         this.branchService = branchService;
         this.securityService = securityService;
         this.breadcrumbBuilder = breadcrumbBuilder;
+        this.locationService = locationService;
     }
 
     /**
@@ -139,34 +144,18 @@ public final class TopicController {
     }
 
     /**
-     * Page with confirmation.
-     *
-     * @param topicId  topic id, this is the topic which contains the first post which should be deleted
-     * @param branchId branch containing topic
-     * @return {@code ModelAndView} with to parameters branchId and topicId
-     */
-    @RequestMapping(method = RequestMethod.GET, value = "/topics/{topicId}/delete")
-    public ModelAndView deleteConfirmPage(@PathVariable(TOPIC_ID) Long topicId,
-                                          @RequestParam(BRANCH_ID) Long branchId) {
-        return new ModelAndView("deleteTopic")
-                .addObject(TOPIC_ID, topicId)
-                .addObject(BRANCH_ID, branchId);
-    }
-
-    /**
      * Delete topic.
      *
      * @param topicId  topic id, this is the topic which contains the first post which should be deleted
-     * @param branchId branch containing the first topic
      * @return redirect to branch page
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic not found
      */
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.DELETE)
-    public ModelAndView delete(@PathVariable(TOPIC_ID) Long topicId,
-                               @RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
+    public ModelAndView delete(@PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
+        Topic topic = topicService.get(topicId);
         topicService.deleteTopic(topicId);
-        return new ModelAndView("redirect:/branches/" + branchId);
+        return new ModelAndView("redirect:/branches/" + topic.getBranch().getId());
     }
 
     /**
@@ -193,7 +182,10 @@ public final class TopicController {
         List<Post> posts = topic.getPosts();
         Pagination pag = new Pagination(page, currentUser, posts.size(), pagingEnabled);
 
+        List<String> viewList = locationService.getUsersViewing(currentUser);
+       
         return new ModelAndView("postList")
+                .addObject("viewList", viewList)
                 .addObject("posts", posts)
                 .addObject("topic", topic)
                 .addObject("pag", pag)
