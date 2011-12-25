@@ -16,10 +16,8 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.common.model.entity.Entity;
-import org.jtalks.jcommune.model.entity.User;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Class for storing and tracking of users on the forum.
