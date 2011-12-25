@@ -17,10 +17,6 @@
  * Sets timezone cookie for the server to show all the dates in a client timezone
  */
 $(document).ready(function() {
-   document.cookie = "GMT=" + new Date().getTimezoneOffset() + "; path=/"
+    document.cookie = "GMT=" + new Date().getTimezoneOffset() + "; path=/";
 });
 
-/**
- * Checks whether an error has been caught during image loading and replaces it with a default error picture
- */
-$("img").error(function() {this.src("http://localhost:8080/resources/images/no_image.png")});

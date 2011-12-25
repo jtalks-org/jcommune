@@ -29,7 +29,7 @@
         <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
     </a></h1>
     <div class="all_forums">
-        <jtalks:form action="${pageContext.request.contextPath}/topics/new?branchId=${branchId}"
+        <form:form action="${pageContext.request.contextPath}/topics/new?branchId=${branchId}"
                      modelAttribute="topicDto"
                      method="POST">
             <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
@@ -168,7 +168,7 @@
             <button type="submit" class="button"><spring:message code="label.addtopic"/></button>
             <a href="${pageContext.request.contextPath}/branches/${branchId}" class="button">
                 <spring:message code='label.back'/></a>
-        </jtalks:form>
+        </form:form>
     </div>
     <div class="footer_buffer"></div>
 </div>
