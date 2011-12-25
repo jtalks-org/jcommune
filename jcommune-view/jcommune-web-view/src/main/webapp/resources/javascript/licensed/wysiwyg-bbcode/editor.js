@@ -85,8 +85,9 @@ function ShowEditor() {
     bbcode2html();
     myeditor.designMode = "on";
     myeditor.open();
-    myeditor.write('<html><head><link href="/jcommune/resources/css/screen.css" rel="Stylesheet" type="text/css" /></head>');
-    myeditor.write('<body style="height: 100%;width: 100%;margin:0px 0px 0px 0px;background: #f8f8f8" class="editorWYSIWYG">');
+    myeditor.write('<html style="background: #f8f8f8;background-image: none;">' +
+        '<head><link href="/jcommune/resources/css/screen.css" rel="Stylesheet" type="text/css" /></head>');
+    myeditor.write('<body style="height: 100%;width: 100%;margin:0px 0px 0px 0px;background: #f8f8f8;background-image: none;" class="editorWYSIWYG">');
     myeditor.write(content);
     myeditor.write('</body></html>');
     myeditor.close();
