@@ -173,7 +173,7 @@
                     </a>
                 </div>
                 <p class="forum_message_cell_text">
-                    <span id='${post.id}'><jtalks:bb2html bbCode="${post.postContent}"/></span>
+                    <jtalks:bb2html bbCode="${post.postContent}"/>
                     <br/><br/><br/>
                     <c:if test="${post.modificationDate!=null}">
                         <spring:message code="label.modify"/>
