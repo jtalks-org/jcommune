@@ -30,7 +30,7 @@
 <div class="wrap main_page">
     <jsp:include page="../template/topLine.jsp"/>
     <h1><a href="${pageContext.request.contextPath}">
-        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+        <jtalks src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
     </a></h1>
 
     <div class="all_forums">

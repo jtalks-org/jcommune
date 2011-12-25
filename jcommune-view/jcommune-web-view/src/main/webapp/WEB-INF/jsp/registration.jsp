@@ -31,7 +31,7 @@
         <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
     </a></h1>
     <div class="all_forums">
-        <jtalks:form id="form" name="form" action='${pageContext.request.contextPath}/user/new'
+        <form:form id="form" name="form" action='${pageContext.request.contextPath}/user/new'
                      modelAttribute="newUser" method="POST">
             <div class="forum_header_table">
                 <div class="forum_header">
@@ -84,7 +84,7 @@
             <div class="form_controls">
                 <button type="submit"><spring:message code="label.signup"/></button>
             </div>
-        </jtalks:form>
+        </form:form>
     </div>
     <div class="footer_buffer"></div>
     <!-- Несемантичный буфер для прибития подвала -->
