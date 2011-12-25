@@ -21,7 +21,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <form:form action="${action}"
              method="POST" modelAttribute="postDto" onsubmit="doCheck();return true;">
    <%-- <c:if test="${postDto.topicId!=null&&postDto.topicId>0}">--%>
