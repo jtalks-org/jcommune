@@ -218,7 +218,7 @@ public class AvatarController {
      *
      * @param responseContent input Map<String, String>
      * @return JSON string
-     * @throws IOException
+     * @throws IOException defined in the JsonFactory implementation, caller must implement exception processing
      */
     private String prepareJSONString(Map<String, String> responseContent) throws IOException {
         JsonFactory jsonFactory = new JsonFactory();
