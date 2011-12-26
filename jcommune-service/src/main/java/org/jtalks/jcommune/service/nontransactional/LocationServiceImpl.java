@@ -71,8 +71,9 @@ public class LocationServiceImpl implements LocationService {
         for (Object o : sessionRegistry.getAllPrincipals()) {
             User user = (User) o;
 
-            LOGGER.error(user.getEncodedUsername());
             LOGGER.error("perebor AllPrincipals");
+            LOGGER.error(user.getEncodedUsername());
+            LOGGER.error(registerUserMap.get(user));
             LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
             if (registerUserMap.containsKey(user) && registerUserMap.get(user).equals(entity.getUuid())) {
                 viewList.add(user.getEncodedUsername());
