@@ -90,9 +90,11 @@ div.richeditor iframe {
 }
 
 .quote {
+	min-width: 90%;
 	margin: 10px 50px;
 }
-.quote div {
+
+.quote_title {
 	float: left;
 	padding: 5px;
 	-moz-box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
@@ -103,8 +105,8 @@ div.richeditor iframe {
 	border-radius: 5px 5px 0px 0px;
 	border: 1px solid grey;
 	border-bottom: none;
-	background: #c6c6c6;
 }
+
 .quote blockquote {
 	clear: both;
 	padding: 5px;
@@ -113,6 +115,18 @@ div.richeditor iframe {
 	-webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
 	box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
 	line-height: 1.2;
+}
+
+.quote_title {
+	background: #C6C6C6;
+}
+
+blockquote:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
 }
 
 .code {
