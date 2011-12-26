@@ -15,8 +15,6 @@
 
 package org.jtalks.jcommune.service;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 
 /**
@@ -34,12 +32,4 @@ public interface AvatarService {
      * @throws IOException conversion problem
      */
     String convertAvatarToBase64String(byte[] bytes) throws IOException;
-
-    /**
-     * Perform multipart file conversion to string
-     *
-     * @param file for conversion
-     * @return result string
-     */
-    String convertAvatarToBase64String(MultipartFile file);
 }

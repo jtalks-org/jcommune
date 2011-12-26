@@ -35,7 +35,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -86,12 +85,12 @@ public class AvatarController {
      */
     @RequestMapping(value = "/users/IFrameAvatarpreview", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<String> uploadAvatarFromIE(DefaultMultipartHttpServletRequest request) throws ServletException {
+    public ResponseEntity<String> uploadAvatar(DefaultMultipartHttpServletRequest request) throws ServletException {
 
         Map<String, MultipartFile> fileMap = request.getFileMap();
         Collection<MultipartFile> fileCollection = fileMap.values();
         Iterator<MultipartFile> fileIterator = fileCollection.iterator();
-        CommonsMultipartFile file = (CommonsMultipartFile) fileIterator.next();
+        MultipartFile file = fileIterator.next();
         HttpHeaders responseHeaders = new HttpHeaders();
         HttpStatus statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         Map<String, String> responseContent = new HashMap<String, String>();
