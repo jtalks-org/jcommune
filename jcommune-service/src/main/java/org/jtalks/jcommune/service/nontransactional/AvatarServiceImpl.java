@@ -16,7 +16,6 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.service.AvatarService;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -49,17 +48,5 @@ public class AvatarServiceImpl implements AvatarService {
         BufferedImage inputAvatar = imageUtils.convertByteArrayToImage(bytes);
         byte[] outputAvatar = imageUtils.preprocessImage(inputAvatar);
         return imageUtils.base64Coder(outputAvatar);
-    }
-
-
-    /**
-     * Perform multipart file conversion to string
-     *
-     * @param file for conversion
-     * @return result string
-     */
-    @Override
-    public String convertAvatarToBase64String(MultipartFile file) {
-        return null;
     }
 }

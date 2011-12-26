@@ -165,27 +165,34 @@
     }
 
     function createUploader() {
-        var action = '${pageContext.request.contextPath}/users/avatarpreview';
+        var action;
+        if (navigator.appName.indexOf("Microsoft") != -1 ||
+                navigator.appName.indexOf("Opera") != -1) {
+            action = '${pageContext.request.contextPath}/users/IFrameAvatarpreview';
+        }
+        else {
+            action = '${pageContext.request.contextPath}/users/XHRavatarpreview';
+        }
 
         console.log('Action: %s', action);
         var uploader = new qq.FileUploaderBasic({
-            button:  $("#upload").get(0),
-            action: action,
-            multiple: false,
-            allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'],
-            sizeLimit: 4194304, // max size
-            onSubmit: function(id, filename) {
+            button:$("#upload").get(0),
+            action:action,
+            multiple:false,
+            allowedExtensions:['jpg', 'jpeg', 'png', 'gif'],
+            sizeLimit:4194304, // max size
+            onSubmit:function (id, filename) {
                 console.log('File upload: %s, ID: %s', filename, id);
             },
-            onProgress: function(id, filename, loaded, total) {
+            onProgress:function (id, filename, loaded, total) {
                 console.log('Progress for file: %s, ID: %s, loaded: %s, total: %s', filename, id, loaded, total);
             },
-            onComplete : function(id, filename, responseJSON) {
+            onComplete:function (id, filename, responseJSON) {
                 console.log('File upload for file %s, id %s done with status %s', filename, id, responseJSON);
                 document.getElementById('avatarPreview').setAttribute('src', responseJSON.srcPrefix + responseJSON.srcImage);
                 document.getElementById('avatarTempValue').setAttribute('value', responseJSON.srcImage);
             },
-            debug: true
+            debug:true
         });
 
     }
