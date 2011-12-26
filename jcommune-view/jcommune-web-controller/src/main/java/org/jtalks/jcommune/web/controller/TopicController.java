@@ -27,6 +27,8 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.Pagination;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
@@ -64,6 +66,8 @@ public final class TopicController {
     private SecurityService securityService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private LocationService locationService;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TopicController.class);
 
     /**
      * This method turns the trim binder on. Trim bilder

@@ -16,7 +16,6 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.common.model.entity.Entity;
-import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.LocationService;
 import org.jtalks.jcommune.service.SecurityService;
@@ -54,25 +53,13 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public synchronized List<String> getUsersViewing(Entity entity) {
         List<String> viewList = new ArrayList<String>();
-        if (!(entity instanceof Topic)) {
-            registerUserMap.put(securityService.getCurrentUser(), entity.getUuid());
-        } else {
-            registerUserMap.put(securityService.getCurrentUser(), "topic");
-        }
+        registerUserMap.put(securityService.getCurrentUser(), entity.getUuid());
 
-        if (!(entity instanceof Topic)) {
-            for (Object o : sessionRegistry.getAllPrincipals()) {
-                User user = (User) o;
-                if (registerUserMap.containsKey(user) && registerUserMap.get(user).equals(entity.getUuid())) {
-                    viewList.add(user.getEncodedUsername());
-                }
-            }
-        } else {
-            for (Object o : sessionRegistry.getAllPrincipals()) {
-                User user = (User) o;
-                if (registerUserMap.containsKey(user) && registerUserMap.get(user).equals("topic")) {
-                    viewList.add(user.getEncodedUsername());
-                }
+        for (Object o : sessionRegistry.getAllPrincipals()) {
+            User user = (User) o;
+
+            if (registerUserMap.containsKey(user) && registerUserMap.get(user).equals(entity.getUuid())) {
+                viewList.add(user.getEncodedUsername());
             }
         }
         return viewList;
