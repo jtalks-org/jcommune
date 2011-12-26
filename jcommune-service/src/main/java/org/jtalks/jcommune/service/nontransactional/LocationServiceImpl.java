@@ -54,7 +54,6 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public synchronized List<String> getUsersViewing(Entity entity) {
         List<String> viewList = new ArrayList<String>();
-        if (securityService.getCurrentUser() != null) {
             registerUserMap.put(securityService.getCurrentUser(), entity.getUuid());
 
             for (Object o : sessionRegistry.getAllPrincipals()) {
@@ -63,7 +62,6 @@ public class LocationServiceImpl implements LocationService {
                     viewList.add(user.getEncodedUsername());
                 }
             }
-        }
         return viewList;
     }
 
