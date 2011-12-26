@@ -16,10 +16,11 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.common.model.entity.Entity;
-import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.LocationService;
 import org.jtalks.jcommune.service.SecurityService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Component;
 
@@ -37,6 +38,7 @@ public class LocationServiceImpl implements LocationService {
     private SecurityService securityService;
     private SessionRegistry sessionRegistry;
     private Map<User, String> registerUserMap = Collections.synchronizedMap(new HashMap<User, String>());
+    private static final Logger LOGGER = LoggerFactory.getLogger(LocationServiceImpl.class);
 
     /**
      * @param securityService security service
@@ -54,27 +56,36 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public synchronized List<String> getUsersViewing(Entity entity) {
         List<String> viewList = new ArrayList<String>();
-        if (!(entity instanceof Topic)) {
-            registerUserMap.put(securityService.getCurrentUser(), entity.getUuid());
+        registerUserMap.put(securityService.getCurrentUser(), entity.getUuid());
+        LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        LOGGER.error("put in registredUserMap current user");
+        if (securityService.getCurrentUser() != null) {
+            LOGGER.error(securityService.getCurrentUser().getEncodedUsername());
+            LOGGER.error(registerUserMap.get(securityService.getCurrentUser()), entity.getUuid());
         } else {
-            registerUserMap.put(securityService.getCurrentUser(), "topic");
+            LOGGER.error(registerUserMap.get(securityService.getCurrentUser()), entity.getUuid());
         }
+        LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
-        if (!(entity instanceof Topic)) {
-            for (Object o : sessionRegistry.getAllPrincipals()) {
-                User user = (User) o;
-                if (registerUserMap.containsKey(user) && registerUserMap.get(user).equals(entity.getUuid())) {
-                    viewList.add(user.getEncodedUsername());
-                }
-            }
-        } else {
-            for (Object o : sessionRegistry.getAllPrincipals()) {
-                User user = (User) o;
-                if (registerUserMap.containsKey(user) && registerUserMap.get(user).equals("topic")) {
-                    viewList.add(user.getEncodedUsername());
-                }
+        LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        for (Object o : sessionRegistry.getAllPrincipals()) {
+            User user = (User) o;
+
+            LOGGER.error(user.getEncodedUsername());
+            LOGGER.error("perebor AllPrincipals");
+            LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+            if (registerUserMap.containsKey(user) && registerUserMap.get(user).equals(entity.getUuid())) {
+                viewList.add(user.getEncodedUsername());
+                LOGGER.error("add in view list");
+                LOGGER.error(user.getEncodedUsername());
             }
         }
+        LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        LOGGER.error("Full view list");
+        for (String str : viewList) {
+            LOGGER.error(str);
+        }
+        LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         return viewList;
     }
 
@@ -83,6 +94,15 @@ public class LocationServiceImpl implements LocationService {
      */
     @Override
     public void clearUserLocation() {
+
+        LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        if (securityService.getCurrentUser() != null) {
+            LOGGER.error(securityService.getCurrentUser().getEncodedUsername());
+        } else {
+            LOGGER.error("anonymous");
+        }
+        LOGGER.error("delete this user");
+        LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         registerUserMap.remove(securityService.getCurrentUser());
     }
 }

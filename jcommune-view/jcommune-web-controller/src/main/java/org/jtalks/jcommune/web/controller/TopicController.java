@@ -27,6 +27,8 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.Pagination;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
@@ -64,6 +66,8 @@ public final class TopicController {
     private SecurityService securityService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private LocationService locationService;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TopicController.class);
 
     /**
      * This method turns the trim binder on. Trim bilder
@@ -183,6 +187,13 @@ public final class TopicController {
         Pagination pag = new Pagination(page, currentUser, posts.size(), pagingEnabled);
 
         List<String> viewList = locationService.getUsersViewing(topic);
+        LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        LOGGER.error("Full view list(in TopicController)");
+        for(String str : viewList)
+                {
+                    LOGGER.error(str);
+                }
+        LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
        
         return new ModelAndView("postList")
                 .addObject("viewList", viewList)
