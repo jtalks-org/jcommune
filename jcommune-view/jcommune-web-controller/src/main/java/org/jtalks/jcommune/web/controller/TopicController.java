@@ -187,13 +187,6 @@ public final class TopicController {
         Pagination pag = new Pagination(page, currentUser, posts.size(), pagingEnabled);
 
         List<String> viewList = locationService.getUsersViewing(topic);
-        LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-        LOGGER.error("Full view list(in TopicController)");
-        for(String str : viewList)
-                {
-                    LOGGER.error(str);
-                }
-        LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
        
         return new ModelAndView("postList")
                 .addObject("viewList", viewList)
