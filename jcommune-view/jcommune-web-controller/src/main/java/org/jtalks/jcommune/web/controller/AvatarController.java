@@ -15,6 +15,9 @@
 
 package org.jtalks.jcommune.web.controller;
 
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.AvatarService;
 import org.jtalks.jcommune.service.SecurityService;
@@ -25,12 +28,12 @@ import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest;
@@ -39,6 +42,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -53,11 +57,10 @@ import java.util.Map;
 @Controller
 public class AvatarController {
 
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(AvatarController.class);
     private AvatarService avatarService;
     private SecurityService securityService;
     private UserService userService;
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * Constructor for controller instantiating, dependencies injected via autowiring.
@@ -77,30 +80,45 @@ public class AvatarController {
      * Process avatar file from request and return avatar preview in response.
      * Used for IE, Opera specific request processing
      *
-     * @param request  incoming request
-     * @param response outcoming response
-     * @return response content
+     * @param request incoming request
+     * @return ResponseEntity
      * @throws javax.servlet.ServletException avatar processing problem
      */
-    @RequestMapping(value = "/users/ieAvatarpreview", method = RequestMethod.POST)
+    @RequestMapping(value = "/users/IFrameAvatarpreview", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, String> uploadAvatarFromIE(DefaultMultipartHttpServletRequest request,
-                                                  HttpServletResponse response) throws ServletException {
+    public ResponseEntity<String> uploadAvatarFromIE(DefaultMultipartHttpServletRequest request) throws ServletException {
 
         Map<String, MultipartFile> fileMap = request.getFileMap();
         Collection<MultipartFile> fileCollection = fileMap.values();
         Iterator<MultipartFile> fileIterator = fileCollection.iterator();
         CommonsMultipartFile file = (CommonsMultipartFile) fileIterator.next();
-
+        HttpHeaders responseHeaders = new HttpHeaders();
+        HttpStatus statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         Map<String, String> responseContent = new HashMap<String, String>();
+        String body = "";
+
         try {
             byte[] bytes = file.getBytes();
-            prepareNormalResponse(bytes, response, responseContent);
+            prepareNormalResponse(bytes, responseContent);
+            body = prepareJSONString(responseContent);
+            statusCode = HttpStatus.OK;
         } catch (IOException e) {
-            prepareErrorResponse(response, responseContent, e);
+            responseContent.clear();
+            prepareErrorResponse(responseContent, e);
+            try {
+                body = prepareJSONString(responseContent);
+                statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+            } catch (IOException exception) {
+                LOGGER.error(new StringBuilder().
+                        append(AvatarController.class.getName()).
+                        append("has thrown an exception: ").
+                        append(exception.getMessage()).toString());
+            }
         }
 
-        return responseContent;
+        responseHeaders.setContentType(MediaType.TEXT_HTML);
+
+        return new ResponseEntity<String>(body, responseHeaders, statusCode);
     }
 
     /**
@@ -112,16 +130,19 @@ public class AvatarController {
      * @return response content
      * @throws javax.servlet.ServletException avatar processing problem
      */
-    @RequestMapping(value = "/users/avatarpreview", method = RequestMethod.POST)
+    @RequestMapping(value = "/users/XHRavatarpreview", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, String> uploadAvatar(@RequestBody byte[] bytes,
-                 HttpServletResponse response) throws ServletException {
+                                            HttpServletResponse response) throws ServletException {
 
         Map<String, String> responseContent = new HashMap<String, String>();
         try {
-            prepareNormalResponse(bytes, response, responseContent);
+            prepareNormalResponse(bytes, responseContent);
+            response.setStatus(HttpServletResponse.SC_OK);
         } catch (IOException e) {
-            prepareErrorResponse(response, responseContent, e);
+            responseContent.clear();
+            prepareErrorResponse(responseContent, e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
         return responseContent;
@@ -151,7 +172,7 @@ public class AvatarController {
      */
     @RequestMapping(value = "/{encodedUsername}/avatar", method = RequestMethod.GET)
     public void renderAvatar(HttpServletResponse response, @PathVariable("encodedUsername") String encodedUsername)
-        throws NotFoundException, IOException {
+            throws NotFoundException, IOException {
         User user = userService.getByEncodedUsername(encodedUsername);
         byte[] avatar = user.getAvatar();
         response.setContentType("image/jpeg");
@@ -163,15 +184,12 @@ public class AvatarController {
      * Used for prepare normal response
      *
      * @param bytes           input avatar data
-     * @param response        output response
      * @param responseContent response payload
      * @throws IOException avatar processing problem
      */
     private void prepareNormalResponse(byte[] bytes,
-                                       HttpServletResponse response,
                                        Map<String, String> responseContent) throws IOException {
         String srcImage = avatarService.convertAvatarToBase64String(bytes);
-        response.setStatus(HttpServletResponse.SC_OK);
         responseContent.put("success", "true");
         responseContent.put("srcPrefix", ImageUtils.HTML_SRC_TAG_PREFIX);
         responseContent.put("srcImage", srcImage);
@@ -180,15 +198,32 @@ public class AvatarController {
     /**
      * Used for prepare error response
      *
-     * @param response        output response
      * @param responseContent response payload
      * @param e               avatar processing problem
      */
-    private void prepareErrorResponse(HttpServletResponse response,
-                                      Map<String, String> responseContent, IOException e) {
-        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+    private void prepareErrorResponse(Map<String, String> responseContent, IOException e) {
         responseContent.put("success", "false");
-        logger.error(UserProfileController.class.getName() + "has thrown an exception: " + e.getMessage());
+        LOGGER.error(new StringBuilder().
+                append(AvatarController.class.getName()).
+                append("has thrown an exception: ").
+                append(e.getMessage()).toString());
+    }
+
+    /**
+     * Used for prepare JSON string from Map<String, String>
+     *
+     * @param responseContent input Map<String, String>
+     * @return JSON string
+     * @throws IOException
+     */
+    private String prepareJSONString(Map<String, String> responseContent) throws IOException {
+        JsonFactory jsonFactory = new JsonFactory();
+        StringWriter stringWriter = new StringWriter();
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonGenerator jgen = jsonFactory.createJsonGenerator(stringWriter);
+        objectMapper.writeValue(jgen, responseContent);
+
+        return stringWriter.toString();
     }
 
 

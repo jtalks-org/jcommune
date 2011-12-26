@@ -14,7 +14,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
@@ -167,27 +167,34 @@
     }
 
     function createUploader() {
-        var action = '${pageContext.request.contextPath}/users/avatarpreview';
+        var action;
+        if (navigator.appName.indexOf("Microsoft") != -1 ||
+                navigator.appName.indexOf("Opera") != -1) {
+            action = '${pageContext.request.contextPath}/users/IFrameAvatarpreview';
+        }
+        else {
+            action = '${pageContext.request.contextPath}/users/XHRavatarpreview';
+        }
 
         console.log('Action: %s', action);
         var uploader = new qq.FileUploaderBasic({
-            button:  $("#upload").get(0),
-            action: action,
-            multiple: false,
-            allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'],
-            sizeLimit: 4194304, // max size
-            onSubmit: function(id, filename) {
+            button:$("#upload").get(0),
+            action:action,
+            multiple:false,
+            allowedExtensions:['jpg', 'jpeg', 'png', 'gif'],
+            sizeLimit:4194304, // max size
+            onSubmit:function (id, filename) {
                 console.log('File upload: %s, ID: %s', filename, id);
             },
-            onProgress: function(id, filename, loaded, total) {
+            onProgress:function (id, filename, loaded, total) {
                 console.log('Progress for file: %s, ID: %s, loaded: %s, total: %s', filename, id, loaded, total);
             },
-            onComplete : function(id, filename, responseJSON) {
+            onComplete:function (id, filename, responseJSON) {
                 console.log('File upload for file %s, id %s done with status %s', filename, id, responseJSON);
                 document.getElementById('avatarPreview').setAttribute('src', responseJSON.srcPrefix + responseJSON.srcImage);
                 document.getElementById('avatarTempValue').setAttribute('value', responseJSON.srcImage);
             },
-            debug: true
+            debug:true
         });
 
     }
