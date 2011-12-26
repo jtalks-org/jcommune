@@ -57,7 +57,7 @@ public class ClearInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
-        LOGGER.debug(request.getContextPath());
+        LOGGER.debug(request.getRequestURL().toString());
         LOGGER.debug("Call clearUserLocation");
         locationServiceImpl.clearUserLocation();
 
