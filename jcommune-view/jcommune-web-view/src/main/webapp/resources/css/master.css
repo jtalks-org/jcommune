@@ -358,7 +358,7 @@ a.last_message_user {
     vertical-align: top;
 }
 
-.forum_message_cell p {
+.forum_message_cell_text {
     padding-left: 10px;
     word-wrap: break-word;
 	line-height: 1.2;

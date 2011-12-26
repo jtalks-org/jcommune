@@ -172,14 +172,14 @@
                         <jtalks:format value="${post.creationDate}"/>
                     </a>
                 </div>
-                <p class="forum_message_cell_text">
+                <div class="forum_message_cell_text">
                     <jtalks:bb2html bbCode="${post.postContent}"/>
                     <br/><br/><br/>
                     <c:if test="${post.modificationDate!=null}">
                         <spring:message code="label.modify"/>
                         <jtalks:format value="${post.modificationDate}"/>
                     </c:if>
-                </p>
+                </div>
                 <c:if test="${post.userCreated.signature!=null}">
                     <div class="signature">
                         -------------------------
