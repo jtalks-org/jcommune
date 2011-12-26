@@ -26,7 +26,9 @@
 <body>
 <div class="wrap section_page">
     <jsp:include page="../template/topLine.jsp"/>
-    <h1>JTalks</h1>
+    <h1><a href="${pageContext.request.contextPath}">
+        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+    </a></h1>
 
     <div class="all_forums">
         <div class="forum_header_table"> <!-- Шапка группы форумов -->
@@ -81,13 +83,14 @@
                 </li>
             </c:forEach>
         </ul>
-        <c:if test="${!noUsers}">
+        <c:if test="${!(empty viewList)}">
             <spring:message code="label.topic.now_browsing"/>
         </c:if>
         <c:forEach var="innerUser" items="${viewList}">
             <a href="${pageContext.request.contextPath}/users/${innerUser}">
                 <c:out value="${innerUser}"/>
             </a>
+            &nbsp;&nbsp;
         </c:forEach>
     </div>
     <div class="footer_buffer"></div>

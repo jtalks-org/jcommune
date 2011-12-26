@@ -52,13 +52,11 @@ public class ClearInterceptorTest {
         response = new MockHttpServletResponse();
         locationServiceImpl = mock(LocationServiceImpl.class);
         securityService = mock(SecurityService.class);
-        interceptor = new ClearInterceptor(locationServiceImpl, securityService);
+        interceptor = new ClearInterceptor(locationServiceImpl);
     }
     
     @Test
     public void testPreHandler() throws IOException, ServletException {
-
-        when(locationServiceImpl.getRegisterUserMap()).thenReturn(new HashMap<User, String>());
 
         boolean result = interceptor.preHandle(request, response, handler);
 

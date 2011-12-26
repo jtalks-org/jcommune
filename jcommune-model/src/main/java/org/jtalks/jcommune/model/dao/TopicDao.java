@@ -26,6 +26,7 @@ import java.util.List;
  * @author Pavel Vervenko
  * @author Kirill Afonin
  * @author Vitaliy Kravchenko
+ * @author Eugeny Batov
  * @see org.jtalks.jcommune.model.dao.hibernate.TopicHibernateDao
  */
 public interface TopicDao extends ChildRepository<Topic> {
@@ -47,4 +48,11 @@ public interface TopicDao extends ChildRepository<Topic> {
      */
     List<Topic> getTopicsUpdatedSince(DateTime lastLogin);
 
+
+    /**
+     * Get unanswered topics(topics which has only 1 post added during topic creation).
+     *
+     * @return list of topics
+     */
+    List<Topic> getUnansweredTopics();
 }

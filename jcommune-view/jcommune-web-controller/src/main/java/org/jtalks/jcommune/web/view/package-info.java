@@ -12,26 +12,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.tags;
-
-import org.springframework.web.servlet.tags.form.FormTag;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
-import java.lang.reflect.Field;
-
-import static org.testng.Assert.assertEquals;
 
 /**
- * @author Evgeniy Naumenko
+ * Contains custom view implementations impossible to be done like JSP.
  */
-public class ProtectedFormTest {
-
-    @Test
-    public void testMultipostBlockingJSPresent() throws NoSuchFieldException, IllegalAccessException {
-        ProtectedForm form = new ProtectedForm();
-        Field field = FormTag.class.getDeclaredField("onsubmit");
-        field.setAccessible(true);
-        assertEquals(field.get(form), ProtectedForm.MULTIPOST_BLOCKING_JS);
-    }
-}
+package org.jtalks.jcommune.web.view;

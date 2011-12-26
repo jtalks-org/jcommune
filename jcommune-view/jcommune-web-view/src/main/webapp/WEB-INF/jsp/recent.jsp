@@ -22,10 +22,11 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <body>
-<h1>JTalks</h1>
-
 <div class="wrap branch_page">
     <jsp:include page="../template/topLine.jsp"/>
+    <h1><a href="${pageContext.request.contextPath}">
+        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+    </a></h1>
     <div class="all_forums">
         <h2><a class="heading" href="#"><c:out value="${recent}"/></a></h2>
 
@@ -42,7 +43,7 @@
             <div class="forum_header">
                 <span class="forum_header_icon"></span>
                 <span class="forum_header_topics"><spring:message code="label.branch.header.topics"/></span>
-                <span class="forum_header_answers"><spring:message code="label.branch.header.answers"/></span>
+                <span class="forum_header_answers"><spring:message code="label.section.header.messages"/></span>
                 <span class="forum_header_author"><spring:message code="label.branch.header.author"/></span>
                 <span class="forum_header_clicks"><spring:message code="label.branch.header.views"/></span>
                 <span class="forum_header_last_message"><spring:message code="label.branch.header.lastMessage"/></span>

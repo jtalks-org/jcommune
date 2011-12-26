@@ -18,7 +18,6 @@ import org.joda.time.DateTime;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -46,15 +45,16 @@ public class PostTest {
             "laboreetdoloremagnaaliqua.Utenimadminimveniam,quisnostrud" +
             "exercitationullamcolaborisnisiutaliquipexeacommodoconsequat." +
             "D...";
-    Post post = new Post();
+    Post post;
     Post post1;
     Topic topic;
     User user;
 
     @BeforeMethod
     public void init() {
-        user = mock(User.class);
-        post1 = mock(Post.class);
+        user = new User("username","email","password");
+        post = new Post(user, "post");
+        post1 = new Post(user, "post1");
         topic = new Topic(user, "");
     }
 

@@ -85,8 +85,9 @@ function ShowEditor() {
     bbcode2html();
     myeditor.designMode = "on";
     myeditor.open();
-    myeditor.write('<html><head><link href="/jcommune/resources/css/editor.css" rel="Stylesheet" type="text/css" /></head>');
-    myeditor.write('<body style="height: 100%;width: 100%;margin:0px 0px 0px 0px;background: #f8f8f8" class="editorWYSIWYG">');
+    myeditor.write('<html style="background: #f8f8f8;background-image: none;">' +
+        '<head><link href="/jcommune/resources/css/screen.css" rel="Stylesheet" type="text/css" /></head>');
+    myeditor.write('<body style="height: 100%;width: 100%;margin:0px 0px 0px 0px;background: #f8f8f8;background-image: none;" class="editorWYSIWYG">');
     myeditor.write(content);
     myeditor.write('</body></html>');
     myeditor.close();
@@ -153,7 +154,9 @@ function html2bbcode() {
         rep(/<p\s[^<>]*?class=\"centerText\"([^<>]*)?>([^<>]*?)<\/p>/gi, "[center]$2[/center]");
         rep(/<font\s[^<>]*?class=\"highlight\"([^<>]*)?>([^<>]*?)<\/font>/gi, "[highlight]$2[/highlight]");
         rep(/<div\s[^<>]*?class=\"code\"([^<>]*)?>([^<>]*?)<\/div>/gi, "[code]$2[/code]");
-        rep(/<div\s[^<>]*?class=\"quote\"([^<>]*)?>([^<>]*?)<\/div>/gi, "[quote]$2[/quote]");
+        rep(/<div\s[^<>]*?class=\"quote\"([^<>]*)?><div>Quote:<\/div><blockquote>([^<>]*?)<\/blockquote><\/div>/gi, "[quote]$2[/quote]");
+        rep(/<div\s[^<>]*?class=\"quote\"([^<>]*)?><div>([^<>]*?):<\/div><blockquote>([^<>]*?)<\/blockquote><\/div>/gi, "[quote=\"$2\"]$3[/quote]");
+
         if (sc == content)
             rep(/<font[^<>]*>([^<>]*?)<\/font>/gi, "$1");
         rep(/<a\s[^<>]*?href=\"?([^<>]*?)\"?(\s[^<>]*)?>([^<>]*?)<\/a>/gi, "[url=$1]$3[/url]");
@@ -341,9 +344,11 @@ function bbcode2html() {
     rep(/\[center\]/gi, '<p class="centerText">');
     rep(/\[\/(left|right|center)\]/gi, "</p>");
 
-    rep(/\[quote\]/gi, '<div class="quote">');
+    rep(/\[quote="([^\[\]]*?)"\](.*?)\[\/quote\]/gi, '<div class="quote"><div>$1:</div><blockquote>$2</blockquote></div>');
+    rep(/\[quote\]/gi, '<div class="quote"><div>Quote:</div><blockquote>');
+    rep(/\[\/quote\]/gi, "</blockquote></div>");
     rep(/\[code\]/gi, '<div class="code">');
-    rep(/\[\/(quote|code)\]/gi, "</div>");
+    rep(/\[\/code\]/gi, "</div>");
 
     rep(/\[highlight\]/gi, '<font class="highlight">');
     rep(/\[\/highlight\]/gi, "</font>");

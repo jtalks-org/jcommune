@@ -66,6 +66,6 @@
     <bean id="concurrentSessionControlStrategy" class="org.springframework.security.web.authentication.session.ConcurrentSessionControlStrategy">
         <constructor-arg name="sessionRegistry" ref="sessionRegistry"/>
         <property name="maximumSessions" value="1"/>
-    </bean>    
+    </bean>
 
 </beans>

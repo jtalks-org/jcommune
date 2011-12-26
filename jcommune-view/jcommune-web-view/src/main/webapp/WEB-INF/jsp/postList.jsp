@@ -26,12 +26,12 @@
             type="text/javascript"></script>
 </head>
 <body>
-<c:set var="authenticated" value="${false}"/>
-<h1>JTalks</h1>
-
 <div class="wrap topic_page">
 <jsp:include page="../template/topLine.jsp"/>
-<!-- Начало всех форумов -->
+<c:set var="authenticated" value="${false}"/>
+<h1><a href="${pageContext.request.contextPath}">
+    <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+</a></h1>
 <div class="all_forums">
 <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
 <span class="nav_bottom">
@@ -81,17 +81,17 @@
 
 <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 <br>
-<!-- Начало группы форумов -->
-<div class="forum_header_table"> <!-- Шапка топика -->
+
+<div class="forum_header_table">
     <div class="forum_header">
         <span class="forum_header_userinfo"><spring:message code="label.topic.header.author"/></span>
         <span class="forum_header_topic"><spring:message code="label.topic.header.message"/></span>
     </div>
 </div>
-<ul class="forum_table"> <!-- Список сообщений -->
+<ul class="forum_table">
     <jtalks:display uri="${topicId}" pagination="${pag}" numberLink="3" list="${posts}">
     <c:forEach var="post" items="${list}" varStatus="i">
-        <li class="forum_row"> <!-- Сообщение -->
+        <li class="forum_row">
             <div class="forum_userinfo">
                 <a class="username"
                    href="${pageContext.request.contextPath}/users/${post.userCreated.encodedUsername}">
@@ -173,7 +173,7 @@
                     </a>
                 </div>
                 <p class="forum_message_cell_text">
-                    <span id='${post.id}'><jtalks:bb2html bbCode="${post.postContent}"/></span>
+                    <jtalks:bb2html bbCode="${post.postContent}"/>
                     <br/><br/><br/>
                     <c:if test="${post.modificationDate!=null}">
                         <spring:message code="label.modify"/>
@@ -247,18 +247,17 @@
         <li><a href="#">Вася</a>.</li>
     </ul>
     <br/>
-    <c:if test="${!noUsers}">
+    <c:if test="${!(empty viewList)}">
         <spring:message code="label.topic.now_browsing"/>
     </c:if>
     <c:forEach var="innerUser" items="${viewList}">
         <a href="${pageContext.request.contextPath}/users/${innerUser}">
             <c:out value="${innerUser}"/>
         </a>
+        &nbsp;&nbsp;
     </c:forEach>
 </div>
 </div>
-<!-- Конец всех форумов -->
 <div class="footer_buffer"></div>
-<!-- Несемантичный буфер для прибития подвала -->
 </div>
 </body>

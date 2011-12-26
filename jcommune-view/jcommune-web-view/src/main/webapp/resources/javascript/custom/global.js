@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2011  JTalks.org Team
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -12,29 +12,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.tags;
-
-import org.springframework.web.servlet.tags.form.FormTag;
 
 /**
- * Extension of Spring form tag. This tag automatically put necessary JavaScript to prevent form's multiposting.
- *
- * @author Pavel Vervenko
+ * Sets timezone cookie for the server to show all the dates in a client timezone
  */
-public class ProtectedForm extends FormTag {
+$(document).ready(function() {
+    document.cookie = "GMT=" + new Date().getTimezoneOffset() + "; path=/";
+});
 
-    /**
-     * Serialixable class should define it
-     */
-    private static final long serialVersionUID = 34588L;
-
-    public static final String MULTIPOST_BLOCKING_JS = "if (this.getAttribute('submitted')) return false; "
-            + "this.setAttribute('submitted','true');";
-
-    /**
-     * Default tag constructor.
-     */
-    public ProtectedForm() {
-        setOnsubmit(MULTIPOST_BLOCKING_JS);
-    }
-}

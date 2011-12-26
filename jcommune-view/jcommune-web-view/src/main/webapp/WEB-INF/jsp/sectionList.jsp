@@ -29,16 +29,21 @@
 <body>
 <div class="wrap main_page">
     <jsp:include page="../template/topLine.jsp"/>
-    <h1>JTalks</h1>
+    <h1><a href="${pageContext.request.contextPath}">
+        <jtalks src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+    </a></h1>
+
     <div class="all_forums">
         <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/recent.rss">
             &nbsp;
             <img src="${pageContext.request.contextPath}/resources/images/RSS.png">
         </a>
-        <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/recent"><spring:message
-                code="label.recent"/></a> <br/>
-        <a class="forum_top_right_link" href="#"><spring:message code="label.messagesWithoutAnswers"/></a>
-
+        <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/recent">
+            <spring:message code="label.recent"/>
+        </a><br/>
+        <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/unanswered">
+            <spring:message code="label.messagesWithoutAnswers"/>
+        </a>
         <h2><a class="heading" href="#"><spring:message code="label.section.jtalks_forum"/></a></h2>
 
         <div class="forum_misc_info">
@@ -70,9 +75,9 @@
                             <h4><a class="forum_link"
                                    href="${pageContext.request.contextPath}/branches/${branch.id}">
                                 <c:out value="${branch.name}"/></a></h4>
+
                             <p>
                                 <c:out value="${branch.description}"/>
-                                <a href="#"><spring:message code="label.section.faq"/></a>
                                 <br/>
                                 <spring:message code="label.section.moderators"/> <a class="moderator" href="#">Vurn</a>
                             </p>
@@ -103,7 +108,7 @@
     <div class="users_information">
         <div class="forum_header_table">
             <div class="forum_header">
-                <h3><a class="users_information_link" href="#"><spring:message code="label.onlineUsersInfo"/> </a></h3>
+                <h3><span class="users_information_link"><spring:message code="label.onlineUsersInfo"/> </span></h3>
                 <span class="empty_cell"></span>
             </div>
         </div>
@@ -113,7 +118,7 @@
                     <spring:message code="label.onlineUsersInfo.messagesCount"/> <c:out value="${messagesCount}"/>
                     <br/>
                     <spring:message code="label.onlineUsersInfo.registeredUsers.count"/> <c:out
-                            value="${registeredUsersCount}"/>
+                        value="${registeredUsersCount}"/>
                 </div>
                 <div class="empty_cell"></div>
             </div>
@@ -121,7 +126,7 @@
                 <div class="forum_info">
                     <spring:message code="label.onlineUsersInfo.visitors"/> <c:out value="${visitors}"/>,
                     <spring:message code="label.onlineUsersInfo.visitors.registered"/> <c:out
-                            value="${visitorsRegistered}"/>,
+                        value="${visitorsRegistered}"/>,
                     <spring:message code="label.onlineUsersInfo.visitors.guests"/> <c:out value="${visitorsGuests}"/>
                     <br/>
                     <c:if test="${!(empty usersRegistered)}">

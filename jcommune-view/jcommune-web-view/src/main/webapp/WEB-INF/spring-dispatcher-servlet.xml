@@ -103,7 +103,7 @@
         <property name="defaultViews">
             <list>
                 <!-- RSS View -->
-                <bean class="org.jtalks.jcommune.web.util.RssViewer"/>
+                <bean class="org.jtalks.jcommune.web.view.RssViewer"/>
             </list>
         </property>
         <property name="ignoreAcceptHeader" value="true"/>

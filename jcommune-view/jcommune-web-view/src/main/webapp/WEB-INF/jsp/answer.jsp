@@ -26,10 +26,11 @@
             type="text/javascript"></script>
 </head>
 <body>
-
-<h1>JTalks</h1>
-
 <div class="wrap answer_page">
+<h1><a href="${pageContext.request.contextPath}">
+    <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+</a></h1>
+
     <jsp:include page="../template/topLine.jsp"/>
     <!-- Начало всех форумов -->
     <div class="all_forums">

@@ -26,6 +26,7 @@ import java.util.List;
  * @author Pavel Vervenko
  * @author Kirill Afonin
  * @author Vitaliy Kravchenko
+ * @author Eugeny Batov
  */
 public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> implements TopicDao {
 
@@ -51,6 +52,17 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
         return (List<Topic>) getSession().createQuery("FROM Topic WHERE modificationDate > :maxModDate " +
                 "ORDER BY modificationDate DESC")
                 .setParameter("maxModDate", time)
+                .list();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Topic> getUnansweredTopics() {
+        return (List<Topic>) getSession().createQuery("FROM Topic t WHERE t.posts.size=1 " +
+                "ORDER BY modificationDate DESC")
                 .list();
     }
 

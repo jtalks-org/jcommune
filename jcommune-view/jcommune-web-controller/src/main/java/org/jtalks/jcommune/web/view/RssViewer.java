@@ -13,7 +13,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.jtalks.jcommune.web.util;
+package org.jtalks.jcommune.web.view;
 
 import com.sun.syndication.feed.rss.Channel;
 import com.sun.syndication.feed.rss.Content;
@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Class forms a RSS feed
+ * Class forms a RSS feed view.
  *
  * @author Andrey Kluev
  */
@@ -117,7 +117,7 @@ public class RssViewer extends AbstractRssFeedView {
      * @param request HttpServletRequest
      * @return url
      */
-    public String buildURL(HttpServletRequest request) {
+    private String buildURL(HttpServletRequest request) {
         return request.getScheme()
                 + "://" + request.getServerName()
                 + ":" + request.getServerPort()

@@ -95,7 +95,6 @@ public class SectionControllerTest {
         //set expectations
         when(sectionService.get(sectionId)).thenReturn(section);
         when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
-        when(locationServiceImpl.getRegisterUserMap()).thenReturn(new HashMap<User, String>());
 
         //invoke the object under test
         ModelAndView mav = controller.branchList(sectionId);
@@ -117,7 +116,6 @@ public class SectionControllerTest {
 
         when(sectionService.get(sectionId)).thenReturn(section);
         when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
-        when(locationServiceImpl.getRegisterUserMap()).thenReturn(new HashMap<User, String>());
 
         ModelAndView mav = controller.branchList(sectionId);
 

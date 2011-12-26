@@ -14,7 +14,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
@@ -25,13 +25,16 @@
 <body>
 <div class="wrap login_page">
     <jsp:include page="../template/topLine.jsp"/>
-    <h1>JTalks</h1>
+    <h1><a href="${pageContext.request.contextPath}">
+        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+    </a></h1>
+
     <form action='<c:url value="/j_spring_security_check"/>' method="POST" name="form" id="form">
         <div class="all_forums">
             <div class="forum_header_table">
                 <div class="forum_header">
                     <span class="forum_header_answer"><spring:message code="label.signin"/></span>
-                    <span class="empty_cell"></span> <!-- Необходима для корректного отображения псевдотаблицы -->
+                    <span class="empty_cell"></span>
                 </div>
             </div>
             <div class="forum_table" id="stylized">
@@ -55,8 +58,8 @@
                     </div>
                 </div>
                 <div class="forum_row">
-                    <input type="checkbox" name="staylogged"><spring:message code="label.auto_logon"/>
-                    <span class="empty_cell"></span> <!-- Необходима для корректного отображения псевдотаблицы -->
+                    <input type="checkbox" name="_spring_security_remember_me"><spring:message code="label.auto_logon"/>
+                    <span class="empty_cell"></span>
                 </div>
             </div>
 
@@ -68,7 +71,6 @@
         </div>
     </form>
     <div class="footer_buffer"></div>
-    <!-- Несемантичный буфер для прибития подвала -->
 </div>
 
 </body>
