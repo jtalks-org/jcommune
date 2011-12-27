@@ -67,8 +67,6 @@ public final class TopicController {
     private BreadcrumbBuilder breadcrumbBuilder;
     private LocationService locationService;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TopicController.class);
-
     /**
      * This method turns the trim binder on. Trim bilder
      * removes leading and trailing spaces from the submitted fields.
