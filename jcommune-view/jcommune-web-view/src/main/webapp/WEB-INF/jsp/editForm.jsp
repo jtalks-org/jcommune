@@ -26,9 +26,11 @@
 <body>
 <div class="wrap answer_page">
     <jsp:include page="../template/topLine.jsp"/>
+
     <h1><a href="${pageContext.request.contextPath}">
         <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
     </a></h1>
+
     <div class="all_forums">
         <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
 
@@ -38,10 +40,21 @@
 
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
         <div id="answer">
-            <jtalks:bbeditor
-                    action="${pageContext.request.contextPath}/posts/${postId}/edit?topicId=${topicId}&page=${page}"
-                    labelForAction="label.post.edit"
-                    back="${pageContext.request.contextPath}/topics/${topicId}"/>
+            <form:form action="${pageContext.request.contextPath}/posts/${postId}/edit?topicId=${topicId}&page=${page}"
+                       method="POST" modelAttribute="postDto" onsubmit="doCheck();return true;">
+                <form:hidden path="topicId"/>
+                <form:hidden path="id"/>
+                <div class="forum_header_table">
+                    <div class="forum_header">
+                        <span class="forum_header_answer"><spring:message code="label.post.edit"/></span>
+                        <span class="empty_cell"></span>
+                    </div>
+                </div>
+                <jtalks:bbeditor labelForAction="label.post.edit"
+                                 postText="${postDto.bodyText}"
+                                 bodyParameterName="bodyText"
+                                 back="${pageContext.request.contextPath}/topics/${topicId}"/>
+            </form:form>
         </div>
     </div>
     <div class="footer_buffer"></div>

@@ -21,6 +21,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <head>
     <title><spring:message code="h.new_topic"/></title>
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
+            type="text/javascript"></script>
 </head>
 <body>
 <div class="wrap answer_page">
@@ -28,10 +30,10 @@
     <h1><a href="${pageContext.request.contextPath}">
         <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
     </a></h1>
+
     <div class="all_forums">
         <form:form action="${pageContext.request.contextPath}/topics/new?branchId=${branchId}"
-                     modelAttribute="topicDto"
-                     method="POST">
+                   method="POST" modelAttribute="topicDto" onsubmit="doCheck();return true;">
             <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
 
             <div class="forum_misc_info">
@@ -59,115 +61,12 @@
                                      class="post" cssClass="error"/>
                     </div>
                 </li>
-                <li class="forum_row">
-                    <div class="forum_answer_left align-top">
-                        <spring:message code="label.topic.message"/>
-                        <table class="smiles_table">
-                            <tbody>
-                            <tr>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="forum_answer_right">
-                        <div class="formatting_buttons">
-                            <input id="format_b" type="button" class="button" accesskey="b" name="format_b"
-                                   value=" B "/>
-                            <input id="format_i" type="button" class="button" accesskey="i" name="format_i"
-                                   value=" i "/>
-                            <input id="format_u" type="button" class="button" accesskey="u" name="format_u"
-                                   value=" u "/>
-                            <input id="format_quote" type="button" class="button" accesskey="q"
-                                   name="format_quote"
-                                   value="Quote"/>
-                            <input id="format_code" type="button" class="button" accesskey="c"
-                                   name="format_code"
-                                   value="Code"/>
-                            <input id="format_list" type="button" class="button" accesskey="l"
-                                   name="format_list"
-                                   value="List"/>
-                            <input id="format_listeq" type="button" class="button" accesskey="o"
-                                   name="format_listeq"
-                                   value="List="/>
-                            <input id="format_img" type="button" class="button" accesskey="p" name="format_img"
-                                   value="Img"/>
-                            <input id="format_url" type="button" class="button" accesskey="w" name="format_url"
-                                   value="URL"/>
-                        </div>
-						<span class="genmed">
-							<spring:message code="label.topic.font_color"/>
-							<select id="select_color" name="select_color">
-                                <option><spring:message code="label.topic.font_color.black"/></option>
-                                <option><spring:message code="label.topic.font_color.white"/></option>
-                            </select>
-							<spring:message code="label.topic.font_size"/>
-							<select id="select_size" name="select_size">
-                                <option><spring:message code="label.topic.font_size.small"/></option>
-                                <option><spring:message code="label.topic.font_size.large"/></option>
-                                <option><spring:message code="label.topic.font_size.king_size"/></option>
-                            </select>
-						</span>
-                        <a href="#" onmouseover="helpline('a')"><spring:message code="label.topic.close_tags"/></a>
-
-                        <div id="helpline"><spring:message code="label.topic.tooltip"/></div>
-                        <form:textarea path="bodyText" name="bodytext" id="bodytext" rows="15" cols="35"
-                                       tabindex="3"
-                                       class="post"/>
-                        <br>
-                        <form:errors path="bodyText" name="bodytext" id="bodytext" rows="15" cols="35" tabindex="3"
-                                     class="post" cssClass="error"/>
-                    </div>
-                </li>
-                <li class="forum_row">
-                    <div class="forum_answer_left">
-                        <spring:message code="label.topic.options"/>
-                    </div>
-                    <div class="forum_answer_right options">
-                        <input id="notify" type="checkbox" name="notify" checked="checked"/><spring:message
-                            code="label.topic.notify_message"/>
-                        <br/>
-                        <input id="nosmiles" type="checkbox" name="nosmiles" checked="checked"/><spring:message
-                            code="label.topic.no_smiles"/>
-                    </div>
-                </li>
             </ul>
-            <button type="submit" class="button"><spring:message code="label.addtopic"/></button>
-            <a href="${pageContext.request.contextPath}/branches/${branchId}" class="button">
-                <spring:message code='label.back'/></a>
+            <jtalks:bbeditor labelForAction="label.addtopic"
+                             postText=""
+                             bodyParameterName="bodyText"
+                             back="${pageContext.request.contextPath}/branches/${branchId}"/>
+
         </form:form>
     </div>
     <div class="footer_buffer"></div>

@@ -33,30 +33,43 @@
 
         <h2><a class="heading" href="#"><spring:message code="label.inbox"/></a></h2>
         <jsp:include page="../../template/pmNavigationMenu.jsp"/>
-        <div>
-            <table>
-                <tr>
-                    <td><spring:message code="label.sender"/></td>
-                    <td><spring:message code="label.title"/></td>
-                    <td><spring:message code="label.sending_date"/></td>
-                </tr>
-                <c:forEach var="pm" items="${pmList}">
-                    <c:choose>
-                        <c:when test="${pm.read}">
-                            <tr>
-                        </c:when>
-                        <c:otherwise>
-                            <tr bgcolor="#b0c4de">
-                        </c:otherwise>
-                    </c:choose>
-                    <td><c:out value="${pm.userFrom.username}"/></td>
-                    <td><a href="${pageContext.request.contextPath}/inbox/${pm.id}">
-                        <c:out value="${pm.title}"/></a></td>
-                    <td><jtalks:format value="${pm.creationDate}"/></td>
-                    </tr>
-                </c:forEach>
-            </table>
+
+        <div class="forum_header_table" style="width: 100%">
+            <div class="forum_header">
+                <div class="forum_header_answer" style="width: 33%">
+                    <spring:message code="label.sender"/>
+                </div>
+                <div class="forum_header_answer" style="width: 33%">
+                    <spring:message code="label.title"/>
+                </div>
+                <div class="forum_header_answer" style="width: 33%">
+                    <spring:message code="label.sending_date"/>
+                </div>
+            </div>
         </div>
+        <ul class="forum_table">
+            <c:forEach var="pm" items="${pmList}">
+                <c:choose>
+                    <c:when test="${pm.read}">
+                        <li class="forum_row">
+                    </c:when>
+                    <c:otherwise>
+                        <li class="forum_row" style="background: #b0c4de">
+                    </c:otherwise>
+                </c:choose>
+                <div class="forum_answer_left">
+                    <c:out value="${pm.userFrom.username}"/>
+                </div>
+                <div class="forum_answer_left">
+                    <a href="${pageContext.request.contextPath}/inbox/${pm.id}">
+                        <c:out value="${pm.title}"/></a>
+                </div>
+                <div class="forum_answer_left">
+                    <jtalks:format value="${pm.creationDate}"/>
+                </div>
+                </li>
+            </c:forEach>
+        </ul>
     </div>
     <div class="footer_buffer"></div>
 </div>

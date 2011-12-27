@@ -34,8 +34,6 @@ public class ClearInterceptor extends HandlerInterceptorAdapter {
 
     private LocationServiceImpl locationServiceImpl;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClearInterceptor.class);
-
     /**
      * Constructor clearInterceptor
      *
@@ -57,9 +55,10 @@ public class ClearInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
-        LOGGER.debug(request.getRequestURL().toString());
-        LOGGER.debug("Call clearUserLocation");
-        locationServiceImpl.clearUserLocation();
+
+        if (!request.getRequestURI().endsWith("/avatar")) {
+            locationServiceImpl.clearUserLocation();
+        }
 
         return true;
     }
