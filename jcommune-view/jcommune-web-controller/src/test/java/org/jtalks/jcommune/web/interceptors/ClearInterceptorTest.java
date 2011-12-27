@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertTrue;
 
 /**
@@ -39,6 +40,7 @@ public class ClearInterceptorTest {
     private HttpServletRequest request;
     private HttpServletResponse response;
     private LocationServiceImpl locationServiceImpl;
+    private boolean result;
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -48,11 +50,29 @@ public class ClearInterceptorTest {
         locationServiceImpl = mock(LocationServiceImpl.class);
         interceptor = new ClearInterceptor(locationServiceImpl);
     }
-    
-    @Test
-    public void testPreHandler() throws IOException, ServletException {
 
-        boolean result = interceptor.preHandle(request, response, handler);
+    @Test
+    public void testPreHandler() {
+
+        result = interceptor.preHandle(request, response, handler);
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testAvatar() {
+
+        result = interceptor.preHandle(request, response, handler);
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testNotAvatar() {
+        request = mock(HttpServletRequest.class);
+        when(request.getRequestURI()).thenReturn("/12345/avatar");
+
+        result = interceptor.preHandle(request, response, handler);
 
         assertTrue(result);
     }

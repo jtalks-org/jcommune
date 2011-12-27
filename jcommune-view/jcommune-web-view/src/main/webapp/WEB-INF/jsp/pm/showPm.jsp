@@ -29,10 +29,10 @@
         <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
     </a></h1>
 
-    <div align="left">
-
-
+    <div class="all_forums">
         <jsp:include page="../../template/pmNavigationMenu.jsp"/>
+        <div class="forum_misc_info">
+        </div>
         <div>
             <div style="float: left">
                 <h3><c:out value="${pm.title}"/></h3>
@@ -72,8 +72,6 @@
                     </tr>
                 </sec:authorize>
             </table>
-
-
         </div>
     </div>
     <div class="footer_buffer"></div>

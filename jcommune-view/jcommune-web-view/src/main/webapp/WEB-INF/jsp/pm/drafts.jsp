@@ -33,27 +33,43 @@
 
         <h2><a class="heading" href="#"><spring:message code="label.drafts"/></a></h2>
         <jsp:include page="../../template/pmNavigationMenu.jsp"/>
-        <div>
-            <table>
-                <tr>
-                    <td><spring:message code="label.recipient"/></td>
-                    <td><spring:message code="label.title"/></td>
-                    <td><spring:message code="label.sending_date"/></td>
-                    <td><spring:message code="label.edit"/></td>
-                </tr>
-                <c:forEach var="pm" items="${pmList}">
-                    <tr>
-                        <td><c:out value="${pm.userTo.username}"/></td>
-                        <td><a href="${pageContext.request.contextPath}/drafts/${pm.id}">
-                            <c:out value="${pm.title}"/></a>
-                        </td>
-                        <td><jtalks:format value="${pm.creationDate}"/></td>
-                        <td><a href="${pageContext.request.contextPath}/pm/${pm.id}/edit">
-                            <spring:message code="label.edit"/></a></td>
-                    </tr>
-                </c:forEach>
-            </table>
+
+        <div class="forum_header_table" style="width: 100%">
+            <div class="forum_header">
+                <div class="forum_header_answer" style="width: 25%">
+                    <spring:message code="label.recipient"/>
+                </div>
+                <div class="forum_header_answer" style="width: 25%">
+                    <spring:message code="label.title"/>
+                </div>
+                <div class="forum_header_answer" style="width: 25%">
+                    <spring:message code="label.sending_date"/>
+                </div>
+                <div class="forum_header_answer" style="width: 25%">
+                    <spring:message code="label.edit"/>
+                </div>
+            </div>
         </div>
+        <ul class="forum_table">
+            <c:forEach var="pm" items="${pmList}">
+                <li class="forum_row">
+                    <div class="forum_answer_left">
+                        <c:out value="${pm.userTo.username}"/>
+                    </div>
+                    <div class="forum_answer_left">
+                        <a href="${pageContext.request.contextPath}/drafts/${pm.id}">
+                            <c:out value="${pm.title}"/></a>
+                    </div>
+                    <div class="forum_answer_left">
+                        <jtalks:format value="${pm.creationDate}"/>
+                    </div>
+                    <div class="forum_answer_left">
+                        <a href="${pageContext.request.contextPath}/pm/${pm.id}/edit">
+                            <spring:message code="label.edit"/></a>
+                    </div>
+                </li>
+            </c:forEach>
+        </ul>
     </div>
     <div class="footer_buffer"></div>
 </div>

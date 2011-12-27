@@ -16,8 +16,6 @@
 package org.jtalks.jcommune.web.interceptors;
 
 import org.jtalks.jcommune.service.nontransactional.LocationServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -33,8 +31,6 @@ import javax.servlet.http.HttpServletResponse;
 public class ClearInterceptor extends HandlerInterceptorAdapter {
 
     private LocationServiceImpl locationServiceImpl;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClearInterceptor.class);
 
     /**
      * Constructor clearInterceptor
@@ -57,9 +53,10 @@ public class ClearInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
-        LOGGER.debug(request.getRequestURL().toString());
-        LOGGER.debug("Call clearUserLocation");
-        locationServiceImpl.clearUserLocation();
+
+        if (!request.getRequestURI().endsWith("/avatar")) {
+            locationServiceImpl.clearUserLocation();
+        }
 
         return true;
     }
