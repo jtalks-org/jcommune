@@ -34,8 +34,6 @@ public class ClearInterceptor extends HandlerInterceptorAdapter {
 
     private LocationServiceImpl locationServiceImpl;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClearInterceptor.class);
-
     /**
      * Constructor clearInterceptor
      *
