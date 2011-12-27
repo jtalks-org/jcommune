@@ -27,9 +27,9 @@
 </head>
 <body>
 <div class="wrap answer_page">
-<h1><a href="${pageContext.request.contextPath}">
-    <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
-</a></h1>
+    <h1><a href="${pageContext.request.contextPath}">
+        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+    </a></h1>
 
     <jsp:include page="../template/topLine.jsp"/>
     <!-- Начало всех форумов -->
@@ -42,9 +42,20 @@
 
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
-        <jtalks:bbeditor action="${pageContext.request.contextPath}/posts/new?topicId=${topicId}&page=${page}"
-                         labelForAction="label.answer"
-                         back="${pageContext.request.contextPath}/topics/${topicId}"/>
+        <form:form action="${pageContext.request.contextPath}/posts/new?topicId=${topicId}&page=${page}"
+                   method="POST" modelAttribute="postDto" onsubmit="doCheck();return true;">
+            <form:hidden path="topicId"/>
+            <div class="forum_header_table">
+                <div class="forum_header">
+                    <span class="forum_header_answer"><spring:message code="label.answer"/></span>
+                    <span class="empty_cell"></span>
+                </div>
+            </div>
+            <jtalks:bbeditor labelForAction="label.answer"
+                             postText=""
+                             bodyParameterName="bodyText"
+                             back="${pageContext.request.contextPath}/topics/${topicId}"/>
+        </form:form>
 
     </div>
     <!-- Конец всех форумов -->
