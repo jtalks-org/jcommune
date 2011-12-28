@@ -34,7 +34,7 @@
         <div id="userdetails">
             <div class="forum_header_table">
                 <div class="forum_header">
-                    <span class="forum_header_generic"><spring:message code="label.forum"/></span>
+                    <span class="forum_header_generic"><spring:message code="label.profile"/></span>
                     <span class="empty_cell"></span>
                 </div>
             </div>
@@ -44,7 +44,7 @@
                     <span><c:out value="${user.username}"/></span>
                 </li>
                 <li class="forum_row">
-                    <label>Email lalala</label>
+                    <label><spring:message code="label.email"/></label>
                     <c:choose>
                         <c:when test="${user.username == auth}">
                             <span><c:out value="${user.email}"/></span>
@@ -70,12 +70,10 @@
                         <span><c:out value="${user.signature}"/></span>
                     </li>
                 </c:if>
-                <c:if test="${user.language != null}">
-                    <li class="forum_row">
-                        <label><spring:message code="label.language"/></label>
-                        <span><spring:message code="${language.languageNameLabel}"/></span>
-                    </li>
-                </c:if>
+                <li class="forum_row">
+                    <label><spring:message code="label.language"/></label>
+                    <span><spring:message code="${language.languageNameLabel}"/></span>
+                </li>
                 <li class="forum_row">
                     <label><spring:message code="label.numberOfTopicsOnPage"/></label>
                     <span><c:out value="${pageSize}"/></span>
@@ -88,17 +86,10 @@
                 </li>
                 <c:if test="${user.avatar != null}">
                     <li class="forum_row">
-                        <span>Аватар</span>
-                                <span>
-                                        <table>
-                                            <tr>
-                                                <td width="100" height="100" align="center" valign="middle">
-                                                    <img src="${pageContext.request.contextPath}/${user.username}/avatar"
-                                                         alt=""/>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                </span>
+                        <label><spring:message code="label.avatar"/></label>
+                            <span class="avatar">
+                                <img src="${pageContext.request.contextPath}/${user.username}/avatar" alt=""/>
+                            </span>
                     </li>
                 </c:if>
                 <li class="forum_row">
@@ -118,6 +109,7 @@
                 </a>
             </div>
         </div>
-        <div class="footer_buffer"></div>
     </div>
+    <div class="footer_buffer"></div>
+</div>
 </body>

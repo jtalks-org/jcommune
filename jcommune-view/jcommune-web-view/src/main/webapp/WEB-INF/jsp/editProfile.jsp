@@ -45,7 +45,7 @@
 
                 <div class="forum_header_table">
                     <div class="forum_header">
-                        <span class="forum_header_generic"><spring:message code="label.forum"/></span>
+                        <span class="forum_header_generic"><spring:message code="label.profile"/></span>
                         <span class="empty_cell"></span>
                     </div>
                 </div>
@@ -91,61 +91,46 @@
                     </li>
                     <li class="forum_row">
                         <label><spring:message code="label.language"/></label>
-               <span>
-                   <form:select path="language" value="${editedUser.language}">
-                       <c:forEach items="${editedUser.languagesAvailable}" var="language">
-                           <form:option value="${language}">
-                               <spring:message code="${language.languageNameLabel}"/>
-                           </form:option>
-                       </c:forEach>
-                   </form:select>
-               </span>
+                        <span>
+                        <form:select path="language" value="${editedUser.language}">
+                            <c:forEach items="${editedUser.languagesAvailable}" var="language">
+                                <form:option value="${language}">
+                                    <spring:message code="${language.languageNameLabel}"/>
+                                </form:option>
+                            </c:forEach>
+                        </form:select>
+                        </span>
                         <span><form:errors path="language" cssClass="error"/></span>
                     </li>
                     <li class="forum_row">
                         <label><spring:message code="label.numberOfTopicsOnPage"/></label>
-               <span>
-                   <form:select path="pageSize" value="${editedUser.pageSize}"
-                                items="${editedUser.pageSizesAvailable}"/>
-               </span>
+                        <span>
+                            <form:select path="pageSize" value="${editedUser.pageSize}"
+                                         items="${editedUser.pageSizesAvailable}"/>
+                        </span>
                         <span><form:errors path="pageSize" cssClass="error"/></span>
                     </li>
                     <li class="forum_row">
-                        <label><spring:message code="label.avatar.preview"/></label>
-               <span>
-                                        <table>
-                                            <tr>
-                                                <td width="100" height="100" align="center" valign="middle">
-                                                    <img id="avatarPreview" src="" alt=""/>
-                                                </td>
-                                            </tr>
-                                        </table>
-               </span>
+                        <label><spring:message code="label.avatar"/></label>
+                        <span class="avatar">
+                            <img id="avatarPreview" src="${editedUser.avatar}" alt=""/>
+                        </span>
                     </li>
                     <li class="forum_row"></li>
                 </ul>
                 <div class="form_controls">
                     <span id="upload"><input type="button" value="<spring:message code="label.avatar.load"/>"/></span>
-                    <form:form action='${pageContext.request.contextPath}/users/${auth}' method="GET">
-                        <input type="submit" value="<spring:message code="label.back"/>"/>
-                    </form:form>
                     <input type="submit" value="<spring:message code="label.save_changes"/>"
                            onclick="submitForm('editProfileForm')"/>
-
+                    <a href="${pageContext.request.contextPath}/users/${auth}">
+                        <button><spring:message code="label.back"/></button>
+                    </a>
                 </div>
             </form:form>
 
             <form action="${pageContext.request.contextPath}/users/edit/avatar" id="removeAvatarForm"
                   name="removeAvatarForm" method="POST">
                 <c:if test="${editedUser.avatar != null}">
-                    <table>
-                        <tr>
-                            <td><label><spring:message code="label.avatar.current"/></label></td>
-                            <td width="100" height="100" align="center" valign="middle">
-                                <img src="${editedUser.avatar}" alt=""/><br>
-                            </td>
-                        </tr>
-                    </table>
                     <div class="form_controls">
                         <a class="button" href="javascript:submitForm('removeAvatarForm')"><spring:message
                                 code="label.avatar.remove"/></a>
