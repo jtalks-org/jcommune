@@ -18,6 +18,10 @@ $(document).ready(function() {
     $('img.thumbnail').imgPreview({
         srcAttr: 'src',
         containerID: 'img_preview',
+        imgCSS: {
+            'max-height': 500,
+            'max-width': 700
+        },
         distanceFromCursor: {top: - 150, left:10},
         onShow: function(link) {
             // Animate link:

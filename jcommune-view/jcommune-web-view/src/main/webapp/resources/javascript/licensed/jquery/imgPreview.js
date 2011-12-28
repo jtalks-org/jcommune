@@ -74,7 +74,7 @@
         }
 
         $collection
-            .mouseenter(function(e) {
+            .mousemove(function(e) {
 
             $container.css({
                 top: e.pageY + s.distanceFromCursor.top + 'px',
