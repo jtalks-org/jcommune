@@ -13,7 +13,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+//registeres image preview handler for user-specified images
 $(document).ready(function() {
-    //Sets timezone cookie for the server to show all the dates in a client timezone
-    document.cookie = "GMT=" + new Date().getTimezoneOffset() + "; path=/";
+    $('img.thumbnail').imgPreview({
+        srcAttr: 'src',
+        containerID: 'img_preview',
+        distanceFromCursor: {top: - 150, left:10},
+        onShow: function(link) {
+            // Animate link:
+            $(link).stop().animate({opacity:0.4});
+            // Reset image:
+            $('img', this).stop().css({opacity:0});
+        },
+        onLoad: function() {
+            // Animate image
+            $(this).animate({opacity:1}, 300);
+        },
+        onHide: function(link) {
+            // Animate link:
+            $(link).stop().animate({opacity:1});
+        }});
 });

@@ -234,11 +234,11 @@
     <!-- Insert image -->
     <code name="img1" priority="2">
         <pattern>[img]<var name="protocol" regex="((ht|f)tps?:|\.{1,2})?"/>/<var name="addr" scope="escapeXml"/>[/img]</pattern>
-        <template>&lt;img src=&quot;<var name="protocol"/>/<var name="addr"/>&quot;/&gt;</template>
+        <template><![CDATA[<img class="thumbnail" src="]]><var name="protocol"/>/<var name="addr"/><![CDATA["/>]]></template>
     </code>
     <code name="img2" priority="1">
         <pattern>[img]<var name="addr" scope="escapeXml"/>[/img]</pattern>
-        <template>&lt;img src=&quot;http://<var name="addr"/>&quot;/&gt;</template>
+        <template>&lt;img class=&quot;thumbnail&quot; src=&quot;http://<var name="addr"/>&quot;/&gt;</template>
     </code>
 
     <!-- Links. http, https, malto protocols -->

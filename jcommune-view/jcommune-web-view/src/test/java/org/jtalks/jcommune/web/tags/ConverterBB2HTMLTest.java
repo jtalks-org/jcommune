@@ -118,8 +118,8 @@ public class ConverterBB2HTMLTest {
 
     @Test
     public void bbCodeImg(){
-        tag.setBbCode("[img]http://heinlein37.narod.ru/markup/forum/images/avatar.jpg[/img]");
-        assertEquals(tag.getBbCode(), "<img src=\"http://heinlein37.narod.ru/markup/forum/images/avatar.jpg\"/>");
+        tag.setBbCode("[img]http://narod.ru/avatar.jpg[/img]");
+        assertEquals(tag.getBbCode(), "<img class=\"thumbnail\" src=\"http://narod.ru/avatar.jpg\"/>");
     }
 
     @Test

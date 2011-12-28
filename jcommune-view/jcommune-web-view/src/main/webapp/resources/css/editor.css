@@ -1,10 +1,10 @@
 ﻿.editorWYSIWYG {
-   /* font: 10pt Tahoma;
-    border-bottom: 1px solid #b2b2b2;*/
+    /* font: 10pt Tahoma;
+ border-bottom: 1px solid #b2b2b2;*/
 }
 
 .editorBBCODE {
-/*font: 9pt "Courier New";*/
+    /*font: 9pt "Courier New";*/
 }
 
 div.richeditor div.editbar {
@@ -90,29 +90,31 @@ div.richeditor iframe {
 }
 
 .quote {
-	margin: 10px 50px;
+    margin: 10px 50px;
 }
+
 .quote div {
-	float: left;
-	padding: 5px;
-	-moz-box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
-	-webkit-box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
-	box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
-	-moz-border-radius: 5px 5px 0px 0px;
-	-webkit-border-radius: 5px 5px 0px 0px;
-	border-radius: 5px 5px 0px 0px;
-	border: 1px solid grey;
-	border-bottom: none;
-	background: #c6c6c6;
+    float: left;
+    padding: 5px;
+    -moz-box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
+    -moz-border-radius: 5px 5px 0px 0px;
+    -webkit-border-radius: 5px 5px 0px 0px;
+    border-radius: 5px 5px 0px 0px;
+    border: 1px solid grey;
+    border-bottom: none;
+    background: #c6c6c6;
 }
+
 .quote blockquote {
-	clear: both;
-	padding: 5px;
-	background: white;
-	-moz-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
-	-webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
-	box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
-	line-height: 1.2;
+    clear: both;
+    padding: 5px;
+    background: white;
+    -moz-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
+    line-height: 1.2;
 }
 
 .code {
@@ -125,19 +127,26 @@ div.richeditor iframe {
 }
 
 .list li {
-	padding: 3px 0;
+    padding: 3px 0;
 }
 
 .offtop {
-	margin: 10px;
-	font-size: 11px;
+    margin: 10px;
+    font-size: 11px;
 }
+
 .offtop div {
-	float: left;
-	padding: 5px 5px 0 10px;
+    float: left;
+    padding: 5px 5px 0 10px;
 }
+
 .offtop p {
-	clear: both;
-	padding: 5px;
-	color: #8e8e8e;
+    clear: both;
+    padding: 5px;
+    color: #8e8e8e;
+}
+
+.thumbnail {
+    max-width: 100px;
+    max-width: 100px;
 }
