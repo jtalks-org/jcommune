@@ -52,7 +52,7 @@
                 </div>
             </div>
             <jtalks:bbeditor labelForAction="label.answer"
-                             postText=""
+                             postText="${postDto.bodyText}"
                              bodyParameterName="bodyText"
                              back="${pageContext.request.contextPath}/topics/${topicId}"/>
         </form:form>
