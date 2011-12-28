@@ -30,7 +30,7 @@
 <div class="wrap main_page">
     <jsp:include page="../template/topLine.jsp"/>
     <h1><a href="${pageContext.request.contextPath}">
-        <jtalks src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
     </a></h1>
 
     <div class="all_forums">
@@ -44,6 +44,7 @@
         <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/unanswered">
             <spring:message code="label.messagesWithoutAnswers"/>
         </a>
+
         <h2><a class="heading" href="#"><spring:message code="label.section.jtalks_forum"/></a></h2>
 
         <div class="forum_misc_info">
