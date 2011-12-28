@@ -192,7 +192,8 @@ a.heading:hover {
 .forum_header_author,
 .forum_header_userinfo,
 .forum_header_topic,
-.forum_header_answer {
+.forum_header_answer,
+.forum_header_generic{
     display: table-cell;
     min-width: 90px;
     padding: 0 5px 0 0;
@@ -209,7 +210,9 @@ a.heading:hover {
     min-width: 30px;
 }
 
-.forum_header_topic, .forum_header_answer {
+.forum_header_topic,
+.forum_header_answer,
+.forum_header_generic {
     width: 100%;
 }
 
@@ -281,7 +284,9 @@ a.heading:hover {
 .forum_userinfo,
 .forum_message_cell,
 .forum_answer_left,
-.forum_answer_right {
+.forum_answer_right,
+.userdetails_page li label,
+.userdetails_page li span {
     display: table-cell;
     padding: 0 5px 0 0;
     border-bottom: 1px solid #b2b2b2;
@@ -431,6 +436,15 @@ a.last_message_user {
 
 .sticky {
     font-weight: bold;
+}
+
+.userdetails_page li label,
+.userdetails_page li span {
+        width: 50%;
+        padding: 5px;
+}
+.userdetails_page li span {
+        border-left: 1px solid grey;
 }
 
 /* Answer Form & Buttons */
@@ -646,6 +660,39 @@ a.admin, a.user {
     color: #535353;
 }
 
+/* User details */
+.userdetails_page .forum_header_table {
+        width: 600px;
+        margin: 0 auto;
+}
+
+.userdetails_page .forum_table {
+        width: 598px;
+        margin: 0 auto;
+}
+
+.userdetails_page table {
+        margin: 5px auto;
+}
+
+.userdetails_page td {
+        vertical-align: middle;
+}
+
+.userdetails_page label {
+        font-weight: bold;
+}
+
+.userdetails_page .error {
+        font-size: 11px;
+        border: none;
+}
+#removeAvatarForm td {
+        padding: 5px;
+        padding-bottom: 0;
+        vertical-align: center;
+}
+
 /* Error 404 */
 .text_404 {
     margin: 0 auto;
@@ -671,6 +718,7 @@ a.admin, a.user {
 }
 
 .form_controls {
+    padding-top: 5px;
     text-align: center;
 }
 
