@@ -661,13 +661,37 @@ a.admin, a.user {
 
 /* User details */
 .userdetails_page .forum_header_table {
-	width: 800px;
+	width: 600px;
 	margin: 0 auto;
 }
-.userdetails_page .forum_table{
-	width: 796px;
+
+.userdetails_page .forum_table {
+	width: 598px;
 	margin: 0 auto;
 }
+
+.userdetails_page table {
+	margin: 5px auto;
+}
+
+.userdetails_page td {
+	vertical-align: middle;
+}
+
+.userdetails_page label {
+	font-weight: bold;
+}
+
+.userdetails_page .error {	
+	font-size: 11px;
+	border: none;
+}
+#removeAvatarForm td {
+	padding: 5px;
+	padding-bottom: 0;
+	vertical-align: center;
+}
+	
 
 /* Error 404 */
 .text_404 {
@@ -694,7 +718,8 @@ a.admin, a.user {
 }
 
 .form_controls {
-    text-align: center;
+    padding-top: 5px;
+	text-align: center;
 }
 
 .error {

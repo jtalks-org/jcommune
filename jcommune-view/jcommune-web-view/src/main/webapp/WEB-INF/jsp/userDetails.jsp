@@ -32,7 +32,7 @@
 		<div class="forum_header_table">
 			<div class="forum_header"> 
 				<span class="forum_header_generic">Личная информация</span>
-				<span class="empty_cell">Сообщение</span>
+				<span class="empty_cell"></span>
 			</div>
 		</div>
 	<ul class="forum_table" id="stylized">
