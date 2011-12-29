@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.joda.time.DateTime;
+import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Topic;
 
@@ -29,18 +30,6 @@ import java.util.List;
  * @author Eugeny Batov
  */
 public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> implements TopicDao {
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Topic> getTopicsInBranch(Long branchId) {
-        List<Topic> topics = getSession().getNamedQuery("getAllTopicsInBranch")
-                .setCacheable(true)
-                .setLong("branchId", branchId)
-                .list();
-        return topics;
-    }
 
 
     /**

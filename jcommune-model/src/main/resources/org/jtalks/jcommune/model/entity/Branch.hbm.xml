@@ -28,12 +28,11 @@
     <property name="name" column="NAME" not-null="true"/>
     <property name="description" column="DESCRIPTION"/>
 
-    <list name="topics" cascade="all-delete-orphan">
+    <bag name="topics" cascade="all-delete-orphan" order-by="sticked DESC, topicWeight DESC, modificationDate DESC">
       <cache usage="nonstrict-read-write"/>
       <key column="BRANCH_ID" foreign-key="FK_BRANCH"/>
-      <index column="TOPICS_INDEX"/>
       <one-to-many class="Topic"/>
-    </list>
+    </bag>
 
     <many-to-one name="section" column="SECTION_ID" class="Section"
                  not-null="false"/>

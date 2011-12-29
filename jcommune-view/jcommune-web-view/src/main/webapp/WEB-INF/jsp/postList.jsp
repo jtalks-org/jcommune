@@ -24,6 +24,8 @@
     <title><c:out value="${topic.title}"/></title>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/utils.js"
             type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/preview.js"
+            type="text/javascript"></script>
 </head>
 <body>
 <div class="wrap topic_page">
@@ -32,6 +34,7 @@
 <h1><a href="${pageContext.request.contextPath}">
     <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
 </a></h1>
+
 <div class="all_forums">
 <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
 <span class="nav_bottom">
@@ -172,14 +175,14 @@
                         <jtalks:format value="${post.creationDate}"/>
                     </a>
                 </div>
-                <p class="forum_message_cell_text">
+                <div class="forum_message_cell_text">
                     <jtalks:bb2html bbCode="${post.postContent}"/>
                     <br/><br/><br/>
                     <c:if test="${post.modificationDate!=null}">
                         <spring:message code="label.modify"/>
                         <jtalks:format value="${post.modificationDate}"/>
                     </c:if>
-                </p>
+                </div>
                 <c:if test="${post.userCreated.signature!=null}">
                     <div class="signature">
                         -------------------------

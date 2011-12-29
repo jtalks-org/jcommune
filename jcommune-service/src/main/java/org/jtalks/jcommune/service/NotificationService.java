@@ -12,26 +12,18 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao;
+package org.jtalks.jcommune.service;
 
-import org.jtalks.common.model.entity.Entity;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.Section;
+import org.jtalks.jcommune.model.entity.Topic;
 
 /**
- * @author Kirill Afonin
+ * @author Evgeniy Naumenko
  */
-public interface ParentRepository<T extends Entity> extends ChildRepository<T> {
-    /**
-     * Save or update entity.
-     *
-     * @param entity object to save
-     */
-    void saveOrUpdate(T entity);
+public interface NotificationService {
 
-    /**
-     * Delete the entity by id.
-     *
-     * @param id the id
-     * @return {@code true} if entity deleted successfully
-     */
-    boolean delete(Long id);
+    void topicChanged(Topic topic);
+    void branchChanged(Branch branch);
+    void sectionChanged(Section section);
 }

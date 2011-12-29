@@ -123,17 +123,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         return topic;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Topic> getTopicsInBranch(long branchId) throws NotFoundException {
-        if (!branchDao.isExist(branchId)) {
-            throw new NotFoundException("Branch with id: " + branchId + " not found");
-        }
-        return this.getDao().getTopicsInBranch(branchId);
-
-    }
 
     /**
      * {@inheritDoc}

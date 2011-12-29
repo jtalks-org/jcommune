@@ -12,39 +12,39 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao.hibernate;
+package org.jtalks.jcommune.service.nontransactional;
 
-import org.hibernate.classic.Session;
-import org.jtalks.common.model.entity.Entity;
-import org.jtalks.jcommune.model.dao.ParentRepository;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.Section;
+import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.NotificationService;
 
 /**
- * @author Kirill Afonin
+ * @author Evgeniy Naumenko
  */
-public class ParentRepositoryImpl<T extends Entity>
-        extends AbstractHibernateChildRepository<T> implements ParentRepository<T> {
-
-
-    private final String deleteQuery = "delete " + getType().getSimpleName() + " e where e.id= :id";
+public class NotificationServiceImpl implements NotificationService {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void saveOrUpdate(T entity) {
-        Session session = getSession();
-        session.saveOrUpdate(entity);
-        session.flush();
+    public void topicChanged(Topic topic) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean delete(Long id) {
-        return getSession().createQuery(deleteQuery)
-                .setCacheable(true)
-                .setLong("id", id)
-                .executeUpdate() != 0;
+    public void branchChanged(Branch branch) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void sectionChanged(Section section) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 }

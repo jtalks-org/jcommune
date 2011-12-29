@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.model.entity.Entity;
-import org.jtalks.jcommune.model.dao.ChildRepository;
+import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.service.EntityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 

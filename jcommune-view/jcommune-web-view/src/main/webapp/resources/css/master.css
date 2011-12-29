@@ -363,7 +363,7 @@ a.last_message_user {
     vertical-align: top;
 }
 
-.forum_message_cell p {
+.forum_message_cell_text {
     padding-left: 10px;
     word-wrap: break-word;
 	line-height: 1.2;
@@ -444,6 +444,15 @@ a.last_message_user {
 }
 .userdetails_page li span {
 	border-left: 1px solid grey;
+}
+
+.userdetails_page li label,
+.userdetails_page li span {
+        width: 50%;
+        padding: 5px;
+}
+.userdetails_page li span {
+        border-left: 1px solid grey;
 }
 
 /* Answer Form & Buttons */
@@ -661,37 +670,36 @@ a.admin, a.user {
 
 /* User details */
 .userdetails_page .forum_header_table {
-	width: 600px;
-	margin: 0 auto;
+        width: 600px;
+        margin: 0 auto;
 }
 
 .userdetails_page .forum_table {
-	width: 598px;
-	margin: 0 auto;
+        width: 598px;
+        margin: 0 auto;
 }
 
 .userdetails_page table {
-	margin: 5px auto;
+        margin: 5px auto;
 }
 
 .userdetails_page td {
-	vertical-align: middle;
+        vertical-align: middle;
 }
 
 .userdetails_page label {
-	font-weight: bold;
+        font-weight: bold;
 }
 
-.userdetails_page .error {	
-	font-size: 11px;
-	border: none;
+.userdetails_page .error {
+        font-size: 11px;
+        border: none;
 }
 #removeAvatarForm td {
-	padding: 5px;
-	padding-bottom: 0;
-	vertical-align: center;
+        padding: 5px;
+        padding-bottom: 0;
+        vertical-align: center;
 }
-	
 
 /* Error 404 */
 .text_404 {
@@ -719,7 +727,7 @@ a.admin, a.user {
 
 .form_controls {
     padding-top: 5px;
-	text-align: center;
+    text-align: center;
 }
 
 .error {

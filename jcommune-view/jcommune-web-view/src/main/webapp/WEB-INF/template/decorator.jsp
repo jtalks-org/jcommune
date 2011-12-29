@@ -36,6 +36,8 @@
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-1.7.min.js"></script>
     <script language="javascript"
+            src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/imgPreview.js"></script>
+    <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/URLBuilder.js"></script>
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/global.js"></script>

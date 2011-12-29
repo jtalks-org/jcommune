@@ -161,21 +161,6 @@ public class TransactionalTopicServiceTest {
         topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, 1L);
     }
 
-    @Test
-    public void testGetTopicsInBranch() throws NotFoundException {
-        List<Topic> expectedList = new ArrayList<Topic>();
-        expectedList.add(new Topic(user, "title"));
-        expectedList.add(new Topic(user, "title"));
-        when(branchDao.isExist(BRANCH_ID)).thenReturn(true);
-        when(topicDao.getTopicsInBranch(BRANCH_ID)).thenReturn(expectedList);
-
-        List<Topic> topics = topicService.getTopicsInBranch(BRANCH_ID);
-
-        assertNotNull(topics);
-        assertEquals(topics.size(), 2);
-        verify(topicDao).getTopicsInBranch(BRANCH_ID);
-        verify(branchDao).isExist(BRANCH_ID);
-    }
 
     @Test
     public void testGetAllTopicsPastLastDay() throws NotFoundException {
@@ -221,12 +206,6 @@ public class TransactionalTopicServiceTest {
         assertEquals(topics.size(), 2);
     }
 
-    @Test(expectedExceptions = {NotFoundException.class})
-    public void testGetTopicsInNonExistentBranch() throws NotFoundException {
-        when(branchDao.isExist(BRANCH_ID)).thenReturn(false);
-
-        topicService.getTopicsInBranch(BRANCH_ID);
-    }
 
     @Test
     public void testDeleteTopic() throws NotFoundException {

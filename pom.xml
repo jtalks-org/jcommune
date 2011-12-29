@@ -296,11 +296,6 @@
                 <artifactId>mail</artifactId>
                 <version>1.4</version>
             </dependency>
-            <dependency>
-                <groupId>org.codehaus.jackson</groupId>
-                <artifactId>jackson-mapper-asl</artifactId>
-                <version>1.9.2</version>
-            </dependency>
             <!-- RSS -->
             <dependency>
                 <groupId>rome</groupId>

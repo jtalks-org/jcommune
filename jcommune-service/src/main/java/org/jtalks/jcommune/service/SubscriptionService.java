@@ -12,25 +12,10 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao;
-
-import java.util.List;
-
-import org.jtalks.common.model.dao.ParentRepository;
-import org.jtalks.jcommune.model.entity.Section;
+package org.jtalks.jcommune.service;
 
 /**
- * DAO for the {@link Section} objects.
- * 
- * @author Max Malakhov
- * @see org.jtalks.jcommune.model.dao.hibernate.SectionHibernateDao
+ * @author Evgeniy Naumenko
  */
-public interface SectionDao extends ParentRepository<Section> {
-
-    /**
-     * Get the list of all sections.
-     *
-     * @return list of section
-     */
-    List<Section> getAll();
+public interface SubscriptionService {
 }

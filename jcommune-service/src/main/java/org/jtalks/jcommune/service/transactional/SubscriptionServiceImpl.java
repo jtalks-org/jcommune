@@ -12,37 +12,10 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao;
-
-import org.jtalks.common.model.entity.Entity;
+package org.jtalks.jcommune.service.transactional;
 
 /**
- * @author Pavel Vervenko
- * @author Kirill Afonin
+ * @author Evgeniy Naumenko
  */
-public interface ChildRepository<T extends Entity> {
-
-    /**
-     * Update entity.
-     * You should not try to save entity using this method.
-     *
-     * @param entity object to save
-     */
-    void update(T entity);
-
-    /**
-     * Get entity by id.
-     *
-     * @param id the id
-     * @return loaded Persistence instance
-     */
-    T get(Long id);
-
-    /**
-     * Check entity existance by id.
-     *
-     * @param id entity id
-     * @return {@code true} if entity exist
-     */
-    boolean isExist(Long id);
+public class SubscriptionServiceImpl {
 }

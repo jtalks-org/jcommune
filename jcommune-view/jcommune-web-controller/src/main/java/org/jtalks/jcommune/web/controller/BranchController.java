@@ -98,7 +98,7 @@ public final class BranchController {
     ) throws NotFoundException {
 
         Branch branch = branchService.get(branchId);
-        List<Topic> topics = topicService.getTopicsInBranch(branchId);
+        List<Topic> topics = branch.getTopics();
         User currentUser = securityService.getCurrentUser();
 
         Pagination pag = new Pagination(page, currentUser, topics.size(), pagingEnabled);
