@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.joda.time.DateTime;
+import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Topic;
 

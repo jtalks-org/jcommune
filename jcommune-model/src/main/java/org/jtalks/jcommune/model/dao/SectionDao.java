@@ -16,6 +16,7 @@ package org.jtalks.jcommune.model.dao;
 
 import java.util.List;
 
+import org.jtalks.common.model.dao.ParentRepository;
 import org.jtalks.jcommune.model.entity.Section;
 
 /**

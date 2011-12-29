@@ -28,7 +28,7 @@
     <!--Declaration of AOP Config -->
     <aop:config>
         <aop:advisor advice-ref="exceptionTranslationInterceptor"
-                     pointcut="execution(* org.jtalks.jcommune.model.dao.ChildRepository+.* (*))"/>
+                     pointcut="execution(* org.jtalks.common.model.dao.ChildRepository+.* (*))"/>
     </aop:config>
 
     <!--Declaration of DAO beans -->

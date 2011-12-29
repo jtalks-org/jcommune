@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import org.jtalks.common.model.dao.hibernate.AbstractHibernateParentRepository;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
@@ -28,7 +29,7 @@ import java.util.List;
  * @author Kirill Afonin
  */
 public class PrivateMessageHibernateDao extends
-        ParentRepositoryImpl<PrivateMessage> implements PrivateMessageDao {
+        AbstractHibernateParentRepository<PrivateMessage> implements PrivateMessageDao {
 
     public static final String STATUS = "status";
 

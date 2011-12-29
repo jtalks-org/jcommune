@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.model.dao;
 
 import org.joda.time.DateTime;
+import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.model.entity.Topic;
 
 import java.util.List;

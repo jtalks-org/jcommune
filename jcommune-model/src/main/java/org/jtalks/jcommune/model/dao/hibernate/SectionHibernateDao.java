@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import org.jtalks.common.model.dao.hibernate.AbstractHibernateParentRepository;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.entity.Section;
 
@@ -24,7 +25,7 @@ import java.util.List;
  *
  * @author Max Malakhov
  */
-public class SectionHibernateDao extends ParentRepositoryImpl<Section> implements SectionDao {
+public class SectionHibernateDao extends AbstractHibernateParentRepository<Section> implements SectionDao {
 
 
     /**
