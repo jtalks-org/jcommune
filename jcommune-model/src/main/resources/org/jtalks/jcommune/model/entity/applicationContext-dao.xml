@@ -58,7 +58,7 @@ resolves a problem of multiple DAO beans definition -->
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
     <!-- Migrations -->
-    <bean id="flyway" class="org.jtalks.common.model.util.FlywayWrapper" init-method="migrate"
+    <bean id="flyway" class="org.jtalks.common.util.FlywayWrapper" init-method="migrate"
           depends-on="dataSource">
         <property name="dataSource" ref="dataSource"/>
         <property name="basePackage" value="org.jtalks.jcommune.migrations"/>
