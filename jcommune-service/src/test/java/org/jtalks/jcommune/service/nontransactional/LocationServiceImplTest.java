@@ -54,7 +54,7 @@ public class LocationServiceImplTest {
         topic = new Topic(user, "");
         topic.setUuid("uuid");
         list = new ArrayList<Object>();
-        map = new HashMap<User, String>();
+        map = new ConcurrentHashMap<User, String>();
     }
 
     @Test
@@ -75,6 +75,7 @@ public class LocationServiceImplTest {
         User user1 = new User("", "", "");
         list.add(user1);
         when(sessionRegistry.getAllPrincipals()).thenReturn(list);
+
 
         locationService.getUsersViewing(topic);
     }

@@ -36,7 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LocationServiceImpl implements LocationService {
     private SecurityService securityService;
     private SessionRegistry sessionRegistry;
-    private Map<User, String> registerUserMap = Collections.synchronizedMap(new HashMap<User, String>());
+    private Map<User, String> registerUserMap = new ConcurrentHashMap<User, String>();
 
     /**
      * Constructor assigns the elements necessary
@@ -60,7 +60,9 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public List<String> getUsersViewing(Entity entity) {
         List<String> viewList = new ArrayList<String>();
-        registerUserMap.put(securityService.getCurrentUser(), entity.getUuid());
+        if (securityService.getCurrentUser() != null) {
+            registerUserMap.put(securityService.getCurrentUser(), entity.getUuid());
+        }
 
         for (Object o : sessionRegistry.getAllPrincipals()) {
             User user = (User) o;
@@ -77,6 +79,8 @@ public class LocationServiceImpl implements LocationService {
      */
     @Override
     public void clearUserLocation() {
-        registerUserMap.remove(securityService.getCurrentUser());
+        if (securityService.getCurrentUser() != null) {
+            registerUserMap.remove(securityService.getCurrentUser());
+        }
     }
 }
