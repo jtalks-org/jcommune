@@ -15,7 +15,7 @@
 
 package org.jtalks.jcommune.web.interceptors;
 
-import org.jtalks.jcommune.service.nontransactional.LocationServiceImpl;
+import org.jtalks.jcommune.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -30,16 +30,16 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ClearInterceptor extends HandlerInterceptorAdapter {
 
-    private LocationServiceImpl locationServiceImpl;
+    private LocationService locationService;
 
     /**
      * Constructor clearInterceptor
      *
-     * @param locationServiceImpl autowired object from Spring Context
+     * @param locationService autowired object from Spring Context
      */
     @Autowired
-    public ClearInterceptor(LocationServiceImpl locationServiceImpl) {
-        this.locationServiceImpl = locationServiceImpl;
+    public ClearInterceptor(LocationService locationService) {
+        this.locationService = locationService;
     }
 
     /**
@@ -53,9 +53,15 @@ public class ClearInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
-
+        /**
+         * This condition is necessary because interceptors work designed to challenge a controller,
+         * if the page is present avatar, after calling the main controller will call controller
+         * avatar that will lead to loss of data on the location of the current user.
+         * If you delete or change the terms of the controller mapinga avatar,
+         * to display all the pages of browsing users will see only the current user.
+         */
         if (!request.getRequestURI().endsWith("/avatar")) {
-            locationServiceImpl.clearUserLocation();
+            locationService.clearUserLocation();
         }
 
         return true;

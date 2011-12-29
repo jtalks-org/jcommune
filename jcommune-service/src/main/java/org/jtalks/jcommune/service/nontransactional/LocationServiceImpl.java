@@ -23,6 +23,7 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Class for storing and tracking of users on the forum.
@@ -38,6 +39,9 @@ public class LocationServiceImpl implements LocationService {
     private Map<User, String> registerUserMap = Collections.synchronizedMap(new HashMap<User, String>());
 
     /**
+     * Constructor assigns the elements necessary
+     * for the correct operation of this implementation
+     *
      * @param securityService security service
      * @param sessionRegistry session registry
      */
@@ -47,11 +51,14 @@ public class LocationServiceImpl implements LocationService {
     }
 
     /**
-     * Modification map to active user, and create list of user name users on the current page
-     * {@inheritDoc}
+     * Get lis name user active these page, modification map to active user
+     * and create list of user name users on the current page
+     *
+     * @param entity entity
+     * @return lis name user active these page
      */
     @Override
-    public synchronized List<String> getUsersViewing(Entity entity) {
+    public List<String> getUsersViewing(Entity entity) {
         List<String> viewList = new ArrayList<String>();
         registerUserMap.put(securityService.getCurrentUser(), entity.getUuid());
 

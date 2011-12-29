@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -66,10 +67,6 @@ public class LocationServiceImplTest {
         topic.setUuid("");
 
         locationService.getUsersViewing(topic);
-
-        locationService.getUsersViewing(topic);
-
-        locationService.getUsersViewing(topic);
     }
 
     @Test
@@ -84,7 +81,8 @@ public class LocationServiceImplTest {
 
     @Test
     public void testCurrentUserIsAnonymous() {
-        when(securityService.getCurrentUser()).thenReturn(null);
+        when(securityService.getCurrentUser()).thenReturn(user);
+        when(sessionRegistry.getAllPrincipals()).thenReturn(list);
 
         locationService.getUsersViewing(topic);
     }
