@@ -538,7 +538,7 @@ a.disabled {
     margin: 5px;
 }
 
-#title, #recipient {
+#title, #recipient, #subject {
     width: 95%;
 }
 
