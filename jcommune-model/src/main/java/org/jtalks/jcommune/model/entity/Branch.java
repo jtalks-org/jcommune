@@ -17,7 +17,9 @@ package org.jtalks.jcommune.model.entity;
 import org.jtalks.common.model.entity.Entity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Forum branch that contains topics related to branch theme.
@@ -32,6 +34,7 @@ public class Branch extends Entity {
     private String description;
     private List<Topic> topics = new ArrayList<Topic>();
     private Section section;
+    private Set<User> subscribers = new HashSet<User>();
 
     /**
      * Creates the Branch instance. All fields values are null.
@@ -212,6 +215,26 @@ public class Branch extends Entity {
      */
     protected void setSection(Section section) {
         this.section = section;
+    }
+
+    /**
+     * Returns users subscribed to get email notifications
+     * about this branch's updates
+     *
+     * @return users to send notifications on update to
+     */
+    public Set<User> getSubscribers() {
+        return subscribers;
+    }
+
+    /**
+     * Sets subscribers list for this branch.
+     * For Hibernate use only.
+     *
+     * @param subscribers users to send notifications on update to
+     */
+    protected void setSubscribers(Set<User> subscribers) {
+        this.subscribers = subscribers;
     }
 
     /**

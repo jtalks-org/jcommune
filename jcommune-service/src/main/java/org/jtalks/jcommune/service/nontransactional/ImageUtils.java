@@ -57,7 +57,7 @@ public class ImageUtils {
      *
      * @param image input image
      * @return byte array obtained from image
-     * @throws java.io.IOException if an I/O error occurs
+     * @throws ImageUploadException if an I/O error occurs
      */
     public byte[] convertImageToByteArray(Image image) throws ImageUploadException {
         byte[] result;
@@ -78,7 +78,7 @@ public class ImageUtils {
      *
      * @param bytes for conversion.
      * @return image result.
-     * @throws java.io.IOException image conversion problem.
+     * @throws ImageUploadException image conversion problem.
      */
     public BufferedImage convertByteArrayToImage(byte[] bytes) throws ImageUploadException {
         BufferedImage result;
@@ -140,7 +140,7 @@ public class ImageUtils {
      *
      * @param image for processing
      * @return processed image bytes
-     * @throws IOException image processing problem
+     * @throws ImageUploadException image processing problem
      */
     public byte[] preprocessImage(Image image) throws ImageUploadException {
         byte[] result;
@@ -219,11 +219,11 @@ public class ImageUtils {
 
         for (int y = 0; y < height; y++) {
             sourceY = y * source.getHeight() / bufferedImage.getHeight();
-            yDiff = scale(y, scaleY) - sourceY;
+            yDiff = y / scaleY - sourceY;
 
             for (int x = 0; x < width; x++) {
                 sourceX = x * source.getWidth() / bufferedImage.getWidth();
-                xDiff = scale(x, scaleX) - sourceX;
+                xDiff = x / scaleX - sourceX;
 
                 x1 = Math.min(source.getWidth() - 1, sourceX + 1);
                 y1 = Math.min(source.getHeight() - 1, sourceY + 1);
@@ -238,17 +238,6 @@ public class ImageUtils {
         }
 
         return bufferedImage;
-    }
-
-    /**
-     * Scales point.
-     *
-     * @param point point
-     * @param scale scale
-     * @return scaled point
-     */
-    private double scale(int point, double scale) {
-        return point / scale;
     }
 
     /**

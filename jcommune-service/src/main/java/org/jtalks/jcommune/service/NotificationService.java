@@ -17,6 +17,7 @@ package org.jtalks.jcommune.service;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Section;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.User;
 
 /**
  * @author Evgeniy Naumenko
@@ -25,5 +26,4 @@ public interface NotificationService {
 
     void topicChanged(Topic topic);
     void branchChanged(Branch branch);
-    void sectionChanged(Section section);
 }

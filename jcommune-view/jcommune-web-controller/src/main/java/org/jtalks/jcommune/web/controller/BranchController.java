@@ -111,7 +111,8 @@ public final class BranchController {
                 .addObject("branch", branch)
                 .addObject("topics", topics)
                 .addObject("pagination", pag)
-                .addObject("breadcrumbList", breadcrumbs);
+                .addObject("breadcrumbList", breadcrumbs)
+                .addObject("subscribed", branch.getSubscribers().contains(currentUser));
     }
 
     /**

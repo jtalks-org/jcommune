@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.MailService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.slf4j.Logger;
@@ -32,12 +33,22 @@ public class MailServiceImpl implements MailService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MailServiceImpl.class);
 
-    // todo: apply i18n settings here somehow
+    // todo: apply i18n settings here somehow and complement template with forum links
     private static final String PASSWORD_RECOVERY_TEMPLATE =
             "Dear %s!\n" +
                     "\n" +
                     "This is a password recovery mail from JTalks forum.\n" +
                     "Your new password is: %s\n" +
+                    "\n" +
+                    "Best regards,\n" +
+                    "\n" +
+                    "Jtalks forum.";
+
+    private static final String SUBSCRIPTION_NOTIFICATION_TEMPLATE =
+            "Dear %s!\n" +
+                    "\n" +
+                    "Your favorite forum has some updates.\n" +
+                    "Olease check it out!" +
                     "\n" +
                     "Best regards,\n" +
                     "\n" +
@@ -58,24 +69,52 @@ public class MailServiceImpl implements MailService {
         this.templateMessage = templateMessage;
     }
 
-     /**
+    /**
      * {@inheritDoc}
      */
     @Override
     public void sendPasswordRecoveryMail(String userName, String email, String newPassword)
-        throws MailingFailedException {
+            throws MailingFailedException {
+        this.sendEmail(
+                email,
+                "Password recovery",
+                String.format(String.format(PASSWORD_RECOVERY_TEMPLATE, userName, newPassword)),
+                "Password recovery email sending failed");
+        LOGGER.info("Password recovery email sent for {}", userName);
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void sendUpdatesOnSubscription(User user) throws MailingFailedException {
+        this.sendEmail(
+                user.getEmail(),
+                "Forum updates",
+                String.format(SUBSCRIPTION_NOTIFICATION_TEMPLATE, user.getUsername()),
+                "Subscription update sending failed");
+    }
+
+    /**
+     * Just a convenience method for message sending to encapsulte
+     * boilerplate error handling code.
+     *
+     * @param to           destination wmail address
+     * @param subject      message headline
+     * @param text         message body, may contain html
+     * @param errorMessage to be logged and thrown if some error occurs
+     * @throws MailingFailedException exception with error message specified ic case of some error
+     */
+    private void sendEmail(String to, String subject, String text, String errorMessage) throws MailingFailedException {
         SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
-        msg.setTo(email);
-        msg.setSubject("Password recovery");
-        msg.setText(String.format(PASSWORD_RECOVERY_TEMPLATE, userName, newPassword));
+        msg.setTo(to);
+        msg.setSubject(subject);
+        msg.setText(text);
         try {
             this.mailSender.send(msg);
-            LOGGER.info("Password recovery email sent for {}", userName);
         } catch (MailException e) {
-            String message = "Password recovery email sending failed";
-            LOGGER.error(message , e);
-            throw new MailingFailedException("Password recovery email sending failed", e);
+            LOGGER.error(errorMessage, e);
+            throw new MailingFailedException(errorMessage, e);
         }
     }
 }

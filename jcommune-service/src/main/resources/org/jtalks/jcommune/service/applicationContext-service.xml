@@ -52,56 +52,68 @@
 
     <bean id="userService"
           class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
-        <constructor-arg index="0" ref="userDao"/>
-        <constructor-arg index="1" ref="securityService"/>
-        <constructor-arg index="2" ref="mailService"/>
-        <constructor-arg index="3" ref="imagePreprocessor"/>
+        <constructor-arg ref="userDao"/>
+        <constructor-arg ref="securityService"/>
+        <constructor-arg ref="mailService"/>
+        <constructor-arg ref="imagePreprocessor"/>
     </bean>
 
     <bean id="postService"
           class="org.jtalks.jcommune.service.transactional.TransactionalPostService">
-        <constructor-arg index="0" ref="postDao"/>
-        <constructor-arg index="1" ref="topicDao"/>
-        <constructor-arg index="2" ref="securityService"/>
+        <constructor-arg ref="postDao"/>
+        <constructor-arg ref="topicDao"/>
+        <constructor-arg ref="securityService"/>
     </bean>
 
     <bean id="topicBranchService"
           class="org.jtalks.jcommune.service.transactional.TransactionalBranchService">
-        <constructor-arg index="0" ref="topicBranchDao"/>
-        <constructor-arg index="1" ref="branchSectionDao"/>
+        <constructor-arg ref="topicBranchDao"/>
+        <constructor-arg ref="branchSectionDao"/>
     </bean>
 
     <bean id="branchSectionService"
           class="org.jtalks.jcommune.service.transactional.TransactionalSectionService">
-        <constructor-arg index="0" ref="branchSectionDao"/>
+        <constructor-arg ref="branchSectionDao"/>
     </bean>
 
     <bean id="pmService"
           class="org.jtalks.jcommune.service.transactional.TransactionalPrivateMessageService">
-        <constructor-arg index="0" ref="privateMessageDao"/>
-        <constructor-arg index="1" ref="securityService"/>
-        <constructor-arg index="2" ref="userService"/>
-        <constructor-arg index="3" ref="userDataCacheService"/>
+        <constructor-arg ref="privateMessageDao"/>
+        <constructor-arg ref="securityService"/>
+        <constructor-arg ref="userService"/>
+        <constructor-arg ref="userDataCacheService"/>
     </bean>
 
     <bean id="topicService"
           class="org.jtalks.jcommune.service.transactional.TransactionalTopicService">
-        <constructor-arg index="0" ref="topicDao"/>
-        <constructor-arg index="1" ref="securityService"/>
-        <constructor-arg index="2" ref="topicBranchService"/>
-        <constructor-arg index="3" ref="topicBranchDao"/>
+        <constructor-arg ref="topicDao"/>
+        <constructor-arg ref="securityService"/>
+        <constructor-arg ref="topicBranchService"/>
+        <constructor-arg ref="topicBranchDao"/>
+    </bean>
+
+    <bean id="notificationService" class="org.jtalks.jcommune.service.nontransactional.NotificationServiceImpl">
+        <constructor-arg ref="securityService"/>
+        <constructor-arg ref="mailService"/>
+    </bean>
+
+    <bean id="subscriptionService"
+          class="org.jtalks.jcommune.service.transactional.TransactionalSubscriptionService">
+        <constructor-arg ref="topicBranchDao"/>
+        <constructor-arg ref="topicDao"/>
+        <constructor-arg ref="securityService"/>
     </bean>
 
     <bean id="securityService"
           class="org.jtalks.jcommune.service.nontransactional.SecurityServiceImpl">
-        <constructor-arg index="0" ref="userDao"/>
-        <constructor-arg index="1" ref="securityContextFacade"/>
-        <constructor-arg index="2" ref="aclManager"/>
+        <constructor-arg ref="userDao"/>
+        <constructor-arg ref="securityContextFacade"/>
+        <constructor-arg ref="aclManager"/>
     </bean>
 
     <bean id="forumStatisticsService"
           class="org.jtalks.jcommune.service.nontransactional.ForumStatisticsServiceImpl">
-        <constructor-arg index="0" ref="forumStatisticsDAO"/>
+        <constructor-arg ref="forumStatisticsDAO"/>
     </bean>
 
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
@@ -124,8 +136,8 @@
 
     <bean id="mailService"
           class="org.jtalks.jcommune.service.nontransactional.MailServiceImpl">
-        <constructor-arg index="0" ref="mailSender"/>
-        <constructor-arg index="1" ref="templateMessage"/>
+        <constructor-arg ref="mailSender"/>
+        <constructor-arg ref="templateMessage"/>
     </bean>
 
     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">

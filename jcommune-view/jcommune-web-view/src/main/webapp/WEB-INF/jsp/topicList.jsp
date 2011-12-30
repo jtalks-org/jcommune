@@ -51,9 +51,23 @@
             </span>
         </nobr>
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-            <a class="button top_button"
-               href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"><spring:message
-                    code="label.addtopic"/></a>
+            <a class="button top_button" href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}">
+                <spring:message code="label.addtopic"/>
+            </a>
+            <c:choose>
+                <c:when test="${subscribed}">
+                    <a class="button top_button"
+                       href="${pageContext.request.contextPath}/branches/${branch.id}/unsubscribe">
+                        <spring:message code="label.topic.unsubscribe"/>
+                    </a>
+                </c:when>
+                <c:otherwise>
+                    <a class="button top_button"
+                       href="${pageContext.request.contextPath}/branches/${branch.id}/subscribe">
+                        <spring:message code="label.topic.subscribe"/>
+                    </a>
+                </c:otherwise>
+            </c:choose>
             &nbsp; &nbsp; &nbsp;
         </sec:authorize>
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>

@@ -14,8 +14,38 @@
  */
 package org.jtalks.jcommune.service;
 
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.Topic;
+
 /**
  * @author Evgeniy Naumenko
  */
 public interface SubscriptionService {
+
+    /**
+     * Subscribes current user to the topic given.
+     * That means, that user will receive email notification for every
+     * topic update except for topic removal.
+     *
+     * @param topic topic to subscribe current user to
+     */
+    void subscribeToTopic(Topic topic);
+
+    /**
+     *
+     * @param branch
+     */
+    void subscribeToBranch(Branch branch);
+
+    /**
+     *
+     * @param topic topic to unsubscribe current user from
+     */
+    void unsubscribeFromTopic(Topic topic);
+
+    /**
+     *
+     * @param branch
+     */
+    void unsubscribeFromBranch(Branch branch);
 }

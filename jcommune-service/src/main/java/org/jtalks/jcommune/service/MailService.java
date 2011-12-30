@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service;
 
+import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 
 /**
@@ -32,7 +33,17 @@ public interface MailService {
      * @param userName    username to be used in a mail
      * @param email       address to mail to
      * @param newPassword new user password to be placed in an email
-     * @throws org.jtalks.jcommune.service.exceptions.MailingFailedException when mailing failed
+     * @throws MailingFailedException when mailing failed
      */
     void sendPasswordRecoveryMail(String userName, String email, String newPassword) throws MailingFailedException;
+
+    /**
+     * Sends update notification to user specified, e.g. when some new
+     * posts were added to the topic. This method won't check if user
+     * is subscribed to the particular notification or not.
+     *
+     * @param user a person to be notified about updates by email
+     * @throws MailingFailedException when mailing failed dur to some reason
+     */
+    void sendUpdatesOnSubscription(User user) throws MailingFailedException;
 }
