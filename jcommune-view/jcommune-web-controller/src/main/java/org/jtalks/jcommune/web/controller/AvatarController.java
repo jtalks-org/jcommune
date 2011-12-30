@@ -211,7 +211,17 @@ public class AvatarController {
         return new ResponseEntity<String>(body, responseHeaders, statusCode);
     }
 
-    private void prepareResponse(byte[] bytes, ServletRequest request, HttpServletResponse response, Map<String, String> responseContent) {
+    /**
+     * Prepare valid or error response after avatar processing
+     *
+     * @param bytes           input avatar data
+     * @param request         used for getting application context
+     * @param response        resulting response
+     * @param responseContent with avatar processing results
+     */
+    private void prepareResponse(byte[] bytes, ServletRequest request,
+                                 HttpServletResponse response,
+                                 Map<String, String> responseContent) {
         try {
             avatarService.validateAvatarSize(bytes);
             prepareNormalResponse(bytes, responseContent);
