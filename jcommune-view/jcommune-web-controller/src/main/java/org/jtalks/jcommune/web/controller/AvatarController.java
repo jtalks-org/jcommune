@@ -188,12 +188,8 @@ public class AvatarController {
 
         try {
             avatarService.validateAvatarFormat(file);
-            byte[] bytes;
-            try {
-                bytes = file.getBytes();
-            } catch (IOException e) {
-                throw new ImageUploadException(e);
-            }
+            byte[] bytes = file.getBytes();
+
             avatarService.validateAvatarSize(bytes);
             prepareNormalResponse(bytes, responseContent);
             statusCode = HttpStatus.OK;

@@ -15,8 +15,6 @@
 
 package org.jtalks.jcommune.service.exceptions;
 
-import java.io.IOException;
-
 /**
  * Throws if uploaded image is invalid, for example has wrong size, format dimensions...
  *
