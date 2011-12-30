@@ -170,8 +170,8 @@
             button:$("#upload").get(0),
             action:action,
             multiple:false,
-            allowedExtensions:['jpg', 'jpeg', 'png', 'gif'],
-            sizeLimit:4194304, // max size
+//            allowedExtensions:['jpg', 'jpeg', 'png', 'gif'],
+//            sizeLimit:4194304, // max size
             onSubmit:function (id, filename) {
                 console.log('File upload: %s, ID: %s', filename, id);
             },
@@ -180,10 +180,17 @@
             },
             onComplete:function (id, filename, responseJSON) {
                 console.log('File upload for file %s, id %s done with status %s', filename, id, responseJSON);
-                document.getElementById('avatarPreview').setAttribute('src', responseJSON.srcPrefix + responseJSON.srcImage);
-                document.getElementById('avatarTempValue').setAttribute('value', responseJSON.srcImage);
+                if (responseJSON.success == "true") {
+                    document.getElementById('avatarPreview').setAttribute('src', responseJSON.srcPrefix
+                            + responseJSON.srcImage);
+                    document.getElementById('avatarTempValue').setAttribute('value', responseJSON.srcImage);
+                } else {
+                    document.getElementById('avatarPreview').setAttribute('src', "");
+                    document.getElementById('avatarPreview').setAttribute('alt', responseJSON.message);
+                }
+
             },
-            debug:true
+            debug:false
         });
 
     }

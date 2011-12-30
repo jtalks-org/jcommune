@@ -13,41 +13,40 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.jtalks.jcommune.service;
-
-import org.jtalks.jcommune.service.exceptions.ImageFormatException;
-import org.jtalks.jcommune.service.exceptions.ImageSizeException;
-import org.jtalks.jcommune.service.exceptions.ImageUploadException;
-import org.springframework.web.multipart.MultipartFile;
+package org.jtalks.jcommune.service.exceptions;
 
 import java.io.IOException;
 
 /**
- * Service for avatar related operations
+ * Throws if uploaded image is invalid, for example has wrong size, format dimensions...
  *
  * @author Alexandre Teterin
  */
-public interface AvatarService {
-
-    int MAX_SIZE = 4096;
-
+public class ImageUploadException extends Exception {
 
     /**
-     * Perform bytes data to string conversion
+     * Default constructor.
+     * <p/>
+     * {@link Exception}
+     */
+    public ImageUploadException() {
+    }
+
+    /**
+     * Create exception with specific message.
      *
-     * @param bytes for conversion
-     * @return result string
-     * @throws IOException conversion problem
+     * @param message exception message
      */
-    String convertAvatarToBase64String(byte[] bytes) throws ImageUploadException;
+    public ImageUploadException(String message) {
+        super(message);
+    }
 
     /**
-     * @param file
+     * @param cause
      */
-    void validateAvatarFormat(MultipartFile file) throws ImageFormatException;
+    public ImageUploadException(Throwable cause) {
+        super(cause);
+    }
 
-    /**
-     * @param bytes
-     */
-    void validateAvatarSize(byte[] bytes) throws ImageSizeException;
+
 }

@@ -22,9 +22,13 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.AvatarService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.exceptions.ImageFormatException;
+import org.jtalks.jcommune.service.exceptions.ImageSizeException;
+import org.jtalks.jcommune.service.exceptions.ImageUploadException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
+import org.jtalks.jcommune.web.validation.ImageFormatValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,17 +42,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -91,37 +100,21 @@ public class AvatarController {
     @ResponseBody
     public ResponseEntity<String> uploadAvatar(DefaultMultipartHttpServletRequest request) throws ServletException {
 
+        //get input file
         Map<String, MultipartFile> fileMap = request.getFileMap();
         Collection<MultipartFile> fileCollection = fileMap.values();
         Iterator<MultipartFile> fileIterator = fileCollection.iterator();
         MultipartFile file = fileIterator.next();
+
+        //prepare response parameters
+        ResponseEntity<String> result;
         HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentType(MediaType.TEXT_HTML);
         HttpStatus statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         Map<String, String> responseContent = new HashMap<String, String>();
         String body = "";
 
-        try {
-            byte[] bytes = file.getBytes();
-            prepareNormalResponse(bytes, responseContent);
-            body = prepareJSONString(responseContent);
-            statusCode = HttpStatus.OK;
-        } catch (IOException e) {
-            responseContent.clear();
-            prepareErrorResponse(responseContent, e);
-            try {
-                body = prepareJSONString(responseContent);
-                statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-            } catch (IOException exception) {
-                LOGGER.error(new StringBuilder().
-                        append(AvatarController.class.getName()).
-                        append("has thrown an exception: ").
-                        append(exception.getMessage()).toString());
-            }
-        }
-
-        responseHeaders.setContentType(MediaType.TEXT_HTML);
-
-        return new ResponseEntity<String>(body, responseHeaders, statusCode);
+        return prepareResponse(request, responseHeaders, statusCode, responseContent, body, file);
     }
 
     /**
@@ -136,18 +129,11 @@ public class AvatarController {
     @RequestMapping(value = "/users/XHRavatarpreview", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, String> uploadAvatar(@RequestBody byte[] bytes,
+                                            ServletRequest request,
                                             HttpServletResponse response) throws ServletException {
 
         Map<String, String> responseContent = new HashMap<String, String>();
-        try {
-            prepareNormalResponse(bytes, responseContent);
-            response.setStatus(HttpServletResponse.SC_OK);
-        } catch (IOException e) {
-            responseContent.clear();
-            prepareErrorResponse(responseContent, e);
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
-
+        prepareResponse(bytes, request, response, responseContent);
         return responseContent;
     }
 
@@ -185,32 +171,104 @@ public class AvatarController {
     }
 
     /**
+     * @param request
+     * @param responseHeaders
+     * @param statusCode
+     * @param responseContent
+     * @param body
+     * @param file
+     * @return
+     */
+    private ResponseEntity<String> prepareResponse(DefaultMultipartHttpServletRequest request, HttpHeaders responseHeaders, HttpStatus statusCode, Map<String, String> responseContent, String body, MultipartFile file) {
+        ResponseEntity<String> result;
+        try {
+            avatarService.validateAvatarFormat(file);
+            byte[] bytes;
+            try {
+                bytes = file.getBytes();
+            } catch (IOException e) {
+                throw new ImageUploadException();
+            }
+            avatarService.validateAvatarSize(bytes);
+            prepareNormalResponse(bytes, responseContent);
+            statusCode = HttpStatus.OK;
+        } catch (ImageFormatException e) {
+            prepareFormatErrorResponse(request, responseContent);
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+        } catch (ImageSizeException e) {
+            prepareSizeErrorResponse(request, responseContent);
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+        } catch (ImageUploadException e) {
+            prepareCommonErrorResponse(request, responseContent);
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        try {
+            body = prepareJSONString(responseContent);
+        } catch (IOException e) {
+            //TODO need to be removed in the final implementations
+        }
+        result = new ResponseEntity<String>(body, responseHeaders, statusCode);
+        return result;
+    }
+
+    private void prepareResponse(byte[] bytes, ServletRequest request, HttpServletResponse response, Map<String, String> responseContent) {
+        try {
+            avatarService.validateAvatarSize(bytes);
+            prepareNormalResponse(bytes, responseContent);
+            response.setStatus(HttpServletResponse.SC_OK);
+        } catch (ImageSizeException e) {
+            prepareSizeErrorResponse(request, responseContent);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        } catch (ImageUploadException e) {
+            prepareCommonErrorResponse(request, responseContent);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * @param request
+     * @param responseContent
+     */
+    private void prepareCommonErrorResponse(ServletRequest request, Map<String, String> responseContent) {
+        responseContent.clear();
+        responseContent.put("success", "false");
+        responseContent.put("message", getMessage(request, "avatar.500.common.error"));
+    }
+
+    /**
+     * @param request
+     * @param responseContent
+     */
+    private void prepareSizeErrorResponse(ServletRequest request, Map<String, String> responseContent) {
+        responseContent.clear();
+        responseContent.put("success", "false");
+        responseContent.put("message", getMessage(request, "image.wrong.size") + " " + AvatarService.MAX_SIZE);
+    }
+
+    /**
+     * @param request
+     * @param responseContent
+     */
+    private void prepareFormatErrorResponse(ServletRequest request, Map<String, String> responseContent) {
+        responseContent.clear();
+        responseContent.put("success", "false");
+        responseContent.put("message", getMessage(request, "image.wrong.format"));
+    }
+
+    /**
      * Used for prepare normal response
      *
      * @param bytes           input avatar data
      * @param responseContent response payload
-     * @throws IOException avatar processing problem
      */
     private void prepareNormalResponse(byte[] bytes,
-                                       Map<String, String> responseContent) throws IOException {
-        String srcImage = avatarService.convertAvatarToBase64String(bytes);
+                                       Map<String, String> responseContent) throws ImageUploadException {
+        String srcImage;
+        srcImage = avatarService.convertAvatarToBase64String(bytes);
         responseContent.put("success", "true");
         responseContent.put("srcPrefix", ImageUtils.HTML_SRC_TAG_PREFIX);
         responseContent.put("srcImage", srcImage);
-    }
-
-    /**
-     * Used for prepare error response
-     *
-     * @param responseContent response payload
-     * @param e               avatar processing problem
-     */
-    private void prepareErrorResponse(Map<String, String> responseContent, IOException e) {
-        responseContent.put("success", "false");
-        LOGGER.error(new StringBuilder().
-                append(AvatarController.class.getName()).
-                append("has thrown an exception: ").
-                append(e.getMessage()).toString());
     }
 
     /**
@@ -228,6 +286,17 @@ public class AvatarController {
         objectMapper.writeValue(jgen, responseContent);
 
         return stringWriter.toString();
+    }
+
+    /**
+     * @param request
+     * @param code
+     * @return
+     */
+    private String getMessage(ServletRequest request, String code) {
+        WebApplicationContext context = RequestContextUtils.getWebApplicationContext(request);
+        Locale locale = RequestContextUtils.getLocale((HttpServletRequest) request);
+        return context.getMessage(code, null, locale);
     }
 
 
