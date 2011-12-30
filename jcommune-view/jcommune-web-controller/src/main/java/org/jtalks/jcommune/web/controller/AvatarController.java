@@ -109,11 +109,9 @@ public class AvatarController {
         //prepare response parameters
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setContentType(MediaType.TEXT_HTML);
-        HttpStatus statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         Map<String, String> responseContent = new HashMap<String, String>();
-        String body = "";
 
-        return prepareResponse(request, responseHeaders, statusCode, responseContent, body, file);
+        return prepareResponse(request, responseHeaders, responseContent, file);
     }
 
     /**
@@ -175,18 +173,19 @@ public class AvatarController {
      *
      * @param request         request with avatar payload
      * @param responseHeaders response HTTP headers
-     * @param statusCode      response HTTP status code
      * @param responseContent response content
-     * @param body            resulting JSON string response payload
      * @param file            avatar file
      * @return ResponseEntity with avatar processing results
      * @throws IOException defined in the JsonFactory implementation, caller must implement exception processing
      */
     private ResponseEntity<String> prepareResponse(DefaultMultipartHttpServletRequest request,
-                                                   HttpHeaders responseHeaders, HttpStatus statusCode,
+                                                   HttpHeaders responseHeaders,
                                                    Map<String, String> responseContent,
-                                                   String body,
                                                    MultipartFile file) throws IOException {
+
+        HttpStatus statusCode;
+
+
         try {
             avatarService.validateAvatarFormat(file);
             byte[] bytes;
@@ -209,7 +208,7 @@ public class AvatarController {
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        body = prepareJSONString(responseContent);
+        String body = prepareJSONString(responseContent);
 
         return new ResponseEntity<String>(body, responseHeaders, statusCode);
     }
