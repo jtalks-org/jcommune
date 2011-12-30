@@ -28,9 +28,6 @@ import org.jtalks.jcommune.service.exceptions.ImageUploadException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
-import org.jtalks.jcommune.web.validation.ImageFormatValidator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -69,7 +66,6 @@ import java.util.Map;
 @Controller
 public class AvatarController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AvatarController.class);
     private AvatarService avatarService;
     private SecurityService securityService;
     private UserService userService;
@@ -98,7 +94,7 @@ public class AvatarController {
      */
     @RequestMapping(value = "/users/IFrameAvatarpreview", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<String> uploadAvatar(DefaultMultipartHttpServletRequest request) throws ServletException {
+    public ResponseEntity<String> uploadAvatar(DefaultMultipartHttpServletRequest request) throws ServletException, IOException {
 
         //get input file
         Map<String, MultipartFile> fileMap = request.getFileMap();
@@ -107,7 +103,6 @@ public class AvatarController {
         MultipartFile file = fileIterator.next();
 
         //prepare response parameters
-        ResponseEntity<String> result;
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setContentType(MediaType.TEXT_HTML);
         HttpStatus statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -122,6 +117,7 @@ public class AvatarController {
      * Used for FF, Chrome specific request processing
      *
      * @param bytes    input avatar data
+     * @param request  input request
      * @param response servlet response
      * @return response content
      * @throws javax.servlet.ServletException avatar processing problem
@@ -171,16 +167,21 @@ public class AvatarController {
     }
 
     /**
-     * @param request
-     * @param responseHeaders
-     * @param statusCode
-     * @param responseContent
-     * @param body
-     * @param file
-     * @return
+     * Prepare valid or error response after avatar processing
+     *
+     * @param request         request with avatar payload
+     * @param responseHeaders response HTTP headers
+     * @param statusCode      response HTTP status code
+     * @param responseContent response content
+     * @param body            resulting JSON string response payload
+     * @param file            avatar file
+     * @return ResponseEntity with avatar processing results
      */
-    private ResponseEntity<String> prepareResponse(DefaultMultipartHttpServletRequest request, HttpHeaders responseHeaders, HttpStatus statusCode, Map<String, String> responseContent, String body, MultipartFile file) {
-        ResponseEntity<String> result;
+    private ResponseEntity<String> prepareResponse(DefaultMultipartHttpServletRequest request,
+                                                   HttpHeaders responseHeaders, HttpStatus statusCode,
+                                                   Map<String, String> responseContent,
+                                                   String body,
+                                                   MultipartFile file) throws IOException {
         try {
             avatarService.validateAvatarFormat(file);
             byte[] bytes;
@@ -203,13 +204,9 @@ public class AvatarController {
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        try {
-            body = prepareJSONString(responseContent);
-        } catch (IOException e) {
-            //TODO need to be removed in the final implementations
-        }
-        result = new ResponseEntity<String>(body, responseHeaders, statusCode);
-        return result;
+        body = prepareJSONString(responseContent);
+
+        return new ResponseEntity<String>(body, responseHeaders, statusCode);
     }
 
     private void prepareResponse(byte[] bytes, ServletRequest request, HttpServletResponse response, Map<String, String> responseContent) {
@@ -227,8 +224,10 @@ public class AvatarController {
     }
 
     /**
-     * @param request
-     * @param responseContent
+     * Prepare common avatar processing error response content
+     *
+     * @param request         used for getting application context
+     * @param responseContent with avatar processing common error message
      */
     private void prepareCommonErrorResponse(ServletRequest request, Map<String, String> responseContent) {
         responseContent.clear();
@@ -237,8 +236,10 @@ public class AvatarController {
     }
 
     /**
-     * @param request
-     * @param responseContent
+     * Prepare invalid size avatar processing error response content
+     *
+     * @param request         used for getting application context
+     * @param responseContent with avatar processing invalid size error message
      */
     private void prepareSizeErrorResponse(ServletRequest request, Map<String, String> responseContent) {
         responseContent.clear();
@@ -247,8 +248,10 @@ public class AvatarController {
     }
 
     /**
-     * @param request
-     * @param responseContent
+     * Prepare invalid format avatar processing error response content
+     *
+     * @param request         used for getting application context
+     * @param responseContent with avatar processing invalid format error message
      */
     private void prepareFormatErrorResponse(ServletRequest request, Map<String, String> responseContent) {
         responseContent.clear();
@@ -261,6 +264,7 @@ public class AvatarController {
      *
      * @param bytes           input avatar data
      * @param responseContent response payload
+     * @throws ImageUploadException due to common avatar processing error
      */
     private void prepareNormalResponse(byte[] bytes,
                                        Map<String, String> responseContent) throws ImageUploadException {
@@ -289,9 +293,11 @@ public class AvatarController {
     }
 
     /**
-     * @param request
-     * @param code
-     * @return
+     * Return validation error message
+     *
+     * @param request used for getting locale
+     * @param code    of the validation error message
+     * @return validation error message
      */
     private String getMessage(ServletRequest request, String code) {
         WebApplicationContext context = RequestContextUtils.getWebApplicationContext(request);
