@@ -118,7 +118,6 @@ public final class SectionController {
         User currentUser = securityService.getCurrentUser();
 
         List<String> viewList = locationService.getUsersViewing(section);
-        
 
         return new ModelAndView("branchList")
                 .addObject("viewList", viewList)

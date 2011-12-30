@@ -47,10 +47,4 @@
         <many-to-one name="branch" column="BRANCH_ID" class="Branch"
                      not-null="false"/>
     </class>
-    <sql-query name="getAllTopicsInBranch">
-        <return alias="TOPIC" class="Topic"/>
-        <![CDATA[SELECT topic.* FROM TOPIC as topic
-             WHERE topic.branch_id = :branchId
-             ORDER BY topic.sticked DESC, topic.topic_weight DESC, topic.modification_date DESC]]>
-    </sql-query>
 </hibernate-mapping>

@@ -32,14 +32,6 @@ import java.util.List;
  */
 public interface TopicDao extends ChildRepository<Topic> {
 
-    /**
-     * Get posts range from branch.
-     *
-     * @param branchId branch id from which we obtain topics
-     * @return list of {@code Topic} objects with size {@code max}
-     */
-    List<Topic> getTopicsInBranch(Long branchId);
-
 
     /**
      * Get all topics past last 24 hour.

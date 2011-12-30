@@ -59,16 +59,6 @@ public interface TopicService extends EntityService<Topic> {
     Topic createTopic(String topicName, String bodyText, long branchId) throws NotFoundException;
 
     /**
-     * Get posts range from branch.
-     *
-     * @param branchId branch id from which we obtain topics
-     * @return list of {@code Topic} objects with size {@code max}
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when branch not found
-     */
-    List<Topic> getTopicsInBranch(long branchId) throws NotFoundException;
-
-    /**
      * Get topic updated since the date passed.
      *
      * @param date to return the topic updated after

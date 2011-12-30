@@ -31,18 +31,6 @@ import java.util.List;
  */
 public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> implements TopicDao {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Topic> getTopicsInBranch(Long branchId) {
-        List<Topic> topics = getSession().getNamedQuery("getAllTopicsInBranch")
-                .setCacheable(true)
-                .setLong("branchId", branchId)
-                .list();
-        return topics;
-    }
-
 
     /**
      * {@inheritDoc}

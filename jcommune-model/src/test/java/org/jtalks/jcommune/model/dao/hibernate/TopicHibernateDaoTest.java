@@ -117,18 +117,6 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     /*===== TopicDao specific methods =====*/
 
     @Test
-    public void testGetTopicRangeInBranch() {
-        List<Topic> persistedTopics = createAndSaveTopicList(5);
-        long branchId = persistedTopics.get(0).getBranch().getId();
-
-        List<Topic> topics = dao.getTopicsInBranch(branchId);
-
-        assertEquals(5, topics.size());
-        assertEquals(branchId, topics.get(0).getBranch().getId(), "Incorrect branch");
-    }
-
-
-    @Test
     public void testGetTopicsUpdatedSince() {
         createAndSaveTopicList(5);
         DateTime lastLogin = new DateTime().minusDays(1);
@@ -138,18 +126,6 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         assertEquals(result.size(), 5);
     }
 
-    @Test
-    public void testPostsInTopic() {
-        Branch branch = ObjectsFactory.getDefaultBranch();
-        Topic topic = ObjectsFactory.getDefaultTopic();
-        branch.addTopic(topic);
-
-        session.save(branch);
-
-        int count = dao.getTopicsInBranch(branch.getId()).get(0).getPostCount();
-
-        assertEquals(count, 1);
-    }
 
     @Test
     public void testGetUnansweredTopics() {

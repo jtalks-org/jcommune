@@ -23,6 +23,7 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Class for storing and tracking of users on the forum.
@@ -35,9 +36,12 @@ import java.util.*;
 public class LocationServiceImpl implements LocationService {
     private SecurityService securityService;
     private SessionRegistry sessionRegistry;
-    private Map<User, String> registerUserMap = Collections.synchronizedMap(new HashMap<User, String>());
+    private Map<User, String> registerUserMap = new ConcurrentHashMap<User, String>();
 
     /**
+     * Constructor assigns the elements necessary
+     * for the correct operation of this implementation
+     *
      * @param securityService security service
      * @param sessionRegistry session registry
      */
@@ -47,13 +51,22 @@ public class LocationServiceImpl implements LocationService {
     }
 
     /**
-     * Modification map to active user, and create list of user name users on the current page
-     * {@inheritDoc}
+     * Get lis name user active these page, modification map to active user
+     * and create list of user name users on the current page
+     *
+     * @param entity entity
+     * @return lis name user active these page
      */
     @Override
-    public synchronized List<String> getUsersViewing(Entity entity) {
+    public List<String> getUsersViewing(Entity entity) {
         List<String> viewList = new ArrayList<String>();
-        registerUserMap.put(securityService.getCurrentUser(), entity.getUuid());
+        /**
+         * At the moment, in the case of call in the forum Anonymous as the current user is returned Anonymous.
+         * This condition does not allow Anonymous add to the map of active users.
+         */
+        if (securityService.getCurrentUser() != null) {
+            registerUserMap.put(securityService.getCurrentUser(), entity.getUuid());
+        }
 
         for (Object o : sessionRegistry.getAllPrincipals()) {
             User user = (User) o;
@@ -70,6 +83,12 @@ public class LocationServiceImpl implements LocationService {
      */
     @Override
     public void clearUserLocation() {
-        registerUserMap.remove(securityService.getCurrentUser());
+        /**
+         * At the moment, in the case of call in the forum Anonymous as the current user is returned Anonymous.
+         * This condition does not allow Anonymous remove to the map of active users.
+         */
+        if (securityService.getCurrentUser() != null) {
+            registerUserMap.remove(securityService.getCurrentUser());
+        }
     }
 }
