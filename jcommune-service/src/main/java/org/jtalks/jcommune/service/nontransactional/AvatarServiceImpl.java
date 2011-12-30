@@ -24,14 +24,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 /**
  * @author Alexandre Teterin
  */
 public class AvatarServiceImpl implements AvatarService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AvatarServiceImpl.class);
     private final ImageUtils imageUtils;
 
 
@@ -62,6 +60,7 @@ public class AvatarServiceImpl implements AvatarService {
      * Validate file format
      *
      * @param file for validation
+     * @throws ImageFormatException invalid format avatar processing error
      */
     public void validateAvatarFormat(MultipartFile file) throws ImageFormatException {
         boolean isValid = false;
@@ -81,6 +80,7 @@ public class AvatarServiceImpl implements AvatarService {
      * Validate avatar size
      *
      * @param bytes array for validation
+     * @throws ImageSizeException invalid size avatar processing error
      */
     public void validateAvatarSize(byte[] bytes) throws ImageSizeException {
         int BYTES_IN_KILOBYTE = 1024;

@@ -37,17 +37,23 @@ public interface AvatarService {
      *
      * @param bytes for conversion
      * @return result string
-     * @throws IOException conversion problem
+     * @throws ImageUploadException common avatar processing error
      */
     String convertAvatarToBase64String(byte[] bytes) throws ImageUploadException;
 
     /**
-     * @param file
+     * Validate file format
+     *
+     * @param file for validation
+     * @throws ImageFormatException invalid format avatar processing error
      */
     void validateAvatarFormat(MultipartFile file) throws ImageFormatException;
 
     /**
-     * @param bytes
+     * Validate avatar size
+     *
+     * @param bytes array for validation
+     * @throws ImageSizeException invalid size avatar processing error
      */
     void validateAvatarSize(byte[] bytes) throws ImageSizeException;
 }
