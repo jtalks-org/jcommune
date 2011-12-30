@@ -60,6 +60,10 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public List<String> getUsersViewing(Entity entity) {
         List<String> viewList = new ArrayList<String>();
+        /**
+         * At the moment, in the case of call in the forum Anonymous as the current user is returned Anonymous.
+         * This condition does not allow Anonymous add to the map of active users.
+         */
         if (securityService.getCurrentUser() != null) {
             registerUserMap.put(securityService.getCurrentUser(), entity.getUuid());
         }
@@ -79,6 +83,10 @@ public class LocationServiceImpl implements LocationService {
      */
     @Override
     public void clearUserLocation() {
+        /**
+         * At the moment, in the case of call in the forum Anonymous as the current user is returned Anonymous.
+         * This condition does not allow Anonymous remove to the map of active users.
+         */
         if (securityService.getCurrentUser() != null) {
             registerUserMap.remove(securityService.getCurrentUser());
         }
