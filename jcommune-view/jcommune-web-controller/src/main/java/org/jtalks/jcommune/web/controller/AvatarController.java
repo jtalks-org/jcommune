@@ -86,7 +86,7 @@ public class AvatarController {
 
     /**
      * Process avatar file from request and return avatar preview in response.
-     * Used for IE, Opera specific request processing
+     * Used for IE, Opera specific request processing.
      *
      * @param request incoming request
      * @return ResponseEntity

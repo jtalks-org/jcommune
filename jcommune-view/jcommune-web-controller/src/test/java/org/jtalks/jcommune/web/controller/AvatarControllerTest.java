@@ -18,6 +18,7 @@ import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.AvatarService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.exceptions.ImageUploadException;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.mockito.Matchers;
 import org.springframework.http.HttpHeaders;
@@ -34,6 +35,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
@@ -128,30 +130,37 @@ public class AvatarControllerTest {
 
     @Test(dataProvider = "validData-XHR-provider")
     public void testValidUploadAvatarXHR(byte[] avatar, Map<String, String> expectedData) throws Exception {
+        //setUp
+        ServletRequest request = mock(ServletRequest.class);
+
         //set expectations
         when(avatarService.convertAvatarToBase64String(avatar)).thenReturn(SRC_IMG);
 
         HttpServletResponse response = new MockHttpServletResponse();
 
         //invoke object under test
-//        Map<String, String> result = avatarController.uploadAvatar(avatar, response);
+        Map<String, String> result = avatarController.uploadAvatar(avatar, request, response);
 
         //check result
-//        assertEquals(result, expectedData);
+        assertEquals(result, expectedData);
     }
 
-    @Test(dataProvider = "invalidData-XHR-provider")
+    //TODO disabled due using static method RequestContextUtils.getWebApplicationContext(request),
+    @Test(enabled = false, dataProvider = "invalidData-XHR-provider")
     public void testInvalidUploadAvatarXHR(byte[] avatar, Map<String, String> expectedData) throws Exception {
-        //set expectations
-//        when(avatarService.convertAvatarToBase64String(avatar)).thenThrow(new IOException());
+        //setUp
+        ServletRequest request = mock(ServletRequest.class);
 
-//        HttpServletResponse response = new MockHttpServletResponse();
+        //set expectations
+        when(avatarService.convertAvatarToBase64String(avatar)).thenThrow(new ImageUploadException());
+
+        HttpServletResponse response = new MockHttpServletResponse();
 
         //invoke object under test
-//        Map<String, String> result = avatarController.uploadAvatar(avatar, response);
+        Map<String, String> result = avatarController.uploadAvatar(avatar, request, response);
 
         //check result
-//        assertEquals(result, expectedData);
+        assertEquals(result, expectedData);
     }
 
     @Test
