@@ -69,7 +69,7 @@ public class AvatarController {
     private AvatarService avatarService;
     private SecurityService securityService;
     private UserService userService;
-    private final String RESULT = "success";
+    public static final String RESULT = "success";
 
     /**
      * Constructor for controller instantiating, dependencies injected via autowiring.
