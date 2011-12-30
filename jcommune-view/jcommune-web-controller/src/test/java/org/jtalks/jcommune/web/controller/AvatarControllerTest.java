@@ -143,9 +143,9 @@ public class AvatarControllerTest {
     @Test(dataProvider = "invalidData-XHR-provider")
     public void testInvalidUploadAvatarXHR(byte[] avatar, Map<String, String> expectedData) throws Exception {
         //set expectations
-        when(avatarService.convertAvatarToBase64String(avatar)).thenThrow(new IOException());
+//        when(avatarService.convertAvatarToBase64String(avatar)).thenThrow(new IOException());
 
-        HttpServletResponse response = new MockHttpServletResponse();
+//        HttpServletResponse response = new MockHttpServletResponse();
 
         //invoke object under test
 //        Map<String, String> result = avatarController.uploadAvatar(avatar, response);

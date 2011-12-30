@@ -91,6 +91,7 @@ public class AvatarController {
      * @param request incoming request
      * @return ResponseEntity
      * @throws javax.servlet.ServletException avatar processing problem
+     * @throws IOException                    defined in the JsonFactory implementation, caller must implement exception processing
      */
     @RequestMapping(value = "/users/IFrameAvatarpreview", method = RequestMethod.POST)
     @ResponseBody
@@ -176,6 +177,7 @@ public class AvatarController {
      * @param body            resulting JSON string response payload
      * @param file            avatar file
      * @return ResponseEntity with avatar processing results
+     * @throws IOException defined in the JsonFactory implementation, caller must implement exception processing
      */
     private ResponseEntity<String> prepareResponse(DefaultMultipartHttpServletRequest request,
                                                    HttpHeaders responseHeaders, HttpStatus statusCode,

@@ -19,22 +19,19 @@ import org.jtalks.jcommune.service.AvatarService;
 import org.jtalks.jcommune.service.exceptions.ImageFormatException;
 import org.jtalks.jcommune.service.exceptions.ImageSizeException;
 import org.jtalks.jcommune.service.exceptions.ImageUploadException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 
 /**
  * @author Alexandre Teterin
  */
 public class AvatarServiceImpl implements AvatarService {
 
-    private final int BYTES_IN_KILOBYTE = 1024;
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(AvatarServiceImpl.class);
     private final ImageUtils imageUtils;
 
 
@@ -52,7 +49,7 @@ public class AvatarServiceImpl implements AvatarService {
      *
      * @param bytes for conversion
      * @return result string
-     * @throws IOException conversion problem
+     * @throws ImageUploadException common avatar processing error
      */
     public String convertAvatarToBase64String(byte[] bytes) throws ImageUploadException {
         BufferedImage inputAvatar = imageUtils.convertByteArrayToImage(bytes);
@@ -62,7 +59,9 @@ public class AvatarServiceImpl implements AvatarService {
     }
 
     /**
-     * @param file
+     * Validate file format
+     *
+     * @param file for validation
      */
     public void validateAvatarFormat(MultipartFile file) throws ImageFormatException {
         boolean isValid = false;
@@ -79,9 +78,12 @@ public class AvatarServiceImpl implements AvatarService {
     }
 
     /**
-     * @param bytes
+     * Validate avatar size
+     *
+     * @param bytes array for validation
      */
     public void validateAvatarSize(byte[] bytes) throws ImageSizeException {
+        int BYTES_IN_KILOBYTE = 1024;
         boolean isValid = bytes.length / BYTES_IN_KILOBYTE < MAX_SIZE;
         if (!isValid) throw new ImageSizeException();
     }

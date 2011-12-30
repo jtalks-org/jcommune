@@ -170,8 +170,8 @@
             button:$("#upload").get(0),
             action:action,
             multiple:false,
-//            allowedExtensions:['jpg', 'jpeg', 'png', 'gif'],
-//            sizeLimit:4194304, // max size
+            allowedExtensions:['jpg', 'jpeg', 'png', 'gif'],
+            sizeLimit:4194304, // max size
             onSubmit:function (id, filename) {
                 console.log('File upload: %s, ID: %s', filename, id);
             },
