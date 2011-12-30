@@ -89,7 +89,9 @@ public class AvatarServiceImpl implements AvatarService {
     public void validateAvatarSize(byte[] bytes) throws ImageSizeException {
         int BYTES_IN_KILOBYTE = 1024;
         boolean isValid = bytes.length / BYTES_IN_KILOBYTE < MAX_SIZE;
-        if (!isValid) throw new ImageSizeException();
+        if (!isValid) {
+            throw new ImageSizeException();
+        }
     }
 
 }

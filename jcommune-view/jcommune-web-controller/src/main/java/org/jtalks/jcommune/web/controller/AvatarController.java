@@ -69,6 +69,7 @@ public class AvatarController {
     private AvatarService avatarService;
     private SecurityService securityService;
     private UserService userService;
+    private final String RESULT = "success";
 
     /**
      * Constructor for controller instantiating, dependencies injected via autowiring.
@@ -244,7 +245,7 @@ public class AvatarController {
      */
     private void prepareCommonErrorResponse(ServletRequest request, Map<String, String> responseContent) {
         responseContent.clear();
-        responseContent.put("success", "false");
+        responseContent.put(RESULT, "false");
         responseContent.put("message", getMessage(request, "avatar.500.common.error"));
     }
 
@@ -256,7 +257,7 @@ public class AvatarController {
      */
     private void prepareSizeErrorResponse(ServletRequest request, Map<String, String> responseContent) {
         responseContent.clear();
-        responseContent.put("success", "false");
+        responseContent.put(RESULT, "false");
         responseContent.put("message", getMessage(request, "image.wrong.size") + " " + AvatarService.MAX_SIZE);
     }
 
@@ -268,7 +269,7 @@ public class AvatarController {
      */
     private void prepareFormatErrorResponse(ServletRequest request, Map<String, String> responseContent) {
         responseContent.clear();
-        responseContent.put("success", "false");
+        responseContent.put(RESULT, "false");
         responseContent.put("message", getMessage(request, "image.wrong.format"));
     }
 
@@ -283,7 +284,7 @@ public class AvatarController {
                                        Map<String, String> responseContent) throws ImageUploadException {
         String srcImage;
         srcImage = avatarService.convertAvatarToBase64String(bytes);
-        responseContent.put("success", "true");
+        responseContent.put(RESULT, "true");
         responseContent.put("srcPrefix", ImageUtils.HTML_SRC_TAG_PREFIX);
         responseContent.put("srcImage", srcImage);
     }
