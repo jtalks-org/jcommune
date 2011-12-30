@@ -42,7 +42,8 @@ public class ImageUploadException extends Exception {
     }
 
     /**
-     * @param cause
+     * @param cause the cause (which is saved for later retrieval by the
+     *              {@link #getCause()} method).
      */
     public ImageUploadException(Throwable cause) {
         super(cause);

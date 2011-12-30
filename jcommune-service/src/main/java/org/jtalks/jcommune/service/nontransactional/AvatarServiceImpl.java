@@ -51,7 +51,9 @@ public class AvatarServiceImpl implements AvatarService {
      */
     public String convertAvatarToBase64String(byte[] bytes) throws ImageUploadException {
         BufferedImage inputAvatar = imageUtils.convertByteArrayToImage(bytes);
-        if (inputAvatar == null) throw new ImageUploadException();
+        if (inputAvatar == null) {
+            throw new ImageUploadException();
+        }
         byte[] outputAvatar = imageUtils.preprocessImage(inputAvatar);
         return imageUtils.base64Coder(outputAvatar);
     }
@@ -72,7 +74,9 @@ public class AvatarServiceImpl implements AvatarService {
             }
         }
 
-        if (!isValid) throw new ImageFormatException();
+        if (!isValid) {
+            throw new ImageFormatException();
+        }
 
     }
 

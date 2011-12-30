@@ -95,7 +95,8 @@ public class AvatarController {
      */
     @RequestMapping(value = "/users/IFrameAvatarpreview", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<String> uploadAvatar(DefaultMultipartHttpServletRequest request) throws ServletException, IOException {
+    public ResponseEntity<String> uploadAvatar(DefaultMultipartHttpServletRequest request)
+            throws ServletException, IOException {
 
         //get input file
         Map<String, MultipartFile> fileMap = request.getFileMap();
@@ -190,7 +191,7 @@ public class AvatarController {
             try {
                 bytes = file.getBytes();
             } catch (IOException e) {
-                throw new ImageUploadException();
+                throw new ImageUploadException(e);
             }
             avatarService.validateAvatarSize(bytes);
             prepareNormalResponse(bytes, responseContent);
