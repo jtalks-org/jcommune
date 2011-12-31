@@ -134,7 +134,7 @@ public class PostControllerTest {
         PostDto dto = getDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "postDto");
         ModelAndView mav = controller.update(dto, bindingResult, TOPIC_ID, PAGE, POST_ID);
-        assertViewName(mav, "redirect:/topics/" + TOPIC_ID + "?page=" + PAGE + "#1");
+        assertViewName(mav, "redirect:/posts/" + dto.getId());
         verify(postService).updatePost(POST_ID, POST_CONTENT);
     }
 

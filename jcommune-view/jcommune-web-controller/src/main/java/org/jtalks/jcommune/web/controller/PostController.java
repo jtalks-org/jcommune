@@ -152,13 +152,7 @@ public class PostController {
                     .addObject(POST_ID, postId);
         }
         postService.updatePost(postDto.getId(), postDto.getBodyText());
-        return new ModelAndView(new StringBuilder("redirect:/topics/")
-                .append(postDto.getTopicId())
-                .append("?page=")
-                .append(page)
-                .append("#")
-                .append(postDto.getId())
-                .toString());
+        return new ModelAndView("redirect:/posts/" + postId);
     }
 
     /**

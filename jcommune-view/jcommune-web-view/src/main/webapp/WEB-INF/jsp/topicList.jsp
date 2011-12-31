@@ -56,15 +56,15 @@
             </a>
             <c:choose>
                 <c:when test="${subscribed}">
-                    <a class="button top_button"
+                    <a id="subscription" class="button top_button"
                        href="${pageContext.request.contextPath}/branches/${branch.id}/unsubscribe">
-                        <spring:message code="label.topic.unsubscribe"/>
+                        <spring:message code="label.unsubscribe"/>
                     </a>
                 </c:when>
                 <c:otherwise>
-                    <a class="button top_button"
+                    <a id="subscription" class="button top_button"
                        href="${pageContext.request.contextPath}/branches/${branch.id}/subscribe">
-                        <spring:message code="label.topic.subscribe"/>
+                        <spring:message code="label.subscribe"/>
                     </a>
                 </c:otherwise>
             </c:choose>
@@ -211,4 +211,13 @@
     <div class="footer_buffer"></div>
 </div>
 </body>
+<script>
+    ${'#subscription'}.click(function() {
+        $.getJSON(${this}.href,function(controlInfo) {
+            ${this}.innerText = controlInfo.caption;
+            ${this}.href = $root + controlInfo.urlSuffix;
+        }
+        return false;
+    })
+</script>
 </html>

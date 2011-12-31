@@ -21,6 +21,9 @@
 <fmt:setLocale value="en"/>
 <!DOCTYPE HTML>
 <html>
+<script>
+    $root = "${pageContext.request.contextPath}";
+</script>
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
     <meta http-equiv="Pragma" content="no-cache"/>
