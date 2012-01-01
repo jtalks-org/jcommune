@@ -30,6 +30,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Locale;
 
 /**
+ * Manages the topic/branch subscription by email URL mappings.
+ * Serves AJAX subscription/unsubscription requests, so locale-dependent
+ * messages ar resolved here as there is no way to resolve them on a client.
+ *
  * @author Evgeniy Naumenko
  */
 @Controller
@@ -40,6 +44,12 @@ public class SubscriptionsController {
     private SubscriptionService subscriptionService;
     private MessageSource messageSource;
 
+    /**
+     * @param topicService        topic service to load topics from DB
+     * @param branchService       branch service to load branches from DB
+     * @param subscriptionService to manage actual updates subscription info
+     * @param messageSource       to resolve locale-dependent messages
+     */
     @Autowired
     public SubscriptionsController(TopicService topicService,
                                    BranchService branchService,
@@ -51,46 +61,65 @@ public class SubscriptionsController {
         this.messageSource = messageSource;
     }
 
+    /**
+     * @param topicId
+     * @param locale current user locale settings to resolve messages
+     * @return info to alter "subscribe" button to the "unsubscribe" one
+     * @throws NotFoundException if no object is found for id given
+     */
     @RequestMapping("topics/{topicId}/subscribe")
-    public void subscribeToTopic(@PathVariable Long topicId, Locale locale) {
-        try {
-            Topic topic = topicService.get(topicId);
-            subscriptionService.subscribeToTopic(topic);
-
-        } catch (NotFoundException e) {
-
-        }
+    public ControlInfo subscribeToTopic(@PathVariable Long topicId, Locale locale) throws NotFoundException {
+        Topic topic = topicService.get(topicId);
+        subscriptionService.subscribeToTopic(topic);
+        String message = messageSource.getMessage("label.unsubscribe", null, locale);
+        return new ControlInfo(message, "topics/" + topicId + "/unsubscribe");
     }
 
+    /**
+     * @param topicId
+     * @param locale current user locale settings to resolve messages
+     * @return info to alter "unsubscribe" button to the "subscribe" one
+     * @throws NotFoundException if no object is found for id given
+     */
     @RequestMapping("topics/{topicId}/unsubscribe")
-    public void unsubscribeFromTopic(@PathVariable Long topicId, Locale locale) {
-        try {
-            Topic topic = topicService.get(topicId);
-            subscriptionService.unsubscribeFromTopic(topic);
-        } catch (NotFoundException e) {
-
-        }
+    public ControlInfo unsubscribeFromTopic(@PathVariable Long topicId, Locale locale) throws NotFoundException {
+        Topic topic = topicService.get(topicId);
+        subscriptionService.unsubscribeFromTopic(topic);
+        String message = messageSource.getMessage("label.subscribe", null, locale);
+        return new ControlInfo(message, "topics/" + topicId + "/subscribe");
     }
 
+    /**
+     * @param branchId
+     * @param locale current user locale settings to resolve messages
+     * @return info to alter "subscribe" button to the "unsubscribe" one
+     * @throws NotFoundException if no object is found for id given
+     */
     @RequestMapping("branches/{branchId}/subscribe")
     @ResponseBody
     public ControlInfo subscribeTobranch(@PathVariable Long branchId, Locale locale) throws NotFoundException {
         Branch branch = branchService.get(branchId);
         subscriptionService.subscribeToBranch(branch);
         String message = messageSource.getMessage("label.unsubscribe", null, locale);
-        return new ControlInfo(message, "branches/{branchId}/unsubscribe");
+        return new ControlInfo(message, "branches/" + branchId + "/unsubscribe");
     }
 
+    /**
+     * @param branchId
+     * @param locale current user locale settings to resolve messages
+     * @return info to alter "unsubscribe" button to the "subscribe" one
+     * @throws NotFoundException if no object is found for id given
+     */
     @RequestMapping("branches/{branchId}/unsubscribe")
     @ResponseBody
     public ControlInfo unsubscribeFromBranch(@PathVariable Long branchId, Locale locale) throws NotFoundException {
         Branch branch = branchService.get(branchId);
         subscriptionService.subscribeToBranch(branch);
         String message = messageSource.getMessage("label.subscribe", null, locale);
-        return new ControlInfo(message, "branches/{branchId}/subscribe");
+        return new ControlInfo(message, "branches/" + branchId + "/subscribe");
     }
 
-    public static class ControlInfo {
+    private static class ControlInfo {
         public final String caption;
         public final String urlSuffix;
 

@@ -22,7 +22,8 @@
 <!DOCTYPE HTML>
 <html>
 <script>
-    $root = "${pageContext.request.contextPath}";
+    <%--Defines URL mapping root to be used in JS--%>
+    $root = "${pageContext.request.contextPath}" + "/";
 </script>
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>

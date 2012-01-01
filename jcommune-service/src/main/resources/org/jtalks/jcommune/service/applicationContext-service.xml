@@ -99,9 +99,9 @@
 
     <bean id="subscriptionService"
           class="org.jtalks.jcommune.service.transactional.TransactionalSubscriptionService">
+        <constructor-arg ref="securityService"/>
         <constructor-arg ref="topicBranchDao"/>
         <constructor-arg ref="topicDao"/>
-        <constructor-arg ref="securityService"/>
     </bean>
 
     <bean id="securityService"

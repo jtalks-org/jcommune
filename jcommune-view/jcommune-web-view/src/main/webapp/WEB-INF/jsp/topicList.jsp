@@ -21,7 +21,6 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<html>
 <head>
     <title><spring:message code="label.section.jtalks_forum"/></title>
 </head>
@@ -210,14 +209,15 @@
     </div>
     <div class="footer_buffer"></div>
 </div>
-</body>
 <script>
-    ${'#subscription'}.click(function() {
-        $.getJSON(${this}.href,function(controlInfo) {
-            ${this}.innerText = controlInfo.caption;
-            ${this}.href = $root + controlInfo.urlSuffix;
-        }
-        return false;
-    })
+    $(document).ready(
+            $('a#subscription').click(function () {
+                var link = $(this)[0];
+                $.getJSON(link.href, function (controlInfo) {
+                    link.innerText = controlInfo.caption;
+                    link.href = $root + controlInfo.urlSuffix;
+                });
+                return false;
+            }))
 </script>
-</html>
+</body>
