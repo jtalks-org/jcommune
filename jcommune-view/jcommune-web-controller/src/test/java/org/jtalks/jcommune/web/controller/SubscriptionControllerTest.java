@@ -32,6 +32,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -61,13 +62,14 @@ public class SubscriptionControllerTest {
     private Long id = 1L;
 
     @BeforeMethod
-    void setUp() {
+    public void setUp() {
         initMocks(this);
         controller = new SubscriptionController(topicService, branchService, subscriptionService, messageSource);
+        when(messageSource.getMessage(anyString(), null, locale )).thenReturn(message);
     }
 
     @Test
-    void testSubscribeToTopic() throws NotFoundException {
+    public void testSubscribeToTopic() throws NotFoundException {
         when(topicService.get(id)).thenReturn(topic);
 
         Map<String, String> map = controller.subscribeToTopic(id, locale);
@@ -77,7 +79,7 @@ public class SubscriptionControllerTest {
     }
 
     @Test
-    void testUnsubscribeFromTopic() throws NotFoundException {
+    public void testUnsubscribeFromTopic() throws NotFoundException {
         when(topicService.get(id)).thenReturn(topic);
 
         Map<String, String> map = controller.unsubscribeFromTopic(id, locale);
@@ -87,7 +89,7 @@ public class SubscriptionControllerTest {
     }
 
     @Test
-    void testSubscribeOnBranch() throws NotFoundException {
+    public void testSubscribeOnBranch() throws NotFoundException {
         when(branchService.get(id)).thenReturn(branch);
 
         Map<String, String> map = controller.subscribeToBranch(id, locale);
@@ -97,7 +99,7 @@ public class SubscriptionControllerTest {
     }
 
     @Test
-    void testUnsubscribeFromBranch() throws NotFoundException {
+    public void testUnsubscribeFromBranch() throws NotFoundException {
         when(branchService.get(id)).thenReturn(branch);
 
         Map<String, String> map = controller.unsubscribeFromBranch(id, locale);
@@ -107,25 +109,25 @@ public class SubscriptionControllerTest {
     }
 
     @Test(expectedExceptions = NotFoundException.class)
-    void testSubscribeToNonexistingTopic() throws NotFoundException {
+    public void testSubscribeToNonexistingTopic() throws NotFoundException {
         doThrow(new NotFoundException()).when(topicService).get(id);
         Map<String, String> map = controller.subscribeToTopic(id, locale);
     }
 
     @Test(expectedExceptions = NotFoundException.class)
-    void testUnsubscribeFromNonexistingTopic() throws NotFoundException {
+    public void testUnsubscribeFromNonexistingTopic() throws NotFoundException {
         doThrow(new NotFoundException()).when(topicService).get(id);
         Map<String, String> map = controller.unsubscribeFromTopic(id, locale);
     }
 
     @Test(expectedExceptions = NotFoundException.class)
-    void testSubscribeOnNonexistingBranch() throws NotFoundException {
+    public void testSubscribeOnNonexistingBranch() throws NotFoundException {
         doThrow(new NotFoundException()).when(branchService).get(id);
         Map<String, String> map = controller.subscribeToBranch(id, locale);
     }
 
     @Test(expectedExceptions = NotFoundException.class)
-    void testUnsubscribeFromNonexistingBranch() throws NotFoundException {
+    public void testUnsubscribeFromNonexistingBranch() throws NotFoundException {
         doThrow(new NotFoundException()).when(branchService).get(id);
         Map<String, String> map = controller.unsubscribeFromBranch(id, locale);
     }
