@@ -54,9 +54,13 @@ public class TransactionalSubscriptionService implements SubscriptionService {
      * {@inheritDoc}
      */
     @Override
-    public void subscribeToTopic(Topic topic) {
+    public void toggleTopicSubscription(Topic topic) {
         User current = securityService.getCurrentUser();
-        topic.getSubscribers().add(current);
+        if (topic.getSubscribers().contains(current)){
+            topic.getSubscribers().remove(current);
+        } else {
+            topic.getSubscribers().add(current);
+        }
         topicDao.update(topic);
     }
 
@@ -64,29 +68,13 @@ public class TransactionalSubscriptionService implements SubscriptionService {
      * {@inheritDoc}
      */
     @Override
-    public void subscribeToBranch(Branch branch) {
+    public void toggleBranchSubscription(Branch branch) {
         User current = securityService.getCurrentUser();
+        if (branch.getSubscribers().contains(current)) {
+            branch.getSubscribers().remove(current);
+        } else {
         branch.getSubscribers().add(current);
-        branchDao.update(branch);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void unsubscribeFromTopic(Topic topic) {
-        User current = securityService.getCurrentUser();
-        topic.getSubscribers().remove(current);
-        topicDao.update(topic);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void unsubscribeFromBranch(Branch branch) {
-        User current = securityService.getCurrentUser();
-        branch.getSubscribers().remove(current);
         branchDao.update(branch);
     }
 }

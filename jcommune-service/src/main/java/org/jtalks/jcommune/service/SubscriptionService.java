@@ -23,29 +23,21 @@ import org.jtalks.jcommune.model.entity.Topic;
 public interface SubscriptionService {
 
     /**
-     * Subscribes current user to the topic given.
-     * That means, that user will receive email notification for every
-     * topic update except for topic removal.
+     * Toggle subscription state for the topic given. Thus, if user is subscribed
+     * to the topic updates the mehod call will unsubscribe him and vice versa.
+     *
+     * Topic subscription means, that user will receive email notification for every
+     * topic update except for topic creation/removal.
      *
      * @param topic topic to subscribe current user to
      */
-    void subscribeToTopic(Topic topic);
+    void toggleTopicSubscription(Topic topic);
 
     /**
      *
      * @param branch
      */
-    void subscribeToBranch(Branch branch);
+    void toggleBranchSubscription(Branch branch);
 
-    /**
-     *
-     * @param topic topic to unsubscribe current user from
-     */
-    void unsubscribeFromTopic(Topic topic);
 
-    /**
-     *
-     * @param branch
-     */
-    void unsubscribeFromBranch(Branch branch);
 }

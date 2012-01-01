@@ -50,6 +50,11 @@
         <security:intercept-url pattern="/outbox" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
         <security:intercept-url pattern="/answer" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
 
+        <security:intercept-url pattern="/topics/*/subscribe" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+        <security:intercept-url pattern="/topics/*/unsubscribe" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+        <security:intercept-url pattern="/branches/*/subscribe" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+        <security:intercept-url pattern="/branches/*/unsubscribe" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+
         <security:intercept-url pattern="*" access="permitAll"/>
 
         <security:form-login login-page="/login" login-processing-url="/j_spring_security_check"
