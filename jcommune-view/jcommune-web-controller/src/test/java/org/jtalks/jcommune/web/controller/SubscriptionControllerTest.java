@@ -23,6 +23,7 @@ import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.context.MessageSource;
 import org.testng.annotations.BeforeMethod;
@@ -65,7 +66,8 @@ public class SubscriptionControllerTest {
     public void setUp() {
         initMocks(this);
         controller = new SubscriptionController(topicService, branchService, subscriptionService, messageSource);
-        when(messageSource.getMessage(anyString(), null, locale )).thenReturn(message);
+        when(messageSource.getMessage(
+                anyString(), Matchers.<Object[]>any(), Matchers.<Locale>any() )).thenReturn(message);
     }
 
     @Test
