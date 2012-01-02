@@ -18,24 +18,33 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 
 /**
+ * This service enables or disables updates subscription by email.
+ * That means user is able to receive emails when new post is created
+ * or topic is updated/deleted/created depends on subscription type.
+ *
  * @author Evgeniy Naumenko
  */
 public interface SubscriptionService {
 
     /**
      * Toggle subscription state for the topic given. Thus, if user is subscribed
-     * to the topic updates the mehod call will unsubscribe him and vice versa.
-     *
-     * Topic subscription means, that user will receive email notification for every
+     * to the topic updates the method call will unsubscribe him and vice versa.
+     * Subscription will be applied to the current user logged in.
+     * Topic subscription means that user will receive email notification for every
      * topic update except for topic creation/removal.
      *
-     * @param topic topic to subscribe current user to
+     * @param topic topic to subscribe or unsubscribe current user to
      */
     void toggleTopicSubscription(Topic topic);
 
     /**
+     * Toggle subscription state for the branch given. Thus, if user is subscribed
+     * to the branch updates the method call will unsubscribe him and vice versa.
+     * Subscription will be applied to the current user logged in.
+     * Branch subscription means that user will receive email notification for every
+     * new/updated/removed posts/topics in the branch given.
      *
-     * @param branch
+     * @param branch branch to subscribe or unsubscribe current user to
      */
     void toggleBranchSubscription(Branch branch);
 

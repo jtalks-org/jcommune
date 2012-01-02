@@ -12,26 +12,26 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.service.AvatarService;
 import org.jtalks.jcommune.service.exceptions.ImageFormatException;
 import org.jtalks.jcommune.service.exceptions.ImageSizeException;
 import org.jtalks.jcommune.service.exceptions.ImageUploadException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.image.BufferedImage;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Alexandre Teterin
  */
 public class AvatarServiceImpl implements AvatarService {
 
-    private final ImageUtils imageUtils;
+    private static final Set<String> VALID_IMAGE_TYPES = new HashSet<String>();
 
+    private final ImageUtils imageUtils;
 
     /**
      * Create AvatarServiceImpl instance
@@ -40,6 +40,9 @@ public class AvatarServiceImpl implements AvatarService {
      */
     public AvatarServiceImpl(ImageUtils imageUtils) {
         this.imageUtils = imageUtils;
+        VALID_IMAGE_TYPES.add("image/jpeg");
+        VALID_IMAGE_TYPES.add("image/png");
+        VALID_IMAGE_TYPES.add("image/gif");
     }
 
     /**
@@ -65,19 +68,9 @@ public class AvatarServiceImpl implements AvatarService {
      * @throws ImageFormatException invalid format avatar processing error
      */
     public void validateAvatarFormat(MultipartFile file) throws ImageFormatException {
-        boolean isValid = false;
-
-        String contentType = file.getContentType();
-        for (ImageFormats format : ImageFormats.values()) {
-            if (format.getContentType().equals(contentType)) {
-                isValid = true;
-            }
-        }
-
-        if (!isValid) {
+        if (!VALID_IMAGE_TYPES.contains(file.getContentType())) {
             throw new ImageFormatException();
         }
-
     }
 
     /**
@@ -87,40 +80,9 @@ public class AvatarServiceImpl implements AvatarService {
      * @throws ImageSizeException invalid size avatar processing error
      */
     public void validateAvatarSize(byte[] bytes) throws ImageSizeException {
-        int BYTES_IN_KILOBYTE = 1024;
-        boolean isValid = bytes.length / BYTES_IN_KILOBYTE < MAX_SIZE;
-        if (!isValid) {
+        if (bytes.length > MAX_SIZE) {
             throw new ImageSizeException();
         }
     }
 
-}
-
-/**
- * Stores all allowable formats and their content types.
- * PNG("image/png")
- *
- * @author Eugeny Batov
- */
-enum ImageFormats {
-
-    JPG("image/jpeg"), GIF("image/gif"), PNG("image/png");
-
-    private String contentType;
-
-    /**
-     * Enum constructor.
-     *
-     * @param contentType - content type
-     */
-    ImageFormats(String contentType) {
-        this.contentType = contentType;
-    }
-
-    /**
-     * @return contentType - content type of chosen format
-     */
-    public String getContentType() {
-        return contentType;
-    }
 }

@@ -56,7 +56,7 @@ public class TransactionalSubscriptionService implements SubscriptionService {
     @Override
     public void toggleTopicSubscription(Topic topic) {
         User current = securityService.getCurrentUser();
-        if (topic.getSubscribers().contains(current)){
+        if (topic.getSubscribers().contains(current)) {
             topic.getSubscribers().remove(current);
         } else {
             topic.getSubscribers().add(current);
@@ -73,8 +73,8 @@ public class TransactionalSubscriptionService implements SubscriptionService {
         if (branch.getSubscribers().contains(current)) {
             branch.getSubscribers().remove(current);
         } else {
-        branch.getSubscribers().add(current);
-    }
+            branch.getSubscribers().add(current);
+        }
         branchDao.update(branch);
     }
 }

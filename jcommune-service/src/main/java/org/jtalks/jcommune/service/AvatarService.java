@@ -27,7 +27,10 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface AvatarService {
 
-    int MAX_SIZE = 4096;
+    /**
+     * Max avatar size in bytes (to be moved in DB later)
+     */
+    int MAX_SIZE = 4096 * 1024;
 
 
     /**

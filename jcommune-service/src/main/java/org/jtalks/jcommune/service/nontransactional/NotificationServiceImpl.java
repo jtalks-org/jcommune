@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.Section;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.MailService;
@@ -30,14 +29,14 @@ import org.slf4j.LoggerFactory;
  */
 public class NotificationServiceImpl implements NotificationService {
 
-    private SecurityService securrityService;
+    private SecurityService securityService;
     private MailService mailService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NotificationServiceImpl.class);
     private static final String LOG_TEMPLATE = "Error occured while sending updates of %s %d to %s";
 
-    public NotificationServiceImpl(SecurityService securrityService, MailService mailService) {
-        this.securrityService = securrityService;
+    public NotificationServiceImpl(SecurityService securityService, MailService mailService) {
+        this.securityService = securityService;
         this.mailService = mailService;
     }
 
@@ -46,10 +45,10 @@ public class NotificationServiceImpl implements NotificationService {
      */
     @Override
     public void topicChanged(Topic topic) {
-        User current = securrityService.getCurrentUser();
+        User current = securityService.getCurrentUser();
         this.branchChanged(topic.getBranch());
         for (User user : topic.getSubscribers()) {
-            if (!current.equals(user)) {
+            if (!user.equals(current)) {
                 try {
                     mailService.sendUpdatesOnSubscription(user);
                 } catch (MailingFailedException e) {
@@ -65,9 +64,9 @@ public class NotificationServiceImpl implements NotificationService {
      */
     @Override
     public void branchChanged(Branch branch) {
-        User current = securrityService.getCurrentUser();
+        User current = securityService.getCurrentUser();
         for (User user : branch.getSubscribers()) {
-            if (!current.equals(user)) {
+            if (!user.equals(current)) {
                 try {
                     mailService.sendUpdatesOnSubscription(user);
                 } catch (MailingFailedException e) {
@@ -78,6 +77,4 @@ public class NotificationServiceImpl implements NotificationService {
         }
 
     }
-
-
 }

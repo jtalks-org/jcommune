@@ -23,6 +23,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <head>
     <title><spring:message code="label.section.jtalks_forum"/></title>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/subscription.js"
+            type="text/javascript"></script>
 </head>
 <body>
 <div class="wrap branch_page">
@@ -110,7 +112,6 @@
                                 <h4><a class="forum_link"
                                        href="${pageContext.request.contextPath}/topics/${topic.id}"><c:out
                                         value="${topic.title}"/></a></h4>
-
                             </div>
                         </c:otherwise>
                     </c:choose>
@@ -204,20 +205,8 @@
                 </a>
                 &nbsp;&nbsp;
             </c:forEach>
-
         </div>
     </div>
     <div class="footer_buffer"></div>
 </div>
-<script>
-    $(document).ready(
-            $('a#subscription').click(function () {
-                var link = $(this)[0];
-                $.getJSON(link.href, function (controlInfo) {
-                    link.innerText = controlInfo.caption;
-                    link.href = $root + controlInfo.urlSuffix;
-                });
-                return false;
-            }))
-</script>
 </body>

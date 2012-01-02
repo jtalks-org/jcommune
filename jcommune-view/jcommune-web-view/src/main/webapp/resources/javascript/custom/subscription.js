@@ -14,29 +14,15 @@
  */
 
 /**
- * Registers image preview handler for user-specified images
+ * Assigns subscription AJAX logic to the anchor with specific id.
+ * Subscription it toggled asynchronously without page reload
  */
-$(document).ready(function() {
-    $('img.thumbnail').imgPreview({
-        srcAttr: 'src',
-        containerID: 'img_preview',
-        imgCSS: {
-            'max-height': '500px',
-            'max-width': '700px'
-        },
-        distanceFromCursor: {top: - 150, left:10},
-        onShow: function(link) {
-            // Animate link:
-            $(link).stop().animate({opacity:0.4});
-            // Reset image:
-            $('img', this).stop().css({opacity:0});
-        },
-        onLoad: function() {
-            // Animate image
-            $(this).animate({opacity:1}, 300);
-        },
-        onHide: function(link) {
-            // Animate link:
-            $(link).stop().animate({opacity:1});
-        }});
-});
+$(document).ready(
+    $('a#subscription').click(function () {
+        var link = $(this)[0];
+        $.getJSON(link.href, function (controlInfo) {
+            link.innerText = controlInfo.caption;
+            link.href = $root + controlInfo.urlSuffix;
+        });
+        return false;
+    }))

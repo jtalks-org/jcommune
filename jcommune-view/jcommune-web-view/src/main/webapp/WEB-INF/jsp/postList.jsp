@@ -26,6 +26,8 @@
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/preview.js"
             type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/subscription.js"
+            type="text/javascript"></script>
 </head>
 <body>
 <div class="wrap topic_page">
@@ -65,6 +67,20 @@
 <a class="button top_button" href="${pageContext.request.contextPath}/branches/${branchId}">
     <spring:message code="label.back"/>
 </a>
+<c:choose>
+    <c:when test="${subscribed}">
+        <a id="subscription" class="button top_button"
+           href="${pageContext.request.contextPath}/branches/${branch.id}/unsubscribe">
+            <spring:message code="label.unsubscribe"/>
+        </a>
+    </c:when>
+    <c:otherwise>
+        <a id="subscription" class="button top_button"
+           href="${pageContext.request.contextPath}/branches/${branch.id}/subscribe">
+            <spring:message code="label.subscribe"/>
+        </a>
+    </c:otherwise>
+</c:choose>
 <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
     <a class="button top_button" href="${pageContext.request.contextPath}/topics/new?branchId=${branchId}">
         <spring:message code="label.topic.new_topic"/></a>

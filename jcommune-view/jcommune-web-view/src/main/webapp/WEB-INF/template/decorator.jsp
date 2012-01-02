@@ -22,8 +22,7 @@
 <!DOCTYPE HTML>
 <html>
 <script>
-    <%--Defines URL mapping root to be used in JS--%>
-    $root = "${pageContext.request.contextPath}";
+    $root = "${pageContext.request.contextPath}"; <%--Defines URL mapping root to be used in JS--%>
 </script>
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
@@ -45,8 +44,8 @@
             src="${pageContext.request.contextPath}/resources/javascript/custom/URLBuilder.js"></script>
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/global.js"></script>
-    <title><decorator:title/></title>
     <decorator:head/>
+    <title><decorator:title/></title>
 </head>
 <body>
 <decorator:body/>
@@ -55,7 +54,7 @@
         <br/>
         <span class="version">Powered by JCommune ${project.version}</span>
         <br/>
-        &copy; 2011 www.jtalks.org
+        &copy; 2012 www.jtalks.org
     </div>
 </div>
 </body>

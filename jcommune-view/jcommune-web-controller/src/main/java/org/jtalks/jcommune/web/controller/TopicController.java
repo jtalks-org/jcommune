@@ -144,7 +144,7 @@ public final class TopicController {
     }
 
     /**
-     * Delete topic.
+     * Delete topic
      *
      * @param topicId  topic id, this is the topic which contains the first post which should be deleted
      * @return redirect to branch page
@@ -159,7 +159,7 @@ public final class TopicController {
     }
 
     /**
-     * Displays to user a list of messages from the topic with pagination.
+     * Displays to user a list of messages from the topic with pagination
      *
      * @param topicId       the id of selected Topic
      * @param page          page
@@ -181,11 +181,9 @@ public final class TopicController {
 
         List<Post> posts = topic.getPosts();
         Pagination pag = new Pagination(page, currentUser, posts.size(), pagingEnabled);
-
-        List<String> viewList = locationService.getUsersViewing(topic);
-       
+        //todo: optimize this binding
         return new ModelAndView("postList")
-                .addObject("viewList", viewList)
+                .addObject("viewList", locationService.getUsersViewing(topic))
                 .addObject("posts", posts)
                 .addObject("topic", topic)
                 .addObject("pag", pag)
@@ -194,6 +192,7 @@ public final class TopicController {
                 .addObject("previousTopic", branch.getPreviousTopic(topic))
                 .addObject(BRANCH_ID, branch.getId())
                 .addObject(TOPIC_ID, topicId)
+                .addObject("subscribed", topic.getSubscribers().contains(currentUser))
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
     }
 

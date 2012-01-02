@@ -33,7 +33,7 @@ public class MailServiceImpl implements MailService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MailServiceImpl.class);
 
-    // todo: apply i18n settings here somehow and complement template with forum links
+    // todo: apply i18n settings here somehow and extract them as templates
     private static final String PASSWORD_RECOVERY_TEMPLATE =
             "Dear %s!\n" +
                     "\n" +
@@ -48,7 +48,7 @@ public class MailServiceImpl implements MailService {
             "Dear %s!\n" +
                     "\n" +
                     "Your favorite forum has some updates.\n" +
-                    "Olease check it out!" +
+                    "Please check it out at %s" +
                     "\n" +
                     "Best regards,\n" +
                     "\n" +
@@ -117,4 +117,5 @@ public class MailServiceImpl implements MailService {
             throw new MailingFailedException(errorMessage, e);
         }
     }
+
 }
