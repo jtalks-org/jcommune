@@ -94,7 +94,7 @@ public class Branch extends Entity {
 
 
     /**
-     * Get the branch last updated topic.
+     * Get the branch's last updated topic.
      * Updates include post addition/update/removal or changes in the topic itself.
      *
      * @return last topic or null if there are no topics in the branch

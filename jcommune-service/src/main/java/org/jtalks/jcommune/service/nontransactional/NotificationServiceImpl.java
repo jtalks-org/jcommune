@@ -50,7 +50,7 @@ public class NotificationServiceImpl implements NotificationService {
         for (User user : topic.getSubscribers()) {
             if (!user.equals(current)) {
                 try {
-                    mailService.sendUpdatesOnSubscription(user);
+                    mailService.sendTopicUpdatesOnSubscription(user, topic);
                 } catch (MailingFailedException e) {
                     // no recovery is possible, just skip it and send notification to other subscribers
                     LOGGER.error(String.format(LOG_TEMPLATE, "Topic", topic.getId(), user.getUsername()));
@@ -68,7 +68,7 @@ public class NotificationServiceImpl implements NotificationService {
         for (User user : branch.getSubscribers()) {
             if (!user.equals(current)) {
                 try {
-                    mailService.sendUpdatesOnSubscription(user);
+                    mailService.sendBranchUpdatesOnSubscription(user, branch);
                 } catch (MailingFailedException e) {
                     // no recovery is possible, just skip it and send notification to other subscribers
                     LOGGER.error(String.format(LOG_TEMPLATE, "Branch", branch.getId(), user.getUsername()));

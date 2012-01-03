@@ -61,8 +61,8 @@ public class NotificationServiceImplTest {
 
         service.topicChanged(topic);
 
-        verify(mailService).sendUpdatesOnSubscription(user1);
-        verify(mailService).sendUpdatesOnSubscription(user2);
+        verify(mailService).sendTopicUpdatesOnSubscription(user1, topic);
+        verify(mailService).sendTopicUpdatesOnSubscription(user2, topic);
     }
 
     @Test
@@ -72,8 +72,8 @@ public class NotificationServiceImplTest {
 
         service.branchChanged(branch);
 
-        verify(mailService).sendUpdatesOnSubscription(user1);
-        verify(mailService).sendUpdatesOnSubscription(user2);
+        verify(mailService).sendBranchUpdatesOnSubscription(user1, branch);
+        verify(mailService).sendBranchUpdatesOnSubscription(user2, branch);
     }
 
     @Test
@@ -84,7 +84,7 @@ public class NotificationServiceImplTest {
 
         service.topicChanged(topic);
 
-        verify(mailService).sendUpdatesOnSubscription(user2);
+        verify(mailService).sendTopicUpdatesOnSubscription(user2, topic);
         verifyNoMoreInteractions(mailService);
     }
 
@@ -96,7 +96,7 @@ public class NotificationServiceImplTest {
 
         service.branchChanged(branch);
 
-        verify(mailService).sendUpdatesOnSubscription(user2);
+        verify(mailService).sendBranchUpdatesOnSubscription(user2, branch);
         verifyNoMoreInteractions(mailService);
     }
 
