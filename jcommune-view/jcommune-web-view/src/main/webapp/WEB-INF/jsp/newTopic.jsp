@@ -53,11 +53,11 @@
                     </div>
                     <div class="forum_answer_right">
                         <form:input path="topicName" id="subject" type="text" name="subject" size="45"
-                                    maxlength="60" tabindex="1"
+                                    maxlength="255" tabindex="1"
                                     class="post"/>
                         <br>
                         <form:errors path="topicName" id="subject" type="text" name="subject" size="45"
-                                     maxlength="60" tabindex="1"
+                                     maxlength="255" tabindex="1"
                                      class="post" cssClass="error"/>
                     </div>
                 </li>
