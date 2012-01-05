@@ -55,4 +55,12 @@ public interface PostService extends EntityService<Post> {
      * @return post list
      */
     List<Post> getPostsOfUser(User userCreated);
+
+    /**
+     * Returns the preview part of the original post. Size is defined in the interface implementation class.
+     *
+     * @param originalPost the original post
+     * @return original post preview part as a String
+     */
+    String getPostPreviewContent(String originalPost);
 }
