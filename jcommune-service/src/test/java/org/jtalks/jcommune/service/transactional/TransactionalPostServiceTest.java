@@ -19,9 +19,11 @@ import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.NotificationService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.mockito.Mock;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -30,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 
 
@@ -38,27 +41,33 @@ import static org.testng.Assert.assertEquals;
  * Logic validation cover update/get/error cases by this class.
  *
  * @author Osadchuck Eugeny
+ * @author Evgeniy Naumenko
  * @author Kirill Afonin
  */
 public class TransactionalPostServiceTest {
 
-    final long POST_ID = 9L;
+    private final long POST_ID = 9L;
     private static final String USERNAME = "username";
     private static final String EMAIL = "username@mail.com";
     private static final String PASSWORD = "password";
 
-    private PostService postService;
+    @Mock
+    private NotificationService notificationService;
+    @Mock
     private PostDao postDao;
+    @Mock
     private SecurityService securityService;
+    @Mock
     private TopicDao topicDao;
+
+    private PostService postService;
+
     private User user;
 
     @BeforeMethod
     public void setUp() throws Exception {
-        postDao = mock(PostDao.class);
-        topicDao = mock(TopicDao.class);
-        securityService = mock(SecurityService.class);
-        postService = new TransactionalPostService(postDao, topicDao, securityService);
+        initMocks(this);
+        postService = new TransactionalPostService(postDao, topicDao, securityService, notificationService);
         user = new User(USERNAME, EMAIL, PASSWORD);
         when(securityService.getCurrentUser()).thenReturn(user);
     }
@@ -98,6 +107,7 @@ public class TransactionalPostServiceTest {
 
         assertEquals(post.getPostContent(), newBody);
 
+        verify(notificationService).topicChanged(topic);
         verify(postDao).get(POST_ID);
         verify(postDao).update(post);
     }
@@ -120,6 +130,7 @@ public class TransactionalPostServiceTest {
         verify(postDao).get(POST_ID);
         verify(topicDao).update(topic);
         verify(securityService).deleteFromAcl(postForDelete);
+        verify(notificationService).topicChanged(topic);
     }
 
     @Test(expectedExceptions = {NotFoundException.class})

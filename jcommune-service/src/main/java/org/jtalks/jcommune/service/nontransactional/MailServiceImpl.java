@@ -89,10 +89,11 @@ public class MailServiceImpl implements MailService {
     @Override
     public void sendPasswordRecoveryMail(String userName, String email, String newPassword)
             throws MailingFailedException {
+        String url = this.getDeploymentRootUrl() + "/login/";
         this.sendEmail(
                 email,
                 "Password recovery",
-                String.format(String.format(PASSWORD_RECOVERY_TEMPLATE, userName, newPassword, "")),
+                String.format(String.format(PASSWORD_RECOVERY_TEMPLATE, userName, newPassword, url)),
                 "Password recovery email sending failed");
         LOGGER.info("Password recovery email sent for {}", userName);
     }
@@ -119,7 +120,7 @@ public class MailServiceImpl implements MailService {
         this.sendEmail(
                 user.getEmail(),
                 "Forum updates",
-                String.format(SUBSCRIPTION_NOTIFICATION_TEMPLATE, user.getUsername()),
+                String.format(SUBSCRIPTION_NOTIFICATION_TEMPLATE, user.getUsername(), url),
                 "Subscription update sending failed");
     }
 
@@ -157,5 +158,4 @@ public class MailServiceImpl implements MailService {
                 + ":" + request.getServerPort()
                 + request.getContextPath();
     }
-
 }

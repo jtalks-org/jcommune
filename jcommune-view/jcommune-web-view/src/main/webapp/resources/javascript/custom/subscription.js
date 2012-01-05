@@ -15,9 +15,12 @@
 
 /**
  * Assigns subscription AJAX logic to the anchor with specific id.
- * Subscription it toggled asynchronously without page reload
+ * Subscription it toggled asynchronously without page reload.
+ *
+ * This script also alters the "subscription" control to "unsubscription"
+ * one and vice versa
  */
-$(document).ready(
+$(document).ready(function() {
     $('a#subscription').click(function () {
         var link = $(this)[0];
         $.getJSON(link.href, function (controlInfo) {
@@ -25,4 +28,6 @@ $(document).ready(
             link.href = $root + controlInfo.urlSuffix;
         });
         return false;
-    }))
+
+    })
+})

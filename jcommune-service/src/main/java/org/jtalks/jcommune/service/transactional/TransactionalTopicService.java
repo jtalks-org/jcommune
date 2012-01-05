@@ -22,6 +22,7 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.NotificationService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -47,24 +48,28 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final SecurityService securityService;
+    private SecurityService securityService;
     private BranchService branchService;
     private BranchDao branchDao;
+    private NotificationService notificationService;
 
     /**
      * Create an instance of User entity based service
      *
-     * @param dao             data access object, which should be able do all CRUD operations with topic entity
-     * @param securityService {@link SecurityService} for retrieving current user
-     * @param branchService   {@link org.jtalks.jcommune.service.BranchService} instance to be injected
-     * @param branchDao       used for checking branch existence
+     * @param dao                 data access object, which should be able do all CRUD operations with topic entity
+     * @param securityService     {@link SecurityService} for retrieving current user
+     * @param branchService       {@link org.jtalks.jcommune.service.BranchService} instance to be injected
+     * @param branchDao           used for checking branch existence
+     * @param notificationService to send email nofications on topic updates to subscribed users
      */
     public TransactionalTopicService(TopicDao dao, SecurityService securityService,
-                                     BranchService branchService, BranchDao branchDao) {
+                                     BranchService branchService, BranchDao branchDao,
+                                     NotificationService notificationService) {
         super(dao);
         this.securityService = securityService;
         this.branchService = branchService;
         this.branchDao = branchDao;
+        this.notificationService = notificationService;
     }
 
     /**
@@ -86,7 +91,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         this.getDao().update(topic);
 
         securityService.grantToCurrentUser().role(SecurityConstants.ROLE_ADMIN).admin().on(answer);
-
+        notificationService.topicChanged(topic);
         logger.debug("New post in topic. Topic id={}, Post id={}, Post author={}",
                 new Object[]{topicId, answer.getId(), currentUser.getUsername()});
 
@@ -115,6 +120,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
 
         securityService.grantToCurrentUser().role(SecurityConstants.ROLE_ADMIN).admin().on(topic)
                 .user(currentUser.getUsername()).role(SecurityConstants.ROLE_ADMIN).admin().on(first);
+        notificationService.branchChanged(branch);
 
         logger.debug("Created new topic id={}, branch id={}, author={}",
                 new Object[]{topic.getId(), branchId, currentUser.getUsername()});
@@ -160,8 +166,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @Override
     @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', admin)")
     public void updateTopic(long topicId, String topicName, String bodyText, int topicWeight,
-                            boolean sticked, boolean announcement)
-            throws NotFoundException {
+                            boolean sticked, boolean announcement) throws NotFoundException {
         Topic topic = get(topicId);
         topic.setTitle(topicName);
         topic.setTopicWeight(topicWeight);
@@ -171,6 +176,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         post.setPostContent(bodyText);
         topic.updateModificationDate();
         this.getDao().update(topic);
+        notificationService.topicChanged(topic);
 
         logger.debug("Topic id={} updated", topic.getId());
     }
@@ -188,9 +194,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         branchDao.update(branch);
 
         securityService.deleteFromAcl(Topic.class, topicId);
+        notificationService.branchChanged(branch);
 
         logger.info("Deleted topic \"{}\". Topic id: {}", topic.getTitle(), topicId);
-
         return branch;
     }
 

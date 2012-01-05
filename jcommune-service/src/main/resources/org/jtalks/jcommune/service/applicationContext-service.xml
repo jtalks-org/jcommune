@@ -63,6 +63,7 @@
         <constructor-arg ref="postDao"/>
         <constructor-arg ref="topicDao"/>
         <constructor-arg ref="securityService"/>
+        <constructor-arg ref="notificationService"/>
     </bean>
 
     <bean id="topicBranchService"
@@ -90,6 +91,7 @@
         <constructor-arg ref="securityService"/>
         <constructor-arg ref="topicBranchService"/>
         <constructor-arg ref="topicBranchDao"/>
+        <constructor-arg ref="notificationService"/>
     </bean>
 
     <bean id="notificationService" class="org.jtalks.jcommune.service.nontransactional.NotificationServiceImpl">
