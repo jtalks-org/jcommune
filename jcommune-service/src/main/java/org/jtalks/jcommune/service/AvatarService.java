@@ -15,9 +15,10 @@
 
 package org.jtalks.jcommune.service;
 
+import org.jtalks.jcommune.service.exceptions.ImageFormatException;
+import org.jtalks.jcommune.service.exceptions.ImageSizeException;
+import org.jtalks.jcommune.service.exceptions.ImageUploadException;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 /**
  * Service for avatar related operations
@@ -27,19 +28,33 @@ import java.io.IOException;
 public interface AvatarService {
 
     /**
+     * Max avatar size in bytes (to be moved in DB later)
+     */
+    int MAX_SIZE = 4096 * 1024;
+
+
+    /**
      * Perform bytes data to string conversion
      *
      * @param bytes for conversion
      * @return result string
-     * @throws IOException conversion problem
+     * @throws ImageUploadException common avatar processing error
      */
-    String convertAvatarToBase64String(byte[] bytes) throws IOException;
+    String convertAvatarToBase64String(byte[] bytes) throws ImageUploadException;
 
     /**
-     * Perform multipart file conversion to string
+     * Validate file format
      *
-     * @param file for conversion
-     * @return result string
+     * @param file for validation
+     * @throws ImageFormatException invalid format avatar processing error
      */
-    String convertAvatarToBase64String(MultipartFile file);
+    void validateAvatarFormat(MultipartFile file) throws ImageFormatException;
+
+    /**
+     * Validate avatar size
+     *
+     * @param bytes array for validation
+     * @throws ImageSizeException invalid size avatar processing error
+     */
+    void validateAvatarSize(byte[] bytes) throws ImageSizeException;
 }

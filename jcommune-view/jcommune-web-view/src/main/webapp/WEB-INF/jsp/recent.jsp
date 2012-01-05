@@ -22,11 +22,11 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <body>
-<h1>JTalks</h1>
-
 <div class="wrap branch_page">
     <jsp:include page="../template/topLine.jsp"/>
-    <!-- Начало всех форумов -->
+    <h1><a href="${pageContext.request.contextPath}">
+        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+    </a></h1>
     <div class="all_forums">
         <h2><a class="heading" href="#"><c:out value="${recent}"/></a></h2>
 
@@ -39,31 +39,29 @@
             </jtalks:display>
             </span>
         </nobr>
-
-        <!-- Начало группы форумов -->
-        <div class="forum_header_table"> <!-- Шапка бранча -->
+        <div class="forum_header_table">
             <div class="forum_header">
                 <span class="forum_header_icon"></span>
                 <span class="forum_header_topics"><spring:message code="label.branch.header.topics"/></span>
-                <span class="forum_header_answers"><spring:message code="label.branch.header.answers"/></span>
+                <span class="forum_header_answers"><spring:message code="label.section.header.messages"/></span>
                 <span class="forum_header_author"><spring:message code="label.branch.header.author"/></span>
                 <span class="forum_header_clicks"><spring:message code="label.branch.header.views"/></span>
                 <span class="forum_header_last_message"><spring:message code="label.branch.header.lastMessage"/></span>
             </div>
         </div>
 
-        <ul class="forum_table"> <!-- Список топиков -->
+        <ul class="forum_table">
             <jtalks:display uri="" pagination="${pagination}" numberLink="3" list="${topics}">
             <c:forEach var="topic" items="${list}">
-                <li class="forum_row"> <!-- Топик -->
-                    <div class="forum_icon"> <!-- Иконка с кофе -->
+                <li class="forum_row">
+                    <div class="forum_icon">
                         <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png"
                              alt=""
                              title="Форум закрыт"/>
                     </div>
                     <c:choose>
                         <c:when test="${topic.announcement=='true'}">
-                            <div class="forum_info"> <!-- Ссылка на тему -->
+                            <div class="forum_info">
                                 <h4>
                                     <span class="sticky">
                                         <spring:message code="label.marked_as_announcement"/>
@@ -113,31 +111,14 @@
                         <a class="last_message_user"
                            href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
                             <c:out value="${topic.lastPost.userCreated.username}"/></a>
-                        <c:choose>
-                            <c:when test="${pagination.pageSize >= topic.postCount}">
-                                <a href="${pageContext.request.contextPath}/topics/${topic.id}#${topic.lastPost.id}"><img
-                                        src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
-                                        alt="<spring:message code="label.section.header.lastMessage"/>"/></a>
-                            </c:when>
-                            <c:otherwise>
-                                <c:if test="${topic.postCount % pagination.pageSize > 0}">
-                                    <c:set var="additionalPage" value="${1}"/>
-                                </c:if>
-                                <c:if test="${topic.postCount % pagination.pageSize == 0}">
-                                    <c:set var="additionalPage" value="${0}"/>
-                                </c:if>
-                                <a href="${pageContext.request.contextPath}/topics/${topic.id}?page=<fmt:formatNumber value="${(topic.postCount - (topic.postCount mod pagination.pageSize)) div pagination.pageSize + additionalPage}"/>#${topic.lastPost.id}">
-                                <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
-                                     alt="<spring:message code="label.section.header.lastMessage"/>"/>
-                                </a>
-                            </c:otherwise>
-                        </c:choose>
+                        <a href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}">
+                            <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
+                                 alt="<spring:message code="label.section.header.lastMessage"/>"/>
+                        </a>
                     </div>
                 </li>
             </c:forEach>
         </ul>
-
-        <!-- Конец группы форумов -->
         <nobr>
             <span class="nav_bottom">
                 <c:if test="${pagination.maxPages>1}">
@@ -147,9 +128,6 @@
             </span>
         </nobr>
 
-        <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-
-
         <div class="forum_misc_info">
             <spring:message code="label.page"/>
             <c:out value="${pagination.page}"/>
@@ -157,8 +135,6 @@
             <c:out value="${pagination.maxPages}"/>
         </div>
     </div>
-    <!-- Конец всех форумов -->
     <div class="footer_buffer"></div>
-    <!-- Несемантичный буфер для прибития подвала -->
 </div>
 </body>

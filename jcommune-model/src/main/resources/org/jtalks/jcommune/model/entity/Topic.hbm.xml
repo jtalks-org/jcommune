@@ -46,11 +46,10 @@
                      not-null="true" foreign-key="FK_TOPIC_STARTER"/>
         <many-to-one name="branch" column="BRANCH_ID" class="Branch"
                      not-null="false"/>
+
+        <set name="subscribers" table="TOPIC_SUBSCRIPTIONS" cascade="all">
+            <key column="TOPIC_ID"/>
+            <many-to-many column="USER_ID" class="org.jtalks.jcommune.model.entity.User"/>
+        </set>
     </class>
-    <sql-query name="getAllTopicsInBranch">
-        <return alias="TOPIC" class="Topic"/>
-        <![CDATA[SELECT topic.* FROM TOPIC as topic
-             WHERE topic.branch_id = :branchId
-             ORDER BY topic.sticked DESC, topic.topic_weight DESC, topic.modification_date DESC]]>
-    </sql-query>
 </hibernate-mapping>

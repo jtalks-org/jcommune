@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.dao;
 
+import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.model.entity.Branch;
 
 import java.util.List;

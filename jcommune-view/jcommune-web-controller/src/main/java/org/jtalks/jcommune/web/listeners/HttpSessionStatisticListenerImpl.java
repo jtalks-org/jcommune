@@ -23,7 +23,7 @@ import javax.servlet.http.HttpSessionEvent;
  */
 public class HttpSessionStatisticListenerImpl implements HttpSessionStatisticListener {
 
-    private static long totalActiveSessions;
+    private static volatile long totalActiveSessions;
 
     /**
      * @return active sessions count
@@ -45,6 +45,14 @@ public class HttpSessionStatisticListenerImpl implements HttpSessionStatisticLis
      */
     @Override
     public synchronized void sessionDestroyed(HttpSessionEvent se) {
-        totalActiveSessions--;
+        /*
+        Tomcat may not invalidate HTTP session on server restart while counter variable
+        will be set to 0 on class reload. So we can quickly get our session count megative when
+        persisted sessions will expire. This check provides us with a self-correcting facility
+        to overcome this problem
+         */
+        if (totalActiveSessions > 0) {
+            totalActiveSessions--;
+        }
     }
 }

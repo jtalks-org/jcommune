@@ -125,11 +125,12 @@
         <coderef name="center"/>
         <coderef name="indent"/>
         <coderef name="list"/>
-
+        <coderef name="offtop"/>
 
         <!-- Quotes -->
         <coderef name="code"/>
         <coderef name="quote"/>
+        <coderef name="quote_named"/>
 
         <!-- Images -->
         <coderef name="img1"/>
@@ -233,11 +234,11 @@
     <!-- Insert image -->
     <code name="img1" priority="2">
         <pattern>[img]<var name="protocol" regex="((ht|f)tps?:|\.{1,2})?"/>/<var name="addr" scope="escapeXml"/>[/img]</pattern>
-        <template>&lt;img src=&quot;<var name="protocol"/>/<var name="addr"/>&quot;/&gt;</template>
+        <template><![CDATA[<img class="thumbnail" src="]]><var name="protocol"/>/<var name="addr"/><![CDATA["/>]]></template>
     </code>
     <code name="img2" priority="1">
         <pattern>[img]<var name="addr" scope="escapeXml"/>[/img]</pattern>
-        <template>&lt;img src=&quot;http://<var name="addr"/>&quot;/&gt;</template>
+        <template>&lt;img class=&quot;thumbnail&quot; src=&quot;http://<var name="addr"/>&quot;/&gt;</template>
     </code>
 
     <!-- Links. http, https, malto protocols -->
@@ -285,13 +286,24 @@
     <!-- Quote block -->
     <code name="quote">
         <pattern>[quote]<var inherit="true"/>[/quote]</pattern>
-        <template>&lt;span class=&quot;quote&quot;&gt;<var/>&lt;/span&gt;</template>
+        <template><![CDATA[<div class="quote"><div>Quote:</div><blockquote>]]><var/><![CDATA[</blockquote></div>]]></template>
     </code>
 
-    <!-- Quote code block -->
+    <code name="quote_named">
+        <pattern>[quote="<var name="author" inherit="true"/>"]<var name="content" inherit="true"/>[/quote]</pattern>
+        <template><![CDATA[<div class="quote"><div>]]><var name="author"/><![CDATA[:</div><blockquote>]]><var name="content"/><![CDATA[</blockquote></div>]]></template>
+    </code>
+
+    <!-- Code block -->
     <code name="code">
         <pattern>[code]<var scope="basic"/>[/code]</pattern>
         <template>&lt;p class=&quot;code&quot;&gt;<var/>&lt;/p&gt;</template>
+    </code>
+
+    <!-- Offtopic block -->
+    <code name="offtop">
+        <pattern>[offtop]<var scope="basic"/>[/offtop]</pattern>
+        <template><![CDATA[<div class="offtop"><p>]]><var/><![CDATA[</p></div>]]></template>
     </code>
 
     <!-- Simple table -->

@@ -12,32 +12,13 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.validation;
+
+package org.jtalks.jcommune.service.exceptions;
 
 /**
- * Stores all allowable formats and their content types.
+ * Throws if image have not allowable size
  *
- * @author Eugeny Batov
+ * @author Alexandre Teterin
  */
-public enum ImageFormats {
-
-    JPG("image/jpeg"), GIF("image/gif"), PNG("image/png");
-
-    private String contentType;
-
-    /**
-     * Enum constructor.
-     *
-     * @param contentType - content type
-     */
-    ImageFormats(String contentType) {
-        this.contentType = contentType;
-    }
-
-    /**
-     * @return contentType - content type of chosen format
-     */
-    public String getContentType() {
-        return contentType;
-    }
+public class ImageSizeException extends ImageUploadException {
 }

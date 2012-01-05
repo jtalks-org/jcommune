@@ -14,23 +14,24 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<html>
 <head>
     <title><spring:message code="label.section.jtalks_forum"/></title>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/subscription.js"
+            type="text/javascript"></script>
 </head>
 <body>
-<h1>JTalks</h1>
-
 <div class="wrap branch_page">
+    <h1><a href="${pageContext.request.contextPath}">
+        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+    </a></h1>
     <jsp:include page="../template/topLine.jsp"/>
-    <!-- Начало всех форумов -->
     <div class="all_forums">
         <h2><a class="heading" href="#"><c:out value="${branch.name}"/></a></h2>
 
@@ -51,38 +52,47 @@
             </span>
         </nobr>
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-            <a class="button top_button"
-               href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"><spring:message
-                    code="label.addtopic"/></a>
+            <a class="button top_button" href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}">
+                <spring:message code="label.addtopic"/>
+            </a>
+            <c:choose>
+                <c:when test="${subscribed}">
+                    <a id="subscription" class="button top_button"
+                       href="${pageContext.request.contextPath}/branches/${branch.id}/unsubscribe">
+                        <spring:message code="label.unsubscribe"/>
+                    </a>
+                </c:when>
+                <c:otherwise>
+                    <a id="subscription" class="button top_button"
+                       href="${pageContext.request.contextPath}/branches/${branch.id}/subscribe">
+                        <spring:message code="label.subscribe"/>
+                    </a>
+                </c:otherwise>
+            </c:choose>
             &nbsp; &nbsp; &nbsp;
         </sec:authorize>
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-
-
-        <!-- Начало группы форумов -->
-        <div class="forum_header_table"> <!-- Шапка бранча -->
+        <div class="forum_header_table">
             <div class="forum_header">
                 <span class="forum_header_topics"><spring:message code="label.branch.header.topics"/></span>
-                <span class="forum_header_answers"><spring:message code="label.branch.header.answers"/></span>
+                <span class="forum_header_answers"><spring:message code="label.section.header.messages"/></span>
                 <span class="forum_header_author"><spring:message code="label.branch.header.author"/></span>
                 <span class="forum_header_clicks"><spring:message code="label.branch.header.views"/></span>
                 <span class="forum_header_last_message"><spring:message code="label.branch.header.lastMessage"/></span>
             </div>
         </div>
-
-
-        <ul class="forum_table"> <!-- Список топиков -->
+        <ul class="forum_table">
             <jtalks:display uri="${branch.id}" pagination="${pagination}" numberLink="3" list="${topics}">
             <c:forEach var="topic" items="${list}">
-                <li class="forum_row"> <!-- Топик -->
-                    <div class="forum_icon"> <!-- Иконка с кофе -->
+                <li class="forum_row">
+                    <div class="forum_icon">
                         <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png"
                              alt=""
                              title="<spring:message code="label.section.close_forum"/>"/>
                     </div>
                     <c:choose>
                         <c:when test="${topic.announcement=='true'}">
-                            <div class="forum_info"> <!-- Ссылка на тему -->
+                            <div class="forum_info">
                                 <h4><span class="sticky"><spring:message code="label.marked_as_announcement"/> </span><a
                                         class="forum_link"
                                         href="${pageContext.request.contextPath}/topics/${topic.id}">
@@ -90,7 +100,7 @@
                             </div>
                         </c:when>
                         <c:when test="${topic.sticked=='true'}">
-                            <div class="forum_info"> <!-- Ссылка на тему -->
+                            <div class="forum_info">
                                 <h4><span class="sticky"><spring:message code="label.marked_as_sticked"/></span><a
                                         class="forum_link"
                                         href="${pageContext.request.contextPath}/topics/${topic.id}">
@@ -98,11 +108,10 @@
                             </div>
                         </c:when>
                         <c:otherwise>
-                            <div class="forum_info"> <!-- Ссылка на тему -->
+                            <div class="forum_info">
                                 <h4><a class="forum_link"
                                        href="${pageContext.request.contextPath}/topics/${topic.id}"><c:out
                                         value="${topic.title}"/></a></h4>
-
                             </div>
                         </c:otherwise>
                     </c:choose>
@@ -156,9 +165,6 @@
             </jtalks:display>
             </span>
         </nobr>
-        <!-- Конец группы форумов -->
-
-
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
             <a class="button"
                href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"><spring:message
@@ -177,10 +183,7 @@
                href="?pagingEnabled=true"><spring:message code="label.showPages"/></a>
             &nbsp; &nbsp; &nbsp;
         </c:if>
-
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-
-
         <div class="forum_misc_info">
             <spring:message code="label.page"/> <c:out value="${pagination.page}"/> <spring:message code="label.of"/>
             <c:out
@@ -193,18 +196,17 @@
                 <li><a href="#">Вася</a>.</li>
             </ul>
             <br/>
-            <spring:message code="label.topic.now_browsing"/>
+            <c:if test="${!(empty viewList)}">
+                <spring:message code="label.topic.now_browsing"/>
+            </c:if>
             <c:forEach var="innerUser" items="${viewList}">
-                 <a href="${pageContext.request.contextPath}/users/${innerUser}">
-                      <c:out value="${innerUser}"/>
-                 </a>
+                <a href="${pageContext.request.contextPath}/users/${innerUser}">
+                    <c:out value="${innerUser}"/>
+                </a>
+                &nbsp;&nbsp;
             </c:forEach>
-
         </div>
     </div>
-    <!-- Конец всех форумов -->
     <div class="footer_buffer"></div>
-    <!-- Несемантичный буфер для прибития подвала -->
 </div>
 </body>
-</html>

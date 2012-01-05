@@ -13,15 +13,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.jtalks.jcommune.web.util;
+package org.jtalks.jcommune.web.view;
 
 import com.sun.syndication.feed.rss.Channel;
 import com.sun.syndication.feed.rss.Content;
 import com.sun.syndication.feed.rss.Description;
 import com.sun.syndication.feed.rss.Item;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.SecurityService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.view.feed.AbstractRssFeedView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,23 +30,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Class forms a RSS feed
+ * Class forms a RSS feed view.
  *
  * @author Andrey Kluev
  */
 public class RssViewer extends AbstractRssFeedView {
-
-    private SecurityService securityService;
-
-    /**
-     * Need for get current user
-     *
-     * @param securityService security service
-     */
-    @Autowired
-    public RssViewer(SecurityService securityService) {
-        this.securityService = securityService;
-    }
 
     /**
      * Set meta data for all RSS feed
@@ -91,7 +77,6 @@ public class RssViewer extends AbstractRssFeedView {
         List<Item> items = new ArrayList<Item>(listContent.size());
 
         for (Topic topic : listContent) {
-
             items.add(createFeedItem(topic, url));
         }
 
@@ -114,15 +99,11 @@ public class RssViewer extends AbstractRssFeedView {
 
         Content content = new Content();
         item.setContent(content);
-        Pagination pag = new Pagination(1, securityService.getCurrentUser(), topic.getPosts().size(), true);
 
         item.setTitle(topic.getTitle());
         item.setAuthor(topic.getLastPost().getUserCreated().getEncodedUsername());
 
-        item.setLink(url
-                + "/topics/" + topic.getId()
-                + "?page=" + pag.getMaxPages()
-                + "#" + topic.getLastPost().getId());
+        item.setLink(url + "/posts/" + topic.getLastPost().getId());
 
         item.setComments(topic.getTopicStarter().getSignature());
         item.setDescription(description);
@@ -136,7 +117,7 @@ public class RssViewer extends AbstractRssFeedView {
      * @param request HttpServletRequest
      * @return url
      */
-    public String buildURL(HttpServletRequest request) {
+    private String buildURL(HttpServletRequest request) {
         return request.getScheme()
                 + "://" + request.getServerName()
                 + ":" + request.getServerPort()

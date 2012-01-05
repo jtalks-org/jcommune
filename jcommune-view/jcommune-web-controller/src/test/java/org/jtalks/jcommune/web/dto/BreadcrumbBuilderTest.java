@@ -137,51 +137,6 @@ public class BreadcrumbBuilderTest {
         assertBreadcrumbs(actualList, expectedList);
     }
 
-    @Test
-    public void testGetInboxBreadcrumb() throws Exception {
-        //init
-        Breadcrumb expectedBreadcrumb = new Breadcrumb(Breadcrumb.STUB_BREADCRUMB_ID,
-                Breadcrumb.BreadcrumbLocation.INBOX, Breadcrumb.INBOX_BREADCRUMB_LOCATION_VALUE);
-        List<Breadcrumb> expectedList = breadcrumbBuilder.getForumBreadcrumb();
-        expectedList.add(expectedBreadcrumb);
-
-        //invoke the object under test
-        List<Breadcrumb> actualList = breadcrumbBuilder.getInboxBreadcrumb();
-
-        //check result
-        assertBreadcrumbs(actualList, expectedList);
-    }
-
-    @Test
-    public void testGetOutboxBreadcrumb() throws Exception {
-        //init
-        Breadcrumb expectedBreadcrumb = new Breadcrumb(Breadcrumb.STUB_BREADCRUMB_ID,
-                Breadcrumb.BreadcrumbLocation.OUTBOX, Breadcrumb.OUTBOX_BREADCRUMB_LOCATION_VALUE);
-        List<Breadcrumb> expectedList = breadcrumbBuilder.getForumBreadcrumb();
-        expectedList.add(expectedBreadcrumb);
-
-        //invoke the object under test
-        List<Breadcrumb> actualList = breadcrumbBuilder.getOutboxBreadcrumb();
-
-        //check result
-        assertBreadcrumbs(actualList, expectedList);
-    }
-
-    @Test
-    public void testGetDraftsBreadcrumb() throws Exception {
-        //init
-        Breadcrumb expectedBreadcrumb = new Breadcrumb(Breadcrumb.STUB_BREADCRUMB_ID,
-                Breadcrumb.BreadcrumbLocation.DRAFTS, Breadcrumb.DRAFTS_BREADCRUMB_LOCATION_VALUE);
-        List<Breadcrumb> expectedList = breadcrumbBuilder.getForumBreadcrumb();
-        expectedList.add(expectedBreadcrumb);
-
-        //invoke the object under test
-        List<Breadcrumb> actualList = breadcrumbBuilder.getDraftsBreadcrumb();
-
-        //check result
-        assertBreadcrumbs(actualList, expectedList);
-    }
-
     private void assertBreadcrumbs(List<Breadcrumb> actualList, List<Breadcrumb> expectedList) {
         if (actualList.size() == expectedList.size()) {
             for (int i = 0; i < actualList.size(); i++) {

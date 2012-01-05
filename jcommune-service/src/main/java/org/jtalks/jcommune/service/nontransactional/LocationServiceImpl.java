@@ -18,54 +18,63 @@ package org.jtalks.jcommune.service.nontransactional;
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.LocationService;
+import org.jtalks.jcommune.service.SecurityService;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Class for storing and tracking of users on the forum.
+ * Realizes the possibility of receiving map stores the user and his location,
+ * the list of user names on this page and delete the current user of map
  *
  * @author Andrey Kluev
  */
 @Component
 public class LocationServiceImpl implements LocationService {
-    private Map<User, String> registerUserMap = new HashMap<User, String>();
+    private SecurityService securityService;
+    private SessionRegistry sessionRegistry;
+    private Map<User, String> registerUserMap = new ConcurrentHashMap<User, String>();
 
     /**
-     * {@inheritDoc}
+     * Constructor assigns the elements necessary
+     * for the correct operation of this implementation
+     *
+     * @param securityService security service
+     * @param sessionRegistry session registry
      */
-    public Map<User, String> getRegisterUserMap() {
-        return registerUserMap;
+    public LocationServiceImpl(SecurityService securityService, SessionRegistry sessionRegistry) {
+        this.securityService = securityService;
+        this.sessionRegistry = sessionRegistry;
     }
 
     /**
-     * {@inheritDoc}
+     * Get lis name user active these page, modification map to active user
+     * and create list of user name users on the current page
+     *
+     * @param entity entity
+     * @return lis name user active these page
      */
-    public void setRegisterUserMap(Map<User, String> registerUserMap) {
-        this.registerUserMap = registerUserMap;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public List<String> activeRegistryUserList(User currentUser, Entity entity,
-                                               List<Object> onlineRegisteredUsers) {
-        Map globalUserMap = getRegisterUserMap();
-        globalUserMap.put(currentUser, entity.getUuid());
-
-        Map<User, String> innerMap = new HashMap<User, String>();
+    @Override
+    public List<String> getUsersViewing(Entity entity) {
         List<String> viewList = new ArrayList<String>();
-        for (Object o : onlineRegisteredUsers) {
+        /**
+         * At the moment, in the case of call in the forum Anonymous as the current user is returned Anonymous.
+         * This condition does not allow Anonymous add to the map of active users.
+         */
+        if (securityService.getCurrentUser() != null) {
+            registerUserMap.put(securityService.getCurrentUser(), entity.getUuid());
+        }
+
+        for (Object o : sessionRegistry.getAllPrincipals()) {
             User user = (User) o;
-            if (globalUserMap.containsKey(user) && globalUserMap.get(user).equals(entity.getUuid())) {
-                innerMap.put(user, entity.getUuid());
+
+            if (registerUserMap.containsKey(user) && registerUserMap.get(user).equals(entity.getUuid())) {
                 viewList.add(user.getEncodedUsername());
             }
         }
-        setRegisterUserMap(innerMap);
         return viewList;
     }
 
@@ -73,7 +82,13 @@ public class LocationServiceImpl implements LocationService {
      * {@inheritDoc}
      */
     @Override
-    public void clear(User user) {
-        getRegisterUserMap().put(user, "");
+    public void clearUserLocation() {
+        /**
+         * At the moment, in the case of call in the forum Anonymous as the current user is returned Anonymous.
+         * This condition does not allow Anonymous remove to the map of active users.
+         */
+        if (securityService.getCurrentUser() != null) {
+            registerUserMap.remove(securityService.getCurrentUser());
+        }
     }
 }

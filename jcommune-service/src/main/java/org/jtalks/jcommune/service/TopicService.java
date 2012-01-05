@@ -29,6 +29,7 @@ import java.util.List;
  * @author Vervenko Pavel
  * @author Kirill Afonin
  * @author Vitaliy Kravchenko
+ * @author Eugeny Batov
  */
 public interface TopicService extends EntityService<Topic> {
 
@@ -58,16 +59,6 @@ public interface TopicService extends EntityService<Topic> {
     Topic createTopic(String topicName, String bodyText, long branchId) throws NotFoundException;
 
     /**
-     * Get posts range from branch.
-     *
-     * @param branchId branch id from which we obtain topics
-     * @return list of {@code Topic} objects with size {@code max}
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when branch not found
-     */
-    List<Topic> getTopicsInBranch(long branchId) throws NotFoundException;
-
-    /**
      * Get topic updated since the date passed.
      *
      * @param date to return the topic updated after
@@ -75,7 +66,12 @@ public interface TopicService extends EntityService<Topic> {
      */
     List<Topic> getRecentTopics(DateTime date);
 
-
+    /**
+     * Get unanswered topics(topics which has only 1 post added during topic creation).
+     *
+     * @return list of {@code Topic} objects without answers
+     */
+    List<Topic> getUnansweredTopics();
 
     /**
      * Update current topic with given title and body.

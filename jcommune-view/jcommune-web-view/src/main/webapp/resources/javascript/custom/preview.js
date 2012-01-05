@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2011  JTalks.org Team
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -12,26 +12,31 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.tags;
-
-import org.springframework.web.servlet.tags.form.FormTag;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
-import java.lang.reflect.Field;
-
-import static org.testng.Assert.assertEquals;
 
 /**
- * @author Evgeniy Naumenko
+ * Registers image preview handler for user-specified images
  */
-public class ProtectedFormTest {
-
-    @Test
-    public void testMultipostBlockingJSPresent() throws NoSuchFieldException, IllegalAccessException {
-        ProtectedForm form = new ProtectedForm();
-        Field field = FormTag.class.getDeclaredField("onsubmit");
-        field.setAccessible(true);
-        assertEquals(field.get(form), ProtectedForm.MULTIPOST_BLOCKING_JS);
-    }
-}
+$(document).ready(function() {
+    $('img.thumbnail').imgPreview({
+        srcAttr: 'src',
+        containerID: 'img_preview',
+        imgCSS: {
+            'max-height': '500px',
+            'max-width': '700px'
+        },
+        distanceFromCursor: {top: - 150, left:10},
+        onShow: function(link) {
+            // Animate link:
+            $(link).stop().animate({opacity:0.4});
+            // Reset image:
+            $('img', this).stop().css({opacity:0});
+        },
+        onLoad: function() {
+            // Animate image
+            $(this).animate({opacity:1}, 300);
+        },
+        onHide: function(link) {
+            // Animate link:
+            $(link).stop().animate({opacity:1});
+        }});
+});

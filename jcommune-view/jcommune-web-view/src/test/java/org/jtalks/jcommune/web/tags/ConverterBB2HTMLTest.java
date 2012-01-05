@@ -118,13 +118,31 @@ public class ConverterBB2HTMLTest {
 
     @Test
     public void bbCodeImg(){
-        tag.setBbCode("[img]http://heinlein37.narod.ru/markup/forum/images/avatar.jpg[/img]");
-        assertEquals(tag.getBbCode(), "<img src=\"http://heinlein37.narod.ru/markup/forum/images/avatar.jpg\"/>");
+        tag.setBbCode("[img]http://narod.ru/avatar.jpg[/img]");
+        assertEquals(tag.getBbCode(), "<img class=\"thumbnail\" src=\"http://narod.ru/avatar.jpg\"/>");
     }
 
     @Test
     public void bbCodeCode(){
         tag.setBbCode("[code]System.out.println(\"Hi!\");[/code]");
         assertEquals(tag.getBbCode(), "<p class=\"code\">System.out.println(&quot;Hi!&quot;);</p>");
+    }
+
+    @Test
+    public void bbCodeQuote(){
+        tag.setBbCode("[quote]Some text[/quote]");
+        assertEquals(tag.getBbCode(), "<div class=\"quote\"><div>Quote:</div><blockquote>Some text</blockquote></div>");
+    }
+
+    @Test
+    public void bbCodeNamedQuote(){
+        tag.setBbCode("[quote=\"user\"]Some text[/quote]");
+        assertEquals(tag.getBbCode(), "<div class=\"quote\"><div>user:</div><blockquote>Some text</blockquote></div>");
+    }
+
+    @Test
+    public void bbCodeOfftop(){
+        tag.setBbCode("[offtop]Some text[/offtop]");
+        assertEquals(tag.getBbCode(), "<div class=\"offtop\"><p>Some text</p></div>");
     }
 }

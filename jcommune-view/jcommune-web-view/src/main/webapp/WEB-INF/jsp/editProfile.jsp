@@ -1,4 +1,4 @@
-<%--
+﻿<%--
 
     Copyright (C) 2011  JTalks.org Team
     This library is free software; you can redistribute it and/or
@@ -14,7 +14,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
@@ -24,134 +24,123 @@
 <sec:authentication property="principal.username" var="auth" scope="request"/>
 <head>
     <title><spring:message code="label.user"/> - "${auth}"</title>
-    <script language="javascript"
-            src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-1.7.min.js"></script>
     <script type="text/javascript"
             src="${pageContext.request.contextPath}/resources/javascript/licensed/fileuploader.js"></script>
 </head>
 <body>
-<jsp:include page="../template/topLine.jsp"/>
-<div id="editUserDetails">
-    <form:form id="editProfileForm" name="editProfileForm"
-               action="${pageContext.request.contextPath}/users/edit"
-               modelAttribute="editedUser" method="POST" enctype="multipart/form-data">
+<div class="wrap userdetails_page">
+    <jsp:include page="../template/topLine.jsp"/>
+    <h1><a href="${pageContext.request.contextPath}">
+        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+    </a></h1>
 
-        <form:hidden id="avatar" path="avatar"/>
-        <input id="avatarTempValue" type="hidden"/>
+    <div class="all_forums">
+        <div id="editUserDetails">
+            <form:form id="editProfileForm" name="editProfileForm"
+                       action="${pageContext.request.contextPath}/users/edit"
+                       modelAttribute="editedUser" method="POST" enctype="multipart/form-data">
 
-        <table>
-            <tr>
-                <td><label><spring:message code="label.username"/></label></td>
-                <td><span><c:out value="${auth}"/></span></td>
-            </tr>
+                <form:hidden id="avatar" path="avatar"/>
+                <input id="avatarTempValue" type="hidden"/>
 
-            <tr>
-                <td><label><spring:message code="label.email"/></label></td>
-                <td><form:input path="email" size="25" value="${editedUser.email}"/></td>
-                <td><form:errors path="email" cssClass="error"/></td>
-            </tr>
-            <tr>
-                <td><label><spring:message code="label.firstname"/></label></td>
-                <td><form:input path="firstName" size="25" value="${editedUser.firstName}"/></td>
-                <td><form:errors path="firstName" cssClass="error"/></td>
-            </tr>
-            <tr>
-                <td><label><spring:message code="label.lastname"/></label></td>
-                <td><form:input path="lastName" size="25" value="${editedUser.lastName}"/></td>
-                <td><form:errors path="lastName" cssClass="error"/></td>
-            </tr>
-            <tr>
-                <td><label><spring:message code="label.newPassword"/></label></td>
-                <td><form:input path="newUserPassword" size="25" type="password"/></td>
-                <td><form:errors path="newUserPassword" cssClass="error"/></td>
-            </tr>
-            <tr>
-                <td><label><spring:message code="label.newPasswordConfirmation"/></label></td>
-                <td><form:input path="newUserPasswordConfirm" size="25" type="password"/></td>
-                <td><form:errors path="newUserPasswordConfirm" cssClass="error"/></td>
-            </tr>
-            <tr>
-                <td><label><spring:message code="label.currentPassword"/></label></td>
-                <td><form:input path="currentUserPassword" size="25" type="password"/></td>
-                <td><form:errors path="currentUserPassword" cssClass="error"/></td>
-            </tr>
-            <tr>
-                <td><label><spring:message code="label.signature"/></label></td>
-                <td><form:input path="signature" size="50" value="${editedUser.signature}"/></td>
-                <td><form:errors path="signature" cssClass="error"/></td>
-            </tr>
-            <tr>
-                <td><label><spring:message code="label.language"/></label></td>
-                <td>
-                    <form:select path="language" value="${editedUser.language}">
-                        <c:forEach items="${editedUser.languagesAvailable}" var="language">
-                            <form:option value="${language}">
-                                <spring:message code="${language.languageNameLabel}"/>
-                            </form:option>
-                        </c:forEach>
-                    </form:select>
-                </td>
-                <td><form:errors path="language" cssClass="error"/></td>
-            </tr>
-            <tr>
-                <td><label><spring:message code="label.numberOfTopicsOnPage"/></label></td>
-                <td>
-                    <form:select path="pageSize" value="${editedUser.pageSize}"
-                                 items="${editedUser.pageSizesAvailable}"/>
-                </td>
-                <td><form:errors path="pageSize" cssClass="error"/></td>
-            </tr>
-            <tr>
-                <td><label><spring:message code="label.avatar.preview"/></label></td>
-                <td width="100" height="100" align="center" valign="middle">
-                    <img id="avatarPreview" src="" alt=""/>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div id="upload"><input type="button" value="<spring:message code="label.avatar.load"/>"/></div>
-                </td>
-            </tr>
-        </table>
-    </form:form>
+                <div class="forum_header_table">
+                    <div class="forum_header">
+                        <span class="forum_header_generic"><spring:message code="label.profile"/></span>
+                        <span class="empty_cell"></span>
+                    </div>
+                </div>
+                <ul class="forum_table">
+                    <li class="forum_row">
+                        <label><spring:message code="label.username"/></label>
+                        <span><c:out value="${auth}"/></span>
+                    </li>
+                    <li class="forum_row">
+                        <label><spring:message code="label.email"/></label>
+                        <span><form:input path="email" size="25" value="${editedUser.email}"/></span>
+                        <span><form:errors path="email" cssClass="error"/></span>
+                    </li>
+                    <li class="forum_row">
+                        <label><spring:message code="label.firstname"/></label>
+                        <span><form:input path="firstName" size="25" value="${editedUser.firstName}"/></span>
+                        <span><form:errors path="firstName" cssClass="error"/></span>
+                    </li>
+                    <li class="forum_row">
+                        <label><spring:message code="label.lastname"/></label>
+                        <span><form:input path="lastName" size="25" value="${editedUser.lastName}"/></span>
+                        <span><form:errors path="lastName" cssClass="error"/></span>
+                    </li>
+                    <li class="forum_row">
+                        <label><spring:message code="label.currentPassword"/></label>
+                        <span><form:input path="currentUserPassword" size="25" type="password"/></span>
+                        <span><form:errors path="currentUserPassword" cssClass="error"/></span>
+                    </li>
+                    <li class="forum_row">
+                        <label><spring:message code="label.newPassword"/></label>
+                        <span><form:input path="newUserPassword" size="25" type="password"/></span>
+                        <span><form:errors path="newUserPassword" cssClass="error"/></span>
+                    </li>
+                    <li class="forum_row">
+                        <label><spring:message code="label.newPasswordConfirmation"/></label>
+                        <span><form:input path="newUserPasswordConfirm" size="25" type="password"/></span>
+                        <span><form:errors path="newUserPasswordConfirm" cssClass="error"/></span>
+                    </li>
+                    <li class="forum_row">
+                        <label><spring:message code="label.signature"/></label>
+                        <span><form:input path="signature" size="40" value="${editedUser.signature}"/></span>
+                        <span><form:errors path="signature" cssClass="error"/></span>
+                    </li>
+                    <li class="forum_row">
+                        <label><spring:message code="label.language"/></label>
+                        <span>
+                        <form:select path="language" value="${editedUser.language}">
+                            <c:forEach items="${editedUser.languagesAvailable}" var="language">
+                                <form:option value="${language}">
+                                    <spring:message code="${language.languageNameLabel}"/>
+                                </form:option>
+                            </c:forEach>
+                        </form:select>
+                        </span>
+                        <span><form:errors path="language" cssClass="error"/></span>
+                    </li>
+                    <li class="forum_row">
+                        <label><spring:message code="label.numberOfTopicsOnPage"/></label>
+                        <span>
+                            <form:select path="pageSize" value="${editedUser.pageSize}"
+                                         items="${editedUser.pageSizesAvailable}"/>
+                        </span>
+                        <span><form:errors path="pageSize" cssClass="error"/></span>
+                    </li>
+                    <li class="forum_row">
+                        <label><spring:message code="label.avatar"/></label>
+                        <span class="avatar">
+                            <img id="avatarPreview" src="${editedUser.avatar}" alt=""/>
+                        </span>
+                    </li>
+                    <li class="forum_row"></li>
+                </ul>
+                <div class="form_controls">
+                    <span id="upload"><input type="button" value="<spring:message code="label.avatar.load"/>"/></span>
+                    <input type="submit" value="<spring:message code="label.save_changes"/>"
+                           onclick="submitForm('editProfileForm')"/>
+                    <a href="${pageContext.request.contextPath}/users/${auth}">
+                        <button><spring:message code="label.back"/></button>
+                    </a>
+                </div>
+            </form:form>
 
-    <form action="${pageContext.request.contextPath}/users/edit/avatar" id="removeAvatarForm"
-          name="removeAvatarForm" method="POST">
-        <c:if test="${editedUser.avatar != null}">
-            <table>
-                <tr>
-                    <td><label><spring:message code="label.avatar.current"/></label></td>
-                    <td width="100" height="100" align="center" valign="middle">
-                        <img src="${editedUser.avatar}" alt=""/><br>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <a href="javascript:submitForm('removeAvatarForm')"><spring:message
+            <form action="${pageContext.request.contextPath}/users/edit/avatar" id="removeAvatarForm"
+                  name="removeAvatarForm" method="POST">
+                <c:if test="${editedUser.avatar != null}">
+                    <div class="form_controls">
+                        <a class="button" href="javascript:submitForm('removeAvatarForm')"><spring:message
                                 code="label.avatar.remove"/></a>
-                    </td>
-                </tr>
-            </table>
-        </c:if>
-    </form>
-
-    <table>
-        <tr>
-            <td>
-                <form:form action='${pageContext.request.contextPath}/users/${auth}' method="GET">
-                    <input type="submit" value="<spring:message code="label.back"/>"/>
-                </form:form>
-            </td>
-            <td>
-                <input type="submit" value="<spring:message code="label.save_changes"/>"
-                       onclick="submitForm('editProfileForm')"/>
-            </td>
-        </tr>
-    </table>
-
+                    </div>
+                </c:if>
+            </form>
+        </div>
+    </div>
+    <div class="footer_buffer"></div>
 </div>
-
-
 <script type="text/javascript">
     function submitForm(formName) {
 
@@ -167,32 +156,45 @@
     }
 
     function createUploader() {
-        var action = '${pageContext.request.contextPath}/users/avatarpreview';
+        var action;
+        if (navigator.appName.indexOf("Microsoft") != -1 ||
+                navigator.appName.indexOf("Opera") != -1) {
+            action = '${pageContext.request.contextPath}/users/IFrameAvatarpreview';
+        }
+        else {
+            action = '${pageContext.request.contextPath}/users/XHRavatarpreview';
+        }
 
         console.log('Action: %s', action);
         var uploader = new qq.FileUploaderBasic({
-            button:  $("#upload").get(0),
-            action: action,
-            multiple: false,
-            allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'],
-            sizeLimit: 4194304, // max size
-            onSubmit: function(id, filename) {
+            button:$("#upload").get(0),
+            action:action,
+            multiple:false,
+            allowedExtensions:['jpg', 'jpeg', 'png', 'gif'],
+            sizeLimit:4194304, // max size
+            onSubmit:function (id, filename) {
                 console.log('File upload: %s, ID: %s', filename, id);
             },
-            onProgress: function(id, filename, loaded, total) {
+            onProgress:function (id, filename, loaded, total) {
                 console.log('Progress for file: %s, ID: %s, loaded: %s, total: %s', filename, id, loaded, total);
             },
-            onComplete : function(id, filename, responseJSON) {
+            onComplete:function (id, filename, responseJSON) {
                 console.log('File upload for file %s, id %s done with status %s', filename, id, responseJSON);
-                document.getElementById('avatarPreview').setAttribute('src', responseJSON.srcPrefix + responseJSON.srcImage);
-                document.getElementById('avatarTempValue').setAttribute('value', responseJSON.srcImage);
+                if (responseJSON.success == "true") {
+                    document.getElementById('avatarPreview').setAttribute('src', responseJSON.srcPrefix
+                            + responseJSON.srcImage);
+                    document.getElementById('avatarTempValue').setAttribute('value', responseJSON.srcImage);
+                } else {
+                    document.getElementById('avatarPreview').setAttribute('src', "");
+                    document.getElementById('avatarPreview').setAttribute('alt', responseJSON.message);
+                }
+
             },
-            debug: true
+            debug:false
         });
 
     }
 
     $(document).ready(createUploader());
 </script>
-
 </body>

@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.model.dao;
 
 import org.joda.time.DateTime;
+import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.model.entity.Topic;
 
 import java.util.List;
@@ -26,17 +27,10 @@ import java.util.List;
  * @author Pavel Vervenko
  * @author Kirill Afonin
  * @author Vitaliy Kravchenko
+ * @author Eugeny Batov
  * @see org.jtalks.jcommune.model.dao.hibernate.TopicHibernateDao
  */
 public interface TopicDao extends ChildRepository<Topic> {
-
-    /**
-     * Get posts range from branch.
-     *
-     * @param branchId branch id from which we obtain topics
-     * @return list of {@code Topic} objects with size {@code max}
-     */
-    List<Topic> getTopicsInBranch(Long branchId);
 
 
     /**
@@ -47,4 +41,11 @@ public interface TopicDao extends ChildRepository<Topic> {
      */
     List<Topic> getTopicsUpdatedSince(DateTime lastLogin);
 
+
+    /**
+     * Get unanswered topics(topics which has only 1 post added during topic creation).
+     *
+     * @return list of topics
+     */
+    List<Topic> getUnansweredTopics();
 }

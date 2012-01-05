@@ -13,7 +13,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+package org.jtalks.jcommune.service.exceptions;
+
 /**
- * Contains utility classes that are not included in other packages.
+ * Throws if image have not allowable format
+ *
+ * @author Alexandre Teterin
  */
-package org.jtalks.jcommune.model.util;
+public class ImageFormatException extends ImageUploadException {
+}

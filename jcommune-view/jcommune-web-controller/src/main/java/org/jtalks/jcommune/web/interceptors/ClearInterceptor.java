@@ -15,55 +15,54 @@
 
 package org.jtalks.jcommune.web.interceptors;
 
-import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.SecurityService;
-import org.jtalks.jcommune.service.nontransactional.LocationServiceImpl;
+import org.jtalks.jcommune.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
- * Global interceptor works for all pages.
+ * Global interceptor works for all pages,
+ * clear location current user
  *
  * @author Andrey Kluev
  */
 public class ClearInterceptor extends HandlerInterceptorAdapter {
 
-    private final SecurityService securityService;
-    private final LocationServiceImpl locationServiceImpl;
+    private LocationService locationService;
 
     /**
      * Constructor clearInterceptor
      *
-     * @param locationServiceImpl autowired object from Spring Context
-     * @param securityService autowired object from Spring Context
+     * @param locationService autowired object from Spring Context
      */
     @Autowired
-    public ClearInterceptor(LocationServiceImpl locationServiceImpl, SecurityService securityService) {
-        this.locationServiceImpl = locationServiceImpl;
-        this.securityService = securityService;
+    public ClearInterceptor(LocationService locationService) {
+        this.locationService = locationService;
     }
 
     /**
      * Drops location current user in forum
      *
-     * @param request HttpServletRequest
+     * @param request  HttpServletRequest
      * @param response HttpServletResponse
      * @param handler  handler
      * @return true
-     * @throws IOException exception I/O
-     * @throws ServletException servlet exception
      */
     @Override
     public boolean preHandle(HttpServletRequest request,
-                             HttpServletResponse response, Object handler) throws IOException, ServletException {
-
-        User currentUser = securityService.getCurrentUser();
-        locationServiceImpl.clear(currentUser);
+                             HttpServletResponse response, Object handler) {
+        /**
+         * This condition is necessary because interceptors work designed to challenge a controller,
+         * if the page is present avatar, after calling the main controller will call controller
+         * avatar that will lead to loss of data on the location of the current user.
+         * If you delete or change the terms of the controller mapinga avatar,
+         * to display all the pages of browsing users will see only the current user.
+         */
+        if (!request.getRequestURI().endsWith("/avatar")) {
+            locationService.clearUserLocation();
+        }
 
         return true;
     }

@@ -18,7 +18,9 @@ import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Represents the topic of the forum.
@@ -41,6 +43,7 @@ public class Topic extends Entity {
     private List<Post> posts = new ArrayList<Post>();
     private Branch branch;
     private int views;
+    private Set<User> subscribers = new HashSet<User>();
 
     public static final int MIN_NAME_SIZE = 5;
     public static final int MAX_NAME_SIZE = 255;
@@ -291,19 +294,22 @@ public class Topic extends Entity {
     }
 
     /**
-     * Calculates last page number for a given pagesize.
-     * Will work incorrectly if topic has no posts
-     * (impossible at the moment)
+     * Returns users subscribed to get email notifications
+     * about this branch's updates
      *
-     * @param pageSize size of a page
-     * @return number of the page where last post is located
+     * @return users to send notifications on update to
      */
-    public int getLastPageNumber(int pageSize) {
-        int pageNum = posts.size() / pageSize;
-        if (posts.size() % pageSize == 0) {
-            return pageNum;
-        } else {
-            return pageNum + 1;
-        }
+    public Set<User> getSubscribers() {
+        return subscribers;
+    }
+
+    /**
+     * Sets subscribers list for this branch.
+     * For Hibernate use only.
+     *
+     * @param subscribers users to send notifications on update to
+     */
+    protected void setSubscribers(Set<User> subscribers) {
+        this.subscribers = subscribers;
     }
 }

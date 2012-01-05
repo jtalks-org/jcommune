@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import org.jtalks.common.model.dao.hibernate.AbstractHibernateParentRepository;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
 
@@ -25,7 +26,7 @@ import org.jtalks.jcommune.model.entity.User;
  * @author Evgeniy Naumenko
  * @author Kirill Afonin
  */
-public class UserHibernateDao extends ParentRepositoryImpl<User> implements UserDao {
+public class UserHibernateDao extends AbstractHibernateParentRepository<User> implements UserDao {
 
     /**
      * {@inheritDoc}

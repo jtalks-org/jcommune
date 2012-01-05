@@ -12,26 +12,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao;
-
-import org.jtalks.common.model.entity.Entity;
 
 /**
- * @author Kirill Afonin
+ * Contains custom view implementations impossible to be done like JSP.
  */
-public interface ParentRepository<T extends Entity> extends ChildRepository<T> {
-    /**
-     * Save or update entity.
-     *
-     * @param entity object to save
-     */
-    void saveOrUpdate(T entity);
-
-    /**
-     * Delete the entity by id.
-     *
-     * @param id the id
-     * @return {@code true} if entity deleted successfully
-     */
-    boolean delete(Long id);
-}
+package org.jtalks.jcommune.web.view;

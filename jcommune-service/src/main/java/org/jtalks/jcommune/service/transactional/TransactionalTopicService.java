@@ -40,6 +40,7 @@ import java.util.List;
  * @author Kirill Afonin
  * @author Vitaliy Kravchenko
  * @author Max Malakhov
+ * @author Eugeny Batov
  */
 public class TransactionalTopicService extends AbstractTransactionalEntityService<Topic, TopicDao>
         implements TopicService {
@@ -122,17 +123,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         return topic;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Topic> getTopicsInBranch(long branchId) throws NotFoundException {
-        if (!branchDao.isExist(branchId)) {
-            throw new NotFoundException("Branch with id: " + branchId + " not found");
-        }
-        return this.getDao().getTopicsInBranch(branchId);
-
-    }
 
     /**
      * {@inheritDoc}
@@ -144,6 +134,15 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         }
         return this.getDao().getTopicsUpdatedSince(date);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Topic> getUnansweredTopics() {
+        return this.getDao().getUnansweredTopics();
+    }
+
 
     /**
      * {@inheritDoc}

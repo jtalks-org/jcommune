@@ -92,14 +92,4 @@ public class TopicTest {
 
         assertEquals(topic.getTopicWeight(), 10);
     }
-
-    @Test
-    public void testGetlastPageNumber() {
-        topic.setPosts(Collections.nCopies(10, post1));
-
-        assertEquals(topic.getLastPageNumber(1), 10);
-        assertEquals(topic.getLastPageNumber(5), 2);
-        assertEquals(topic.getLastPageNumber(100), 1);
-
-    }
 }

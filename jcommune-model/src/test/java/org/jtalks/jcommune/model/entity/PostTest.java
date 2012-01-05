@@ -15,9 +15,9 @@
 package org.jtalks.jcommune.model.entity;
 
 import org.joda.time.DateTime;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -45,7 +45,18 @@ public class PostTest {
             "laboreetdoloremagnaaliqua.Utenimadminimveniam,quisnostrud" +
             "exercitationullamcolaborisnisiutaliquipexeacommodoconsequat." +
             "D...";
-    Post post = new Post();
+    Post post;
+    Post post1;
+    Topic topic;
+    User user;
+
+    @BeforeMethod
+    public void init() {
+        user = new User("username","email","password");
+        post = new Post(user, "post");
+        post1 = new Post(user, "post1");
+        topic = new Topic(user, "");
+    }
 
     @Test
     public void shortContentShouldBeMax200Symbols() {
@@ -91,19 +102,4 @@ public class PostTest {
 
 
     }
-
-    @Test
-    public void testDefinitionPostInTopic() {
-        User user = mock(User.class);
-        Post post1 = mock(Post.class);
-        Topic topic = new Topic(user, "");
-        topic.addPost(post1);
-        topic.addPost(post1);
-        topic.addPost(post);
-
-        post.getNumberPagePostInTopic(post, 2);
-
-
-    }
-
 }

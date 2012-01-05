@@ -12,36 +12,40 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.util;
 
-import com.googlecode.flyway.core.Flyway;
+package org.jtalks.jcommune.service.exceptions;
 
 /**
- * Wrapper that gives ability for disabling flyway migrations.
+ * Throws if uploaded image is invalid, for example has wrong size, format dimensions...
  *
- * @author Kirill Afonin
+ * @author Alexandre Teterin
  */
-public class FlywayWrapper extends Flyway {
-    private boolean enabled = true;
+public class ImageUploadException extends Exception {
 
     /**
-     * Can be used for disabling/enabling migrations.
-     * Migrations enabled by default.
+     * Default constructor.
+     * <p/>
+     * {@link Exception}
+     */
+    public ImageUploadException() {
+    }
+
+    /**
+     * Create exception with specific message.
      *
-     * @param enabled is migrations enabled
+     * @param message exception message
      */
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public ImageUploadException(String message) {
+        super(message);
     }
 
     /**
-     * {@inheritDoc}
+     * @param cause the cause (which is saved for later retrieval by the
+     *              {@link #getCause()} method).
      */
-    @Override
-    public int migrate() {
-        if (enabled) {
-            return super.migrate();
-        }
-        return 0;
+    public ImageUploadException(Throwable cause) {
+        super(cause);
     }
+
+
 }

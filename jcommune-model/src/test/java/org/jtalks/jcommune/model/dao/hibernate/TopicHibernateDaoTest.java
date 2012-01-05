@@ -20,6 +20,7 @@ import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ import static org.testng.Assert.*;
 
 /**
  * @author Kirill Afonin
+ * @author Eugeny Batov
  */
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
@@ -115,18 +117,6 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     /*===== TopicDao specific methods =====*/
 
     @Test
-    public void testGetTopicRangeInBranch() {
-        List<Topic> persistedTopics = createAndSaveTopicList(5);
-        long branchId = persistedTopics.get(0).getBranch().getId();
-
-        List<Topic> topics = dao.getTopicsInBranch(branchId);
-
-        assertEquals(5, topics.size());
-        assertEquals(branchId, topics.get(0).getBranch().getId(), "Incorrect branch");
-    }
-
-
-    @Test
     public void testGetTopicsUpdatedSince() {
         createAndSaveTopicList(5);
         DateTime lastLogin = new DateTime().minusDays(1);
@@ -136,16 +126,26 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         assertEquals(result.size(), 5);
     }
 
+
     @Test
-    public void testPostsInTopic() {
-        Branch branch = ObjectsFactory.getDefaultBranch();
-        Topic topic = ObjectsFactory.getDefaultTopic();
-        branch.addTopic(topic);
+    public void testGetUnansweredTopics() {
+        createAndSaveTopicsWithUnansweredTopics();
+        List<Topic> result = dao.getUnansweredTopics();
+        assertEquals(result.size(), 2);
+    }
 
-        session.save(branch);
-
-        int count = dao.getTopicsInBranch(branch.getId()).get(0).getPostCount();
-
-        assertEquals(count, 1);
+    private void createAndSaveTopicsWithUnansweredTopics() {
+        User author = ObjectsFactory.getDefaultUser();
+        session.save(author);
+        Topic firstTopic = new Topic(author, "firstTopic");
+        firstTopic.addPost(new Post(author, "first topic initial post"));
+        Topic secondTopic = new Topic(author, "secondTopic");
+        secondTopic.addPost(new Post(author, "second topic initial post"));
+        Topic thirdTopic = new Topic(author, "thirdTopic");
+        thirdTopic.addPost(new Post(author, "third topic initial post"));
+        thirdTopic.addPost(new Post(author, "another post"));
+        session.save(firstTopic);
+        session.save(secondTopic);
+        session.save(thirdTopic);
     }
 }

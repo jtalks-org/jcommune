@@ -14,8 +14,6 @@
  */
 package org.jtalks.jcommune.web.interceptors;
 
-import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.nontransactional.LocationServiceImpl;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -27,7 +25,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -42,8 +39,8 @@ public class ClearInterceptorTest {
     private HttpRequestHandler handler;
     private HttpServletRequest request;
     private HttpServletResponse response;
-    private SecurityService securityService;
     private LocationServiceImpl locationServiceImpl;
+    private boolean result;
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -51,16 +48,31 @@ public class ClearInterceptorTest {
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
         locationServiceImpl = mock(LocationServiceImpl.class);
-        securityService = mock(SecurityService.class);
-        interceptor = new ClearInterceptor(locationServiceImpl, securityService);
+        interceptor = new ClearInterceptor(locationServiceImpl);
     }
-    
+
     @Test
-    public void testPreHandler() throws IOException, ServletException {
+    public void testPreHandler() {
 
-        when(locationServiceImpl.getRegisterUserMap()).thenReturn(new HashMap<User, String>());
+        result = interceptor.preHandle(request, response, handler);
 
-        boolean result = interceptor.preHandle(request, response, handler);
+        assertTrue(result);
+    }
+
+    @Test
+    public void testAvatar() {
+
+        result = interceptor.preHandle(request, response, handler);
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testNotAvatar() {
+        request = mock(HttpServletRequest.class);
+        when(request.getRequestURI()).thenReturn("/12345/avatar");
+
+        result = interceptor.preHandle(request, response, handler);
 
         assertTrue(result);
     }

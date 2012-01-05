@@ -16,10 +16,10 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Section;
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.LocationService;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.LocationServiceImpl;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,14 +51,14 @@ public final class SectionController {
     private SecurityService securityService;
     private SectionService sectionService;
     private ForumStatisticsProvider forumStaticsProvider;   
-    private LocationServiceImpl locationServiceImpl;
+    private LocationService locationService;
 
     /**
      * Constructor creates MVC controller with specified SectionService
      *
      * @param securityService      autowired object from Spring Context
      * @param sectionService       autowired object from Spring Context
-     * @param locationServiceImpl autowired object from Spring Context
+     * @param locationService autowired object from Spring Context
      * @param forumStaticsProvider autowired object from Spring Context which provides methods for getting
      *                             forum statistic information
      */
@@ -66,11 +66,11 @@ public final class SectionController {
     public SectionController(SecurityService securityService,
                              SectionService sectionService,
                              ForumStatisticsProvider forumStaticsProvider,
-                             LocationServiceImpl locationServiceImpl) {
+                             LocationService locationService) {
         this.securityService = securityService;
         this.sectionService = sectionService;
         this.forumStaticsProvider = forumStaticsProvider;
-        this.locationServiceImpl = locationServiceImpl;
+        this.locationService = locationService;
     }
 
 
@@ -117,9 +117,7 @@ public final class SectionController {
         Section section = sectionService.get(sectionId);
         User currentUser = securityService.getCurrentUser();
 
-        List<String> viewList = locationServiceImpl.activeRegistryUserList(currentUser, section,
-                forumStaticsProvider.getOnlineRegisteredUsers());
-        
+        List<String> viewList = locationService.getUsersViewing(section);
 
         return new ModelAndView("branchList")
                 .addObject("viewList", viewList)

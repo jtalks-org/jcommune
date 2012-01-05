@@ -16,10 +16,8 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.common.model.entity.Entity;
-import org.jtalks.jcommune.model.entity.User;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Class for storing and tracking of users on the forum.
@@ -29,34 +27,15 @@ import java.util.Map;
 public interface LocationService {
 
     /**
-     * Get map to active users
+     * Get lis name user active these page
      *
-     * @return map registry user
-     */
-    Map<User, String> getRegisterUserMap();
-
-    /**
-     * Set map to active users
-     *
-     * @param registerUserMap map registry user
-     */
-    void setRegisterUserMap(Map<User, String> registerUserMap);
-
-    /**
-     * Modification map to active user, and create list of user name users on the current page
-     *
-     * @param currentUser           current user
      * @param entity                entity
-     * @param onlineRegisteredUsers list online users
      * @return lis name user active these page
      */
-    List<String> activeRegistryUserList(User currentUser, Entity entity,
-                                        List<Object> onlineRegisteredUsers);
+    List<String> getUsersViewing(Entity entity);
 
     /**
-     * Drops location current user in forum
-     *
-     * @param user user
+     * Drops current user of map
      */
-    void clear(User user);
+    void clearUserLocation();
 }

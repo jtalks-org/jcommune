@@ -77,8 +77,7 @@ public class TopicControllerTest {
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
         forumStatisticsProvider = mock(ForumStatisticsProvider.class);
         controller = new TopicController(topicService,branchService,
-                securityService, breadcrumbBuilder, locationServiceImpl,
-                forumStatisticsProvider);
+                securityService, breadcrumbBuilder, locationServiceImpl);
     }
 
     @BeforeMethod

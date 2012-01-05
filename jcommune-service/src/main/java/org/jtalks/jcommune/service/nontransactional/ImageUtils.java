@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.apache.commons.codec.binary.Base64;
+import org.jtalks.jcommune.service.exceptions.ImageUploadException;
 import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
@@ -56,15 +57,20 @@ public class ImageUtils {
      *
      * @param image input image
      * @return byte array obtained from image
-     * @throws java.io.IOException if an I/O error occurs
+     * @throws ImageUploadException if an I/O error occurs
      */
-    public byte[] convertImageToByteArray(Image image) throws IOException {
+    public byte[] convertImageToByteArray(Image image) throws ImageUploadException {
+        byte[] result;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write((RenderedImage) image, "jpeg", baos);
-        baos.flush();
-        byte[] bytes = baos.toByteArray();
-        baos.close();
-        return bytes;
+        try {
+            ImageIO.write((RenderedImage) image, "jpeg", baos);
+            baos.flush();
+            result = baos.toByteArray();
+            baos.close();
+        } catch (IOException e) {
+            throw new ImageUploadException(e);
+        }
+        return result;
     }
 
     /**
@@ -72,11 +78,17 @@ public class ImageUtils {
      *
      * @param bytes for conversion.
      * @return image result.
-     * @throws java.io.IOException image conversion problem.
+     * @throws ImageUploadException image conversion problem.
      */
-    public BufferedImage convertByteArrayToImage(byte[] bytes) throws IOException {
+    public BufferedImage convertByteArrayToImage(byte[] bytes) throws ImageUploadException {
+        BufferedImage result;
         BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(bytes));
-        return ImageIO.read(bis);
+        try {
+            result = ImageIO.read(bis);
+        } catch (IOException e) {
+            throw new ImageUploadException(e);
+        }
+        return result;
     }
 
     /**
@@ -128,9 +140,9 @@ public class ImageUtils {
      *
      * @param image for processing
      * @return processed image bytes
-     * @throws IOException image processing problem
+     * @throws ImageUploadException image processing problem
      */
-    public byte[] preprocessImage(Image image) throws IOException {
+    public byte[] preprocessImage(Image image) throws ImageUploadException {
         byte[] result;
         Image outputImage = resizeImage((BufferedImage) image, IMAGE_JPEG, AVATAR_MAX_HEIGHT, AVATAR_MAX_WIDTH);
         result = convertImageToByteArray(outputImage);
@@ -207,11 +219,11 @@ public class ImageUtils {
 
         for (int y = 0; y < height; y++) {
             sourceY = y * source.getHeight() / bufferedImage.getHeight();
-            yDiff = scale(y, scaleY) - sourceY;
+            yDiff = y / scaleY - sourceY;
 
             for (int x = 0; x < width; x++) {
                 sourceX = x * source.getWidth() / bufferedImage.getWidth();
-                xDiff = scale(x, scaleX) - sourceX;
+                xDiff = x / scaleX - sourceX;
 
                 x1 = Math.min(source.getWidth() - 1, sourceX + 1);
                 y1 = Math.min(source.getHeight() - 1, sourceY + 1);
@@ -226,17 +238,6 @@ public class ImageUtils {
         }
 
         return bufferedImage;
-    }
-
-    /**
-     * Scales point.
-     *
-     * @param point point
-     * @param scale scale
-     * @return scaled point
-     */
-    private double scale(int point, double scale) {
-        return point / scale;
     }
 
     /**

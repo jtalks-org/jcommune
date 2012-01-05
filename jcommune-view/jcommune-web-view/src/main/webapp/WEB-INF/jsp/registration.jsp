@@ -14,7 +14,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
@@ -27,10 +27,11 @@
 <body>
 <div class="wrap registration_page">
     <jsp:include page="../template/topLine.jsp"/>
-    <h1><spring:message code="label.signup"/></h1>
-
+    <h1><a href="${pageContext.request.contextPath}">
+        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+    </a></h1>
     <div class="all_forums">
-        <jtalks:form id="form" name="form" action='${pageContext.request.contextPath}/user/new'
+        <form:form id="form" name="form" action='${pageContext.request.contextPath}/user/new'
                      modelAttribute="newUser" method="POST">
             <div class="forum_header_table">
                 <div class="forum_header">
@@ -74,16 +75,16 @@
                     </div>
                     <span class="reg_info"><spring:message code="label.tip.confirmation"/></span>
                 </div>
-<%--                <div class="forum_row">
-                    <div><input type="checkbox" name="iagree" id="iagree"/>
-                        Я принимаю условия <a href="#">пользовательского соглашения</a>.
-                        </input></div>
-                </div>--%>
+                    <%--                <div class="forum_row">
+                        <div><input type="checkbox" name="iagree" id="iagree"/>
+                            Я принимаю условия <a href="#">пользовательского соглашения</a>.
+                            </input></div>
+                    </div>--%>
             </div>
             <div class="form_controls">
                 <button type="submit"><spring:message code="label.signup"/></button>
             </div>
-        </jtalks:form>
+        </form:form>
     </div>
     <div class="footer_buffer"></div>
     <!-- Несемантичный буфер для прибития подвала -->

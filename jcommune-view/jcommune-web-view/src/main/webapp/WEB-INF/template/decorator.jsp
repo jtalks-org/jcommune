@@ -14,13 +14,16 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="decorator" uri="http://www.opensymphony.com/sitemesh/decorator" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <fmt:setBundle basename="org.jtalks.jcommune.web.view.messages"/>
 <fmt:setLocale value="en"/>
 <!DOCTYPE HTML>
 <html>
+<script>
+    $root = "${pageContext.request.contextPath}"; <%--Defines URL mapping root to be used in JS--%>
+</script>
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
     <meta http-equiv="Pragma" content="no-cache"/>
@@ -34,18 +37,24 @@
     <link rel="icon" type="image/png"
           href="${pageContext.request.contextPath}/resources/images/favicon.png"/>
     <script language="javascript"
+            src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-1.7.min.js"></script>
+    <script language="javascript"
+            src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/imgPreview.js"></script>
+    <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/URLBuilder.js"></script>
+    <script language="javascript"
+            src="${pageContext.request.contextPath}/resources/javascript/custom/global.js"></script>
     <decorator:head/>
+    <title><decorator:title/></title>
 </head>
-<!--Define timezone to adjust date and time values-->
-<body onload='document.cookie="GMT=" + new Date().getTimezoneOffset()+"; path=/"'>
+<body>
 <decorator:body/>
-<div class="footer"> <!-- Подвал -->
+<div class="footer">
     <div class="copyright">
         <br/>
         <span class="version">Powered by JCommune ${project.version}</span>
         <br/>
-        &copy; 2011 www.jtalks.org
+        &copy; 2012 www.jtalks.org
     </div>
 </div>
 </body>

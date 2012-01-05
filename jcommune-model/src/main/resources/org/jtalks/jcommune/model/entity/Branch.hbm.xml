@@ -16,26 +16,31 @@
 
 -->
 <!DOCTYPE hibernate-mapping PUBLIC
-  "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-  "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
-  <class name="Branch" table="BRANCH">
-    <cache usage="nonstrict-read-write"/>
-    <id column="BRANCH_ID" name="id" unsaved-value="0">
-      <generator class="native"/>
-    </id>
-    <property column="UUID" name="uuid" unique="true" not-null="true"/>
-    <property name="name" column="NAME" not-null="true"/>
-    <property name="description" column="DESCRIPTION"/>
+    <class name="Branch" table="BRANCH">
+        <cache usage="nonstrict-read-write"/>
+        <id column="BRANCH_ID" name="id" unsaved-value="0">
+            <generator class="native"/>
+        </id>
+        <property column="UUID" name="uuid" unique="true" not-null="true"/>
+        <property name="name" column="NAME" not-null="true"/>
+        <property name="description" column="DESCRIPTION"/>
 
-    <list name="topics" cascade="all-delete-orphan">
-      <cache usage="nonstrict-read-write"/>
-      <key column="BRANCH_ID" foreign-key="FK_BRANCH"/>
-      <index column="TOPICS_INDEX"/>
-      <one-to-many class="Topic"/>
-    </list>
+        <bag name="topics" cascade="all-delete-orphan" order-by="sticked DESC, topicWeight DESC, modificationDate DESC">
+            <cache usage="nonstrict-read-write"/>
+            <key column="BRANCH_ID" foreign-key="FK_BRANCH"/>
+            <one-to-many class="Topic"/>
+        </bag>
 
-    <many-to-one name="section" column="SECTION_ID" class="Section"
-                 not-null="false"/>
-  </class>
+        <many-to-one name="section" column="SECTION_ID" class="Section"
+                     not-null="false"/>
+
+        <set name="subscribers" table="BRANCH_SUBSCRIPTIONS" cascade="all">
+            <key column="BRANCH_ID"/>
+            <many-to-many column="USER_ID" class="org.jtalks.jcommune.model.entity.User"/>
+        </set>
+
+    </class>
 </hibernate-mapping>

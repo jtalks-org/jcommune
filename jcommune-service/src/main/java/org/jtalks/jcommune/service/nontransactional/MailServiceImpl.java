@@ -14,6 +14,9 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.MailService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.slf4j.Logger;
@@ -21,8 +24,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.web.context.ServletContextAware;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 /**
+ * This service is focused on sending e-mail to the forum users.
+ * Notifications, confirmations or e-mail based subscriptions of a various
+ * kind should use this service to perform e-mail sending.
+ *
  * @author Evgeniy Naumenko
  */
 public class MailServiceImpl implements MailService {
@@ -32,12 +46,23 @@ public class MailServiceImpl implements MailService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MailServiceImpl.class);
 
-    // todo: apply i18n settings here somehow
+    // todo: apply i18n settings here somehow and extract them as templates (velocity?)
     private static final String PASSWORD_RECOVERY_TEMPLATE =
             "Dear %s!\n" +
                     "\n" +
                     "This is a password recovery mail from JTalks forum.\n" +
                     "Your new password is: %s\n" +
+                    "Feel free to log in at %s.\n" +
+                    "\n" +
+                    "Best regards,\n" +
+                    "\n" +
+                    "Jtalks forum.";
+
+    private static final String SUBSCRIPTION_NOTIFICATION_TEMPLATE =
+            "Dear %s!\n" +
+                    "\n" +
+                    "Your favorite forum has some updates.\n" +
+                    "Please check it out at %s.\n" +
                     "\n" +
                     "Best regards,\n" +
                     "\n" +
@@ -58,24 +83,79 @@ public class MailServiceImpl implements MailService {
         this.templateMessage = templateMessage;
     }
 
-     /**
+    /**
      * {@inheritDoc}
      */
     @Override
     public void sendPasswordRecoveryMail(String userName, String email, String newPassword)
-        throws MailingFailedException {
+            throws MailingFailedException {
+        this.sendEmail(
+                email,
+                "Password recovery",
+                String.format(String.format(PASSWORD_RECOVERY_TEMPLATE, userName, newPassword, "")),
+                "Password recovery email sending failed");
+        LOGGER.info("Password recovery email sent for {}", userName);
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void sendTopicUpdatesOnSubscription(User user, Topic topic) throws MailingFailedException {
+        String url = this.getDeploymentRootUrl() + "/posts/" + topic.getLastPost().getId();
+        this.sendEmail(
+                user.getEmail(),
+                "Forum updates",
+                String.format(SUBSCRIPTION_NOTIFICATION_TEMPLATE, user.getUsername(), url),
+                "Subscription update sending failed");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void sendBranchUpdatesOnSubscription(User user, Branch branch) throws MailingFailedException {
+        String url = this.getDeploymentRootUrl() + "/branches/" + branch.getId();
+        this.sendEmail(
+                user.getEmail(),
+                "Forum updates",
+                String.format(SUBSCRIPTION_NOTIFICATION_TEMPLATE, user.getUsername()),
+                "Subscription update sending failed");
+    }
+
+    /**
+     * Just a convenience method for message sending to encapsulte
+     * boilerplate error handling code.
+     *
+     * @param to           destination wmail address
+     * @param subject      message headline
+     * @param text         message body, may contain html
+     * @param errorMessage to be logged and thrown if some error occurs
+     * @throws MailingFailedException exception with error message specified ic case of some error
+     */
+    private void sendEmail(String to, String subject, String text, String errorMessage) throws MailingFailedException {
         SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
-        msg.setTo(email);
-        msg.setSubject("Password recovery");
-        msg.setText(String.format(PASSWORD_RECOVERY_TEMPLATE, userName, newPassword));
+        msg.setTo(to);
+        msg.setSubject(subject);
+        msg.setText(text);
         try {
             this.mailSender.send(msg);
-            LOGGER.info("Password recovery email sent for {}", userName);
         } catch (MailException e) {
-            String message = "Password recovery email sending failed";
-            LOGGER.error(message , e);
-            throw new MailingFailedException("Password recovery email sending failed", e);
+            LOGGER.error(errorMessage, e);
+            throw new MailingFailedException(errorMessage, e);
         }
     }
+
+    /**
+     * @return current deployment root, e.g. "http://myhost.com:1234/mycoolforum"
+     */
+    private String getDeploymentRootUrl() {
+        RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
+        HttpServletRequest request = ((ServletRequestAttributes) attributes).getRequest();
+        return request.getScheme()
+                + "://" + request.getServerName()
+                + ":" + request.getServerPort()
+                + request.getContextPath();
+    }
+
 }

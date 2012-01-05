@@ -14,7 +14,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
@@ -24,14 +24,19 @@
     <title><c:out value="${topic.title}"/></title>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/utils.js"
             type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/preview.js"
+            type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/subscription.js"
+            type="text/javascript"></script>
 </head>
 <body>
-<c:set var="authenticated" value="${false}"/>
-<h1>JTalks</h1>
-
 <div class="wrap topic_page">
 <jsp:include page="../template/topLine.jsp"/>
-<!-- Начало всех форумов -->
+<c:set var="authenticated" value="${false}"/>
+<h1><a href="${pageContext.request.contextPath}">
+    <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+</a></h1>
+
 <div class="all_forums">
 <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
 <span class="nav_bottom">
@@ -62,6 +67,20 @@
 <a class="button top_button" href="${pageContext.request.contextPath}/branches/${branchId}">
     <spring:message code="label.back"/>
 </a>
+<c:choose>
+    <c:when test="${subscribed}">
+        <a id="subscription" class="button top_button"
+           href="${pageContext.request.contextPath}/branches/${branch.id}/unsubscribe">
+            <spring:message code="label.unsubscribe"/>
+        </a>
+    </c:when>
+    <c:otherwise>
+        <a id="subscription" class="button top_button"
+           href="${pageContext.request.contextPath}/branches/${branch.id}/subscribe">
+            <spring:message code="label.subscribe"/>
+        </a>
+    </c:otherwise>
+</c:choose>
 <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
     <a class="button top_button" href="${pageContext.request.contextPath}/topics/new?branchId=${branchId}">
         <spring:message code="label.topic.new_topic"/></a>
@@ -81,17 +100,17 @@
 
 <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 <br>
-<!-- Начало группы форумов -->
-<div class="forum_header_table"> <!-- Шапка топика -->
+
+<div class="forum_header_table">
     <div class="forum_header">
         <span class="forum_header_userinfo"><spring:message code="label.topic.header.author"/></span>
         <span class="forum_header_topic"><spring:message code="label.topic.header.message"/></span>
     </div>
 </div>
-<ul class="forum_table"> <!-- Список сообщений -->
+<ul class="forum_table">
     <jtalks:display uri="${topicId}" pagination="${pag}" numberLink="3" list="${posts}">
     <c:forEach var="post" items="${list}" varStatus="i">
-        <li class="forum_row"> <!-- Сообщение -->
+        <li class="forum_row">
             <div class="forum_userinfo">
                 <a class="username"
                    href="${pageContext.request.contextPath}/users/${post.userCreated.encodedUsername}">
@@ -114,6 +133,7 @@
             </div>
             <div class="forum_message_cell">
                 <div class="post_details">
+                    <a class="button" href="#">&#8657;</a>
                     <a class="button" href="javascript:createAndPromptPostLink(${post.id})">
                         <spring:message code="label.link"/>
                     </a>
@@ -132,7 +152,8 @@
                         </c:choose>
                         <form:form id="delete${post.id}" action="${delete_url}" method="DELETE"
                                    onsubmit="return confirm('Are you sure you want to delete?')? true: false;"/>
-                        <a class="button" href="javascript:confirmAndDelete(${post.id}, '<spring:message code="${confirm_message}"/>')">
+                        <a class="button"
+                           href="javascript:confirmAndDelete(${post.id}, '<spring:message code="${confirm_message}"/>')">
                             <spring:message code="label.delete"/>
                         </a>
                     </sec:accesscontrollist>
@@ -143,12 +164,12 @@
                             <c:when test="${pag.page == 1 && i.index == 0}">
                                 <%-- first post - url to edit topic --%>
                                 <c:set var="edit_url"
-                                       value="${pageContext.request.contextPath}/topics/${topic.id}/edit?branchId=${branchId}"/>
+                                       value="${pageContext.request.contextPath}/topics/${topic.id}/edit?branchId=${branchId}&page=${pag.page}"/>
                             </c:when>
                             <c:otherwise>
                                 <%-- url to edit post --%>
                                 <c:set var="edit_url"
-                                       value="${pageContext.request.contextPath}/posts/${post.id}/edit?topicId=${topic.id}"/>
+                                       value="${pageContext.request.contextPath}/posts/${post.id}/edit?topicId=${topic.id}&page=${pag.page}"/>
                             </c:otherwise>
                         </c:choose>
                         <a class="button" href="${edit_url}"><spring:message code="label.edit"/></a>
@@ -170,14 +191,14 @@
                         <jtalks:format value="${post.creationDate}"/>
                     </a>
                 </div>
-                <p class="forum_message_cell_text">
-                    <span id='${post.id}'><jtalks:bb2html bbCode="${post.postContent}"/></span>
+                <div class="forum_message_cell_text">
+                    <jtalks:bb2html bbCode="${post.postContent}"/>
                     <br/><br/><br/>
                     <c:if test="${post.modificationDate!=null}">
                         <spring:message code="label.modify"/>
                         <jtalks:format value="${post.modificationDate}"/>
                     </c:if>
-                </p>
+                </div>
                 <c:if test="${post.userCreated.signature!=null}">
                     <div class="signature">
                         -------------------------
@@ -245,16 +266,17 @@
         <li><a href="#">Вася</a>.</li>
     </ul>
     <br/>
-    <spring:message code="label.topic.now_browsing"/>
+    <c:if test="${!(empty viewList)}">
+        <spring:message code="label.topic.now_browsing"/>
+    </c:if>
     <c:forEach var="innerUser" items="${viewList}">
         <a href="${pageContext.request.contextPath}/users/${innerUser}">
             <c:out value="${innerUser}"/>
         </a>
+        &nbsp;&nbsp;
     </c:forEach>
 </div>
 </div>
-<!-- Конец всех форумов -->
 <div class="footer_buffer"></div>
-<!-- Несемантичный буфер для прибития подвала -->
 </div>
 </body>

@@ -12,37 +12,18 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao;
+package org.jtalks.jcommune.service;
 
-import org.jtalks.common.model.entity.Entity;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.Section;
+import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.User;
 
 /**
- * @author Pavel Vervenko
- * @author Kirill Afonin
+ * @author Evgeniy Naumenko
  */
-public interface ChildRepository<T extends Entity> {
+public interface NotificationService {
 
-    /**
-     * Update entity.
-     * You should not try to save entity using this method.
-     *
-     * @param entity object to save
-     */
-    void update(T entity);
-
-    /**
-     * Get entity by id.
-     *
-     * @param id the id
-     * @return loaded Persistence instance
-     */
-    T get(Long id);
-
-    /**
-     * Check entity existance by id.
-     *
-     * @param id entity id
-     * @return {@code true} if entity exist
-     */
-    boolean isExist(Long id);
+    void topicChanged(Topic topic);
+    void branchChanged(Branch branch);
 }

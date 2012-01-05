@@ -17,12 +17,10 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.PostService;
-import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.PostDto;
-import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
@@ -55,11 +53,11 @@ public class PostController {
     public static final String TOPIC_ID = "topicId";
     public static final String POST_ID = "postId";
     public static final String POST_DTO = "postDto";
+    public static final String PAGE = "page";
 
     private PostService postService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private TopicService topicService;
-    private SecurityService securityService;
 
     /**
      * This method turns the trim binder on. Trim bilder
@@ -81,21 +79,19 @@ public class PostController {
      * @param breadcrumbBuilder the object which provides actions on
      *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
      * @param topicService      {@link TopicService} to be injected
-     * @param securityService   {@link SecurityService} to retrieve current logged in user
      */
     @Autowired
     public PostController(PostService postService, BreadcrumbBuilder breadcrumbBuilder,
-                          TopicService topicService, SecurityService securityService) {
+                          TopicService topicService) {
         this.postService = postService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.topicService = topicService;
-        this.securityService = securityService;
     }
 
     /**
      * Delete post by given id.
      *
-     * @param postId  post
+     * @param postId post
      * @return redirect to topic page
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic or post not found
@@ -111,6 +107,7 @@ public class PostController {
      * Edit post page filled with data from post with given id.
      *
      * @param topicId topic id
+     * @param page    current page number
      * @param postId  post id
      * @return redirect to post form page
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
@@ -118,6 +115,7 @@ public class PostController {
      */
     @RequestMapping(value = "/posts/{postId}/edit", method = RequestMethod.GET)
     public ModelAndView editPage(@RequestParam(TOPIC_ID) Long topicId,
+                                 @RequestParam(PAGE) Long page,
                                  @PathVariable(POST_ID) Long postId) throws NotFoundException {
         Post post = postService.get(postId);
 
@@ -125,6 +123,7 @@ public class PostController {
                 .addObject(POST_DTO, PostDto.getDtoFor(post))
                 .addObject(TOPIC_ID, topicId)
                 .addObject(POST_ID, postId)
+                .addObject(PAGE, page)
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(post.getTopic()));
     }
 
@@ -134,6 +133,7 @@ public class PostController {
      * @param postDto Dto populated in form
      * @param result  validation result
      * @param topicId the current topicId
+     * @param page    current page number
      * @param postId  the current postId
      * @return {@code ModelAndView} object which will be redirect to topic page
      *         if saved successfully or show form with error message
@@ -144,16 +144,15 @@ public class PostController {
     public ModelAndView update(@Valid @ModelAttribute PostDto postDto,
                                BindingResult result,
                                @RequestParam(TOPIC_ID) Long topicId,
+                               @RequestParam(PAGE) Long page,
                                @PathVariable(POST_ID) Long postId) throws NotFoundException {
         if (result.hasErrors()) {
             return new ModelAndView("editForm")
                     .addObject(TOPIC_ID, topicId)
                     .addObject(POST_ID, postId);
         }
-
         postService.updatePost(postDto.getId(), postDto.getBodyText());
-
-        return new ModelAndView("redirect:/topics/" + topicId);
+        return new ModelAndView("redirect:/posts/" + postId);
     }
 
     /**
@@ -182,7 +181,7 @@ public class PostController {
      * Supports post method to pass large quotations.
      * Supports get method as language switching always use get requests.
      *
-     * @param postId identifier os the post we're quoting
+     * @param postId    identifier os the post we're quoting
      * @param selection text selected by user for the quotation.
      * @return the same view as topic answerring page with textarea prefilled with quted text
      * @throws NotFoundException when topic was not found
@@ -194,13 +193,13 @@ public class PostController {
         ModelAndView mav = addPost(source.getTopic().getId());
         PostDto dto = (PostDto) mav.getModel().get(POST_DTO);
         String content;
-        if (selection == null){
+        if (selection == null) {
             content = source.getPostContent();
         } else {
             content = selection;
         }
         // todo: move these constants to BB converter
-        dto.setBodyText("[quote]" + content + "[/quote]");
+        dto.setBodyText("[quote=\""+ source.getUserCreated().getUsername()+"\"]" + content + "[/quote]");
         return mav;
     }
 
@@ -223,16 +222,28 @@ public class PostController {
             return mav;
         }
         Post newbie = topicService.replyToTopic(postDto.getTopicId(), postDto.getBodyText());
-        int pagesize = Pagination.getPageSizeFor(securityService.getCurrentUser());
-        int lastPage = newbie.getTopic().getLastPageNumber(pagesize);
-        return new ModelAndView(new StringBuilder("redirect:/topics/")
-                .append(postDto.getTopicId())
-                .append("?page=")
-                .append(lastPage)
-                .append("#")
-                .append(newbie.getId())
-                .toString());
+        return new ModelAndView(this.redirectToPageWithPost(newbie.getId()));
     }
 
-
+    /**
+     * Redirects user to the topic view with the appropriate page selected.
+     * Method clients should not wary about paging at all, post id
+     * is enough to be transferred to the proper page.
+     *
+     * @param postId unique post identifier
+     * @return redirect view to the certain topic page
+     * @throws NotFoundException is the is no post for the identifier given
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/posts/{postId}")
+    public String redirectToPageWithPost(@PathVariable Long postId) throws NotFoundException {
+        Post post = postService.get(postId);
+        int page = postService.getPageForPost(post);
+        return new StringBuilder("redirect:/topics/")
+                .append(post.getTopic().getId())
+                .append("?page=")
+                .append(page)
+                .append("#")
+                .append(postId)
+                .toString();
+    }
 }

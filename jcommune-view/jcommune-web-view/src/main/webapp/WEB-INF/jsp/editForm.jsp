@@ -14,28 +14,49 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
-<html>
-<head></head>
+<head>
+    <title><spring:message code="label.answer_to"/>: <c:out value="${topic.title}"/></title>
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
+            type="text/javascript"></script>
+</head>
 <body>
-<jsp:include page="../template/topLine.jsp"/>
-<div id="answer">
-    <jtalks:form name="editForm" modelAttribute="postDto" method="POST"
-                 action="${pageContext.request.contextPath}/posts/${postId}/edit?topicId=${topicId}">
-        <form:hidden path="id"/>
-        <div>
-            <form:label path="bodyText"><spring:message code="label.text"/></form:label>
-            <form:textarea path="bodyText"/>
-            <form:errors path="bodyText" cols="30" rows="10"/>
-            <br/>
-            <a href="${pageContext.request.contextPath}/topics/${topicId}" class="coolbutton"><spring:message
-                    code='label.back'/></a>
-            <button type="submit" class="coolbutton"><spring:message code='label.save'/></button>
+<div class="wrap answer_page">
+    <jsp:include page="../template/topLine.jsp"/>
+
+    <h1><a href="${pageContext.request.contextPath}">
+        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
+    </a></h1>
+
+    <div class="all_forums">
+        <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
+
+        <div class="forum_misc_info">
+            <spring:message code="label.post.edit_title"/>
         </div>
-    </jtalks:form>
+
+        <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
+        <div id="answer">
+            <form:form action="${pageContext.request.contextPath}/posts/${postId}/edit?topicId=${topicId}&page=${page}"
+                       method="POST" modelAttribute="postDto" onsubmit="doCheck();return true;">
+                <form:hidden path="topicId"/>
+                <form:hidden path="id"/>
+                <div class="forum_header_table">
+                    <div class="forum_header">
+                        <span class="forum_header_answer"><spring:message code="label.post.edit"/></span>
+                        <span class="empty_cell"></span>
+                    </div>
+                </div>
+                <jtalks:bbeditor labelForAction="label.post.edit"
+                                 postText="${postDto.bodyText}"
+                                 bodyParameterName="bodyText"
+                                 back="${pageContext.request.contextPath}/topics/${topicId}"/>
+            </form:form>
+        </div>
+    </div>
+    <div class="footer_buffer"></div>
 </div>
 </body>
-</html>
