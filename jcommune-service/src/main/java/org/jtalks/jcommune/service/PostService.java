@@ -63,4 +63,12 @@ public interface PostService extends EntityService<Post> {
      * @return number of the page where the post will actually be
      */
     int getPageForPost(Post post);
+
+    /**
+     * Returns the preview part of the original post. Size is defined in the interface implementation class.
+     *
+     * @param originalPost the original post
+     * @return original post preview part as a String
+     */
+    String getPostPreviewContent(String originalPost);
 }

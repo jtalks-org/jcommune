@@ -28,6 +28,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Post service class. This class contains method needed to manipulate with Post persistent entity.
@@ -37,6 +39,11 @@ import java.util.List;
 public class TransactionalPostService extends AbstractTransactionalEntityService<Post, PostDao> implements PostService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    private static final String[] codes = new String[] {"i", "b", "s", "u", "url", "quote", "code", "list", "indent", "center", "right", "left", "highlight", "font", "size", "color"};
+    private static final int ABBREVIATED_LENGTH = 200;
+    private static final String ABBREVIATION_SIGN = "...";
+
 
     private TopicDao topicDao;
     private SecurityService securityService;
@@ -98,6 +105,90 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     @Override
     public List<Post> getPostsOfUser(User userCreated) {
         return this.getDao().getPostsOfUser(userCreated);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getPostPreviewContent(String originalPost) {
+        String result = deleteAllImages(originalPost);
+        int absoluteIndex = getAbsoluteIndex(result);
+        if (absoluteIndex <= ABBREVIATED_LENGTH)
+            return originalPost;
+        else
+            return getPreview(originalPost, absoluteIndex);
+    }
+
+    private boolean[] locateAllCodes(String post) {
+        boolean[] r = new boolean[post.length()];
+
+        for (String code : codes) {
+            Matcher m = getMatcherForBBCode(code, post);
+            while (m.find()) {
+                markAs(r, true, m.start(1), m.end(1));
+                markAs(r, true, m.start(4), m.end(4));
+            }
+        }
+
+        return r;
+    }
+
+    private void markAs(boolean[] a, boolean isCountable, int startIndex, int endIndex) {
+        for (int i = startIndex; i < endIndex; i++) {
+            a[i] = isCountable;
+        }
+    }
+
+    private Matcher getMatcherForBBCode(String code, String text) {
+        return Pattern.compile(String.format("(\\[%s.*?\\])((.|\\n)*?)(\\[\\/%s\\])", code, code)).matcher(text);
+    }
+
+    private String deleteAllImages(String post) {
+        String r = post;
+        Matcher m = getMatcherForBBCode("img", r);
+        while (m.find()) {
+            r = m.replaceAll("");
+        }
+
+        return r;
+    }
+
+    private int getAbsoluteIndex(String post) {
+        boolean[] a = locateAllCodes(post);
+
+        int absoluteIndex = 0;
+        for (int i = 0; i < a.length; i++) {
+            if (!a[i])
+                absoluteIndex++;
+            if (absoluteIndex == ABBREVIATED_LENGTH) {
+                absoluteIndex = i;
+                break;
+            }
+        }
+        return absoluteIndex;
+    }
+
+    private String getPreview(String post, int ai) {
+        String longestCode = "";
+        int index = 0;
+        for (String code : codes) {
+            Matcher m = getMatcherForBBCode(code, post);
+            while (m.find()) {
+                if (m.start() < ai && m.end() > ai & m.end() > index) {
+                    index = m.end();
+                    longestCode = m.group();
+                }
+            }
+        }
+        if (!"".equals(longestCode) && index > 0) {
+            if (ai - (index - longestCode.length()) < Math.round(longestCode.length()/2)) {
+                return post.substring(0, index - longestCode.length()) + ABBREVIATION_SIGN;
+            } else {
+                return post.substring(0, index) + ABBREVIATION_SIGN;
+            }
+        }
+        return post;
     }
 
     /**
