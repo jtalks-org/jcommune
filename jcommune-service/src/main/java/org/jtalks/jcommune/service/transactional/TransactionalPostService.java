@@ -39,7 +39,11 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private static final String[] codes = new String[] {"i", "b", "s", "u", "url", "quote", "code", "list", "indent", "center", "right", "left", "highlight", "font", "size", "color"};
+    private static final String[] CODES =
+            new String[] {"i", "b", "s", "u",
+                    "url", "quote", "code", "list",
+                    "indent", "center", "right", "left",
+                    "highlight", "font", "size", "color"};
     private static final int ABBREVIATED_LENGTH = 200;
     private static final String ABBREVIATION_SIGN = "...";
 
@@ -108,16 +112,17 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     public String getPostPreviewContent(String originalPost) {
         String result = deleteAllImages(originalPost);
         int absoluteIndex = getAbsoluteIndex(result);
-        if (absoluteIndex <= ABBREVIATED_LENGTH)
+        if (absoluteIndex <= ABBREVIATED_LENGTH) {
             return originalPost;
-        else
+        } else {
             return getPreview(originalPost, absoluteIndex);
+        }
     }
 
     private boolean[] locateAllCodes(String post) {
         boolean[] r = new boolean[post.length()];
 
-        for (String code : codes) {
+        for (String code : CODES) {
             Matcher m = getMatcherForBBCode(code, post);
             while (m.find()) {
                 markAs(r, true, m.start(1), m.end(1));
@@ -153,8 +158,9 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
 
         int absoluteIndex = 0;
         for (int i = 0; i < a.length; i++) {
-            if (!a[i])
+            if (!a[i]) {
                 absoluteIndex++;
+            }
             if (absoluteIndex == ABBREVIATED_LENGTH) {
                 absoluteIndex = i;
                 break;
@@ -166,17 +172,17 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     private String getPreview(String post, int ai) {
         String longestCode = "";
         int index = 0;
-        for (String code : codes) {
+        for (String code : CODES) {
             Matcher m = getMatcherForBBCode(code, post);
             while (m.find()) {
-                if (m.start() < ai && m.end() > ai & m.end() > index) {
+                if (m.start() < ai && m.end() > ai && m.end() > index) {
                     index = m.end();
                     longestCode = m.group();
                 }
             }
         }
         if (!"".equals(longestCode) && index > 0) {
-            if (ai - (index - longestCode.length()) < Math.round(longestCode.length()/2)) {
+            if (ai - (index - longestCode.length()) < longestCode.length()/2) {
                 return post.substring(0, index - longestCode.length()) + ABBREVIATION_SIGN;
             } else {
                 return post.substring(0, index) + ABBREVIATION_SIGN;
