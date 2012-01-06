@@ -37,8 +37,8 @@
         </div>
         <jsp:include page="../../template/pmNavigationMenu.jsp"/>
         <form:form action="${pageContext.request.contextPath}/pm"
-                   method="POST" modelAttribute="privateMessageDto"
-                   onsubmit="doCheck();document.editForm.action='${pageContext.request.contextPath}/pm';return true;">
+                   method="POST" modelAttribute="privateMessageDto" name="editForm"
+                   onsubmit="doCheck();">
             <ul class="forum_table">
                 <li class="forum_row">
                     <div class="forum_answer_left">
@@ -60,7 +60,7 @@
                 </li>
             </ul>
             <jtalks:bbeditor labelForAction="label.send"
-                             postText=""
+                             postText="${privateMessageDto.body}"
                              bodyParameterName="body"
                              back="${pageContext.request.contextPath}/inbox"/>
             <input id="save_pm" type="submit" class="button" name="save_pm" value="<spring:message code="label.save"/>"
