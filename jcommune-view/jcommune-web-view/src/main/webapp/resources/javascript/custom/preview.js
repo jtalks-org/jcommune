@@ -14,7 +14,9 @@
  */
 
 /**
- * Registers image preview handler for user-specified images
+ * Registers image preview handler for user-specified images.
+ * All the images in posts are to be displayes as small tumbnails. When user places
+ * a mouse over thumbnail the large preview appears.
  */
 $(document).ready(function() {
     $('img.thumbnail').imgPreview({
@@ -25,6 +27,7 @@ $(document).ready(function() {
             'max-width': '700px'
         },
         distanceFromCursor: {top: - 150, left:10},
+        preloadImages: false, // setting this to "true" causes tons of problems
         onShow: function(link) {
             // Animate link:
             $(link).stop().animate({opacity:0.4});

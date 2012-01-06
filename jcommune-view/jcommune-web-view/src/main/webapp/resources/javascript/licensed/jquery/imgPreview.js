@@ -59,7 +59,9 @@
 
         // Re-usable means to add prefix (from setting):
         function addPrefix(src) {
-            return src.replace(/(\/?)([^\/]+)$/, '$1' + s.thumbPrefix + '$2');
+            //some problems were encountered when there is nothing to preview
+            //return src.replace(/(\/?)([^\/]+)$/, '$1' + s.thumbPrefix + '$2');
+            return src;
         }
 
         if (s.preloadImages) {
@@ -77,8 +79,8 @@
             .mousemove(function(e) {
 
             $container.css({
-                top: e.pageY + s.distanceFromCursor.top + 'px',
-                left: e.pageX + s.distanceFromCursor.left + 'px'
+                top: window.pageYOffset + (window.innerHeight - this.naturalHeight)/2 + 'px',
+                left: window.pageXOffset + (window.innerWidth - this.naturalWidth)/2 + 'px'
             });
 
         })
