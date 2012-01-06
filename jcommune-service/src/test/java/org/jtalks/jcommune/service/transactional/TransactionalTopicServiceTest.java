@@ -22,12 +22,14 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.NotificationService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.security.AclBuilder;
 import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -36,6 +38,7 @@ import java.util.List;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
@@ -57,25 +60,30 @@ public class TransactionalTopicServiceTest {
     final String TOPIC_TITLE = "topic title";
     final String BRANCH_NAME = "branch name";
     private static final String USERNAME = "username";
-    private User user;
+    private User user = new User(USERNAME, "email@mail.com", "password");
     final String ANSWER_BODY = "Test Answer Body";
+
     private TopicService topicService;
+
+    @Mock
     private SecurityService securityService;
+    @Mock
     private BranchService branchService;
+    @Mock
     private TopicDao topicDao;
+    @Mock
     private BranchDao branchDao;
+    @Mock
+    private NotificationService notificationService;
+
     private AclBuilder aclBuilder;
 
     @BeforeMethod
     public void setUp() throws Exception {
         aclBuilder = mockAclBuilder();
-        topicDao = mock(TopicDao.class);
-        branchService = mock(BranchService.class);
-        securityService = mock(SecurityService.class);
-        branchDao = mock(BranchDao.class);
+        initMocks(this);
         topicService = new TransactionalTopicService(topicDao, securityService,
-                branchService, branchDao);
-        user = new User(USERNAME, "email@mail.com", "password");
+                branchService, branchDao, notificationService);
     }
 
     @Test
@@ -89,7 +97,7 @@ public class TransactionalTopicServiceTest {
         Topic actualTopic = topicService.get(TOPIC_ID);
 
         assertEquals(actualTopic.getViews(), viewsCount + 1);
-        assertEquals(actualTopic, expectedTopic, "Topics aren't equals");
+        assertEquals(actualTopic, expectedTopic, "Topics aren't equal");
         verify(topicDao).isExist(TOPIC_ID);
         verify(topicDao).get(TOPIC_ID);
     }
@@ -119,6 +127,7 @@ public class TransactionalTopicServiceTest {
         verify(aclBuilder).role(SecurityConstants.ROLE_ADMIN);
         verify(aclBuilder).admin();
         verify(aclBuilder).on(createdPost);
+        verify(notificationService).topicChanged(answeredTopic);
     }
 
     @Test(expectedExceptions = {IllegalStateException.class})
@@ -152,6 +161,7 @@ public class TransactionalTopicServiceTest {
         verify(aclBuilder).user(USERNAME);
         verify(aclBuilder).on(createdTopic);
         verify(aclBuilder).on(createdPost);
+        verify(notificationService).branchChanged(branch);
     }
 
     @Test(expectedExceptions = {IllegalStateException.class})
@@ -221,6 +231,7 @@ public class TransactionalTopicServiceTest {
         assertEquals(branch.getTopicCount(), 0);
         verify(branchDao).update(branch);
         verify(securityService).deleteFromAcl(Topic.class, TOPIC_ID);
+        verify(notificationService).branchChanged(branch);
     }
 
     @Test(expectedExceptions = {NotFoundException.class})
@@ -257,6 +268,7 @@ public class TransactionalTopicServiceTest {
 
         verify(topicDao).isExist(TOPIC_ID);
         verify(topicDao).get(TOPIC_ID);
+        verify(notificationService).topicChanged(topic);
     }
 
     @Test
@@ -286,6 +298,7 @@ public class TransactionalTopicServiceTest {
 
         verify(topicDao).isExist(TOPIC_ID);
         verify(topicDao).get(TOPIC_ID);
+        verify(notificationService).topicChanged(topic);
     }
 
     @Test(expectedExceptions = {NotFoundException.class})

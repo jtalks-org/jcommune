@@ -24,9 +24,9 @@
     <title><c:out value="${topic.title}"/></title>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/utils.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/preview.js"
-            type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/subscription.js"
+            type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/preview.js"
             type="text/javascript"></script>
 </head>
 <body>
@@ -67,35 +67,27 @@
 <a class="button top_button" href="${pageContext.request.contextPath}/branches/${branchId}">
     <spring:message code="label.back"/>
 </a>
-<c:choose>
-    <c:when test="${subscribed}">
-        <a id="subscription" class="button top_button"
-           href="${pageContext.request.contextPath}/branches/${branch.id}/unsubscribe">
-            <spring:message code="label.unsubscribe"/>
-        </a>
-    </c:when>
-    <c:otherwise>
-        <a id="subscription" class="button top_button"
-           href="${pageContext.request.contextPath}/branches/${branch.id}/subscribe">
-            <spring:message code="label.subscribe"/>
-        </a>
-    </c:otherwise>
-</c:choose>
 <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+    <c:choose>
+        <c:when test="${subscribed}">
+            <a id="subscription" class="button top_button"
+               href="${pageContext.request.contextPath}/topics/${topic.id}/unsubscribe">
+                <spring:message code="label.unsubscribe"/>
+            </a>
+        </c:when>
+        <c:otherwise>
+            <a id="subscription" class="button top_button"
+               href="${pageContext.request.contextPath}/topics/${topic.id}/subscribe">
+                <spring:message code="label.subscribe"/>
+            </a>
+        </c:otherwise>
+    </c:choose>
     <a class="button top_button" href="${pageContext.request.contextPath}/topics/new?branchId=${branchId}">
         <spring:message code="label.topic.new_topic"/></a>
     <a class="button top_button" href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}">
         <spring:message code="label.answer"/></a>
     <c:set var="authenticated" value="${true}"/>
 </sec:authorize>
-<c:if test="${authenticated==false}">
-    <a class="button top_button disabled" href="${pageContext.request.contextPath}/topics/new?branchId=${branchId}">
-        <spring:message code="label.topic.new_topic"/></a>
-    <a class="button top_button disabled"
-       href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}">
-        <spring:message code="label.answer"/>
-    </a>
-</c:if>
 &nbsp; &nbsp; &nbsp;
 
 <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
@@ -228,14 +220,6 @@
         <spring:message code="label.answer"/></a>
     <c:set var="authenticated" value="${true}"/>
 </sec:authorize>
-<c:if test="${authenticated==false}">
-    <a class="button top_button disabled" href="${pageContext.request.contextPath}/topics/new?branchId=${branchId}">
-        <spring:message code="label.topic.new_topic"/></a>
-    <a class="button top_button disabled"
-       href="${pageContext.request.contextPath}/posts/new?topicId=${topic.id}">
-        <spring:message code="label.answer"/>
-    </a>
-</c:if>
 <c:if test="${pag.maxPages>1}">
     <c:if test="${pag.pagingEnabled==true}">
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">

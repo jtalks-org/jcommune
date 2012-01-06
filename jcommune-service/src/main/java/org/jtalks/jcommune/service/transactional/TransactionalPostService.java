@@ -19,6 +19,7 @@ import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.service.NotificationService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -50,7 +51,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
 
     private TopicDao topicDao;
     private SecurityService securityService;
-
+    private NotificationService notificationServise;
 
     /**
      * Create an instance of Post entity based service
@@ -58,11 +59,14 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * @param dao             data access object, which should be able do all CRUD operations with post entity.
      * @param topicDao        this dao used for checking branch existance
      * @param securityService service for authorization
+     * @param notificationServise to send email updates for subscribed users
      */
-    public TransactionalPostService(PostDao dao, TopicDao topicDao, SecurityService securityService) {
+    public TransactionalPostService(PostDao dao, TopicDao topicDao, SecurityService securityService,
+                                    NotificationService notificationServise) {
         super(dao);
         this.topicDao = topicDao;
         this.securityService = securityService;
+        this.notificationServise = notificationServise;
     }
 
     /**
@@ -76,6 +80,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         post.updateModificationDate();
 
         this.getDao().update(post);
+        notificationServise.topicChanged(post.getTopic());
 
         logger.debug("Post id={} updated.", post.getId());
     }
@@ -90,9 +95,10 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         Post post = get(postId);
         Topic topic = post.getTopic();
         topic.removePost(post);
-        topicDao.update(topic);
 
+        topicDao.update(topic);
         securityService.deleteFromAcl(post);
+        notificationServise.topicChanged(topic);
 
         logger.debug("Deleted post id={}", postId);
     }

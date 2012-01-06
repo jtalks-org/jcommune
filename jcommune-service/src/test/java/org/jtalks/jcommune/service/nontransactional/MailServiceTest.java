@@ -20,6 +20,9 @@ import static org.mockito.Mockito.verify;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.MailService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
@@ -29,8 +32,13 @@ import org.mockito.Matchers;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Test for {@link MailServiceImpl}.
@@ -42,11 +50,17 @@ public class MailServiceTest {
     private MailService service;
     private MailSender sender;
     private SimpleMailMessage message;
+    private MockHttpServletRequest request;
 
     private static final String FROM = "lol@wut.zz";
     private static final String TO = "foo@bar.zz";
     private static final String USERNAME = "user";
     private static final String PASSWORD = "new_password";
+
+    private User user = new User(USERNAME, TO, PASSWORD);
+    private Topic topic = new Topic(user, "title");
+    private Branch branch = new Branch("title");
+    private ArgumentCaptor<SimpleMailMessage> captor;
 
     @BeforeMethod
     public void setUp() {
@@ -54,18 +68,49 @@ public class MailServiceTest {
         message = new SimpleMailMessage();
         message.setFrom(FROM);
         service = new MailServiceImpl(sender, message);
+        captor = ArgumentCaptor.forClass(SimpleMailMessage.class);
+    }
+
+    @BeforeMethod
+    public void setUpRequestContext() {
+        request = new MockHttpServletRequest();
+        request.setScheme("http");
+        request.setServerName("coolsite.com");
+        request.setServerPort(1234);
+        request.setContextPath("/forum");
+        RequestContextHolder.setRequestAttributes(new ServletWebRequest(request));
     }
 
     @Test
     public void testSendPasswordRecoveryMail() throws MailingFailedException {
         service.sendPasswordRecoveryMail(USERNAME, TO, PASSWORD);
-        ArgumentCaptor<SimpleMailMessage> captor = ArgumentCaptor.forClass(SimpleMailMessage.class);
-        verify(sender).send(captor.capture());
-        assertEquals(captor.getValue().getTo().length, 1);
-        assertEquals(captor.getValue().getTo()[0], TO);
-        assertEquals(captor.getValue().getFrom(), FROM);
+
+        this.checkMailCredentials();
         assertTrue(captor.getValue().getText().contains(USERNAME));
         assertTrue(captor.getValue().getText().contains(PASSWORD));
+        assertTrue(captor.getValue().getText().contains("http://coolsite.com:1234/forum/login"));
+    }
+
+    @Test
+    public void testSendTopicUpdatesEmail() throws MailingFailedException {
+        Post post = new Post(user, "content");
+        post.setId(1);
+        topic.addPost(post);
+
+        service.sendTopicUpdatesOnSubscription(user, topic);
+
+        this.checkMailCredentials();
+        assertTrue(captor.getValue().getText().contains("http://coolsite.com:1234/forum/posts/1"));
+    }
+
+    @Test
+    public void testSendBranchUpdateEmail() throws MailingFailedException {
+        branch.setId(1);
+
+        service.sendBranchUpdatesOnSubscription(user, branch);
+
+        this.checkMailCredentials();
+        assertTrue(captor.getValue().getText().contains("http://coolsite.com:1234/forum/branches/1"));
     }
 
     @Test(expectedExceptions = MailingFailedException.class)
@@ -74,5 +119,28 @@ public class MailServiceTest {
         doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
 
         service.sendPasswordRecoveryMail(USERNAME, TO, PASSWORD);
+    }
+
+    @Test(expectedExceptions = MailingFailedException.class)
+    public void testTopicUpdateNotiticationFail() throws NotFoundException, MailingFailedException {
+        Exception fail = new MailSendException("");
+        doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
+
+        service.sendTopicUpdatesOnSubscription(user, topic);
+    }
+
+    @Test(expectedExceptions = MailingFailedException.class)
+    public void testbranchUpdateNotificationFail() throws NotFoundException, MailingFailedException {
+        Exception fail = new MailSendException("");
+        doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
+
+        service.sendBranchUpdatesOnSubscription(user, branch);
+    }
+
+    private void checkMailCredentials() {
+        verify(sender).send(captor.capture());
+        assertEquals(captor.getValue().getTo().length, 1);
+        assertEquals(captor.getValue().getTo()[0], TO);
+        assertEquals(captor.getValue().getFrom(), FROM);
     }
 }

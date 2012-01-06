@@ -63,7 +63,7 @@
                 </li>
             </ul>
             <jtalks:bbeditor labelForAction="label.addtopic"
-                             postText=""
+                             postText="${topicDto.bodyText}"
                              bodyParameterName="bodyText"
                              back="${pageContext.request.contextPath}/branches/${branchId}"/>
 
