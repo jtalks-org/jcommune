@@ -17,12 +17,14 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
-import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
+import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -34,6 +36,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Evgeniy Naumenko
@@ -77,34 +80,6 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testRegisterDuplicateUser() throws Exception {
-        RegisterUserDto dto = getRegisterUserDto();
-        BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
-        doThrow(new DuplicateUserException("User username already exists!"))
-                .when(userService).registerUser(any(User.class));
-
-        ModelAndView mav = userController.registerUser(dto, bindingResult);
-
-        assertViewName(mav, "registration");
-        assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
-        verify(userService).registerUser(any(User.class));
-    }
-
-    @Test
-    public void testRegisterUserWithDuplicateEmail() throws Exception {
-        RegisterUserDto dto = getRegisterUserDto();
-        BindingResult bindingResult = new BeanPropertyBindingResult(dto, "newUser");
-        doThrow(new DuplicateEmailException("E-mail mail@mail.com already exists!"))
-                .when(userService).registerUser(any(User.class));
-
-        ModelAndView mav = userController.registerUser(dto, bindingResult);
-
-        assertViewName(mav, "registration");
-        assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
-        verify(userService).registerUser(any(User.class));
-    }
-
-    @Test
     public void testRegisterValidationFail() {
         RegisterUserDto dto = getRegisterUserDto();
         BindingResult bindingResult = mock(BindingResult.class);
@@ -122,26 +97,35 @@ public class UserControllerTest {
 
     @Test
     public void testRestorePassword() throws IOException, NotFoundException, MailingFailedException {
-        ModelAndView mav = userController.restorePassword(EMAIL);
+        RestorePasswordDto dto = new RestorePasswordDto();
+        dto.setEmail(EMAIL);
+        BindingResult bindingResult = new BeanPropertyBindingResult(dto, "email");
+        ModelAndView mav = userController.restorePassword(dto, bindingResult);
         verify(userService, times(1)).restorePassword(EMAIL);
         assertModelAttributeValue(mav, "message", "label.restorePassword.completed");
     }
 
     @Test
-    public void testRestorePasswordWithWrongEmail() throws NotFoundException, MailingFailedException {
-        doThrow(new NotFoundException()).when(userService).restorePassword(anyString());
-        ModelAndView mav = userController.restorePassword(EMAIL);
-        verify(userService, times(1)).restorePassword(EMAIL);
-        assertModelAttributeValue(mav, "error", "email.unknown");
+    public void testRestorePasswordWrongMail() throws IOException, NotFoundException, MailingFailedException {
+        RestorePasswordDto dto = new RestorePasswordDto();
+        dto.setEmail(EMAIL);
+        BindingResult bindingResult = new BeanPropertyBindingResult(dto, "email");
+        bindingResult.addError(new FieldError("","",""));
+        ModelAndView mav = userController.restorePassword(dto, bindingResult);
+        verifyZeroInteractions(userService);
+        assertViewName(mav, "restorePassword");
     }
 
     @Test
     public void testRestorePasswordFail() throws NotFoundException, MailingFailedException {
         Exception fail = new MailingFailedException("", new RuntimeException());
         doThrow(fail).when(userService).restorePassword(anyString());
-        ModelAndView mav = userController.restorePassword(EMAIL);
+        RestorePasswordDto dto = new RestorePasswordDto();
+        dto.setEmail(EMAIL);
+        BindingResult bindingResult = new BeanPropertyBindingResult(dto, "email");
+        ModelAndView mav = userController.restorePassword(dto, bindingResult);
         verify(userService, times(1)).restorePassword(EMAIL);
-        assertModelAttributeValue(mav, "error", "email.failed");
+        assertTrue(bindingResult.hasErrors());
     }
 
     private void assertNullFields(RegisterUserDto dto) {
@@ -149,8 +133,6 @@ public class UserControllerTest {
         assertNull(dto.getUsername());
         assertNull(dto.getPassword());
         assertNull(dto.getPasswordConfirm());
-        assertNull(dto.getLastName());
-        assertNull(dto.getFirstName());
     }
 
     private RegisterUserDto getRegisterUserDto() {
@@ -159,8 +141,6 @@ public class UserControllerTest {
         dto.setEmail(EMAIL);
         dto.setPassword(PASSWORD);
         dto.setPasswordConfirm(PASSWORD);
-        dto.setFirstName(FIRST_NAME);
-        dto.setLastName(LAST_NAME);
         return dto;
     }
 }

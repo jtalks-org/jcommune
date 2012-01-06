@@ -32,7 +32,7 @@
     <div class="all_forums">
         <h2 class="heading"><spring:message code="label.restorePassword.header"/></h2>
         <br>
-        <form:form id="form" name="form"
+        <form:form id="form" name="form" modelAttribute="dto"
                    action='${pageContext.request.contextPath}/password/restore' method="POST">
 
             <p><spring:message code="label.restorePassword.text"/></p>
@@ -45,17 +45,13 @@
 
                     </td>
                     <td>
-                        <input name="email" type="text" size="20"/>
+                        <form:input path="email" type="text" size="20"/>
                         <br/>
                     </td>
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <c:if test="${not empty error}">
-                            <span class="error">
-                                <spring:message code="${error}"/>
-                            </span>
-                        </c:if>
+                        <form:errors path="email" cssClass="error"/>
                         <c:if test="${not empty message}">
                             <spring:message code="${message}"/>
                         </c:if>

@@ -21,12 +21,10 @@ import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
-import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
-import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,20 +94,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public User registerUser(User user) throws DuplicateUserException, DuplicateEmailException {
-        if (this.isUserExist(user.getUsername())) {
-            String msg = "Failed to register user. User " + user.getUsername() + " already exists!";
-            logger.info(msg);
-            throw new DuplicateUserException(msg);
-        }
-        if (this.isEmailExist(user.getEmail())) {
-            String msg = "Failed to register user. E-mail " + user.getEmail() + " already exists!";
-            logger.info(msg);
-            throw new DuplicateEmailException(msg);
-        }
-
+    public User registerUser(User user) {
         this.getDao().saveOrUpdate(user);
-
         logger.info("User registered: {}", user.getUsername());
         return user;
     }
@@ -160,7 +146,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      */
     private void changeEmail(String email, User currentUser) throws DuplicateEmailException {
         if (!currentUser.getEmail().equals(email)) {
-            if (this.isEmailExist(email)) {
+            User user = this.getDao().getByEmail(email);
+            if (user != null) {
                 throw new DuplicateEmailException();
             } else {
                 currentUser.setEmail(email);
@@ -213,13 +200,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public void restorePassword(String email) throws NotFoundException, MailingFailedException {
+    public void restorePassword(String email) throws  MailingFailedException {
         User user = this.getDao().getByEmail(email);
-        if (user == null) {
-            String message = "No user matches the email " + email;
-            logger.info(message);
-            throw new NotFoundException(message);
-        }
         String randomPassword = Long.toString(new Random().nextInt(100000000), 36); // 5-6 chars
         // first - mail attempt, then - database changes
         mailService.sendPasswordRecoveryMail(user.getUsername(), email, randomPassword);
@@ -229,20 +211,4 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         logger.info("New random password was set for user {}", user.getUsername());
     }
 
-    /**
-     * Checks whether username passed is associated with any known user.
-     *
-     * @param userName user login to check
-     * @return true is login given matches some user in a database
-     */
-    private boolean isUserExist(String userName) {
-        return SecurityConstants.ANONYMOUS_USERNAME.equals(userName) || this.getDao().isUserWithUsernameExist(userName);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isEmailExist(String email) {
-        return this.getDao().isUserWithEmailExist(email);
-    }
 }

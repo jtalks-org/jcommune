@@ -177,46 +177,6 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     }
 
     @Test
-    public void testIsUserWithEmailExist() {
-        User user = ObjectsFactory.getDefaultUser();
-        session.save(user);
-
-        boolean result = dao.isUserWithEmailExist(user.getEmail());
-
-        assertTrue(result, "User not exist");
-    }
-
-    @Test
-    public void testIsUserWithEmailNotExist() {
-        User user = ObjectsFactory.getDefaultUser();
-        session.save(user);
-
-        boolean result = dao.isUserWithEmailExist("dick@head.com");
-
-        assertFalse(result, "User exist");
-    }
-
-    @Test
-    public void testIsUserWithUsernameExist() {
-        User user = ObjectsFactory.getDefaultUser();
-        session.save(user);
-
-        boolean result = dao.isUserWithUsernameExist(user.getUsername());
-
-        assertTrue(result, "User not exist");
-    }
-
-    @Test
-    public void testIsUserWithUsernameNotExist() {
-        User user = ObjectsFactory.getDefaultUser();
-        session.save(user);
-
-        boolean result = dao.isUserWithUsernameExist("qwertyuio");
-
-        assertFalse(result, "User exist");
-    }
-
-    @Test
     public void testFetchByEMail() {
         User user = ObjectsFactory.getDefaultUser();
         session.save(user);

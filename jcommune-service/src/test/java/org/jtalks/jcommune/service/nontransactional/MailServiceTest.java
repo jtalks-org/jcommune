@@ -121,16 +121,16 @@ public class MailServiceTest {
         service.sendPasswordRecoveryMail(USERNAME, TO, PASSWORD);
     }
 
-    @Test(expectedExceptions = MailingFailedException.class)
-    public void testTopicUpdateNotiticationFail() throws NotFoundException, MailingFailedException {
+    @Test
+    public void testTopicUpdateNotiticationFail() throws NotFoundException {
         Exception fail = new MailSendException("");
         doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
 
         service.sendTopicUpdatesOnSubscription(user, topic);
     }
 
-    @Test(expectedExceptions = MailingFailedException.class)
-    public void testbranchUpdateNotificationFail() throws NotFoundException, MailingFailedException {
+    @Test
+    public void testbranchUpdateNotificationFail() throws NotFoundException {
         Exception fail = new MailSendException("");
         doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
 

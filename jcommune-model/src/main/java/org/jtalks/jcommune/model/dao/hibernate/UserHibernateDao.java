@@ -63,28 +63,6 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<User> im
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isUserWithUsernameExist(String username) {
-        return ((Number) getSession()
-                .createQuery("select count(*) from User u where u.username = ?")
-                .setCacheable(true).setString(0, username).uniqueResult())
-                .intValue() != 0;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isUserWithEmailExist(String email) {
-        return ((Number) getSession()
-                .createQuery("select count(*) from User u where u.email = ?")
-                .setCacheable(true).setString(0, email).uniqueResult())
-                .intValue() != 0;
-    }
-
-    /**
      * Counts post for the user passed.
      * <p/>
      * We've tried to apply formula property instead of that, but

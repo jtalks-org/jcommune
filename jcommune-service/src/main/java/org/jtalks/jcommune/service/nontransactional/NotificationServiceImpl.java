@@ -25,6 +25,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Send email notifications to the users subscribed.
+ * If the update author is subscribed he won't get the notification message.
+ * This service also assumes, that topic update as a enclosing branch update as well.
+ *
+ * Errors occured while sending emails are suppressed (logged only) as updates
+ * notifications are themselves a kind of a side effect, so they should not prevent
+ * the whole operation from beeing completed.
+ *
  * @author Evgeniy Naumenko
  */
 public class NotificationServiceImpl implements NotificationService {
@@ -32,9 +40,10 @@ public class NotificationServiceImpl implements NotificationService {
     private SecurityService securityService;
     private MailService mailService;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NotificationServiceImpl.class);
-    private static final String LOG_TEMPLATE = "Error occured while sending updates of %s %d to %s";
-
+    /**
+     * @param securityService to determine the update author
+     * @param mailService to perform actual email notifications.
+     */
     public NotificationServiceImpl(SecurityService securityService, MailService mailService) {
         this.securityService = securityService;
         this.mailService = mailService;
@@ -49,12 +58,7 @@ public class NotificationServiceImpl implements NotificationService {
         this.branchChanged(topic.getBranch());
         for (User user : topic.getSubscribers()) {
             if (!user.equals(current)) {
-                try {
-                    mailService.sendTopicUpdatesOnSubscription(user, topic);
-                } catch (MailingFailedException e) {
-                    // no recovery is possible, just skip it and send notification to other subscribers
-                    LOGGER.error(String.format(LOG_TEMPLATE, "Topic", topic.getId(), user.getUsername()));
-                }
+                mailService.sendTopicUpdatesOnSubscription(user, topic);
             }
         }
     }
@@ -67,14 +71,10 @@ public class NotificationServiceImpl implements NotificationService {
         User current = securityService.getCurrentUser();
         for (User user : branch.getSubscribers()) {
             if (!user.equals(current)) {
-                try {
-                    mailService.sendBranchUpdatesOnSubscription(user, branch);
-                } catch (MailingFailedException e) {
-                    // no recovery is possible, just skip it and send notification to other subscribers
-                    LOGGER.error(String.format(LOG_TEMPLATE, "Branch", branch.getId(), user.getUsername()));
-                }
+                mailService.sendBranchUpdatesOnSubscription(user, branch);
             }
         }
-
     }
+
 }
+

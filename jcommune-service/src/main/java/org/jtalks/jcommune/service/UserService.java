@@ -17,7 +17,6 @@ package org.jtalks.jcommune.service;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
-import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
@@ -54,11 +53,9 @@ public interface UserService extends EntityService<User> {
      *
      * @param user user for register
      * @return registered {@link User}
-     * @throws DuplicateUserException  if user with username already exist
-     * @throws DuplicateEmailException when user with given email already exist
      * @see User
      */
-    User registerUser(User user) throws DuplicateUserException, DuplicateEmailException;
+    User registerUser(User user);
 
 
     /**
@@ -85,23 +82,12 @@ public interface UserService extends EntityService<User> {
     void removeAvatarFromCurrentUser();
 
     /**
-     * Checks if email has been registered.
-     *
-     * @param email email for check existence
-     * @return {@code true} if email exist
-     */
-    boolean isEmailExist(String email);
-
-    /**
      * Performs the following:
-     * 2. Checks, checks if this parameter represents known e-mail
-     * 3. If no user is found by e-mail exception is thrown
-     * 4. Alters the password for this user to the random string
-     * 5. Sends an e-mail with new password to this address to notify user
+     * 1. Alters the password for this user to the random string
+     * 2. Sends an e-mail with new password to this address to notify user
      *
      * @param email address to identify user
-     * @throws NotFoundException if there is no user for the email given
      * @throws org.jtalks.jcommune.service.exceptions.MailingFailedException if mailing failed
      */
-    void restorePassword(String email) throws NotFoundException, MailingFailedException;
+    void restorePassword(String email) throws MailingFailedException;
 }

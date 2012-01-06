@@ -16,13 +16,14 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
-import org.jtalks.jcommune.service.exceptions.DuplicateUserException;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
+import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,13 +32,13 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.validation.Valid;
 
 /**
- *  This controller handles custom authentication actions
- *  like user registration or password restore.
+ * This controller handles custom authentication actions
+ * like user registration or password restore.
+ * <p/>
+ * Basic actions like username/password verification are
+ * to be performed by Spring Security
  *
- *  Basic actions like username/password verification are
- *  to be performed by Spring Security
- *
- *  @author Evgeniy Naumenko
+ * @author Evgeniy Naumenko
  */
 @Controller
 public class UserController {
@@ -47,7 +48,6 @@ public class UserController {
     private UserService userService;
 
     /**
-     *
      * @param userService to delegate business logic invocation
      */
     @Autowired
@@ -63,7 +63,8 @@ public class UserController {
      */
     @RequestMapping(value = "/password/restore", method = RequestMethod.GET)
     public ModelAndView showRestorePasswordPage() {
-        return new ModelAndView("restorePassword");
+        return new ModelAndView("restorePassword")
+                .addObject("dto", new RestorePasswordDto());
     }
 
     /**
@@ -71,19 +72,21 @@ public class UserController {
      * If e-mail given has not been registered
      * before view with an error will be returned.
      *
-     * @param email address to identify the user
+     * @param dto    with email address to identify the user
+     * @param result email validation result
      * @return view with a parameters bound
      */
     @RequestMapping(value = "/password/restore", method = RequestMethod.POST)
-    public ModelAndView restorePassword(String email) {
+    public ModelAndView restorePassword(@Valid @ModelAttribute("dto") RestorePasswordDto dto, BindingResult result) {
         ModelAndView mav = new ModelAndView("restorePassword");
+        if (result.hasErrors()) {
+            return mav;
+        }
         try {
-            userService.restorePassword(email);
+            userService.restorePassword(dto.getEmail());
             mav.addObject("message", "label.restorePassword.completed");
-        } catch (NotFoundException e) {
-            mav.addObject("error", "email.unknown");
         } catch (MailingFailedException e) {
-            mav.addObject("error", "email.failed");
+            result.addError(new FieldError("dto", "email", "email.failed"));
         }
         return mav;
     }
@@ -102,8 +105,9 @@ public class UserController {
 
     /**
      * Register {@link org.jtalks.jcommune.model.entity.User} from populated in form {@link RegisterUserDto}.
-     *
+     * <p/>
      * todo: redirect to the latest url we came from instead of root
+     *
      * @param userDto {@link RegisterUserDto} populated in form
      * @param result  result of {@link RegisterUserDto} validation
      * @return redirect to / if registration successful or back to "/registration" if failed
@@ -113,14 +117,7 @@ public class UserController {
         if (result.hasErrors()) {
             return new ModelAndView(REGISTRATION);
         }
-        try {
-            userService.registerUser(userDto.createUser());
-            return new ModelAndView("redirect:/");
-        } catch (DuplicateUserException e) {
-            result.rejectValue("username", "validation.duplicateuser");
-        } catch (DuplicateEmailException e) {
-            result.rejectValue("email", "validation.duplicateemail");
-        }
-        return new ModelAndView(REGISTRATION);
+        userService.registerUser(userDto.createUser());
+        return new ModelAndView("redirect:/");
     }
 }

@@ -111,58 +111,22 @@ public class TransactionalUserServiceTest {
     @Test
     public void testRegisterUser() throws Exception {
         User user = getUser(USERNAME);
-        when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
-        when(userDao.isUserWithUsernameExist(USERNAME)).thenReturn(false);
+        when(userDao.getByEmail(EMAIL)).thenReturn(null);
 
         User registeredUser = userService.registerUser(user);
 
         assertEquals(registeredUser.getUsername(), USERNAME);
         assertEquals(registeredUser.getEmail(), EMAIL);
         assertEquals(registeredUser.getPassword(), PASSWORD);
-        verify(userDao).isUserWithEmailExist(EMAIL);
-        verify(userDao).isUserWithUsernameExist(USERNAME);
         verify(userDao).saveOrUpdate(user);
     }
 
-    @Test(expectedExceptions = {DuplicateException.class})
-    public void testRegisterUserUsernameExist() throws Exception {
-        User user = getUser(USERNAME);
-        when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
-        when(userDao.isUserWithUsernameExist(USERNAME)).thenReturn(true);
-
-        userService.registerUser(user);
-    }
-
-    @Test(expectedExceptions = {DuplicateException.class})
-    public void testRegisterUserEmailExist() throws Exception {
-        User user = getUser(USERNAME);
-        when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(true);
-        when(userDao.isUserWithUsernameExist(USERNAME)).thenReturn(false);
-
-        userService.registerUser(user);
-    }
-
-    @Test(expectedExceptions = {DuplicateException.class})
-    public void testRegisterUserBothExist() throws Exception {
-        User user = getUser(USERNAME);
-        when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(true);
-        when(userDao.isUserWithUsernameExist(USERNAME)).thenReturn(true);
-
-        userService.registerUser(user);
-    }
-
-    @Test(expectedExceptions = {DuplicateException.class})
-    public void testRegisterUserAnonymous() throws Exception {
-        User user = getUser(SecurityConstants.ANONYMOUS_USERNAME);
-
-        userService.registerUser(user);
-    }
 
     @Test
     public void testEditUserProfile() throws Exception {
         User user = getUser(USERNAME);
         when(securityService.getCurrentUser()).thenReturn(user);
-        when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
+        when(userDao.getByEmail(EMAIL)).thenReturn(null);
 
         String newAvatar = new String(new byte[12]);
 
@@ -183,7 +147,7 @@ public class TransactionalUserServiceTest {
     public void testEditUserProfileSameEmail() throws Exception {
         User user = getUser(USERNAME);
         when(securityService.getCurrentUser()).thenReturn(user);
-        when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
+        when(userDao.getByEmail(EMAIL)).thenReturn(null);
 
         String newAvatar = new String(new byte[0]);
 
@@ -199,7 +163,7 @@ public class TransactionalUserServiceTest {
     public void testEditUserProfileNullAvatar() throws Exception {
         User user = getUser(USERNAME);
         when(securityService.getCurrentUser()).thenReturn(user);
-        when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
+        when(userDao.getByEmail(EMAIL)).thenReturn(null);
 
         User editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
                 PASSWORD, NEW_PASSWORD, SIGNATURE, null, LANGUAGE, PAGE_SIZE));
@@ -218,7 +182,7 @@ public class TransactionalUserServiceTest {
     public void testEditUserProfileEmptyAvatar() throws Exception {
         User user = getUser(USERNAME);
         when(securityService.getCurrentUser()).thenReturn(user);
-        when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
+        when(userDao.getByEmail(EMAIL)).thenReturn(null);
 
         String newAvatar = new String(new byte[0]);
 
@@ -244,7 +208,7 @@ public class TransactionalUserServiceTest {
                 WRONG_PASSWORD, NEW_PASSWORD, SIGNATURE, null, LANGUAGE, PAGE_SIZE));
 
         verify(securityService).getCurrentUser();
-        verify(userDao, never()).isUserWithEmailExist(anyString());
+        verify(userDao, never()).getByEmail(anyString());
         verify(userDao, never()).saveOrUpdate(any(User.class));
     }
 
@@ -257,7 +221,7 @@ public class TransactionalUserServiceTest {
                 null, NEW_PASSWORD, SIGNATURE, null, LANGUAGE, PAGE_SIZE));
 
         verify(securityService).getCurrentUser();
-        verify(userDao, never()).isUserWithEmailExist(anyString());
+        verify(userDao, never()).getByEmail(anyString());
         verify(userDao, never()).saveOrUpdate(any(User.class));
     }
 
@@ -265,13 +229,13 @@ public class TransactionalUserServiceTest {
     public void testEditUserProfileDuplicateEmail() throws Exception {
         User user = getUser(USERNAME);
         when(securityService.getCurrentUser()).thenReturn(user);
-        when(userDao.isUserWithEmailExist(NEW_EMAIL)).thenReturn(true);
+        when(userDao.getByEmail(NEW_EMAIL)).thenReturn(user);
 
         userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, NEW_EMAIL,
                 null, null, SIGNATURE, null, LANGUAGE, PAGE_SIZE));
 
         verify(securityService).getCurrentUser();
-        verify(userDao).isUserWithEmailExist(NEW_EMAIL);
+        verify(userDao).getByEmail(NEW_EMAIL);
         verify(userDao, never()).saveOrUpdate(any(User.class));
     }
 
@@ -312,7 +276,7 @@ public class TransactionalUserServiceTest {
     @Test
     public void testRestorePassword() throws NotFoundException, MailingFailedException {
         User user = new User(USERNAME, EMAIL, PASSWORD);
-        when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(true);
+        when(userDao.getByEmail(EMAIL)).thenReturn(user);
         when(userDao.getByEmail(EMAIL)).thenReturn(user);
 
         userService.restorePassword(EMAIL);
@@ -325,20 +289,11 @@ public class TransactionalUserServiceTest {
         assertFalse(PASSWORD.equals(captor.getValue().getPassword()));
     }
 
-    @Test(expectedExceptions = NotFoundException.class)
-    public void testRestorePasswordWithWrongEmail() throws NotFoundException, MailingFailedException {
-        new User(USERNAME, EMAIL, PASSWORD);
-        when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(false);
-
-        userService.restorePassword(EMAIL);
-    }
-
     @Test(expectedExceptions = MailingFailedException.class)
     public void testRestorePasswordFail() throws NotFoundException, MailingFailedException {
         User user = new User(USERNAME, EMAIL, PASSWORD);
         Exception fail = new MailingFailedException("", new RuntimeException());
         doThrow(fail).when(mailService).sendPasswordRecoveryMail(anyString(), anyString(), anyString());
-        when(userDao.isUserWithEmailExist(EMAIL)).thenReturn(true);
         when(userDao.getByEmail(EMAIL)).thenReturn(user);
 
         try {

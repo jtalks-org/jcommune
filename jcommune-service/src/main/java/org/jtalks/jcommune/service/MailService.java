@@ -46,9 +46,8 @@ public interface MailService {
      *
      * @param user a person to be notified about updates by email
      * @param topic topic changed (to include more detailes in email)
-     * @throws MailingFailedException when mailing failed due to some reason
      */
-    void sendTopicUpdatesOnSubscription(User user, Topic topic) throws MailingFailedException;
+    void sendTopicUpdatesOnSubscription(User user, Topic topic);
 
     /**
      * Sends update notification to user specified, e.g. when some new
@@ -57,7 +56,6 @@ public interface MailService {
      *
      * @param user a person to be notified about updates by email
      * @param branch branch changed (to include more detailes in email)
-     * @throws MailingFailedException when mailing failed due to some reason
      */
-    void sendBranchUpdatesOnSubscription(User user, Branch branch) throws MailingFailedException;
+    void sendBranchUpdatesOnSubscription(User user, Branch branch);
 }

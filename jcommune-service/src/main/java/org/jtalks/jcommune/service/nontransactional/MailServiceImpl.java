@@ -45,6 +45,7 @@ public class MailServiceImpl implements MailService {
     private SimpleMailMessage templateMessage;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MailServiceImpl.class);
+    private static final String LOG_TEMPLATE = "Error occured while sending updates of %s %d to %s";
 
     // todo: apply i18n settings here somehow and extract them as templates (velocity?)
     private static final String PASSWORD_RECOVERY_TEMPLATE =
@@ -102,26 +103,34 @@ public class MailServiceImpl implements MailService {
      * {@inheritDoc}
      */
     @Override
-    public void sendTopicUpdatesOnSubscription(User user, Topic topic) throws MailingFailedException {
+    public void sendTopicUpdatesOnSubscription(User user, Topic topic) {
         String url = this.getDeploymentRootUrl() + "/posts/" + topic.getLastPost().getId();
-        this.sendEmail(
-                user.getEmail(),
-                "Forum updates",
-                String.format(SUBSCRIPTION_NOTIFICATION_TEMPLATE, user.getUsername(), url),
-                "Subscription update sending failed");
+        try {
+            this.sendEmail(
+                    user.getEmail(),
+                    "Forum updates",
+                    String.format(SUBSCRIPTION_NOTIFICATION_TEMPLATE, user.getUsername(), url),
+                    "Subscription update sending failed");
+        } catch (MailingFailedException e) {
+            LOGGER.error(String.format(LOG_TEMPLATE, "Topic", topic.getId(), user.getUsername()));
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void sendBranchUpdatesOnSubscription(User user, Branch branch) throws MailingFailedException {
+    public void sendBranchUpdatesOnSubscription(User user, Branch branch) {
         String url = this.getDeploymentRootUrl() + "/branches/" + branch.getId();
-        this.sendEmail(
-                user.getEmail(),
-                "Forum updates",
-                String.format(SUBSCRIPTION_NOTIFICATION_TEMPLATE, user.getUsername(), url),
-                "Subscription update sending failed");
+        try {
+            this.sendEmail(
+                    user.getEmail(),
+                    "Forum updates",
+                    String.format(SUBSCRIPTION_NOTIFICATION_TEMPLATE, user.getUsername(), url),
+                    "Subscription update sending failed");
+        } catch (MailingFailedException e) {
+            LOGGER.error(String.format(LOG_TEMPLATE, "Branch", branch.getId(), user.getUsername()));
+        }
     }
 
     /**

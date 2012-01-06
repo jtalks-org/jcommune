@@ -17,7 +17,9 @@ package org.jtalks.jcommune.web.dto;
 import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.web.validation.Matches;
+import org.jtalks.jcommune.web.validation.Unique;
 
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 /**
@@ -28,14 +30,25 @@ import javax.validation.constraints.Size;
  * @author Osadchuck Eugeny
  */
 @Matches(field = "password", verifyField = "passwordConfirm", message = "{password_not_matches}")
-public class RegisterUserDto extends UserDto {
+public class RegisterUserDto {
 
     @NotBlank(message = "{validation.username.notblank}")
     @Size(min = User.MIN_NAME_SIZE, max = User.MAX_NAME_SIZE, message = "{validation.username.length}")
+    @Unique(hql = "from User user where user.username = ?", message = "{validation.duplicateuser}")
     private String username;
+
+    @NotBlank(message = "{validation.email.notblank}")
+    @Pattern(regexp = "^[a-zA-Z0-9_'+*/^&=?~{}\\-](\\.?[a-zA-Z0-9_'+*/^&=?~{}\\-])" +
+            "*\\@((\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}(\\:\\d{1,3})?)|(((([a-zA-Z0-9][a-zA-Z0-9\\-]" +
+            "+[a-zA-Z0-9])|([a-zA-Z0-9]{1,2}))[\\.]{1})+([a-zA-Z]{2,6})))$",
+            message = "{validation.email.wrong.format}")
+    @Unique(hql = "from User user where user.email = ?", message = "{validation.duplicateemail}")
+    private String email;
+
     @NotBlank(message = "{validation.password.notblank}")
     @Size(min = User.MIN_PASS_SIZE, max = User.MAX_PASS_SIZE)
     private String password;
+
     @NotBlank(message = "{validation.password.confirm.notblank}")
     private String passwordConfirm;
 
@@ -83,6 +96,24 @@ public class RegisterUserDto extends UserDto {
     }
 
     /**
+     * Get email.
+     *
+     * @return email
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * Set email.
+     *
+     * @param email email
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
      * Set password confirmation.
      *
      * @param passwordConfirm password confirmation
@@ -97,9 +128,6 @@ public class RegisterUserDto extends UserDto {
      * @return populated {@link User} object
      */
     public User createUser() {
-        User newUser = new User(username, getEmail(), password);
-        newUser.setFirstName(getFirstName());
-        newUser.setLastName(getLastName());
-        return newUser;
+        return new User(username, email, password);
     }
 }

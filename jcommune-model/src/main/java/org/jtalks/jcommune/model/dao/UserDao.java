@@ -57,21 +57,4 @@ public interface UserDao extends ParentRepository<User> {
      */
     User getByEmail(String email);
 
-    /**
-     * Check if {@link User} with given username exist.
-     *
-     * @param username username
-     * @return <code>true</code> if {@link User} with given username exist or
-     *         <code>false</code>
-     */
-    boolean isUserWithUsernameExist(String username);
-
-    /**
-     * Check if {@link User} with given email exist.
-     *
-     * @param email email
-     * @return <code>true</code> if {@link User} with given email exist or
-     *         <code>false</code>
-     */
-    boolean isUserWithEmailExist(String email);
 }
