@@ -16,7 +16,6 @@ package org.jtalks.jcommune.service.nontransactional;
 
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
-import org.jtalks.jcommune.service.UserDataCacheService;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -29,7 +28,7 @@ import static org.testng.Assert.assertNull;
 /**
  * @author Kirill Afonin
  */
-public class UserDataCacheServiceImplTest {
+public class UserDataCacheServiceTest {
     private Ehcache cache;
     private UserDataCacheService userDataCacheService;
     private static final String USERNAME = "usernaME";
@@ -37,7 +36,7 @@ public class UserDataCacheServiceImplTest {
     @BeforeMethod
     public void setUp() throws Exception {
         cache = mock(Ehcache.class);
-        userDataCacheService = new UserDataCacheServiceImpl(cache);
+        userDataCacheService = new UserDataCacheService(cache);
     }
 
 

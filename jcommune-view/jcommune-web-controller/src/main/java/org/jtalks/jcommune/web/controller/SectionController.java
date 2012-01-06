@@ -16,9 +16,9 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Section;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.LocationService;
+import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.service.SectionService;
-import org.jtalks.jcommune.service.SecurityService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.jtalks.jcommune.web.util.Pagination;

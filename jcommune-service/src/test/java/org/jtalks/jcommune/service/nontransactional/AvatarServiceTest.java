@@ -28,15 +28,15 @@ import static org.testng.Assert.assertEquals;
 /**
  * @author Alexandre Teterin
  */
-public class AvatarServiceImplTest {
+public class AvatarServiceTest {
 
     private ImageUtils imageUtils;
-    private AvatarServiceImpl avatarService;
+    private AvatarService avatarService;
 
     @BeforeMethod
     public void setUp() {
         imageUtils = mock(ImageUtils.class);
-        avatarService = new AvatarServiceImpl(imageUtils);
+        avatarService = new AvatarService(imageUtils);
     }
 
     @Test(dataProvider = "test-data-provider")

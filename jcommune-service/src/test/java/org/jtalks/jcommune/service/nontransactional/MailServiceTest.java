@@ -24,7 +24,7 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.MailService;
+import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.ArgumentCaptor;
@@ -41,7 +41,7 @@ import org.testng.annotations.Test;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Test for {@link MailServiceImpl}.
+ * Test for {@link MailService}.
  *
  * @author Evgeniy Naumenko
  */
@@ -67,7 +67,7 @@ public class MailServiceTest {
         sender = mock(MailSender.class);
         message = new SimpleMailMessage();
         message.setFrom(FROM);
-        service = new MailServiceImpl(sender, message);
+        service = new MailService(sender, message);
         captor = ArgumentCaptor.forClass(SimpleMailMessage.class);
     }
 

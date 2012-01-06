@@ -18,8 +18,7 @@ package org.jtalks.jcommune.service.nontransactional;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.MailService;
-import org.jtalks.jcommune.service.SecurityService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
@@ -31,14 +30,14 @@ import static org.mockito.MockitoAnnotations.initMocks;
 /**
  * @author Evgeniy Naumenko
  */
-public class NotificationServiceImplTest {
+public class NotificationServiceTest {
 
     @Mock
     private MailService mailService;
     @Mock
     private SecurityService securityService;
 
-    private NotificationServiceImpl service;
+    private NotificationService service;
 
     private User user1 = new User("name1", "email1", "password1");
     private User user2 = new User("name2", "email2", "password2");
@@ -48,7 +47,7 @@ public class NotificationServiceImplTest {
     @BeforeMethod
     public void setUp() {
         initMocks(this);
-        service = new NotificationServiceImpl(securityService, mailService);
+        service = new NotificationService(securityService, mailService);
         topic = new Topic(user1, "title");
         branch = new Branch("name");
         branch.addTopic(topic);

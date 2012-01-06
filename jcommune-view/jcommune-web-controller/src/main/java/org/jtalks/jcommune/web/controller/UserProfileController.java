@@ -18,7 +18,7 @@ import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PostService;
-import org.jtalks.jcommune.service.SecurityService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;

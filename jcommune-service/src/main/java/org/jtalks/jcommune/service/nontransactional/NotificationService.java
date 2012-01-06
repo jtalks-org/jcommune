@@ -17,9 +17,8 @@ package org.jtalks.jcommune.service.nontransactional;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.MailService;
-import org.jtalks.jcommune.service.NotificationService;
-import org.jtalks.jcommune.service.SecurityService;
+import org.jtalks.jcommune.service.nontransactional.MailService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +34,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Evgeniy Naumenko
  */
-public class NotificationServiceImpl implements NotificationService {
+public class NotificationService {
 
     private SecurityService securityService;
     private MailService mailService;
@@ -44,15 +43,15 @@ public class NotificationServiceImpl implements NotificationService {
      * @param securityService to determine the update author
      * @param mailService to perform actual email notifications.
      */
-    public NotificationServiceImpl(SecurityService securityService, MailService mailService) {
+    public NotificationService(SecurityService securityService, MailService mailService) {
         this.securityService = securityService;
         this.mailService = mailService;
     }
 
     /**
-     * {@inheritDoc}
+     *
+     * @param topic
      */
-    @Override
     public void topicChanged(Topic topic) {
         User current = securityService.getCurrentUser();
         this.branchChanged(topic.getBranch());
@@ -64,9 +63,9 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     /**
-     * {@inheritDoc}
+     *
+     * @param branch
      */
-    @Override
     public void branchChanged(Branch branch) {
         User current = securityService.getCurrentUser();
         for (User user : branch.getSubscribers()) {

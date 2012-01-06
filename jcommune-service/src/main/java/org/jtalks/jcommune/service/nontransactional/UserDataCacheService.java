@@ -16,14 +16,13 @@ package org.jtalks.jcommune.service.nontransactional;
 
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
-import org.jtalks.jcommune.service.UserDataCacheService;
 
 /**
  * Operations above user data cache.
  *
  * @author Kirill Afonin
  */
-public class UserDataCacheServiceImpl implements UserDataCacheService {
+public class UserDataCacheService {
 
     private final Ehcache userDataCache;
 
@@ -32,14 +31,16 @@ public class UserDataCacheServiceImpl implements UserDataCacheService {
      *
      * @param userDataCache cache
      */
-    public UserDataCacheServiceImpl(Ehcache userDataCache) {
+    public UserDataCacheService(Ehcache userDataCache) {
         this.userDataCache = userDataCache;
     }
 
     /**
-     * {@inheritDoc}
+     * Get new messages count for {@code username} in cache.
+     *
+     * @param username username
+     * @return new messages count or {@code null} if user not in cache
      */
-    @Override
     public Integer getNewPmCountFor(String username) {
         Element cacheElementForUser = userDataCache.get(username);
         if (cacheElementForUser == null) {
@@ -49,17 +50,20 @@ public class UserDataCacheServiceImpl implements UserDataCacheService {
     }
 
     /**
-     * {@inheritDoc}
+     * Put new messages count for {@code username} to cache.
+     *
+     * @param username username
+     * @param count    new messages count
      */
-    @Override
     public void putNewPmCount(String username, int count) {
         userDataCache.put(new Element(username, count));
     }
 
     /**
-     * {@inheritDoc}
+     * Increment new messages count for {@code username} in cache.
+     *
+     * @param username username
      */
-    @Override
     public void incrementNewMessageCountFor(String username) {
         Element cacheElementForUser = userDataCache.get(username);
         if (cacheElementForUser != null) {
@@ -70,9 +74,10 @@ public class UserDataCacheServiceImpl implements UserDataCacheService {
     }
 
     /**
-     * {@inheritDoc}
+     * Decrement new messages count for {@code username} in cache.
+     *
+     * @param username username
      */
-    @Override
     public void decrementNewMessageCountFor(String username) {
         Element cacheElementForUser = userDataCache.get(username);
         if (cacheElementForUser != null) {

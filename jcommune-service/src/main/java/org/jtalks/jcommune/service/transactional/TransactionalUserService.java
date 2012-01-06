@@ -16,8 +16,8 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.MailService;
-import org.jtalks.jcommune.service.SecurityService;
+import org.jtalks.jcommune.service.nontransactional.MailService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;

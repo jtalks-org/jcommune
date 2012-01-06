@@ -15,11 +15,10 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Section;
-import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.SectionService;
-import org.jtalks.jcommune.service.SecurityService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.LocationServiceImpl;
+import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
@@ -29,7 +28,6 @@ import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -46,7 +44,7 @@ public class SectionControllerTest {
     private SectionController controller;
     private BreadcrumbBuilder breadcrumbBuilder;
     private ForumStatisticsProvider statisticsProvider;
-    private LocationServiceImpl locationServiceImpl;
+    private LocationService locationServiceImpl;
 
     @BeforeMethod
     public void init() {
@@ -54,7 +52,7 @@ public class SectionControllerTest {
         SecurityService securityService = mock(SecurityService.class);
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
         statisticsProvider = mock(ForumStatisticsProvider.class);
-        locationServiceImpl = mock(LocationServiceImpl.class);
+        locationServiceImpl = mock(LocationService.class);
         controller = new SectionController(securityService, sectionService,
                 statisticsProvider, locationServiceImpl);
     }

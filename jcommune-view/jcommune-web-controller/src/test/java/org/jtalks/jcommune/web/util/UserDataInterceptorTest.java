@@ -16,7 +16,7 @@ package org.jtalks.jcommune.web.util;
 
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PrivateMessageService;
-import org.jtalks.jcommune.service.SecurityService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.interceptors.UserDataInterceptor;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;

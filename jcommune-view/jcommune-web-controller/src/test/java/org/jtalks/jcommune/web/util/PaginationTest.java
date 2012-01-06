@@ -15,17 +15,14 @@
 package org.jtalks.jcommune.web.util;
 
 import org.jtalks.common.model.entity.Entity;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.nontransactional.LocationServiceImpl;
+import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.*;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
 public class PaginationTest {
@@ -33,7 +30,7 @@ public class PaginationTest {
     private String link;
     private String uri;
     private User user;
-    private LocationServiceImpl locationServiceImpl;
+    private LocationService locationServiceImpl;
     private ForumStatisticsProvider forumStatisticsProvider;
     private Entity entity;
 
@@ -42,7 +39,7 @@ public class PaginationTest {
     @BeforeMethod
     protected void setUp() {
         entity = mock(Entity.class);
-        locationServiceImpl = mock(LocationServiceImpl.class);
+        locationServiceImpl = mock(LocationService.class);
         forumStatisticsProvider = mock(ForumStatisticsProvider.class);
         user = new User("", "", "");
         user.setPageSize(PAGE_SIZE);

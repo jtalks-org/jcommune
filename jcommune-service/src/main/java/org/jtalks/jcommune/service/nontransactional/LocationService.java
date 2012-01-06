@@ -17,8 +17,7 @@ package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.LocationService;
-import org.jtalks.jcommune.service.SecurityService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Andrey Kluev
  */
 @Component
-public class LocationServiceImpl implements LocationService {
+public class LocationService {
     private SecurityService securityService;
     private SessionRegistry sessionRegistry;
     private Map<User, String> registerUserMap = new ConcurrentHashMap<User, String>();
@@ -45,7 +44,7 @@ public class LocationServiceImpl implements LocationService {
      * @param securityService security service
      * @param sessionRegistry session registry
      */
-    public LocationServiceImpl(SecurityService securityService, SessionRegistry sessionRegistry) {
+    public LocationService(SecurityService securityService, SessionRegistry sessionRegistry) {
         this.securityService = securityService;
         this.sessionRegistry = sessionRegistry;
     }
@@ -57,7 +56,6 @@ public class LocationServiceImpl implements LocationService {
      * @param entity entity
      * @return lis name user active these page
      */
-    @Override
     public List<String> getUsersViewing(Entity entity) {
         List<String> viewList = new ArrayList<String>();
         /**
@@ -79,9 +77,8 @@ public class LocationServiceImpl implements LocationService {
     }
 
     /**
-     * {@inheritDoc}
+     * Drops current user from the list of topic viewer, regardless of topic
      */
-    @Override
     public void clearUserLocation() {
         /**
          * At the moment, in the case of call in the forum Anonymous as the current user is returned Anonymous.

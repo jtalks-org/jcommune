@@ -17,7 +17,6 @@ package org.jtalks.jcommune.service.nontransactional;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.security.AclBuilder;
 import org.jtalks.jcommune.service.security.AclManager;
 import org.jtalks.jcommune.service.security.SecurityConstants;
@@ -42,12 +41,12 @@ import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 /**
- * Test for {@link SecurityServiceImpl}.
+ * Test for {@link SecurityService}.
  *
  * @author Kirill Afonin
  * @author Max Malakhov
  */
-public class SecurityServiceImplTest {
+public class SecurityServiceTest {
 
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
@@ -68,7 +67,7 @@ public class SecurityServiceImplTest {
         securityContextFacade = mock(SecurityContextFacade.class);
         securityContext = mock(SecurityContext.class);
         aclManager = mock(AclManager.class);
-        securityService = new SecurityServiceImpl(userDao, securityContextFacade, aclManager);
+        securityService = new SecurityService(userDao, securityContextFacade, aclManager);
         when(securityContextFacade.getContext()).thenReturn(securityContext);
     }
 

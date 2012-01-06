@@ -19,10 +19,10 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.SecurityService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.LocationServiceImpl;
+import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
@@ -53,7 +53,7 @@ public class BranchControllerTest {
     private TopicService topicService;
     private BranchController controller;
     private BreadcrumbBuilder breadcrumbBuilder;
-    private LocationServiceImpl locationServiceImpl;
+    private LocationService locationServiceImpl;
     private ForumStatisticsProvider forumStatisticsProvider;
 
 
@@ -61,7 +61,7 @@ public class BranchControllerTest {
 
     @BeforeMethod
     public void init() {
-        locationServiceImpl = mock(LocationServiceImpl.class);
+        locationServiceImpl = mock(LocationService.class);
         branchService = mock(BranchService.class);
         topicService = mock(TopicService.class);
         SecurityService securityService = mock(SecurityService.class);

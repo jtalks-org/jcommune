@@ -15,38 +15,41 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.model.dao.ForumStatisticsDAO;
-import org.jtalks.jcommune.service.ForumStatisticsService;
 
 /**
  * This class contains methods for getting forum statistic information.
  *
  * @author Elena Lepaeva
  */
-public class ForumStatisticsServiceImpl implements ForumStatisticsService {
+public class ForumStatisticsService  {
 
     private ForumStatisticsDAO statisticsDAO;
 
     /**
      * Create an instance of transactional forum statistics service
      *
-     * @param statisticsDAO            for operations with data storage
+     * @param statisticsDAO for operations with data storage
      */
-    public ForumStatisticsServiceImpl(ForumStatisticsDAO statisticsDAO) {
+    public ForumStatisticsService(ForumStatisticsDAO statisticsDAO) {
         this.statisticsDAO = statisticsDAO;
     }
 
     /**
-     * {@inheritDoc}
+     * Get total count of messages on the forum
+     *
+     * @return number of posts on the forum.
      */
-    @Override
+
     public int getPostsOnForumCount() {
         return statisticsDAO.getPostsOnForumCount();
     }
 
     /**
-     * {@inheritDoc}
+     * Return total count of registred user's accounts
+     *
+     * @return count of registred user's accounts
      */
-    @Override
+
     public int getUsersCount() {
         return statisticsDAO.getUsersCount();
     }

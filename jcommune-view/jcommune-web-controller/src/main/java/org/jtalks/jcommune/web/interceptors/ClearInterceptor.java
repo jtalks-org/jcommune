@@ -15,7 +15,7 @@
 
 package org.jtalks.jcommune.web.interceptors;
 
-import org.jtalks.jcommune.service.LocationService;
+import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 

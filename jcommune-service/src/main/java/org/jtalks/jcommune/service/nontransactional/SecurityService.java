@@ -17,7 +17,6 @@ package org.jtalks.jcommune.service.nontransactional;
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.SecurityService;
 import org.jtalks.jcommune.service.security.AclBuilder;
 import org.jtalks.jcommune.service.security.AclBuilderImpl;
 import org.jtalks.jcommune.service.security.AclManager;
@@ -25,6 +24,7 @@ import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.jtalks.jcommune.service.security.SecurityContextFacade;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 
@@ -35,7 +35,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
  * @author Kirill Afonin
  * @author Max Malakhov
  */
-public class SecurityServiceImpl implements SecurityService {
+public class SecurityService implements UserDetailsService {
 
     private UserDao userDao;
     private AclManager aclManager;
@@ -48,25 +48,30 @@ public class SecurityServiceImpl implements SecurityService {
      * @param securityContextFacade {@link org.jtalks.jcommune.service.security.SecurityContextFacade} to be injected
      * @param aclManager            manager for actions with ACLs
      */
-    public SecurityServiceImpl(UserDao userDao, SecurityContextFacade securityContextFacade,
-                               AclManager aclManager) {
+    public SecurityService(UserDao userDao, SecurityContextFacade securityContextFacade,
+                           AclManager aclManager) {
         this.userDao = userDao;
         this.securityContextFacade = securityContextFacade;
         this.aclManager = aclManager;
     }
 
     /**
-     * {@inheritDoc}
+     * Get current authenticated {@link User}.
+     *
+     * @return current authenticated {@link User} or {@code null} if there is
+     *         no authenticated {@link User}.
+     * @see User
      */
-    @Override
     public User getCurrentUser() {
         return userDao.getByUsername(getCurrentUserUsername());
     }
 
     /**
-     * {@inheritDoc}
+     * Get current authenticated {@link User} username.
+     *
+     * @return current authenticated {@link User} username or {@code null} if there is
+     *         no authenticated {@link User}.
      */
-    @Override
     public String getCurrentUserUsername() {
         Authentication auth = securityContextFacade.getContext().getAuthentication();
         if (auth == null) {
@@ -105,41 +110,50 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     /**
-     * {@inheritDoc}
+     * Delete object from acl. All permissions will be removed.
+     *
+     * @param securedObject a removed secured object.
      */
-    @Override
     public void deleteFromAcl(Entity securedObject) {
         deleteFromAcl(securedObject.getClass(), securedObject.getId());
     }
 
     /**
-     * {@inheritDoc}
+     * Delete object from acl. All permissions will be removed.
+     *
+     * @param clazz object {@code Class}
+     * @param id    object id
      */
-    @Override
     public void deleteFromAcl(Class clazz, long id) {
         aclManager.deleteFromAcl(clazz, id);
     }
 
     /**
-     * {@inheritDoc}
+     * Create new builder for granting acl permissions.
+     *
+     * @return builder for granting permissions
+     * @see AclBuilder
      */
-    @Override
     public AclBuilder grant() {
         return new AclBuilderImpl(aclManager, AclBuilderImpl.Action.GRANT);
     }
 
     /**
-     * {@inheritDoc}
+     * Create new builder for granting acl permissions with added current user.
+     *
+     * @return builder for granting permissions
+     * @see AclBuilder
      */
-    @Override
     public AclBuilder grantToCurrentUser() {
         return new AclBuilderImpl(aclManager, AclBuilderImpl.Action.GRANT).user(getCurrentUserUsername());
     }
 
     /**
-     * {@inheritDoc}
+     * Create new builder for removing acl permissions.
+     *
+     * @return builder for removing permissions
+     * @see AclBuilder
      */
-    @Override
     public AclBuilder delete() {
         return new AclBuilderImpl(aclManager, AclBuilderImpl.Action.DELETE);
     }
@@ -154,6 +168,6 @@ public class SecurityServiceImpl implements SecurityService {
             throw new UsernameNotFoundException("User not found: " + username);
         }
         return user;
-    }    
+    }
 
 }

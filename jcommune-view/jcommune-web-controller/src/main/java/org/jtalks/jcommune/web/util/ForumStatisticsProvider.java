@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.web.util;
 
-import org.jtalks.jcommune.service.ForumStatisticsService;
+import org.jtalks.jcommune.service.nontransactional.ForumStatisticsService;
 import org.jtalks.jcommune.web.listeners.HttpSessionStatisticListener;
 import org.springframework.security.core.session.SessionRegistry;
 

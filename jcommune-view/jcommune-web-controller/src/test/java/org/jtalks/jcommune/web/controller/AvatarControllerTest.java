@@ -15,8 +15,8 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.AvatarService;
-import org.jtalks.jcommune.service.SecurityService;
+import org.jtalks.jcommune.service.nontransactional.AvatarService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.ImageUploadException;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;

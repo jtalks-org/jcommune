@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
-import org.jtalks.jcommune.service.AvatarService;
 import org.jtalks.jcommune.service.exceptions.ImageFormatException;
 import org.jtalks.jcommune.service.exceptions.ImageSizeException;
 import org.jtalks.jcommune.service.exceptions.ImageUploadException;
@@ -25,20 +24,26 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * Service for avatar related operations
+ *
  * @author Alexandre Teterin
  */
-public class AvatarServiceImpl implements AvatarService {
+public class AvatarService {
 
     private static final Set<String> VALID_IMAGE_TYPES = new HashSet<String>();
+    /**
+     * Max avatar size in bytes (to be moved in DB later)
+     */
+    public static final int MAX_SIZE = 4096 * 1024;
 
     private final ImageUtils imageUtils;
 
     /**
-     * Create AvatarServiceImpl instance
+     * Create AvatarService instance
      *
      * @param imageUtils object for image processing
      */
-    public AvatarServiceImpl(ImageUtils imageUtils) {
+    public AvatarService(ImageUtils imageUtils) {
         this.imageUtils = imageUtils;
         VALID_IMAGE_TYPES.add("image/jpeg");
         VALID_IMAGE_TYPES.add("image/png");

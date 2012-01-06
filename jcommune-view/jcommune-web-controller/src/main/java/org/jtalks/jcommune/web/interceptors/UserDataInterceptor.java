@@ -16,7 +16,7 @@ package org.jtalks.jcommune.web.interceptors;
 
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PrivateMessageService;
-import org.jtalks.jcommune.service.SecurityService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;

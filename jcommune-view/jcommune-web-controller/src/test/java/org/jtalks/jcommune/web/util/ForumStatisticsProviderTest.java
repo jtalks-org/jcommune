@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.web.util;
 
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.ForumStatisticsService;
+import org.jtalks.jcommune.service.nontransactional.ForumStatisticsService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.listeners.HttpSessionStatisticListener;
 import org.springframework.security.core.session.SessionRegistry;
@@ -33,7 +33,7 @@ import static org.testng.Assert.assertEquals;
  *
  * @author Elena Lepaeva
  */
-public class ForumStaticsProviderTest {
+public class ForumStatisticsProviderTest {
 
     private ForumStatisticsService statisticsService;
     private ForumStatisticsProvider forumStaticsProvider;

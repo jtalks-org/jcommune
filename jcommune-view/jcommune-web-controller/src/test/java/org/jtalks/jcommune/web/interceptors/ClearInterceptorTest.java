@@ -14,17 +14,15 @@
  */
 package org.jtalks.jcommune.web.interceptors;
 
-import org.jtalks.jcommune.service.nontransactional.LocationServiceImpl;
+import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.HttpRequestHandler;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -39,7 +37,7 @@ public class ClearInterceptorTest {
     private HttpRequestHandler handler;
     private HttpServletRequest request;
     private HttpServletResponse response;
-    private LocationServiceImpl locationServiceImpl;
+    private LocationService locationServiceImpl;
     private boolean result;
 
     @BeforeMethod
@@ -47,7 +45,7 @@ public class ClearInterceptorTest {
         handler = mock(HttpRequestHandler.class);
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
-        locationServiceImpl = mock(LocationServiceImpl.class);
+        locationServiceImpl = mock(LocationService.class);
         interceptor = new ClearInterceptor(locationServiceImpl);
     }
 

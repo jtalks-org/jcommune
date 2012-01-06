@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.model.dao.ForumStatisticsDAO;
-import org.jtalks.jcommune.service.ForumStatisticsService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -24,7 +23,7 @@ import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
 
 /**
- * Test for {@link ForumStatisticsServiceImpl}.
+ * Test for {@link ForumStatisticsService}.
  *
  * @author Elena Lepaeva
  */
@@ -36,7 +35,7 @@ public class ForumStatisticsServiceTest {
     @BeforeClass
     public void setUp() {
         statisticsDAO = mock(ForumStatisticsDAO.class);
-        statisticsService = new ForumStatisticsServiceImpl(statisticsDAO);
+        statisticsService = new ForumStatisticsService(statisticsDAO);
     }
 
     @Test

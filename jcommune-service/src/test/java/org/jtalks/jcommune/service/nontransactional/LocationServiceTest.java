@@ -16,14 +16,12 @@ package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.LocationService;
-import org.jtalks.jcommune.service.SecurityService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.springframework.security.core.session.SessionRegistry;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,7 +33,7 @@ import static org.testng.Assert.assertEquals;
 /**
  * @author Andrey Kluev
  */
-public class LocationServiceImplTest {
+public class LocationServiceTest {
     private Topic topic;
     private LocationService locationService;
     private SecurityService securityService;
@@ -49,7 +47,7 @@ public class LocationServiceImplTest {
     protected void setUp() {
         securityService = mock(SecurityService.class);
         sessionRegistry = mock(SessionRegistry.class);
-        locationService = new LocationServiceImpl(securityService, sessionRegistry);
+        locationService = new LocationService(securityService, sessionRegistry);
         user = new User("", "", "");
         topic = new Topic(user, "");
         topic.setUuid("uuid");
