@@ -46,22 +46,22 @@ import java.lang.annotation.Target;
 public @interface Unique {
 
     /**
-     * @return Resource bundle code for error message
+     * Resource bundle code for error message
      */
     String message();
 
     /**
-     * @return groups settings for this validation constraint
+     * Groups settings for this validation constraint
      */
     Class<?>[] groups() default {};
 
     /**
-     * @return payload, no used here
+     * Payload, no used here
      */
     Class<? extends Payload>[] payload() default {};
 
     /**
-     * @return query to executed, must contain one placeholder for field value
+     * Query to executed, must contain one placeholder for field value
      */
     String hql();
 }
