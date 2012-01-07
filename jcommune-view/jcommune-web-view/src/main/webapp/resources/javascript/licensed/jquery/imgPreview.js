@@ -79,8 +79,8 @@
             .mousemove(function(e) {
 
             $container.css({
-                top: window.pageYOffset + (window.innerHeight - this.naturalHeight)/2 + 'px',
-                left: window.pageXOffset + (window.innerWidth - this.naturalWidth)/2 + 'px'
+                top: window.pageYOffset + (window.innerHeight - Math.min(this.naturalHeight, 500))/2 + 'px',
+                left: window.pageXOffset + (window.innerWidth - Math.min(this.naturalWidth, 700))/2 + 'px'
             });
 
         })
