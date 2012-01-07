@@ -23,6 +23,20 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Marks the field to check it's value for existence in a database.
+ * Specify HQL query in a parameter with one placeholder for the actual field value.
+ * Validation succeds if result set returned is not empty.
+ *
+ * <p>For exmaple:
+ *
+ * <p><code>@Exists(hql = "from User user where user.email = ?", message = "{email.unknown}")
+ * private String email<code/>
+ *
+ * <p>This snippet will pass the validation if and only if there is record with email value
+ * equal to the one sprecified in varialbe.
+ *
+ * <p>Works only for sting variables as for now.
+ *
  * @author Evgeniy Naumenko
  */
 @Target({ElementType.FIELD})
@@ -30,17 +44,24 @@ import java.lang.annotation.Target;
 @Documented
 @Constraint(validatedBy = ExistenceValidator.class)
 public @interface Exists {
+
+    /**
+     * @return Resource bundle code for error message
+     */
     String message();
 
     /**
-     * {@inheritDoc}
+     * @return groups settings for this validation constraint
      */
     Class<?>[] groups() default {};
 
     /**
-     * {@inheritDoc}
+     * @return payload, no used here
      */
     Class<? extends Payload>[] payload() default {};
 
+    /**
+     * @return query to executed, must contain one placeholder for field value
+     */
     String hql();
 }
