@@ -49,8 +49,10 @@ public class NotificationService {
     }
 
     /**
+     * Notifices subscribers that the ceertain topic has been changed by email.
+     * Call of this method will alos trigger enclosing branch update event.
      *
-     * @param topic
+     * @param topic topic changed
      */
     public void topicChanged(Topic topic) {
         User current = securityService.getCurrentUser();
@@ -63,8 +65,11 @@ public class NotificationService {
     }
 
     /**
+     * Notifies subscribers about branch updates by email.
+     * If mailing failed thi implementation simply continues
+     * with other sunscribers.
      *
-     * @param branch
+     * @param branch branch changed
      */
     public void branchChanged(Branch branch) {
         User current = securityService.getCurrentUser();

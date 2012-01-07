@@ -23,8 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Global interceptor works for all pages,
- * clear location current user
+ * Global interceptor works for all pages, clears location of
+ * the current user. Locations is a certain page user is viewing at the moment
  *
  * @author Andrey Kluev
  */
@@ -33,9 +33,7 @@ public class ClearInterceptor extends HandlerInterceptorAdapter {
     private LocationService locationService;
 
     /**
-     * Constructor clearInterceptor
-     *
-     * @param locationService autowired object from Spring Context
+     * @param locationService to oerate with current user location on forum
      */
     @Autowired
     public ClearInterceptor(LocationService locationService) {
@@ -43,22 +41,22 @@ public class ClearInterceptor extends HandlerInterceptorAdapter {
     }
 
     /**
-     * Drops location current user in forum
+     * Clears location current user in forum
      *
      * @param request  HttpServletRequest
      * @param response HttpServletResponse
      * @param handler  handler
-     * @return true
+     * @return true, as processing should be continued anyway
      */
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
         /**
-         * This condition is necessary because interceptors work designed to challenge a controller,
-         * if the page is present avatar, after calling the main controller will call controller
-         * avatar that will lead to loss of data on the location of the current user.
-         * If you delete or change the terms of the controller mapinga avatar,
-         * to display all the pages of browsing users will see only the current user.
+         * This condition is necessary because interceptors are designed to be called before a controller.
+         * As avatars are requested from the separate controller avatar request will actualy clear
+         * location set on page. So, won't be able to see his name in a page visitors list.
+         *
+         * That is why we're skipping avatar requests when determaiming user location on forum.
          */
         if (!request.getRequestURI().endsWith("/avatar")) {
             locationService.clearUserLocation();

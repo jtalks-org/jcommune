@@ -27,10 +27,16 @@ public class RestorePasswordDto {
     @Exists(hql = "from User user where user.email = ?", message = "{email.unknown}")
     private String email;
 
+    /**
+     * @return email set on the web page
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * @param email email set on the web page
+     */
     public void setEmail(String email) {
         this.email = email;
     }
