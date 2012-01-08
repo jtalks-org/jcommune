@@ -41,6 +41,9 @@ import java.util.Map;
 @Controller
 public class SubscriptionController {
 
+    private final static String CAPTION = "caption";
+    private final static String SUFFIX = "urlSuffix";
+
     private TopicService topicService;
     private BranchService branchService;
     private SubscriptionService subscriptionService;
@@ -78,8 +81,8 @@ public class SubscriptionController {
         Topic topic = topicService.get(topicId);
         subscriptionService.toggleTopicSubscription(topic);
         Map model = new HashMap();
-        model.put("caption", messageSource.getMessage("label.unsubscribe", null, locale));
-        model.put("urlSuffix", "/topics/" + topicId + "/unsubscribe");
+        model.put(CAPTION, messageSource.getMessage("label.unsubscribe", null, locale));
+        model.put(SUFFIX, "/topics/" + topicId + "/unsubscribe");
         return model;
     }
 
@@ -98,8 +101,8 @@ public class SubscriptionController {
         Topic topic = topicService.get(topicId);
         subscriptionService.toggleTopicSubscription(topic);
         Map model = new HashMap();
-        model.put("caption", messageSource.getMessage("label.subscribe", null, locale));
-        model.put("urlSuffix", "/topics/" + topicId + "/subscribe");
+        model.put(CAPTION, messageSource.getMessage("label.subscribe", null, locale));
+        model.put(SUFFIX, "/topics/" + topicId + "/subscribe");
         return model;
     }
 
@@ -119,8 +122,8 @@ public class SubscriptionController {
         Branch branch = branchService.get(branchId);
         subscriptionService.toggleBranchSubscription(branch);
         Map model = new HashMap();
-        model.put("caption", messageSource.getMessage("label.unsubscribe", null, locale));
-        model.put("urlSuffix", "/branches/" + branchId + "/unsubscribe");
+        model.put(CAPTION, messageSource.getMessage("label.unsubscribe", null, locale));
+        model.put(SUFFIX, "/branches/" + branchId + "/unsubscribe");
         return model;
     }
 
@@ -139,8 +142,8 @@ public class SubscriptionController {
         Branch branch = branchService.get(branchId);
         subscriptionService.toggleBranchSubscription(branch);
         Map model = new HashMap();
-        model.put("caption", messageSource.getMessage("label.subscribe", null, locale));
-        model.put("urlSuffix", "/branches/" + branchId + "/subscribe");
+        model.put(CAPTION, messageSource.getMessage("label.subscribe", null, locale));
+        model.put(SUFFIX, "/branches/" + branchId + "/subscribe");
         return model;
     }
 }

@@ -50,6 +50,9 @@
     <bean id="forumStatisticsDAO" class="org.jtalks.jcommune.model.dao.hibernate.ForumStatisticsHibernateDAO">
         <constructor-arg index="0" ref="sessionFactory"/>
     </bean>
+        <bean id="validatorDAO" class="org.jtalks.jcommune.model.dao.hibernate.ValidatorHibernateDao">
+        <constructor-arg index="0" ref="sessionFactory"/>
+    </bean>
     <!--Injecting sessionFactory bean to class AbstractHibernateChildRepository, this way
 resolves a problem of multiple DAO beans definition -->
     <bean id="abstractHibernateDao"

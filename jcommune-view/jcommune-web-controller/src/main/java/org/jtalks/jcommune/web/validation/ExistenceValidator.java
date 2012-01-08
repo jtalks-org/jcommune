@@ -15,34 +15,45 @@
 package org.jtalks.jcommune.web.validation;
 
 import org.hibernate.SessionFactory;
+import org.jtalks.jcommune.model.dao.ValidatorDao;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 /**
+ * Chcks string value for existence in a database.
+ * @see Exists
+ *
  * @author Evgeniy Naumenko
  */
 public class ExistenceValidator implements ConstraintValidator<Exists, Object> {
 
     private String hql;
 
-    @Autowired
-    private SessionFactory sessionFatory;
+    private ValidatorDao<String> dao;
 
-    @Override
-    public void initialize(Exists annotation) {
-       this.hql = annotation.hql();
+    /**
+     * @param dao session factory fro database requests
+     */
+    @Autowired
+    public ExistenceValidator(ValidatorDao<String> dao) {
+        this.dao = dao;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void initialize(Exists annotation) {
+        this.hql = annotation.hql();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
-        Object result = sessionFatory
-                .getCurrentSession()
-                .createQuery(hql)
-                .setString(0, value.toString())
-                .setCacheable(true)
-                .uniqueResult();
-        return result != null;
+        return !dao.isResultSetEmpty(hql, value.toString());
     }
 }

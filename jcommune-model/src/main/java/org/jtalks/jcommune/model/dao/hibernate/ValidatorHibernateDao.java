@@ -12,48 +12,39 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.validation;
+package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.dao.ValidatorDao;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 
 /**
- * Ensures uniqueness of the field value given using an hql query provided.
- * @see Unique
+ * Performs simple checks in a database for the sake of validation.
+ * This implemetation supports only string params for simlicity
  *
  * @author Evgeniy Naumenko
  */
-public class UniqueValidator implements ConstraintValidator<Unique, Object> {
+public class ValidatorHibernateDao implements ValidatorDao<String> {
 
-    private String hql;
-
-    private ValidatorDao dao;
+    private SessionFactory sessionFactory;
 
     /**
-     * @param dao to perform database-based validationa
+     * @param sessionFactory to obtain current hibernate session
      */
-    @Autowired
-    public UniqueValidator(ValidatorDao dao) {
-        this.dao = dao;
+    public ValidatorHibernateDao(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void initialize(Unique annotation) {
-        this.hql = annotation.hql();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isValid(Object value, ConstraintValidatorContext context) {
-        return dao.isResultSetEmpty(hql, value.toString());
+    public boolean isResultSetEmpty(String hql, String param) {
+        return sessionFactory
+                .getCurrentSession()
+                .createQuery(hql)
+                .setString(0, param)
+                .setCacheable(true)
+                .list()
+                .isEmpty();
     }
 }
