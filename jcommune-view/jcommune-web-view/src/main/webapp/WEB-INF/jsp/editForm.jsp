@@ -33,7 +33,9 @@
     </a></h1>
 
     <div class="all_forums">
-        <h2><a class="heading" href="#"><c:out value="${topicTitle}"/></a></h2>
+        <h2><a class="heading" href="${pageContext.request.contextPath}/topics/${topicId}">
+            <c:out value="${topicTitle}"/>
+        </a></h2>
 
         <div class="forum_misc_info">
             <spring:message code="label.post.edit_title"/>
