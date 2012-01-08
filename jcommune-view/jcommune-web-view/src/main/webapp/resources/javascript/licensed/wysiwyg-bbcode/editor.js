@@ -154,8 +154,8 @@ function html2bbcode() {
         rep(/<p\s[^<>]*?class=\"centerText\"([^<>]*)?>([^<>]*?)<\/p>/gi, "[center]$2[/center]");
         rep(/<font\s[^<>]*?class=\"highlight\"([^<>]*)?>([^<>]*?)<\/font>/gi, "[highlight]$2[/highlight]");
         rep(/<div\s[^<>]*?class=\"code\"([^<>]*)?>([^<>]*?)<\/div>/gi, "[code]$2[/code]");
-        rep(/<div\s[^<>]*?class=\"quote\"([^<>]*)?><div>Quote:<\/div><blockquote>([^<>]*?)<\/blockquote><\/div>/gi, "[quote]$2[/quote]");
-        rep(/<div\s[^<>]*?class=\"quote\"([^<>]*)?><div>([^<>]*?):<\/div><blockquote>([^<>]*?)<\/blockquote><\/div>/gi, "[quote=\"$2\"]$3[/quote]");
+        rep(/<div\s[^<>]*?class=\"quote\"([^<>]*)?><div\s[^<>]*?class=\"quote_title\"[^<>]*?>Quote:<\/div><blockquote>([^<>]*?)<\/blockquote><\/div>/gi, "[quote]$2[/quote]");
+        rep(/<div\s[^<>]*?class=\"quote\"([^<>]*)?><div\s[^<>]*?class=\"quote_title\"[^<>]*?>([^<>]*?):<\/div><blockquote>([^<>]*?)<\/blockquote><\/div>/gi, "[quote=\"$2\"]$3[/quote]");
 
         if (sc == content)
             rep(/<font[^<>]*>([^<>]*?)<\/font>/gi, "$1");
@@ -344,8 +344,8 @@ function bbcode2html() {
     rep(/\[center\]/gi, '<p class="centerText">');
     rep(/\[\/(left|right|center)\]/gi, "</p>");
 
-    rep(/\[quote="([^\[\]]*?)"\](.*?)\[\/quote\]/gi, '<div class="quote"><div>$1:</div><blockquote>$2</blockquote></div>');
-    rep(/\[quote\]/gi, '<div class="quote"><div>Quote:</div><blockquote>');
+    rep(/\[quote="([^\[\]]*?)"\](.*?)\[\/quote\]/gi, '<div class="quote"><div class="quote_title">$1:</div><blockquote>$2</blockquote></div>');
+    rep(/\[quote\]/gi, '<div class="quote"><div class="quote_title">Quote:</div><blockquote>');
     rep(/\[\/quote\]/gi, "</blockquote></div>");
     rep(/\[code\]/gi, '<div class="code">');
     rep(/\[\/code\]/gi, "</div>");
