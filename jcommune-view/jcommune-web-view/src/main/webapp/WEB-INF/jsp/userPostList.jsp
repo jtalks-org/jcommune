@@ -23,6 +23,8 @@
 <html>
 <head>
     <title><spring:message code="label.postListOfUser"/> <c:out value="${user.username}"/></title>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/preview.js"
+            type="text/javascript"></script>
 </head>
 <body>
 <c:set var="authenticated" value="${false}"/>
@@ -31,9 +33,11 @@
     <h1><a href="${pageContext.request.contextPath}">
         <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
     </a></h1>
+
     <div class="all_forums">
         <h2 class="heading"><spring:message code="label.postListOfUser"/> ${user.username}</h2>
         <br>
+
         <div class="forum_top_right_link">
 
             <jtalks:display uri="" pagination="${pag}" numberLink="3" list="${posts}">
