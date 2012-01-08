@@ -54,6 +54,7 @@ public class PostController {
     public static final String POST_ID = "postId";
     public static final String POST_DTO = "postDto";
     public static final String PAGE = "page";
+    public static final String TOPIC_TITLE = "topicTitle";
 
     private PostService postService;
     private BreadcrumbBuilder breadcrumbBuilder;
@@ -123,6 +124,7 @@ public class PostController {
                 .addObject(POST_DTO, PostDto.getDtoFor(post))
                 .addObject(TOPIC_ID, topicId)
                 .addObject(POST_ID, postId)
+                .addObject(TOPIC_TITLE, post.getTopic().getTitle())
                 .addObject(PAGE, page)
                 .addObject("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(post.getTopic()));
     }
@@ -199,7 +201,7 @@ public class PostController {
             content = selection;
         }
         // todo: move these constants to BB converter
-        dto.setBodyText("[quote=\""+ source.getUserCreated().getUsername()+"\"]" + content + "[/quote]");
+        dto.setBodyText("[quote=\"" + source.getUserCreated().getUsername() + "\"]" + content + "[/quote]");
         return mav;
     }
 

@@ -18,8 +18,9 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <head>
-    <title><spring:message code="label.answer_to"/>: <c:out value="${topic.title}"/></title>
+    <title><spring:message code="label.answer_to"/>: <c:out value="${topicTitle}"/></title>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
             type="text/javascript"></script>
 </head>
@@ -32,7 +33,7 @@
     </a></h1>
 
     <div class="all_forums">
-        <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
+        <h2><a class="heading" href="#"><c:out value="${topicTitle}"/></a></h2>
 
         <div class="forum_misc_info">
             <spring:message code="label.post.edit_title"/>
