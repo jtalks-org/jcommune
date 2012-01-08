@@ -174,6 +174,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         topic.setAnnouncement(announcement);
         Post post = topic.getFirstPost();
         post.setPostContent(bodyText);
+        post.updateModificationDate();
         topic.updateModificationDate();
         this.getDao().update(topic);
         notificationService.topicChanged(topic);

@@ -131,13 +131,13 @@ public class ConverterBB2HTMLTest {
     @Test
     public void bbCodeQuote(){
         tag.setBbCode("[quote]Some text[/quote]");
-        assertEquals(tag.getBbCode(), "<div class=\"quote\"><div>Quote:</div><blockquote>Some text</blockquote></div>");
+        assertEquals(tag.getBbCode(), "<div class=\"quote\"><div class=\"quote_title\">Quote:</div><blockquote>Some text</blockquote></div>");
     }
 
     @Test
     public void bbCodeNamedQuote(){
         tag.setBbCode("[quote=\"user\"]Some text[/quote]");
-        assertEquals(tag.getBbCode(), "<div class=\"quote\"><div>user:</div><blockquote>Some text</blockquote></div>");
+        assertEquals(tag.getBbCode(), "<div class=\"quote\"><div class=\"quote_title\">user:</div><blockquote>Some text</blockquote></div>");
     }
 
     @Test
