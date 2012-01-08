@@ -58,7 +58,9 @@
                     </c:otherwise>
                 </c:choose>
                 <div class="forum_answer_left">
-                    <c:out value="${pm.userFrom.username}"/>
+                    <a href="${pageContext.request.contextPath}/users/${pm.userFrom.username}">
+                        <c:out value="${pm.userFrom.username}"/>
+                    </a>
                 </div>
                 <div class="forum_answer_left">
                     <a href="${pageContext.request.contextPath}/inbox/${pm.id}">

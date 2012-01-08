@@ -44,11 +44,19 @@
             <table cellspacing=0 cellpadding=5 border="1">
                 <tr>
                     <td><spring:message code="label.sender"/></td>
-                    <td><c:out value="${pm.userFrom.username}"/></td>
+                    <td>
+                        <a href="${pageContext.request.contextPath}/users/${pm.userFrom.username}">
+                            <c:out value="${pm.userFrom.username}"/>
+                        </a>
+                    </td>
                 </tr>
                 <tr>
                     <td><spring:message code="label.recipient"/></td>
-                    <td><c:out value="${pm.userTo.username}"/></td>
+                    <td>
+                        <a href="${pageContext.request.contextPath}/users/${pm.userTo.username}">
+                            <c:out value="${pm.userTo.username}"/>
+                        </a>
+                    </td>
                 </tr>
                 <tr>
                     <td valign="top"><spring:message code="label.body"/></td>
