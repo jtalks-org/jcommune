@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.model.dao;
 
-import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.common.model.dao.ParentRepository;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.User;
@@ -22,7 +21,7 @@ import org.jtalks.jcommune.model.entity.User;
 import java.util.List;
 
 /**
- * DAO interface for private messaging. Except of basic CRUD operations from {@link ChildRepository}
+ * DAO interface for private messaging. Except of basic CRUD operations from {@link ParentRepository}
  * provides methods to get all messages from some user or to the user.
  *
  * @author Pavel Vervenko

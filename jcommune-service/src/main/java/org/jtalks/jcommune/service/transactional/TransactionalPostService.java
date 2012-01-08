@@ -40,11 +40,8 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private static final String[] CODES =
-            new String[] {"i", "b", "s", "u",
-                    "url", "quote", "code", "list",
-                    "indent", "center", "right", "left",
-                    "highlight", "font", "size", "color"};
+    private static final String[] CODES = new String[]{"i", "b", "s", "u", "url", "quote", "code", "list",
+                    "indent", "center", "right", "left", "highlight", "font", "size", "color"};
     private static final int ABBREVIATED_LENGTH = 200;
     private static final String ABBREVIATION_SIGN = "...";
 
@@ -56,9 +53,9 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     /**
      * Create an instance of Post entity based service
      *
-     * @param dao             data access object, which should be able do all CRUD operations with post entity.
-     * @param topicDao        this dao used for checking branch existance
-     * @param securityService service for authorization
+     * @param dao                 data access object, which should be able do all CRUD operations with post entity.
+     * @param topicDao            this dao used for checking branch existance
+     * @param securityService     service for authorization
      * @param notificationServise to send email updates for subscribed users
      */
     public TransactionalPostService(PostDao dao, TopicDao topicDao, SecurityService securityService,
@@ -188,7 +185,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
             }
         }
         if (!"".equals(longestCode) && index > 0) {
-            if (ai - (index - longestCode.length()) < longestCode.length()/2) {
+            if (ai - (index - longestCode.length()) < longestCode.length() / 2) {
                 return post.substring(0, index - longestCode.length()) + ABBREVIATION_SIGN;
             } else {
                 return post.substring(0, index) + ABBREVIATION_SIGN;

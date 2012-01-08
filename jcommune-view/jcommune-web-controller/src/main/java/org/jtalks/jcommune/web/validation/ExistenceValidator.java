@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.web.validation;
 
-import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.dao.ValidatorDao;
 import org.springframework.beans.factory.annotation.Autowired;
 

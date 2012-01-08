@@ -14,14 +14,12 @@
  */
 package org.jtalks.jcommune.model.dao;
 
-import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.common.model.dao.ParentRepository;
 import org.jtalks.jcommune.model.entity.User;
 
 /**
  * This interface provides persistence operations for
- * {@link User} objects. Now it has no specific methods, it has only methods
- * inherited from {@link ChildRepository} interface.
+ * {@link User} objects.
  *
  * @author Pavel Vervenko
  * @author Kirill Afonin

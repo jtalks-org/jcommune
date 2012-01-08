@@ -23,12 +23,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -87,20 +85,19 @@ public class MailService  {
      * Sends a password recovery message for the user with a given email.
      * This method does not generate new password, just sends a message.
      *
-     * @param userName    username to be used in a mail
+     * @param name    username to be used in a mail
      * @param email       address to mail to
      * @param newPassword new user password to be placed in an email
      * @throws MailingFailedException when mailing failed
      */
-    public void sendPasswordRecoveryMail(String userName, String email, String newPassword)
-            throws MailingFailedException {
+    public void sendPasswordRecoveryMail(String name, String email, String newPassword) throws MailingFailedException {
         String url = this.getDeploymentRootUrl() + "/login/";
         this.sendEmail(
                 email,
                 "Password recovery",
-                String.format(String.format(PASSWORD_RECOVERY_TEMPLATE, userName, newPassword, url)),
+                String.format(String.format(PASSWORD_RECOVERY_TEMPLATE, name, newPassword, url)),
                 "Password recovery email sending failed");
-        LOGGER.info("Password recovery email sent for {}", userName);
+        LOGGER.info("Password recovery email sent for {}", name);
     }
 
     /**

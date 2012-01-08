@@ -98,7 +98,7 @@ public class AvatarController {
     @RequestMapping(value = "/users/IFrameAvatarpreview", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<String> uploadAvatar(DefaultMultipartHttpServletRequest request)
-            throws ServletException, IOException {
+        throws ServletException, IOException {
 
         //get input file
         Map<String, MultipartFile> fileMap = request.getFileMap();

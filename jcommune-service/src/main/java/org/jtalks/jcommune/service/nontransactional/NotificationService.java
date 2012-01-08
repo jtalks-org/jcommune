@@ -19,9 +19,6 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
-import org.jtalks.jcommune.service.exceptions.MailingFailedException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Send email notifications to the users subscribed.
