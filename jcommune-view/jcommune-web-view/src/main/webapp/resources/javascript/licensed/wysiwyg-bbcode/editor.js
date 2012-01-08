@@ -297,7 +297,7 @@ function closeAllTags(text, tag) {
                 var regAbstactTagRes1 = regAbstactTag1.exec(tempText1);
                 if (regAbstactTagRes1 != null) {
                     var regAbstactTagIndex1 = regAbstactTag1.lastIndex;
-                    var prefAndTag1 = currentText.substring(0, regAbstactTagIndex1-regAbstactTagRes1[0].length);
+                    var prefAndTag1 = currentText.substring(0, intInd1+tempText1.length-regAbstactTagRes1[0].length);
                     var cont1 = tempText1.substring(regAbstactTagIndex1-regAbstactTagRes1[0].length, tempText1.length);
                     currentText = prefAndTag1  + "[/" + tag + "]"+ cont1;
 
