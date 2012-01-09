@@ -67,7 +67,7 @@
                 <c:if test="${user.signature != null}">
                     <li class="forum_row">
                         <label><spring:message code="label.signature"/></label>
-                        <span><c:out value="${user.signature}"/></span>
+                        <span class="signature"><c:out value="${user.signature}"/></span>
                     </li>
                 </c:if>
                 <li class="forum_row">
