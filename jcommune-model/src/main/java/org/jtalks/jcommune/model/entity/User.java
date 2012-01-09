@@ -52,7 +52,7 @@ public class User extends Entity implements UserDetails {
     public static final int MIN_NAME_SIZE = 4;
     public static final int MAX_NAME_SIZE = 20;
     public static final int MAX_LAST_NAME_SIZE = 255;
-    public static final int MIN_PASS_SIZE = 3;
+    public static final int MIN_PASS_SIZE = 4;
     public static final int MAX_PASS_SIZE = 20;
 
     public static final int DEFAULT_PAGE_SIZE = 50;
