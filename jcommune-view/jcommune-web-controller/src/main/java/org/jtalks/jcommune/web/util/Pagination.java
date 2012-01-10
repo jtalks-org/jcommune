@@ -101,7 +101,7 @@ public class Pagination {
     /**
      * @return true if current page is last
      */
-    public boolean isLastPages() {
+    public boolean isLastPage() {
         return page == getMaxPages();
     }
 
@@ -112,32 +112,7 @@ public class Pagination {
         return pagingEnabled;
     }
 
-    /**
-     * @param numberLink number of links on pages
-     * @param link       pattern of building links
-     * @param uri        uri
-     * @return completed links
-     */
-    public String createPagingLink(int numberLink, String link, String uri) {
-        StringBuffer buffer = new StringBuffer();
-        if (isPagingEnabled()) {
-            for (int i = numberLink; i > 0; i--) {
-                if (getPage() > i) {
-                    buffer.append(String.format(link, uri, getPage() - i, getPage() - i));
-                }
-            }
-            if (getMaxPages() > 1) {
-                buffer.append(getPage());
-                buffer.append("      ");
-            }
-            for (int i = 0; i < numberLink; i++) {
-                if (getPage() + i < getMaxPages()) {
-                    buffer.append(String.format(link, uri, getPage() + i + 1, getPage() + i + 1));
-                }
-            }
-        }
-        return buffer.toString();
-    }
+
 
     /**
      * used if the total number of items

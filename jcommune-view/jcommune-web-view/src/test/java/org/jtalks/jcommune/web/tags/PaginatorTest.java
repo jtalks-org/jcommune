@@ -38,6 +38,7 @@ public class PaginatorTest {
     private User user;
     private List list;
 
+
     @BeforeMethod
     protected void setUp() throws Exception {
         MockServletContext servletContext = new MockServletContext();
@@ -134,5 +135,31 @@ public class PaginatorTest {
         paginator.doStartTag();
 
         assertEquals(pageContext.getAttribute("list"), list);
+    }
+
+    @Test
+    public void testCreatePagingLinkPagingEnabled() {
+        Pagination pagination = new Pagination(1, user, 10, true);
+        paginator.setPagination(pagination);
+
+        assertEquals(paginator.createPagingLink(5, "1"),
+                "<span class='page'>1</span><a class='page' href='1?page=2'>2</a>");
+    }
+
+    @Test
+    public void testCreatePagingLinkPagingDisabled() {
+        Pagination pagination = new Pagination(1, user, 10, false);
+        paginator.setPagination(pagination);
+
+        assertEquals(paginator.createPagingLink(5, "1"), "");
+    }
+
+    @Test
+    public void testCreatePagingLink() {
+        Pagination pagination = new Pagination(2, user, 15, true);
+        paginator.setPagination(pagination);
+
+        assertEquals(paginator.createPagingLink(5, "1"),
+                "<a class='page' href='1?page=1'>1</a><span class='page'>2</span><a class='page' href='1?page=3'>3</a>");
     }
 }

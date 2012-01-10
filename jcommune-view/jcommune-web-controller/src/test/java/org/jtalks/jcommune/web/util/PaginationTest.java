@@ -27,8 +27,7 @@ import static org.testng.Assert.assertEquals;
 
 public class PaginationTest {
     private Pagination pagination;
-    private String link;
-    private String uri;
+
     private User user;
     private LocationService locationServiceImpl;
     private ForumStatisticsProvider forumStatisticsProvider;
@@ -43,25 +42,7 @@ public class PaginationTest {
         forumStatisticsProvider = mock(ForumStatisticsProvider.class);
         user = new User("", "", "");
         user.setPageSize(PAGE_SIZE);
-        uri = "1";
-        link = "<a href=\"%s?page=%d\">%d</a>";
-    }
 
-    @Test
-    public void testCreatePagingLink() {
-        pagination = new Pagination(1, user, 10, true);
-
-        assertEquals(pagination.createPagingLink(5, link, uri), "1      <a href=\"1?page=2\">2</a>");
-
-        pagination = new Pagination(1, user, 10, false);
-
-        assertEquals(pagination.createPagingLink(5, link, uri), "");
-
-        pagination = new Pagination(2, user, 15, true);
-
-        assertEquals(
-                pagination.createPagingLink(5, link, uri),
-                "<a href=\"1?page=1\">1</a>2      <a href=\"1?page=3\">3</a>");
     }
 
     @Test
@@ -101,7 +82,7 @@ public class PaginationTest {
         pagination = new Pagination(1, user, 10, true);
 
         assertEquals(pagination.getMaxPages(), 2);
-        assertEquals(pagination.isLastPages(), false);
+        assertEquals(pagination.isLastPage(), false);
     }
 
     @Test
@@ -109,7 +90,7 @@ public class PaginationTest {
         pagination = new Pagination(1, user, 4, true);
 
         assertEquals(pagination.getMaxPages(), 1);
-        assertEquals(pagination.isLastPages(), true);
+        assertEquals(pagination.isLastPage(), true);
     }
 
     @Test

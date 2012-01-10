@@ -40,15 +40,12 @@
             <span class="nav_bottom">
                 <a class="forum_top_right_link" href="#"><spring:message code="label.mark_all_topics"/></a>
             </span>
-            <br>
         </div>
+        <br>
         <jtalks:display uri="${branch.id}" pagination="${pagination}" list="${topics}">
         <nobr>
-            <span class="nav_bottom">
-                <c:if test="${pagination.maxPages>1}">
-                    <spring:message code="label.onPage"/>
-                </c:if>
-            </jtalks:display>
+            <span class="nav_top">
+                </jtalks:display>
             </span>
         </nobr>
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
@@ -159,10 +156,7 @@
         </ul>
         <nobr>
             <span class="nav_bottom">
-                <c:if test="${pagination.maxPages>1}">
-                    <spring:message code="label.onPage"/>
-                </c:if>
-            </jtalks:display>
+                </jtalks:display>
             </span>
         </nobr>
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
@@ -185,9 +179,6 @@
         </c:if>
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
         <div class="forum_misc_info">
-            <spring:message code="label.page"/> <c:out value="${pagination.page}"/> <spring:message code="label.of"/>
-            <c:out
-                    value="${pagination.maxPages}"/>
             <br/>
             <spring:message code="label.topic.moderators"/>
             <ul class="users_list">
