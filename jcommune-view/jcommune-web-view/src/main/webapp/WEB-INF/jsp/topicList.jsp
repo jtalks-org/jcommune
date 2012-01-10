@@ -128,7 +128,7 @@
                     </div>
                     <div class="forum_last_message">
                         <a href="${pageContext.request.contextPath}/topics/${topic.id}">
-                            <jtalks:format value="${topic.lastPost.creationDate}"/></a>
+                            <jtalks:format value="${topic.modificationDate}"/></a>
                         <br/>
                         <a class="last_message_user"
                            href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
