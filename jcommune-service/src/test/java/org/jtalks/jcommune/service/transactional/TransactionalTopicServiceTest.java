@@ -22,10 +22,10 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.nontransactional.NotificationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.NotificationService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.security.AclBuilder;
 import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.mockito.ArgumentCaptor;
@@ -33,7 +33,7 @@ import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
@@ -87,7 +87,7 @@ public class TransactionalTopicServiceTest {
     }
 
     @Test
-    public void testGet() throws NotFoundException {
+    public void testGetTopic() throws NotFoundException {
         Topic expectedTopic = new Topic(user, "title");
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(expectedTopic);
@@ -103,7 +103,7 @@ public class TransactionalTopicServiceTest {
     }
 
     @Test(expectedExceptions = {NotFoundException.class})
-    public void testGetIncorrectId() throws NotFoundException {
+    public void testGetTopicWithIncorrectId() throws NotFoundException {
         when(topicDao.isExist(POST_ID)).thenReturn(false);
 
         topicService.get(POST_ID);
@@ -175,9 +175,7 @@ public class TransactionalTopicServiceTest {
     @Test
     public void testGetAllTopicsPastLastDay() throws NotFoundException {
         DateTime now = new DateTime();
-        List<Topic> expectedList = new ArrayList<Topic>();
-        expectedList.add(new Topic(user, "title"));
-        expectedList.add(new Topic(user, "title"));
+        List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
         when(topicDao.getTopicsUpdatedSince(now)).thenReturn(expectedList);
 
         List<Topic> topics = topicService.getRecentTopics(now);
@@ -189,16 +187,14 @@ public class TransactionalTopicServiceTest {
 
     @Test
     public void testGetAllTopicsPastLastDayNullLastLoginDate() {
-        List<Topic> expectedList = new ArrayList<Topic>();
-        expectedList.add(new Topic(user, "title"));
-        expectedList.add(new Topic(user, "title"));
-        ArgumentCaptor<DateTime> captor = ArgumentCaptor.forClass(DateTime.class);
+        List<Topic> expectedList =  Collections.nCopies(2, new Topic(user, "title"));
         when(topicDao.getTopicsUpdatedSince(any(DateTime.class))).thenReturn(expectedList);
 
         List<Topic> topics = topicService.getRecentTopics(null);
 
         assertNotNull(topics);
         assertEquals(topics.size(), 2);
+        ArgumentCaptor<DateTime> captor = ArgumentCaptor.forClass(DateTime.class);
         verify(topicDao).getTopicsUpdatedSince(captor.capture());
         int yesterday = new DateTime().minusDays(1).getDayOfYear();
         assertEquals(captor.getValue().getDayOfYear(), yesterday);
@@ -206,9 +202,7 @@ public class TransactionalTopicServiceTest {
 
     @Test
     public void testGetUnansweredTopics() {
-        List<Topic> expectedList = new ArrayList<Topic>();
-        expectedList.add(new Topic(user, "title"));
-        expectedList.add(new Topic(user, "title"));
+        List<Topic> expectedList =  Collections.nCopies(2, new Topic(user, "title"));
         when(topicDao.getUnansweredTopics()).thenReturn(expectedList);
 
         List<Topic> topics = topicService.getUnansweredTopics();

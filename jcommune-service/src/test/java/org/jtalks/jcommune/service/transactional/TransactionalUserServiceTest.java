@@ -17,19 +17,23 @@ package org.jtalks.jcommune.service.transactional;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.nontransactional.MailService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
-import org.jtalks.jcommune.service.exceptions.*;
+import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
+import org.jtalks.jcommune.service.exceptions.MailingFailedException;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
-import org.jtalks.jcommune.service.security.SecurityConstants;
+import org.jtalks.jcommune.service.nontransactional.MailService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
+import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 
@@ -47,26 +51,26 @@ public class TransactionalUserServiceTest {
     private static final String EMAIL = "username@mail.com";
     private static final String PASSWORD = "password";
     private static final String SIGNATURE = "signature";
-    private static final String WRONG_PASSWORD = "abracodabra";
     private static final String NEW_PASSWORD = "newPassword";
     private static final String LANGUAGE = "language";
     private static final int PAGE_SIZE = 50;
     private byte[] avatar = new byte[10];
     private static final Long USER_ID = 999L;
 
+    @Mock
     private UserService userService;
+    @Mock
     private UserDao userDao;
+    @Mock
     private SecurityService securityService;
+    @Mock
     private MailService mailService;
+    @Mock
     private ImageUtils processor;
 
     @BeforeMethod
     public void setUp() throws Exception {
-        userService = mock(UserService.class);
-        userDao = mock(UserDao.class);
-        securityService = mock(SecurityService.class);
-        mailService = mock(MailService.class);
-        processor = mock(ImageUtils.class);
+        initMocks(this);
         userService = new TransactionalUserService(userDao, securityService, mailService, processor);
     }
 
@@ -130,16 +134,12 @@ public class TransactionalUserServiceTest {
 
         String newAvatar = new String(new byte[12]);
 
-        User editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, NEW_EMAIL,
+        User editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
                 PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE));
 
         verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
-        assertEquals(editedUser.getEmail(), NEW_EMAIL, "Email was not changed");
-        assertEquals(editedUser.getSignature(), SIGNATURE, "Signature was not changed");
-        assertEquals(editedUser.getFirstName(), FIRST_NAME, "first name was not changed");
-        assertEquals(editedUser.getLastName(), LAST_NAME, "last name was not changed");
-        assertEquals(editedUser.getPassword(), NEW_PASSWORD, "new password was not accepted");
+        assertUserUpdated(editedUser);
         assertEquals(editedUser.getLanguage(), LANGUAGE, "language was not changed");
     }
 
@@ -170,11 +170,7 @@ public class TransactionalUserServiceTest {
 
         verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
-        assertEquals(editedUser.getEmail(), EMAIL, "Email was not changed");
-        assertEquals(editedUser.getSignature(), SIGNATURE, "Signature was not changed");
-        assertEquals(editedUser.getFirstName(), FIRST_NAME, "first name was not changed");
-        assertEquals(editedUser.getLastName(), LAST_NAME, "last name was not changed");
-        assertEquals(editedUser.getPassword(), NEW_PASSWORD, "new password was not accepted");
+        assertUserUpdated(editedUser);
         assertEquals(editedUser.getAvatar(), avatar, "avatar was changed");
     }
 
@@ -191,12 +187,16 @@ public class TransactionalUserServiceTest {
 
         verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
-        assertEquals(editedUser.getEmail(), EMAIL, "Email was not changed");
-        assertEquals(editedUser.getSignature(), SIGNATURE, "Signature was not changed");
-        assertEquals(editedUser.getFirstName(), FIRST_NAME, "first name was not changed");
-        assertEquals(editedUser.getLastName(), LAST_NAME, "last name was not changed");
-        assertEquals(editedUser.getPassword(), NEW_PASSWORD, "new password was not accepted");
+        assertUserUpdated(editedUser);
         assertEquals(editedUser.getAvatar(), avatar, "avatar was changed");
+    }
+    
+    private void assertUserUpdated(User user){
+        assertEquals(user.getEmail(), EMAIL, "Email was not changed");
+        assertEquals(user.getSignature(), SIGNATURE, "Signature was not changed");
+        assertEquals(user.getFirstName(), FIRST_NAME, "first name was not changed");
+        assertEquals(user.getLastName(), LAST_NAME, "last name was not changed");
+        assertEquals(user.getPassword(), NEW_PASSWORD, "new password was not accepted");
     }
 
     @Test(expectedExceptions = WrongPasswordException.class)
@@ -205,7 +205,7 @@ public class TransactionalUserServiceTest {
         when(securityService.getCurrentUser()).thenReturn(user);
 
         userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                WRONG_PASSWORD, NEW_PASSWORD, SIGNATURE, null, LANGUAGE, PAGE_SIZE));
+                "abracodabra", NEW_PASSWORD, SIGNATURE, null, LANGUAGE, PAGE_SIZE));
 
         verify(securityService).getCurrentUser();
         verify(userDao, never()).getByEmail(anyString());
@@ -298,10 +298,9 @@ public class TransactionalUserServiceTest {
 
         try {
             userService.restorePassword(EMAIL);
-        } catch (MailingFailedException e) {
+        } finally {
             // ensure db modification haven't been done if mailing failed
             verify(userDao, never()).update(Matchers.<User>any());
-            throw e;
         }
     }
 

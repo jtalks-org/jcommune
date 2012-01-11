@@ -23,65 +23,10 @@ package org.jtalks.jcommune.web.dto;
 public class Breadcrumb {
 
     public static final String ROOT_BREADCRUMB_LOCATION_VALUE = "Forum";
-    public static final String INBOX_BREADCRUMB_LOCATION_VALUE = "Inbox";
-    public static final String OUTBOX_BREADCRUMB_LOCATION_VALUE = "Outbox";
-    public static final String DRAFTS_BREADCRUMB_LOCATION_VALUE = "Drafts";
-    public static final String RECENT_BREADCRUMB_LOCATION_VALUE = "Recent";
     public static final Long STUB_BREADCRUMB_ID = 1L; // used when node have no ID, e.g. folder
 
     private static final int SIZE_LIMIT = 40;
     private static final String ABBREVIATION_SIGN = "...";
-
-    /**
-     * Enumerates all possible location on the forum
-     */
-    public enum BreadcrumbLocation {
-        FORUM("sections"),
-
-        BRANCH("branches"),
-        SECTION("sections"),
-        TOPIC("topics"),
-        POST("posts"),
-
-        INBOX("/inbox"),
-        OUTBOX("/outbox"),
-        DRAFTS("/drafts"),
-
-        RECENT("/topics/recent");
-
-
-        //Displayed value for the HTML link
-        private String name;
-
-        /**
-         * Set the Breadcrumb URL location
-         *
-         * @param name Breadcrumb URL location
-         */
-        BreadcrumbLocation(String name) {
-            this.name = name;
-        }
-
-        /**
-         * Return the Breadcrumb URL location
-         *
-         * @return name Breadcrumb URL location
-         */
-        public String getName() {
-            return name;
-        }
-
-        /**
-         * Return the display value for the breadcrumb URL location
-         *
-         * @return the display value for the breadcrumb URL location
-         */
-
-        @Override
-        public String toString() {
-            return name;
-        }
-    }
 
     private Long id;
     //Displayed URL breadcrumb value
@@ -121,15 +66,6 @@ public class Breadcrumb {
     }
 
     /**
-     * Set the location element breadcrumb URL.
-     *
-     * @param breadcrumbLocation the location element breadcrumb URL.
-     */
-    public void setBreadcrumbLocation(BreadcrumbLocation breadcrumbLocation) {
-        this.breadcrumbLocation = breadcrumbLocation;
-    }
-
-    /**
      * Get the display breadcrumb name.
      *
      * @return breadcrumbLocationValue the display breadcrumb name.
@@ -141,14 +77,5 @@ public class Breadcrumb {
             int barrier = SIZE_LIMIT - ABBREVIATION_SIGN.length();
             return breadcrumbLocationValue.substring(0, barrier) + ABBREVIATION_SIGN;
         }
-    }
-
-    /**
-     * Get the display breadcrumb name.
-     *
-     * @param breadcrumbLocationValue the display breadcrumb name.
-     */
-    public void setBreadcrumbLocationValue(String breadcrumbLocationValue) {
-        this.breadcrumbLocationValue = breadcrumbLocationValue;
     }
 }

@@ -30,7 +30,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * This service is focused on sending e-mail to the forum users.
+ * This service is focused on sending e-mail to forum users.
  * Notifications, confirmations or e-mail based subscriptions of a various
  * kind should use this service to perform e-mail sending.
  *
@@ -42,7 +42,7 @@ public class MailService  {
     private SimpleMailMessage templateMessage;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MailService.class);
-    private static final String LOG_TEMPLATE = "Error occured while sending updates of %s %d to %s";
+    private static final String LOG_TEMPLATE = "Error occurred while sending updates of %s %d to %s";
 
     // todo: apply i18n settings here somehow and extract them as templates (velocity?)
     private static final String PASSWORD_RECOVERY_TEMPLATE =

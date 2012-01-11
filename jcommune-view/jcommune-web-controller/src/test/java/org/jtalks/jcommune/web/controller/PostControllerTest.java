@@ -18,7 +18,6 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PostService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
@@ -214,7 +213,7 @@ public class PostControllerTest {
         topic.addPost(post);
         topic.setId(TOPIC_ID);
         when(topicService.replyToTopic(anyLong(), Matchers.<String>any())).thenReturn(post);
-        when(postService.getPageForPost(post)).thenReturn(1);
+        when(postService.calculatePageForPost(post)).thenReturn(1);
         when(postService.get(Matchers.<Long>any())).thenReturn(post);
         //invoke the object under test
         ModelAndView mav = controller.create(getDto(), resultWithoutErrors);
@@ -245,7 +244,7 @@ public class PostControllerTest {
         Post post = new Post(null, null);
         topic.addPost(post);
         topic.setId(TOPIC_ID);
-        when(postService.getPageForPost(post)).thenReturn(5);
+        when(postService.calculatePageForPost(post)).thenReturn(5);
         when(postService.get(POST_ID)).thenReturn(post);
 
         String result = controller.redirectToPageWithPost(POST_ID);

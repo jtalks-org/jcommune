@@ -63,7 +63,7 @@ public class AvatarService {
             throw new ImageUploadException();
         }
         byte[] outputAvatar = imageUtils.preprocessImage(inputAvatar);
-        return imageUtils.base64Coder(outputAvatar);
+        return imageUtils.encodeB64(outputAvatar);
     }
 
     /**

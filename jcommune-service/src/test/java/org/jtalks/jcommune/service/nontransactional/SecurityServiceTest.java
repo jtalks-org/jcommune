@@ -82,12 +82,23 @@ public class SecurityServiceTest {
         User result = securityService.getCurrentUser();
 
         assertEquals(result.getUsername(), USERNAME, "Username not equals");
-        assertEquals(result.getAuthorities().iterator().next().getAuthority(), "ROLE_USER");
+        verify(userDao).getByUsername(USERNAME);
+    }
+
+    @Test
+    public void testCurrentUserUserDetailsAttributes(){
+        User user = getUser();
+        Authentication auth = mock(Authentication.class);
+        when(auth.getPrincipal()).thenReturn(user);
+        when(securityContext.getAuthentication()).thenReturn(auth);
+        when(userDao.getByUsername(USERNAME)).thenReturn(user);
+
+        User result = securityService.getCurrentUser();
+
         assertTrue(result.isAccountNonExpired());
         assertTrue(result.isAccountNonLocked());
         assertTrue(result.isEnabled());
         assertTrue(result.isCredentialsNonExpired());
-        verify(userDao).getByUsername(USERNAME);
         verify(auth).getPrincipal();
         verify(securityContext).getAuthentication();
     }

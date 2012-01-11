@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service.security;
 
 import org.jtalks.common.model.entity.Entity;
+import org.jtalks.jcommune.model.entity.Post;
 import org.springframework.security.acls.domain.BasePermission;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -32,8 +33,7 @@ public class AclBuilderImplTest {
     public static final String ROLE = "ROLE_USER";
     private AclBuilder builder;
     private AclManager manager;
-    private Entity target = new Entity() {
-    };
+    private Entity target = new Post(null, null);
 
     @BeforeMethod
     public void setUp() throws Exception {

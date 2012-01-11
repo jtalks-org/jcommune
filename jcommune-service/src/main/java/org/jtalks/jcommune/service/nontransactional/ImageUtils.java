@@ -31,14 +31,18 @@ import java.io.IOException;
 
 /**
  * Class for preparing image to save.
+ * Some methods were taken from JForum: http://jforum.net/
  *
- * @author JForum
  * @author Eugeny Batov
  * @author Alexandre Teterin
  */
 @Component
 public class ImageUtils {
 
+    /**
+     * This prefix is used when specifying image as a byte array in SRC attribute
+     * of IMG HTML tag. Used in AJAX avatar preview.
+     */
     public static final String HTML_SRC_TAG_PREFIX = "data:image/jpeg;base64,";
     public static final int AVATAR_MAX_HEIGHT = 100;
     public static final int AVATAR_MAX_WIDTH = 100;
@@ -124,18 +128,6 @@ public class ImageUtils {
     }
 
     /**
-     * Creates a <code>BufferedImage</code> from an <code>Image</code>. This method can
-     * function on a completely headless system. This especially includes Linux and Unix systems
-     * that do not have the X11 libraries installed, which are required for the AWT subsystem to
-     * operate. The resulting image will be smoothly scaled using bilinear filtering.
-     *
-     * @param source The image to convert
-     * @param width  The desired image width
-     * @param height The desired image height
-     * @param type   int code jpeg, png or gif
-     * @return bufferedImage The resized image
-     */
-    /**
      * Perform image resizing and processing
      *
      * @param image for processing
@@ -144,7 +136,7 @@ public class ImageUtils {
      */
     public byte[] preprocessImage(Image image) throws ImageUploadException {
         byte[] result;
-        Image outputImage = resizeImage((BufferedImage) image, IMAGE_JPEG, AVATAR_MAX_HEIGHT, AVATAR_MAX_WIDTH);
+        Image outputImage = resizeImage((BufferedImage) image, IMAGE_JPEG, AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
         result = convertImageToByteArray(outputImage);
         return result;
     }
@@ -155,7 +147,7 @@ public class ImageUtils {
      * @param bytes for processing
      * @return converted binary data string
      */
-    public String base64Coder(byte[] bytes) {
+    public String encodeB64(byte[] bytes) {
         return Base64.encodeBase64String(bytes);
     }
 
@@ -185,13 +177,16 @@ public class ImageUtils {
     }
 
     /**
-     * Create parameterized image from original image
+     * Creates a <code>BufferedImage</code> from an <code>Image</code>. This method can
+     * function on a completely headless system. This especially includes Linux and Unix systems
+     * that do not have the X11 libraries installed, which are required for the AWT subsystem to
+     * operate. The resulting image will be smoothly scaled using bilinear filtering.
      *
-     * @param source original image
-     * @param type   result image type
-     * @param width  result image width
-     * @param height result image height
-     * @return result image
+     * @param source The image to convert
+     * @param width  The desired image width
+     * @param height The desired image height
+     * @param type   int code jpeg, png or gif
+     * @return bufferedImage The resized image
      */
     private BufferedImage createBufferedImage(BufferedImage source, int type, int width, int height) {
         int imageType = BufferedImage.TYPE_INT_RGB;

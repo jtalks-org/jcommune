@@ -270,7 +270,7 @@ public class AvatarController {
     }
 
     /**
-     * Used for prepare normal response
+     * Used for prepare normal response (operation success)
      *
      * @param bytes           input avatar data
      * @param responseContent response payload

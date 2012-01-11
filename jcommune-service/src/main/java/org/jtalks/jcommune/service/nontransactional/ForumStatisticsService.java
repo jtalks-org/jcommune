@@ -39,17 +39,15 @@ public class ForumStatisticsService  {
      *
      * @return number of posts on the forum.
      */
-
     public int getPostsOnForumCount() {
         return statisticsDao.getPostsOnForumCount();
     }
 
     /**
-     * Return total count of registred user's accounts
+     * Return total count of registered user's accounts
      *
-     * @return count of registred user's accounts
+     * @return count of registered user's accounts
      */
-
     public int getUsersCount() {
         return statisticsDao.getUsersCount();
     }

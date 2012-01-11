@@ -63,7 +63,7 @@ public class ImageUtilsTest {
     @Test(dataProvider = "byte-string-provider")
     public void testBase64Coder(byte[] inputData, String expectedData) {
         //invoke object under test
-        String result = imageUtils.base64Coder(inputData);
+        String result = imageUtils.encodeB64(inputData);
 
         //check result
         assertEquals(result, expectedData);

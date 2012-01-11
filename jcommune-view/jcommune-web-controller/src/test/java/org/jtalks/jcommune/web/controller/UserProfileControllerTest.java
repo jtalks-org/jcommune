@@ -75,7 +75,7 @@ public class UserProfileControllerTest {
 
     @BeforeClass
     public void mockAvatar() throws IOException {
-        avatar = new ImageUtils().base64Coder(avatarByteArray);
+        avatar = new ImageUtils().encodeB64(avatarByteArray);
     }
 
     @BeforeMethod
@@ -135,10 +135,7 @@ public class UserProfileControllerTest {
         EditUserProfileDto userDto = getEditUserProfileDto();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        when(userService.editUserProfile(new UserInfoContainer(userDto.getFirstName(),
-                userDto.getLastName(), userDto.getEmail(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), SIGNATURE,
-                anyString(), LANGUAGE, PAGE_SIZE))).thenReturn(user);
+        when(userService.editUserProfile(Matchers.<UserInfoContainer>any())).thenReturn(user);
 
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
 

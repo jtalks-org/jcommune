@@ -61,7 +61,7 @@ public class PostController {
     private TopicService topicService;
 
     /**
-     * This method turns the trim binder on. Trim bilder
+     * This method turns the trim binder on. Trim binder
      * removes leading and trailing spaces from the submitted fields.
      * So, it ensures, that all validations will be applied to
      * trimmed field values only.
@@ -74,11 +74,8 @@ public class PostController {
     }
 
     /**
-     * Constructor. Injects {@link PostService}.
-     *
-     * @param postService       {@link org.jtalks.jcommune.service.PostService} instance to be injected
-     * @param breadcrumbBuilder the object which provides actions on
-     *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
+     * @param postService       {@link PostService} instance to be injected
+     * @param breadcrumbBuilder the object which provides actions on {@link BreadcrumbBuilder} entity
      * @param topicService      {@link TopicService} to be injected
      */
     @Autowired
@@ -90,12 +87,11 @@ public class PostController {
     }
 
     /**
-     * Delete post by given id.
+     * Delete post by given id
      *
      * @param postId post
      * @return redirect to topic page
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when topic or post not found
+     * @throws NotFoundException when topic or post not found
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/posts/{postId}")
     public String delete(@PathVariable(POST_ID) Long postId) throws NotFoundException {
@@ -105,14 +101,13 @@ public class PostController {
     }
 
     /**
-     * Edit post page filled with data from post with given id.
+     * Edit post page filled with data from post with given id
      *
      * @param topicId topic id
      * @param page    current page number
      * @param postId  post id
      * @return redirect to post form page
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when topic or post not found
+     * @throws NotFoundException when topic or post not found
      */
     @RequestMapping(value = "/posts/{postId}/edit", method = RequestMethod.GET)
     public ModelAndView editPage(@RequestParam(TOPIC_ID) Long topicId,
@@ -130,7 +125,7 @@ public class PostController {
     }
 
     /**
-     * Update existing post.
+     * Update existing post
      *
      * @param postDto Dto populated in form
      * @param result  validation result
@@ -139,8 +134,7 @@ public class PostController {
      * @param postId  the current postId
      * @return {@code ModelAndView} object which will be redirect to topic page
      *         if saved successfully or show form with error message
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when topic, branch or post not found
+     * @throws NotFoundException when topic, branch or post not found
      */
     @RequestMapping(value = "/posts/{postId}/edit", method = RequestMethod.POST)
     public ModelAndView update(@Valid @ModelAttribute PostDto postDto,
@@ -158,12 +152,11 @@ public class PostController {
     }
 
     /**
-     * Creates the answering page with empty answer form.
+     * Creates the answering page with empty answer form
      *
      * @param topicId the id of the topic for the answer
      * @return answering {@code ModelAndView} or redirect to the login page
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when topic not found
+     * @throws NotFoundException when topic not found
      */
     @RequestMapping(method = RequestMethod.GET, value = "/posts/new")
     public ModelAndView addPost(@RequestParam(TOPIC_ID) Long topicId) throws NotFoundException {
@@ -185,7 +178,7 @@ public class PostController {
      *
      * @param postId    identifier os the post we're quoting
      * @param selection text selected by user for the quotation.
-     * @return the same view as topic answerring page with textarea prefilled with quted text
+     * @return the same view as topic answering page with textarea prefilled with quoted text
      * @throws NotFoundException when topic was not found
      */
     @RequestMapping(method = {RequestMethod.POST, RequestMethod.GET}, value = "/posts/{postId}/quote")
@@ -212,8 +205,7 @@ public class PostController {
      * @param postDto dto that contains data entered in form
      * @param result  validation result
      * @return redirect to the topic or back to answer pae if validation failed
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when topic or branch not found
+     * @throws NotFoundException when topic or branch not found
      */
     @RequestMapping(method = RequestMethod.POST, value = "/posts/new")
     public ModelAndView create(@Valid @ModelAttribute PostDto postDto, BindingResult result) throws NotFoundException {
@@ -239,7 +231,7 @@ public class PostController {
     @RequestMapping(method = RequestMethod.GET, value = "/posts/{postId}")
     public String redirectToPageWithPost(@PathVariable Long postId) throws NotFoundException {
         Post post = postService.get(postId);
-        int page = postService.getPageForPost(post);
+        int page = postService.calculatePageForPost(post);
         return new StringBuilder("redirect:/topics/")
                 .append(post.getTopic().getId())
                 .append("?page=")

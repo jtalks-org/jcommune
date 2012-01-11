@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.dto;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.User;
 
@@ -101,11 +102,7 @@ public abstract class UserDto {
      * @return signature
      */
     public String getSignature() {
-        if (signature == null || signature.trim().isEmpty()) {
-            return null;
-        } else {
-            return signature;
-        }
+        return StringUtils.trimToNull(signature);
     }
 
     /**

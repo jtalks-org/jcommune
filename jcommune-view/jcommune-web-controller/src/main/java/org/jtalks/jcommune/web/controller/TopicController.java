@@ -203,7 +203,7 @@ public class TopicController {
         Topic topic = topicService.get(topicId);
 
         return new ModelAndView("topicForm")
-                .addObject("topicDto", TopicDto.getDtoFor(topic))
+                .addObject("topicDto", new TopicDto(topic))
                 .addObject(BRANCH_ID, branchId)
                 .addObject(TOPIC_ID, topicId)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));

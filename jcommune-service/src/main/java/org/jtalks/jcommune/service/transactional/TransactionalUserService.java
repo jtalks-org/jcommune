@@ -14,10 +14,9 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.nontransactional.MailService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
@@ -25,10 +24,10 @@ import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
+import org.jtalks.jcommune.service.nontransactional.MailService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Random;
 
 /**
  * User service class. This class contains method needed to manipulate with User persistent entity.
@@ -70,7 +69,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         User user = this.getDao().getByUsername(username);
         if (user == null) {
             String msg = "User " + username + " not found.";
-            logger.warn(msg);
+            logger.info(msg);
             throw new NotFoundException(msg);
         }
         return user;
@@ -136,13 +135,12 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * Checks if e-mail passed differs from the one set in the User object
      * and new email is valid, i. e. has not been used by any other user.
      * <p/>
-     * If no violations found, this method then wiil set new email value
+     * If no violations found, this method then will set new email value
      * to the User object passed.
      *
      * @param email       new address to be validated and set
      * @param currentUser user object to be checked
-     * @throws org.jtalks.jcommune.service.exceptions.DuplicateEmailException
-     *          if email set is already in use
+     * @throws DuplicateEmailException if email set is already in use
      */
     private void changeEmail(String email, User currentUser) throws DuplicateEmailException {
         if (!currentUser.getEmail().equals(email)) {
@@ -161,13 +159,13 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      *
      * @param currentPass existing password from the form to verify identity
      * @param newPass     new password to be set
-     * @param current     user object from a database
+     * @param currentUser     user object from a database
      * @throws WrongPasswordException if current password doesn't match the one stored in database
      */
-    private void changePassword(String currentPass, String newPass, User current) throws WrongPasswordException {
+    private void changePassword(String currentPass, String newPass, User currentUser) throws WrongPasswordException {
         if (newPass != null) {
-            if (current.getPassword().equals(currentPass)) {
-                current.setPassword(newPass);
+            if (currentUser.getPassword().equals(currentPass)) {
+                currentUser.setPassword(newPass);
             } else {
                 throw new WrongPasswordException();
             }
@@ -202,7 +200,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     @Override
     public void restorePassword(String email) throws  MailingFailedException {
         User user = this.getDao().getByEmail(email);
-        String randomPassword = Long.toString(new Random().nextInt(100000000), 36); // 5-6 chars
+        String randomPassword = RandomStringUtils.randomAlphanumeric(6);
         // first - mail attempt, then - database changes
         mailService.sendPasswordRecoveryMail(user.getUsername(), email, randomPassword);
         user.setPassword(randomPassword);

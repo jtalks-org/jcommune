@@ -41,6 +41,27 @@ public class TopicDto {
     private boolean sticked;
     private boolean announcement;
 
+    private long id;
+
+    /**
+     * Plain object for topic creation
+     */
+    public TopicDto(){}
+
+    /**
+     * Create dto from {@link Topic}
+     *
+     * @param topic topic for conversion
+     */
+    public TopicDto (Topic topic) {
+        topicName = topic.getTitle();
+        bodyText = topic.getFirstPost().getPostContent();
+        id = topic.getId();
+        topicWeight = topic.getTopicWeight();
+        sticked = topic.isSticked();
+        announcement = topic.isAnnouncement();
+    }
+
     /**
      * @return topic id
      */
@@ -56,8 +77,6 @@ public class TopicDto {
     public void setId(long id) {
         this.id = id;
     }
-
-    private long id;
 
     /**
      * Get topic title.
@@ -141,22 +160,5 @@ public class TopicDto {
      */
     public void setAnnouncement(boolean announcement) {
         this.announcement = announcement;
-    }
-
-    /**
-     * Create dto from {@link Topic}
-     *
-     * @param topic topic for conversion
-     * @return dto for topic
-     */
-    public static TopicDto getDtoFor(Topic topic) {
-        TopicDto dto = new TopicDto();
-        dto.setTopicName(topic.getTitle());
-        dto.setBodyText(topic.getFirstPost().getPostContent());
-        dto.setId(topic.getId());
-        dto.setTopicWeight(topic.getTopicWeight());
-        dto.setSticked(topic.isSticked());
-        dto.setAnnouncement(topic.isAnnouncement());
-        return dto;
     }
 }

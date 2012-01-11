@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service.security;
 
 import org.jtalks.common.model.entity.Entity;
+import org.jtalks.jcommune.model.entity.Post;
 import org.springframework.security.acls.domain.AclAuthorizationStrategy;
 import org.springframework.security.acls.domain.AclImpl;
 import org.springframework.security.acls.domain.AuditLogger;
@@ -49,12 +50,7 @@ public class AclManagerImplTest {
     public static final String USERNAME = "username";
     private List<Sid> sids = new ArrayList<Sid>();
     private List<Permission> permissions = new ArrayList<Permission>();
-    private Entity target = new Entity() {
-        @Override
-        public long getId() {
-            return ID;
-        }
-    };
+    private Entity target = new Post(null, null);
     private AclManager manager;
     private MutableAclService aclService;
 
@@ -65,6 +61,7 @@ public class AclManagerImplTest {
         sids.add(new GrantedAuthoritySid(ROLE));
         sids.add(new PrincipalSid(USERNAME));
         permissions.add(BasePermission.READ);
+        target.setId(ID);
     }
 
     @Test

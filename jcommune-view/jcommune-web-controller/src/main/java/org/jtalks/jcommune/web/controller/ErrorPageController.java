@@ -18,7 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * Controlles serving different error pages.
+ * Controls serving different error pages.
  *
  * @author Evgeniy Naumenko
  */

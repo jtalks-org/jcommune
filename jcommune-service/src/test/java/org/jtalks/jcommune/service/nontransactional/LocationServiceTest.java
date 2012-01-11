@@ -16,7 +16,6 @@ package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.springframework.security.core.session.SessionRegistry;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -28,7 +27,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertEquals;
 
 /**
  * @author Andrey Kluev
@@ -39,7 +37,7 @@ public class LocationServiceTest {
     private SecurityService securityService;
     private SessionRegistry sessionRegistry;
     private User user;
-    List list;
+    List<Object> list;
     Map<User, String> map;
 
 

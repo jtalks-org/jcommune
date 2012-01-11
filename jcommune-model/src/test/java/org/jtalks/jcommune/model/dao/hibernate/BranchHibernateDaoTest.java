@@ -160,13 +160,13 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         dao.update(branch);
         session.flush();
 
-        assertEquals(getBranchCount(), 1);
-        assertEquals(((Number) session.createQuery("select count(*) from Topic").uniqueResult()).intValue(), 0);
-        assertEquals(((Number) session.createQuery("select count(*) from Post").uniqueResult()).intValue(), 0);
+        assertEquals(getCount("select count(*) from Branch"), 1);
+        assertEquals(getCount("select count(*) from Topic"), 0);
+        assertEquals(getCount("select count(*) from Post"), 0);
     }
 
-    private int getBranchCount() {
-        return ((Number) session.createQuery("select count(*) from Branch").uniqueResult()).intValue();
+    private int getCount(String hql) {
+        return ((Number) session.createQuery(hql).uniqueResult()).intValue();
     }
 
     private List<Branch> createAndSaveBranchList(int size) {

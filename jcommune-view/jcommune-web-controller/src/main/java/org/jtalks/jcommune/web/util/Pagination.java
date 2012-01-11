@@ -75,7 +75,7 @@ public class Pagination {
      *
      * @return page count
      */
-    private int getPageCount() {
+    private int calculatePageCount() {
         return itemsCount / pageSize;
     }
 
@@ -83,11 +83,8 @@ public class Pagination {
      * @return total number of pages
      */
     public int getMaxPages() {
-        int maxPages = isRounded() ? getPageCount() : getPageCount() + 1;
-        if (maxPages == 0) {
-            maxPages = 1;
-        }
-        return maxPages;
+        int maxPages = isRounded() ? calculatePageCount() : calculatePageCount() + 1;
+        return Math.max(maxPages, 1);
 
     }
 

@@ -18,22 +18,20 @@ import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
-import org.jtalks.jcommune.service.nontransactional.UserDataCacheService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
+import org.jtalks.jcommune.service.nontransactional.UserDataCacheService;
 import org.jtalks.jcommune.service.security.AclBuilder;
+import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -44,28 +42,33 @@ import static org.testng.Assert.assertTrue;
  */
 public class TransactionalPrivateMessageServiceTest {
 
+    @Mock
     private PrivateMessageDao pmDao;
+    @Mock
     private SecurityService securityService;
-    private TransactionalPrivateMessageService pmService;
+    @Mock
     private UserService userService;
+    @Mock
     private UserDataCacheService userDataCache;
+
+    private TransactionalPrivateMessageService pmService;
+
     private static final long PM_ID = 1L;
     private static final String USERNAME = "username";
     private AclBuilder aclBuilder;
 
+    User user =new User(USERNAME, "email", "password");
+
     @BeforeMethod
     public void setUp() throws Exception {
+        initMocks(this);
         aclBuilder = mockAclBuilder();
-        pmDao = mock(PrivateMessageDao.class);
-        securityService = mock(SecurityService.class);
-        userService = mock(UserService.class);
-        userDataCache = mock(UserDataCacheService.class);
         pmService = new TransactionalPrivateMessageService(pmDao, securityService, userService, userDataCache);
     }
 
     @Test
     public void testGetInboxForCurrentUser() {
-        User user =new User(USERNAME, "email", "password");
+
         when(pmDao.getAllForUser(user)).thenReturn(new ArrayList<PrivateMessage>());
         when(securityService.getCurrentUser()).thenReturn(user);
 
@@ -77,7 +80,6 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testGetOutboxForCurrentUser() {
-        User user = new User(USERNAME, "email", "password");
         when(pmDao.getAllFromUser(user)).thenReturn(new ArrayList<PrivateMessage>());
         when(securityService.getCurrentUser()).thenReturn(user);
 
@@ -116,8 +118,7 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testMarkAsRead() {
-        User userTo = new User(USERNAME, "email", "password");
-        PrivateMessage pm = new PrivateMessage(userTo, null, "title", "body");
+        PrivateMessage pm = new PrivateMessage(user, null, "title", "body");
 
         pmService.markAsRead(pm);
 
@@ -139,7 +140,6 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testGetDraftsFromCurrentUser() {
-        User user = new User(USERNAME, "email", "password");
         when(pmDao.getDraftsFromUser(user)).thenReturn(new ArrayList<PrivateMessage>());
         when(securityService.getCurrentUser()).thenReturn(user);
 

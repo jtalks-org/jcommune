@@ -105,7 +105,7 @@ public class BreadcrumbBuilder {
     private Breadcrumb prepareForumBreadcrumb() {
         return new Breadcrumb(
                 Breadcrumb.STUB_BREADCRUMB_ID,
-                Breadcrumb.BreadcrumbLocation.FORUM,
+                BreadcrumbLocation.FORUM,
                 Breadcrumb.ROOT_BREADCRUMB_LOCATION_VALUE);
     }
 
@@ -119,7 +119,7 @@ public class BreadcrumbBuilder {
         Section section = branch.getSection();
         return new Breadcrumb(
                 section.getId(),
-                Breadcrumb.BreadcrumbLocation.SECTION,
+                BreadcrumbLocation.SECTION,
                 section.getName());
     }
 
@@ -132,7 +132,7 @@ public class BreadcrumbBuilder {
     private Breadcrumb prepareTopicBreadcrumb(Branch branch) {
         return new Breadcrumb(
                 branch.getId(),
-                Breadcrumb.BreadcrumbLocation.BRANCH,
+                BreadcrumbLocation.BRANCH,
                 branch.getName());
     }
 
@@ -146,7 +146,7 @@ public class BreadcrumbBuilder {
         Topic topic = post.getTopic();
         return new Breadcrumb(
                 topic.getId(),
-                Breadcrumb.BreadcrumbLocation.TOPIC,
+                BreadcrumbLocation.TOPIC,
                 topic.getTitle());
     }
 }

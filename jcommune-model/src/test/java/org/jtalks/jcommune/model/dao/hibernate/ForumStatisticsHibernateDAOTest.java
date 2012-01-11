@@ -61,4 +61,9 @@ public class ForumStatisticsHibernateDaoTest extends AbstractTransactionalTestNG
         session.save(ObjectsFactory.getUser("firstUser", "firstUserMail@mail.ru"));
         assertEquals(1, dao.getUsersCount());
     }
+
+    @Test
+    public void testGetUserCountNoUsers() {
+        assertEquals(0, dao.getUsersCount());
+    }
 }

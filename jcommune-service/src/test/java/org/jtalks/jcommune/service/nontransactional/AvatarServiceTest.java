@@ -45,7 +45,7 @@ public class AvatarServiceTest {
         //set expectations
         when(imageUtils.convertByteArrayToImage(originalImageBytes)).thenReturn(inputImage);
         when(imageUtils.preprocessImage(inputImage)).thenReturn(processedImageBytes);
-        when(imageUtils.base64Coder(processedImageBytes)).thenReturn(expectedBase64String);
+        when(imageUtils.encodeB64(processedImageBytes)).thenReturn(expectedBase64String);
 
         //invoke object under test
         String resultBase64String = avatarService.convertAvatarToBase64String(originalImageBytes);
@@ -53,7 +53,7 @@ public class AvatarServiceTest {
         //check expectations
         verify(imageUtils).convertByteArrayToImage(originalImageBytes);
         verify(imageUtils).preprocessImage(inputImage);
-        verify(imageUtils).base64Coder(processedImageBytes);
+        verify(imageUtils).encodeB64(processedImageBytes);
 
         //check result
         assertEquals(resultBase64String, expectedBase64String);
@@ -77,7 +77,7 @@ public class AvatarServiceTest {
 
 //        BufferedImage inputImage = imageUtils.convertByteArrayToImage(originalImageBytes);
 //        byte[] processedImageBytes = imageUtils.preprocessImage(inputImage);
-//        String expectedBase64String = imageUtils.base64Coder(processedImageBytes);
+//        String expectedBase64String = imageUtils.encodeB64(processedImageBytes);
 
         return new Object[][]{
 //                {originalImageBytes, inputImage, processedImageBytes, expectedBase64String}

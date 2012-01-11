@@ -83,15 +83,11 @@ public class UserProfileController {
     }
 
     /**
-     * Assign {@link UserService} to field.
-     *
-     * @param userService       {@link org.jtalks.jcommune.service.UserService} to be injected
-     * @param securityService   {@link org.jtalks.jcommune.service.nontransactional.SecurityService} used for
-     *                          accessing to current logged in user
-     * @param breadcrumbBuilder the object which provides actions on
-     *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
-     * @param imageUtils        {@link org.jtalks.jcommune.service.nontransactional.ImageUtils} used
-     * @param postService       {@link org.jtalks.jcommune.service.PostService} used
+     * @param userService       {@link UserService} to be injected
+     * @param securityService   {@link SecurityService} used for accessing to current logged in user
+     * @param breadcrumbBuilder the object which provides actions on {@link BreadcrumbBuilder} entity
+     * @param imageUtils        {@link ImageUtils} used
+     * @param postService       {@link PostService} used
      */
     @Autowired
     public UserProfileController(UserService userService,
@@ -137,9 +133,8 @@ public class UserProfileController {
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
         byte[] avatar = user.getAvatar();
         if (avatar != null) {
-            editedUser.setAvatar(imageUtils.prepareHtmlImgSrc(
-                    imageUtils.base64Coder(avatar)
-            ));
+            String image = imageUtils.prepareHtmlImgSrc(imageUtils.encodeB64(avatar));
+            editedUser.setAvatar(image);
         }
         return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUser);
     }

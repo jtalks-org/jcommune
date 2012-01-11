@@ -198,7 +198,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public int getPageForPost(Post post) {
+    public int calculatePageForPost(Post post) {
         Topic topic = post.getTopic();
         User user = securityService.getCurrentUser();
         int index = topic.getPosts().indexOf(post) + 1;

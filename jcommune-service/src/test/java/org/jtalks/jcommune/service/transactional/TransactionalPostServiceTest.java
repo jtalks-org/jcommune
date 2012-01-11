@@ -19,19 +19,21 @@ import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.service.PostService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.NotificationService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.mockito.Mock;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 
@@ -152,9 +154,7 @@ public class TransactionalPostServiceTest {
 
     @Test
     public void testPostsOfUser() {
-        List<Post> posts = new ArrayList<Post>();
-        Post post = new Post(user, "");
-        posts.add(post);
+        List<Post> posts = Arrays.asList(new Post(user, ""));
         when(postDao.getUserPosts(user)).thenReturn(posts);
 
         assertEquals(postService.getPostsOfUser(user), posts);
@@ -171,7 +171,7 @@ public class TransactionalPostServiceTest {
         topic.addPost(new Post(null, null));
         topic.addPost(post);
 
-        assertEquals(postService.getPageForPost(post), 2);
+        assertEquals(postService.calculatePageForPost(post), 2);
     }
 
     @Test
@@ -181,7 +181,7 @@ public class TransactionalPostServiceTest {
         Post post = new Post(user, "");
         topic.addPost(post);
 
-        assertEquals(postService.getPageForPost(post), 1);
+        assertEquals(postService.calculatePageForPost(post), 1);
     }
 
     @Test
@@ -191,7 +191,7 @@ public class TransactionalPostServiceTest {
         Post post = new Post(user, "");
         topic.addPost(post);
 
-        assertEquals(postService.getPageForPost(post), 1);
+        assertEquals(postService.calculatePageForPost(post), 1);
     }
 
     @Test
@@ -202,7 +202,7 @@ public class TransactionalPostServiceTest {
         topic.addPost(new Post(null, null));
         topic.addPost(post);
 
-        assertEquals(postService.getPageForPost(post), 1);
+        assertEquals(postService.calculatePageForPost(post), 1);
     }
 
     @Test
@@ -215,7 +215,7 @@ public class TransactionalPostServiceTest {
         topic.addPost(new Post(null, null));
         topic.addPost(post);
 
-        assertEquals(postService.getPageForPost(post), 2);
+        assertEquals(postService.calculatePageForPost(post), 2);
     }
 
     @Test
@@ -227,6 +227,6 @@ public class TransactionalPostServiceTest {
         topic.addPost(post);
         topic.addPost(new Post(null, null));
 
-        assertEquals(postService.getPageForPost(post), 1);
+        assertEquals(postService.calculatePageForPost(post), 1);
     }
 }
