@@ -50,20 +50,14 @@
             <spring:message code="label.topic.next"/></a>
     </c:if>
 </span>
+
 <br>
-
-<div class="forum_top_right_link">
-
-    <jtalks:display uri="${topicId}" pagination="${pag}" numberLink="3" list="${posts}">
-    <nobr>
-            <span class="nav_bottom">
-                <c:if test="${pag.maxPages>1}">
-                    <spring:message code="label.onPage"/>
-                </c:if>
-            </jtalks:display>
+<jtalks:display uri="${topicId}" pagination="${pag}" numberLink="3" list="${posts}">
+<nobr>
+            <span class="nav_top">
+                </jtalks:display>
             </span>
-    </nobr>
-</div>
+</nobr>
 <a class="button top_button" href="${pageContext.request.contextPath}/branches/${branchId}">
     <spring:message code="label.back"/>
 </a>
@@ -202,13 +196,9 @@
         </li>
     </c:forEach>
 </ul>
-<nobr>
-    <c:if test="${pag.maxPages>1}">
-        <span class="nav_bottom"><spring:message code="label.onPage"/>
-        </c:if>
+<nobr><span class="nav_bottom">
     </jtalks:display>
-        </span>
-</nobr>
+</span></nobr>
 
 <a class="button" href="${pageContext.request.contextPath}/branches/${branchId}">
     <spring:message code="label.back"/>
@@ -238,10 +228,8 @@
 &nbsp; &nbsp; &nbsp;
 
 <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-
 <div class="forum_misc_info">
-    <spring:message code="label.page"/> <c:out value="${pag.page}"/> <spring:message code="label.of"/> <c:out
-        value="${pag.maxPages}"/>
+
     <br/>
     <spring:message code="label.topic.moderators"/>
     <ul class="users_list">

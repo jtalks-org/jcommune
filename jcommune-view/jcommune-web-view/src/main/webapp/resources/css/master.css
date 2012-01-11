@@ -133,7 +133,6 @@ a.heading:hover {
 
 .nav_top {
     float: right;
-    padding-top: 5px;
 }
 
 .nav_bottom {
@@ -693,7 +692,31 @@ a.admin, a.user {
         padding-bottom: 0;
         vertical-align: center;
 }
+/* pagination*/
+.page{
+    text-decoration:none;
+    color:black;
+    font-size:1.1em;
+    font-weight:bold;
+    margin:0 5px 10px;
+    float:left;
+    background:white;
+    min-width:12px;
+    height:12px;
+    line-height:12px;
+    display:block;
+    text-align:center;
+    padding:5px;
+    border:1px solid #999;
+}
 
+span.page{
+   background:#A3DE38;
+}
+
+a.page:hover{
+    background:#A3DE38;
+}
 /* Error 404 */
 .text_404 {
     margin: 0 auto;

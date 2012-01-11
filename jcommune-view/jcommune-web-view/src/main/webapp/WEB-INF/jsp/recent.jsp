@@ -21,6 +21,9 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<head>
+    <title><spring:message code="label.recent"/></title>
+</head>
 <body>
 <div class="wrap branch_page">
     <jsp:include page="../template/topLine.jsp"/>
@@ -28,15 +31,12 @@
         <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
     </a></h1>
     <div class="all_forums">
-        <h2><a class="heading" href="#"><c:out value="${recent}"/></a></h2>
-
+        <h2><a class="heading" href="#"><spring:message code="label.recent"/></a></h2>
+        <br/>
         <jtalks:display uri="" pagination="${pagination}" list="${topics}">
         <nobr>
-            <span class="nav_bottom">
-                <c:if test="${pagination.maxPages>1}">
-                    <spring:message code="label.onPage"/>
-                </c:if>
-            </jtalks:display>
+            <span class="nav_top">
+                </jtalks:display>
             </span>
         </nobr>
         <div class="forum_header_table">
@@ -121,19 +121,9 @@
         </ul>
         <nobr>
             <span class="nav_bottom">
-                <c:if test="${pagination.maxPages>1}">
-                    <spring:message code="label.onPage"/>
-                </c:if>
             </jtalks:display>
             </span>
         </nobr>
-
-        <div class="forum_misc_info">
-            <spring:message code="label.page"/>
-            <c:out value="${pagination.page}"/>
-            <spring:message code="label.of"/>
-            <c:out value="${pagination.maxPages}"/>
-        </div>
     </div>
     <div class="footer_buffer"></div>
 </div>

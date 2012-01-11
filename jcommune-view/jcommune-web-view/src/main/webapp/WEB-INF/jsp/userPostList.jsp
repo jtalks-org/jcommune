@@ -42,11 +42,8 @@
 
             <jtalks:display uri="" pagination="${pag}" numberLink="3" list="${posts}">
             <nobr>
-            <span class="nav_bottom">
-                <c:if test="${pag.maxPages>1}">
-                    <spring:message code="label.onPage"/>
-                </c:if>
-            </jtalks:display>
+            <span class="nav_top">
+                </jtalks:display>
             </span>
             </nobr>
         </div>
@@ -106,14 +103,11 @@
             </c:forEach>
         </ul>
         <nobr>
-            <c:if test="${pag.maxPages>1}">
-        <span class="nav_bottom"><spring:message code="label.onPage"/>
-        </c:if>
-    </jtalks:display>
+        <span class="nav_bottom">
+            </jtalks:display>
         </span>
         </nobr>
-        <a class="button"
-           href="${pageContext.request.contextPath}/users/${user.encodedUsername}">
+        <a class="button"  href="${pageContext.request.contextPath}/users/${user.encodedUsername}">
             <spring:message code="label.backToProfile"/>
         </a>
         <c:if test="${pag.maxPages>1}">
