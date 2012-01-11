@@ -14,7 +14,7 @@
  */
 /**
  *
- * Entities package for jcommune. Contains all classes that should be persists into the database.
+ * Entities package for JCommune. Contains domain model classes.
  *
  */
 package org.jtalks.jcommune.model.entity;

@@ -31,40 +31,42 @@ import java.util.List;
 public class PrivateMessageHibernateDao extends
         AbstractHibernateParentRepository<PrivateMessage> implements PrivateMessageDao {
 
-    public static final String STATUS = "status";
+    private static final String STATUS = "status";
 
     /**
      * {@inheritDoc}
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<PrivateMessage> getAllFromUser(User userFrom) {
-        return getSession().getNamedQuery("getAllFromUser").setCacheable(true)
+        return getSession().getNamedQuery("getAllFromUser")
+                .setCacheable(true)
                 .setParameter(STATUS, PrivateMessageStatus.DRAFT)
-                .setEntity("user", userFrom).list();
+                .setEntity("user", userFrom)
+                .list();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<PrivateMessage> getAllForUser(User userTo) {
-        return getSession().getNamedQuery("getAllToUser").setCacheable(true)
+        return getSession().getNamedQuery("getAllToUser")
+                .setCacheable(true)
                 .setParameter(STATUS, PrivateMessageStatus.DRAFT)
-                .setEntity("user", userTo).list();
+                .setEntity("user", userTo)
+                .list();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<PrivateMessage> getDraftsFromUser(User userFrom) {
         return getSession().getNamedQuery("getDraftsFromUser")
                 .setCacheable(true)
                 .setParameter(STATUS, PrivateMessageStatus.DRAFT)
-                .setEntity("user", userFrom).list();
+                .setEntity("user", userFrom)
+                .list();
     }
 
     /**
@@ -75,6 +77,8 @@ public class PrivateMessageHibernateDao extends
         return ((Number) getSession().getNamedQuery("getNewMessagesCountFor")
                 .setCacheable(true)
                 .setParameter(STATUS, PrivateMessageStatus.NOT_READ)
-                .setString("username", username).uniqueResult()).intValue();
+                .setString("username", username)
+                .uniqueResult())
+                .intValue();
     }
 }

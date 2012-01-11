@@ -34,9 +34,9 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
     /**
      * {@inheritDoc}
      */
-    public List<Post> getPostsOfUser(User userCreated) {
+    public List<Post> getUserPosts(User author) {
         return (List<Post>) getSession().createQuery("FROM Post p WHERE p.userCreated = ? ORDER BY creationDate DESC")
-                .setParameter(0, userCreated)
+                .setParameter(0, author)
                 .list();
     }
 }

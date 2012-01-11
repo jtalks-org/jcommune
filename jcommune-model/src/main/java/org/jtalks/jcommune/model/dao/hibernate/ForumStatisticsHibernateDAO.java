@@ -15,38 +15,25 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.SessionFactory;
-import org.hibernate.classic.Session;
-import org.jtalks.jcommune.model.dao.ForumStatisticsDAO;
+import org.jtalks.jcommune.model.dao.ForumStatisticsDao;
 
 /**
- * The implementation of ForumStatisticsDAO based on Hibernate.
+ * The implementation of ForumStatisticsDao based on Hibernate.
  * The class is responsible for getting forum statistic information from database.
  *
  * @author Elena Lepaeva
  */
-public class ForumStatisticsHibernateDAO implements ForumStatisticsDAO {
+public class ForumStatisticsHibernateDao implements ForumStatisticsDao {
 
-    /**
-     * Hibernate SessionFactory
-     */
     private SessionFactory sessionFactory;
 
     /**
-     * Create an instance of ForumStatisticsHibernateDAO
+     * Create an instance of ForumStatisticsHibernateDao
      *
      * @param sessionFactory Hibernate SessionFactory.
      */
-    public ForumStatisticsHibernateDAO(SessionFactory sessionFactory) {
+    public ForumStatisticsHibernateDao(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
-    }
-
-    /**
-     * Get current Hibernate session.
-     *
-     * @return current Session
-     */
-    protected Session getSession() {
-        return sessionFactory.getCurrentSession();
     }
 
     /**
@@ -54,8 +41,11 @@ public class ForumStatisticsHibernateDAO implements ForumStatisticsDAO {
      */
     @Override
     public int getPostsOnForumCount() {
-        return ((Number) getSession().createQuery("select count(*) from Post p")
-                .setCacheable(true).uniqueResult()).intValue();
+        return ((Number) sessionFactory.getCurrentSession()
+                .createQuery("select count(*) from Post p")
+                .setCacheable(true)
+                .uniqueResult())
+                .intValue();
     }
 
     /**
@@ -63,7 +53,8 @@ public class ForumStatisticsHibernateDAO implements ForumStatisticsDAO {
      */
     @Override
     public int getUsersCount() {
-        return ((Number) getSession().getNamedQuery("getCountOfUsers")
+        return ((Number) sessionFactory
+                .getCurrentSession().getNamedQuery("getCountOfUsers")
                 .setCacheable(true)
                 .uniqueResult())
                 .intValue();

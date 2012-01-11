@@ -20,7 +20,7 @@ import org.jtalks.jcommune.model.entity.User;
 
 /**
  * Hibernate implementation of UserDao.
- * Mainly intended for quering users from DB based on different criteria.
+ * Mainly intended for queering users from DB based on different criteria.
  *
  * @author Pavel Vervenko
  * @author Evgeniy Naumenko
@@ -35,7 +35,8 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<User> im
     public User getByUsername(String username) {
         User user = (User) getSession()
                 .createQuery("from User u where u.username = ?")
-                .setCacheable(true).setString(0, username).uniqueResult();
+                .setCacheable(true).setString(0, username)
+                .uniqueResult();
         if (user != null) {
             user.setUserPostCount(getCountPostOfUser(user));
         }
@@ -59,7 +60,9 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<User> im
     @Override
     public User getByEmail(String email) {
         return (User) getSession().createQuery("from User u where u.email = ?")
-                .setCacheable(true).setString(0, email).uniqueResult();
+                .setCacheable(true)
+                .setString(0, email)
+                .uniqueResult();
     }
 
     /**
@@ -73,7 +76,9 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<User> im
      */
     private int getCountPostOfUser(User userCreated) {
         return ((Number) getSession().getNamedQuery("getCountPostOfUser")
-                .setCacheable(true).setEntity("userCreated", userCreated)
-                .uniqueResult()).intValue();
+                .setCacheable(true)
+                .setEntity("userCreated", userCreated)
+                .uniqueResult())
+                .intValue();
     }
 }

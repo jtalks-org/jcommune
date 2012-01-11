@@ -36,11 +36,10 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      * {@inheritDoc}
      */
     @Override
-    public List<Topic> getTopicsUpdatedSince(DateTime lastLogin) {
-        DateTime time = lastLogin.toDateTime();
+    public List<Topic> getTopicsUpdatedSince(DateTime timeStamp) {
         return (List<Topic>) getSession().createQuery("FROM Topic WHERE modificationDate > :maxModDate " +
                 "ORDER BY modificationDate DESC")
-                .setParameter("maxModDate", time)
+                .setParameter("maxModDate", timeStamp)
                 .list();
     }
 

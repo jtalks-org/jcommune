@@ -46,7 +46,7 @@ import java.util.List;
  */
 
 @Controller
-public final class SectionController {
+public class SectionController {
 
     private SecurityService securityService;
     private SectionService sectionService;

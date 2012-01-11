@@ -33,8 +33,8 @@ import java.util.List;
 public interface PostDao extends ChildRepository<Post> {
 
     /**
-     * @param userCreated user
+     * @param author user to select posts for
      * @return post list of user
      */
-    List<Post> getPostsOfUser(User userCreated);
+    List<Post> getUserPosts(User author);
 }

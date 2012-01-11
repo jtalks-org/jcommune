@@ -107,7 +107,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         session.save(user);
         session.save(post);
 
-        List<Post> postsTwo = dao.getPostsOfUser(user);
+        List<Post> postsTwo = dao.getUserPosts(user);
 
         assertEquals(postsTwo, posts);
     }
@@ -117,7 +117,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         User user = ObjectsFactory.getDefaultUser();
         session.save(user);
 
-        List<Post> posts = dao.getPostsOfUser(user);
+        List<Post> posts = dao.getUserPosts(user);
 
         assertEquals(posts, new ArrayList<Post>());
     }

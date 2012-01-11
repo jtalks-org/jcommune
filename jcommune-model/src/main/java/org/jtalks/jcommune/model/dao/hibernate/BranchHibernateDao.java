@@ -21,7 +21,7 @@ import org.jtalks.jcommune.model.entity.Branch;
 import java.util.List;
 
 /**
- * Hibernate DAO implementation from the {@link Branch}.
+ * Hibernate DAO implementation for operations with a {@link Branch}.
  *
  * @author Vitaliy Kravchenko
  * @author Max Malakhov

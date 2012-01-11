@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -42,17 +41,18 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.List;
-
-
 /**
+ * Serves topic management web requests
+ *
  * @author Kravchenko Vitaliy
  * @author Kirill Afonin
  * @author Teterin Alexandre
  * @author Max Malakhov
+ * @author Evgeniy Naumenko
  * @see Topic
  */
 @Controller
-public final class TopicController {
+public class TopicController {
 
     public static final String TOPIC_ID = "topicId";
     public static final String BRANCH_ID = "branchId";
@@ -66,7 +66,7 @@ public final class TopicController {
     private LocationService locationService;
 
     /**
-     * This method turns the trim binder on. Trim bilder
+     * This method turns the trim binder on. Trim binder
      * removes leading and trailing spaces from the submitted fields.
      * So, it ensures, that all validations will be applied to
      * trimmed field values only.
@@ -79,15 +79,11 @@ public final class TopicController {
     }
 
     /**
-     * Constructor creates controller with objects injected via autowiring.
-     *
      * @param topicService      the object which provides actions on {@link Topic} entity
-     * @param branchService     the object which provides actions on
-     * @param locationService autowired object from Spring Context
-     * @param securityService   autowired object from Spring Context
-     *                          {@link org.jtalks.jcommune.model.entity.Branch} entity
-     * @param breadcrumbBuilder the object which provides actions on
-     *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
+     * @param branchService     the object which provides actions on  {@link Branch} entity
+     * @param locationService   to track user location on forum (what page he is viewing now)
+     * @param securityService   to determine the current user logged in
+     * @param breadcrumbBuilder to create Breadcrumbs for pages
      */
     @Autowired
     public TopicController(TopicService topicService,
@@ -103,40 +99,39 @@ public final class TopicController {
     }
 
     /**
-     * Shows page with form for new topic.
+     * Shows page with form for new topic
      *
-     * @param branchId {@link org.jtalks.jcommune.model.entity.Branch} branch, where topic will be created
+     * @param branchId {@link Branch} branch, where topic will be created
      * @return {@code ModelAndView} object with "newTopic" view, new {@link TopicDto} and branch id
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when branch not found
+     * @throws NotFoundException when branch was not found
      */
     @RequestMapping(value = "/topics/new", method = RequestMethod.GET)
-    public ModelAndView createPage(@RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
+    public ModelAndView showNewTopicPage(@RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
+        Branch branch = branchService.get(branchId);
         return new ModelAndView("newTopic")
                 .addObject("topicDto", new TopicDto())
                 .addObject("branchId", branchId)
-                .addObject(BREADCRUMB_LIST,
-                        breadcrumbBuilder.getNewTopicBreadcrumb(branchService.get(branchId)));
+                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
     }
 
     /**
-     * Create topic from data entered in form.
+     * Create topic from data entered in form
      *
      * @param topicDto object with data from form
      * @param result   {@link BindingResult} validation result
      * @param branchId branch, where topic will be created
      * @return {@code ModelAndView} object which will be redirect to forum.html
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when branch not found
+     * @throws NotFoundException when branch not found
      */
     @RequestMapping(value = "/topics/new", method = RequestMethod.POST)
-    public ModelAndView create(@Valid @ModelAttribute TopicDto topicDto,
-                               BindingResult result,
-                               @RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
+    public ModelAndView createTopic(@Valid @ModelAttribute TopicDto topicDto,
+                                    BindingResult result,
+                                    @RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
+        Branch branch = branchService.get(branchId);
         if (result.hasErrors()) {
             return new ModelAndView("newTopic")
                     .addObject(BRANCH_ID, branchId)
-                    .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)));
+                    .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branch));
         }
 
         Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(), branchId);
@@ -146,13 +141,12 @@ public final class TopicController {
     /**
      * Delete topic
      *
-     * @param topicId  topic id, this is the topic which contains the first post which should be deleted
+     * @param topicId topic id, this is the topic which contains the first post which should be deleted
      * @return redirect to branch page
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when topic not found
+     * @throws NotFoundException when topic not found
      */
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.DELETE)
-    public ModelAndView delete(@PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
+    public ModelAndView deleteTopic(@PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         Topic topic = topicService.get(topicId);
         topicService.deleteTopic(topicId);
         return new ModelAndView("redirect:/branches/" + topic.getBranch().getId());
@@ -163,10 +157,9 @@ public final class TopicController {
      *
      * @param topicId       the id of selected Topic
      * @param page          page
-     * @param pagingEnabled number of posts on the page
+     * @param pagingEnabled if output data should be divided by pages
      * @return {@code ModelAndView}
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when topic or branch not found
+     * @throws NotFoundException when topic or branch not found
      */
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.GET)
     public ModelAndView showTopicPage(@PathVariable(TOPIC_ID) Long topicId,
@@ -197,13 +190,12 @@ public final class TopicController {
     }
 
     /**
-     * Edit page with form, populated with fields from topic.
+     * Shows edit topic page with form, populated with fields from topic.
      *
      * @param topicId  the id of selected Topic
-     * @param branchId the id of selected topic branch
+     * @param branchId the id of selected topic's branch
      * @return {@code ModelAndView}
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when topic or branch not found
+     * @throws NotFoundException when topic or branch not found
      */
     @RequestMapping(value = "/topics/{topicId}/edit", method = RequestMethod.GET)
     public ModelAndView editTopicPage(@RequestParam(BRANCH_ID) Long branchId,
@@ -218,16 +210,14 @@ public final class TopicController {
     }
 
     /**
-     * Save topic.
+     * Saves topic after edit topic form submission.
      *
      * @param topicDto Dto populated in form
      * @param result   validation result
      * @param branchId hold the current branchId
      * @param topicId  the current topicId
-     * @return {@code ModelAndView} object which will be redirect to forum.html
-     *         if saved successfully or show form with error message
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when topic or branch not found
+     * @return {@code ModelAndView} with redirect to saved topic or the same page with validation errors, if any
+     * @throws NotFoundException when topic or branch not found
      */
     @RequestMapping(value = "/topics/{topicId}/edit", method = RequestMethod.POST)
     public ModelAndView editTopic(@Valid @ModelAttribute TopicDto topicDto,

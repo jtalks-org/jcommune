@@ -17,7 +17,6 @@ package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Component;
 
@@ -27,9 +26,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Class for storing and tracking of users on the forum.
- * Realizes the possibility of receiving map stores the user and his location,
- * the list of user names on this page and delete the current user of map
+ * Stores and tracks user's location on the forum.
+ * As for now  is mostly used to show who's browsing the topic/branch/etc.
  *
  * @author Andrey Kluev
  */
@@ -40,11 +38,8 @@ public class LocationService {
     private Map<User, String> registerUserMap = new ConcurrentHashMap<User, String>();
 
     /**
-     * Constructor assigns the elements necessary
-     * for the correct operation of this implementation
-     *
-     * @param securityService security service
-     * @param sessionRegistry session registry
+     * @param securityService to figure out the current user
+     * @param sessionRegistry session registry to get all the users logged in
      */
     public LocationService(SecurityService securityService, SessionRegistry sessionRegistry) {
         this.securityService = securityService;
@@ -52,26 +47,28 @@ public class LocationService {
     }
 
     /**
-     * Get lis name user active these page, modification map to active user
-     * and create list of user name users on the current page
+     * Returns list of user viewing a page with the entity specified.
+     * This method will automatically add the current user to the viewing list
+     * for entity passed
      *
-     * @param entity entity
-     * @return lis name user active these page
+     * @param entity to get users viewing a page with this entity
+     * @return Users, who're viewing the page for entity passed. Will return empty list if
+     *         there are no viewers or view tracking is not supported for this entity type
      */
     public List<String> getUsersViewing(Entity entity) {
         List<String> viewList = new ArrayList<String>();
+        User currentUser = securityService.getCurrentUser();
         /**
-         * At the moment, in the case of call in the forum Anonymous as the current user is returned Anonymous.
          * This condition does not allow Anonymous add to the map of active users.
          */
-        if (securityService.getCurrentUser() != null) {
-            registerUserMap.put(securityService.getCurrentUser(), entity.getUuid());
+        if (currentUser != null) {
+            registerUserMap.put(currentUser, entity.getUuid());
         }
 
         for (Object o : sessionRegistry.getAllPrincipals()) {
             User user = (User) o;
 
-            if (registerUserMap.containsKey(user) && registerUserMap.get(user).equals(entity.getUuid())) {
+            if (entity.getUuid().equals(registerUserMap.get(user))) {
                 viewList.add(user.getEncodedUsername());
             }
         }
@@ -79,12 +76,14 @@ public class LocationService {
     }
 
     /**
-     * Drops current user from the list of topic viewer, regardless of topic
+     * Clears forum location for the current user.
+     * After the call current user will be excluded from all the
+     * topic/branch viewer's list until explicitly added
      */
     public void clearUserLocation() {
         /**
-         * At the moment, in the case of call in the forum Anonymous as the current user is returned Anonymous.
-         * This condition does not allow Anonymous remove to the map of active users.
+         * As for anonymous security service will return null.
+         * Attempt to pass null as a key will result in NPE
          */
         if (securityService.getCurrentUser() != null) {
             registerUserMap.remove(securityService.getCurrentUser());

@@ -19,7 +19,7 @@ import org.jtalks.jcommune.model.dao.ValidatorDao;
 
 /**
  * Performs simple checks in a database for the sake of validation.
- * This implemetation supports only string params for simlicity
+ * This implementation supports only string params for simplicity
  *
  * @author Evgeniy Naumenko
  */

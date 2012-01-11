@@ -38,19 +38,4 @@ public class SectionHibernateDao extends AbstractHibernateParentRepository<Secti
                 .setCacheable(true).list();
         return sectionList;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean delete(Long id) {
-        //TODO: inefficient solution. See more info on the next link http://bit.ly/m85eLs
-        Section section = get(id);
-        if (section == null) {
-            return false;
-        }
-        getSession().delete(section);
-        return true;
-    }
-
 }

@@ -20,7 +20,7 @@ import org.jtalks.common.model.entity.Entity;
 import java.util.StringTokenizer;
 
 /**
- * Text message to send from one user to another. <br/>
+ * Text message sent from one user to another. <br/>
  * All fields are required.
  *
  * @author Pavel Vervenko
@@ -45,9 +45,9 @@ public class PrivateMessage extends Entity {
     private PrivateMessageStatus status = PrivateMessageStatus.NOT_READ;
 
     /**
-     * Creates the PrivateMessage instance. All fields values are null.
+     * For Hibernate use only
      */
-    public PrivateMessage() {
+    protected PrivateMessage() {
     }
 
     /**

@@ -20,7 +20,7 @@ import org.jtalks.common.model.entity.Entity;
 /**
  * Represents the simple version of post of the forum
  * with String content.<br/>
- * Contains in some {@link Topic}. <br/>
+ * Always included in the {@link Topic}. Topic itself should contain at lest one Post <br/>
  * All fields of this object are required and can't be null.<br/>
  * The topic field will be updated automatically when called Topic.addPost(Post). <br/>
  * The Post deletes automatically if the parent Topic deleted.
@@ -30,9 +30,6 @@ import org.jtalks.common.model.entity.Entity;
  */
 public class Post extends Entity {
 
-    /**
-     * Creation date and time
-     */
     private DateTime creationDate;
     private DateTime modificationDate;
     private User userCreated;
@@ -45,7 +42,7 @@ public class Post extends Entity {
     private static final String ABBREVIATION_SIGN = "...";
 
     /**
-     * Constructs the instance with initialized fields.
+     * For Hibernate use only
      */
     protected Post() {
     }

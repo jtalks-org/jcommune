@@ -29,6 +29,10 @@
     <aop:config>
         <aop:advisor advice-ref="exceptionTranslationInterceptor"
                      pointcut="execution(* org.jtalks.common.model.dao.ChildRepository+.* (*))"/>
+        <aop:advisor advice-ref="exceptionTranslationInterceptor"
+                     pointcut="execution(* org.jtalks.jcommune.model.dao.ForumStatisticsDao.* (*))"/>
+        <aop:advisor advice-ref="exceptionTranslationInterceptor"
+                     pointcut="execution(* org.jtalks.jcommune.model.dao.ValidatorDao.* (*))"/>
     </aop:config>
 
     <!--Declaration of DAO beans -->
@@ -47,7 +51,7 @@
           parent="abstractHibernateDao"/>
     <bean id="branchSectionDao" class="org.jtalks.jcommune.model.dao.hibernate.SectionHibernateDao"
           parent="abstractHibernateDao"/>
-    <bean id="forumStatisticsDAO" class="org.jtalks.jcommune.model.dao.hibernate.ForumStatisticsHibernateDAO">
+    <bean id="forumStatisticsDAO" class="org.jtalks.jcommune.model.dao.hibernate.ForumStatisticsHibernateDao">
         <constructor-arg index="0" ref="sessionFactory"/>
     </bean>
         <bean id="validatorDAO" class="org.jtalks.jcommune.model.dao.hibernate.ValidatorHibernateDao">
@@ -55,9 +59,7 @@
     </bean>
     <!--Injecting sessionFactory bean to class AbstractHibernateChildRepository, this way
 resolves a problem of multiple DAO beans definition -->
-    <bean id="abstractHibernateDao"
-          class="org.jtalks.jcommune.model.dao.hibernate.AbstractHibernateChildRepository"
-          abstract="true">
+    <bean id="abstractHibernateDao" abstract="true">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
     <!-- Migrations -->

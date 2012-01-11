@@ -37,9 +37,17 @@ public class Branch extends Entity {
     private Set<User> subscribers = new HashSet<User>();
 
     /**
-     * Creates the Branch instance. All fields values are null.
+     * For Hibernate use only
      */
-    public Branch() {
+    protected Branch() {}
+
+    /**
+     * Creates the Branch instance with required fields.
+     *
+     * @param name branch name
+     */
+    public Branch(String name) {
+        this.name = name;
     }
 
     /**
@@ -60,12 +68,12 @@ public class Branch extends Entity {
     }
 
     /**
-     * Returns the prevoius topic for the topic given.
+     * Returns the previous topic for the topic given.
      * This method is sorting aware, i. e. all the sorting applied
      * in topic selection query will be be taken into account.
      *
      * @param topic a topic to found predecessor for
-     * @return prevoius topic or null, if the argument is the first topic in the branch
+     * @return previous topic or null, if the argument is the first topic in the branch
      */
     public Topic getPreviousTopic(Topic topic) {
         int index = this.getTopicIndexInList(topic);
@@ -110,16 +118,6 @@ public class Branch extends Entity {
             }
         }
         return topics.get(lastTopicIndex);
-    }
-
-
-    /**
-     * Creates the Branch instance with required fields.
-     *
-     * @param name branch name
-     */
-    public Branch(String name) {
-        this.name = name;
     }
 
 
@@ -238,7 +236,7 @@ public class Branch extends Entity {
     }
 
     /**
-     * Returns a summ of all topic's post count for that branch
+     * Returns a sum of all topic's post count for that branch
      *
      * @return sum of post count for all the topics in this branch
      */

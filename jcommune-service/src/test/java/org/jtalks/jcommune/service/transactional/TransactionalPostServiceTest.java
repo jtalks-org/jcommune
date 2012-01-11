@@ -143,11 +143,11 @@ public class TransactionalPostServiceTest {
     @Test
     public void testNullPostsOfUser() {
         List<Post> posts = new ArrayList<Post>();
-        when(postDao.getPostsOfUser(user)).thenReturn(posts);
+        when(postDao.getUserPosts(user)).thenReturn(posts);
 
         assertEquals(postService.getPostsOfUser(user), new ArrayList<Post>());
 
-        verify(postDao).getPostsOfUser(user);
+        verify(postDao).getUserPosts(user);
     }
 
     @Test
@@ -155,11 +155,11 @@ public class TransactionalPostServiceTest {
         List<Post> posts = new ArrayList<Post>();
         Post post = new Post(user, "");
         posts.add(post);
-        when(postDao.getPostsOfUser(user)).thenReturn(posts);
+        when(postDao.getUserPosts(user)).thenReturn(posts);
 
         assertEquals(postService.getPostsOfUser(user), posts);
 
-        verify(postDao).getPostsOfUser(user);
+        verify(postDao).getUserPosts(user);
     }
 
     @Test

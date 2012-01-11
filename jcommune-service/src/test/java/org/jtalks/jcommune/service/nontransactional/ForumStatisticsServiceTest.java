@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
-import org.jtalks.jcommune.model.dao.ForumStatisticsDAO;
+import org.jtalks.jcommune.model.dao.ForumStatisticsDao;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -30,29 +30,29 @@ import static org.testng.Assert.assertEquals;
 public class ForumStatisticsServiceTest {
 
     private ForumStatisticsService statisticsService;
-    private ForumStatisticsDAO statisticsDAO;
+    private ForumStatisticsDao statisticsDao;
 
     @BeforeClass
     public void setUp() {
-        statisticsDAO = mock(ForumStatisticsDAO.class);
-        statisticsService = new ForumStatisticsService(statisticsDAO);
+        statisticsDao = mock(ForumStatisticsDao.class);
+        statisticsService = new ForumStatisticsService(statisticsDao);
     }
 
     @Test
     public void testGetPostsOnForumCount() throws NotFoundException {
         int expectedCount = 10;
-        when(statisticsDAO.getPostsOnForumCount()).thenReturn(expectedCount);
+        when(statisticsDao.getPostsOnForumCount()).thenReturn(expectedCount);
 
         assertEquals(statisticsService.getPostsOnForumCount(), expectedCount);
-        verify(statisticsDAO).getPostsOnForumCount();
+        verify(statisticsDao).getPostsOnForumCount();
     }
 
     @Test
     public void testGetUsersCount() throws Exception {
         int userCount = 5;
-        when(statisticsDAO.getUsersCount()).thenReturn(userCount);
+        when(statisticsDao.getUsersCount()).thenReturn(userCount);
 
         assertEquals(statisticsService.getUsersCount(), userCount);
-        verify(statisticsDAO).getUsersCount();
+        verify(statisticsDao).getUsersCount();
     }
 }

@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Global interceptor works for all pages, clears location of
- * the current user. Locations is a certain page user is viewing at the moment
+ * the current user. Location is a certain page user is viewing at the moment
  *
  * @author Andrey Kluev
  */
@@ -33,7 +33,7 @@ public class ClearInterceptor extends HandlerInterceptorAdapter {
     private LocationService locationService;
 
     /**
-     * @param locationService to oerate with current user location on forum
+     * @param locationService to operate with current user location on forum
      */
     @Autowired
     public ClearInterceptor(LocationService locationService) {
@@ -53,10 +53,10 @@ public class ClearInterceptor extends HandlerInterceptorAdapter {
                              HttpServletResponse response, Object handler) {
         /**
          * This condition is necessary because interceptors are designed to be called before a controller.
-         * As avatars are requested from the separate controller avatar request will actualy clear
+         * As avatars are requested from the separate controller avatar request will actually clear
          * location set on page. So, won't be able to see his name in a page visitors list.
          *
-         * That is why we're skipping avatar requests when determaiming user location on forum.
+         * That is why we're skipping avatar requests when determining user location on forum.
          */
         if (!request.getRequestURI().endsWith("/avatar")) {
             locationService.clearUserLocation();

@@ -82,7 +82,7 @@ public class TopicControllerTest {
 
     @BeforeMethod
     public void prepareTestData(){
-        branch = new Branch();
+        branch = new Branch("");
         branch.setId(BRANCH_ID);
         user = new User("username", "email@mail.com", "password");
     }
@@ -100,7 +100,7 @@ public class TopicControllerTest {
         branch.addTopic(topic);
         when(topicService.get(anyLong())).thenReturn(topic);
         
-        ModelAndView actualMav = controller.delete(TOPIC_ID);
+        ModelAndView actualMav = controller.deleteTopic(TOPIC_ID);
 
         assertViewName(actualMav, "redirect:/branches/" + BRANCH_ID);
         verify(topicService).deleteTopic(TOPIC_ID);
@@ -156,7 +156,7 @@ public class TopicControllerTest {
         when(topicService.createTopic(TOPIC_THEME, TOPIC_CONTENT, BRANCH_ID)).thenReturn(topic);
 
         //invoke the object under test
-        ModelAndView mav = controller.create(dto, result, BRANCH_ID);
+        ModelAndView mav = controller.createTopic(dto, result, BRANCH_ID);
 
         //check expectations
         verify(topicService).createTopic(TOPIC_THEME, TOPIC_CONTENT, BRANCH_ID);
@@ -175,7 +175,7 @@ public class TopicControllerTest {
         when(breadcrumbBuilder.getForumBreadcrumb(branch)).thenReturn(new ArrayList<Breadcrumb>());
 
         //invoke the object under test
-        ModelAndView mav = controller.create(getDto(), result, BRANCH_ID);
+        ModelAndView mav = controller.createTopic(getDto(), result, BRANCH_ID);
 
         //check expectations
         verify(branchService).get(BRANCH_ID);
@@ -194,7 +194,7 @@ public class TopicControllerTest {
         when(breadcrumbBuilder.getNewTopicBreadcrumb(branch)).thenReturn(new ArrayList<Breadcrumb>());
 
         //invoke the object under test
-        ModelAndView mav = controller.createPage(BRANCH_ID);
+        ModelAndView mav = controller.showNewTopicPage(BRANCH_ID);
 
         //check expectations
         verify(branchService).get(BRANCH_ID);

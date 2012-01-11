@@ -30,11 +30,11 @@ import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.ModelAndViewAssert.*;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -163,7 +163,7 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void replyPage() throws NotFoundException {
-        PrivateMessage pm = new PrivateMessage();
+        PrivateMessage pm = new PrivateMessage(null, null, "title", "body");
         //set expectations
         when(pmService.get(PM_ID)).thenReturn(pm);
         when(pmDtoBuilder.getReplyDtoFor(pm)).thenReturn(pmDto);
@@ -182,7 +182,7 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void quotePage() throws NotFoundException {
-        PrivateMessage pm = new PrivateMessage();
+        PrivateMessage pm = new PrivateMessage(null, null, "title", "body");
         //set expectations
         when(pmService.get(PM_ID)).thenReturn(pm);
         when(pmDtoBuilder.getQuoteDtoFor(pm)).thenReturn(pmDto);
@@ -202,7 +202,7 @@ public class PrivateMessageControllerTest {
     @Test
     public void showPmPageInbox() throws NotFoundException {
         String box = "inbox";
-        PrivateMessage pm = new PrivateMessage();
+        PrivateMessage pm = new PrivateMessage(null, null, "title", "body");
 
         //set expectations
         when(pmService.get(PM_ID)).thenReturn(pm);
@@ -223,7 +223,7 @@ public class PrivateMessageControllerTest {
     @Test
     public void showPmPageOutbox() throws NotFoundException {
         String box = "outbox";
-        PrivateMessage pm = new PrivateMessage();
+        PrivateMessage pm = new PrivateMessage(null, null, "title", "body");
 
         //set expectations
         when(pmService.get(PM_ID)).thenReturn(pm);
@@ -243,7 +243,7 @@ public class PrivateMessageControllerTest {
     @Test
     public void showPmPageDrafts() throws NotFoundException {
         String box = "drafts";
-        PrivateMessage pm = new PrivateMessage();
+        PrivateMessage pm = new PrivateMessage(null, null, "title", "body");
 
         //set expectations
         when(pmService.get(PM_ID)).thenReturn(pm);

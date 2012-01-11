@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
-import org.jtalks.jcommune.model.dao.ForumStatisticsDAO;
+import org.jtalks.jcommune.model.dao.ForumStatisticsDao;
 
 /**
  * This class contains methods for getting forum statistic information.
@@ -23,15 +23,15 @@ import org.jtalks.jcommune.model.dao.ForumStatisticsDAO;
  */
 public class ForumStatisticsService  {
 
-    private ForumStatisticsDAO statisticsDAO;
+    private ForumStatisticsDao statisticsDao;
 
     /**
      * Create an instance of transactional forum statistics service
      *
-     * @param statisticsDAO for operations with data storage
+     * @param statisticsDao for operations with data storage
      */
-    public ForumStatisticsService(ForumStatisticsDAO statisticsDAO) {
-        this.statisticsDAO = statisticsDAO;
+    public ForumStatisticsService(ForumStatisticsDao statisticsDao) {
+        this.statisticsDao = statisticsDao;
     }
 
     /**
@@ -41,7 +41,7 @@ public class ForumStatisticsService  {
      */
 
     public int getPostsOnForumCount() {
-        return statisticsDAO.getPostsOnForumCount();
+        return statisticsDao.getPostsOnForumCount();
     }
 
     /**
@@ -51,6 +51,6 @@ public class ForumStatisticsService  {
      */
 
     public int getUsersCount() {
-        return statisticsDAO.getUsersCount();
+        return statisticsDao.getUsersCount();
     }
 }

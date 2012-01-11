@@ -116,9 +116,8 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testMarkAsRead() {
-        PrivateMessage pm = new PrivateMessage();
         User userTo = new User(USERNAME, "email", "password");
-        pm.setUserTo(userTo);
+        PrivateMessage pm = new PrivateMessage(userTo, null, "title", "body");
 
         pmService.markAsRead(pm);
 
@@ -129,7 +128,7 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testMarkAsReadAlreadyRead() {
-        PrivateMessage pm = new PrivateMessage();
+        PrivateMessage pm = new PrivateMessage(null, null, "title", "body");
         pm.markAsRead();
 
         pmService.markAsRead(pm);
@@ -222,7 +221,7 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testGet() throws NotFoundException {
-        PrivateMessage expected = new PrivateMessage();
+        PrivateMessage expected = new PrivateMessage(null, null, "title", "body");
         when(pmDao.get(PM_ID)).thenReturn(expected);
         when(pmDao.isExist(PM_ID)).thenReturn(true);
 

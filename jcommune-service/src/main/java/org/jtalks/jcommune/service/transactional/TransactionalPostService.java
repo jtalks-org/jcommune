@@ -105,7 +105,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      */
     @Override
     public List<Post> getPostsOfUser(User userCreated) {
-        return this.getDao().getPostsOfUser(userCreated);
+        return this.getDao().getUserPosts(userCreated);
     }
 
     /**

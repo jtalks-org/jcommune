@@ -19,9 +19,9 @@ package org.jtalks.jcommune.model.dao;
  * (e.c. total count of registered user's accounts, total count of messages on the forum).
  *
  * @author Elena Lepaeva
- * @see org.jtalks.jcommune.model.dao.hibernate.ForumStatisticsHibernateDAO
+ * @see org.jtalks.jcommune.model.dao.hibernate.ForumStatisticsHibernateDao
  */
-public interface ForumStatisticsDAO {
+public interface ForumStatisticsDao {
 
     /**
      * Get total count of messages on the forum

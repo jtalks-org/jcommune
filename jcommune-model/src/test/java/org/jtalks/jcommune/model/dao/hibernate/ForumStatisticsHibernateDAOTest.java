@@ -17,7 +17,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.ObjectsFactory;
-import org.jtalks.jcommune.model.dao.ForumStatisticsDAO;
+import org.jtalks.jcommune.model.dao.ForumStatisticsDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -34,10 +34,10 @@ import static org.testng.Assert.assertEquals;
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
-public class ForumStatisticsHibernateDAOTest extends AbstractTransactionalTestNGSpringContextTests {
+public class ForumStatisticsHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
 
     @Autowired
-    private ForumStatisticsDAO dao;
+    private ForumStatisticsDao dao;
     @Autowired
     private SessionFactory sessionFactory;
     private Session session;

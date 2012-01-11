@@ -58,7 +58,7 @@ public class UserDataInterceptorTest {
     }
 
     @Test
-    public void testPostHandle() throws Exception {
+    public void testUserDataIsSetAfterController() throws Exception {
         User user = getUser();
         when(service.currentUserNewPmCount()).thenReturn(USER_NEW_PM_COUNT);
         when(securityService.getCurrentUser()).thenReturn(user);

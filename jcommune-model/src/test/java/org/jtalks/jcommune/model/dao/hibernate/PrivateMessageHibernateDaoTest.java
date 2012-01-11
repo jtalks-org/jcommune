@@ -79,7 +79,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
 
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void testSavePostWithDateNotNullViolation() {
-        PrivateMessage pm = new PrivateMessage();
+        PrivateMessage pm = new PrivateMessage(author,recipient, "", "");
         dao.saveOrUpdate(pm);
     }
 

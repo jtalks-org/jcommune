@@ -47,7 +47,7 @@ import java.util.List;
  */
 
 @Controller
-public final class BranchController {
+public class BranchController {
 
     public static final String PAGE = "page";
     public static final String PAGING_ENABLED = "pagingEnabled";
@@ -121,7 +121,7 @@ public final class BranchController {
      * updated during last 24 hours.
      *
      * @param page    page
-     * @param session bound http session
+     * @param session http session to figure out last login
      * @return {@code ModelAndView} with topics list and vars for pagination
      */
     @RequestMapping(value = "/topics/recent", method = RequestMethod.GET)
