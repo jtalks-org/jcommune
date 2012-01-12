@@ -13,10 +13,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package org.jtalks.jcommune.model.dao.hibernate;
- 
+
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.dao.ForumStatisticsDao;
- 
+
 /**
  * The implementation of ForumStatisticsDao based on Hibernate.
  * The class is responsible for getting forum statistic information from database.
@@ -24,39 +24,39 @@ import org.jtalks.jcommune.model.dao.ForumStatisticsDao;
  * @author Elena Lepaeva
  */
 public class ForumStatisticsHibernateDao implements ForumStatisticsDao {
- 
-   private SessionFactory sessionFactory;
- 
-   /**
+
+    private SessionFactory sessionFactory;
+
+    /**
      * Create an instance of ForumStatisticsHibernateDao
      *
      * @param sessionFactory Hibernate SessionFactory.
      */
-   public ForumStatisticsHibernateDao(SessionFactory sessionFactory) {
-       this.sessionFactory = sessionFactory;
-   }
- 
-   /**
+    public ForumStatisticsHibernateDao(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    /**
      * {@inheritDoc}
      */
-   @Override
-   public int getPostsOnForumCount() {
-       return ((Number) sessionFactory.getCurrentSession()
-               .createQuery("select count(*) from Post p")
-               .setCacheable(true)
-               .uniqueResult())
-               .intValue();
-   }
- 
-   /**
+    @Override
+    public int getPostsOnForumCount() {
+        return ((Number) sessionFactory.getCurrentSession()
+                .createQuery("select count(*) from Post p")
+                .setCacheable(true)
+                .uniqueResult())
+                .intValue();
+    }
+
+    /**
      * {@inheritDoc}
      */
-   @Override
-   public int getUsersCount() {
-       return ((Number) sessionFactory
-               .getCurrentSession().getNamedQuery("getCountOfUsers")
-               .setCacheable(true)
-               .uniqueResult())
-               .intValue();
-   }
+    @Override
+    public int getUsersCount() {
+        return ((Number) sessionFactory
+                .getCurrentSession().getNamedQuery("getCountOfUsers")
+                .setCacheable(true)
+                .uniqueResult())
+                .intValue();
+    }
 }
