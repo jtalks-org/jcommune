@@ -22,6 +22,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Alexandre Teterin
@@ -73,7 +74,7 @@ public class PrivateMessageDtoBuilderTest {
         PrivateMessageDto dto = pmDtoBuilder.getQuoteDtoFor(pm);
 
         //check result
-        assertEquals(dto.getBody(), "> " + BODY + "\r\n");
+        assertTrue(dto.getBody().startsWith("> " + BODY));
         assertEquals(dto.getRecipient(), user.getUsername());
         assertEquals(dto.getTitle(), "Re: " + TITLE);
     }
