@@ -36,7 +36,7 @@
             <div class="forum_header_table">
                 <div class="forum_header">
                     <span class="forum_header_answer"><spring:message code="label.fillmessage"/></span>
-                    <span class="empty_cell"></span> <!-- Необходима для корректного отображения псевдотаблицы -->
+                    <span class="empty_cell"></span>
                 </div>
             </div>
             <div class="forum_table" id="stylized">
@@ -75,11 +75,6 @@
                     </div>
                     <span class="reg_info"><spring:message code="label.tip.confirmation"/></span>
                 </div>
-                    <%--                <div class="forum_row">
-                        <div><input type="checkbox" name="iagree" id="iagree"/>
-                            Я принимаю условия <a href="#">пользовательского соглашения</a>.
-                            </input></div>
-                    </div>--%>
             </div>
             <div class="form_controls">
                 <button type="submit"><spring:message code="label.signup"/></button>
@@ -87,8 +82,6 @@
         </form:form>
     </div>
     <div class="footer_buffer"></div>
-    <!-- Несемантичный буфер для прибития подвала -->
 </div>
-
 </body>
 </html>

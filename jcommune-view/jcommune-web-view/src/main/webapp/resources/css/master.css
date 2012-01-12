@@ -719,21 +719,21 @@ span.page{
 a.page:hover{
     background:#c6c6c6;
 }
-/* Error 404 */
-.text_404 {
+/* Various error pages (404, 500 and so on) */
+.text_errorpage {
     margin: 0 auto;
     text-align: center;
     font-size: 2em;
     font-family: Georgia, Arial, sans-serif;
 }
 
-.text_404 h1 {
+.text_errorpage h1 {
     font-size: 5em;
     position: static;
     font-family: Georgia, Arial, sans-serif;
 }
 
-.error_404 {
+.error_errorpage {
     font-size: 0.6em;
 }
 

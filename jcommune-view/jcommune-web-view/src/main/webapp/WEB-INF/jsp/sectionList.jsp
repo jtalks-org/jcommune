@@ -23,8 +23,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <head>
     <title><spring:message code="label.section.jtalks_forum"/></title>
-    <script language="javascript"
-            src="${pageContext.request.contextPath}/resources/javascript/licensed/snow.js"></script>
 </head>
 <body>
 <div class="wrap main_page">

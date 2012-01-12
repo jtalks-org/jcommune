@@ -24,8 +24,8 @@
        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
        ">
 
-    <context:component-scan base-package="org.jtalks.jcommune.web" use-default-filters="false">
-        <context:include-filter type="annotation" expression="org.springframework.stereotype.Component"/>
+    <context:component-scan base-package="org.jtalks.jcommune.web.controller" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
     <mvc:annotation-driven/>
@@ -37,8 +37,7 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
-    <bean id="multipartResolver" class=
-            "org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
 
     <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
         <property name="basenames">

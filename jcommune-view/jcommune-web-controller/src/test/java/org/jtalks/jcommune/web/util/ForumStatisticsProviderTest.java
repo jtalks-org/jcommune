@@ -15,14 +15,14 @@
 package org.jtalks.jcommune.web.util;
 
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.nontransactional.ForumStatisticsService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.ForumStatisticsService;
 import org.jtalks.jcommune.web.listeners.HttpSessionStatisticListener;
 import org.springframework.security.core.session.SessionRegistry;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -48,9 +48,7 @@ public class ForumStatisticsProviderTest {
         statisticsService = mock(ForumStatisticsService.class);
 
         SessionRegistry sessionRegistry = mock(SessionRegistry.class);
-        users = new ArrayList<Object>();
-        for (int i = 1; i <= userCount; i++)
-            users.add(mock(User.class));
+        users = Collections.nCopies(userCount , (Object) new User("","",""));
         when(sessionRegistry.getAllPrincipals()).thenReturn(users);
 
         HttpSessionStatisticListener listener = mock(HttpSessionStatisticListener.class);
@@ -92,7 +90,7 @@ public class ForumStatisticsProviderTest {
     }
 
     @Test
-    public void getOnlineAnonymoustUsersCountTest() throws Exception {
+    public void getOnlineAnonymousUsersCountTest() throws Exception {
         assertEquals(forumStaticsProvider.getOnlineAnonymousUsersCount(), sessionCount - userCount);
     }
 }

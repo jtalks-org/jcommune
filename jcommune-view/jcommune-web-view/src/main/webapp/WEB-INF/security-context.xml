@@ -29,12 +29,8 @@
         <security:intercept-url pattern="/topics/new" method="GET" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
 
         <security:intercept-url pattern="/posts/new" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
-        <security:intercept-url pattern="/posts/*/delete"
-                                method="GET"
-                                access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
-        <security:intercept-url pattern="/posts/*"
-                                method="DELETE"
-                                access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+        <security:intercept-url pattern="/posts/*/delete" method="GET" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+        <security:intercept-url pattern="/posts/*" method="DELETE" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
 
         <security:intercept-url pattern="/users/new" method="GET" access="permitAll"/>
         <security:intercept-url pattern="/users" method="POST" access="permitAll"/>
@@ -68,7 +64,8 @@
         <constructor-arg ref="userService"/>
     </bean>
 
-    <bean id="concurrentSessionControlStrategy" class="org.springframework.security.web.authentication.session.ConcurrentSessionControlStrategy">
+    <bean id="concurrentSessionControlStrategy"
+          class="org.springframework.security.web.authentication.session.ConcurrentSessionControlStrategy">
         <constructor-arg name="sessionRegistry" ref="sessionRegistry"/>
         <property name="maximumSessions" value="1"/>
     </bean>

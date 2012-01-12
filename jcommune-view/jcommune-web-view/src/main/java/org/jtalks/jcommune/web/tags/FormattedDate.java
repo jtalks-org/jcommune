@@ -51,6 +51,10 @@ public class FormattedDate extends FormatTag {
 
     public static final String GMT_COOKIE_NAME = "GMT";
 
+    /**
+     * Example: 01 Jan 2011 05:13
+     * Localized month names are to be inserted by magic
+     */
     public static final String DATE_FORMAT_PATTERN = "dd MMM yyyy HH:mm";
 
     private long offset = DEFAULT_OFFSET;

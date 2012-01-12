@@ -31,6 +31,7 @@ import java.io.IOException;
 public class ConverterBB2HTML extends SimpleTagSupport {
 
     private String bbCode;
+    private TextProcessor processor = BBProcessorFactory.getInstance().create();
 
     /**
      * {@inheritDoc}
@@ -46,7 +47,6 @@ public class ConverterBB2HTML extends SimpleTagSupport {
      * @param bbCode bb-encoded text
      */
     public void setBbCode(String bbCode){
-        TextProcessor processor = BBProcessorFactory.getInstance().create();
         this.bbCode = processor.process(bbCode);
     }
 

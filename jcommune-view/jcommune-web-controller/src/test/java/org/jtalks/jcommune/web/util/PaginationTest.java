@@ -14,67 +14,47 @@
  */
 package org.jtalks.jcommune.web.util;
 
-import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
-import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertEquals;
 
 public class PaginationTest {
     private Pagination pagination;
 
     private User user;
-    private LocationService locationServiceImpl;
-    private ForumStatisticsProvider forumStatisticsProvider;
-    private Entity entity;
 
     private static final int PAGE_SIZE = 5;
 
     @BeforeMethod
     protected void setUp() {
-        entity = mock(Entity.class);
-        locationServiceImpl = mock(LocationService.class);
-        forumStatisticsProvider = mock(ForumStatisticsProvider.class);
         user = new User("", "", "");
         user.setPageSize(PAGE_SIZE);
 
     }
 
     @Test
-    public void testNumberOfPages() {
+    public void testIntegerNumberOfPages() {
         pagination = new Pagination(1, user, 10, true);
-
         List list = Collections.nCopies(10, 1);
 
         List lists = pagination.integerNumberOfPages(list);
 
         assertEquals(lists, list.subList(0, 5));
-
-        pagination = new Pagination(2, user, 10, true);
-
-        list = Collections.nCopies(7, 1);
-
-        lists = pagination.notIntegerNumberOfPages(list);
-
-        assertEquals(lists, list.subList(5, 7));
-
     }
 
     @Test
-    public void testConstructor() {
-        pagination = new Pagination(1, user, 10, true);
+    public void testNotIntegerNumberOfPages() {
+        pagination = new Pagination(2, user, 10, true);
+        List list = Collections.nCopies(7, 1);
 
-        assertEquals((int) pagination.getPage(), 1);
-        assertEquals(pagination.getPageSize(), 5);
+        List lists = pagination.notIntegerNumberOfPages(list);
 
-        pagination = new Pagination(1, null, 10, true);
-
-        assertEquals(pagination.getPageSize(), 50);
+        assertEquals(lists, list.subList(5, 7));
     }
 
     @Test

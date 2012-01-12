@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -29,14 +30,7 @@ import static org.testng.Assert.fail;
  */
 public class BreadcrumbBuilderTest {
     private final Long ID = 1L;
-    private final String USER_NAME = "user";
-    private final String EMAIL = "mail@mail.com";
-    private final String PASSWORD = "password";
-    private final String SECTION_NAME = "Section Name";
-    private final String BRANCH_NAME = "Branch Name";
-    private final String TOPIC_NAME = "Topic Name";
     private BreadcrumbBuilder breadcrumbBuilder;
-    private User user;
     private Section section;
     private Branch branch;
     private Topic topic;
@@ -47,16 +41,16 @@ public class BreadcrumbBuilderTest {
     public void setUp() throws Exception {
         breadcrumbBuilder = new BreadcrumbBuilder();
 
-        user = new User(USER_NAME, EMAIL, PASSWORD);
+        User user = new User("user", "mail@mail.com", "password");
 
-        section = new Section(SECTION_NAME);
+        section = new Section("Section Name");
         section.setId(ID);
 
-        branch = new Branch(BRANCH_NAME);
+        branch = new Branch("Branch Name");
         branch.setId(ID);
         section.addBranch(branch);
 
-        topic = new Topic(user, TOPIC_NAME);
+        topic = new Topic(user, "Topic Name");
         topic.setId(ID);
         branch.addTopic(topic);
 
@@ -77,7 +71,7 @@ public class BreadcrumbBuilderTest {
         List<Breadcrumb> actualResult = breadcrumbBuilder.getForumBreadcrumb();
 
         //check result
-        assertBreadcrumbs(actualResult, expectedResult);
+        assertBreadcrumbsAreEqual(actualResult, expectedResult);
 
     }
 
@@ -92,7 +86,7 @@ public class BreadcrumbBuilderTest {
         List<Breadcrumb> actualList = breadcrumbBuilder.getForumBreadcrumb(branch);
 
         //check result
-        assertBreadcrumbs(actualList, expectedList);
+        assertBreadcrumbsAreEqual(actualList, expectedList);
     }
 
     @Test
@@ -106,7 +100,7 @@ public class BreadcrumbBuilderTest {
         List<Breadcrumb> actualList = breadcrumbBuilder.getForumBreadcrumb(topic);
 
         //check result
-        assertBreadcrumbs(actualList, expectedList);
+        assertBreadcrumbsAreEqual(actualList, expectedList);
     }
 
     @Test
@@ -120,7 +114,7 @@ public class BreadcrumbBuilderTest {
         List<Breadcrumb> actualList = breadcrumbBuilder.getNewTopicBreadcrumb(branch);
 
         //check result
-        assertBreadcrumbs(actualList, expectedList);
+        assertBreadcrumbsAreEqual(actualList, expectedList);
     }
 
     @Test
@@ -134,10 +128,10 @@ public class BreadcrumbBuilderTest {
         List<Breadcrumb> actualList = breadcrumbBuilder.getForumBreadcrumb(post);
 
         //check result
-        assertBreadcrumbs(actualList, expectedList);
+        assertBreadcrumbsAreEqual(actualList, expectedList);
     }
 
-    private void assertBreadcrumbs(List<Breadcrumb> actualList, List<Breadcrumb> expectedList) {
+    private void assertBreadcrumbsAreEqual(List<Breadcrumb> actualList, List<Breadcrumb> expectedList) {
         if (actualList.size() == expectedList.size()) {
             for (int i = 0; i < actualList.size(); i++) {
                 Breadcrumb actual = actualList.get(i);

@@ -18,7 +18,7 @@ import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
-import org.jtalks.jcommune.web.dto.PrivateMessageDtoBuilder;
+import org.jtalks.jcommune.web.util.PrivateMessageDtoBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
@@ -69,7 +69,7 @@ public class PrivateMessageController {
     /**
      * @param pmService         the PrivateMessageService instance
      * @param pmDtoBuilder      the object which provides actions on
-     *                          {@link org.jtalks.jcommune.web.dto.PrivateMessageDtoBuilder} entity
+     *                          {@link org.jtalks.jcommune.web.util.PrivateMessageDtoBuilder} entity
      */
     @Autowired
     public PrivateMessageController(PrivateMessageService pmService, PrivateMessageDtoBuilder pmDtoBuilder) {

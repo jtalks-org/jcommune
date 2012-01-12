@@ -12,9 +12,10 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.dto;
+package org.jtalks.jcommune.web.util;
 
 import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 import org.springframework.stereotype.Component;
 
 /**
@@ -29,7 +30,7 @@ public class PrivateMessageDtoBuilder {
 
 
     /**
-     * Create the full private message dto from {@link org.jtalks.jcommune.model.entity.PrivateMessage}
+     * Create the full private message dto from {@link PrivateMessage}
      *
      * @param pm private message for conversion
      * @return dto for full private message
@@ -44,7 +45,7 @@ public class PrivateMessageDtoBuilder {
     }
 
     /**
-     * Create the reply private message dto from {@link org.jtalks.jcommune.model.entity.PrivateMessage}
+     * Create the reply private message dto from {@link PrivateMessage}
      * @param pm private message for conversion in to reply
      * @return dto for reply
      */
@@ -56,7 +57,7 @@ public class PrivateMessageDtoBuilder {
     }
 
     /**
-     * Create the quote private message dto from {@link org.jtalks.jcommune.model.entity.PrivateMessage}
+     * Create the quote private message dto from {@link PrivateMessage}
      * @param pm private message for conversion in to the quote
      * @return dto for quote
      */

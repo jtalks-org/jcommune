@@ -13,6 +13,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+/**
+ * Creates a link = current location + 'lang' URL parameter.
+ * When submitted this link will force temporary (session scoped)
+ * locale change for the current user.
+ * To change locale instantly user should alter the corresponding user profile settings.
+ *
+ * @param lang ISO_639-1 language code
+ */
 function getLanguageLink(lang) {
     var href = window.location.toString().split("#", 1)[0];
     if (href.indexOf("?") == -1) {
@@ -27,6 +35,12 @@ function getLanguageLink(lang) {
     return href + lang;
 }
 
+/**
+ * Prompts message with a constant post link to the user.
+ * Unfortunately direct clipboard copying is not all-browsers compatible.
+ *
+ * @param postId unique post identifier
+ */
 function createAndPromptPostLink(postId) {
     var href = window.location.toString().split("#", 1)[0];
     prompt("Link to copy", href + "#" + postId);

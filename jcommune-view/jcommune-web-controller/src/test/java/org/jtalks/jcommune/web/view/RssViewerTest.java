@@ -20,7 +20,6 @@ import com.sun.syndication.feed.rss.Item;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.web.view.RssViewer;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.testng.annotations.BeforeMethod;
@@ -37,6 +36,9 @@ import static org.mockito.Mockito.verify;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 
+/**
+ * @author Andrey Kluev
+ */
 public class RssViewerTest {
     private RssViewer rssViewer;
     private RssViewer rssViewerMock;

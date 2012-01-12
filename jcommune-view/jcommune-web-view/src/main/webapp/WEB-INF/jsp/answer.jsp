@@ -32,7 +32,6 @@
     </a></h1>
 
     <jsp:include page="../template/topLine.jsp"/>
-    <!-- Начало всех форумов -->
     <div class="all_forums">
         <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
 
@@ -58,8 +57,6 @@
         </form:form>
 
     </div>
-    <!-- Конец всех форумов -->
     <div class="footer_buffer"></div>
-    <!-- Несемантичный буфер для прибития подвала -->
 </div>
 </body>

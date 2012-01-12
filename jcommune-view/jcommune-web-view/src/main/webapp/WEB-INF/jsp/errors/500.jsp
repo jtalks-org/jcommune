@@ -23,8 +23,8 @@
 <div class="wrap main_page">
     <jsp:include page="../../template/topLine.jsp"/>
     <div class="all_forums">
-        <div class="text_404">
-            <h1><span class="error_404"><spring:message code="label.error"/></span> 500</h1>
+        <div class="text_errorpage">
+            <h1><span class="error_errorpage"><spring:message code="label.error"/></span> 500</h1>
             <spring:message code="label.500.detail"/>
             <br/>
             <spring:message code="label.500.refresh"/>&nbsp;

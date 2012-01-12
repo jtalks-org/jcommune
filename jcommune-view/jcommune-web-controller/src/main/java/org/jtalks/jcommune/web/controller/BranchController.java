@@ -25,7 +25,7 @@ import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
-import org.jtalks.jcommune.web.dto.BreadcrumbBuilder;
+import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -65,7 +65,7 @@ public class BranchController {
      * @param securityService   autowired object from Spring Context
      * @param locationService   autowired object from Spring Context
      * @param breadcrumbBuilder the object which provides actions on
-     *                          {@link org.jtalks.jcommune.web.dto.BreadcrumbBuilder} entity
+     *                          {@link org.jtalks.jcommune.web.util.BreadcrumbBuilder} entity
      */
     @Autowired
     public BranchController(BranchService branchService,

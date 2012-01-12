@@ -19,7 +19,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <!--Forum statistics beans-->
+    <!-- Web-level helper beans -->
 
     <bean name="forumStaticsProvider" class="org.jtalks.jcommune.web.util.ForumStatisticsProvider">
         <constructor-arg index="0" ref="sessionRegistry"/>
@@ -28,6 +28,10 @@
     </bean>
 
     <bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl"/>
+
+    <bean id="breadcrumbBuilder" class="org.jtalks.jcommune.web.util.BreadcrumbBuilder"/>
+
+    <bean id="privateMessageDtoBuilder" class="org.jtalks.jcommune.web.util.PrivateMessageDtoBuilder"/>
 
     <bean id="sessionStatisticListener" class="org.jtalks.jcommune.web.listeners.HttpSessionStatisticListenerImpl"/>
 

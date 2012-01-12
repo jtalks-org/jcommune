@@ -53,8 +53,8 @@ public class SuccessfulAuthenticationHandler extends SavedRequestAwareAuthentica
      * @param request        http request
      * @param response       http response
      * @param authentication user's authentication
-     * @throws ServletException .
-     * @throws IOException      .
+     * @throws ServletException  forwarded from handler chain
+     * @throws IOException       forwarded from handler chain
      */
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws ServletException, IOException {

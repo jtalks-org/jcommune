@@ -17,103 +17,65 @@ package org.jtalks.jcommune.web.dto.builder;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
-import org.jtalks.jcommune.web.dto.PrivateMessageDtoBuilder;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.jtalks.jcommune.web.util.PrivateMessageDtoBuilder;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertEquals;
 
 /**
  * @author Alexandre Teterin
+ * @author Evgeniy Naumenko
  */
-
-
 public class PrivateMessageDtoBuilderTest {
+    
     private PrivateMessageDtoBuilder pmDtoBuilder;
-    @Mock
-    private PrivateMessage pm;
-    @Mock
-    private User user;
+    private User user = new User("username", "email", "password");
 
+    private String BODY = "body";
+    private String TITLE = "title";
+    private long ID = 1L;
+    PrivateMessage pm;
+    
     @BeforeMethod
     public void init() {
-        MockitoAnnotations.initMocks(this);
         pmDtoBuilder = new PrivateMessageDtoBuilder();
+        pm = new PrivateMessage(user,user, TITLE, BODY);
+        pm.setId(ID);
     }
 
     @Test
-    public void testGetFullPmDtoFor() throws Exception {
-        //set expectations
-        when(pm.getBody()).thenReturn("");
-        when(pm.getTitle()).thenReturn("");
-        when(pm.getUserTo()).thenReturn(user);
-        when(user.getUsername()).thenReturn("");
-        when(pm.getId()).thenReturn(2L);
-
+    public void testGetRegularPmDto() throws Exception {
         //invoke the object under test
-        PrivateMessageDto actualDto = pmDtoBuilder.getFullPmDtoFor(pm);
-
-        //check expectations
-        verify(pm).getBody();
-        verify(pm).getTitle();
-        verify(pm).getUserTo();
-        verify(user).getUsername();
-        verify(pm).getId();
+        PrivateMessageDto dto = pmDtoBuilder.getFullPmDtoFor(pm);
 
         //check result
-        assertNotNull(actualDto.getBody());
-        assertNotNull(actualDto.getTitle());
-        assertNotNull(actualDto.getRecipient());
-        assertNotNull(actualDto.getId());
+        assertEquals(dto.getBody(), BODY);
+        assertEquals(dto.getId(), ID);
+        assertEquals(dto.getRecipient(), user.getUsername());
+        assertEquals(dto.getTitle(), TITLE);
 
     }
 
     @Test
-    public void testGetReplyDtoFor() throws Exception {
-        //set expectations
-        when(pm.getUserFrom()).thenReturn(user);
-        when(user.getUsername()).thenReturn("");
-        when(pm.prepareTitleForReply()).thenReturn("");
-
+    public void testGetReplyDto() throws Exception {
         //invoke the object under test
-        PrivateMessageDto actualDto = pmDtoBuilder.getReplyDtoFor(pm);
-
-        //check expectations
-        verify(pm).getUserFrom();
-        verify(user).getUsername();
-        verify(pm).prepareTitleForReply();
+        PrivateMessageDto dto = pmDtoBuilder.getReplyDtoFor(pm);
 
         //check result
-        assertNotNull(actualDto.getRecipient());
-        assertNotNull(actualDto.getTitle());
-
+        assertEquals(dto.getRecipient(), user.getUsername());
+        assertEquals(dto.getTitle(), "Re: " + TITLE);
     }
 
     @Test
-    public void testGetQuoteDtoFor() throws Exception {
-        //set expectations
-        when(pm.getUserFrom()).thenReturn(user);
-        when(user.getUsername()).thenReturn("");
-        when(pm.prepareTitleForReply()).thenReturn("");
-        when(pm.prepareBodyForQuote()).thenReturn("");
-
+    public void testGetQuoteDto() throws Exception {
         //invoke the object under test
-        PrivateMessageDto actualDto = pmDtoBuilder.getQuoteDtoFor(pm);
-
-        //check expectations
-        verify(pm).getUserFrom();
-        verify(user).getUsername();
-        verify(pm).prepareTitleForReply();
-        verify(pm).prepareBodyForQuote();
+        PrivateMessageDto dto = pmDtoBuilder.getQuoteDtoFor(pm);
 
         //check result
-        assertNotNull(actualDto.getRecipient());
-        assertNotNull(actualDto.getTitle());
-        assertNotNull(actualDto.getBody());
+        assertEquals(dto.getBody(), "> " + BODY + "\r\n");
+        assertEquals(dto.getRecipient(), user.getUsername());
+        assertEquals(dto.getTitle(), "Re: " + TITLE);
     }
 
 }
