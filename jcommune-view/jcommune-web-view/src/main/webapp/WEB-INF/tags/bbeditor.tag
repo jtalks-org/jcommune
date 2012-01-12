@@ -153,8 +153,7 @@
 <input id="preview" type="button" class="button" tabindex="5" name="preview"
        value="<spring:message code="label.answer.preview"/>" onclick="SwitchEditor();return null;"/>
 <script type="text/javascript">
-    initEditor("tbMsg", true);
-    SwitchEditor();
+    initEditor("tbMsg");
 </script>
 <input id="post" type="submit" class="button" accesskey="s" tabindex="6" name="post"
        value="<spring:message code="${labelForAction}"/>"/>

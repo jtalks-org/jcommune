@@ -37,53 +37,37 @@ var browser = isIE || window.opera;
 var textRange;
 var enter = 0;
 var editorVisible = false;
-var enableWysiwyg = false;
 
 function rep(re, str) {
     content = content.replace(re, str);
 }
 
-function initEditor(textarea_id, wysiwyg) {
-    if (wysiwyg != undefined)
-        enableWysiwyg = wysiwyg;
-    else
-        enableWysiwyg = true;
+function initEditor(textarea_id) {
     body_id = textarea_id;
     textboxelement = document.getElementById(body_id);
     textboxelement.setAttribute('class', 'editorBBCODE');
     textboxelement.className = "editorBBCODE";
-    if (enableWysiwyg) {
-        ifm = document.createElement("iframe");
-        ifm.setAttribute("id", "rte");
-        ifm.setAttribute("class", "editorBBCODE");
-        ifm.setAttribute("frameborder", "1");
-        ifm.width = '90%';
-        ifm.height = 400;
-        textboxelement.parentNode.insertBefore(ifm, textboxelement);
-        textboxelement.style.display = 'none';
-        if (ifm) {
-            ShowEditor();
-        } else
-            setTimeout('ShowEditor()', 100);
-    }
-}
 
-function getStyle(el, styleProp) {
-    var x = document.getElementById(el);
-    if (x.currentStyle)
-        var y = x.currentStyle[styleProp];
-    else if (window.getComputedStyle)
-        var y = document.defaultView.getComputedStyle(x, null).getPropertyValue(styleProp);
-    return y;
+    ifm = document.createElement("iframe");
+    ifm.setAttribute("id", "rte");
+    ifm.setAttribute("class", "editorBBCODE");
+    ifm.setAttribute("frameborder", "1");
+    ifm.width = '90%';
+    ifm.height = 400;
+    textboxelement.parentNode.insertBefore(ifm, textboxelement);
+    textboxelement.style.display = 'none';
+
+    ifm.style.display = 'none';
+    textboxelement.style.display = '';
+    editorVisible = false;
 }
 
 function ShowEditor() {
-    if (!enableWysiwyg) return;
-    editorVisible = true;
     content = document.getElementById(body_id).value;
     myeditor = ifm.contentWindow.document;
+
     bbcode2html();
-    myeditor.designMode = "on";
+
     myeditor.open();
     myeditor.write('<html style="background: #f8f8f8;background-image: none;">' +
         '<head><link href="/jcommune/resources/css/screen.css" rel="Stylesheet" type="text/css" /></head>');
@@ -91,27 +75,25 @@ function ShowEditor() {
     myeditor.write(content);
     myeditor.write('</body></html>');
     myeditor.close();
-    if (myeditor.attachEvent) {
-        if (parent.ProcessKeyPress)
-            myeditor.attachEvent("onkeydown", parent.ProcessKeyPress);
-        myeditor.attachEvent("onkeypress", kp);
-    }
-    else if (myeditor.addEventListener) {
-        if (parent.ProcessKeyPress)
-            myeditor.addEventListener("keydown", parent.ProcessKeyPress, true);
-        myeditor.addEventListener("keypress", kp, true);
-    }
+}
+
+function doCheck() {
+    content = myeditor.body.innerHTML;
+    html2bbcode();
+    document.getElementById(body_id).value = content;
 }
 
 function SwitchEditor() {
     if (editorVisible) {
+
         doCheck();
+
         ifm.style.display = 'none';
         textboxelement.style.display = '';
         editorVisible = false;
     }
     else {
-        if (enableWysiwyg && ifm) {
+        if (ifm) {
             ifm.style.display = '';
             textboxelement.style.display = 'none';
             ShowEditor();
@@ -121,92 +103,69 @@ function SwitchEditor() {
 }
 
 function html2bbcode() {
-    rep(/<img\s[^<>]*?src=\"?([^<>]*?)\"?(\s[^<>]*)?\/?>/gi, "[img]$1[/img]");
-    rep(/<\/(strong|b)>/gi, "[/b]");
-    rep(/<(strong|b)(\s[^<>]*)?>/gi, "[b]");
-    rep(/<\/(em|i)>/gi, "[/i]");
-    rep(/<(em|i)(\s[^<>]*)?>/gi, "[i]");
-    rep(/<\/u>/gi, "[/u]");
-    rep(/<\/s>/gi, "[/s]");
-    rep(/\n/gi, " ");
-    rep(/\r/gi, " ");
-    rep(/<u(\s[^<>]*)?>/gi, "[u]");
-    rep(/<s(\s[^<>]*)?>/gi, "[s]");
 
-    rep(/<br(\s[^<>]*)?>/gi, "\n");
-    /*rep(/<p(\s[^<>]*)?>/gi, "");
-     rep(/<\/p>/gi, "\n");*/
-    rep(/<ul>/gi, "[list]");
-    rep(/<\/ul>/gi, "[/list]");
-    rep(/<li>/gi, "[*]");
-    rep(/<\/li>/gi, "");
-    rep(/&nbsp;/gi, " ");
-    rep(/&quot;/gi, "\"");
-    rep(/&amp;/gi, "&");
-    var sc, sc2;
-    do {
-        sc = content;
-        rep(/<font\s[^<>]*?color=\"?([^<>]*?)\"?(\s[^<>]*)?>([^<>]*?)<\/font>/gi, "[color=$1]$3[/color]");
-        rep(/<font\s[^<>]*?class=\"textSize(\d*)\"[^<>]*?>([^<>]*?)<\/font>/gi, "[size=$1]$2[/size]");
-        rep(/<font\s[^<>]*?class=\"marginLeft(\d*)\"[^<>]*?>([^<>]*?)<\/font>/gi, "[indent=$1]$2[/indent]");
-        rep(/<p\s[^<>]*?class=\"leftText\"([^<>]*)?>([^<>]*?)<\/p>/gi, "[left]$2[/left]");
-        rep(/<p\s[^<>]*?class=\"rightText\"([^<>]*)?>([^<>]*?)<\/p>/gi, "[right]$2[/right]");
-        rep(/<p\s[^<>]*?class=\"centerText\"([^<>]*)?>([^<>]*?)<\/p>/gi, "[center]$2[/center]");
-        rep(/<font\s[^<>]*?class=\"highlight\"([^<>]*)?>([^<>]*?)<\/font>/gi, "[highlight]$2[/highlight]");
-        rep(/<div\s[^<>]*?class=\"code\"([^<>]*)?>([^<>]*?)<\/div>/gi, "[code]$2[/code]");
-        rep(/<div\s[^<>]*?class=\"quote\"([^<>]*)?><div\s[^<>]*?class=\"quote_title\"[^<>]*?>Quote:<\/div><blockquote>([^<>]*?)<\/blockquote><\/div>/gi, "[quote]$2[/quote]");
-        rep(/<div\s[^<>]*?class=\"quote\"([^<>]*)?><div\s[^<>]*?class=\"quote_title\"[^<>]*?>([^<>]*?):<\/div><blockquote>([^<>]*?)<\/blockquote><\/div>/gi, "[quote=\"$2\"]$3[/quote]");
+    var doit = true;
 
-        if (sc == content)
-            rep(/<font[^<>]*>([^<>]*?)<\/font>/gi, "$1");
-        rep(/<a\s[^<>]*?href=\"?([^<>]*?)\"?(\s[^<>]*)?>([^<>]*?)<\/a>/gi, "[url=$1]$3[/url]");
-        sc2 = content;
-        rep(/<(span|blockquote|pre)\s[^<>]*?style=\"?font-weight: ?bold;?\"?\s*([^<]*?)<\/\1>/gi, "[b]<$1 style=$2</$1>[/b]");
-        rep(/<(span|blockquote|pre)\s[^<>]*?style=\"?font-weight: ?normal;?\"?\s*([^<]*?)<\/\1>/gi, "<$1 style=$2</$1>");
-        rep(/<(span|blockquote|pre)\s[^<>]*?style=\"?font-style: ?italic;?\"?\s*([^<]*?)<\/\1>/gi, "[i]<$1 style=$2</$1>[/i]");
-        rep(/<(span|blockquote|pre)\s[^<>]*?style=\"?font-style: ?normal;?\"?\s*([^<]*?)<\/\1>/gi, "<$1 style=$2</$1>");
-        rep(/<(span|blockquote|pre)\s[^<>]*?style=\"?text-decoration: ?underline;?\"?\s*([^<]*?)<\/\1>/gi, "[u]<$1 style=$2</$1>[/u]");
-        rep(/<(span|blockquote|pre)\s[^<>]*?style=\"?text-decoration: ?none;?\"?\s*([^<]*?)<\/\1>/gi, "<$1 style=$2</$1>");
-        rep(/<(span|blockquote|pre)\s[^<>]*?style=\"?color: ?([^<>]*?);\"?\s*([^<]*?)<\/\1>/gi, "[color=$2]<$1 style=$3</$1>[/color]");
-        rep(/<(span|blockquote|pre)\s[^<>]*?style=\"?font-family: ?([^<>]*?);\"?\s*([^<]*?)<\/\1>/gi, "[font=$2]<$1 style=$3</$1>[/font]");
-        rep(/<(blockquote|pre)\s[^<>]*?style=\"?\"? (class=|id=)([^<>]*)>([^<>]*?)<\/\1>/gi, "<$1 $2$3>$4</$1>");
-        rep(/<span\s[^<>]*?style=\"?\"?>([^<>]*?)<\/span>/gi, "$1");
-        if (sc2 == content) {
-            rep(/<span[^<>]*>([^<>]*?)<\/span>/gi, "$1");
-            sc2 = content;
-        }
-    } while (sc != content)
+    while (doit) {
+        var reglt = /<([^<>]*?)>/gi;
+        var reggt = /<\/([^<>]*?)>/gi;
 
-    rep(/<div><br(\s[^<>]*)?>/gi, "<div>");//chrome-safari fix to prevent double linefeeds
-    rep(/<\/div>\s*<div([^<>]*)>/gi, "</span>\n<span$1>");//chrome-safari fix to prevent double linefeeds
-    rep(/<div([^<>]*)>/gi, "\n<span$1>");
-    rep(/<\/div>/gi, "</span>\n");
+        doit = reglt.exec(content) != null || reggt.exec(content) != null;
 
-    rep(/<[^<>]*>/gi, "");
+        rep(/<img\s[^<>]*?src=\"?([^<>]*?)\"?(\s[^<>]*)?\/?>/gi, "[img]$1[/img]");
+
+        rep(/<\/b>/gi, "[/b]");
+        rep(/<b(\s[^<>]*)?>/gi, "[b]");
+
+        rep(/<\/i>/gi, "[/i]");
+        rep(/<i(\s[^<>]*)?>/gi, "[i]");
+
+        rep(/<u(\s[^<>]*)?>/gi, "[u]");
+        rep(/<\/u>/gi, "[/u]");
+
+        rep(/<span\s[^<>]*?style=\"text-decoration: line-through;\"(\s[^<>]*)?>(.*?)<\/span>/gi, "[s]$2[/s]");
+        rep(/<span\s[^<>]*?style=\"font-weight: bold;\"(\s[^<>]*)?>(.*?)<\/span>/gi, "[b]$2[/b]");
+        rep(/<span\s[^<>]*?style=\"font-style: italic;\"(\s[^<>]*)?>(.*?)<\/span>/gi, "[i]$2[/i]");
+        rep(/<span\s[^<>]*?style=\"text-decoration: underline;\"(\s[^<>]*)?>(.*?)<\/span>/gi, "[u]$2[/u]");
+
+        //rep(/\n/gi, " ");
+        //rep(/\r/gi, " ");
+
+        rep(/<br(\s[^<>]*)?>/gi, "\n");
+        /*rep(/<p(\s[^<>]*)?>/gi, "");
+         rep(/<\/p>/gi, "\n");*/ //todo \n
+
+        rep(/<ul>/gi, "[list]");
+        rep(/<\/ul>/gi, "[/list]");
+
+        rep(/<li>/gi, "[*]");
+        rep(/<\/li>/gi, ""); //todo \n
+
+        rep(/&nbsp;/gi, " ");
+        rep(/&quot;/gi, "\"");
+        rep(/&amp;/gi, "&");
+
+        rep(/<font\s[^<>]*?color=\"#?([^<>]*?)\"?(\s[^<>]*)?>(.*?)<\/font>/gi, "[color=$1]$3[/color]");
+        rep(/<font\s[^<>]*?class=\"textSize(\d*)\"[^<>]*?>(.*?)<\/font>/gi, "[size=$1]$2[/size]");
+        rep(/<font\s[^<>]*?class=\"marginLeft(\d*)\"[^<>]*?>(.*?)<\/font>/gi, "[indent=$1]$2[/indent]");
+
+        rep(/<p\s[^<>]*?class=\"leftText\"([^<>]*)?>(.*?)<\/p>/gi, "[left]$2[/left]");
+        rep(/<p\s[^<>]*?class=\"rightText\"([^<>]*)?>(.*?)<\/p>/gi, "[right]$2[/right]");
+        rep(/<p\s[^<>]*?class=\"centerText\"([^<>]*)?>(.*?)<\/p>/gi, "[center]$2[/center]");
+
+        rep(/<font\s[^<>]*?class=\"highlight\"([^<>]*)?>(.*?)<\/font>/gi, "[highlight]$2[/highlight]");
+
+        rep(/<div\s[^<>]*?class=\"code\"([^<>]*)?>(.*?)<\/div>/gi, "[code]$2[/code]");
+
+        rep(/<div\s[^<>]*?class=\"quote\"([^<>]*)?><div\s[^<>]*?class=\"quote_title\"[^<>]*?>Quote:<\/div><blockquote>(.*?)<\/blockquote><\/div>/gi, "[quote]$2[/quote]");
+        rep(/<div\s[^<>]*?class=\"quote\"([^<>]*)?><div\s[^<>]*?class=\"quote_title\"[^<>]*?>([^<>]*?):<\/div><blockquote>(.*?)<\/blockquote><\/div>/gi, "[quote=\"$2\"]$3[/quote]");
+
+        rep(/<a\s[^<>]*?href=\"?([^<>]*?)\"?(\s[^<>]*)?>(.*?)<\/a>/gi, "[url=$1]$3[/url]");
+    }
+
     rep(/&lt;/gi, "<");
     rep(/&gt;/gi, ">");
 
-    do {
-        sc = content;
-        rep(/\[(b|i|u)\]\[quote([^\]]*)\]([\s\S]*?)\[\/quote\]\[\/\1\]/gi, "[quote$2][$1]$3[/$1][/quote]");
-        rep(/\[color=([^\]]*)\]\[quote([^\]]*)\]([\s\S]*?)\[\/quote\]\[\/color\]/gi, "[quote$2][color=$1]$3[/color][/quote]");
-        rep(/\[(b|i|u)\]\[code\]([\s\S]*?)\[\/code\]\[\/\1\]/gi, "[code][$1]$2[/$1][/code]");
-        rep(/\[color=([^\]]*)\]\[code\]([\s\S]*?)\[\/code\]\[\/color\]/gi, "[code][color=$1]$2[/color][/code]");
-    } while (sc != content)
-
-    //clean up empty tags
-    do {
-        sc = content;
-        rep(/\[b\]\[\/b\]/gi, "");
-        rep(/\[i\]\[\/i\]/gi, "");
-        rep(/\[u\]\[\/u\]/gi, "");
-        rep(/\[quote[^\]]*\]\[\/quote\]/gi, "");
-        rep(/\[code\]\[\/code\]/gi, "");
-        rep(/\[url=([^\]]+)\]\[\/url\]/gi, "");
-        rep(/\[size=([^\]]+)\]\[\/size\]/gi, "");
-        rep(/\[img\]\[\/img\]/gi, "");
-        rep(/\[color=([^\]]*)\]\[\/color\]/gi, "");
-    } while (sc != content)
 }
 
 function closeTags() {
@@ -297,9 +256,9 @@ function closeAllTags(text, tag) {
                 var regAbstactTagRes1 = regAbstactTag1.exec(tempText1);
                 if (regAbstactTagRes1 != null) {
                     var regAbstactTagIndex1 = regAbstactTag1.lastIndex;
-                    var prefAndTag1 = currentText.substring(0, intInd1+tempText1.length-regAbstactTagRes1[0].length);
-                    var cont1 = tempText1.substring(regAbstactTagIndex1-regAbstactTagRes1[0].length, tempText1.length);
-                    currentText = prefAndTag1  + "[/" + tag + "]"+ cont1;
+                    var prefAndTag1 = currentText.substring(0, intInd1 + tempText1.length - regAbstactTagRes1[0].length);
+                    var cont1 = tempText1.substring(regAbstactTagIndex1 - regAbstactTagRes1[0].length, tempText1.length);
+                    currentText = prefAndTag1 + "[/" + tag + "]" + cont1;
 
                 } else {
                     currentText = currentText + "[/" + tag + "]";
@@ -312,32 +271,34 @@ function closeAllTags(text, tag) {
 }
 
 function bbcode2html() {
-    // removing html tags
     rep(/\</gi, "&lt;");
     rep(/\>/gi, "&gt;");
 
     rep(/([\s\S]*?)\s*\[\/list\]/gi, "$1</li>[/list]");
     rep(/\[\*\]([\s\S]*?)\s*\[\*\]/gi, "<li>$1</li><li>");
     rep(/\[\*\]([\s\S]*?)\s*<\/li>/gi, "<li>$1</li>");
+
     rep(/\[list\]/gi, "<ul>");
     rep(/\[\/list\]/gi, "</ul>");
+
     rep(/\n/gi, "<br />");
+
     if (browser) {
-        rep(/\[b\]/gi, "<strong>");
-        rep(/\[\/b\]/gi, "</strong>");
-        rep(/\[i\]/gi, "<em>");
-        rep(/\[\/i\]/gi, "</em>");
+        rep(/\[b\]/gi, "<b>");
+        rep(/\[\/b\]/gi, "</b>");
+        rep(/\[i\]/gi, "<i>");
+        rep(/\[\/i\]/gi, "</i>");
         rep(/\[u\]/gi, "<u>");
         rep(/\[\/u\]/gi, "</u>");
-        rep(/\[s\]/gi, "<s>");
-        rep(/\[\/s\]/gi, "</s>");
     } else {
         rep(/\[b\]/gi, "<span style=\"font-weight: bold;\">");
         rep(/\[i\]/gi, "<span style=\"font-style: italic;\">");
         rep(/\[u\]/gi, "<span style=\"text-decoration: underline;\">");
-        rep(/\[s\]/gi, "<span style=\"text-decoration: line-through;\">");
-        rep(/\[\/(b|i|u|s)\]/gi, "</span>");
+        rep(/\[\/(b|i|u|s)\]/gi, "</span b='1'>");
     }
+
+    rep(/\[s\]/gi, "<span style=\"text-decoration: line-through;\">");
+    rep(/\[\/s\]/gi, "</span>");
 
     rep(/\[left\]/gi, '<p class="leftText">');
     rep(/\[right\]/gi, '<p class="rightText">');
@@ -347,6 +308,7 @@ function bbcode2html() {
     rep(/\[quote="([^\[\]]*?)"\](.*?)\[\/quote\]/gi, '<div class="quote"><div class="quote_title">$1:</div><blockquote>$2</blockquote></div>');
     rep(/\[quote\]/gi, '<div class="quote"><div class="quote_title">Quote:</div><blockquote>');
     rep(/\[\/quote\]/gi, "</blockquote></div>");
+
     rep(/\[code\]/gi, '<div class="code">');
     rep(/\[\/code\]/gi, "</div>");
 
@@ -354,105 +316,29 @@ function bbcode2html() {
     rep(/\[\/highlight\]/gi, "</font>");
 
     rep(/\[img\]([^\"]*?)\[\/img\]/gi, "<img src=\"$1\" />");
-    var sc;
-    do {
-        sc = content;
-        rep(/\[url=([^\]]+)\]([\s\S]*?)\[\/url\]/gi, "<a href=\"$1\">$2</a>");
-        rep(/\[url\]([\s\S]*?)\[\/url\]/gi, "<a href=\"$1\">$1</a>");
-        rep(/\[size=([^\]]+)\]([\s\S]*?)\[\/size\]/gi, '<font class="textSize$1">$2</font>');
-        rep(/\[indent=([^\]]+)\]([\s\S]*?)\[\/indent\]/gi, '<font class="marginLeft$1">$2</font>');
-        if (browser) {
-            rep(/\[color=([^\]]*?)\]([\s\S]*?)\[\/color\]/gi, "<font color=\"$1\">$2</font>");
-            rep(/\[font=([^\]]*?)\]([\s\S]*?)\[\/font\]/gi, "<font face=\"$1\">$2</font>");
-        } else {
-            rep(/\[color=([^\]]*?)\]([\s\S]*?)\[\/color\]/gi, "<span style=\"color: $1;\">$2</span>");
-            rep(/\[font=([^\]]*?)\]([\s\S]*?)\[\/font\]/gi, "<span style=\"font-family: $1;\">$2</span>");
-        }
-    } while (sc != content);
-}
 
-function doCheck() {
-    if (!editorVisible) {
-        ShowEditor();
-    }
-    content = myeditor.body.innerHTML;
-    html2bbcode();
-    document.getElementById(body_id).value = content;
-}
+    rep(/\[url=([^\]]+)\]([\s\S]*?)\[\/url\]/gi, "<a href=\"$1\">$2</a>");
+    rep(/\[url\]([\s\S]*?)\[\/url\]/gi, "<a href=\"$1\">$1</a>");
+    rep(/\[size=([^\]]+)\]([\s\S]*?)\[\/size\]/gi, '<font class="textSize$1">$2</font>');
+    rep(/\[indent=([^\]]+)\]([\s\S]*?)\[\/indent\]/gi, '<font class="marginLeft$1">$2</font>');
 
-function stopEvent(evt) {
-    evt || window.event;
-    if (evt.stopPropagation) {
-        evt.stopPropagation();
-        evt.preventDefault();
-    } else if (typeof evt.cancelBubble != "undefined") {
-        evt.cancelBubble = true;
-        evt.returnValue = false;
+    rep(/\[color=([^\]]*?)\]([\s\S]*?)\[\/color\]/gi, "<font color=\"$1\">$2</font>");
+    rep(/\[font=([^\]]*?)\]([\s\S]*?)\[\/font\]/gi, "<font face=\"$1\">$2</font>");
     }
-    return false;
-}
 
 function doQuote() {
-    if (editorVisible) {
-        ifm.contentWindow.focus();
-        if (isIE) {
-            textRange = ifm.contentWindow.document.selection.createRange();
-            var newTxt = "[quote]" + textRange.text + "[/quote]";
-            textRange.text = newTxt;
-        }
-        else {
-            var edittext = ifm.contentWindow.getSelection().getRangeAt(0);
-            var original = edittext.toString();
-            edittext.deleteContents();
-            edittext.insertNode(document.createTextNode("[quote]" + original + "[/quote]"));
-        }
-    }
-    else {
+    if (!editorVisible) {
         AddTag('[quote]', '[/quote]');
     }
 }
 
-function kp(e) {
-    if (isIE)
-        var k = e.keyCode;
-    else
-        var k = e.which;
-    if (k == 13) {
-        if (isIE) {
-            var r = myeditor.selection.createRange();
-            if (r.parentElement().tagName.toLowerCase() != "li") {
-                r.pasteHTML('<br/>');
-                if (r.move('character'))
-                    r.move('character', -1);
-                r.select();
-                stopEvent(e);
-                return false;
-            }
-        }
-    } else
-        enter = 0;
-}
-
-function InsertSmile(txt) {
-    InsertText(txt);
-    document.getElementById('divSmilies').style.display = 'none';
-}
-function InsertYoutube() {
-    InsertText("http://www.youtube.com/watch?v=XXXXXXXXXXX");
-}
 function InsertText(txt) {
-    if (editorVisible)
-        insertHtml(txt);
-    else
+    if (!editorVisible)
         textboxelement.value += txt;
 }
 
 function doClick(command) {
-    if (editorVisible) {
-        ifm.contentWindow.focus();
-        myeditor.execCommand(command, false, null);
-    }
-    else {
+    if (!editorVisible) {
         switch (command) {
             case 'bold':
                 AddTag('[b]', '[/b]');
@@ -491,24 +377,13 @@ function doClick(command) {
     }
 }
 
-function doColor(color) {
-    ifm.contentWindow.focus();
-    if (isIE) {
-        textRange = ifm.contentWindow.document.selection.createRange();
-        textRange.select();
-    }
-    myeditor.execCommand('forecolor', false, color);
-}
-
 function doSize() {
-    var listSizes = document.getElementById("select_size");
-    var selectedIndex = listSizes.selectedIndex;
-    if (selectedIndex >= 0) {
-        var size = listSizes.options[selectedIndex].value;
-        ifm.contentWindow.focus();
-        if (editorVisible) {
-            myeditor.execCommand('FontSize', false, size);
-        } else {
+    if (!editorVisible) {
+        var listSizes = document.getElementById("select_size");
+        var selectedIndex = listSizes.selectedIndex;
+        if (selectedIndex >= 0) {
+            var size = listSizes.options[selectedIndex].value;
+            ifm.contentWindow.focus();
             if (size > 0)
                 AddTag('[size=' + size + ']', '[/size]');
         }
@@ -526,14 +401,12 @@ function resetIndentSelector() {
 }
 
 function doIndent() {
-    var listIndents = document.getElementById("select_indent");
-    var selectedIndex = listIndents.selectedIndex;
-    if (selectedIndex >= 0) {
-        var indent = listIndents.options[selectedIndex].value;
-        ifm.contentWindow.focus();
-        if (editorVisible) {
-            myeditor.execCommand('FontIndent', false, indent);
-        } else {
+    if (!editorVisible) {
+        var listIndents = document.getElementById("select_indent");
+        var selectedIndex = listIndents.selectedIndex;
+        if (selectedIndex >= 0) {
+            var indent = listIndents.options[selectedIndex].value;
+            ifm.contentWindow.focus();
             if (indent > 0)
                 AddTag('[indent=' + indent + ']', '[/indent]');
         }
@@ -541,30 +414,9 @@ function doIndent() {
 }
 
 function doLink() {
-    ifm.contentWindow.focus();
-    var mylink = prompt("Enter a URL:", "http://");
-    if (editorVisible) {
-        if ((mylink != null) && (mylink != "")) {
-            if (isIE) { //IE
-                var range = ifm.contentWindow.document.selection.createRange();
-                if (range.text == '') {
-                    range.pasteHTML("<a href='" + mylink + "'>" + mylink + "</a>");
-                }
-                else
-                    myeditor.execCommand("CreateLink", false, mylink);
-            }
-            else if (window.getSelection) { //FF
-                var userSelection = ifm.contentWindow.getSelection().getRangeAt(0);
-                if (userSelection.toString().length == 0)
-                    myeditor.execCommand('inserthtml', false, "<a href='" + mylink + "'>" + mylink + "</a>");
-                else
-                    myeditor.execCommand("CreateLink", false, mylink);
-            }
-            else
-                myeditor.execCommand("CreateLink", false, mylink);
-        }
-    }
-    else {
+    if (!editorVisible) {
+        ifm.contentWindow.focus();
+        var mylink = prompt("Enter a URL:", "http://");
         if ((mylink != null) && (mylink != "")) {
             AddTag('[url=' + mylink + ']', '[/url]');
         }
@@ -572,26 +424,13 @@ function doLink() {
 }
 
 function doImage() {
-    ifm.contentWindow.focus();
-    myimg = prompt('Enter Image URL:', 'http://');
-    if (editorVisible) {
-        if ((myimg != null) && (myimg != "")) {
-            myeditor.execCommand('InsertImage', false, myimg);
-        }
-    }
-    else {
+    if (!editorVisible) {
+        ifm.contentWindow.focus();
+        myimg = prompt('Enter Image URL:', 'http://');
         if ((myimg != null) && (myimg != "")) {
             AddTag('[img]' + myimg + '[/img]', '');
         }
     }
-}
-
-function insertHtml(html) {
-    ifm.contentWindow.focus();
-    if (isIE)
-        ifm.contentWindow.document.selection.createRange().pasteHTML(html);
-    else
-        myeditor.execCommand('inserthtml', false, html);
 }
 
 //textarea-mode functions
@@ -725,7 +564,7 @@ function getTop2() {
     return ctop;
 }
 var nocol1 = "&#78;&#79;&#32;&#67;&#79;&#76;&#79;&#82;",
-        clos1 = "X";
+    clos1 = "X";
 
 function getLeft2() {
     var csBrWt = 0;
@@ -742,7 +581,8 @@ function getLeft2() {
 
 //function setCCbldID2(val, textBoxID) { document.getElementById(textBoxID).value = val; }
 function setCCbldID2(val) {
-    if (editorVisible) doColor(val); else AddTag('[color=' + val + ']', '[/color]');
+    if (!editorVisible)
+        AddTag('[color=' + val + ']', '[/color]');
 }
 
 function setCCbldSty2(objID, prop, val) {
@@ -778,33 +618,35 @@ function putOBJxColor2(Samp, pigMent, textBoxId) {
 }
 
 function showColorGrid2(Sam, textBoxId) {
-    var objX = new Array('00', '33', '66', '99', 'CC', 'FF');
-    var c = 0;
-    var xl = '"' + Sam + '","x", "' + textBoxId + '"';
-    var mid = '';
-    mid += '<table bgcolor="#FFFFFF" border="0" cellpadding="0" cellspacing="0" style="border:solid 0px #F0F0F0;padding:2px;"><tr>';
-    mid += "<td colspan='9' align='left' style='margin:0;padding:2px;height:12px;' ><input class='o5582n66' type='text' size='12' id='o5582n66' value='#FFFFFF'><input class='o5582n66a' type='text' size='2' style='width:14px;' id='o5582n66a' onclick='javascript:alert(\"click on selected swatch below...\");' value='' style='border:solid 1px #666;'></td><td colspan='9' align='right'><a class='o5582n66' href='javascript:onclick=putOBJxColor2(" + xl + ")'><span class='a01p3'>" + clos1 + "</span></a></td></tr><tr>";
-    var br = 1;
-    for (o = 0; o < 6; o++) {
-        mid += '</tr><tr>';
-        for (y = 0; y < 6; y++) {
-            if (y == 3) {
-                mid += '</tr><tr>';
-            }
-            for (x = 0; x < 6; x++) {
-                var grid = '';
-                grid = objX[o] + objX[y] + objX[x];
-                var b = "'" + Sam + "','" + grid + "', '" + textBoxId + "'";
-                mid += '<td class="o5582brd" style="background-color:#' + grid + '"><a class="o5582n66"  href="javascript:onclick=putOBJxColor2(' + b + ');" onmouseover=javascript:document.getElementById("o5582n66").value="#' + grid + '";javascript:document.getElementById("o5582n66a").style.backgroundColor="#' + grid + '";  title="#' + grid + '"><div style="width:12px;height:14px;"></div></a></td>';
-                c++;
+    if (!editorVisible) {
+        var objX = new Array('00', '33', '66', '99', 'CC', 'FF');
+        var c = 0;
+        var xl = '"' + Sam + '","x", "' + textBoxId + '"';
+        var mid = '';
+        mid += '<table bgcolor="#FFFFFF" border="0" cellpadding="0" cellspacing="0" style="border:solid 0px #F0F0F0;padding:2px;"><tr>';
+        mid += "<td colspan='9' align='left' style='margin:0;padding:2px;height:12px;' ><input class='o5582n66' type='text' size='12' id='o5582n66' value='#FFFFFF'><input class='o5582n66a' type='text' size='2' style='width:14px;' id='o5582n66a' onclick='javascript:alert(\"click on selected swatch below...\");' value='' style='border:solid 1px #666;'></td><td colspan='9' align='right'><a class='o5582n66' href='javascript:onclick=putOBJxColor2(" + xl + ")'><span class='a01p3'>" + clos1 + "</span></a></td></tr><tr>";
+        var br = 1;
+        for (o = 0; o < 6; o++) {
+            mid += '</tr><tr>';
+            for (y = 0; y < 6; y++) {
+                if (y == 3) {
+                    mid += '</tr><tr>';
+                }
+                for (x = 0; x < 6; x++) {
+                    var grid = '';
+                    grid = objX[o] + objX[y] + objX[x];
+                    var b = "'" + Sam + "','" + grid + "', '" + textBoxId + "'";
+                    mid += '<td class="o5582brd" style="background-color:#' + grid + '"><a class="o5582n66"  href="javascript:onclick=putOBJxColor2(' + b + ');" onmouseover=javascript:document.getElementById("o5582n66").value="#' + grid + '";javascript:document.getElementById("o5582n66a").style.backgroundColor="#' + grid + '";  title="#' + grid + '"><div style="width:12px;height:14px;"></div></a></td>';
+                    c++;
+                }
             }
         }
+        mid += "</tr></table>";
+        //var ttop=getTop2();
+        //setCCbldSty2('colorpicker201','tp',ttop);
+        //document.getElementById('colorpicker201').style.left=getLeft2();
+        document.getElementById('colorpicker201').innerHTML = mid;
+        setCCbldSty2('colorpicker201', 'vs', 'visible');
+        setCCbldSty2('colorpicker201', 'ds', 'inline');
     }
-    mid += "</tr></table>";
-    //var ttop=getTop2();
-    //setCCbldSty2('colorpicker201','tp',ttop);
-    //document.getElementById('colorpicker201').style.left=getLeft2();
-    document.getElementById('colorpicker201').innerHTML = mid;
-    setCCbldSty2('colorpicker201', 'vs', 'visible');
-    setCCbldSty2('colorpicker201', 'ds', 'inline');
 }
