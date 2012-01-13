@@ -17,9 +17,9 @@ package org.jtalks.jcommune.web.view;
 
 import com.sun.syndication.feed.rss.Channel;
 import com.sun.syndication.feed.rss.Item;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.testng.annotations.BeforeMethod;
@@ -57,7 +57,7 @@ public class RssViewerTest {
         channel = new Channel();
         model = new HashMap<String, Object>();
         List<Topic> topics = new ArrayList<Topic>();
-        User user = new User("username", "email", "password");
+        JCUser user = new JCUser("username", "email", "password");
         user.setSignature("Signature");
         Post post = new Post(user,"sagjalighjh eghjwhjslhjsdfhdfhljdfh");
         topic = new Topic(user, "");

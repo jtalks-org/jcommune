@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.PrivateMessage;
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
@@ -335,7 +335,7 @@ public class PrivateMessageControllerTest {
     }
 
     private PrivateMessage getPrivateMessage() {
-        return new PrivateMessage(new User("username", "email", "password"),
-                new User("username2", "email2", "password2"), "title", "body");
+        return new PrivateMessage(new JCUser("username", "email", "password"),
+                new JCUser("username2", "email2", "password2"), "title", "body");
     }
 }

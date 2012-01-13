@@ -19,9 +19,9 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
-import org.jtalks.jcommune.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -57,8 +57,8 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
     private PrivateMessage notReadPm;
     private PrivateMessage readPm;
     private PrivateMessage draftPm;
-    private User author;
-    private User recipient;
+    private JCUser author;
+    private JCUser recipient;
 
     @BeforeMethod
     public void setUp() throws Exception {

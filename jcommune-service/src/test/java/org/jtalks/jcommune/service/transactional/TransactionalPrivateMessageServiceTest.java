@@ -15,9 +15,9 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
-import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
@@ -57,7 +57,7 @@ public class TransactionalPrivateMessageServiceTest {
     private static final String USERNAME = "username";
     private AclBuilder aclBuilder;
 
-    User user =new User(USERNAME, "email", "password");
+    JCUser user =new JCUser(USERNAME, "email", "password");
 
     @BeforeMethod
     public void setUp() throws Exception {

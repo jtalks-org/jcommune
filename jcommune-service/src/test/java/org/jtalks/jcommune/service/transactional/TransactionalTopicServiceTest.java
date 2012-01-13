@@ -18,9 +18,9 @@ import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -60,7 +60,7 @@ public class TransactionalTopicServiceTest {
     final String TOPIC_TITLE = "topic title";
     final String BRANCH_NAME = "branch name";
     private static final String USERNAME = "username";
-    private User user = new User(USERNAME, "email@mail.com", "password");
+    private JCUser user = new JCUser(USERNAME, "email@mail.com", "password");
     final String ANSWER_BODY = "Test Answer Body";
 
     private TopicService topicService;

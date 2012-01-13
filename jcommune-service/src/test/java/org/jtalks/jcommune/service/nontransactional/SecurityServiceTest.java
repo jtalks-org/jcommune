@@ -15,8 +15,8 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.security.AclBuilder;
 import org.jtalks.jcommune.service.security.AclManager;
 import org.jtalks.jcommune.service.security.SecurityConstants;
@@ -57,8 +57,8 @@ public class SecurityServiceTest {
     private SecurityContext securityContext;
     private AclManager aclManager;
 
-    private User getUser() {
-        return new User(USERNAME, "email", PASSWORD);
+    private JCUser getUser() {
+        return new JCUser(USERNAME, "email", PASSWORD);
     }
 
     @BeforeMethod
@@ -73,13 +73,13 @@ public class SecurityServiceTest {
 
     @Test
     public void testGetCurrentUser() throws Exception {
-        User user = getUser();
+        JCUser user = getUser();
         Authentication auth = mock(Authentication.class);
         when(auth.getPrincipal()).thenReturn(user);
         when(securityContext.getAuthentication()).thenReturn(auth);
         when(userDao.getByUsername(USERNAME)).thenReturn(user);
 
-        User result = securityService.getCurrentUser();
+        JCUser result = securityService.getCurrentUser();
 
         assertEquals(result.getUsername(), USERNAME, "Username not equals");
         verify(userDao).getByUsername(USERNAME);
@@ -87,13 +87,13 @@ public class SecurityServiceTest {
 
     @Test
     public void testCurrentUserUserDetailsAttributes(){
-        User user = getUser();
+        JCUser user = getUser();
         Authentication auth = mock(Authentication.class);
         when(auth.getPrincipal()).thenReturn(user);
         when(securityContext.getAuthentication()).thenReturn(auth);
         when(userDao.getByUsername(USERNAME)).thenReturn(user);
 
-        User result = securityService.getCurrentUser();
+        JCUser result = securityService.getCurrentUser();
 
         assertTrue(result.isAccountNonExpired());
         assertTrue(result.isAccountNonLocked());
@@ -107,16 +107,16 @@ public class SecurityServiceTest {
     public void testGetCurrentUserNotFound() throws Exception {
         when(securityContext.getAuthentication()).thenReturn(null);
 
-        User result = securityService.getCurrentUser();
+        JCUser result = securityService.getCurrentUser();
 
-        assertNull(result, "User not null");
+        assertNull(result, "JCUser not null");
         verify(securityContext).getAuthentication();
         verify(userDao, never()).getByUsername(USERNAME);
     }
 
     @Test
     public void testGetCurrentUserUsername() throws Exception {
-        User user = getUser();
+        JCUser user = getUser();
         Authentication auth = mock(Authentication.class);
         when(auth.getPrincipal()).thenReturn(user);
         when(securityContext.getAuthentication()).thenReturn(auth);
@@ -168,7 +168,7 @@ public class SecurityServiceTest {
 
     @Test
     public void testLoadUserByUsername() throws Exception {
-        User user = getUser();
+        JCUser user = getUser();
 
         when(userDao.getByUsername(USERNAME)).thenReturn(user);
 

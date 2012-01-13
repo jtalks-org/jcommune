@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.web.interceptors;
 
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +64,7 @@ public class UserDataInterceptor extends HandlerInterceptorAdapter {
             //todo: revise the common information we actualy need here
             int newPmCount = service.currentUserNewPmCount();
             request.setAttribute("newPmCount", newPmCount);
-            User user = securityService.getCurrentUser();
+            JCUser user = securityService.getCurrentUser();
 
             String encodedUserName = user != null ? user.getEncodedUsername() : null;
             request.setAttribute("encodedUserName", encodedUserName);

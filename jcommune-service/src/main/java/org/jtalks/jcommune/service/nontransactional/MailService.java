@@ -16,7 +16,7 @@ package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,7 +108,7 @@ public class MailService  {
      * @param user a person to be notified about updates by email
      * @param topic topic changed (to include more detailes in email)
      */
-    public void sendTopicUpdatesOnSubscription(User user, Topic topic) {
+    public void sendTopicUpdatesOnSubscription(JCUser user, Topic topic) {
         String url = this.getDeploymentRootUrl() + "/posts/" + topic.getLastPost().getId();
         try {
             this.sendEmail(
@@ -129,7 +129,7 @@ public class MailService  {
      * @param user a person to be notified about updates by email
      * @param branch branch changed (to include more detailes in email)
      */
-    public void sendBranchUpdatesOnSubscription(User user, Branch branch) {
+    public void sendBranchUpdatesOnSubscription(JCUser user, Branch branch) {
         String url = this.getDeploymentRootUrl() + "/branches/" + branch.getId();
         try {
             this.sendEmail(

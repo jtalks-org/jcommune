@@ -18,11 +18,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.BranchDao;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Section;
-import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -148,7 +145,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     @Test
     public void testDeleteTopicFromBranchCascade() {
         Branch branch = ObjectsFactory.getDefaultBranch();
-        User author = ObjectsFactory.getDefaultUser();
+        JCUser author = ObjectsFactory.getDefaultUser();
         session.save(author);
         Topic topic = new Topic(author, "title");
         Post post = new Post(author, "content");

@@ -18,8 +18,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -48,35 +48,33 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     @Autowired
     private SessionFactory sessionFactory;
     private Session session;
-    private User user;
 
     @BeforeMethod
     public void setUp() throws Exception {
         session = sessionFactory.getCurrentSession();
         ObjectsFactory.setSession(session);
-        user = ObjectsFactory.getDefaultUser();
     }
 
     /*===== Common methods =====*/
 
     @Test
     public void testSave() {
-        User user = ObjectsFactory.getDefaultUser();
+        JCUser user = ObjectsFactory.getDefaultUser();
 
         dao.saveOrUpdate(user);
 
         assertNotSame(user.getId(), 0, "Id not created");
 
         session.evict(user);
-        User result = (User) session.get(User.class, user.getId());
+        JCUser result = (JCUser) session.get(JCUser.class, user.getId());
 
         assertReflectionEquals(user, result);
     }
 
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void testSaveUserWithUniqueViolation() {
-        User user = ObjectsFactory.getDefaultUser();
-        User user2 = ObjectsFactory.getDefaultUser();
+        JCUser user = ObjectsFactory.getDefaultUser();
+        JCUser user2 = ObjectsFactory.getDefaultUser();
 
         dao.saveOrUpdate(user);
         dao.saveOrUpdate(user2);
@@ -84,10 +82,10 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
     @Test
     public void testGet() {
-        User user = ObjectsFactory.getDefaultUser();
+        JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
 
-        User result = dao.get(user.getId());
+        JCUser result = dao.get(user.getId());
 
         assertNotNull(result);
         assertEquals(result.getId(), user.getId());
@@ -95,7 +93,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
     @Test
     public void testGetInvalidId() {
-        User result = dao.get(-567890L);
+        JCUser result = dao.get(-567890L);
 
         assertNull(result);
     }
@@ -103,20 +101,20 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     @Test
     public void testUpdate() {
         String newName = "new name";
-        User user = ObjectsFactory.getDefaultUser();
+        JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
         user.setFirstName(newName);
 
         dao.saveOrUpdate(user);
         session.evict(user);
-        User result = (User) session.get(User.class, user.getId());//!
+        JCUser result = (JCUser) session.get(JCUser.class, user.getId());//!
 
         assertEquals(result.getFirstName(), newName);
     }
 
     @Test(expectedExceptions = DataIntegrityViolationException.class)
     public void testUpdateNotNullViolation() {
-        User user = ObjectsFactory.getDefaultUser();
+        JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
         user.setEmail(null);
 
@@ -125,7 +123,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
     @Test
     public void testDelete() {
-        User user = ObjectsFactory.getDefaultUser();
+        JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
 
         boolean result = dao.delete(user.getId());
@@ -146,10 +144,10 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
     @Test
     public void testGetByUsername() {
-        User user = ObjectsFactory.getDefaultUser();
+        JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
 
-        User result = dao.getByUsername(user.getUsername());
+        JCUser result = dao.getByUsername(user.getUsername());
 
         assertNotNull(result);
         assertReflectionEquals(user, result);
@@ -157,10 +155,10 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
     @Test
     public void testGetByEncodedUsername() {
-        User user = ObjectsFactory.getDefaultUser();
+        JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
 
-        User result = dao.getByEncodedUsername(user.getEncodedUsername());
+        JCUser result = dao.getByEncodedUsername(user.getEncodedUsername());
 
         assertNotNull(result);
         assertReflectionEquals(user, result);
@@ -168,17 +166,17 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
     @Test
     public void testGetByUsernameNotExist() {
-        User user = ObjectsFactory.getDefaultUser();
+        JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
 
-        User result = dao.getByUsername("Name");
+        JCUser result = dao.getByUsername("Name");
 
         assertNull(result);
     }
 
     @Test
     public void testFetchByEMail() {
-        User user = ObjectsFactory.getDefaultUser();
+        JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
         assertNotNull(dao.getByEmail(user.getEmail()));
     }
@@ -187,26 +185,26 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     public void testNullPostsOfUserCount() {
         session.save(ObjectsFactory.getDefaultUser());
 
-        User user = dao.getByEncodedUsername("username");
+        JCUser user = dao.getByEncodedUsername("username");
 
         assertEquals(user.getUserPostCount(), 0);
     }
 
     @Test
     public void testPostsOfUserCount() {
-        User user = ObjectsFactory.getDefaultUser();
+        JCUser user = ObjectsFactory.getDefaultUser();
         Post post = new Post(user, "first");
         List<Post> posts = new ArrayList<Post>();
         posts.add(post);
         session.save(user);
         session.save(post);
 
-        User userForDao = dao.getByUsername("username");
+        JCUser userForDao = dao.getByUsername("username");
 
         assertEquals(userForDao.getUserPostCount(), 1);
     }
 
     private int getCount() {
-        return ((Number) session.createQuery("select count(*) from User").uniqueResult()).intValue();
+        return ((Number) session.createQuery("select count(*) from JCUser").uniqueResult()).intValue();
     }
 }

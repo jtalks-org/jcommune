@@ -18,7 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.Language;
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.web.validation.Matches;
 
@@ -26,7 +26,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 /**
- * This dto used for transferring data in edit {@link User} profile operation.
+ * This dto used for transferring data in edit {@link org.jtalks.jcommune.model.entity.JCUser} profile operation.
  * To get more info see {@link org.jtalks.jcommune.web.controller.UserProfileController#editProfile}.
  *
  * @author Osadchuck Eugeny
@@ -42,10 +42,10 @@ public class EditUserProfileDto {
     private String email;
     private String firstName;
     private String lastName;
-    @Size(max = User.MAX_LAST_NAME_SIZE, message = "{validation.signature.length}")
+    @Size(max = JCUser.MAX_LAST_NAME_SIZE, message = "{validation.signature.length}")
     private String signature;
     private String currentUserPassword;
-    @Length(min = User.MIN_PASS_SIZE, max = User.MAX_PASS_SIZE)
+    @Length(min = JCUser.MIN_PASS_SIZE, max = JCUser.MAX_PASS_SIZE)
     private String newUserPassword;
     private String newUserPasswordConfirm;
     private Language language;
@@ -64,11 +64,11 @@ public class EditUserProfileDto {
 
     /**
      * Constructor which fills dto fields from user.
-     * Fields {@link User#getFirstName()}, {@link User#getLastName()}, {@link User#getEmail() will be copied.
+     * Fields {@link org.jtalks.jcommune.model.entity.JCUser#getFirstName()}, {@link org.jtalks.jcommune.model.entity.JCUser#getLastName()}, {@link org.jtalks.jcommune.model.entity.JCUser#getEmail() will be copied.
      *
      * @param user copying source
      */
-    public EditUserProfileDto(User user) {
+    public EditUserProfileDto(JCUser user) {
         firstName = user.getFirstName();
         lastName = user.getLastName();
         email = user.getEmail();

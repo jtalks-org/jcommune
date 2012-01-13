@@ -22,7 +22,7 @@ import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -102,7 +102,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
     private List<Topic> createAndSaveTopicList(int size) {
         List<Topic> topics = new ArrayList<Topic>();
-        User author = ObjectsFactory.getDefaultUser();
+        JCUser author = ObjectsFactory.getDefaultUser();
         session.save(author);
         Branch branch = ObjectsFactory.getDefaultBranch();
         for (int i = 0; i < size; i++) {
@@ -135,7 +135,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     }
 
     private void createAndSaveTopicsWithUnansweredTopics() {
-        User author = ObjectsFactory.getDefaultUser();
+        JCUser author = ObjectsFactory.getDefaultUser();
         session.save(author);
         Topic firstTopic = new Topic(author, "firstTopic");
         firstTopic.addPost(new Post(author, "first topic initial post"));

@@ -16,9 +16,8 @@ package org.jtalks.jcommune.service.nontransactional;
 
 
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
@@ -39,8 +38,8 @@ public class NotificationServiceTest {
 
     private NotificationService service;
 
-    private User user1 = new User("name1", "email1", "password1");
-    private User user2 = new User("name2", "email2", "password2");
+    private JCUser user1 = new JCUser("name1", "email1", "password1");
+    private JCUser user2 = new JCUser("name2", "email2", "password2");
     private Topic topic;
     private Branch branch;
 

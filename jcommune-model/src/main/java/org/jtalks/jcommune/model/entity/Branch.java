@@ -34,7 +34,7 @@ public class Branch extends Entity {
     private String description;
     private List<Topic> topics = new ArrayList<Topic>();
     private Section section;
-    private Set<User> subscribers = new HashSet<User>();
+    private Set<JCUser> subscribers = new HashSet<JCUser>();
 
     /**
      * For Hibernate use only
@@ -221,7 +221,7 @@ public class Branch extends Entity {
      *
      * @return users to send notifications on update to
      */
-    public Set<User> getSubscribers() {
+    public Set<JCUser> getSubscribers() {
         return subscribers;
     }
 
@@ -231,7 +231,7 @@ public class Branch extends Entity {
      *
      * @param subscribers users to send notifications on update to
      */
-    protected void setSubscribers(Set<User> subscribers) {
+    protected void setSubscribers(Set<JCUser> subscribers) {
         this.subscribers = subscribers;
     }
 

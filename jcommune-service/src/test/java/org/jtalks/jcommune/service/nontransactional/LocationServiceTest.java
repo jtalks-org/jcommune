@@ -14,8 +14,8 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
 import org.springframework.security.core.session.SessionRegistry;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -36,9 +36,9 @@ public class LocationServiceTest {
     private LocationService locationService;
     private SecurityService securityService;
     private SessionRegistry sessionRegistry;
-    private User user;
+    private JCUser user;
     List<Object> list;
-    Map<User, String> map;
+    Map<JCUser, String> map;
 
 
     @BeforeMethod
@@ -46,11 +46,11 @@ public class LocationServiceTest {
         securityService = mock(SecurityService.class);
         sessionRegistry = mock(SessionRegistry.class);
         locationService = new LocationService(securityService, sessionRegistry);
-        user = new User("", "", "");
+        user = new JCUser("", "", "");
         topic = new Topic(user, "");
         topic.setUuid("uuid");
         list = new ArrayList<Object>();
-        map = new ConcurrentHashMap<User, String>();
+        map = new ConcurrentHashMap<JCUser, String>();
     }
 
     @Test
@@ -68,7 +68,7 @@ public class LocationServiceTest {
     @Test
     public void testUserNotOnline() {
         when(securityService.getCurrentUser()).thenReturn(user);
-        User user1 = new User("", "", "");
+        JCUser user1 = new JCUser("", "", "");
         list.add(user1);
         when(sessionRegistry.getAllPrincipals()).thenReturn(list);
 

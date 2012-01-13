@@ -17,8 +17,8 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
@@ -44,7 +44,7 @@ public class TransactionalSubscriptionServiceTest {
 
     private TransactionalSubscriptionService service;
 
-    User user = new User("username", "email", "password");
+    JCUser user = new JCUser("username", "email", "password");
     Branch branch;
     Topic topic;
 

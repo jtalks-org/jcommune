@@ -16,9 +16,7 @@ package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.nontransactional.MailService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
+import org.jtalks.jcommune.model.entity.JCUser;
 
 /**
  * Send email notifications to the users subscribed.
@@ -52,9 +50,9 @@ public class NotificationService {
      * @param topic topic changed
      */
     public void topicChanged(Topic topic) {
-        User current = securityService.getCurrentUser();
+        JCUser current = securityService.getCurrentUser();
         this.branchChanged(topic.getBranch());
-        for (User user : topic.getSubscribers()) {
+        for (JCUser user : topic.getSubscribers()) {
             if (!user.equals(current)) {
                 mailService.sendTopicUpdatesOnSubscription(user, topic);
             }
@@ -69,8 +67,8 @@ public class NotificationService {
      * @param branch branch changed
      */
     public void branchChanged(Branch branch) {
-        User current = securityService.getCurrentUser();
-        for (User user : branch.getSubscribers()) {
+        JCUser current = securityService.getCurrentUser();
+        for (JCUser user : branch.getSubscribers()) {
             if (!user.equals(current)) {
                 mailService.sendBranchUpdatesOnSubscription(user, branch);
             }

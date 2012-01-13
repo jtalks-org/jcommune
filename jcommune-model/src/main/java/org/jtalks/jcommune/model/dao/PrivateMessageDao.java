@@ -15,8 +15,8 @@
 package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.common.model.dao.ParentRepository;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
-import org.jtalks.jcommune.model.entity.User;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public interface PrivateMessageDao extends ParentRepository<PrivateMessage> {
      * @param userFrom the sender
      * @return the list of messages
      */
-    List<PrivateMessage> getAllFromUser(User userFrom);
+    List<PrivateMessage> getAllFromUser(JCUser userFrom);
 
     /**
      * Get all private messages to the specified user.
@@ -44,7 +44,7 @@ public interface PrivateMessageDao extends ParentRepository<PrivateMessage> {
      * @param userTo the recipient of the messages
      * @return the list of messages
      */
-    List<PrivateMessage> getAllForUser(User userTo);
+    List<PrivateMessage> getAllForUser(JCUser userTo);
 
     /**
      * Get draft messages for user,
@@ -52,7 +52,7 @@ public interface PrivateMessageDao extends ParentRepository<PrivateMessage> {
      * @param user drafts author
      * @return list of draft messages
      */
-    List<PrivateMessage> getDraftsFromUser(User user);
+    List<PrivateMessage> getDraftsFromUser(JCUser user);
 
     /**
      * Get count of new (unread) messages for user.

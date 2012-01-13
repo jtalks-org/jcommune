@@ -14,8 +14,8 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Section;
-import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
@@ -115,7 +115,7 @@ public class SectionController {
     @RequestMapping(value = "/sections/{sectionId}", method = RequestMethod.GET)
     public ModelAndView branchList(@PathVariable("sectionId") long sectionId) throws NotFoundException {
         Section section = sectionService.get(sectionId);
-        User currentUser = securityService.getCurrentUser();
+        JCUser currentUser = securityService.getCurrentUser();
 
         List<String> viewList = locationService.getUsersViewing(section);
 

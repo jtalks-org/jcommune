@@ -48,11 +48,11 @@ public class PostTest {
     Post post;
     Post post1;
     Topic topic;
-    User user;
+    JCUser user;
 
     @BeforeMethod
     public void init() {
-        user = new User("username","email","password");
+        user = new JCUser("username","email","password");
         post = new Post(user, "post");
         post1 = new Post(user, "post1");
         topic = new Topic(user, "");

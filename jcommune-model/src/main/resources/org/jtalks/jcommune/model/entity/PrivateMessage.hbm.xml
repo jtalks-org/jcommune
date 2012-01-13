@@ -26,9 +26,9 @@
       <generator class="native"/>
     </id>
     <property column="UUID" name="uuid" unique="true" not-null="true"/>
-    <many-to-one name="userFrom" class="User" column="USER_FROM"
+    <many-to-one name="userFrom" class="JCUser" column="USER_FROM"
                  foreign-key="FK_USER_FROM" not-null="true"/>
-    <many-to-one name="userTo" class="User" column="USER_TO"
+    <many-to-one name="userTo" class="JCUser" column="USER_TO"
                  foreign-key="FK_USER_TO" not-null="true"/>
     <property name="creationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
               column="CREATION_DATE" not-null="true"/>

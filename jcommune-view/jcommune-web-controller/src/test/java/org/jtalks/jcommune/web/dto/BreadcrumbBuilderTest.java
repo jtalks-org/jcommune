@@ -41,7 +41,7 @@ public class BreadcrumbBuilderTest {
     public void setUp() throws Exception {
         breadcrumbBuilder = new BreadcrumbBuilder();
 
-        User user = new User("user", "mail@mail.com", "password");
+        JCUser user = new JCUser("user", "mail@mail.com", "password");
 
         section = new Section("Section Name");
         section.setId(ID);

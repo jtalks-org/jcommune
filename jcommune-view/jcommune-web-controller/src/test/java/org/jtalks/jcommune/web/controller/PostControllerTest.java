@@ -14,9 +14,9 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -102,7 +102,7 @@ public class PostControllerTest {
 
     @Test
     public void editPost() throws NotFoundException {
-        User user = new User("username", "email@mail.com", "password");
+        JCUser user = new JCUser("username", "email@mail.com", "password");
         Topic topic = new Topic(user, "title");
         topic.setId(TOPIC_ID);
         Post post = new Post(user, "content");
@@ -172,7 +172,7 @@ public class PostControllerTest {
 
     @Test
     public void testQuotedAnswer() throws NotFoundException {
-        User user = new User("user", null, null);
+        JCUser user = new JCUser("user", null, null);
         Post post = new Post(user, POST_CONTENT);
         topic.addPost(post);
         when(postService.get(anyLong())).thenReturn(post);
@@ -187,7 +187,7 @@ public class PostControllerTest {
     @Test
     public void testPartialQuotedAnswer() throws NotFoundException {
         String selection = "selected content";
-        User user = new User("user", null, null);
+        JCUser user = new JCUser("user", null, null);
         Post post = new Post(user, POST_CONTENT);
         topic.addPost(post);
         when(postService.get(anyLong())).thenReturn(post);

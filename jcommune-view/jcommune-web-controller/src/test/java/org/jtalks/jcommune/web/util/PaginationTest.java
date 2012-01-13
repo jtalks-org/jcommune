@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.web.util;
 
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -26,13 +26,13 @@ import static org.testng.Assert.assertEquals;
 public class PaginationTest {
     private Pagination pagination;
 
-    private User user;
+    private JCUser user;
 
     private static final int PAGE_SIZE = 5;
 
     @BeforeMethod
     protected void setUp() {
-        user = new User("", "", "");
+        user = new JCUser("", "", "");
         user.setPageSize(PAGE_SIZE);
 
     }
@@ -82,6 +82,6 @@ public class PaginationTest {
     @Test
     public void testReturnDefaultPageSizeForNullUser() {
         int pageSize = Pagination.getPageSizeFor(null);
-        assertEquals(pageSize, User.DEFAULT_PAGE_SIZE);
+        assertEquals(pageSize, JCUser.DEFAULT_PAGE_SIZE);
     }
 }

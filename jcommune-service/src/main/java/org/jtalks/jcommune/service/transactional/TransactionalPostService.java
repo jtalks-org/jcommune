@@ -18,7 +18,7 @@ import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
@@ -104,7 +104,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public List<Post> getPostsOfUser(User userCreated) {
+    public List<Post> getPostsOfUser(JCUser userCreated) {
         return this.getDao().getUserPosts(userCreated);
     }
 
@@ -200,9 +200,9 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     @Override
     public int calculatePageForPost(Post post) {
         Topic topic = post.getTopic();
-        User user = securityService.getCurrentUser();
+        JCUser user = securityService.getCurrentUser();
         int index = topic.getPosts().indexOf(post) + 1;
-        int pageSize = (user == null) ? User.DEFAULT_PAGE_SIZE : user.getPageSize();
+        int pageSize = (user == null) ? JCUser.DEFAULT_PAGE_SIZE : user.getPageSize();
         int pageNum = index / pageSize;
         if (index % pageSize == 0) {
             return pageNum;

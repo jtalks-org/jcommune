@@ -16,9 +16,9 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
@@ -64,13 +64,13 @@ public class TransactionalPostServiceTest {
 
     private PostService postService;
 
-    private User user;
+    private JCUser user;
 
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
         postService = new TransactionalPostService(postDao, topicDao, securityService, notificationService);
-        user = new User(USERNAME, EMAIL, PASSWORD);
+        user = new JCUser(USERNAME, EMAIL, PASSWORD);
         when(securityService.getCurrentUser()).thenReturn(user);
     }
 

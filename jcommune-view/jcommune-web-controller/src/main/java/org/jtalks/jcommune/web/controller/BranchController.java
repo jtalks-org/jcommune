@@ -18,7 +18,7 @@ package org.jtalks.jcommune.web.controller;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
@@ -99,7 +99,7 @@ public class BranchController {
 
         Branch branch = branchService.get(branchId);
         List<Topic> topics = branch.getTopics();
-        User currentUser = securityService.getCurrentUser();
+        JCUser currentUser = securityService.getCurrentUser();
 
         Pagination pag = new Pagination(page, currentUser, topics.size(), pagingEnabled);
         List<Breadcrumb> breadcrumbs = breadcrumbBuilder.getForumBreadcrumb(branch);
@@ -129,7 +129,7 @@ public class BranchController {
                                          HttpSession session) {
 
         DateTime lastLogin = (DateTime) session.getAttribute("lastlogin");
-        User currentUser = securityService.getCurrentUser();
+        JCUser currentUser = securityService.getCurrentUser();
         List<Topic> topics = topicService.getRecentTopics(lastLogin);
         Pagination pagination = new Pagination(page, currentUser, topics.size(), true);
 
@@ -147,7 +147,7 @@ public class BranchController {
     @RequestMapping(value = "/topics/unanswered", method = RequestMethod.GET)
     public ModelAndView unansweredTopicsPage(@RequestParam(value = PAGE, defaultValue = "1", required = false)
                                              Integer page) {
-        User currentUser = securityService.getCurrentUser();
+        JCUser currentUser = securityService.getCurrentUser();
         List<Topic> topics = topicService.getUnansweredTopics();
         Pagination pagination = new Pagination(page, currentUser, topics.size(), true);
 

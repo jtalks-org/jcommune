@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.web.util;
 
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -41,7 +41,7 @@ public class SuccessfulAuthenticationHandlerTest {
 
     @Test
     public void testOnAuthenticationSuccess() throws Exception {
-        User user = new User("username", "email", "password");
+        JCUser user = new JCUser("username", "email", "password");
         Authentication auth = mock(Authentication.class);
         when(auth.getPrincipal()).thenReturn(user);
 

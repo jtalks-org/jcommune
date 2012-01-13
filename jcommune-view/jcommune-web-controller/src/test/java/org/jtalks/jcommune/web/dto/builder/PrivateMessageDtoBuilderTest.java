@@ -14,8 +14,8 @@
  */
 package org.jtalks.jcommune.web.dto.builder;
 
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
-import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 import org.jtalks.jcommune.web.util.PrivateMessageDtoBuilder;
 import org.testng.annotations.BeforeMethod;
@@ -31,7 +31,7 @@ import static org.testng.Assert.assertTrue;
 public class PrivateMessageDtoBuilderTest {
     
     private PrivateMessageDtoBuilder pmDtoBuilder;
-    private User user = new User("username", "email", "password");
+    private JCUser user = new JCUser("username", "email", "password");
 
     private String BODY = "body";
     private String TITLE = "title";

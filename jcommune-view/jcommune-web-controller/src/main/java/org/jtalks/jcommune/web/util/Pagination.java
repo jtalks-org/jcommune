@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.web.util;
 
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class Pagination {
     private int page;
-    private int pageSize = User.DEFAULT_PAGE_SIZE;
+    private int pageSize = JCUser.DEFAULT_PAGE_SIZE;
     private int itemsCount;
     private boolean pagingEnabled;
 
@@ -38,7 +38,7 @@ public class Pagination {
      * @param itemsCount    total number of items
      * @param pagingEnabled paging status
      */
-    public Pagination(Integer page, User currentUser, int itemsCount, boolean pagingEnabled) {
+    public Pagination(Integer page, JCUser currentUser, int itemsCount, boolean pagingEnabled) {
         this.page = page;
         this.pageSize = Pagination.getPageSizeFor(currentUser);
         this.itemsCount = itemsCount;
@@ -142,7 +142,7 @@ public class Pagination {
      * @param user current user representation, may be null
      * @return page size for the current user or default if there is no user
      */
-    public static int getPageSizeFor(User user) {
-        return (user == null) ? User.DEFAULT_PAGE_SIZE : user.getPageSize();
+    public static int getPageSizeFor(JCUser user) {
+        return (user == null) ? JCUser.DEFAULT_PAGE_SIZE : user.getPageSize();
     }
 }

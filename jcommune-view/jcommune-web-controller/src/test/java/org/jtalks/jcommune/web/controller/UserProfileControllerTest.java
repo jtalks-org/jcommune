@@ -17,7 +17,7 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.UserService;
@@ -92,7 +92,7 @@ public class UserProfileControllerTest {
 
     @Test
     public void testShow() throws Exception {
-        User user = new User("username", "email", "password");
+        JCUser user = new JCUser("username", "email", "password");
         user.setLanguage(LANGUAGE);
         //set expectations
         when(userService.getByUsername(USER_NAME)).thenReturn(user);
@@ -110,7 +110,7 @@ public class UserProfileControllerTest {
 
     @Test
     public void testEditProfilePage() throws NotFoundException, IOException {
-        User user = getUser();
+        JCUser user = getUser();
         //set expectations
         when(securityService.getCurrentUser()).thenReturn(user);
 
@@ -131,7 +131,7 @@ public class UserProfileControllerTest {
 
     @Test
     public void testEditProfile() throws Exception {
-        User user = getUser();
+        JCUser user = getUser();
         EditUserProfileDto userDto = getEditUserProfileDto();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
@@ -153,7 +153,7 @@ public class UserProfileControllerTest {
 
     @Test
     public void testEditProfileDuplicatedEmail() throws Exception {
-        User user = getUser();
+        JCUser user = getUser();
         when(securityService.getCurrentUser()).thenReturn(user);
         EditUserProfileDto userDto = getEditUserProfileDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
@@ -171,7 +171,7 @@ public class UserProfileControllerTest {
 
     @Test
     public void testEditProfileWrongPassword() throws Exception {
-        User user = getUser();
+        JCUser user = getUser();
         when(securityService.getCurrentUser()).thenReturn(user);
         EditUserProfileDto userDto = getEditUserProfileDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
@@ -195,7 +195,7 @@ public class UserProfileControllerTest {
 
     @Test
     public void testEditProfileValidationFail() throws Exception {
-        User user = getUser();
+        JCUser user = getUser();
         when(securityService.getCurrentUser()).thenReturn(user);
 
         EditUserProfileDto dto = getEditUserProfileDto();
@@ -217,7 +217,7 @@ public class UserProfileControllerTest {
 
     @Test
     public void testShowUserPostList() throws NotFoundException {
-        User user = new User("username", "email", "password");
+        JCUser user = new JCUser("username", "email", "password");
         user.setPageSize(5);
         Post post = mock(Post.class);
         Topic topic = mock(Topic.class);
@@ -260,7 +260,7 @@ public class UserProfileControllerTest {
     private EditUserProfileDto getEditUserProfileDto() {
         String NEW_PASSWORD = "newPassword";
 
-        User user = new User("username", EMAIL, PASSWORD);
+        JCUser user = new JCUser("username", EMAIL, PASSWORD);
         user.setFirstName(FIRST_NAME);
         user.setLastName(LAST_NAME);
         user.setSignature(SIGNATURE);
@@ -275,8 +275,8 @@ public class UserProfileControllerTest {
         return dto;
     }
 
-    private User getUser() throws IOException {
-        User newUser = new User(USER_NAME, EMAIL, PASSWORD);
+    private JCUser getUser() throws IOException {
+        JCUser newUser = new JCUser(USER_NAME, EMAIL, PASSWORD);
         newUser.setFirstName(FIRST_NAME);
         newUser.setLastName(LAST_NAME);
         newUser.setAvatar(avatarByteArray);

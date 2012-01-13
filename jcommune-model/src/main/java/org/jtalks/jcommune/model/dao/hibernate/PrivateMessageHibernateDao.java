@@ -16,9 +16,9 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateParentRepository;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
-import org.jtalks.jcommune.model.entity.User;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class PrivateMessageHibernateDao extends
      * {@inheritDoc}
      */
     @Override
-    public List<PrivateMessage> getAllFromUser(User userFrom) {
+    public List<PrivateMessage> getAllFromUser(JCUser userFrom) {
         return getSession().getNamedQuery("getAllFromUser")
                 .setCacheable(true)
                 .setParameter(STATUS, PrivateMessageStatus.DRAFT)
@@ -49,7 +49,7 @@ public class PrivateMessageHibernateDao extends
      * {@inheritDoc}
      */
     @Override
-    public List<PrivateMessage> getAllForUser(User userTo) {
+    public List<PrivateMessage> getAllForUser(JCUser userTo) {
         return getSession().getNamedQuery("getAllToUser")
                 .setCacheable(true)
                 .setParameter(STATUS, PrivateMessageStatus.DRAFT)
@@ -61,7 +61,7 @@ public class PrivateMessageHibernateDao extends
      * {@inheritDoc}
      */
     @Override
-    public List<PrivateMessage> getDraftsFromUser(User userFrom) {
+    public List<PrivateMessage> getDraftsFromUser(JCUser userFrom) {
         return getSession().getNamedQuery("getDraftsFromUser")
                 .setCacheable(true)
                 .setParameter(STATUS, PrivateMessageStatus.DRAFT)

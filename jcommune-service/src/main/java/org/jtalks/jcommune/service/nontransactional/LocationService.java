@@ -16,7 +16,7 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.common.model.entity.Entity;
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Component;
 
@@ -35,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LocationService {
     private SecurityService securityService;
     private SessionRegistry sessionRegistry;
-    private Map<User, String> registerUserMap = new ConcurrentHashMap<User, String>();
+    private Map<JCUser, String> registerUserMap = new ConcurrentHashMap<JCUser, String>();
 
     /**
      * @param securityService to figure out the current user
@@ -57,7 +57,7 @@ public class LocationService {
      */
     public List<String> getUsersViewing(Entity entity) {
         List<String> viewList = new ArrayList<String>();
-        User currentUser = securityService.getCurrentUser();
+        JCUser currentUser = securityService.getCurrentUser();
         /**
          * This condition does not allow Anonymous add to the map of active users.
          */
@@ -66,7 +66,7 @@ public class LocationService {
         }
 
         for (Object o : sessionRegistry.getAllPrincipals()) {
-            User user = (User) o;
+            JCUser user = (JCUser) o;
 
             if (entity.getUuid().equals(registerUserMap.get(user))) {
                 viewList.add(user.getEncodedUsername());

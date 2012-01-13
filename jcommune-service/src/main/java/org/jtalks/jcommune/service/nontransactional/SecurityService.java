@@ -16,7 +16,7 @@ package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.dao.UserDao;
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.security.AclBuilder;
 import org.jtalks.jcommune.service.security.AclBuilderImpl;
 import org.jtalks.jcommune.service.security.AclManager;
@@ -56,21 +56,21 @@ public class SecurityService implements UserDetailsService {
     }
 
     /**
-     * Get current authenticated {@link User}.
+     * Get current authenticated {@link org.jtalks.jcommune.model.entity.JCUser}.
      *
-     * @return current authenticated {@link User} or {@code null} if there is
-     *         no authenticated {@link User}.
-     * @see User
+     * @return current authenticated {@link org.jtalks.jcommune.model.entity.JCUser} or {@code null} if there is
+     *         no authenticated {@link org.jtalks.jcommune.model.entity.JCUser}.
+     * @see org.jtalks.jcommune.model.entity.JCUser
      */
-    public User getCurrentUser() {
+    public JCUser getCurrentUser() {
         return userDao.getByUsername(getCurrentUserUsername());
     }
 
     /**
-     * Get current authenticated {@link User} username.
+     * Get current authenticated {@link org.jtalks.jcommune.model.entity.JCUser} username.
      *
-     * @return current authenticated {@link User} username or {@code null} if there is
-     *         no authenticated {@link User}.
+     * @return current authenticated {@link org.jtalks.jcommune.model.entity.JCUser} username or {@code null} if there is
+     *         no authenticated {@link org.jtalks.jcommune.model.entity.JCUser}.
      */
     public String getCurrentUserUsername() {
         Authentication auth = securityContextFacade.getContext().getAuthentication();
@@ -163,9 +163,9 @@ public class SecurityService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) {
-        User user = userDao.getByUsername(username);
+        JCUser user = userDao.getByUsername(username);
         if (user == null) {
-            throw new UsernameNotFoundException("User not found: " + username);
+            throw new UsernameNotFoundException("JCUser not found: " + username);
         }
         return user;
     }

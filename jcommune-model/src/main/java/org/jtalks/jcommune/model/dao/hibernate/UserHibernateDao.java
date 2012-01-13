@@ -16,7 +16,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateParentRepository;
 import org.jtalks.jcommune.model.dao.UserDao;
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 
 /**
  * Hibernate implementation of UserDao.
@@ -26,15 +26,15 @@ import org.jtalks.jcommune.model.entity.User;
  * @author Evgeniy Naumenko
  * @author Kirill Afonin
  */
-public class UserHibernateDao extends AbstractHibernateParentRepository<User> implements UserDao {
+public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser> implements UserDao {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public User getByUsername(String username) {
-        User user = (User) getSession()
-                .createQuery("from User u where u.username = ?")
+    public JCUser getByUsername(String username) {
+        JCUser user = (JCUser) getSession()
+                .createQuery("from JCUser u where u.username = ?")
                 .setCacheable(true).setString(0, username)
                 .uniqueResult();
         if (user != null) {
@@ -47,9 +47,9 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<User> im
      * {@inheritDoc}
      */
     @Override
-    public User getByEncodedUsername(String encodedUsername) {
-        return (User) getSession()
-                .createQuery("from User u where u.encodedUsername = ?")
+    public JCUser getByEncodedUsername(String encodedUsername) {
+        return (JCUser) getSession()
+                .createQuery("from JCUser u where u.encodedUsername = ?")
                 .setCacheable(true).setString(0, encodedUsername)
                 .uniqueResult();
     }
@@ -58,8 +58,8 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<User> im
      * {@inheritDoc}
      */
     @Override
-    public User getByEmail(String email) {
-        return (User) getSession().createQuery("from User u where u.email = ?")
+    public JCUser getByEmail(String email) {
+        return (JCUser) getSession().createQuery("from JCUser u where u.email = ?")
                 .setCacheable(true)
                 .setString(0, email)
                 .uniqueResult();
@@ -74,7 +74,7 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<User> im
      * @param userCreated user created of post
      * @return count posts of user
      */
-    private int getCountPostOfUser(User userCreated) {
+    private int getCountPostOfUser(JCUser userCreated) {
         return ((Number) getSession().getNamedQuery("getCountPostOfUser")
                 .setCacheable(true)
                 .setEntity("userCreated", userCreated)

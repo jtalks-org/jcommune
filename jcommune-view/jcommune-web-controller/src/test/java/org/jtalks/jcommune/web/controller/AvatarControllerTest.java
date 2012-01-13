@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.UserService;
@@ -165,7 +165,7 @@ public class AvatarControllerTest {
 
     @Test
     public void testRemoveAvatar() throws IOException {
-        User user = getUser();
+        JCUser user = getUser();
         when(securityService.getCurrentUser()).thenReturn(user);
 
         ModelAndView mav = avatarController.removeAvatarFromCurrentUser();
@@ -177,7 +177,7 @@ public class AvatarControllerTest {
 
     @Test(dataProvider = "validData-XHR-provider")
     public void testRenderAvatar(byte[] avatar, Map<String, String> expectedData) throws Exception {
-        User user = getUser();
+        JCUser user = getUser();
         user.setAvatar(avatar);
         when(userService.getByEncodedUsername(Matchers.<String>any())).thenReturn(user);
         HttpServletResponse response = mock(HttpServletResponse.class);
@@ -263,15 +263,15 @@ public class AvatarControllerTest {
         };
     }
 
-    private User getUser() throws IOException {
-        User newUser = new User(USER_NAME, EMAIL, PASSWORD);
+    private JCUser getUser() throws IOException {
+        JCUser newUser = new JCUser(USER_NAME, EMAIL, PASSWORD);
         newUser.setFirstName(FIRST_NAME);
         newUser.setLastName(LAST_NAME);
         return newUser;
     }
 
-    private User getUserWithoutAvatar() throws IOException {
-        User newUser = new User(USER_NAME, EMAIL, PASSWORD);
+    private JCUser getUserWithoutAvatar() throws IOException {
+        JCUser newUser = new JCUser(USER_NAME, EMAIL, PASSWORD);
         newUser.setFirstName(FIRST_NAME);
         newUser.setLastName(LAST_NAME);
         newUser.setAvatar(null);

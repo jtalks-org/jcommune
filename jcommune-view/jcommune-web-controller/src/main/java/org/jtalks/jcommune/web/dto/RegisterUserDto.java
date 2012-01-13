@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.web.validation.Matches;
 import org.jtalks.jcommune.web.validation.Unique;
 
@@ -23,7 +23,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 /**
- * DTO for {@link User} object. Required for validation and binding
+ * DTO for {@link org.jtalks.jcommune.model.entity.JCUser} object. Required for validation and binding
  * errors to form. This dto used for register user operation
  * {@link org.jtalks.jcommune.web.controller.UserController#registerUser}.
  *
@@ -33,8 +33,8 @@ import javax.validation.constraints.Size;
 public class RegisterUserDto {
 
     @NotBlank(message = "{validation.username.notblank}")
-    @Size(min = User.MIN_NAME_SIZE, max = User.MAX_NAME_SIZE, message = "{validation.username.length}")
-    @Unique(hql = "from User user where user.username = ?", message = "{validation.duplicateuser}")
+    @Size(min = JCUser.MIN_NAME_SIZE, max = JCUser.MAX_NAME_SIZE, message = "{validation.username.length}")
+    @Unique(hql = "from JCUser user where user.username = ?", message = "{validation.duplicateuser}")
     private String username;
 
     @NotBlank(message = "{validation.email.notblank}")
@@ -42,11 +42,11 @@ public class RegisterUserDto {
             "*\\@((\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}(\\:\\d{1,3})?)|(((([a-zA-Z0-9][a-zA-Z0-9\\-]" +
             "+[a-zA-Z0-9])|([a-zA-Z0-9]{1,2}))[\\.]{1})+([a-zA-Z]{2,6})))$",
             message = "{validation.email.wrong.format}")
-    @Unique(hql = "from User user where user.email = ?", message = "{validation.duplicateemail}")
+    @Unique(hql = "from JCUser user where user.email = ?", message = "{validation.duplicateemail}")
     private String email;
 
     @NotBlank(message = "{validation.password.notblank}")
-    @Size(min = User.MIN_PASS_SIZE, max = User.MAX_PASS_SIZE)
+    @Size(min = JCUser.MIN_PASS_SIZE, max = JCUser.MAX_PASS_SIZE)
     private String password;
 
     @NotBlank(message = "{validation.password.confirm.notblank}")
@@ -123,11 +123,11 @@ public class RegisterUserDto {
     }
 
     /**
-     * Populate {@link User} from fields.
+     * Populate {@link org.jtalks.jcommune.model.entity.JCUser} from fields.
      *
-     * @return populated {@link User} object
+     * @return populated {@link org.jtalks.jcommune.model.entity.JCUser} object
      */
-    public User createUser() {
-        return new User(username, email, password);
+    public JCUser createUser() {
+        return new JCUser(username, email, password);
     }
 }

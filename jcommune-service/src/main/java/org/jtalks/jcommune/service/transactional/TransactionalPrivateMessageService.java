@@ -15,9 +15,9 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
-import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.nontransactional.UserDataCacheService;
@@ -69,7 +69,7 @@ public class TransactionalPrivateMessageService
      */
     @Override
     public List<PrivateMessage> getInboxForCurrentUser() {
-        User currentUser = securityService.getCurrentUser();
+        JCUser currentUser = securityService.getCurrentUser();
         return this.getDao().getAllForUser(currentUser);
     }
 
@@ -78,7 +78,7 @@ public class TransactionalPrivateMessageService
      */
     @Override
     public List<PrivateMessage> getOutboxForCurrentUser() {
-        User currentUser = securityService.getCurrentUser();
+        JCUser currentUser = securityService.getCurrentUser();
         return this.getDao().getAllFromUser(currentUser);
     }
 
@@ -89,7 +89,7 @@ public class TransactionalPrivateMessageService
     @Override
     @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
     public PrivateMessage sendMessage(String title, String body, String recipientUsername) throws NotFoundException {
-        User recipient = userService.getByUsername(recipientUsername);
+        JCUser recipient = userService.getByUsername(recipientUsername);
         PrivateMessage pm = populateMessage(title, body, recipient);
         pm.setStatus(PrivateMessageStatus.NOT_READ);
         this.getDao().saveOrUpdate(pm);
@@ -112,8 +112,8 @@ public class TransactionalPrivateMessageService
      * @return created {@link PrivateMessage}
      * @throws NotFoundException if current user of recipient not found
      */
-    private PrivateMessage populateMessage(String title, String body, User recipient) throws NotFoundException {
-        User userFrom = securityService.getCurrentUser();
+    private PrivateMessage populateMessage(String title, String body, JCUser recipient) throws NotFoundException {
+        JCUser userFrom = securityService.getCurrentUser();
         return new PrivateMessage(recipient, userFrom, title, body);
     }
 
@@ -133,7 +133,7 @@ public class TransactionalPrivateMessageService
      */
     @Override
     public List<PrivateMessage> getDraftsFromCurrentUser() {
-        User currentUser = securityService.getCurrentUser();
+        JCUser currentUser = securityService.getCurrentUser();
         return this.getDao().getDraftsFromUser(currentUser);
     }
 
@@ -144,7 +144,7 @@ public class TransactionalPrivateMessageService
     @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
     public PrivateMessage saveDraft(long id, String title, String body, String recipientUsername)
             throws NotFoundException {
-        User recipient = userService.getByUsername(recipientUsername);
+        JCUser recipient = userService.getByUsername(recipientUsername);
         PrivateMessage pm = populateMessage(title, body, recipient);
         pm.setId(id);
         pm.markAsDraft();
@@ -184,7 +184,7 @@ public class TransactionalPrivateMessageService
     @PreAuthorize("hasPermission(#id, 'org.jtalks.jcommune.model.entity.PrivateMessage', admin)")
     public PrivateMessage sendDraft(long id, String title, String body,
                                     String recipientUsername) throws NotFoundException {
-        User recipient = userService.getByUsername(recipientUsername);
+        JCUser recipient = userService.getByUsername(recipientUsername);
         PrivateMessage pm = populateMessage(title, body, recipient);
         pm.setId(id);
         pm.setStatus(PrivateMessageStatus.NOT_READ);

@@ -39,7 +39,7 @@
 
         <set name="subscribers" table="BRANCH_SUBSCRIPTIONS" cascade="all">
             <key column="BRANCH_ID"/>
-            <many-to-many column="USER_ID" class="org.jtalks.jcommune.model.entity.User"/>
+            <many-to-many column="USER_ID" class="org.jtalks.jcommune.model.entity.JCUser"/>
         </set>
 
     </class>

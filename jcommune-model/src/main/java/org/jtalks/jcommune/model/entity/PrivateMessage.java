@@ -37,8 +37,8 @@ public class PrivateMessage extends Entity {
     public static final int MIN_TITLE_LENGTH = 2;
 
     private DateTime creationDate;
-    private User userFrom;
-    private User userTo;
+    private JCUser userFrom;
+    private JCUser userTo;
     private String title;
     private String body;
 
@@ -58,7 +58,7 @@ public class PrivateMessage extends Entity {
      * @param title    message title
      * @param body     message content
      */
-    public PrivateMessage(User userTo, User userFrom, String title, String body) {
+    public PrivateMessage(JCUser userTo, JCUser userFrom, String title, String body) {
         this.creationDate = new DateTime();
         this.userFrom = userFrom;
         this.userTo = userTo;
@@ -125,7 +125,7 @@ public class PrivateMessage extends Entity {
      *
      * @return sender
      */
-    public User getUserFrom() {
+    public JCUser getUserFrom() {
         return userFrom;
     }
 
@@ -134,7 +134,7 @@ public class PrivateMessage extends Entity {
      *
      * @param userFrom sender
      */
-    protected void setUserFrom(User userFrom) {
+    protected void setUserFrom(JCUser userFrom) {
         this.userFrom = userFrom;
     }
 
@@ -143,7 +143,7 @@ public class PrivateMessage extends Entity {
      *
      * @return recipient
      */
-    public User getUserTo() {
+    public JCUser getUserTo() {
         return userTo;
     }
 
@@ -152,7 +152,7 @@ public class PrivateMessage extends Entity {
      *
      * @param userTo recipient of the message
      */
-    public void setUserTo(User userTo) {
+    public void setUserTo(JCUser userTo) {
         this.userTo = userTo;
     }
 

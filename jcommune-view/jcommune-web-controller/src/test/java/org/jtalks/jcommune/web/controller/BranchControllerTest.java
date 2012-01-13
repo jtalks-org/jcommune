@@ -16,8 +16,8 @@ package org.jtalks.jcommune.web.controller;
 
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
@@ -74,8 +74,8 @@ public class BranchControllerTest {
 
     @Test
     public void showPage() throws NotFoundException {
-        User user = new User("", "", "");
-        Map map = new HashMap<User, String>();
+        JCUser user = new JCUser("", "", "");
+        Map map = new HashMap<JCUser, String>();
         map.put(user, "");
         long branchId = 1L;
         int page = 2;
@@ -155,8 +155,8 @@ public class BranchControllerTest {
 
     @Test
     public void testViewList() throws NotFoundException {
-        User user = new User("", "", "");
-        Map map = new HashMap<User, String>();
+        JCUser user = new JCUser("", "", "");
+        Map map = new HashMap<JCUser, String>();
         map.put(user, "");
         long branchId = 1L;
         int page = 2;

@@ -32,7 +32,7 @@
                   column="MODIFICATION_DATE" not-null="false"/>
         <property name="postContent" type="text" column="POST_CONTENT" not-null="true"/>
 
-        <many-to-one name="userCreated" column="USER_CREATED" class="User" fetch="join"
+        <many-to-one name="userCreated" column="USER_CREATED" class="JCUser" fetch="join"
                      foreign-key="FK_USER" lazy="false" not-null="true"/>
         <many-to-one name="topic" column="TOPIC_ID" not-null="false"/>
     </class>

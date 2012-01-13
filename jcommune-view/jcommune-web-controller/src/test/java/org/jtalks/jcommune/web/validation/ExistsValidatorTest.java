@@ -14,23 +14,10 @@
  */
 package org.jtalks.jcommune.web.validation;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.dao.ValidatorDao;
-import org.jtalks.jcommune.model.entity.User;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
-import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.transaction.annotation.Transactional;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;

@@ -15,44 +15,44 @@
 package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.common.model.dao.ParentRepository;
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 
 /**
  * This interface provides persistence operations for
- * {@link User} objects.
+ * {@link org.jtalks.jcommune.model.entity.JCUser} objects.
  *
  * @author Pavel Vervenko
  * @author Kirill Afonin
  * @author Evgeniy Naumenko
  * @see org.jtalks.jcommune.model.dao.hibernate.UserHibernateDao
  */
-public interface UserDao extends ParentRepository<User> {
+public interface UserDao extends ParentRepository<JCUser> {
 
     /**
-     * Get {@link User} with corresponding username.
+     * Get {@link org.jtalks.jcommune.model.entity.JCUser} with corresponding username.
      *
      * @param username name of requested user.
-     * @return {@link User} with given username.
-     * @see User
+     * @return {@link org.jtalks.jcommune.model.entity.JCUser} with given username.
+     * @see org.jtalks.jcommune.model.entity.JCUser
      */
-    User getByUsername(String username);
+    JCUser getByUsername(String username);
 
     /**
-     * Get {@link User} with corresponding encodedUsername.
+     * Get {@link org.jtalks.jcommune.model.entity.JCUser} with corresponding encodedUsername.
      *
      * @param encodedUsername encoded name of requested user.
-     * @return {@link User} with given encodedUsername.
-     * @see User
+     * @return {@link org.jtalks.jcommune.model.entity.JCUser} with given encodedUsername.
+     * @see org.jtalks.jcommune.model.entity.JCUser
      */
-    User getByEncodedUsername(String encodedUsername);
+    JCUser getByEncodedUsername(String encodedUsername);
 
     /**
-     * Get {@link User} with e-mail given.
+     * Get {@link org.jtalks.jcommune.model.entity.JCUser} with e-mail given.
      *
      * @param email e-mail address set in user profile.
-     * @return {@link User} with given encodedUsername.
-     * @see User
+     * @return {@link org.jtalks.jcommune.model.entity.JCUser} with given encodedUsername.
+     * @see org.jtalks.jcommune.model.entity.JCUser
      */
-    User getByEmail(String email);
+    JCUser getByEmail(String email);
 
 }

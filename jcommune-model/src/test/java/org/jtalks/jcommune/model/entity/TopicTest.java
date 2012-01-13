@@ -18,8 +18,6 @@ import org.joda.time.DateTime;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.Collections;
-
 import static org.testng.Assert.*;
 
 public class TopicTest {
@@ -29,7 +27,7 @@ public class TopicTest {
 
     @BeforeMethod
     public void setUp() {
-        topic = new Topic(new User(), "title");
+        topic = new Topic(new JCUser(), "title");
         topic.addPost(post1);
         topic.addPost(post2);
     }

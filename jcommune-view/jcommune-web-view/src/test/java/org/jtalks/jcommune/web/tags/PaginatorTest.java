@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.web.tags;
 
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.mock.web.MockPageContext;
 import org.springframework.mock.web.MockServletContext;
@@ -35,7 +35,7 @@ public class PaginatorTest {
 
     private Paginator paginator;
     private MockPageContext pageContext;
-    private User user;
+    private JCUser user;
     private List list;
 
 
@@ -50,14 +50,14 @@ public class PaginatorTest {
 
         when(context.getServletContext()).thenReturn(servletContext);
 
-        user = new User("", "", "");
+        user = new JCUser("", "", "");
         user.setPageSize(5);
         list = Arrays.asList(1, 2, 3, 4, 5, 6);
     }
 
     @Test
     public void testElementsOfPage() {
-        User user = new User("", "", "");
+        JCUser user = new JCUser("", "", "");
         user.setPageSize(5);
         Pagination pagination = new Pagination(1, user, 6, true);
         paginator.setPagination(pagination);

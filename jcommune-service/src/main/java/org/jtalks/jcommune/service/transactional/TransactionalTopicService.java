@@ -18,9 +18,9 @@ import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
@@ -78,9 +78,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @Override
     @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
     public Post replyToTopic(long topicId, String answerBody) throws NotFoundException {
-        User currentUser = securityService.getCurrentUser();
+        JCUser currentUser = securityService.getCurrentUser();
         if (currentUser == null) { // it shouldn't happen because only registered user can have this roles
-            String msg = "User should log in to post answers.";
+            String msg = "JCUser should log in to post answers.";
             logger.error(msg);
             throw new IllegalStateException(msg);
         }
@@ -104,9 +104,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @Override
     @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
     public Topic createTopic(String topicName, String bodyText, long branchId) throws NotFoundException {
-        User currentUser = securityService.getCurrentUser();
+        JCUser currentUser = securityService.getCurrentUser();
         if (currentUser == null) { // it shouldn't happen because only registered user can have this roles
-            String msg = "User should log in to create topic.";
+            String msg = "JCUser should log in to create topic.";
             logger.error(msg);
             throw new IllegalStateException(msg);
         }

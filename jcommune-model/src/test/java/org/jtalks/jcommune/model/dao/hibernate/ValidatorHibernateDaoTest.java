@@ -43,7 +43,7 @@ public class ValidatorHibernateDaoTest extends AbstractTransactionalTestNGSpring
 
     @Test
     public void testResultSetisEmpty() {
-        assertTrue(dao.isResultSetEmpty("from User u where u.username = ?", "lol"));
+        assertTrue(dao.isResultSetEmpty("from JCUser u where u.username = ?", "lol"));
     }
 
     @Test
@@ -51,6 +51,6 @@ public class ValidatorHibernateDaoTest extends AbstractTransactionalTestNGSpring
         String realname = ObjectsFactory.getDefaultUser().getUsername();
         sessionFactory.getCurrentSession().saveOrUpdate(ObjectsFactory.getDefaultUser());
 
-        assertFalse(dao.isResultSetEmpty("from User u where u.username = ?", realname));
+        assertFalse(dao.isResultSetEmpty("from JCUser u where u.username = ?", realname));
     }
 }

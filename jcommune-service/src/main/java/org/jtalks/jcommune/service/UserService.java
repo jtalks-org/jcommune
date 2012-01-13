@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.service;
 
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
@@ -27,44 +27,44 @@ import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
  * @author Osadchuck Eugeny
  * @author Kirill Afonin
  */
-public interface UserService extends EntityService<User> {
+public interface UserService extends EntityService<JCUser> {
     /**
-     * Get {@link User} by username.
+     * Get {@link org.jtalks.jcommune.model.entity.JCUser} by username.
      *
      * @param username username of User
-     * @return {@link User} with given username
+     * @return {@link org.jtalks.jcommune.model.entity.JCUser} with given username
      * @throws NotFoundException if user not found
-     * @see User
+     * @see org.jtalks.jcommune.model.entity.JCUser
      */
-    User getByUsername(String username) throws NotFoundException;
+    JCUser getByUsername(String username) throws NotFoundException;
 
     /**
-     * Get {@link User} by encodedUsername.
+     * Get {@link org.jtalks.jcommune.model.entity.JCUser} by encodedUsername.
      *
      * @param encodedUsername encodedUsername of User
-     * @return {@link User} with given encodedUsername
+     * @return {@link org.jtalks.jcommune.model.entity.JCUser} with given encodedUsername
      * @throws NotFoundException if user not found
-     * @see User
+     * @see org.jtalks.jcommune.model.entity.JCUser
      */
-    User getByEncodedUsername(String encodedUsername) throws NotFoundException;
+    JCUser getByEncodedUsername(String encodedUsername) throws NotFoundException;
 
     /**
-     * Try to register {@link User} with given features.
+     * Try to register {@link org.jtalks.jcommune.model.entity.JCUser} with given features.
      *
      * @param user user for register
-     * @return registered {@link User}
-     * @see User
+     * @return registered {@link org.jtalks.jcommune.model.entity.JCUser}
+     * @see org.jtalks.jcommune.model.entity.JCUser
      */
-    User registerUser(User user);
+    JCUser registerUser(JCUser user);
 
 
     /**
      * Updates user last login time to current time.
      *
      * @param user user which must be updated
-     * @see User
+     * @see org.jtalks.jcommune.model.entity.JCUser
      */
-    void updateLastLoginTime(User user);
+    void updateLastLoginTime(JCUser user);
 
     /**
      * Update user entity.
@@ -74,7 +74,7 @@ public interface UserService extends EntityService<User> {
      * @throws DuplicateEmailException when user with given email already exist
      * @throws WrongPasswordException  when user enter wrong currentPassword
      */
-    User editUserProfile(UserInfoContainer info) throws DuplicateEmailException, WrongPasswordException;
+    JCUser editUserProfile(UserInfoContainer info) throws DuplicateEmailException, WrongPasswordException;
 
     /**
      * Remove current user's avatar.

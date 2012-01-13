@@ -21,10 +21,9 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
-import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.ArgumentCaptor;
@@ -37,8 +36,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Test for {@link MailService}.
@@ -57,7 +54,7 @@ public class MailServiceTest {
     private static final String USERNAME = "user";
     private static final String PASSWORD = "new_password";
 
-    private User user = new User(USERNAME, TO, PASSWORD);
+    private JCUser user = new JCUser(USERNAME, TO, PASSWORD);
     private Topic topic = new Topic(user, "title");
     private Branch branch = new Branch("title");
     private ArgumentCaptor<SimpleMailMessage> captor;

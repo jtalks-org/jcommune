@@ -103,7 +103,7 @@
                     <c:out value="${post.userCreated.username}"/></a>
 
                 <div class="status"><spring:message code="label.topic.online_users"/></div>
-
+                <%--We don't need additional HTTP-request for avatar if there is no avatar--%>
                 <c:if test="${post.userCreated.avatar != null}">
                     <img src="${pageContext.request.contextPath}/${post.userCreated.encodedUsername}/avatar"
                          alt="Аватар" class="avatar"/>

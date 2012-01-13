@@ -32,7 +32,7 @@ public class Post extends Entity {
 
     private DateTime creationDate;
     private DateTime modificationDate;
-    private User userCreated;
+    private JCUser userCreated;
     private String postContent;
     private Topic topic;
 
@@ -54,7 +54,7 @@ public class Post extends Entity {
      * @param userCreated user who create the post
      * @param postContent content of the post
      */
-    public Post(User userCreated, String postContent) {
+    public Post(JCUser userCreated, String postContent) {
         this.creationDate = new DateTime();
         this.userCreated = userCreated;
         this.postContent = postContent;
@@ -103,7 +103,7 @@ public class Post extends Entity {
     /**
      * @return the userCreated
      */
-    public User getUserCreated() {
+    public JCUser getUserCreated() {
         return userCreated;
     }
 
@@ -112,7 +112,7 @@ public class Post extends Entity {
      *
      * @param userCreated the userCreated to set
      */
-    protected void setUserCreated(User userCreated) {
+    protected void setUserCreated(JCUser userCreated) {
         this.userCreated = userCreated;
     }
 

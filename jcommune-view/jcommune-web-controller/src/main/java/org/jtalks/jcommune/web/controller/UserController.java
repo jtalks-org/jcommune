@@ -102,7 +102,7 @@ public class UserController {
     }
 
     /**
-     * Register {@link org.jtalks.jcommune.model.entity.User} from populated in form {@link RegisterUserDto}.
+     * Register {@link org.jtalks.jcommune.model.entity.JCUser} from populated in form {@link RegisterUserDto}.
      * <p/>
      * todo: redirect to the latest url we came from instead of root
      *

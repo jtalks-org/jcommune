@@ -16,7 +16,7 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.jtalks.jcommune.model.dao.UserDao;
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * @author Alexandre Teterin
  * @author Evgeniy Naumenko
  */
-public class TransactionalUserService extends AbstractTransactionalEntityService<User, UserDao>
+public class TransactionalUserService extends AbstractTransactionalEntityService<JCUser, UserDao>
         implements UserService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -65,10 +65,10 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public User getByUsername(String username) throws NotFoundException {
-        User user = this.getDao().getByUsername(username);
+    public JCUser getByUsername(String username) throws NotFoundException {
+        JCUser user = this.getDao().getByUsername(username);
         if (user == null) {
-            String msg = "User " + username + " not found.";
+            String msg = "JCUser " + username + " not found.";
             logger.info(msg);
             throw new NotFoundException(msg);
         }
@@ -79,10 +79,10 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public User getByEncodedUsername(String encodedUsername) throws NotFoundException {
-        User user = this.getDao().getByEncodedUsername(encodedUsername);
+    public JCUser getByEncodedUsername(String encodedUsername) throws NotFoundException {
+        JCUser user = this.getDao().getByEncodedUsername(encodedUsername);
         if (user == null) {
-            String msg = "User " + encodedUsername + " not found.";
+            String msg = "JCUser " + encodedUsername + " not found.";
             logger.info(msg);
             throw new NotFoundException(msg);
         }
@@ -93,9 +93,9 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public User registerUser(User user) {
+    public JCUser registerUser(JCUser user) {
         this.getDao().saveOrUpdate(user);
-        logger.info("User registered: {}", user.getUsername());
+        logger.info("JCUser registered: {}", user.getUsername());
         return user;
     }
 
@@ -103,7 +103,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public void updateLastLoginTime(User user) {
+    public void updateLastLoginTime(JCUser user) {
         user.updateLastLoginTime();
         this.getDao().saveOrUpdate(user);
     }
@@ -112,9 +112,9 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public User editUserProfile(UserInfoContainer info) throws DuplicateEmailException, WrongPasswordException {
+    public JCUser editUserProfile(UserInfoContainer info) throws DuplicateEmailException, WrongPasswordException {
 
-        User currentUser = securityService.getCurrentUser();
+        JCUser currentUser = securityService.getCurrentUser();
         byte[] decodedAvatar = imageUtils.decodeB64(info.getB64EncodedAvatar());
 
         this.changePassword(info.getCurrentPassword(), info.getNewPassword(), currentUser);
@@ -142,9 +142,9 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * @param currentUser user object to be checked
      * @throws DuplicateEmailException if email set is already in use
      */
-    private void changeEmail(String email, User currentUser) throws DuplicateEmailException {
+    private void changeEmail(String email, JCUser currentUser) throws DuplicateEmailException {
         if (!currentUser.getEmail().equals(email)) {
-            User user = this.getDao().getByEmail(email);
+            JCUser user = this.getDao().getByEmail(email);
             if (user != null) {
                 throw new DuplicateEmailException();
             } else {
@@ -162,7 +162,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * @param currentUser     user object from a database
      * @throws WrongPasswordException if current password doesn't match the one stored in database
      */
-    private void changePassword(String currentPass, String newPass, User currentUser) throws WrongPasswordException {
+    private void changePassword(String currentPass, String newPass, JCUser currentUser) throws WrongPasswordException {
         if (newPass != null) {
             if (currentUser.getPassword().equals(currentPass)) {
                 currentUser.setPassword(newPass);
@@ -179,7 +179,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * @param avatar      avatar image representation
      * @param currentUser user to be set with new avatar image
      */
-    private void changeAvatar(byte[] avatar, User currentUser) {
+    private void changeAvatar(byte[] avatar, JCUser currentUser) {
         if (avatar != null && avatar.length > 0) {
             currentUser.setAvatar(avatar);
         }
@@ -190,7 +190,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      */
     @Override
     public void removeAvatarFromCurrentUser() {
-        User user = securityService.getCurrentUser();
+        JCUser user = securityService.getCurrentUser();
         user.setAvatar(null);
     }
 
@@ -199,7 +199,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      */
     @Override
     public void restorePassword(String email) throws  MailingFailedException {
-        User user = this.getDao().getByEmail(email);
+        JCUser user = this.getDao().getByEmail(email);
         String randomPassword = RandomStringUtils.randomAlphanumeric(6);
         // first - mail attempt, then - database changes
         mailService.sendPasswordRecoveryMail(user.getUsername(), email, randomPassword);

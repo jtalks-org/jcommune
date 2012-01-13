@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.web.dto;
 
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -29,7 +29,7 @@ public class EditUserProfileDtoTest {
 
     @BeforeMethod
     public void setUp(){
-       dto = new EditUserProfileDto(new User("","",""));
+       dto = new EditUserProfileDto(new JCUser("","",""));
     }
     @Test
     public void testSetSignature() throws Exception {

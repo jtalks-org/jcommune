@@ -15,8 +15,8 @@
 package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.User;
 
 import java.util.List;
 
@@ -36,5 +36,5 @@ public interface PostDao extends ChildRepository<Post> {
      * @param author user to select posts for
      * @return post list of user
      */
-    List<Post> getUserPosts(User author);
+    List<Post> getUserPosts(JCUser author);
 }

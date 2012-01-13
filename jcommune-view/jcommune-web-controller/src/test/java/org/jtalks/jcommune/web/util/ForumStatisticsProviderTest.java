@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.web.util;
 
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.ForumStatisticsService;
 import org.jtalks.jcommune.web.listeners.HttpSessionStatisticListener;
@@ -48,7 +48,7 @@ public class ForumStatisticsProviderTest {
         statisticsService = mock(ForumStatisticsService.class);
 
         SessionRegistry sessionRegistry = mock(SessionRegistry.class);
-        users = Collections.nCopies(userCount , (Object) new User("","",""));
+        users = Collections.nCopies(userCount , (Object) new JCUser("","",""));
         when(sessionRegistry.getAllPrincipals()).thenReturn(users);
 
         HttpSessionStatisticListener listener = mock(HttpSessionStatisticListener.class);

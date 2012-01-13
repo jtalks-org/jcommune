@@ -17,7 +17,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
     /**
      * {@inheritDoc}
      */
-    public List<Post> getUserPosts(User author) {
+    public List<Post> getUserPosts(JCUser author) {
         return (List<Post>) getSession().createQuery("FROM Post p WHERE p.userCreated = ? ORDER BY creationDate DESC")
                 .setParameter(0, author)
                 .list();

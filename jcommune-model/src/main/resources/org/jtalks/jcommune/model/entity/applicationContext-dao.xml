@@ -82,7 +82,7 @@ resolves a problem of multiple DAO beans definition -->
         <property name="dataSource" ref="dataSource"/>
         <property name="mappingResources">
             <list>
-                <value>/org/jtalks/jcommune/model/entity/User.hbm.xml</value>
+                <value>/org/jtalks/jcommune/model/entity/JCUser.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/Post.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/Topic.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/Branch.hbm.xml</value>

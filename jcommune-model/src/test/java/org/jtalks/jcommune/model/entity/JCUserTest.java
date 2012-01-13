@@ -25,13 +25,13 @@ import static org.testng.Assert.assertTrue;
 /**
  * @author Kirill Afonin
  */
-public class UserTest {
+public class JCUserTest {
 
-    User user;
+    JCUser user;
 
     @BeforeMethod
     public void setUp(){
-        user = new User("username", "email@mail.com", "pass");
+        user = new JCUser("username", "email@mail.com", "pass");
     }
 
     @Test

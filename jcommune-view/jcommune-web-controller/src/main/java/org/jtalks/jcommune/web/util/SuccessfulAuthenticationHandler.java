@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.web.util;
 
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
@@ -55,11 +55,11 @@ public class SuccessfulAuthenticationHandler extends SavedRequestAwareAuthentica
      */
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws ServletException, IOException {
-        User user = (User) authentication.getPrincipal();
+        JCUser user = (JCUser) authentication.getPrincipal();
         HttpSession session = request.getSession(true);
         session.setAttribute("lastlogin", user.getLastLogin());
         userService.updateLastLoginTime(user);
-        logger.info("User logged in: " + user.getUsername());
+        logger.info("JCUser logged in: " + user.getUsername());
         //apply language settings assuming CookieLocaleResolver usage
         String languageCode = user.getLanguage().getLanguageCode();
         Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, languageCode);

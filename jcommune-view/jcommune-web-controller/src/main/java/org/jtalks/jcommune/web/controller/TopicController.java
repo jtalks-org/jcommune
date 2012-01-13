@@ -15,9 +15,9 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
@@ -170,7 +170,7 @@ public class TopicController {
         Topic topic = topicService.get(topicId);
         Branch branch = topic.getBranch();
 
-        User currentUser = securityService.getCurrentUser();
+        JCUser currentUser = securityService.getCurrentUser();
 
         List<Post> posts = topic.getPosts();
         Pagination pag = new Pagination(page, currentUser, posts.size(), pagingEnabled);

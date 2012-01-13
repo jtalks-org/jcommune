@@ -15,12 +15,8 @@
 package org.jtalks.jcommune.model;
 
 import org.hibernate.Session;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.PrivateMessage;
-import org.jtalks.jcommune.model.entity.Section;
-import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.model.entity.JCUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,12 +37,12 @@ public final class ObjectsFactory {
 
     private static Session session;
 
-    public static User getDefaultUser() {
+    public static JCUser getDefaultUser() {
         return getUser("username", "username@mail.com");
     }
 
-    public static User getUser(String username, String email) {
-        User newUser = new User(username, email, "password");
+    public static JCUser getUser(String username, String email) {
+        JCUser newUser = new JCUser(username, email, "password");
         newUser.setFirstName("first name");
         newUser.setLastName("last name");
         return newUser;
@@ -57,7 +53,7 @@ public final class ObjectsFactory {
     }
 
     public static Topic getDefaultTopic() {
-        User user = persist(getDefaultUser());
+        JCUser user = persist(getDefaultUser());
         Branch branch = getDefaultBranch();
         Topic newTopic = new Topic(user, "topic title");
         Post post = new Post(user, "post content");
@@ -86,13 +82,13 @@ public final class ObjectsFactory {
      * @return ready to save instance
      */
     public static PrivateMessage getDefaultPrivateMessage() {
-        User userTo = persist(getUser("UserTo", "mail2"));
-        User userFrom = persist(getUser("UserFrom", "mail1"));
+        JCUser userTo = persist(getUser("UserTo", "mail2"));
+        JCUser userFrom = persist(getUser("UserFrom", "mail1"));
         return new PrivateMessage(userTo, userFrom,
                 "Message title", "Private message body");
     }
 
-    public static PrivateMessage getPrivateMessage(User userTo, User userFrom) {
+    public static PrivateMessage getPrivateMessage(JCUser userTo, JCUser userFrom) {
         return new PrivateMessage(userTo, userFrom,
                 "Message title", "Private message body");
     }
@@ -105,7 +101,7 @@ public final class ObjectsFactory {
     public static List<Post> createAndSavePostList(int size) {
         List<Post> posts = new ArrayList<Post>();
         Topic topic = ObjectsFactory.getDefaultTopic();
-        User author = topic.getTopicStarter();
+        JCUser author = topic.getTopicStarter();
         for (int i = 0; i < size - 1; i++) {
             Post newPost = new Post(author, "content " + i);
             topic.addPost(newPost);

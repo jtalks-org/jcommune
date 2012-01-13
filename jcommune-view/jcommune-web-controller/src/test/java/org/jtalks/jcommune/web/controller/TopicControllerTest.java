@@ -15,9 +15,9 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
@@ -57,7 +57,7 @@ public class TopicControllerTest {
     private boolean STICKED = false;
     private boolean ANNOUNCEMENT = false;
     
-    private User user;
+    private JCUser user;
     private Branch branch;
     
     private TopicService topicService;
@@ -84,7 +84,7 @@ public class TopicControllerTest {
     public void prepareTestData(){
         branch = new Branch("");
         branch.setId(BRANCH_ID);
-        user = new User("username", "email@mail.com", "password");
+        user = new JCUser("username", "email@mail.com", "password");
     }
 
     @Test

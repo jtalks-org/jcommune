@@ -18,7 +18,7 @@ package org.jtalks.jcommune.web.controller;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.UserService;
@@ -142,7 +142,7 @@ public class AvatarController {
      */
     @RequestMapping(value = "/users/edit/avatar", method = RequestMethod.POST)
     public ModelAndView removeAvatarFromCurrentUser() {
-        User user = securityService.getCurrentUser();
+        JCUser user = securityService.getCurrentUser();
         userService.removeAvatarFromCurrentUser();
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
         return new ModelAndView("editProfile", "editedUser", editedUser);
@@ -152,7 +152,7 @@ public class AvatarController {
      * Write user avatar in response for rendering it on html pages.
      *
      * @param response        servlet response
-     * @param encodedUsername {@link User#getEncodedUsername()}
+     * @param encodedUsername {@link org.jtalks.jcommune.model.entity.JCUser#getEncodedUsername()}
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *                     if user with given encodedUsername not found
      * @throws IOException throws if an output exception occurred
@@ -161,7 +161,7 @@ public class AvatarController {
     public void renderAvatar(HttpServletResponse response,
                              @PathVariable("encodedUsername") String encodedUsername) throws NotFoundException,
             IOException {
-        User user = userService.getByEncodedUsername(encodedUsername);
+        JCUser user = userService.getByEncodedUsername(encodedUsername);
         byte[] avatar = user.getAvatar();
         response.setContentType("image/jpeg");
         response.setContentLength(avatar.length);

@@ -24,7 +24,7 @@ import org.jtalks.jcommune.web.validation.Exists;
  */
 public class RestorePasswordDto {
 
-    @Exists(hql = "from User user where user.email = ?", message = "{email.unknown}")
+    @Exists(hql = "from JCUser user where user.email = ?", message = "{email.unknown}")
     private String email;
 
     /**

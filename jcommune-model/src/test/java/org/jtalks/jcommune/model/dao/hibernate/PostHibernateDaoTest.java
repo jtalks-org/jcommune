@@ -19,7 +19,7 @@ import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -100,7 +100,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
     @Test
     public void testPostOfUser() {
-        User user = ObjectsFactory.getDefaultUser();
+        JCUser user = ObjectsFactory.getDefaultUser();
         Post post = new Post(user, "first");
         List<Post> posts = new ArrayList<Post>();
         posts.add(post);
@@ -114,7 +114,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
     @Test
     public void testNullPostOfUser() {
-        User user = ObjectsFactory.getDefaultUser();
+        JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
 
         List<Post> posts = dao.getUserPosts(user);

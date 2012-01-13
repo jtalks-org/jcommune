@@ -14,9 +14,9 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.UserService;
@@ -106,14 +106,14 @@ public class UserProfileController {
      * Show page with user info.
      *
      * @param username the decoded encodedUsername from the JSP view.
-     * @return user details view with {@link User} object.
+     * @return user details view with {@link org.jtalks.jcommune.model.entity.JCUser} object.
      * @throws NotFoundException if user with given id not found.
      */
     @RequestMapping(value = "/users/{encodedUsername}", method = RequestMethod.GET)
     public ModelAndView showProfilePage(@PathVariable("encodedUsername") String username) throws NotFoundException {
         //The {encodedUsername} from the JSP view automatically converted to username.
         // That's why the getByUsername() method is used instead of getByEncodedUsername().
-        User user = userService.getByUsername(username);
+        JCUser user = userService.getByUsername(username);
         return new ModelAndView("userDetails")
                 .addObject("user", user)
                  // bind separately to get localized value
@@ -129,7 +129,7 @@ public class UserProfileController {
      */
     @RequestMapping(value = "/users/edit", method = RequestMethod.GET)
     public ModelAndView editProfilePage() throws NotFoundException {
-        User user = securityService.getCurrentUser();
+        JCUser user = securityService.getCurrentUser();
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
         byte[] avatar = user.getAvatar();
         if (avatar != null) {
@@ -158,7 +158,7 @@ public class UserProfileController {
         }
         // while the others need to be validated in service layer
         try {
-            User user = userService.editUserProfile(userDto.getUserInfoContainer());
+            JCUser user = userService.editUserProfile(userDto.getUserInfoContainer());
             // apply language changes immediately
             applyLanguage(userDto.getLanguage(), response);
             return new ModelAndView("redirect:/users/" + user.getEncodedUsername());
@@ -200,7 +200,7 @@ public class UserProfileController {
                                          @RequestParam(value = "pagingEnabled", defaultValue = "true", required = false
                                          ) Boolean pagingEnabled
     ) throws NotFoundException {
-        User user = userService.getByEncodedUsername(encodedUsername);
+        JCUser user = userService.getByEncodedUsername(encodedUsername);
         List<Post> posts = postService.getPostsOfUser(user);
         Pagination pag = new Pagination(page, user, posts.size(), pagingEnabled);
         return new ModelAndView("userPostList")

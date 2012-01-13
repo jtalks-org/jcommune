@@ -35,7 +35,7 @@ import java.util.Set;
 public class Topic extends Entity {
     private DateTime creationDate;
     private DateTime modificationDate;
-    private User topicStarter;
+    private JCUser topicStarter;
     private String title;
     private int topicWeight;
     private boolean sticked;
@@ -43,7 +43,7 @@ public class Topic extends Entity {
     private List<Post> posts = new ArrayList<Post>();
     private Branch branch;
     private int views;
-    private Set<User> subscribers = new HashSet<User>();
+    private Set<JCUser> subscribers = new HashSet<JCUser>();
 
     public static final int MIN_NAME_SIZE = 5;
     public static final int MAX_NAME_SIZE = 255;
@@ -61,7 +61,7 @@ public class Topic extends Entity {
      * @param topicStarter user who create the topic
      * @param title        topic title
      */
-    public Topic(User topicStarter, String title) {
+    public Topic(JCUser topicStarter, String title) {
         this.topicStarter = topicStarter;
         this.title = title;
         this.creationDate = new DateTime();
@@ -116,7 +116,7 @@ public class Topic extends Entity {
      *
      * @return the userCreated
      */
-    public User getTopicStarter() {
+    public JCUser getTopicStarter() {
         return topicStarter;
     }
 
@@ -125,7 +125,7 @@ public class Topic extends Entity {
      *
      * @param userCreated the user who create the post
      */
-    protected void setTopicStarter(User userCreated) {
+    protected void setTopicStarter(JCUser userCreated) {
         this.topicStarter = userCreated;
     }
 
@@ -299,7 +299,7 @@ public class Topic extends Entity {
      *
      * @return users to send notifications on update to
      */
-    public Set<User> getSubscribers() {
+    public Set<JCUser> getSubscribers() {
         return subscribers;
     }
 
@@ -309,7 +309,7 @@ public class Topic extends Entity {
      *
      * @param subscribers users to send notifications on update to
      */
-    protected void setSubscribers(Set<User> subscribers) {
+    protected void setSubscribers(Set<JCUser> subscribers) {
         this.subscribers = subscribers;
     }
 }

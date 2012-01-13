@@ -14,9 +14,8 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
@@ -24,7 +23,6 @@ import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -76,7 +74,7 @@ public class UserControllerTest {
         ModelAndView mav = userController.registerUser(dto, bindingResult);
 
         assertViewName(mav, "redirect:/");
-        verify(userService).registerUser(any(User.class));
+        verify(userService).registerUser(any(JCUser.class));
     }
 
     @Test
@@ -110,7 +108,7 @@ public class UserControllerTest {
         RestorePasswordDto dto = new RestorePasswordDto();
         dto.setEmail(EMAIL);
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "email");
-        bindingResult.addError(new FieldError("","",""));
+        bindingResult.addError(new FieldError("", "", ""));
         ModelAndView mav = userController.restorePassword(dto, bindingResult);
         verifyZeroInteractions(userService);
         assertViewName(mav, "restorePassword");

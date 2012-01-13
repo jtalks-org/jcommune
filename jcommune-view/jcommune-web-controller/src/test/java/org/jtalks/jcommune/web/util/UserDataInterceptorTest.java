@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.web.util;
 
-import org.jtalks.jcommune.model.entity.User;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.interceptors.UserDataInterceptor;
@@ -59,7 +59,7 @@ public class UserDataInterceptorTest {
 
     @Test
     public void testUserDataIsSetAfterController() throws Exception {
-        User user = getUser();
+        JCUser user = getUser();
         when(service.currentUserNewPmCount()).thenReturn(USER_NEW_PM_COUNT);
         when(securityService.getCurrentUser()).thenReturn(user);
 
@@ -84,8 +84,8 @@ public class UserDataInterceptorTest {
         verify(securityService).getCurrentUser();
     }
 
-    private User getUser() {
-        User newUser = new User(USER_NAME, EMAIL, PASSWORD);
+    private JCUser getUser() {
+        JCUser newUser = new JCUser(USER_NAME, EMAIL, PASSWORD);
         newUser.setFirstName(FIRST_NAME);
         newUser.setLastName(LAST_NAME);
         return newUser;
