@@ -202,41 +202,7 @@ public class User extends Entity implements UserDetails {
         this.password = password;
     }
 
-    //methods from UserDetails inteface, indicating that
-    //user can or can't authenticate.
-    //we don't need this functional now and users always enabled
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 
     /**
      * @return last login time  and date
@@ -330,5 +296,41 @@ public class User extends Entity implements UserDetails {
      */
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
+    }
+
+    //methods from UserDetails inteface, indicating that
+    //user can or can't authenticate.
+    //we don't need this functional now and users always enabled
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

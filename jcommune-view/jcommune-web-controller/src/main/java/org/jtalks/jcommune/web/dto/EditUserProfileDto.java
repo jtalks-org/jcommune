@@ -69,12 +69,12 @@ public class EditUserProfileDto {
      * @param user copying source
      */
     public EditUserProfileDto(User user) {
-        this.setFirstName(user.getFirstName());
-        this.setLastName(user.getLastName());
-        this.setEmail(user.getEmail());
-        this.setSignature(user.getSignature());
-        this.language = user.getLanguage();
-        this.pageSize = user.getPageSize();
+        firstName = user.getFirstName();
+        lastName = user.getLastName();
+        email = user.getEmail();
+        signature = user.getSignature();
+        language = user.getLanguage();
+        pageSize = user.getPageSize();
     }
 
     /**
