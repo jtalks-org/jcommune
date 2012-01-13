@@ -1,9 +1,0 @@
-/* Contains styles for imported libraries, plugins, etc. Please modify with extreme care */
-#img_preview {
-    background: #222;
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
-    padding: 15px;
-    z-index: 1001;
-    border: none;
-}

@@ -26,8 +26,6 @@
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/subscription.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/preview.js"
-            type="text/javascript"></script>
 </head>
 <body>
 <div class="wrap topic_page">

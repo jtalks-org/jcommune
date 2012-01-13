@@ -134,7 +134,6 @@
 
         <!-- Images -->
         <coderef name="img1"/>
-        <coderef name="img2"/>
 
         <!-- links -->
         <coderef name="url1"/>
@@ -234,14 +233,11 @@
     <!-- Insert image -->
     <code name="img1" priority="2">
         <pattern>[img]<var name="protocol" regex="((ht|f)tps?:|\.{1,2})?"/>/<var name="addr" scope="escapeXml"/>[/img]</pattern>
-        <template><![CDATA[<img class="thumbnail" src="]]><var name="protocol"/>/<var name="addr"/><![CDATA["/>]]></template>
-    </code>
-    <code name="img2" priority="1">
-        <pattern>[img]<var name="addr" scope="escapeXml"/>[/img]</pattern>
-        <template>&lt;img class=&quot;thumbnail&quot; src=&quot;http://<var name="addr"/>&quot;/&gt;</template>
+        <template><![CDATA[<a title="" href="]]><var name="protocol"/>/<var name="addr"/><![CDATA[" rel="prettyPhoto"><img class="thumbnail" alt="" src="]]><var name="protocol"/>/<var name="addr"/><![CDATA["/></a>]]></template>
     </code>
 
-    <!-- Links. http, https, malto protocols -->
+
+    <!-- Links. http, https, mailto protocols -->
     <scope name="url" parent="basic">
         <coderef name="bold"/>
         <coderef name="u"/>
@@ -252,7 +248,6 @@
         <coderef name="size"/>
 
         <coderef name="img1"/>
-        <coderef name="img2"/>
     </scope>
 
     <!-- HTTP -->

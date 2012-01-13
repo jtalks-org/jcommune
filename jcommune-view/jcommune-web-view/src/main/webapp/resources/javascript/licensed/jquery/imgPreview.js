@@ -84,7 +84,7 @@
             });
 
         })
-            .hover(function() {
+            .onclick(function() {
 
                 var link = this;
                 $container

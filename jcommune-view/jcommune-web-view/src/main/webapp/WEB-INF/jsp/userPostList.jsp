@@ -23,8 +23,6 @@
 <html>
 <head>
     <title><spring:message code="label.postListOfUser"/> <c:out value="${user.username}"/></title>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/preview.js"
-            type="text/javascript"></script>
 </head>
 <body>
 <c:set var="authenticated" value="${false}"/>
