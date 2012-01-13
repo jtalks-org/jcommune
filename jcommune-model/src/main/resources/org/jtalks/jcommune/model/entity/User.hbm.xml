@@ -38,7 +38,13 @@
         <property name="avatar" lazy="true">
             <column name="AVATAR" sql-type="blob"/>
         </property>
-        <property column="LANGUAGE" name="language"/>
+        <property column="LANGUAGE" name="language">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.jtalks.jcommune.model.entity.Language</param>
+                <!-- varchar -->
+                <param name="type">12</param>
+            </type>
+        </property>
         <property column="PAGE_SIZE" name="pageSize"/>
     </class>
 

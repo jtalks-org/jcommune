@@ -14,11 +14,16 @@
  */
 package org.jtalks.jcommune.web.dto;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.web.validation.Matches;
+
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 /**
  * This dto used for transferring data in edit {@link User} profile operation.
@@ -27,21 +32,34 @@ import org.jtalks.jcommune.web.validation.Matches;
  * @author Osadchuck Eugeny
  */
 @Matches(field = "newUserPassword", verifyField = "newUserPasswordConfirm", message = "{password_not_matches}")
-public class EditUserProfileDto extends UserDto {
+public class EditUserProfileDto {
 
+    @NotBlank(message = "{validation.email.notblank}")
+    @Pattern(regexp = "^[a-zA-Z0-9_'+*/^&=?~{}\\-](\\.?[a-zA-Z0-9_'+*/^&=?~{}\\-])" +
+            "*\\@((\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}(\\:\\d{1,3})?)|(((([a-zA-Z0-9][a-zA-Z0-9\\-]" +
+            "+[a-zA-Z0-9])|([a-zA-Z0-9]{1,2}))[\\.]{1})+([a-zA-Z]{2,6})))$",
+            message = "{validation.email.wrong.format}")
+    private String email;
+    private String firstName;
+    private String lastName;
+    @Size(max = User.MAX_LAST_NAME_SIZE, message = "{validation.signature.length}")
+    private String signature;
     private String currentUserPassword;
     @Length(min = User.MIN_PASS_SIZE, max = User.MAX_PASS_SIZE)
     private String newUserPassword;
     private String newUserPasswordConfirm;
-    private String language;
+    private Language language;
     private int pageSize;
     private String avatar;
 
     /**
-     * Default constructor
+     * Returns all the page size values available for the user
+     * to choose from.
+     *
+     * @return array of page sizes available
      */
-    public EditUserProfileDto() {
-        super();
+    public int[] getPageSizesAvailable() {
+        return new int[]{5, 10, 20, 50, 100, 250};
     }
 
     /**
@@ -138,14 +156,14 @@ public class EditUserProfileDto extends UserDto {
     /**
      * @return user language
      */
-    public String getLanguage() {
+    public Language getLanguage() {
         return language;
     }
 
     /**
      * @param language of user
      */
-    public void setLanguage(String language) {
+    public void setLanguage(Language language) {
         this.language = language;
     }
 
@@ -164,16 +182,6 @@ public class EditUserProfileDto extends UserDto {
     }
 
     /**
-     * Returns all the page size values available for the user
-     * to choose from.
-     *
-     * @return array of page sizes available
-     */
-    public int[] getPageSizesAvailable() {
-        return new int[]{5, 10, 20, 50, 100, 250};
-    }
-
-    /**
      * Returns all the languages available for the user
      * to choose from.
      *
@@ -181,5 +189,73 @@ public class EditUserProfileDto extends UserDto {
      */
     public Language[] getLanguagesAvailable() {
         return Language.values();
+    }
+
+    /**
+     * Get email.
+     *
+     * @return email
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * Set email.
+     *
+     * @param email email
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
+     * Get first name.
+     *
+     * @return first name
+     */
+    public String getFirstName() {
+        return firstName;
+    }
+
+    /**
+     * Set first name.
+     *
+     * @param firstName first name
+     */
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    /**
+     * Get last name.
+     *
+     * @return last name
+     */
+    public String getLastName() {
+        return lastName;
+    }
+
+    /**
+     * Set last name.
+     *
+     * @param lastName last name
+     */
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    /**
+     * @return signature
+     */
+    public String getSignature() {
+        return StringUtils.trimToNull(signature);
+    }
+
+    /**
+     * @param signature user signature
+     */
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 }

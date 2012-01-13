@@ -23,9 +23,9 @@ import static org.testng.Assert.assertEquals;
 /**
  * @author Evgeniy Naumenko
  */
-public class UserDtoTest {
+public class EditUserProfileDtoTest {
 
-    private UserDto dto;
+    private EditUserProfileDto dto;
 
     @BeforeMethod
     public void setUp(){

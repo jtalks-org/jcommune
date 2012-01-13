@@ -46,7 +46,7 @@ public class User extends Entity implements UserDetails {
     private String encodedUsername;
     private int userPostCount;
     private byte[] avatar;
-    private String language;
+    private Language language;
     private int pageSize;
 
     public static final int MIN_NAME_SIZE = 4;
@@ -63,7 +63,7 @@ public class User extends Entity implements UserDetails {
      * Only for hibernate usage.
      */
     protected User() {
-        language = Language.ENGLISH.toString();
+        language = Language.ENGLISH;
         pageSize = DEFAULT_PAGE_SIZE;
     }
 
@@ -307,14 +307,14 @@ public class User extends Entity implements UserDetails {
     /**
      * @return user language
      */
-    public String getLanguage() {
+    public Language getLanguage() {
         return language;
     }
 
     /**
      * @param language of user
      */
-    public void setLanguage(String language) {
+    public void setLanguage(Language language) {
         this.language = language;
     }
 

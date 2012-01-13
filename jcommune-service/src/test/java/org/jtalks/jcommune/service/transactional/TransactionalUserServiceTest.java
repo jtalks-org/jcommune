@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
@@ -52,7 +53,7 @@ public class TransactionalUserServiceTest {
     private static final String PASSWORD = "password";
     private static final String SIGNATURE = "signature";
     private static final String NEW_PASSWORD = "newPassword";
-    private static final String LANGUAGE = "language";
+    private static final Language LANGUAGE = Language.ENGLISH;
     private static final int PAGE_SIZE = 50;
     private byte[] avatar = new byte[10];
     private static final Long USER_ID = 999L;

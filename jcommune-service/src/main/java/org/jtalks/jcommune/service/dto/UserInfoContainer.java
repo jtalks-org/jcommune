@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.service.dto;
 
+import org.jtalks.jcommune.model.entity.Language;
+
 /**
  * This class is used when transferring user profile updates
  * from web tier to the service layer. For various reasons
@@ -30,7 +32,7 @@ public class UserInfoContainer {
     private String newPassword;
     private String signature;
     private String b64EncodedAvatar;
-    private String language;
+    private Language language;
     private int pageSize;
 
 
@@ -44,11 +46,11 @@ public class UserInfoContainer {
      * @param newPassword  new password to be set, may be null is we're not changing password
      * @param signature user's signature
      * @param avatar  B64 encoded avatar
-     * @param language  preffered language
-     * @param pageSize page size choosen
+     * @param language  preferred language
+     * @param pageSize page size chosen
      */
     public UserInfoContainer(String firstName, String lastName, String email, String currentPassword,
-                             String newPassword, String signature, String avatar, String language, int pageSize) {
+                             String newPassword, String signature, String avatar, Language language, int pageSize) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -108,7 +110,7 @@ public class UserInfoContainer {
     /**
      * @return user language
      */
-    public String getLanguage() {
+    public Language getLanguage() {
         return language;
     }
 

@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.web.util;
 
-import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.User;
 import org.jtalks.jcommune.service.UserService;
 import org.springframework.security.core.Authentication;
@@ -38,9 +37,7 @@ public class SuccessfulAuthenticationHandler extends SavedRequestAwareAuthentica
     private UserService userService;
 
     /**
-     * Constructor.
-     *
-     * @param userService service for users related actions
+     * @param userService service to get current user information
      */
     public SuccessfulAuthenticationHandler(UserService userService) {
         this.userService = userService;
@@ -64,8 +61,8 @@ public class SuccessfulAuthenticationHandler extends SavedRequestAwareAuthentica
         userService.updateLastLoginTime(user);
         logger.info("User logged in: " + user.getUsername());
         //apply language settings assuming CookieLocaleResolver usage
-        Language language = Language.valueOf(user.getLanguage());
-        Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, language.getLanguageCode());
+        String languageCode = user.getLanguage().getLanguageCode();
+        Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, languageCode);
         cookie.setPath("/");
         response.addCookie(cookie);
         super.onAuthenticationSuccess(request, response, authentication);

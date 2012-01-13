@@ -66,7 +66,7 @@ public class UserProfileControllerTest {
     private final String EMAIL = "mail@mail.com";
     private final String PASSWORD = "password";
     private final String SIGNATURE = "signature";
-    private final String LANGUAGE = "ENGLISH";
+    private final Language LANGUAGE = Language.ENGLISH;
     private final int PAGE_SIZE = 50;
     private String avatar;
     private BreadcrumbBuilder breadcrumbBuilder;
@@ -93,7 +93,7 @@ public class UserProfileControllerTest {
     @Test
     public void testShow() throws Exception {
         User user = new User("username", "email", "password");
-        user.setLanguage("ENGLISH");
+        user.setLanguage(LANGUAGE);
         //set expectations
         when(userService.getByUsername(USER_NAME)).thenReturn(user);
 
@@ -259,16 +259,17 @@ public class UserProfileControllerTest {
      */
     private EditUserProfileDto getEditUserProfileDto() {
         String NEW_PASSWORD = "newPassword";
-        EditUserProfileDto dto = new EditUserProfileDto();
 
-        dto.setEmail(EMAIL);
-        dto.setFirstName(FIRST_NAME);
-        dto.setLastName(LAST_NAME);
+        User user = new User("username", EMAIL, PASSWORD);
+        user.setFirstName(FIRST_NAME);
+        user.setLastName(LAST_NAME);
+        user.setSignature(SIGNATURE);
+        user.setLanguage(LANGUAGE);
+        user.setPageSize(PAGE_SIZE);
+
+        EditUserProfileDto dto = new EditUserProfileDto(user);
         dto.setCurrentUserPassword(PASSWORD);
         dto.setNewUserPassword(NEW_PASSWORD);
-        dto.setSignature(SIGNATURE);
-        dto.setLanguage(LANGUAGE);
-        dto.setPageSize(PAGE_SIZE);
         dto.setNewUserPasswordConfirm(NEW_PASSWORD);
         dto.setAvatar(avatar);
         return dto;

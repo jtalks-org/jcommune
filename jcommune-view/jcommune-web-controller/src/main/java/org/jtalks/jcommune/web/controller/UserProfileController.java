@@ -117,7 +117,7 @@ public class UserProfileController {
         return new ModelAndView("userDetails")
                 .addObject("user", user)
                  // bind separately to get localized value
-                .addObject("language", Language.valueOf(user.getLanguage()))
+                .addObject("language", user.getLanguage())
                 .addObject("pageSize", Pagination.getPageSizeFor(user));
     }
 
@@ -147,7 +147,7 @@ public class UserProfileController {
      * @param userDto  dto populated by user
      * @param result   binding result which contains the validation result
      * @param response http servlet response
-     * @return in case of errors return back to edit profile page, in another case return to user detalis page
+     * @return in case of errors return back to edit profile page, in another case return to user details page
      */
     @RequestMapping(value = "/users/edit", method = RequestMethod.POST)
     public ModelAndView editProfile(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
@@ -160,7 +160,7 @@ public class UserProfileController {
         try {
             User user = userService.editUserProfile(userDto.getUserInfoContainer());
             // apply language changes immediately
-            applyLanguage(Language.valueOf(userDto.getLanguage()), response);
+            applyLanguage(userDto.getLanguage(), response);
             return new ModelAndView("redirect:/users/" + user.getEncodedUsername());
         } catch (DuplicateEmailException e) {
             result.rejectValue("email", "validation.duplicateemail");
