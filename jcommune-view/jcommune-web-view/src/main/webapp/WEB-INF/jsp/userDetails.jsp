@@ -1,4 +1,4 @@
-<%--
+﻿<%--
 
     Copyright (C) 2011  JTalks.org Team
     This library is free software; you can redistribute it and/or
@@ -44,19 +44,6 @@
                     <span><c:out value="${user.username}"/></span>
                 </li>
                 <li class="forum_row">
-                    <label><spring:message code="label.email"/></label>
-                    <c:choose>
-                        <c:when test="${user.username == auth}">
-                            <span><c:out value="${user.email}"/></span>
-                        </c:when>
-                        <c:otherwise>
-                            <sec:authorize access="hasRole('ROLE_ADMIN')">
-                                <span><c:out value="${user.email}"/></span>
-                            </sec:authorize>
-                        </c:otherwise>
-                    </c:choose>
-                </li>
-                <li class="forum_row">
                     <label><spring:message code="label.firstname"/></label>
                     <span><c:out value="${user.firstName}"/></span>
                 </li>
@@ -70,14 +57,23 @@
                         <span class="signature"><c:out value="${user.signature}"/></span>
                     </li>
                 </c:if>
-                <li class="forum_row">
-                    <label><spring:message code="label.language"/></label>
-                    <span><spring:message code="${language.languageNameLabel}"/></span>
-                </li>
-                <li class="forum_row">
-                    <label><spring:message code="label.numberOfTopicsOnPage"/></label>
-                    <span><c:out value="${pageSize}"/></span>
-                </li>
+                <c:choose>
+                    <%--Do not show mu email to other users--%>
+                    <c:when test="${user.username == auth}">
+                        <li class="forum_row">
+                            <label><spring:message code="label.email"/></label>
+                            <span><c:out value="${user.email}"/></span>
+                        </li>
+                        <li class="forum_row">
+                            <label><spring:message code="label.language"/></label>
+                            <span><spring:message code="${language.languageNameLabel}"/></span>
+                        </li>
+                        <li class="forum_row">
+                            <label><spring:message code="label.numberOfTopicsOnPage"/></label>
+                            <span><c:out value="${pageSize}"/></span>
+                        </li>
+                    </c:when>
+                </c:choose>
                 <li class="forum_row">
                     <label><spring:message code="label.lastlogin"/></label>
            <span>
