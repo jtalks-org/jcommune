@@ -21,6 +21,10 @@
             <artifactId>jtalks-common-model</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.jtalks.common</groupId>
+            <artifactId>jtalks-common-service</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
         </dependency>

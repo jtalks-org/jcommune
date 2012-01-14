@@ -39,6 +39,11 @@
                 <artifactId>jtalks-common-model</artifactId>
                 <version>0.9</version>
             </dependency>
+            <dependency>
+                <groupId>org.jtalks.common</groupId>
+                <artifactId>jtalks-common-service</artifactId>
+                <version>0.9</version>
+            </dependency>
             <!-- Hibernate -->
             <dependency>
                 <groupId>org.hibernate</groupId>

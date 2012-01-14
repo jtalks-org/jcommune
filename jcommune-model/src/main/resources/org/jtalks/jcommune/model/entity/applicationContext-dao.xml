@@ -54,21 +54,13 @@
     <bean id="forumStatisticsDAO" class="org.jtalks.jcommune.model.dao.hibernate.ForumStatisticsHibernateDao">
         <constructor-arg index="0" ref="sessionFactory"/>
     </bean>
-        <bean id="validatorDAO" class="org.jtalks.jcommune.model.dao.hibernate.ValidatorHibernateDao">
+    <bean id="validatorDAO" class="org.jtalks.jcommune.model.dao.hibernate.ValidatorHibernateDao">
         <constructor-arg index="0" ref="sessionFactory"/>
     </bean>
     <!--Injecting sessionFactory bean to class AbstractHibernateChildRepository, this way
 resolves a problem of multiple DAO beans definition -->
     <bean id="abstractHibernateDao" abstract="true">
         <property name="sessionFactory" ref="sessionFactory"/>
-    </bean>
-    <!-- Migrations -->
-    <bean id="flyway" class="org.jtalks.common.util.FlywayWrapper" init-method="migrate"
-          depends-on="dataSource">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="basePackage" value="org.jtalks.jcommune.migrations"/>
-        <property name="baseDir" value="/org/jtalks/jcommune/migrations"/>
-        <property name="enabled" value="${migrations_enabled}"/>
     </bean>
     <!--Declaration and setting up datasource, sessionFactory and transactionalManager
    beans -->
@@ -78,7 +70,7 @@ resolves a problem of multiple DAO beans definition -->
         <property name="username" value="${jdbc.username:root}"/>
         <property name="password" value="${jdbc.password:root}"/>
     </bean>
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" depends-on="flyway">
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" depends-on="flyway_jcommune">
         <property name="dataSource" ref="dataSource"/>
         <property name="mappingResources">
             <list>
@@ -118,5 +110,35 @@ resolves a problem of multiple DAO beans definition -->
     </bean>
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="location" value="classpath:/org/jtalks/jcommune/model/datasource.properties"/>
+    </bean>
+
+    <!-- Migrations, todo: 4 beans - that's weird, Ticket has been left for common to move init to one method -->
+
+    <bean id="flyway_common_init" class="org.jtalks.common.util.FlywayWrapper" init-method="smartInit">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="table" value="common_schema_version"/>
+        <property name="enabled" value="${migrations_enabled}"/>
+    </bean>
+    <bean id="flyway_common" class="org.jtalks.common.util.FlywayWrapper" init-method="migrate"
+          depends-on="flyway_common_init">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="basePackage" value="org.jtalks.common.migrations"/>
+        <property name="baseDir" value="/org/jtalks/common/migrations"/>
+        <property name="table" value="common_schema_version"/>
+        <property name="enabled" value="${migrations_enabled}"/>
+    </bean>
+        <bean id="flyway_jcommune_init" class="org.jtalks.common.util.FlywayWrapper" init-method="smartInit"
+              depends-on="flyway_common">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="table" value="jcommune_schema_version"/>
+        <property name="enabled" value="${migrations_enabled}"/>
+    </bean>
+    <bean id="flyway_jcommune" class="org.jtalks.common.util.FlywayWrapper" init-method="migrate"
+          depends-on="flyway_jcommune_init">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="basePackage" value="org.jtalks.jcommune.migrations"/>
+        <property name="baseDir" value="/org/jtalks/jcommune/migrations"/>
+        <property name="table" value="jcommune_schema_version"/>
+        <property name="enabled" value="${migrations_enabled}"/>
     </bean>
 </beans>
