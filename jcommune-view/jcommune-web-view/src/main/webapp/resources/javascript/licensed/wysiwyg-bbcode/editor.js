@@ -38,6 +38,8 @@ var textRange;
 var enter = 0;
 var editorVisible = false;
 
+var bbtags = [ "", "", "", "" ];
+
 function rep(re, str) {
     content = content.replace(re, str);
 }
@@ -157,8 +159,8 @@ function html2bbcode() {
 
         rep(/<div\s[^<>]*?class=\"code\"([^<>]*)?>(.*?)<\/div>/gi, "[code]$2[/code]");
 
-        rep(/<div\s[^<>]*?class=\"quote\"([^<>]*)?><div\s[^<>]*?class=\"quote_title\"[^<>]*?>Quote:<\/div><blockquote>(.*?)<\/blockquote><\/div>/gi, "[quote]$2[/quote]");
-        rep(/<div\s[^<>]*?class=\"quote\"([^<>]*)?><div\s[^<>]*?class=\"quote_title\"[^<>]*?>([^<>]*?):<\/div><blockquote>(.*?)<\/blockquote><\/div>/gi, "[quote=\"$2\"]$3[/quote]");
+        rep(/<div\s[^<>]*?class=\"quote\"([^<>]*)?><div\s[^<>]*?class=\"quote_title\"[^<>]*?>Quote:<\/div><blockquote>(.*?)(<::after>)?\s*?<\/blockquote><\/div>/gi, "[quote]$2[/quote]");
+        rep(/<div\s[^<>]*?class=\"quote\"([^<>]*)?><div\s[^<>]*?class=\"quote_title\"[^<>]*?>([^<>]*?):<\/div><blockquote>(.*?)(<::after>)?\s*?<\/blockquote><\/div>/gi, "[quote=\"$2\"]$3[/quote]");
 
         rep(/<a\s[^<>]*?href=\"?([^<>]*?)\"?(\s[^<>]*)?>(.*?)<\/a>/gi, "[url=$1]$3[/url]");
     }
