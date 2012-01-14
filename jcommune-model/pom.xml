@@ -96,33 +96,9 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>**/datasource.properties</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>**/*.xml</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>**/*.sql</include>
-                </includes>
-            </resource>
-        </resources>
-    </build>
+
 
     <properties>
-        <jdbc.user>${env.JCOMMUNE_DB_USER}</jdbc.user>
-        <jdbc.pass>${env.JCOMMUNE_DB_PASS}</jdbc.pass>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <headerBaseDir>${basedir}/..</headerBaseDir>
     </properties>
