@@ -51,6 +51,8 @@ public class EditUserProfileDto {
     private Language language;
     private int pageSize;
     private String avatar;
+    @Length(max = JCUser.MAX_LOCATION_SIZE)
+    private String location;
 
     /**
      * Returns all the page size values available for the user
@@ -80,6 +82,7 @@ public class EditUserProfileDto {
         signature = user.getSignature();
         language = user.getLanguage();
         pageSize = user.getPageSize();
+        location = user.getLocation();
     }
 
     /**
@@ -91,7 +94,7 @@ public class EditUserProfileDto {
     public UserInfoContainer getUserInfoContainer() {
         return new UserInfoContainer(this.getFirstName(), this.getLastName(), this.getEmail(),
                 this.getCurrentUserPassword(), this.getNewUserPassword(), this.getSignature(),
-                this.getAvatar(), this.getLanguage(), this.getPageSize());
+                this.getAvatar(), this.getLanguage(), this.getPageSize(), this.getLocation());
     }
 
     /**
@@ -262,5 +265,19 @@ public class EditUserProfileDto {
      */
     public void setSignature(String signature) {
         this.signature = signature;
+    }
+
+    /**
+     * @return user location
+     */
+    public String getLocation() {
+        return location;
+    }
+
+    /**
+     * @param location user location
+     */
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

@@ -34,6 +34,7 @@ public class UserInfoContainer {
     private String b64EncodedAvatar;
     private Language language;
     private int pageSize;
+    private String location;
 
 
     /**
@@ -50,7 +51,8 @@ public class UserInfoContainer {
      * @param pageSize page size chosen
      */
     public UserInfoContainer(String firstName, String lastName, String email, String currentPassword,
-                             String newPassword, String signature, String avatar, Language language, int pageSize) {
+                             String newPassword, String signature, String avatar, Language language,
+                             int pageSize, String location) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -60,6 +62,7 @@ public class UserInfoContainer {
         this.b64EncodedAvatar = avatar;
         this.language = language;
         this.pageSize = pageSize;
+        this.location = location;
     }
 
     /**
@@ -128,5 +131,12 @@ public class UserInfoContainer {
      */
     public String getNewPassword() {
         return newPassword;
+    }
+
+    /**
+     * @return user location
+     */
+    public String getLocation() {
+        return location;
     }
 }

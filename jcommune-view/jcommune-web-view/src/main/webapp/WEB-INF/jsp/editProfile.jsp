@@ -111,6 +111,11 @@
                         <span><form:errors path="pageSize" cssClass="error"/></span>
                     </li>
                     <li class="forum_row">
+                        <label><spring:message code="label.location"/></label>
+                        <span><form:input path="location" size="40" value="${editedUser.location}"/></span>
+                        <span><form:errors path="location" cssClass="error"/></span>
+                    </li>
+                    <li class="forum_row">
                         <label><spring:message code="label.avatar"/></label>
                         <span class="avatar">
                             <img id="avatarPreview" src="${editedUser.avatar}" alt=""/>

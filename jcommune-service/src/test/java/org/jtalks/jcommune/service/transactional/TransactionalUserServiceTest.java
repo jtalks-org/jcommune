@@ -55,6 +55,7 @@ public class TransactionalUserServiceTest {
     private static final String NEW_PASSWORD = "newPassword";
     private static final Language LANGUAGE = Language.ENGLISH;
     private static final int PAGE_SIZE = 50;
+    private static final String LOCATION = "location";
     private byte[] avatar = new byte[10];
     private static final Long USER_ID = 999L;
 
@@ -136,7 +137,7 @@ public class TransactionalUserServiceTest {
         String newAvatar = new String(new byte[12]);
 
         JCUser editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE));
+                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, LOCATION));
 
         verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
@@ -153,7 +154,7 @@ public class TransactionalUserServiceTest {
         String newAvatar = new String(new byte[0]);
 
         JCUser editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE));
+                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, LOCATION));
 
         verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
@@ -167,7 +168,7 @@ public class TransactionalUserServiceTest {
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
 
         JCUser editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, NEW_PASSWORD, SIGNATURE, null, LANGUAGE, PAGE_SIZE));
+                PASSWORD, NEW_PASSWORD, SIGNATURE, null, LANGUAGE, PAGE_SIZE, LOCATION));
 
         verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
@@ -184,7 +185,7 @@ public class TransactionalUserServiceTest {
         String newAvatar = new String(new byte[0]);
 
         JCUser editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE));
+                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, LOCATION));
 
         verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
@@ -206,7 +207,7 @@ public class TransactionalUserServiceTest {
         when(securityService.getCurrentUser()).thenReturn(user);
 
         userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                "abracodabra", NEW_PASSWORD, SIGNATURE, null, LANGUAGE, PAGE_SIZE));
+                "abracodabra", NEW_PASSWORD, SIGNATURE, null, LANGUAGE, PAGE_SIZE, LOCATION));
 
         verify(securityService).getCurrentUser();
         verify(userDao, never()).getByEmail(anyString());
@@ -219,7 +220,7 @@ public class TransactionalUserServiceTest {
         when(securityService.getCurrentUser()).thenReturn(user);
 
         userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                null, NEW_PASSWORD, SIGNATURE, null, LANGUAGE, PAGE_SIZE));
+                null, NEW_PASSWORD, SIGNATURE, null, LANGUAGE, PAGE_SIZE, LOCATION));
 
         verify(securityService).getCurrentUser();
         verify(userDao, never()).getByEmail(anyString());
@@ -233,7 +234,7 @@ public class TransactionalUserServiceTest {
         when(userDao.getByEmail(NEW_EMAIL)).thenReturn(user);
 
         userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, NEW_EMAIL,
-                null, null, SIGNATURE, null, LANGUAGE, PAGE_SIZE));
+                null, null, SIGNATURE, null, LANGUAGE, PAGE_SIZE, LOCATION));
 
         verify(securityService).getCurrentUser();
         verify(userDao).getByEmail(NEW_EMAIL);
