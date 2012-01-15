@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
+import org.joda.time.Interval;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
@@ -37,6 +38,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Kirill Afonin
@@ -58,6 +60,7 @@ public class TransactionalUserServiceTest {
     private static final String LOCATION = "location";
     private byte[] avatar = new byte[10];
     private static final Long USER_ID = 999L;
+    private static final long MAX_REGISTRATION_TIMEOUT = 1000L;
 
     @Mock
     private UserService userService;
@@ -120,10 +123,13 @@ public class TransactionalUserServiceTest {
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
 
         JCUser registeredUser = userService.registerUser(user);
+        DateTime now = new DateTime();
 
         assertEquals(registeredUser.getUsername(), USERNAME);
         assertEquals(registeredUser.getEmail(), EMAIL);
         assertEquals(registeredUser.getPassword(), PASSWORD);
+        assertTrue(new Interval(registeredUser.getRegistrationDate(), now)
+                .toDuration().getMillis() <= MAX_REGISTRATION_TIMEOUT);
         verify(userDao).saveOrUpdate(user);
     }
 
