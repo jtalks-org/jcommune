@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
@@ -94,6 +95,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      */
     @Override
     public JCUser registerUser(JCUser user) {
+        user.setRegistrationDate(new DateTime());
         this.getDao().saveOrUpdate(user);
         logger.info("JCUser registered: {}", user.getUsername());
         return user;
@@ -125,6 +127,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         currentUser.setLastName(info.getLastName());
         currentUser.setLanguage(info.getLanguage());
         currentUser.setPageSize(info.getPageSize());
+        currentUser.setLocation(info.getLocation());
 
         this.getDao().saveOrUpdate(currentUser);
         logger.info("Updated user profile. Username: {}", currentUser.getUsername());

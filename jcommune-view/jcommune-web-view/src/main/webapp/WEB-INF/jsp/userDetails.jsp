@@ -69,6 +69,10 @@
                             <span><spring:message code="${language.languageNameLabel}"/></span>
                         </li>
                         <li class="forum_row">
+                            <label><spring:message code="label.location"/></label>
+                            <span><c:out value="${user.location}"/></span>
+                        </li>
+                        <li class="forum_row">
                             <label><spring:message code="label.numberOfTopicsOnPage"/></label>
                             <span><c:out value="${pageSize}"/></span>
                         </li>
@@ -76,9 +80,11 @@
                 </c:choose>
                 <li class="forum_row">
                     <label><spring:message code="label.lastlogin"/></label>
-           <span>
-               <jtalks:format value="${user.lastLogin}"/>
-           </span>
+                    <span><jtalks:format value="${user.lastLogin}"/></span>
+                </li>
+                <li class="forum_row">
+                    <label><spring:message code="label.registrationDate"/></label>
+                    <span><jtalks:format value="${user.registrationDate}"/></span>
                 </li>
                 <c:if test="${user.avatar != null}">
                     <li class="forum_row">

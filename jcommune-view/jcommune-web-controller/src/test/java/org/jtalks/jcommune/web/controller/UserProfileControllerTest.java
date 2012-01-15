@@ -68,6 +68,7 @@ public class UserProfileControllerTest {
     private final String SIGNATURE = "signature";
     private final Language LANGUAGE = Language.ENGLISH;
     private final int PAGE_SIZE = 50;
+    private final String LOCATION = "location";
     private String avatar;
     private BreadcrumbBuilder breadcrumbBuilder;
     private ImageUtils imageUtils;
@@ -148,7 +149,7 @@ public class UserProfileControllerTest {
         verify(userService).editUserProfile(new UserInfoContainer(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
                 userDto.getNewUserPassword(), anyString(),
-                SIGNATURE, LANGUAGE, PAGE_SIZE));
+                SIGNATURE, LANGUAGE, PAGE_SIZE, LOCATION));
     }
 
     @Test
@@ -180,7 +181,7 @@ public class UserProfileControllerTest {
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
                 userDto.getNewUserPassword(),
                 anyString(),
-                SIGNATURE, LANGUAGE, PAGE_SIZE))).thenThrow(new WrongPasswordException());
+                SIGNATURE, LANGUAGE, PAGE_SIZE, LOCATION))).thenThrow(new WrongPasswordException());
 
         ModelAndView mav = profileController.editProfile(userDto, bindingResult, new MockHttpServletResponse());
 
@@ -189,7 +190,7 @@ public class UserProfileControllerTest {
         verify(userService).editUserProfile(new UserInfoContainer(userDto.getEmail(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
                 userDto.getNewUserPassword(), anyString(),
-                SIGNATURE, LANGUAGE, PAGE_SIZE));
+                SIGNATURE, LANGUAGE, PAGE_SIZE, LOCATION));
         assertContainsError(bindingResult, "currentUserPassword");
     }
 

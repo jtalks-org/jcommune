@@ -31,12 +31,15 @@ public class JCUser extends User {
     private int userPostCount;
     private Language language = Language.ENGLISH;
     private int pageSize = DEFAULT_PAGE_SIZE;
+    private String location;
+    private DateTime registrationDate;
 
     public static final int MIN_NAME_SIZE = 4;
     public static final int MAX_NAME_SIZE = 20;
     public static final int MAX_LAST_NAME_SIZE = 255;
     public static final int MIN_PASS_SIZE = 4;
     public static final int MAX_PASS_SIZE = 20;
+    public static final int MAX_LOCATION_SIZE = 30;
 
     public static final int DEFAULT_PAGE_SIZE = 50;
 
@@ -138,5 +141,33 @@ public class JCUser extends User {
      */
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
+    }
+
+    /**
+     * @return user location
+     */
+    public String getLocation() {
+        return location;
+    }
+
+    /**
+     * @param location user location
+     */
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    /**
+     * @return user registration date
+     */
+    public DateTime getRegistrationDate() {
+        return registrationDate;
+    }
+
+    /**
+     * @param registrationDate user registration date
+     */
+    public void setRegistrationDate(DateTime registrationDate) {
+        this.registrationDate = registrationDate;
     }
 }
