@@ -203,8 +203,11 @@ public class TransactionalPrivateMessageService
         securityService.deleteFromAcl(pm);
         securityService.grantToCurrentUser().user(recipientUsername).read().on(pm);
 
+        long pmId = pm.getId();
+        mailService.sendReceivedPrivateMessageNotification(recipient, pmId);
+
         logger.debug("Private message(was draft) to user {} was sent. Message id={}",
-                recipientUsername, pm.getId());
+                recipientUsername, pmId);
 
         return pm;
     }
