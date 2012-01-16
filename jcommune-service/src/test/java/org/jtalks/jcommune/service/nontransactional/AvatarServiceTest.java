@@ -15,13 +15,19 @@
 
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.jtalks.jcommune.service.exceptions.ImageFormatException;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
@@ -64,8 +70,8 @@ public class AvatarServiceTest {
     }
 
     @Test(expectedExceptions = ImageProcessException.class, dataProvider = "invalid-data-provider")
-    public void shouldThrowIfInputDataForProcessConvertAvatarToBase64StringIsInvalid(byte[] originalImageBytes,
-                                                                                     BufferedImage inputImage) throws Exception {
+    public void inputDataForProcessConvertAvatarToBase64StringIsInvalid(byte[] originalImageBytes,
+                                                                        BufferedImage inputImage) throws Exception {
         //set expectations
         when(imageUtils.convertByteArrayToImage(originalImageBytes)).thenReturn(inputImage);
 
@@ -74,6 +80,18 @@ public class AvatarServiceTest {
 
         //check expectations
         verify(imageUtils).convertByteArrayToImage(originalImageBytes);
+    }
+
+    @Test(expectedExceptions = ImageFormatException.class, dataProvider = "invalidFormats")
+    public void inputDataForValidateAvatarFormatIsInvalid(MultipartFile file) throws Exception {
+        //invoke object under test
+        avatarService.validateAvatarFormat(file);
+    }
+
+    @Test(dataProvider = "validFormats")
+    public void inputDataForValidateAvatarFormatIsValid(MultipartFile file) throws Exception {
+        //invoke object under test
+        avatarService.validateAvatarFormat(file);
     }
 
 
@@ -112,9 +130,37 @@ public class AvatarServiceTest {
                 {originalImageBytes, inputImage},
                 {null, null}
         };
-
-
     }
 
+    @DataProvider
+    public Object[][] invalidFormats() {
+        return new Object[][]{
+                {new MockMultipartFile("test_avatar", "test_avatar", "image/bmp", new byte[10])},
+                {new MockMultipartFile("test_avatar", "test_avatar", "image/tiff", new byte[10])},
+                {new MockMultipartFile("test_avatar", "test_avatar", "text/plain", new byte[10])},
+                {new MockMultipartFile("test_avatar", "test_avatar", "audio/mpeg", new byte[10])},
+                {new MockMultipartFile("test_avatar", "test_avatar", "audio/x-wav", new byte[10])},
+                {new MockMultipartFile("test_avatar", "test_avatar", "text/plain", new byte[10])},
+                {new MockMultipartFile("test_avatar", "test_avatar", "text/html", new byte[10])},
+                {new MockMultipartFile("test_avatar", "test_avatar", "video/mpeg", new byte[10])}
+
+        };
+    }
+
+    @DataProvider
+    Object[][] validFormats() {
+        Set<String> validFormats = AvatarService.getValidImageTypes();
+        List<MultipartFile> files = new ArrayList<MultipartFile>(validFormats.size());
+        for (String contentType : validFormats) {
+            files.add(new MockMultipartFile("test_avatar", "test_avatar", contentType, new byte[10]));
+        }
+        Object[][] result = new Object[files.size()][];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = new Object[]{files.get(i)};
+        }
+
+        return result;
+
+    }
 
 }

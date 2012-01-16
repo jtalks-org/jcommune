@@ -90,4 +90,9 @@ public class AvatarService {
         }
     }
 
+    public static Set<String> getValidImageTypes() {
+        return VALID_IMAGE_TYPES;
+    }
+
+
 }
