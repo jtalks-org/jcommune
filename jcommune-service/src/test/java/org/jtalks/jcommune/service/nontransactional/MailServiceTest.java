@@ -14,12 +14,6 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
@@ -36,6 +30,12 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 /**
  * Test for {@link MailService}.
@@ -110,6 +110,14 @@ public class MailServiceTest {
         assertTrue(captor.getValue().getText().contains("http://coolsite.com:1234/forum/branches/1"));
     }
 
+    @Test
+    public void testSendReceivedPrivateMessageNotification() {
+        service.sendReceivedPrivateMessageNotification(user, 1);
+
+        this.checkMailCredentials();
+        assertTrue(captor.getValue().getText().contains("http://coolsite.com:1234/forum/inbox/1"));
+    }
+
     @Test(expectedExceptions = MailingFailedException.class)
     public void testRestorePasswordFail() throws NotFoundException, MailingFailedException {
         Exception fail = new MailSendException("");
@@ -119,7 +127,7 @@ public class MailServiceTest {
     }
 
     @Test
-    public void testTopicUpdateNotiticationFail() throws NotFoundException {
+    public void testTopicUpdateNotificationFail() throws NotFoundException {
         Exception fail = new MailSendException("");
         doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
 
@@ -127,11 +135,19 @@ public class MailServiceTest {
     }
 
     @Test
-    public void testbranchUpdateNotificationFail() throws NotFoundException {
+    public void testBranchUpdateNotificationFail() throws NotFoundException {
         Exception fail = new MailSendException("");
         doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
 
         service.sendBranchUpdatesOnSubscription(user, branch);
+    }
+
+    @Test
+    public void testSendReceivedPrivateMessageNotificationFail() {
+        Exception fail = new MailSendException("");
+        doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
+
+        service.sendReceivedPrivateMessageNotification(user, 1);
     }
 
     private void checkMailCredentials() {

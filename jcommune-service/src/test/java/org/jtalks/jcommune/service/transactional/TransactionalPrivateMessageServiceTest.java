@@ -20,6 +20,7 @@ import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.nontransactional.UserDataCacheService;
 import org.jtalks.jcommune.service.security.AclBuilder;
@@ -30,7 +31,10 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -50,6 +54,8 @@ public class TransactionalPrivateMessageServiceTest {
     private UserService userService;
     @Mock
     private UserDataCacheService userDataCache;
+    @Mock
+    private MailService mailService;
 
     private TransactionalPrivateMessageService pmService;
 
@@ -57,13 +63,14 @@ public class TransactionalPrivateMessageServiceTest {
     private static final String USERNAME = "username";
     private AclBuilder aclBuilder;
 
-    JCUser user =new JCUser(USERNAME, "email", "password");
+    JCUser user = new JCUser(USERNAME, "email", "password");
 
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
         aclBuilder = mockAclBuilder();
-        pmService = new TransactionalPrivateMessageService(pmDao, securityService, userService, userDataCache);
+        pmService = new TransactionalPrivateMessageService(pmDao, securityService, userService, userDataCache,
+                mailService);
     }
 
     @Test
@@ -99,6 +106,7 @@ public class TransactionalPrivateMessageServiceTest {
         verify(securityService).getCurrentUser();
         verify(userService).getByUsername(USERNAME);
         verify(userDataCache).incrementNewMessageCountFor(USERNAME);
+        verify(mailService).sendReceivedPrivateMessageNotification(userService.getByUsername(USERNAME), pm.getId());
         verify(pmDao).saveOrUpdate(pm);
         verify(securityService).grantToCurrentUser();
         verify(aclBuilder).user(USERNAME);
