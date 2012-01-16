@@ -60,7 +60,7 @@ public class AvatarService {
     public String convertBytesToBase64String(byte[] bytes) throws ImageProcessException {
         BufferedImage image = imageUtils.convertByteArrayToImage(bytes);
         if (image == null) {
-            throw new ImageProcessException("NULL input data");
+            throw new ImageProcessException("Invalid input data");
         }
         byte[] outputAvatar = imageUtils.preprocessImage(image);
         return imageUtils.encodeB64(outputAvatar);

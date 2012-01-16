@@ -15,6 +15,7 @@
 
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -39,9 +40,11 @@ public class AvatarServiceTest {
         avatarService = new AvatarService(imageUtils);
     }
 
-    @Test(dataProvider = "test-data-provider")
-    public void testConvertAvatarToBase64String(byte[] originalImageBytes, BufferedImage inputImage,
-                                                byte[] processedImageBytes, String expectedBase64String) throws Exception {
+    @Test(dataProvider = "valid-data-provider")
+    public void shouldNormalProcessConvertAvatarToBase64String(byte[] originalImageBytes,
+                                                               BufferedImage inputImage,
+                                                               byte[] processedImageBytes,
+                                                               String expectedBase64String) throws Exception {
         //set expectations
         when(imageUtils.convertByteArrayToImage(originalImageBytes)).thenReturn(inputImage);
         when(imageUtils.preprocessImage(inputImage)).thenReturn(processedImageBytes);
@@ -58,11 +61,24 @@ public class AvatarServiceTest {
         //check result
         assertEquals(resultBase64String, expectedBase64String);
 
-
     }
 
-    @DataProvider(name = "test-data-provider")
-    private Object[][] dataForTest() throws IOException {
+    @Test(expectedExceptions = ImageProcessException.class, dataProvider = "invalid-data-provider")
+    public void shouldThrowIfInputDataForProcessConvertAvatarToBase64StringIsInvalid(byte[] originalImageBytes,
+                                                                                     BufferedImage inputImage) throws Exception {
+        //set expectations
+        when(imageUtils.convertByteArrayToImage(originalImageBytes)).thenReturn(inputImage);
+
+        //invoke object under test
+        String resultBase64String = avatarService.convertBytesToBase64String(originalImageBytes);
+
+        //check expectations
+        verify(imageUtils).convertByteArrayToImage(originalImageBytes);
+    }
+
+
+    @DataProvider(name = "valid-data-provider")
+    private Object[][] validData() throws IOException, ImageProcessException {
         ImageUtils imageUtils = new ImageUtils();
 
         byte[] originalImageBytes = new byte[]{-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0,
@@ -75,12 +91,26 @@ public class AvatarServiceTest {
                 36, 71, 49, 115, -89, 85, 0, 0, 0, 0, 73, 69, 78, 68, -82, 66, 96, -126
         };
 
-//        BufferedImage inputImage = imageUtils.convertByteArrayToImage(originalImageBytes);
-//        byte[] processedImageBytes = imageUtils.preprocessImage(inputImage);
-//        String expectedBase64String = imageUtils.encodeB64(processedImageBytes);
+        BufferedImage inputImage = imageUtils.convertByteArrayToImage(originalImageBytes);
+        byte[] processedImageBytes = imageUtils.preprocessImage(inputImage);
+        String expectedBase64String = imageUtils.encodeB64(processedImageBytes);
 
         return new Object[][]{
-//                {originalImageBytes, inputImage, processedImageBytes, expectedBase64String}
+                {originalImageBytes, inputImage, processedImageBytes, expectedBase64String}
+        };
+    }
+
+    @DataProvider(name = "invalid-data-provider")
+    private Object[][] invalidData() throws IOException, ImageProcessException {
+        ImageUtils imageUtils = new ImageUtils();
+
+        byte[] originalImageBytes = new byte[]{96, -126};
+
+        BufferedImage inputImage = imageUtils.convertByteArrayToImage(originalImageBytes);
+
+        return new Object[][]{
+                {originalImageBytes, inputImage},
+                {null, null}
         };
 
 
