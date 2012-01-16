@@ -15,8 +15,8 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.service.exceptions.ImageFormatException;
+import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.jtalks.jcommune.service.exceptions.ImageSizeException;
-import org.jtalks.jcommune.service.exceptions.ImageUploadException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.image.BufferedImage;
@@ -55,14 +55,14 @@ public class AvatarService {
      *
      * @param bytes for conversion
      * @return result string
-     * @throws ImageUploadException common avatar processing error
+     * @throws ImageProcessException common avatar processing error
      */
-    public String convertAvatarToBase64String(byte[] bytes) throws ImageUploadException {
-        BufferedImage inputAvatar = imageUtils.convertByteArrayToImage(bytes);
-        if (inputAvatar == null) {
-            throw new ImageUploadException();
+    public String convertBytesToBase64String(byte[] bytes) throws ImageProcessException {
+        BufferedImage image = imageUtils.convertByteArrayToImage(bytes);
+        if (image == null) {
+            throw new ImageProcessException("NULL input data");
         }
-        byte[] outputAvatar = imageUtils.preprocessImage(inputAvatar);
+        byte[] outputAvatar = imageUtils.preprocessImage(image);
         return imageUtils.encodeB64(outputAvatar);
     }
 

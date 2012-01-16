@@ -28,7 +28,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
 /**
  * @author Eugeny Batov
@@ -113,6 +112,14 @@ public class ImageUtilsTest {
             -110, -88, -88, 42, 79, -37, 110, 3, 109, -81, 12, -33, -26, -1, 73, -88, 36, -33, 0, -62, -31,
             36, 71, 49, 115, -89, 85, 0, 0, 0, 0, 73, 69, 78, 68, -82, 66, 96, -126
     };
+
+    @DataProvider(name = "invalid-images-provider")
+    private Object[][] rangeInvalidImageData() {
+
+        return new Object[][]{
+
+        };
+    }
 
     @DataProvider(name = "byte-string-provider")
     private Object[][] rangeByteStringData() {

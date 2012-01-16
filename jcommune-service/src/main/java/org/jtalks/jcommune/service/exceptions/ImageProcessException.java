@@ -12,22 +12,23 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
 package org.jtalks.jcommune.service.exceptions;
 
 /**
- * Exception for cases when image is invalid. For example, user try upload image with not allowable format.
+ * Throws if error occurred while image processing
  *
- * @author Eugeny Batov
+ * @author Alexandre Teterin
  */
-public class InvalidImageException extends Exception {
-
-    private static final long serialVersionUID = -4015705012130741453L;
+public class ImageProcessException extends Exception {
+    private static final long serialVersionUID = 20120115L;
 
     /**
      * Default constructor.
+     * <p/>
+     * {@link Exception}
      */
-    public InvalidImageException() {
-        super();
+    public ImageProcessException() {
     }
 
     /**
@@ -35,8 +36,15 @@ public class InvalidImageException extends Exception {
      *
      * @param message exception message
      */
-    public InvalidImageException(String message) {
+    public ImageProcessException(String message) {
         super(message);
     }
 
+    /**
+     * @param cause the cause (which is saved for later retrieval by the
+     *              {@link #getCause()} method).
+     */
+    public ImageProcessException(Throwable cause) {
+        super(cause);
+    }
 }

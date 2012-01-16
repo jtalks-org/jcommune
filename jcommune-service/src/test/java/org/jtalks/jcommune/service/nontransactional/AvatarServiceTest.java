@@ -48,7 +48,7 @@ public class AvatarServiceTest {
         when(imageUtils.encodeB64(processedImageBytes)).thenReturn(expectedBase64String);
 
         //invoke object under test
-        String resultBase64String = avatarService.convertAvatarToBase64String(originalImageBytes);
+        String resultBase64String = avatarService.convertBytesToBase64String(originalImageBytes);
 
         //check expectations
         verify(imageUtils).convertByteArrayToImage(originalImageBytes);

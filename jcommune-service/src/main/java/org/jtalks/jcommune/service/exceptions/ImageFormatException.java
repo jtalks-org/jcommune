@@ -16,9 +16,9 @@
 package org.jtalks.jcommune.service.exceptions;
 
 /**
- * Throws if image have not allowable format
+ * Throws if image has not allowable format
  *
  * @author Alexandre Teterin
  */
-public class ImageFormatException extends ImageUploadException {
+public class ImageFormatException extends ImageProcessException {
 }

@@ -16,9 +16,9 @@
 package org.jtalks.jcommune.service.exceptions;
 
 /**
- * Throws if image have not allowable size
+ * Throws if image has not allowable size
  *
  * @author Alexandre Teterin
  */
-public class ImageSizeException extends ImageUploadException {
+public class ImageSizeException extends ImageProcessException {
 }

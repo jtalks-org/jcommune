@@ -15,11 +15,11 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.service.nontransactional.AvatarService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.ImageUploadException;
+import org.jtalks.jcommune.service.exceptions.ImageProcessException;
+import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.mockito.Matchers;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -88,14 +88,14 @@ public class AvatarControllerTest {
 
         //set expectations
         when(request.getFileMap()).thenReturn(fileMap);
-        when(avatarService.convertAvatarToBase64String(validAvatar)).thenReturn(SRC_IMG);
+        when(avatarService.convertBytesToBase64String(validAvatar)).thenReturn(SRC_IMG);
 
         //invoke object under test
         ResponseEntity<String> actualResponseEntity = avatarController.uploadAvatar(request);
 
         //check expectations
         verify(request).getFileMap();
-        verify(avatarService).convertAvatarToBase64String(validAvatar);
+        verify(avatarService).convertBytesToBase64String(validAvatar);
 
         //check result
         assertEquals(actualResponseEntity.getStatusCode(), expectedResponseEntity.getStatusCode());
@@ -112,14 +112,14 @@ public class AvatarControllerTest {
 
         //set expectations
         when(request.getFileMap()).thenReturn(fileMap);
-        when(avatarService.convertAvatarToBase64String(validAvatar)).thenThrow(new IOException());
+        when(avatarService.convertBytesToBase64String(validAvatar)).thenThrow(new IOException());
 
         //invoke object under test
         ResponseEntity<String> actualResponseEntity = avatarController.uploadAvatar(request);
 
         //check expectations
         verify(request).getFileMap();
-        verify(avatarService).convertAvatarToBase64String(validAvatar);
+        verify(avatarService).convertBytesToBase64String(validAvatar);
 
         //check result
         assertEquals(actualResponseEntity.getStatusCode(), expectedResponseEntity.getStatusCode());
@@ -134,7 +134,7 @@ public class AvatarControllerTest {
         ServletRequest request = mock(ServletRequest.class);
 
         //set expectations
-        when(avatarService.convertAvatarToBase64String(avatar)).thenReturn(SRC_IMG);
+        when(avatarService.convertBytesToBase64String(avatar)).thenReturn(SRC_IMG);
 
         HttpServletResponse response = new MockHttpServletResponse();
 
@@ -152,7 +152,7 @@ public class AvatarControllerTest {
         ServletRequest request = mock(ServletRequest.class);
 
         //set expectations
-        when(avatarService.convertAvatarToBase64String(avatar)).thenThrow(new ImageUploadException());
+        when(avatarService.convertBytesToBase64String(avatar)).thenThrow(new ImageProcessException());
 
         HttpServletResponse response = new MockHttpServletResponse();
 

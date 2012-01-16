@@ -15,12 +15,11 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.apache.commons.codec.binary.Base64;
-import org.jtalks.jcommune.service.exceptions.ImageUploadException;
+import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
-import java.awt.Dimension;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
 import java.awt.image.RenderedImage;
@@ -61,9 +60,14 @@ public class ImageUtils {
      *
      * @param image input image
      * @return byte array obtained from image
-     * @throws ImageUploadException if an I/O error occurs
+     * @throws ImageProcessException if an I/O error occurs
      */
-    public byte[] convertImageToByteArray(Image image) throws ImageUploadException {
+    public byte[] convertImageToByteArray(Image image) throws ImageProcessException {
+
+        if (image == null) {
+            throw new ImageProcessException();
+        }
+
         byte[] result;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
@@ -72,7 +76,7 @@ public class ImageUtils {
             result = baos.toByteArray();
             baos.close();
         } catch (IOException e) {
-            throw new ImageUploadException(e);
+            throw new ImageProcessException(e);
         }
         return result;
     }
@@ -82,15 +86,15 @@ public class ImageUtils {
      *
      * @param bytes for conversion.
      * @return image result.
-     * @throws ImageUploadException image conversion problem.
+     * @throws ImageProcessException image conversion problem.
      */
-    public BufferedImage convertByteArrayToImage(byte[] bytes) throws ImageUploadException {
+    public BufferedImage convertByteArrayToImage(byte[] bytes) throws ImageProcessException {
         BufferedImage result;
         BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(bytes));
         try {
             result = ImageIO.read(bis);
         } catch (IOException e) {
-            throw new ImageUploadException(e);
+            throw new ImageProcessException(e);
         }
         return result;
     }
@@ -132,9 +136,9 @@ public class ImageUtils {
      *
      * @param image for processing
      * @return processed image bytes
-     * @throws ImageUploadException image processing problem
+     * @throws ImageProcessException image processing problem
      */
-    public byte[] preprocessImage(Image image) throws ImageUploadException {
+    public byte[] preprocessImage(Image image) throws ImageProcessException {
         byte[] result;
         Image outputImage = resizeImage((BufferedImage) image, IMAGE_JPEG, AVATAR_MAX_WIDTH, AVATAR_MAX_HEIGHT);
         result = convertImageToByteArray(outputImage);

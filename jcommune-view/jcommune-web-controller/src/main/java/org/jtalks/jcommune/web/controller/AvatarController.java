@@ -19,14 +19,14 @@ import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.service.nontransactional.AvatarService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.ImageFormatException;
+import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.jtalks.jcommune.service.exceptions.ImageSizeException;
-import org.jtalks.jcommune.service.exceptions.ImageUploadException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -34,11 +34,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest;
@@ -51,11 +47,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Controller for processing avatar related request.
@@ -98,7 +90,7 @@ public class AvatarController {
     @RequestMapping(value = "/users/IFrameAvatarpreview", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<String> uploadAvatar(DefaultMultipartHttpServletRequest request)
-        throws ServletException, IOException {
+            throws ServletException, IOException {
 
         //get input file
         Map<String, MultipartFile> fileMap = request.getFileMap();
@@ -199,7 +191,7 @@ public class AvatarController {
         } catch (ImageSizeException e) {
             prepareSizeErrorResponse(request, responseContent);
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-        } catch (ImageUploadException e) {
+        } catch (ImageProcessException e) {
             prepareCommonErrorResponse(request, responseContent);
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         }
@@ -227,7 +219,7 @@ public class AvatarController {
         } catch (ImageSizeException e) {
             prepareSizeErrorResponse(request, responseContent);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        } catch (ImageUploadException e) {
+        } catch (ImageProcessException e) {
             prepareCommonErrorResponse(request, responseContent);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
@@ -274,12 +266,12 @@ public class AvatarController {
      *
      * @param bytes           input avatar data
      * @param responseContent response payload
-     * @throws ImageUploadException due to common avatar processing error
+     * @throws ImageProcessException due to common avatar processing error
      */
     private void prepareNormalResponse(byte[] bytes,
-                                       Map<String, String> responseContent) throws ImageUploadException {
+                                       Map<String, String> responseContent) throws ImageProcessException {
         String srcImage;
-        srcImage = avatarService.convertAvatarToBase64String(bytes);
+        srcImage = avatarService.convertBytesToBase64String(bytes);
         responseContent.put(RESULT, "true");
         responseContent.put("srcPrefix", ImageUtils.HTML_SRC_TAG_PREFIX);
         responseContent.put("srcImage", srcImage);
