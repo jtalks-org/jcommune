@@ -19,10 +19,11 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.service.PrivateMessageService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
-import org.jtalks.jcommune.service.nontransactional.UserDataCacheService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.MailService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
+import org.jtalks.jcommune.service.nontransactional.UserDataCacheService;
 import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +46,7 @@ public class TransactionalPrivateMessageService
     private final SecurityService securityService;
     private final UserService userService;
     private final UserDataCacheService userDataCache;
+    private final MailService mailService;
 
     /**
      * Creates the instance of service.
@@ -53,15 +55,18 @@ public class TransactionalPrivateMessageService
      * @param securityService for retrieving current user
      * @param userService     for getting user by name
      * @param userDataCache   service for cache for user data
+     * @param mailService     for sending email notifications
      */
     public TransactionalPrivateMessageService(PrivateMessageDao pmDao,
                                               SecurityService securityService,
                                               UserService userService,
-                                              UserDataCacheService userDataCache) {
+                                              UserDataCacheService userDataCache,
+                                              MailService mailService) {
         super(pmDao);
         this.securityService = securityService;
         this.userService = userService;
         this.userDataCache = userDataCache;
+        this.mailService = mailService;
     }
 
     /**
@@ -98,7 +103,10 @@ public class TransactionalPrivateMessageService
 
         securityService.grantToCurrentUser().user(recipientUsername).read().on(pm);
 
-        logger.debug("Private message to user {} was sent. Message id={}", recipientUsername, pm.getId());
+        long pmId = pm.getId();
+        mailService.sendReceivedPrivateMessageNotification(recipient, pmId);
+
+        logger.debug("Private message to user {} was sent. Message id={}", recipientUsername, pmId);
 
         return pm;
     }
@@ -195,8 +203,11 @@ public class TransactionalPrivateMessageService
         securityService.deleteFromAcl(pm);
         securityService.grantToCurrentUser().user(recipientUsername).read().on(pm);
 
+        long pmId = pm.getId();
+        mailService.sendReceivedPrivateMessageNotification(recipient, pmId);
+
         logger.debug("Private message(was draft) to user {} was sent. Message id={}",
-                recipientUsername, pm.getId());
+                recipientUsername, pmId);
 
         return pm;
     }

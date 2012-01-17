@@ -15,8 +15,8 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Evgeniy Naumenko
  */
-public class MailService  {
+public class MailService {
 
     private MailSender mailSender;
     private SimpleMailMessage templateMessage;
@@ -66,6 +66,16 @@ public class MailService  {
                     "\n" +
                     "Jtalks forum.";
 
+    private static final String RECEIVED_PRIVATE_MESSAGE_NOTIFICATION_TEMPLATE =
+            "Dear %s!\n" +
+                    "\n" +
+                    "Your received new private message.\n" +
+                    "Please check it out at %s.\n" +
+                    "\n" +
+                    "Best regards,\n" +
+                    "\n" +
+                    "Jtalks forum.";
+
     /**
      * Creates a mailing service with a default template message autowired.
      * Template message contains sender address and can be configured via spring
@@ -81,11 +91,11 @@ public class MailService  {
         this.templateMessage = templateMessage;
     }
 
-        /**
+    /**
      * Sends a password recovery message for the user with a given email.
      * This method does not generate new password, just sends a message.
      *
-     * @param name    username to be used in a mail
+     * @param name        username to be used in a mail
      * @param email       address to mail to
      * @param newPassword new user password to be placed in an email
      * @throws MailingFailedException when mailing failed
@@ -105,7 +115,7 @@ public class MailService  {
      * posts were added to the topic. This method won't check if user
      * is subscribed to the particular notification or not.
      *
-     * @param user a person to be notified about updates by email
+     * @param user  a person to be notified about updates by email
      * @param topic topic changed (to include more detailes in email)
      */
     public void sendTopicUpdatesOnSubscription(JCUser user, Topic topic) {
@@ -126,7 +136,7 @@ public class MailService  {
      * posts were added to the topic. This method won't check if user
      * is subscribed to the particular notification or not.
      *
-     * @param user a person to be notified about updates by email
+     * @param user   a person to be notified about updates by email
      * @param branch branch changed (to include more detailes in email)
      */
     public void sendBranchUpdatesOnSubscription(JCUser user, Branch branch) {
@@ -139,6 +149,23 @@ public class MailService  {
                     "Subscription update sending failed");
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Branch", branch.getId(), user.getUsername()));
+        }
+    }
+
+    /**
+     * Sends notification to user about received private message.
+     *
+     * @param recipient a person to be notified about received private message by email
+     */
+    public void sendReceivedPrivateMessageNotification(JCUser recipient, long pmId) {
+        String url = this.getDeploymentRootUrl() + "/inbox/" + pmId;
+        try {
+            this.sendEmail(recipient.getEmail(),
+                    "Received private message",
+                    String.format(RECEIVED_PRIVATE_MESSAGE_NOTIFICATION_TEMPLATE, recipient.getUsername(), url),
+                    "Received private message notification sending failed");
+        } catch (MailingFailedException e) {
+            LOGGER.error(String.format(LOG_TEMPLATE, "Private message", pmId, recipient.getUsername()));
         }
     }
 
