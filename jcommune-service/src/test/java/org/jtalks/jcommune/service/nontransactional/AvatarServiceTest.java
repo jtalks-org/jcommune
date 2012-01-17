@@ -108,6 +108,12 @@ public class AvatarServiceTest {
         avatarService.validateAvatarFormat(file);
     }
 
+    @Test(expectedExceptions = IllegalArgumentException.class, dataProvider = "nullValues")
+    public void inputDataForValidateAvatarFormatIsNull(MultipartFile file) throws Exception {
+        //invoke object under test
+        avatarService.validateAvatarFormat(file);
+    }
+
     @Test(expectedExceptions = ImageSizeException.class, dataProvider = "invalidSizeValues")
     public void inputDataForValidateAvatarSizeIsInvalid(byte[] bytes) throws Exception {
         //invoke object under test
