@@ -17,6 +17,7 @@ package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.service.exceptions.ImageFormatException;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
+import org.jtalks.jcommune.service.exceptions.ImageSizeException;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.testng.annotations.BeforeMethod;
@@ -46,7 +47,7 @@ public class AvatarServiceTest {
         avatarService = new AvatarService(imageUtils);
     }
 
-    @Test(dataProvider = "valid-data-provider")
+    @Test(dataProvider = "validImageBytesValues")
     public void shouldNormalProcessConvertAvatarToBase64String(byte[] originalImageBytes,
                                                                BufferedImage inputImage,
                                                                byte[] processedImageBytes,
@@ -69,34 +70,59 @@ public class AvatarServiceTest {
 
     }
 
-    @Test(expectedExceptions = ImageProcessException.class, dataProvider = "invalid-data-provider")
+    @Test(expectedExceptions = ImageProcessException.class, dataProvider = "invalidImageBytesValues")
     public void inputDataForProcessConvertAvatarToBase64StringIsInvalid(byte[] originalImageBytes,
                                                                         BufferedImage inputImage) throws Exception {
         //set expectations
         when(imageUtils.convertByteArrayToImage(originalImageBytes)).thenReturn(inputImage);
 
         //invoke object under test
-        String resultBase64String = avatarService.convertBytesToBase64String(originalImageBytes);
+        avatarService.convertBytesToBase64String(originalImageBytes);
 
         //check expectations
         verify(imageUtils).convertByteArrayToImage(originalImageBytes);
     }
 
-    @Test(expectedExceptions = ImageFormatException.class, dataProvider = "invalidFormats")
+    @Test(expectedExceptions = IllegalArgumentException.class, dataProvider = "nullValues")
+    public void inputDataForProcessConvertAvatarToBase64StringIsNull(byte[] bytes) throws Exception {
+        //invoke object under test
+        avatarService.convertBytesToBase64String(bytes);
+    }
+
+
+    @Test(expectedExceptions = IllegalArgumentException.class, dataProvider = "nullValues")
+    public void inputDataForProcessConvertAvatarToBase64StringIsInvalid(byte[] bytes) throws Exception {
+        //invoke object under test
+        avatarService.convertBytesToBase64String(bytes);
+    }
+
+    @Test(expectedExceptions = ImageFormatException.class, dataProvider = "invalidFormatValues")
     public void inputDataForValidateAvatarFormatIsInvalid(MultipartFile file) throws Exception {
         //invoke object under test
         avatarService.validateAvatarFormat(file);
     }
 
-    @Test(dataProvider = "validFormats")
+    @Test(dataProvider = "validFormatValues")
     public void inputDataForValidateAvatarFormatIsValid(MultipartFile file) throws Exception {
         //invoke object under test
         avatarService.validateAvatarFormat(file);
     }
 
+    @Test(expectedExceptions = ImageSizeException.class, dataProvider = "invalidSizeValues")
+    public void inputDataForValidateAvatarSizeIsInvalid(byte[] bytes) throws Exception {
+        //invoke object under test
+        avatarService.validateAvatarSize(bytes);
+    }
 
-    @DataProvider(name = "valid-data-provider")
-    private Object[][] validData() throws IOException, ImageProcessException {
+    @Test(expectedExceptions = IllegalArgumentException.class, dataProvider = "nullValues")
+    public void inputDataForValidateAvatarSizeIsNull(byte[] bytes) throws Exception {
+        //invoke object under test
+        avatarService.validateAvatarSize(bytes);
+    }
+
+
+    @DataProvider
+    private Object[][] validImageBytesValues() throws IOException, ImageProcessException {
         ImageUtils imageUtils = new ImageUtils();
 
         byte[] originalImageBytes = new byte[]{-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0,
@@ -118,8 +144,16 @@ public class AvatarServiceTest {
         };
     }
 
-    @DataProvider(name = "invalid-data-provider")
-    private Object[][] invalidData() throws IOException, ImageProcessException {
+    @DataProvider
+    private Object[][] nullValues() {
+
+        return new Object[][]{
+                {null}
+        };
+    }
+
+    @DataProvider
+    private Object[][] invalidImageBytesValues() throws Exception {
         ImageUtils imageUtils = new ImageUtils();
 
         byte[] originalImageBytes = new byte[]{96, -126};
@@ -128,12 +162,11 @@ public class AvatarServiceTest {
 
         return new Object[][]{
                 {originalImageBytes, inputImage},
-                {null, null}
         };
     }
 
     @DataProvider
-    public Object[][] invalidFormats() {
+    public Object[][] invalidFormatValues() {
         return new Object[][]{
                 {new MockMultipartFile("test_avatar", "test_avatar", "image/bmp", new byte[10])},
                 {new MockMultipartFile("test_avatar", "test_avatar", "image/tiff", new byte[10])},
@@ -143,12 +176,11 @@ public class AvatarServiceTest {
                 {new MockMultipartFile("test_avatar", "test_avatar", "text/plain", new byte[10])},
                 {new MockMultipartFile("test_avatar", "test_avatar", "text/html", new byte[10])},
                 {new MockMultipartFile("test_avatar", "test_avatar", "video/mpeg", new byte[10])}
-
         };
     }
 
     @DataProvider
-    Object[][] validFormats() {
+    Object[][] validFormatValues() {
         Set<String> validFormats = AvatarService.getValidImageTypes();
         List<MultipartFile> files = new ArrayList<MultipartFile>(validFormats.size());
         for (String contentType : validFormats) {
@@ -161,6 +193,21 @@ public class AvatarServiceTest {
 
         return result;
 
+    }
+
+    @DataProvider
+    Object[][] invalidSizeValues() {
+        return new Object[][]{
+                {new byte[AvatarService.MAX_SIZE * 2]},
+        };
+    }
+
+    @DataProvider
+    Object[][] validSizeValues() {
+        return new Object[][]{
+                {new byte[AvatarService.MAX_SIZE]},
+                {new byte[Math.round(AvatarService.MAX_SIZE / 2)]}
+        };
     }
 
 }

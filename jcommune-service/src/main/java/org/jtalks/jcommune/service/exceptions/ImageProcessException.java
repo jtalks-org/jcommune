@@ -29,6 +29,7 @@ public class ImageProcessException extends Exception {
      * {@link Exception}
      */
     public ImageProcessException() {
+        super();
     }
 
     /**

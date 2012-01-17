@@ -21,4 +21,21 @@ package org.jtalks.jcommune.service.exceptions;
  * @author Alexandre Teterin
  */
 public class ImageFormatException extends ImageProcessException {
+
+
+    /**
+     * Constructors with <code>null</code> as its detail message.
+     */
+    public ImageFormatException() {
+        super();
+    }
+
+    /**
+     * Constructs a new exception with detailed message.
+     *
+     * @param message about exception cause.
+     */
+    public ImageFormatException(String message) {
+        super(message);
+    }
 }

@@ -58,10 +58,15 @@ public class AvatarService {
      * @throws ImageProcessException common avatar processing error
      */
     public String convertBytesToBase64String(byte[] bytes) throws ImageProcessException {
+        if (bytes == null) {
+            throw new IllegalArgumentException();
+        }
+
         BufferedImage image = imageUtils.convertByteArrayToImage(bytes);
         if (image == null) {
-            throw new ImageProcessException("Invalid input data");
+            throw new ImageProcessException();
         }
+
         byte[] outputAvatar = imageUtils.preprocessImage(image);
         return imageUtils.encodeB64(outputAvatar);
     }
@@ -73,6 +78,10 @@ public class AvatarService {
      * @throws ImageFormatException invalid format avatar processing error
      */
     public void validateAvatarFormat(MultipartFile file) throws ImageFormatException {
+        if (file == null) {
+            throw new IllegalArgumentException();
+        }
+
         if (!VALID_IMAGE_TYPES.contains(file.getContentType())) {
             throw new ImageFormatException();
         }
@@ -85,6 +94,10 @@ public class AvatarService {
      * @throws ImageSizeException invalid size avatar processing error
      */
     public void validateAvatarSize(byte[] bytes) throws ImageSizeException {
+        if (bytes == null) {
+            throw new IllegalArgumentException();
+        }
+
         if (bytes.length > MAX_SIZE) {
             throw new ImageSizeException();
         }

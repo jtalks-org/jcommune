@@ -21,4 +21,23 @@ package org.jtalks.jcommune.service.exceptions;
  * @author Alexandre Teterin
  */
 public class ImageSizeException extends ImageProcessException {
+
+    static final long serialVersionUID = 2012017L;
+
+    /**
+     * Constructs a new exception with <code>null</code> as its detail message.
+     */
+    public ImageSizeException() {
+        super();
+    }
+
+    /**
+     * Create exception with specific message.
+     *
+     * @param message exception message
+     */
+    public ImageSizeException(String message) {
+        super(message);
+    }
+
 }
