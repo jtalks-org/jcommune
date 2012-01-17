@@ -24,6 +24,7 @@ import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
+import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
@@ -45,6 +46,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     private SecurityService securityService;
     private MailService mailService;
     private ImageUtils imageUtils;
+    private AvatarService avatarService;
 
     /**
      * Create an instance of User entity based service
@@ -53,13 +55,15 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * @param securityService for security
      * @param mailService     to send e-mails
      * @param imageUtils      for avatar image-related operations
+     * @param avatarService   some more avatar operations)
      */
     public TransactionalUserService(UserDao dao, SecurityService securityService,
-                                    MailService mailService, ImageUtils imageUtils) {
+                                    MailService mailService, ImageUtils imageUtils, AvatarService avatarService) {
         super(dao);
         this.securityService = securityService;
         this.mailService = mailService;
         this.imageUtils = imageUtils;
+        this.avatarService = avatarService;
     }
 
     /**
@@ -96,6 +100,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     @Override
     public JCUser registerUser(JCUser user) {
         user.setRegistrationDate(new DateTime());
+        user.setAvatar(avatarService.getDefaultAvatar());
         this.getDao().saveOrUpdate(user);
         logger.info("JCUser registered: {}", user.getUsername());
         return user;
@@ -186,15 +191,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         if (avatar != null && avatar.length > 0) {
             currentUser.setAvatar(avatar);
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void removeAvatarFromCurrentUser() {
-        JCUser user = securityService.getCurrentUser();
-        user.setAvatar(null);
     }
 
     /**

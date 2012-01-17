@@ -25,6 +25,7 @@ import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
+import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
@@ -72,11 +73,13 @@ public class TransactionalUserServiceTest {
     private MailService mailService;
     @Mock
     private ImageUtils processor;
+    @Mock
+    private AvatarService avatarService;
 
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-        userService = new TransactionalUserService(userDao, securityService, mailService, processor);
+        userService = new TransactionalUserService(userDao, securityService, mailService, processor, avatarService);
     }
 
     @Test
@@ -198,8 +201,8 @@ public class TransactionalUserServiceTest {
         assertUserUpdated(editedUser);
         assertEquals(editedUser.getAvatar(), avatar, "avatar was changed");
     }
-    
-    private void assertUserUpdated(JCUser user){
+
+    private void assertUserUpdated(JCUser user) {
         assertEquals(user.getEmail(), EMAIL, "Email was not changed");
         assertEquals(user.getSignature(), SIGNATURE, "Signature was not changed");
         assertEquals(user.getFirstName(), FIRST_NAME, "first name was not changed");
@@ -271,14 +274,6 @@ public class TransactionalUserServiceTest {
         DateTime dateTimeAfter = user.getLastLogin();
         assertEquals(dateTimeAfter.compareTo(dateTimeBefore), 1, "last login time lesser than before test");
         verify(userDao).saveOrUpdate(user);
-    }
-
-    @Test
-    public void testRemoveAvatar() {
-        JCUser user = getUser(USERNAME);
-        when(securityService.getCurrentUser()).thenReturn(user);
-        userService.removeAvatarFromCurrentUser();
-        assertEquals(user.getAvatar(), null, "Avatar after remove should be null");
     }
 
     @Test

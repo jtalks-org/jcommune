@@ -135,7 +135,7 @@ public class AvatarController {
     @RequestMapping(value = "/users/edit/avatar", method = RequestMethod.POST)
     public ModelAndView removeAvatarFromCurrentUser() {
         JCUser user = securityService.getCurrentUser();
-        userService.removeAvatarFromCurrentUser();
+        user.setAvatar(avatarService.getDefaultAvatar());
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
         return new ModelAndView("editProfile", "editedUser", editedUser);
     }

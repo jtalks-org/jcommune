@@ -172,7 +172,7 @@ public class AvatarControllerTest {
 
         assertViewName(mav, "editProfile");
         verify(securityService).getCurrentUser();
-        verify(userService).removeAvatarFromCurrentUser();
+        verify(avatarService).getDefaultAvatar();
     }
 
     @Test(dataProvider = "validData-XHR-provider")

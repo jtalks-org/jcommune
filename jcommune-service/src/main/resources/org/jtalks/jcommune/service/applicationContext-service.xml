@@ -56,6 +56,7 @@
         <constructor-arg ref="securityService"/>
         <constructor-arg ref="mailService"/>
         <constructor-arg ref="imagePreprocessor"/>
+        <constructor-arg ref="avatarService"/>
     </bean>
 
     <bean id="postService"

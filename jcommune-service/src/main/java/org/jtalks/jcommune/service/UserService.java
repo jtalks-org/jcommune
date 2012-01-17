@@ -77,11 +77,6 @@ public interface UserService extends EntityService<JCUser> {
     JCUser editUserProfile(UserInfoContainer info) throws DuplicateEmailException, WrongPasswordException;
 
     /**
-     * Remove current user's avatar.
-     */
-    void removeAvatarFromCurrentUser();
-
-    /**
      * Performs the following:
      * 1. Alters the password for this user to the random string
      * 2. Sends an e-mail with new password to this address to notify user

@@ -17,9 +17,14 @@ package org.jtalks.jcommune.service.nontransactional;
 import org.jtalks.jcommune.service.exceptions.ImageFormatException;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.jtalks.jcommune.service.exceptions.ImageSizeException;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.xml.bind.annotation.XmlElementRef;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,13 +35,17 @@ import java.util.Set;
  */
 public class AvatarService {
 
+
     private static final Set<String> VALID_IMAGE_TYPES = new HashSet<String>();
     /**
      * Max avatar size in bytes (to be moved in DB later)
      */
     public static final int MAX_SIZE = 4096 * 1024;
 
-    private final ImageUtils imageUtils;
+    private ImageUtils imageUtils;
+
+    //todo: to be configured in Poulpe in future
+    private static final String DEFAULT_AVATAR = "org/jtalks/jcommune/service/avatar.gif";
 
     /**
      * Create AvatarService instance
@@ -108,4 +117,15 @@ public class AvatarService {
     }
 
 
+    public byte[] getDefaultAvatar(){
+        byte[] result = new byte[0];
+        try {
+            InputStream stream = AvatarService.class.getClassLoader().getResourceAsStream(DEFAULT_AVATAR);
+            result = new byte[stream.available()];
+            stream.read(result);
+        } catch (IOException e) {
+
+        }
+        return result;
+    }
 }
