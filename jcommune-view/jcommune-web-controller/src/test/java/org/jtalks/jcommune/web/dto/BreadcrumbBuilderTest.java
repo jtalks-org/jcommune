@@ -63,7 +63,7 @@ public class BreadcrumbBuilderTest {
     public void testGetForumBreadcrumb() throws Exception {
         //init
         Breadcrumb expectedBreadcrumb = new Breadcrumb(Breadcrumb.STUB_BREADCRUMB_ID,
-                BreadcrumbLocation.FORUM,  Breadcrumb.ROOT_BREADCRUMB_LOCATION_VALUE);
+                BreadcrumbLocation.FORUM, Breadcrumb.ROOT_BREADCRUMB_LOCATION_VALUE);
         List<Breadcrumb> expectedResult = new ArrayList<Breadcrumb>();
         expectedResult.add(expectedBreadcrumb);
 
@@ -131,6 +131,14 @@ public class BreadcrumbBuilderTest {
         assertBreadcrumbsAreEqual(actualList, expectedList);
     }
 
+    @Test
+    public void testLongBreadcrumbValue() {
+        String longOne = "this is a long string to be shortened by finely trained code chunk";
+        Breadcrumb breadcrumb = new Breadcrumb(ID, BreadcrumbLocation.BRANCH, longOne);
+
+        assertEquals(breadcrumb.getValue(), "this is a long string to be shortened...");
+    }
+
     private void assertBreadcrumbsAreEqual(List<Breadcrumb> actualList, List<Breadcrumb> expectedList) {
         if (actualList.size() == expectedList.size()) {
             for (int i = 0; i < actualList.size(); i++) {
@@ -138,7 +146,7 @@ public class BreadcrumbBuilderTest {
                 Breadcrumb expected = expectedList.get(i);
                 assertEquals(actual.getId(), expected.getId());
                 assertEquals(actual.getBreadcrumbLocation(), expected.getBreadcrumbLocation());
-                assertEquals(actual.getBreadcrumbLocationValue(), expected.getBreadcrumbLocationValue());
+                assertEquals(actual.getValue(), expected.getValue());
             }
         } else {
             fail("Actual and expect breadcrumbs must be of the same length");

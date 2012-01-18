@@ -23,7 +23,13 @@ import org.mockito.Matchers;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Mockito.*;
+import java.util.Collections;
+import java.util.List;
+
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -64,6 +70,16 @@ public class TransactionalBranchServiceTest {
     public void testGetIncorrectId() throws NotFoundException {
         when(branchDao.isExist(BRANCH_ID)).thenReturn(false);
         branchService.get(BRANCH_ID);
+    }
+
+    @Test
+    public void testGetBrancesInSection() throws NotFoundException {
+        List<Branch> list = Collections.singletonList(new Branch(BRANCH_NAME));
+        when(sectionDao.isExist(Matchers.<Long>any())).thenReturn(true);
+        when(branchDao.getBranchesInSection(anyLong())).thenReturn(list);
+        
+        List<Branch> result = branchService.getBranchesInSection(BRANCH_ID);
+        assertEquals(list, result);
     }
 
     @Test(expectedExceptions = {NotFoundException.class})
