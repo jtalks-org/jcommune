@@ -91,7 +91,7 @@
                             <c:if test="${branch.topicCount>0}">
                                 <span><jtalks:format value="${branch.lastUpdatedTopic.lastPost.creationDate}"/></span>
                                 <br/>
-                                <a href="${pageContext.request.contextPath}/users/${branch.lastUpdatedTopic.lastPost.userCreated.username}">
+                                <a href="${pageContext.request.contextPath}/users/${branch.lastUpdatedTopic.lastPost.userCreated.encodedUsername}">
                                         ${branch.lastUpdatedTopic.lastPost.userCreated.username}</a>
                                 <a href="${pageContext.request.contextPath}/posts/${branch.lastUpdatedTopic.lastPost.id}">
                                     <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
@@ -134,12 +134,12 @@
                             <c:forEach items="${usersRegistered}" var="user">
                                 <c:choose>
                                     <c:when test="${user.role=='ROLE_ADMIN'}">
-                                        <li><a href="${pageContext.request.contextPath}/users/${user.username}"
-                                               class="admin">
-                                            <c:out value="${user.username}"/></a>&nbsp;&nbsp;</li>
+                                        <li><a href="${pageContext.request.contextPath}/users/${user.encodedUsername}"
+                                               class="admin">${user.username}></a>&nbsp;&nbsp;
+                                        </li>
                                     </c:when>
                                     <c:otherwise>
-                                        <li><a href="${pageContext.request.contextPath}/users/${user.username}"
+                                        <li><a href="${pageContext.request.contextPath}/users/${user.encodedUsername}"
                                                class="user">
                                             <c:out value="${user.username}"/></a>&nbsp;&nbsp;</li>
                                     </c:otherwise>

@@ -258,7 +258,7 @@ public class AvatarControllerTest {
     public void testRenderAvatar(byte[] avatar, Map<String, String> expectedData) throws Exception {
         JCUser user = getUser();
         user.setAvatar(avatar);
-        when(userService.getByEncodedUsername(Matchers.<String>any())).thenReturn(user);
+        when(userService.getByUsername(Matchers.<String>any())).thenReturn(user);
         HttpServletResponse response = mock(HttpServletResponse.class);
         ServletOutputStream servletOutputStream = mock(ServletOutputStream.class);
         when(response.getOutputStream()).thenReturn(servletOutputStream);

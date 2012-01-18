@@ -45,7 +45,7 @@
                 <tr>
                     <td><spring:message code="label.sender"/></td>
                     <td>
-                        <a href="${pageContext.request.contextPath}/users/${pm.userFrom.username}">
+                        <a href="${pageContext.request.contextPath}/users/${pm.userFrom.encodedUsername}">
                             <c:out value="${pm.userFrom.username}"/>
                         </a>
                     </td>
@@ -53,7 +53,7 @@
                 <tr>
                     <td><spring:message code="label.recipient"/></td>
                     <td>
-                        <a href="${pageContext.request.contextPath}/users/${pm.userTo.username}">
+                        <a href="${pageContext.request.contextPath}/users/${pm.userTo.encodedUsername}">
                             <c:out value="${pm.userTo.username}"/>
                         </a>
                     </td>

@@ -97,7 +97,7 @@
         <li class="forum_row">
             <div class="forum_userinfo">
                 <a class="username"
-                   href="${pageContext.request.contextPath}/users/${post.userCreated.username}">
+                   href="${pageContext.request.contextPath}/users/${post.userCreated.encodedUsername}">
                     <c:out value="${post.userCreated.username}"/></a>
 
                 <div class="status"><spring:message code="label.topic.online_users"/></div>

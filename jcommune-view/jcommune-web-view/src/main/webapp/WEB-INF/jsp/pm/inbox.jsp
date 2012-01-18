@@ -58,7 +58,7 @@
                     </c:otherwise>
                 </c:choose>
                 <div class="forum_answer_left">
-                    <a href="${pageContext.request.contextPath}/users/${pm.userFrom.username}">
+                    <a href="${pageContext.request.contextPath}/users/${pm.userFrom.encodedUsername}">
                         <c:out value="${pm.userFrom.username}"/>
                     </a>
                 </div>

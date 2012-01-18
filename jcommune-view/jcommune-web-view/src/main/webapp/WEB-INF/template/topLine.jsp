@@ -20,7 +20,7 @@
 <div class="top_line">
     <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
         <fmt:message key="label.welcomeMessage"/>
-        <a class="currentusername" href="${pageContext.request.contextPath}/users/${userName}">
+        <a class="currentusername" href="${pageContext.request.contextPath}/users/${encodedUsername}">
             <sec:authentication property="principal.username"/>
         </a>!
     </sec:authorize>
@@ -32,7 +32,7 @@
         </li>
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
             <li>
-                <a href="${pageContext.request.contextPath}/users/${userName}">
+                <a href="${pageContext.request.contextPath}/users/${encodedUsername}">
                     <fmt:message key="label.profile"/>
                 </a>
             </li>

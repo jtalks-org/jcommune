@@ -66,7 +66,7 @@ public class UserDataInterceptorTest {
         interceptor.postHandle(request, response, null, new ModelAndView("view"));
 
         assertEquals(request.getAttribute("newPmCount"), USER_NEW_PM_COUNT);
-        assertEquals(request.getAttribute("encodedUserName"), ENCODED_USER_NAME);
+        assertEquals(request.getAttribute("encodedUsername"), ENCODED_USER_NAME);
         verify(service).currentUserNewPmCount();
         verify(securityService).getCurrentUser();
     }
@@ -79,7 +79,7 @@ public class UserDataInterceptorTest {
         interceptor.postHandle(request, response, null, new ModelAndView("view"));
 
         assertEquals(request.getAttribute("newPmCount"), 0);
-        assertEquals(request.getAttribute("encodedUserName"), null);
+        assertEquals(request.getAttribute("encodedUsername"), null);
         verify(service).currentUserNewPmCount();
         verify(securityService).getCurrentUser();
     }

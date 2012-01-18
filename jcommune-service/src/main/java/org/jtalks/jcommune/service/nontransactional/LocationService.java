@@ -69,7 +69,7 @@ public class LocationService {
             JCUser user = (JCUser) o;
 
             if (entity.getUuid().equals(registerUserMap.get(user))) {
-                viewList.add(user.getUsername());
+                viewList.add(user.getEncodedUsername());
             }
         }
         return viewList;

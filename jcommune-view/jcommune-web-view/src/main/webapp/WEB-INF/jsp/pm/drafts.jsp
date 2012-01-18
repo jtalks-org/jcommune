@@ -54,7 +54,7 @@
             <c:forEach var="pm" items="${pmList}">
                 <li class="forum_row">
                     <div class="forum_answer_left">
-                        <a href="${pageContext.request.contextPath}/users/${pm.userTo.username}">
+                        <a href="${pageContext.request.contextPath}/users/${pm.userTo.encodedUsername}">
                             <c:out value="${pm.userTo.username}"/>
                         </a>
                     </div>

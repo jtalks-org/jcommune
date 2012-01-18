@@ -156,7 +156,7 @@ public class AvatarController {
     public void renderAvatar(HttpServletResponse response,
                              @PathVariable("encodedUsername") String encodedUsername) throws NotFoundException,
             IOException {
-        JCUser user = userService.getByEncodedUsername(encodedUsername);
+        JCUser user = userService.getByUsername(encodedUsername);
         byte[] avatar = user.getAvatar();
         response.setContentType("image/jpeg");
         response.setContentLength(avatar.length);

@@ -93,7 +93,7 @@
                         </c:otherwise>
                     </c:choose>
                     <div class="forum_author">
-                        <a href="${pageContext.request.contextPath}/users/${topic.topicStarter.username}"
+                        <a href="${pageContext.request.contextPath}/users/${topic.topicStarter.encodedUsername}"
                            title="<spring:message code="label.topic.header.author"/>"><c:out
                                 value="${topic.topicStarter.username}"/></a>
                     </div>
@@ -105,7 +105,7 @@
                             <jtalks:format value="${topic.lastPost.creationDate}"/></a>
                         <br/>
                         <a class="last_message_user"
-                           href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.username}">
+                           href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
                             <c:out value="${topic.lastPost.userCreated.username}"/></a>
                         <a href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}">
                             <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
