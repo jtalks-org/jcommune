@@ -71,7 +71,6 @@ public class EditUserProfileDto {
 
     /**
      * Constructor which fills dto fields from user.
-     * Fields {@link org.jtalks.jcommune.model.entity.JCUser#getFirstName()}, {@link org.jtalks.jcommune.model.entity.JCUser#getLastName()}, {@link org.jtalks.jcommune.model.entity.JCUser#getEmail() will be copied.
      *
      * @param user copying source
      */

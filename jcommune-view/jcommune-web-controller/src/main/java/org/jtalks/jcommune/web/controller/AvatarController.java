@@ -34,7 +34,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest;
@@ -47,7 +51,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Controller for processing avatar related request.
@@ -119,7 +127,7 @@ public class AvatarController {
      * @param request  input request
      * @param response servlet response
      * @return response content
-     * @throws javax.servlet.ServletException avatar processing problem
+     * @throws ServletException avatar processing problem
      */
     @RequestMapping(value = "/users/XHRavatarpreview", method = RequestMethod.POST)
     @ResponseBody
@@ -142,7 +150,7 @@ public class AvatarController {
         JCUser user = securityService.getCurrentUser();
         byte[] defaultAvatar = avatarService.getDefaultAvatar();
         user.setAvatar(defaultAvatar);
-        EditUserProfileDto editedUser = new EditUserProfileDto(user);;
+        EditUserProfileDto editedUser = new EditUserProfileDto(user);
         editedUser.setAvatar(imageUtils.prepareHtmlImgSrc(defaultAvatar));
         return new ModelAndView("editProfile", "editedUser", editedUser);
     }
@@ -151,10 +159,9 @@ public class AvatarController {
      * Write user avatar in response for rendering it on html pages.
      *
      * @param response        servlet response
-     * @param encodedUsername {@link org.jtalks.jcommune.model.entity.JCUser#getEncodedUsername()}
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *                     if user with given encodedUsername not found
-     * @throws IOException throws if an output exception occurred
+     * @param encodedUsername {@link JCUser#getEncodedUsername()}
+     * @throws NotFoundException if user with given encodedUsername not found
+     * @throws IOException       throws if an output exception occurred
      */
     @RequestMapping(value = "/{encodedUsername}/avatar", method = RequestMethod.GET)
     public void renderAvatar(HttpServletResponse response,

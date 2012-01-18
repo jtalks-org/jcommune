@@ -49,6 +49,7 @@ public class UserInfoContainer {
      * @param avatar  B64 encoded avatar
      * @param language  preferred language
      * @param pageSize page size chosen
+     * @param location geographic user location
      */
     public UserInfoContainer(String firstName, String lastName, String email, String currentPassword,
                              String newPassword, String signature, String avatar, Language language,

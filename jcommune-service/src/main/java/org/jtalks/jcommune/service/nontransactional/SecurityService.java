@@ -69,8 +69,7 @@ public class SecurityService implements UserDetailsService {
     /**
      * Get current authenticated {@link org.jtalks.jcommune.model.entity.JCUser} username.
      *
-     * @return current authenticated {@link org.jtalks.jcommune.model.entity.JCUser} username or {@code null} if there is
-     *         no authenticated {@link org.jtalks.jcommune.model.entity.JCUser}.
+     * @return current authenticated {@link JCUser} username or {@code null} if there is no authenticated user
      */
     public String getCurrentUserUsername() {
         Authentication auth = securityContextFacade.getContext().getAuthentication();
