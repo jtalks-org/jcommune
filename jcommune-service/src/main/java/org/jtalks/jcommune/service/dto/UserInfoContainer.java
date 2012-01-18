@@ -40,15 +40,16 @@ public class UserInfoContainer {
     /**
      * Create instance with required fields.
      *
-     * @param firstName user's first name
-     * @param lastName user's last name
-     * @param email email set for user
-     * @param currentPassword  current user password to verify identity, may be null is we're not changing password
-     * @param newPassword  new password to be set, may be null is we're not changing password
-     * @param signature user's signature
-     * @param avatar  B64 encoded avatar
-     * @param language  preferred language
-     * @param pageSize page size chosen
+     * @param firstName       user's first name
+     * @param lastName        user's last name
+     * @param email           email set for user
+     * @param currentPassword current user password to verify identity, may be null is we're not changing password
+     * @param newPassword     new password to be set, may be null is we're not changing password
+     * @param signature       user's signature
+     * @param avatar          B64 encoded avatar
+     * @param language        preferred language
+     * @param pageSize        page size chosen
+     * @param location        geographic user location
      */
     public UserInfoContainer(String firstName, String lastName, String email, String currentPassword,
                              String newPassword, String signature, String avatar, Language language,
@@ -126,8 +127,7 @@ public class UserInfoContainer {
     }
 
     /**
-     *
-     * @return  new password set during profile updates
+     * @return new password set during profile updates
      */
     public String getNewPassword() {
         return newPassword;

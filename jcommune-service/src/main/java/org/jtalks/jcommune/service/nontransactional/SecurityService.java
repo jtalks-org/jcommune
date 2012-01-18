@@ -17,11 +17,7 @@ package org.jtalks.jcommune.service.nontransactional;
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.service.security.AclBuilder;
-import org.jtalks.jcommune.service.security.AclBuilderImpl;
-import org.jtalks.jcommune.service.security.AclManager;
-import org.jtalks.jcommune.service.security.SecurityConstants;
-import org.jtalks.jcommune.service.security.SecurityContextFacade;
+import org.jtalks.jcommune.service.security.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -69,8 +65,7 @@ public class SecurityService implements UserDetailsService {
     /**
      * Get current authenticated {@link org.jtalks.jcommune.model.entity.JCUser} username.
      *
-     * @return current authenticated {@link org.jtalks.jcommune.model.entity.JCUser} username or {@code null} if there is
-     *         no authenticated {@link org.jtalks.jcommune.model.entity.JCUser}.
+     * @return current authenticated {@link JCUser} username or {@code null} if there is no authenticated user
      */
     public String getCurrentUserUsername() {
         Authentication auth = securityContextFacade.getContext().getAuthentication();

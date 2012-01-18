@@ -115,7 +115,7 @@ public class AvatarController {
      * @param response servlet response
      * @param locale   current user locale settings to resolve messages
      * @return response content
-     * @throws javax.servlet.ServletException avatar processing problem
+     * @throws ServletException avatar processing problem
      */
     @RequestMapping(value = "/users/XHRavatarpreview", method = RequestMethod.POST)
     @ResponseBody
@@ -148,10 +148,9 @@ public class AvatarController {
      * Write user avatar in response for rendering it on html pages.
      *
      * @param response        servlet response
-     * @param encodedUsername {@link org.jtalks.jcommune.model.entity.JCUser#getEncodedUsername()}
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *                     if user with given encodedUsername not found
-     * @throws IOException throws if an output exception occurred
+     * @param encodedUsername {@link JCUser#getEncodedUsername()}
+     * @throws NotFoundException if user with given encodedUsername not found
+     * @throws IOException       throws if an output exception occurred
      */
     @RequestMapping(value = "/{encodedUsername}/avatar", method = RequestMethod.GET)
     public void renderAvatar(HttpServletResponse response,
