@@ -32,8 +32,8 @@
     </a></h1>
 
     <div class="all_forums">
+        &nbsp;
         <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/recent.rss">
-            &nbsp;
             <img src="${pageContext.request.contextPath}/resources/images/RSS.png">
         </a>
         <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/recent">
@@ -91,7 +91,7 @@
                             <c:if test="${branch.topicCount>0}">
                                 <span><jtalks:format value="${branch.lastUpdatedTopic.lastPost.creationDate}"/></span>
                                 <br/>
-                                <a href="${pageContext.request.contextPath}/users/${branch.lastUpdatedTopic.lastPost.userCreated.encodedUsername}">
+                                <a href="${pageContext.request.contextPath}/users/${branch.lastUpdatedTopic.lastPost.userCreated.username}">
                                         ${branch.lastUpdatedTopic.lastPost.userCreated.username}</a>
                                 <a href="${pageContext.request.contextPath}/posts/${branch.lastUpdatedTopic.lastPost.id}">
                                     <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"

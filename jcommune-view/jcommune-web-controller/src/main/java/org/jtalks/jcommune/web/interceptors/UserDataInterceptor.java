@@ -61,13 +61,13 @@ public class UserDataInterceptor extends HandlerInterceptorAdapter {
                            ModelAndView modelAndView) {
         //do not apply to the redirected requests: it's unnecessary and may cause error pages to work incorrectly
         if (modelAndView != null && !modelAndView.getViewName().contains("redirect:")) {
-            //todo: revise the common information we actualy need here
+            //todo: revise the common information we actually need here
             int newPmCount = service.currentUserNewPmCount();
             request.setAttribute("newPmCount", newPmCount);
             JCUser user = securityService.getCurrentUser();
 
-            String encodedUserName = user != null ? user.getEncodedUsername() : null;
-            request.setAttribute("encodedUserName", encodedUserName);
+            request.setAttribute("encodedUserName", (user != null) ? user.getEncodedUsername() : null);
+            request.setAttribute("userName", (user != null) ? user.getUsername() : null);
         }
     }
 }

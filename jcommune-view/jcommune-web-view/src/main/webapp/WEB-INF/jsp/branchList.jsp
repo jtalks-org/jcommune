@@ -71,7 +71,7 @@
                         <c:if test="${branch.topicCount>0}">
                             <span><jtalks:format value="${branch.lastUpdatedTopic.lastPost.creationDate}"/></span>
                             <br/>
-                            <a href="${pageContext.request.contextPath}/users/${branch.lastUpdatedTopic.lastPost.userCreated.encodedUsername}">
+                            <a href="${pageContext.request.contextPath}/users/${branch.lastUpdatedTopic.lastPost.userCreated.username}">
                                     ${branch.lastUpdatedTopic.lastPost.userCreated.username}
                             </a>
                             <a href="${pageContext.request.contextPath}/posts/${branch.lastUpdatedTopic.lastPost.id}">

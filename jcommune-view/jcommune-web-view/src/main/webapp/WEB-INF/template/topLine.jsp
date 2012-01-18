@@ -15,14 +15,12 @@
 
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="org.jtalks.jcommune.model.entity.Language" %>
-<%@ page import="org.springframework.web.servlet.i18n.CookieLocaleResolver" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <div class="top_line">
     <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
         <fmt:message key="label.welcomeMessage"/>
-        <a class="currentusername" href="${pageContext.request.contextPath}/users/${encodedUserName}">
+        <a class="currentusername" href="${pageContext.request.contextPath}/users/${userName}">
             <sec:authentication property="principal.username"/>
         </a>!
     </sec:authorize>
@@ -34,7 +32,7 @@
         </li>
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
             <li>
-                <a href="${pageContext.request.contextPath}/users/${encodedUserName}">
+                <a href="${pageContext.request.contextPath}/users/${userName}">
                     <fmt:message key="label.profile"/>
                 </a>
             </li>

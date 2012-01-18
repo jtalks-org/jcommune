@@ -50,7 +50,7 @@
         </sec:authorize>
         <c:if test="${authenticated==true}">
             <a class="button"
-               href="${pageContext.request.contextPath}/users/${user.encodedUsername}">
+               href="${pageContext.request.contextPath}/users/${user.username}">
                 <spring:message code="label.backToProfile"/>
             </a>
         </c:if>
@@ -105,7 +105,7 @@
             </jtalks:display>
         </span>
         </nobr>
-        <a class="button"  href="${pageContext.request.contextPath}/users/${user.encodedUsername}">
+        <a class="button"  href="${pageContext.request.contextPath}/users/${user.username}">
             <spring:message code="label.backToProfile"/>
         </a>
         <c:if test="${pag.maxPages>1}">

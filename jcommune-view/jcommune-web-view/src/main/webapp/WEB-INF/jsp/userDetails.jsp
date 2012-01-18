@@ -90,7 +90,7 @@
                     <li class="forum_row">
                         <label><spring:message code="label.avatar"/></label>
                             <span class="avatar">
-                                <img src="${pageContext.request.contextPath}/${user.username}/avatar" alt=""/>
+                                <img src="${pageContext.request.contextPath}/${user.encodedUsername}/avatar" alt=""/>
                             </span>
                     </li>
                 </c:if>

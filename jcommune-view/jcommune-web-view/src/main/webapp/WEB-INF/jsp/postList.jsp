@@ -97,22 +97,20 @@
         <li class="forum_row">
             <div class="forum_userinfo">
                 <a class="username"
-                   href="${pageContext.request.contextPath}/users/${post.userCreated.encodedUsername}">
+                   href="${pageContext.request.contextPath}/users/${post.userCreated.username}">
                     <c:out value="${post.userCreated.username}"/></a>
 
                 <div class="status"><spring:message code="label.topic.online_users"/></div>
-                <%--We don't need additional HTTP-request for avatar if there is no avatar--%>
-                <c:if test="${post.userCreated.avatar != null}">
-                    <img src="${pageContext.request.contextPath}/${post.userCreated.encodedUsername}/avatar"
-                         alt="Аватар" class="avatar"/>
-                </c:if>
-
+                <img src="${pageContext.request.contextPath}/${post.userCreated.encodedUsername}/avatar"
+                     class="avatar"/>
                 <br/>
 
                 <div class="user_misc_info">
-                    <spring:message code="label.topic.registered"/> 13.04.09 <br/>
+                    <spring:message code="label.topic.registered"/> ${post.userCreated.registrationDate} <br/>
                     <spring:message code="label.topic.message_count"/> 661 <br/>
-                    <spring:message code="label.topic.from_whence"/> good ol' 60s
+                    <c:if test="${post.userCreated.location != null}">
+                        <spring:message code="label.topic.from_whence"/> ${post.userCreated.location}
+                    </c:if>
                 </div>
             </div>
             <div class="forum_message_cell">

@@ -116,7 +116,7 @@
                         <c:out value="${topic.postCount}"/>
                     </div>
                     <div class="forum_author">
-                        <a href="${pageContext.request.contextPath}/users/${topic.topicStarter.encodedUsername}"
+                        <a href="${pageContext.request.contextPath}/users/${topic.topicStarter.username}"
                            title="<spring:message code="label.topic.header.author"/>"><c:out
                                 value="${topic.topicStarter.username}"/></a>
                     </div>
@@ -128,7 +128,7 @@
                             <jtalks:format value="${topic.lastPost.creationDate}"/></a>
                         <br/>
                         <a class="last_message_user"
-                           href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
+                           href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.username}">
                             <c:out value="${topic.lastPost.userCreated.username}"/></a>
                         <c:choose>
                             <c:when test="${pagination.pageSize >= topic.postCount}">
