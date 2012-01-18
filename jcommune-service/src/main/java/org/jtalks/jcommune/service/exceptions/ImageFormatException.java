@@ -29,13 +29,4 @@ public class ImageFormatException extends ImageProcessException {
     public ImageFormatException() {
         super();
     }
-
-    /**
-     * Constructs a new exception with detailed message.
-     *
-     * @param message about exception cause.
-     */
-    public ImageFormatException(String message) {
-        super(message);
-    }
 }
