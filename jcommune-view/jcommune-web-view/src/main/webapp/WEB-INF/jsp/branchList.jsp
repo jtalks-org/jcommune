@@ -31,7 +31,7 @@
     </a></h1>
 
     <div class="all_forums">
-        <div class="forum_header_table"> <!-- Шапка группы форумов -->
+        <div class="forum_header_table">
             <div class="forum_header">
                 <h3><a class="forum_header_link"
                        href="${pageContext.request.contextPath}/sections/${section.id}">
@@ -42,15 +42,15 @@
                             code="label.section.header.lastMessage"/></span>
             </div>
         </div>
-        <ul class="forum_table"> <!-- Группа форумов -->
+        <ul class="forum_table">
             <c:forEach var="branch" items="${section.branches}" varStatus="i">
-                <li class="forum_row"> <!-- Отдельный форум -->
-                    <div class="forum_icon"> <!-- Иконка с кофе -->
+                <li class="forum_row">
+                    <div class="forum_icon">
                         <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png"
                              alt=""
                              title="<spring:message code="label.section.close_forum"/>"/>
                     </div>
-                    <div class="forum_info"> <!-- Информация о форуме -->
+                    <div class="forum_info">
                         <h4><a class="forum_link"
                                href="${pageContext.request.contextPath}/branches/${branch.id}">
                             <c:out value="${branch.name}"/></a></h4> <!-- Ссылка на форум -->
@@ -83,18 +83,18 @@
                 </li>
             </c:forEach>
         </ul>
+        <br/>
         <c:if test="${!(empty viewList)}">
             <spring:message code="label.topic.now_browsing"/>
         </c:if>
         <c:forEach var="innerUser" items="${viewList}">
-            <a href="${pageContext.request.contextPath}/users/${innerUser}">
-                <c:out value="${innerUser}"/>
+            <a href="${pageContext.request.contextPath}/users/${innerUser.encodedUsername}">
+                <c:out value="${innerUser.username}"/>
             </a>
             &nbsp;&nbsp;
         </c:forEach>
     </div>
     <div class="footer_buffer"></div>
-    <!-- Несемантичный буфер для прибития подвала -->
 </div>
 </body>
 

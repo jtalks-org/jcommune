@@ -117,10 +117,8 @@ public class SectionController {
         Section section = sectionService.get(sectionId);
         JCUser currentUser = securityService.getCurrentUser();
 
-        List<String> viewList = locationService.getUsersViewing(section);
-
         return new ModelAndView("branchList")
-                .addObject("viewList", viewList)
+                .addObject("viewList", locationService.getUsersViewing(section))
                 .addObject("section", section)
                 .addObject("pageSize", Pagination.getPageSizeFor(currentUser));
     }

@@ -191,7 +191,7 @@ public class UserProfileController {
                                          @RequestParam(value = "pagingEnabled", defaultValue = "true", required = false
                                          ) Boolean pagingEnabled
     ) throws NotFoundException {
-        JCUser user = userService.getByEncodedUsername(encodedUsername);
+        JCUser user = userService.getByUsername(encodedUsername);
         List<Post> posts = postService.getPostsOfUser(user);
         Pagination pag = new Pagination(page, user, posts.size(), pagingEnabled);
         return new ModelAndView("userPostList")

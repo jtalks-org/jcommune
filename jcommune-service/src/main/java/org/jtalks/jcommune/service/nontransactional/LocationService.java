@@ -55,8 +55,8 @@ public class LocationService {
      * @return Users, who're viewing the page for entity passed. Will return empty list if
      *         there are no viewers or view tracking is not supported for this entity type
      */
-    public List<String> getUsersViewing(Entity entity) {
-        List<String> viewList = new ArrayList<String>();
+    public List<JCUser> getUsersViewing(Entity entity) {
+        List<JCUser> viewList = new ArrayList<JCUser>();
         JCUser currentUser = securityService.getCurrentUser();
         /**
          * This condition does not allow Anonymous add to the map of active users.
@@ -69,7 +69,7 @@ public class LocationService {
             JCUser user = (JCUser) o;
 
             if (entity.getUuid().equals(registerUserMap.get(user))) {
-                viewList.add(user.getEncodedUsername());
+                viewList.add(user);
             }
         }
         return viewList;

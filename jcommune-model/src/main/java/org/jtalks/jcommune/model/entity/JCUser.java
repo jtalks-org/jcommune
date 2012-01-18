@@ -154,4 +154,17 @@ public class JCUser extends User {
     public void setRegistrationDate(DateTime registrationDate) {
         this.registrationDate = registrationDate;
     }
+
+    /**
+     * We're overriding base method 'cause it's factualy incorrect:
+     * It replaces spaces with a plus sign, while we need %20.
+     *
+     * todo: fix it in Common Model component
+     *
+     * @return encoded username, safe for URLs
+     */
+    @Override
+    public String getEncodedUsername() {
+        return super.getEncodedUsername().replace("+","%20");
+    }
 }

@@ -226,7 +226,7 @@ public class UserProfileControllerTest {
         posts.add(post);
 
         //set expectations
-        when(userService.getByEncodedUsername("username")).thenReturn(user);
+        when(userService.getByUsername("username")).thenReturn(user);
         when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
         when(postService.getPostsOfUser(user)).thenReturn(new ArrayList<Post>());
         when(securityService.getCurrentUser()).thenReturn(user);
@@ -238,7 +238,7 @@ public class UserProfileControllerTest {
         ModelAndView mav = profileController.showUserPostList("username", 1, true);
 
         //check expectations
-        verify(userService).getByEncodedUsername("username");
+        verify(userService).getByUsername("username");
         verify(breadcrumbBuilder).getForumBreadcrumb();
 
         //check result
