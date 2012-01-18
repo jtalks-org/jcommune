@@ -29,21 +29,19 @@ import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -61,6 +59,7 @@ public class AvatarController {
     private AvatarService avatarService;
     private SecurityService securityService;
     private UserService userService;
+    private MessageSource messageSource;
     public static final String RESULT = "success";
 
     /**
@@ -69,12 +68,16 @@ public class AvatarController {
      * @param avatarService   for avatar manipulation
      * @param securityService for current user-related operations
      * @param userService     to manipulate user-related data
+     * @param messageSource   to resolve locale-dependent messages
      */
     @Autowired
-    public AvatarController(AvatarService avatarService, SecurityService securityService, UserService userService) {
+    public AvatarController(AvatarService avatarService, SecurityService securityService,
+                            UserService userService, MessageSource messageSource) {
         this.avatarService = avatarService;
         this.securityService = securityService;
         this.userService = userService;
+        this.messageSource = messageSource;
+
     }
 
     /**
@@ -82,6 +85,7 @@ public class AvatarController {
      * Used for IE, Opera specific request processing.
      *
      * @param request incoming request
+     * @param locale  current user locale settings to resolve messages
      * @return ResponseEntity
      * @throws javax.servlet.ServletException avatar processing problem
      * @throws IOException                    defined in the JsonFactory implementation,
@@ -89,21 +93,15 @@ public class AvatarController {
      */
     @RequestMapping(value = "/users/IFrameAvatarpreview", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<String> uploadAvatar(DefaultMultipartHttpServletRequest request)
+    public ResponseEntity<String> uploadAvatar(DefaultMultipartHttpServletRequest request, Locale locale)
             throws ServletException, IOException {
-
-        //get input file
-        Map<String, MultipartFile> fileMap = request.getFileMap();
-        Collection<MultipartFile> fileCollection = fileMap.values();
-        Iterator<MultipartFile> fileIterator = fileCollection.iterator();
-        MultipartFile file = fileIterator.next();
 
         //prepare response parameters
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setContentType(MediaType.TEXT_HTML);
         Map<String, String> responseContent = new HashMap<String, String>();
 
-        return prepareResponse(request, responseHeaders, responseContent, file);
+        return prepareResponse(request, responseHeaders, responseContent, locale);
     }
 
     /**
@@ -113,6 +111,7 @@ public class AvatarController {
      * @param bytes    input avatar data
      * @param request  input request
      * @param response servlet response
+     * @param locale   current user locale settings to resolve messages
      * @return response content
      * @throws javax.servlet.ServletException avatar processing problem
      */
@@ -120,10 +119,11 @@ public class AvatarController {
     @ResponseBody
     public Map<String, String> uploadAvatar(@RequestBody byte[] bytes,
                                             ServletRequest request,
-                                            HttpServletResponse response) throws ServletException {
+                                            HttpServletResponse response,
+                                            Locale locale) throws ServletException {
 
         Map<String, String> responseContent = new HashMap<String, String>();
-        prepareResponse(bytes, request, response, responseContent);
+        prepareResponse(bytes, request, response, responseContent, locale);
         return responseContent;
     }
 
@@ -166,16 +166,22 @@ public class AvatarController {
      * @param request         request with avatar payload
      * @param responseHeaders response HTTP headers
      * @param responseContent response content
-     * @param file            avatar file
+     * @param locale          current user locale settings to resolve messages
      * @return ResponseEntity with avatar processing results
      * @throws IOException defined in the JsonFactory implementation, caller must implement exception processing
      */
     private ResponseEntity<String> prepareResponse(DefaultMultipartHttpServletRequest request,
                                                    HttpHeaders responseHeaders,
                                                    Map<String, String> responseContent,
-                                                   MultipartFile file) throws IOException {
+                                                   Locale locale) throws IOException {
 
         HttpStatus statusCode;
+
+        //get input file
+        Map<String, MultipartFile> fileMap = request.getFileMap();
+        Collection<MultipartFile> fileCollection = fileMap.values();
+        Iterator<MultipartFile> fileIterator = fileCollection.iterator();
+        MultipartFile file = fileIterator.next();
 
 
         try {
@@ -186,13 +192,13 @@ public class AvatarController {
             prepareNormalResponse(bytes, responseContent);
             statusCode = HttpStatus.OK;
         } catch (ImageFormatException e) {
-            prepareFormatErrorResponse(request, responseContent);
+            prepareFormatErrorResponse(responseContent, locale);
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         } catch (ImageSizeException e) {
-            prepareSizeErrorResponse(request, responseContent);
+            prepareSizeErrorResponse(responseContent, locale);
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         } catch (ImageProcessException e) {
-            prepareCommonErrorResponse(request, responseContent);
+            prepareCommonErrorResponse(responseContent, locale);
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
@@ -208,19 +214,21 @@ public class AvatarController {
      * @param request         used for getting application context
      * @param response        resulting response
      * @param responseContent with avatar processing results
+     * @param locale          current user locale settings to resolve messages
      */
     private void prepareResponse(byte[] bytes, ServletRequest request,
                                  HttpServletResponse response,
-                                 Map<String, String> responseContent) {
+                                 Map<String, String> responseContent,
+                                 Locale locale) {
         try {
             avatarService.validateAvatarSize(bytes);
             prepareNormalResponse(bytes, responseContent);
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (ImageSizeException e) {
-            prepareSizeErrorResponse(request, responseContent);
+            prepareSizeErrorResponse(responseContent, locale);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } catch (ImageProcessException e) {
-            prepareCommonErrorResponse(request, responseContent);
+            prepareCommonErrorResponse(responseContent, locale);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
@@ -228,37 +236,37 @@ public class AvatarController {
     /**
      * Prepare common avatar processing error response content
      *
-     * @param request         used for getting application context
      * @param responseContent with avatar processing common error message
+     * @param locale          current user locale settings to resolve messages
      */
-    private void prepareCommonErrorResponse(ServletRequest request, Map<String, String> responseContent) {
+    private void prepareCommonErrorResponse(Map<String, String> responseContent, Locale locale) {
         responseContent.clear();
         responseContent.put(RESULT, "false");
-        responseContent.put("message", getMessage(request, "avatar.500.common.error"));
+        responseContent.put("message", messageSource.getMessage("avatar.500.common.error", null, locale));
     }
 
     /**
      * Prepare invalid size avatar processing error response content
      *
-     * @param request         used for getting application context
      * @param responseContent with avatar processing invalid size error message
+     * @param locale          current user locale settings to resolve messages
      */
-    private void prepareSizeErrorResponse(ServletRequest request, Map<String, String> responseContent) {
+    private void prepareSizeErrorResponse(Map<String, String> responseContent, Locale locale) {
         responseContent.clear();
         responseContent.put(RESULT, "false");
-        responseContent.put("message", getMessage(request, "image.wrong.size") + " " + AvatarService.MAX_SIZE);
+        responseContent.put("message", messageSource.getMessage("image.wrong.size" + " " + AvatarService.MAX_SIZE, null, locale));
     }
 
     /**
      * Prepare invalid format avatar processing error response content
      *
-     * @param request         used for getting application context
      * @param responseContent with avatar processing invalid format error message
+     * @param locale          current user locale settings to resolve messages
      */
-    private void prepareFormatErrorResponse(ServletRequest request, Map<String, String> responseContent) {
+    private void prepareFormatErrorResponse(Map<String, String> responseContent, Locale locale) {
         responseContent.clear();
         responseContent.put(RESULT, "false");
-        responseContent.put("message", getMessage(request, "image.wrong.format"));
+        responseContent.put("message", messageSource.getMessage("image.wrong.format", null, locale));
     }
 
     /**
@@ -292,19 +300,6 @@ public class AvatarController {
         objectMapper.writeValue(jgen, responseContent);
 
         return stringWriter.toString();
-    }
-
-    /**
-     * Return validation error message
-     *
-     * @param request used for getting locale
-     * @param code    of the validation error message
-     * @return validation error message
-     */
-    private String getMessage(ServletRequest request, String code) {
-        WebApplicationContext context = RequestContextUtils.getWebApplicationContext(request);
-        Locale locale = RequestContextUtils.getLocale((HttpServletRequest) request);
-        return context.getMessage(code, null, locale);
     }
 
 

@@ -31,13 +31,4 @@ public class ImageSizeException extends ImageProcessException {
         super();
     }
 
-    /**
-     * Create exception with specific message.
-     *
-     * @param message exception message
-     */
-    public ImageSizeException(String message) {
-        super(message);
-    }
-
 }
