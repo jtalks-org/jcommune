@@ -24,6 +24,7 @@ import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
+import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
@@ -45,6 +46,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     private SecurityService securityService;
     private MailService mailService;
     private ImageUtils imageUtils;
+    private AvatarService avatarService;
 
     /**
      * Create an instance of User entity based service
@@ -53,13 +55,15 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * @param securityService for security
      * @param mailService     to send e-mails
      * @param imageUtils      for avatar image-related operations
+     * @param avatarService   some more avatar operations)
      */
     public TransactionalUserService(UserDao dao, SecurityService securityService,
-                                    MailService mailService, ImageUtils imageUtils) {
+                                    MailService mailService, ImageUtils imageUtils, AvatarService avatarService) {
         super(dao);
         this.securityService = securityService;
         this.mailService = mailService;
         this.imageUtils = imageUtils;
+        this.avatarService = avatarService;
     }
 
     /**
@@ -96,6 +100,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     @Override
     public JCUser registerUser(JCUser user) {
         user.setRegistrationDate(new DateTime());
+        user.setAvatar(avatarService.getDefaultAvatar());
         this.getDao().saveOrUpdate(user);
         logger.info("JCUser registered: {}", user.getUsername());
         return user;
@@ -162,7 +167,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      *
      * @param currentPass existing password from the form to verify identity
      * @param newPass     new password to be set
-     * @param currentUser     user object from a database
+     * @param currentUser user object from a database
      * @throws WrongPasswordException if current password doesn't match the one stored in database
      */
     private void changePassword(String currentPass, String newPass, JCUser currentUser) throws WrongPasswordException {
@@ -192,16 +197,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public void removeAvatarFromCurrentUser() {
-        JCUser user = securityService.getCurrentUser();
-        user.setAvatar(null);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void restorePassword(String email) throws  MailingFailedException {
+    public void restorePassword(String email) throws MailingFailedException {
         JCUser user = this.getDao().getByEmail(email);
         String randomPassword = RandomStringUtils.randomAlphanumeric(6);
         // first - mail attempt, then - database changes

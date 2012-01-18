@@ -22,7 +22,8 @@
 <!DOCTYPE HTML>
 <html>
 <script>
-    $root = "${pageContext.request.contextPath}"; <%--Defines URL mapping root to be used in JS--%>
+    $root = "${pageContext.request.contextPath}";
+    <%--Defines URL mapping root to be used in JS--%>
 </script>
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
@@ -58,4 +59,7 @@
     </div>
 </div>
 </body>
+<%--Online surveys to ask users for a feature--%>
+<script type="text/javascript">var _kiq = _kiq || [];</script>
+<script type="text/javascript" src="//s3.amazonaws.com/ki.js/29591/5N_.js" async="true"></script>
 </html>

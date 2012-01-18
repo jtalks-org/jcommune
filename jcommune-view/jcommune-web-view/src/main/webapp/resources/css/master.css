@@ -110,6 +110,7 @@ span.version {
     float: right;
     padding-top: 5px;
 }
+
 .main_page .forum_top_right_link,
 .section_page .forum_top_right_link {
     position: relative;
@@ -137,7 +138,7 @@ a.heading:hover {
 
 .nav_bottom {
     float: right;
-	margin-top: 5px;
+    margin-top: 5px;
     padding-top: 5px;
     font-size: 11px;
 }
@@ -192,7 +193,7 @@ a.heading:hover {
 .forum_header_userinfo,
 .forum_header_topic,
 .forum_header_answer,
-.forum_header_generic{
+.forum_header_generic {
     display: table-cell;
     min-width: 90px;
     padding: 0 5px 0 0;
@@ -365,7 +366,7 @@ a.last_message_user {
 .forum_message_cell_text {
     padding-left: 10px;
     word-wrap: break-word;
-	line-height: 1.2;
+    line-height: 1.2;
 }
 
 .post_details, .signature {
@@ -440,11 +441,12 @@ a.last_message_user {
 
 .userdetails_page li label,
 .userdetails_page li span {
-        width: 50%;
-        padding: 5px;
+    width: 50%;
+    padding: 5px;
 }
+
 .userdetails_page li span {
-        border-left: 1px solid grey;
+    border-left: 1px solid grey;
 }
 
 /* Answer Form & Buttons */
@@ -462,7 +464,7 @@ a.last_message_user {
     background: url(../images/hover_bg.jpg) repeat-x;
 }
 
-.pm_page #newmsg_link {
+.highlight_tab {
     background: url(../images/active_bg.jpg) repeat-x;
     color: white;
 }
@@ -498,7 +500,8 @@ a.last_message_user {
 
 .answer_page .button,
 .pm_page .button {
-    border: 1px solid grey; !important
+    border: 1px solid grey;
+!important
 
 }
 
@@ -539,7 +542,7 @@ a.disabled {
     margin: 5px;
 }
 
-#title, #recipient,#subject  {
+#title, #recipient, #subject {
     width: 95%;
 }
 
@@ -662,63 +665,66 @@ a.admin, a.user {
 
 /* User details */
 .userdetails_page .forum_header_table {
-        width: 600px;
-        margin: 0 auto;
+    width: 600px;
+    margin: 0 auto;
 }
 
 .userdetails_page .forum_table {
-        width: 598px;
-        margin: 0 auto;
+    width: 598px;
+    margin: 0 auto;
 }
 
 .userdetails_page table {
-        margin: 5px auto;
+    margin: 5px auto;
 }
 
 .userdetails_page td {
-        vertical-align: middle;
+    vertical-align: middle;
 }
 
 .userdetails_page label {
-        font-weight: bold;
+    font-weight: bold;
 }
 
 .userdetails_page .error {
-        font-size: 11px;
-        border: none;
+    font-size: 11px;
+    border: none;
 }
+
 #removeAvatarForm td {
-        padding: 5px;
-        padding-bottom: 0;
-        vertical-align: middle;
+    padding: 5px;
+    padding-bottom: 0;
+    vertical-align: middle;
 }
+
 /* pagination*/
-.page{
-    text-decoration:none;
-    color:black;
-    font-size:1.1em;
-    font-weight:bold;
-    margin:0 5px 10px;
-    float:left;
-    background:white;
-    min-width:12px;
-    height:12px;
-    line-height:12px;
-    display:block;
-    text-align:center;
-    padding:5px;
+.page {
+    text-decoration: none;
+    color: black;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin: 0 5px 10px;
+    float: left;
+    background: white;
+    min-width: 12px;
+    height: 12px;
+    line-height: 12px;
+    display: block;
+    text-align: center;
+    padding: 5px;
     -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
     -moz-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
     box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
 }
 
-span.page{
-   background:#c6c6c6;
+span.page {
+    background: #c6c6c6;
 }
 
-a.page:hover{
-    background:#c6c6c6;
+a.page:hover {
+    background: #c6c6c6;
 }
+
 /* Various error pages (404, 500 and so on) */
 .text_errorpage {
     margin: 0 auto;

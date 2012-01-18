@@ -63,7 +63,8 @@ public class AvatarControllerTest {
     private UserService userService;
     @Mock
     private MessageSource messageSource;
-
+    @Mock
+    ImageUtils imageUtils;
     private AvatarController avatarController;
 
     private final String USER_NAME = "username";
@@ -96,7 +97,7 @@ public class AvatarControllerTest {
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-        avatarController = new AvatarController(avatarService, securityService, userService, messageSource);
+        avatarController = new AvatarController(avatarService, securityService, userService, messageSource, imageUtils);
     }
 
     @Test(dataProvider = "validData-iframe-provider")
@@ -218,7 +219,7 @@ public class AvatarControllerTest {
 
         assertViewName(mav, "editProfile");
         verify(securityService).getCurrentUser();
-        verify(userService).removeAvatarFromCurrentUser();
+        verify(avatarService).getDefaultAvatar();
     }
 
     @Test(dataProvider = "validData-XHR-provider")

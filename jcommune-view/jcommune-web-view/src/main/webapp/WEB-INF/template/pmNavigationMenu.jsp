@@ -14,7 +14,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
@@ -26,9 +26,11 @@
             <spring:message code="label.outbox"/></a>
         <a class="forum_header_menu" id="newmsg_link" href="${pageContext.request.contextPath}/pm/new">
             <spring:message code="label.new_pm"/></a>
-        <a class="forum_header_menu" id="draft_link"  href="${pageContext.request.contextPath}/drafts">
+        <a class="forum_header_menu" id="draft_link" href="${pageContext.request.contextPath}/drafts">
             <spring:message code="label.drafts"/></a>
         <span class="empty_cell"></span>
     </div>
 </div>
+<script src="${pageContext.request.contextPath}/resources/javascript/custom/pmNavigationMenuHighlighter.js"
+        type="text/javascript"></script>
 
