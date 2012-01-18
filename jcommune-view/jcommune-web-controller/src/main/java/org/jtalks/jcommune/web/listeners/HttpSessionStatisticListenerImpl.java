@@ -47,7 +47,7 @@ public class HttpSessionStatisticListenerImpl implements HttpSessionStatisticLis
     public synchronized void sessionDestroyed(HttpSessionEvent se) {
         /*
         Tomcat may not invalidate HTTP session on server restart while counter variable
-        will be set to 0 on class reload. So we can quickly get our session count megative when
+        will be set to 0 on class reload. So we can quickly get our session count negative when
         persisted sessions will expire. This check provides us with a self-correcting facility
         to overcome this problem
          */

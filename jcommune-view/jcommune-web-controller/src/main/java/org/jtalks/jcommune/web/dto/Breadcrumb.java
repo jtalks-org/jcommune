@@ -32,19 +32,19 @@ public class Breadcrumb {
     //Displayed URL breadcrumb value
     private BreadcrumbLocation breadcrumbLocation;
     //Displayed breadcrumb value
-    private String breadcrumbLocationValue;
+    private String value;
 
     /**
      * Create instance {@code }Breadcrumb{@code } and set it fields.
      *
      * @param id                      location id
      * @param breadcrumbLocation      used for constructing location URL
-     * @param breadcrumbLocationValue used for constructing location display name
+     * @param value used for constructing location display name
      */
-    public Breadcrumb(Long id, BreadcrumbLocation breadcrumbLocation, String breadcrumbLocationValue) {
+    public Breadcrumb(Long id, BreadcrumbLocation breadcrumbLocation, String value) {
         this.id = id;
         this.breadcrumbLocation = breadcrumbLocation;
-        this.breadcrumbLocationValue = breadcrumbLocationValue;
+        this.value = value;
     }
 
     /**
@@ -68,14 +68,14 @@ public class Breadcrumb {
     /**
      * Get the display breadcrumb name.
      *
-     * @return breadcrumbLocationValue the display breadcrumb name.
+     * @return value the display breadcrumb name.
      */
-    public String getBreadcrumbLocationValue() {
-        if (breadcrumbLocationValue.length() < SIZE_LIMIT) {
-            return breadcrumbLocationValue;
+    public String getValue() {
+        if (value.length() < SIZE_LIMIT) {
+            return value;
         } else {
             int barrier = SIZE_LIMIT - ABBREVIATION_SIGN.length();
-            return breadcrumbLocationValue.substring(0, barrier) + ABBREVIATION_SIGN;
+            return value.substring(0, barrier) + ABBREVIATION_SIGN;
         }
     }
 }
