@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletRequest;
  * kind should use this service to perform e-mail sending.
  *
  * @author Evgeniy Naumenko
+ * @author Eugeny Batov
  */
 public class MailService {
 
@@ -156,6 +157,7 @@ public class MailService {
      * Sends notification to user about received private message.
      *
      * @param recipient a person to be notified about received private message by email
+     * @param pmId      id of received private message
      */
     public void sendReceivedPrivateMessageNotification(JCUser recipient, long pmId) {
         String url = this.getDeploymentRootUrl() + "/inbox/" + pmId;
