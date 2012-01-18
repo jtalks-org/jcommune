@@ -18,6 +18,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.ImageFormatException;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
+import org.jtalks.jcommune.service.exceptions.ImageSizeException;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
@@ -76,8 +77,6 @@ public class AvatarControllerTest {
 
     private Locale locale = Locale.ENGLISH;
     private final String message = "message";
-    private final String generalErrorBody = "{\"message\"\"success\":\"false\"}";
-    private final String customErrorBody = "{\"message\":\"message\",\"success\":\"false\"}";
 
 
     private byte[] validAvatar = new byte[]{-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0,
@@ -124,15 +123,19 @@ public class AvatarControllerTest {
 
     }
 
-    @Test(enabled = false, dataProvider = "invalidDataForOperaIE")
-    public void testErrorUploadAvatarDueInvalidDataForOperaIE(Map<String, MultipartFile> fileMap,
-                                                              ResponseEntity<String> expectedResponseEntity) throws Exception {
+    //TODO Must throw expectedExceptions = ImageProcessException.class
+    @Test(dataProvider = "invalidDataForOperaIE")
+    public void testErrorUploadAvatarDueNonImageDataForOperaIE(Map<String, MultipartFile> fileMap,
+                                                               ResponseEntity<String> expectedResponseEntity)
+            throws Exception {
         //setUp
         DefaultMultipartHttpServletRequest request = mock(DefaultMultipartHttpServletRequest.class);
 
         //set expectations
         when(request.getFileMap()).thenReturn(fileMap);
-        when(avatarService.convertBytesToBase64String(validAvatar)).thenThrow(new IOException());
+        when(avatarService.convertBytesToBase64String(validAvatar)).thenThrow(new ImageProcessException());
+        when(messageSource.getMessage(
+                eq("avatar.500.common.error"), Matchers.<Object[]>any(), Matchers.<Locale>any())).thenReturn(message);
 
         //invoke object under test
         ResponseEntity<String> actualResponseEntity = avatarController.uploadAvatar(request, locale);
@@ -149,7 +152,7 @@ public class AvatarControllerTest {
     }
 
     //TODO Must throw expectedExceptions = ImageFormatException.class
-    @Test(dataProvider = "invalidImageFormatDataForOperaIE")
+    @Test(dataProvider = "invalidDataForOperaIE")
     public void testErrorUploadAvatarDueInvalidImageFormatForOperaIE(Map<String, MultipartFile> fileMap,
                                                                      ResponseEntity<String> expectedResponseEntity)
             throws Exception {
@@ -168,6 +171,35 @@ public class AvatarControllerTest {
         //check expectation
         verify(request).getFileMap();
         verify(avatarService).validateAvatarFormat(file);
+
+        //check result
+        assertEquals(actualResponseEntity.getStatusCode(), expectedResponseEntity.getStatusCode());
+        assertEquals(actualResponseEntity.getBody(), expectedResponseEntity.getBody());
+        assertEquals(actualResponseEntity.getHeaders(), expectedResponseEntity.getHeaders());
+
+    }
+
+    //TODO Must throw expectedExceptions = ImageSizeException.class
+    @Test(dataProvider = "invalidDataForOperaIE")
+    public void testErrorUploadAvatarDueInvalidImageSizeForOperaIE(Map<String, MultipartFile> fileMap,
+                                                                   ResponseEntity<String> expectedResponseEntity)
+            throws Exception {
+        //setUp
+        DefaultMultipartHttpServletRequest request = mock(DefaultMultipartHttpServletRequest.class);
+        byte[] bytes = file.getBytes();
+
+        //set expectations
+        when(request.getFileMap()).thenReturn(fileMap);
+        doThrow(new ImageSizeException()).when(avatarService).validateAvatarSize(bytes);
+        when(messageSource.getMessage(
+                eq("image.wrong.size" + " " + AvatarService.MAX_SIZE), Matchers.<Object[]>any(), Matchers.<Locale>any())).thenReturn(message);
+
+        //invoke objects under test
+        ResponseEntity<String> actualResponseEntity = avatarController.uploadAvatar(request, locale);
+
+        //check expectation
+        verify(request).getFileMap();
+        verify(avatarService).validateAvatarSize(bytes);
 
         //check result
         assertEquals(actualResponseEntity.getStatusCode(), expectedResponseEntity.getStatusCode());
@@ -290,16 +322,16 @@ public class AvatarControllerTest {
 
     @DataProvider
     private Object[][] invalidDataForOperaIE() {
+        file = new MockMultipartFile(name, validAvatar);
+        fileMap = new HashMap<String, MultipartFile>(1);
+        headers = new HttpHeaders();
+        fileMap.put(name, file);
+        headers.setContentType(MediaType.TEXT_HTML);
+        String errorBody = "{\"message\":\"message\",\"success\":\"false\"}";
+        ResponseEntity<String> errorResponseEntity = new ResponseEntity<String>(errorBody,
+                headers,
+                HttpStatus.INTERNAL_SERVER_ERROR);
 
-        ResponseEntity<String> errorResponseEntity = initDataForIe(generalErrorBody);
-        return new Object[][]{
-                {fileMap, errorResponseEntity}
-        };
-    }
-
-    @DataProvider
-    private Object[][] invalidImageFormatDataForOperaIE() {
-        ResponseEntity<String> errorResponseEntity = initDataForIe(customErrorBody);
         return new Object[][]{
                 {fileMap, errorResponseEntity}
         };

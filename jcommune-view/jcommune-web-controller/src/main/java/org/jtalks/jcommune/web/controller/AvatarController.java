@@ -140,7 +140,6 @@ public class AvatarController {
         byte[] defaultAvatar = avatarService.getDefaultAvatar();
         user.setAvatar(defaultAvatar);
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
-        ;
         editedUser.setAvatar(imageUtils.prepareHtmlImgSrc(defaultAvatar));
         return new ModelAndView("editProfile", "editedUser", editedUser);
     }
