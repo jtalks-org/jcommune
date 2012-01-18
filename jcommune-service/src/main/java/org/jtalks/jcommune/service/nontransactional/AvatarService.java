@@ -43,14 +43,14 @@ public class AvatarService {
 
     private ImageUtils imageUtils;
 
-    private  String defaultAvatarPath;
+    private String defaultAvatarPath;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AvatarService.class);
 
     /**
      * Create AvatarService instance
      *
-     * @param imageUtils object for image processing
+     * @param imageUtils        object for image processing
      * @param defaultAvatarPath path to the default avatar image, to be replaced with image managed in Poulpe in future
      */
     public AvatarService(ImageUtils imageUtils, String defaultAvatarPath) {

@@ -67,7 +67,7 @@ public class JCUser extends User {
      * Updates login time to current time
      */
     public void updateLastLoginTime() {
-        this.setLastLogin( new DateTime());
+        this.setLastLogin(new DateTime());
     }
 
     /**

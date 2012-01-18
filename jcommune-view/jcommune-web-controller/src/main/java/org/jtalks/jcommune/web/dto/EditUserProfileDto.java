@@ -17,8 +17,8 @@ package org.jtalks.jcommune.web.dto;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
-import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.web.validation.Matches;
 
@@ -67,7 +67,8 @@ public class EditUserProfileDto {
     /**
      * Form info population only, please do not call it explicitly
      */
-    public EditUserProfileDto(){}
+    public EditUserProfileDto() {
+    }
 
     /**
      * Constructor which fills dto fields from user.

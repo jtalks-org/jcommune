@@ -167,7 +167,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      *
      * @param currentPass existing password from the form to verify identity
      * @param newPass     new password to be set
-     * @param currentUser     user object from a database
+     * @param currentUser user object from a database
      * @throws WrongPasswordException if current password doesn't match the one stored in database
      */
     private void changePassword(String currentPass, String newPass, JCUser currentUser) throws WrongPasswordException {
@@ -197,7 +197,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public void restorePassword(String email) throws  MailingFailedException {
+    public void restorePassword(String email) throws MailingFailedException {
         JCUser user = this.getDao().getByEmail(email);
         String randomPassword = RandomStringUtils.randomAlphanumeric(6);
         // first - mail attempt, then - database changes

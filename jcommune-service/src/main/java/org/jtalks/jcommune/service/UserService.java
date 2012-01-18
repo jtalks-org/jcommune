@@ -82,7 +82,8 @@ public interface UserService extends EntityService<JCUser> {
      * 2. Sends an e-mail with new password to this address to notify user
      *
      * @param email address to identify user
-     * @throws org.jtalks.jcommune.service.exceptions.MailingFailedException if mailing failed
+     * @throws org.jtalks.jcommune.service.exceptions.MailingFailedException
+     *          if mailing failed
      */
     void restorePassword(String email) throws MailingFailedException;
 }

@@ -65,7 +65,7 @@ public class SubscriptionControllerTest {
         controller = new SubscriptionController(topicService, branchService, subscriptionService, messageSource);
         // todo: specify exact message codes
         when(messageSource.getMessage(
-                anyString(), Matchers.<Object[]>any(), Matchers.<Locale>any() )).thenReturn(message);
+                anyString(), Matchers.<Object[]>any(), Matchers.<Locale>any())).thenReturn(message);
     }
 
     @Test
