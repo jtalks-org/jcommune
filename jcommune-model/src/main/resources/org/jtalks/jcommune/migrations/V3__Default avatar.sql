@@ -1,0 +1,1 @@
+update USERS set AVATAR = '' where AVATAR = NULL;

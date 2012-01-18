@@ -61,6 +61,8 @@ public class AvatarController {
     private AvatarService avatarService;
     private SecurityService securityService;
     private UserService userService;
+    private ImageUtils imageUtils;
+
     public static final String RESULT = "success";
 
     /**
@@ -69,12 +71,15 @@ public class AvatarController {
      * @param avatarService   for avatar manipulation
      * @param securityService for current user-related operations
      * @param userService     to manipulate user-related data
+     * @param imageUtils      to convert image data
      */
     @Autowired
-    public AvatarController(AvatarService avatarService, SecurityService securityService, UserService userService) {
+    public AvatarController(AvatarService avatarService, SecurityService securityService,
+                            UserService userService, ImageUtils imageUtils) {
         this.avatarService = avatarService;
         this.securityService = securityService;
         this.userService = userService;
+        this.imageUtils = imageUtils;
     }
 
     /**
@@ -135,8 +140,10 @@ public class AvatarController {
     @RequestMapping(value = "/users/edit/avatar", method = RequestMethod.POST)
     public ModelAndView removeAvatarFromCurrentUser() {
         JCUser user = securityService.getCurrentUser();
-        user.setAvatar(avatarService.getDefaultAvatar());
-        EditUserProfileDto editedUser = new EditUserProfileDto(user);
+        byte[] defaultAvatar = avatarService.getDefaultAvatar();
+        user.setAvatar(defaultAvatar);
+        EditUserProfileDto editedUser = new EditUserProfileDto(user);;
+        editedUser.setAvatar(imageUtils.prepareHtmlImgSrc(defaultAvatar));
         return new ModelAndView("editProfile", "editedUser", editedUser);
     }
 

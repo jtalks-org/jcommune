@@ -17,11 +17,10 @@ package org.jtalks.jcommune.service.nontransactional;
 import org.jtalks.jcommune.service.exceptions.ImageFormatException;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.jtalks.jcommune.service.exceptions.ImageSizeException;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.xml.bind.annotation.XmlElementRef;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,15 +43,18 @@ public class AvatarService {
 
     private ImageUtils imageUtils;
 
-    //todo: to be configured in Poulpe in future
-    private static final String DEFAULT_AVATAR = "org/jtalks/jcommune/service/avatar.gif";
+    private  String defaultAvatarPath;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AvatarService.class);
 
     /**
      * Create AvatarService instance
      *
      * @param imageUtils object for image processing
+     * @param defaultAvatarPath path to the default avatar image, to be replaced with image managed in Poulpe in future
      */
-    public AvatarService(ImageUtils imageUtils) {
+    public AvatarService(ImageUtils imageUtils, String defaultAvatarPath) {
+        this.defaultAvatarPath = defaultAvatarPath;
         this.imageUtils = imageUtils;
         VALID_IMAGE_TYPES.add("image/jpeg");
         VALID_IMAGE_TYPES.add("image/png");
@@ -116,15 +118,19 @@ public class AvatarService {
         return VALID_IMAGE_TYPES;
     }
 
-
-    public byte[] getDefaultAvatar(){
+    /**
+     * Returns default avatar to be used when custom user image is not set
+     *
+     * @return byte array-stored image
+     */
+    public byte[] getDefaultAvatar() {
         byte[] result = new byte[0];
         try {
-            InputStream stream = AvatarService.class.getClassLoader().getResourceAsStream(DEFAULT_AVATAR);
+            InputStream stream = AvatarService.class.getClassLoader().getResourceAsStream(defaultAvatarPath);
             result = new byte[stream.available()];
             stream.read(result);
         } catch (IOException e) {
-
+            LOGGER.error("Failed to load default avatar", e);
         }
         return result;
     }

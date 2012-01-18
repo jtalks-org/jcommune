@@ -116,7 +116,7 @@ public class UserProfileController {
         JCUser user = userService.getByUsername(username);
         return new ModelAndView("userDetails")
                 .addObject("user", user)
-                 // bind separately to get localized value
+                        // bind separately to get localized value
                 .addObject("language", user.getLanguage())
                 .addObject("pageSize", Pagination.getPageSizeFor(user));
     }
@@ -132,10 +132,7 @@ public class UserProfileController {
         JCUser user = securityService.getCurrentUser();
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
         byte[] avatar = user.getAvatar();
-        if (avatar != null) {
-            String image = imageUtils.prepareHtmlImgSrc(imageUtils.encodeB64(avatar));
-            editedUser.setAvatar(image);
-        }
+        editedUser.setAvatar(imageUtils.prepareHtmlImgSrc(avatar));
         return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUser);
     }
 

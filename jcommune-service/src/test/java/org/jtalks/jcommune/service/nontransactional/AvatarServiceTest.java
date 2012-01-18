@@ -32,6 +32,7 @@ import java.util.Set;
 
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Alexandre Teterin
@@ -44,7 +45,7 @@ public class AvatarServiceTest {
     @BeforeMethod
     public void setUp() {
         imageUtils = mock(ImageUtils.class);
-        avatarService = new AvatarService(imageUtils);
+        avatarService = new AvatarService(imageUtils, "org/jtalks/jcommune/service/avatar.gif");
     }
 
     @Test(dataProvider = "validImageBytesValues")
@@ -81,6 +82,13 @@ public class AvatarServiceTest {
 
         //check expectations
         verify(imageUtils).convertByteArrayToImage(originalImageBytes);
+    }
+
+    @Test
+    public void testGetDefaultAvatar() {
+        byte[] avatar = avatarService.getDefaultAvatar();
+
+        assertTrue(avatar.length > 0);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class, dataProvider = "nullValues")

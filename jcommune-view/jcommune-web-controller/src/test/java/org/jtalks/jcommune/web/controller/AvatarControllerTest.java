@@ -21,6 +21,7 @@ import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.mockito.Matchers;
+import org.mockito.Mock;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -42,6 +43,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 
@@ -50,9 +52,15 @@ import static org.testng.Assert.assertEquals;
  */
 public class AvatarControllerTest {
 
+    @Mock
     private AvatarService avatarService;
+    @Mock
     private SecurityService securityService;
+    @Mock
     private UserService userService;
+    @Mock
+    ImageUtils imageUtils;
+
     private AvatarController avatarController;
 
     private final String USER_NAME = "username";
@@ -71,13 +79,10 @@ public class AvatarControllerTest {
             -82, 66, 96, -126
     };
 
-
     @BeforeMethod
     public void setUp() throws Exception {
-        avatarService = mock(AvatarService.class);
-        userService = mock(UserService.class);
-        securityService = mock(SecurityService.class);
-        avatarController = new AvatarController(avatarService, securityService, userService);
+        initMocks(this);
+        avatarController = new AvatarController(avatarService, securityService, userService, imageUtils);
     }
 
     @Test(dataProvider = "validData-iframe-provider")

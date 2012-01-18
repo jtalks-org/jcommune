@@ -173,11 +173,11 @@ public class ImageUtils {
     /**
      * Perform preparing content for SRC attribute of the IMG HTML tag
      *
-     * @param encodedImgBytes image payload
+     * @param avatar image payload
      * @return SRC attribute content
      */
-    public String prepareHtmlImgSrc(String encodedImgBytes) {
-        return HTML_SRC_TAG_PREFIX + encodedImgBytes;
+    public String prepareHtmlImgSrc(byte[] avatar) {
+        return HTML_SRC_TAG_PREFIX + this.encodeB64(avatar);
     }
 
     /**

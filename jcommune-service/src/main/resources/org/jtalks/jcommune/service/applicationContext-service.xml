@@ -38,9 +38,9 @@
 
     <!--Declaration services bean -->
 
-    <bean id="avatarService"
-          class="org.jtalks.jcommune.service.nontransactional.AvatarService">
+    <bean id="avatarService" class="org.jtalks.jcommune.service.nontransactional.AvatarService">
         <constructor-arg index="0" ref="imagePreprocessor"/>
+        <constructor-arg index="1" value="org/jtalks/jcommune/service/avatar.gif"/>
     </bean>
 
     <bean id="imagePreprocessor"

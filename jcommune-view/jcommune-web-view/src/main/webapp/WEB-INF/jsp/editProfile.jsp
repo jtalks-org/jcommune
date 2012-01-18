@@ -1,4 +1,4 @@
-<%--
+﻿<%--
 
     Copyright (C) 2011  JTalks.org Team
     This library is free software; you can redistribute it and/or
@@ -132,16 +132,15 @@
                     </a>
                 </div>
             </form:form>
-
-            <form action="${pageContext.request.contextPath}/users/edit/avatar" id="removeAvatarForm"
-                  name="removeAvatarForm" method="POST">
-                <c:if test="${editedUser.avatar != null}">
+            <c:if test="${editedUser.avatar != null}">
+                <form action="${pageContext.request.contextPath}/users/edit/avatar" id="removeAvatarForm"
+                      name="removeAvatarForm" method="POST">
                     <div class="form_controls">
-                        <a class="button" href="javascript:submitForm('removeAvatarForm')"><spring:message
-                                code="label.avatar.remove"/></a>
+                        <input type="submit" value="<spring:message code="label.avatar.remove"/>"
+                               onclick="submitForm('removeAvatarForm')"/>
                     </div>
-                </c:if>
-            </form>
+                </form>
+            </c:if>
         </div>
     </div>
     <div class="footer_buffer"></div>

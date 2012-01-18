@@ -64,22 +64,6 @@ public class JCUser extends User {
     }
 
     /**
-     * Too complex only for compatibility sake: common-model User
-     * assumes byte[0] means empty avatar while we're using "null"
-     * value for that
-     *
-     * @return user avatar
-     */
-    public byte[] getAvatar() {
-        byte[] avatar = super.getAvatar();
-        if (avatar == null || avatar.length == 0){
-            return null;
-        } else {
-            return avatar.clone();
-        }
-    }
-
-    /**
      * Updates login time to current time
      */
     public void updateLastLoginTime() {
