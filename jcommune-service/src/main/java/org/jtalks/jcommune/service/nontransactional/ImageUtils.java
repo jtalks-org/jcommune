@@ -65,7 +65,7 @@ public class ImageUtils {
     public byte[] convertImageToByteArray(Image image) throws ImageProcessException {
 
         if (image == null) {
-            throw new ImageProcessException();
+            throw new IllegalArgumentException();
         }
 
         byte[] result;
