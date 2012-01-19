@@ -119,7 +119,6 @@ public class AvatarControllerTest {
 
     }
 
-    //TODO Must throw expectedExceptions = ImageProcessException.class
     @Test(dataProvider = "invalidDataForOperaIE")
     public void testErrorUploadAvatarDueNonImageDataForOperaIE(Map<String, MultipartFile> fileMap,
                                                                ResponseEntity<String> expectedResponseEntity)
@@ -147,7 +146,6 @@ public class AvatarControllerTest {
 
     }
 
-    //TODO Must throw expectedExceptions = ImageFormatException.class
     @Test(dataProvider = "invalidDataForOperaIE")
     public void testErrorUploadAvatarDueInvalidImageFormatForOperaIE(Map<String, MultipartFile> fileMap,
                                                                      ResponseEntity<String> expectedResponseEntity)
@@ -175,7 +173,6 @@ public class AvatarControllerTest {
 
     }
 
-    //TODO Must throw expectedExceptions = ImageSizeException.class
     @Test(dataProvider = "invalidDataForOperaIE")
     public void testErrorUploadAvatarDueInvalidImageSizeForOperaIE(Map<String, MultipartFile> fileMap,
                                                                    ResponseEntity<String> expectedResponseEntity)
@@ -237,7 +234,6 @@ public class AvatarControllerTest {
         assertEquals(result, expectedData);
     }
 
-    //TODO Must throw expectedExceptions = ImageSizeException.class
     @Test(dataProvider = "invalidDataCustomCaseForChromeFF")
     public void testErrorUploadAvatarDueInvalidImageSizeForChromeFF(byte[] bytes, Map<String, String> expectedData)
             throws Exception {
