@@ -20,7 +20,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
-<html>
 <head>
     <title><spring:message code="label.postListOfUser"/> <c:out value="${user.username}"/></title>
 </head>
@@ -89,7 +88,7 @@
                             <jtalks:format value="${post.creationDate}"/>
                         </div>
                         <p class="forum_message_cell_text">
-                            <span><jtalks:bb2html bbCode="${post.shortContent}"/></span>
+                            <span class="truncated"><jtalks:bb2html bbCode="${post.postContent}"/></span>
                             <br/><br/><br/>
                             <c:if test="${post.modificationDate!=null}">
                                 <spring:message code="label.modify"/>
@@ -122,4 +121,3 @@
     <div class="footer_buffer"></div>
 </div>
 </body>
-</html>

@@ -38,8 +38,6 @@ public class Post extends Entity {
 
     public static final int MAX_LENGTH = 20000;
     public static final int MIN_LENGTH = 5;
-    private static final int ABBREVIATED_LENGTH = 200;
-    private static final String ABBREVIATION_SIGN = "...";
 
     /**
      * For Hibernate use only
@@ -142,24 +140,5 @@ public class Post extends Entity {
      */
     protected void setTopic(Topic topic) {
         this.topic = topic;
-    }
-
-    /**
-     * Get a short version of topic content for preview in recent messages (max 200 character).
-     * Preserves the last word, that fits 200 chars and replasev others with "..." sign
-     *
-     * @return shortContent
-     */
-    public String getShortContent() {
-        if (this.postContent.length() > ABBREVIATED_LENGTH) {
-            int trimSize = ABBREVIATED_LENGTH - ABBREVIATION_SIGN.length();
-            String shortContent = this.postContent.substring(0, trimSize);
-            if (shortContent.contains(" ")) {
-                shortContent = shortContent.substring(0, shortContent.lastIndexOf(' '));
-            }
-            return shortContent + ABBREVIATION_SIGN;
-        } else {
-            return this.postContent;
-        }
     }
 }

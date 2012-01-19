@@ -23,8 +23,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <head>
     <title><spring:message code="label.recent"/></title>
-    <script language="javascript"
-            src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery.truncate.js"></script>
 </head>
 <body>
 <div class="wrap branch_page">
@@ -61,7 +59,7 @@
                                href="${pageContext.request.contextPath}/topics/${topic.id}">${topic.title}</a>
                         </h4>
                         <br/>
-                        <span id="truncated"><jtalks:bb2html bbCode="${topic.lastPost.postContent}"/></span>
+                        <span class="truncated"><jtalks:bb2html bbCode="${topic.lastPost.postContent}"/></span>
                     </div>
                     <div class="forum_answers">
                         <c:out value="${topic.postCount}"/>

@@ -98,8 +98,9 @@
 })(jQuery);
 
 /**
- * Apply truncation for all elements with given id
+ * Apply truncation for all elements with given class
  */
-$(function() {
-    $('#truncated').truncate({max_length: 1000});
-});
+$(document).ready($(function() {
+    $('.truncated').truncate({max_length: 255});
+})
+);
