@@ -27,6 +27,7 @@ import org.testng.annotations.Test;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -187,7 +188,10 @@ public class AvatarServiceTest {
 
     @DataProvider
     Object[][] validFormatValues() {
-        Set<String> validFormats = AvatarService.getValidImageTypes();
+        Set<String> validFormats = new HashSet<String>();
+        validFormats.add("image/jpeg");
+        validFormats.add("image/png");
+        validFormats.add("image/gif");
         List<MultipartFile> files = new ArrayList<MultipartFile>(validFormats.size());
         for (String contentType : validFormats) {
             files.add(new MockMultipartFile("test_avatar", "test_avatar", contentType, new byte[10]));

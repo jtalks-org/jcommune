@@ -114,10 +114,6 @@ public class AvatarService {
         }
     }
 
-    public static Set<String> getValidImageTypes() {
-        return VALID_IMAGE_TYPES;
-    }
-
     /**
      * Returns default avatar to be used when custom user image is not set
      *
