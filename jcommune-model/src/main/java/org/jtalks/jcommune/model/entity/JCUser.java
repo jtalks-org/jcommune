@@ -17,7 +17,7 @@ package org.jtalks.jcommune.model.entity;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.User;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * Stores information about the forum user.
@@ -47,7 +47,7 @@ public class JCUser extends User {
     public static final int DEFAULT_PAGE_SIZE = 50;
 
     private static final long serialVersionUID = 19981017L;
-    private List<UserContact> contacts;
+    private Set<UserContact> contacts;
 
     /**
      * Only for hibernate usage.
@@ -162,15 +162,14 @@ public class JCUser extends User {
     /**
      * @return set contacts of user
      */
-    public List<UserContact> getContacts() {
+    public Set<UserContact> getContacts() {
         return contacts;
     }
 
     /**
-     *
      * @param contacts contacts of user
      */
-    public void setContacts(List<UserContact> contacts) {
+    public void setContacts(Set<UserContact> contacts) {
         this.contacts = contacts;
     }
 }

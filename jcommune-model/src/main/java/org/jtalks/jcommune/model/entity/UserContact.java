@@ -25,8 +25,7 @@ public class UserContact extends Entity {
 
     private String value;
     private JCUser contactOfUser;
-    private String type;
-    private String icon;
+    private UserContactType type;
 
     /**
      * Only for hibernate usage.
@@ -35,30 +34,16 @@ public class UserContact extends Entity {
     }
 
     /**
-     * @return path icon this contact
-     */
-    public String getIcon() {
-        return icon;
-    }
-
-    /**
-     * @param icon path icon this contact
-     */
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    /**
      * @return type contact
      */
-    public String getType() {
+    public UserContactType getType() {
         return type;
     }
 
     /**
      * @param type type contact
      */
-    public void setType(String type) {
+    public void setType(UserContactType type) {
         this.type = type;
     }
 

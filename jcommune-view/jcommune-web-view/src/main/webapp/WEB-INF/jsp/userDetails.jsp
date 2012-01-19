@@ -100,7 +100,7 @@
                 </li>
                 <c:forEach var="contact" items="${user.contacts}">
                     <li class="forum_row">
-                        <label><img src="${contact.icon}" alt=""><c:out value="${contact.type}"/></label>
+                        <label><img src="${contact.type.icon}" alt=""><c:out value="${contact.type.typeName}"/></label>
                         <span><c:out value="${contact.value}"/></span>
                     </li>
                 </c:forEach>

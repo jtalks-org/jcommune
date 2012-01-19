@@ -37,12 +37,10 @@
         <property name="avatar" lazy="true">
             <column name="AVATAR" sql-type="blob"/>
         </property>
-        <list name="contacts" cascade="all-delete-orphan">
-            <cache usage="nonstrict-read-write"/>
+        <set name="contacts" cascade="all-delete-orphan">
             <key column="USER_ID" foreign-key="FK_USER"/>
-            <index column="LIST_INDEX"/>
             <one-to-many class="UserContact"/>
-        </list>
+        </set>
         <join table="JC_USER_DETAILS">
             <key column="USER_ID"/>
             <property column="SIGNATURE" name="signature"/>

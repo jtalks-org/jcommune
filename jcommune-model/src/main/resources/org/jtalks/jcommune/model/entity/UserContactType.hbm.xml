@@ -19,16 +19,13 @@
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
-    <class name="UserContact" table="USER_CONTACT">
+    <class name="UserContactType" table="CONTACT_TYPE">
         <cache usage="nonstrict-read-write"/>
-        <id column="CONTACT_ID" name="id" unsaved-value="0">
+        <id column="TYPE_ID" name="id" unsaved-value="0">
             <generator class="native"/>
         </id>
-        <property column="VALUE" name="value" not-null="true"/>
+        <property name="typeName" column="TYPE"/>
+        <property name="icon" column="ICON"/>
 
-        <many-to-one name="contactOfUser" column="USER_ID" class="JCUser" lazy="false"
-                     not-null="true" foreign-key="FK_USER"/>
-        <many-to-one name="type" column="TYPE_ID" class="UserContactType" lazy="false"
-                     not-null="true" foreign-key="FK_TYPE"/>
     </class>
 </hibernate-mapping>

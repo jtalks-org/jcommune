@@ -81,6 +81,7 @@ resolves a problem of multiple DAO beans definition -->
                 <value>/org/jtalks/jcommune/model/entity/PrivateMessage.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/Section.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/UserContact.hbm.xml</value>
+                <value>/org/jtalks/jcommune/model/entity/UserContactType.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">
