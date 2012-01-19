@@ -16,27 +16,50 @@ package org.jtalks.jcommune.model.entity;
 
 import org.jtalks.common.model.entity.Entity;
 
+/**
+ * Stores information about the type contacts of user.
+ * Used as {@code UserDetails}
+ */
 public class UserContactType extends Entity {
 
     private String typeName;
     private String icon;
 
+    /**
+     * Only for hibernate usage.
+     */
+    public UserContactType() {
+    }
+
+    /**
+     *
+     * @return address of icon
+     */
     public String getIcon() {
         return icon;
     }
 
+    /**
+     *
+     * @param icon address of icon
+     */
     public void setIcon(String icon) {
         this.icon = icon;
     }
 
+    /**
+     *
+     * @return name type of contact
+     */
     public String getTypeName() {
         return typeName;
     }
 
+    /**
+     *
+     * @param typeName name type of contact
+     */
     public void setTypeName(String typeName) {
         this.typeName = typeName;
-    }
-
-    public UserContactType() {
     }
 }
