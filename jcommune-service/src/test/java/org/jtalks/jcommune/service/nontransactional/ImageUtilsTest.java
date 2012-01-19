@@ -84,6 +84,12 @@ public class ImageUtilsTest {
         assertEquals(modifiedImage.getHeight(null), expectedHeight);
     }
 
+    @Test(dataProvider = "htmlImgSrcData")
+    public void testPrepareHtmlImgSrc(String expected) {
+        String actual = imageUtils.prepareHtmlImgSrc(originalImageByteArray);
+        assertEquals(actual, expected);
+    }
+
     private byte[] originalImageByteArray = new byte[]{-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0,
             0, 5, 0, 0, 0, 5, 8, 2, 0, 0, 0, 2, 13, -79, -78, 0, 0, 0, 9, 112, 72, 89, 115, 0, 0, 1, -118, 0,
             0, 1, -118, 1, 51, -105, 48, 88, 0, 0, 0, 32, 99, 72, 82, 77, 0, 0, 122, 37, 0, 0, -128, -125,
@@ -93,6 +99,13 @@ public class ImageUtilsTest {
             -110, -88, -88, 42, 79, -37, 110, 3, 109, -81, 12, -33, -26, -1, 73, -88, 36, -33, 0, -62, -31,
             36, 71, 49, 115, -89, 85, 0, 0, 0, 0, 73, 69, 78, 68, -82, 66, 96, -126
     };
+
+    @DataProvider
+    private Object[][] htmlImgSrcData() {
+        return new Object[][]{
+                {ImageUtils.HTML_SRC_TAG_PREFIX + imageUtils.encodeB64(originalImageByteArray)}
+        };
+    }
 
 
     @DataProvider
