@@ -757,3 +757,8 @@ a.page:hover {
 .error {
     color: #FF0000;
 }
+
+.elipsis {
+   text-overflow: ellipsis;
+   -o-text-overflow: ellipsis;
+}
