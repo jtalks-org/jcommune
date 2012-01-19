@@ -390,57 +390,10 @@ function bbcode2html() {
         i++;
     }
     content = convertedText;
-    /*
-     rep(/([\s\S]*?)\s*\[\/list\]/gi, "$1</li>[/list]");
-     rep(/\[\*\]([\s\S]*?)\s*\[\*\]/gi, "<li>$1</li><li>");
-     rep(/\[\*\]([\s\S]*?)\s*<\/li>/gi, "<li>$1</li>");
 
-     rep(/\[list\]/gi, "<ul>");
-     rep(/\[\/list\]/gi, "</ul>");
+    //rep(/\n/gi, "<br\/>");
 
-     rep(/\n/gi, "<br />");
-
-     if (browser) {
-     rep(/\[b\]/gi, "<b>");
-     rep(/\[\/b\]/gi, "</b>");
-     rep(/\[i\]/gi, "<i>");
-     rep(/\[\/i\]/gi, "</i>");
-     rep(/\[u\]/gi, "<u>");
-     rep(/\[\/u\]/gi, "</u>");
-     } else {
-     rep(/\[b\]/gi, "<span style=\"font-weight: bold;\">");
-     rep(/\[i\]/gi, "<span style=\"font-style: italic;\">");
-     rep(/\[u\]/gi, "<span style=\"text-decoration: underline;\">");
-     rep(/\[\/(b|i|u|s)\]/gi, "</span b='1'>");
-     }
-
-     rep(/\[s\]/gi, "<span style=\"text-decoration: line-through;\">");
-     rep(/\[\/s\]/gi, "</span>");
-
-     rep(/\[left\]/gi, '<p class="leftText">');
-     rep(/\[right\]/gi, '<p class="rightText">');
-     rep(/\[center\]/gi, '<p class="centerText">');
-     rep(/\[\/(left|right|center)\]/gi, "</p>");
-
-     rep(/\[quote="([^\[\]]*?)"\](.*?)\[\/quote\]/gi, '<div class="quote"><div class="quote_title">$1:</div><blockquote>$2</blockquote></div>');
-     rep(/\[quote\]/gi, '<div class="quote"><div class="quote_title">Quote:</div><blockquote>');
-     rep(/\[\/quote\]/gi, "</blockquote></div>");
-
-     rep(/\[code\]/gi, '<div class="code">');
-     rep(/\[\/code\]/gi, "</div>");
-
-     rep(/\[highlight\]/gi, '<font class="highlight">');
-     rep(/\[\/highlight\]/gi, "</font>");
-
-     rep(/\[img\]([^\"]*?)\[\/img\]/gi, "<img src=\"$1\" />");
-
-     rep(/\[url=([^\]]+)\]([\s\S]*?)\[\/url\]/gi, "<a href=\"$1\">$2</a>");
-     rep(/\[url\]([\s\S]*?)\[\/url\]/gi, "<a href=\"$1\">$1</a>");
-     rep(/\[size=([^\]]+)\]([\s\S]*?)\[\/size\]/gi, '<font class="textSize$1">$2</font>');
-     rep(/\[indent=([^\]]+)\]([\s\S]*?)\[\/indent\]/gi, '<font class="marginLeft$1">$2</font>');
-
-     rep(/\[color=([^\]]*?)\]([\s\S]*?)\[\/color\]/gi, "<font color=\"$1\">$2</font>");
-     rep(/\[font=([^\]]*?)\]([\s\S]*?)\[\/font\]/gi, "<font face=\"$1\">$2</font>");*/
+    document.getElementById(body_id).value = content;
 }
 
 function html2bbcode() {
@@ -452,95 +405,18 @@ function html2bbcode() {
 
     rep(/&lt;/gi, "<");
     rep(/&gt;/gi, ">");
-
-    /*
-
-     var doit = true;
-
-     while (doit) {
-     var reglt = /<([^<>]*?)>/gi;
-     var reggt = /<\/([^<>]*?)>/gi;
-
-     doit = reglt.exec(content) != null || reggt.exec(content) != null;
-
-     rep(/<img\s[^<>]*?src="?([^<>]*?)"?(\s[^<>]*)?\/?>/gi, "[img]$1[/img]");
-
-     rep(/<\/b>/gi, "[/b]");
-     rep(/<b(\s[^<>]*)?>/gi, "[b]");
-
-     rep(/<\/i>/gi, "[/i]");
-     rep(/<i(\s[^<>]*)?>/gi, "[i]");
-
-     rep(/<u(\s[^<>]*)?>/gi, "[u]");
-     rep(/<\/u>/gi, "[/u]");
-
-     rep(/<span\s[^<>]*?style=\"text-decoration: line-through;\"(\s[^<>]*)?>(.*?)<\/span>/gi, "[s]$2[/s]");
-     rep(/<span\s[^<>]*?style=\"font-weight: bold;\"(\s[^<>]*)?>(.*?)<\/span>/gi, "[b]$2[/b]");
-     rep(/<span\s[^<>]*?style=\"font-style: italic;\"(\s[^<>]*)?>(.*?)<\/span>/gi, "[i]$2[/i]");
-     rep(/<span\s[^<>]*?style=\"text-decoration: underline;\"(\s[^<>]*)?>(.*?)<\/span>/gi, "[u]$2[/u]");
-
-     //rep(/\n/gi, " ");
-     //rep(/\r/gi, " ");
-
-     rep(/<br(\s[^<>]*)?>/gi, "\n");
-     */
-    /*rep(/<p(\s[^<>]*)?>/gi, "");
-     rep(/<\/p>/gi, "\n");*/
-    /*
-     //todo \n
-
-     rep(/<ul>/gi, "[list]");
-     rep(/<\/ul>/gi, "[/list]");
-
-     rep(/<li>/gi, "[*]");
-     rep(/<\/li>/gi, ""); //todo \n
-
-     rep(/&nbsp;/gi, " ");
-     rep(/&quot;/gi, "\"");
-     rep(/&amp;/gi, "&");
-
-     rep(/<font\s[^<>]*?color=\"#?([^<>]*?)\"?(\s[^<>]*)?>(.*?)<\/font>/gi, "[color=$1]$3[/color]");
-     rep(/<font\s[^<>]*?class=\"textSize(\d*)\"[^<>]*?>(.*?)<\/font>/gi, "[size=$1]$2[/size]");
-     rep(/<font\s[^<>]*?class=\"marginLeft(\d*)\"[^<>]*?>(.*?)<\/font>/gi, "[indent=$1]$2[/indent]");
-
-     rep(/<p\s[^<>]*?class=\"leftText\"([^<>]*)?>(.*?)<\/p>/gi, "[left]$2[/left]");
-     rep(/<p\s[^<>]*?class=\"rightText\"([^<>]*)?>(.*?)<\/p>/gi, "[right]$2[/right]");
-     rep(/<p\s[^<>]*?class=\"centerText\"([^<>]*)?>(.*?)<\/p>/gi, "[center]$2[/center]");
-
-     rep(/<font\s[^<>]*?class=\"highlight\"([^<>]*)?>(.*?)<\/font>/gi, "[highlight]$2[/highlight]");
-
-     rep(/<div\s[^<>]*?class=\"code\"([^<>]*)?>(.*?)<\/div>/gi, "[code]$2[/code]");
-
-     rep(/<div\s[^<>]*?class=\"quote\"([^<>]*)?><div\s[^<>]*?class=\"quote_title\"[^<>]*?>Quote:<\/div><blockquote>(.*?)(<::after>)?\s*?<\/blockquote><\/div>/gi, "[quote]$2[/quote]");
-     rep(/<div\s[^<>]*?class=\"quote\"([^<>]*)?><div\s[^<>]*?class=\"quote_title\"[^<>]*?>([^<>]*?):<\/div><blockquote>(.*?)(<::after>)?\s*?<\/blockquote><\/div>/gi, "[quote=\"$2\"]$3[/quote]");
-
-     rep(/<a\s[^<>]*?href=\"?([^<>]*?)\"?(\s[^<>]*)?>(.*?)<\/a>/gi, "[url=$1]$3[/url]");
-     }
-     */
-
-
-
+    rep(/&nbsp;/gi, " ");
+    rep(/&quot;/gi, "\"");
+    rep(/&amp;/gi, "&");
+    //rep(/<br\/>/gi, "\n");
+    document.getElementById(body_id).value = content;
 }
 
 function closeTags() {
     var currentContent = document.getElementById(body_id).value;
-    currentContent = closeAllTags(currentContent, 'b');
-    currentContent = closeAllTags(currentContent, 'i');
-    currentContent = closeAllTags(currentContent, 'u');
-    currentContent = closeAllTags(currentContent, 's');
-    currentContent = closeAllTags(currentContent, 'left');
-    currentContent = closeAllTags(currentContent, 'center');
-    currentContent = closeAllTags(currentContent, 'right');
-    currentContent = closeAllTags(currentContent, 'quote');
-    currentContent = closeAllTags(currentContent, 'code');
-    currentContent = closeAllTags(currentContent, 'img');
-    currentContent = closeAllTags(currentContent, 'highlight');
-    currentContent = closeAllTags(currentContent, 'list');
-
-    currentContent = closeAllTags(currentContent, 'color');
-    currentContent = closeAllTags(currentContent, 'size');
-    currentContent = closeAllTags(currentContent, 'indent');
-    currentContent = closeAllTags(currentContent, 'url');
+    for (var i = 0; i < bbtags.length; i++) {
+        currentContent = closeAllTags(currentContent, bbtags[i].name);
+    }
     currentContent = currentContent.replace(/\[size\]/gi, '[size=10]');
     currentContent = currentContent.replace(/\[color\]/gi, '[color=000000]');
     currentContent = currentContent.replace(/\[url\]/gi, '[url=]');
