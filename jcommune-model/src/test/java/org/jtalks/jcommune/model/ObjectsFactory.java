@@ -45,6 +45,7 @@ public final class ObjectsFactory {
         JCUser newUser = new JCUser(username, email, "password");
         newUser.setFirstName("first name");
         newUser.setLastName("last name");
+        newUser.setContacts(new ArrayList<UserContact>());
         return newUser;
     }
 

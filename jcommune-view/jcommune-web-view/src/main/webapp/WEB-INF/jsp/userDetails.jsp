@@ -98,6 +98,12 @@
                     <label><spring:message code="label.postcount"/></label>
                     <span><c:out value="${user.userPostCount}"/></span>
                 </li>
+                <c:forEach var="contact" items="${user.contacts}">
+                    <li class="forum_row">
+                        <label><img src="${contact.icon}" alt=""><c:out value="${contact.type}"/></label>
+                        <span><c:out value="${contact.value}"/></span>
+                    </li>
+                </c:forEach>
             </ul>
             <div class="form_controls">
                 <c:if test="${user.username == auth}">

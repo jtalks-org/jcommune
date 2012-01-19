@@ -17,6 +17,8 @@ package org.jtalks.jcommune.model.entity;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.User;
 
+import java.util.List;
+
 /**
  * Stores information about the forum user.
  * Used as {@code UserDetails} in spring security for user authentication, authorization.
@@ -24,6 +26,7 @@ import org.jtalks.common.model.entity.User;
  * @author Pavel Vervenko
  * @author Kirill Afonin
  * @author Alexandre Teterin
+ * @author Andrey Kluev
  */
 public class JCUser extends User {
 
@@ -44,6 +47,7 @@ public class JCUser extends User {
     public static final int DEFAULT_PAGE_SIZE = 50;
 
     private static final long serialVersionUID = 19981017L;
+    private List<UserContact> contacts;
 
     /**
      * Only for hibernate usage.
@@ -156,15 +160,17 @@ public class JCUser extends User {
     }
 
     /**
-     * We're overriding base method 'cause it's factualy incorrect:
-     * It replaces spaces with a plus sign, while we need %20.
-     *
-     * todo: fix it in Common Model component
-     *
-     * @return encoded username, safe for URLs
+     * @return set contacts of user
      */
-    @Override
-    public String getEncodedUsername() {
-        return super.getEncodedUsername().replace("+","%20");
+    public List<UserContact> getContacts() {
+        return contacts;
+    }
+
+    /**
+     *
+     * @param contacts contacts of user
+     */
+    public void setContacts(List<UserContact> contacts) {
+        this.contacts = contacts;
     }
 }
