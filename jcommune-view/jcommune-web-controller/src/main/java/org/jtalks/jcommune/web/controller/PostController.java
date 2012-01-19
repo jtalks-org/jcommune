@@ -14,11 +14,13 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.PostDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +61,7 @@ public class PostController {
     private PostService postService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private TopicService topicService;
+    private BBCodeService bbCodeService;
 
     /**
      * This method turns the trim binder on. Trim binder
@@ -77,13 +80,15 @@ public class PostController {
      * @param postService       {@link PostService} instance to be injected
      * @param breadcrumbBuilder the object which provides actions on {@link BreadcrumbBuilder} entity
      * @param topicService      {@link TopicService} to be injected
+     * @param bbCodeService     to create valid quotes
      */
     @Autowired
     public PostController(PostService postService, BreadcrumbBuilder breadcrumbBuilder,
-                          TopicService topicService) {
+                          TopicService topicService, BBCodeService bbCodeService) {
         this.postService = postService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.topicService = topicService;
+        this.bbCodeService = bbCodeService;
     }
 
     /**
@@ -187,14 +192,8 @@ public class PostController {
         Post source = postService.get(postId);
         ModelAndView mav = addPost(source.getTopic().getId());
         PostDto dto = (PostDto) mav.getModel().get(POST_DTO);
-        String content;
-        if (selection == null) {
-            content = source.getPostContent();
-        } else {
-            content = selection;
-        }
-        // todo: move these constants to BB converter
-        dto.setBodyText("[quote=\"" + source.getUserCreated().getUsername() + "\"]" + content + "[/quote]");
+        String content =  StringUtils.defaultString(selection, source.getPostContent());
+        dto.setBodyText(bbCodeService.quote(content, source.getUserCreated()));
         return mav;
     }
 

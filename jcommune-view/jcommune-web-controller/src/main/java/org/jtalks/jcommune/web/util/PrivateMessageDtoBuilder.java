@@ -56,14 +56,4 @@ public class PrivateMessageDtoBuilder {
         return dto;
     }
 
-    /**
-     * Create the quote private message dto from {@link PrivateMessage}
-     * @param pm private message for conversion in to the quote
-     * @return dto for quote
-     */
-    public PrivateMessageDto getQuoteDtoFor(PrivateMessage pm) {
-        PrivateMessageDto dto = getReplyDtoFor(pm);
-        dto.setBody(pm.prepareBodyForQuote());
-        return dto;
-    }
 }

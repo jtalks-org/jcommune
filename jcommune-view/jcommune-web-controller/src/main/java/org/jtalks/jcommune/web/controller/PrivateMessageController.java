@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 import org.jtalks.jcommune.web.util.PrivateMessageDtoBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +46,9 @@ import javax.validation.Valid;
 public class PrivateMessageController {
 
     public static final String BREADCRUMB_LIST = "breadcrumbList";
-    private final PrivateMessageService pmService;
+    private PrivateMessageService pmService;
     private PrivateMessageDtoBuilder pmDtoBuilder;
+    private BBCodeService bbCodeService;
 
     //constants are moved here when occurs 4 or more times, as project PMD rule states
     private static final String PM_FORM = "pm/pmForm";
@@ -67,14 +69,16 @@ public class PrivateMessageController {
     }
 
     /**
-     * @param pmService         the PrivateMessageService instance
-     * @param pmDtoBuilder      the object which provides actions on
-     *                          {@link org.jtalks.jcommune.web.util.PrivateMessageDtoBuilder} entity
+     * @param pmService         for PrivateMessage-related operation
+     * @param pmDtoBuilder      the object which provides actions on {@link PrivateMessageDtoBuilder} entity
+     * @param bbCodeService
      */
     @Autowired
-    public PrivateMessageController(PrivateMessageService pmService, PrivateMessageDtoBuilder pmDtoBuilder) {
+    public PrivateMessageController(PrivateMessageService pmService, PrivateMessageDtoBuilder pmDtoBuilder,
+                                    BBCodeService bbCodeService) {
         this.pmService = pmService;
         this.pmDtoBuilder = pmDtoBuilder;
+        this.bbCodeService = bbCodeService;
     }
 
     /**
@@ -144,10 +148,10 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/quote/{pmId}", method = RequestMethod.GET)
     public ModelAndView quotePage(@PathVariable(PM_ID) Long id) throws NotFoundException {
-        // todo: implement quotation here
         PrivateMessage pm = pmService.get(id);
-        PrivateMessageDto object = pmDtoBuilder.getQuoteDtoFor(pm);
-        return new ModelAndView(PM_FORM).addObject(DTO, object);
+        PrivateMessageDto dto = pmDtoBuilder.getReplyDtoFor(pm);
+        dto.setBody(bbCodeService.quote(pm.getBody(), pm.getUserFrom()));
+        return new ModelAndView(PM_FORM).addObject(DTO, dto);
     }
 
     /**

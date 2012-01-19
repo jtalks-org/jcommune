@@ -30,11 +30,11 @@ public class PrivateMessageDto {
 
 
     @NotBlank
-    @Size(min = PrivateMessage.MIN_MESSAGE_LENGTH, max = PrivateMessage.MAX_MESSAGE_LENGTH, message = "{title.length}")
+    @Size(min = PrivateMessage.MIN_TITLE_LENGTH, max = PrivateMessage.MAX_TITLE_LENGTH, message = "{title.length}")
     private String title;
 
     @NotBlank
-    @Size(min = PrivateMessage.MIN_TITLE_LENGTH, max = PrivateMessage.MAX_TITLE_LENGTH, message = "{body.length}")
+    @Size(min = PrivateMessage.MIN_MESSAGE_LENGTH, max = PrivateMessage.MAX_MESSAGE_LENGTH, message = "{body.length}")
     private String body;
 
     @NotBlank

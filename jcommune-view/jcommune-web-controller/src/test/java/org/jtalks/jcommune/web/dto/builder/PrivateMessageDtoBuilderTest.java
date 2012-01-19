@@ -68,15 +68,4 @@ public class PrivateMessageDtoBuilderTest {
         assertEquals(dto.getTitle(), "Re: " + TITLE);
     }
 
-    @Test
-    public void testGetQuoteDto() throws Exception {
-        //invoke the object under test
-        PrivateMessageDto dto = pmDtoBuilder.getQuoteDtoFor(pm);
-
-        //check result
-        assertTrue(dto.getBody().startsWith("> " + BODY));
-        assertEquals(dto.getRecipient(), user.getUsername());
-        assertEquals(dto.getTitle(), "Re: " + TITLE);
-    }
-
 }

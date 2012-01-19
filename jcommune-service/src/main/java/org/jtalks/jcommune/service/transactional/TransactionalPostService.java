@@ -38,12 +38,6 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private static final String[] CODES = new String[]{"i", "b", "s", "u", "url", "quote", "code", "list",
-                    "indent", "center", "right", "left", "highlight", "font", "size", "color"};
-    private static final int ABBREVIATED_LENGTH = 200;
-    private static final String ABBREVIATION_SIGN = "...";
-
-
     private TopicDao topicDao;
     private SecurityService securityService;
     private NotificationService notificationServise;

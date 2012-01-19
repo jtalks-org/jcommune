@@ -28,12 +28,9 @@ import java.util.StringTokenizer;
  */
 public class PrivateMessage extends Entity {
 
-    public static final String QUOTE_PREFIX = ">";
-    public static final String QUOTE_SEPARATOR = " ";
-    public static final String NEW_LINE = System.getProperty("line.separator");
     public static final int MAX_MESSAGE_LENGTH = 1000;
     public static final int MIN_MESSAGE_LENGTH = 2;
-    public static final int MAX_TITLE_LENGTH = 22;
+    public static final int MAX_TITLE_LENGTH = 50;
     public static final int MIN_TITLE_LENGTH = 2;
 
     private DateTime creationDate;
@@ -215,35 +212,4 @@ public class PrivateMessage extends Entity {
         return title.startsWith("Re: ") ? getTitle() : "Re: " + getTitle();
     }
 
-    /**
-     * Prepare body for quote message according to next rules:
-     * <ul>
-     * <li>each new line beginning with  ">";</li>
-     * <li>if there is not ">" or space in the start of the line the space added between ">"  and line.</li>
-     * </ul>
-     * Quote example:
-     * >>> reply
-     * >> reply
-     * > reply
-     *
-     * @return quote body
-     */
-    public String prepareBodyForQuote() {
-        StringBuilder bodyBuilder = new StringBuilder();
-        StringTokenizer st = new StringTokenizer(getBody(), NEW_LINE);
-        while (st.hasMoreTokens()) {
-            String line = st.nextToken();
-            bodyBuilder.append(QUOTE_PREFIX);
-            if (line.startsWith(QUOTE_PREFIX)) {
-                //create quote line from the quoted line
-                bodyBuilder.append(line);
-            } else {
-                //create quote line from the unquoted line
-                bodyBuilder.append(QUOTE_SEPARATOR);
-                bodyBuilder.append(line);
-            }
-            bodyBuilder.append(NEW_LINE);
-        }
-        return bodyBuilder.toString();
-    }
 }
