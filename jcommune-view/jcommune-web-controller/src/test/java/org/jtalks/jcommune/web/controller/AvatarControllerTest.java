@@ -87,10 +87,7 @@ public class AvatarControllerTest {
             -82, 66, 96, -126
     };
 
-    private String name = "name";
     private MockMultipartFile file;
-    private Map<String, MultipartFile> fileMap;
-    private HttpHeaders headers;
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -98,9 +95,9 @@ public class AvatarControllerTest {
         avatarController = new AvatarController(avatarService, securityService, userService, messageSource, imageUtils);
     }
 
-    @Test(dataProvider = "validData-iframe-provider")
-    public void testValidUploadAvatarIFrame(Map<String, MultipartFile> fileMap,
-                                            ResponseEntity<String> expectedResponseEntity) throws Exception {
+    @Test(dataProvider = "validDataForOperaIE")
+    public void testValidUploadAvatarForOperaIE(Map<String, MultipartFile> fileMap,
+                                                ResponseEntity<String> expectedResponseEntity) throws Exception {
         //setUp
         DefaultMultipartHttpServletRequest request = mock(DefaultMultipartHttpServletRequest.class);
 
@@ -207,7 +204,7 @@ public class AvatarControllerTest {
 
     }
 
-    @Test(dataProvider = "validData-XHR-provider")
+    @Test(dataProvider = "validDataForChromeFF")
     public void testValidUploadAvatarXHR(byte[] avatar, Map<String, String> expectedData) throws Exception {
         //set expectations
         when(avatarService.convertBytesToBase64String(avatar)).thenReturn(SRC_IMG);
@@ -221,18 +218,50 @@ public class AvatarControllerTest {
         assertEquals(result, expectedData);
     }
 
-    @Test(enabled = false, dataProvider = "invalidData-XHR-provider")
-    public void testInvalidUploadAvatarXHR(byte[] avatar, Map<String, String> expectedData) throws Exception {
-        //set expectations
-        when(avatarService.convertBytesToBase64String(avatar)).thenThrow(new ImageProcessException());
-
+    @Test(dataProvider = "invalidDataGeneralCaseForChromeFF")
+    public void testErrorUploadAvatarDueInvalidDataForChromeFF(byte[] bytes, Map<String, String> expectedData)
+            throws Exception {
+        //setUp
         HttpServletResponse response = new MockHttpServletResponse();
 
+        //set expectations
+        when(avatarService.convertBytesToBase64String(bytes)).thenThrow(new ImageProcessException());
+
         //invoke object under test
-        Map<String, String> result = avatarController.uploadAvatar(avatar, response, locale);
+        Map<String, String> result = avatarController.uploadAvatar(bytes, response, locale);
+
+        //check expectations
+        verify(avatarService).convertBytesToBase64String(bytes);
 
         //check result
         assertEquals(result, expectedData);
+    }
+
+    //TODO Must throw expectedExceptions = ImageSizeException.class
+    @Test(dataProvider = "invalidDataCustomCaseForChromeFF")
+    public void testErrorUploadAvatarDueInvalidImageSizeForChromeFF(byte[] bytes, Map<String, String> expectedData)
+            throws Exception {
+        //setUp
+        HttpServletResponse response = new MockHttpServletResponse();
+
+        //set expectations
+        doThrow(new ImageSizeException()).when(avatarService).validateAvatarSize(bytes);
+        when(messageSource.getMessage(
+                eq("image.wrong.size" + " "
+                        + AvatarService.MAX_SIZE), Matchers.<Object[]>any(), Matchers.<Locale>any())).thenReturn(message);
+
+        //invoke objects under test
+        Map<String, String> result = avatarController.uploadAvatar(bytes, response, locale);
+
+        //check expectation
+        verify(avatarService).validateAvatarSize(bytes);
+        verify(messageSource).getMessage(eq("image.wrong.size" + " "
+                + AvatarService.MAX_SIZE), Matchers.<Object[]>any(), Matchers.<Locale>any());
+
+        //check result
+        assertEquals(result, expectedData);
+
+
     }
 
     @Test
@@ -247,7 +276,7 @@ public class AvatarControllerTest {
         verify(avatarService).getDefaultAvatar();
     }
 
-    @Test(dataProvider = "validData-XHR-provider")
+    @Test(dataProvider = "validDataForChromeFF")
     public void testRenderAvatar(byte[] avatar, Map<String, String> expectedData) throws Exception {
         JCUser user = getUser();
         user.setAvatar(avatar);
@@ -264,8 +293,8 @@ public class AvatarControllerTest {
         verify(servletOutputStream).write(avatar);
     }
 
-    @DataProvider(name = "validData-XHR-provider")
-    private Object[][] validByteServletResponseData() {
+    @DataProvider
+    private Object[][] validDataForChromeFF() {
 
         Map<String, String> normalResponseContent = new HashMap<String, String>() {{
             put("success", "true");
@@ -278,23 +307,33 @@ public class AvatarControllerTest {
         };
     }
 
-    @DataProvider(name = "invalidData-XHR-provider")
-    private Object[][] invalidByteServletResponseData() {
-
-        byte[] invalidAvatar = null;
+    @DataProvider
+    private Object[][] invalidDataGeneralCaseForChromeFF() {
 
         Map<String, String> errorResponseContent = new HashMap<String, String>() {{
             put("success", "false");
         }};
 
-
         return new Object[][]{
-                {invalidAvatar, errorResponseContent}
+                {validAvatar, errorResponseContent}
         };
     }
 
-    @DataProvider(name = "validData-iframe-provider")
-    private Object[][] iframeValidData() {
+    @DataProvider
+    private Object[][] invalidDataCustomCaseForChromeFF() {
+
+        Map<String, String> errorResponseContent = new HashMap<String, String>() {{
+            put(message, message);
+            put("success", "false");
+        }};
+
+        return new Object[][]{
+                {validAvatar, errorResponseContent}
+        };
+    }
+
+    @DataProvider
+    private Object[][] validDataForOperaIE() {
 
         String name = "name";
         MockMultipartFile file = new MockMultipartFile(name, validAvatar);
@@ -315,9 +354,10 @@ public class AvatarControllerTest {
 
     @DataProvider
     private Object[][] invalidDataForOperaIE() {
+        String name = "name";
         file = new MockMultipartFile(name, validAvatar);
-        fileMap = new HashMap<String, MultipartFile>(1);
-        headers = new HttpHeaders();
+        Map<String, MultipartFile> fileMap = new HashMap<String, MultipartFile>(1);
+        HttpHeaders headers = new HttpHeaders();
         fileMap.put(name, file);
         headers.setContentType(MediaType.TEXT_HTML);
         String errorBody = "{\"message\":\"message\",\"success\":\"false\"}";

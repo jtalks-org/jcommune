@@ -191,7 +191,6 @@ public class AvatarController {
         Iterator<MultipartFile> fileIterator = fileCollection.iterator();
         MultipartFile file = fileIterator.next();
 
-
         try {
             avatarService.validateAvatarFormat(file);
             byte[] bytes = file.getBytes();
