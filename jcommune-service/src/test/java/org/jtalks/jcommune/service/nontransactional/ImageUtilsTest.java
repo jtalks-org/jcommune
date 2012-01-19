@@ -12,10 +12,10 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service.util;
+package org.jtalks.jcommune.service.nontransactional;
 
 import org.apache.commons.codec.binary.Base64;
-import org.jtalks.jcommune.service.nontransactional.ImageUtils;
+import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.testng.annotations.BeforeClass;
@@ -46,20 +46,13 @@ public class ImageUtilsTest {
                 originalImageByteArray);
     }
 
-    @Test
-    public void testPreprocessImage() throws IOException {
-        //init
-        Image image = new BufferedImage(100, 100, BufferedImage.TYPE_3BYTE_BGR);
-
-        //invoke the object under test
-//        byte[] result = imageUtils.preprocessImage(image);
-
-        //check result
-//        assertTrue(result.length != 0);
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testConvertImageToByteArrayForNullData() throws ImageProcessException {
+        //invoke object under test
+        imageUtils.convertImageToByteArray(null);
     }
 
-
-    @Test(dataProvider = "byte-string-provider")
+    @Test(dataProvider = "rangeByteStringData")
     public void testBase64Coder(byte[] inputData, String expectedData) {
         //invoke object under test
         String result = imageUtils.encodeB64(inputData);
@@ -70,7 +63,7 @@ public class ImageUtilsTest {
     }
 
 
-    @Test(dataProvider = "string-byte-provider")
+    @Test(dataProvider = "rangeStringByteData")
     public void testBase64Decoder(String inputData, byte[] expectedData) throws IOException {
         //invoke object under test
         byte[] result = imageUtils.decodeB64(inputData);
@@ -91,17 +84,11 @@ public class ImageUtilsTest {
         assertEquals(modifiedImage.getHeight(null), expectedHeight);
     }
 
-    @Test
-    public void testConvertImageToByteArray() throws IOException {
-        //init
-        Image image = new BufferedImage(100, 100, BufferedImage.TYPE_3BYTE_BGR);
-        //invoke object under test
-//        byte[] imageByteArray = imageUtils.convertImageToByteArray(image);
-        //check result
-//        assertTrue(imageByteArray != null);
-//        assertTrue(imageByteArray.length != 0);
+    @Test(dataProvider = "htmlImgSrcData")
+    public void testPrepareHtmlImgSrc(String expected) {
+        String actual = imageUtils.prepareHtmlImgSrc(originalImageByteArray);
+        assertEquals(actual, expected);
     }
-
 
     private byte[] originalImageByteArray = new byte[]{-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0,
             0, 5, 0, 0, 0, 5, 8, 2, 0, 0, 0, 2, 13, -79, -78, 0, 0, 0, 9, 112, 72, 89, 115, 0, 0, 1, -118, 0,
@@ -113,15 +100,15 @@ public class ImageUtilsTest {
             36, 71, 49, 115, -89, 85, 0, 0, 0, 0, 73, 69, 78, 68, -82, 66, 96, -126
     };
 
-    @DataProvider(name = "invalid-images-provider")
-    private Object[][] rangeInvalidImageData() {
-
+    @DataProvider
+    private Object[][] htmlImgSrcData() {
         return new Object[][]{
-
+                {ImageUtils.HTML_SRC_TAG_PREFIX + imageUtils.encodeB64(originalImageByteArray)}
         };
     }
 
-    @DataProvider(name = "byte-string-provider")
+
+    @DataProvider
     private Object[][] rangeByteStringData() {
         String outputData = Base64.encodeBase64String(byteArray);
 
@@ -131,7 +118,7 @@ public class ImageUtilsTest {
 
     }
 
-    @DataProvider(name = "string-byte-provider")
+    @DataProvider
     private Object[][] rangeStringByteData() throws IOException {
         String inputData = Base64.encodeBase64String(byteArray);
         byte[] outputData = Base64.decodeBase64(inputData);

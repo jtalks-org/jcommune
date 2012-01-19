@@ -64,7 +64,7 @@
                              bodyParameterName="body"
                              back="${pageContext.request.contextPath}/inbox"/>
             <input id="save_pm" type="submit" class="button" name="save_pm" value="<spring:message code="label.save"/>"
-                   onclick="doCheck();document.editForm.action='${pageContext.request.contextPath}/pm/save';return true;"/>
+                   onclick="document.editForm.action='${pageContext.request.contextPath}/pm/save';doCheck();return true;"/>
         </form:form>
     </div>
     <div class="footer_buffer"></div>
