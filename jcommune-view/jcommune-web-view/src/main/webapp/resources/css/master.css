@@ -464,7 +464,7 @@ a.last_message_user {
     background: url(../images/hover_bg.jpg) repeat-x;
 }
 
-.highlight_tab {
+a.highlight_tab {
     background: url(../images/active_bg.jpg) repeat-x;
     color: white;
 }
