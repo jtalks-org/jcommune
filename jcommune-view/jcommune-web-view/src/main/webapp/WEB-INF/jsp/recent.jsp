@@ -23,6 +23,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <head>
     <title><spring:message code="label.recent"/></title>
+    <script language="javascript"
+            src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery.truncate.js"></script>
 </head>
 <body>
 <div class="wrap branch_page">
@@ -30,6 +32,7 @@
     <h1><a href="${pageContext.request.contextPath}">
         <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
     </a></h1>
+
     <div class="all_forums">
         <h2><a class="heading" href="#"><spring:message code="label.recent"/></a></h2>
         <br/>
@@ -41,7 +44,6 @@
         </nobr>
         <div class="forum_header_table">
             <div class="forum_header">
-                <span class="forum_header_icon"></span>
                 <span class="forum_header_topics"><spring:message code="label.branch.header.topics"/></span>
                 <span class="forum_header_answers"><spring:message code="label.section.header.messages"/></span>
                 <span class="forum_header_author"><spring:message code="label.branch.header.author"/></span>
@@ -54,43 +56,13 @@
             <jtalks:display uri="" pagination="${pagination}" numberLink="3" list="${topics}">
             <c:forEach var="topic" items="${list}">
                 <li class="forum_row">
-                    <div class="forum_icon">
-                        <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png"/>
+                    <div class="forum_info">
+                        <h4><a class="forum_link"
+                               href="${pageContext.request.contextPath}/topics/${topic.id}">${topic.title}</a>
+                        </h4>
+                        <br/>
+                        <span id="truncated"><jtalks:bb2html bbCode="${topic.lastPost.postContent}"/></span>
                     </div>
-                    <c:choose>
-                        <c:when test="${topic.announcement=='true'}">
-                            <div class="forum_info">
-                                <h4>
-                                    <span class="sticky">
-                                        <spring:message code="label.marked_as_announcement"/>
-                                    </span>
-                                    <a class="forum_link" href="${pageContext.request.contextPath}/topics/${topic.id}">
-                                        <c:out value="${topic.title}"/>
-                                    </a>
-                                </h4>
-                            </div>
-                        </c:when>
-                        <c:when test="${topic.sticked=='true'}">
-                            <div class="forum_info">
-                                <h4><span class="sticky">
-                                    <spring:message code="label.marked_as_sticked"/> </span><a
-                                        class="forum_link"
-                                        href="${pageContext.request.contextPath}/topics/${topic.id}">
-                                    <c:out value="${topic.title}"/></a></h4>
-                            </div>
-                        </c:when>
-                        <c:otherwise>
-                            <div class="forum_info">
-                                <h4><a class="forum_link"
-                                       href="${pageContext.request.contextPath}/topics/${topic.id}"><c:out
-                                        value="${topic.title}"/></a></h4>
-                                <h5>
-                                    <span><jtalks:bb2html bbCode="${topic.lastPost.shortContent}"/></span>
-                                </h5>
-
-                            </div>
-                        </c:otherwise>
-                    </c:choose>
                     <div class="forum_answers">
                         <c:out value="${topic.postCount}"/>
                     </div>
@@ -118,7 +90,7 @@
         </ul>
         <nobr>
             <span class="nav_bottom">
-            </jtalks:display>
+                </jtalks:display>
             </span>
         </nobr>
     </div>

@@ -35,17 +35,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Controller for processing avatar related request.
@@ -111,7 +118,6 @@ public class AvatarController {
      * Used for FF, Chrome specific request processing
      *
      * @param bytes    input avatar data
-     * @param request  input request
      * @param response servlet response
      * @param locale   current user locale settings to resolve messages
      * @return response content
@@ -120,12 +126,11 @@ public class AvatarController {
     @RequestMapping(value = "/users/XHRavatarpreview", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, String> uploadAvatar(@RequestBody byte[] bytes,
-                                            ServletRequest request,
                                             HttpServletResponse response,
                                             Locale locale) throws ServletException {
 
         Map<String, String> responseContent = new HashMap<String, String>();
-        prepareResponse(bytes, request, response, responseContent, locale);
+        prepareResponse(bytes, response, responseContent, locale);
         return responseContent;
     }
 
@@ -186,7 +191,6 @@ public class AvatarController {
         Iterator<MultipartFile> fileIterator = fileCollection.iterator();
         MultipartFile file = fileIterator.next();
 
-
         try {
             avatarService.validateAvatarFormat(file);
             byte[] bytes = file.getBytes();
@@ -214,12 +218,11 @@ public class AvatarController {
      * Prepare valid or error response after avatar processing
      *
      * @param bytes           input avatar data
-     * @param request         used for getting application context
      * @param response        resulting response
      * @param responseContent with avatar processing results
      * @param locale          current user locale settings to resolve messages
      */
-    private void prepareResponse(byte[] bytes, ServletRequest request,
+    private void prepareResponse(byte[] bytes,
                                  HttpServletResponse response,
                                  Map<String, String> responseContent,
                                  Locale locale) {
@@ -257,7 +260,8 @@ public class AvatarController {
     private void prepareSizeErrorResponse(Map<String, String> responseContent, Locale locale) {
         responseContent.clear();
         responseContent.put(RESULT, "false");
-        responseContent.put("message", messageSource.getMessage("image.wrong.size" + " " + AvatarService.MAX_SIZE, null, locale));
+        responseContent.put("message", messageSource.getMessage("image.wrong.size" + " "
+                + AvatarService.MAX_SIZE, null, locale));
     }
 
     /**

@@ -27,6 +27,7 @@ import org.testng.annotations.Test;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -91,17 +92,17 @@ public class AvatarServiceTest {
         assertTrue(avatar.length > 0);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class, dataProvider = "nullValues")
-    public void inputDataForProcessConvertAvatarToBase64StringIsNull(byte[] bytes) throws Exception {
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void inputDataForProcessConvertAvatarToBase64StringIsNull() throws Exception {
         //invoke object under test
-        avatarService.convertBytesToBase64String(bytes);
+        avatarService.convertBytesToBase64String(null);
     }
 
 
-    @Test(expectedExceptions = IllegalArgumentException.class, dataProvider = "nullValues")
-    public void inputDataForProcessConvertAvatarToBase64StringIsInvalid(byte[] bytes) throws Exception {
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void inputDataForProcessConvertAvatarToBase64StringIsInvalid() throws Exception {
         //invoke object under test
-        avatarService.convertBytesToBase64String(bytes);
+        avatarService.convertBytesToBase64String(null);
     }
 
     @Test(expectedExceptions = ImageFormatException.class, dataProvider = "invalidFormatValues")
@@ -116,10 +117,10 @@ public class AvatarServiceTest {
         avatarService.validateAvatarFormat(file);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class, dataProvider = "nullValues")
-    public void inputDataForValidateAvatarFormatIsNull(MultipartFile file) throws Exception {
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void inputDataForValidateAvatarFormatIsNull() throws Exception {
         //invoke object under test
-        avatarService.validateAvatarFormat(file);
+        avatarService.validateAvatarFormat(null);
     }
 
     @Test(expectedExceptions = ImageSizeException.class, dataProvider = "invalidSizeValues")
@@ -128,10 +129,10 @@ public class AvatarServiceTest {
         avatarService.validateAvatarSize(bytes);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class, dataProvider = "nullValues")
-    public void inputDataForValidateAvatarSizeIsNull(byte[] bytes) throws Exception {
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void inputDataForValidateAvatarSizeIsNull() throws Exception {
         //invoke object under test
-        avatarService.validateAvatarSize(bytes);
+        avatarService.validateAvatarSize(null);
     }
 
 
@@ -155,14 +156,6 @@ public class AvatarServiceTest {
 
         return new Object[][]{
                 {originalImageBytes, inputImage, processedImageBytes, expectedBase64String}
-        };
-    }
-
-    @DataProvider
-    private Object[][] nullValues() {
-
-        return new Object[][]{
-                {null}
         };
     }
 
@@ -195,7 +188,10 @@ public class AvatarServiceTest {
 
     @DataProvider
     Object[][] validFormatValues() {
-        Set<String> validFormats = AvatarService.getValidImageTypes();
+        Set<String> validFormats = new HashSet<String>();
+        validFormats.add("image/jpeg");
+        validFormats.add("image/png");
+        validFormats.add("image/gif");
         List<MultipartFile> files = new ArrayList<MultipartFile>(validFormats.size());
         for (String contentType : validFormats) {
             files.add(new MockMultipartFile("test_avatar", "test_avatar", contentType, new byte[10]));
