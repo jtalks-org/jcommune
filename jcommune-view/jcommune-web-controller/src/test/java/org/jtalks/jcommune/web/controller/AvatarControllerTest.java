@@ -39,7 +39,6 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import javax.servlet.ServletOutputStream;
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
@@ -210,16 +209,13 @@ public class AvatarControllerTest {
 
     @Test(dataProvider = "validData-XHR-provider")
     public void testValidUploadAvatarXHR(byte[] avatar, Map<String, String> expectedData) throws Exception {
-        //setUp
-        ServletRequest request = mock(ServletRequest.class);
-
         //set expectations
         when(avatarService.convertBytesToBase64String(avatar)).thenReturn(SRC_IMG);
 
         HttpServletResponse response = new MockHttpServletResponse();
 
         //invoke object under test
-        Map<String, String> result = avatarController.uploadAvatar(avatar, request, response, locale);
+        Map<String, String> result = avatarController.uploadAvatar(avatar, response, locale);
 
         //check result
         assertEquals(result, expectedData);
@@ -227,16 +223,13 @@ public class AvatarControllerTest {
 
     @Test(enabled = false, dataProvider = "invalidData-XHR-provider")
     public void testInvalidUploadAvatarXHR(byte[] avatar, Map<String, String> expectedData) throws Exception {
-        //setUp
-        ServletRequest request = mock(ServletRequest.class);
-
         //set expectations
         when(avatarService.convertBytesToBase64String(avatar)).thenThrow(new ImageProcessException());
 
         HttpServletResponse response = new MockHttpServletResponse();
 
         //invoke object under test
-        Map<String, String> result = avatarController.uploadAvatar(avatar, request, response, locale);
+        Map<String, String> result = avatarController.uploadAvatar(avatar, response, locale);
 
         //check result
         assertEquals(result, expectedData);
@@ -352,16 +345,5 @@ public class AvatarControllerTest {
         return newUser;
     }
 
-    private ResponseEntity<String> initDataForIe(String body) {
-        file = new MockMultipartFile(name, validAvatar);
-        fileMap = new HashMap<String, MultipartFile>(1);
-        headers = new HttpHeaders();
-        fileMap.put(name, file);
-        headers.setContentType(MediaType.TEXT_HTML);
-        return new ResponseEntity<String>(body,
-                headers,
-                HttpStatus.INTERNAL_SERVER_ERROR);
-
-    }
 
 }
