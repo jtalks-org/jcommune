@@ -23,7 +23,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
  */
 public class BBCodeService {
 
-    private final static String QUOTE_PATEERN = "[quote=\"%s\"]%s[/quote]";
+    private static final String QUOTE_PATEERN = "[quote=\"%s\"]%s[/quote]";
 
     /**
      * Qoutes text given as a valid BB-coded quote.
@@ -33,10 +33,10 @@ public class BBCodeService {
      * @param author text author, not null
      * @return well formed BB qoute
      */
-    public String quote(String source, JCUser author){
-       if (source == null || author == null){
-           throw new IllegalArgumentException("Author and source cannot be null");
-       }
-       return String.format(QUOTE_PATEERN, author.getUsername(), source);
+    public String quote(String source, JCUser author) {
+        if (source == null || author == null) {
+            throw new IllegalArgumentException("Author and source cannot be null");
+        }
+        return String.format(QUOTE_PATEERN, author.getUsername(), source);
     }
 }

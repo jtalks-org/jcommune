@@ -71,7 +71,7 @@ public class PrivateMessageController {
     /**
      * @param pmService         for PrivateMessage-related operation
      * @param pmDtoBuilder      the object which provides actions on {@link PrivateMessageDtoBuilder} entity
-     * @param bbCodeService
+     * @param bbCodeService     for qutes creation
      */
     @Autowired
     public PrivateMessageController(PrivateMessageService pmService, PrivateMessageDtoBuilder pmDtoBuilder,
