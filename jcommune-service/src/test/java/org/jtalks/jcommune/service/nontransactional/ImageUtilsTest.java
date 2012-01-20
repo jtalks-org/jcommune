@@ -25,6 +25,10 @@ import org.testng.annotations.Test;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import static org.testng.Assert.assertEquals;
@@ -50,6 +54,22 @@ public class ImageUtilsTest {
     public void testConvertImageToByteArrayForNullData() throws ImageProcessException {
         //invoke object under test
         imageUtils.convertImageToByteArray(null);
+    }
+
+    @Test(dataProvider = "validDataForImageToByteArrayTest")
+    public void testConvertImageToByteArrayForValidData(Image image, byte[] expected) throws ImageProcessException {
+        byte[] actual = imageUtils.convertImageToByteArray(image);
+        assertEquals(actual, expected);
+    }
+
+    @Test(dataProvider = "validDataForConvertByteArrayToImageTest")
+    public void testConvertByteArrayToImageForValidData(byte[] bytes, BufferedImage expected) throws ImageProcessException {
+        BufferedImage actual = imageUtils.convertByteArrayToImage(bytes);
+
+        byte[] actualResult = imageUtils.convertImageToByteArray(actual);
+        byte[] expectedResult = imageUtils.convertImageToByteArray(expected);
+
+        assertEquals(actualResult, expectedResult);
     }
 
     @Test(dataProvider = "rangeByteStringData")
@@ -99,6 +119,30 @@ public class ImageUtilsTest {
             -110, -88, -88, 42, 79, -37, 110, 3, 109, -81, 12, -33, -26, -1, 73, -88, 36, -33, 0, -62, -31,
             36, 71, 49, 115, -89, 85, 0, 0, 0, 0, 73, 69, 78, 68, -82, 66, 96, -126
     };
+
+    @DataProvider
+    private Object[][] validDataForImageToByteArrayTest() throws IOException {
+        Image image = new BufferedImage(100, 100, BufferedImage.TYPE_3BYTE_BGR);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write((RenderedImage) image, "jpeg", baos);
+        baos.flush();
+        byte[] result = baos.toByteArray();
+        baos.close();
+
+        return new Object[][]{
+                {image, result}
+        };
+    }
+
+    @DataProvider
+    private Object[][] validDataForConvertByteArrayToImageTest() throws IOException {
+        BufferedImage result;
+        BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(originalImageByteArray));
+        result = ImageIO.read(bis);
+        return new Object[][]{
+                {originalImageByteArray, result}
+        };
+    }
 
     @DataProvider
     private Object[][] htmlImgSrcData() {
