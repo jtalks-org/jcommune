@@ -20,10 +20,12 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.PostDto;
 import org.mockito.Matchers;
+import org.mockito.Mock;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
@@ -37,6 +39,7 @@ import java.util.ArrayList;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
 
@@ -48,24 +51,28 @@ import static org.testng.Assert.assertEquals;
  * @author Evgeniy Naumenko
  */
 public class PostControllerTest {
+
+    @Mock
     private PostService postService;
-    private PostController controller;
+    @Mock
+    private BBCodeService bbCodeService;
+    @Mock
     private TopicService topicService;
+    @Mock
+    private BreadcrumbBuilder breadcrumbBuilder;
 
     public static final long POST_ID = 1;
     public static final long TOPIC_ID = 1L;
     public static final long PAGE = 1L;
     private final String POST_CONTENT = "postContent";
-    private BreadcrumbBuilder breadcrumbBuilder;
     private Topic topic;
+
+    private PostController controller;
 
     @BeforeMethod
     public void init() throws NotFoundException {
-        postService = mock(PostService.class);
-        topicService = mock(TopicService.class);
-        breadcrumbBuilder = mock(BreadcrumbBuilder.class);
-        controller = new PostController(postService, breadcrumbBuilder, topicService);
-
+        initMocks(this);
+        controller = new PostController(postService, breadcrumbBuilder, topicService, bbCodeService);
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
         topic = new Topic(null, "");
@@ -174,12 +181,14 @@ public class PostControllerTest {
     public void testQuotedAnswer() throws NotFoundException {
         JCUser user = new JCUser("user", null, null);
         Post post = new Post(user, POST_CONTENT);
+        String expected = "[quote=\"user\"]" + POST_CONTENT + "[/quote]";
         topic.addPost(post);
         when(postService.get(anyLong())).thenReturn(post);
+        when(bbCodeService.quote(POST_CONTENT ,user)).thenReturn(expected);
 
         ModelAndView mav = controller.addPostWithQuote(post.getId(), null);
         //check expectations
-        String expected = "[quote=\"user\"]" + POST_CONTENT + "[/quote]";
+
         PostDto actual = assertAndReturnModelAttributeOfType(mav, "postDto", PostDto.class);
         assertEquals(actual.getBodyText(), expected);
     }
@@ -188,13 +197,15 @@ public class PostControllerTest {
     public void testPartialQuotedAnswer() throws NotFoundException {
         String selection = "selected content";
         JCUser user = new JCUser("user", null, null);
+        String expected = "[quote=\"user\"]" + selection + "[/quote]";
         Post post = new Post(user, POST_CONTENT);
         topic.addPost(post);
         when(postService.get(anyLong())).thenReturn(post);
+        when(bbCodeService.quote(selection,user)).thenReturn(expected);
 
         ModelAndView mav = controller.addPostWithQuote(TOPIC_ID, selection);
         //check expectations
-        String expected = "[quote=\"user\"]" + selection + "[/quote]";
+
         PostDto actual = assertAndReturnModelAttributeOfType(mav, "postDto", PostDto.class);
         assertEquals(actual.getBodyText(), expected);
     }

@@ -14,16 +14,14 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
-
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
 <head>
-    <spring:message code="label.messagesWithoutAnswers"/>
+    <title><spring:message code="label.messagesWithoutAnswers"/></title>
 </head>
 <body>
 <div class="wrap branch_page">
@@ -31,6 +29,7 @@
     <h1><a href="${pageContext.request.contextPath}">
         <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
     </a></h1>
+
     <div class="all_forums">
         <h2><a class="heading" href="#"><spring:message code="label.messagesWithoutAnswers"/></a></h2>
         <br/>
@@ -60,7 +59,7 @@
                     </div>
                     <c:choose>
                         <c:when test="${topic.announcement=='true'}">
-                            <div class="forum_info"> <!-- Ссылка на тему -->
+                            <div class="forum_info">
                                 <h4>
                                     <span class="sticky">
                                         <spring:message code="label.marked_as_announcement"/>
@@ -72,7 +71,7 @@
                             </div>
                         </c:when>
                         <c:when test="${topic.sticked=='true'}">
-                            <div class="forum_info"> <!-- Ссылка на тему -->
+                            <div class="forum_info">
                                 <h4><span class="sticky">
                                     <spring:message code="label.marked_as_sticked"/> </span><a
                                         class="forum_link"
@@ -81,14 +80,12 @@
                             </div>
                         </c:when>
                         <c:otherwise>
-                            <div class="forum_info"> <!-- Ссылка на тему -->
+                            <div class="forum_info">
                                 <h4><a class="forum_link"
                                        href="${pageContext.request.contextPath}/topics/${topic.id}"><c:out
                                         value="${topic.title}"/></a></h4>
-                                <h5>
-                                    <span><jtalks:bb2html bbCode="${topic.lastPost.shortContent}"/></span>
-                                </h5>
-
+                                <br>
+                                <span class="truncated"><jtalks:bb2html bbCode="${topic.lastPost.postContent}"/></span>
                             </div>
                         </c:otherwise>
                     </c:choose>

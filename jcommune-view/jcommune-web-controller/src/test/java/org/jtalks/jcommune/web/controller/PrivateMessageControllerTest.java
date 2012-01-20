@@ -18,6 +18,7 @@ import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 import org.jtalks.jcommune.web.util.PrivateMessageDtoBuilder;
 import org.mockito.Mock;
@@ -50,13 +51,16 @@ public class PrivateMessageControllerTest {
     private PrivateMessageService pmService;
     @Mock
     private PrivateMessageDtoBuilder pmDtoBuilder;
+    //todo: replace DTO mock with plain domain object
     @Mock
     private PrivateMessageDto pmDto;
+    @Mock
+    private BBCodeService bbCodeService;
 
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
-        controller = new PrivateMessageController(pmService, pmDtoBuilder);
+        controller = new PrivateMessageController(pmService, pmDtoBuilder, bbCodeService);
     }
 
     @Test
@@ -185,14 +189,13 @@ public class PrivateMessageControllerTest {
         PrivateMessage pm = new PrivateMessage(null, null, "title", "body");
         //set expectations
         when(pmService.get(PM_ID)).thenReturn(pm);
-        when(pmDtoBuilder.getQuoteDtoFor(pm)).thenReturn(pmDto);
+        when(pmDtoBuilder.getReplyDtoFor(pm)).thenReturn(pmDto);
 
         //invoke the object under test
         ModelAndView mav = controller.quotePage(PM_ID);
 
         //check expectations
         verify(pmService).get(PM_ID);
-        verify(pmDtoBuilder).getQuoteDtoFor(pm);
 
         //check result
         assertViewName(mav, "pm/pmForm");

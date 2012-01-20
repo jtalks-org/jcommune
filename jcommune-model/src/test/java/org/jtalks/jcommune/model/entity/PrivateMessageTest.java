@@ -48,35 +48,6 @@ public class PrivateMessageTest {
     }
 
 
-    @Test(dataProvider = "body-provider")
-    public void testPrepareBodyForQuote(String body, String expectedBody) throws Exception {
-        pm.setBody(body);
-        String result = pm.prepareBodyForQuote();
-        assertEquals(result, expectedBody);
-
-    }
-
-    @DataProvider(name = "body-provider")
-    public Object[][] rangeBodyData() {
-
-        return new Object[][]{
-                //data set for unquoted line test
-                {"Line1" + PrivateMessage.NEW_LINE + "Line2",
-                        PrivateMessage.QUOTE_PREFIX + PrivateMessage.QUOTE_SEPARATOR + "Line1"
-                                + PrivateMessage.NEW_LINE
-                                + PrivateMessage.QUOTE_PREFIX + PrivateMessage.QUOTE_SEPARATOR
-                                + "Line2" + PrivateMessage.NEW_LINE},
-                //data set for quoted line test
-                {PrivateMessage.QUOTE_PREFIX + PrivateMessage.QUOTE_SEPARATOR + "Line1" + PrivateMessage.NEW_LINE
-                        + PrivateMessage.QUOTE_PREFIX + PrivateMessage.QUOTE_SEPARATOR + "Line2",
-                        PrivateMessage.QUOTE_PREFIX + PrivateMessage.QUOTE_PREFIX + PrivateMessage.QUOTE_SEPARATOR
-                                + "Line1" + PrivateMessage.NEW_LINE
-                                + PrivateMessage.QUOTE_PREFIX + PrivateMessage.QUOTE_PREFIX
-                                + PrivateMessage.QUOTE_SEPARATOR + "Line2" + PrivateMessage.NEW_LINE}
-        };
-
-    }
-
     @Test
     public void testIsRead() {
         pm.markAsRead();

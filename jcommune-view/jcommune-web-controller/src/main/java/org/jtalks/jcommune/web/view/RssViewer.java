@@ -95,7 +95,7 @@ public class RssViewer extends AbstractRssFeedView {
         Item item = new Item();
         Description description = new Description();
         description.setType("text");
-        description.setValue(topic.getLastPost().getShortContent());
+        description.setValue(topic.getLastPost().getPostContent());
 
         Content content = new Content();
         item.setContent(content);
