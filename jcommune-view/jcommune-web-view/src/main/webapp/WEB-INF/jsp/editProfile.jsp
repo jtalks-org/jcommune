@@ -56,64 +56,90 @@
                     </li>
                     <li class="forum_row">
                         <label><spring:message code="label.email"/></label>
-                        <span><form:input path="email" size="25" value="${editedUser.email}"/></span>
-                        <span><form:errors path="email" cssClass="error"/></span>
+                        <span>
+                            <form:input path="email" size="25" value="${editedUser.email}"/>
+                            <br/>
+                            <form:errors path="email" cssClass="error"/>
+                        </span>
                     </li>
                     <li class="forum_row">
                         <label><spring:message code="label.firstname"/></label>
-                        <span><form:input path="firstName" size="25" value="${editedUser.firstName}"/></span>
-                        <span><form:errors path="firstName" cssClass="error"/></span>
+                        <span>
+                            <form:input path="firstName" size="25" value="${editedUser.firstName}"/>
+                            <br/>
+                            <form:errors path="firstName" cssClass="error"/>
+                        </span>
                     </li>
                     <li class="forum_row">
                         <label><spring:message code="label.lastname"/></label>
-                        <span><form:input path="lastName" size="25" value="${editedUser.lastName}"/></span>
-                        <span><form:errors path="lastName" cssClass="error"/></span>
+                        <span>
+                            <form:input path="lastName" size="25" value="${editedUser.lastName}"/>
+                            <br/>
+                            <form:errors path="lastName" cssClass="error"/>
+                        </span>
                     </li>
                     <li class="forum_row">
                         <label><spring:message code="label.currentPassword"/></label>
-                        <span><form:input path="currentUserPassword" size="25" type="password"/></span>
-                        <span><form:errors path="currentUserPassword" cssClass="error"/></span>
+                        <span>
+                            <form:input path="currentUserPassword" size="25" type="password"/>
+                            <br/>
+                            <form:errors path="currentUserPassword" cssClass="error"/>
+                        </span>
                     </li>
                     <li class="forum_row">
                         <label><spring:message code="label.newPassword"/></label>
-                        <span><form:input path="newUserPassword" size="25" type="password"/></span>
-                        <span><form:errors path="newUserPassword" cssClass="error"/></span>
+                        <span>
+                            <form:input path="newUserPassword" size="25" type="password"/>
+                            <br/>
+                            <form:errors path="newUserPassword" cssClass="error"/>
+                        </span>
                     </li>
                     <li class="forum_row">
                         <label><spring:message code="label.newPasswordConfirmation"/></label>
-                        <span><form:input path="newUserPasswordConfirm" size="25" type="password"/></span>
-                        <span><form:errors path="newUserPasswordConfirm" cssClass="error"/></span>
+                        <span>
+                            <form:input path="newUserPasswordConfirm" size="25" type="password"/>
+                            <br/>
+                            <form:errors path="newUserPasswordConfirm" cssClass="error"/>
+                        </span>
                     </li>
                     <li class="forum_row">
                         <label><spring:message code="label.signature"/></label>
-                        <span><form:input path="signature" size="40" value="${editedUser.signature}"/></span>
-                        <span><form:errors path="signature" cssClass="error"/></span>
+                        <span>
+                            <form:input path="signature" size="40" value="${editedUser.signature}"/>
+                            <br/>
+                            <form:errors path="signature" cssClass="error"/>
+                        </span>
                     </li>
                     <li class="forum_row">
                         <label><spring:message code="label.language"/></label>
                         <span>
-                        <form:select path="language" value="${editedUser.language}">
-                            <c:forEach items="${editedUser.languagesAvailable}" var="language">
-                                <form:option value="${language}">
-                                    <spring:message code="${language.languageNameLabel}"/>
-                                </form:option>
-                            </c:forEach>
-                        </form:select>
+                            <form:select path="language" value="${editedUser.language}">
+                                <c:forEach items="${editedUser.languagesAvailable}" var="language">
+                                    <form:option value="${language}">
+                                        <spring:message code="${language.languageNameLabel}"/>
+                                    </form:option>
+                                </c:forEach>
+                            </form:select>
+                            <br/>
+                            <form:errors path="language" cssClass="error"/>
                         </span>
-                        <span><form:errors path="language" cssClass="error"/></span>
                     </li>
                     <li class="forum_row">
                         <label><spring:message code="label.numberOfTopicsOnPage"/></label>
                         <span>
                             <form:select path="pageSize" value="${editedUser.pageSize}"
                                          items="${editedUser.pageSizesAvailable}"/>
+                            <br/>
+                            <form:errors path="pageSize" cssClass="error"/>
                         </span>
-                        <span><form:errors path="pageSize" cssClass="error"/></span>
                     </li>
                     <li class="forum_row">
                         <label><spring:message code="label.location"/></label>
-                        <span><form:input path="location" size="40" value="${editedUser.location}"/></span>
-                        <span><form:errors path="location" cssClass="error"/></span>
+                        <span>
+                            <form:input path="location" size="40" value="${editedUser.location}"/>
+                            <br/>
+                            <form:errors path="location" cssClass="error"/>
+                        </span>
                     </li>
                     <li class="forum_row">
                         <label><spring:message code="label.avatar"/></label>
