@@ -33,10 +33,8 @@
             });
 
         });
-    }
+    };
 
-    // Note that the " (вЂ¦more)" bit counts towards the max length вЂ“ so a max
-    // length of 10 would truncate "1234567890" to "12 (вЂ¦more)".
     $.fn.truncate.defaults = {
         max_length: 100,
         more: 'Show full post',
@@ -48,7 +46,7 @@
     }
 
     function truncateNode(node, max_length) {
-        var node = $(node);
+        node = $(node);
         var new_node = node.clone().empty();
         var truncatedChild;
         node.contents().each(function() {
@@ -65,7 +63,7 @@
         if (trailing_whitespace)  // remove initial whitespace if last text
             text = text.replace(/^ /, '');  // node had trailing whitespace.
         trailing_whitespace = !!text.match(/ $/);
-        var text = text.slice(0, max_length);
+        text = text.slice(0, max_length);
         // Ensure HTML entities are encoded
         // http://debuggable.com/posts/encode-html-entities-with-jquery:480f4dd6-13cc-4ce9-8071-4710cbdd56cb
         text = $('<div/>').text(text).html();
@@ -85,7 +83,7 @@
         var display = last_child.css('display');
         if (!display || display=='inline') return $node;
         return findNodeForMore(last_child);
-    };
+    }
 
     // Finds the last child if it's a p; otherwise the parent
     function findNodeForLess(node) {
@@ -93,7 +91,7 @@
         var last_child = $node.children(":last");
         if (last_child && last_child.is('p')) return last_child;
         return node;
-    };
+    }
 
 })(jQuery);
 

@@ -46,7 +46,8 @@
                     </div>
                     <div class="forum_answer_right">
                         <form:input path="recipient" size="45" maxlength="60" tabindex="1" class="post"/>
-                        <form:errors path="recipient"/>
+                        <br/>
+                        <span class="error"><form:errors path="recipient"/></span>
                     </div>
                 </li>
                 <li class="forum_row">
@@ -55,7 +56,8 @@
                     </div>
                     <div class="forum_answer_right">
                         <form:input path="title" size="45" maxlength="60" tabindex="1" class="post"/>
-                        <form:errors path="title"/>
+                        <br/>
+                        <span class="error"><form:errors path="title"/></span>
                     </div>
                 </li>
             </ul>
