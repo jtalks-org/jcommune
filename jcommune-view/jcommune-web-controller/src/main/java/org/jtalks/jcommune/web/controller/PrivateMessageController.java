@@ -56,7 +56,7 @@ public class PrivateMessageController {
     private static final String DTO = "privateMessageDto";
 
     /**
-     * This method turns the trim binder on. Trim bilder
+     * This method turns the trim binder on. Trim builder
      * removes leading and trailing spaces from the submitted fields.
      * So, it ensures, that all validations will be applied to
      * trimmed field values only.
@@ -69,9 +69,9 @@ public class PrivateMessageController {
     }
 
     /**
-     * @param pmService         for PrivateMessage-related operation
-     * @param pmDtoBuilder      the object which provides actions on {@link PrivateMessageDtoBuilder} entity
-     * @param bbCodeService     for qutes creation
+     * @param pmService     for PrivateMessage-related operation
+     * @param pmDtoBuilder  the object which provides actions on {@link PrivateMessageDtoBuilder} entity
+     * @param bbCodeService for qutes creation
      */
     @Autowired
     public PrivateMessageController(PrivateMessageService pmService, PrivateMessageDtoBuilder pmDtoBuilder,
@@ -160,21 +160,18 @@ public class PrivateMessageController {
      * @param pmDto  {@link PrivateMessageDto} populated in form
      * @param result result of {@link PrivateMessageDto} validation
      * @return redirect to /inbox on success or back to "/new_pm" on validation errors
+     * @throws NotFoundException is invalid user set as recipient
      */
     @RequestMapping(value = "/pm", method = {RequestMethod.POST, RequestMethod.GET})
-    public String sendMessage(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
+    public String sendMessage(@Valid @ModelAttribute PrivateMessageDto pmDto,
+                              BindingResult result) throws NotFoundException {
         if (result.hasErrors()) {
             return PM_FORM;
         }
-        try {
-            if (pmDto.getId() > 0) {
-                pmService.sendDraft(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
-            } else {
-                pmService.sendMessage(pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
-            }
-        } catch (NotFoundException nfe) {
-            result.rejectValue("recipient", "label.wrong_recipient");
-            return PM_FORM;
+        if (pmDto.getId() > 0) {
+            pmService.sendDraft(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
+        } else {
+            pmService.sendMessage(pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
         }
         return "redirect:/outbox";
     }
@@ -185,8 +182,7 @@ public class PrivateMessageController {
      * @param folder message folder (inbox/outbox/drafts)
      * @param id     {@link PrivateMessage} id
      * @return {@code ModelAndView} with a message
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when message not found
+     * @throws NotFoundException when message not found
      */
     @RequestMapping(value = "/{folder}/{pmId}", method = RequestMethod.GET)
     public ModelAndView showPmPage(@PathVariable("folder") String folder,
@@ -222,18 +218,15 @@ public class PrivateMessageController {
      * @param pmDto  Dto populated in form
      * @param result validation result
      * @return redirect to "drafts" folder if saved successfully or show form with error message
+     * @throws NotFoundException if incorrect User is set as recipient
      */
     @RequestMapping(value = "/pm/save", method = {RequestMethod.POST, RequestMethod.GET})
-    public String saveDraft(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
+    public String saveDraft(@Valid @ModelAttribute PrivateMessageDto pmDto,
+                            BindingResult result) throws NotFoundException {
         if (result.hasErrors()) {
             return PM_FORM;
         }
-        try {
-            pmService.saveDraft(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
-        } catch (NotFoundException nfe) {
-            result.rejectValue("recipient", "label.wrong_recipient");
-            return PM_FORM;
-        }
+        pmService.saveDraft(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
         return "redirect:/drafts";
     }
 

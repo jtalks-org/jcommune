@@ -14,26 +14,15 @@
  */
 package org.jtalks.jcommune.web.validation;
 
+import org.jtalks.common.model.entity.Entity;
+
 import javax.validation.Constraint;
 import javax.validation.Payload;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
- * <p>Marks the field to check it's value for uniqueness in a database.
- * Specify HQL query in a parameter with one placeholder for the actual field value.
- * Validation succeds if result set returned is empty.
- *
- * <p>For exmaple:
- *
- * <p><code>@Unique(hql = "from User user where user.email = ?", message = "{email.unknown}")
- * private String email<code/>
- *
- * <p>This snippet will pass the validation if and only if there is no record with email value
- * equal to the one sprecified in varialbe.
+ * Marks the field to check it's value for non-existence in a database.
+ * You should specify an Entity and a field to search for value in.
  *
  * <p>Works only for sting variables as for now.
  *
@@ -61,7 +50,12 @@ public @interface Unique {
     Class<? extends Payload>[] payload() default {};
 
     /**
-     * Query to executed, must contain one placeholder for field value
+     * Entity to be verified
      */
-    String hql();
+    Class<? extends Entity> entity();
+
+    /**
+     * Field to be checked
+     */
+    String field();
 }

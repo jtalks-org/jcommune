@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.dto;
 
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.web.validation.Exists;
 
 /**
@@ -24,7 +25,7 @@ import org.jtalks.jcommune.web.validation.Exists;
  */
 public class RestorePasswordDto {
 
-    @Exists(hql = "from JCUser user where user.email = ?", message = "{email.unknown}")
+    @Exists(entity = JCUser.class, field = "email", message = "{email.unknown}")
     private String email;
 
     /**

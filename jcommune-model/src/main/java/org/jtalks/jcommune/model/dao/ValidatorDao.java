@@ -14,9 +14,11 @@
  */
 package org.jtalks.jcommune.model.dao;
 
+import org.jtalks.common.model.entity.Entity;
+
 /**
  * Simple DAO to check if certain objects are already present in a database.
- * To be used mostly for duplication/existance verifications.
+ * To be used mostly for duplication/existence verifications.
  *
  * Type parameter stands for type of the query argument.
  *
@@ -28,9 +30,10 @@ public interface ValidatorDao<T> {
      * Checks if the query passed returns nothing.
      * Supports one parameter for a certain type.
      *
-     * @param query hql query to be executed
+     * @param entity entity we want to check
+     * @param field  entity field we want to check
      * @param param parameter for the query
-     * @return true if resut set returned have at least one row
+     * @return true if result set returned have at least one row
      */
-    boolean isResultSetEmpty(String query, T param);
+    boolean isResultSetEmpty(Class<? extends Entity> entity, String field, T param);
 }

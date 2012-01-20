@@ -15,12 +15,14 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.jtalks.jcommune.web.validation.Exists;
 
 import javax.validation.constraints.Size;
 
 /**
- * DTO for {@link org.jtalks.jcommune.model.entity.PrivateMessage} objects. Used for validation and binding to the form.
+ * DTO for {@link PrivateMessage} objects. Used for validation and binding to the form.
  * Holds message's title, body and username of the recipient.
  *
  * @author Pavel Vervenko
@@ -38,6 +40,7 @@ public class PrivateMessageDto {
     private String body;
 
     @NotBlank
+    @Exists(entity = JCUser.class, field = "username", message = "{validation.wrong_recipient}")
     private String recipient;
 
     /**

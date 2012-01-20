@@ -17,12 +17,12 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.ValidatorDao;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertFalse;
@@ -43,7 +43,7 @@ public class ValidatorHibernateDaoTest extends AbstractTransactionalTestNGSpring
 
     @Test
     public void testResultSetisEmpty() {
-        assertTrue(dao.isResultSetEmpty("from JCUser u where u.username = ?", "lol"));
+        assertTrue(dao.isResultSetEmpty(JCUser.class, "username", "lol"));
     }
 
     @Test
@@ -51,6 +51,6 @@ public class ValidatorHibernateDaoTest extends AbstractTransactionalTestNGSpring
         String realname = ObjectsFactory.getDefaultUser().getUsername();
         sessionFactory.getCurrentSession().saveOrUpdate(ObjectsFactory.getDefaultUser());
 
-        assertFalse(dao.isResultSetEmpty("from JCUser u where u.username = ?", realname));
+        assertFalse(dao.isResultSetEmpty(JCUser.class, "username", realname));
     }
 }

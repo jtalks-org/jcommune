@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.validation;
 
+import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.dao.ValidatorDao;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -28,15 +29,16 @@ import javax.validation.ConstraintValidatorContext;
  */
 public class UniqueValidator implements ConstraintValidator<Unique, Object> {
 
-    private String hql;
+    private Class<? extends Entity> entity;
+    private String field;
 
-    private ValidatorDao dao;
+    private ValidatorDao<String> dao;
 
     /**
-     * @param dao to perform database-based validationa
+     * @param dao to perform database-based validations
      */
     @Autowired
-    public UniqueValidator(ValidatorDao dao) {
+    public UniqueValidator(ValidatorDao<String> dao) {
         this.dao = dao;
     }
 
@@ -45,7 +47,8 @@ public class UniqueValidator implements ConstraintValidator<Unique, Object> {
      */
     @Override
     public void initialize(Unique annotation) {
-        this.hql = annotation.hql();
+        this.entity = annotation.entity();
+        this.field = annotation.field();
     }
 
     /**
@@ -53,6 +56,6 @@ public class UniqueValidator implements ConstraintValidator<Unique, Object> {
      */
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
-        return dao.isResultSetEmpty(hql, value.toString());
+        return dao.isResultSetEmpty(entity, field, value.toString());
     }
 }

@@ -34,7 +34,7 @@ public class RegisterUserDto {
 
     @NotBlank(message = "{validation.username.notblank}")
     @Size(min = JCUser.MIN_NAME_SIZE, max = JCUser.MAX_NAME_SIZE, message = "{validation.username.length}")
-    @Unique(hql = "from JCUser user where user.username = ?", message = "{validation.duplicateuser}")
+    @Unique(entity = JCUser.class, field = "username", message = "{validation.duplicateuser}")
     private String username;
 
     @NotBlank(message = "{validation.email.notblank}")
@@ -42,7 +42,7 @@ public class RegisterUserDto {
             "*\\@((\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}(\\:\\d{1,3})?)|(((([a-zA-Z0-9][a-zA-Z0-9\\-]" +
             "+[a-zA-Z0-9])|([a-zA-Z0-9]{1,2}))[\\.]{1})+([a-zA-Z]{2,6})))$",
             message = "{validation.email.wrong.format}")
-    @Unique(hql = "from JCUser user where user.email = ?", message = "{validation.duplicateemail}")
+    @Unique(entity = JCUser.class, field = "email", message = "{validation.duplicateemail}")
     private String email;
 
     @NotBlank(message = "{validation.password.notblank}")
@@ -123,9 +123,9 @@ public class RegisterUserDto {
     }
 
     /**
-     * Populate {@link org.jtalks.jcommune.model.entity.JCUser} from fields.
+     * Populate {@link JCUser} from fields.
      *
-     * @return populated {@link org.jtalks.jcommune.model.entity.JCUser} object
+     * @return populated {@link JCUser} object
      */
     public JCUser createUser() {
         return new JCUser(username, email, password);

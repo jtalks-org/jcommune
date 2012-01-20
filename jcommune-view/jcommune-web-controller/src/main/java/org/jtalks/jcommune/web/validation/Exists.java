@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.web.validation;
 
+import org.jtalks.common.model.entity.Entity;
+
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.Documented;
@@ -24,16 +26,7 @@ import java.lang.annotation.Target;
 
 /**
  * Marks the field to check it's value for existence in a database.
- * Specify HQL query in a parameter with one placeholder for the actual field value.
- * Validation succeds if result set returned is not empty.
- *
- * <p>For exmaple:
- *
- * <p><code>@Exists(hql = "from User user where user.email = ?", message = "{email.unknown}")
- * private String email<code/>
- *
- * <p>This snippet will pass the validation if and only if there is record with email value
- * equal to the one sprecified in varialbe.
+ * You should specify an Entity and a field to search for value in.
  *
  * <p>Works only for sting variables as for now.
  *
@@ -56,12 +49,17 @@ public @interface Exists {
     Class<?>[] groups() default {};
 
     /**
-     * Payload, no used here
+     * Payload, not used here
      */
     Class<? extends Payload>[] payload() default {};
 
     /**
-     * Query to executed, must contain one placeholder for field value
+     * Entity to be verified
      */
-    String hql();
+    Class<? extends Entity> entity();
+
+    /**
+     * Field to be checked
+     */
+    String field();
 }

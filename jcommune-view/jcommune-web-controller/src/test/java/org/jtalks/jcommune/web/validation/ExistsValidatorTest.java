@@ -14,7 +14,9 @@
  */
 package org.jtalks.jcommune.web.validation;
 
+import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.dao.ValidatorDao;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -43,14 +45,14 @@ public class ExistsValidatorTest {
 
     @Test
     public void testValueExists() {
-        when(dao.isResultSetEmpty(anyString(), anyString())).thenReturn(true);
+        when(dao.isResultSetEmpty(Matchers.<Class<Entity>>any(), anyString(), anyString())).thenReturn(true);
 
         assertFalse(validator.isValid("value", null));
     }
 
     @Test
     public void testValueDoesntExist() {
-        when(dao.isResultSetEmpty(anyString(), anyString())).thenReturn(false);
+        when(dao.isResultSetEmpty(Matchers.<Class<Entity>>any(), anyString(), anyString())).thenReturn(false);
 
         assertTrue(validator.isValid("value", null));
     }

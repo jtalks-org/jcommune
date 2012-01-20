@@ -14,17 +14,12 @@
  */
 package org.jtalks.jcommune.web.validation;
 
+import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.dao.ValidatorDao;
+import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import javax.validation.Payload;
-
-import java.lang.annotation.Annotation;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
@@ -49,14 +44,14 @@ public class UniqueValidatorTest {
 
     @Test
     public void testValueExists() {
-        when(dao.isResultSetEmpty(anyString(), anyString())).thenReturn(true);
+        when(dao.isResultSetEmpty(Matchers.<Class<Entity>>any(), anyString(), anyString())).thenReturn(true);
 
         assertTrue(validator.isValid("value", null));
     }
 
     @Test
     public void testValueDoesntExist() {
-        when(dao.isResultSetEmpty(anyString(), anyString())).thenReturn(false);
+        when(dao.isResultSetEmpty(Matchers.<Class<Entity>>any(), anyString(), anyString())).thenReturn(false);
 
         assertFalse(validator.isValid("value", null));
     }

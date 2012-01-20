@@ -143,7 +143,7 @@ public class PrivateMessageControllerTest {
     }
 
     @Test
-    public void sendMessageWithErrors() {
+    public void sendMessageWithErrors() throws NotFoundException {
         PrivateMessageDto dto = getPrivateMessageDto();
         BeanPropertyBindingResult resultWithErrors = mock(BeanPropertyBindingResult.class);
         when(resultWithErrors.hasErrors()).thenReturn(true);
@@ -153,16 +153,13 @@ public class PrivateMessageControllerTest {
         assertEquals(view, "pm/pmForm");
     }
 
-    @Test
+    @Test(expectedExceptions = NotFoundException.class)
     public void sendMessageWithWrongUser() throws NotFoundException {
         PrivateMessageDto dto = getPrivateMessageDto();
         doThrow(new NotFoundException()).when(pmService).sendMessage(dto.getTitle(), dto.getBody(), dto.getRecipient());
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
 
-        String view = controller.sendMessage(dto, bindingResult);
-
-        assertEquals(view, "pm/pmForm");
-        verify(pmService).sendMessage(dto.getTitle(), dto.getBody(), dto.getRecipient());
+        controller.sendMessage(dto, bindingResult);
     }
 
     @Test
@@ -315,18 +312,14 @@ public class PrivateMessageControllerTest {
         verify(pmService, never()).saveDraft(anyLong(), anyString(), anyString(), anyString());
     }
 
-    @Test
+    @Test(expectedExceptions = NotFoundException.class)
     public void saveDraftWithWrongUser() throws NotFoundException {
         PrivateMessageDto dto = getPrivateMessageDto();
         doThrow(new NotFoundException()).when(pmService)
                 .saveDraft(dto.getId(), dto.getTitle(), dto.getBody(), dto.getRecipient());
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
 
-        String view = controller.saveDraft(dto, bindingResult);
-
-        assertEquals(view, "pm/pmForm");
-        assertEquals(bindingResult.getErrorCount(), 1);
-        verify(pmService).saveDraft(dto.getId(), dto.getTitle(), dto.getBody(), dto.getRecipient());
+        controller.saveDraft(dto, bindingResult);
     }
 
     private PrivateMessageDto getPrivateMessageDto() {

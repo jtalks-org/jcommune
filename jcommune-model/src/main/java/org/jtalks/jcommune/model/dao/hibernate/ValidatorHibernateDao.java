@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.SessionFactory;
+import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.dao.ValidatorDao;
 
 /**
@@ -24,6 +25,8 @@ import org.jtalks.jcommune.model.dao.ValidatorDao;
  * @author Evgeniy Naumenko
  */
 public class ValidatorHibernateDao implements ValidatorDao<String> {
+
+    private static final String QUERY_TEMPLATE = "from %s p where p.%s = ?";
 
     private SessionFactory sessionFactory;
 
@@ -38,7 +41,8 @@ public class ValidatorHibernateDao implements ValidatorDao<String> {
      * {@inheritDoc}
      */
     @Override
-    public boolean isResultSetEmpty(String hql, String param) {
+    public boolean isResultSetEmpty(Class<? extends Entity> entity, String field, String param) {
+        String hql = String.format(QUERY_TEMPLATE, entity.getSimpleName(), field);
         return sessionFactory
                 .getCurrentSession()
                 .createQuery(hql)
