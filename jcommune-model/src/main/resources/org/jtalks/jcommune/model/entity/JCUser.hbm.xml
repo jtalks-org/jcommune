@@ -18,7 +18,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<hibernate-mapping>
+<hibernate-mapping package="org.jtalks.jcommune.model.entity">
     <class name="org.jtalks.jcommune.model.entity.JCUser" table="USERS">
         <cache usage="nonstrict-read-write"/>
         <id column="ID" name="id" unsaved-value="0">
@@ -37,6 +37,10 @@
         <property name="avatar" lazy="true">
             <column name="AVATAR" sql-type="blob"/>
         </property>
+        <set name="contacts" cascade="all-delete-orphan">
+            <key column="USER_ID" foreign-key="FK_USER"/>
+            <one-to-many class="UserContact"/>
+        </set>
         <join table="JC_USER_DETAILS">
             <key column="USER_ID"/>
             <property column="SIGNATURE" name="signature"/>

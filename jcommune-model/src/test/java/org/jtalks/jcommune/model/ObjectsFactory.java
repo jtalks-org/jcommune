@@ -19,6 +19,7 @@ import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.model.entity.JCUser;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -45,6 +46,7 @@ public final class ObjectsFactory {
         JCUser newUser = new JCUser(username, email, "password");
         newUser.setFirstName("first name");
         newUser.setLastName("last name");
+        newUser.setContacts(new HashSet<UserContact>());
         return newUser;
     }
 
