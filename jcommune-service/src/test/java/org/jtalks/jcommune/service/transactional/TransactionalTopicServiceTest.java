@@ -60,7 +60,7 @@ public class TransactionalTopicServiceTest {
     final String TOPIC_TITLE = "topic title";
     final String BRANCH_NAME = "branch name";
     private static final String USERNAME = "username";
-    private JCUser user = new JCUser(USERNAME, "email@mail.com", "password");
+    private JCUser user;
     final String ANSWER_BODY = "Test Answer Body";
 
     private TopicService topicService;
@@ -84,6 +84,7 @@ public class TransactionalTopicServiceTest {
         initMocks(this);
         topicService = new TransactionalTopicService(topicDao, securityService,
                 branchService, branchDao, notificationService);
+        user = new JCUser(USERNAME, "email@mail.com", "password");
     }
 
     @Test
@@ -121,6 +122,8 @@ public class TransactionalTopicServiceTest {
 
         assertEquals(createdPost.getPostContent(), ANSWER_BODY);
         assertEquals(createdPost.getUserCreated(), user);
+        assertEquals(user.getPostCount(), 1);
+        
         verify(securityService).getCurrentUser();
         verify(topicDao).get(TOPIC_ID);
         verify(securityService).grantToCurrentUser();
@@ -152,6 +155,7 @@ public class TransactionalTopicServiceTest {
         assertEquals(createdTopic.getBranch(), branch);
         assertEquals(createdPost.getUserCreated(), user);
         assertEquals(createdPost.getPostContent(), ANSWER_BODY);
+
         verify(securityService).getCurrentUser();
         verify(branchDao).update(branch);
         verify(branchService).get(BRANCH_ID);
@@ -305,5 +309,21 @@ public class TransactionalTopicServiceTest {
         when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
         topicService.updateTopic(TOPIC_ID, newTitle, newBody, newWeight, newSticked, newAnnouncement);
+    }
+
+    @Test
+    public void testDeleteTopicUserPostCount() throws NotFoundException {
+        Branch branch = new Branch(BRANCH_NAME);
+        when(securityService.getCurrentUser()).thenReturn(user);
+        when(branchService.get(BRANCH_ID)).thenReturn(branch);
+        when(securityService.grantToCurrentUser()).thenReturn(aclBuilder);
+
+        Topic topic = topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, BRANCH_ID);
+        when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
+        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
+
+        assertEquals(user.getPostCount(), 1);
+        topicService.deleteTopic(TOPIC_ID);
+        assertEquals(user.getPostCount(), 0);
     }
 }

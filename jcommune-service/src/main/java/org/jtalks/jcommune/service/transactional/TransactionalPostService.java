@@ -82,6 +82,8 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
             "hasPermission(#postId, 'org.jtalks.jcommune.model.entity.Post', delete)")
     public void deletePost(long postId) throws NotFoundException {
         Post post = get(postId);
+        JCUser user = post.getUserCreated();
+        user.setPostCount(user.getPostCount() - 1);
         Topic topic = post.getTopic();
         topic.removePost(post);
 

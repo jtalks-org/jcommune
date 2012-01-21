@@ -108,7 +108,7 @@
                 <div class="user_misc_info">
                     <spring:message code="label.topic.registered"/>
                     <jtalks:format value="${post.userCreated.registrationDate}"/> <br/>
-                    <spring:message code="label.topic.message_count"/> 661 <br/>
+                    <spring:message code="label.topic.message_count"/> <c:out value="${post.userCreated.postCount}"/> <br/>
                     <c:if test="${post.userCreated.location != null}">
                         <spring:message code="label.topic.from_whence"/> ${post.userCreated.location}
                     </c:if>

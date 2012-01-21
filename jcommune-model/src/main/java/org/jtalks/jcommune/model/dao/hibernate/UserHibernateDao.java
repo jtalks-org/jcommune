@@ -37,9 +37,6 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser> 
                 .createQuery("from JCUser u where u.username = ?")
                 .setCacheable(true).setString(0, username)
                 .uniqueResult();
-        if (user != null) {
-            user.setUserPostCount(getCountPostOfUser(user));
-        }
         return user;
     }
 
@@ -63,22 +60,5 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser> 
                 .setCacheable(true)
                 .setString(0, email)
                 .uniqueResult();
-    }
-
-    /**
-     * Counts post for the user passed.
-     * <p/>
-     * We've tried to apply formula property instead of that, but
-     * it is affected by l2cahce showing old results
-     *
-     * @param userCreated user created of post
-     * @return count posts of user
-     */
-    private int getCountPostOfUser(JCUser userCreated) {
-        return ((Number) getSession().getNamedQuery("getCountPostOfUser")
-                .setCacheable(true)
-                .setEntity("userCreated", userCreated)
-                .uniqueResult())
-                .intValue();
     }
 }
