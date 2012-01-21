@@ -18,4 +18,13 @@ $(document).ready(function() {
     document.cookie = "GMT=" + new Date().getTimezoneOffset() + "; path=/";
     // Initializes image previewing
     $("a[rel^='prettyPhoto']").prettyPhoto({social_tools:false});
+    // popups for individual post links
+    $("a.postLink").each(function() {
+        var href = window.location.toString().split("#", 1)[0];
+        $(this).click(function(e){
+            e.preventDefault();
+            $.prompt('<nobr>' + href + '#' + $(this)[0].rel + '</nobr>',
+                {buttons: {}, persistent: false});
+        })
+    })
 });

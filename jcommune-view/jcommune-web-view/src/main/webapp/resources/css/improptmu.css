@@ -1,0 +1,269 @@
+/*
+------------------------------
+	Impromptu's
+------------------------------
+*/
+.jqifade{
+	position: absolute;
+	background-color: #aaaaaa;
+}
+div.jqi{
+	width: 400px;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	position: absolute;
+	background-color: #ffffff;
+	font-size: 11px;
+	text-align: left;
+	border: solid 1px #eeeeee;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	padding: 7px;
+}
+div.jqi .jqicontainer{
+	font-weight: bold;
+}
+div.jqi .jqiclose{
+	position: absolute;
+	top: 4px; right: -2px;
+	width: 18px;
+	cursor: default;
+	color: #bbbbbb;
+	font-weight: bold;
+}
+div.jqi .jqimessage{
+	padding: 10px;
+	line-height: 20px;
+	color: #444444;
+}
+div.jqi .jqibuttons{
+	text-align: right;
+	padding: 5px 0 5px 0;
+	border: solid 1px #eeeeee;
+	background-color: #f4f4f4;
+}
+div.jqi button{
+	padding: 3px 10px;
+	margin: 0 10px;
+	background-color: #2F6073;
+	border: solid 1px #f4f4f4;
+	color: #ffffff;
+	font-weight: bold;
+	font-size: 12px;
+}
+div.jqi button:hover{
+	background-color: #728A8C;
+}
+div.jqi button.jqidefaultbutton{
+	/*background-color: #8DC05B;*/
+	background-color: #BF5E26;
+}
+.jqiwarning .jqi .jqibuttons{
+	background-color: #BF5E26;
+}
+
+/*
+------------------------------
+	impromptu
+------------------------------
+*/
+.impromptuwarning .impromptu{ background-color: #aaaaaa; }
+.impromptufade{
+	position: absolute;
+	background-color: #ffffff;
+}
+div.impromptu{
+    position: absolute;
+	background-color: #cccccc;
+	padding: 10px;
+	width: 300px;
+	text-align: left;
+}
+div.impromptu .impromptuclose{
+    float: right;
+    margin: -35px -10px 0 0;
+    cursor: pointer;
+    color: #213e80;
+}
+div.impromptu .impromptucontainer{
+	background-color: #213e80;
+	padding: 5px;
+	color: #ffffff;
+	font-weight: bold;
+}
+div.impromptu .impromptumessage{
+	background-color: #415ea0;
+	padding: 10px;
+}
+div.impromptu .impromptubuttons{
+	text-align: center;
+	padding: 5px 0 0 0;
+}
+div.impromptu button{
+	padding: 3px 10px 3px 10px;
+	margin: 0 10px;
+}
+
+/*
+------------------------------
+	columns ex
+------------------------------
+*/
+.colsJqifadewarning .colsJqi{ background-color: #b0be96; }
+.colsJqifade{
+	position: absolute;
+	background-color: #ffffff;
+}
+div.colsJqi{
+    position: absolute;
+	background-color: #d0dEb6;
+	padding: 10px;
+	width: 400px;
+	text-align: left;
+}
+div.colsJqi .colsJqiclose{
+    float: right;
+    margin: -35px -10px 0 0;
+    cursor: pointer;
+    color: #bbbbbb;
+}
+div.colsJqi .colsJqicontainer{
+	background-color: #e0eEc6;
+	padding: 5px;
+	color: #ffffff;
+	font-weight: bold;
+	height: 160px;
+}
+div.colsJqi .colsJqimessage{
+	background-color: #c0cEa6;
+	padding: 10px;
+	width: 280px;
+	height: 140px;
+	float: left;
+}
+div.colsJqi .jqibuttons{
+	text-align: center;
+	padding: 5px 0 0 0;
+}
+div.colsJqi button{
+	background: url(../images/button_bg.jpg) top left repeat-x #ffffff;
+	border: solid #777777 1px;
+	font-size: 12px;
+	padding: 3px 10px 3px 10px;
+	margin: 5px 5px 5px 10px;
+	width: 75px;
+}
+div.colsJqi button:hover{
+	border: solid #aaaaaa 1px;
+}
+
+/*
+------------------------------
+	brown theme
+------------------------------
+*/
+.brownJqiwarning .brownJqi{ background-color: #cccccc; }
+.brownJqifade{
+	position: absolute;
+	background-color: #ffffff;
+}
+div.brownJqi{
+	position: absolute;
+	background-color: transparent;
+	padding: 10px;
+	width: 300px;
+	text-align: left;
+}
+div.brownJqi .brownJqiclose{
+    float: right;
+    margin: -20px 0 0 0;
+    cursor: pointer;
+    color: #777777;
+    font-size: 11px;
+}
+div.brownJqi .brownJqicontainer{
+	position: relative;
+	background-color: transparent;
+	border: solid 1px #5F5D5A;
+	color: #ffffff;
+	font-weight: bold;
+}
+div.brownJqi .brownJqimessage{
+	position: relative;
+	background-color: #F7F6F2;
+	border-top: solid 1px #C6B8AE;
+	border-bottom: solid 1px #C6B8AE;
+}
+div.brownJqi .brownJqimessage h3{
+	background: url(../images/brown_theme_gradient.jpg) top left repeat-x #ffffff;
+	margin: 0;
+	padding: 7px 0 7px 15px;
+	color: #4D4A47;
+}
+div.brownJqi .brownJqimessage p{
+	padding: 10px;
+	color: #777777;
+}
+div.brownJqi .brownJqimessage img.helpImg{
+	position: absolute;
+	bottom: -25px;
+	left: 10px;
+}
+div.brownJqi .brownJqibuttons{
+	text-align: right;
+}
+div.brownJqi button{
+	background: url(../images/brown_theme_gradient.jpg) top left repeat-x #ffffff;
+	border: solid #777777 1px;
+	font-size: 12px;
+	padding: 3px 10px 3px 10px;
+	margin: 5px 5px 5px 10px;
+}
+div.brownJqi button:hover{
+	border: solid #aaaaaa 1px;
+}
+
+/*
+*------------------------
+*   clean blue ex
+*------------------------
+*/
+.cleanbluewarning .cleanblue{ background-color: #acb4c4; }
+.cleanbluefade{ position: absolute; background-color: #aaaaaa; }
+div.cleanblue{ font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; position: absolute; background-color: #ffffff; width: 300px; font-size: 11px; text-align: left; border: solid 1px #213e80; }
+div.cleanblue .cleanbluecontainer{ background-color: #ffffff; border-top: solid 14px #213e80; padding: 5px; font-weight: bold; }
+div.cleanblue .cleanblueclose{ float: right; width: 18px; cursor: default; margin: -19px -12px 0 0; color: #ffffff; font-weight: bold; }
+div.cleanblue .cleanbluemessage{ padding: 10px; line-height: 20px; font-size: 11px; color: #333333; }
+div.cleanblue .cleanbluebuttons{ text-align: right; padding: 5px 0 5px 0; border: solid 1px #eeeeee; background-color: #f4f4f4; }
+div.cleanblue button{ padding: 3px 10px; margin: 0 10px; background-color: #314e90; border: solid 1px #f4f4f4; color: #ffffff; font-weight: bold; font-size: 12px; }
+div.cleanblue button:hover{ border: solid 1px #d4d4d4; }
+
+/*
+*------------------------
+*   Ext Blue Ex
+*------------------------
+*/
+.extbluewarning .extblue{ border:1px red solid; }
+.extbluefade{ position: absolute; background-color: #ffffff; }
+div.extblue{ border:1px #6289B6 solid; position: absolute; background-color: #CAD8EA; padding: 0; width: 300px; text-align: left; }
+div.extblue .extblueclose{ background-color: #CAD8EA; margin:2px -2px 0 0; cursor: pointer; color: red; text-align: right; }
+div.extblue .extbluecontainer{ background-color: #CAD8EA; padding: 0 5px 5px 5px; color: #000000; font:normal 11px Verdana; }
+div.extblue .extbluemessage{ background-color: #CAD8EA; padding: 0; margin:0 15px 15px 15px; }
+div.extblue .extbluebuttons{ text-align: center; padding: 0px 0 0 0; }
+div.extblue button{ padding: 1px 4px; margin: 0 10px; background-color:#cccccc; font-weight:normal; font-family:Verdana; font-size:10px; }
+
+/*
+*------------------------
+*   smooth Ex
+*------------------------
+*/
+.jqismoothfade{ position: absolute; background-color: #333333; }
+div.jqismooth{ width: 350px; font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; position: absolute; background-color: #ffffff; font-size: 11px; text-align: left; border: solid 3px #e2e8e6; -moz-border-radius: 10px; -webkit-border-radius: 10px; padding: 7px; }
+div.jqismooth .jqismoothcontainer{ font-weight: bold; }
+div.jqismooth .jqismoothclose{ position: absolute; top: 0; right: 0; width: 18px; cursor: default; text-align: center; padding: 2px 0 4px 0; color: #727876; font-weight: bold; background-color: #e2e8e6; -moz-border-radius-bottomLeft: 5px; -webkit-border-bottom-left-radius: 5px; border-left: solid 1px #e2e8e6; border-bottom: solid 1px #e2e8e6;  }
+div.jqismooth .jqismoothmessage{ padding: 10px; line-height: 20px; color: #444444; }
+div.jqismooth .jqismoothbuttons{ text-align: right; padding: 5px 0 5px 0; border: solid 1px #e2e8e6; background-color: #f2f8f6; }
+div.jqismooth button{ padding: 3px 10px; margin: 0 10px; background-color: #2F6073; border: solid 1px #f4f4f4; color: #ffffff; font-weight: bold; font-size: 12px; }
+div.jqismooth button:hover{ background-color: #728A8C; }
+div.jqismooth button.jqismoothdefaultbutton{ background-color: #BF5E26; }
+.jqismoothwarning .jqismooth .jqismoothbuttons{ background-color: #BF5E26; }

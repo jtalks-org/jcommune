@@ -50,7 +50,7 @@
 </span>
 
 <br>
-<jtalks:display uri="${topicId}" pagination="${pag}" numberLink="3" list="${posts}">
+<jtalks:display uri="${topicId}" pagination="${pag}" list="${posts}">
 <nobr>
             <span class="nav_top">
                 </jtalks:display>
@@ -92,7 +92,7 @@
     </div>
 </div>
 <ul class="forum_table">
-    <jtalks:display uri="${topicId}" pagination="${pag}" numberLink="3" list="${posts}">
+    <jtalks:display uri="${topicId}" pagination="${pag}" list="${posts}">
     <c:forEach var="post" items="${list}" varStatus="i">
         <li class="forum_row">
             <div class="forum_userinfo">
@@ -106,7 +106,8 @@
                 <br/>
 
                 <div class="user_misc_info">
-                    <spring:message code="label.topic.registered"/> ${post.userCreated.registrationDate} <br/>
+                    <spring:message code="label.topic.registered"/>
+                    <jtalks:format value="${post.userCreated.registrationDate}"/> <br/>
                     <spring:message code="label.topic.message_count"/> 661 <br/>
                     <c:if test="${post.userCreated.location != null}">
                         <spring:message code="label.topic.from_whence"/> ${post.userCreated.location}
@@ -116,7 +117,7 @@
             <div class="forum_message_cell">
                 <div class="post_details">
                     <a class="button" href="#">&#8657;</a>
-                    <a class="button" href="javascript:createAndPromptPostLink(${post.id})">
+                    <a class="button postLink" rel="${post.id}">
                         <spring:message code="label.link"/>
                     </a>
                     <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
