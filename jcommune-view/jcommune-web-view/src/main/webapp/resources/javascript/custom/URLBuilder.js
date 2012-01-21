@@ -34,14 +34,3 @@ function getLanguageLink(lang) {
     }
     return href + lang;
 }
-
-/**
- * Prompts message with a constant post link to the user.
- * Unfortunately direct clipboard copying is not all-browsers compatible.
- *
- * @param postId unique post identifier
- */
-function createAndPromptPostLink(postId) {
-    var href = window.location.toString().split("#", 1)[0];
-    prompt("Link to copy", href + "#" + postId);
-}

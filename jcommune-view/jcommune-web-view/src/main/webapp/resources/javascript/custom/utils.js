@@ -25,10 +25,4 @@ function getSelectedText(postId) {
     return txt;
 }
 
-function confirmAndDelete(id, message){
-    if (confirm(message)){
-        document.getElementById('delete' + id).submit();
-    }
-}
-
 

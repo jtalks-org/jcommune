@@ -21,10 +21,29 @@ $(document).ready(function() {
     // popups for individual post links
     $("a.postLink").each(function() {
         var href = window.location.toString().split("#", 1)[0];
-        $(this).click(function(e){
+        $(this).click(function(e) {
             e.preventDefault();
-            $.prompt('<nobr>' + href + '#' + $(this)[0].rel + '</nobr>',
+            $.prompt(href + '#' + $(this)[0].rel,
                 {buttons: {}, persistent: false});
+        })
+    })
+    // popups to confirm post/topic deletion
+    $("a.delete").each(function() {
+        $(this).click(function(e) {
+            e.preventDefault();
+            deletePath = $(this)[0].href;
+            $.prompt($(this)[0].rel,
+                {buttons: { Ok: true, Cancel: false },
+                    persistent: false,
+                    submit: function(confirmed) {
+                        if (confirmed) {
+                            var deleteForm = $('#deleteForm')[0];
+                            deleteForm.action = deletePath;
+                            deleteForm.submit();
+                        }
+                    }
+                }
+            );
         })
     })
 });

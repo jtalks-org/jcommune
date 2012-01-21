@@ -133,15 +133,10 @@
                                 <c:set var="confirm_message" value="label.deletePostConfirmation"/>
                             </c:otherwise>
                         </c:choose>
-                        <form:form id="delete${post.id}" action="${delete_url}" method="DELETE"
-                                   onsubmit="return confirm('Are you sure you want to delete?')? true: false;"/>
-                        <a class="button"
-                           href="javascript:confirmAndDelete(${post.id}, '<spring:message code="${confirm_message}"/>')">
+                        <a class="button delete" href="#" rel="<spring:message code="${confirm_message}"/>">
                             <spring:message code="label.delete"/>
                         </a>
                     </sec:accesscontrollist>
-
-
                     <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
                         <c:choose>
                             <c:when test="${pag.page == 1 && i.index == 0}">
@@ -244,6 +239,9 @@
         </a>
         &nbsp;&nbsp;
     </c:forEach>
+    <%--Fake form to delete posts and topics.
+    Without it we're likely to get lots of problems simulating HTTP DELETE via JS in a String fashion  --%>
+    <form:form id="deleteForm" method="DELETE"/>
 </div>
 </div>
 <div class="footer_buffer"></div>
