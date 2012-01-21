@@ -85,6 +85,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
             throw new IllegalStateException(msg);
         }
 
+        currentUser.setPostCount(currentUser.getPostCount() + 1);
         Topic topic = get(topicId);
         Post answer = new Post(currentUser, answerBody);
         topic.addPost(answer);
@@ -110,7 +111,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
             logger.error(msg);
             throw new IllegalStateException(msg);
         }
-
+        
+        currentUser.setPostCount(currentUser.getPostCount() + 1);
         Branch branch = branchService.get(branchId);
         Topic topic = new Topic(currentUser, topicName);
         Post first = new Post(currentUser, bodyText);
@@ -190,6 +192,12 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
             "hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', delete)")
     public Branch deleteTopic(long topicId) throws NotFoundException {
         Topic topic = get(topicId);
+        
+        for (Post post: topic.getPosts()) {
+            JCUser user = post.getUserCreated();
+            user.setPostCount(user.getPostCount() - 1);
+        }
+        
         Branch branch = topic.getBranch();
         branch.deleteTopic(topic);
         branchDao.update(branch);

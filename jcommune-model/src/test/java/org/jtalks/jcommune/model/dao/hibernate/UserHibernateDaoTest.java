@@ -187,22 +187,9 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
         JCUser user = dao.getByEncodedUsername("username");
 
-        assertEquals(user.getUserPostCount(), 0);
+        assertEquals(user.getPostCount(), 0);
     }
 
-    @Test
-    public void testPostsOfUserCount() {
-        JCUser user = ObjectsFactory.getDefaultUser();
-        Post post = new Post(user, "first");
-        List<Post> posts = new ArrayList<Post>();
-        posts.add(post);
-        session.save(user);
-        session.save(post);
-
-        JCUser userForDao = dao.getByUsername("username");
-
-        assertEquals(userForDao.getUserPostCount(), 1);
-    }
 
     private int getCount() {
         return ((Number) session.createQuery("select count(*) from JCUser").uniqueResult()).intValue();

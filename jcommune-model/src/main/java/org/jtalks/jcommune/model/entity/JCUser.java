@@ -31,7 +31,7 @@ import java.util.Set;
 public class JCUser extends User {
 
     private String signature;
-    private int userPostCount;
+    private int postCount;
     private Language language = Language.ENGLISH;
     private int pageSize = DEFAULT_PAGE_SIZE;
     private String location;
@@ -91,16 +91,16 @@ public class JCUser extends User {
     /**
      * @return count post this user
      */
-    public int getUserPostCount() {
-        return this.userPostCount;
+    public int getPostCount() {
+        return this.postCount;
 
     }
 
     /**
-     * @param userPostCount count posts this user to set
+     * @param postCount count posts this user to set
      */
-    public void setUserPostCount(int userPostCount) {
-        this.userPostCount = userPostCount;
+    public void setPostCount(int postCount) {
+        this.postCount = postCount;
     }
 
     /**
