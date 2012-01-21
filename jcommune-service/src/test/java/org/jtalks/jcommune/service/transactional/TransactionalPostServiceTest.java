@@ -124,11 +124,13 @@ public class TransactionalPostServiceTest {
         postForDelete.setId(POST_ID);
         topic.addPost(post);
         topic.addPost(postForDelete);
+        user.setPostCount(2);
         when(postDao.isExist(POST_ID)).thenReturn(true);
         when(postDao.get(POST_ID)).thenReturn(postForDelete);
 
         postService.deletePost(POST_ID);
 
+        assertEquals(user.getPostCount(), 1);
         verify(postDao).get(POST_ID);
         verify(topicDao).update(topic);
         verify(securityService).deleteFromAcl(postForDelete);
