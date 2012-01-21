@@ -155,6 +155,7 @@ public class TransactionalTopicServiceTest {
         assertEquals(createdTopic.getBranch(), branch);
         assertEquals(createdPost.getUserCreated(), user);
         assertEquals(createdPost.getPostContent(), ANSWER_BODY);
+        assertEquals(user.getPostCount(), 1);
 
         verify(securityService).getCurrentUser();
         verify(branchDao).update(branch);
@@ -218,6 +219,9 @@ public class TransactionalTopicServiceTest {
     @Test
     public void testDeleteTopic() throws NotFoundException {
         Topic topic = new Topic(user, "title");
+        Post firstPost = new Post(user, ANSWER_BODY);
+        topic.addPost(firstPost);
+        user.setPostCount(1);
         Branch branch = new Branch(BRANCH_NAME);
         branch.addTopic(topic);
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
@@ -227,6 +231,7 @@ public class TransactionalTopicServiceTest {
 
         assertEquals(branchFromWhichTopicDeleted, branch);
         assertEquals(branch.getTopicCount(), 0);
+        assertEquals(user.getPostCount(), 0);
         verify(branchDao).update(branch);
         verify(securityService).deleteFromAcl(Topic.class, TOPIC_ID);
         verify(notificationService).branchChanged(branch);
@@ -309,21 +314,5 @@ public class TransactionalTopicServiceTest {
         when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
         topicService.updateTopic(TOPIC_ID, newTitle, newBody, newWeight, newSticked, newAnnouncement);
-    }
-
-    @Test
-    public void testDeleteTopicUserPostCount() throws NotFoundException {
-        Branch branch = new Branch(BRANCH_NAME);
-        when(securityService.getCurrentUser()).thenReturn(user);
-        when(branchService.get(BRANCH_ID)).thenReturn(branch);
-        when(securityService.grantToCurrentUser()).thenReturn(aclBuilder);
-
-        Topic topic = topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, BRANCH_ID);
-        when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
-        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
-
-        assertEquals(user.getPostCount(), 1);
-        topicService.deleteTopic(TOPIC_ID);
-        assertEquals(user.getPostCount(), 0);
     }
 }
