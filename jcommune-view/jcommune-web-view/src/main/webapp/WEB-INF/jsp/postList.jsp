@@ -133,7 +133,7 @@
                                 <c:set var="confirm_message" value="label.deletePostConfirmation"/>
                             </c:otherwise>
                         </c:choose>
-                        <a class="button delete" href="#" rel="<spring:message code="${confirm_message}"/>">
+                        <a class="button delete" href="${delete_url}" rel="<spring:message code="${confirm_message}"/>">
                             <spring:message code="label.delete"/>
                         </a>
                     </sec:accesscontrollist>
