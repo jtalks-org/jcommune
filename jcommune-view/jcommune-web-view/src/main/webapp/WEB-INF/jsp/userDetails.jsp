@@ -96,7 +96,7 @@
                 </c:if>
                 <li class="forum_row">
                     <label><spring:message code="label.postcount"/></label>
-                    <span><c:out value="${user.userPostCount}"/></span>
+                    <span><c:out value="${user.postCount}"/></span>
                 </li>
                 <c:forEach var="contact" items="${user.contacts}">
                     <li class="forum_row">
