@@ -27,9 +27,7 @@
 <c:set var="authenticated" value="${false}"/>
 <div class="wrap topic_page">
     <jsp:include page="../template/topLine.jsp"/>
-    <h1><a href="${pageContext.request.contextPath}">
-        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
-    </a></h1>
+    <jsp:include page="../template/logo.jsp"/>
 
     <div class="all_forums">
         <h2 class="heading"><spring:message code="label.postListOfUser"/> ${user.username}</h2>

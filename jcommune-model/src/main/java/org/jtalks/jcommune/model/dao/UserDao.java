@@ -38,15 +38,6 @@ public interface UserDao extends ParentRepository<JCUser> {
     JCUser getByUsername(String username);
 
     /**
-     * Get {@link org.jtalks.jcommune.model.entity.JCUser} with corresponding encodedUsername.
-     *
-     * @param encodedUsername encoded name of requested user.
-     * @return {@link org.jtalks.jcommune.model.entity.JCUser} with given encodedUsername.
-     * @see org.jtalks.jcommune.model.entity.JCUser
-     */
-    JCUser getByEncodedUsername(String encodedUsername);
-
-    /**
      * Get {@link org.jtalks.jcommune.model.entity.JCUser} with e-mail given.
      *
      * @param email e-mail address set in user profile.

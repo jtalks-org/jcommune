@@ -98,25 +98,6 @@ public class TransactionalUserServiceTest {
         userService.getByUsername(USERNAME);
     }
 
-    @Test
-    public void testGetByEncodedUsername() throws Exception {
-        JCUser user = getUser(USERNAME);
-        when(userDao.getByEncodedUsername(ENCODED_USERNAME)).thenReturn(user);
-
-        JCUser actualUser = userService.getByEncodedUsername(ENCODED_USERNAME);
-
-        assertEquals(actualUser, user, "Users are not equal");
-        verify(userDao).getByEncodedUsername(anyString());
-    }
-
-    @Test(expectedExceptions = NotFoundException.class)
-    public void testGetByEncodedUsernameNotFound() throws Exception {
-        when(userDao.getByEncodedUsername(ENCODED_USERNAME)).thenReturn(null);
-
-        userService.getByEncodedUsername(ENCODED_USERNAME);
-
-        verify(userDao).getByEncodedUsername(anyString());
-    }
 
     @Test
     public void testRegisterUser() throws Exception {

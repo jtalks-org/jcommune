@@ -26,9 +26,7 @@
 <body>
 <div class="wrap branch_page">
     <jsp:include page="../template/topLine.jsp"/>
-    <h1><a href="${pageContext.request.contextPath}">
-        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
-    </a></h1>
+    <jsp:include page="../template/logo.jsp"/>
 
     <div class="all_forums">
         <h2><a class="heading" href="#"><spring:message code="label.messagesWithoutAnswers"/></a></h2>

@@ -25,9 +25,7 @@
 <body>
 <div class="wrap login_page">
     <jsp:include page="../template/topLine.jsp"/>
-    <h1><a href="${pageContext.request.contextPath}">
-        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
-    </a></h1>
+    <jsp:include page="../template/logo.jsp"/>
 
     <form action='<c:url value="/j_spring_security_check"/>' method="POST" name="form" id="form">
         <div class="all_forums">

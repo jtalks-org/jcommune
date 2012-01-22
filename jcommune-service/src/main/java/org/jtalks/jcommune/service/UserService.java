@@ -39,16 +39,6 @@ public interface UserService extends EntityService<JCUser> {
     JCUser getByUsername(String username) throws NotFoundException;
 
     /**
-     * Get {@link org.jtalks.jcommune.model.entity.JCUser} by encodedUsername.
-     *
-     * @param encodedUsername encodedUsername of User
-     * @return {@link org.jtalks.jcommune.model.entity.JCUser} with given encodedUsername
-     * @throws NotFoundException if user not found
-     * @see org.jtalks.jcommune.model.entity.JCUser
-     */
-    JCUser getByEncodedUsername(String encodedUsername) throws NotFoundException;
-
-    /**
      * Try to register {@link org.jtalks.jcommune.model.entity.JCUser} with given features.
      *
      * @param user user for register

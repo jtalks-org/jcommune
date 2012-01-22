@@ -14,40 +14,37 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.jtalks.common.model.dao.hibernate.AbstractHibernateParentRepository;
-import org.jtalks.jcommune.model.dao.UserDao;
-import org.jtalks.jcommune.model.entity.JCUser;
+import org.hibernate.SessionFactory;
+import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
+import org.jtalks.jcommune.model.dao.UserContactsDao;
+import org.jtalks.jcommune.model.entity.UserContactType;
+
+import java.util.List;
 
 /**
- * Hibernate implementation of UserDao.
- * Mainly intended for queering users from DB based on different criteria.
  *
- * @author Pavel Vervenko
+ *
  * @author Evgeniy Naumenko
- * @author Kirill Afonin
  */
-public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser> implements UserDao {
+public class UserContactsHibernateDao implements UserContactsDao {
+
+    private SessionFactory factory;
 
     /**
-     * {@inheritDoc}
+     * @param factory to obtain current hibernate session
      */
-    @Override
-    public JCUser getByUsername(String username) {
-        JCUser user = (JCUser) getSession()
-                .createQuery("from JCUser u where u.username = ?")
-                .setCacheable(true).setString(0, username)
-                .uniqueResult();
-        return user;
+    public UserContactsHibernateDao(SessionFactory factory) {
+        this.factory = factory;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public JCUser getByEmail(String email) {
-        return (JCUser) getSession().createQuery("from JCUser u where u.email = ?")
+    public List<UserContactType> getAvailableContactTypes() {
+        return factory.getCurrentSession()
+                .createQuery("from UserContactType")
                 .setCacheable(true)
-                .setString(0, email)
-                .uniqueResult();
+                .list();
     }
 }

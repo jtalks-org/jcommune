@@ -28,9 +28,7 @@
 </head>
 <body>
 <div class="wrap branch_page">
-    <h1><a href="${pageContext.request.contextPath}">
-        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
-    </a></h1>
+    <jsp:include page="../template/logo.jsp"/>
     <jsp:include page="../template/topLine.jsp"/>
     <div class="all_forums">
         <h2><a class="heading" href="#"><c:out value="${branch.name}"/></a></h2>

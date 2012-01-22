@@ -26,9 +26,7 @@
 <div class="wrap userdetails_page">
     <sec:authentication property="principal.username" var="auth" scope="request"/>
     <jsp:include page="../template/topLine.jsp"/>
-    <h1><a href="${pageContext.request.contextPath}">
-        <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
-    </a></h1>
+    <jsp:include page="../template/logo.jsp"/>
 
     <div class="all_forums">
         <div id="userdetails">

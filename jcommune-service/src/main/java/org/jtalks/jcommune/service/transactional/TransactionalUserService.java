@@ -80,19 +80,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         return user;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public JCUser getByEncodedUsername(String encodedUsername) throws NotFoundException {
-        JCUser user = this.getDao().getByEncodedUsername(encodedUsername);
-        if (user == null) {
-            String msg = "JCUser " + encodedUsername + " not found.";
-            logger.info(msg);
-            throw new NotFoundException(msg);
-        }
-        return user;
-    }
 
     /**
      * {@inheritDoc}

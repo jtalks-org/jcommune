@@ -154,17 +154,6 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     }
 
     @Test
-    public void testGetByEncodedUsername() {
-        JCUser user = ObjectsFactory.getDefaultUser();
-        session.save(user);
-
-        JCUser result = dao.getByEncodedUsername(user.getEncodedUsername());
-
-        assertNotNull(result);
-        assertReflectionEquals(user, result);
-    }
-
-    @Test
     public void testGetByUsernameNotExist() {
         JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
@@ -185,7 +174,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     public void testNullPostsOfUserCount() {
         session.save(ObjectsFactory.getDefaultUser());
 
-        JCUser user = dao.getByEncodedUsername("username");
+        JCUser user = dao.getByUsername("username");
 
         assertEquals(user.getPostCount(), 0);
     }
