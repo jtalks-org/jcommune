@@ -27,7 +27,9 @@ import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
+import org.mockito.Mock;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -38,6 +40,7 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
 
@@ -47,41 +50,45 @@ import static org.testng.Assert.assertEquals;
  * @author Max Malakhov
  */
 public class TopicControllerTest {
-    public  long BRANCH_ID = 1L;
+    public long BRANCH_ID = 1L;
     private long TOPIC_ID = 1L;
     private int TOPIC_WEIGHT = 0;
-    
+
     private String TOPIC_CONTENT = "content here";
     private String TOPIC_THEME = "Topic theme";
 
     private boolean STICKED = false;
     private boolean ANNOUNCEMENT = false;
-    
+
     private JCUser user;
     private Branch branch;
-    
+
+    @Mock
     private TopicService topicService;
+    @Mock
     private BranchService branchService;
+    @Mock
     private SecurityService securityService;
-    private TopicController controller;
+    @Mock
     private BreadcrumbBuilder breadcrumbBuilder;
+    @Mock
     private ForumStatisticsProvider forumStatisticsProvider;
-    private LocationService locationServiceImpl;
+    @Mock
+    private LocationService locationService;
+    @Mock
+    private SessionRegistry registry;
+
+    private TopicController controller;
 
     @BeforeMethod
     public void initEnvironment() {
-        locationServiceImpl = mock(LocationService.class);
-        topicService = mock(TopicService.class);
-        branchService = mock(BranchService.class);
-        securityService = mock(SecurityService.class);
-        breadcrumbBuilder = mock(BreadcrumbBuilder.class);
-        forumStatisticsProvider = mock(ForumStatisticsProvider.class);
-        controller = new TopicController(topicService,branchService,
-                securityService, breadcrumbBuilder, locationServiceImpl);
+        initMocks(this);
+        controller = new TopicController(topicService, branchService,
+                securityService, breadcrumbBuilder, locationService, registry);
     }
 
     @BeforeMethod
-    public void prepareTestData(){
+    public void prepareTestData() {
         branch = new Branch("");
         branch.setId(BRANCH_ID);
         user = new JCUser("username", "email@mail.com", "password");
@@ -99,7 +106,7 @@ public class TopicControllerTest {
         Topic topic = new Topic(null, null);
         branch.addTopic(topic);
         when(topicService.get(anyLong())).thenReturn(topic);
-        
+
         ModelAndView actualMav = controller.deleteTopic(TOPIC_ID);
 
         assertViewName(actualMav, "redirect:/branches/" + BRANCH_ID);

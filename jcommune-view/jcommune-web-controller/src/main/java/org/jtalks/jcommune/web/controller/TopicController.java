@@ -28,6 +28,7 @@ import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -64,6 +65,7 @@ public class TopicController {
     private SecurityService securityService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private LocationService locationService;
+    private SessionRegistry sessionRegistry;
 
     /**
      * This method turns the trim binder on. Trim binder
@@ -82,6 +84,7 @@ public class TopicController {
      * @param topicService      the object which provides actions on {@link Topic} entity
      * @param branchService     the object which provides actions on  {@link Branch} entity
      * @param locationService   to track user location on forum (what page he is viewing now)
+     * @param sessionRegistry   to obtain list of users currently online
      * @param securityService   to determine the current user logged in
      * @param breadcrumbBuilder to create Breadcrumbs for pages
      */
@@ -90,12 +93,14 @@ public class TopicController {
                            BranchService branchService,
                            SecurityService securityService,
                            BreadcrumbBuilder breadcrumbBuilder,
-                           LocationService locationService) {
+                           LocationService locationService,
+                           SessionRegistry sessionRegistry) {
         this.topicService = topicService;
         this.branchService = branchService;
         this.securityService = securityService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.locationService = locationService;
+        this.sessionRegistry = sessionRegistry;
     }
 
     /**
@@ -177,6 +182,7 @@ public class TopicController {
         //todo: optimize this binding
         return new ModelAndView("postList")
                 .addObject("viewList", locationService.getUsersViewing(topic))
+                .addObject("usersOnline", sessionRegistry.getAllPrincipals())
                 .addObject("posts", posts)
                 .addObject("topic", topic)
                 .addObject("pag", pag)

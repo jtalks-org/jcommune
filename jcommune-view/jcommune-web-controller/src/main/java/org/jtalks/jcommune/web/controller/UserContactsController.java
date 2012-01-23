@@ -19,6 +19,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,6 +41,7 @@ public class UserContactsController {
      * @param securityService
      * @param dao
      */
+    @Autowired
     public UserContactsController(SecurityService securityService, UserContactsDao dao) {
         this.securityService = securityService;
         this.dao = dao;
