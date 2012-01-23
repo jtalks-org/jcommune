@@ -364,6 +364,7 @@ a.last_message_user {
 }
 
 .forum_message_cell_text {
+	padding-top: 5px;
     padding-left: 10px;
     word-wrap: break-word;
     line-height: 1.2;
