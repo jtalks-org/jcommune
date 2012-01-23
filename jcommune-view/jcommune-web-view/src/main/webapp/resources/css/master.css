@@ -450,6 +450,10 @@ a.last_message_user {
     border-left: 1px solid grey;
 }
 
+.userdetails_page li span input {
+	max-width: 95%;
+}
+
 /* Answer Form & Buttons */
 .forum_header_menu {
     display: table-cell;
