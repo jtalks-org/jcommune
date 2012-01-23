@@ -24,13 +24,18 @@ import org.jtalks.common.model.entity.Entity;
 public class UserContact extends Entity {
 
     private String value;
-    private JCUser contactOfUser;
+    private JCUser owner;
     private UserContactType type;
 
     /**
      * Only for hibernate usage.
      */
-    public UserContact() {
+    protected UserContact() {
+    }
+
+    public UserContact(String value, UserContactType type) {
+        this.value = value;
+        this.type = type;
     }
 
     /**
@@ -50,16 +55,15 @@ public class UserContact extends Entity {
     /**
      * @return user who owns the contact
      */
-    public JCUser getContactOfUser() {
-        return contactOfUser;
+    public JCUser getOwner() {
+        return owner;
     }
 
     /**
-     *
-     * @param contactOfUser  user who owns the contact
+     * @param owner user who owns the contact
      */
-    public void setContactOfUser(JCUser contactOfUser) {
-        this.contactOfUser = contactOfUser;
+    public void setOwner(JCUser owner) {
+        this.owner = owner;
     }
 
     /**

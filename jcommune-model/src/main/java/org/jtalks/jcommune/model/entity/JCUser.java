@@ -17,6 +17,7 @@ package org.jtalks.jcommune.model.entity;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.User;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -47,7 +48,7 @@ public class JCUser extends User {
     public static final int DEFAULT_PAGE_SIZE = 50;
 
     private static final long serialVersionUID = 19981017L;
-    private Set<UserContact> contacts;
+    private Set<UserContact> contacts = new HashSet<UserContact>();
 
     /**
      * Only for hibernate usage.
@@ -72,6 +73,23 @@ public class JCUser extends User {
      */
     public void updateLastLoginTime() {
         this.setLastLogin(new DateTime());
+    }
+
+    /**
+     *
+     * @param contact
+     */
+    public void addContact(UserContact contact){
+        contact.setOwner(this);
+        this.getContacts().add(contact);
+    }
+
+    /**
+     *
+     * @param contact
+     */
+    public void removeContact(UserContact contact){
+        this.getContacts().remove(contact);
     }
 
     /**
@@ -162,14 +180,14 @@ public class JCUser extends User {
     /**
      * @return set contacts of user
      */
-    public Set<UserContact> getContacts() {
+    protected Set<UserContact> getContacts() {
         return contacts;
     }
 
     /**
      * @param contacts contacts of user
      */
-    public void setContacts(Set<UserContact> contacts) {
+    protected void setContacts(Set<UserContact> contacts) {
         this.contacts = contacts;
     }
 }
