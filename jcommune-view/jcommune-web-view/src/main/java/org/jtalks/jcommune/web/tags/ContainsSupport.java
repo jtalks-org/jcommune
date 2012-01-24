@@ -15,32 +15,50 @@
 package org.jtalks.jcommune.web.tags;
 
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.SimpleTagSupport;
+import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
 import java.util.Collection;
 
 /**
+ * Supporting class for ifContains tag. This tag checks if certain object is contained
+ * in the collection passed and prints messages depending on the result.
+ * <p/>
+ * This tag does not support localization or message codes.
+ *
  * @author Evgeniy Naumenko
  */
-public class ContainsSupport extends SimpleTagSupport {
+public class ContainsSupport extends BodyTagSupport {
 
     private Collection collection;
     private Object object;
     private String successMessage;
     private String failMessage;
 
+
+    /**
+     * @param collection collection to search specified object into
+     */
     public void setCollection(Collection collection) {
         this.collection = collection;
     }
 
+    /**
+     * @param object object to be searched in collection
+     */
     public void setObject(Object object) {
         this.object = object;
     }
 
+    /**
+     * @param successMessage message to display if collection passed contains the target element
+     */
     public void setSuccessMessage(String successMessage) {
         this.successMessage = successMessage;
     }
 
+    /**
+     * @param failMessage message to display if element is not in the collection passed
+     */
     public void setFailMessage(String failMessage) {
         this.failMessage = failMessage;
     }
@@ -49,11 +67,13 @@ public class ContainsSupport extends SimpleTagSupport {
      * {@inheritDoc}
      */
     @Override
-    public void doTag() throws JspException, IOException {
-        if (collection.contains(object)){
-            this.getJspContext().getOut().print(successMessage);
-        } else {
-            this.getJspContext().getOut().print(failMessage);
+    public int doStartTag() throws JspException {
+        try {
+            String message = collection.contains(object) ? successMessage : failMessage;
+            pageContext.getOut().write(message);
+        } catch (IOException e) {
+            throw new JspException(e);
         }
+        return SKIP_BODY;
     }
 }

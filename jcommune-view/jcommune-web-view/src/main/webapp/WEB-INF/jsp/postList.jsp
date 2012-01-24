@@ -35,14 +35,16 @@
 <div class="all_forums">
     <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
 <span class="nav_bottom">
-<c:if test="${previousTopic != null}">
-    <a href="${pageContext.request.contextPath}/topics/${previousTopic.id}">
-        <spring:message code="label.topic.previous"/></a>
-</c:if>
+    <c:if test="${previousTopic != null}">
+        <a href="${pageContext.request.contextPath}/topics/${previousTopic.id}">
+            <spring:message code="label.topic.previous"/>
+        </a>
+    </c:if>
     &nbsp;
     <c:if test="${nextTopic != null}">
         <a href="${pageContext.request.contextPath}/topics/${nextTopic.id}">
-            <spring:message code="label.topic.next"/></a>
+            <spring:message code="label.topic.next"/>
+        </a>
     </c:if>
 </span>
 
@@ -98,21 +100,23 @@
                         <c:out value="${post.userCreated.username}"/>
                     </a>
                     <div class="status">
+                        <spring:message var="online" code="label.topic.online_users"/>
+                        <spring:message var="offline" code="label.topic.offline_users"/>
                         <jtalks:ifContains collection="${usersOnline}" object="${post.userCreated}"
-                                           successMessage="<spring:message code=\"label.topic.online_users\"/>"
-                                           failMessage="offline"/>
-
+                                           successMessage="${online}" failMessage="${offline}"/>
                     </div>
                     <img src="${pageContext.request.contextPath}/${post.userCreated.encodedUsername}/avatar"
                          class="avatar"/>
                     <br/>
 
                     <div class="user_misc_info">
-                        <spring:message code="label.topic.registered"/>
+                        <span class="status"><spring:message code="label.topic.registered"/></span>
                         <jtalks:format pattern="dd.MM.yy" value="${post.userCreated.registrationDate}"/><br/>
-                        <spring:message code="label.topic.message_count"/> ${post.userCreated.postCount}<br/>
+                        <span class="status"><spring:message code="label.topic.message_count"/></span>
+                        ${post.userCreated.postCount}<br/>
                         <c:if test="${post.userCreated.location != null}">
-                            <spring:message code="label.topic.from_whence"/> ${post.userCreated.location}
+                            <span class="status"><spring:message code="label.topic.from_whence"/></span>
+                            ${post.userCreated.location}
                         </c:if>
                     </div>
                 </div>
@@ -128,6 +132,7 @@
                                     <%-- first post - urls to delete & edit topic --%>
                                     <c:set var="delete_url"
                                            value="${pageContext.request.contextPath}/topics/${topic.id}"/>
+                                    <%--todo: page settings for edit url? WTF?--%>
                                     <c:set var="edit_url"
                                            value="${pageContext.request.contextPath}/topics/${topic.id}/edit?branchId=${branchId}&page=${pag.page}"/>
                                     <c:set var="confirm_message" value="label.deleteTopicConfirmation"/>
