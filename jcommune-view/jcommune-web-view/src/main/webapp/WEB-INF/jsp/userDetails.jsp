@@ -56,7 +56,7 @@
                     </li>
                 </c:if>
                 <c:choose>
-                    <%--Do not show mu email to other users--%>
+                    <%--Do not show my email to other users--%>
                     <c:when test="${user.username == auth}">
                         <li class="forum_row">
                             <label><spring:message code="label.email"/></label>
@@ -96,12 +96,12 @@
                     <label><spring:message code="label.postcount"/></label>
                     <span><c:out value="${user.postCount}"/></span>
                 </li>
-                <c:forEach var="contact" items="${user.contacts}">
+                <%--<c:forEach var="contact" items="${user.contacts}">
                     <li class="forum_row">
                         <label><img src="${contact.type.icon}" alt=""><c:out value="${contact.type.typeName}"/></label>
                         <span><c:out value="${contact.value}"/></span>
                     </li>
-                </c:forEach>
+                </c:forEach>--%>
             </ul>
             <div class="form_controls">
                 <c:if test="${user.username == auth}">
