@@ -139,13 +139,13 @@
         <div class="forum_answer_left">
             <spring:message code="label.answer.options"/>
         </div>
-        <div class="forum_answer_right options">
+<%--        <div class="forum_answer_right options">
             <input id="notify" type="checkbox" name="notify" checked="checked"/><spring:message
                 code="label.answer.notify_message"/>
             <br/>
             <input id="nosmiles" type="checkbox" name="nosmiles" checked="checked"/><spring:message
                 code="label.answer.no_smiles"/>
-        </div>
+        </div>--%>
     </li>
 </ul>
 <a href="${back}"><input id="back" type="button" class="button" tabindex="5" name="back"

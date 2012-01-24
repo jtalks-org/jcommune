@@ -14,9 +14,18 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.dao.UserContactsDao;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.UserContact;
+import org.jtalks.jcommune.model.entity.UserContactType;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 /**
  * @author Evgeniy Naumenko
@@ -24,19 +33,46 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class UserContactsController {
 
-    SecurityService securityService;
+    private SecurityService securityService;
+    private UserContactsDao dao;
 
-    @RequestMapping("contacts/types")
-    public void getContactTypes() {
-
+    /**
+     *
+     * @param securityService
+     * @param dao
+     */
+    @Autowired
+    public UserContactsController(SecurityService securityService, UserContactsDao dao) {
+        this.securityService = securityService;
+        this.dao = dao;
     }
 
-    @RequestMapping("contacts/add")
-    public void addContact() {
-
+    /**
+     *
+     * @return
+     */
+    @RequestMapping(value="contacts/types", method = RequestMethod.GET)
+    @ResponseBody
+    public List<UserContactType> getContactTypes() {
+       return dao.getAvailableContactTypes();
     }
 
-    @RequestMapping("contacts/remove")
+    /**
+     *
+     * @param type
+     * @param value
+     */
+    @RequestMapping(value="contacts/add", method = RequestMethod.POST)
+    public void addContact(UserContactType type, String value) {
+        JCUser user = securityService.getCurrentUser();
+        UserContact contact = new UserContact(value, type);
+        user.addContact(contact);
+    }
+
+    /**
+     *
+     */
+    @RequestMapping(value = "contacts/remove", method = RequestMethod.POST)
     public void removeContact(){
 
     }
