@@ -47,10 +47,10 @@
 </span>
 
     <br>
-    <jtalks:display uri="${topicId}" pagination="${pag}" list="${posts}">
+    <jtalks:pagination uri="${topicId}" pagination="${pag}" list="${posts}">
     <nobr>
             <span class="nav_top">
-                </jtalks:display>
+                </jtalks:pagination>
             </span>
     </nobr>
     <a class="button top_button" href="${pageContext.request.contextPath}/branches/${branchId}">
@@ -89,15 +89,20 @@
         </div>
     </div>
     <ul class="forum_table">
-        <jtalks:display uri="${topicId}" pagination="${pag}" list="${posts}">
+        <jtalks:pagination uri="${topicId}" pagination="${pag}" list="${posts}">
         <c:forEach var="post" items="${list}" varStatus="i">
             <li class="forum_row">
                 <div class="forum_userinfo">
                     <a class="username"
                        href="${pageContext.request.contextPath}/users/${post.userCreated.encodedUsername}">
-                        <c:out value="${post.userCreated.username}"/></a>
+                        <c:out value="${post.userCreated.username}"/>
+                    </a>
+                    <div class="status">
+                        <jtalks:ifContains collection="${usersOnline}" object="${post.userCreated}"
+                                           successMessage="<spring:message code=\"label.topic.online_users\"/>"
+                                           failMessage="offline"/>
 
-                    <div class="status"><spring:message code="label.topic.online_users"/></div>
+                    </div>
                     <img src="${pageContext.request.contextPath}/${post.userCreated.encodedUsername}/avatar"
                          class="avatar"/>
                     <br/>
@@ -179,7 +184,7 @@
         </c:forEach>
     </ul>
     <nobr><span class="nav_bottom">
-        </jtalks:display>
+        </jtalks:pagination>
     </span></nobr>
 
     <a class="button" href="${pageContext.request.contextPath}/branches/${branchId}">

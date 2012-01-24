@@ -40,10 +40,10 @@
             </span>
         </div>
         <br>
-        <jtalks:display uri="${branch.id}" pagination="${pagination}" list="${topics}">
+        <jtalks:pagination uri="${branch.id}" pagination="${pagination}" list="${topics}">
         <nobr>
             <span class="nav_top">
-                </jtalks:display>
+                </jtalks:pagination>
             </span>
         </nobr>
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
@@ -77,7 +77,7 @@
             </div>
         </div>
         <ul class="forum_table">
-            <jtalks:display uri="${branch.id}" pagination="${pagination}" numberLink="3" list="${topics}">
+            <jtalks:pagination uri="${branch.id}" pagination="${pagination}" numberLink="3" list="${topics}">
             <c:forEach var="topic" items="${list}">
                 <li class="forum_row">
                     <div class="forum_icon">
@@ -154,7 +154,7 @@
         </ul>
         <nobr>
             <span class="nav_bottom">
-                </jtalks:display>
+                </jtalks:pagination>
             </span>
         </nobr>
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
