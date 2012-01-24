@@ -29,6 +29,11 @@ import java.util.Collection;
  */
 public class ContainsSupport extends BodyTagSupport {
 
+    /**
+     * Serializable class should define it
+     */
+    private static final long serialVersionUID = 34588L;
+
     private Collection collection;
     private Object object;
     private String successMessage;
