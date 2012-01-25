@@ -134,9 +134,15 @@ public class AvatarServiceTest {
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void inputDataForValidateAvatarFormatIsNull() throws Exception {
+    public void inputDataForValidateAvatarFormatIsNullForOperaIE() throws Exception {
         //invoke object under test
         avatarService.validateAvatarFormat((MultipartFile) null);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void inputDataForValidateAvatarFormatIsNullForChromeFF() throws Exception {
+        //invoke object under test
+        avatarService.validateAvatarFormat((byte[]) null);
     }
 
     @Test(expectedExceptions = ImageSizeException.class, dataProvider = "invalidSizeValues")
