@@ -100,6 +100,12 @@ public class AvatarService {
         }
     }
 
+    /**
+     * Validate byte array data format
+     *
+     * @param bytes for validation
+     * @throws ImageFormatException invalid format avatar processing error
+     */
     public void validateAvatarFormat(byte[] bytes) throws ImageFormatException {
         if (bytes == null) {
             throw new IllegalArgumentException();
