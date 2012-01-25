@@ -227,9 +227,13 @@ public class AvatarController {
                                  Map<String, String> responseContent,
                                  Locale locale) {
         try {
+            avatarService.validateAvatarFormat(bytes);
             avatarService.validateAvatarSize(bytes);
             prepareNormalResponse(bytes, responseContent);
             response.setStatus(HttpServletResponse.SC_OK);
+        } catch (ImageFormatException e) {
+            prepareFormatErrorResponse(responseContent, locale);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } catch (ImageSizeException e) {
             prepareSizeErrorResponse(responseContent, locale);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

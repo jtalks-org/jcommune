@@ -15,6 +15,7 @@
 
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.apache.commons.io.IOUtils;
 import org.jtalks.jcommune.service.exceptions.ImageFormatException;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.jtalks.jcommune.service.exceptions.ImageSizeException;
@@ -25,13 +26,17 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -112,15 +117,26 @@ public class AvatarServiceTest {
     }
 
     @Test(dataProvider = "validFormatValues")
-    public void inputDataForValidateAvatarFormatIsValid(MultipartFile file) throws Exception {
+    public void inputDataForValidateAvatarFormatFromOperaIEIsValid(MultipartFile file) throws Exception {
         //invoke object under test
         avatarService.validateAvatarFormat(file);
+    }
+
+    @Test(dataProvider = "validFormatValuesForChromeFF")
+    public void inputDataForValidateAvatarFormatFromChromeFFIsValid(byte[] bytes) throws ImageFormatException {
+        avatarService.validateAvatarFormat(bytes);
+    }
+
+
+    @Test(dataProvider = "invalidFormatValuesForChromeFF", expectedExceptions = ImageFormatException.class)
+    public void inputDataForValidateAvatarFormatFromChromeFFIsInvalid(byte[] bytes) throws ImageFormatException {
+        avatarService.validateAvatarFormat(bytes);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void inputDataForValidateAvatarFormatIsNull() throws Exception {
         //invoke object under test
-        avatarService.validateAvatarFormat(null);
+        avatarService.validateAvatarFormat((MultipartFile) null);
     }
 
     @Test(expectedExceptions = ImageSizeException.class, dataProvider = "invalidSizeValues")
@@ -203,6 +219,32 @@ public class AvatarServiceTest {
 
         return result;
 
+    }
+
+    @DataProvider
+    Object[][] validFormatValuesForChromeFF() throws Exception {
+        File file =
+                new File("jcommune-service/src/main/resources/org/jtalks/jcommune/service/testdata/avatar/valid/format");
+        File[] files = file.listFiles();
+        Object[][] result = new Object[files.length][];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = new Object[]{IOUtils.toByteArray(new FileInputStream(files[i]))};
+        }
+
+        return result;
+    }
+
+    @DataProvider
+    Object[][] invalidFormatValuesForChromeFF() throws Exception {
+        File file =
+                new File("jcommune-service/src/main/resources/org/jtalks/jcommune/service/testdata/avatar/invalid/format");
+        File[] files = file.listFiles();
+        Object[][] result = new Object[files.length][];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = new Object[]{IOUtils.toByteArray(new FileInputStream(files[i]))};
+        }
+
+        return result;
     }
 
     @DataProvider

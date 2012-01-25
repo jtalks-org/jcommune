@@ -202,7 +202,7 @@ public class AvatarControllerTest {
     }
 
     @Test(dataProvider = "validDataForChromeFF")
-    public void testValidUploadAvatarXHR(byte[] avatar, Map<String, String> expectedData) throws Exception {
+    public void testValidUploadAvatarForChromeFF(byte[] avatar, Map<String, String> expectedData) throws Exception {
         //set expectations
         when(avatarService.convertBytesToBase64String(avatar)).thenReturn(SRC_IMG);
 
@@ -232,6 +232,30 @@ public class AvatarControllerTest {
 
         //check result
         assertEquals(result, expectedData);
+    }
+
+    @Test(dataProvider = "invalidDataCustomCaseForChromeFF")
+    public void testErrorUploadAvatarDueInvalidImageFormatForChromeFF(byte[] bytes, Map<String, String> expectedData)
+            throws Exception {
+        //setUp
+        HttpServletResponse response = new MockHttpServletResponse();
+
+        //set expectations
+        doThrow(new ImageFormatException()).when(avatarService).validateAvatarFormat(bytes);
+        when(messageSource.getMessage(
+                eq("image.wrong.format"), Matchers.<Object[]>any(), Matchers.<Locale>any())).thenReturn(message);
+
+        //invoke objects under test
+        Map<String, String> result = avatarController.uploadAvatar(bytes, response, locale);
+
+        //check expectation
+        verify(avatarService).validateAvatarFormat(bytes);
+        verify(messageSource).getMessage(eq("image.wrong.format"), Matchers.<Object[]>any(), Matchers.<Locale>any());
+
+        //check result
+        assertEquals(result, expectedData);
+
+
     }
 
     @Test(dataProvider = "invalidDataCustomCaseForChromeFF")
