@@ -329,6 +329,18 @@
                 <artifactId>jackson-mapper-asl</artifactId>
                 <version>1.9.2</version>
             </dependency>
+            <!--Tika-->
+            <dependency>
+                <groupId>org.apache.tika</groupId>
+                <artifactId>tika-core</artifactId>
+                <version>1.0</version>
+            </dependency>
+            <!--Apache Commons IO 2.1 API -->
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.0.1</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -437,8 +449,8 @@
         </repository>
 
         <repository>
-            <id>codehaus-snapshots</id>
-            <url>http://snapshots.repository.codehaus.org</url>
+            <id>codehaus</id>
+            <url>http://repository.codehaus.org</url>
         </repository>
 
 

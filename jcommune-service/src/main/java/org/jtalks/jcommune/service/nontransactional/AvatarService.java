@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.apache.tika.Tika;
 import org.jtalks.jcommune.service.exceptions.ImageFormatException;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.jtalks.jcommune.service.exceptions.ImageSizeException;
@@ -22,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
@@ -95,6 +97,22 @@ public class AvatarService {
 
         if (!VALID_IMAGE_TYPES.contains(file.getContentType())) {
             throw new ImageFormatException();
+        }
+    }
+
+    public void validateAvatarFormat(byte[] bytes) throws ImageFormatException {
+        if (bytes == null) {
+            throw new IllegalArgumentException();
+        }
+        Tika tika = new Tika();
+        InputStream input = new ByteArrayInputStream(bytes);
+        try {
+            String type = tika.detect(input);
+            if (!VALID_IMAGE_TYPES.contains(type)) {
+                throw new ImageFormatException();
+            }
+        } catch (IOException e) {
+            LOGGER.error("Failed to handle avatar ByteArrayInputStream", e);
         }
     }
 

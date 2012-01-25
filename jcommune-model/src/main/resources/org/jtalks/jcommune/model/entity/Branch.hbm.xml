@@ -29,7 +29,7 @@
         <property name="description" column="DESCRIPTION"/>
 
         <bag name="topics" cascade="all-delete-orphan" order-by="sticked DESC, topicWeight DESC, modificationDate DESC">
-            <cache usage="nonstrict-read-write"/>
+            <!--No caching here, see JC-378-->
             <key column="BRANCH_ID" foreign-key="FK_BRANCH"/>
             <one-to-many class="Topic"/>
         </bag>
@@ -38,6 +38,7 @@
                      not-null="false"/>
 
         <set name="subscribers" table="BRANCH_SUBSCRIPTIONS" cascade="all">
+            <cache usage="nonstrict-read-write"/>
             <key column="BRANCH_ID"/>
             <many-to-many column="USER_ID" class="org.jtalks.jcommune.model.entity.JCUser"/>
         </set>
