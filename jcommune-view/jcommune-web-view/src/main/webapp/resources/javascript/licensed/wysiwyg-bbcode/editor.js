@@ -432,6 +432,14 @@ function closeTags() {
 function closeTag2(text) {
     var currentText = text;
 
+    {
+        var n = "&U000A;";
+        var space = "&U000B;";
+
+        currentText = currentText.replace(/\n/gi, n);
+        currentText = currentText.replace(/\s/gi, space);
+    }
+
     var regexpForOpenBBtag = new RegExp(patternForOpenBBtag, 'ig');
     var regexpForOpenBBtagResult = regexpForOpenBBtag.exec(currentText);
 
@@ -469,6 +477,11 @@ function closeTag2(text) {
         if (domResult != null) {
             currentText = closeTag2(domResult[1]) + domResult[2] + closeTag2(domResult[5]) + domResult[6] + closeTag2(domResult[8]) + closeTag2(domResult[9]);
         }
+    }
+
+    {
+        currentText = currentText.replace(new RegExp(n, 'ig'), "\n");
+        currentText = currentText.replace(new RegExp(space, 'ig'), " ");
     }
 
     return  currentText;
