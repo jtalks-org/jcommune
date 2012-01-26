@@ -26,7 +26,7 @@
     <uri>http://www.jtalks.org/tags</uri>
 
     <tag>
-        <name>display</name>
+        <name>pagination</name>
         <tag-class>org.jtalks.jcommune.web.tags.Paginator</tag-class>
         <body-content>JSP</body-content>
         <attribute>
@@ -52,6 +52,36 @@
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.util.List</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <name>ifContains</name>
+        <tag-class>org.jtalks.jcommune.web.tags.ContainsSupport</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>collection</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.util.Collection</type>
+        </attribute>
+        <attribute>
+            <name>object</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.Object</type>
+        </attribute>
+        <attribute>
+            <name>successMessage</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <name>failMessage</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
         </attribute>
     </tag>
 

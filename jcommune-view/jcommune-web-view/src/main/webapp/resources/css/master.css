@@ -364,7 +364,7 @@ a.last_message_user {
 }
 
 .forum_message_cell_text {
-	padding-top: 5px;
+    padding-top: 5px;
     padding-left: 10px;
     word-wrap: break-word;
     line-height: 1.2;
@@ -398,6 +398,7 @@ a.last_message_user {
 
 .status {
     font-size: 11px;
+    font-weight: bold;
 }
 
 .avatar {
@@ -451,7 +452,7 @@ a.last_message_user {
 }
 
 .userdetails_page li span input {
-	max-width: 95%;
+    max-width: 95%;
 }
 
 /* Answer Form & Buttons */
@@ -764,6 +765,6 @@ a.page:hover {
 }
 
 .elipsis {
-   text-overflow: ellipsis;
-   -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
 }

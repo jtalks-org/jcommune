@@ -22,6 +22,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.servlet.jsp.JspException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -56,7 +57,7 @@ public class PaginatorTest {
     }
 
     @Test
-    public void testElementsOfPage() {
+    public void testElementsOfPage() throws JspException {
         JCUser user = new JCUser("", "", "");
         user.setPageSize(5);
         Pagination pagination = new Pagination(1, user, 6, true);
@@ -110,7 +111,7 @@ public class PaginatorTest {
     }
 
     @Test
-    public void testEmptyList() {
+    public void testEmptyList() throws JspException {
         Pagination pagination = new Pagination(1, user, 6, true);
         paginator.setPagination(pagination);
         List list = new ArrayList();

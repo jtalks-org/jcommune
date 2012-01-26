@@ -369,7 +369,10 @@ function SwitchEditor() {
     }
 }
 
+// tag list for convertation to bb code or html
 var tagList;
+// open tag regexp
+var patternForOpenBBtag = "\\[([^\\/\\[\\]]*?)(=[^\\[\\]]*)?\\]";
 
 function bbcode2html() {
     rep(/\</gi, "&lt;");
@@ -378,14 +381,14 @@ function bbcode2html() {
     tagList = [];
 
     var convertedText = content;
-    var reglt = /\[([^\/\[\]]*?)(=[^\[\]]*)?\]/gi;
+    var reglt = new RegExp(patternForOpenBBtag, 'ig');
     var result = reglt.exec(convertedText);
     var i = 0;
     while (result != null) {
         var tag = findTag(result[1]);
         tagList[i] = tag;
         convertedText = tag.toHTMLFunction(convertedText);
-        reglt = /\[([^\/\[\]]*?)(=[^\[\]]*)?\]/gi;
+        reglt = new RegExp(patternForOpenBBtag, 'ig');
         result = reglt.exec(convertedText);
         i++;
     }
@@ -414,9 +417,9 @@ function html2bbcode() {
 
 function closeTags() {
     var currentContent = document.getElementById(body_id).value;
-    for (var i = 0; i < bbtags.length; i++) {
-        currentContent = closeAllTags(currentContent, bbtags[i].name);
-    }
+
+    currentContent = closeTag2(currentContent);
+
     currentContent = currentContent.replace(/\[size\]/gi, '[size=10]');
     currentContent = currentContent.replace(/\[color\]/gi, '[color=000000]');
     currentContent = currentContent.replace(/\[url\]/gi, '[url=]');
@@ -426,78 +429,62 @@ function closeTags() {
     document.getElementById(body_id).value = content;
 }
 
-function closeAllTags(text, tag) {
+function closeTag2(text) {
     var currentText = text;
 
-    var regPrefix = new RegExp('\\[' + tag + '[^\\[^\\]]*\\]', 'ig');
+    {
+        var n = "&U000A;";
+        var space = "&U000B;";
 
-    var regTags = new RegExp('(\\[' + tag + '[^\\[^\\]]*\\])([\\s\\S]*)(\\[\\/' + tag + '\\])([\\s\\S]*)', 'ig');
+        currentText = currentText.replace(/\n/gi, n);
+        currentText = currentText.replace(/\s/gi, space);
+    }
 
-    var openTag = new RegExp('\\[' + tag + '(=[^\\[^\\]]*)?\\]', 'ig');
-    var closeTag = new RegExp('\\[\\/' + tag + '\\]', 'ig');
+    var regexpForOpenBBtag = new RegExp(patternForOpenBBtag, 'ig');
+    var regexpForOpenBBtagResult = regexpForOpenBBtag.exec(currentText);
 
-    var prefIndex = currentText.search(regPrefix);
-    var prefix = "";
-    var postfix = "";
+    // find first(!) open tag
+    if (regexpForOpenBBtagResult != null) {
+        var tagName = regexpForOpenBBtagResult[1];
 
-    var result = regTags.exec(currentText);
-    if (result != null) {
-        postfix = closeAllTags(result[4], tag);
-        prefix = closeAllTags(currentText.substring(0, prefIndex), tag);
-        while (result != null) {
-            currentText = result[1] + closeAllTags(result[2], tag) + result[3];
-            result = regTags.exec(currentText);
+        var regTwoTags = '([^\\[\\]]*)(\\[(' + tagName + ')(=[^\\[\\]]*)?\\])(.*)(\\[\/(' + tagName + ')\\])([^\\[\\]]*)(.*)';
+
+        var domRegExp = new RegExp(regTwoTags, 'ig');
+        /**
+         * Example: "some [size=10][i]text[/i] for[/size] a [b]example[/b]...".
+         * Tag name is "size".
+         *
+         * domResult[0] - full expression result
+         * domResult[1] - prefix ("some ")
+         * domResult[2] - full open tag ("[size=10]")
+         * domResult[3] - tag name ("size")
+         * domResult[4] - tag parameter value if exist ("=10")
+         * domResult[5] - tag content ("[i]text[/i] for")
+         * domResult[6] - close tag ("[/size]")
+         * domResult[7] - tag name ("size")
+         * domResult[8] - postffix without other tags (" a ")
+         * domResult[9] - postffix with other tags if exist ("[b]example[/b]...")
+         */
+
+        var domResult = domRegExp.exec(currentText);
+        if (domResult == null) {
+            // add close tag
+            currentText += "[/" + tagName + "]";
+            // update domRegExp
+            domRegExp = new RegExp(regTwoTags, 'ig');
+            domResult = domRegExp.exec(currentText);
         }
-        currentText = prefix + currentText + postfix;
-    } else {
-
-        var closeTagResult = closeTag.exec(currentText);
-        if (closeTagResult != null) {
-            while (closeTagResult != null) {
-
-                var regAbstactTag = /\[[^\[^\]]*\]/gi;
-
-                var intInd = closeTag.lastIndex;
-                var tempText = currentText.substring(0, intInd - 3 - tag.length);
-                var regAbstactTagRes = regAbstactTag.exec(tempText);
-                if (regAbstactTagRes != null) {
-                    while (regAbstactTagRes != null) {
-                        var regAbstactTagIndex = regAbstactTag.lastIndex;
-                        var regAbstactTagRes2 = regAbstactTag.exec(tempText);
-                        if (regAbstactTagRes != null && regAbstactTagRes2 == null) {
-                            var prefAndTag = tempText.substring(0, regAbstactTagIndex);
-                            var cont = tempText.substring(regAbstactTagIndex, intInd - 3 - tag.length);
-                            var postText = currentText.substring(intInd - 3 - tag.length, currentText.length);
-                            currentText = prefAndTag + "[" + tag + "]" + cont + postText;
-                        }
-                        regAbstactTagRes = regAbstactTagRes2;
-                    }
-                } else {
-                    currentText = "[" + tag + "]" + currentText;
-                }
-                closeTagResult = closeTag.exec(currentText);
-            }
-        } else {
-            var openTagResult = openTag.exec(currentText);
-            while (openTagResult != null) {
-                var regAbstactTag1 = /\[[^\[^\]]*\]/gi;
-                var intInd1 = openTag.lastIndex;
-                var tempText1 = currentText.substring(intInd1, currentText.length);
-                var regAbstactTagRes1 = regAbstactTag1.exec(tempText1);
-                if (regAbstactTagRes1 != null) {
-                    var regAbstactTagIndex1 = regAbstactTag1.lastIndex;
-                    var prefAndTag1 = currentText.substring(0, intInd1 + tempText1.length - regAbstactTagRes1[0].length);
-                    var cont1 = tempText1.substring(regAbstactTagIndex1 - regAbstactTagRes1[0].length, tempText1.length);
-                    currentText = prefAndTag1 + "[/" + tag + "]" + cont1;
-
-                } else {
-                    currentText = currentText + "[/" + tag + "]";
-                }
-                openTagResult = openTag.exec(currentText);
-            }
+        if (domResult != null) {
+            currentText = closeTag2(domResult[1]) + domResult[2] + closeTag2(domResult[5]) + domResult[6] + closeTag2(domResult[8]) + closeTag2(domResult[9]);
         }
     }
-    return currentText;
+
+    {
+        currentText = currentText.replace(new RegExp(n, 'ig'), "\n");
+        currentText = currentText.replace(new RegExp(space, 'ig'), " ");
+    }
+
+    return  currentText;
 }
 
 function doQuote() {

@@ -16,16 +16,16 @@
 package org.jtalks.jcommune.web.tags;
 
 import org.jtalks.jcommune.web.util.Pagination;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
 import java.util.List;
 
 /**
- * Class for custom tag jtalks:display
+ * Class for custom tag jtalks:pagination
+ * todo: refactor it
  *
  * @author Andrey Kluev
  */
@@ -36,8 +36,6 @@ public class Paginator extends BodyTagSupport {
     private transient Pagination pagination;
     private static final String LINK_PATTERN = "<a class='page' href='%s?page=%d'>%d</a>";
     private static final String CURRENT_LINK_PATTERN = "<span class='page'>%d</span>";
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(Paginator.class);
 
     public static final int DEFAULT_LINK_COUNT = 7;
 
@@ -64,6 +62,9 @@ public class Paginator extends BodyTagSupport {
         return this.list;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int doStartTag() {
 
@@ -81,18 +82,21 @@ public class Paginator extends BodyTagSupport {
         return EVAL_BODY_INCLUDE;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public int doEndTag() {
+    public int doEndTag() throws JspException {
         JspWriter out = pageContext.getOut();
         try {
             out.write(this.createPagingLink(numberLink, uri));
         } catch (IOException e) {
-            LOGGER.error("There was an error writing formed links for paging!", e);
+            throw new JspException(e);
         }
         return EVAL_PAGE;
     }
 
-        /**
+    /**
      * @param numberLink number of links on pages
      * @param uri        uri
      * @return completed links

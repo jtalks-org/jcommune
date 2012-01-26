@@ -26,7 +26,7 @@
         </id>
         <property column="VALUE" name="value" not-null="true"/>
 
-        <many-to-one name="contactOfUser" column="USER_ID" class="JCUser" lazy="false"
+        <many-to-one name="owner" column="USER_ID" class="JCUser" lazy="false"
                      not-null="true" foreign-key="FK_USER"/>
         <many-to-one name="type" column="TYPE_ID" class="UserContactType" lazy="false"
                      not-null="true" foreign-key="FK_TYPE"/>

@@ -35,10 +35,10 @@
 
         <div class="forum_top_right_link">
 
-            <jtalks:display uri="" pagination="${pag}" numberLink="3" list="${posts}">
+            <jtalks:pagination uri="" pagination="${pag}" numberLink="3" list="${posts}">
             <nobr>
             <span class="nav_top">
-                </jtalks:display>
+                </jtalks:pagination>
             </span>
             </nobr>
         </div>
@@ -61,7 +61,7 @@
             </div>
         </div>
         <ul class="forum_table">
-            <jtalks:display uri="${topicId}" pagination="${pag}" numberLink="3" list="${posts}">
+            <jtalks:pagination uri="${topicId}" pagination="${pag}" numberLink="3" list="${posts}">
             <c:forEach var="post" items="${list}" varStatus="i">
                 <li class="forum_row">
                     <div class="forum_userinfo">
@@ -99,7 +99,7 @@
         </ul>
         <nobr>
         <span class="nav_bottom">
-            </jtalks:display>
+            </jtalks:pagination>
         </span>
         </nobr>
         <a class="button"  href="${pageContext.request.contextPath}/users/${user.encodedUsername}">

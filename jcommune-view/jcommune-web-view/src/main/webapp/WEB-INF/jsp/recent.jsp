@@ -32,10 +32,10 @@
     <div class="all_forums">
         <h2><a class="heading" href="#"><spring:message code="label.recent"/></a></h2>
         <br/>
-        <jtalks:display uri="" pagination="${pagination}" list="${topics}">
+        <jtalks:pagination uri="" pagination="${pagination}" list="${topics}">
         <nobr>
             <span class="nav_top">
-                </jtalks:display>
+                </jtalks:pagination>
             </span>
         </nobr>
         <div class="forum_header_table">
@@ -49,7 +49,7 @@
         </div>
 
         <ul class="forum_table">
-            <jtalks:display uri="" pagination="${pagination}" numberLink="3" list="${topics}">
+            <jtalks:pagination uri="" pagination="${pagination}" numberLink="3" list="${topics}">
             <c:forEach var="topic" items="${list}">
                 <li class="forum_row">
                     <div class="forum_info">
@@ -86,7 +86,7 @@
         </ul>
         <nobr>
             <span class="nav_bottom">
-                </jtalks:display>
+                </jtalks:pagination>
             </span>
         </nobr>
     </div>

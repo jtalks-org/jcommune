@@ -25,7 +25,7 @@ import java.io.IOException;
 
 /**
  * Converts BB-codes into html representation.
- * Tis tag also replaces newline symbols with html
+ * This tag also replaces newline symbols with html
  * line break tag <br>
  */
 public class ConverterBB2HTML extends SimpleTagSupport {

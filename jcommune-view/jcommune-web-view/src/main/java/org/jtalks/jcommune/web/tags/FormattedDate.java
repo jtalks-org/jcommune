@@ -110,7 +110,7 @@ public class FormattedDate extends FormatTag {
             int offsetInMinutes = -Integer.parseInt(jsRepresentation);
             return TimeUnit.MINUTES.toMillis(offsetInMinutes);
         } catch (NumberFormatException e) {
-            // someone has passed wrong GMT in cookie, use GMT
+            // someone has passed wrong offset in cookie, use GMT
             return DEFAULT_OFFSET;
         }
     }
