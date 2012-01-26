@@ -443,9 +443,10 @@ function closeTag2(text) {
     var regexpForOpenBBtag = new RegExp(patternForOpenBBtag, 'ig');
     var regexpForOpenBBtagResult = regexpForOpenBBtag.exec(currentText);
 
+    var tagName = regexpForOpenBBtagResult[1];
+
     // find first(!) open tag
-    if (regexpForOpenBBtagResult != null) {
-        var tagName = regexpForOpenBBtagResult[1];
+    if (regexpForOpenBBtagResult != null && tagName != "*") {
 
         var regTwoTags = '([^\\[\\]]*)(\\[(' + tagName + ')(=[^\\[\\]]*)?\\])(.*)(\\[\/(' + tagName + ')\\])([^\\[\\]]*)(.*)';
 
