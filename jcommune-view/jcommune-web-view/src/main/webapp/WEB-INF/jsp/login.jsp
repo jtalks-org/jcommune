@@ -66,7 +66,7 @@
             </div>
 
             <div class="form_controls">
-                <input type="submit" value="<spring:message code="label.signin"/>"></input><br/>
+                <input type="submit" class="button" value="<spring:message code="label.signin"/>"></input><br/>
                 <a href='<c:url value="/password/restore"/>'><spring:message
                         code="label.restorePassword.prompt"/></a>
             </div>

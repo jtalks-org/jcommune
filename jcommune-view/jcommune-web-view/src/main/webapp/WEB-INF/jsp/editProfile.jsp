@@ -148,11 +148,13 @@
                     <li class="forum_row"></li>
                 </ul>
                 <div class="form_controls">
-                    <span id="upload"><input type="button" value="<spring:message code="label.avatar.load"/>"/></span>
-                    <input type="submit" value="<spring:message code="label.save_changes"/>"
+                    <span id="upload">
+                        <input type="button"  class="button" value="<spring:message code="label.avatar.load"/>"/>
+                    </span>
+                    <input type="submit"  class="button" value="<spring:message code="label.save_changes"/>"
                            onclick="submitForm('editProfileForm')"/>
                     <a href="${pageContext.request.contextPath}/users/${auth}">
-                        <button><spring:message code="label.back"/></button>
+                        <button  class="button"><spring:message code="label.back"/></button>
                     </a>
                 </div>
             </form:form>
@@ -160,7 +162,7 @@
                 <form action="${pageContext.request.contextPath}/users/edit/avatar" id="removeAvatarForm"
                       name="removeAvatarForm" method="POST">
                     <div class="form_controls">
-                        <input type="submit" value="<spring:message code="label.avatar.remove"/>"
+                        <input type="submit" class="button" value="<spring:message code="label.avatar.remove"/>"
                                onclick="submitForm('removeAvatarForm')"/>
                     </div>
                 </form>
