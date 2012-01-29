@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.apache.velocity.app.VelocityEngine;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -23,11 +24,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This service is focused on sending e-mail to forum users.
@@ -41,6 +45,7 @@ public class MailService {
 
     private MailSender mailSender;
     private SimpleMailMessage templateMessage;
+    private VelocityEngine velocityEngine;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MailService.class);
     private static final String LOG_TEMPLATE = "Error occurred while sending updates of %s %d to %s";
@@ -67,15 +72,6 @@ public class MailService {
                     "\n" +
                     "Jtalks forum.";
 
-    private static final String RECEIVED_PRIVATE_MESSAGE_NOTIFICATION_TEMPLATE =
-            "Dear %s!\n" +
-                    "\n" +
-                    "Your received new private message.\n" +
-                    "Please check it out at %s.\n" +
-                    "\n" +
-                    "Best regards,\n" +
-                    "\n" +
-                    "Jtalks forum.";
 
     /**
      * Creates a mailing service with a default template message autowired.
@@ -87,9 +83,10 @@ public class MailService {
      * @param mailSender      spring mailing tool
      * @param templateMessage blank message with "from" filed preset
      */
-    public MailService(MailSender mailSender, SimpleMailMessage templateMessage) {
+    public MailService(MailSender mailSender, SimpleMailMessage templateMessage, VelocityEngine velocityEngine) {
         this.mailSender = mailSender;
         this.templateMessage = templateMessage;
+        this.velocityEngine = velocityEngine;
     }
 
     /**
@@ -162,9 +159,14 @@ public class MailService {
     public void sendReceivedPrivateMessageNotification(JCUser recipient, long pmId) {
         String url = this.getDeploymentRootUrl() + "/inbox/" + pmId;
         try {
+            Map model = new HashMap();
+            model.put("recipient", recipient);
+            model.put("url", url);
+            String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
+                    "org/jtalks/jcommune/service/templates/privateMessageNotification.vm", model);
             this.sendEmail(recipient.getEmail(),
                     "Received private message",
-                    String.format(RECEIVED_PRIVATE_MESSAGE_NOTIFICATION_TEMPLATE, recipient.getUsername(), url),
+                    text,
                     "Received private message notification sending failed");
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Private message", pmId, recipient.getUsername()));

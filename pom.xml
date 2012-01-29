@@ -295,6 +295,11 @@
                 <artifactId>kefir-bb</artifactId>
                 <version>0.6</version>
             </dependency>
+          <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <version>1.7</version>
+          </dependency>
             <!--Mail-->
             <dependency>
                 <groupId>javax.activation</groupId>
@@ -417,6 +422,7 @@
                         <exclude>**/*.properties</exclude>
                         <exclude>**/*.sql</exclude>
                         <exclude>**/*.css</exclude>
+                        <exclude>**/*.vm</exclude>
                         <exclude>**/.*</exclude>
                         <exclude>**/empty</exclude>
                         <exclude>**/licensed/**</exclude>
