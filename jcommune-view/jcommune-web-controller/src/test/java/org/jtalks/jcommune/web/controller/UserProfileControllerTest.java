@@ -19,6 +19,7 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
@@ -76,7 +77,7 @@ public class UserProfileControllerTest {
 
     @BeforeClass
     public void mockAvatar() throws IOException {
-        avatar = new ImageUtils().encodeB64(avatarByteArray);
+        avatar = new Base64Wrapper().encodeB64Bytes(avatarByteArray);
     }
 
     @BeforeMethod

@@ -18,6 +18,8 @@ import org.jtalks.common.model.dao.hibernate.AbstractHibernateParentRepository;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 
+import java.util.Collection;
+
 /**
  * Hibernate implementation of UserDao.
  * Mainly intended for queering users from DB based on different criteria.
@@ -49,5 +51,15 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser> 
                 .setCacheable(true)
                 .setString(0, email)
                 .uniqueResult();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<JCUser> getNonActivatedUsers() {
+        return getSession().createQuery("from JCUser u where u.enabled = true")
+                .setCacheable(false)
+                .list();
     }
 }

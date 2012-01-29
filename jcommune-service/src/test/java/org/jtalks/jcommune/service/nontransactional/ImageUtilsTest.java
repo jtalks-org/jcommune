@@ -45,7 +45,7 @@ public class ImageUtilsTest {
 
     @BeforeClass
     public void init() throws IOException {
-        imageUtils = new ImageUtils();
+        imageUtils = new ImageUtils(null);
         MultipartFile multipartFile = new MockMultipartFile("test_avatar.png", "test_avatar.png", "image/png",
                 originalImageByteArray);
     }
@@ -70,27 +70,6 @@ public class ImageUtilsTest {
         byte[] expectedResult = imageUtils.convertImageToByteArray(expected);
 
         assertEquals(actualResult, expectedResult);
-    }
-
-    @Test(dataProvider = "rangeByteStringData")
-    public void testBase64Coder(byte[] inputData, String expectedData) {
-        //invoke object under test
-        String result = imageUtils.encodeB64(inputData);
-
-        //check result
-        assertEquals(result, expectedData);
-
-    }
-
-
-    @Test(dataProvider = "rangeStringByteData")
-    public void testBase64Decoder(String inputData, byte[] expectedData) throws IOException {
-        //invoke object under test
-        byte[] result = imageUtils.decodeB64(inputData);
-
-        //check result
-        assertEquals(result, expectedData);
-
     }
 
     @Test
@@ -142,24 +121,6 @@ public class ImageUtilsTest {
         return new Object[][]{
                 {originalImageByteArray, result}
         };
-    }
-
-    @DataProvider
-    private Object[][] htmlImgSrcData() {
-        return new Object[][]{
-                {ImageUtils.HTML_SRC_TAG_PREFIX + imageUtils.encodeB64(originalImageByteArray)}
-        };
-    }
-
-
-    @DataProvider
-    private Object[][] rangeByteStringData() {
-        String outputData = Base64.encodeBase64String(byteArray);
-
-        return new Object[][]{
-                {byteArray, outputData}
-        };
-
     }
 
     @DataProvider

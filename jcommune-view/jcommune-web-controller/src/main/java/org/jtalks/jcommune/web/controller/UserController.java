@@ -16,6 +16,7 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.RegisterUserDto;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -116,6 +118,17 @@ public class UserController {
             return new ModelAndView(REGISTRATION);
         }
         userService.registerUser(userDto.createUser());
+        return new ModelAndView("redirect:/");
+    }
+
+    /**
+     *
+     * @param b64Username
+     * @return
+     */
+    @RequestMapping(value = "user/activate/{b64Username}")
+    public ModelAndView activateAccount(@PathVariable String b64Username) throws NotFoundException {
+        userService.activateAccount(b64Username);
         return new ModelAndView("redirect:/");
     }
 }

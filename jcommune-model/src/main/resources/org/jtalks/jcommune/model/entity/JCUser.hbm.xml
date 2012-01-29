@@ -56,6 +56,7 @@
             <property column="REGISTRATION_DATE" name="registrationDate"
                       type="org.joda.time.contrib.hibernate.PersistentDateTime" not-null="false"/>
             <property column="POST_COUNT" name="postCount"/>
+            <property column="ENABLED" name="enabled"/>
         </join>
     </class>
 

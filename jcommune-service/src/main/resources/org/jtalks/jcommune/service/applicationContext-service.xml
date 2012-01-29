@@ -39,28 +39,31 @@
     <!--Declaration services bean -->
 
     <bean id="avatarService" class="org.jtalks.jcommune.service.nontransactional.AvatarService">
-        <constructor-arg index="0" ref="imagePreprocessor"/>
-        <constructor-arg index="1" value="org/jtalks/jcommune/service/avatar.gif"/>
+        <constructor-arg ref="imagePreprocessor"/>
+        <constructor-arg ref="base64Wrapper"/>
+        <constructor-arg value="org/jtalks/jcommune/service/avatar.gif"/>
     </bean>
 
-    <bean id="imagePreprocessor"
-          class="org.jtalks.jcommune.service.nontransactional.ImageUtils"/>
+    <bean id="base64Wrapper" class="org.jtalks.jcommune.service.nontransactional.Base64Wrapper"/>
+
+    <bean id="imagePreprocessor" class="org.jtalks.jcommune.service.nontransactional.ImageUtils">
+        <constructor-arg ref="base64Wrapper"/>
+    </bean>
+
     <bean id="locationService" class="org.jtalks.jcommune.service.nontransactional.LocationService">
-        <constructor-arg name="sessionRegistry" ref="sessionRegistry"/>
-        <constructor-arg name="securityService" ref="securityService"/>
+        <constructor-arg ref="sessionRegistry"/>
+        <constructor-arg ref="securityService"/>
     </bean>
 
-    <bean id="userService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
+    <bean id="userService" class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
         <constructor-arg ref="userDao"/>
         <constructor-arg ref="securityService"/>
         <constructor-arg ref="mailService"/>
-        <constructor-arg ref="imagePreprocessor"/>
+        <constructor-arg ref="base64Wrapper"/>
         <constructor-arg ref="avatarService"/>
     </bean>
 
-    <bean id="postService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalPostService">
+    <bean id="postService" class="org.jtalks.jcommune.service.transactional.TransactionalPostService">
         <constructor-arg ref="postDao"/>
         <constructor-arg ref="topicDao"/>
         <constructor-arg ref="securityService"/>
@@ -161,5 +164,5 @@
         <constructor-arg name="userDataCache" ref="userDataCache"/>
     </bean>
 
-     <bean id="bbCodeService" class="org.jtalks.jcommune.service.nontransactional.BBCodeService"/>
+    <bean id="bbCodeService" class="org.jtalks.jcommune.service.nontransactional.BBCodeService"/>
 </beans>

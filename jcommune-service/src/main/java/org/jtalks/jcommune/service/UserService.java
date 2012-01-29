@@ -76,4 +76,10 @@ public interface UserService extends EntityService<JCUser> {
      *          if mailing failed
      */
     void restorePassword(String email) throws MailingFailedException;
+
+    /**
+     *
+     * @param b64enchipheredUsername
+     */
+    void activateAccount(String b64enchipheredUsername) throws NotFoundException;
 }

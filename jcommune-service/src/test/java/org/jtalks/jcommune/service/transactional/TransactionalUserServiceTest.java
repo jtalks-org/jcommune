@@ -26,6 +26,7 @@ import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
+import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
@@ -61,7 +62,6 @@ public class TransactionalUserServiceTest {
     private static final Long USER_ID = 999L;
     private static final long MAX_REGISTRATION_TIMEOUT = 1000L;
 
-    @Mock
     private UserService userService;
     @Mock
     private UserDao userDao;
@@ -70,14 +70,14 @@ public class TransactionalUserServiceTest {
     @Mock
     private MailService mailService;
     @Mock
-    private ImageUtils processor;
-    @Mock
     private AvatarService avatarService;
+    @Mock
+    private Base64Wrapper base64Wrapper;
 
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-        userService = new TransactionalUserService(userDao, securityService, mailService, processor, avatarService);
+        userService = new TransactionalUserService(userDao, securityService, mailService, base64Wrapper, avatarService);
     }
 
     @Test

@@ -17,6 +17,8 @@ package org.jtalks.jcommune.model.dao;
 import org.jtalks.common.model.dao.ParentRepository;
 import org.jtalks.jcommune.model.entity.JCUser;
 
+import java.util.Collection;
+
 /**
  * This interface provides persistence operations for
  * {@link org.jtalks.jcommune.model.entity.JCUser} objects.
@@ -46,4 +48,12 @@ public interface UserDao extends ParentRepository<JCUser> {
      */
     JCUser getByEmail(String email);
 
+    /**
+     * Returns all users, whose accounts are not enables.
+     * At the moment registration creates disabled accounts and user should activate
+     * them manually following the link in an e-mail.
+     *
+     * @return list of non-activated user accounts
+     */
+    Collection<JCUser> getNonActivatedUsers();
 }

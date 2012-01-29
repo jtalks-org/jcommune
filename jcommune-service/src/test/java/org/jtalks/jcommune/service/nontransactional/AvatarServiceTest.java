@@ -19,6 +19,7 @@ import org.apache.commons.io.IOUtils;
 import org.jtalks.jcommune.service.exceptions.ImageFormatException;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.jtalks.jcommune.service.exceptions.ImageSizeException;
+import org.mockito.Mock;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.testng.annotations.BeforeMethod;
@@ -37,6 +38,7 @@ import java.util.Set;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -45,13 +47,16 @@ import static org.testng.Assert.assertTrue;
  */
 public class AvatarServiceTest {
 
-    private ImageUtils imageUtils;
     private AvatarService avatarService;
+    @Mock
+    private ImageUtils imageUtils;
+    @Mock
+    private Base64Wrapper base64Wrapper;
 
     @BeforeMethod
     public void setUp() {
-        imageUtils = mock(ImageUtils.class);
-        avatarService = new AvatarService(imageUtils, "org/jtalks/jcommune/service/avatar.gif");
+        initMocks(this);
+        avatarService = new AvatarService(imageUtils, base64Wrapper, "org/jtalks/jcommune/service/avatar.gif");
     }
 
     @Test(dataProvider = "validImageBytesValues")
@@ -62,7 +67,7 @@ public class AvatarServiceTest {
         //set expectations
         when(imageUtils.convertByteArrayToImage(originalImageBytes)).thenReturn(inputImage);
         when(imageUtils.preprocessImage(inputImage)).thenReturn(processedImageBytes);
-        when(imageUtils.encodeB64(processedImageBytes)).thenReturn(expectedBase64String);
+        when(base64Wrapper.encodeB64Bytes(processedImageBytes)).thenReturn(expectedBase64String);
 
         //invoke object under test
         String resultBase64String = avatarService.convertBytesToBase64String(originalImageBytes);
@@ -70,7 +75,7 @@ public class AvatarServiceTest {
         //check expectations
         verify(imageUtils).convertByteArrayToImage(originalImageBytes);
         verify(imageUtils).preprocessImage(inputImage);
-        verify(imageUtils).encodeB64(processedImageBytes);
+        verify(base64Wrapper).encodeB64Bytes(processedImageBytes);
 
         //check result
         assertEquals(resultBase64String, expectedBase64String);
@@ -145,8 +150,9 @@ public class AvatarServiceTest {
         avatarService.validateAvatarFormat((byte[]) null);
     }
 
-    @Test(expectedExceptions = ImageSizeException.class, dataProvider = "invalidSizeValues")
-    public void inputDataForValidateAvatarSizeIsInvalid(byte[] bytes) throws Exception {
+    @Test(expectedExceptions = ImageSizeException.class)
+    public void inputDataForValidateAvatarSizeIsInvalid() throws Exception {
+        byte[] bytes = new byte[AvatarService.MAX_SIZE * 2];
         //invoke object under test
         avatarService.validateAvatarSize(bytes);
     }
@@ -160,8 +166,6 @@ public class AvatarServiceTest {
 
     @DataProvider
     private Object[][] validImageBytesValues() throws IOException, ImageProcessException {
-        ImageUtils imageUtils = new ImageUtils();
-
         byte[] originalImageBytes = new byte[]{-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0,
                 0, 5, 0, 0, 0, 5, 8, 2, 0, 0, 0, 2, 13, -79, -78, 0, 0, 0, 9, 112, 72, 89, 115, 0, 0, 1, -118, 0,
                 0, 1, -118, 1, 51, -105, 48, 88, 0, 0, 0, 32, 99, 72, 82, 77, 0, 0, 122, 37, 0, 0, -128, -125,
@@ -172,9 +176,10 @@ public class AvatarServiceTest {
                 36, 71, 49, 115, -89, 85, 0, 0, 0, 0, 73, 69, 78, 68, -82, 66, 96, -126
         };
 
+        ImageUtils imageUtils = new ImageUtils(new Base64Wrapper());
         BufferedImage inputImage = imageUtils.convertByteArrayToImage(originalImageBytes);
         byte[] processedImageBytes = imageUtils.preprocessImage(inputImage);
-        String expectedBase64String = imageUtils.encodeB64(processedImageBytes);
+        String expectedBase64String = new Base64Wrapper().encodeB64Bytes(processedImageBytes);
 
         return new Object[][]{
                 {originalImageBytes, inputImage, processedImageBytes, expectedBase64String}
@@ -183,7 +188,7 @@ public class AvatarServiceTest {
 
     @DataProvider
     private Object[][] invalidImageBytesValues() throws Exception {
-        ImageUtils imageUtils = new ImageUtils();
+        ImageUtils imageUtils = new ImageUtils(new Base64Wrapper());
 
         byte[] originalImageBytes = new byte[]{96, -126};
 
@@ -251,13 +256,6 @@ public class AvatarServiceTest {
         }
 
         return result;
-    }
-
-    @DataProvider
-    Object[][] invalidSizeValues() {
-        return new Object[][]{
-                {new byte[AvatarService.MAX_SIZE * 2]},
-        };
     }
 
     @DataProvider

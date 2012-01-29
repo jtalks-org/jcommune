@@ -30,6 +30,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static org.testng.Assert.*;
@@ -171,12 +172,16 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     }
 
     @Test
-    public void testNullPostsOfUserCount() {
+    public void testFetchNonActivatedAccounts(){
+        JCUser activated = new JCUser("login", "email", "password");
+        activated.setEnabled(true);
+        session.save(activated);
         session.save(ObjectsFactory.getDefaultUser());
 
-        JCUser user = dao.getByUsername("username");
+        Collection<JCUser> users = dao.getNonActivatedUsers();
 
-        assertEquals(user.getPostCount(), 0);
+        assertTrue(users.contains(activated));
+        assertEquals(users.size(), 1);
     }
 
 
