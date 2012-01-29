@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.apache.commons.codec.binary.StringUtils;
+import org.apache.velocity.app.VelocityEngine;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -24,11 +25,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This service is focused on sending e-mail to forum users.
@@ -42,49 +46,19 @@ public class MailService {
 
     private MailSender mailSender;
     private SimpleMailMessage templateMessage;
+    private VelocityEngine velocityEngine;
+    private Base64Wrapper base64Wrapper;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MailService.class);
     private static final String LOG_TEMPLATE = "Error occurred while sending updates of %s %d to %s";
 
     // todo: apply i18n settings here somehow and extract them as templates (velocity?)
-    private static final String PASSWORD_RECOVERY_TEMPLATE =
-            "Dear %s!\n" +
-                    "\n" +
-                    "This is a password recovery mail from JTalks forum.\n" +
-                    "Your new password is: %s\n" +
-                    "Feel free to log in at %s.\n" +
-                    "\n" +
-                    "Best regards,\n" +
-                    "\n" +
-                    "Jtalks forum.";
 
     private static final String SUBSCRIPTION_NOTIFICATION_TEMPLATE =
             "Dear %s!\n" +
                     "\n" +
                     "Your favorite forum has some updates.\n" +
                     "Please check it out at %s.\n" +
-                    "\n" +
-                    "Best regards,\n" +
-                    "\n" +
-                    "Jtalks forum.";
-
-    private static final String RECEIVED_PRIVATE_MESSAGE_NOTIFICATION_TEMPLATE =
-            "Dear %s!\n" +
-                    "\n" +
-                    "Your received new private message.\n" +
-                    "Please check it out at %s.\n" +
-                    "\n" +
-                    "Best regards,\n" +
-                    "\n" +
-                    "Jtalks forum.";
-
-    private static final String ACCOUNT_ACTIVATION_TEMPLATE =
-            "Dear %s!\n" +
-                    "\n" +
-                    "This mail is to confirm your registration at JTalks forum.\n" +
-                    "Please follow the link below to activate your account. This link is valid for 24 hours.\n" +
-                    "Also note, that account will be deleted automatically in 24 hours if not activated.\n" +
-                    "\nActivation link: %s\n" +
                     "\n" +
                     "Best regards,\n" +
                     "\n" +
@@ -99,10 +73,15 @@ public class MailService {
      *
      * @param mailSender      spring mailing tool
      * @param templateMessage blank message with "from" filed preset
+     * @param velocityEngine  engine for templating email notifications
+     * @param base64Wrapper to encode username for account activation
      */
-    public MailService(MailSender mailSender, SimpleMailMessage templateMessage) {
+    public MailService(MailSender mailSender, SimpleMailMessage templateMessage, VelocityEngine velocityEngine,
+                       Base64Wrapper base64Wrapper) {
         this.mailSender = mailSender;
         this.templateMessage = templateMessage;
+        this.velocityEngine = velocityEngine;
+        this.base64Wrapper = base64Wrapper;
     }
 
     /**
@@ -116,10 +95,16 @@ public class MailService {
      */
     public void sendPasswordRecoveryMail(String name, String email, String newPassword) throws MailingFailedException {
         String url = this.getDeploymentRootUrl() + "/login/";
+        Map model = new HashMap();
+        model.put("name", name);
+        model.put("newPassword", newPassword);
+        model.put("url", url);
+        String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
+                "org/jtalks/jcommune/service/templates/passwordRecoveryTemplate.vm", model);
         this.sendEmail(
                 email,
                 "Password recovery",
-                String.format(String.format(PASSWORD_RECOVERY_TEMPLATE, name, newPassword, url)),
+                text,
                 "Password recovery email sending failed");
         LOGGER.info("Password recovery email sent for {}", name);
     }
@@ -175,9 +160,14 @@ public class MailService {
     public void sendReceivedPrivateMessageNotification(JCUser recipient, long pmId) {
         String url = this.getDeploymentRootUrl() + "/inbox/" + pmId;
         try {
+            Map model = new HashMap();
+            model.put("recipient", recipient);
+            model.put("url", url);
+            String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
+                    "org/jtalks/jcommune/service/templates/receivedPrivateMessageNotificationTemplate.vm", model);
             this.sendEmail(recipient.getEmail(),
                     "Received private message",
-                    String.format(RECEIVED_PRIVATE_MESSAGE_NOTIFICATION_TEMPLATE, recipient.getUsername(), url),
+                    text,
                     "Received private message notification sending failed");
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Private message", pmId, recipient.getUsername()));
@@ -187,11 +177,26 @@ public class MailService {
     /**
      * Sends email with a hyperlink to activate user account.
      *
-     * @param recipient account to be activated
+     * @param username username set on registration
+     * @param email address to send activation email to
      */
-    public void sendAccountActivationMail(JCUser recipient) {
-        byte[] username = StringUtils.getBytesUtf8(recipient.getUsername());
-
+    public void sendAccountActivationMail(String username, String email) {
+        byte[] name = StringUtils.getBytesUtf8(username);
+        String encodedName = base64Wrapper.encodeB64Bytes(name);
+        String url = this.getDeploymentRootUrl() + "/users/activate/" + encodedName;
+        try {
+            Map model = new HashMap();
+            model.put("name", username);
+            model.put("url", url);
+            String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
+                    "org/jtalks/jcommune/service/templates/accountActivation.vm", model);
+            this.sendEmail(email,
+                    "Received private message",
+                    text,
+                    "Received private message notification sending failed");
+        } catch (MailingFailedException e) {
+            LOGGER.error("Failed tosent activation mail for user: " + username);
+        }
     }
 
     /**

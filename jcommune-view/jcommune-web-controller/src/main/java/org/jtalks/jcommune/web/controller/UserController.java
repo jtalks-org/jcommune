@@ -125,6 +125,7 @@ public class UserController {
      *
      * @param b64Username
      * @return
+     * @throws NotFoundException
      */
     @RequestMapping(value = "user/activate/{b64Username}")
     public ModelAndView activateAccount(@PathVariable String b64Username) throws NotFoundException {

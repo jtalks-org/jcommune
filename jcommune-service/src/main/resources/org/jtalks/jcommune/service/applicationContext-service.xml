@@ -141,10 +141,20 @@
         <property name="from" value="jtalks@inbox.ru"/>
     </bean>
 
-    <bean id="mailService"
-          class="org.jtalks.jcommune.service.nontransactional.MailService">
+    <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+      <property name="velocityProperties">
+        <value>
+          resource.loader=class
+          class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+        </value>
+      </property>
+    </bean>
+
+    <bean id="mailService" class="org.jtalks.jcommune.service.nontransactional.MailService">
         <constructor-arg ref="mailSender"/>
         <constructor-arg ref="templateMessage"/>
+        <constructor-arg ref="velocityEngine"/>
+        <constructor-arg ref="base64Wrapper"/>
     </bean>
 
     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">

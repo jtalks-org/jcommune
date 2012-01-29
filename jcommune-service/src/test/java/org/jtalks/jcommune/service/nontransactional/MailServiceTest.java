@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.apache.velocity.app.VelocityEngine;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
@@ -47,6 +48,8 @@ public class MailServiceTest {
     private MailService service;
     private MailSender sender;
     private SimpleMailMessage message;
+    private VelocityEngine velocityEngine;
+    private Base64Wrapper base64Wrapper;
     private MockHttpServletRequest request;
 
     private static final String FROM = "lol@wut.zz";
@@ -63,8 +66,12 @@ public class MailServiceTest {
     public void setUp() {
         sender = mock(MailSender.class);
         message = new SimpleMailMessage();
+        velocityEngine = new VelocityEngine();
+        velocityEngine.setProperty("resource.loader", "class");
+        velocityEngine.setProperty("class.resource.loader.class",
+                "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
         message.setFrom(FROM);
-        service = new MailService(sender, message);
+        service = new MailService(sender, message, velocityEngine, base64Wrapper);
         captor = ArgumentCaptor.forClass(SimpleMailMessage.class);
     }
 
