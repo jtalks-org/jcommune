@@ -82,6 +82,7 @@ public class MailService {
      *
      * @param mailSender      spring mailing tool
      * @param templateMessage blank message with "from" filed preset
+     * @param velocityEngine  engine for templating email notifications
      */
     public MailService(MailSender mailSender, SimpleMailMessage templateMessage, VelocityEngine velocityEngine) {
         this.mailSender = mailSender;
