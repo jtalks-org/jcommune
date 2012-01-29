@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.apache.commons.codec.binary.StringUtils;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -72,6 +73,18 @@ public class MailService {
                     "\n" +
                     "Your received new private message.\n" +
                     "Please check it out at %s.\n" +
+                    "\n" +
+                    "Best regards,\n" +
+                    "\n" +
+                    "Jtalks forum.";
+
+    private static final String ACCOUNT_ACTIVATION_TEMPLATE =
+            "Dear %s!\n" +
+                    "\n" +
+                    "This mail is to confirm your registration at JTalks forum.\n" +
+                    "Please follow the link below to activate your account. This link is valid for 24 hours.\n" +
+                    "Also note, that account will be deleted automatically in 24 hours if not activated.\n" +
+                    "\nActivation link: %s\n" +
                     "\n" +
                     "Best regards,\n" +
                     "\n" +
@@ -169,6 +182,16 @@ public class MailService {
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Private message", pmId, recipient.getUsername()));
         }
+    }
+
+    /**
+     * Sends email with a hyperlink to activate user account.
+     *
+     * @param recipient account to be activated
+     */
+    public void sendAccountActivationMail(JCUser recipient) {
+        byte[] username = StringUtils.getBytesUtf8(recipient.getUsername());
+
     }
 
     /**
