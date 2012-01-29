@@ -51,16 +51,6 @@ public class MailService {
     private static final String LOG_TEMPLATE = "Error occurred while sending updates of %s %d to %s";
 
     // todo: apply i18n settings here somehow and extract them as templates (velocity?)
-    private static final String PASSWORD_RECOVERY_TEMPLATE =
-            "Dear %s!\n" +
-                    "\n" +
-                    "This is a password recovery mail from JTalks forum.\n" +
-                    "Your new password is: %s\n" +
-                    "Feel free to log in at %s.\n" +
-                    "\n" +
-                    "Best regards,\n" +
-                    "\n" +
-                    "Jtalks forum.";
 
     private static final String SUBSCRIPTION_NOTIFICATION_TEMPLATE =
             "Dear %s!\n" +
@@ -101,10 +91,16 @@ public class MailService {
      */
     public void sendPasswordRecoveryMail(String name, String email, String newPassword) throws MailingFailedException {
         String url = this.getDeploymentRootUrl() + "/login/";
+        Map model = new HashMap();
+        model.put("name", name);
+        model.put("newPassword", newPassword);
+        model.put("url", url);
+        String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
+                "org/jtalks/jcommune/service/templates/passwordRecoveryTemplate.vm", model);
         this.sendEmail(
                 email,
                 "Password recovery",
-                String.format(String.format(PASSWORD_RECOVERY_TEMPLATE, name, newPassword, url)),
+                text,
                 "Password recovery email sending failed");
         LOGGER.info("Password recovery email sent for {}", name);
     }
@@ -164,7 +160,7 @@ public class MailService {
             model.put("recipient", recipient);
             model.put("url", url);
             String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
-                    "org/jtalks/jcommune/service/templates/privateMessageNotification.vm", model);
+                    "org/jtalks/jcommune/service/templates/receivedPrivateMessageNotificationTemplate.vm", model);
             this.sendEmail(recipient.getEmail(),
                     "Received private message",
                     text,
