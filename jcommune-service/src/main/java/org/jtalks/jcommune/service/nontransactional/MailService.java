@@ -49,6 +49,9 @@ public class MailService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MailService.class);
     private static final String LOG_TEMPLATE = "Error occurred while sending updates of %s %d to %s";
+    private static final String TEMPLATES_PATH = "org/jtalks/jcommune/service/templates/";
+    private static final String URL = "url";
+    private static final String USER = "user";
 
     // todo: apply i18n settings here somehow and extract them as templates (velocity?)
 
@@ -83,9 +86,9 @@ public class MailService {
         Map model = new HashMap();
         model.put("name", name);
         model.put("newPassword", newPassword);
-        model.put("url", url);
+        model.put(URL, url);
         String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
-                "org/jtalks/jcommune/service/templates/passwordRecoveryTemplate.vm", model);
+                TEMPLATES_PATH + "passwordRecoveryTemplate.vm", model);
         this.sendEmail(
                 email,
                 "Password recovery",
@@ -106,10 +109,10 @@ public class MailService {
         String url = this.getDeploymentRootUrl() + "/posts/" + topic.getLastPost().getId();
         try {
             Map model = new HashMap();
-            model.put("user", user);
-            model.put("url", url);
+            model.put(USER, user);
+            model.put(URL, url);
             String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
-                    "org/jtalks/jcommune/service/templates/subscriptionNotificationTemplate.vm", model);
+                    TEMPLATES_PATH + "subscriptionNotificationTemplate.vm", model);
             this.sendEmail(
                     user.getEmail(),
                     "Forum updates",
@@ -132,10 +135,10 @@ public class MailService {
         String url = this.getDeploymentRootUrl() + "/branches/" + branch.getId();
         try {
             Map model = new HashMap();
-            model.put("user", user);
-            model.put("url", url);
+            model.put(USER, user);
+            model.put(URL, url);
             String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
-                    "org/jtalks/jcommune/service/templates/subscriptionNotificationTemplate.vm", model);
+                    TEMPLATES_PATH + "subscriptionNotificationTemplate.vm", model);
             this.sendEmail(
                     user.getEmail(),
                     "Forum updates",
@@ -157,9 +160,9 @@ public class MailService {
         try {
             Map model = new HashMap();
             model.put("recipient", recipient);
-            model.put("url", url);
+            model.put(URL, url);
             String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
-                    "org/jtalks/jcommune/service/templates/receivedPrivateMessageNotificationTemplate.vm", model);
+                    TEMPLATES_PATH + "receivedPrivateMessageNotificationTemplate.vm", model);
             this.sendEmail(recipient.getEmail(),
                     "Received private message",
                     text,
