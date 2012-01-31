@@ -51,18 +51,11 @@ public class MailService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MailService.class);
     private static final String LOG_TEMPLATE = "Error occurred while sending updates of %s %d to %s";
+    private static final String TEMPLATES_PATH = "org/jtalks/jcommune/service/templates/";
+    private static final String URL = "url";
+    private static final String USER = "user";
 
     // todo: apply i18n settings here somehow and extract them as templates (velocity?)
-
-    private static final String SUBSCRIPTION_NOTIFICATION_TEMPLATE =
-            "Dear %s!\n" +
-                    "\n" +
-                    "Your favorite forum has some updates.\n" +
-                    "Please check it out at %s.\n" +
-                    "\n" +
-                    "Best regards,\n" +
-                    "\n" +
-                    "Jtalks forum.";
 
     /**
      * Creates a mailing service with a default template message autowired.
@@ -98,9 +91,9 @@ public class MailService {
         Map model = new HashMap();
         model.put("name", name);
         model.put("newPassword", newPassword);
-        model.put("url", url);
+        model.put(URL, url);
         String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
-                "org/jtalks/jcommune/service/templates/passwordRecoveryTemplate.vm", model);
+                TEMPLATES_PATH + "passwordRecoveryTemplate.vm", model);
         this.sendEmail(
                 email,
                 "Password recovery",
@@ -120,10 +113,15 @@ public class MailService {
     public void sendTopicUpdatesOnSubscription(JCUser user, Topic topic) {
         String url = this.getDeploymentRootUrl() + "/posts/" + topic.getLastPost().getId();
         try {
+            Map model = new HashMap();
+            model.put(USER, user);
+            model.put(URL, url);
+            String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
+                    TEMPLATES_PATH + "subscriptionNotificationTemplate.vm", model);
             this.sendEmail(
                     user.getEmail(),
                     "Forum updates",
-                    String.format(SUBSCRIPTION_NOTIFICATION_TEMPLATE, user.getUsername(), url),
+                    text,
                     "Subscription update sending failed");
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Topic", topic.getId(), user.getUsername()));
@@ -141,10 +139,15 @@ public class MailService {
     public void sendBranchUpdatesOnSubscription(JCUser user, Branch branch) {
         String url = this.getDeploymentRootUrl() + "/branches/" + branch.getId();
         try {
+            Map model = new HashMap();
+            model.put(USER, user);
+            model.put(URL, url);
+            String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
+                    TEMPLATES_PATH + "subscriptionNotificationTemplate.vm", model);
             this.sendEmail(
                     user.getEmail(),
                     "Forum updates",
-                    String.format(SUBSCRIPTION_NOTIFICATION_TEMPLATE, user.getUsername(), url),
+                    text,
                     "Subscription update sending failed");
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Branch", branch.getId(), user.getUsername()));
@@ -162,9 +165,9 @@ public class MailService {
         try {
             Map model = new HashMap();
             model.put("recipient", recipient);
-            model.put("url", url);
+            model.put(URL, url);
             String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
-                    "org/jtalks/jcommune/service/templates/receivedPrivateMessageNotificationTemplate.vm", model);
+                    TEMPLATES_PATH + "receivedPrivateMessageNotificationTemplate.vm", model);
             this.sendEmail(recipient.getEmail(),
                     "Received private message",
                     text,
