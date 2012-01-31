@@ -47,7 +47,6 @@ public class MailService {
     private MailSender mailSender;
     private SimpleMailMessage templateMessage;
     private VelocityEngine velocityEngine;
-    private Base64Wrapper base64Wrapper;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MailService.class);
     private static final String LOG_TEMPLATE = "Error occurred while sending updates of %s %d to %s";
@@ -67,14 +66,11 @@ public class MailService {
      * @param mailSender      spring mailing tool
      * @param templateMessage blank message with "from" filed preset
      * @param velocityEngine  engine for templating email notifications
-     * @param base64Wrapper to encode username for account activation
      */
-    public MailService(MailSender mailSender, SimpleMailMessage templateMessage, VelocityEngine velocityEngine,
-                       Base64Wrapper base64Wrapper) {
+    public MailService(MailSender mailSender, SimpleMailMessage templateMessage, VelocityEngine velocityEngine) {
         this.mailSender = mailSender;
         this.templateMessage = templateMessage;
         this.velocityEngine = velocityEngine;
-        this.base64Wrapper = base64Wrapper;
     }
 
     /**
@@ -180,25 +176,22 @@ public class MailService {
     /**
      * Sends email with a hyperlink to activate user account.
      *
-     * @param username username set on registration
-     * @param email address to send activation email to
+     * @param recipient user to send activation mail to
      */
-    public void sendAccountActivationMail(String username, String email) {
-        byte[] name = StringUtils.getBytesUtf8(username);
-        String encodedName = base64Wrapper.encodeB64Bytes(name);
-        String url = this.getDeploymentRootUrl() + "/user/activate/" + encodedName;
+    public void sendAccountActivationMail(JCUser recipient) {
+        String url = this.getDeploymentRootUrl() + "/user/activate/" + recipient.getEncodedUsername();
         try {
             Map model = new HashMap();
-            model.put("name", username);
+            model.put("name", recipient.getUsername());
             model.put("url", url);
             String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
                     "org/jtalks/jcommune/service/templates/accountActivation.vm", model);
-            this.sendEmail(email,
+            this.sendEmail(recipient.getEmail(),
                     "JTalks account activation",
                     text,
                     "Account activation mail sending failed");
         } catch (MailingFailedException e) {
-            LOGGER.error("Failed tosent activation mail for user: " + username);
+            LOGGER.error("Failed tosent activation mail for user: " + recipient.getUsername());
         }
     }
 

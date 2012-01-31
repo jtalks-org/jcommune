@@ -53,8 +53,6 @@ public class MailServiceTest {
     private MailSender sender;
     private SimpleMailMessage message;
     private VelocityEngine velocityEngine;
-    @Mock
-    private Base64Wrapper base64Wrapper;
     private MockHttpServletRequest request;
 
     private static final String FROM = "lol@wut.zz";
@@ -76,7 +74,7 @@ public class MailServiceTest {
         velocityEngine.setProperty("class.resource.loader.class",
                 "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
         message.setFrom(FROM);
-        service = new MailService(sender, message, velocityEngine, base64Wrapper);
+        service = new MailService(sender, message, velocityEngine);
         captor = ArgumentCaptor.forClass(SimpleMailMessage.class);
     }
 
@@ -132,19 +130,18 @@ public class MailServiceTest {
 
     @Test
     public void testSendActivationMail() {
-        when(base64Wrapper.encodeB64Bytes(Matchers.<byte[]>any())).thenReturn(USERNAME);
 
-        service.sendAccountActivationMail(USERNAME, TO);
+        service.sendAccountActivationMail(new JCUser(USERNAME, TO, PASSWORD));
         this.checkMailCredentials();
         assertTrue(captor.getValue().getText().contains("http://coolsite.com:1234/forum/user/activate/" + USERNAME));
     }
 
     @Test
-    public void testSendActivationMailFail(){
-       Exception fail = new MailSendException("");
+    public void testSendActivationMailFail() {
+        Exception fail = new MailSendException("");
         doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
 
-        service.sendAccountActivationMail(USERNAME, TO);
+        service.sendAccountActivationMail(new JCUser(USERNAME, TO, PASSWORD));
     }
 
     @Test(expectedExceptions = MailingFailedException.class)

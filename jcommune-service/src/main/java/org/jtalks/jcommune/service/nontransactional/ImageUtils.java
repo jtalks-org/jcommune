@@ -18,7 +18,8 @@ import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
 import java.awt.image.RenderedImage;
@@ -56,6 +57,9 @@ public class ImageUtils {
 
     private Base64Wrapper base64Wrapper;
 
+    /**
+     * @param base64Wrapper to perform image data encoding, essential for embedding an image into HTML page
+     */
     public ImageUtils(Base64Wrapper base64Wrapper) {
         this.base64Wrapper = base64Wrapper;
     }

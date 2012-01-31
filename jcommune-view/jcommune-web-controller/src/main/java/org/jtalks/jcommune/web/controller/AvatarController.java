@@ -102,9 +102,8 @@ public class AvatarController {
      */
     @RequestMapping(value = "/users/IFrameAvatarpreview", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<String> uploadAvatar(DefaultMultipartHttpServletRequest request, Locale locale)
-            throws ServletException, IOException {
-
+    public ResponseEntity<String> uploadAvatar(DefaultMultipartHttpServletRequest request,
+                                               Locale locale) throws ServletException, IOException {
         //prepare response parameters
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setContentType(MediaType.TEXT_HTML);

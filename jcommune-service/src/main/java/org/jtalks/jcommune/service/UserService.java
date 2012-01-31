@@ -78,13 +78,12 @@ public interface UserService extends EntityService<JCUser> {
     void restorePassword(String email) throws MailingFailedException;
 
     /**
-     * Activates user account based on enchipehed name passed.
-     * We using B64 not to expose username in a plain link.
+     * Activates user account based on username name passed.
      *
-     * @param b64enchipheredUsername username, prevoiusly incoded with Base65
+     * @param username username to identify account for activation
      * @throws NotFoundException if there is no user mathing username given
      */
-    void activateAccount(String b64enchipheredUsername) throws NotFoundException;
+    void activateAccount(String username) throws NotFoundException;
 
     /**
      * This method will be called authomatically every hour to check

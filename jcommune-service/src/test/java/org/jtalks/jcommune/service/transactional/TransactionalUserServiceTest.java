@@ -37,6 +37,11 @@ import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.*;
@@ -290,8 +295,6 @@ public class TransactionalUserServiceTest {
     @Test
     public void activateAccountTest() throws NotFoundException {
         JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
-        byte[] bytes = org.apache.commons.codec.binary.StringUtils.getBytesUtf8(USERNAME);
-        when(base64Wrapper.decodeB64Bytes(USERNAME)).thenReturn(bytes);
         when(userDao.getByUsername(USERNAME)).thenReturn(user);
 
         userService.activateAccount(USERNAME);
@@ -303,16 +306,35 @@ public class TransactionalUserServiceTest {
     @Test(expectedExceptions = NotFoundException.class)
     public void activateNotFoundAccountTest() throws NotFoundException {
         JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
-        byte[] bytes = org.apache.commons.codec.binary.StringUtils.getBytesUtf8(USERNAME);
-        when(base64Wrapper.decodeB64Bytes(USERNAME)).thenReturn(bytes);
         when(userDao.getByUsername(USERNAME)).thenReturn(null);
 
         userService.activateAccount(USERNAME);
     }
 
+    @Test
+    public void testNonActivatedAccountExpiration() throws NotFoundException {
+        JCUser user1 = new JCUser(USERNAME, EMAIL, PASSWORD);
+        user1.setRegistrationDate(new DateTime());
+        JCUser user2 = new JCUser(USERNAME, EMAIL, PASSWORD);
+        user2.setRegistrationDate(new DateTime().minusHours(25));
+        JCUser user3 = new JCUser(USERNAME, EMAIL, PASSWORD);
+        user3.setRegistrationDate(new DateTime().minusHours(50));
+
+        List<JCUser> users = new ArrayList<JCUser>();
+        Collections.addAll(users, user1, user2, user3);
+
+        when(userDao.getNonActivatedUsers()).thenReturn(users);
+
+        userService.deleteUnactivatedAccountsByTimer();
+
+        verify(userDao).delete(user2);
+        verify(userDao).delete(user3);
+        verify(userDao, never()).delete(user1);
+    }
+
     /**
      * @param username username
-     * @return create and return {@link org.jtalks.jcommune.model.entity.JCUser} with default username, encodedUsername,
+     * @return create and return {@link JCUser} with default username, encodedUsername,
      *         first name, last name,  email and password
      */
     private JCUser getUser(String username) {

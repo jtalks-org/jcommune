@@ -164,7 +164,6 @@
         <constructor-arg ref="mailSender"/>
         <constructor-arg ref="templateMessage"/>
         <constructor-arg ref="velocityEngine"/>
-        <constructor-arg ref="base64Wrapper"/>
     </bean>
 
     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">

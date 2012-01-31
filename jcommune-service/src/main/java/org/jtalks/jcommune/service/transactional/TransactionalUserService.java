@@ -92,7 +92,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         user.setRegistrationDate(new DateTime());
         user.setAvatar(avatarService.getDefaultAvatar());
         this.getDao().saveOrUpdate(user);
-        mailService.sendAccountActivationMail(user.getUsername(), user.getEmail());
+        mailService.sendAccountActivationMail(user);
         logger.info("JCUser registered: {}", user.getUsername());
         return user;
     }
@@ -203,10 +203,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public void activateAccount(String b64Username) throws NotFoundException {
-        byte[] decodedBytes = base64Wrapper.decodeB64Bytes(b64Username);
-        // we have another StringUtils import already
-        String username = org.apache.commons.codec.binary.StringUtils.newStringUtf8(decodedBytes);
+    public void activateAccount(String username) throws NotFoundException {
         JCUser user = this.getDao().getByUsername(username);
         if (user == null){
             throw new NotFoundException();
