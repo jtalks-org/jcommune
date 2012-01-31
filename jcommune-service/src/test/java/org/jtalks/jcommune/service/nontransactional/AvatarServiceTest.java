@@ -133,6 +133,7 @@ public class AvatarServiceTest {
     }
 
 
+
     @Test(dataProvider = "invalidFormatValuesForChromeFF", expectedExceptions = ImageFormatException.class)
     public void inputDataForValidateAvatarFormatFromChromeFFIsInvalid(byte[] bytes) throws ImageFormatException {
         avatarService.validateAvatarFormat(bytes);
@@ -234,27 +235,22 @@ public class AvatarServiceTest {
 
     @DataProvider
     Object[][] validFormatValuesForChromeFF() throws Exception {
-        File file =
-                new File("jcommune-service/src/main/resources/org/jtalks/jcommune/service/testdata/avatar/valid/format");
-        File[] files = file.listFiles();
-        Object[][] result = new Object[files.length][];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = new Object[]{IOUtils.toByteArray(new FileInputStream(files[i]))};
-        }
-
+        String root = "/org/jtalks/jcommune/service/testdata/avatar/valid/format/";
+        Object[][] result = new Object[3][];
+        result[0] = new Object[]{IOUtils.toByteArray(this.getClass().getResourceAsStream(root + "avatar.gif"))};
+        result[1] = new Object[]{IOUtils.toByteArray(this.getClass().getResourceAsStream(root + "avatar.jpg"))};
+        result[2] = new Object[]{IOUtils.toByteArray(this.getClass().getResourceAsStream(root + "avatar.png"))};
         return result;
     }
 
     @DataProvider
     Object[][] invalidFormatValuesForChromeFF() throws Exception {
-        File file =
-                new File("jcommune-service/src/main/resources/org/jtalks/jcommune/service/testdata/avatar/invalid/format");
-        File[] files = file.listFiles();
-        Object[][] result = new Object[files.length][];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = new Object[]{IOUtils.toByteArray(new FileInputStream(files[i]))};
-        }
-
+        String root = "/org/jtalks/jcommune/service/testdata/avatar/invalid/format/";
+        Object[][] result = new Object[4][];
+        result[0] = new Object[]{IOUtils.toByteArray(this.getClass().getResourceAsStream(root + "avatar.bmp"))};
+        result[1] = new Object[]{IOUtils.toByteArray(this.getClass().getResourceAsStream(root + "avatar.pcx"))};
+        result[2] = new Object[]{IOUtils.toByteArray(this.getClass().getResourceAsStream(root + "avatar.pdf"))};
+        result[3] = new Object[]{IOUtils.toByteArray(this.getClass().getResourceAsStream(root + "avatar.tif"))};
         return result;
     }
 

@@ -16,6 +16,8 @@ package org.jtalks.jcommune.service.nontransactional;
 
 import org.apache.commons.codec.binary.Base64;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
+import org.mockito.Matchers;
+import org.mockito.Mock;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.testng.annotations.BeforeClass;
@@ -31,6 +33,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -39,13 +43,16 @@ import static org.testng.Assert.assertEquals;
  */
 public class ImageUtilsTest {
 
+    @Mock
+    private Base64Wrapper base64;
     private ImageUtils imageUtils;
     private byte[] byteArray = new byte[]{1, 2, 3};
 
 
     @BeforeClass
     public void init() throws IOException {
-        imageUtils = new ImageUtils(null);
+        initMocks(this);
+        imageUtils = new ImageUtils(base64);
         MultipartFile multipartFile = new MockMultipartFile("test_avatar.png", "test_avatar.png", "image/png",
                 originalImageByteArray);
     }
@@ -83,10 +90,14 @@ public class ImageUtilsTest {
         assertEquals(modifiedImage.getHeight(null), expectedHeight);
     }
 
-    @Test(dataProvider = "htmlImgSrcData")
-    public void testPrepareHtmlImgSrc(String expected) {
+    @Test
+    public void testPrepareHtmlImgSrc() {
+        String source = "source";
+        when(base64.encodeB64Bytes(Matchers.<byte[]>any())).thenReturn(source);
+
         String actual = imageUtils.prepareHtmlImgSrc(originalImageByteArray);
-        assertEquals(actual, expected);
+
+        assertEquals(actual, ImageUtils.HTML_SRC_TAG_PREFIX + source);
     }
 
     private byte[] originalImageByteArray = new byte[]{-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0,
