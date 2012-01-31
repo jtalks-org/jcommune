@@ -79,8 +79,20 @@
             <spring:message code="label.answer"/></a>
         <c:set var="authenticated" value="${true}"/>
     </sec:authorize>
-    &nbsp; &nbsp; &nbsp;
-
+        <c:if test="${pag.maxPages>1}">
+        <c:if test="${pag.pagingEnabled==true}">
+            <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                <a class="button" href="?pagingEnabled=false"><spring:message code="label.showAll"/></a>
+                &nbsp; &nbsp; &nbsp;
+            </sec:authorize>
+        </c:if>
+    </c:if>
+    <c:if test="${pag.pagingEnabled == false}">
+        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+            <a class="button" href="?pagingEnabled=true"><spring:message code="label.showPages"/></a>
+            &nbsp; &nbsp; &nbsp;
+        </sec:authorize>
+    </c:if>
     <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
     <br>
 

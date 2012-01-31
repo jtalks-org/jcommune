@@ -78,8 +78,18 @@ public interface UserService extends EntityService<JCUser> {
     void restorePassword(String email) throws MailingFailedException;
 
     /**
+     * Activates user account based on enchipehed name passed.
+     * We using B64 not to expose username in a plain link.
      *
-     * @param b64enchipheredUsername
+     * @param b64enchipheredUsername username, prevoiusly incoded with Base65
+     * @throws NotFoundException if there is no user mathing username given
      */
     void activateAccount(String b64enchipheredUsername) throws NotFoundException;
+
+    /**
+     * This method will be called authomatically every hour to check
+     * if there are expired user accounts to be deleted. User account
+     * is expired if it's created, but not activated for a day or more.
+     */
+    public void deleteUnactivatedAccountsByTimer();
 }

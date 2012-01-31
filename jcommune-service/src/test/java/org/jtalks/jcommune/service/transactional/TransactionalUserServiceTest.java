@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.jtalks.jcommune.model.dao.UserDao;
@@ -284,6 +285,29 @@ public class TransactionalUserServiceTest {
             // ensure db modification haven't been done if mailing failed
             verify(userDao, never()).update(Matchers.<JCUser>any());
         }
+    }
+
+    @Test
+    public void activateAccountTest() throws NotFoundException {
+        JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
+        byte[] bytes = org.apache.commons.codec.binary.StringUtils.getBytesUtf8(USERNAME);
+        when(base64Wrapper.decodeB64Bytes(USERNAME)).thenReturn(bytes);
+        when(userDao.getByUsername(USERNAME)).thenReturn(user);
+
+        userService.activateAccount(USERNAME);
+
+        assertTrue(user.isEnabled());
+        verify(userDao).getByUsername(USERNAME);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void activateNotFoundAccountTest() throws NotFoundException {
+        JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
+        byte[] bytes = org.apache.commons.codec.binary.StringUtils.getBytesUtf8(USERNAME);
+        when(base64Wrapper.decodeB64Bytes(USERNAME)).thenReturn(bytes);
+        when(userDao.getByUsername(USERNAME)).thenReturn(null);
+
+        userService.activateAccount(USERNAME);
     }
 
     /**

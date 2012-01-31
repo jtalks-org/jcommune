@@ -183,7 +183,7 @@ public class MailService {
     public void sendAccountActivationMail(String username, String email) {
         byte[] name = StringUtils.getBytesUtf8(username);
         String encodedName = base64Wrapper.encodeB64Bytes(name);
-        String url = this.getDeploymentRootUrl() + "/users/activate/" + encodedName;
+        String url = this.getDeploymentRootUrl() + "/user/activate/" + encodedName;
         try {
             Map model = new HashMap();
             model.put("name", username);
@@ -191,9 +191,9 @@ public class MailService {
             String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
                     "org/jtalks/jcommune/service/templates/accountActivation.vm", model);
             this.sendEmail(email,
-                    "Received private message",
+                    "JTalks account activation",
                     text,
-                    "Received private message notification sending failed");
+                    "Account activation mail sending failed");
         } catch (MailingFailedException e) {
             LOGGER.error("Failed tosent activation mail for user: " + username);
         }

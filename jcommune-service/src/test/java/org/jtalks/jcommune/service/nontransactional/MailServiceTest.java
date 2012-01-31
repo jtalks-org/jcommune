@@ -23,6 +23,7 @@ import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
+import org.mockito.Mock;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -35,6 +36,8 @@ import org.testng.annotations.Test;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -46,9 +49,11 @@ import static org.testng.Assert.assertTrue;
 public class MailServiceTest {
 
     private MailService service;
+    @Mock
     private MailSender sender;
     private SimpleMailMessage message;
     private VelocityEngine velocityEngine;
+    @Mock
     private Base64Wrapper base64Wrapper;
     private MockHttpServletRequest request;
 
@@ -64,7 +69,7 @@ public class MailServiceTest {
 
     @BeforeMethod
     public void setUp() {
-        sender = mock(MailSender.class);
+        initMocks(this);
         message = new SimpleMailMessage();
         velocityEngine = new VelocityEngine();
         velocityEngine.setProperty("resource.loader", "class");
@@ -123,6 +128,23 @@ public class MailServiceTest {
 
         this.checkMailCredentials();
         assertTrue(captor.getValue().getText().contains("http://coolsite.com:1234/forum/inbox/1"));
+    }
+
+    @Test
+    public void testSendActivationMail() {
+        when(base64Wrapper.encodeB64Bytes(Matchers.<byte[]>any())).thenReturn(USERNAME);
+
+        service.sendAccountActivationMail(USERNAME, TO);
+        this.checkMailCredentials();
+        assertTrue(captor.getValue().getText().contains("http://coolsite.com:1234/forum/user/activate/" + USERNAME));
+    }
+
+    @Test
+    public void testSendActivationMailFail(){
+       Exception fail = new MailSendException("");
+        doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
+
+        service.sendAccountActivationMail(USERNAME, TO);
     }
 
     @Test(expectedExceptions = MailingFailedException.class)

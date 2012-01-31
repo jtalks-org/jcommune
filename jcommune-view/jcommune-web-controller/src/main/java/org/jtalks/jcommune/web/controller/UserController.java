@@ -122,10 +122,11 @@ public class UserController {
     }
 
     /**
+     * Activates user account with username-based URL
      *
-     * @param b64Username
-     * @return
-     * @throws NotFoundException
+     * @param b64Username encoded username as a part of URL
+     * @return redirect to the login page
+     * @throws NotFoundException if no user has been found for the link passed
      */
     @RequestMapping(value = "user/activate/{b64Username}")
     public ModelAndView activateAccount(@PathVariable String b64Username) throws NotFoundException {

@@ -216,11 +216,10 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     }
 
     /**
-     *  This method will be called authomatically every hour to check
-     *  if there are expired user accounts to be deleted. User account
-     *  is expired if it's created, but not activated for a day or more.
+     * {@inheritDoc}
      */
-    @Scheduled(cron="0 * * * *") // cron expression: invoke every hour at :00 min, e.g. 11:00, 12:00 and so on
+    @Override
+    @Scheduled(cron="0 * * * * *") // cron expression: invoke every hour at :00 min, e.g. 11:00, 12:00 and so on
     public void deleteUnactivatedAccountsByTimer(){
         DateTime today = new DateTime();
         for (JCUser user : this.getDao().getNonActivatedUsers()){
