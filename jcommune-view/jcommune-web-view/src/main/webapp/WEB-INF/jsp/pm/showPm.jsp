@@ -58,7 +58,7 @@
                 </tr>
                 <tr>
                     <td valign="top"><spring:message code="label.body"/></td>
-                    <td><c:out value="${pm.body}"/></td>
+                    <td><jtalks:bb2html bbCode="${pm.body}"/></td>
                 </tr>
             </table>
 
