@@ -14,6 +14,16 @@
  */
 
 $(document).ready(function () {
+    //save form handler
+    $('#saveChanges').click(function () {
+        submitForm('editProfileForm')
+    });
+    //remove avatar handler
+    $('#removeAvatar').click(function () {
+        submitForm('removeAvatarForm')
+    });
+
+    //avatar uploading handler
     var action;
     if (navigator.appName.indexOf("Microsoft") != -1 ||
         navigator.appName.indexOf("Opera") != -1) {
