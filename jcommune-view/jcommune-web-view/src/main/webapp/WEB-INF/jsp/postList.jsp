@@ -125,10 +125,10 @@
                         <span class="status"><spring:message code="label.topic.registered"/></span>
                         <jtalks:format pattern="dd.MM.yy" value="${post.userCreated.registrationDate}"/><br/>
                         <span class="status"><spring:message code="label.topic.message_count"/></span>
-                        ${post.userCreated.postCount}<br/>
+                        <c:out value="${post.userCreated.postCount}"/><br/>
                         <c:if test="${post.userCreated.location != null}">
                             <span class="status"><spring:message code="label.topic.from_whence"/></span>
-                            ${post.userCreated.location}
+                            <c:out value="${post.userCreated.location}"/>
                         </c:if>
                     </div>
                 </div>
@@ -252,7 +252,7 @@
             &nbsp;&nbsp;
         </c:forEach>
         <%--Fake form to delete posts and topics.
-Without it we're likely to get lots of problems simulating HTTP DELETE via JS in a String fashion  --%>
+Without it we're likely to get lots of problems simulating HTTP DELETE via JS in a Spring fashion  --%>
         <form:form id="deleteForm" method="DELETE"/>
     </div>
 </div>
