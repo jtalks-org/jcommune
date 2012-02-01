@@ -121,7 +121,7 @@ public class PostControllerTest {
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
 
         //invoke the object under test
-        ModelAndView actualMav = controller.editPage(TOPIC_ID, POST_ID, PAGE);
+        ModelAndView actualMav = controller.editPage(TOPIC_ID, POST_ID);
 
         //check expectations
         verify(postService).get(POST_ID);
@@ -139,7 +139,7 @@ public class PostControllerTest {
     public void testUpdatePost() throws NotFoundException {
         PostDto dto = getDto();
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "postDto");
-        ModelAndView mav = controller.update(dto, bindingResult, TOPIC_ID, PAGE, POST_ID);
+        ModelAndView mav = controller.update(dto, bindingResult, TOPIC_ID, POST_ID);
         assertViewName(mav, "redirect:/posts/" + dto.getId());
         verify(postService).updatePost(POST_ID, POST_CONTENT);
     }
@@ -151,7 +151,7 @@ public class PostControllerTest {
 
         when(resultWithErrors.hasErrors()).thenReturn(true);
 
-        ModelAndView mav = controller.update(dto, resultWithErrors, TOPIC_ID, PAGE, POST_ID);
+        ModelAndView mav = controller.update(dto, resultWithErrors, TOPIC_ID, POST_ID);
 
         this.assertEditPostFormMavIsCorrect(mav);
 

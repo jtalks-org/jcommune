@@ -144,9 +144,8 @@
                                     <%-- first post - urls to delete & edit topic --%>
                                     <c:set var="delete_url"
                                            value="${pageContext.request.contextPath}/topics/${topic.id}"/>
-                                    <%--todo: page settings for edit url? WTF?--%>
                                     <c:set var="edit_url"
-                                           value="${pageContext.request.contextPath}/topics/${topic.id}/edit?branchId=${branchId}&page=${pag.page}"/>
+                                           value="${pageContext.request.contextPath}/topics/${topic.id}/edit?branchId=${branchId}"/>
                                     <c:set var="confirm_message" value="label.deleteTopicConfirmation"/>
                                 </c:when>
                                 <c:otherwise>
@@ -154,7 +153,7 @@
                                     <c:set var="delete_url"
                                            value="${pageContext.request.contextPath}/posts/${post.id}"/>
                                     <c:set var="edit_url"
-                                           value="${pageContext.request.contextPath}/posts/${post.id}/edit?topicId=${topic.id}&page=${pag.page}"/>
+                                           value="${pageContext.request.contextPath}/posts/${post.id}/edit?topicId=${topic.id}"/>
                                     <c:set var="confirm_message" value="label.deletePostConfirmation"/>
                                 </c:otherwise>
                             </c:choose>
