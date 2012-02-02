@@ -26,7 +26,7 @@
     <title><spring:message code="label.user"/> - "${auth}"</title>
     <script type="text/javascript"
             src="${pageContext.request.contextPath}/resources/javascript/licensed/fileuploader.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/editProfileRelatedJS.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/avatarUpload.js"
             type="text/javascript"></script>
 </head>
 <body>

@@ -24,6 +24,10 @@ $(document).ready(function () {
     });
 
     //avatar uploading handler
+
+    //defined the URL for appropriate avatar processing depending on client browser:
+    // Opera, IE - multipart file using iFrame
+    // Chrome, Opera - byte [] using XHR
     var action;
     if (navigator.appName.indexOf("Microsoft") != -1 ||
         navigator.appName.indexOf("Opera") != -1) {
@@ -36,10 +40,13 @@ $(document).ready(function () {
     console.log('Action: %s', action);
     var uploader = new qq.FileUploaderBasic({
         button:$("#upload").get(0),
+        //server side uploading handler
         action:action,
+        //is multiple file upload available
         multiple:false,
         allowedExtensions:['jpg', 'jpeg', 'png', 'gif'],
-        sizeLimit:4194304, // max size
+        // max uploaded file size (bytes)
+        sizeLimit:4194304,
         onSubmit:function (id, filename) {
             console.log('File upload: %s, ID: %s', filename, id);
         },
@@ -49,10 +56,12 @@ $(document).ready(function () {
         onComplete:function (id, filename, responseJSON) {
             console.log('File upload for file %s, id %s done with status %s', filename, id, responseJSON);
             if (responseJSON.success == "true") {
+                //if server side avatar uploading successful  a processed image displayed
                 document.getElementById('avatarPreview').setAttribute('src', responseJSON.srcPrefix
                     + responseJSON.srcImage);
                 document.getElementById('avatarTempValue').setAttribute('value', responseJSON.srcImage);
             } else {
+                //if server side avatar uploading error occurred instead image an error message displayed
                 document.getElementById('avatarPreview').setAttribute('src', "");
                 document.getElementById('avatarPreview').setAttribute('alt', responseJSON.message);
             }
