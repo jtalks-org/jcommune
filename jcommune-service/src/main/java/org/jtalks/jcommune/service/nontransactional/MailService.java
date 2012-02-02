@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
-import org.apache.commons.codec.binary.StringUtils;
 import org.apache.velocity.app.VelocityEngine;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -84,7 +83,7 @@ public class MailService {
      */
     public void sendPasswordRecoveryMail(String name, String email, String newPassword) throws MailingFailedException {
         String url = this.getDeploymentRootUrl() + "/login/";
-        Map model = new HashMap();
+        Map<String, Object> model = new HashMap<String, Object>();
         model.put("name", name);
         model.put("newPassword", newPassword);
         model.put(URL, url);
@@ -109,7 +108,7 @@ public class MailService {
     public void sendTopicUpdatesOnSubscription(JCUser user, Topic topic) {
         String url = this.getDeploymentRootUrl() + "/posts/" + topic.getLastPost().getId();
         try {
-            Map model = new HashMap();
+            Map<String, Object> model = new HashMap<String, Object>();
             model.put(USER, user);
             model.put(URL, url);
             String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
@@ -135,7 +134,7 @@ public class MailService {
     public void sendBranchUpdatesOnSubscription(JCUser user, Branch branch) {
         String url = this.getDeploymentRootUrl() + "/branches/" + branch.getId();
         try {
-            Map model = new HashMap();
+            Map<String, Object> model = new HashMap<String, Object>();
             model.put(USER, user);
             model.put(URL, url);
             String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
@@ -159,7 +158,7 @@ public class MailService {
     public void sendReceivedPrivateMessageNotification(JCUser recipient, long pmId) {
         String url = this.getDeploymentRootUrl() + "/inbox/" + pmId;
         try {
-            Map model = new HashMap();
+            Map<String, Object> model = new HashMap<String, Object>();
             model.put("recipient", recipient);
             model.put(URL, url);
             String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
@@ -181,17 +180,17 @@ public class MailService {
     public void sendAccountActivationMail(JCUser recipient) {
         String url = this.getDeploymentRootUrl() + "/user/activate/" + recipient.getEncodedUsername();
         try {
-            Map model = new HashMap();
+            Map<String, Object> model = new HashMap<String, Object>();
             model.put("name", recipient.getUsername());
             model.put("url", url);
             String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
-                    "org/jtalks/jcommune/service/templates/accountActivation.vm", model);
+                    TEMPLATES_PATH + "accountActivation.vm", model);
             this.sendEmail(recipient.getEmail(),
                     "JTalks account activation",
                     text,
                     "Account activation mail sending failed");
         } catch (MailingFailedException e) {
-            LOGGER.error("Failed tosent activation mail for user: " + recipient.getUsername());
+            LOGGER.error("Failed to sent activation mail for user: " + recipient.getUsername());
         }
     }
 
