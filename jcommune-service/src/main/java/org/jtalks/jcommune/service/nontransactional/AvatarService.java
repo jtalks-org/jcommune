@@ -26,7 +26,9 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -37,7 +39,7 @@ import java.util.Set;
 public class AvatarService {
 
 
-    private static final Set<String> VALID_IMAGE_TYPES = new HashSet<String>();
+    private static final List<String> VALID_IMAGE_TYPES = Arrays.asList("image/jpeg", "image/png", "image/gif");
     /**
      * Max avatar size in bytes (to be moved in DB later)
      */
@@ -60,9 +62,6 @@ public class AvatarService {
         this.defaultAvatarPath = defaultAvatarPath;
         this.imageUtils = imageUtils;
         this.base64Wrapper = base64Wrapper;
-        VALID_IMAGE_TYPES.add("image/jpeg");
-        VALID_IMAGE_TYPES.add("image/png");
-        VALID_IMAGE_TYPES.add("image/gif");
     }
 
     /**

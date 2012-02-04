@@ -14,11 +14,23 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 *#
-Dear ${recipient.username}!
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" media="screen, projection"
+          href="${pageContext.request.contextPath}/resources/css/editor.css"/>
+</head>
+<body>
+${messageSource.getMessage($greeting, $noArgs, $locale)} ${recipient.username}!
+<br>
+${messageSource.getMessage($content, $noArgs, $locale)} <a href="${url}">${url}</a>.
+<br><hr><br>
 
-You have unread message in your Jtalks inbox.
-Please check it out at ${url}.
-
-Best regards,
-
-Jtalks forum.
+<br><hr><br>
+${messageSource.getMessage($wish, $noArgs, $locale)}
+<br>
+${messageSource.getMessage($signature, $noArgs, $locale)}
+</body>
+</html>

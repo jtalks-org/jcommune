@@ -31,22 +31,31 @@ import java.util.Collection;
 public interface UserDao extends ParentRepository<JCUser> {
 
     /**
-     * Get {@link org.jtalks.jcommune.model.entity.JCUser} with corresponding username.
+     * Get {@link JCUser} with corresponding username.
      *
-     * @param username name of requested user.
-     * @return {@link org.jtalks.jcommune.model.entity.JCUser} with given username.
-     * @see org.jtalks.jcommune.model.entity.JCUser
+     * @param username name of requested user
+     * @return {@link JCUser} with given username or null if not found
+     * @see JCUser
      */
     JCUser getByUsername(String username);
 
     /**
-     * Get {@link org.jtalks.jcommune.model.entity.JCUser} with e-mail given.
+     * Get {@link JCUser} with e-mail given.
      *
      * @param email e-mail address set in user profile.
-     * @return {@link org.jtalks.jcommune.model.entity.JCUser} with given encodedUsername.
-     * @see org.jtalks.jcommune.model.entity.JCUser
+     * @return {@link JCUser} with given email or null if not found
+     * @see JCUser
      */
     JCUser getByEmail(String email);
+
+    /**
+     * Get {@link JCUser} with UUID given.
+     *
+     * @param uuid unique entity identifier
+     * @return {@link JCUser} with given UUID or null if not found
+     * @see JCUser
+     */
+    JCUser getByUuid(String uuid);
 
     /**
      * Returns all users, whose accounts are not enables.

@@ -24,9 +24,11 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.springframework.context.MessageSource;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -34,9 +36,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -50,10 +50,12 @@ public class MailServiceTest {
 
     private MailService service;
     @Mock
-    private MailSender sender;
+    private JavaMailSender sender;
     private SimpleMailMessage message;
     private VelocityEngine velocityEngine;
     private MockHttpServletRequest request;
+    private MessageSource messageSource;
+
 
     private static final String FROM = "lol@wut.zz";
     private static final String TO = "foo@bar.zz";
@@ -74,7 +76,7 @@ public class MailServiceTest {
         velocityEngine.setProperty("class.resource.loader.class",
                 "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
         message.setFrom(FROM);
-        service = new MailService(sender, message, velocityEngine);
+        service = new MailService(sender, message, velocityEngine, messageSource);
         captor = ArgumentCaptor.forClass(SimpleMailMessage.class);
     }
 
@@ -130,10 +132,11 @@ public class MailServiceTest {
 
     @Test
     public void testSendActivationMail() {
-
-        service.sendAccountActivationMail(new JCUser(USERNAME, TO, PASSWORD));
+        JCUser user =  new JCUser(USERNAME, TO, PASSWORD);
+        service.sendAccountActivationMail(user);
         this.checkMailCredentials();
-        assertTrue(captor.getValue().getText().contains("http://coolsite.com:1234/forum/user/activate/" + USERNAME));
+        assertTrue(captor.getValue().getText().contains(
+                "http://coolsite.com:1234/forum/user/activate/" + user.getUuid()));
     }
 
     @Test

@@ -165,6 +165,27 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     }
 
     @Test
+    public void testGetByUuid() {
+        JCUser user = ObjectsFactory.getDefaultUser();
+        String uuid = user.getUuid();
+        session.save(user);
+
+        JCUser result = dao.getByUuid(uuid);
+
+        assertReflectionEquals(user, result);
+    }
+
+    @Test
+    public void testGetByUuidNotExist() {
+        JCUser user = ObjectsFactory.getDefaultUser();
+        session.save(user);
+
+        JCUser result = dao.getByUuid("uuid");
+
+        assertNull(result);
+    }
+
+    @Test
     public void testFetchByEMail() {
         JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
@@ -172,15 +193,16 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     }
 
     @Test
-    public void testFetchNonActivatedAccounts(){
+    public void testFetchNonActivatedAccounts() {
         JCUser activated = new JCUser("login", "email", "password");
         activated.setEnabled(true);
+        JCUser nonActivated = ObjectsFactory.getDefaultUser();
         session.save(activated);
-        session.save(ObjectsFactory.getDefaultUser());
+        session.save(nonActivated);
 
         Collection<JCUser> users = dao.getNonActivatedUsers();
 
-        assertTrue(users.contains(activated));
+        assertTrue(users.contains(nonActivated));
         assertEquals(users.size(), 1);
     }
 

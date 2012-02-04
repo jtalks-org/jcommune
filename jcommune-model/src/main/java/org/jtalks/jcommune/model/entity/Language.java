@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import java.util.Locale;
+
 /**
  * Holds a list of the languages available
  */
@@ -52,5 +54,12 @@ public enum Language {
      */
     public String getLanguageCode() {
         return code;
+    }
+
+    /**
+     * @return Locale object
+     */
+    public Locale getLocale(){
+        return new Locale(code);
     }
 }

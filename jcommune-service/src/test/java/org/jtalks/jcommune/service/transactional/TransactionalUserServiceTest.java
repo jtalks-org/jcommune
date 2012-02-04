@@ -295,12 +295,12 @@ public class TransactionalUserServiceTest {
     @Test
     public void activateAccountTest() throws NotFoundException {
         JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
-        when(userDao.getByUsername(USERNAME)).thenReturn(user);
+        when(userDao.getByUuid(user.getUuid())).thenReturn(user);
 
-        userService.activateAccount(USERNAME);
+        userService.activateAccount(user.getUuid());
 
         assertTrue(user.isEnabled());
-        verify(userDao).getByUsername(USERNAME);
+        verify(userDao).getByUuid(user.getUuid());
     }
 
     @Test(expectedExceptions = NotFoundException.class)

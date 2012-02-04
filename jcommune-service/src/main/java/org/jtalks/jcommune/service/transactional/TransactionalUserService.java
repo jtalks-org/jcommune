@@ -203,8 +203,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public void activateAccount(String username) throws NotFoundException {
-        JCUser user = this.getDao().getByUsername(username);
+    public void activateAccount(String uuid) throws NotFoundException {
+        JCUser user = this.getDao().getByUuid(uuid);
         if (user == null){
             throw new NotFoundException();
         }

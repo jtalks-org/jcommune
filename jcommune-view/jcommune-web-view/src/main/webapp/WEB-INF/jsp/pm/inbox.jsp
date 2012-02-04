@@ -38,7 +38,7 @@
                     <spring:message code="label.sender"/>
                 </div>
                 <div class="forum_header_answer" style="width: 33%">
-                    <spring:message code="label.title"/>
+                    <spring:message code="label.pm.title"/>
                 </div>
                 <div class="forum_header_answer" style="width: 33%">
                     <spring:message code="label.sending_date"/>

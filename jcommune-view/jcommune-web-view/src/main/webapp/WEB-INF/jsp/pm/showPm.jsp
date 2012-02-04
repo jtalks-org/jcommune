@@ -49,7 +49,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><spring:message code="label.recipient"/></td>
+                    <td><spring:message code="label.pm.recipient"/></td>
                     <td>
                         <a href="${pageContext.request.contextPath}/users/${pm.userTo.encodedUsername}">
                             <c:out value="${pm.userTo.username}"/>

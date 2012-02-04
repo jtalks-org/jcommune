@@ -77,19 +77,17 @@ public class JCUser extends User {
     }
 
     /**
-     *
      * @param contact
      */
-    public void addContact(UserContact contact){
+    public void addContact(UserContact contact) {
         contact.setOwner(this);
         this.getContacts().add(contact);
     }
 
     /**
-     *
      * @param contact
      */
-    public void removeContact(UserContact contact){
+    public void removeContact(UserContact contact) {
         this.getContacts().remove(contact);
     }
 
@@ -195,7 +193,7 @@ public class JCUser extends User {
     /**
      * After registration user account is disabled by default.
      * If not enabled in 24 hours after registration account will be deleted.
-     *
+     * <p/>
      * User can activate his account by following the link in email.
      *
      * @return true, if user account is enabled
@@ -209,5 +207,18 @@ public class JCUser extends User {
      */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    /**
+     * We're overriding base method 'cause it's factualy incorrect:
+     * It replaces spaces with a plus sign, while we need %20.
+     * <p/>
+     * todo: fix it in Common Model component
+     *
+     * @return encoded username, safe for URLs
+     */
+    @Override
+    public String getEncodedUsername() {
+        return super.getEncodedUsername().replace("+", "%20");
     }
 }

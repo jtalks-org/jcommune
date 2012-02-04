@@ -58,8 +58,19 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser> 
      */
     @Override
     public Collection<JCUser> getNonActivatedUsers() {
-        return getSession().createQuery("from JCUser u where u.enabled = true")
+        return getSession().createQuery("from JCUser u where u.enabled = false")
                 .setCacheable(false)
                 .list();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JCUser getByUuid(String uuid) {
+        return (JCUser) getSession().createQuery("from JCUser u where u.uuid = ?")
+                .setCacheable(true)
+                .setString(0, uuid)
+                .uniqueResult();
     }
 }
