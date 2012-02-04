@@ -121,6 +121,21 @@ public class UserProfileController {
     }
 
     /**
+     * This method is a shortcut for user profile access. It may be usefull when we haven't got
+     * the specific id, but simply want to access current user's profile.
+     * <p/>
+     * Requires user to be authorized.
+     *
+     * @return user details view with {@link org.jtalks.jcommune.model.entity.JCUser} object.
+     * @throws NotFoundException if user with given id not found.
+     */
+    @RequestMapping(value = "/user", method = RequestMethod.GET)
+    public String showProfilePage() throws NotFoundException {
+        JCUser user = securityService.getCurrentUser();
+        return "redirect:/users/" + user.getEncodedUsername();
+    }
+
+    /**
      * Show edit user profile page for current logged in user.
      *
      * @return edit user profile page

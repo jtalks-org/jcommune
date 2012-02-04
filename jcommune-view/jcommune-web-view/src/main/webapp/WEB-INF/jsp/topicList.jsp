@@ -127,26 +127,12 @@
                         <br/>
                         <a class="last_message_user"
                            href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
-                            ${topic.lastPost.userCreated.username}</a>
-                        <c:choose>
-                            <c:when test="${pagination.pageSize >= topic.postCount}">
-                                <a href="${pageContext.request.contextPath}/topics/${topic.id}#${topic.lastPost.id}"><img
-                                        src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
-                                        alt="<spring:message code="label.section.header.lastMessage"/>"/></a>
-                            </c:when>
-                            <c:otherwise>
-                                <c:if test="${topic.postCount % pagination.pageSize > 0}">
-                                    <c:set var="additionalPage" value="${1}"/>
-                                </c:if>
-                                <c:if test="${topic.postCount % pagination.pageSize == 0}">
-                                    <c:set var="additionalPage" value="${0}"/>
-                                </c:if>
-                                <a href="${pageContext.request.contextPath}/topics/${topic.id}?page=<fmt:formatNumber value="${(topic.postCount - (topic.postCount mod pagination.pageSize)) div pagination.pageSize + additionalPage}"/>#${topic.lastPost.id}">
-                                    <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
-                                         alt="<spring:message code="label.section.header.lastMessage"/>"/>
-                                </a>
-                            </c:otherwise>
-                        </c:choose>
+                                ${topic.lastPost.userCreated.username}
+                        </a>
+                        <a href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}">
+                            <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
+                                 alt="<spring:message code="label.section.header.lastMessage"/>"/>
+                         </a>
                     </div>
                 </li>
             </c:forEach>

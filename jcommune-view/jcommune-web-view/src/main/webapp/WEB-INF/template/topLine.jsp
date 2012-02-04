@@ -17,10 +17,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <div class="top_line">
     <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
         <fmt:message key="label.welcomeMessage"/>
-        <a class="currentusername" href="${pageContext.request.contextPath}/users/${encodedUsername}">
+        <a class="currentusername" href="${pageContext.request.contextPath}/user">
             <sec:authentication property="principal.username"/>
         </a>!
     </sec:authorize>
@@ -32,13 +33,13 @@
         </li>
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
             <li>
-                <a href="${pageContext.request.contextPath}/users/${encodedUsername}">
+                <a href="${pageContext.request.contextPath}/user">
                     <fmt:message key="label.profile"/>
                 </a>
             </li>
             <li>
                 <a href="${pageContext.request.contextPath}/inbox">
-                    <fmt:message key="label.pm"/>(${newPmCount})
+                    <fmt:message key="label.pm"/><c:if test="${newPmCount != null}">(${newPmCount})</c:if>
                 </a>
             </li>
             <li>
