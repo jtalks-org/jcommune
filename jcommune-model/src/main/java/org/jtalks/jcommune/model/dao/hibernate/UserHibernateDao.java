@@ -62,4 +62,15 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser> 
                 .setCacheable(false)
                 .list();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JCUser getByUuid(String uuid) {
+        return (JCUser) getSession().createQuery("from JCUser u where u.uuid = ?")
+                .setCacheable(true)
+                .setString(0, uuid)
+                .uniqueResult();
+    }
 }

@@ -180,7 +180,7 @@ public class MailService {
      * @param recipient user to send activation mail to
      */
     public void sendAccountActivationMail(JCUser recipient) {
-        String url = this.getDeploymentRootUrl() + "/user/activate/" + recipient.getEncodedUsername();
+        String url = this.getDeploymentRootUrl() + "/user/activate/" + recipient.getUuid();
         try {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put("name", recipient.getUsername());

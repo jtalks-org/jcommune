@@ -27,6 +27,7 @@ import org.mockito.Mock;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -50,7 +51,7 @@ public class MailServiceTest {
 
     private MailService service;
     @Mock
-    private MailSender sender;
+    private JavaMailSender sender;
     private SimpleMailMessage message;
     private VelocityEngine velocityEngine;
     private MockHttpServletRequest request;
@@ -130,10 +131,11 @@ public class MailServiceTest {
 
     @Test
     public void testSendActivationMail() {
-
-        service.sendAccountActivationMail(new JCUser(USERNAME, TO, PASSWORD));
+        JCUser user =  new JCUser(USERNAME, TO, PASSWORD);
+        service.sendAccountActivationMail(user);
         this.checkMailCredentials();
-        assertTrue(captor.getValue().getText().contains("http://coolsite.com:1234/forum/user/activate/" + USERNAME));
+        assertTrue(captor.getValue().getText().contains(
+                "http://coolsite.com:1234/forum/user/activate/" + user.getUuid()));
     }
 
     @Test

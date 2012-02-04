@@ -122,15 +122,17 @@ public class UserController {
     }
 
     /**
-     * Activates user account with username-based URL
+     * Activates user account with UUID-based URL
+     * We use UUID's to be sure activation link cannot be generated from username
+     * by script or any other autoted tool.
      *
-     * @param username encoded username as a part of URL
+     * @param uuid unique entity idetifier
      * @return redirect to the login page
      * @throws NotFoundException if no user has been found for the link passed
      */
-    @RequestMapping(value = "user/activate/{username}")
-    public ModelAndView activateAccount(@PathVariable String username) throws NotFoundException {
-        userService.activateAccount(username);
+    @RequestMapping(value = "user/activate/{uuid}")
+    public ModelAndView activateAccount(@PathVariable String uuid) throws NotFoundException {
+        userService.activateAccount(uuid);
         return new ModelAndView("redirect:/");
     }
 }
