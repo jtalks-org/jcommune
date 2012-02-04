@@ -24,6 +24,7 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.springframework.context.MessageSource;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -35,9 +36,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -55,6 +54,8 @@ public class MailServiceTest {
     private SimpleMailMessage message;
     private VelocityEngine velocityEngine;
     private MockHttpServletRequest request;
+    private MessageSource messageSource;
+
 
     private static final String FROM = "lol@wut.zz";
     private static final String TO = "foo@bar.zz";
@@ -75,7 +76,7 @@ public class MailServiceTest {
         velocityEngine.setProperty("class.resource.loader.class",
                 "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
         message.setFrom(FROM);
-        service = new MailService(sender, message, velocityEngine);
+        service = new MailService(sender, message, velocityEngine, messageSource);
         captor = ArgumentCaptor.forClass(SimpleMailMessage.class);
     }
 

@@ -21,18 +21,16 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" media="screen, projection"
           href="${pageContext.request.contextPath}/resources/css/editor.css"/>
-
 </head>
 <body>
-Dear ${recipient.username}!
+${messageSource.getMessage($greeting, $noArgs, $locale)} ${recipient.username}!
 <br>
-You have unread message in your Jtalks inbox.
-Please check it out at <a href="${url}">${url}</a>.
+${messageSource.getMessage($content, $noArgs, $locale)} <a href="${url}">${url}</a>.
 <br><hr><br>
 
 <br><hr><br>
-Best regards,
+${messageSource.getMessage($wish, $noArgs, $locale)}
 <br>
-Jtalks forum.
+${messageSource.getMessage($signature, $noArgs, $locale)}
 </body>
 </html>

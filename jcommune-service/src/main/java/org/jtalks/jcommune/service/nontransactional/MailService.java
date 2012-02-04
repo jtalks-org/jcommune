@@ -21,8 +21,8 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
 import org.springframework.mail.MailException;
-import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
@@ -48,6 +48,7 @@ public class MailService {
     private JavaMailSender mailSender;
     private SimpleMailMessage templateMessage;
     private VelocityEngine velocityEngine;
+    private MessageSource messageSource;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MailService.class);
     private static final String LOG_TEMPLATE = "Error occurred while sending updates of %s %d to %s";
@@ -67,11 +68,14 @@ public class MailService {
      * @param mailSender      spring mailing tool
      * @param templateMessage blank message with "from" filed preset
      * @param velocityEngine  engine for templating email notifications
+     * @param messageSource   for resolving internationalization messages
      */
-    public MailService(JavaMailSender mailSender, SimpleMailMessage templateMessage, VelocityEngine velocityEngine) {
+    public MailService(JavaMailSender mailSender, SimpleMailMessage templateMessage, VelocityEngine velocityEngine,
+                       MessageSource messageSource) {
         this.mailSender = mailSender;
         this.templateMessage = templateMessage;
         this.velocityEngine = velocityEngine;
+        this.messageSource = messageSource;
     }
 
     /**
@@ -90,7 +94,7 @@ public class MailService {
         model.put("newPassword", newPassword);
         model.put(URL, url);
         String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
-                TEMPLATES_PATH + "passwordRecoveryTemplate.vm", model);
+                TEMPLATES_PATH + "passwordRecovery.vm", model);
         this.sendEmail(
                 email,
                 "Password recovery",
@@ -114,7 +118,7 @@ public class MailService {
             model.put(USER, user);
             model.put(URL, url);
             String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
-                    TEMPLATES_PATH + "subscriptionNotificationTemplate.vm", model);
+                    TEMPLATES_PATH + "subscriptionNotification.vm", model);
             this.sendEmail(
                     user.getEmail(),
                     "Forum updates",
@@ -140,7 +144,7 @@ public class MailService {
             model.put(USER, user);
             model.put(URL, url);
             String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
-                    TEMPLATES_PATH + "subscriptionNotificationTemplate.vm", model);
+                    TEMPLATES_PATH + "subscriptionNotification.vm", model);
             this.sendEmail(
                     user.getEmail(),
                     "Forum updates",
@@ -163,8 +167,15 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put("recipient", recipient);
             model.put(URL, url);
+            model.put("messageSource", messageSource);
+            model.put("greeting", "greeting");
+            model.put("content", "content");
+            model.put("wish", "wish");
+            model.put("signature", "signature");
+            model.put("noArgs", new Object[]{});
+            model.put("locale", recipient.getLanguage().getLocale());
             String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
-                    TEMPLATES_PATH + "receivedPrivateMessageNotificationTemplate.vm", model);
+                    TEMPLATES_PATH + "receivedPrivateMessageNotification.vm", model);
             this.sendEmail(recipient.getEmail(),
                     "Received private message",
                     text,
@@ -207,7 +218,7 @@ public class MailService {
      * @throws MailingFailedException exception with error message specified ic case of some error
      */
     private void sendEmail(String to, String subject, String text, String errorMessage) throws MailingFailedException {
-        MimeMessagePreparator prep= null;
+        MimeMessagePreparator prep = null;
         SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
         msg.setTo(to);
         msg.setSubject(subject);
@@ -231,4 +242,5 @@ public class MailService {
                 + ":" + request.getServerPort()
                 + request.getContextPath();
     }
+
 }
