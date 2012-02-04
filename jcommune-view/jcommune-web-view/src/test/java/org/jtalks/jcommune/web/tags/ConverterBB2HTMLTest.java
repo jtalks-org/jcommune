@@ -14,136 +14,66 @@
  */
 package org.jtalks.jcommune.web.tags;
 
+import org.jtalks.jcommune.service.nontransactional.BBCodeService;
+import org.springframework.beans.BeanUtils;
+import org.springframework.context.ApplicationContext;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockPageContext;
+import org.springframework.mock.web.MockServletConfig;
+import org.springframework.mock.web.MockServletContext;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.GenericWebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
+
+import java.io.UnsupportedEncodingException;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 public class ConverterBB2HTMLTest {
 
     private ConverterBB2HTML tag;
+    private BBCodeService bbCodeService;
+    private MockPageContext pageContext;
 
     @BeforeMethod
     public void setUp() {
         tag = new ConverterBB2HTML();
+
+        bbCodeService = mock(BBCodeService.class);
+
+        ServletContext servletContext = new MockServletContext();
+        GenericWebApplicationContext wac = (GenericWebApplicationContext) BeanUtils
+                .instantiateClass(GenericWebApplicationContext.class);
+        wac.getBeanFactory().registerSingleton("BBCodeService", bbCodeService);
+        servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, wac);
+        pageContext = new MockPageContext(servletContext);
     }
 
     @Test
-    public void bbCodeBold(){
-        tag.setBbCode("[b]Bold text[/b]");
-        assertEquals(tag.getBbCode(), "<span style=\"font-weight:bold;\">Bold text</span>");
+    public void testConverterTag() throws JspException, UnsupportedEncodingException {
+        String expected = "result";
+        String source = "source";
+        when(bbCodeService.convertBbToHtml(source)).thenReturn(expected);
+
+        tag.setPageContext(pageContext);
+        tag.setBbCode(source);
+
+        tag.doStartTag();
+
+        String output = ((MockHttpServletResponse) pageContext.getResponse()).getContentAsString();
+        assertEquals(output, expected);
     }
 
-    @Test
-    public void bbCodeItalic(){
-        tag.setBbCode("[i]Italic text[/i]");
-        assertEquals(tag.getBbCode(), "<span style=\"font-style:italic;\">Italic text</span>");
-    }
 
-    @Test
-    public void bbCodeUnderline(){
-        tag.setBbCode("[u]Underline text[/u]");
-        assertEquals(tag.getBbCode(), "<span style=\"text-decoration:underline;\">Underline text</span>");
-    }
 
-    @Test
-    public void bbCodeStrong(){
-        tag.setBbCode("[s]Strong text[/s]");
-        assertEquals(tag.getBbCode(), "<span style=\"text-decoration:line-through;\">Strong text</span>");
-    }
-
-    @Test
-    public void bbCodeColor(){
-        tag.setBbCode("[color=red]Colored text[/color]");
-        assertEquals(tag.getBbCode(), "<span style=\"color:red;\">Colored text</span>");
-    }
-
-    @Test
-    public void bbCodeColorCode(){
-        tag.setBbCode("[color=FF0000]Colored text[/color]");
-        assertEquals(tag.getBbCode(), "<span style=\"color:#FF0000;\">Colored text</span>");
-    }
-
-    @Test
-    public void bbCodeSize(){
-        tag.setBbCode("[size=18]Large text[/size]");
-        assertEquals(tag.getBbCode(), "<span class=\"textSize18\">Large text</span>");
-    }
-
-    @Test
-    public void bbCodeFont(){
-        tag.setBbCode("[font=system]Custom font[/font]");
-        assertEquals(tag.getBbCode(), "<span style=\"font-style:system;\">Custom font</span>");
-    }
-
-    @Test
-    public void bbCodeHighlight(){
-        tag.setBbCode("[highlight]Highlited text[/highlight]");
-        assertEquals(tag.getBbCode(), "<span class=\"highlight\">Highlited text</span>");
-    }
-    @Test
-    public void bbCodeLeft(){
-        tag.setBbCode("[left]Left aligned text[/left]");
-        assertEquals(tag.getBbCode(), "<p class=\"leftText\">Left aligned text</p>");
-    }
-
-    @Test
-    public void bbCodeRight(){
-        tag.setBbCode("[right]Right aligned text[/right]");
-        assertEquals(tag.getBbCode(), "<p class=\"rightText\">Right aligned text</p>");
-    }
-
-    @Test
-    public void bbCodeCenter(){
-        tag.setBbCode("[center]Center aligned text[/center]");
-        assertEquals(tag.getBbCode(), "<p class=\"centerText\">Center aligned text</p>");
-    }
-
-    @Test
-    public void bbCodeIndent(){
-        tag.setBbCode("[indent=25]Indent text[/indent]");
-        assertEquals(tag.getBbCode(), "<p class=\"marginLeft25\">Indent text</p>");
-    }
-
-    @Test
-    public void bbCodeURL(){
-        tag.setBbCode("[url=http://www.google.com]Гу\nгл[/url]");
-        assertEquals(tag.getBbCode(), "<a href=\"http://www.google.com\">Гу<br/>гл</a>");
-    }
-
-    @Test
-    public void bbCodeList(){
-        tag.setBbCode("[list][*]1й пункт[*]2й пункт[/list]");
-        assertEquals(tag.getBbCode(), "<ul class=\"list\"><li>1й пункт</li><li>2й пункт</li></ul>");
-    }
-
-    @Test
-    public void bbCodeImg(){
-        tag.setBbCode("[img]http://narod.ru/avatar.jpg[/img]");
-        assertEquals(tag.getBbCode(), "<a title=\"\" href=\"http://narod.ru/avatar.jpg\" rel=\"prettyPhoto\">" +
-                "<img class=\"thumbnail\" alt=\"\" src=\"http://narod.ru/avatar.jpg\"/></a>");
-    }
-
-    @Test
-    public void bbCodeCode(){
-        tag.setBbCode("[code]System.out.println(\"Hi!\");[/code]");
-        assertEquals(tag.getBbCode(), "<p class=\"code\">System.out.println(&quot;Hi!&quot;);</p>");
-    }
-
-    @Test
-    public void bbCodeQuote(){
-        tag.setBbCode("[quote]Some text[/quote]");
-        assertEquals(tag.getBbCode(), "<div class=\"quote\"><div class=\"quote_title\">Quote:</div><blockquote>Some text</blockquote></div>");
-    }
-
-    @Test
-    public void bbCodeNamedQuote(){
-        tag.setBbCode("[quote=\"user\"]Some text[/quote]");
-        assertEquals(tag.getBbCode(), "<div class=\"quote\"><div class=\"quote_title\">user:</div><blockquote>Some text</blockquote></div>");
-    }
-
-    @Test
-    public void bbCodeOfftop(){
-        tag.setBbCode("[offtop]Some text[/offtop]");
-        assertEquals(tag.getBbCode(), "<div class=\"offtop\"><p>Some text</p></div>");
-    }
 }
