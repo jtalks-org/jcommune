@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -43,7 +45,7 @@ import java.util.Map;
  */
 public class MailService {
 
-    private MailSender mailSender;
+    private JavaMailSender mailSender;
     private SimpleMailMessage templateMessage;
     private VelocityEngine velocityEngine;
 
@@ -66,7 +68,7 @@ public class MailService {
      * @param templateMessage blank message with "from" filed preset
      * @param velocityEngine  engine for templating email notifications
      */
-    public MailService(MailSender mailSender, SimpleMailMessage templateMessage, VelocityEngine velocityEngine) {
+    public MailService(JavaMailSender mailSender, SimpleMailMessage templateMessage, VelocityEngine velocityEngine) {
         this.mailSender = mailSender;
         this.templateMessage = templateMessage;
         this.velocityEngine = velocityEngine;
@@ -205,6 +207,7 @@ public class MailService {
      * @throws MailingFailedException exception with error message specified ic case of some error
      */
     private void sendEmail(String to, String subject, String text, String errorMessage) throws MailingFailedException {
+        MimeMessagePreparator prep= null;
         SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
         msg.setTo(to);
         msg.setSubject(subject);
