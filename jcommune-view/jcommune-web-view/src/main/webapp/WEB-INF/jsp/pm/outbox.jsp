@@ -35,10 +35,10 @@
         <div class="forum_header_table" style="width: 100%">
             <div class="forum_header">
                 <div class="forum_header_answer" style="width: 33%">
-                    <spring:message code="label.recipient"/>
+                    <spring:message code="label.pm.recipient"/>
                 </div>
                 <div class="forum_header_answer" style="width: 33%">
-                    <spring:message code="label.title"/>
+                    <spring:message code="label.pm.title"/>
                 </div>
                 <div class="forum_header_answer" style="width: 33%">
                     <spring:message code="label.sending_date"/>
