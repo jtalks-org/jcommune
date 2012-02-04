@@ -39,7 +39,6 @@ public class PrivateMessageDto {
     @Size(min = PrivateMessage.MIN_MESSAGE_LENGTH, max = PrivateMessage.MAX_MESSAGE_LENGTH, message = "{body.length}")
     private String body;
 
-    @NotBlank
     @Exists(entity = JCUser.class, field = "username", message = "{validation.wrong_recipient}")
     private String recipient;
 

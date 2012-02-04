@@ -56,4 +56,9 @@ public class ExistsValidatorTest {
 
         assertTrue(validator.isValid("value", null));
     }
+
+    @Test
+    public void testNullValue() {
+        assertFalse(validator.isValid(null, null));
+    }
 }
