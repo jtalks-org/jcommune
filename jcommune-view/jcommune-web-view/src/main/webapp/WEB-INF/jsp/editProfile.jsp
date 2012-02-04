@@ -164,7 +164,7 @@
                 <form action="${pageContext.request.contextPath}/users/edit/avatar" id="removeAvatarForm"
                       name="removeAvatarForm" method="POST">
                     <div class="form_controls">
-                        <input id="removeAvatar" type="submit" class="button"
+                        <input id="removeAvatar" type="button" class="button"
                                value="<spring:message code="label.avatar.remove"/>"/>
                     </div>
                 </form>

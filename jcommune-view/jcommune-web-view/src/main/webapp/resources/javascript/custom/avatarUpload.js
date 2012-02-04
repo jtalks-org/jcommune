@@ -20,7 +20,10 @@ $(document).ready(function () {
     });
     //remove avatar handler
     $('#removeAvatar').click(function () {
-        submitForm('removeAvatarForm')
+        $.getJSON($root + "/defaultAvatar", function (responseJSON) {
+            document.getElementById('avatarPreview').setAttribute('src', responseJSON.srcPrefix
+                + responseJSON.srcImage);
+        });
     });
 
     //avatar uploading handler
@@ -59,6 +62,7 @@ $(document).ready(function () {
                 //if server side avatar uploading successful  a processed image displayed
                 document.getElementById('avatarPreview').setAttribute('src', responseJSON.srcPrefix
                     + responseJSON.srcImage);
+                //
                 document.getElementById('avatarTempValue').setAttribute('value', responseJSON.srcImage);
             } else {
                 //if server side avatar uploading error occurred instead image an error message displayed
@@ -74,12 +78,8 @@ $(document).ready(function () {
 
 function submitForm(formName) {
 
-    if (formName == "editProfileForm") {
-        document.getElementById('avatar').setAttribute('value',
-            document.getElementById('avatarTempValue').value);
-    } else {
-        document.getElementById('avatar').setAttribute('value', null);
-    }
+    document.getElementById('avatar')
+        .setAttribute('value', document.getElementById('avatarTempValue').value);
 
     document.forms[formName].submit();
 

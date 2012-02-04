@@ -167,6 +167,15 @@ public class AvatarController {
         response.getOutputStream().write(avatar);
     }
 
+    @RequestMapping(value = "/defaultAvatar", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    String getDefaultAvatar() throws ImageProcessException, IOException {
+        Map<String, String> responseContent = new HashMap<String, String>();
+        prepareNormalResponse(avatarService.getDefaultAvatar(), responseContent);
+        return prepareJSONString(responseContent);
+    }
+
     /**
      * Prepare valid or error response after avatar processing
      *
