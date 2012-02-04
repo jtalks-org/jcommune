@@ -26,7 +26,7 @@
     <title><spring:message code="label.user"/> - "${auth}"</title>
     <script type="text/javascript"
             src="${pageContext.request.contextPath}/resources/javascript/licensed/fileuploader.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/editProfileRelatedJS.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/avatarUpload.js"
             type="text/javascript"></script>
 </head>
 <body>
@@ -153,8 +153,8 @@
                     <span id="upload">
                         <input type="button" class="button" value="<spring:message code="label.avatar.load"/>"/>
                     </span>
-                    <input type="submit" class="button" value="<spring:message code="label.save_changes"/>"
-                           onclick="submitForm('editProfileForm')"/>
+                    <input id="saveChanges" type="submit" class="button"
+                           value="<spring:message code="label.save_changes"/>"/>
                     <a href="${pageContext.request.contextPath}/users/${auth}">
                         <button class="button"><spring:message code="label.back"/></button>
                     </a>
@@ -164,8 +164,8 @@
                 <form action="${pageContext.request.contextPath}/users/edit/avatar" id="removeAvatarForm"
                       name="removeAvatarForm" method="POST">
                     <div class="form_controls">
-                        <input type="submit" class="button" value="<spring:message code="label.avatar.remove"/>"
-                               onclick="submitForm('removeAvatarForm')"/>
+                        <input id="removeAvatar" type="submit" class="button"
+                               value="<spring:message code="label.avatar.remove"/>"/>
                     </div>
                 </form>
             </c:if>
