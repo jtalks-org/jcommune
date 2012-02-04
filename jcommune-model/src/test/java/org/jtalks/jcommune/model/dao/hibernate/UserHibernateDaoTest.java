@@ -196,12 +196,13 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     public void testFetchNonActivatedAccounts() {
         JCUser activated = new JCUser("login", "email", "password");
         activated.setEnabled(true);
+        JCUser nonActivated = ObjectsFactory.getDefaultUser();
         session.save(activated);
-        session.save(ObjectsFactory.getDefaultUser());
+        session.save(nonActivated);
 
         Collection<JCUser> users = dao.getNonActivatedUsers();
 
-        assertTrue(users.contains(activated));
+        assertTrue(users.contains(nonActivated));
         assertEquals(users.size(), 1);
     }
 
