@@ -37,6 +37,7 @@
         <form:form action="${pageContext.request.contextPath}/pm"
                    method="POST" modelAttribute="privateMessageDto" name="editForm"
                    onsubmit="doCheck();">
+            <form:hidden path="id"/>
             <ul class="forum_table">
                 <li class="forum_row">
                     <div class="forum_answer_left">
