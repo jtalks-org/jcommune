@@ -116,7 +116,7 @@ public class UserControllerTest {
 
     @Test
     public void testRestorePasswordFail() throws NotFoundException, MailingFailedException {
-        Exception fail = new MailingFailedException("", new RuntimeException());
+        Exception fail = new MailingFailedException(new RuntimeException());
         doThrow(fail).when(userService).restorePassword(anyString());
         RestorePasswordDto dto = new RestorePasswordDto();
         dto.setEmail(EMAIL);

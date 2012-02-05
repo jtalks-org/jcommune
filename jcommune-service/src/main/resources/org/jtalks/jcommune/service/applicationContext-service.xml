@@ -139,6 +139,7 @@
         <property name="port" value="25"/>
         <property name="username" value="jtalks@inbox.ru"/>
         <property name="password" value="javatalks"/>
+        <property name="defaultEncoding" value="UTF-8"/>
         <property name="javaMailProperties">
             <props>
                 <prop key="mail.smtp.auth">true</prop>

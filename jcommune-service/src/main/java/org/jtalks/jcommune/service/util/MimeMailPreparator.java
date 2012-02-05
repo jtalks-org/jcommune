@@ -52,6 +52,7 @@ public class MimeMailPreparator implements MimeMessagePreparator {
      */
     @Override
     public void prepare(MimeMessage mimeMessage) throws Exception {
+
         MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
         message.setTo(to);
         message.setFrom(from);

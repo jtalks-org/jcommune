@@ -90,8 +90,6 @@ public class UserProfileControllerTest {
         profileController = new UserProfileController(userService, securityService, breadcrumbBuilder, imageUtils, postService);
     }
 
-
-
     @Test
     public void testShow() throws Exception {
         JCUser user = new JCUser("username", "email", "password");
@@ -108,6 +106,15 @@ public class UserProfileControllerTest {
         //check result
         assertViewName(mav, "userDetails");
         assertModelAttributeAvailable(mav, "user");
+    }
+
+    @Test
+    public void testShowShortcut() {
+       when(securityService.getCurrentUser()).thenReturn(new JCUser(USER_NAME, EMAIL, PASSWORD));
+
+        String result = profileController.showProfilePage();
+
+        assertEquals(result, "redirect:/users/" + USER_NAME);
     }
 
     @Test

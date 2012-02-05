@@ -280,7 +280,7 @@ public class TransactionalUserServiceTest {
     @Test(expectedExceptions = MailingFailedException.class)
     public void testRestorePasswordFail() throws NotFoundException, MailingFailedException {
         JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
-        Exception fail = new MailingFailedException("", new RuntimeException());
+        Exception fail = new MailingFailedException(new RuntimeException());
         doThrow(fail).when(mailService).sendPasswordRecoveryMail(anyString(), anyString(), anyString());
         when(userDao.getByEmail(EMAIL)).thenReturn(user);
 
