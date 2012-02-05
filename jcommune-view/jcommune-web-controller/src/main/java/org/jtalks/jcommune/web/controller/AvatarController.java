@@ -95,8 +95,8 @@ public class AvatarController {
      * @param locale  current user locale settings to resolve messages
      * @return ResponseEntity
      * @throws javax.servlet.ServletException avatar processing problem
-     * @throws IOException                    defined in the JsonFactory implementation,
-     *                                        caller must implement exception processing
+     * @throws IOException defined in the JsonFactory implementation,
+     * caller must implement exception processing
      */
     @RequestMapping(value = "/users/IFrameAvatarpreview", method = RequestMethod.POST)
     @ResponseBody
@@ -137,7 +137,7 @@ public class AvatarController {
      * @param response servlet response
      * @param username {@link JCUser#getUsername()}
      * @throws NotFoundException if user with given encodedUsername not found
-     * @throws IOException       throws if an output exception occurred
+     * @throws IOException throws if an output exception occurred
      */
     @RequestMapping(value = "/{username}/avatar", method = RequestMethod.GET)
     public void renderAvatar(HttpServletResponse response,
@@ -158,7 +158,8 @@ public class AvatarController {
      * @throws IOException defined in the JsonFactory implementation, caller must implement exception processing
      */
     @RequestMapping(value = "/defaultAvatar", method = RequestMethod.GET)
-    public @ResponseBody String getDefaultAvatar() throws ImageProcessException, IOException {
+    @ResponseBody
+    public String getDefaultAvatar() throws ImageProcessException, IOException {
         Map<String, String> responseContent = new HashMap<String, String>();
         prepareNormalResponse(avatarService.getDefaultAvatar(), responseContent);
         return prepareJSONString(responseContent);
