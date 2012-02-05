@@ -155,12 +155,10 @@ public class AvatarController {
      *
      * @return JSON string with default user avatar
      * @throws ImageProcessException due to common avatar processing error
-     * @throws IOException           defined in the JsonFactory implementation, caller must implement exception processing
+     * @throws IOException defined in the JsonFactory implementation, caller must implement exception processing
      */
     @RequestMapping(value = "/defaultAvatar", method = RequestMethod.GET)
-    public
-    @ResponseBody
-    String getDefaultAvatar() throws ImageProcessException, IOException {
+    public @ResponseBody String getDefaultAvatar() throws ImageProcessException, IOException {
         Map<String, String> responseContent = new HashMap<String, String>();
         prepareNormalResponse(avatarService.getDefaultAvatar(), responseContent);
         return prepareJSONString(responseContent);
