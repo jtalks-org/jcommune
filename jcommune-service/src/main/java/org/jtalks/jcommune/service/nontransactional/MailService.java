@@ -22,15 +22,19 @@ import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +50,7 @@ import java.util.Map;
 public class MailService {
 
     private JavaMailSender mailSender;
-    private SimpleMailMessage templateMessage;
+    private String from;
     private VelocityEngine velocityEngine;
     private MessageSource messageSource;
 
@@ -60,22 +64,20 @@ public class MailService {
 
     /**
      * Creates a mailing service with a default template message autowired.
-     * Template message contains sender address and can be configured via spring
-     * xml configuration. Please note, that this address should be valid email address
+     * "From" property is essential. Please note, that this address should be valid email address
      * as most e-mail servers will reject e-mail if sender is not really correlated with
-     * the letters "from" value.
+     * the letter's "from" value.
      *
-     * @param mailSender      spring mailing tool
-     * @param templateMessage blank message with "from" filed preset
-     * @param velocityEngine  engine for templating email notifications
-     * @param messageSource   for resolving internationalization messages
+     * @param sender spring mailing tool
+     * @param from   blank message with "from" filed preset
+     * @param engine engine for templating email notifications
+     * @param source for resolving internationalization messages
      */
-    public MailService(JavaMailSender mailSender, SimpleMailMessage templateMessage, VelocityEngine velocityEngine,
-                       MessageSource messageSource) {
-        this.mailSender = mailSender;
-        this.templateMessage = templateMessage;
-        this.velocityEngine = velocityEngine;
-        this.messageSource = messageSource;
+    public MailService(JavaMailSender sender, String from, VelocityEngine engine, MessageSource source) {
+        this.mailSender = sender;
+        this.from = from;
+        this.velocityEngine = engine;
+        this.messageSource = source;
     }
 
     /**
@@ -194,13 +196,17 @@ public class MailService {
      * @throws MailingFailedException exception with error message specified ic case of some error
      */
     private void sendEmail(String to, String subject, String text) throws MailingFailedException {
-        MimeMessagePreparator prep = null;
-        SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
-        msg.setTo(to);
-        msg.setSubject(subject);
-        msg.setText(text);
         try {
-            this.mailSender.send(msg);
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message);
+            helper.setTo(to);
+            helper.setFrom(from);
+            helper.setSubject(subject);
+            helper.setText(text, true);
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            LOGGER.error("Mail sending failed", e);
+            throw new MailingFailedException(e);
         } catch (MailException e) {
             LOGGER.error("Mail sending failed", e);
             throw new MailingFailedException(e);

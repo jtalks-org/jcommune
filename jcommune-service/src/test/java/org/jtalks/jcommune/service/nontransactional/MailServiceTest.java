@@ -35,8 +35,18 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
+import java.io.IOException;
+
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -51,7 +61,6 @@ public class MailServiceTest {
     private MailService service;
     @Mock
     private JavaMailSender sender;
-    private SimpleMailMessage message;
     private VelocityEngine velocityEngine;
     private MockHttpServletRequest request;
     private MessageSource messageSource;
@@ -65,19 +74,20 @@ public class MailServiceTest {
     private JCUser user = new JCUser(USERNAME, TO, PASSWORD);
     private Topic topic = new Topic(user, "title");
     private Branch branch = new Branch("title");
-    private ArgumentCaptor<SimpleMailMessage> captor;
+    private ArgumentCaptor<MimeMessage> captor;
 
     @BeforeMethod
     public void setUp() {
         initMocks(this);
-        message = new SimpleMailMessage();
+
         velocityEngine = new VelocityEngine();
         velocityEngine.setProperty("resource.loader", "class");
         velocityEngine.setProperty("class.resource.loader.class",
                 "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-        message.setFrom(FROM);
-        service = new MailService(sender, message, velocityEngine, messageSource);
-        captor = ArgumentCaptor.forClass(SimpleMailMessage.class);
+        service = new MailService(sender, FROM, velocityEngine, messageSource);
+        MimeMessage message = new MimeMessage((Session) null);
+        when(sender.createMimeMessage()).thenReturn(message);
+        captor = ArgumentCaptor.forClass(MimeMessage.class);
     }
 
     @BeforeMethod
@@ -91,17 +101,17 @@ public class MailServiceTest {
     }
 
     @Test
-    public void testSendPasswordRecoveryMail() throws MailingFailedException {
+    public void testSendPasswordRecoveryMail() throws MailingFailedException, IOException, MessagingException {
         service.sendPasswordRecoveryMail(USERNAME, TO, PASSWORD);
 
         this.checkMailCredentials();
-        assertTrue(captor.getValue().getText().contains(USERNAME));
-        assertTrue(captor.getValue().getText().contains(PASSWORD));
-        assertTrue(captor.getValue().getText().contains("http://coolsite.com:1234/forum/login"));
+        assertTrue(captor.getValue().getContent().toString().contains(USERNAME));
+        assertTrue(captor.getValue().getContent().toString().contains(PASSWORD));
+        assertTrue(captor.getValue().getContent().toString().contains("http://coolsite.com:1234/forum/login"));
     }
 
     @Test
-    public void testSendTopicUpdatesEmail() throws MailingFailedException {
+    public void testSendTopicUpdatesEmail() throws MailingFailedException, IOException, MessagingException {
         Post post = new Post(user, "content");
         post.setId(1);
         topic.addPost(post);
@@ -109,33 +119,33 @@ public class MailServiceTest {
         service.sendTopicUpdatesOnSubscription(user, topic);
 
         this.checkMailCredentials();
-        assertTrue(captor.getValue().getText().contains("http://coolsite.com:1234/forum/posts/1"));
+        assertTrue(captor.getValue().getContent().toString().contains("http://coolsite.com:1234/forum/posts/1"));
     }
 
     @Test
-    public void testSendBranchUpdateEmail() throws MailingFailedException {
+    public void testSendBranchUpdateEmail() throws MailingFailedException, IOException, MessagingException {
         branch.setId(1);
 
         service.sendBranchUpdatesOnSubscription(user, branch);
 
         this.checkMailCredentials();
-        assertTrue(captor.getValue().getText().contains("http://coolsite.com:1234/forum/branches/1"));
+        assertTrue(captor.getValue().getContent().toString().contains("http://coolsite.com:1234/forum/branches/1"));
     }
 
     @Test
-    public void testSendReceivedPrivateMessageNotification() {
+    public void testSendReceivedPrivateMessageNotification() throws IOException, MessagingException {
         service.sendReceivedPrivateMessageNotification(user, 1);
 
         this.checkMailCredentials();
-        assertTrue(captor.getValue().getText().contains("http://coolsite.com:1234/forum/inbox/1"));
+        assertTrue(captor.getValue().getContent().toString().contains("http://coolsite.com:1234/forum/inbox/1"));
     }
 
     @Test
-    public void testSendActivationMail() {
-        JCUser user =  new JCUser(USERNAME, TO, PASSWORD);
+    public void testSendActivationMail() throws IOException, MessagingException {
+        JCUser user = new JCUser(USERNAME, TO, PASSWORD);
         service.sendAccountActivationMail(user);
         this.checkMailCredentials();
-        assertTrue(captor.getValue().getText().contains(
+        assertTrue(captor.getValue().getContent().toString().contains(
                 "http://coolsite.com:1234/forum/user/activate/" + user.getUuid()));
     }
 
@@ -150,7 +160,7 @@ public class MailServiceTest {
     @Test(expectedExceptions = MailingFailedException.class)
     public void testRestorePasswordFail() throws NotFoundException, MailingFailedException {
         Exception fail = new MailSendException("");
-        doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
+        doThrow(fail).when(sender).send(Matchers.<MimeMessage>any());
 
         service.sendPasswordRecoveryMail(USERNAME, TO, PASSWORD);
     }
@@ -179,10 +189,12 @@ public class MailServiceTest {
         service.sendReceivedPrivateMessageNotification(user, 1);
     }
 
-    private void checkMailCredentials() {
+    private void checkMailCredentials() throws MessagingException {
         verify(sender).send(captor.capture());
-        assertEquals(captor.getValue().getTo().length, 1);
-        assertEquals(captor.getValue().getTo()[0], TO);
-        assertEquals(captor.getValue().getFrom(), FROM);
+        assertEquals(captor.getValue().getRecipients(Message.RecipientType.TO).length, 1);
+        InternetAddress actualTo = (InternetAddress) captor.getValue().getRecipients(Message.RecipientType.TO)[0];
+        assertEquals(actualTo.getAddress(), TO);
+        InternetAddress actualFrom = (InternetAddress) captor.getValue().getFrom()[0];
+        assertEquals(actualFrom.getAddress(), FROM);
     }
 }

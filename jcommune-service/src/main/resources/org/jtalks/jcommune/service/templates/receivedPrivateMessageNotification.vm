@@ -23,14 +23,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
           href="${pageContext.request.contextPath}/resources/css/editor.css"/>
 </head>
 <body>
-${messageSource.getMessage($greeting, $noArgs, $locale)} ${recipient.username}!
+<p>${messageSource.getMessage($greeting, $noArgs, $locale)} ${recipient.username}!</p>
 <br>
-${messageSource.getMessage($content, $noArgs, $locale)} <a href="${url}">${url}</a>.
+<p>${messageSource.getMessage($content, $noArgs, $locale)} <a href="${url}">${url}</a>.</p>
 <br><hr><br>
 
 <br><hr><br>
-${messageSource.getMessage($wish, $noArgs, $locale)}
+<p>${messageSource.getMessage($wish, $noArgs, $locale)}</p>
 <br>
-${messageSource.getMessage($signature, $noArgs, $locale)}
+<p>${messageSource.getMessage($signature, $noArgs, $locale)}</p>
 </body>
 </html>
