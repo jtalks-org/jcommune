@@ -134,7 +134,7 @@ public class AvatarController {
     /**
      * Write user avatar in response for rendering it on html pages.
      *
-     * @param response        servlet response
+     * @param response servlet response
      * @param username {@link JCUser#getUsername()}
      * @throws NotFoundException if user with given encodedUsername not found
      * @throws IOException       throws if an output exception occurred
