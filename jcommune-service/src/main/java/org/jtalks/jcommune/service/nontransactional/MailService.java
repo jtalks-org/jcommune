@@ -93,13 +93,8 @@ public class MailService {
         model.put("name", name);
         model.put("newPassword", newPassword);
         model.put(URL, url);
-        String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
-                TEMPLATES_PATH + "passwordRecovery.vm", model);
-        this.sendEmail(
-                email,
-                "Password recovery",
-                text,
-                "Password recovery email sending failed");
+        String text = this.mergeTemplate("passwordRecovery.vm", model);
+        this.sendEmail(email, "Password recovery", text);
         LOGGER.info("Password recovery email sent for {}", name);
     }
 
@@ -112,18 +107,13 @@ public class MailService {
      * @param topic topic changed (to include more detailes in email)
      */
     public void sendTopicUpdatesOnSubscription(JCUser user, Topic topic) {
-        String url = this.getDeploymentRootUrl() + "/posts/" + topic.getLastPost().getId();
         try {
+            String url = this.getDeploymentRootUrl() + "/posts/" + topic.getLastPost().getId();
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(USER, user);
             model.put(URL, url);
-            String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
-                    TEMPLATES_PATH + "subscriptionNotification.vm", model);
-            this.sendEmail(
-                    user.getEmail(),
-                    "Forum updates",
-                    text,
-                    "Subscription update sending failed");
+            String text = this.mergeTemplate("subscriptionNotification.vm", model);
+            this.sendEmail(user.getEmail(), "Forum updates", text);
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Topic", topic.getId(), user.getUsername()));
         }
@@ -138,18 +128,13 @@ public class MailService {
      * @param branch branch changed (to include more detailes in email)
      */
     public void sendBranchUpdatesOnSubscription(JCUser user, Branch branch) {
-        String url = this.getDeploymentRootUrl() + "/branches/" + branch.getId();
         try {
+            String url = this.getDeploymentRootUrl() + "/branches/" + branch.getId();
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(USER, user);
             model.put(URL, url);
-            String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
-                    TEMPLATES_PATH + "subscriptionNotification.vm", model);
-            this.sendEmail(
-                    user.getEmail(),
-                    "Forum updates",
-                    text,
-                    "Subscription update sending failed");
+            String text = this.mergeTemplate("subscriptionNotification.vm", model);
+            this.sendEmail(user.getEmail(), "Forum updates", text);
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Branch", branch.getId(), user.getUsername()));
         }
@@ -162,8 +147,8 @@ public class MailService {
      * @param pmId      id of received private message
      */
     public void sendReceivedPrivateMessageNotification(JCUser recipient, long pmId) {
-        String url = this.getDeploymentRootUrl() + "/inbox/" + pmId;
         try {
+            String url = this.getDeploymentRootUrl() + "/inbox/" + pmId;
             Map<String, Object> model = new HashMap<String, Object>();
             model.put("recipient", recipient);
             model.put(URL, url);
@@ -174,12 +159,8 @@ public class MailService {
             model.put("signature", "signature");
             model.put("noArgs", new Object[]{});
             model.put("locale", recipient.getLanguage().getLocale());
-            String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
-                    TEMPLATES_PATH + "receivedPrivateMessageNotification.vm", model);
-            this.sendEmail(recipient.getEmail(),
-                    "Received private message",
-                    text,
-                    "Received private message notification sending failed");
+            String text = this.mergeTemplate("receivedPrivateMessageNotification.vm", model);
+            this.sendEmail(recipient.getEmail(), "Received private message", text);
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Private message", pmId, recipient.getUsername()));
         }
@@ -191,17 +172,13 @@ public class MailService {
      * @param recipient user to send activation mail to
      */
     public void sendAccountActivationMail(JCUser recipient) {
-        String url = this.getDeploymentRootUrl() + "/user/activate/" + recipient.getUuid();
         try {
+            String url = this.getDeploymentRootUrl() + "/user/activate/" + recipient.getUuid();
             Map<String, Object> model = new HashMap<String, Object>();
             model.put("name", recipient.getUsername());
             model.put("url", url);
-            String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,
-                    TEMPLATES_PATH + "accountActivation.vm", model);
-            this.sendEmail(recipient.getEmail(),
-                    "JTalks account activation",
-                    text,
-                    "Account activation mail sending failed");
+            String text = this.mergeTemplate("accountActivation.vm", model);
+            this.sendEmail(recipient.getEmail(), "JTalks account activation", text);
         } catch (MailingFailedException e) {
             LOGGER.error("Failed to sent activation mail for user: " + recipient.getUsername());
         }
@@ -211,13 +188,12 @@ public class MailService {
      * Just a convenience method for message sending to encapsulte
      * boilerplate error handling code.
      *
-     * @param to           destination wmail address
-     * @param subject      message headline
-     * @param text         message body, may contain html
-     * @param errorMessage to be logged and thrown if some error occurs
+     * @param to      destination wmail address
+     * @param subject message headline
+     * @param text    message body, may contain html
      * @throws MailingFailedException exception with error message specified ic case of some error
      */
-    private void sendEmail(String to, String subject, String text, String errorMessage) throws MailingFailedException {
+    private void sendEmail(String to, String subject, String text) throws MailingFailedException {
         MimeMessagePreparator prep = null;
         SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
         msg.setTo(to);
@@ -226,9 +202,22 @@ public class MailService {
         try {
             this.mailSender.send(msg);
         } catch (MailException e) {
-            LOGGER.error(errorMessage, e);
-            throw new MailingFailedException(errorMessage, e);
+            LOGGER.error("Mail sending failed", e);
+            throw new MailingFailedException(e);
         }
+    }
+
+    /**
+     * Creates a text message from templates and param given.
+     * Template should be located in org/jtalks/jcommune/service/templates/
+     *
+     * @param templateName template file name, like "template.vm"
+     * @param model        template params to be substituted in velocity template
+     * @return text message, ready to be sent
+     */
+    private String mergeTemplate(String templateName, Map<String, Object> model) {
+        String path = TEMPLATES_PATH + templateName;
+        return VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, path, model);
     }
 
     /**
