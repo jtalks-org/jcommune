@@ -128,17 +128,6 @@ public class TransactionalPrivateMessageService
     /**
      * {@inheritDoc}
      */
-    public void markAsRead(PrivateMessage pm) {
-        if (!pm.isRead()) {
-            pm.markAsRead();
-            this.getDao().saveOrUpdate(pm);
-            userDataCache.decrementNewMessageCountFor(pm.getUserTo().getUsername());
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<PrivateMessage> getDraftsFromCurrentUser() {
         JCUser currentUser = securityService.getCurrentUser();
@@ -219,6 +208,12 @@ public class TransactionalPrivateMessageService
     @PreAuthorize("hasPermission(#id, 'org.jtalks.jcommune.model.entity.PrivateMessage', admin) or " +
             "hasPermission(#id, 'org.jtalks.jcommune.model.entity.PrivateMessage', read)")
     public PrivateMessage get(Long id) throws NotFoundException {
-        return super.get(id);
+        PrivateMessage pm = super.get(id);
+        if (securityService.getCurrentUser().equals(pm.getUserTo()) && !pm.isRead()) {
+            pm.markAsRead();
+            this.getDao().saveOrUpdate(pm);
+            userDataCache.decrementNewMessageCountFor(pm.getUserTo().getUsername());
+        }
+        return pm;
     }
 }

@@ -57,7 +57,7 @@
                         </a>
                     </div>
                     <div class="forum_answer_left">
-                        <a href="${pageContext.request.contextPath}/drafts/${pm.id}">
+                        <a href="${pageContext.request.contextPath}/pm/${pm.id}">
                             <c:out value="${pm.title}"/></a>
                     </div>
                     <div class="forum_answer_left">
