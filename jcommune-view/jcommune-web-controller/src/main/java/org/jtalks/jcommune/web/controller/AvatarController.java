@@ -27,7 +27,6 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
-import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
@@ -42,7 +41,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
@@ -134,21 +132,6 @@ public class AvatarController {
     }
 
     /**
-     * Remove avatar from user profile.
-     *
-     * @return edit user profile page
-     */
-    @RequestMapping(value = "/users/edit/avatar", method = RequestMethod.POST)
-    public ModelAndView removeAvatarFromCurrentUser() {
-        JCUser user = securityService.getCurrentUser();
-        byte[] defaultAvatar = avatarService.getDefaultAvatar();
-        user.setAvatar(defaultAvatar);
-        EditUserProfileDto editedUser = new EditUserProfileDto(user);
-        editedUser.setAvatar(imageUtils.prepareHtmlImgSrc(defaultAvatar));
-        return new ModelAndView("editProfile", "editedUser", editedUser);
-    }
-
-    /**
      * Write user avatar in response for rendering it on html pages.
      *
      * @param response        servlet response
@@ -167,6 +150,13 @@ public class AvatarController {
         response.getOutputStream().write(avatar);
     }
 
+    /**
+     * Prepare response with default user avatar
+     *
+     * @return JSON string with default user avatar
+     * @throws ImageProcessException due to common avatar processing error
+     * @throws IOException           defined in the JsonFactory implementation, caller must implement exception processing
+     */
     @RequestMapping(value = "/defaultAvatar", method = RequestMethod.GET)
     public
     @ResponseBody

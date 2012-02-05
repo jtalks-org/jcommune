@@ -149,26 +149,19 @@
                     </li>
                     <li class="forum_row"></li>
                 </ul>
-                <div class="form_controls">
-                    <span id="upload">
-                        <input type="button" class="button" value="<spring:message code="label.avatar.load"/>"/>
-                    </span>
-                    <input id="saveChanges" type="submit" class="button"
-                           value="<spring:message code="label.save_changes"/>"/>
-                    <a href="${pageContext.request.contextPath}/users/${auth}">
-                        <button class="button"><spring:message code="label.back"/></button>
-                    </a>
-                </div>
             </form:form>
-            <c:if test="${editedUser.avatar != null}">
-                <form action="${pageContext.request.contextPath}/users/edit/avatar" id="removeAvatarForm"
-                      name="removeAvatarForm" method="POST">
-                    <div class="form_controls">
-                        <input id="removeAvatar" type="button" class="button"
-                               value="<spring:message code="label.avatar.remove"/>"/>
-                    </div>
-                </form>
-            </c:if>
+            <div class="form_controls">
+                    <span id="upload">
+                        <button class="button"><spring:message code="label.avatar.load"/></button>
+                    </span>
+                <button id="removeAvatar" class="button"><spring:message code="label.avatar.remove"/></button>
+                <input id="saveChanges" type="submit" class="button"
+                       value="<spring:message code="label.save_changes"/>"/>
+                <a href="${pageContext.request.contextPath}/users/${auth}">
+                    <button class="button"><spring:message code="label.back"/></button>
+                </a>
+            </div>
+
         </div>
     </div>
     <div class="footer_buffer"></div>
