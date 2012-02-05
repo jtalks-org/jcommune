@@ -41,8 +41,6 @@
                        modelAttribute="editedUser" method="POST" enctype="multipart/form-data">
 
                 <form:hidden id="avatar" path="avatar"/>
-                <input id="avatarTempValue" type="hidden"/>
-
                 <div class="forum_header_table">
                     <div class="forum_header">
                         <span class="forum_header_generic"><spring:message code="label.profile"/></span>
