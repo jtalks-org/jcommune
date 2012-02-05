@@ -232,10 +232,6 @@ public class MailService {
     private String getDeploymentRootUrl() {
         RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes) attributes).getRequest();
-        return request.getScheme()
-                + "://" + request.getServerName()
-                + ":" + request.getServerPort()
-                + request.getContextPath();
+        return request.getScheme() + "://" + request.getServerName() + request.getContextPath();
     }
-
 }
