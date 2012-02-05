@@ -84,7 +84,7 @@ public class MailServiceTest {
         velocityEngine.setProperty("resource.loader", "class");
         velocityEngine.setProperty("class.resource.loader.class",
                 "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-        service = new MailService(sender, FROM, velocityEngine, messageSource);
+        service = new MailService(sender, FROM, velocityEngine, messageSource, null);
         MimeMessage message = new MimeMessage((Session) null);
         when(sender.createMimeMessage()).thenReturn(message);
         captor = ArgumentCaptor.forClass(MimeMessage.class);
@@ -95,6 +95,7 @@ public class MailServiceTest {
         request = new MockHttpServletRequest();
         request.setScheme("http");
         request.setServerName("coolsite.com");
+        request.setServerPort(1234);
         request.setContextPath("/forum");
         RequestContextHolder.setRequestAttributes(new ServletWebRequest(request));
     }
@@ -106,7 +107,7 @@ public class MailServiceTest {
         this.checkMailCredentials();
         assertTrue(captor.getValue().getContent().toString().contains(USERNAME));
         assertTrue(captor.getValue().getContent().toString().contains(PASSWORD));
-        assertTrue(captor.getValue().getContent().toString().contains("http://coolsite.com/forum/login"));
+        assertTrue(captor.getValue().getContent().toString().contains("http://coolsite.com:1234/forum/login"));
     }
 
     @Test
@@ -118,7 +119,7 @@ public class MailServiceTest {
         service.sendTopicUpdatesOnSubscription(user, topic);
 
         this.checkMailCredentials();
-        assertTrue(captor.getValue().getContent().toString().contains("http://coolsite.com/forum/posts/1"));
+        assertTrue(captor.getValue().getContent().toString().contains("http://coolsite.com:1234/forum/posts/1"));
     }
 
     @Test
@@ -128,7 +129,7 @@ public class MailServiceTest {
         service.sendBranchUpdatesOnSubscription(user, branch);
 
         this.checkMailCredentials();
-        assertTrue(captor.getValue().getContent().toString().contains("http://coolsite.com/forum/branches/1"));
+        assertTrue(captor.getValue().getContent().toString().contains("http://coolsite.com:1234/forum/branches/1"));
     }
 
     @Test
@@ -136,7 +137,7 @@ public class MailServiceTest {
         service.sendReceivedPrivateMessageNotification(user, 1);
 
         this.checkMailCredentials();
-        assertTrue(captor.getValue().getContent().toString().contains("http://coolsite.com/forum/inbox/1"));
+        assertTrue(captor.getValue().getContent().toString().contains("http://coolsite.com:1234/forum/inbox/1"));
     }
 
     @Test
@@ -145,7 +146,7 @@ public class MailServiceTest {
         service.sendAccountActivationMail(user);
         this.checkMailCredentials();
         assertTrue(captor.getValue().getContent().toString().contains(
-                "http://coolsite.com/forum/user/activate/" + user.getUuid()));
+                "http://coolsite.com:1234/forum/user/activate/" + user.getUuid()));
     }
 
     @Test

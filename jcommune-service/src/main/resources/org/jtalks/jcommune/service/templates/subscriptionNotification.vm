@@ -14,11 +14,11 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 *#
-Dear ${user.username}!
-
-Your favorite forum has some updates.
-Please check it out at ${url}.
-
-Best regards,
-
-Jtalks forum.
+<p>Dear ${user.username}!</p>
+<br/>
+<p>Your favorite forum has some updates.</p>
+<p>Please check it out at ${url}.
+<br/>
+<p>Best regards,</p>
+<br/>
+<p>Jtalks forum.</p>

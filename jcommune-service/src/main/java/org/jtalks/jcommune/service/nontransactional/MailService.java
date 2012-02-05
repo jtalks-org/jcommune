@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -32,6 +33,7 @@ import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -72,8 +74,10 @@ public class MailService {
      * @param from   blank message with "from" filed preset
      * @param engine engine for templating email notifications
      * @param source for resolving internationalization messages
+     * @param bbCodeCss styles to display BB-encoded messages in HTML emails
      */
-    public MailService(JavaMailSender sender, String from, VelocityEngine engine, MessageSource source) {
+    public MailService(JavaMailSender sender, String from, VelocityEngine engine, MessageSource source,
+                       Resource bbCodeCss) {
         this.mailSender = sender;
         this.from = from;
         this.velocityEngine = engine;
@@ -90,7 +94,7 @@ public class MailService {
      * @throws MailingFailedException when mailing failed
      */
     public void sendPasswordRecoveryMail(String name, String email, String newPassword) throws MailingFailedException {
-        String url = this.getDeploymentRootUrl() + "/login/";
+        String url = this.getDeploymentRootUrl() + "/login";
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("name", name);
         model.put("newPassword", newPassword);
@@ -232,6 +236,9 @@ public class MailService {
     private String getDeploymentRootUrl() {
         RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes) attributes).getRequest();
-        return request.getScheme() + "://" + request.getServerName() + request.getContextPath();
+        return request.getScheme()
+                + "://" + request.getServerName()
+                + ":" + request.getServerPort()
+                + request.getContextPath();
     }
 }
