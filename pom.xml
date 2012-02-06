@@ -210,6 +210,11 @@
                 <artifactId>ehcache-core</artifactId>
                 <version>2.4.0</version>
             </dependency>
+            <dependency>
+                <groupId>net.sf.ehcache</groupId>
+                <artifactId>ehcache-jgroupsreplication</artifactId>
+                <version>1.5</version>
+            </dependency>
             <!-- TestNG & Mockito -->
             <dependency>
                 <groupId>org.testng</groupId>
@@ -290,11 +295,11 @@
                 <artifactId>kefir-bb</artifactId>
                 <version>0.6</version>
             </dependency>
-          <dependency>
-            <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity</artifactId>
-            <version>1.7</version>
-          </dependency>
+            <dependency>
+                <groupId>org.apache.velocity</groupId>
+                <artifactId>velocity</artifactId>
+                <version>1.7</version>
+            </dependency>
             <!--Mail-->
             <dependency>
                 <groupId>javax.activation</groupId>
