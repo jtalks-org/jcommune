@@ -14,13 +14,13 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 *#
-<p>Dear ${name}!</p>
+<p>${messageSource.getMessage($greeting, $noArgs, $locale)} ${name}!</p>
 <br/>
-<p>This mail is to confirm your registration at JTalks forum.</p>
-<p>Please follow the link below to activate your account. This link is valid for 24 hours.</p>
-<p>Also note, that account will be deleted automatically in 24 hours if not activated.</p>
-<p>Activation link: ${url}</p>
+<p>${messageSource.getMessage($contentPart1, $noArgs, $locale)}</p>
+<p>${messageSource.getMessage($contentPart2, $noArgs, $locale)}</p>
+<p>${messageSource.getMessage($contentPart3, $noArgs, $locale)}</p>
+<p>${messageSource.getMessage($link, $noArgs, $locale)} ${url}</p>
 <br/>
-<p>Best regards,</p>
+<p>${messageSource.getMessage($wish, $noArgs, $locale)}</p>
 <br/>
-<p>Jtalks forum.</p>
+<p>${messageSource.getMessage($signature, $noArgs, $locale)}</p>

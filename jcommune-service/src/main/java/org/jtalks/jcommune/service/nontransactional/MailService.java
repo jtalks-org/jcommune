@@ -139,6 +139,14 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(USER, user);
             model.put(URL, url);
+            model.put("messageSource", messageSource);
+            model.put("greeting", "greeting");
+            model.put("content", "subscriptionNotification.content");
+            model.put("link", "subscriptionNotification.link");
+            model.put("wish", "wish");
+            model.put("signature", "signature");
+            model.put("noArgs", new Object[]{});
+            model.put("locale", user.getLanguage().getLocale());
             String text = this.mergeTemplate("subscriptionNotification.vm", model);
             this.sendEmail(user.getEmail(), "Forum updates", text);
         } catch (MailingFailedException e) {
@@ -160,7 +168,8 @@ public class MailService {
             model.put(URL, url);
             model.put("messageSource", messageSource);
             model.put("greeting", "greeting");
-            model.put("content", "content");
+            model.put("content", "receivedPrivateMessageNotification.content");
+            model.put("link", "receivedPrivateMessageNotification.link");
             model.put("wish", "wish");
             model.put("signature", "signature");
             model.put("noArgs", new Object[]{});
@@ -183,6 +192,16 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put("name", recipient.getUsername());
             model.put("url", url);
+            model.put("messageSource", messageSource);
+            model.put("greeting", "greeting");
+            model.put("contentPart1", "accountActivation.content.part1");
+            model.put("contentPart2", "accountActivation.content.part2");
+            model.put("contentPart3", "accountActivation.content.part3");
+            model.put("link", "accountActivation.link");
+            model.put("wish", "wish");
+            model.put("signature", "signature");
+            model.put("noArgs", new Object[]{});
+            model.put("locale", recipient.getLanguage().getLocale());
             String text = this.mergeTemplate("accountActivation.vm", model);
             this.sendEmail(recipient.getEmail(), "JTalks account activation", text);
         } catch (MailingFailedException e) {
