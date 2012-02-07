@@ -123,7 +123,7 @@
                         </span>
                     </li>
                     <li class="forum_row">
-                        <label><spring:message code="label.numberOfTopicsOnPage"/></label>
+                        <label><spring:message code="label.pageSize"/></label>
                         <span>
                             <form:select path="pageSize" value="${editedUser.pageSize}"
                                          items="${editedUser.pageSizesAvailable}"/>
