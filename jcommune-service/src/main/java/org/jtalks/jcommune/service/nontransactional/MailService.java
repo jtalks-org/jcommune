@@ -84,15 +84,14 @@ public class MailService {
     }
 
     /**
-     * Sends a password recovery message for the user with a given email.
+     * Sends a password recovery message for the user.
      * This method does not generate new password, just sends a message.
      *
-     * @param user        a person whose name to be used in a mail
-     * @param email       address to mail to
+     * @param user        a person we will send a mail
      * @param newPassword new user password to be placed in an email
      * @throws MailingFailedException when mailing failed
      */
-    public void sendPasswordRecoveryMail(JCUser user, String email, String newPassword) throws MailingFailedException {
+    public void sendPasswordRecoveryMail(JCUser user, String newPassword) throws MailingFailedException {
         String url = this.getDeploymentRootUrl() + "/login";
         String name = user.getUsername();
         Map<String, Object> model = new HashMap<String, Object>();
@@ -109,7 +108,7 @@ public class MailService {
         model.put("noArgs", new Object[]{});
         model.put("locale", user.getLanguage().getLocale());
         String text = this.mergeTemplate("passwordRecovery.vm", model);
-        this.sendEmail(email, "Password recovery", text);
+        this.sendEmail(user.getEmail(), "Password recovery", text);
         LOGGER.info("Password recovery email sent for {}", name);
     }
 

@@ -269,7 +269,7 @@ public class TransactionalUserServiceTest {
 
         userService.restorePassword(EMAIL);
 
-        verify(mailService).sendPasswordRecoveryMail(eq(user), eq(EMAIL), matches("^[a-zA-Z0-9]*$"));
+        verify(mailService).sendPasswordRecoveryMail(eq(user), matches("^[a-zA-Z0-9]*$"));
         ArgumentCaptor<JCUser> captor = ArgumentCaptor.forClass(JCUser.class);
         verify(userDao).update(captor.capture());
         assertEquals(captor.getValue().getUsername(), USERNAME);
@@ -281,7 +281,7 @@ public class TransactionalUserServiceTest {
     public void testRestorePasswordFail() throws NotFoundException, MailingFailedException {
         JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
         Exception fail = new MailingFailedException(new RuntimeException());
-        doThrow(fail).when(mailService).sendPasswordRecoveryMail(eq(user), anyString(), anyString());
+        doThrow(fail).when(mailService).sendPasswordRecoveryMail(eq(user), anyString());
         when(userDao.getByEmail(EMAIL)).thenReturn(user);
 
         try {

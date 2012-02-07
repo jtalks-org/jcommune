@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.jtalks.jcommune.model.dao.UserDao;
@@ -192,7 +191,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         JCUser user = this.getDao().getByEmail(email);
         String randomPassword = RandomStringUtils.randomAlphanumeric(6);
         // first - mail attempt, then - database changes
-        mailService.sendPasswordRecoveryMail(user, email, randomPassword);
+        mailService.sendPasswordRecoveryMail(user, randomPassword);
         user.setPassword(randomPassword);
         this.getDao().update(user);
 
@@ -205,7 +204,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     @Override
     public void activateAccount(String uuid) throws NotFoundException {
         JCUser user = this.getDao().getByUuid(uuid);
-        if (user == null){
+        if (user == null) {
             throw new NotFoundException();
         }
         user.setEnabled(true);
@@ -216,13 +215,13 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    @Scheduled(cron="0 * * * * *") // cron expression: invoke every hour at :00 min, e.g. 11:00, 12:00 and so on
-    public void deleteUnactivatedAccountsByTimer(){
+    @Scheduled(cron = "0 * * * * *") // cron expression: invoke every hour at :00 min, e.g. 11:00, 12:00 and so on
+    public void deleteUnactivatedAccountsByTimer() {
         DateTime today = new DateTime();
-        for (JCUser user : this.getDao().getNonActivatedUsers()){
+        for (JCUser user : this.getDao().getNonActivatedUsers()) {
             Period period = new Period(user.getRegistrationDate(), today);
-            if (period.getDays() > 0){
-                 this.getDao().delete(user);
+            if (period.getDays() > 0) {
+                this.getDao().delete(user);
             }
         }
     }
