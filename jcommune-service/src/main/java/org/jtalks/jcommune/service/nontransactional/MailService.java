@@ -22,18 +22,14 @@ import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -70,10 +66,10 @@ public class MailService {
      * as most e-mail servers will reject e-mail if sender is not really correlated with
      * the letter's "from" value.
      *
-     * @param sender spring mailing tool
-     * @param from   blank message with "from" filed preset
-     * @param engine engine for templating email notifications
-     * @param source for resolving internationalization messages
+     * @param sender    spring mailing tool
+     * @param from      blank message with "from" filed preset
+     * @param engine    engine for templating email notifications
+     * @param source    for resolving internationalization messages
      * @param bbCodeCss styles to display BB-encoded messages in HTML emails
      */
     public MailService(JavaMailSender sender, String from, VelocityEngine engine, MessageSource source,
@@ -88,17 +84,27 @@ public class MailService {
      * Sends a password recovery message for the user with a given email.
      * This method does not generate new password, just sends a message.
      *
-     * @param name        username to be used in a mail
+     * @param user        a person whose name to be used in a mail
      * @param email       address to mail to
      * @param newPassword new user password to be placed in an email
      * @throws MailingFailedException when mailing failed
      */
-    public void sendPasswordRecoveryMail(String name, String email, String newPassword) throws MailingFailedException {
+    public void sendPasswordRecoveryMail(JCUser user, String email, String newPassword) throws MailingFailedException {
         String url = this.getDeploymentRootUrl() + "/login";
+        String name = user.getUsername();
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("name", name);
         model.put("newPassword", newPassword);
         model.put(URL, url);
+        model.put("messageSource", messageSource);
+        model.put("greeting", "greeting");
+        model.put("contentPart1", "passwordRecovery.content.part1");
+        model.put("contentPart2", "passwordRecovery.content.part2");
+        model.put("link", "passwordRecovery.link");
+        model.put("wish", "wish");
+        model.put("signature", "signature");
+        model.put("noArgs", new Object[]{});
+        model.put("locale", user.getLanguage().getLocale());
         String text = this.mergeTemplate("passwordRecovery.vm", model);
         this.sendEmail(email, "Password recovery", text);
         LOGGER.info("Password recovery email sent for {}", name);
