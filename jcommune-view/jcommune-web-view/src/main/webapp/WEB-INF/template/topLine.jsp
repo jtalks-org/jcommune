@@ -65,11 +65,6 @@
                 </a>
             </li>
         </sec:authorize>
-        <li>
-            <a href="http://lolbin.net/img/f/buy9fMAJ.jpg">
-                Don't like the forum?
-            </a>
-        </li>
         <li class="flag no_border">
             <a href="#" onclick="window.location = getLanguageLink('en')">
                 <img src="${pageContext.request.contextPath}/resources/images/flags/great britain.png" alt=""/>
