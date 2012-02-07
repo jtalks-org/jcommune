@@ -14,11 +14,11 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 *#
-<p>Dear ${user.username}!</p>
+<p>${messageSource.getMessage($greeting, $noArgs, $locale)} ${user.username}!</p>
 <br/>
-<p>Your favorite forum has some updates.</p>
-<p>Please check it out at ${url}.
+<p>${messageSource.getMessage($content, $noArgs, $locale)}</p>
+<p>${messageSource.getMessage($link, $noArgs, $locale)} ${url}.
 <br/>
-<p>Best regards,</p>
+<p>${messageSource.getMessage($wish, $noArgs, $locale)}</p>
 <br/>
-<p>Jtalks forum.</p>
+<p>${messageSource.getMessage($signature, $noArgs, $locale)}</p>

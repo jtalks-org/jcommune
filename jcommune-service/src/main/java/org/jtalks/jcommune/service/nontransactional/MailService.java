@@ -23,25 +23,20 @@ import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 
-import javax.activation.FileTypeMap;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -92,17 +87,27 @@ public class MailService {
      * Sends a password recovery message for the user with a given email.
      * This method does not generate new password, just sends a message.
      *
-     * @param name        username to be used in a mail
+     * @param user        a person whose name to be used in a mail
      * @param email       address to mail to
      * @param newPassword new user password to be placed in an email
      * @throws MailingFailedException when mailing failed
      */
-    public void sendPasswordRecoveryMail(String name, String email, String newPassword) throws MailingFailedException {
+    public void sendPasswordRecoveryMail(JCUser user, String email, String newPassword) throws MailingFailedException {
         String url = this.getDeploymentRootUrl() + "/login";
+        String name = user.getUsername();
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("name", name);
         model.put("newPassword", newPassword);
         model.put(URL, url);
+        model.put("messageSource", messageSource);
+        model.put("greeting", "greeting");
+        model.put("contentPart1", "passwordRecovery.content.part1");
+        model.put("contentPart2", "passwordRecovery.content.part2");
+        model.put("link", "passwordRecovery.link");
+        model.put("wish", "wish");
+        model.put("signature", "signature");
+        model.put("noArgs", new Object[]{});
+        model.put("locale", user.getLanguage().getLocale());
         String text = this.mergeTemplate("passwordRecovery.vm", model);
         this.sendEmail(email, "Password recovery", text);
         LOGGER.info("Password recovery email sent for {}", name);
@@ -122,6 +127,14 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(USER, user);
             model.put(URL, url);
+            model.put("messageSource", messageSource);
+            model.put("greeting", "greeting");
+            model.put("content", "subscriptionNotification.content");
+            model.put("link", "subscriptionNotification.link");
+            model.put("wish", "wish");
+            model.put("signature", "signature");
+            model.put("noArgs", new Object[]{});
+            model.put("locale", user.getLanguage().getLocale());
             String text = this.mergeTemplate("subscriptionNotification.vm", model);
             this.sendEmail(user.getEmail(), "Forum updates", text);
         } catch (MailingFailedException e) {
@@ -143,6 +156,14 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(USER, user);
             model.put(URL, url);
+            model.put("messageSource", messageSource);
+            model.put("greeting", "greeting");
+            model.put("content", "subscriptionNotification.content");
+            model.put("link", "subscriptionNotification.link");
+            model.put("wish", "wish");
+            model.put("signature", "signature");
+            model.put("noArgs", new Object[]{});
+            model.put("locale", user.getLanguage().getLocale());
             String text = this.mergeTemplate("subscriptionNotification.vm", model);
             this.sendEmail(user.getEmail(), "Forum updates", text);
         } catch (MailingFailedException e) {
@@ -164,7 +185,8 @@ public class MailService {
             model.put(URL, url);
             model.put("messageSource", messageSource);
             model.put("greeting", "greeting");
-            model.put("content", "content");
+            model.put("content", "receivedPrivateMessageNotification.content");
+            model.put("link", "receivedPrivateMessageNotification.link");
             model.put("wish", "wish");
             model.put("signature", "signature");
             model.put("noArgs", new Object[]{});
@@ -188,7 +210,17 @@ public class MailService {
             String url = this.getDeploymentRootUrl() + "/user/activate/" + recipient.getUuid();
             Map<String, Object> model = new HashMap<String, Object>();
             model.put("name", recipient.getUsername());
-            model.put("url", url);
+            model.put(URL, url);
+            model.put("messageSource", messageSource);
+            model.put("greeting", "greeting");
+            model.put("contentPart1", "accountActivation.content.part1");
+            model.put("contentPart2", "accountActivation.content.part2");
+            model.put("contentPart3", "accountActivation.content.part3");
+            model.put("link", "accountActivation.link");
+            model.put("wish", "wish");
+            model.put("signature", "signature");
+            model.put("noArgs", new Object[]{});
+            model.put("locale", recipient.getLanguage().getLocale());
             String text = this.mergeTemplate("accountActivation.vm", model);
             this.sendEmail(recipient.getEmail(), "JTalks account activation", text);
         } catch (MailingFailedException e) {

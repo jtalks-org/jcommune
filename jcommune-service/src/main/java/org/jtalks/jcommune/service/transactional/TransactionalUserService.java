@@ -192,7 +192,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         JCUser user = this.getDao().getByEmail(email);
         String randomPassword = RandomStringUtils.randomAlphanumeric(6);
         // first - mail attempt, then - database changes
-        mailService.sendPasswordRecoveryMail(user.getUsername(), email, randomPassword);
+        mailService.sendPasswordRecoveryMail(user, email, randomPassword);
         user.setPassword(randomPassword);
         this.getDao().update(user);
 
