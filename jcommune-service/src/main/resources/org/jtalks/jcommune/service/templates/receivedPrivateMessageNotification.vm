@@ -19,8 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" media="screen, projection"
-          href="${pageContext.request.contextPath}/resources/css/editor.css"/>
+    <link rel="stylesheet" type="text/css" href="cid:css"/>
 </head>
 <body>
 <p>${messageSource.getMessage($greeting, $noArgs, $locale)} ${recipient.username}!</p>
@@ -28,7 +27,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 <p>${messageSource.getMessage($content, $noArgs, $locale)}<br>
 ${messageSource.getMessage($link, $noArgs, $locale)}<a href="${url}">${url}</a>.</p>
 <br><hr><br>
-
+<h2>${title}</h2>
+${message}
 <br><hr><br>
 <p>${messageSource.getMessage($wish, $noArgs, $locale)}</p>
 <br>

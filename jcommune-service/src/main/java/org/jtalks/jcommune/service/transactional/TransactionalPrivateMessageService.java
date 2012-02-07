@@ -104,7 +104,7 @@ public class TransactionalPrivateMessageService
         securityService.grantToCurrentUser().user(recipientUsername).read().on(pm);
 
         long pmId = pm.getId();
-        mailService.sendReceivedPrivateMessageNotification(recipient, pmId);
+        mailService.sendReceivedPrivateMessageNotification(recipient, pm);
 
         logger.debug("Private message to user {} was sent. Message id={}", recipientUsername, pmId);
 
@@ -193,7 +193,7 @@ public class TransactionalPrivateMessageService
         securityService.grantToCurrentUser().user(recipientUsername).read().on(pm);
 
         long pmId = pm.getId();
-        mailService.sendReceivedPrivateMessageNotification(recipient, pmId);
+        mailService.sendReceivedPrivateMessageNotification(recipient, pm);
 
         logger.debug("Private message(was draft) to user {} was sent. Message id={}",
                 recipientUsername, pmId);

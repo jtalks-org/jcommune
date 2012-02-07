@@ -17,11 +17,13 @@ package org.jtalks.jcommune.service.nontransactional;
 import org.apache.velocity.app.VelocityEngine;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -30,6 +32,7 @@ import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -51,6 +54,7 @@ public class MailService {
     private String from;
     private VelocityEngine velocityEngine;
     private MessageSource messageSource;
+    private BBCodeService bbCodeService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MailService.class);
     private static final String LOG_TEMPLATE = "Error occurred while sending updates of %s %d to %s";
@@ -58,26 +62,25 @@ public class MailService {
     private static final String URL = "url";
     private static final String USER = "user";
 
-    // todo: apply i18n settings here somehow and extract them as templates (velocity?)
-
     /**
      * Creates a mailing service with a default template message autowired.
      * "From" property is essential. Please note, that this address should be valid email address
      * as most e-mail servers will reject e-mail if sender is not really correlated with
      * the letter's "from" value.
      *
-     * @param sender    spring mailing tool
-     * @param from      blank message with "from" filed preset
-     * @param engine    engine for templating email notifications
-     * @param source    for resolving internationalization messages
-     * @param bbCodeCss styles to display BB-encoded messages in HTML emails
+     * @param sender spring mailing tool
+     * @param from   blank message with "from" filed preset
+     * @param engine engine for templating email notifications
+     * @param source for resolving internationalization messages
+     * @param bbCodeService to transform BB-encoded text to HTML
      */
     public MailService(JavaMailSender sender, String from, VelocityEngine engine, MessageSource source,
-                       Resource bbCodeCss) {
+                        BBCodeService bbCodeService) {
         this.mailSender = sender;
         this.from = from;
         this.velocityEngine = engine;
         this.messageSource = source;
+        this.bbCodeService = bbCodeService;
     }
 
     /**
@@ -171,11 +174,11 @@ public class MailService {
      * Sends notification to user about received private message.
      *
      * @param recipient a person to be notified about received private message by email
-     * @param pmId      id of received private message
+     * @param pm        private message itself
      */
-    public void sendReceivedPrivateMessageNotification(JCUser recipient, long pmId) {
+    public void sendReceivedPrivateMessageNotification(JCUser recipient, PrivateMessage pm) {
         try {
-            String url = this.getDeploymentRootUrl() + "/inbox/" + pmId;
+            String url = this.getDeploymentRootUrl() + "/pm/" + pm.getId();
             Map<String, Object> model = new HashMap<String, Object>();
             model.put("recipient", recipient);
             model.put(URL, url);
@@ -187,10 +190,12 @@ public class MailService {
             model.put("signature", "signature");
             model.put("noArgs", new Object[]{});
             model.put("locale", recipient.getLanguage().getLocale());
+            model.put("title", pm.getTitle());
+            model.put("message", bbCodeService.removeBBCodes(pm.getBody()));
             String text = this.mergeTemplate("receivedPrivateMessageNotification.vm", model);
             this.sendEmail(recipient.getEmail(), "Received private message", text);
         } catch (MailingFailedException e) {
-            LOGGER.error(String.format(LOG_TEMPLATE, "Private message", pmId, recipient.getUsername()));
+            LOGGER.error(String.format(LOG_TEMPLATE, "Private message", pm.getId(), recipient.getUsername()));
         }
     }
 
@@ -204,7 +209,7 @@ public class MailService {
             String url = this.getDeploymentRootUrl() + "/user/activate/" + recipient.getUuid();
             Map<String, Object> model = new HashMap<String, Object>();
             model.put("name", recipient.getUsername());
-            model.put("url", url);
+            model.put(URL, url);
             model.put("messageSource", messageSource);
             model.put("greeting", "greeting");
             model.put("contentPart1", "accountActivation.content.part1");
@@ -240,10 +245,7 @@ public class MailService {
             helper.setSubject(subject);
             helper.setText(text, true);
             mailSender.send(message);
-        } catch (MessagingException e) {
-            LOGGER.error("Mail sending failed", e);
-            throw new MailingFailedException(e);
-        } catch (MailException e) {
+        } catch (Exception e) {
             LOGGER.error("Mail sending failed", e);
             throw new MailingFailedException(e);
         }

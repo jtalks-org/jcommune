@@ -18,6 +18,7 @@ import org.apache.velocity.app.VelocityEngine;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -25,6 +26,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -35,14 +39,17 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 import java.io.IOException;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -64,7 +71,8 @@ public class MailServiceTest {
     private VelocityEngine velocityEngine;
     private MockHttpServletRequest request;
     private MessageSource messageSource;
-
+    @Mock
+    private BBCodeService bbCodeService;
 
     private static final String FROM = "lol@wut.zz";
     private static final String TO = "foo@bar.zz";
@@ -79,12 +87,11 @@ public class MailServiceTest {
     @BeforeMethod
     public void setUp() {
         initMocks(this);
-
         velocityEngine = new VelocityEngine();
         velocityEngine.setProperty("resource.loader", "class");
         velocityEngine.setProperty("class.resource.loader.class",
                 "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-        service = new MailService(sender, FROM, velocityEngine, messageSource, null);
+        service = new MailService(sender, FROM, velocityEngine, messageSource, bbCodeService);
         MimeMessage message = new MimeMessage((Session) null);
         when(sender.createMimeMessage()).thenReturn(message);
         captor = ArgumentCaptor.forClass(MimeMessage.class);
@@ -105,9 +112,9 @@ public class MailServiceTest {
         service.sendPasswordRecoveryMail(user, PASSWORD);
 
         this.checkMailCredentials();
-        assertTrue(captor.getValue().getContent().toString().contains(USERNAME));
-        assertTrue(captor.getValue().getContent().toString().contains(PASSWORD));
-        assertTrue(captor.getValue().getContent().toString().contains("http://coolsite.com:1234/forum/login"));
+        assertTrue(this.getMimeMailBody().contains(USERNAME));
+        assertTrue(this.getMimeMailBody().toString().contains(PASSWORD));
+        assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/login"));
     }
 
     @Test
@@ -119,7 +126,7 @@ public class MailServiceTest {
         service.sendTopicUpdatesOnSubscription(user, topic);
 
         this.checkMailCredentials();
-        assertTrue(captor.getValue().getContent().toString().contains("http://coolsite.com:1234/forum/posts/1"));
+        assertTrue(this.getMimeMailBody().toString().contains("http://coolsite.com:1234/forum/posts/1"));
     }
 
     @Test
@@ -129,15 +136,22 @@ public class MailServiceTest {
         service.sendBranchUpdatesOnSubscription(user, branch);
 
         this.checkMailCredentials();
-        assertTrue(captor.getValue().getContent().toString().contains("http://coolsite.com:1234/forum/branches/1"));
+        assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/branches/1"));
     }
 
     @Test
     public void testSendReceivedPrivateMessageNotification() throws IOException, MessagingException {
-        service.sendReceivedPrivateMessageNotification(user, 1);
+        PrivateMessage message = new PrivateMessage(null, null, "title", "body");
+        message.setId(1);
+        when(bbCodeService.removeBBCodes("body")).thenReturn("plain body");
+
+        service.sendReceivedPrivateMessageNotification(user, message);
 
         this.checkMailCredentials();
-        assertTrue(captor.getValue().getContent().toString().contains("http://coolsite.com:1234/forum/inbox/1"));
+        System.out.println(this.getMimeMailBody());
+        assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/pm/1"));
+        assertTrue(this.getMimeMailBody().contains("title"));
+        assertTrue(this.getMimeMailBody().contains("plain body"));
     }
 
     @Test
@@ -145,8 +159,7 @@ public class MailServiceTest {
         JCUser user = new JCUser(USERNAME, TO, PASSWORD);
         service.sendAccountActivationMail(user);
         this.checkMailCredentials();
-        assertTrue(captor.getValue().getContent().toString().contains(
-                "http://coolsite.com:1234/forum/user/activate/" + user.getUuid()));
+        assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/user/activate/" + user.getUuid()));
     }
 
     @Test
@@ -186,7 +199,11 @@ public class MailServiceTest {
         Exception fail = new MailSendException("");
         doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
 
-        service.sendReceivedPrivateMessageNotification(user, 1);
+        service.sendReceivedPrivateMessageNotification(user, new PrivateMessage(null,null, null, null));
+    }
+
+    private String getMimeMailBody() throws IOException, MessagingException {
+        return captor.getValue().getContent().toString();
     }
 
     private void checkMailCredentials() throws MessagingException {
