@@ -102,7 +102,7 @@ public class MailServiceTest {
 
     @Test
     public void testSendPasswordRecoveryMail() throws MailingFailedException, IOException, MessagingException {
-        service.sendPasswordRecoveryMail(user, TO, PASSWORD);
+        service.sendPasswordRecoveryMail(user, PASSWORD);
 
         this.checkMailCredentials();
         assertTrue(captor.getValue().getContent().toString().contains(USERNAME));
@@ -162,7 +162,7 @@ public class MailServiceTest {
         Exception fail = new MailSendException("");
         doThrow(fail).when(sender).send(Matchers.<MimeMessage>any());
 
-        service.sendPasswordRecoveryMail(user, TO, PASSWORD);
+        service.sendPasswordRecoveryMail(user, PASSWORD);
     }
 
     @Test
