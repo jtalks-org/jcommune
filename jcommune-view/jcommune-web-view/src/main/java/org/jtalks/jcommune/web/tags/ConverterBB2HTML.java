@@ -15,11 +15,17 @@
 
 package org.jtalks.jcommune.web.tags;
 
+import org.jtalks.jcommune.service.nontransactional.BBCodeService;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import ru.perm.kefir.bbcode.BBProcessorFactory;
 import ru.perm.kefir.bbcode.TextProcessor;
 
+import javax.servlet.jsp.JspContext;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
+import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
 
 
@@ -28,17 +34,24 @@ import java.io.IOException;
  * This tag also replaces newline symbols with html
  * line break tag <br>
  */
-public class ConverterBB2HTML extends SimpleTagSupport {
+public class ConverterBB2HTML extends TagSupport {
 
     private String bbCode;
-    private TextProcessor processor = BBProcessorFactory.getInstance().create();
+    private BBCodeService service;
+
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void doTag() throws JspException, IOException {
-        getJspContext().getOut().print(bbCode);
+    public int doStartTag() throws JspException {
+        try {
+            String html =  service.convertBbToHtml(bbCode);
+            pageContext.getOut().print(html);
+            return SKIP_BODY;
+        } catch (IOException e) {
+            throw new JspException(e);
+        }
     }
 
     /**
@@ -46,16 +59,17 @@ public class ConverterBB2HTML extends SimpleTagSupport {
      *
      * @param bbCode bb-encoded text
      */
-    public void setBbCode(String bbCode){
-        this.bbCode = processor.process(bbCode);
+    public void setBbCode(String bbCode) {
+        this.bbCode = bbCode;
     }
 
     /**
-     * Returns text passed formatted with HTML instead of bb-codes
-     *
-     * @return html representation of bb-encoded text passed
+     * {@inheritDoc}
      */
-    public String getBbCode() {
-        return bbCode;
+    @Override
+    public void setPageContext(PageContext pageContext) {
+        super.setPageContext(pageContext);
+        ApplicationContext ac = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
+        service = ac.getBean(BBCodeService.class);
     }
 }

@@ -66,13 +66,13 @@
                 <li class="forum_row">
                     <div class="forum_userinfo">
                         <div class="user_info">Branch</div>
-                        <a class="username"
+                        <a class="forum_message_cell_text"
                            href="${pageContext.request.contextPath}/branches/${post.topic.branch.id}">
                             <c:out value="${post.topic.branch.name}"/></a>
                         <br>
 
                         <div class="user_info">Topic</div>
-                        <a class="username"
+                        <a class="forum_message_cell_text"
                            href="${pageContext.request.contextPath}/topics/${post.topic.id}">
                             <c:out value="${post.topic.title}"/></a>
                     </div>

@@ -179,20 +179,14 @@ public class PrivateMessageController {
     /**
      * Show page with private message details.
      *
-     * @param folder message folder (inbox/outbox/drafts)
      * @param id     {@link PrivateMessage} id
      * @return {@code ModelAndView} with a message
      * @throws NotFoundException when message not found
      */
-    @RequestMapping(value = "/{folder}/{pmId}", method = RequestMethod.GET)
-    public ModelAndView showPmPage(@PathVariable("folder") String folder,
-                                   @PathVariable(PM_ID) Long id) throws NotFoundException {
+    @RequestMapping(value = "/pm/{pmId}", method = RequestMethod.GET)
+    public ModelAndView showPmPage(@PathVariable(PM_ID) Long id) throws NotFoundException {
         PrivateMessage pm = pmService.get(id);
-        if ("inbox".equals(folder)) {
-            pmService.markAsRead(pm);
-        }
-        return new ModelAndView("pm/showPm")
-                .addObject("pm", pm);
+        return new ModelAndView("pm/showPm").addObject("pm", pm);
     }
 
     /**

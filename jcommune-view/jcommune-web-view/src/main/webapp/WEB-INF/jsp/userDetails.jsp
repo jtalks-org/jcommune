@@ -71,7 +71,7 @@
                             <span><c:out value="${user.location}"/></span>
                         </li>
                         <li class="forum_row">
-                            <label><spring:message code="label.numberOfTopicsOnPage"/></label>
+                            <label><spring:message code="label.pageSize"/></label>
                             <span><c:out value="${pageSize}"/></span>
                         </li>
                     </c:when>

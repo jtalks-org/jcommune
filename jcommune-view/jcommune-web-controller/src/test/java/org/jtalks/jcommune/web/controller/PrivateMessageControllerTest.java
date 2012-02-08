@@ -29,6 +29,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -201,55 +202,13 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void showPmPageInbox() throws NotFoundException {
-        String box = "inbox";
         PrivateMessage pm = new PrivateMessage(null, null, "title", "body");
 
         //set expectations
         when(pmService.get(PM_ID)).thenReturn(pm);
 
         //invoke the object under test
-        ModelAndView mav = controller.showPmPage(box, PM_ID);
-
-        //check expectations
-        verify(pmService).get(PM_ID);
-        verify(pmService).markAsRead(pm);
-
-        //check result
-        assertViewName(mav, "pm/showPm");
-        PrivateMessage actualPm = assertAndReturnModelAttributeOfType(mav, "pm", PrivateMessage.class);
-        assertEquals(actualPm, pm);
-    }
-
-    @Test
-    public void showPmPageOutbox() throws NotFoundException {
-        String box = "outbox";
-        PrivateMessage pm = new PrivateMessage(null, null, "title", "body");
-
-        //set expectations
-        when(pmService.get(PM_ID)).thenReturn(pm);
-
-        //invoke the object under test
-        ModelAndView mav = controller.showPmPage(box, PM_ID);
-
-        //check expectations
-        verify(pmService).get(PM_ID);
-
-        //check result
-        assertViewName(mav, "pm/showPm");
-        PrivateMessage actualPm = assertAndReturnModelAttributeOfType(mav, "pm", PrivateMessage.class);
-        assertEquals(actualPm, pm);
-    }
-
-    @Test
-    public void showPmPageDrafts() throws NotFoundException {
-        String box = "drafts";
-        PrivateMessage pm = new PrivateMessage(null, null, "title", "body");
-
-        //set expectations
-        when(pmService.get(PM_ID)).thenReturn(pm);
-
-        //invoke the object under test
-        ModelAndView mav = controller.showPmPage(box, PM_ID);
+        ModelAndView mav = controller.showPmPage(PM_ID);
 
         //check expectations
         verify(pmService).get(PM_ID);

@@ -15,14 +15,12 @@
 
 function getSelectedText(postId) {
     var txt = '';
-    if (window.getSelection) {
-        txt = window.getSelection().toString();
-    } else if (document.getSelection) {
+    if (document.getSelection) {
         txt = document.getSelection();
+    } else if (window.getSelection) {
+        txt = window.getSelection().toString();
     } else if (document.selection) {
         txt = document.selection.createRange().text;
     }
     return txt;
 }
-
-

@@ -33,9 +33,9 @@
         <security:intercept-url pattern="/posts/*" method="DELETE" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
 
         <security:intercept-url pattern="/users/new" method="GET" access="permitAll"/>
-        <security:intercept-url pattern="/users" method="POST" access="permitAll"/>
+        <security:intercept-url pattern="/user" method="GET" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
         <security:intercept-url pattern="/users/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
-
+        <security:intercept-url pattern="/user/activate/**" access="permitAll"/>
 
         <security:intercept-url pattern="/pm/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
         <security:intercept-url pattern="/inbox" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>

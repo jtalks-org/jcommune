@@ -79,8 +79,20 @@
             <spring:message code="label.answer"/></a>
         <c:set var="authenticated" value="${true}"/>
     </sec:authorize>
-    &nbsp; &nbsp; &nbsp;
-
+        <c:if test="${pag.maxPages>1}">
+        <c:if test="${pag.pagingEnabled==true}">
+            <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                <a class="button" href="?pagingEnabled=false"><spring:message code="label.showAll"/></a>
+                &nbsp; &nbsp; &nbsp;
+            </sec:authorize>
+        </c:if>
+    </c:if>
+    <c:if test="${pag.pagingEnabled == false}">
+        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+            <a class="button" href="?pagingEnabled=true"><spring:message code="label.showPages"/></a>
+            &nbsp; &nbsp; &nbsp;
+        </sec:authorize>
+    </c:if>
     <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
     <br>
 
@@ -113,10 +125,10 @@
                         <span class="status"><spring:message code="label.topic.registered"/></span>
                         <jtalks:format pattern="dd.MM.yy" value="${post.userCreated.registrationDate}"/><br/>
                         <span class="status"><spring:message code="label.topic.message_count"/></span>
-                        ${post.userCreated.postCount}<br/>
+                        <c:out value="${post.userCreated.postCount}"/><br/>
                         <c:if test="${post.userCreated.location != null}">
                             <span class="status"><spring:message code="label.topic.from_whence"/></span>
-                            ${post.userCreated.location}
+                            <c:out value="${post.userCreated.location}"/>
                         </c:if>
                     </div>
                 </div>
@@ -132,9 +144,8 @@
                                     <%-- first post - urls to delete & edit topic --%>
                                     <c:set var="delete_url"
                                            value="${pageContext.request.contextPath}/topics/${topic.id}"/>
-                                    <%--todo: page settings for edit url? WTF?--%>
                                     <c:set var="edit_url"
-                                           value="${pageContext.request.contextPath}/topics/${topic.id}/edit?branchId=${branchId}&page=${pag.page}"/>
+                                           value="${pageContext.request.contextPath}/topics/${topic.id}/edit?branchId=${branchId}"/>
                                     <c:set var="confirm_message" value="label.deleteTopicConfirmation"/>
                                 </c:when>
                                 <c:otherwise>
@@ -142,7 +153,7 @@
                                     <c:set var="delete_url"
                                            value="${pageContext.request.contextPath}/posts/${post.id}"/>
                                     <c:set var="edit_url"
-                                           value="${pageContext.request.contextPath}/posts/${post.id}/edit?topicId=${topic.id}&page=${pag.page}"/>
+                                           value="${pageContext.request.contextPath}/posts/${post.id}/edit?topicId=${topic.id}"/>
                                     <c:set var="confirm_message" value="label.deletePostConfirmation"/>
                                 </c:otherwise>
                             </c:choose>
@@ -240,7 +251,7 @@
             &nbsp;&nbsp;
         </c:forEach>
         <%--Fake form to delete posts and topics.
-Without it we're likely to get lots of problems simulating HTTP DELETE via JS in a String fashion  --%>
+Without it we're likely to get lots of problems simulating HTTP DELETE via JS in a Spring fashion  --%>
         <form:form id="deleteForm" method="DELETE"/>
     </div>
 </div>

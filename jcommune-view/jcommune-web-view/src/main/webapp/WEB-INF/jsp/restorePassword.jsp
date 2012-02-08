@@ -56,7 +56,7 @@
 
             </table>
 
-            <button type="submit"><spring:message code="label.send"/></button>
+            <button type="submit" class="button"><spring:message code="label.send"/></button>
             <div class="spacer"></div>
         </form:form>
     </div>

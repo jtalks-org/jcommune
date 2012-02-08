@@ -104,7 +104,7 @@ public class TransactionalPrivateMessageService
         securityService.grantToCurrentUser().user(recipientUsername).read().on(pm);
 
         long pmId = pm.getId();
-        mailService.sendReceivedPrivateMessageNotification(recipient, pmId);
+        mailService.sendReceivedPrivateMessageNotification(recipient, pm);
 
         logger.debug("Private message to user {} was sent. Message id={}", recipientUsername, pmId);
 
@@ -123,17 +123,6 @@ public class TransactionalPrivateMessageService
     private PrivateMessage populateMessage(String title, String body, JCUser recipient) throws NotFoundException {
         JCUser userFrom = securityService.getCurrentUser();
         return new PrivateMessage(recipient, userFrom, title, body);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void markAsRead(PrivateMessage pm) {
-        if (!pm.isRead()) {
-            pm.markAsRead();
-            this.getDao().saveOrUpdate(pm);
-            userDataCache.decrementNewMessageCountFor(pm.getUserTo().getUsername());
-        }
     }
 
     /**
@@ -204,7 +193,7 @@ public class TransactionalPrivateMessageService
         securityService.grantToCurrentUser().user(recipientUsername).read().on(pm);
 
         long pmId = pm.getId();
-        mailService.sendReceivedPrivateMessageNotification(recipient, pmId);
+        mailService.sendReceivedPrivateMessageNotification(recipient, pm);
 
         logger.debug("Private message(was draft) to user {} was sent. Message id={}",
                 recipientUsername, pmId);
@@ -219,6 +208,12 @@ public class TransactionalPrivateMessageService
     @PreAuthorize("hasPermission(#id, 'org.jtalks.jcommune.model.entity.PrivateMessage', admin) or " +
             "hasPermission(#id, 'org.jtalks.jcommune.model.entity.PrivateMessage', read)")
     public PrivateMessage get(Long id) throws NotFoundException {
-        return super.get(id);
+        PrivateMessage pm = super.get(id);
+        if (securityService.getCurrentUser().equals(pm.getUserTo()) && !pm.isRead()) {
+            pm.markAsRead();
+            this.getDao().saveOrUpdate(pm);
+            userDataCache.decrementNewMessageCountFor(pm.getUserTo().getUsername());
+        }
+        return pm;
     }
 }

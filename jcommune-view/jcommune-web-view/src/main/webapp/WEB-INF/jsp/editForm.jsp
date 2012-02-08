@@ -34,13 +34,9 @@
             <c:out value="${topicTitle}"/>
         </a></h2>
 
-        <div class="forum_misc_info">
-            <spring:message code="label.post.edit_title"/>
-        </div>
-
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
         <div id="answer">
-            <form:form action="${pageContext.request.contextPath}/posts/${postId}/edit?topicId=${topicId}&page=${page}"
+            <form:form action="${pageContext.request.contextPath}/posts/${postId}/edit?topicId=${topicId}"
                        method="POST" modelAttribute="postDto" onsubmit="doCheck();return true;">
                 <form:hidden path="topicId"/>
                 <form:hidden path="id"/>

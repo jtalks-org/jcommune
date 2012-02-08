@@ -55,4 +55,9 @@ public class UniqueValidatorTest {
 
         assertFalse(validator.isValid("value", null));
     }
+
+    @Test
+    public void testNullValue() {
+        assertFalse(validator.isValid(null, null));
+    }
 }

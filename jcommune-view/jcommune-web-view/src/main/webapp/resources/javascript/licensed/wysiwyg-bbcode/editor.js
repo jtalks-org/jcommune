@@ -433,11 +433,13 @@ function closeTag2(text) {
     var currentText = text;
 
     {
-        var n = "&U000A;";
-        var space = "&U000B;";
+        var n = "&U999000A;";
+        var space = "&999U000B;";
+        var star = "&U999000C;";
 
         currentText = currentText.replace(/\n/gi, n);
         currentText = currentText.replace(/\s/gi, space);
+        currentText = currentText.replace(/\[\*\]/gi, star);
     }
 
     var regexpForOpenBBtag = new RegExp(patternForOpenBBtag, 'ig');
@@ -445,6 +447,7 @@ function closeTag2(text) {
 
     // find first(!) open tag
     if (regexpForOpenBBtagResult != null) {
+
         var tagName = regexpForOpenBBtagResult[1];
 
         var regTwoTags = '([^\\[\\]]*)(\\[(' + tagName + ')(=[^\\[\\]]*)?\\])(.*)(\\[\/(' + tagName + ')\\])([^\\[\\]]*)(.*)';
@@ -482,6 +485,7 @@ function closeTag2(text) {
     {
         currentText = currentText.replace(new RegExp(n, 'ig'), "\n");
         currentText = currentText.replace(new RegExp(space, 'ig'), " ");
+        currentText = currentText.replace(new RegExp(star, 'ig'), "[*]");
     }
 
     return  currentText;

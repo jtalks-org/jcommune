@@ -14,12 +14,16 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.ImageFormatException;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.jtalks.jcommune.service.exceptions.ImageSizeException;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
+import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.mockito.Matchers;
@@ -33,7 +37,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -41,13 +44,13 @@ import org.testng.annotations.Test;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -284,18 +287,6 @@ public class AvatarControllerTest {
 
     }
 
-    @Test
-    public void testRemoveAvatar() throws IOException {
-        JCUser user = getUser();
-        when(securityService.getCurrentUser()).thenReturn(user);
-
-        ModelAndView mav = avatarController.removeAvatarFromCurrentUser();
-
-        assertViewName(mav, "editProfile");
-        verify(securityService).getCurrentUser();
-        verify(avatarService).getDefaultAvatar();
-    }
-
     @Test(dataProvider = "validDataForChromeFF")
     public void testRenderAvatar(byte[] avatar, Map<String, String> expectedData) throws Exception {
         JCUser user = getUser();
@@ -313,6 +304,47 @@ public class AvatarControllerTest {
         verify(servletOutputStream).write(avatar);
     }
 
+    @Test(dataProvider = "testDataForGetDefaultAvatar")
+    public void testGetDefaultAvatar(String srcImage, String expected) throws IOException, ImageProcessException {
+        //set expectations
+        when(avatarService.getDefaultAvatar()).thenReturn(validAvatar);
+        when(avatarService.convertBytesToBase64String(validAvatar)).thenReturn(srcImage);
+
+        //invoke object under test
+        String actual = avatarController.getDefaultAvatar();
+
+        //check expectations
+        verify(avatarService).getDefaultAvatar();
+
+        //check result
+        assertEquals(actual, expected);
+    }
+
+    @DataProvider
+    private Object[][] testDataForGetDefaultAvatar() throws IOException, ImageProcessException {
+        final String RESULT = "success";
+        Map<String, String> map = new HashMap<String, String>();
+
+        String srcImage;
+        srcImage = new AvatarService(new ImageUtils(new Base64Wrapper()), new Base64Wrapper(), "").convertBytesToBase64String(validAvatar);
+        map.put(RESULT, "true");
+        map.put("srcPrefix", ImageUtils.HTML_SRC_TAG_PREFIX);
+        map.put("srcImage", srcImage);
+
+
+        JsonFactory jsonFactory = new JsonFactory();
+        StringWriter stringWriter = new StringWriter();
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonGenerator jgen = jsonFactory.createJsonGenerator(stringWriter);
+        objectMapper.writeValue(jgen, map);
+        String expected = stringWriter.toString();
+
+        return new Object[][]{
+                {srcImage, expected}
+        };
+
+    }
+
     @DataProvider
     private Object[][] validDataForChromeFF() {
 
@@ -323,7 +355,7 @@ public class AvatarControllerTest {
         }};
 
         return new Object[][]{
-                {validAvatar, normalResponseContent},
+                {validAvatar, normalResponseContent}
         };
     }
 
@@ -396,14 +428,5 @@ public class AvatarControllerTest {
         newUser.setLastName(LAST_NAME);
         return newUser;
     }
-
-    private JCUser getUserWithoutAvatar() throws IOException {
-        JCUser newUser = new JCUser(USER_NAME, EMAIL, PASSWORD);
-        newUser.setFirstName(FIRST_NAME);
-        newUser.setLastName(LAST_NAME);
-        newUser.setAvatar(null);
-        return newUser;
-    }
-
 
 }

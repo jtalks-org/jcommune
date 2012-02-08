@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.jtalks.jcommune.model.dao.UserDao;
@@ -26,6 +27,7 @@ import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
+import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
@@ -34,6 +36,11 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -61,7 +68,6 @@ public class TransactionalUserServiceTest {
     private static final Long USER_ID = 999L;
     private static final long MAX_REGISTRATION_TIMEOUT = 1000L;
 
-    @Mock
     private UserService userService;
     @Mock
     private UserDao userDao;
@@ -70,14 +76,14 @@ public class TransactionalUserServiceTest {
     @Mock
     private MailService mailService;
     @Mock
-    private ImageUtils processor;
-    @Mock
     private AvatarService avatarService;
+    @Mock
+    private Base64Wrapper base64Wrapper;
 
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-        userService = new TransactionalUserService(userDao, securityService, mailService, processor, avatarService);
+        userService = new TransactionalUserService(userDao, securityService, mailService, base64Wrapper, avatarService);
     }
 
     @Test
@@ -263,7 +269,7 @@ public class TransactionalUserServiceTest {
 
         userService.restorePassword(EMAIL);
 
-        verify(mailService).sendPasswordRecoveryMail(eq(USERNAME), eq(EMAIL), matches("^[a-zA-Z0-9]*$"));
+        verify(mailService).sendPasswordRecoveryMail(eq(user), matches("^[a-zA-Z0-9]*$"));
         ArgumentCaptor<JCUser> captor = ArgumentCaptor.forClass(JCUser.class);
         verify(userDao).update(captor.capture());
         assertEquals(captor.getValue().getUsername(), USERNAME);
@@ -274,8 +280,8 @@ public class TransactionalUserServiceTest {
     @Test(expectedExceptions = MailingFailedException.class)
     public void testRestorePasswordFail() throws NotFoundException, MailingFailedException {
         JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
-        Exception fail = new MailingFailedException("", new RuntimeException());
-        doThrow(fail).when(mailService).sendPasswordRecoveryMail(anyString(), anyString(), anyString());
+        Exception fail = new MailingFailedException(new RuntimeException());
+        doThrow(fail).when(mailService).sendPasswordRecoveryMail(eq(user), anyString());
         when(userDao.getByEmail(EMAIL)).thenReturn(user);
 
         try {
@@ -286,9 +292,49 @@ public class TransactionalUserServiceTest {
         }
     }
 
+    @Test
+    public void activateAccountTest() throws NotFoundException {
+        JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
+        when(userDao.getByUuid(user.getUuid())).thenReturn(user);
+
+        userService.activateAccount(user.getUuid());
+
+        assertTrue(user.isEnabled());
+        verify(userDao).getByUuid(user.getUuid());
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void activateNotFoundAccountTest() throws NotFoundException {
+        JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
+        when(userDao.getByUsername(USERNAME)).thenReturn(null);
+
+        userService.activateAccount(USERNAME);
+    }
+
+    @Test
+    public void testNonActivatedAccountExpiration() throws NotFoundException {
+        JCUser user1 = new JCUser(USERNAME, EMAIL, PASSWORD);
+        user1.setRegistrationDate(new DateTime());
+        JCUser user2 = new JCUser(USERNAME, EMAIL, PASSWORD);
+        user2.setRegistrationDate(new DateTime().minusHours(25));
+        JCUser user3 = new JCUser(USERNAME, EMAIL, PASSWORD);
+        user3.setRegistrationDate(new DateTime().minusHours(50));
+
+        List<JCUser> users = new ArrayList<JCUser>();
+        Collections.addAll(users, user1, user2, user3);
+
+        when(userDao.getNonActivatedUsers()).thenReturn(users);
+
+        userService.deleteUnactivatedAccountsByTimer();
+
+        verify(userDao).delete(user2);
+        verify(userDao).delete(user3);
+        verify(userDao, never()).delete(user1);
+    }
+
     /**
      * @param username username
-     * @return create and return {@link org.jtalks.jcommune.model.entity.JCUser} with default username, encodedUsername,
+     * @return create and return {@link JCUser} with default username, encodedUsername,
      *         first name, last name,  email and password
      */
     private JCUser getUser(String username) {
