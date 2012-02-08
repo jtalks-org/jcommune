@@ -31,8 +31,6 @@
 
     <bean id="breadcrumbBuilder" class="org.jtalks.jcommune.web.util.BreadcrumbBuilder"/>
 
-    <bean id="privateMessageDtoBuilder" class="org.jtalks.jcommune.web.util.PrivateMessageDtoBuilder"/>
-
     <bean id="sessionStatisticListener" class="org.jtalks.jcommune.web.listeners.HttpSessionStatisticListenerImpl"/>
 
 </beans>

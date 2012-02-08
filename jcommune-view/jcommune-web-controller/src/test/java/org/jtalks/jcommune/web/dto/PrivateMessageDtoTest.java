@@ -12,12 +12,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.dto.builder;
+package org.jtalks.jcommune.web.dto;
 
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
-import org.jtalks.jcommune.web.util.PrivateMessageDtoBuilder;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -28,9 +27,8 @@ import static org.testng.Assert.assertTrue;
  * @author Alexandre Teterin
  * @author Evgeniy Naumenko
  */
-public class PrivateMessageDtoBuilderTest {
+public class PrivateMessageDtoTest {
     
-    private PrivateMessageDtoBuilder pmDtoBuilder;
     private JCUser user = new JCUser("username", "email", "password");
 
     private String BODY = "body";
@@ -40,7 +38,6 @@ public class PrivateMessageDtoBuilderTest {
     
     @BeforeMethod
     public void init() {
-        pmDtoBuilder = new PrivateMessageDtoBuilder();
         pm = new PrivateMessage(user,user, TITLE, BODY);
         pm.setId(ID);
     }
@@ -48,7 +45,7 @@ public class PrivateMessageDtoBuilderTest {
     @Test
     public void testGetRegularPmDto() throws Exception {
         //invoke the object under test
-        PrivateMessageDto dto = pmDtoBuilder.getFullPmDtoFor(pm);
+        PrivateMessageDto dto = PrivateMessageDto.getFullPmDtoFor(pm);
 
         //check result
         assertEquals(dto.getBody(), BODY);
@@ -58,10 +55,24 @@ public class PrivateMessageDtoBuilderTest {
 
     }
 
+        @Test
+    public void testGetRegularPmDtoNullUser() throws Exception {
+        //invoke the object under test
+            pm.setUserTo(null);
+        PrivateMessageDto dto = PrivateMessageDto.getFullPmDtoFor(pm);
+
+        //check result
+        assertEquals(dto.getBody(), BODY);
+        assertEquals(dto.getId(), ID);
+        assertEquals(dto.getRecipient(), null);
+        assertEquals(dto.getTitle(), TITLE);
+
+    }
+
     @Test
     public void testGetReplyDto() throws Exception {
         //invoke the object under test
-        PrivateMessageDto dto = pmDtoBuilder.getReplyDtoFor(pm);
+        PrivateMessageDto dto = PrivateMessageDto.getReplyDtoFor(pm);
 
         //check result
         assertEquals(dto.getRecipient(), user.getUsername());

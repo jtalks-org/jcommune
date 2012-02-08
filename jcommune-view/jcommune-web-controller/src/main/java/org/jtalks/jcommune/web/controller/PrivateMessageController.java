@@ -19,7 +19,6 @@ import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
-import org.jtalks.jcommune.web.util.PrivateMessageDtoBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
@@ -47,7 +46,6 @@ public class PrivateMessageController {
 
     public static final String BREADCRUMB_LIST = "breadcrumbList";
     private PrivateMessageService pmService;
-    private PrivateMessageDtoBuilder pmDtoBuilder;
     private BBCodeService bbCodeService;
 
     //constants are moved here when occurs 4 or more times, as project PMD rule states
@@ -70,14 +68,11 @@ public class PrivateMessageController {
 
     /**
      * @param pmService     for PrivateMessage-related operation
-     * @param pmDtoBuilder  the object which provides actions on {@link PrivateMessageDtoBuilder} entity
      * @param bbCodeService for qutes creation
      */
     @Autowired
-    public PrivateMessageController(PrivateMessageService pmService, PrivateMessageDtoBuilder pmDtoBuilder,
-                                    BBCodeService bbCodeService) {
+    public PrivateMessageController(PrivateMessageService pmService, BBCodeService bbCodeService) {
         this.pmService = pmService;
-        this.pmDtoBuilder = pmDtoBuilder;
         this.bbCodeService = bbCodeService;
     }
 
@@ -133,7 +128,7 @@ public class PrivateMessageController {
     @RequestMapping(value = "/reply/{pmId}", method = RequestMethod.GET)
     public ModelAndView replyPage(@PathVariable(PM_ID) Long id) throws NotFoundException {
         PrivateMessage pm = pmService.get(id);
-        PrivateMessageDto object = pmDtoBuilder.getReplyDtoFor(pm);
+        PrivateMessageDto object = PrivateMessageDto.getReplyDtoFor(pm);
         return new ModelAndView(PM_FORM).addObject(DTO, object);
     }
 
@@ -149,7 +144,7 @@ public class PrivateMessageController {
     @RequestMapping(value = "/quote/{pmId}", method = RequestMethod.GET)
     public ModelAndView quotePage(@PathVariable(PM_ID) Long id) throws NotFoundException {
         PrivateMessage pm = pmService.get(id);
-        PrivateMessageDto dto = pmDtoBuilder.getReplyDtoFor(pm);
+        PrivateMessageDto dto = PrivateMessageDto.getReplyDtoFor(pm);
         dto.setBody(bbCodeService.quote(pm.getBody(), pm.getUserFrom()));
         return new ModelAndView(PM_FORM).addObject(DTO, dto);
     }
@@ -203,23 +198,18 @@ public class PrivateMessageController {
             // todo: 404? we need something more meaninful here
             throw new NotFoundException("Edit allowed only for draft messages.");
         }
-        return new ModelAndView(PM_FORM).addObject(DTO, new PrivateMessageDtoBuilder().getFullPmDtoFor(pm));
+        return new ModelAndView(PM_FORM).addObject(DTO, PrivateMessageDto.getFullPmDtoFor(pm));
     }
 
     /**
-     * Save private message as draft.
+     * Save private message as draft. As draft message is not requred to be valid
      *
      * @param pmDto  Dto populated in form
-     * @param result validation result
      * @return redirect to "drafts" folder if saved successfully or show form with error message
      * @throws NotFoundException if incorrect User is set as recipient
      */
     @RequestMapping(value = "/pm/save", method = {RequestMethod.POST, RequestMethod.GET})
-    public String saveDraft(@Valid @ModelAttribute PrivateMessageDto pmDto,
-                            BindingResult result) throws NotFoundException {
-        if (result.hasErrors()) {
-            return PM_FORM;
-        }
+    public String saveDraft(@ModelAttribute PrivateMessageDto pmDto) throws NotFoundException {
         pmService.saveDraft(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
         return "redirect:/drafts";
     }
