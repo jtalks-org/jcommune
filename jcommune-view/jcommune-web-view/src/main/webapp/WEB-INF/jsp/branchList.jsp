@@ -49,9 +49,12 @@
                              title="<spring:message code="label.section.close_forum"/>"/>
                     </div>
                     <div class="forum_info">
-                        <h4><a class="forum_link"
-                               href="${pageContext.request.contextPath}/branches/${branch.id}">
-                            <c:out value="${branch.name}"/></a></h4> <!-- Ссылка на форум -->
+                        <h4>
+                            <a class="forum_link" href="${pageContext.request.contextPath}/branches/${branch.id}">
+                                <c:out value="${branch.name}"/>
+                            </a>
+                        </h4>
+
                         <p>
                             <c:out value="${branch.description}"/>
                             <a href="#"><spring:message code="label.section.faq"/></a>
@@ -70,11 +73,10 @@
                             <span><jtalks:format value="${branch.lastUpdatedTopic.lastPost.creationDate}"/></span>
                             <br/>
                             <a href="${pageContext.request.contextPath}/users/${branch.lastUpdatedTopic.lastPost.userCreated.encodedUsername}">
-                                    ${branch.lastUpdatedTopic.lastPost.userCreated.username}
+                                <c:out value="${branch.lastUpdatedTopic.lastPost.userCreated.username}"/>
                             </a>
                             <a href="${pageContext.request.contextPath}/posts/${branch.lastUpdatedTopic.lastPost.id}">
-                                <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
-                                     alt="<spring:message code="label.section.header.lastMessage"/>"/>
+                                <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"/>
                             </a>
                         </c:if>
                     </div>
