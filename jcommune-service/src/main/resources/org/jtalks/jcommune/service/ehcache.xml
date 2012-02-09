@@ -19,8 +19,8 @@
 
     <diskStore path="java.io.tmpdir"/>
 
-    <cacheManagerPeerProviderFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheManagerPeerProviderFactory"
-                                     properties="file=jgroups-udp.xml"/>
+<!--    <cacheManagerPeerProviderFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheManagerPeerProviderFactory"
+                                     properties="file=jgroups-udp.xml"/>-->
 
     <defaultCache
             maxElementsInMemory="500"
@@ -30,10 +30,10 @@
             overflowToDisk="false"
             diskPersistent="false"
             memoryStoreEvictionPolicy="LFU">
-        <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+<!--        <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
                                    properties="replicateAsynchronously=true, replicatePuts=true,
                 replicateUpdates=true, replicateUpdatesViaCopy=false,
-                replicateRemovals=true"/>
+                replicateRemovals=true"/>-->
     </defaultCache>
 
     <!--
