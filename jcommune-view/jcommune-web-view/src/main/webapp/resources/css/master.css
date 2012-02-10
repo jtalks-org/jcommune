@@ -146,6 +146,7 @@ a.heading:hover {
 /*Forum Header */
 .forum_header_table {
     z-index: 2;
+    clear: both;
     position: relative;
     display: table;
     table-layout: fixed;
