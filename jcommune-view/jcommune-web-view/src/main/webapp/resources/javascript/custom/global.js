@@ -13,29 +13,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-$(document).ready(function() {
+$(document).ready(function () {
     //Sets timezone cookie for the server to show all the dates in a client timezone
     document.cookie = "GMT=" + new Date().getTimezoneOffset() + "; path=/";
     // Initializes image previewing
     $("a[rel^='prettyPhoto']").prettyPhoto({social_tools:false});
     // popups for individual post links
-    $("a.postLink").each(function() {
+    $("a.postLink").each(function () {
         var href = window.location.toString().split("#", 1)[0];
-        $(this).click(function(e) {
+        $(this).click(function (e) {
             e.preventDefault();
             $.prompt(href + '#' + $(this)[0].rel,
-                {buttons: {}, persistent: false});
+                {buttons:{}, persistent:false});
         })
     })
     // popups to confirm post/topic deletion
-    $("a.delete").each(function() {
-        $(this).click(function(e) {
+    $("a.delete").each(function () {
+        $(this).click(function (e) {
             e.preventDefault();
             deletePath = $(this)[0].href;
             $.prompt($(this)[0].rel,
-                {buttons: { Ok: true, Cancel: false },
-                    persistent: false,
-                    submit: function(confirmed) {
+                {buttons:{ Ok:true, Cancel:false },
+                    persistent:false,
+                    submit:function (confirmed) {
                         if (confirmed) {
                             var deleteForm = $('#deleteForm')[0];
                             deleteForm.action = deletePath;
@@ -47,3 +47,4 @@ $(document).ready(function() {
         })
     })
 });
+
