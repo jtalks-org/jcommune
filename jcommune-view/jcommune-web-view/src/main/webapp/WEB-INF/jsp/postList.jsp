@@ -36,19 +36,19 @@
     <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
 <span class="nav_bottom">
     <c:if test="${previousTopic != null}">
-        <a href="${pageContext.request.contextPath}/topics/${previousTopic.id}">
+        <a class="button" href="${pageContext.request.contextPath}/topics/${previousTopic.id}">
             <spring:message code="label.topic.previous"/>
         </a>
     </c:if>
     &nbsp;
     <c:if test="${nextTopic != null}">
-        <a href="${pageContext.request.contextPath}/topics/${nextTopic.id}">
+        <a class="button" href="${pageContext.request.contextPath}/topics/${nextTopic.id}">
             <spring:message code="label.topic.next"/>
         </a>
     </c:if>
 </span>
 
-    <br>
+    <br><br>
     <jtalks:pagination uri="${topicId}" pagination="${pag}" list="${posts}">
     <nobr>
             <span class="nav_top">
