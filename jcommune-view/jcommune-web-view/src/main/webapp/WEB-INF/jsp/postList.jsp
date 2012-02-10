@@ -33,7 +33,7 @@
 <jsp:include page="../template/logo.jsp"/>
 <c:set var="authenticated" value="${false}"/>
 <div class="all_forums">
-    <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
+    <h2><a class="heading break_word" href="#"><c:out value="${topic.title}"/></a></h2>
 <span class="nav_bottom">
     <c:if test="${previousTopic != null}">
         <a class="button" href="${pageContext.request.contextPath}/topics/${previousTopic.id}">
