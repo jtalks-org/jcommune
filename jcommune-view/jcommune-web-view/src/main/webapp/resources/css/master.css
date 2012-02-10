@@ -145,6 +145,7 @@ a.heading:hover {
 
 /*Forum Header */
 .forum_header_table {
+	clear: both;
     z-index: 2;
     position: relative;
     display: table;
@@ -738,9 +739,9 @@ a.admin, a.user {
     color: black;
     font-size: 1.1em;
     font-weight: bold;
-    margin: 0 5px 10px;
+    margin: 10px 5px 0 0;
     float: left;
-    background: white;
+    background: #c6c6c6;
     min-width: 12px;
     height: 12px;
     line-height: 12px;
@@ -750,14 +751,27 @@ a.admin, a.user {
     -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
     -moz-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
     box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
+	-webkit-border-radius: 2px 2px 0 0;
+	-moz-border-radius: 2px 2px 0 0;
+	border-radius: 2px 2px 0 0;
+	
 }
 
 span.page {
-    background: #c6c6c6;
+    background: white;
 }
 
 a.page:hover {
-    background: #c6c6c6;
+    background: #E6E6E6;
+}
+
+.nav_bottom .page {
+	position: relative;
+	z-index: -50;
+	margin: -10px 5px 0 0;
+	-webkit-border-radius: 0px 0px 2px 2px;
+	-moz-border-radius: 0 0 2px 2px;
+	border-radius: 0 0 2px 2px;
 }
 
 /* Various error pages (404, 500 and so on) */
