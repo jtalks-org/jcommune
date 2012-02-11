@@ -257,6 +257,8 @@ a.heading:hover {
     display: table-row;
     min-width: 100%;
     background: #c6c6c6;
+}
+.topic_page .forum_row {
 	height: 180px;
 }
 
