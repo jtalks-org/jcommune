@@ -23,9 +23,6 @@ import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.ui.velocity.VelocityEngineUtils;
@@ -33,8 +30,6 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -58,7 +53,8 @@ public class MailService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MailService.class);
     private static final String LOG_TEMPLATE = "Error occurred while sending updates of %s %d to %s";
-    private static final String TEMPLATES_PATH = "org/jtalks/jcommune/service/templates/";
+    private static final String HTML_TEMPLATES_PATH = "org/jtalks/jcommune/service/templates/html/";
+    private static final String PLAIN_TEXT_TEMPLATES_PATH = "org/jtalks/jcommune/service/templates/plaintext/";
     private static final String URL = "url";
     private static final String USER = "user";
 
@@ -68,14 +64,14 @@ public class MailService {
      * as most e-mail servers will reject e-mail if sender is not really correlated with
      * the letter's "from" value.
      *
-     * @param sender spring mailing tool
-     * @param from   blank message with "from" filed preset
-     * @param engine engine for templating email notifications
-     * @param source for resolving internationalization messages
+     * @param sender        spring mailing tool
+     * @param from          blank message with "from" filed preset
+     * @param engine        engine for templating email notifications
+     * @param source        for resolving internationalization messages
      * @param bbCodeService to transform BB-encoded text to HTML
      */
     public MailService(JavaMailSender sender, String from, VelocityEngine engine, MessageSource source,
-                        BBCodeService bbCodeService) {
+                       BBCodeService bbCodeService) {
         this.mailSender = sender;
         this.from = from;
         this.velocityEngine = engine;
@@ -107,8 +103,9 @@ public class MailService {
         model.put("signature", "signature");
         model.put("noArgs", new Object[]{});
         model.put("locale", user.getLanguage().getLocale());
-        String text = this.mergeTemplate("passwordRecovery.vm", model);
-        this.sendEmail(user.getEmail(), "Password recovery", text);
+        String plainText = this.mergePlainTextTemplate("passwordRecovery.vm", model);
+        String htmlText = this.mergeHtmlTemplate("passwordRecovery.vm", model);
+        this.sendEmail(user.getEmail(), "Password recovery", plainText, htmlText);
         LOGGER.info("Password recovery email sent for {}", name);
     }
 
@@ -134,8 +131,9 @@ public class MailService {
             model.put("signature", "signature");
             model.put("noArgs", new Object[]{});
             model.put("locale", user.getLanguage().getLocale());
-            String text = this.mergeTemplate("subscriptionNotification.vm", model);
-            this.sendEmail(user.getEmail(), "Forum updates", text);
+            String plainText = this.mergePlainTextTemplate("subscriptionNotification.vm", model);
+            String htmlText = this.mergeHtmlTemplate("subscriptionNotification.vm", model);
+            this.sendEmail(user.getEmail(), "Forum updates", plainText, htmlText);
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Topic", topic.getId(), user.getUsername()));
         }
@@ -163,8 +161,9 @@ public class MailService {
             model.put("signature", "signature");
             model.put("noArgs", new Object[]{});
             model.put("locale", user.getLanguage().getLocale());
-            String text = this.mergeTemplate("subscriptionNotification.vm", model);
-            this.sendEmail(user.getEmail(), "Forum updates", text);
+            String plainText = this.mergePlainTextTemplate("subscriptionNotification.vm", model);
+            String htmlText = this.mergeHtmlTemplate("subscriptionNotification.vm", model);
+            this.sendEmail(user.getEmail(), "Forum updates", plainText, htmlText);
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Branch", branch.getId(), user.getUsername()));
         }
@@ -192,8 +191,9 @@ public class MailService {
             model.put("locale", recipient.getLanguage().getLocale());
             model.put("title", pm.getTitle());
             model.put("message", bbCodeService.removeBBCodes(pm.getBody()));
-            String text = this.mergeTemplate("receivedPrivateMessageNotification.vm", model);
-            this.sendEmail(recipient.getEmail(), "Received private message", text);
+            String plainText = this.mergePlainTextTemplate("receivedPrivateMessageNotification.vm", model);
+            String htmlText = this.mergeHtmlTemplate("receivedPrivateMessageNotification.vm", model);
+            this.sendEmail(recipient.getEmail(), "Received private message", plainText, htmlText);
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Private message", pm.getId(), recipient.getUsername()));
         }
@@ -220,30 +220,32 @@ public class MailService {
             model.put("signature", "signature");
             model.put("noArgs", new Object[]{});
             model.put("locale", recipient.getLanguage().getLocale());
-            String text = this.mergeTemplate("accountActivation.vm", model);
-            this.sendEmail(recipient.getEmail(), "JTalks account activation", text);
+            String plainText = this.mergePlainTextTemplate("accountActivation.vm", model);
+            String htmlText = this.mergeHtmlTemplate("accountActivation.vm", model);
+            this.sendEmail(recipient.getEmail(), "JTalks account activation", plainText, htmlText);
         } catch (MailingFailedException e) {
             LOGGER.error("Failed to sent activation mail for user: " + recipient.getUsername());
         }
     }
 
     /**
-     * Just a convenience method for message sending to encapsulte
+     * Just a convenience method for message sending to encapsulate
      * boilerplate error handling code.
      *
-     * @param to      destination wmail address
-     * @param subject message headline
-     * @param text    message body, may contain html
+     * @param to        destination email address
+     * @param subject   message headline
+     * @param plainText plaintext message body
+     * @param htmlText  html message body
      * @throws MailingFailedException exception with error message specified ic case of some error
      */
-    private void sendEmail(String to, String subject, String text) throws MailingFailedException {
+    private void sendEmail(String to, String subject, String plainText, String htmlText) throws MailingFailedException {
         try {
             MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message);
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setTo(to);
             helper.setFrom(from);
             helper.setSubject(subject);
-            helper.setText(text, true);
+            helper.setText(plainText, htmlText);
             mailSender.send(message);
         } catch (Exception e) {
             LOGGER.error("Mail sending failed", e);
@@ -252,15 +254,28 @@ public class MailService {
     }
 
     /**
-     * Creates a text message from templates and param given.
-     * Template should be located in org/jtalks/jcommune/service/templates/
+     * Creates a html text message from templates and param given.
+     * Template should be located in org/jtalks/jcommune/service/templates/html/
      *
      * @param templateName template file name, like "template.vm"
      * @param model        template params to be substituted in velocity template
-     * @return text message, ready to be sent
+     * @return html text message, ready to be sent
      */
-    private String mergeTemplate(String templateName, Map<String, Object> model) {
-        String path = TEMPLATES_PATH + templateName;
+    private String mergeHtmlTemplate(String templateName, Map<String, Object> model) {
+        String path = HTML_TEMPLATES_PATH + templateName;
+        return VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, path, model);
+    }
+
+    /**
+     * Creates a plain text message from templates and param given.
+     * Template should be located in org/jtalks/jcommune/service/templates/plaintext/
+     *
+     * @param templateName template file name, like "template.vm"
+     * @param model        template params to be substituted in velocity template
+     * @return plain text message, ready to be sent
+     */
+    private String mergePlainTextTemplate(String templateName, Map<String, Object> model) {
+        String path = PLAIN_TEXT_TEMPLATES_PATH + templateName;
         return VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, path, model);
     }
 
