@@ -259,6 +259,10 @@ a.heading:hover {
     background: #c6c6c6;
 }
 
+.topic_page .forum_row {
+    height: 180px;
+}
+
 .forum_row:nth-child(even) {
     background: #efefef;
 }
@@ -794,6 +798,6 @@ a.page:hover {
     color: #FF0000;
 }
 
-.break_word{
+.break_word {
     word-wrap: break-word;
 }
