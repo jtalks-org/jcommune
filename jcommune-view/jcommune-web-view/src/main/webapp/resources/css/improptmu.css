@@ -9,21 +9,22 @@
 }
 div.jqi{
 	width: 400px;
-	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-family: Georgia, Verdana, Geneva, Arial, Helvetica, sans-serif;
 	position: absolute;
-	background-color: #ffffff;
+	background-color: #EFEFEF;
 	font-size: 11px;
 	text-align: left;
-	border: solid 1px #eeeeee;
+	border: solid 3px #C6C6C6;
 	border-radius: 10px;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
-	padding: 7px;
+	padding: 7px 3px 3px 7px;
 }
 div.jqi .jqicontainer{
 	font-weight: bold;
 }
 div.jqi .jqiclose{
+	font-family: Verdana, sans-serif;
 	position: absolute;
 	top: 4px; right: -2px;
 	width: 18px;
@@ -40,19 +41,38 @@ div.jqi .jqibuttons{
 	text-align: right;
 	padding: 5px 0 5px 0;
 	border: solid 1px #eeeeee;
-	background-color: #f4f4f4;
 }
 div.jqi button{
+	font-family: Georgia, Verdana, Geneva, Arial, Helvetica, sans-serif;
 	padding: 3px 10px;
-	margin: 0 10px;
-	background-color: #2F6073;
-	border: solid 1px #f4f4f4;
-	color: #ffffff;
-	font-weight: bold;
-	font-size: 12px;
+	margin: 0 5px;
+	-webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), -1px 0 2px rgba(0, 0, 0, 0.7);
+    -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), -1px 0 2px rgba(0, 0, 0, 0.7);
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), -1px 0 2px rgba(0, 0, 0, 0.7);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #c6c6c6), color-stop(1, #dfdfdf));
+    background: -moz-linear-gradient(center top, #c6c6c6 5%, #dfdfdf 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#c6c6c6', endColorstr = '#dfdfdf');
+    background-color: #c6c6c6;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    border: 1px solid #dcdcdc;
+    display: inline-block;
+    color: #262626;
+    font-family: Georgia;
+    font-size: 11px;
+    font-weight: bold;
+    text-decoration: none;
 }
 div.jqi button:hover{
-	background-color: #728A8C;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #c6c6c6));
+    background: -moz-linear-gradient(center top, #dfdfdf 5%, #c6c6c6 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#dfdfdf', endColorstr = '#c6c6c6');
+    background-color: #dfdfdf;
+}
+div.jqi button:active {
+	position: relative;
+    top: 1px;
 }
 div.jqi button.jqidefaultbutton{
 	/*background-color: #8DC05B;*/
