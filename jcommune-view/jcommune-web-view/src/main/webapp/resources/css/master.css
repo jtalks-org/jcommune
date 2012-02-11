@@ -146,7 +146,7 @@ a.heading:hover {
 /*Forum Header */
 .forum_header_table {
 	clear: both;
-    z-index: 2;
+    z-index: 3;
     position: relative;
     display: table;
     table-layout: fixed;
@@ -250,6 +250,11 @@ a.heading:hover {
 
 .forum_table p {
     padding-top: 5px;
+}
+
+.forum_table {
+	position: relative;
+	z-index: 2;
 }
 
 /* Forum Row*/
@@ -769,8 +774,6 @@ a.page:hover {
 }
 
 .nav_bottom .page {
-	position: relative;
-	z-index: -50;
 	margin: -10px 5px 0 0;
 	-webkit-border-radius: 0px 0px 2px 2px;
 	-moz-border-radius: 0 0 2px 2px;
