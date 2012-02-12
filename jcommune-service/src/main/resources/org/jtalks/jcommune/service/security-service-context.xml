@@ -37,11 +37,11 @@
     <!-- Set role hierarchy to use -->
     <property name="roleHierarchy" ref="roleHierarchy"/>
     <!-- Enable SpEL hasPermission expression evaluation -->
-    <property name="permissionEvaluator" ref="aclPermissionEvaluator"/>
+    <property name="permissionEvaluator" ref="aclGroupPermissionEvaluator"/>
   </bean>
 
-  <!-- Evaluates hasPermission expression -->
-  <bean id="aclPermissionEvaluator" class="org.springframework.security.acls.AclPermissionEvaluator">
+   <!-- Evaluates hasPermission expression -->
+  <bean id="aclGroupPermissionEvaluator" class="org.jtalks.jcommune.service.security.AclGroupPermissionEvaluator">
     <!-- Link to actual ACL Service -->
     <constructor-arg ref="aclService"/>
   </bean>
