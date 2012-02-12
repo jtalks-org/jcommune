@@ -113,10 +113,12 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         assertEquals(result.getBody(), newBody);
     }
 
-    @Test(expectedExceptions = Exception.class)
+    @Test
     public void testUpdateNotNullViolation() {
         PrivateMessage pm = getSavedPm();
         pm.setTitle(null);
+        pm.setUserTo(null);
+        pm.setBody(null);
 
         dao.saveOrUpdate(pm);
     }
@@ -203,9 +205,6 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
 
     /**
      * Create new PrivateMessage with filled fields and save it.
-     *
-     * @return saved object
-     * @throws HibernateException
      */
     private PrivateMessage getSavedPm() throws HibernateException {
         PrivateMessage pm = ObjectsFactory.getDefaultPrivateMessage();

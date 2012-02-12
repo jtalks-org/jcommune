@@ -101,7 +101,7 @@ public class RssViewer extends AbstractRssFeedView {
         item.setContent(content);
 
         item.setTitle(topic.getTitle());
-        item.setAuthor(topic.getLastPost().getUserCreated().getEncodedUsername());
+        item.setAuthor(topic.getLastPost().getUserCreated().getUsername());
 
         item.setLink(url + "/posts/" + topic.getLastPost().getId());
 

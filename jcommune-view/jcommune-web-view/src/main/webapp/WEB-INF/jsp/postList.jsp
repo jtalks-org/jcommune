@@ -33,22 +33,22 @@
 <jsp:include page="../template/logo.jsp"/>
 <c:set var="authenticated" value="${false}"/>
 <div class="all_forums">
-    <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
+    <h2><a class="heading break_word" href="#"><c:out value="${topic.title}"/></a></h2>
 <span class="nav_bottom">
     <c:if test="${previousTopic != null}">
-        <a href="${pageContext.request.contextPath}/topics/${previousTopic.id}">
+        <a class="button" href="${pageContext.request.contextPath}/topics/${previousTopic.id}">
             <spring:message code="label.topic.previous"/>
         </a>
     </c:if>
     &nbsp;
     <c:if test="${nextTopic != null}">
-        <a href="${pageContext.request.contextPath}/topics/${nextTopic.id}">
+        <a class="button" href="${pageContext.request.contextPath}/topics/${nextTopic.id}">
             <spring:message code="label.topic.next"/>
         </a>
     </c:if>
 </span>
 
-    <br>
+    <br><br>
     <jtalks:pagination uri="${topicId}" pagination="${pag}" list="${posts}">
     <nobr>
             <span class="nav_top">
@@ -164,16 +164,9 @@
                             <a class="button" href="${edit_url}"><spring:message code="label.edit"/></a>
                         </sec:accesscontrollist>
                         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                            <a class="button" href="javascript:
-                                document.getElementById('selection${post.id}').value = getSelectedText(${post.id});
-                                document.forms['quoteForm${post.id}'].submit();">
+                            <a class="button quote" href="javascript:quote(${post.id});">
                                 <spring:message code="label.quotation"/>
                             </a>
-
-                            <form action="${pageContext.request.contextPath}/posts/${post.id}/quote"
-                                  method="post" id='quoteForm${post.id}'>
-                                <input name='selection' id='selection${post.id}' type='hidden'/>
-                            </form>
                         </sec:authorize>
                         <a name="${post.id}" href="#${post.id}">
                             <spring:message code="label.added"/>&nbsp;

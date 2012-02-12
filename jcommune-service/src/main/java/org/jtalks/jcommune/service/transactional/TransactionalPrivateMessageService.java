@@ -95,7 +95,8 @@ public class TransactionalPrivateMessageService
     @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
     public PrivateMessage sendMessage(String title, String body, String recipientUsername) throws NotFoundException {
         JCUser recipient = userService.getByUsername(recipientUsername);
-        PrivateMessage pm = populateMessage(title, body, recipient);
+        JCUser userFrom = securityService.getCurrentUser();
+        PrivateMessage pm = new PrivateMessage(recipient, userFrom, title, body);
         pm.setStatus(PrivateMessageStatus.NOT_READ);
         this.getDao().saveOrUpdate(pm);
 
@@ -104,25 +105,11 @@ public class TransactionalPrivateMessageService
         securityService.grantToCurrentUser().user(recipientUsername).read().on(pm);
 
         long pmId = pm.getId();
-        mailService.sendReceivedPrivateMessageNotification(recipient, pmId);
+        mailService.sendReceivedPrivateMessageNotification(recipient, pm);
 
         logger.debug("Private message to user {} was sent. Message id={}", recipientUsername, pmId);
 
         return pm;
-    }
-
-    /**
-     * Populate {@link PrivateMessage} from values.
-     *
-     * @param title     title
-     * @param body      message content
-     * @param recipient message recipient
-     * @return created {@link PrivateMessage}
-     * @throws NotFoundException if current user of recipient not found
-     */
-    private PrivateMessage populateMessage(String title, String body, JCUser recipient) throws NotFoundException {
-        JCUser userFrom = securityService.getCurrentUser();
-        return new PrivateMessage(recipient, userFrom, title, body);
     }
 
     /**
@@ -141,8 +128,12 @@ public class TransactionalPrivateMessageService
     @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
     public PrivateMessage saveDraft(long id, String title, String body, String recipientUsername)
             throws NotFoundException {
-        JCUser recipient = userService.getByUsername(recipientUsername);
-        PrivateMessage pm = populateMessage(title, body, recipient);
+        JCUser recipient = null;
+        if (recipientUsername != null){
+            recipient = userService.getByUsername(recipientUsername);
+        }
+        JCUser userFrom = securityService.getCurrentUser();
+        PrivateMessage pm = new PrivateMessage(recipient, userFrom, title, body);
         pm.setId(id);
         pm.markAsDraft();
         this.getDao().saveOrUpdate(pm);
@@ -182,7 +173,8 @@ public class TransactionalPrivateMessageService
     public PrivateMessage sendDraft(long id, String title, String body,
                                     String recipientUsername) throws NotFoundException {
         JCUser recipient = userService.getByUsername(recipientUsername);
-        PrivateMessage pm = populateMessage(title, body, recipient);
+        JCUser userFrom = securityService.getCurrentUser();
+        PrivateMessage pm = new PrivateMessage(recipient, userFrom, title, body);
         pm.setId(id);
         pm.setStatus(PrivateMessageStatus.NOT_READ);
         this.getDao().saveOrUpdate(pm);
@@ -193,7 +185,7 @@ public class TransactionalPrivateMessageService
         securityService.grantToCurrentUser().user(recipientUsername).read().on(pm);
 
         long pmId = pm.getId();
-        mailService.sendReceivedPrivateMessageNotification(recipient, pmId);
+        mailService.sendReceivedPrivateMessageNotification(recipient, pm);
 
         logger.debug("Private message(was draft) to user {} was sent. Message id={}",
                 recipientUsername, pmId);

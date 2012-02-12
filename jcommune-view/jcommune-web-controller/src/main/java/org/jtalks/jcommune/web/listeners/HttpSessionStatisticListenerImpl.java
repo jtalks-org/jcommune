@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.listeners;
 
 import javax.servlet.http.HttpSessionEvent;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Custom session listener implementation to track active user sessions
@@ -23,6 +24,8 @@ import javax.servlet.http.HttpSessionEvent;
  */
 public class HttpSessionStatisticListenerImpl implements HttpSessionStatisticListener {
 
+    //todo: make timeout configurable from poulpe
+    public static final int SESSION_TIMEOUT = (int) TimeUnit.SECONDS.convert(24, TimeUnit.HOURS);
     private static volatile long totalActiveSessions;
 
     /**
@@ -37,6 +40,7 @@ public class HttpSessionStatisticListenerImpl implements HttpSessionStatisticLis
      */
     @Override
     public synchronized void sessionCreated(HttpSessionEvent se) {
+        se.getSession().setMaxInactiveInterval(SESSION_TIMEOUT);
         totalActiveSessions++;
     }
 

@@ -24,7 +24,7 @@ $(document).ready(function() {
     $('a#subscription').click(function () {
         var link = $(this)[0];
         $.getJSON(link.href, function (controlInfo) {
-            link.innerText = controlInfo.caption;
+            link.textContent = controlInfo.caption;
             link.href = $root + controlInfo.urlSuffix;
         });
         return false;

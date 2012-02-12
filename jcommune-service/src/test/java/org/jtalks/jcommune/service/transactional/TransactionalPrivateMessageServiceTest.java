@@ -108,7 +108,7 @@ public class TransactionalPrivateMessageServiceTest {
         verify(securityService).getCurrentUser();
         verify(userService).getByUsername(USERNAME);
         verify(userDataCache).incrementNewMessageCountFor(USERNAME);
-        verify(mailService).sendReceivedPrivateMessageNotification(userService.getByUsername(USERNAME), pm.getId());
+        verify(mailService).sendReceivedPrivateMessageNotification(userService.getByUsername(USERNAME), pm);
         verify(pmDao).saveOrUpdate(pm);
         verify(securityService).grantToCurrentUser();
         verify(aclBuilder).user(USERNAME);
@@ -199,7 +199,7 @@ public class TransactionalPrivateMessageServiceTest {
         verify(securityService).getCurrentUser();
         verify(userService).getByUsername(USERNAME);
         verify(userDataCache).incrementNewMessageCountFor(USERNAME);
-        verify(mailService).sendReceivedPrivateMessageNotification(userService.getByUsername(USERNAME), pm.getId());
+        verify(mailService).sendReceivedPrivateMessageNotification(userService.getByUsername(USERNAME), pm);
         verify(pmDao).saveOrUpdate(pm);
         verify(securityService).deleteFromAcl(pm);
         verify(securityService).grantToCurrentUser();

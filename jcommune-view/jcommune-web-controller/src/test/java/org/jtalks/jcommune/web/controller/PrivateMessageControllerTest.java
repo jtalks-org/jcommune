@@ -20,10 +20,10 @@ import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
-import org.jtalks.jcommune.web.util.PrivateMessageDtoBuilder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -47,12 +47,10 @@ import static org.testng.Assert.assertEquals;
 public class PrivateMessageControllerTest {
 
     public static final long PM_ID = 2L;
+
     private PrivateMessageController controller;
     @Mock
     private PrivateMessageService pmService;
-    @Mock
-    private PrivateMessageDtoBuilder pmDtoBuilder;
-    //todo: replace DTO mock with plain domain object
     @Mock
     private PrivateMessageDto pmDto;
     @Mock
@@ -61,7 +59,7 @@ public class PrivateMessageControllerTest {
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
-        controller = new PrivateMessageController(pmService, pmDtoBuilder, bbCodeService);
+        controller = new PrivateMessageController(pmService, bbCodeService);
     }
 
     @Test
@@ -165,17 +163,15 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void replyPage() throws NotFoundException {
-        PrivateMessage pm = new PrivateMessage(null, null, "title", "body");
+        PrivateMessage pm = getPrivateMessage();
         //set expectations
         when(pmService.get(PM_ID)).thenReturn(pm);
-        when(pmDtoBuilder.getReplyDtoFor(pm)).thenReturn(pmDto);
 
         //invoke the object under test
         ModelAndView mav = controller.replyPage(PM_ID);
 
         //check expectations
         verify(pmService).get(PM_ID);
-        verify(pmDtoBuilder).getReplyDtoFor(pm);
 
         //check result
         assertViewName(mav, "pm/pmForm");
@@ -184,10 +180,9 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void quotePage() throws NotFoundException {
-        PrivateMessage pm = new PrivateMessage(null, null, "title", "body");
+        PrivateMessage pm = getPrivateMessage();
         //set expectations
         when(pmService.get(PM_ID)).thenReturn(pm);
-        when(pmDtoBuilder.getReplyDtoFor(pm)).thenReturn(pmDto);
 
         //invoke the object under test
         ModelAndView mav = controller.quotePage(PM_ID);
@@ -202,7 +197,7 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void showPmPageInbox() throws NotFoundException {
-        PrivateMessage pm = new PrivateMessage(null, null, "title", "body");
+        PrivateMessage pm = getPrivateMessage();
 
         //set expectations
         when(pmService.get(PM_ID)).thenReturn(pm);
@@ -251,34 +246,21 @@ public class PrivateMessageControllerTest {
     @Test
     public void saveDraft() throws NotFoundException {
         PrivateMessageDto dto = getPrivateMessageDto();
-        BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
 
-        String view = controller.saveDraft(dto, bindingResult);
+        String view = controller.saveDraft(dto);
 
         assertEquals(view, "redirect:/drafts");
         verify(pmService).saveDraft(dto.getId(), dto.getTitle(), dto.getBody(), dto.getRecipient());
     }
 
     @Test
-    public void saveDraftWithErrors() throws NotFoundException {
-        PrivateMessageDto dto = getPrivateMessageDto();
-        BeanPropertyBindingResult resultWithErrors = mock(BeanPropertyBindingResult.class);
-        when(resultWithErrors.hasErrors()).thenReturn(true);
-
-        String view = controller.saveDraft(dto, resultWithErrors);
-
-        assertEquals(view, "pm/pmForm");
-        verify(pmService, never()).saveDraft(anyLong(), anyString(), anyString(), anyString());
-    }
-
-    @Test(expectedExceptions = NotFoundException.class)
     public void saveDraftWithWrongUser() throws NotFoundException {
-        PrivateMessageDto dto = getPrivateMessageDto();
-        doThrow(new NotFoundException()).when(pmService)
-                .saveDraft(dto.getId(), dto.getTitle(), dto.getBody(), dto.getRecipient());
-        BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
+        PrivateMessageDto dto = new PrivateMessageDto();
 
-        controller.saveDraft(dto, bindingResult);
+        String result = controller.saveDraft(dto);
+
+        assertEquals(result, "redirect:/drafts");
+        verify(pmService).saveDraft(dto.getId(), dto.getTitle(), dto.getBody(), dto.getRecipient());
     }
 
     private PrivateMessageDto getPrivateMessageDto() {

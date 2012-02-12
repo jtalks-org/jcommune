@@ -59,4 +59,8 @@ public class BBCodeService {
     public String convertBbToHtml(String bbEncodedText) {
         return processor.process(bbEncodedText);
     }
+
+    public String removeBBCodes(String source){
+        return source.replaceAll("\\[.*?\\]","");
+    }
 }

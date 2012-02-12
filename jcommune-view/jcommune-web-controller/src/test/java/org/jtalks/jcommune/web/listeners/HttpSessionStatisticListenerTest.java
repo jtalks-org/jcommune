@@ -31,10 +31,11 @@ import static org.testng.Assert.assertEquals;
 public class HttpSessionStatisticListenerTest {
     private HttpSessionStatisticListenerImpl listener;
     private HttpSessionEvent event;
+    private MockHttpSession session;
 
     @BeforeMethod
     public void initMethod() {
-        HttpSession session = new MockHttpSession();
+        session = new MockHttpSession();
         event = new HttpSessionEvent(session);
         listener = new HttpSessionStatisticListenerImpl();
     }
@@ -42,7 +43,9 @@ public class HttpSessionStatisticListenerTest {
     @Test
     public void confirmIncrementSessionCountTest() {
         listener.sessionCreated(event);
+
         assertEquals(listener.getTotalActiveSessions(), 1);
+        assertEquals(session.getMaxInactiveInterval(),  HttpSessionStatisticListenerImpl.SESSION_TIMEOUT);
     }
 
     @Test
