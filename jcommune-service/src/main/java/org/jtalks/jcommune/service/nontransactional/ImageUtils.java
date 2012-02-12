@@ -14,12 +14,12 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
-import org.apache.commons.codec.binary.Base64;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
 import java.awt.image.RenderedImage;
@@ -54,6 +54,15 @@ public class ImageUtils {
     private static final int BIT = 8;
     private static final int TWO_BITS = 16;
     private static final int THREE_BITS = 24;
+
+    private Base64Wrapper base64Wrapper;
+
+    /**
+     * @param base64Wrapper to perform image data encoding, essential for embedding an image into HTML page
+     */
+    public ImageUtils(Base64Wrapper base64Wrapper) {
+        this.base64Wrapper = base64Wrapper;
+    }
 
     /**
      * Converts image to byte array.
@@ -145,30 +154,6 @@ public class ImageUtils {
         return result;
     }
 
-    /**
-     * Perform base64 binary data to string conversion
-     *
-     * @param bytes for processing
-     * @return converted binary data string
-     */
-    public String encodeB64(byte[] bytes) {
-        return Base64.encodeBase64String(bytes);
-    }
-
-    /**
-     * Perform base64 string to binary data conversion
-     *
-     * @param encodedBytes string representation for processing
-     * @return converted binary data
-     */
-    public byte[] decodeB64(String encodedBytes) {
-        byte[] result = null;
-        if (encodedBytes != null) {
-            result = Base64.decodeBase64(encodedBytes);
-        }
-
-        return result;
-    }
 
     /**
      * Perform preparing content for SRC attribute of the IMG HTML tag
@@ -177,7 +162,7 @@ public class ImageUtils {
      * @return SRC attribute content
      */
     public String prepareHtmlImgSrc(byte[] avatar) {
-        return HTML_SRC_TAG_PREFIX + this.encodeB64(avatar);
+        return HTML_SRC_TAG_PREFIX + base64Wrapper.encodeB64Bytes(avatar);
     }
 
     /**

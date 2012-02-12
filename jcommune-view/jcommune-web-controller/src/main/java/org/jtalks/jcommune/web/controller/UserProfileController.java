@@ -32,7 +32,12 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
@@ -100,7 +105,7 @@ public class UserProfileController {
      * Show page with user info.
      *
      * @param username the decoded encodedUsername from the JSP view.
-     * @return user details view with {@link org.jtalks.jcommune.model.entity.JCUser} object.
+     * @return user details view with {@link JCUser} object.
      * @throws NotFoundException if user with given id not found.
      */
     @RequestMapping(value = "/users/{encodedUsername}", method = RequestMethod.GET)
@@ -113,6 +118,20 @@ public class UserProfileController {
                         // bind separately to get localized value
                 .addObject("language", user.getLanguage())
                 .addObject("pageSize", Pagination.getPageSizeFor(user));
+    }
+
+    /**
+     * This method is a shortcut for user profile access. It may be usefull when we haven't got
+     * the specific id, but simply want to access current user's profile.
+     * <p/>
+     * Requires user to be authorized.
+     *
+     * @return user details view with {@link JCUser} object.
+     */
+    @RequestMapping(value = "/user", method = RequestMethod.GET)
+    public String showProfilePage() {
+        JCUser user = securityService.getCurrentUser();
+        return "redirect:/users/" + user.getEncodedUsername();
     }
 
     /**

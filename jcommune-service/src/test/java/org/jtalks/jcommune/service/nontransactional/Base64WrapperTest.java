@@ -12,33 +12,50 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.controller;
+package org.jtalks.jcommune.service.nontransactional;
 
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.io.IOException;
 
 import static org.testng.Assert.assertEquals;
 
 /**
  * @author Evgeniy Naumenko
  */
-public class ErrorPageControllerTest {
+public class Base64WrapperTest {
 
-    private ErrorPageController controller;
+    private Base64Wrapper wrapper = new Base64Wrapper();
 
-    @BeforeMethod
-    public void setUp() {
-        controller = new ErrorPageController();
-    }
+    private byte[] rawData = new byte[]{1, 2, 3, 4, 5};
+    private String encodedData = "AQIDBAU=";
 
 
     @Test
-    public void testGet404Page() throws Exception {
-        assertEquals(controller.get404Page(), ErrorPageController.NOT_FOUND_PAGE_VIEW);
+    public void testBase64Encoder() {
+        String result = wrapper.encodeB64Bytes(rawData);
+
+        assertEquals(result, encodedData);
     }
 
     @Test
-    public void testRedirect404() throws Exception {
-        assertEquals(controller.redirect404(), "redirect:" + ErrorPageController.NOT_FOUND_PAGE_VIEW);
+    public void testBase64Decoder()  {
+        byte[] result = wrapper.decodeB64Bytes(encodedData);
+
+        assertEquals(result, rawData);
+    }
+
+    @Test
+    public void testBase64EncoderNullData() {
+        String result = wrapper.encodeB64Bytes(null);
+
+        assertEquals(result, null);
+    }
+
+    @Test
+    public void testBase64DecoderNullData() {
+        byte[] result = wrapper.decodeB64Bytes(null);
+
+        assertEquals(result, null);
     }
 }

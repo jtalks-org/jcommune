@@ -53,14 +53,6 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
     PrivateMessage sendMessage(String title, String body, String recipient) throws NotFoundException;
 
     /**
-     * Marks private message as read.
-     * If message is read, nothing happens.
-     *
-     * @param pm read private message
-     */
-    void markAsRead(PrivateMessage pm);
-
-    /**
      * Get current user's drafts
      *
      * @return list of draft messages

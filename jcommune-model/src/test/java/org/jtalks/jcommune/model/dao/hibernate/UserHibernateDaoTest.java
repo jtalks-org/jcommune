@@ -30,6 +30,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static org.testng.Assert.*;
@@ -164,6 +165,27 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     }
 
     @Test
+    public void testGetByUuid() {
+        JCUser user = ObjectsFactory.getDefaultUser();
+        String uuid = user.getUuid();
+        session.save(user);
+
+        JCUser result = dao.getByUuid(uuid);
+
+        assertReflectionEquals(user, result);
+    }
+
+    @Test
+    public void testGetByUuidNotExist() {
+        JCUser user = ObjectsFactory.getDefaultUser();
+        session.save(user);
+
+        JCUser result = dao.getByUuid("uuid");
+
+        assertNull(result);
+    }
+
+    @Test
     public void testFetchByEMail() {
         JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
@@ -171,12 +193,17 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     }
 
     @Test
-    public void testNullPostsOfUserCount() {
-        session.save(ObjectsFactory.getDefaultUser());
+    public void testFetchNonActivatedAccounts() {
+        JCUser activated = new JCUser("login", "email", "password");
+        activated.setEnabled(true);
+        JCUser nonActivated = ObjectsFactory.getDefaultUser();
+        session.save(activated);
+        session.save(nonActivated);
 
-        JCUser user = dao.getByUsername("username");
+        Collection<JCUser> users = dao.getNonActivatedUsers();
 
-        assertEquals(user.getPostCount(), 0);
+        assertTrue(users.contains(nonActivated));
+        assertEquals(users.size(), 1);
     }
 
 

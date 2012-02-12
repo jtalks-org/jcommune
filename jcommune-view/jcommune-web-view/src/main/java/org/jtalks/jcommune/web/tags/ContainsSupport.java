@@ -34,7 +34,7 @@ public class ContainsSupport extends BodyTagSupport {
      */
     private static final long serialVersionUID = 34588L;
 
-    private Collection collection;
+    private transient Collection collection;
     private Object object;
     private String successMessage;
     private String failMessage;

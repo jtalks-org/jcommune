@@ -56,10 +56,6 @@
                     </div>
                 </div>
                 <div class="forum_row">
-                    <img src="http://s.lurkmore.to/images/5/57/Llimarcsin.gif"/>
-                    <span class="empty_cell"></span>
-                </div>
-                <div class="forum_row">
                     <input type="checkbox" name="_spring_security_remember_me"><spring:message code="label.auto_logon"/>
                     <span class="empty_cell"></span>
                 </div>

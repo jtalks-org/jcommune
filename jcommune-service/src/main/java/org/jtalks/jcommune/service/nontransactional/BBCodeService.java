@@ -15,6 +15,8 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.model.entity.JCUser;
+import ru.perm.kefir.bbcode.BBProcessorFactory;
+import ru.perm.kefir.bbcode.TextProcessor;
 
 /**
  * Provides various helper methods for encoding/decoding BB codes
@@ -24,6 +26,11 @@ import org.jtalks.jcommune.model.entity.JCUser;
 public class BBCodeService {
 
     private static final String QUOTE_PATEERN = "[quote=\"%s\"]%s[/quote]";
+
+    /**
+     * Processor is thread safe as it's explicitly stated in documentation
+     */
+    private TextProcessor processor = BBProcessorFactory.getInstance().create();
 
     /**
      * Qoutes text given as a valid BB-coded quote.
@@ -38,5 +45,22 @@ public class BBCodeService {
             throw new IllegalArgumentException("Author and source cannot be null");
         }
         return String.format(QUOTE_PATEERN, author.getUsername(), source);
+    }
+
+    /**
+     * Converts BB-encoded text into HTML-encoded one. Actual transformation result
+     * depend on kefirBB.xml configuration and the CSS styles mentioned in it's patterns.
+     * <p/>
+     * If input text contains no BB-conpatible tags it's returned as is.
+     *
+     * @param bbEncodedText string with BB-style markup
+     * @return the same text with HTML markup to be shown
+     */
+    public String convertBbToHtml(String bbEncodedText) {
+        return processor.process(bbEncodedText);
+    }
+
+    public String removeBBCodes(String source){
+        return source.replaceAll("\\[.*?\\]","");
     }
 }

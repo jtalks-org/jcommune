@@ -17,13 +17,17 @@ package org.jtalks.jcommune.web.dto;
 import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.web.validation.Exists;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
  * DTO for {@link PrivateMessage} objects. Used for validation and binding to the form.
  * Holds message's title, body and username of the recipient.
+ * <p/>
+ * Validation is not applied when saving message as a draft
  *
  * @author Pavel Vervenko
  * @author Alexandre Teterin
@@ -39,9 +43,10 @@ public class PrivateMessageDto {
     @Size(min = PrivateMessage.MIN_MESSAGE_LENGTH, max = PrivateMessage.MAX_MESSAGE_LENGTH, message = "{body.length}")
     private String body;
 
-    @NotBlank
     @Exists(entity = JCUser.class, field = "username", message = "{validation.wrong_recipient}")
     private String recipient;
+
+    private long id;
 
     /**
      * @return pm id
@@ -59,7 +64,6 @@ public class PrivateMessageDto {
         this.id = id;
     }
 
-    private long id;
 
     /**
      * Get the text content of the message's body.
@@ -115,4 +119,32 @@ public class PrivateMessageDto {
         this.title = title;
     }
 
+        /**
+     * Create the full private message dto from {@link PrivateMessage}
+     *
+     * @param pm private message for conversion
+     * @return dto for full private message
+     */
+    public static PrivateMessageDto getFullPmDtoFor(PrivateMessage pm) {
+        PrivateMessageDto dto = new PrivateMessageDto();
+        dto.setBody(pm.getBody());
+        dto.setTitle(pm.getTitle());
+        if (pm.getUserTo() != null) {
+            dto.setRecipient(pm.getUserTo().getUsername());
+        }
+        dto.setId(pm.getId());
+        return dto;
+    }
+
+    /**
+     * Create the reply private message dto from {@link PrivateMessage}
+     * @param pm private message for conversion in to reply
+     * @return dto for reply
+     */
+    public static PrivateMessageDto getReplyDtoFor(PrivateMessage pm) {
+        PrivateMessageDto dto = new PrivateMessageDto();
+        dto.setRecipient(pm.getUserFrom().getUsername());
+        dto.setTitle(pm.prepareTitleForReply());
+        return dto;
+    }
 }

@@ -31,6 +31,7 @@ import sun.security.acl.PrincipalImpl;
 
 import java.security.Principal;
 
+import static junit.framework.Assert.assertFalse;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -97,7 +98,7 @@ public class SecurityServiceTest {
 
         assertTrue(result.isAccountNonExpired());
         assertTrue(result.isAccountNonLocked());
-        assertTrue(result.isEnabled());
+        assertFalse(result.isEnabled());
         assertTrue(result.isCredentialsNonExpired());
         verify(auth).getPrincipal();
         verify(securityContext).getAuthentication();

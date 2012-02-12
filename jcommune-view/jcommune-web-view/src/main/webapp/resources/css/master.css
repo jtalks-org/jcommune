@@ -145,7 +145,8 @@ a.heading:hover {
 
 /*Forum Header */
 .forum_header_table {
-    z-index: 2;
+    z-index: 3;
+    clear: both;
     position: relative;
     display: table;
     table-layout: fixed;
@@ -251,11 +252,20 @@ a.heading:hover {
     padding-top: 5px;
 }
 
+.forum_table {
+        position: relative;
+        z-index: 2;
+}
+
 /* Forum Row*/
 .forum_row {
     display: table-row;
     min-width: 100%;
     background: #c6c6c6;
+}
+
+.topic_page .forum_row {
+    height: 180px;
 }
 
 .forum_row:nth-child(even) {
@@ -738,9 +748,9 @@ a.admin, a.user {
     color: black;
     font-size: 1.1em;
     font-weight: bold;
-    margin: 0 5px 10px;
+    margin: 10px 5px 0 0;
     float: left;
-    background: white;
+    background: #c6c6c6;
     min-width: 12px;
     height: 12px;
     line-height: 12px;
@@ -750,15 +760,26 @@ a.admin, a.user {
     -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
     -moz-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
     box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
+    -webkit-border-radius: 2px 2px 0 0;
+    -moz-border-radius: 2px 2px 0 0;
+    border-radius: 2px 2px 0 0;
 }
 
 span.page {
-    background: #c6c6c6;
+    background: white;
 }
 
 a.page:hover {
-    background: #c6c6c6;
+    background: #E6E6E6;
 }
+
+.nav_bottom .page {
+        margin: -10px 5px 0 0;
+        -webkit-border-radius: 0px 0px 2px 2px;
+        -moz-border-radius: 0 0 2px 2px;
+        border-radius: 0 0 2px 2px;
+}
+
 
 /* Various error pages (404, 500 and so on) */
 .text_errorpage {
@@ -791,4 +812,8 @@ a.page:hover {
 
 .error {
     color: #FF0000;
+}
+
+.break_word {
+    word-wrap: break-word;
 }

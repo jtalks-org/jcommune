@@ -34,5 +34,5 @@ public interface UserContactsDao extends ChildRepository<UserContactType> {
      *
      * @return valid contact type list, e.g (skype, icq, jabber, mail, cell)
      */
-    public List<UserContactType> getAvailableContactTypes();
+    List<UserContactType> getAvailableContactTypes();
 }

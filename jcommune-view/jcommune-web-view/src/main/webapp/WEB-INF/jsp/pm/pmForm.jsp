@@ -37,10 +37,11 @@
         <form:form action="${pageContext.request.contextPath}/pm"
                    method="POST" modelAttribute="privateMessageDto" name="editForm"
                    onsubmit="doCheck();">
+            <form:hidden path="id"/>
             <ul class="forum_table">
                 <li class="forum_row">
                     <div class="forum_answer_left">
-                        <spring:message code="label.recipient"/>
+                        <spring:message code="label.pm.recipient"/>
                     </div>
                     <div class="forum_answer_right">
                         <form:input path="recipient" size="45" maxlength="60" tabindex="1" class="post"/>
@@ -50,7 +51,7 @@
                 </li>
                 <li class="forum_row">
                     <div class="forum_answer_left">
-                        <spring:message code="label.title"/>
+                        <spring:message code="label.pm.title"/>
                     </div>
                     <div class="forum_answer_right">
                         <form:input path="title" size="45" maxlength="60" tabindex="1" class="post"/>
