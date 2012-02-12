@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.jtalks.jcommune.model.dao.UserDao;
@@ -28,7 +27,6 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
-import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.mockito.ArgumentCaptor;
@@ -40,7 +38,6 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
