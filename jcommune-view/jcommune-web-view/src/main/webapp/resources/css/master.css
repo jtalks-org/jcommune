@@ -765,6 +765,10 @@ a.admin, a.user {
 	
 }
 
+.topic_page .page {
+	margin: 14px 5px 0 0;
+}
+
 span.page {
     background: white;
 }
