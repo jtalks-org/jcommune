@@ -30,7 +30,10 @@
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/json2.js"
                 type="text/javascript"></script>
-    <base href="${pageContext.request.contextPath}" />
+
+    <script type="text/javascript">
+        var basePath = "${pageContext.request.contextPath}";
+    </script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/contacts.js"
             type="text/javascript"></script>
 </head>
@@ -115,7 +118,7 @@
             <div id="contacts">
             <c:forEach var="contact" items="${user.contacts}" >
                 <div class="contact">
-                    <label><img src="${contact.type.icon}" alt=""><c:out value="${contact.type.typeName}"/></label>
+                    <label><img src="${pageContext.request.contextPath}${contact.type.icon}" alt=""><c:out value="${contact.type.typeName}"/></label>
                     <span><c:out value="${contact.value}"/></span>
                     <input type="hidden" value="${contact.id}"/>
                     <a class="button" href="#">

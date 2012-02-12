@@ -58,7 +58,7 @@ public class TransactionalUserContactsService extends AbstractTransactionalEntit
     /**
      * {@inheritDoc}
      */
-    public void addContact(UserContact userContact) {
+    public UserContact addContact(UserContact userContact) {
         JCUser user = securityService.getCurrentUser();
 
         UserContactType type = null;
@@ -69,12 +69,13 @@ public class TransactionalUserContactsService extends AbstractTransactionalEntit
         }
         UserContact contact = new UserContact(userContact.getValue(), type);
         user.addContact(contact);
+        return contact;
     }
 
     /**
     * {@inheritDoc}
     */
-    public void  removeContact(Long userContactId) {
+    public void removeContact(Long userContactId) {
         JCUser user = securityService.getCurrentUser();
         for (UserContact contact: user.getContacts()) {
             if (contact.getId() == userContactId) {

@@ -38,7 +38,7 @@ public interface UserContactsService extends EntityService<UserContactType> {
      *
      * @param contact
      */
-    void addContact(UserContact contact);
+    UserContact addContact(UserContact contact);
 
     /**
      *

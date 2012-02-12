@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
 import org.jtalks.jcommune.service.UserContactsService;
+import org.jtalks.jcommune.web.dto.UserContactDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -53,8 +54,8 @@ public class UserContactsController {
      * @param userContact
      */
     @RequestMapping(value="/contacts/add", method = RequestMethod.POST)
-    public void addContact(@RequestBody UserContact userContact) {
-        service.addContact(userContact);
+    public @ResponseBody UserContactDto addContact(@RequestBody UserContact userContact) {
+        return UserContactDto.getDtoFor(service.addContact(userContact));
     }
 
 
