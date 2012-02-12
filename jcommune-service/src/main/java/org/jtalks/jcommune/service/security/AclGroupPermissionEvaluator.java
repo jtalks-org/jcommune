@@ -14,16 +14,34 @@
  */
 package org.jtalks.jcommune.service.security;
 
+import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.acls.AclPermissionEvaluator;
-import org.springframework.security.acls.model.AclService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+
+import javax.annotation.Nonnull;
+import java.io.Serializable;
 
 /**
  *
  */
-public class AclGroupPermissionEvaluator extends AclPermissionEvaluator {
+public class AclGroupPermissionEvaluator implements PermissionEvaluator {
+    private final AclPermissionEvaluator basicPermissionEvaluator;
+    private final org.jtalks.common.security.acl.AclManager aclManager;
 
-    public AclGroupPermissionEvaluator(AclService aclService) {
-        super(aclService);
+    public AclGroupPermissionEvaluator(@Nonnull AclPermissionEvaluator basicPermissionEvaluator,
+                                       @Nonnull org.jtalks.common.security.acl.AclManager aclManager) {
+        this.basicPermissionEvaluator = basicPermissionEvaluator;
+        this.aclManager = aclManager;
     }
 
+    @Override
+    public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
+        return false;
+    }
+
+    @Override
+    public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
+        return false;
+    }
 }

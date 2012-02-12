@@ -43,6 +43,12 @@
    <!-- Evaluates hasPermission expression -->
   <bean id="aclGroupPermissionEvaluator" class="org.jtalks.jcommune.service.security.AclGroupPermissionEvaluator">
     <!-- Link to actual ACL Service -->
+    <constructor-arg index="0" ref="basicPermissionEvaluator"/>
+    <constructor-arg index="1" ref="commonAclManager"/>
+  </bean>
+
+  <bean id="basicPermissionEvaluator" class="org.springframework.security.acls.AclPermissionEvaluator">
+    <!-- Link to actual ACL Service -->
     <constructor-arg ref="aclService"/>
   </bean>
 
@@ -113,5 +119,8 @@
 
   <bean id="aclManager" class="org.jtalks.jcommune.service.security.AclManagerImpl">
     <constructor-arg ref="aclService"/>
+  </bean>
+  <bean id="commonAclManager" class="org.jtalks.common.security.acl.AclManager">
+    <constructor-arg index="0" ref="aclService"/>
   </bean>
 </beans>
