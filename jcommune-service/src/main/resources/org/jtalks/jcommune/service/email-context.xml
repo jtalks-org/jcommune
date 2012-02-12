@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2011  JTalks.org Team
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+    <!--todo:  make it configurable -->
+    <property name="host" value="smtp.mail.ru"/>
+    <property name="port" value="25"/>
+    <!--the following property should match "from" property in MailSender bean-->
+    <property name="username" value="jtalks@inbox.ru"/>
+    <property name="password" value="javatalks"/>
+    <property name="defaultEncoding" value="UTF-8"/>
+    <property name="javaMailProperties">
+      <props>
+        <prop key="mail.smtp.auth">true</prop>
+      </props>
+    </property>
+  </bean>
+
+  <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+    <property name="basenames">
+      <list>
+        <value>classpath:/org/jtalks/jcommune/service/bundle/TemplatesMessages</value>
+      </list>
+    </property>
+    <property name="defaultEncoding" value="UTF-8"/>
+  </bean>
+
+  <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+    <property name="velocityProperties">
+      <value>
+        resource.loader=class
+        class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+      </value>
+    </property>
+  </bean>
+
+  <bean id="mailService" class="org.jtalks.jcommune.service.nontransactional.MailService">
+    <constructor-arg ref="mailSender"/>
+    <!--the following argument should match real mailbox we use to send mails-->
+    <constructor-arg name="from" value="jtalks@inbox.ru"/>
+    <constructor-arg ref="velocityEngine"/>
+    <constructor-arg ref="messageSource"/>
+    <constructor-arg ref="bbCodeService"/>
+  </bean>
+
+  <bean id="notificationService" class="org.jtalks.jcommune.service.nontransactional.NotificationService">
+    <constructor-arg ref="securityService"/>
+    <constructor-arg ref="mailService"/>
+  </bean>
+
+</beans>
