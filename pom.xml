@@ -483,7 +483,7 @@
     </distributionManagement>
 
     <properties>
-        <jtalkscommon.version>0.11</jtalkscommon.version>
+        <jtalkscommon.version>0.12-SNAPSHOT</jtalkscommon.version>
         <hibernateVersion>3.6.6.Final</hibernateVersion>
         <springVersion>3.0.5.RELEASE</springVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
