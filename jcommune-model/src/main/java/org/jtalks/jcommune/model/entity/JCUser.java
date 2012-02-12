@@ -179,7 +179,7 @@ public class JCUser extends User {
     /**
      * @return set contacts of user
      */
-    protected Set<UserContact> getContacts() {
+    public Set<UserContact> getContacts() {
         return contacts;
     }
 

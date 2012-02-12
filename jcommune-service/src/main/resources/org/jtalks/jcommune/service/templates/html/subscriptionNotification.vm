@@ -14,23 +14,11 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 *#
-<!DOCTYPE HTML>
-<html>
-<head>
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" media="screen, projection"
-          href="${pageContext.request.contextPath}/resources/css/editor.css"/>
-</head>
-<body>
-<p>${messageSource.getMessage($greeting, $noArgs, $locale)} ${recipient.username}!</p>
-<br>
-<p>${messageSource.getMessage($content, $noArgs, $locale)} <a href="${url}">${url}</a>.</p>
-<br><hr><br>
-
-<br><hr><br>
+<p>${messageSource.getMessage($greeting, $noArgs, $locale)} ${user.username}!</p>
+<br/>
+<p>${messageSource.getMessage($content, $noArgs, $locale)}</p>
+<p>${messageSource.getMessage($link, $noArgs, $locale)} <a href="${url}">${url}</a>.
+<br/>
 <p>${messageSource.getMessage($wish, $noArgs, $locale)}</p>
-<br>
+<br/>
 <p>${messageSource.getMessage($signature, $noArgs, $locale)}</p>
-</body>
-</html>

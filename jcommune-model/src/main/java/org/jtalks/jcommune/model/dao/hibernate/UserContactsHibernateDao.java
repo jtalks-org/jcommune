@@ -26,23 +26,16 @@ import java.util.List;
  *
  * @author Evgeniy Naumenko
  */
-public class UserContactsHibernateDao implements UserContactsDao {
+public class UserContactsHibernateDao extends AbstractHibernateChildRepository<UserContactType> implements UserContactsDao {
 
-    private SessionFactory factory;
 
-    /**
-     * @param factory to obtain current hibernate session
-     */
-    public UserContactsHibernateDao(SessionFactory factory) {
-        this.factory = factory;
-    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public List<UserContactType> getAvailableContactTypes() {
-        return factory.getCurrentSession()
+        return getSession()
                 .createQuery("from UserContactType")
                 .setCacheable(true)
                 .list();

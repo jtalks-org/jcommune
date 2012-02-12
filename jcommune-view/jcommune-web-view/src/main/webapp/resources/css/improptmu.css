@@ -1,83 +1,103 @@
 /*
 ------------------------------
-	Impromptu's
+        Impromptu's
 ------------------------------
 */
 .jqifade{
-	position: absolute;
-	background-color: #aaaaaa;
+        position: absolute;
+        background-color: #aaaaaa;
 }
 div.jqi{
-	width: 400px;
-	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-	position: absolute;
-	background-color: #ffffff;
-	font-size: 11px;
-	text-align: left;
-	border: solid 1px #eeeeee;
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	padding: 7px;
+        width: 400px;
+        font-family: Georgia, Verdana, Geneva, Arial, Helvetica, sans-serif;
+        position: absolute;
+        background-color: #EFEFEF;
+        font-size: 11px;
+        text-align: left;
+        border: solid 3px #C6C6C6;
+        border-radius: 10px;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        padding: 7px 3px 3px 7px;
 }
 div.jqi .jqicontainer{
-	font-weight: bold;
+        font-weight: bold;
 }
 div.jqi .jqiclose{
-	position: absolute;
-	top: 4px; right: -2px;
-	width: 18px;
-	cursor: default;
-	color: #bbbbbb;
-	font-weight: bold;
+        font-family: Verdana, sans-serif;
+        position: absolute;
+        top: 4px; right: -2px;
+        width: 18px;
+        cursor: default;
+        color: #bbbbbb;
+        font-weight: bold;
 }
 div.jqi .jqimessage{
-	padding: 10px;
-	line-height: 20px;
-	color: #444444;
+        padding: 10px;
+        line-height: 20px;
+        color: #444444;
 }
 div.jqi .jqibuttons{
-	text-align: right;
-	padding: 5px 0 5px 0;
-	border: solid 1px #eeeeee;
-	background-color: #f4f4f4;
+        text-align: right;
+        padding: 5px 0 5px 0;
+        border: solid 1px #eeeeee;
 }
 div.jqi button{
-	padding: 3px 10px;
-	margin: 0 10px;
-	background-color: #2F6073;
-	border: solid 1px #f4f4f4;
-	color: #ffffff;
-	font-weight: bold;
-	font-size: 12px;
+        font-family: Georgia, Verdana, Geneva, Arial, Helvetica, sans-serif;
+        padding: 3px 10px;
+        margin: 0 5px;
+        -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), -1px 0 2px rgba(0, 0, 0, 0.7);
+    -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), -1px 0 2px rgba(0, 0, 0, 0.7);
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), -1px 0 2px rgba(0, 0, 0, 0.7);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #c6c6c6), color-stop(1, #dfdfdf));
+    background: -moz-linear-gradient(center top, #c6c6c6 5%, #dfdfdf 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#c6c6c6', endColorstr = '#dfdfdf');
+    background-color: #c6c6c6;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    border: 1px solid #dcdcdc;
+    display: inline-block;
+    color: #262626;
+    font-family: Georgia;
+    font-size: 11px;
+    font-weight: bold;
+    text-decoration: none;
 }
 div.jqi button:hover{
-	background-color: #728A8C;
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #c6c6c6));
+    background: -moz-linear-gradient(center top, #dfdfdf 5%, #c6c6c6 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#dfdfdf', endColorstr = '#c6c6c6');
+    background-color: #dfdfdf;
+}
+div.jqi button:active {
+        position: relative;
+    top: 1px;
 }
 div.jqi button.jqidefaultbutton{
-	/*background-color: #8DC05B;*/
-	background-color: #BF5E26;
+        /*background-color: #8DC05B;*/
+        background-color: #BF5E26;
 }
 .jqiwarning .jqi .jqibuttons{
-	background-color: #BF5E26;
+        background-color: #BF5E26;
 }
-
+ 
 /*
 ------------------------------
-	impromptu
+        impromptu
 ------------------------------
 */
 .impromptuwarning .impromptu{ background-color: #aaaaaa; }
 .impromptufade{
-	position: absolute;
-	background-color: #ffffff;
+        position: absolute;
+        background-color: #ffffff;
 }
 div.impromptu{
     position: absolute;
-	background-color: #cccccc;
-	padding: 10px;
-	width: 300px;
-	text-align: left;
+        background-color: #cccccc;
+        padding: 10px;
+        width: 300px;
+        text-align: left;
 }
 div.impromptu .impromptuclose{
     float: right;
@@ -86,40 +106,40 @@ div.impromptu .impromptuclose{
     color: #213e80;
 }
 div.impromptu .impromptucontainer{
-	background-color: #213e80;
-	padding: 5px;
-	color: #ffffff;
-	font-weight: bold;
+        background-color: #213e80;
+        padding: 5px;
+        color: #ffffff;
+        font-weight: bold;
 }
 div.impromptu .impromptumessage{
-	background-color: #415ea0;
-	padding: 10px;
+        background-color: #415ea0;
+        padding: 10px;
 }
 div.impromptu .impromptubuttons{
-	text-align: center;
-	padding: 5px 0 0 0;
+        text-align: center;
+        padding: 5px 0 0 0;
 }
 div.impromptu button{
-	padding: 3px 10px 3px 10px;
-	margin: 0 10px;
+        padding: 3px 10px 3px 10px;
+        margin: 0 10px;
 }
-
+ 
 /*
 ------------------------------
-	columns ex
+        columns ex
 ------------------------------
 */
 .colsJqifadewarning .colsJqi{ background-color: #b0be96; }
 .colsJqifade{
-	position: absolute;
-	background-color: #ffffff;
+        position: absolute;
+        background-color: #ffffff;
 }
 div.colsJqi{
     position: absolute;
-	background-color: #d0dEb6;
-	padding: 10px;
-	width: 400px;
-	text-align: left;
+        background-color: #d0dEb6;
+        padding: 10px;
+        width: 400px;
+        text-align: left;
 }
 div.colsJqi .colsJqiclose{
     float: right;
@@ -128,51 +148,51 @@ div.colsJqi .colsJqiclose{
     color: #bbbbbb;
 }
 div.colsJqi .colsJqicontainer{
-	background-color: #e0eEc6;
-	padding: 5px;
-	color: #ffffff;
-	font-weight: bold;
-	height: 160px;
+        background-color: #e0eEc6;
+        padding: 5px;
+        color: #ffffff;
+        font-weight: bold;
+        height: 160px;
 }
 div.colsJqi .colsJqimessage{
-	background-color: #c0cEa6;
-	padding: 10px;
-	width: 280px;
-	height: 140px;
-	float: left;
+        background-color: #c0cEa6;
+        padding: 10px;
+        width: 280px;
+        height: 140px;
+        float: left;
 }
 div.colsJqi .jqibuttons{
-	text-align: center;
-	padding: 5px 0 0 0;
+        text-align: center;
+        padding: 5px 0 0 0;
 }
 div.colsJqi button{
-	background: url(../images/button_bg.jpg) top left repeat-x #ffffff;
-	border: solid #777777 1px;
-	font-size: 12px;
-	padding: 3px 10px 3px 10px;
-	margin: 5px 5px 5px 10px;
-	width: 75px;
+        background: url(../images/button_bg.jpg) top left repeat-x #ffffff;
+        border: solid #777777 1px;
+        font-size: 12px;
+        padding: 3px 10px 3px 10px;
+        margin: 5px 5px 5px 10px;
+        width: 75px;
 }
 div.colsJqi button:hover{
-	border: solid #aaaaaa 1px;
+        border: solid #aaaaaa 1px;
 }
-
+ 
 /*
 ------------------------------
-	brown theme
+        brown theme
 ------------------------------
 */
 .brownJqiwarning .brownJqi{ background-color: #cccccc; }
 .brownJqifade{
-	position: absolute;
-	background-color: #ffffff;
+        position: absolute;
+        background-color: #ffffff;
 }
 div.brownJqi{
-	position: absolute;
-	background-color: transparent;
-	padding: 10px;
-	width: 300px;
-	text-align: left;
+        position: absolute;
+        background-color: transparent;
+        padding: 10px;
+        width: 300px;
+        text-align: left;
 }
 div.brownJqi .brownJqiclose{
     float: right;
@@ -182,47 +202,47 @@ div.brownJqi .brownJqiclose{
     font-size: 11px;
 }
 div.brownJqi .brownJqicontainer{
-	position: relative;
-	background-color: transparent;
-	border: solid 1px #5F5D5A;
-	color: #ffffff;
-	font-weight: bold;
+        position: relative;
+        background-color: transparent;
+        border: solid 1px #5F5D5A;
+        color: #ffffff;
+        font-weight: bold;
 }
 div.brownJqi .brownJqimessage{
-	position: relative;
-	background-color: #F7F6F2;
-	border-top: solid 1px #C6B8AE;
-	border-bottom: solid 1px #C6B8AE;
+        position: relative;
+        background-color: #F7F6F2;
+        border-top: solid 1px #C6B8AE;
+        border-bottom: solid 1px #C6B8AE;
 }
 div.brownJqi .brownJqimessage h3{
-	background: url(../images/brown_theme_gradient.jpg) top left repeat-x #ffffff;
-	margin: 0;
-	padding: 7px 0 7px 15px;
-	color: #4D4A47;
+        background: url(../images/brown_theme_gradient.jpg) top left repeat-x #ffffff;
+        margin: 0;
+        padding: 7px 0 7px 15px;
+        color: #4D4A47;
 }
 div.brownJqi .brownJqimessage p{
-	padding: 10px;
-	color: #777777;
+        padding: 10px;
+        color: #777777;
 }
 div.brownJqi .brownJqimessage img.helpImg{
-	position: absolute;
-	bottom: -25px;
-	left: 10px;
+        position: absolute;
+        bottom: -25px;
+        left: 10px;
 }
 div.brownJqi .brownJqibuttons{
-	text-align: right;
+        text-align: right;
 }
 div.brownJqi button{
-	background: url(../images/brown_theme_gradient.jpg) top left repeat-x #ffffff;
-	border: solid #777777 1px;
-	font-size: 12px;
-	padding: 3px 10px 3px 10px;
-	margin: 5px 5px 5px 10px;
+        background: url(../images/brown_theme_gradient.jpg) top left repeat-x #ffffff;
+        border: solid #777777 1px;
+        font-size: 12px;
+        padding: 3px 10px 3px 10px;
+        margin: 5px 5px 5px 10px;
 }
 div.brownJqi button:hover{
-	border: solid #aaaaaa 1px;
+        border: solid #aaaaaa 1px;
 }
-
+ 
 /*
 *------------------------
 *   clean blue ex
@@ -237,7 +257,7 @@ div.cleanblue .cleanbluemessage{ padding: 10px; line-height: 20px; font-size: 11
 div.cleanblue .cleanbluebuttons{ text-align: right; padding: 5px 0 5px 0; border: solid 1px #eeeeee; background-color: #f4f4f4; }
 div.cleanblue button{ padding: 3px 10px; margin: 0 10px; background-color: #314e90; border: solid 1px #f4f4f4; color: #ffffff; font-weight: bold; font-size: 12px; }
 div.cleanblue button:hover{ border: solid 1px #d4d4d4; }
-
+ 
 /*
 *------------------------
 *   Ext Blue Ex
@@ -251,7 +271,7 @@ div.extblue .extbluecontainer{ background-color: #CAD8EA; padding: 0 5px 5px 5px
 div.extblue .extbluemessage{ background-color: #CAD8EA; padding: 0; margin:0 15px 15px 15px; }
 div.extblue .extbluebuttons{ text-align: center; padding: 0px 0 0 0; }
 div.extblue button{ padding: 1px 4px; margin: 0 10px; background-color:#cccccc; font-weight:normal; font-family:Verdana; font-size:10px; }
-
+ 
 /*
 *------------------------
 *   smooth Ex

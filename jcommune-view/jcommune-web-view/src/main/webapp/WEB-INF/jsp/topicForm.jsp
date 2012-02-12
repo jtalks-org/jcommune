@@ -19,8 +19,10 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <html>
 <head>
+    <title><spring:message code="h.edit_topic"/></title>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
             type="text/javascript"></script>
 </head>
@@ -36,7 +38,7 @@
             <form:hidden path="id"/>
 
             <div class="forum_misc_info">
-                <h2 class="heading"><spring:message code="h.edit_topic"/></h2>
+                <h2 class="heading"><c:out value="${topicDto.topicName}"/></h2>
             </div>
 
             <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
