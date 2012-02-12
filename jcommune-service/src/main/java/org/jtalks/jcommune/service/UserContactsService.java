@@ -35,13 +35,13 @@ public interface UserContactsService extends EntityService<UserContactType> {
     List<UserContactType> getAvailableContactTypes();
 
     /**
-     *
+     * Adds contact to current user contacts.
      * @param contact
      */
     UserContact addContact(UserContact contact);
 
     /**
-     *
+     * Removes contact from contacts of current user.
      * @param userContactId
      */
     void removeContact(Long userContactId);

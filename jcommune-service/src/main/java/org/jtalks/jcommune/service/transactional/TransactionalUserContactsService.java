@@ -42,9 +42,8 @@ public class TransactionalUserContactsService extends AbstractTransactionalEntit
      * @param dao             for operations with data storage
      * @param securityService for security
      */
-    public TransactionalUserContactsService(UserContactsDao dao, UserDao userDao, SecurityService securityService) {
+    public TransactionalUserContactsService(UserContactsDao dao, SecurityService securityService) {
         super(dao);
-        this.userDao = userDao;
         this.securityService = securityService;
     }
 
@@ -80,7 +79,6 @@ public class TransactionalUserContactsService extends AbstractTransactionalEntit
         for (UserContact contact: user.getContacts()) {
             if (contact.getId() == userContactId) {
                 user.removeContact(contact);
-                userDao.update(user);
                 break;
             }
         }

@@ -23,6 +23,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 /**
+ * This controller handles creation and deletion of user contacts.
+ *
  * @author Evgeniy Naumenko
  * @author Michael Gamov
  */
@@ -32,8 +34,7 @@ public class UserContactsController {
     private UserContactsService service;
 
     /**
-     *
-     * @param service
+     * @param service to delegate business logic invocation
      */
     @Autowired
     public UserContactsController(UserContactsService service) {
@@ -41,8 +42,8 @@ public class UserContactsController {
     }
 
     /**
-     *
-     * @return
+     * Renders available contact types as a JSON array.
+     * @return contact types
      */
     @RequestMapping(value="/contacts/types", method = RequestMethod.GET)
     public @ResponseBody UserContactType[] getContactTypes() {
@@ -50,15 +51,18 @@ public class UserContactsController {
     }
 
     /**
-     *
-     * @param userContact
+     * Handles creation of new contact for current user.
+     * @param userContact user contact information
      */
     @RequestMapping(value="/contacts/add", method = RequestMethod.POST)
     public @ResponseBody UserContactDto addContact(@RequestBody UserContact userContact) {
         return UserContactDto.getDtoFor(service.addContact(userContact));
     }
 
-
+    /**
+     * Removes contact identified by contactId from user contacts.
+     * @param contactId identifier of contact to be removed
+     */
     @RequestMapping(value = "/contacts/remove/{contactId}", method = RequestMethod.DELETE)
     public void removeContact(@PathVariable Long contactId){
         service.removeContact(contactId);

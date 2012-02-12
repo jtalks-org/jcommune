@@ -29,38 +29,71 @@ public class UserContactDto {
     private String value;
     private UserContactType type;
 
+    /**
+     * @return id
+     */
     public Long getId() {
         return id;
     }
 
+    /**
+     * Set contact id
+     * @param id of contact
+     */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * @return owner id
+     */
     public Long getOwnerId() {
         return ownerId;
     }
 
+    /**
+     * Set owner id of contact
+     * @param ownerId
+     */
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
     }
 
+    /**
+     * @return contact value
+     */
     public String getValue() {
         return value;
     }
 
+    /**
+     * Set contact value
+     * @param value of contact
+     */
     public void setValue(String value) {
         this.value = value;
     }
 
+    /**
+     * @return user contact type
+     */
     public UserContactType getType() {
         return type;
     }
 
+    /**
+     * Set user contact type
+     * @param type user contact type
+     */
     public void setType(UserContactType type) {
         this.type = type;
     }
 
+    /**
+     * Create dto from {@link UserContact)
+     * @param contact
+     * @return
+     */
     public static UserContactDto getDtoFor(UserContact contact) {
         UserContactDto dto = new UserContactDto();
         dto.setId(contact.getId());
