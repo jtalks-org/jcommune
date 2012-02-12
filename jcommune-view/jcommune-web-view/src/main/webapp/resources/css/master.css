@@ -798,15 +798,27 @@ a.page:hover {
     font-size: 0.6em;
 }
 
+/* Edit profile form controls */
+.form_controls {
+    padding-top: 5px;
+    text-align: center;
+}
+
+.form_controls table {
+	width: 600px;
+	margin: 0 auto;
+}
+
+.form_controls td {
+	width: 50%;
+	text-align: center;
+}
+
+
 /* Various */
 .empty_cell {
     display: table-cell;
     min-width: 1px;
-}
-
-.form_controls {
-    padding-top: 5px;
-    text-align: center;
 }
 
 .error {

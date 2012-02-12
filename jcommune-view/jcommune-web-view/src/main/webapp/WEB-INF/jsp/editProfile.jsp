@@ -149,14 +149,22 @@
                 </ul>
             </form:form>
             <div class="form_controls">
-				<a href="${pageContext.request.contextPath}/users/${auth}">
-                <button class="button"><spring:message code="label.back"/></button></a>
-				<input id="saveChanges" type="submit" class="button"
-			    value="<spring:message code="label.save_changes"/>"/>
-				<span id="upload">
-				<button class="button"><spring:message code="label.avatar.load"/></button>
-				</span>
-                <button id="removeAvatar" class="button"><spring:message code="label.avatar.remove"/></button>   
+				<table>
+					<tr>
+						<td>
+							<a href="${pageContext.request.contextPath}/users/${auth}">
+							<button class="button"><spring:message code="label.back"/></button></a>
+							<input id="saveChanges" type="submit" class="button" value="<spring:message code="label.save_changes"/>"/>
+						</td>
+						<td>
+							
+							<span id="upload">
+							<button class="button"><spring:message code="label.avatar.load"/></button>
+							</span>
+							<button id="removeAvatar" class="button"><spring:message code="label.avatar.remove"/></button>   
+						</td>
+					</tr>
+				</table>
 			</div>
 
         </div>
