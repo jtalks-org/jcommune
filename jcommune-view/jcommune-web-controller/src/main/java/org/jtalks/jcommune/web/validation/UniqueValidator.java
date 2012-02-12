@@ -56,6 +56,6 @@ public class UniqueValidator implements ConstraintValidator<Unique, Object> {
      */
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
-        return dao.isResultSetEmpty(entity, field, value.toString());
+        return (value != null) && dao.isResultSetEmpty(entity, field, value.toString());
     }
 }

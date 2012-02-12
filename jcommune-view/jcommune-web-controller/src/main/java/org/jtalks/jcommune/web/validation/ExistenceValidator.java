@@ -23,9 +23,9 @@ import javax.validation.ConstraintValidatorContext;
 
 /**
  * Chcks string value for existence in a database.
- * @see Exists
  *
  * @author Evgeniy Naumenko
+ * @see Exists
  */
 public class ExistenceValidator implements ConstraintValidator<Exists, Object> {
 
@@ -56,6 +56,6 @@ public class ExistenceValidator implements ConstraintValidator<Exists, Object> {
      */
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
-        return !dao.isResultSetEmpty(entity, field, value.toString());
+        return (value != null) && !dao.isResultSetEmpty(entity, field, value.toString());
     }
 }

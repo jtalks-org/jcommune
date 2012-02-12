@@ -26,6 +26,8 @@
     <title><spring:message code="label.user"/> - "${auth}"</title>
     <script type="text/javascript"
             src="${pageContext.request.contextPath}/resources/javascript/licensed/fileuploader.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/avatarUpload.js"
+            type="text/javascript"></script>
 </head>
 <body>
 <div class="wrap userdetails_page">
@@ -39,8 +41,6 @@
                        modelAttribute="editedUser" method="POST" enctype="multipart/form-data">
 
                 <form:hidden id="avatar" path="avatar"/>
-                <input id="avatarTempValue" type="hidden"/>
-
                 <div class="forum_header_table">
                     <div class="forum_header">
                         <span class="forum_header_generic"><spring:message code="label.profile"/></span>
@@ -123,7 +123,7 @@
                         </span>
                     </li>
                     <li class="forum_row">
-                        <label><spring:message code="label.numberOfTopicsOnPage"/></label>
+                        <label><spring:message code="label.pageSize"/></label>
                         <span>
                             <form:select path="pageSize" value="${editedUser.pageSize}"
                                          items="${editedUser.pageSizesAvailable}"/>
@@ -147,84 +147,21 @@
                     </li>
                     <li class="forum_row"></li>
                 </ul>
-                <div class="form_controls">
-                    <span id="upload">
-                        <input type="button"  class="button" value="<spring:message code="label.avatar.load"/>"/>
-                    </span>
-                    <input type="submit"  class="button" value="<spring:message code="label.save_changes"/>"
-                           onclick="submitForm('editProfileForm')"/>
-                    <a href="${pageContext.request.contextPath}/users/${auth}">
-                        <button  class="button"><spring:message code="label.back"/></button>
-                    </a>
-                </div>
             </form:form>
-            <c:if test="${editedUser.avatar != null}">
-                <form action="${pageContext.request.contextPath}/users/edit/avatar" id="removeAvatarForm"
-                      name="removeAvatarForm" method="POST">
-                    <div class="form_controls">
-                        <input type="submit" class="button" value="<spring:message code="label.avatar.remove"/>"
-                               onclick="submitForm('removeAvatarForm')"/>
-                    </div>
-                </form>
-            </c:if>
+            <div class="form_controls">
+                    <span id="upload">
+                        <button class="button"><spring:message code="label.avatar.load"/></button>
+                    </span>
+                <button id="removeAvatar" class="button"><spring:message code="label.avatar.remove"/></button>
+                <input id="saveChanges" type="submit" class="button"
+                       value="<spring:message code="label.save_changes"/>"/>
+                <a href="${pageContext.request.contextPath}/users/${auth}">
+                    <button class="button"><spring:message code="label.back"/></button>
+                </a>
+            </div>
+
         </div>
     </div>
     <div class="footer_buffer"></div>
 </div>
-<script type="text/javascript">
-    function submitForm(formName) {
-
-        if (formName == "editProfileForm") {
-            document.getElementById('avatar').setAttribute('value',
-                    document.getElementById('avatarTempValue').value);
-        } else {
-            document.getElementById('avatar').setAttribute('value', null);
-        }
-
-        document.forms[formName].submit();
-
-    }
-
-    function createUploader() {
-        var action;
-        if (navigator.appName.indexOf("Microsoft") != -1 ||
-                navigator.appName.indexOf("Opera") != -1) {
-            action = '${pageContext.request.contextPath}/users/IFrameAvatarpreview';
-        }
-        else {
-            action = '${pageContext.request.contextPath}/users/XHRavatarpreview';
-        }
-
-        console.log('Action: %s', action);
-        var uploader = new qq.FileUploaderBasic({
-            button:$("#upload").get(0),
-            action:action,
-            multiple:false,
-            allowedExtensions:['jpg', 'jpeg', 'png', 'gif'],
-            sizeLimit:4194304, // max size
-            onSubmit:function (id, filename) {
-                console.log('File upload: %s, ID: %s', filename, id);
-            },
-            onProgress:function (id, filename, loaded, total) {
-                console.log('Progress for file: %s, ID: %s, loaded: %s, total: %s', filename, id, loaded, total);
-            },
-            onComplete:function (id, filename, responseJSON) {
-                console.log('File upload for file %s, id %s done with status %s', filename, id, responseJSON);
-                if (responseJSON.success == "true") {
-                    document.getElementById('avatarPreview').setAttribute('src', responseJSON.srcPrefix
-                            + responseJSON.srcImage);
-                    document.getElementById('avatarTempValue').setAttribute('value', responseJSON.srcImage);
-                } else {
-                    document.getElementById('avatarPreview').setAttribute('src', "");
-                    document.getElementById('avatarPreview').setAttribute('alt', responseJSON.message);
-                }
-
-            },
-            debug:false
-        });
-
-    }
-
-    $(document).ready(createUploader());
-</script>
 </body>

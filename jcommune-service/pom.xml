@@ -6,7 +6,7 @@
     <parent>
         <artifactId>jcommune</artifactId>
         <groupId>org.jtalks.jcommune</groupId>
-        <version>0.11-SNAPSHOT</version>
+        <version>0.12-SNAPSHOT</version>
     </parent>
     <artifactId>jcommune-service</artifactId>
     <name>${project.artifactId}</name>
@@ -50,6 +50,10 @@
             <artifactId>ehcache-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-jgroupsreplication</artifactId>
+        </dependency>
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
         </dependency>
@@ -69,6 +73,10 @@
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+        </dependency>
         <!--Tika-->
         <dependency>
             <groupId>org.apache.tika</groupId>
@@ -78,6 +86,10 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>kefir-bb</groupId>
+            <artifactId>kefir-bb</artifactId>
         </dependency>
     </dependencies>
 

@@ -13,10 +13,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-function getSelectedText(postId) {
+function quote(postId) {
+    // we need a synchronous POST here so we're creating a form. Found no better way to do it(
+    var form = document.createElement("form");
+    form.setAttribute("action", $root + "/posts/" + postId + "/quote");
+    form.setAttribute("method", "POST");
+    var field = document.createElement("input");
+    field.setAttribute("type", "hidden");
+    field.setAttribute("name", "selection");
+    field.setAttribute("value", getSelectedPostText());
+    form.appendChild(field);
+    document.body.appendChild(form);
+    form.submit();
+}
+
+function getSelectedPostText() {
     var txt = '';
     if (document.getSelection) {
-        txt = document.getSelection();
+        txt = document.getSelection().toString();
     } else if (window.getSelection) {
         txt = window.getSelection().toString();
     } else if (document.selection) {

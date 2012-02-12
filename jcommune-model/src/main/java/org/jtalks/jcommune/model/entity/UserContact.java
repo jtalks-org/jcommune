@@ -33,6 +33,10 @@ public class UserContact extends Entity {
     protected UserContact() {
     }
 
+    /**
+     * @param value actual value, like cell number, mail address or ICQ UIN
+     * @param type contact type, like "Skype", "Jabber" or "Pigeon Mail"
+     */
     public UserContact(String value, UserContactType type) {
         this.value = value;
         this.type = type;

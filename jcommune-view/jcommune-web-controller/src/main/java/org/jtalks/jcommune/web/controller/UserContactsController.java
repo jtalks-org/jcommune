@@ -14,66 +14,57 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.dao.UserContactsDao;
-import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
+import org.jtalks.jcommune.service.UserContactsService;
+import org.jtalks.jcommune.web.dto.UserContactDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 /**
+ * This controller handles creation and deletion of user contacts.
+ *
  * @author Evgeniy Naumenko
+ * @author Michael Gamov
  */
 @Controller
 public class UserContactsController {
 
-    private SecurityService securityService;
-    private UserContactsDao dao;
+    private UserContactsService service;
 
     /**
-     *
-     * @param securityService
-     * @param dao
+     * @param service to delegate business logic invocation
      */
     @Autowired
-    public UserContactsController(SecurityService securityService, UserContactsDao dao) {
-        this.securityService = securityService;
-        this.dao = dao;
+    public UserContactsController(UserContactsService service) {
+        this.service = service;
     }
 
     /**
-     *
-     * @return
+     * Renders available contact types as a JSON array.
+     * @return contact types
      */
-    @RequestMapping(value="contacts/types", method = RequestMethod.GET)
-    @ResponseBody
-    public List<UserContactType> getContactTypes() {
-       return dao.getAvailableContactTypes();
+    @RequestMapping(value="/contacts/types", method = RequestMethod.GET)
+    public @ResponseBody UserContactType[] getContactTypes() {
+       return service.getAvailableContactTypes().toArray(new UserContactType[0]);
     }
 
     /**
-     *
-     * @param type
-     * @param value
+     * Handles creation of new contact for current user.
+     * @param userContact user contact information
      */
-    @RequestMapping(value="contacts/add", method = RequestMethod.POST)
-    public void addContact(UserContactType type, String value) {
-        JCUser user = securityService.getCurrentUser();
-        UserContact contact = new UserContact(value, type);
-        user.addContact(contact);
+    @RequestMapping(value="/contacts/add", method = RequestMethod.POST)
+    public @ResponseBody UserContactDto addContact(@RequestBody UserContact userContact) {
+        return UserContactDto.getDtoFor(service.addContact(userContact));
     }
 
     /**
-     *
+     * Removes contact identified by contactId from user contacts.
+     * @param contactId identifier of contact to be removed
      */
-    @RequestMapping(value = "contacts/remove", method = RequestMethod.POST)
-    public void removeContact(){
-
+    @RequestMapping(value = "/contacts/remove/{contactId}", method = RequestMethod.DELETE)
+    public void removeContact(@PathVariable Long contactId){
+        service.removeContact(contactId);
     }
 }

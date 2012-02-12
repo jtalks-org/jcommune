@@ -49,7 +49,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><spring:message code="label.recipient"/></td>
+                    <td><spring:message code="label.pm.recipient"/></td>
                     <td>
                         <a href="${pageContext.request.contextPath}/users/${pm.userTo.encodedUsername}">
                             <c:out value="${pm.userTo.username}"/>
@@ -58,7 +58,7 @@
                 </tr>
                 <tr>
                     <td valign="top"><spring:message code="label.body"/></td>
-                    <td><c:out value="${pm.body}"/></td>
+                    <td><jtalks:bb2html bbCode="${pm.body}"/></td>
                 </tr>
             </table>
 

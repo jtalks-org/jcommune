@@ -116,7 +116,7 @@ public class UserControllerTest {
 
     @Test
     public void testRestorePasswordFail() throws NotFoundException, MailingFailedException {
-        Exception fail = new MailingFailedException("", new RuntimeException());
+        Exception fail = new MailingFailedException(new RuntimeException());
         doThrow(fail).when(userService).restorePassword(anyString());
         RestorePasswordDto dto = new RestorePasswordDto();
         dto.setEmail(EMAIL);
@@ -124,6 +124,20 @@ public class UserControllerTest {
         ModelAndView mav = userController.restorePassword(dto, bindingResult);
         verify(userService, times(1)).restorePassword(EMAIL);
         assertTrue(bindingResult.hasErrors());
+    }
+
+    @Test
+    public void testActivateAccount() throws NotFoundException {
+        userController.activateAccount(USER_NAME);
+
+        verify(userService, times(1)).activateAccount(USER_NAME);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void testActivateAccountFail() throws NotFoundException {
+        doThrow(new NotFoundException()).when(userService).activateAccount(anyString());
+
+        userController.activateAccount(USER_NAME);
     }
 
     private void assertNullFields(RegisterUserDto dto) {

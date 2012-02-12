@@ -59,7 +59,13 @@ public class ClearInterceptor extends HandlerInterceptorAdapter {
          * That is why we're skipping avatar requests when determining user location on forum.
          */
         if (!request.getRequestURI().endsWith("/avatar")) {
-            locationService.clearUserLocation();
+            // failure here should not cause all the web processing chain to be broken
+            // todo: find a better solution
+            try {
+                locationService.clearUserLocation();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         return true;

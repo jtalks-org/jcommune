@@ -20,6 +20,7 @@ import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import static junit.framework.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 /**
@@ -39,7 +40,7 @@ public class JCUserTest {
         assertTrue(user.isAccountNonExpired());
         assertTrue(user.isAccountNonLocked());
         assertTrue(user.isCredentialsNonExpired());
-        assertTrue(user.isEnabled());
+        assertFalse(user.isEnabled());
     }
 
     @Test

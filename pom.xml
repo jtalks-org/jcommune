@@ -6,7 +6,7 @@
     <groupId>org.jtalks.jcommune</groupId>
     <artifactId>jcommune</artifactId>
     <packaging>pom</packaging>
-    <version>0.11-SNAPSHOT</version>
+    <version>0.12-SNAPSHOT</version>
     <name>${project.artifactId}</name>
     <modules>
         <module>jcommune-model</module>
@@ -210,6 +210,11 @@
                 <artifactId>ehcache-core</artifactId>
                 <version>2.4.0</version>
             </dependency>
+            <dependency>
+                <groupId>net.sf.ehcache</groupId>
+                <artifactId>ehcache-jgroupsreplication</artifactId>
+                <version>1.5</version>
+            </dependency>
             <!-- TestNG & Mockito -->
             <dependency>
                 <groupId>org.testng</groupId>
@@ -281,11 +286,6 @@
                 <version>2.6</version>
             </dependency>
             <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>2.0.1</version>
-            </dependency>
-            <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
                 <version>1.6</version>
@@ -294,6 +294,11 @@
                 <groupId>kefir-bb</groupId>
                 <artifactId>kefir-bb</artifactId>
                 <version>0.6</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.velocity</groupId>
+                <artifactId>velocity</artifactId>
+                <version>1.7</version>
             </dependency>
             <!--Mail-->
             <dependency>
@@ -417,6 +422,7 @@
                         <exclude>**/*.properties</exclude>
                         <exclude>**/*.sql</exclude>
                         <exclude>**/*.css</exclude>
+                        <exclude>**/*.vm</exclude>
                         <exclude>**/.*</exclude>
                         <exclude>**/empty</exclude>
                         <exclude>**/licensed/**</exclude>

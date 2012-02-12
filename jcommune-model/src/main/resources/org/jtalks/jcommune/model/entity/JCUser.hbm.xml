@@ -37,7 +37,7 @@
         <property name="avatar" lazy="true">
             <column name="AVATAR" sql-type="blob"/>
         </property>
-        <set name="contacts" cascade="all-delete-orphan">
+        <set name="contacts" cascade="all-delete-orphan" inverse="true">
             <key column="USER_ID" foreign-key="FK_USER"/>
             <one-to-many class="UserContact"/>
         </set>
@@ -56,6 +56,7 @@
             <property column="REGISTRATION_DATE" name="registrationDate"
                       type="org.joda.time.contrib.hibernate.PersistentDateTime" not-null="false"/>
             <property column="POST_COUNT" name="postCount"/>
+            <property column="ENABLED" name="enabled"/>
         </join>
     </class>
 

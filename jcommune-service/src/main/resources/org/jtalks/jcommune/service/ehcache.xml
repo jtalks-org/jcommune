@@ -17,29 +17,34 @@
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="http://ehcache.sf.net/ehcache.xsd">
 
-  <diskStore path="java.io.tmpdir"/>
+    <diskStore path="java.io.tmpdir"/>
 
-  <defaultCache
-    maxElementsInMemory="500"
-    eternal="false"
-    timeToIdleSeconds="120"
-    timeToLiveSeconds="300"
-    overflowToDisk="false"
-    diskPersistent="false"
-    memoryStoreEvictionPolicy="LFU"
-    />
+<!--    <cacheManagerPeerProviderFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheManagerPeerProviderFactory"
+                                     properties="file=jgroups-udp.xml"/>-->
 
-  <!--
-  Cache for user related data.
-  Now used for storing new pm count.
-  -->
-  <cache name="cuserDataCache"
-         maxElementsInMemory="1000"
-         eternal="false"
-         timeToLiveSeconds="1200"
-         overflowToDisk="false"
-         diskPersistent="false"
-         memoryStoreEvictionPolicy="LRU"
-    />
+    <defaultCache
+            maxElementsInMemory="500"
+            eternal="false"
+            timeToIdleSeconds="120"
+            timeToLiveSeconds="300"
+            overflowToDisk="false"
+            diskPersistent="false"
+            memoryStoreEvictionPolicy="LFU">
+<!--        <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+                                   properties="replicateAsynchronously=true, replicatePuts=true,
+                replicateUpdates=true, replicateUpdatesViaCopy=false,
+                replicateRemovals=true"/>-->
+    </defaultCache>
 
+    <!--
+    Cache for user related data.
+    Now used for storing new pm count.
+    -->
+    <cache name="cuserDataCache"
+           maxElementsInMemory="1000"
+           eternal="false"
+           timeToLiveSeconds="1200"
+           overflowToDisk="false"
+           diskPersistent="false"
+           memoryStoreEvictionPolicy="LRU"/>
 </ehcache>

@@ -26,7 +26,9 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -37,14 +39,14 @@ import java.util.Set;
 public class AvatarService {
 
 
-    private static final Set<String> VALID_IMAGE_TYPES = new HashSet<String>();
+    private static final List<String> VALID_IMAGE_TYPES = Arrays.asList("image/jpeg", "image/png", "image/gif");
     /**
      * Max avatar size in bytes (to be moved in DB later)
      */
     public static final int MAX_SIZE = 4096 * 1024;
 
     private ImageUtils imageUtils;
-
+    private Base64Wrapper base64Wrapper;
     private String defaultAvatarPath;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AvatarService.class);
@@ -53,19 +55,18 @@ public class AvatarService {
      * Create AvatarService instance
      *
      * @param imageUtils        object for image processing
+     * @param base64Wrapper     to encode/decode avatar passed from the client side
      * @param defaultAvatarPath path to the default avatar image, to be replaced with image managed in Poulpe in future
      */
-    public AvatarService(ImageUtils imageUtils, String defaultAvatarPath) {
+    public AvatarService(ImageUtils imageUtils, Base64Wrapper base64Wrapper, String defaultAvatarPath) {
         this.defaultAvatarPath = defaultAvatarPath;
         this.imageUtils = imageUtils;
-        VALID_IMAGE_TYPES.add("image/jpeg");
-        VALID_IMAGE_TYPES.add("image/png");
-        VALID_IMAGE_TYPES.add("image/gif");
+        this.base64Wrapper = base64Wrapper;
     }
 
     /**
      * Perform bytes data to string conversion
-     *
+     *  (todo: wtf? it does tons of things, correct method name and description)
      * @param bytes for conversion
      * @return result string
      * @throws ImageProcessException common avatar processing error
@@ -81,7 +82,7 @@ public class AvatarService {
         }
 
         byte[] outputAvatar = imageUtils.preprocessImage(image);
-        return imageUtils.encodeB64(outputAvatar);
+        return base64Wrapper.encodeB64Bytes(outputAvatar);
     }
 
     /**

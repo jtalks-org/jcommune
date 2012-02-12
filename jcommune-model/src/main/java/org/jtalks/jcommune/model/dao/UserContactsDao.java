@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.dao;
 
+import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.model.entity.UserContactType;
 
 import java.util.List;
@@ -25,13 +26,13 @@ import java.util.List;
  *
  * @author Evgeniy Naumenko
  */
-public interface UserContactsDao {
+public interface UserContactsDao extends ChildRepository<UserContactType> {
 
     /**
      * Returns a list of contact types permitted in the current configuration.
-     * These types are to to configured from Poulpe.
+     * These types are to be configured from Poulpe.
      *
      * @return valid contact type list, e.g (skype, icq, jabber, mail, cell)
      */
-    public List<UserContactType> getAvailableContactTypes();
+    List<UserContactType> getAvailableContactTypes();
 }
