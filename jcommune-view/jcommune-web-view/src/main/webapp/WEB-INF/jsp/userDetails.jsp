@@ -21,6 +21,18 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <head>
     <title><spring:message code="label.user"/> - ${user.username}</title>
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
+            type="text/javascript"></script>
+
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-1.7.min.js"
+            type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jqery.impromptu.js"
+            type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/json2.js"
+                type="text/javascript"></script>
+    <base href="${pageContext.request.contextPath}" />
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/contacts.js"
+            type="text/javascript"></script>
 </head>
 <body>
 <div class="wrap userdetails_page">
@@ -96,13 +108,26 @@
                     <label><spring:message code="label.postcount"/></label>
                     <span><c:out value="${user.postCount}"/></span>
                 </li>
-                <%--<c:forEach var="contact" items="${user.contacts}">
-                    <li class="forum_row">
-                        <label><img src="${contact.type.icon}" alt=""><c:out value="${contact.type.typeName}"/></label>
-                        <span><c:out value="${contact.value}"/></span>
-                    </li>
-                </c:forEach>--%>
             </ul>
+
+            <label><spring:message code="label.contacts.header"/></label>
+
+            <div id="contacts">
+            <c:forEach var="contact" items="${user.contacts}" >
+                <div class="contact">
+                    <label><img src="${contact.type.icon}" alt=""><c:out value="${contact.type.typeName}"/></label>
+                    <span><c:out value="${contact.value}"/></span>
+                    <input type="hidden" value="${contact.id}"/>
+                    <a class="button" href="#">
+                        <spring:message code="label.contacts.delete"/>
+                    </a>
+                </div>
+            </c:forEach>
+            </div>
+            <a class="button" id="add_contact" href="#">
+                 <spring:message code="label.contacts.addMore"/>
+            </a>
+
             <div class="form_controls">
                 <c:if test="${user.username == auth}">
                     <a class="button" href="${pageContext.request.contextPath}/users/edit">

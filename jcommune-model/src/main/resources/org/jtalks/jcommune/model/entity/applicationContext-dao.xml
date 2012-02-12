@@ -57,9 +57,11 @@
     <bean id="validatorDAO" class="org.jtalks.jcommune.model.dao.hibernate.ValidatorHibernateDao">
         <constructor-arg ref="sessionFactory"/>
     </bean>
-        <bean id="userContacsDao" class="org.jtalks.jcommune.model.dao.hibernate.UserContactsHibernateDao">
-        <constructor-arg ref="sessionFactory"/>
-    </bean>
+
+    <bean id="userContactsDao"
+          class="org.jtalks.jcommune.model.dao.hibernate.UserContactsHibernateDao"
+          parent="abstractHibernateDao"/>
+
     <!--Injecting sessionFactory bean to class AbstractHibernateChildRepository, this way
 resolves a problem of multiple DAO beans definition -->
     <bean id="abstractHibernateDao" abstract="true">

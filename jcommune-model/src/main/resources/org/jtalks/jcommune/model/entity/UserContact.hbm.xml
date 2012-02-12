@@ -24,6 +24,7 @@
         <id column="CONTACT_ID" name="id" unsaved-value="0">
             <generator class="native"/>
         </id>
+        <property name="uuid" column="UUID" unique="true" not-null="true"/>
         <property column="VALUE" name="value" not-null="true"/>
 
         <many-to-one name="owner" column="USER_ID" class="JCUser" lazy="false"
