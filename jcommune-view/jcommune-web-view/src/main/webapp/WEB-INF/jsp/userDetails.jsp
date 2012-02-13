@@ -58,11 +58,11 @@
                 </li>
                 <li class="forum_row">
                     <label><spring:message code="label.firstname"/></label>
-                    <span><c:out value="${user.firstName}"/></span>
+                    <span class="break_word"><c:out value="${user.firstName}"/></span>
                 </li>
                 <li class="forum_row">
                     <label><spring:message code="label.lastname"/></label>
-                    <span><c:out value="${user.lastName}"/></span>
+                    <span class="break_word"><c:out value="${user.lastName}"/></span>
                 </li>
                 <c:if test="${user.signature != null}">
                     <li class="forum_row">

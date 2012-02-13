@@ -25,179 +25,133 @@
        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
 
-    <!-- Declaration AOP configs -->
-    <aop:config>
-        <aop:pointcut id="defaultTxPointcut"
-                      expression="within(org.jtalks.jcommune.service.transactional..*)"/>
-        <aop:advisor advice-ref="txAdvice" pointcut-ref="defaultTxPointcut"/>
-    </aop:config>
+  <!-- Declaration AOP configs -->
+  <aop:config>
+    <aop:pointcut id="defaultTxPointcut"
+                  expression="within(org.jtalks.jcommune.service.transactional..*)"/>
+    <aop:advisor advice-ref="txAdvice" pointcut-ref="defaultTxPointcut"/>
+  </aop:config>
 
-    <tx:advice id="txAdvice">
-        <tx:attributes>
-            <tx:method name="*" rollback-for="java.lang.Exception"/>
-        </tx:attributes>
-    </tx:advice>
+  <tx:advice id="txAdvice">
+    <tx:attributes>
+      <tx:method name="*" rollback-for="java.lang.Exception"/>
+    </tx:attributes>
+  </tx:advice>
 
-    <!--Timers and executirs to be specified via annotations-->
+  <!--Timers and executirs to be specified via annotations-->
 
-    <task:annotation-driven executor="executor" scheduler="scheduler"/>
+  <task:annotation-driven executor="executor" scheduler="scheduler"/>
 
-    <task:executor id="executor" pool-size="1"/>
+  <task:executor id="executor" pool-size="1"/>
 
-    <task:scheduler id="scheduler" pool-size="1"/>
+  <task:scheduler id="scheduler" pool-size="1"/>
 
-    <!--Declaration services bean -->
+  <!--Declaration services bean -->
 
-    <bean id="avatarService" class="org.jtalks.jcommune.service.nontransactional.AvatarService">
-        <constructor-arg ref="imagePreprocessor"/>
-        <constructor-arg ref="base64Wrapper"/>
-        <constructor-arg value="org/jtalks/jcommune/service/avatar.gif"/>
-    </bean>
+  <bean id="avatarService" class="org.jtalks.jcommune.service.nontransactional.AvatarService">
+    <constructor-arg ref="imagePreprocessor"/>
+    <constructor-arg ref="base64Wrapper"/>
+    <constructor-arg value="org/jtalks/jcommune/service/avatar.gif"/>
+  </bean>
 
-    <bean id="base64Wrapper" class="org.jtalks.jcommune.service.nontransactional.Base64Wrapper"/>
+  <bean id="base64Wrapper" class="org.jtalks.jcommune.service.nontransactional.Base64Wrapper"/>
 
-    <bean id="imagePreprocessor" class="org.jtalks.jcommune.service.nontransactional.ImageUtils">
-        <constructor-arg ref="base64Wrapper"/>
-    </bean>
+  <bean id="imagePreprocessor" class="org.jtalks.jcommune.service.nontransactional.ImageUtils">
+    <constructor-arg ref="base64Wrapper"/>
+  </bean>
 
-    <bean id="locationService" class="org.jtalks.jcommune.service.nontransactional.LocationService">
-        <constructor-arg ref="sessionRegistry"/>
-        <constructor-arg ref="securityService"/>
-    </bean>
+  <bean id="locationService" class="org.jtalks.jcommune.service.nontransactional.LocationService">
+    <constructor-arg ref="sessionRegistry"/>
+    <constructor-arg ref="securityService"/>
+  </bean>
 
-    <bean id="userService" class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
-        <constructor-arg ref="userDao"/>
-        <constructor-arg ref="securityService"/>
-        <constructor-arg ref="mailService"/>
-        <constructor-arg ref="base64Wrapper"/>
-        <constructor-arg ref="avatarService"/>
-    </bean>
+  <bean id="userService" class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
+    <constructor-arg ref="userDao"/>
+    <constructor-arg ref="securityService"/>
+    <constructor-arg ref="mailService"/>
+    <constructor-arg ref="base64Wrapper"/>
+    <constructor-arg ref="avatarService"/>
+  </bean>
 
-    <bean id="userContactsService"
-            class="org.jtalks.jcommune.service.transactional.TransactionalUserContactsService">
-        <constructor-arg ref="userContactsDao"/>
-        <constructor-arg ref="securityService"/>
-    </bean>
-    
-    <bean id="postService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalPostService">
-        <constructor-arg ref="postDao"/>
-        <constructor-arg ref="topicDao"/>
-        <constructor-arg ref="securityService"/>
-        <constructor-arg ref="notificationService"/>
-    </bean>
+  <bean id="userContactsService"
+        class="org.jtalks.jcommune.service.transactional.TransactionalUserContactsService">
+    <constructor-arg ref="userContactsDao"/>
+    <constructor-arg ref="securityService"/>
+  </bean>
 
-    <bean id="topicBranchService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalBranchService">
-        <constructor-arg ref="topicBranchDao"/>
-        <constructor-arg ref="branchSectionDao"/>
-    </bean>
+  <bean id="postService"
+        class="org.jtalks.jcommune.service.transactional.TransactionalPostService">
+    <constructor-arg ref="postDao"/>
+    <constructor-arg ref="topicDao"/>
+    <constructor-arg ref="securityService"/>
+    <constructor-arg ref="notificationService"/>
+  </bean>
 
-    <bean id="branchSectionService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalSectionService">
-        <constructor-arg ref="branchSectionDao"/>
-    </bean>
+  <bean id="topicBranchService"
+        class="org.jtalks.jcommune.service.transactional.TransactionalBranchService">
+    <constructor-arg ref="topicBranchDao"/>
+    <constructor-arg ref="branchSectionDao"/>
+  </bean>
 
-    <bean id="pmService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalPrivateMessageService">
-        <constructor-arg ref="privateMessageDao"/>
-        <constructor-arg ref="securityService"/>
-        <constructor-arg ref="userService"/>
-        <constructor-arg ref="userDataCacheService"/>
-        <constructor-arg ref="mailService"/>
-    </bean>
+  <bean id="branchSectionService"
+        class="org.jtalks.jcommune.service.transactional.TransactionalSectionService">
+    <constructor-arg ref="branchSectionDao"/>
+  </bean>
 
-    <bean id="topicService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalTopicService">
-        <constructor-arg ref="topicDao"/>
-        <constructor-arg ref="securityService"/>
-        <constructor-arg ref="topicBranchService"/>
-        <constructor-arg ref="topicBranchDao"/>
-        <constructor-arg ref="notificationService"/>
-    </bean>
+  <bean id="pmService"
+        class="org.jtalks.jcommune.service.transactional.TransactionalPrivateMessageService">
+    <constructor-arg ref="privateMessageDao"/>
+    <constructor-arg ref="securityService"/>
+    <constructor-arg ref="userService"/>
+    <constructor-arg ref="userDataCacheService"/>
+    <constructor-arg ref="mailService"/>
+  </bean>
 
-    <bean id="notificationService" class="org.jtalks.jcommune.service.nontransactional.NotificationService">
-        <constructor-arg ref="securityService"/>
-        <constructor-arg ref="mailService"/>
-    </bean>
+  <bean id="topicService"
+        class="org.jtalks.jcommune.service.transactional.TransactionalTopicService">
+    <constructor-arg ref="topicDao"/>
+    <constructor-arg ref="securityService"/>
+    <constructor-arg ref="topicBranchService"/>
+    <constructor-arg ref="topicBranchDao"/>
+    <constructor-arg ref="notificationService"/>
+  </bean>
 
-    <bean id="subscriptionService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalSubscriptionService">
-        <constructor-arg ref="securityService"/>
-        <constructor-arg ref="topicBranchDao"/>
-        <constructor-arg ref="topicDao"/>
-    </bean>
+  <bean id="subscriptionService"
+        class="org.jtalks.jcommune.service.transactional.TransactionalSubscriptionService">
+    <constructor-arg ref="securityService"/>
+    <constructor-arg ref="topicBranchDao"/>
+    <constructor-arg ref="topicDao"/>
+  </bean>
 
-    <bean id="securityService"
-          class="org.jtalks.jcommune.service.nontransactional.SecurityService">
-        <constructor-arg ref="userDao"/>
-        <constructor-arg ref="securityContextFacade"/>
-        <constructor-arg ref="aclManager"/>
-    </bean>
+  <bean id="securityService"
+        class="org.jtalks.jcommune.service.nontransactional.SecurityService">
+    <constructor-arg ref="userDao"/>
+    <constructor-arg ref="securityContextFacade"/>
+    <constructor-arg ref="aclManager"/>
+  </bean>
 
-    <bean id="forumStatisticsService"
-          class="org.jtalks.jcommune.service.nontransactional.ForumStatisticsService">
-        <constructor-arg ref="forumStatisticsDAO"/>
-    </bean>
+  <bean id="forumStatisticsService"
+        class="org.jtalks.jcommune.service.nontransactional.ForumStatisticsService">
+    <constructor-arg ref="forumStatisticsDAO"/>
+  </bean>
 
-    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-        <!--todo:  make it configurable -->
-        <property name="host" value="smtp.mail.ru"/>
-        <property name="port" value="25"/>
-        <!--the following property should match "from" property in MailSender bean-->
-        <property name="username" value="jtalks@inbox.ru"/>
-        <property name="password" value="javatalks"/>
-        <property name="defaultEncoding" value="UTF-8"/>
-        <property name="javaMailProperties">
-            <props>
-                <prop key="mail.smtp.auth">true</prop>
-            </props>
-        </property>
-    </bean>
+  <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+    <property name="configLocation" value="classpath:/org/jtalks/jcommune/service/ehcache.xml"/>
+  </bean>
 
-    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-        <property name="basenames">
-            <list>
-                <value>classpath:/org/jtalks/jcommune/service/bundle/TemplatesMessages</value>
-            </list>
-        </property>
-        <property name="defaultEncoding" value="UTF-8"/>
-    </bean>
+  <!--
+  Cache for user related data.
+  Now used for storing new private messages count.
+  -->
+  <bean id="userDataCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+    <property name="cacheManager" ref="cacheManager"/>
+    <property name="cacheName" value="cuserDataCache"/>
+  </bean>
 
-    <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
-        <property name="velocityProperties">
-            <value>
-                resource.loader=class
-                class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
-            </value>
-        </property>
-    </bean>
+  <bean id="userDataCacheService"
+        class="org.jtalks.jcommune.service.nontransactional.UserDataCacheService">
+    <constructor-arg name="userDataCache" ref="userDataCache"/>
+  </bean>
 
-    <bean id="mailService" class="org.jtalks.jcommune.service.nontransactional.MailService">
-        <constructor-arg ref="mailSender"/>
-        <!--the following argument should match real mailbox we use to send mails-->
-        <constructor-arg name="from" value="jtalks@inbox.ru"/>
-        <constructor-arg ref="velocityEngine"/>
-        <constructor-arg ref="messageSource"/>
-        <constructor-arg ref="bbCodeService"/>
-    </bean>
-
-    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-        <property name="configLocation" value="classpath:/org/jtalks/jcommune/service/ehcache.xml"/>
-    </bean>
-    <!--
-    Cache for user related data.
-    Now used for storing new private messages count.
-    -->
-    <bean id="userDataCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
-        <property name="cacheManager" ref="cacheManager"/>
-        <property name="cacheName" value="cuserDataCache"/>
-    </bean>
-
-    <bean id="userDataCacheService"
-          class="org.jtalks.jcommune.service.nontransactional.UserDataCacheService">
-        <constructor-arg name="userDataCache" ref="userDataCache"/>
-    </bean>
-
-    <bean id="bbCodeService" class="org.jtalks.jcommune.service.nontransactional.BBCodeService"/>
+  <bean id="bbCodeService" class="org.jtalks.jcommune.service.nontransactional.BBCodeService"/>
 </beans>

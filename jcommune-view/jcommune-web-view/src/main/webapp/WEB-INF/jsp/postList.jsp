@@ -128,7 +128,7 @@
                         <c:out value="${post.userCreated.postCount}"/><br/>
                         <c:if test="${post.userCreated.location != null}">
                             <span class="status"><spring:message code="label.topic.from_whence"/></span>
-                            <c:out value="${post.userCreated.location}"/>
+                            <span class="break_word"><c:out value="${post.userCreated.location}"/></span>
                         </c:if>
                     </div>
                 </div>
