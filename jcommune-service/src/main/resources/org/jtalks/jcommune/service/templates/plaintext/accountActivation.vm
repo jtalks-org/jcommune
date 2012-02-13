@@ -19,7 +19,7 @@ ${messageSource.getMessage("greeting", $noArgs, $locale)} ${name}!
 ${messageSource.getMessage("accountActivation.content.part1", $noArgs, $locale)}
 ${messageSource.getMessage("accountActivation.content.part2", $noArgs, $locale)}
 ${messageSource.getMessage("accountActivation.content.part3", $noArgs, $locale)}
-${messageSource.getMessage("accountActivation.link", $noArgs, $locale)} ${url}
+${messageSource.getMessage("accountActivation.link", $noArgs, $locale)} ${link}
 
 ${messageSource.getMessage("wish", $noArgs, $locale)}
 

@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
 import org.jtalks.jcommune.service.UserContactsService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.UserContactDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -60,7 +61,7 @@ public class UserContactsController {
      * @return saved user contact (with updated id)
      */
     @RequestMapping(value="/contacts/add", method = RequestMethod.POST)
-    @ResponseBody public UserContactDto addContact(@RequestBody UserContact userContact) {
+    @ResponseBody public UserContactDto addContact(@RequestBody UserContact userContact) throws NotFoundException {
         return UserContactDto.getDtoFor(service.addContact(userContact));
     }
 

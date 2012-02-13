@@ -254,8 +254,8 @@ a.heading:hover {
 }
 
 .forum_table {
-        position: relative;
-        z-index: 2;
+    position: relative;
+    z-index: 2;
 }
 
 /* Forum Row*/
@@ -765,6 +765,10 @@ a.admin, a.user {
     border-radius: 2px 2px 0 0;
 }
 
+.topic_page .page {
+    margin: 14px 5px 0 0;
+}
+
 span.page {
     background: white;
 }
@@ -774,12 +778,11 @@ a.page:hover {
 }
 
 .nav_bottom .page {
-        margin: -10px 5px 0 0;
-        -webkit-border-radius: 0px 0px 2px 2px;
-        -moz-border-radius: 0 0 2px 2px;
-        border-radius: 0 0 2px 2px;
+    margin: -10px 5px 0 0;
+    -webkit-border-radius: 0px 0px 2px 2px;
+    -moz-border-radius: 0 0 2px 2px;
+    border-radius: 0 0 2px 2px;
 }
-
 
 /* Various error pages (404, 500 and so on) */
 .text_errorpage {
@@ -816,4 +819,65 @@ a.page:hover {
 
 .break_word {
     word-wrap: break-word;
+}
+
+/*Breadcrumbs*/
+
+.breadcrumbs {
+    display: inline-block;
+    position: relative;
+    top: 5px;
+}
+
+.breadcrumbs li {
+    float: left;
+    margin-right: 15px;
+}
+
+.breadcrumbs a {
+    background: #ddd;
+    padding: 3px;
+    float: left;
+    text-decoration: none;
+    color: #444;
+    font-size: 10px;
+    position: relative;
+}
+
+.breadcrumbs a:hover {
+    background-color: #EFEFEF;
+}
+
+.breadcrumbs a::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    margin-top: -9px;
+    border-width: 9px 0 10px 10px;
+    border-style: solid;
+    border-color: #ddd #ddd #ddd transparent;
+    left: -10px;
+}
+
+.breadcrumbs a:hover::before {
+    border-color: #EFEFEF #EFEFEF #EFEFEF transparent;
+}
+
+.breadcrumbs a::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    margin-top: -9px;
+    border-top: 9px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 10px solid #ddd;
+    right: -10px;
+}
+
+.breadcrumbs a:hover::after {
+    border-left-color: #EFEFEF;
+}
+
+a.bc_first::before {
+    display: none;
 }
