@@ -50,9 +50,6 @@ public class TransactionalUserContactsServiceTest {
     private UserContactsDao userContactsDao;
 
     @Mock
-    private UserDao userDao;
-
-    @Mock
     private SecurityService securityService;
     
     private JCUser user;
@@ -60,7 +57,7 @@ public class TransactionalUserContactsServiceTest {
     @BeforeMethod
     public void setUp() {
         initMocks(this);
-        userContactsService = new TransactionalUserContactsService(userContactsDao, userDao, securityService);
+        userContactsService = new TransactionalUserContactsService(userContactsDao, securityService);
         user = new JCUser(USERNAME, EMAIL, PASSWORD);
         when(securityService.getCurrentUser()).thenReturn(user);
     }

@@ -21,19 +21,8 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <head>
     <title><spring:message code="label.user"/> - ${user.username}</title>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
-            type="text/javascript"></script>
-
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-1.7.min.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jqery.impromptu.js"
-            type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/json2.js"
             type="text/javascript"></script>
-
-    <script type="text/javascript">
-        var basePath = "${pageContext.request.contextPath}";
-    </script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/contacts.js"
             type="text/javascript"></script>
 </head>
