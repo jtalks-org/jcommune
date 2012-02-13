@@ -35,7 +35,6 @@ public class TransactionalUserContactsService
         extends AbstractTransactionalEntityService<UserContactType, UserContactsDao> implements UserContactsService {
 
     private SecurityService securityService;
-    private UserDao userDao;
 
     /**
      * Create an instance of User entity based service
@@ -43,9 +42,8 @@ public class TransactionalUserContactsService
      * @param dao             for operations with data storage
      * @param securityService for security
      */
-    public TransactionalUserContactsService(UserContactsDao dao, UserDao userDao, SecurityService securityService) {
+    public TransactionalUserContactsService(UserContactsDao dao, SecurityService securityService) {
         super(dao);
-        this.userDao = userDao;
         this.securityService = securityService;
     }
 

@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.hibernate.SessionFactory;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.jcommune.model.dao.UserContactsDao;
 import org.jtalks.jcommune.model.entity.UserContactType;

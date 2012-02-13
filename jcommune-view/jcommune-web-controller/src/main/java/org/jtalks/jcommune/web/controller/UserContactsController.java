@@ -21,7 +21,11 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.UserContactDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
@@ -59,6 +63,7 @@ public class UserContactsController {
      * Handles creation of new contact for current user.
      * @param userContact user contact information
      * @return saved user contact (with updated id)
+     * @throws NotFoundException
      */
     @RequestMapping(value="/contacts/add", method = RequestMethod.POST)
     @ResponseBody public UserContactDto addContact(@RequestBody UserContact userContact) throws NotFoundException {
