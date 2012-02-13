@@ -45,6 +45,7 @@
     <!-- Link to actual ACL Service -->
     <constructor-arg index="0" ref="basicPermissionEvaluator"/>
     <constructor-arg index="1" ref="commonAclManager"/>
+      <property name="jdbcAclService" ref="aclService"/>
   </bean>
 
   <bean id="basicPermissionEvaluator" class="org.springframework.security.acls.AclPermissionEvaluator">

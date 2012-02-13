@@ -14,10 +14,16 @@
  */
 package org.jtalks.jcommune.service.security;
 
+import org.jtalks.common.model.permissions.BranchPermission;
+import org.jtalks.common.security.acl.ExtendedMutableAcl;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.acls.AclPermissionEvaluator;
+import org.springframework.security.acls.domain.ObjectIdentityRetrievalStrategyImpl;
+import org.springframework.security.acls.jdbc.JdbcMutableAclService;
+import org.springframework.security.acls.model.AccessControlEntry;
+import org.springframework.security.acls.model.ObjectIdentity;
+import org.springframework.security.acls.model.ObjectIdentityGenerator;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
@@ -28,6 +34,8 @@ import java.io.Serializable;
 public class AclGroupPermissionEvaluator implements PermissionEvaluator {
     private final AclPermissionEvaluator basicPermissionEvaluator;
     private final org.jtalks.common.security.acl.AclManager aclManager;
+    private ObjectIdentityGenerator objectIdentityGenerator = new ObjectIdentityRetrievalStrategyImpl();
+    private JdbcMutableAclService jdbcAclService;
 
     public AclGroupPermissionEvaluator(@Nonnull AclPermissionEvaluator basicPermissionEvaluator,
                                        @Nonnull org.jtalks.common.security.acl.AclManager aclManager) {
@@ -42,6 +50,21 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
 
     @Override
     public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
-        return false;
+        ObjectIdentity objectIdentity = objectIdentityGenerator.createObjectIdentity(targetId, targetType);
+        boolean hasPermission = false;
+        BranchPermission branchPermission = BranchPermission.CREATE_TOPICS;
+        ExtendedMutableAcl extendedMutableAcl = ExtendedMutableAcl.castAndCreate(jdbcAclService.readAclById(objectIdentity));
+        for (AccessControlEntry controlEntry : extendedMutableAcl.getEntries()) {
+            if (controlEntry.getPermission().equals(branchPermission)) {//todo getting permission
+                hasPermission = controlEntry.isGranting();
+                if (!hasPermission)
+                    break;
+            }
+        }
+        return hasPermission;
+    }
+
+    public void setJdbcAclService(JdbcMutableAclService jdbcAclService) {
+        this.jdbcAclService = jdbcAclService;
     }
 }
