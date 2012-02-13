@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * This controller handles creation and deletion of user contacts.
  *
@@ -46,16 +48,19 @@ public class UserContactsController {
      * @return contact types
      */
     @RequestMapping(value="/contacts/types", method = RequestMethod.GET)
-    public @ResponseBody UserContactType[] getContactTypes() {
-       return service.getAvailableContactTypes().toArray(new UserContactType[0]);
+    @ResponseBody
+    public UserContactType[] getContactTypes() {
+        List<UserContactType> types = service.getAvailableContactTypes();
+        return types.toArray(new UserContactType[types.size()]);
     }
 
     /**
      * Handles creation of new contact for current user.
      * @param userContact user contact information
+     * @return saved user contact (with updated id)
      */
     @RequestMapping(value="/contacts/add", method = RequestMethod.POST)
-    public @ResponseBody UserContactDto addContact(@RequestBody UserContact userContact) {
+    @ResponseBody public UserContactDto addContact(@RequestBody UserContact userContact) {
         return UserContactDto.getDtoFor(service.addContact(userContact));
     }
 
