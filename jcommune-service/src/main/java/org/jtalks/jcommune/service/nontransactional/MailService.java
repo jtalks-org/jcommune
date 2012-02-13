@@ -103,7 +103,6 @@ public class MailService {
         model.put(NAME, name);
         model.put("newPassword", newPassword);
         model.put(URL, url);
-        model.put(MESSAGE_SOURCE, messageSource);
         model.put(RECIPIENT_LOCALE, user.getLanguage().getLocale());
         this.sendEmail(user.getEmail(), "Password recovery", model, PASSWORD_RECOVERY_TEMPLATE);
         LOGGER.info("Password recovery email sent for {}", name);
@@ -123,7 +122,6 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(USER, user);
             model.put(URL, url);
-            model.put(MESSAGE_SOURCE, messageSource);
             model.put(RECIPIENT_LOCALE, user.getLanguage().getLocale());
             this.sendEmail(user.getEmail(), "Forum updates", model, SUBSCRIPTION_NOTIFICATION_TEMPLATE);
         } catch (MailingFailedException e) {
@@ -145,7 +143,6 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(USER, user);
             model.put(URL, url);
-            model.put(MESSAGE_SOURCE, messageSource);
             model.put(RECIPIENT_LOCALE, user.getLanguage().getLocale());
             this.sendEmail(user.getEmail(), "Forum updates", model, SUBSCRIPTION_NOTIFICATION_TEMPLATE);
         } catch (MailingFailedException e) {
@@ -165,7 +162,6 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put("recipient", recipient);
             model.put(URL, url);
-            model.put(MESSAGE_SOURCE, messageSource);
             model.put(RECIPIENT_LOCALE, recipient.getLanguage().getLocale());
             model.put("title", pm.getTitle());
             model.put("message", bbCodeService.removeBBCodes(pm.getBody()));
@@ -186,7 +182,6 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(NAME, recipient.getUsername());
             model.put(URL, url);
-            model.put(MESSAGE_SOURCE, messageSource);
             model.put(RECIPIENT_LOCALE, recipient.getLanguage().getLocale());
             this.sendEmail(recipient.getEmail(), "JTalks account activation", model, ACCOUNT_ACTIVATION_TEMPLATE);
         } catch (MailingFailedException e) {
@@ -207,9 +202,10 @@ public class MailService {
     private void sendEmail(String to, String subject, Map<String, Object> model, String templateName) throws
             MailingFailedException {
         try {
+            model.put(MESSAGE_SOURCE, messageSource);
+            model.put(NO_ARGS, new Object[]{});
             String plainText = this.mergePlainTextTemplate(templateName, model);
             String htmlText = this.mergeHtmlTemplate(templateName, model);
-            model.put(NO_ARGS, new Object[]{});
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setTo(to);
