@@ -14,13 +14,13 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 *#
-${messageSource.getMessage($greeting, $noArgs, $locale)} ${name}!
+${messageSource.getMessage("greeting", $noArgs, $locale)} ${name}!
 
-${messageSource.getMessage($contentPart1, $noArgs, $locale)}
-${messageSource.getMessage($contentPart2, $noArgs, $locale)}
-${messageSource.getMessage($contentPart3, $noArgs, $locale)}
-${messageSource.getMessage($link, $noArgs, $locale)} ${url}
+${messageSource.getMessage("accountActivation.content.part1", $noArgs, $locale)}
+${messageSource.getMessage("accountActivation.content.part2", $noArgs, $locale)}
+${messageSource.getMessage("accountActivation.content.part3", $noArgs, $locale)}
+${messageSource.getMessage("accountActivation.link", $noArgs, $locale)} ${url}
 
-${messageSource.getMessage($wish, $noArgs, $locale)}
+${messageSource.getMessage("wish", $noArgs, $locale)}
 
-${messageSource.getMessage($signature, $noArgs, $locale)}
+${messageSource.getMessage("signature", $noArgs, $locale)}
