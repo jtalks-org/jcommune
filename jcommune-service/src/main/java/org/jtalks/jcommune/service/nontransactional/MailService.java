@@ -59,11 +59,6 @@ public class MailService {
     private static final String USER = "user";
     private static final String NAME = "name";
     private static final String MESSAGE_SOURCE = "messageSource";
-    private static final String GREETING_RESOURCE_KEY = "greeting";
-    private static final String CONTENT_RESOURCE_KEY = "content";
-    private static final String LINK_RESOURCE_KEY = "link";
-    private static final String WISH_RESOURCE_KEY = "wish";
-    private static final String SIGNATURE_RESOURCE_KEY = "signature";
     private static final String RECIPIENT_LOCALE = "locale";
     private static final String NO_ARGS = "noArgs";
     private static final String PASSWORD_RECOVERY_TEMPLATE = "passwordRecovery.vm";
@@ -108,13 +103,6 @@ public class MailService {
         model.put(NAME, name);
         model.put("newPassword", newPassword);
         model.put(URL, url);
-        model.put(MESSAGE_SOURCE, messageSource);
-        model.put(GREETING_RESOURCE_KEY, GREETING_RESOURCE_KEY);
-        model.put("contentPart1", "passwordRecovery.content.part1");
-        model.put("contentPart2", "passwordRecovery.content.part2");
-        model.put(LINK_RESOURCE_KEY, "passwordRecovery.link");
-        model.put(WISH_RESOURCE_KEY, WISH_RESOURCE_KEY);
-        model.put(SIGNATURE_RESOURCE_KEY, SIGNATURE_RESOURCE_KEY);
         model.put(RECIPIENT_LOCALE, user.getLanguage().getLocale());
         this.sendEmail(user.getEmail(), "Password recovery", model, PASSWORD_RECOVERY_TEMPLATE);
         LOGGER.info("Password recovery email sent for {}", name);
@@ -134,12 +122,6 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(USER, user);
             model.put(URL, url);
-            model.put(MESSAGE_SOURCE, messageSource);
-            model.put(GREETING_RESOURCE_KEY, GREETING_RESOURCE_KEY);
-            model.put(CONTENT_RESOURCE_KEY, "subscriptionNotification.content");
-            model.put(LINK_RESOURCE_KEY, "subscriptionNotification.link");
-            model.put(WISH_RESOURCE_KEY, WISH_RESOURCE_KEY);
-            model.put(SIGNATURE_RESOURCE_KEY, SIGNATURE_RESOURCE_KEY);
             model.put(RECIPIENT_LOCALE, user.getLanguage().getLocale());
             this.sendEmail(user.getEmail(), "Forum updates", model, SUBSCRIPTION_NOTIFICATION_TEMPLATE);
         } catch (MailingFailedException e) {
@@ -161,12 +143,6 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(USER, user);
             model.put(URL, url);
-            model.put(MESSAGE_SOURCE, messageSource);
-            model.put(GREETING_RESOURCE_KEY, GREETING_RESOURCE_KEY);
-            model.put(CONTENT_RESOURCE_KEY, "subscriptionNotification.content");
-            model.put(LINK_RESOURCE_KEY, "subscriptionNotification.link");
-            model.put(WISH_RESOURCE_KEY, WISH_RESOURCE_KEY);
-            model.put(SIGNATURE_RESOURCE_KEY, SIGNATURE_RESOURCE_KEY);
             model.put(RECIPIENT_LOCALE, user.getLanguage().getLocale());
             this.sendEmail(user.getEmail(), "Forum updates", model, SUBSCRIPTION_NOTIFICATION_TEMPLATE);
         } catch (MailingFailedException e) {
@@ -186,12 +162,6 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put("recipient", recipient);
             model.put(URL, url);
-            model.put(MESSAGE_SOURCE, messageSource);
-            model.put(GREETING_RESOURCE_KEY, GREETING_RESOURCE_KEY);
-            model.put(CONTENT_RESOURCE_KEY, "receivedPrivateMessageNotification.content");
-            model.put(LINK_RESOURCE_KEY, "receivedPrivateMessageNotification.link");
-            model.put(WISH_RESOURCE_KEY, WISH_RESOURCE_KEY);
-            model.put(SIGNATURE_RESOURCE_KEY, SIGNATURE_RESOURCE_KEY);
             model.put(RECIPIENT_LOCALE, recipient.getLanguage().getLocale());
             model.put("title", pm.getTitle());
             model.put("message", bbCodeService.removeBBCodes(pm.getBody()));
@@ -212,14 +182,6 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(NAME, recipient.getUsername());
             model.put(URL, url);
-            model.put(MESSAGE_SOURCE, messageSource);
-            model.put(GREETING_RESOURCE_KEY, GREETING_RESOURCE_KEY);
-            model.put("contentPart1", "accountActivation.content.part1");
-            model.put("contentPart2", "accountActivation.content.part2");
-            model.put("contentPart3", "accountActivation.content.part3");
-            model.put(LINK_RESOURCE_KEY, "accountActivation.link");
-            model.put(WISH_RESOURCE_KEY, WISH_RESOURCE_KEY);
-            model.put(SIGNATURE_RESOURCE_KEY, SIGNATURE_RESOURCE_KEY);
             model.put(RECIPIENT_LOCALE, recipient.getLanguage().getLocale());
             this.sendEmail(recipient.getEmail(), "JTalks account activation", model, ACCOUNT_ACTIVATION_TEMPLATE);
         } catch (MailingFailedException e) {
@@ -240,9 +202,10 @@ public class MailService {
     private void sendEmail(String to, String subject, Map<String, Object> model, String templateName) throws
             MailingFailedException {
         try {
+            model.put(MESSAGE_SOURCE, messageSource);
+            model.put(NO_ARGS, new Object[]{});
             String plainText = this.mergePlainTextTemplate(templateName, model);
             String htmlText = this.mergeHtmlTemplate(templateName, model);
-            model.put(NO_ARGS, new Object[]{});
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setTo(to);
