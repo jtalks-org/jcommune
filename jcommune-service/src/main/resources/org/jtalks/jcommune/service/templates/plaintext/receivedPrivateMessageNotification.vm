@@ -18,7 +18,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ${messageSource.getMessage("greeting", $noArgs, $locale)} ${recipient.username}!
 
 ${messageSource.getMessage("receivedPrivateMessageNotification.content", $noArgs, $locale)}
-${messageSource.getMessage("receivedPrivateMessageNotification.link", $noArgs, $locale)} ${url}
+${messageSource.getMessage("receivedPrivateMessageNotification.link", $noArgs, $locale)} ${link}
 
 ${title}
 ${message}
