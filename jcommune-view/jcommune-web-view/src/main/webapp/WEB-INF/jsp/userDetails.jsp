@@ -29,7 +29,7 @@
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jqery.impromptu.js"
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/json2.js"
-                type="text/javascript"></script>
+            type="text/javascript"></script>
 
     <script type="text/javascript">
         var basePath = "${pageContext.request.contextPath}";
@@ -82,15 +82,15 @@
                             <span><spring:message code="${language.languageNameLabel}"/></span>
                         </li>
                         <li class="forum_row">
-                            <label><spring:message code="label.location"/></label>
-                            <span><c:out value="${user.location}"/></span>
-                        </li>
-                        <li class="forum_row">
                             <label><spring:message code="label.pageSize"/></label>
                             <span><c:out value="${pageSize}"/></span>
                         </li>
                     </c:when>
                 </c:choose>
+                <li class="forum_row">
+                    <label><spring:message code="label.location"/></label>
+                    <span><c:out value="${user.location}"/></span>
+                </li>
                 <li class="forum_row">
                     <label><spring:message code="label.lastlogin"/></label>
                     <span><jtalks:format value="${user.lastLogin}"/></span>
@@ -116,19 +116,20 @@
             <label><spring:message code="label.contacts.header"/></label>
 
             <div id="contacts">
-            <c:forEach var="contact" items="${user.contacts}" >
-                <div class="contact">
-                    <label><img src="${pageContext.request.contextPath}${contact.type.icon}" alt=""><c:out value="${contact.type.typeName}"/></label>
-                    <span><c:out value="${contact.value}"/></span>
-                    <input type="hidden" value="${contact.id}"/>
-                    <a class="button" href="#">
-                        <spring:message code="label.contacts.delete"/>
-                    </a>
-                </div>
-            </c:forEach>
+                <c:forEach var="contact" items="${user.contacts}">
+                    <div class="contact">
+                        <label><img src="${pageContext.request.contextPath}${contact.type.icon}" alt=""><c:out
+                                value="${contact.type.typeName}"/></label>
+                        <span><c:out value="${contact.value}"/></span>
+                        <input type="hidden" value="${contact.id}"/>
+                        <a class="button" href="#">
+                            <spring:message code="label.contacts.delete"/>
+                        </a>
+                    </div>
+                </c:forEach>
             </div>
             <a class="button" id="add_contact" href="#">
-                 <spring:message code="label.contacts.addMore"/>
+                <spring:message code="label.contacts.addMore"/>
             </a>
 
             <div class="form_controls">
