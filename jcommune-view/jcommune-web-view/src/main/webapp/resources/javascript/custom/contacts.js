@@ -21,7 +21,7 @@
 /**
  * Application base path with trailing slash. Must be defined somewhere within the global scope.
  */
-var baseUrl = basePath;
+var baseUrl = $root;
 
 /**
  * Binds click handler for "X" buttons (delete contact)

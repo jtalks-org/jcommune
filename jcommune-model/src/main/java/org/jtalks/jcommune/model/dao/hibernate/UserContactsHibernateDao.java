@@ -26,7 +26,8 @@ import java.util.List;
  *
  * @author Evgeniy Naumenko
  */
-public class UserContactsHibernateDao extends AbstractHibernateChildRepository<UserContactType> implements UserContactsDao {
+public class UserContactsHibernateDao extends AbstractHibernateChildRepository<UserContactType>
+        implements UserContactsDao {
 
 
 

@@ -59,11 +59,6 @@ public class MailService {
     private static final String USER = "user";
     private static final String NAME = "name";
     private static final String MESSAGE_SOURCE = "messageSource";
-    private static final String GREETING_RESOURCE_KEY = "greeting";
-    private static final String CONTENT_RESOURCE_KEY = "content";
-    private static final String LINK_RESOURCE_KEY = "link";
-    private static final String WISH_RESOURCE_KEY = "wish";
-    private static final String SIGNATURE_RESOURCE_KEY = "signature";
     private static final String RECIPIENT_LOCALE = "locale";
     private static final String NO_ARGS = "noArgs";
     private static final String PASSWORD_RECOVERY_TEMPLATE = "passwordRecovery.vm";
@@ -108,18 +103,8 @@ public class MailService {
         model.put(NAME, name);
         model.put("newPassword", newPassword);
         model.put(URL, url);
-        model.put(MESSAGE_SOURCE, messageSource);
-        model.put(GREETING_RESOURCE_KEY, GREETING_RESOURCE_KEY);
-        model.put("contentPart1", "passwordRecovery.content.part1");
-        model.put("contentPart2", "passwordRecovery.content.part2");
-        model.put(LINK_RESOURCE_KEY, "passwordRecovery.link");
-        model.put(WISH_RESOURCE_KEY, WISH_RESOURCE_KEY);
-        model.put(SIGNATURE_RESOURCE_KEY, SIGNATURE_RESOURCE_KEY);
-        model.put(NO_ARGS, new Object[]{});
         model.put(RECIPIENT_LOCALE, user.getLanguage().getLocale());
-        String plainText = this.mergePlainTextTemplate(PASSWORD_RECOVERY_TEMPLATE, model);
-        String htmlText = this.mergeHtmlTemplate(PASSWORD_RECOVERY_TEMPLATE, model);
-        this.sendEmail(user.getEmail(), "Password recovery", plainText, htmlText);
+        this.sendEmail(user.getEmail(), "Password recovery", model, PASSWORD_RECOVERY_TEMPLATE);
         LOGGER.info("Password recovery email sent for {}", name);
     }
 
@@ -137,17 +122,8 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(USER, user);
             model.put(URL, url);
-            model.put(MESSAGE_SOURCE, messageSource);
-            model.put(GREETING_RESOURCE_KEY, GREETING_RESOURCE_KEY);
-            model.put(CONTENT_RESOURCE_KEY, "subscriptionNotification.content");
-            model.put(LINK_RESOURCE_KEY, "subscriptionNotification.link");
-            model.put(WISH_RESOURCE_KEY, WISH_RESOURCE_KEY);
-            model.put(SIGNATURE_RESOURCE_KEY, SIGNATURE_RESOURCE_KEY);
-            model.put(NO_ARGS, new Object[]{});
             model.put(RECIPIENT_LOCALE, user.getLanguage().getLocale());
-            String plainText = this.mergePlainTextTemplate(SUBSCRIPTION_NOTIFICATION_TEMPLATE, model);
-            String htmlText = this.mergeHtmlTemplate(SUBSCRIPTION_NOTIFICATION_TEMPLATE, model);
-            this.sendEmail(user.getEmail(), "Forum updates", plainText, htmlText);
+            this.sendEmail(user.getEmail(), "Forum updates", model, SUBSCRIPTION_NOTIFICATION_TEMPLATE);
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Topic", topic.getId(), user.getUsername()));
         }
@@ -167,17 +143,8 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(USER, user);
             model.put(URL, url);
-            model.put(MESSAGE_SOURCE, messageSource);
-            model.put(GREETING_RESOURCE_KEY, GREETING_RESOURCE_KEY);
-            model.put(CONTENT_RESOURCE_KEY, "subscriptionNotification.content");
-            model.put(LINK_RESOURCE_KEY, "subscriptionNotification.link");
-            model.put(WISH_RESOURCE_KEY, WISH_RESOURCE_KEY);
-            model.put(SIGNATURE_RESOURCE_KEY, SIGNATURE_RESOURCE_KEY);
-            model.put(NO_ARGS, new Object[]{});
             model.put(RECIPIENT_LOCALE, user.getLanguage().getLocale());
-            String plainText = this.mergePlainTextTemplate(SUBSCRIPTION_NOTIFICATION_TEMPLATE, model);
-            String htmlText = this.mergeHtmlTemplate(SUBSCRIPTION_NOTIFICATION_TEMPLATE, model);
-            this.sendEmail(user.getEmail(), "Forum updates", plainText, htmlText);
+            this.sendEmail(user.getEmail(), "Forum updates", model, SUBSCRIPTION_NOTIFICATION_TEMPLATE);
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Branch", branch.getId(), user.getUsername()));
         }
@@ -195,19 +162,10 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put("recipient", recipient);
             model.put(URL, url);
-            model.put(MESSAGE_SOURCE, messageSource);
-            model.put(GREETING_RESOURCE_KEY, GREETING_RESOURCE_KEY);
-            model.put(CONTENT_RESOURCE_KEY, "receivedPrivateMessageNotification.content");
-            model.put(LINK_RESOURCE_KEY, "receivedPrivateMessageNotification.link");
-            model.put(WISH_RESOURCE_KEY, WISH_RESOURCE_KEY);
-            model.put(SIGNATURE_RESOURCE_KEY, SIGNATURE_RESOURCE_KEY);
-            model.put(NO_ARGS, new Object[]{});
             model.put(RECIPIENT_LOCALE, recipient.getLanguage().getLocale());
             model.put("title", pm.getTitle());
             model.put("message", bbCodeService.removeBBCodes(pm.getBody()));
-            String plainText = this.mergePlainTextTemplate(RECEIVED_PM_NOTIFICATION_TEMPLATE, model);
-            String htmlText = this.mergeHtmlTemplate(RECEIVED_PM_NOTIFICATION_TEMPLATE, model);
-            this.sendEmail(recipient.getEmail(), "Received private message", plainText, htmlText);
+            this.sendEmail(recipient.getEmail(), "Received private message", model, RECEIVED_PM_NOTIFICATION_TEMPLATE);
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Private message", pm.getId(), recipient.getUsername()));
         }
@@ -224,19 +182,8 @@ public class MailService {
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(NAME, recipient.getUsername());
             model.put(URL, url);
-            model.put(MESSAGE_SOURCE, messageSource);
-            model.put(GREETING_RESOURCE_KEY, GREETING_RESOURCE_KEY);
-            model.put("contentPart1", "accountActivation.content.part1");
-            model.put("contentPart2", "accountActivation.content.part2");
-            model.put("contentPart3", "accountActivation.content.part3");
-            model.put(LINK_RESOURCE_KEY, "accountActivation.link");
-            model.put(WISH_RESOURCE_KEY, WISH_RESOURCE_KEY);
-            model.put(SIGNATURE_RESOURCE_KEY, SIGNATURE_RESOURCE_KEY);
-            model.put(NO_ARGS, new Object[]{});
             model.put(RECIPIENT_LOCALE, recipient.getLanguage().getLocale());
-            String plainText = this.mergePlainTextTemplate(ACCOUNT_ACTIVATION_TEMPLATE, model);
-            String htmlText = this.mergeHtmlTemplate(ACCOUNT_ACTIVATION_TEMPLATE, model);
-            this.sendEmail(recipient.getEmail(), "JTalks account activation", plainText, htmlText);
+            this.sendEmail(recipient.getEmail(), "JTalks account activation", model, ACCOUNT_ACTIVATION_TEMPLATE);
         } catch (MailingFailedException e) {
             LOGGER.error("Failed to sent activation mail for user: " + recipient.getUsername());
         }
@@ -246,14 +193,19 @@ public class MailService {
      * Just a convenience method for message sending to encapsulate
      * boilerplate error handling code.
      *
-     * @param to        destination email address
-     * @param subject   message headline
-     * @param plainText plaintext message body
-     * @param htmlText  html message body
+     * @param to           destination email address
+     * @param subject      message headline
+     * @param model        template params to be substituted in velocity template
+     * @param templateName template file name, like "template.vm"
      * @throws MailingFailedException exception with error message specified ic case of some error
      */
-    private void sendEmail(String to, String subject, String plainText, String htmlText) throws MailingFailedException {
+    private void sendEmail(String to, String subject, Map<String, Object> model, String templateName) throws
+            MailingFailedException {
         try {
+            model.put(MESSAGE_SOURCE, messageSource);
+            model.put(NO_ARGS, new Object[]{});
+            String plainText = this.mergePlainTextTemplate(templateName, model);
+            String htmlText = this.mergeHtmlTemplate(templateName, model);
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setTo(to);

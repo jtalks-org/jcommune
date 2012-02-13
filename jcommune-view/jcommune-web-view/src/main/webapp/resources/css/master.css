@@ -197,7 +197,7 @@ a.heading:hover {
 .forum_header_generic {
     display: table-cell;
     min-width: 90px;
-    padding: 0 5px 0 0;
+    padding: 0;
     vertical-align: middle;
     text-align: center;
     font-size: 11px;
@@ -205,6 +205,7 @@ a.heading:hover {
 
 .forum_header_last_message {
     min-width: 130px;
+    padding-right: 3px;
 }
 
 .forum_header_icon {
@@ -298,7 +299,7 @@ a.heading:hover {
 .userdetails_page li label,
 .userdetails_page li span {
     display: table-cell;
-    padding: 0 5px 0 0;
+    padding: 0;
     border-bottom: 1px solid #b2b2b2;
     vertical-align: middle;
     text-align: center;
@@ -338,7 +339,6 @@ a.moderator {
 
 .forum_last_message {
     width: 130px;
-    padding: 0 3px 0 0;
 }
 
 a.last_message_user {

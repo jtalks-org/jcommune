@@ -22,16 +22,16 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     <link rel="stylesheet" type="text/css" href="cid:css"/>
 </head>
 <body>
-<p>${messageSource.getMessage($greeting, $noArgs, $locale)} ${recipient.username}!</p>
+<p>${messageSource.getMessage("greeting", $noArgs, $locale)} ${recipient.username}!</p>
 <br>
-<p>${messageSource.getMessage($content, $noArgs, $locale)}<br>
-${messageSource.getMessage($link, $noArgs, $locale)} <a href="${url}">${url}</a>.</p>
+<p>${messageSource.getMessage("receivedPrivateMessageNotification.content", $noArgs, $locale)}<br>
+${messageSource.getMessage("receivedPrivateMessageNotification.link", $noArgs, $locale)} <a href="${url}">${url}</a>.</p>
 <br><hr><br>
 <h2>${title}</h2>
 ${message}
 <br><hr><br>
-<p>${messageSource.getMessage($wish, $noArgs, $locale)}</p>
+<p>${messageSource.getMessage("wish", $noArgs, $locale)}</p>
 <br>
-<p>${messageSource.getMessage($signature, $noArgs, $locale)}</p>
+<p>${messageSource.getMessage("signature", $noArgs, $locale)}</p>
 </body>
 </html>
