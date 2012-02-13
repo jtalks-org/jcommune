@@ -35,6 +35,7 @@ public class TransactionalUserContactsService
         extends AbstractTransactionalEntityService<UserContactType, UserContactsDao> implements UserContactsService {
 
     private SecurityService securityService;
+    private UserDao userDao;
 
     /**
      * Create an instance of User entity based service
@@ -42,8 +43,9 @@ public class TransactionalUserContactsService
      * @param dao             for operations with data storage
      * @param securityService for security
      */
-    public TransactionalUserContactsService(UserContactsDao dao, SecurityService securityService) {
+    public TransactionalUserContactsService(UserContactsDao dao, UserDao userDao, SecurityService securityService) {
         super(dao);
+        this.userDao = userDao;
         this.securityService = securityService;
     }
 
@@ -57,12 +59,12 @@ public class TransactionalUserContactsService
     /**
      * {@inheritDoc}
      */
-    public UserContact addContact(UserContact userContact) {
+    public UserContact addContact(UserContact userContact) throws NotFoundException {
         JCUser user = securityService.getCurrentUser();
 
-        UserContactType type = userContact.getType();
+        //explicitly getting UserContactType because we need to populate it with data before returning
+        UserContactType type = get(userContact.getType().getId());
         UserContact contact = new UserContact(userContact.getValue(), type);
-
         user.addContact(contact);
         return contact;
     }

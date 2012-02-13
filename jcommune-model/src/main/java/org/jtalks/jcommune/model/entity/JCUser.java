@@ -178,10 +178,17 @@ public class JCUser extends User {
     }
 
     /**
+     * @return read-only user contacts collection
+     */
+    public Set<UserContact> getUserContacts() {
+        return UnmodifiableSet.decorate(contacts);
+    }
+
+    /**
      * @return set contacts of user
      */
-    public Set<UserContact> getContacts() {
-        return UnmodifiableSet.decorate(contacts);
+    protected Set<UserContact> getContacts() {
+        return contacts;
     }
 
     /**

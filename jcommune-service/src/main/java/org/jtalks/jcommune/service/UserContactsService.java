@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 import java.util.List;
 
@@ -39,7 +40,7 @@ public interface UserContactsService extends EntityService<UserContactType> {
      * @param contact user contact to be added
      * @return saved user contact entity
      */
-    UserContact addContact(UserContact contact);
+    UserContact addContact(UserContact contact) throws NotFoundException;
 
     /**
      * Removes contact from contacts of current user.

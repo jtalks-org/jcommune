@@ -82,4 +82,13 @@ public class UserContactType extends Entity {
         UserContactType other = (UserContactType) obj;
         return (getId() == other.getId());
     }
+    
+    /**
+     * {@inheritDoc }
+     * We need this override because AJAX calls operate with ids, not uuids.
+     */
+    @Override
+    public int hashCode() {
+        return new Long(getId()).hashCode();
+    }
 }

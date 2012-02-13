@@ -76,6 +76,7 @@
   <bean id="userContactsService"
         class="org.jtalks.jcommune.service.transactional.TransactionalUserContactsService">
     <constructor-arg ref="userContactsDao"/>
+    <constructor-arg ref="userDao"/>
     <constructor-arg ref="securityService"/>
   </bean>
 

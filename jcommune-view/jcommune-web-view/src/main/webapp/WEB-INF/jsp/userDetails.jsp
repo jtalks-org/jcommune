@@ -116,20 +116,24 @@
             <label><spring:message code="label.contacts.header"/></label>
 
             <div id="contacts">
-            <c:forEach var="contact" items="${user.contacts}" >
+            <c:forEach var="contact" items="${user.userContacts}" >
                 <div class="contact">
                     <label><img src="${pageContext.request.contextPath}${contact.type.icon}" alt=""><c:out value="${contact.type.typeName}"/></label>
                     <span><c:out value="${contact.value}"/></span>
-                    <input type="hidden" value="${contact.id}"/>
-                    <a class="button" href="#">
-                        <spring:message code="label.contacts.delete"/>
-                    </a>
+                    <c:if test="${user.username == auth}">
+                        <input type="hidden" value="${contact.id}"/>
+                        <a class="button" href="#">
+                            <spring:message code="label.contacts.delete"/>
+                        </a>
+                    </c:if>
                 </div>
             </c:forEach>
             </div>
-            <a class="button" id="add_contact" href="#">
-                 <spring:message code="label.contacts.addMore"/>
-            </a>
+            <c:if test="${user.username == auth}">
+                <a class="button" id="add_contact" href="#">
+                     <spring:message code="label.contacts.addMore"/>
+                </a>
+            </c:if>
 
             <div class="form_controls">
                 <c:if test="${user.username == auth}">
