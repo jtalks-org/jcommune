@@ -17,10 +17,17 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
 import org.jtalks.jcommune.service.UserContactsService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.UserContactDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.List;
 
 /**
  * This controller handles creation and deletion of user contacts.
@@ -46,16 +53,20 @@ public class UserContactsController {
      * @return contact types
      */
     @RequestMapping(value="/contacts/types", method = RequestMethod.GET)
-    public @ResponseBody UserContactType[] getContactTypes() {
-       return service.getAvailableContactTypes().toArray(new UserContactType[0]);
+    @ResponseBody
+    public UserContactType[] getContactTypes() {
+        List<UserContactType> types = service.getAvailableContactTypes();
+        return types.toArray(new UserContactType[types.size()]);
     }
 
     /**
      * Handles creation of new contact for current user.
      * @param userContact user contact information
+     * @return saved user contact (with updated id)
+     * @throws NotFoundException
      */
     @RequestMapping(value="/contacts/add", method = RequestMethod.POST)
-    public @ResponseBody UserContactDto addContact(@RequestBody UserContact userContact) {
+    @ResponseBody public UserContactDto addContact(@RequestBody UserContact userContact) throws NotFoundException {
         return UserContactDto.getDtoFor(service.addContact(userContact));
     }
 

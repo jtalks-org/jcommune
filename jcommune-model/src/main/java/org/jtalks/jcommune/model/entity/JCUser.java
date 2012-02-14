@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import org.apache.commons.collections.set.UnmodifiableSet;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.User;
 
@@ -77,7 +78,7 @@ public class JCUser extends User {
     }
 
     /**
-     * @param contact
+     * @param contact user contact
      */
     public void addContact(UserContact contact) {
         contact.setOwner(this);
@@ -85,7 +86,7 @@ public class JCUser extends User {
     }
 
     /**
-     * @param contact
+     * @param contact user contact
      */
     public void removeContact(UserContact contact) {
         this.getContacts().remove(contact);
@@ -177,9 +178,16 @@ public class JCUser extends User {
     }
 
     /**
+     * @return read-only user contacts collection
+     */
+    public Set<UserContact> getUserContacts() {
+        return UnmodifiableSet.decorate(contacts);
+    }
+
+    /**
      * @return set contacts of user
      */
-    public Set<UserContact> getContacts() {
+    protected Set<UserContact> getContacts() {
         return contacts;
     }
 

@@ -27,14 +27,14 @@ import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import java.util.List;
 
 /**
- * User service class. This class contains method needed to manipulate with User persistent entity.
+ * User contacts service class. This class contains method needed to manipulate with UserContactTypes persistent entity.
  *
  * @author Michael Gamov
  */
-public class TransactionalUserContactsService extends AbstractTransactionalEntityService<UserContactType, UserContactsDao> implements UserContactsService {
+public class TransactionalUserContactsService
+        extends AbstractTransactionalEntityService<UserContactType, UserContactsDao> implements UserContactsService {
 
     private SecurityService securityService;
-    private UserDao userDao;
 
     /**
      * Create an instance of User entity based service
@@ -57,15 +57,11 @@ public class TransactionalUserContactsService extends AbstractTransactionalEntit
     /**
      * {@inheritDoc}
      */
-    public UserContact addContact(UserContact userContact) {
+    public UserContact addContact(UserContact userContact) throws NotFoundException {
         JCUser user = securityService.getCurrentUser();
 
-        UserContactType type = null;
-        try {
-            type = get(userContact.getType().getId());
-        } catch(NotFoundException e) {
-
-        }
+        //explicitly getting UserContactType because we need to populate it with data before returning
+        UserContactType type = get(userContact.getType().getId());
         UserContact contact = new UserContact(userContact.getValue(), type);
         user.addContact(contact);
         return contact;
@@ -76,12 +72,8 @@ public class TransactionalUserContactsService extends AbstractTransactionalEntit
     */
     public void removeContact(Long userContactId) {
         JCUser user = securityService.getCurrentUser();
-        for (UserContact contact: user.getContacts()) {
-            if (contact.getId() == userContactId) {
-                user.removeContact(contact);
-                break;
-            }
-        }
+        UserContact contact = new UserContact(null, null);
+        contact.setId(userContactId);
+        user.removeContact(contact);
     }
-
 }

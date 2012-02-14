@@ -20,6 +20,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
 import org.jtalks.jcommune.service.UserContactsService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
@@ -74,24 +75,38 @@ public class TransactionalUserContactsServiceTest {
     }
     
     @Test
-    public void testAddContact() {
+    public void testAddContact() throws NotFoundException {
         UserContactType type = createUserContactType();
         UserContact contact = new UserContact(CONTACT, type);
-                   
+        
+        when(userContactsDao.isExist(type.getId())).thenReturn(true);
+        when(userContactsDao.get(type.getId())).thenReturn(type);
+        
         UserContact addedContact = userContactsService.addContact(contact);
         assertEquals(contact.getValue(), CONTACT);
         assertEquals(contact.getType(), type);
     }
     
     @Test
-    public void testRemoveContact() {
+    public void testRemoveUnfamiliarContact() {
         UserContact userContact = new UserContact(CONTACT, createUserContactType());
         userContact.setId(1L);
         user.addContact(userContact);        
         
-        userContactsService.removeContact(1L);
-        assertEquals(user.getContacts().size(), 0);
+        userContactsService.removeContact(2L);
+        assertEquals(user.getUserContacts().size(), 1);
     }
+
+    @Test
+    public void testRemoveContact() {
+        UserContact userContact = new UserContact(CONTACT, createUserContactType());
+        userContact.setId(1L);
+        user.addContact(userContact);
+
+        userContactsService.removeContact(1L);
+        assertEquals(user.getUserContacts().size(), 0);
+    }
+
     
     private static UserContactType createUserContactType() {
         UserContactType userContactType = new UserContactType();

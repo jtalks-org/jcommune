@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.hibernate.SessionFactory;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.jcommune.model.dao.UserContactsDao;
 import org.jtalks.jcommune.model.entity.UserContactType;
@@ -26,7 +25,8 @@ import java.util.List;
  *
  * @author Evgeniy Naumenko
  */
-public class UserContactsHibernateDao extends AbstractHibernateChildRepository<UserContactType> implements UserContactsDao {
+public class UserContactsHibernateDao extends AbstractHibernateChildRepository<UserContactType>
+        implements UserContactsDao {
 
 
 
