@@ -85,7 +85,7 @@
         </ul>
         <br/>
         <c:if test="${!(empty viewList)}">
-            <spring:message code="label.topic.now_browsing"/>
+            <spring:message code="label.section.now_browsing"/>
         </c:if>
         <c:forEach var="innerUser" items="${viewList}">
             <a href="${pageContext.request.contextPath}/users/${innerUser.encodedUsername}">
