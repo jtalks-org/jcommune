@@ -145,7 +145,8 @@ a.heading:hover {
 
 /*Forum Header */
 .forum_header_table {
-    z-index: 2;
+    z-index: 3;
+    clear: both;
     position: relative;
     display: table;
     table-layout: fixed;
@@ -196,7 +197,7 @@ a.heading:hover {
 .forum_header_generic {
     display: table-cell;
     min-width: 90px;
-    padding: 0 5px 0 0;
+    padding: 0;
     vertical-align: middle;
     text-align: center;
     font-size: 11px;
@@ -204,6 +205,7 @@ a.heading:hover {
 
 .forum_header_last_message {
     min-width: 130px;
+    padding-right: 3px;
 }
 
 .forum_header_icon {
@@ -251,11 +253,20 @@ a.heading:hover {
     padding-top: 5px;
 }
 
+.forum_table {
+    position: relative;
+    z-index: 2;
+}
+
 /* Forum Row*/
 .forum_row {
     display: table-row;
     min-width: 100%;
     background: #c6c6c6;
+}
+
+.topic_page .forum_row {
+    height: 180px;
 }
 
 .forum_row:nth-child(even) {
@@ -288,7 +299,7 @@ a.heading:hover {
 .userdetails_page li label,
 .userdetails_page li span {
     display: table-cell;
-    padding: 0 5px 0 0;
+    padding: 0;
     border-bottom: 1px solid #b2b2b2;
     vertical-align: middle;
     text-align: center;
@@ -328,7 +339,6 @@ a.moderator {
 
 .forum_last_message {
     width: 130px;
-    padding: 0 3px 0 0;
 }
 
 a.last_message_user {
@@ -738,9 +748,9 @@ a.admin, a.user {
     color: black;
     font-size: 1.1em;
     font-weight: bold;
-    margin: 0 5px 10px;
+    margin: 10px 5px 0 0;
     float: left;
-    background: white;
+    background: #c6c6c6;
     min-width: 12px;
     height: 12px;
     line-height: 12px;
@@ -750,14 +760,28 @@ a.admin, a.user {
     -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
     -moz-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
     box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
+    -webkit-border-radius: 2px 2px 0 0;
+    -moz-border-radius: 2px 2px 0 0;
+    border-radius: 2px 2px 0 0;
+}
+
+.topic_page .page {
+    margin: 14px 5px 0 0;
 }
 
 span.page {
-    background: #c6c6c6;
+    background: white;
 }
 
 a.page:hover {
-    background: #c6c6c6;
+    background: #E6E6E6;
+}
+
+.nav_bottom .page {
+    margin: -10px 5px 0 0;
+    -webkit-border-radius: 0px 0px 2px 2px;
+    -moz-border-radius: 0 0 2px 2px;
+    border-radius: 0 0 2px 2px;
 }
 
 /* Various error pages (404, 500 and so on) */
@@ -793,6 +817,67 @@ a.page:hover {
     color: #FF0000;
 }
 
-.break_word{
+.break_word {
     word-wrap: break-word;
+}
+
+/*Breadcrumbs*/
+
+.breadcrumbs {
+    display: inline-block;
+    position: relative;
+    top: 5px;
+}
+
+.breadcrumbs li {
+    float: left;
+    margin-right: 15px;
+}
+
+.breadcrumbs a {
+    background: #ddd;
+    padding: 3px;
+    float: left;
+    text-decoration: none;
+    color: #444;
+    font-size: 10px;
+    position: relative;
+}
+
+.breadcrumbs a:hover {
+    background-color: #EFEFEF;
+}
+
+.breadcrumbs a::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    margin-top: -9px;
+    border-width: 9px 0 10px 10px;
+    border-style: solid;
+    border-color: #ddd #ddd #ddd transparent;
+    left: -10px;
+}
+
+.breadcrumbs a:hover::before {
+    border-color: #EFEFEF #EFEFEF #EFEFEF transparent;
+}
+
+.breadcrumbs a::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    margin-top: -9px;
+    border-top: 9px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 10px solid #ddd;
+    right: -10px;
+}
+
+.breadcrumbs a:hover::after {
+    border-left-color: #EFEFEF;
+}
+
+a.bc_first::before {
+    display: none;
 }

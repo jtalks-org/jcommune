@@ -89,11 +89,15 @@ public class FormattedDate extends FormatTag {
      */
     @Override
     public void setValue(Object value) throws JspTagException {
-        DateTime time = (DateTime) value;
-        DateTimeZone zone = time.getZone();
-        long utcTime = zone.convertLocalToUTC(time.getMillis(), true);
-        time = new DateTime(utcTime + offset);
-        super.setValue(time);
+        if (value != null) {
+            DateTime time = (DateTime) value;
+            DateTimeZone zone = time.getZone();
+            long utcTime = zone.convertLocalToUTC(time.getMillis(), true);
+            time = new DateTime(utcTime + offset);
+            super.setValue(time);
+        } else {
+            super.setValue(null);
+        }
     }
 
     /**

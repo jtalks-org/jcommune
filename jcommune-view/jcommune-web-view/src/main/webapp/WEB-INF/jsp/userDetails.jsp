@@ -21,6 +21,10 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <head>
     <title><spring:message code="label.user"/> - ${user.username}</title>
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/json2.js"
+            type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/contacts.js"
+            type="text/javascript"></script>
 </head>
 <body>
 <div class="wrap userdetails_page">
@@ -43,11 +47,11 @@
                 </li>
                 <li class="forum_row">
                     <label><spring:message code="label.firstname"/></label>
-                    <span><c:out value="${user.firstName}"/></span>
+                    <span class="break_word"><c:out value="${user.firstName}"/></span>
                 </li>
                 <li class="forum_row">
                     <label><spring:message code="label.lastname"/></label>
-                    <span><c:out value="${user.lastName}"/></span>
+                    <span class="break_word"><c:out value="${user.lastName}"/></span>
                 </li>
                 <c:if test="${user.signature != null}">
                     <li class="forum_row">
@@ -67,15 +71,15 @@
                             <span><spring:message code="${language.languageNameLabel}"/></span>
                         </li>
                         <li class="forum_row">
-                            <label><spring:message code="label.location"/></label>
-                            <span><c:out value="${user.location}"/></span>
-                        </li>
-                        <li class="forum_row">
                             <label><spring:message code="label.pageSize"/></label>
                             <span><c:out value="${pageSize}"/></span>
                         </li>
                     </c:when>
                 </c:choose>
+                <li class="forum_row">
+                    <label><spring:message code="label.location"/></label>
+                    <span><c:out value="${user.location}"/></span>
+                </li>
                 <li class="forum_row">
                     <label><spring:message code="label.lastlogin"/></label>
                     <span><jtalks:format value="${user.lastLogin}"/></span>
@@ -96,13 +100,30 @@
                     <label><spring:message code="label.postcount"/></label>
                     <span><c:out value="${user.postCount}"/></span>
                 </li>
-                <%--<c:forEach var="contact" items="${user.contacts}">
-                    <li class="forum_row">
-                        <label><img src="${contact.type.icon}" alt=""><c:out value="${contact.type.typeName}"/></label>
-                        <span><c:out value="${contact.value}"/></span>
-                    </li>
-                </c:forEach>--%>
             </ul>
+
+            <label><spring:message code="label.contacts.header"/></label>
+
+            <div id="contacts">
+            <c:forEach var="contact" items="${user.userContacts}" >
+                <div class="contact">
+                    <label><img src="${pageContext.request.contextPath}${contact.type.icon}" alt=""><c:out value="${contact.type.typeName}"/></label>
+                    <span><c:out value="${contact.value}"/></span>
+                    <c:if test="${user.username == auth}">
+                        <input type="hidden" value="${contact.id}"/>
+                        <a class="button" href="#">
+                            <spring:message code="label.contacts.delete"/>
+                        </a>
+                    </c:if>
+                </div>
+            </c:forEach>
+            </div>
+            <c:if test="${user.username == auth}">
+                <a class="button" id="add_contact" href="#">
+                     <spring:message code="label.contacts.addMore"/>
+                </a>
+            </c:if>
+
             <div class="form_controls">
                 <c:if test="${user.username == auth}">
                     <a class="button" href="${pageContext.request.contextPath}/users/edit">

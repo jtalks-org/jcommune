@@ -94,6 +94,13 @@ public final class ObjectsFactory {
                 "Message title", "Private message body");
     }
 
+    public static UserContactType getDefaultUserContactType() {
+        UserContactType type = new UserContactType();
+        type.setTypeName("Some type");
+        type.setIcon("/some/icon");
+        return type;
+    }
+
     private static <T> T persist(T entity) {
         session.save(entity);
         return entity;

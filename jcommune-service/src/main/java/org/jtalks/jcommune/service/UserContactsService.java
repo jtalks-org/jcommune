@@ -12,21 +12,20 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao;
+package org.jtalks.jcommune.service;
 
-import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 import java.util.List;
 
 /**
- * Inteneded to perform various operations on user contacts and contact types.
- * Please note, that there is no need to explicitly store/delete contacts, just
- * add/remove them to/from User's collection.
- *
- * @author Evgeniy Naumenko
+  * This interface should have methods which give us more abilities in manipulating UserContactType persistent entity.
+  *
+  * @author Michael Gamov
  */
-public interface UserContactsDao extends ChildRepository<UserContactType> {
+public interface UserContactsService extends EntityService<UserContactType> {
 
     /**
      * Returns a list of contact types permitted in the current configuration.
@@ -35,4 +34,18 @@ public interface UserContactsDao extends ChildRepository<UserContactType> {
      * @return valid contact type list, e.g (skype, icq, jabber, mail, cell)
      */
     List<UserContactType> getAvailableContactTypes();
+
+    /**
+     * Adds contact to current user contacts.
+     * @param contact user contact to be added
+     * @return saved user contact entity
+     * @throws NotFoundException
+     */
+    UserContact addContact(UserContact contact) throws NotFoundException;
+
+    /**
+     * Removes contact from contacts of current user.
+     * @param userContactId id of user contact to be removed
+     */
+    void removeContact(Long userContactId);
 }

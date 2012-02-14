@@ -57,6 +57,8 @@ public enum Language {
     }
 
     /**
+     * Returns locale accordingly language code.
+     *
      * @return Locale object
      */
     public Locale getLocale(){

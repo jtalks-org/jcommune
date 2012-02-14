@@ -23,9 +23,6 @@ import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.ui.velocity.VelocityEngineUtils;
@@ -33,8 +30,6 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -58,9 +53,21 @@ public class MailService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MailService.class);
     private static final String LOG_TEMPLATE = "Error occurred while sending updates of %s %d to %s";
-    private static final String TEMPLATES_PATH = "org/jtalks/jcommune/service/templates/";
-    private static final String URL = "url";
+    private static final String HTML_TEMPLATES_PATH = "org/jtalks/jcommune/service/templates/html/";
+    private static final String PLAIN_TEXT_TEMPLATES_PATH = "org/jtalks/jcommune/service/templates/plaintext/";
+    private static final String LINK = "link";
+    private static final String LINK_LABEL = "linkLabel";
     private static final String USER = "user";
+    private static final String NAME = "name";
+    private static final String MESSAGE_SOURCE = "messageSource";
+    private static final String RECIPIENT_LOCALE = "locale";
+    private static final String NO_ARGS = "noArgs";
+    private static final String PASSWORD_RECOVERY_TEMPLATE = "passwordRecovery.vm";
+    private static final String SUBSCRIPTION_NOTIFICATION_TEMPLATE = "subscriptionNotification.vm";
+    private static final String RECEIVED_PM_NOTIFICATION_TEMPLATE = "receivedPrivateMessageNotification.vm";
+    private static final String ACCOUNT_ACTIVATION_TEMPLATE = "accountActivation.vm";
+    private static final String PORT_PATTERN = ":\\d+";
+
 
     /**
      * Creates a mailing service with a default template message autowired.
@@ -68,14 +75,14 @@ public class MailService {
      * as most e-mail servers will reject e-mail if sender is not really correlated with
      * the letter's "from" value.
      *
-     * @param sender spring mailing tool
-     * @param from   blank message with "from" filed preset
-     * @param engine engine for templating email notifications
-     * @param source for resolving internationalization messages
+     * @param sender        spring mailing tool
+     * @param from          blank message with "from" filed preset
+     * @param engine        engine for templating email notifications
+     * @param source        for resolving internationalization messages
      * @param bbCodeService to transform BB-encoded text to HTML
      */
     public MailService(JavaMailSender sender, String from, VelocityEngine engine, MessageSource source,
-                        BBCodeService bbCodeService) {
+                       BBCodeService bbCodeService) {
         this.mailSender = sender;
         this.from = from;
         this.velocityEngine = engine;
@@ -95,20 +102,12 @@ public class MailService {
         String url = this.getDeploymentRootUrl() + "/login";
         String name = user.getUsername();
         Map<String, Object> model = new HashMap<String, Object>();
-        model.put("name", name);
+        model.put(NAME, name);
         model.put("newPassword", newPassword);
-        model.put(URL, url);
-        model.put("messageSource", messageSource);
-        model.put("greeting", "greeting");
-        model.put("contentPart1", "passwordRecovery.content.part1");
-        model.put("contentPart2", "passwordRecovery.content.part2");
-        model.put("link", "passwordRecovery.link");
-        model.put("wish", "wish");
-        model.put("signature", "signature");
-        model.put("noArgs", new Object[]{});
-        model.put("locale", user.getLanguage().getLocale());
-        String text = this.mergeTemplate("passwordRecovery.vm", model);
-        this.sendEmail(user.getEmail(), "Password recovery", text);
+        model.put(LINK, url);
+        model.put(LINK_LABEL, getLinkLabel(url));
+        model.put(RECIPIENT_LOCALE, user.getLanguage().getLocale());
+        this.sendEmail(user.getEmail(), "Password recovery", model, PASSWORD_RECOVERY_TEMPLATE);
         LOGGER.info("Password recovery email sent for {}", name);
     }
 
@@ -125,17 +124,10 @@ public class MailService {
             String url = this.getDeploymentRootUrl() + "/posts/" + topic.getLastPost().getId();
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(USER, user);
-            model.put(URL, url);
-            model.put("messageSource", messageSource);
-            model.put("greeting", "greeting");
-            model.put("content", "subscriptionNotification.content");
-            model.put("link", "subscriptionNotification.link");
-            model.put("wish", "wish");
-            model.put("signature", "signature");
-            model.put("noArgs", new Object[]{});
-            model.put("locale", user.getLanguage().getLocale());
-            String text = this.mergeTemplate("subscriptionNotification.vm", model);
-            this.sendEmail(user.getEmail(), "Forum updates", text);
+            model.put(LINK, url);
+            model.put(LINK_LABEL, getLinkLabel(url));
+            model.put(RECIPIENT_LOCALE, user.getLanguage().getLocale());
+            this.sendEmail(user.getEmail(), "Forum updates", model, SUBSCRIPTION_NOTIFICATION_TEMPLATE);
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Topic", topic.getId(), user.getUsername()));
         }
@@ -154,17 +146,10 @@ public class MailService {
             String url = this.getDeploymentRootUrl() + "/branches/" + branch.getId();
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(USER, user);
-            model.put(URL, url);
-            model.put("messageSource", messageSource);
-            model.put("greeting", "greeting");
-            model.put("content", "subscriptionNotification.content");
-            model.put("link", "subscriptionNotification.link");
-            model.put("wish", "wish");
-            model.put("signature", "signature");
-            model.put("noArgs", new Object[]{});
-            model.put("locale", user.getLanguage().getLocale());
-            String text = this.mergeTemplate("subscriptionNotification.vm", model);
-            this.sendEmail(user.getEmail(), "Forum updates", text);
+            model.put(LINK, url);
+            model.put(LINK_LABEL, getLinkLabel(url));
+            model.put(RECIPIENT_LOCALE, user.getLanguage().getLocale());
+            this.sendEmail(user.getEmail(), "Forum updates", model, SUBSCRIPTION_NOTIFICATION_TEMPLATE);
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Branch", branch.getId(), user.getUsername()));
         }
@@ -181,19 +166,12 @@ public class MailService {
             String url = this.getDeploymentRootUrl() + "/pm/" + pm.getId();
             Map<String, Object> model = new HashMap<String, Object>();
             model.put("recipient", recipient);
-            model.put(URL, url);
-            model.put("messageSource", messageSource);
-            model.put("greeting", "greeting");
-            model.put("content", "receivedPrivateMessageNotification.content");
-            model.put("link", "receivedPrivateMessageNotification.link");
-            model.put("wish", "wish");
-            model.put("signature", "signature");
-            model.put("noArgs", new Object[]{});
-            model.put("locale", recipient.getLanguage().getLocale());
+            model.put(LINK, url);
+            model.put(LINK_LABEL, getLinkLabel(url));
+            model.put(RECIPIENT_LOCALE, recipient.getLanguage().getLocale());
             model.put("title", pm.getTitle());
             model.put("message", bbCodeService.removeBBCodes(pm.getBody()));
-            String text = this.mergeTemplate("receivedPrivateMessageNotification.vm", model);
-            this.sendEmail(recipient.getEmail(), "Received private message", text);
+            this.sendEmail(recipient.getEmail(), "Received private message", model, RECEIVED_PM_NOTIFICATION_TEMPLATE);
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Private message", pm.getId(), recipient.getUsername()));
         }
@@ -208,42 +186,39 @@ public class MailService {
         try {
             String url = this.getDeploymentRootUrl() + "/user/activate/" + recipient.getUuid();
             Map<String, Object> model = new HashMap<String, Object>();
-            model.put("name", recipient.getUsername());
-            model.put(URL, url);
-            model.put("messageSource", messageSource);
-            model.put("greeting", "greeting");
-            model.put("contentPart1", "accountActivation.content.part1");
-            model.put("contentPart2", "accountActivation.content.part2");
-            model.put("contentPart3", "accountActivation.content.part3");
-            model.put("link", "accountActivation.link");
-            model.put("wish", "wish");
-            model.put("signature", "signature");
-            model.put("noArgs", new Object[]{});
-            model.put("locale", recipient.getLanguage().getLocale());
-            String text = this.mergeTemplate("accountActivation.vm", model);
-            this.sendEmail(recipient.getEmail(), "JTalks account activation", text);
+            model.put(NAME, recipient.getUsername());
+            model.put(LINK, url);
+            model.put(LINK_LABEL, getLinkLabel(url));
+            model.put(RECIPIENT_LOCALE, recipient.getLanguage().getLocale());
+            this.sendEmail(recipient.getEmail(), "JTalks account activation", model, ACCOUNT_ACTIVATION_TEMPLATE);
         } catch (MailingFailedException e) {
             LOGGER.error("Failed to sent activation mail for user: " + recipient.getUsername());
         }
     }
 
     /**
-     * Just a convenience method for message sending to encapsulte
+     * Just a convenience method for message sending to encapsulate
      * boilerplate error handling code.
      *
-     * @param to      destination wmail address
-     * @param subject message headline
-     * @param text    message body, may contain html
+     * @param to           destination email address
+     * @param subject      message headline
+     * @param model        template params to be substituted in velocity template
+     * @param templateName template file name, like "template.vm"
      * @throws MailingFailedException exception with error message specified ic case of some error
      */
-    private void sendEmail(String to, String subject, String text) throws MailingFailedException {
+    private void sendEmail(String to, String subject, Map<String, Object> model, String templateName) throws
+            MailingFailedException {
         try {
+            model.put(MESSAGE_SOURCE, messageSource);
+            model.put(NO_ARGS, new Object[]{});
+            String plainText = this.mergePlainTextTemplate(templateName, model);
+            String htmlText = this.mergeHtmlTemplate(templateName, model);
             MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message);
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setTo(to);
             helper.setFrom(from);
             helper.setSubject(subject);
-            helper.setText(text, true);
+            helper.setText(plainText, htmlText);
             mailSender.send(message);
         } catch (Exception e) {
             LOGGER.error("Mail sending failed", e);
@@ -252,16 +227,39 @@ public class MailService {
     }
 
     /**
-     * Creates a text message from templates and param given.
-     * Template should be located in org/jtalks/jcommune/service/templates/
+     * Creates a html text message from templates and param given.
+     * Template should be located in org/jtalks/jcommune/service/templates/html/
      *
      * @param templateName template file name, like "template.vm"
      * @param model        template params to be substituted in velocity template
-     * @return text message, ready to be sent
+     * @return html text message, ready to be sent
      */
-    private String mergeTemplate(String templateName, Map<String, Object> model) {
-        String path = TEMPLATES_PATH + templateName;
+    private String mergeHtmlTemplate(String templateName, Map<String, Object> model) {
+        String path = HTML_TEMPLATES_PATH + templateName;
         return VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, path, model);
+    }
+
+    /**
+     * Creates a plain text message from templates and param given.
+     * Template should be located in org/jtalks/jcommune/service/templates/plaintext/
+     *
+     * @param templateName template file name, like "template.vm"
+     * @param model        template params to be substituted in velocity template
+     * @return plain text message, ready to be sent
+     */
+    private String mergePlainTextTemplate(String templateName, Map<String, Object> model) {
+        String path = PLAIN_TEXT_TEMPLATES_PATH + templateName;
+        return VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, path, model);
+    }
+
+    /**
+     * Forms label for link by omitting port from url.
+     *
+     * @param url url for forming label
+     * @return label to display in mail
+     */
+    private String getLinkLabel(String url){
+        return url.replaceFirst(PORT_PATTERN, "");
     }
 
     /**

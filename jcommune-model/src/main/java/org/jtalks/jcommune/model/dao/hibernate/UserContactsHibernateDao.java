@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.hibernate.SessionFactory;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.jcommune.model.dao.UserContactsDao;
 import org.jtalks.jcommune.model.entity.UserContactType;
@@ -26,23 +25,17 @@ import java.util.List;
  *
  * @author Evgeniy Naumenko
  */
-public class UserContactsHibernateDao implements UserContactsDao {
+public class UserContactsHibernateDao extends AbstractHibernateChildRepository<UserContactType>
+        implements UserContactsDao {
 
-    private SessionFactory factory;
 
-    /**
-     * @param factory to obtain current hibernate session
-     */
-    public UserContactsHibernateDao(SessionFactory factory) {
-        this.factory = factory;
-    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public List<UserContactType> getAvailableContactTypes() {
-        return factory.getCurrentSession()
+        return getSession()
                 .createQuery("from UserContactType")
                 .setCacheable(true)
                 .list();
