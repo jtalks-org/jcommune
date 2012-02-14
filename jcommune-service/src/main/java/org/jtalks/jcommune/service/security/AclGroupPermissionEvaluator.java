@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.service.security;
 
-import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.security.acl.ExtendedMutableAcl;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.acls.AclPermissionEvaluator;
@@ -23,10 +22,12 @@ import org.springframework.security.acls.jdbc.JdbcMutableAclService;
 import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.ObjectIdentityGenerator;
+import org.springframework.security.acls.model.Permission;
 import org.springframework.security.core.Authentication;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *
@@ -51,16 +52,23 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
     @Override
     public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
         ObjectIdentity objectIdentity = objectIdentityGenerator.createObjectIdentity(targetId, targetType);
-        boolean hasPermission = false;
-        BranchPermission branchPermission = BranchPermission.CREATE_TOPICS;
+
+        Permission jtalksPermission = JtalksPermission.EDIT_TOPIC;
         ExtendedMutableAcl extendedMutableAcl = ExtendedMutableAcl.castAndCreate(jdbcAclService.readAclById(objectIdentity));
-        for (AccessControlEntry controlEntry : extendedMutableAcl.getEntries()) {
-            if (controlEntry.getPermission().equals(branchPermission)) {//todo getting permission
-                hasPermission = controlEntry.isGranting();
-                if (!hasPermission)
-                    break;
+        List<AccessControlEntry> accessControlEntries = extendedMutableAcl.getEntries();
+        boolean hasPermission = false;
+        boolean init = false;
+        for (AccessControlEntry controlEntry : accessControlEntries) {
+            if (controlEntry.getPermission().equals(jtalksPermission)) {//todo getting permission
+                if (!init)
+                    hasPermission = true;
+                init = true;
+                hasPermission = hasPermission && controlEntry.isGranting();
             }
+            if (init && !hasPermission)
+                break;
         }
+
         return hasPermission;
     }
 

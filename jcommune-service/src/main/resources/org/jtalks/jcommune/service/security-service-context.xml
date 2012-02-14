@@ -21,107 +21,109 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
               http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
 
-  <!-- Spring Security authentication manager -->
-  <security:authentication-manager alias="authenticationManager">
-    <security:authentication-provider user-service-ref="securityService"/>
-  </security:authentication-manager>
+    <!-- Spring Security authentication manager -->
+    <security:authentication-manager alias="authenticationManager">
+        <security:authentication-provider user-service-ref="securityService"/>
+    </security:authentication-manager>
 
-  <!-- Enable security annotations using specified expression handler -->
-  <security:global-method-security pre-post-annotations="enabled">
-    <security:expression-handler ref="securityExpressionHandler"/>
-  </security:global-method-security>
+    <!-- Enable security annotations using specified expression handler -->
+    <security:global-method-security pre-post-annotations="enabled">
+        <security:expression-handler ref="securityExpressionHandler"/>
+    </security:global-method-security>
 
-  <!-- Configure SpEL expressions handler for security annotations -->
-  <bean id="securityExpressionHandler"
-        class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
-    <!-- Set role hierarchy to use -->
-    <property name="roleHierarchy" ref="roleHierarchy"/>
-    <!-- Enable SpEL hasPermission expression evaluation -->
-    <property name="permissionEvaluator" ref="aclGroupPermissionEvaluator"/>
-  </bean>
+    <!-- Configure SpEL expressions handler for security annotations -->
+    <bean id="securityExpressionHandler"
+          class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+        <!-- Set role hierarchy to use -->
+        <property name="roleHierarchy" ref="roleHierarchy"/>
+        <!-- Enable SpEL hasPermission expression evaluation -->
+        <property name="permissionEvaluator" ref="aclGroupPermissionEvaluator"/>
+    </bean>
 
-   <!-- Evaluates hasPermission expression -->
-  <bean id="aclGroupPermissionEvaluator" class="org.jtalks.jcommune.service.security.AclGroupPermissionEvaluator">
-    <!-- Link to actual ACL Service -->
-    <constructor-arg index="0" ref="basicPermissionEvaluator"/>
-    <constructor-arg index="1" ref="commonAclManager"/>
-      <property name="jdbcAclService" ref="aclService"/>
-  </bean>
+    <!-- Evaluates hasPermission expression -->
+    <bean id="aclGroupPermissionEvaluator" class="org.jtalks.jcommune.service.security.AclGroupPermissionEvaluator">
+        <!-- Link to actual ACL Service -->
+        <constructor-arg index="0" ref="basicPermissionEvaluator"/>
+        <constructor-arg index="1" ref="commonAclManager"/>
+        <property name="jdbcAclService" ref="aclService"/>
+    </bean>
 
-  <bean id="basicPermissionEvaluator" class="org.springframework.security.acls.AclPermissionEvaluator">
-    <!-- Link to actual ACL Service -->
-    <constructor-arg ref="aclService"/>
-  </bean>
+    <bean id="basicPermissionEvaluator" class="org.springframework.security.acls.AclPermissionEvaluator">
+        <!-- Link to actual ACL Service -->
+        <constructor-arg ref="aclService"/>
+    </bean>
 
-  <!-- Retrieves, modifies and strores access control lists -->
-  <bean id="aclService" class="org.springframework.security.acls.jdbc.JdbcMutableAclService">
-    <constructor-arg ref="dataSource"/>
-    <constructor-arg ref="lookupStrategy"/>
-    <constructor-arg ref="aclCache"/>
-    <property name="classIdentityQuery" value="SELECT @@IDENTITY"/>
-    <property name="sidIdentityQuery" value="SELECT @@IDENTITY"/>
-  </bean>
+    <!-- Retrieves, modifies and strores access control lists -->
+    <bean id="aclService" class="org.springframework.security.acls.jdbc.JdbcMutableAclService">
+        <constructor-arg ref="dataSource"/>
+        <constructor-arg ref="lookupStrategy"/>
+        <constructor-arg ref="aclCache"/>
+        <property name="classIdentityQuery" value="SELECT @@IDENTITY"/>
+        <property name="sidIdentityQuery" value="SELECT @@IDENTITY"/>
+    </bean>
 
-  <!-- Responsible for efficient retrieval of ACLs from database -->
-  <bean id="lookupStrategy" class="org.springframework.security.acls.jdbc.BasicLookupStrategy">
-    <constructor-arg ref="dataSource"/>
-    <constructor-arg ref="aclCache"/>
-    <constructor-arg ref="aclAuthorizationStrategy"/>
-    <constructor-arg>
-      <bean class="org.springframework.security.acls.domain.ConsoleAuditLogger"/>
-    </constructor-arg>
-    <property name="permissionFactory" ref="permissionFactory"/>
-  </bean>
+    <!-- Responsible for efficient retrieval of ACLs from database -->
+    <bean id="lookupStrategy" class="org.springframework.security.acls.jdbc.BasicLookupStrategy">
+        <constructor-arg ref="dataSource"/>
+        <constructor-arg ref="aclCache"/>
+        <constructor-arg ref="aclAuthorizationStrategy"/>
+        <constructor-arg>
+            <bean class="org.springframework.security.acls.domain.ConsoleAuditLogger"/>
+        </constructor-arg>
+        <property name="permissionFactory" ref="permissionFactory"/>
+    </bean>
 
-  <!-- ACL permission factory -->
-  <bean id="permissionFactory"
-        class="org.springframework.security.acls.domain.DefaultPermissionFactory"/>
+    <!-- ACL permission factory -->
+    <bean id="permissionFactory"
+          class="org.springframework.security.acls.domain.DefaultPermissionFactory">
+        <constructor-arg name="permissionClass" value="org.jtalks.jcommune.service.security.JtalksPermission"/>
+    </bean>
 
-  <!-- Caching support for ACLs -->
-  <bean id="aclCache" class="org.springframework.security.acls.domain.EhCacheBasedAclCache">
-    <constructor-arg>
-      <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean">
-        <property name="cacheManager">
-          <bean class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"/>
+    <!-- Caching support for ACLs -->
+    <bean id="aclCache" class="org.springframework.security.acls.domain.EhCacheBasedAclCache">
+        <constructor-arg>
+            <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+                <property name="cacheManager">
+                    <bean class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"/>
+                </property>
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <!-- Authorization for ACLs administration setup -->
+    <bean id="aclAuthorizationStrategy" class="org.springframework.security.acls.domain.AclAuthorizationStrategyImpl">
+        <constructor-arg>
+            <list>
+                <bean class="org.springframework.security.core.authority.GrantedAuthorityImpl">
+                    <constructor-arg value="ROLE_ADMIN"/>
+                </bean>
+                <bean class="org.springframework.security.core.authority.GrantedAuthorityImpl">
+                    <constructor-arg value="ROLE_ADMIN"/>
+                </bean>
+                <bean class="org.springframework.security.core.authority.GrantedAuthorityImpl">
+                    <constructor-arg value="ROLE_ADMIN"/>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <!-- http://static.springsource.org/spring-security/site/docs/3.0.x/apidocs/org/springframework/security/access/hierarchicalroles/RoleHierarchyImpl.html -->
+    <bean id="roleHierarchy" class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl">
+        <property name="hierarchy">
+            <value>
+                ROLE_ADMIN > ROLE_USER
+                ROLE_USER > ROLE_ANONYMOUS
+            </value>
         </property>
-      </bean>
-    </constructor-arg>
-  </bean>
+    </bean>
 
-  <!-- Authorization for ACLs administration setup -->
-  <bean id="aclAuthorizationStrategy" class="org.springframework.security.acls.domain.AclAuthorizationStrategyImpl">
-    <constructor-arg>
-      <list>
-        <bean class="org.springframework.security.core.authority.GrantedAuthorityImpl">
-          <constructor-arg value="ROLE_ADMIN"/>
-        </bean>
-        <bean class="org.springframework.security.core.authority.GrantedAuthorityImpl">
-          <constructor-arg value="ROLE_ADMIN"/>
-        </bean>
-        <bean class="org.springframework.security.core.authority.GrantedAuthorityImpl">
-          <constructor-arg value="ROLE_ADMIN"/>
-        </bean>
-      </list>
-    </constructor-arg>
-  </bean>
+    <bean id="securityContextFacade"
+          class="org.jtalks.jcommune.service.security.SecurityContextHolderFacade"/>
 
-  <!-- http://static.springsource.org/spring-security/site/docs/3.0.x/apidocs/org/springframework/security/access/hierarchicalroles/RoleHierarchyImpl.html -->
-  <bean id="roleHierarchy" class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl">
-    <property name="hierarchy">
-      <value>
-        ROLE_ADMIN > ROLE_USER
-        ROLE_USER > ROLE_ANONYMOUS
-      </value>
-    </property>
-  </bean>
-
-  <bean id="securityContextFacade"
-        class="org.jtalks.jcommune.service.security.SecurityContextHolderFacade"/>
-
-  <bean id="aclManager" class="org.jtalks.jcommune.service.security.AclManagerImpl">
-    <constructor-arg ref="aclService"/>
-  </bean>
-  <bean id="commonAclManager" class="org.jtalks.common.security.acl.AclManager">
-    <constructor-arg index="0" ref="aclService"/>
-  </bean>
+    <bean id="aclManager" class="org.jtalks.jcommune.service.security.AclManagerImpl">
+        <constructor-arg ref="aclService"/>
+    </bean>
+    <bean id="commonAclManager" class="org.jtalks.common.security.acl.AclManager">
+        <constructor-arg index="0" ref="aclService"/>
+    </bean>
 </beans>
