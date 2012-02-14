@@ -62,11 +62,6 @@ public class MailService {
     private static final String MESSAGE_SOURCE = "messageSource";
     private static final String RECIPIENT_LOCALE = "locale";
     private static final String NO_ARGS = "noArgs";
-    private static final String PASSWORD_RECOVERY_TEMPLATE = "passwordRecovery.vm";
-    private static final String SUBSCRIPTION_NOTIFICATION_TEMPLATE = "subscriptionNotification.vm";
-    private static final String RECEIVED_PM_NOTIFICATION_TEMPLATE = "receivedPrivateMessageNotification.vm";
-    private static final String ACCOUNT_ACTIVATION_TEMPLATE = "accountActivation.vm";
-    private static final String PORT_PATTERN = ":\\d+";
 
 
     /**
@@ -107,7 +102,7 @@ public class MailService {
         model.put(LINK, url);
         model.put(LINK_LABEL, getLinkLabel(url));
         model.put(RECIPIENT_LOCALE, user.getLanguage().getLocale());
-        this.sendEmail(user.getEmail(), "Password recovery", model, PASSWORD_RECOVERY_TEMPLATE);
+        this.sendEmail(user.getEmail(), "Password recovery", model, "passwordRecovery.vm");
         LOGGER.info("Password recovery email sent for {}", name);
     }
 
@@ -127,7 +122,7 @@ public class MailService {
             model.put(LINK, url);
             model.put(LINK_LABEL, getLinkLabel(url));
             model.put(RECIPIENT_LOCALE, user.getLanguage().getLocale());
-            this.sendEmail(user.getEmail(), "Forum updates", model, SUBSCRIPTION_NOTIFICATION_TEMPLATE);
+            this.sendEmail(user.getEmail(), "Forum updates", model, "subscriptionNotification.vm");
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Topic", topic.getId(), user.getUsername()));
         }
@@ -149,7 +144,7 @@ public class MailService {
             model.put(LINK, url);
             model.put(LINK_LABEL, getLinkLabel(url));
             model.put(RECIPIENT_LOCALE, user.getLanguage().getLocale());
-            this.sendEmail(user.getEmail(), "Forum updates", model, SUBSCRIPTION_NOTIFICATION_TEMPLATE);
+            this.sendEmail(user.getEmail(), "Forum updates", model, "subscriptionNotification.vm");
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Branch", branch.getId(), user.getUsername()));
         }
@@ -171,7 +166,8 @@ public class MailService {
             model.put(RECIPIENT_LOCALE, recipient.getLanguage().getLocale());
             model.put("title", pm.getTitle());
             model.put("message", bbCodeService.removeBBCodes(pm.getBody()));
-            this.sendEmail(recipient.getEmail(), "Received private message", model, RECEIVED_PM_NOTIFICATION_TEMPLATE);
+            this.sendEmail(recipient.getEmail(),
+                    "Received private message", model, "receivedPrivateMessageNotification.vm");
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Private message", pm.getId(), recipient.getUsername()));
         }
@@ -190,7 +186,7 @@ public class MailService {
             model.put(LINK, url);
             model.put(LINK_LABEL, getLinkLabel(url));
             model.put(RECIPIENT_LOCALE, recipient.getLanguage().getLocale());
-            this.sendEmail(recipient.getEmail(), "JTalks account activation", model, ACCOUNT_ACTIVATION_TEMPLATE);
+            this.sendEmail(recipient.getEmail(), "JTalks account activation", model, "accountActivation.vm");
         } catch (MailingFailedException e) {
             LOGGER.error("Failed to sent activation mail for user: " + recipient.getUsername());
         }
@@ -259,7 +255,7 @@ public class MailService {
      * @return label to display in mail
      */
     private String getLinkLabel(String url){
-        return url.replaceFirst(PORT_PATTERN, "");
+        return url.replaceFirst(":\\d+", "");
     }
 
     /**
