@@ -103,12 +103,14 @@ public class UserProfileController {
 
     /**
      * Show page with user info.
+     * SpEL pattern in a var name indicates we want to consume all the symbols in a var,
+     * even dots, which Spring MVC uses as file extension delimiters by default.
      *
      * @param username the decoded encodedUsername from the JSP view.
      * @return user details view with {@link JCUser} object.
      * @throws NotFoundException if user with given id not found.
      */
-    @RequestMapping(value = "/users/{encodedUsername}", method = RequestMethod.GET)
+    @RequestMapping(value = "/users/{encodedUsername:.+}", method = RequestMethod.GET)
     public ModelAndView showProfilePage(@PathVariable("encodedUsername") String username) throws NotFoundException {
         //The {encodedUsername} from the JSP view automatically converted to username.
         // That's why the getByUsername() method is used instead of getByEncodedUsername().
@@ -196,6 +198,8 @@ public class UserProfileController {
 
     /**
      * Show page with post of user.
+     * SpEL pattern in a var name indicates we want to consume all the symbols in a var,
+     * even dots, which Spring MVC uses as file extension delimiters by default.
      *
      * @param page            number current page
      * @param pagingEnabled   flag on/OffScreenImage paging
@@ -203,7 +207,7 @@ public class UserProfileController {
      * @return post list of user
      * @throws NotFoundException if user with given id not found.
      */
-    @RequestMapping(value = "/users/{encodedUsername}/postList", method = RequestMethod.GET)
+    @RequestMapping(value = "/users/{encodedUsername:.+}/postList", method = RequestMethod.GET)
     public ModelAndView showUserPostList(@PathVariable("encodedUsername") String encodedUsername,
                                          @RequestParam(value = "page", defaultValue = "1",
                                                  required = false) Integer page,
