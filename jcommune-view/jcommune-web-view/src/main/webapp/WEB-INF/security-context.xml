@@ -38,6 +38,7 @@
         <security:intercept-url pattern="/user/activate/**" access="permitAll"/>
 
         <security:intercept-url pattern="/pm/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+        <security:intercept-url pattern="/pm/new/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
         <security:intercept-url pattern="/inbox" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
         <security:intercept-url pattern="/inbox/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
         <security:intercept-url pattern="/outbox" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>

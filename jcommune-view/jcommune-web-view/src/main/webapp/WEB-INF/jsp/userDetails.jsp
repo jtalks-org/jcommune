@@ -134,6 +134,10 @@
                    href="${pageContext.request.contextPath}/users/${user.encodedUsername}/postList">
                     <spring:message code="label.postList"/>
                 </a>
+                <a class="button"
+                   href="${pageContext.request.contextPath}/pm/new/${user.encodedUsername}">
+                    <spring:message code="label.pm.send"/>
+                </a>
             </div>
         </div>
     </div>
