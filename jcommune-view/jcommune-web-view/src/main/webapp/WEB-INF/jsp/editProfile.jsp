@@ -147,19 +147,16 @@
                     </li>
                     <li class="forum_row"></li>
                 </ul>
+                <div class="form_controls">
+                    <a id="upload" class="button"><spring:message code="label.avatar.load"/></a>
+                    <a id="removeAvatar" class="button"><spring:message code="label.avatar.remove"/></a>
+                    <input id="saveChanges" type="submit" class="button"
+                           value="<spring:message code="label.save_changes"/>"/>
+                    <a class="button" href="${pageContext.request.contextPath}/users/${auth}">
+                        <spring:message code="label.back"/>
+                    </a>
+                </div>
             </form:form>
-            <div class="form_controls">
-                    <span id="upload">
-                        <button class="button"><spring:message code="label.avatar.load"/></button>
-                    </span>
-                <button id="removeAvatar" class="button"><spring:message code="label.avatar.remove"/></button>
-                <input id="saveChanges" type="submit" class="button"
-                       value="<spring:message code="label.save_changes"/>"/>
-                <a href="${pageContext.request.contextPath}/users/${auth}">
-                    <button class="button"><spring:message code="label.back"/></button>
-                </a>
-            </div>
-
         </div>
     </div>
     <div class="footer_buffer"></div>
