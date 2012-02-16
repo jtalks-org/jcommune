@@ -17,9 +17,11 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.ObjectsFactory;
+import org.jtalks.jcommune.model.dao.UserContactsDao;
 import org.jtalks.jcommune.model.entity.UserContactType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
@@ -35,19 +37,19 @@ import static org.testng.Assert.*;
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
-public class UserContactsHibernateDaoTest {
+public class UserContactsHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests  {
 
     @Autowired
     private SessionFactory sessionFactory;
 
     @Autowired
-    private UserContactsHibernateDao dao;
+    private UserContactsDao dao;
 
     private Session session;
 
     @BeforeMethod
     public void setUp() {
-        sessionFactory.getCurrentSession();
+        session = sessionFactory.getCurrentSession();
         ObjectsFactory.setSession(session);
     }
 
