@@ -17,51 +17,37 @@ package org.jtalks.jcommune.model.entity;
 import org.jtalks.common.model.entity.Entity;
 
 /**
- * Stores information about the type contacts of user.
- * Used as {@code UserDetails}
+ * Entities compared by id.
+ * We need them in AJAX calls, which operate with ids, not uuids.
+ *
+ * @author Michael Gamov
  */
-public class UserContactType extends Entity {
-
-    private String typeName;
-    private String icon;
+public abstract class IdComparableEntity extends Entity {
 
     /**
-     * Only for hibernate usage.
+     * {@inheritDoc }
      */
-    public UserContactType() {
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        IdComparableEntity other = (IdComparableEntity) obj;
+        return (getId() == other.getId());
     }
 
     /**
-     *
-     * @return address of icon
+     * {@inheritDoc }
      */
-    public String getIcon() {
-        return icon;
+    @Override
+    public int hashCode() {
+        return Long.valueOf(getId()).hashCode();
     }
-
-    /**
-     *
-     * @param icon address of icon
-     */
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    /**
-     *
-     * @return name type of contact
-     */
-    public String getTypeName() {
-        return typeName;
-    }
-
-    /**
-     *
-     * @param typeName name type of contact
-     */
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
-    }
-
-
 }

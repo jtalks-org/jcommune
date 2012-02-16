@@ -110,6 +110,6 @@ public class UserContact extends Entity {
      */
     @Override
     public int hashCode() {
-        return new Long(getId()).hashCode();
+        return Long.valueOf(getId()).hashCode();
     }
 }
