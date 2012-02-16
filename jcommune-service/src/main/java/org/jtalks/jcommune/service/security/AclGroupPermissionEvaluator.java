@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.service.security;
 
+import org.jtalks.common.model.permissions.GeneralPermission;
+import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.common.security.acl.AclUtil;
 import org.jtalks.common.security.acl.ExtendedMutableAcl;
 import org.springframework.security.access.PermissionEvaluator;
@@ -55,7 +57,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
         AclUtil aclUtil = new AclUtil(jdbcAclService);
         ObjectIdentity objectIdentity = objectIdentityGenerator.createObjectIdentity(targetId, targetType);//TODO: think about adding such a method to the AclUtil
 
-        Permission jtalksPermission = JtalksPermission.EDIT_TOPIC;
+        Permission jtalksPermission = GeneralPermission.ADMIN;
         ExtendedMutableAcl extendedMutableAcl = ExtendedMutableAcl.castAndCreate(jdbcAclService.readAclById(objectIdentity));
         List<AccessControlEntry> accessControlEntries = extendedMutableAcl.getEntries();
         boolean hasPermission = false;
