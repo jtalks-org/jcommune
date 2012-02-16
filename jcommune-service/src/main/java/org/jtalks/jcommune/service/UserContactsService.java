@@ -39,7 +39,7 @@ public interface UserContactsService extends EntityService<UserContactType> {
      * Adds contact to current user contacts.
      * @param contact user contact to be added
      * @return saved user contact entity
-     * @throws NotFoundException
+     * @throws NotFoundException when contact type was not found
      */
     UserContact addContact(UserContact contact) throws NotFoundException;
 

@@ -24,10 +24,10 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertEquals;
 
 import java.util.List;
+
+import static org.testng.Assert.*;
 
 /**
  * @author Michael Gamov
@@ -41,7 +41,7 @@ public class UserContactsHibernateDaoTest {
     private SessionFactory sessionFactory;
 
     @Autowired
-    private UserContactsHibernateDao userContactsDao;
+    private UserContactsHibernateDao dao;
 
     private Session session;
 
@@ -51,11 +51,54 @@ public class UserContactsHibernateDaoTest {
         ObjectsFactory.setSession(session);
     }
 
+    @Test
+    public void testSave(){
+    }
+
+    @Test
+    public void testGet() {
+        UserContactType type = ObjectsFactory.getDefaultUserContactType();
+        session.save(type);
+        
+        UserContactType result = dao.get(type.getId());
+        
+        assertNotNull(result);
+        assertEquals(type.getId(), result.getId());
+        assertEquals(type.getIcon(), result.getIcon());
+        assertEquals(type.getTypeName(), result.getTypeName());
+    }
+
+    @Test
+    public void testGetInvalidId() {
+        UserContactType type = dao.get(-12345L);
+        
+        assertNull(type);
+    }
+
+    @Test
+    public void testUpdate() {
+        String newName = "New contact type";
+        String newIcon = "/new/icon";
+        UserContactType type = ObjectsFactory.getDefaultUserContactType();
+        session.save(type);
+        type.setTypeName(newName);
+        type.setIcon(newIcon);
+
+        dao.update(type);
+        session.evict(type);
+        
+        UserContactType result = (UserContactType) session.get(UserContactType.class, type.getId());
+
+        
+
+    }
+    
+    @Test
     public void testGetAvailableContactTypes() {
         UserContactType type = ObjectsFactory.getDefaultUserContactType();
         session.saveOrUpdate(type);
 
-        List<UserContactType> types = userContactsDao.getAvailableContactTypes();
+        List<UserContactType> types = dao.getAvailableContactTypes();
         assertEquals(types.size(), 1);
         assertTrue(types.contains(type));
     }
