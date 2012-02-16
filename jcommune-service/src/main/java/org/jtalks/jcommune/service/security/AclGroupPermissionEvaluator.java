@@ -22,10 +22,7 @@ import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.acls.AclPermissionEvaluator;
 import org.springframework.security.acls.domain.ObjectIdentityRetrievalStrategyImpl;
 import org.springframework.security.acls.jdbc.JdbcMutableAclService;
-import org.springframework.security.acls.model.AccessControlEntry;
-import org.springframework.security.acls.model.ObjectIdentity;
-import org.springframework.security.acls.model.ObjectIdentityGenerator;
-import org.springframework.security.acls.model.Permission;
+import org.springframework.security.acls.model.*;
 import org.springframework.security.core.Authentication;
 
 import javax.annotation.Nonnull;
@@ -39,7 +36,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
     private final AclPermissionEvaluator basicPermissionEvaluator;
     private final org.jtalks.common.security.acl.AclManager aclManager;
     private ObjectIdentityGenerator objectIdentityGenerator = new ObjectIdentityRetrievalStrategyImpl();
-    private JdbcMutableAclService jdbcAclService;
+    private MutableAclService jdbcAclService;
 
     public AclGroupPermissionEvaluator(@Nonnull AclPermissionEvaluator basicPermissionEvaluator,
                                        @Nonnull org.jtalks.common.security.acl.AclManager aclManager) {
@@ -77,7 +74,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
         return hasPermission;
     }
 
-    public void setJdbcAclService(JdbcMutableAclService jdbcAclService) {
+    public void setJdbcAclService(MutableAclService jdbcAclService) {
         this.jdbcAclService = jdbcAclService;
     }
 }

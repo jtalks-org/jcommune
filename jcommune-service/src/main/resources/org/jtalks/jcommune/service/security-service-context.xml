@@ -23,7 +23,7 @@
 
   <!-- Spring Security authentication manager -->
   <security:authentication-manager alias="authenticationManager">
-    <security:authentication-provider user-service-ref="securityService"/>
+    <security:authentication-provider ref="" user-service-ref="securityService"/>
   </security:authentication-manager>
 
   <!-- Enable security annotations using specified expression handler -->
@@ -57,7 +57,7 @@
   </bean>
 
   <!-- Retrieves, modifies and strores access control lists -->
-  <bean id="aclService" class="org.springframework.security.acls.jdbc.JdbcMutableAclService">
+  <bean id="aclService" class="org.jtalks.common.security.acl.ExtendedJdbcMutableAclService">
     <constructor-arg ref="dataSource"/>
     <constructor-arg ref="lookupStrategy"/>
     <constructor-arg ref="aclCache"/>
