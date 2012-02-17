@@ -1,4 +1,4 @@
-﻿<%--
+﻿﻿<%--
 
     Copyright (C) 2011  JTalks.org Team
     This library is free software; you can redistribute it and/or
@@ -142,31 +142,32 @@
                     <li class="forum_row">
                         <label><spring:message code="label.avatar"/></label>
                         <span class="avatar">
-                            <img id="avatarPreview" src="${editedUser.avatar}" alt=""/>
+                            <table>
+                                <tr>
+                                    <td rowspan="2">
+                                        <img id="avatarPreview" src="${editedUser.avatar}" alt=""/>
+                                    </td>
+                                    <td class="button_cell">
+                                        <a id="upload" class="button"><spring:message code="label.avatar.load"/></a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="button_cell">
+                                        <a id="removeAvatar" class="button"><spring:message code="label.avatar.remove"/></a>
+                                    </td>
+                                </tr>
+                            </table>
                         </span>
                     </li>
-                    <li class="forum_row"></li>
                 </ul>
+                <div class="form_controls">
+                    <input id="saveChanges" type="submit" class="button"
+                           value="<spring:message code="label.save_changes"/>"/>
+                    <a class="button" href="${pageContext.request.contextPath}/users/${auth}">
+                        <spring:message code="label.back"/>
+                    </a>
+                </div>
             </form:form>
-            <div class="form_controls">
-				<table>
-					<tr>
-						<td>
-							<a href="${pageContext.request.contextPath}/users/${auth}">
-							<button class="button"><spring:message code="label.back"/></button></a>
-							<input id="saveChanges" type="submit" class="button" value="<spring:message code="label.save_changes"/>"/>
-						</td>
-						<td>
-							
-							<span id="upload">
-							<button class="button"><spring:message code="label.avatar.load"/></button>
-							</span>
-							<button id="removeAvatar" class="button"><spring:message code="label.avatar.remove"/></button>   
-						</td>
-					</tr>
-				</table>
-			</div>
-
         </div>
     </div>
     <div class="footer_buffer"></div>
