@@ -24,6 +24,7 @@
         <id column="TYPE_ID" name="id" unsaved-value="0">
             <generator class="native"/>
         </id>
+        <property name="uuid" column="UUID" unique="true" not-null="true"/>
         <property name="typeName" column="TYPE"/>
         <property name="icon" column="ICON"/>
 

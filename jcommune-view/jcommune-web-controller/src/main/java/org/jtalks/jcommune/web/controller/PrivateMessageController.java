@@ -107,7 +107,7 @@ public class PrivateMessageController {
     }
 
     /**
-     * Render the page with a form for creation new Private Message with empty binded {@link PrivateMessageDto}.
+     * Render the page with a form for creation new Private Message with empty {@link PrivateMessageDto} bound.
      *
      * @return {@code ModelAndView} with the form
      */
@@ -117,13 +117,26 @@ public class PrivateMessageController {
     }
 
     /**
+     * Render the page with a form for creation new Private Message for particular user.
+     * This method performs no validation on username given simply passing it to the view as is.
+     *
+     * @param username user to send new private message to
+     * @return {@code ModelAndView} with the form
+     */
+    @RequestMapping(value = "/pm/new/{username}", method = RequestMethod.GET)
+    public ModelAndView newPmPageForUser(@PathVariable String username) {
+        PrivateMessageDto dto = new PrivateMessageDto();
+        dto.setRecipient(username);
+        return new ModelAndView(PM_FORM).addObject(DTO, dto);
+    }
+
+    /**
      * Render the page with the form for the reply to original message.
      * The form has the next filled fields: recipient, title
      *
      * @param id {@link PrivateMessage} id
      * @return {@code ModelAndView} with the message having filled recipient, title fields
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when message not found
+     * @throws NotFoundException when message not found
      */
     @RequestMapping(value = "/reply/{pmId}", method = RequestMethod.GET)
     public ModelAndView replyPage(@PathVariable(PM_ID) Long id) throws NotFoundException {
@@ -138,8 +151,7 @@ public class PrivateMessageController {
      *
      * @param id {@link PrivateMessage} id
      * @return {@code ModelAndView} with the message having filled recipient, title, message fields
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when message not found
+     * @throws NotFoundException when message not found
      */
     @RequestMapping(value = "/quote/{pmId}", method = RequestMethod.GET)
     public ModelAndView quotePage(@PathVariable(PM_ID) Long id) throws NotFoundException {
@@ -213,5 +225,4 @@ public class PrivateMessageController {
         pmService.saveDraft(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
         return "redirect:/drafts";
     }
-
 }

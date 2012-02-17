@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import org.apache.commons.collections.set.UnmodifiableSet;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.User;
 
@@ -39,8 +40,8 @@ public class JCUser extends User {
     private DateTime registrationDate;
     private boolean enabled;
 
-    public static final int MIN_NAME_SIZE = 4;
-    public static final int MAX_NAME_SIZE = 20;
+    public static final int MIN_NAME_SIZE = 2;
+    public static final int MAX_NAME_SIZE = 40;
     public static final int MAX_LAST_NAME_SIZE = 255;
     public static final int MIN_PASS_SIZE = 4;
     public static final int MAX_PASS_SIZE = 20;
@@ -77,7 +78,7 @@ public class JCUser extends User {
     }
 
     /**
-     * @param contact
+     * @param contact user contact
      */
     public void addContact(UserContact contact) {
         contact.setOwner(this);
@@ -85,7 +86,7 @@ public class JCUser extends User {
     }
 
     /**
-     * @param contact
+     * @param contact user contact
      */
     public void removeContact(UserContact contact) {
         this.getContacts().remove(contact);
@@ -174,6 +175,13 @@ public class JCUser extends User {
      */
     public void setRegistrationDate(DateTime registrationDate) {
         this.registrationDate = registrationDate;
+    }
+
+    /**
+     * @return read-only user contacts collection
+     */
+    public Set<UserContact> getUserContacts() {
+        return UnmodifiableSet.decorate(contacts);
     }
 
     /**

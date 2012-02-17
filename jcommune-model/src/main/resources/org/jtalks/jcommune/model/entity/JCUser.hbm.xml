@@ -37,7 +37,7 @@
         <property name="avatar" lazy="true">
             <column name="AVATAR" sql-type="blob"/>
         </property>
-        <set name="contacts" cascade="all-delete-orphan">
+        <set name="contacts" cascade="all-delete-orphan" inverse="true">
             <key column="USER_ID" foreign-key="FK_USER"/>
             <one-to-many class="UserContact"/>
         </set>

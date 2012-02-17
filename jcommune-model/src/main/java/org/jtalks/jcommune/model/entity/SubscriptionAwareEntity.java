@@ -16,52 +16,35 @@ package org.jtalks.jcommune.model.entity;
 
 import org.jtalks.common.model.entity.Entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
- * Stores information about the type contacts of user.
- * Used as {@code UserDetails}
+ * Encapsulates subscription management details.
+ * All the entities with subscription allowed should extend this class instead
+ * of implementing subscription handling on their own.
  */
-public class UserContactType extends IdComparableEntity {
+public abstract class SubscriptionAwareEntity extends Entity {
 
-    private String typeName;
-    private String icon;
-
-    /**
-     * Only for hibernate usage.
-     */
-    public UserContactType() {
-    }
+    private Set<JCUser> subscribers = new HashSet<JCUser>();
 
     /**
+     * Returns users subscribed to get email notifications
+     * about this entity's updates
      *
-     * @return address of icon
+     * @return users to send notifications on update to
      */
-    public String getIcon() {
-        return icon;
+    public Set<JCUser> getSubscribers() {
+        return subscribers;
     }
 
     /**
+     * Sets subscribers list for this branch.
+     * For Hibernate use only.
      *
-     * @param icon address of icon
+     * @param subscribers users to send notifications on update to
      */
-    public void setIcon(String icon) {
-        this.icon = icon;
+    protected void setSubscribers(Set<JCUser> subscribers) {
+        this.subscribers = subscribers;
     }
-
-    /**
-     *
-     * @return name type of contact
-     */
-    public String getTypeName() {
-        return typeName;
-    }
-
-    /**
-     *
-     * @param typeName name type of contact
-     */
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
-    }
-
-
 }

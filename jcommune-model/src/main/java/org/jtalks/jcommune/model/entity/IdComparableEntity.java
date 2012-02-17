@@ -12,32 +12,42 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao.hibernate;
+package org.jtalks.jcommune.model.entity;
 
-import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
-import org.jtalks.jcommune.model.dao.UserContactsDao;
-import org.jtalks.jcommune.model.entity.UserContactType;
-
-import java.util.List;
+import org.jtalks.common.model.entity.Entity;
 
 /**
+ * Entities compared by id.
+ * We need them in AJAX calls, which operate with ids, not uuids.
  *
- *
- * @author Evgeniy Naumenko
+ * @author Michael Gamov
  */
-public class UserContactsHibernateDao extends AbstractHibernateChildRepository<UserContactType>
-        implements UserContactsDao {
-
-
+public abstract class IdComparableEntity extends Entity {
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc }
      */
     @Override
-    public List<UserContactType> getAvailableContactTypes() {
-        return getSession()
-                .createQuery("from UserContactType")
-                .setCacheable(true)
-                .list();
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        IdComparableEntity other = (IdComparableEntity) obj;
+        return (getId() == other.getId());
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public int hashCode() {
+        return Long.valueOf(getId()).hashCode();
     }
 }
