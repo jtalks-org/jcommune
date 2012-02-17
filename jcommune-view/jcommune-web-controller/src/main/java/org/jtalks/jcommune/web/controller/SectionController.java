@@ -16,10 +16,10 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Section;
-import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.service.SectionService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.LocationService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  * Displays to user page contains section list with related branch lists
@@ -109,8 +108,7 @@ public class SectionController {
      *
      * @param sectionId section for display
      * @return {@code ModelAndView} the chosen section
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when section not found
+     * @throws NotFoundException when section not found
      */
     @RequestMapping(value = "/sections/{sectionId}", method = RequestMethod.GET)
     public ModelAndView branchList(@PathVariable("sectionId") long sectionId) throws NotFoundException {
