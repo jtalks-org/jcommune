@@ -145,7 +145,8 @@
                            <table>
                                <tr>
                                    <td rowspan="2">
-                                       <img id="avatarPreview" src="${editedUser.avatar}" alt=""/>
+                                       <%--String prefix "data:image/jpeg;base64," needed for correct image rendering--%>
+                            <img id="avatarPreview" src="data:image/jpeg;base64,${editedUser.avatar}" alt=""/>
                                    </td>
                                    <td class="button_cell">
                                        <a id="upload" class="button"><spring:message code="label.avatar.load"/></a>
