@@ -1,6 +1,6 @@
 html {
     height: 100%;
-    background: url(../images/pattern1.jpg);
+    background: url(../images/pattern.jpg);
 }
 
 body {
@@ -779,7 +779,7 @@ a.page:hover {
 
 .nav_bottom .page {
     margin: -10px 5px 0 0;
-    -webkit-border-radius: 0px 0px 2px 2px;
+    -webkit-border-radius: 0 0 2px 2px;
     -moz-border-radius: 0 0 2px 2px;
     border-radius: 0 0 2px 2px;
 }
@@ -880,4 +880,34 @@ a.page:hover {
 
 a.bc_first::before {
     display: none;
+}
+
+/* Edit Profile Page */
+.avatar td {
+    text-align: center;
+}
+
+.avatar tr {
+    height: 40px;
+}
+
+.avatar .button {
+    margin: 5px;
+}
+
+td.button_cell {
+    vertical-align: baseline;
+}
+
+.avatar img {
+    margin-right: 10px;
+}
+
+#removeAvatar {
+    margin-top: 5px;
+    margin-bottom: 22px;
+}
+
+#upload {
+    margin-top: 22px;
 }
