@@ -20,7 +20,7 @@ import org.jtalks.common.model.entity.Entity;
  * Stores information about the type contacts of user.
  * Used as {@code UserDetails}
  */
-public class UserContactType extends IdComparableEntity {
+public class UserContactType extends Entity {
 
     private String typeName;
     private String icon;

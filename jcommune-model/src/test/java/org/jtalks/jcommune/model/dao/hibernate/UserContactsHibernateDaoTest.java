@@ -18,6 +18,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.UserContactsDao;
+import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -30,6 +31,7 @@ import org.testng.annotations.Test;
 import java.util.List;
 
 import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 /**
  * @author Michael Gamov
@@ -37,7 +39,7 @@ import static org.testng.Assert.*;
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
-public class UserContactsHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests  {
+public class UserContactsHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -54,16 +56,16 @@ public class UserContactsHibernateDaoTest extends AbstractTransactionalTestNGSpr
     }
 
     @Test
-    public void testSave(){
+    public void testSave() {
     }
 
     @Test
     public void testGet() {
         UserContactType type = ObjectsFactory.getDefaultUserContactType();
         session.save(type);
-        
+
         UserContactType result = dao.get(type.getId());
-        
+
         assertNotNull(result);
         assertEquals(type.getId(), result.getId());
         assertEquals(type.getIcon(), result.getIcon());
@@ -73,7 +75,7 @@ public class UserContactsHibernateDaoTest extends AbstractTransactionalTestNGSpr
     @Test
     public void testGetInvalidId() {
         UserContactType type = dao.get(-12345L);
-        
+
         assertNull(type);
     }
 
@@ -88,13 +90,12 @@ public class UserContactsHibernateDaoTest extends AbstractTransactionalTestNGSpr
 
         dao.update(type);
         session.evict(type);
-        
+
         UserContactType result = (UserContactType) session.get(UserContactType.class, type.getId());
 
-        
 
     }
-    
+
     @Test
     public void testGetAvailableContactTypes() {
         UserContactType type = ObjectsFactory.getDefaultUserContactType();
@@ -103,5 +104,24 @@ public class UserContactsHibernateDaoTest extends AbstractTransactionalTestNGSpr
         List<UserContactType> types = dao.getAvailableContactTypes();
         assertEquals(types.size(), 1);
         assertTrue(types.contains(type));
+    }
+
+    @Test
+    public void testGetContactById() {
+        UserContact contact = ObjectsFactory.getDefaultUserContact();
+        session.saveOrUpdate(contact.getOwner());
+        session.saveOrUpdate(contact.getType());
+        session.saveOrUpdate(contact);
+
+        UserContact persisted = dao.getContactById(contact.getId());
+
+        assertEquals(contact, persisted);
+    }
+
+    @Test
+    public void testGetContactByWrongId() {
+        UserContact persisted = dao.getContactById(5L);
+
+        assertNull(persisted);
     }
 }
