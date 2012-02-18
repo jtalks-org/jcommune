@@ -34,13 +34,12 @@ public class UserContactDto {
      * Create dto from {@link UserContact)
      *
      * @param contact user contact for conversion
-     * @return dto for user contact
      */
     public UserContactDto(UserContact contact) {
-        this.setId(contact.getId());
-        this.setOwnerId(contact.getOwner().getId());
-        this.setValue(contact.getValue());
-        this.setType(contact.getType());
+        id = contact.getId();
+        ownerId = contact.getOwner().getId();
+        value = contact.getValue();
+        type = contact.getType();
     }
 
     /**
