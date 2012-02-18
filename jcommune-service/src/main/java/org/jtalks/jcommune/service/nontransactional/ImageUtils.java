@@ -18,8 +18,7 @@ import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
-import java.awt.Dimension;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
 import java.awt.image.RenderedImage;
@@ -162,7 +161,7 @@ public class ImageUtils {
      * @return SRC attribute content
      */
     public String prepareHtmlImgSrc(byte[] avatar) {
-        return HTML_SRC_TAG_PREFIX + base64Wrapper.encodeB64Bytes(avatar);
+        return base64Wrapper.encodeB64Bytes(avatar);
     }
 
     /**

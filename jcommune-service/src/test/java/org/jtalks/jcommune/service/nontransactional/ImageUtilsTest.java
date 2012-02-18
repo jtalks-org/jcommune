@@ -97,7 +97,7 @@ public class ImageUtilsTest {
 
         String actual = imageUtils.prepareHtmlImgSrc(originalImageByteArray);
 
-        assertEquals(actual, ImageUtils.HTML_SRC_TAG_PREFIX + source);
+        assertEquals(actual, source);
     }
 
     private byte[] originalImageByteArray = new byte[]{-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0,

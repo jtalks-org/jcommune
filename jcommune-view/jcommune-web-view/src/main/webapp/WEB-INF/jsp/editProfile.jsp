@@ -142,7 +142,8 @@
                     <li class="forum_row">
                         <label><spring:message code="label.avatar"/></label>
                         <span class="avatar">
-                            <img id="avatarPreview" src="${editedUser.avatar}" alt=""/>
+                            <%--String prefix "data:image/jpeg;base64," needed for correct image rendering--%>
+                            <img id="avatarPreview" src="data:image/jpeg;base64,${editedUser.avatar}" alt=""/>
                         </span>
                     </li>
                     <li class="forum_row"></li>
