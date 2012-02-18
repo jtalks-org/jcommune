@@ -24,6 +24,7 @@ import java.util.Locale;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 
 import org.joda.time.DateTime;
@@ -107,6 +108,19 @@ public class FormattedDateTagTest {
         when(request.getCookies()).thenReturn(cookies);
         String output = this.render();
         assertEquals(output, formatter.withLocale(locale).print(utcDate));
+    }
+
+    @Test
+    public void testTagWithNullData() throws JspException, UnsupportedEncodingException {
+        cookies = new Cookie[]{new Cookie(FormattedDate.GMT_COOKIE_NAME, "0")};
+        tag.setPageContext(context);
+        tag.setValue(null);
+        tag.doStartTag();
+        tag.doEndTag();
+
+        String result = ((MockHttpServletResponse) context.getResponse()).getContentAsString();
+
+        assertEquals("", result);
     }
 
     private String render() throws JspException, UnsupportedEncodingException {
