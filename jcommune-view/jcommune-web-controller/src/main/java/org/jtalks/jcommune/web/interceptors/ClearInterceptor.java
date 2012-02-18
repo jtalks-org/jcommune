@@ -16,6 +16,8 @@
 package org.jtalks.jcommune.web.interceptors;
 
 import org.jtalks.jcommune.service.nontransactional.LocationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -31,6 +33,8 @@ import javax.servlet.http.HttpServletResponse;
 public class ClearInterceptor extends HandlerInterceptorAdapter {
 
     private LocationService locationService;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClearInterceptor.class);
 
     /**
      * @param locationService to operate with current user location on forum
@@ -64,7 +68,7 @@ public class ClearInterceptor extends HandlerInterceptorAdapter {
             try {
                 locationService.clearUserLocation();
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error("Failed to clear current user's location",e);
             }
         }
 

@@ -20,14 +20,28 @@ import org.jtalks.jcommune.model.entity.UserContactType;
 
 /**
  * Dto for transferring user contacts to client side.
+ *
  * @author Michael Gamov
-  */
+ */
 public class UserContactDto {
 
     private Long id;
     private Long ownerId;
     private String value;
     private UserContactType type;
+
+    /**
+     * Create dto from {@link UserContact)
+     *
+     * @param contact user contact for conversion
+     * @return dto for user contact
+     */
+    public UserContactDto(UserContact contact) {
+        this.setId(contact.getId());
+        this.setOwnerId(contact.getOwner().getId());
+        this.setValue(contact.getValue());
+        this.setType(contact.getType());
+    }
 
     /**
      * @return id
@@ -38,6 +52,7 @@ public class UserContactDto {
 
     /**
      * Set contact id
+     *
      * @param id of contact
      */
     public void setId(Long id) {
@@ -53,6 +68,7 @@ public class UserContactDto {
 
     /**
      * Set owner id of contact
+     *
      * @param ownerId owner id
      */
     public void setOwnerId(Long ownerId) {
@@ -68,6 +84,7 @@ public class UserContactDto {
 
     /**
      * Set contact value
+     *
      * @param value of contact
      */
     public void setValue(String value) {
@@ -83,24 +100,11 @@ public class UserContactDto {
 
     /**
      * Set user contact type
+     *
      * @param type user contact type
      */
     public void setType(UserContactType type) {
         this.type = type;
-    }
-
-    /**
-     * Create dto from {@link UserContact)
-     * @param contact user contact for conversion
-     * @return dto for user contact
-     */
-    public static UserContactDto getDtoFor(UserContact contact) {
-        UserContactDto dto = new UserContactDto();
-        dto.setId(contact.getId());
-        dto.setOwnerId(contact.getOwner().getId());
-        dto.setValue(contact.getValue());
-        dto.setType(contact.getType());
-        return dto;
     }
 
 }

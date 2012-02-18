@@ -17,8 +17,6 @@ package org.jtalks.jcommune.model.entity;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
 
-import java.util.StringTokenizer;
-
 /**
  * Text message sent from one user to another. <br/>
  * All fields are required.

@@ -91,5 +91,5 @@ public interface UserService extends EntityService<JCUser> {
      * if there are expired user accounts to be deleted. User account
      * is expired if it's created, but not activated for a day or more.
      */
-    public void deleteUnactivatedAccountsByTimer();
+    void deleteUnactivatedAccountsByTimer();
 }

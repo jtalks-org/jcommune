@@ -54,6 +54,7 @@ import java.util.Map;
 
 /**
  * Controller for processing avatar related request.
+ * todo: this class is too complex, we need to move some logic either to service or to a helper bean
  *
  * @author Alexandre Teterin
  */
@@ -62,9 +63,7 @@ import java.util.Map;
 public class AvatarController {
 
     private AvatarService avatarService;
-    private SecurityService securityService;
     private UserService userService;
-    private ImageUtils imageUtils;
     private MessageSource messageSource;
     public static final String RESULT = "success";
 
@@ -72,19 +71,14 @@ public class AvatarController {
      * Constructor for controller instantiating, dependencies injected via autowiring.
      *
      * @param avatarService   for avatar manipulation
-     * @param securityService for current user-related operations
      * @param userService     to manipulate user-related data
      * @param messageSource   to resolve locale-dependent messages
-     * @param imageUtils      to convert image data
      */
     @Autowired
-    public AvatarController(AvatarService avatarService, SecurityService securityService, UserService userService,
-                            MessageSource messageSource, ImageUtils imageUtils) {
+    public AvatarController(AvatarService avatarService, UserService userService, MessageSource messageSource) {
         this.avatarService = avatarService;
-        this.securityService = securityService;
         this.userService = userService;
         this.messageSource = messageSource;
-        this.imageUtils = imageUtils;
     }
 
     /**
@@ -180,7 +174,7 @@ public class AvatarController {
                                                    Map<String, String> responseContent,
                                                    Locale locale) throws IOException {
 
-        HttpStatus statusCode;
+        HttpStatus statusCode = HttpStatus.INTERNAL_SERVER_ERROR; //default
 
         //get input file
         Map<String, MultipartFile> fileMap = request.getFileMap();
@@ -197,13 +191,10 @@ public class AvatarController {
             statusCode = HttpStatus.OK;
         } catch (ImageFormatException e) {
             prepareFormatErrorResponse(responseContent, locale);
-            statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         } catch (ImageSizeException e) {
             prepareSizeErrorResponse(responseContent, locale);
-            statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         } catch (ImageProcessException e) {
             prepareCommonErrorResponse(responseContent, locale);
-            statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
         String body = prepareJSONString(responseContent);

@@ -52,6 +52,7 @@ public class MailService {
     private BBCodeService bbCodeService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MailService.class);
+
     private static final String LOG_TEMPLATE = "Error occurred while sending updates of %s %d to %s";
     private static final String HTML_TEMPLATES_PATH = "org/jtalks/jcommune/service/templates/html/";
     private static final String PLAIN_TEXT_TEMPLATES_PATH = "org/jtalks/jcommune/service/templates/plaintext/";

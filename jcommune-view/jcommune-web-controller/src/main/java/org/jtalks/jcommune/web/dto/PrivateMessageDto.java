@@ -17,10 +17,8 @@ package org.jtalks.jcommune.web.dto;
 import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
-import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.web.validation.Exists;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
