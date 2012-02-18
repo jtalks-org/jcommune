@@ -204,7 +204,7 @@ a.heading:hover {
 }
 
 .forum_header_last_message {
-    min-width: 130px;
+    min-width: 150px;
     padding-right: 3px;
 }
 
@@ -328,17 +328,17 @@ a.moderator {
 }
 
 .forum_messages, .forum_clicks, .forum_header_messages, .forum_header_clicks {
-    width: 65px;
-    min-width: 65px;
+    width: 90px;
+    min-width: 90px;
 }
 
 .forum_themes, .forum_header_themes {
-    width: 35px;
-    min-width: 35px;
+    width: 40px;
+    min-width: 40px;
 }
 
 .forum_last_message {
-    width: 130px;
+    width: 150px;
 }
 
 a.last_message_user {
@@ -346,8 +346,8 @@ a.last_message_user {
 }
 
 .forum_answers, .forum_header_answers {
-    width: 50px;
-    min-width: 50px;
+    width: 90px;
+    min-width: 90px;
 }
 
 .forum_author, .forum_header_author {
@@ -779,7 +779,7 @@ a.page:hover {
 
 .nav_bottom .page {
     margin: -10px 5px 0 0;
-    -webkit-border-radius: 0 0 2px 2px;
+    -webkit-border-radius: 0px 0px 2px 2px;
     -moz-border-radius: 0 0 2px 2px;
     border-radius: 0 0 2px 2px;
 }
