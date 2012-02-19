@@ -40,7 +40,7 @@
             </span>
         </div>
         <br>
-        <jtalks:pagination uri="${branch.id}" pagination="${pagination}" list="${topics}">
+        <jtalks:pagination uri="${branch.id}" pagination="${pagination}" list="${topics}" numberLink="3">
         <nobr>
             <span class="nav_top">
                 </jtalks:pagination>
