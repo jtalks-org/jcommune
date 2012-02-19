@@ -97,26 +97,16 @@ span.version {
     color: #535353;
 }
 
-.forum_misc_info {
-    font-size: 11px;
-    margin-bottom: 5px;
-}
-
 .forums_list + .forum_misc_info {
     margin-top: 5px;
 }
 
-.forum_top_right_link {
-    float: right;
-    padding-top: 5px;
-}
-
-.main_page .forum_top_right_link,
+/*.main_page .forum_top_right_link,
 .section_page .forum_top_right_link {
     position: relative;
     top: 48px;
     padding: 0;
-}
+} */
 
 .branch_page .forum_top_right_link {
     padding: 0;
@@ -134,6 +124,7 @@ a.heading:hover {
 
 .nav_top {
     float: right;
+    margin-left: 10px;
 }
 
 .nav_bottom {
@@ -226,6 +217,73 @@ a.heading:hover {
 .forum_header_userinfo {
     min-width: 160px;
     padding-left: 14px;
+}
+
+/* Forum Info&Buttons */
+.forum_info_top {
+    display: table;
+    width: 100%;
+}
+
+.forum_top_right_link {
+    position: relative;
+    top: 5px;
+}
+
+.main_page .forum_top_right_link {
+    float: right;
+    top: 0;
+}
+
+.forum_misc_info {
+    display: block;
+    position: relative;
+    top: -3px;
+    font-size: 11px;
+}
+
+.forum_info_top .button {
+    margin: 0;
+}
+
+.forum_info_top div { /* all divs */
+    display: table-cell;
+    vertical-align: bottom;
+    /*border: 1px solid black; */
+}
+
+.forum_info_top > div { /* all rows */
+    display: table-row;
+}
+
+.forum_info_top > div div { /* all cells */
+    height: 30px;
+}
+
+.forum_info_top > div:first-child { /* top row */
+    height: 50px;
+    font-size: 11px;
+    vertical-align: middle;
+    text-align: right;
+    padding-bottom: 5px;
+}
+
+.forum_info_top > div:first-child > div:first-child { /* top-left cell */
+    text-align: left;
+}
+
+.info_top_lower > div { /* bottom row cells */
+    text-align: right;
+}
+
+.info_top_lower > div:first-child { /* bottom left cell */
+    text-align: left;
+    vertical-align: middle;
+}
+
+.info_top_lower_right .button {
+    position: relative;
+    top: -2px;
 }
 
 /* Forum Main Table */
@@ -748,13 +806,12 @@ a.admin, a.user {
     color: black;
     font-size: 1.1em;
     font-weight: bold;
-    margin: 10px 5px 0 0;
+    margin: 0 5px 0 0;
     float: left;
     background: #c6c6c6;
     min-width: 12px;
     height: 12px;
     line-height: 12px;
-    display: block;
     text-align: center;
     padding: 5px;
     -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3), -1px 0 2px rgba(0, 0, 0, 0.3);
@@ -766,7 +823,7 @@ a.admin, a.user {
 }
 
 .topic_page .page {
-    margin: 14px 5px 0 0;
+    margin: 4px 5px 0 0;
 }
 
 span.page {
@@ -806,8 +863,8 @@ a.page:hover {
 
 .breadcrumbs {
     display: inline-block;
-    position: relative;
-    top: 5px;
+    vertical-align: middle;
+    padding-left: 10px;
 }
 
 .breadcrumbs li {

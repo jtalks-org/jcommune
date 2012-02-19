@@ -31,43 +31,47 @@
     <jsp:include page="../template/logo.jsp"/>
     <jsp:include page="../template/topLine.jsp"/>
     <div class="all_forums">
-        <h2><a class="heading" href="#"><c:out value="${branch.name}"/></a></h2>
-
-        <div class="forum_misc_info">
-            <c:out value="${branch.description}"/>
-            <span class="nav_bottom">
-                <a class="forum_top_right_link" href="#"><spring:message code="label.mark_all_topics"/></a>
-            </span>
+        <div class="forum_info_top">
+            <div>
+                <div> <!-- top left -->
+                    <h2><a class="heading" href="#"><c:out value="${branch.name}"/></a></h2><br />
+                    <span class="forum_misc_info"><c:out value="${branch.description}"/></span>
+                </div>
+                <div> <!-- top right -->
+                    <a class="forum_top_right_link" href="#"><spring:message code="label.mark_all_topics"/></a>
+                </div>
+            </div>
+            <div class="info_top_lower"> <!-- bottom left -->
+                <div>
+                    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                        <a class="button top_button" href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}">
+                            <spring:message code="label.addtopic"/>
+                        </a>
+                        <c:choose>
+                            <c:when test="${subscribed}">
+                                <a id="subscription" class="button top_button"
+                                   href="${pageContext.request.contextPath}/branches/${branch.id}/unsubscribe">
+                                    <spring:message code="label.unsubscribe"/>
+                                </a>
+                            </c:when>
+                            <c:otherwise>
+                                <a id="subscription" class="button top_button"
+                                   href="${pageContext.request.contextPath}/branches/${branch.id}/subscribe">
+                                    <spring:message code="label.subscribe"/>
+                                </a>
+                            </c:otherwise>
+                        </c:choose>
+                    </sec:authorize>
+                    <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
+                </div>
+                <div> <!-- bottom right -->
+                    <span class="nav_top">
+                        <jtalks:pagination uri="${branch.id}" pagination="${pagination}" list="${topics}"/>
+                    </span>
+                </div>
+            </div>
         </div>
-        <br>
-        <jtalks:pagination uri="${branch.id}" pagination="${pagination}" list="${topics}">
-        <nobr>
-            <span class="nav_top">
-                </jtalks:pagination>
-            </span>
-        </nobr>
-        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-            <a class="button top_button" href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}">
-                <spring:message code="label.addtopic"/>
-            </a>
-            <c:choose>
-                <c:when test="${subscribed}">
-                    <a id="subscription" class="button top_button"
-                       href="${pageContext.request.contextPath}/branches/${branch.id}/unsubscribe">
-                        <spring:message code="label.unsubscribe"/>
-                    </a>
-                </c:when>
-                <c:otherwise>
-                    <a id="subscription" class="button top_button"
-                       href="${pageContext.request.contextPath}/branches/${branch.id}/subscribe">
-                        <spring:message code="label.subscribe"/>
-                    </a>
-                </c:otherwise>
-            </c:choose>
-            &nbsp; &nbsp; &nbsp;
-        </sec:authorize>
-        <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-        <div class="forum_header_table">
+            <div class="forum_header_table">
             <div class="forum_header">
                 <span class="forum_header_topics"><spring:message code="label.branch.header.topics"/></span>
                 <span class="forum_header_answers"><spring:message code="label.section.header.messages"/></span>
@@ -171,7 +175,7 @@
                 &nbsp;&nbsp;
             </c:forEach>
         </div>
-    </div>
+	</div>
     <div class="footer_buffer"></div>
 </div>
 </body>
