@@ -76,63 +76,74 @@
                 <span class="forum_header_last_message"><spring:message code="label.branch.header.lastMessage"/></span>
             </div>
         </div>
-        <ul class="forum_table">
-            <jtalks:pagination uri="${branch.id}" pagination="${pagination}" numberLink="3" list="${topics}">
-            <c:forEach var="topic" items="${list}">
-                <li class="forum_row">
-                    <div class="forum_icon">
-                        <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png"
-                             alt=""
-                             title="<spring:message code="label.section.close_forum"/>"/>
-                    </div>
-                    <div class="forum_info">
-                        <h4>
-                            <c:choose>  <%--Some topic types should have a special prefix when displayed--%>
-                                <c:when test="${topic.announcement=='true'}">
-                                    <span class="sticky"><spring:message code="label.marked_as_announcement"/> </span>
-                                </c:when>
-                                <c:when test="${topic.sticked=='true'}">
-                                    <span class="sticky"><spring:message code="label.marked_as_sticked"/></span>
-                                </c:when>
-                            </c:choose>
-                            <a class="forum_link"  href="${pageContext.request.contextPath}/topics/${topic.id}">
-                                <span class="forum_message_cell_text"><c:out value="${topic.title}"/></span>
-                            </a>
-                        </h4>
-                    </div>
-                    <div class="forum_answers">
-                        <c:out value="${topic.postCount}"/>
-                    </div>
-                    <div class="forum_author">
-                        <a href="${pageContext.request.contextPath}/users/${topic.topicStarter.encodedUsername}"
-                           title="<spring:message code="label.topic.header.author"/>"><c:out
-                                value="${topic.topicStarter.username}"/></a>
-                    </div>
-                    <div class="forum_clicks">
-                        <c:out value="${topic.views}"/>
-                    </div>
-                    <div class="forum_last_message">
-                        <a href="${pageContext.request.contextPath}/topics/${topic.id}">
-                            <jtalks:format value="${topic.lastPost.creationDate}"/></a>
-                        <br/>
-                        <a class="last_message_user"
-                           href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
-                                ${topic.lastPost.userCreated.username}
-                        </a>
-                        <a href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}">
-                            <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
-                                 alt="<spring:message code="label.section.header.lastMessage"/>"/>
-                        </a>
-                    </div>
-                </li>
-            </c:forEach>
+        <c:choose>
+            <c:when test="${!(empty topics)}">
+                <ul class="forum_table">
+                    <jtalks:pagination uri="${branch.id}" pagination="${pagination}" numberLink="3" list="${topics}">
+                    <c:forEach var="topic" items="${list}">
+                        <li class="forum_row">
+                            <div class="forum_icon">
+                                <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png"
+                                     alt=""
+                                     title="<spring:message code="label.section.close_forum"/>"/>
+                            </div>
+                            <div class="forum_info">
+                                <h4>
+                                    <c:choose>  <%--Some topic types should have a special prefix when displayed--%>
+                                        <c:when test="${topic.announcement=='true'}">
+                                            <span class="sticky"><spring:message code="label.marked_as_announcement"/> </span>
+                                        </c:when>
+                                        <c:when test="${topic.sticked=='true'}">
+                                            <span class="sticky"><spring:message code="label.marked_as_sticked"/></span>
+                                        </c:when>
+                                    </c:choose>
+                                    <a class="forum_link"  href="${pageContext.request.contextPath}/topics/${topic.id}">
+                                        <span class="forum_message_cell_text"><c:out value="${topic.title}"/></span>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div class="forum_answers">
+                                <c:out value="${topic.postCount}"/>
+                            </div>
+                            <div class="forum_author">
+                                <a href="${pageContext.request.contextPath}/users/${topic.topicStarter.encodedUsername}"
+                                   title="<spring:message code="label.topic.header.author"/>"><c:out
+                                        value="${topic.topicStarter.username}"/></a>
+                            </div>
+                            <div class="forum_clicks">
+                                <c:out value="${topic.views}"/>
+                            </div>
+                            <div class="forum_last_message">
+                                <a href="${pageContext.request.contextPath}/topics/${topic.id}">
+                                    <jtalks:format value="${topic.lastPost.creationDate}"/></a>
+                                <br/>
+                                <a class="last_message_user"
+                                   href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
+                                        ${topic.lastPost.userCreated.username}
+                                </a>
+                                <a href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}">
+                                    <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
+                                         alt="<spring:message code="label.section.header.lastMessage"/>"/>
+                                </a>
+                            </div>
+                        </li>
+                    </c:forEach>
 
-        </ul>
-        <nobr>
-            <span class="nav_bottom">
-                </jtalks:pagination>
-            </span>
-        </nobr>
+                </ul>
+                <nobr>
+                    <span class="nav_bottom">
+                        </jtalks:pagination>
+                    </span>
+                </nobr>
+            </c:when>
+            <c:otherwise>
+                <ul class="forum_table">
+                    <li class="forum_row">
+                          <spring:message code="label.branch.empty"/>
+                    </li>
+                </ul>
+            </c:otherwise>
+        </c:choose>
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
             <a class="button"
                href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"><spring:message

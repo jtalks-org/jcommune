@@ -46,29 +46,38 @@
             </div>
         </div>
         <ul class="forum_table">
-            <c:forEach var="pm" items="${pmList}">
-                <c:choose>
-                    <c:when test="${pm.read}">
-                        <li class="forum_row">
-                    </c:when>
-                    <c:otherwise>
-                        <li class="forum_row" style="background: #b0c4de">
-                    </c:otherwise>
-                </c:choose>
-                <div class="forum_answer_left">
-                    <a href="${pageContext.request.contextPath}/users/${pm.userFrom.encodedUsername}">
-                        <c:out value="${pm.userFrom.username}"/>
-                    </a>
-                </div>
-                <div class="forum_answer_left">
-                    <a href="${pageContext.request.contextPath}/pm/${pm.id}">
-                        <c:out value="${pm.title}"/></a>
-                </div>
-                <div class="forum_answer_left">
-                    <jtalks:format value="${pm.creationDate}"/>
-                </div>
-                </li>
-            </c:forEach>
+            <c:choose>
+                <c:when test="${!(empty pmList)}">
+                    <c:forEach var="pm" items="${pmList}">
+                        <c:choose>
+                            <c:when test="${pm.read}">
+                                <li class="forum_row">
+                            </c:when>
+                            <c:otherwise>
+                                <li class="forum_row" style="background: #b0c4de">
+                            </c:otherwise>
+                        </c:choose>
+                        <div class="forum_answer_left">
+                            <a href="${pageContext.request.contextPath}/users/${pm.userFrom.encodedUsername}">
+                                <c:out value="${pm.userFrom.username}"/>
+                            </a>
+                        </div>
+                        <div class="forum_answer_left">
+                            <a href="${pageContext.request.contextPath}/pm/${pm.id}">
+                                <c:out value="${pm.title}"/></a>
+                        </div>
+                        <div class="forum_answer_left">
+                            <jtalks:format value="${pm.creationDate}"/>
+                        </div>
+                        </li>
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>
+                    <li class="forum_row">
+                        <spring:message code="label.inbox.empty"/>
+                    </li>
+                </c:otherwise>
+            </c:choose>
         </ul>
     </div>
     <div class="footer_buffer"></div>
