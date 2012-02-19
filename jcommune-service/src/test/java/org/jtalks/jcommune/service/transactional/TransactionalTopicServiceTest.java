@@ -337,7 +337,6 @@ public class TransactionalTopicServiceTest {
         assertEquals(targetBranch.getTopicCount(), 1);
         verify(branchDao).update(targetBranch);
         verify(notificationService).topicChanged(topic);
-        verify(notificationService).branchChanged(targetBranch);
         verify(notificationService).branchChanged(currentBranch);
     }
 

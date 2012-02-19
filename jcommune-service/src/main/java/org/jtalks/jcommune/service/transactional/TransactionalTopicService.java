@@ -220,10 +220,11 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         Branch targetBranch = branchService.get(branchId);
         targetBranch.addTopic(topic);
         branchDao.update(targetBranch);
+
         logger.info("Moved topic \"{}\". Topic id: {}", topic.getTitle(), topicId);
+
         notificationService.topicChanged(topic);
         notificationService.branchChanged(currentBranch);
-        notificationService.branchChanged(targetBranch);
     }
 
     /**
