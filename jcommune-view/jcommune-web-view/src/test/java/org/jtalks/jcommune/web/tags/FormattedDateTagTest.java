@@ -111,18 +111,17 @@ public class FormattedDateTagTest {
     }
 
     @Test
-    public void testTagWithNullData() throws JspException, UnsupportedEncodingException {
-        cookies = new Cookie[]{new Cookie(FormattedDate.GMT_COOKIE_NAME, "0")};
+    public void testRenderNullDate() throws JspException, UnsupportedEncodingException {
+        cookies = new Cookie[]{};
+        when(request.getCookies()).thenReturn(cookies);
         tag.setPageContext(context);
         tag.setValue(null);
         tag.doStartTag();
         tag.doEndTag();
-
-        String result = ((MockHttpServletResponse) context.getResponse()).getContentAsString();
-
-        assertEquals("", result);
+        String output = ((MockHttpServletResponse) context.getResponse()).getContentAsString();
+        assertEquals(output, "");
     }
-
+    
     private String render() throws JspException, UnsupportedEncodingException {
         //cannot move it to @Before as cookies should be set first
         tag.setPageContext(context);
