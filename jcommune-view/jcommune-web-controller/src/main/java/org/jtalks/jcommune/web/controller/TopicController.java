@@ -51,6 +51,7 @@ import java.util.List;
  * @author Teterin Alexandre
  * @author Max Malakhov
  * @author Evgeniy Naumenko
+ * @author Eugeny Batov
  * @see Topic
  */
 @Controller
