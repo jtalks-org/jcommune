@@ -20,6 +20,7 @@ import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
+import org.jtalks.jcommune.web.dto.SectionDto;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +28,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Displays to user page contains section list with related branch lists
@@ -49,7 +53,7 @@ public class SectionController {
 
     private SecurityService securityService;
     private SectionService sectionService;
-    private ForumStatisticsProvider forumStaticsProvider;   
+    private ForumStatisticsProvider forumStaticsProvider;
     private LocationService locationService;
 
     /**
@@ -57,7 +61,7 @@ public class SectionController {
      *
      * @param securityService      autowired object from Spring Context
      * @param sectionService       autowired object from Spring Context
-     * @param locationService autowired object from Spring Context
+     * @param locationService      autowired object from Spring Context
      * @param forumStaticsProvider autowired object from Spring Context which provides methods for getting
      *                             forum statistic information
      */
@@ -71,7 +75,6 @@ public class SectionController {
         this.forumStaticsProvider = forumStaticsProvider;
         this.locationService = locationService;
     }
-
 
 
     /**
@@ -101,6 +104,22 @@ public class SectionController {
                 .addObject("usersRegistered", forumStaticsProvider.getOnlineRegisteredUsers())
                 .addObject("visitorsRegistered", forumStaticsProvider.getOnlineRegisteredUsersCount())
                 .addObject("visitorsGuests", forumStaticsProvider.getOnlineAnonymousUsersCount());
+    }
+
+    /**
+     * Provides all sections as a JSON array.
+     *
+     * @return sections list
+     */
+    @RequestMapping(value = "/sections/json", method = RequestMethod.GET)
+    @ResponseBody
+    public SectionDto[] sectionList() {
+        List<Section> sections = sectionService.getAll();
+        List<SectionDto> sectionDtoList = new ArrayList<SectionDto>(sections.size());
+        for (Section section : sections) {
+            sectionDtoList.add(SectionDto.getDtoFor(section));
+        }
+        return sectionDtoList.toArray(new SectionDto[sectionDtoList.size()]);
     }
 
     /**

@@ -19,12 +19,12 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.nontransactional.LocationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
+import org.jtalks.jcommune.service.nontransactional.LocationService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.TopicDto;
+import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -42,6 +42,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.List;
+
 /**
  * Serves topic management web requests
  *
@@ -240,5 +241,18 @@ public class TopicController {
                 topicDto.getTopicWeight(), topicDto.isSticked(), topicDto.isAnnouncement());
 
         return new ModelAndView("redirect:/topics/" + topicId);
+    }
+
+    /**
+     * Moves topic to another branch.
+     *
+     * @param topicId  id of moving topic
+     * @param branchId id of target branch
+     * @throws NotFoundException when topic or branch with given id not found
+     */
+    @RequestMapping(value = "/topics/json/{topicId}", method = RequestMethod.POST)
+    public void moveTopic(@PathVariable(TOPIC_ID) Long topicId,
+                          @RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
+        topicService.moveTopic(topicId, branchId);
     }
 }

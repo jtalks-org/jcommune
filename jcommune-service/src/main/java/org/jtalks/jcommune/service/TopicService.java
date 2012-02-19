@@ -107,4 +107,15 @@ public interface TopicService extends EntityService<Topic> {
      * @throws NotFoundException when topic not found
      */
     Branch deleteTopic(long topicId) throws NotFoundException;
+
+    /**
+     * Moves topic to another branch.
+     *
+     * @param topicId  id of moving topic
+     * @param branchId id of target branch
+     * @throws NotFoundException when topic or branch with given id not found
+     */
+    void moveTopic(Long topicId, Long branchId) throws NotFoundException;
+
+
 }

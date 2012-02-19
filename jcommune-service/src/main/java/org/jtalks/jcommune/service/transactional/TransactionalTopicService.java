@@ -22,10 +22,10 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.nontransactional.NotificationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.NotificationService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,7 +111,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
             logger.error(msg);
             throw new IllegalStateException(msg);
         }
-        
+
         currentUser.setPostCount(currentUser.getPostCount() + 1);
         Branch branch = branchService.get(branchId);
         Topic topic = new Topic(currentUser, topicName);
@@ -192,12 +192,12 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
             "hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', delete)")
     public Branch deleteTopic(long topicId) throws NotFoundException {
         Topic topic = get(topicId);
-        
-        for (Post post: topic.getPosts()) {
+
+        for (Post post : topic.getPosts()) {
             JCUser user = post.getUserCreated();
             user.setPostCount(user.getPostCount() - 1);
         }
-        
+
         Branch branch = topic.getBranch();
         branch.deleteTopic(topic);
         branchDao.update(branch);
@@ -207,6 +207,18 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
 
         logger.info("Deleted topic \"{}\". Topic id: {}", topic.getTitle(), topicId);
         return branch;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_ADMIN + "')")
+    public void moveTopic(Long topicId, Long branchId) throws NotFoundException {
+        Topic topic = get(topicId);
+        Branch targetBranch = branchService.get(branchId);
+        targetBranch.addTopic(topic);
+        branchDao.update(targetBranch);
     }
 
     /**

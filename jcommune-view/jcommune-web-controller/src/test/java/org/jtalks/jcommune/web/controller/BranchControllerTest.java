@@ -19,10 +19,11 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
+import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
@@ -37,8 +38,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.ModelAndViewAssert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 
 
@@ -173,5 +178,21 @@ public class BranchControllerTest {
 
         List<String> actualViewList = assertAndReturnModelAttributeOfType(mav, "viewList", List.class);
         assertEquals(actualViewList, new ArrayList<String>());
+    }
+
+    @Test
+    public void testBranchList() throws NotFoundException {
+        long sectionId = 1L;
+        long branchId = 1L;
+        List<Branch> branches = new ArrayList<Branch>();
+        Branch branch = new Branch("name");
+        branch.setId(branchId);
+        branches.add(branch);
+        when(branchService.getBranchesInSection(sectionId)).thenReturn(branches);
+        BranchDto[] branchDtoArray = controller.branchList(sectionId);
+
+        assertEquals(branchDtoArray.length, branches.size());
+        assertEquals(branchDtoArray[0].getId(), branch.getId());
+        assertEquals(branchDtoArray[0].getName(), branch.getName());
     }
 }
