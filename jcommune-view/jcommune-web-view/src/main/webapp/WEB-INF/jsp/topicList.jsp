@@ -81,7 +81,6 @@
             </div>
         </div>
         <ul class="forum_table">
-            <jtalks:pagination uri="${branch.id}" pagination="${pagination}" numberLink="3" list="${topics}">
             <c:forEach var="topic" items="${list}">
                 <li class="forum_row">
                     <div class="forum_icon">
@@ -130,34 +129,38 @@
                     </div>
                 </li>
             </c:forEach>
-
         </ul>
-        <nobr>
-            <span class="nav_bottom">
-                </jtalks:pagination>
-            </span>
-        </nobr>
-        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-            <a class="button"
-               href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"><spring:message
-                    code="label.addtopic"/></a>
-            &nbsp; &nbsp; &nbsp;
-        </sec:authorize>
-        <c:if test="${pagination.maxPages>1}">
-            <c:if test="${pagination.pagingEnabled == true}">
-                <a class="button"
-                   href="?pagingEnabled=false"><spring:message code="label.showAll"/></a>
-                &nbsp; &nbsp; &nbsp;
-            </c:if>
-        </c:if>
-        <c:if test="${pagination.pagingEnabled == false}">
-            <a class="button"
-               href="?pagingEnabled=true"><spring:message code="label.showPages"/></a>
-            &nbsp; &nbsp; &nbsp;
-        </c:if>
-        <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
+        <div class="forum_info_bottom">
+            <div>
+                <div>
+                    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                        <a class="button"
+                           href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"><spring:message
+                                code="label.addtopic"/>
+                        </a>
+                    </sec:authorize>
+                    <c:if test="${pagination.maxPages>1}">
+                        <c:if test="${pagination.pagingEnabled == true}">
+                            <a class="button"
+                               href="?pagingEnabled=false"><spring:message code="label.showAll"/></a>
+                        </c:if>
+                    </c:if>
+                    <c:if test="${pagination.pagingEnabled == false}">
+                        <a class="button"
+                           href="?pagingEnabled=true"><spring:message code="label.showPages"/>
+                        </a>
+                    </c:if>
+                    <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
+                </div>
+                <div>
+                    <span class="nav_bottom">
+                        <jtalks:pagination uri="${branch.id}" pagination="${pagination}" list="${topics}" />
+                    </span>
+                </div>
+            </div>
+        </div>
+        <br />
         <div class="forum_misc_info">
-            <br/>
             <spring:message code="label.topic.moderators"/>
             <ul class="users_list">
                 <li><a href="#">andreyko</a>,</li>
@@ -172,7 +175,6 @@
                 <a href="${pageContext.request.contextPath}/users/${innerUser.encodedUsername}">
                     <c:out value="${innerUser.username}"/>
                 </a>
-                &nbsp;&nbsp;
             </c:forEach>
         </div>
 	</div>

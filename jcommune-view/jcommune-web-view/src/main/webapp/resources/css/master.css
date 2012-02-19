@@ -122,18 +122,6 @@ a.heading:hover {
     text-decoration: underline;
 }
 
-.nav_top {
-    float: right;
-    margin-left: 10px;
-}
-
-.nav_bottom {
-    float: right;
-    margin-top: 5px;
-    padding-top: 5px;
-    font-size: 11px;
-}
-
 /*Forum Header */
 .forum_header_table {
     z-index: 3;
@@ -220,7 +208,7 @@ a.heading:hover {
 }
 
 /* Forum Info&Buttons */
-.forum_info_top {
+.forum_info_top, .forum_info_bottom {
     display: table;
     width: 100%;
 }
@@ -242,22 +230,33 @@ a.heading:hover {
     font-size: 11px;
 }
 
-.forum_info_top .button {
+.forum_info_top .button, .forum_info_bottom .button {
     margin: 0;
+    padding: 3px;
+    font-size: 10px;
 }
 
-.forum_info_top div { /* all divs */
+.info_top_lower_right .button {
+    position: relative;
+    top: -3px;
+}
+
+.forum_info_top div, .forum_info_bottom div { /* all divs */
     display: table-cell;
     vertical-align: bottom;
-    /*border: 1px solid black; */
+    /* border: 1px solid black; */
 }
 
-.forum_info_top > div { /* all rows */
+.forum_info_top > div, .forum_info_bottom > div { /* all rows */
     display: table-row;
 }
 
-.forum_info_top > div div { /* all cells */
+.forum_info_top > div div, .forum_info_bottom > div div { /* all cells */
     height: 30px;
+}
+
+.forum_info_bottom div {
+    vertical-align: top;
 }
 
 .forum_info_top > div:first-child { /* top row */
@@ -268,22 +267,26 @@ a.heading:hover {
     padding-bottom: 5px;
 }
 
-.forum_info_top > div:first-child > div:first-child { /* top-left cell */
-    text-align: left;
-}
-
 .info_top_lower > div { /* bottom row cells */
     text-align: right;
 }
 
-.info_top_lower > div:first-child { /* bottom left cell */
+.forum_info_top > div:first-child > div:first-child { /* top-left cell */
     text-align: left;
+}
+
+.forum_info_bottom > div:first-child > div:first-child {
     vertical-align: middle;
 }
 
-.info_top_lower_right .button {
-    position: relative;
-    top: -2px;
+.info_top_lower > div:first-child { /* bottom left cell */
+    vertical-align: middle;
+    text-align: left;
+}
+
+.nav_top, .nav_bottom {
+    float: right;
+    margin-left: 10px;
 }
 
 /* Forum Main Table */
@@ -822,10 +825,6 @@ a.admin, a.user {
     border-radius: 2px 2px 0 0;
 }
 
-.topic_page .page {
-    margin: 4px 5px 0 0;
-}
-
 span.page {
     background: white;
 }
@@ -835,7 +834,6 @@ a.page:hover {
 }
 
 .nav_bottom .page {
-    margin: -10px 5px 0 0;
     -webkit-border-radius: 0px 0px 2px 2px;
     -moz-border-radius: 0 0 2px 2px;
     border-radius: 0 0 2px 2px;

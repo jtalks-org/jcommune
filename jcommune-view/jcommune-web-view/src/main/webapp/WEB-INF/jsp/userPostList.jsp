@@ -28,7 +28,6 @@
 <div class="wrap topic_page">
     <jsp:include page="../template/topLine.jsp"/>
     <jsp:include page="../template/logo.jsp"/>
-
     <div class="all_forums">
         <div class="forum_info_top">
             <div>
@@ -54,11 +53,10 @@
                 <div> <!-- bottom right -->
                     <span class="nav_top">
                         <jtalks:pagination uri="" pagination="${pag}" numberLink="3" list="${posts}"/>
-                    </span>
+                    <span>
                 </div>
             </div>
         </div>
-
         <div class="forum_header_table">
             <div class="forum_header">
                 <span class="forum_header_userinfo"><spring:message code="label.info"/></span>
@@ -66,7 +64,6 @@
             </div>
         </div>
         <ul class="forum_table">
-            <jtalks:pagination uri="${topicId}" pagination="${pag}" numberLink="3" list="${posts}">
             <c:forEach var="post" items="${list}" varStatus="i">
                 <li class="forum_row">
                     <div class="forum_userinfo">
@@ -102,24 +99,30 @@
                 </li>
             </c:forEach>
         </ul>
-        <nobr>
-        <span class="nav_bottom">
-            </jtalks:pagination>
-        </span>
-        </nobr>
-        <a class="button"  href="${pageContext.request.contextPath}/users/${user.encodedUsername}">
-            <spring:message code="label.backToProfile"/>
-        </a>
-        <c:if test="${pag.maxPages>1}">
-            <c:if test="${pag.pagingEnabled==true}">
-                <a class="button"
-                   href="?pagingEnabled=false"><spring:message code="label.showAll"/></a>
-                &nbsp; &nbsp; &nbsp;
-            </c:if>
-        </c:if>
-        <c:if test="${pag.pagingEnabled == false}">
-            <a class="button" href="?pagingEnabled=true"><spring:message code="label.showPages"/></a>
-        </c:if>
+        <div class="forum_info_bottom">
+            <div>
+                <div>
+                    <a class="button"  href="${pageContext.request.contextPath}/users/${user.encodedUsername}">
+                        <spring:message code="label.backToProfile"/>
+                    </a>
+                    <c:if test="${pag.maxPages>1}">
+                        <c:if test="${pag.pagingEnabled==true}">
+                            <a class="button"
+                               href="?pagingEnabled=false"><spring:message code="label.showAll"/></a>
+                            &nbsp; &nbsp; &nbsp;
+                        </c:if>
+                    </c:if>
+                    <c:if test="${pag.pagingEnabled == false}">
+                        <a class="button" href="?pagingEnabled=true"><spring:message code="label.showPages"/></a>
+                    </c:if>
+                </div>
+                <div>
+                    <span class="nav_bottom">
+                        <jtalks:pagination uri="" pagination="${pag}" numberLink="3" list="${posts}"/>
+                    </span>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="footer_buffer"></div>
 </div>

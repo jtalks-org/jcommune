@@ -38,7 +38,7 @@
                 <h2><spring:message code="h.new_topic"/></h2>
             </div>
             <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-            <div class="forum_header_table"> 
+            <div class="forum_header_table">
                 <div class="forum_header">
                     <span class="forum_header_answer"><spring:message code="h.new_topic"/></span>
                     <span class="empty_cell"></span>
