@@ -336,6 +336,8 @@ public class TransactionalTopicServiceTest {
 
         assertEquals(targetBranch.getTopicCount(), 1);
         verify(branchDao).update(targetBranch);
+        verify(notificationService).topicChanged(topic);
+        verify(notificationService).branchChanged(currentBranch);
     }
 
     @Test(expectedExceptions = {NotFoundException.class})

@@ -223,25 +223,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
 
         logger.info("Moved topic \"{}\". Topic id: {}", topic.getTitle(), topicId);
 
-        notifySubscribedUsersAboutUpdatedBranchesAndTopic(topic, currentBranch);
-    }
-
-    /**
-     * Notifies subscribed users about updated, in the process of moving topic, branches and topic.
-     * Execution of this method proceeds in separate thread because the process of sending mails may consume long time.
-     * We don't want to force user waiting long.
-     *
-     * @param topic  updated topic
-     * @param branch updated branch
-     */
-    private void notifySubscribedUsersAboutUpdatedBranchesAndTopic(final Topic topic, final Branch branch) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                notificationService.topicChanged(topic);
-                notificationService.branchChanged(branch);
-            }
-        }).start();
+        notificationService.topicChanged(topic);
+        notificationService.branchChanged(currentBranch);
     }
 
     /**
