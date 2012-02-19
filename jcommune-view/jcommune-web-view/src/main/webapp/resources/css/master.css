@@ -246,6 +246,11 @@ a.heading:hover {
     top: -5px;
 }
 
+.user_posts_page .forum_info_bottom .button,
+.user_posts_page .forum_info_top .button {
+    position: static;
+}
+
 .forum_info_top div, .forum_info_bottom div { /* all divs */
     display: table-cell;
     vertical-align: bottom;
