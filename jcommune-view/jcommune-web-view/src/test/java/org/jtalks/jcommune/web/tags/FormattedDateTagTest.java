@@ -24,6 +24,7 @@ import java.util.Locale;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 
 import org.joda.time.DateTime;
@@ -109,6 +110,18 @@ public class FormattedDateTagTest {
         assertEquals(output, formatter.withLocale(locale).print(utcDate));
     }
 
+    @Test
+    public void testRenderNullDate() throws JspException, UnsupportedEncodingException {
+        cookies = new Cookie[]{};
+        when(request.getCookies()).thenReturn(cookies);
+        tag.setPageContext(context);
+        tag.setValue(null);
+        tag.doStartTag();
+        tag.doEndTag();
+        String output = ((MockHttpServletResponse) context.getResponse()).getContentAsString();
+        assertEquals(output, "");
+    }
+    
     private String render() throws JspException, UnsupportedEncodingException {
         //cannot move it to @Before as cookies should be set first
         tag.setPageContext(context);
