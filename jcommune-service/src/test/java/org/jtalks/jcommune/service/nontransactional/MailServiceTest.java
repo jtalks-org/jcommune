@@ -26,6 +26,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.context.MessageSource;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -62,7 +63,7 @@ public class MailServiceTest {
     private JavaMailSender sender;
     private VelocityEngine velocityEngine;
     private MockHttpServletRequest request;
-    private MessageSource messageSource;
+    private ReloadableResourceBundleMessageSource messageSource;
     @Mock
     private BBCodeService bbCodeService;
 
@@ -83,6 +84,8 @@ public class MailServiceTest {
         velocityEngine.setProperty("resource.loader", "class");
         velocityEngine.setProperty("class.resource.loader.class",
                 "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+        messageSource=new ReloadableResourceBundleMessageSource();
+        messageSource.setBasename("classpath:/org/jtalks/jcommune/service/bundle/TemplatesMessages");
         service = new MailService(sender, FROM, velocityEngine, messageSource, bbCodeService);
         MimeMessage message = new MimeMessage((Session) null);
         when(sender.createMimeMessage()).thenReturn(message);

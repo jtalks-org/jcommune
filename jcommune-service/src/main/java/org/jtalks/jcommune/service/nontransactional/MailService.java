@@ -33,6 +33,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -97,13 +98,15 @@ public class MailService {
     public void sendPasswordRecoveryMail(JCUser user, String newPassword) throws MailingFailedException {
         String url = this.getDeploymentRootUrl() + "/login";
         String name = user.getUsername();
+        Locale locale = user.getLanguage().getLocale();
         Map<String, Object> model = new HashMap<String, Object>();
         model.put(NAME, name);
         model.put("newPassword", newPassword);
         model.put(LINK, url);
         model.put(LINK_LABEL, getLinkLabel(url));
-        model.put(RECIPIENT_LOCALE, user.getLanguage().getLocale());
-        this.sendEmail(user.getEmail(), "Password recovery", model, "passwordRecovery.vm");
+        model.put(RECIPIENT_LOCALE, locale);
+        this.sendEmail(user.getEmail(), messageSource.getMessage("passwordRecovery.subject", new Object[]{}, locale),
+                model, "passwordRecovery.vm");
         LOGGER.info("Password recovery email sent for {}", name);
     }
 
@@ -118,12 +121,14 @@ public class MailService {
     public void sendTopicUpdatesOnSubscription(JCUser user, Topic topic) {
         try {
             String url = this.getDeploymentRootUrl() + "/posts/" + topic.getLastPost().getId();
+            Locale locale = user.getLanguage().getLocale();
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(USER, user);
             model.put(LINK, url);
             model.put(LINK_LABEL, getLinkLabel(url));
-            model.put(RECIPIENT_LOCALE, user.getLanguage().getLocale());
-            this.sendEmail(user.getEmail(), "Forum updates", model, "subscriptionNotification.vm");
+            model.put(RECIPIENT_LOCALE, locale);
+            this.sendEmail(user.getEmail(), messageSource.getMessage("subscriptionNotification.subject", new Object[]{},
+                    locale), model, "subscriptionNotification.vm");
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Topic", topic.getId(), user.getUsername()));
         }
@@ -140,12 +145,14 @@ public class MailService {
     public void sendBranchUpdatesOnSubscription(JCUser user, Branch branch) {
         try {
             String url = this.getDeploymentRootUrl() + "/branches/" + branch.getId();
+            Locale locale = user.getLanguage().getLocale();
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(USER, user);
             model.put(LINK, url);
             model.put(LINK_LABEL, getLinkLabel(url));
-            model.put(RECIPIENT_LOCALE, user.getLanguage().getLocale());
-            this.sendEmail(user.getEmail(), "Forum updates", model, "subscriptionNotification.vm");
+            model.put(RECIPIENT_LOCALE, locale);
+            this.sendEmail(user.getEmail(), messageSource.getMessage("subscriptionNotification.subject", new Object[]{},
+                    locale), model, "subscriptionNotification.vm");
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Branch", branch.getId(), user.getUsername()));
         }
@@ -160,15 +167,17 @@ public class MailService {
     public void sendReceivedPrivateMessageNotification(JCUser recipient, PrivateMessage pm) {
         try {
             String url = this.getDeploymentRootUrl() + "/pm/" + pm.getId();
+            Locale locale = recipient.getLanguage().getLocale();
             Map<String, Object> model = new HashMap<String, Object>();
             model.put("recipient", recipient);
             model.put(LINK, url);
             model.put(LINK_LABEL, getLinkLabel(url));
-            model.put(RECIPIENT_LOCALE, recipient.getLanguage().getLocale());
+            model.put(RECIPIENT_LOCALE, locale);
             model.put("title", pm.getTitle());
             model.put("message", bbCodeService.removeBBCodes(pm.getBody()));
             this.sendEmail(recipient.getEmail(),
-                    "Received private message", model, "receivedPrivateMessageNotification.vm");
+                    messageSource.getMessage("receivedPrivateMessageNotification.subject", new Object[]{}, locale),
+                    model, "receivedPrivateMessageNotification.vm");
         } catch (MailingFailedException e) {
             LOGGER.error(String.format(LOG_TEMPLATE, "Private message", pm.getId(), recipient.getUsername()));
         }
@@ -182,12 +191,14 @@ public class MailService {
     public void sendAccountActivationMail(JCUser recipient) {
         try {
             String url = this.getDeploymentRootUrl() + "/user/activate/" + recipient.getUuid();
+            Locale locale = recipient.getLanguage().getLocale();
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(NAME, recipient.getUsername());
             model.put(LINK, url);
             model.put(LINK_LABEL, getLinkLabel(url));
-            model.put(RECIPIENT_LOCALE, recipient.getLanguage().getLocale());
-            this.sendEmail(recipient.getEmail(), "JTalks account activation", model, "accountActivation.vm");
+            model.put(RECIPIENT_LOCALE, locale);
+            this.sendEmail(recipient.getEmail(), messageSource.getMessage("accountActivation.subject",
+                    new Object[]{}, locale), model, "accountActivation.vm");
         } catch (MailingFailedException e) {
             LOGGER.error("Failed to sent activation mail for user: " + recipient.getUsername());
         }
@@ -255,7 +266,7 @@ public class MailService {
      * @param url url for forming label
      * @return label to display in mail
      */
-    private String getLinkLabel(String url){
+    private String getLinkLabel(String url) {
         return url.replaceFirst(":\\d+", "");
     }
 
