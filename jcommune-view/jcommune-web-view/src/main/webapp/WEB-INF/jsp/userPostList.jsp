@@ -57,18 +57,6 @@
                 </div>
             </div>
         </div>
-        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-            <c:set var="authenticated" value="${true}"/>
-        </sec:authorize>
-        <c:if test="${authenticated==true}">
-            <a class="button"
-               href="${pageContext.request.contextPath}/users/${user.encodedUsername}">
-                <spring:message code="label.backToProfile"/>
-            </a>
-        </c:if>
-        <br>
-        &nbsp; &nbsp; &nbsp;
-
         <div class="forum_header_table">
             <div class="forum_header">
                 <span class="forum_header_userinfo"><spring:message code="label.info"/></span>

@@ -12,6 +12,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
 $(document).ready(function () {
 	var c = 0;
 	$('.messages tr.mess:even').css('background', '#d4d9df');
