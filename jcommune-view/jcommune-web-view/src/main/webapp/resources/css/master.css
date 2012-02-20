@@ -101,13 +101,6 @@ span.version {
     margin-top: 5px;
 }
 
-/*.main_page .forum_top_right_link,
-.section_page .forum_top_right_link {
-    position: relative;
-    top: 48px;
-    padding: 0;
-} */
-
 .branch_page .forum_top_right_link {
     padding: 0;
 }
@@ -236,19 +229,19 @@ a.heading:hover {
     font-size: 10px;
 }
 
-.info_top_lower .button {
+/*.info_top_lower .button {
     position: relative;
     top: -3px;
-}
+}*/
 
-.forum_info_bottom .button {
+/*.forum_info_bottom .button {
     position: relative;
     top: -5px;
-}
+} */
 
-.user_posts_page .forum_info_bottom .button,
-.user_posts_page .forum_info_top .button {
-    position: static;
+.user_posts_page .forum_info_bottom .button {
+    position: relative;
+    top: 2px;
 }
 
 .forum_info_top div, .forum_info_bottom div { /* all divs */
@@ -269,6 +262,18 @@ a.heading:hover {
     vertical-align: top;
 }
 
+.forum_info_bottom div:first-child {
+    padding-top: 2px;
+}
+
+.forum_info_bottom .breadcrumbs {
+    top: 1px;
+}
+
+.forum_info_top .breadcrumbs {
+    top: 1px;
+}
+
 .forum_info_top > div:first-child { /* top row */
     height: 50px;
     font-size: 11px;
@@ -286,17 +291,22 @@ a.heading:hover {
 }
 
 .forum_info_bottom > div:first-child > div:first-child {
-    vertical-align: middle;
+    vertical-align: top;
 }
 
 .info_top_lower > div:first-child { /* bottom left cell */
-    vertical-align: middle;
     text-align: left;
+    padding-bottom: 3px;
 }
 
 .nav_top, .nav_bottom {
     float: right;
     margin-left: 10px;
+}
+
+.info_top_lower_right .button {
+    position: relative;
+    top: -2px;
 }
 
 /* Forum Main Table */
@@ -844,7 +854,7 @@ a.page:hover {
 }
 
 .nav_bottom .page {
-    -webkit-border-radius: 0px 0px 2px 2px;
+    -webkit-border-radius: 0 0 2px 2px;
     -moz-border-radius: 0 0 2px 2px;
     border-radius: 0 0 2px 2px;
 }
@@ -870,7 +880,7 @@ a.page:hover {
 /*Breadcrumbs*/
 .breadcrumbs {
     position: relative;
-    top: 5px;
+    vertical-align: bottom;
     display: inline-block;
     margin-left: 10px;
     border-width: 1px;
@@ -881,9 +891,9 @@ a.page:hover {
     overflow: hidden;
 }
 
-.forum_info_bottom .breadcrumbs {
+/*.forum_info_bottom .breadcrumbs {
     top: 3px;
-}
+}*/
 
 .breadcrumbs li{
     float: left;
