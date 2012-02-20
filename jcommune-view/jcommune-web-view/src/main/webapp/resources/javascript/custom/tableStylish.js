@@ -13,11 +13,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+/**
+ * This script enables checking private 
+ * messages in table and highlights the checked.
+ *
+ * 
+ * 
+ */
+
 $(document).ready(function () {
 	var c = 0;
 	$('.messages tr.mess:even').css('background', '#d4d9df');
 	$('.messages tr.mess:odd').css('background', '#cdcdcd');
 	$('.counter').text('0 выбрано');
+
 
 	$('.checker').on("click", function () {
 		if ($(this).is(':checked')) {
