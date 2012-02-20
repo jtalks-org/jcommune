@@ -28,19 +28,34 @@
 <div class="wrap user_posts_page topic_page">
     <jsp:include page="../template/topLine.jsp"/>
     <jsp:include page="../template/logo.jsp"/>
-
     <div class="all_forums">
-        <h2 class="heading"><spring:message code="label.postListOfUser"/> ${user.username}</h2>
-        <br>
+        <div class="forum_info_top">
+            <div>
+                <div> <!-- top left -->
+                    <h2 class="heading"><spring:message code="label.postListOfUser"/> ${user.username}</h2>
+                </div>
+                <div> <!-- top right -->
 
-        <div class="forum_top_right_link">
-
-            <jtalks:pagination uri="" pagination="${pag}" numberLink="3" list="${posts}">
-            <nobr>
-            <span class="nav_top">
-                </jtalks:pagination>
-            </span>
-            </nobr>
+                </div>
+            </div>
+            <div class="info_top_lower">
+                <div> <!-- bottom left -->
+                    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                        <c:set var="authenticated" value="${true}"/>
+                    </sec:authorize>
+                    <c:if test="${authenticated==true}">
+                        <a class="button"
+                           href="${pageContext.request.contextPath}/users/${user.encodedUsername}">
+                            <spring:message code="label.backToProfile"/>
+                        </a>
+                    </c:if>
+                </div>
+                <div> <!-- bottom right -->
+                    <span class="nav_top">
+                        <jtalks:pagination uri="" pagination="${pag}" numberLink="3" list="${posts}"/>
+                    <span>
+                </div>
+            </div>
         </div>
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
             <c:set var="authenticated" value="${true}"/>

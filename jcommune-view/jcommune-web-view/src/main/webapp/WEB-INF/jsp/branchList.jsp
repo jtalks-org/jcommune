@@ -83,7 +83,7 @@
                 </li>
             </c:forEach>
         </ul>
-        <br/>
+        <br />
         <c:if test="${!(empty viewList)}">
             <spring:message code="label.section.now_browsing"/>
         </c:if>
@@ -91,7 +91,6 @@
             <a href="${pageContext.request.contextPath}/users/${innerUser.encodedUsername}">
                 <c:out value="${innerUser.username}"/>
             </a>
-            &nbsp;&nbsp;
         </c:forEach>
     </div>
     <div class="footer_buffer"></div>
