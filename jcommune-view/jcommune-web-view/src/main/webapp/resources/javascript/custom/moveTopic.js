@@ -29,6 +29,7 @@ $(document).ready(function () {
         $.getJSON(baseUrl + "/sections/json", function (sections) {
             var sectionsSize = sections.length;
             var str = '<b>Move topic</b><br/><select name="section_name" id="section_name" size="' + sectionsSize + '">';
+            str += '<option value="all">All sections</option>';
             $.each(sections, function (i, section) {
                 str += '<option value="' + section.id + '">' + section.name + '</option>';
             });
@@ -42,13 +43,21 @@ $(document).ready(function () {
                 loaded:function () {
                     $("#section_name").change(function () {
                         var sectionId = $(this).val();
-                        $.ajax({
-                            url:baseUrl + '/branches/json/' + sectionId,
-                            success:function (branches) {
-                                $("#branch_name").children().remove();
-                                $("#branch_name").append(getBranchItemHtml(branches));
-                            }
-                        });
+                        if (sectionId != "all") {
+                            $.ajax({
+                                url:baseUrl + '/branches/json/' + sectionId,
+                                success:function (branches) {
+                                    rebuildBranchesList(branches);
+                                }
+                            });
+                        } else {
+                            $.ajax({
+                                url:baseUrl + '/branches/json',
+                                success:function (branches) {
+                                    rebuildBranchesList(branches);
+                                }
+                            });
+                        }
                     });
                     $("#branch_name").change(function () {
                         branchId = $(this).val();
@@ -71,11 +80,20 @@ $(document).ready(function () {
     });
 });
 
+/**
+ * Removes old values from branches select element and insert new values.
+ *
+ * @param branches list of branches to present
+ */
+function rebuildBranchesList(branches) {
+    $("#branch_name").children().remove();
+    $("#branch_name").append(getBranchItemHtml(branches));
+}
 
 /**
  * Returns HTML code for options in branches select element.
  *
- * @param branches list of all branches in section
+ * @param branches list of branches to present
  * @return html template
  */
 function getBranchItemHtml(branches) {
@@ -85,3 +103,4 @@ function getBranchItemHtml(branches) {
     });
     return template;
 }
+

@@ -166,8 +166,24 @@ public class BranchController {
      */
     @RequestMapping(value = "/branches/json/{sectionId}", method = RequestMethod.GET)
     @ResponseBody
-    public BranchDto[] branchList(@PathVariable long sectionId) throws NotFoundException {
+    public BranchDto[] getBranchesFromSection(@PathVariable long sectionId) throws NotFoundException {
         List<Branch> branches = branchService.getBranchesInSection(sectionId);
+        List<BranchDto> branchDtoList = new ArrayList<BranchDto>(branches.size());
+        for (Branch branch : branches) {
+            branchDtoList.add(BranchDto.getDtoFor(branch));
+        }
+        return branchDtoList.toArray(new BranchDto[branchDtoList.size()]);
+    }
+
+    /**
+     * Get all existing branches.
+     *
+     * @return branches list
+     */
+    @RequestMapping(value = "/branches/json", method = RequestMethod.GET)
+    @ResponseBody
+    public BranchDto[] getAllBranches() {
+        List<Branch> branches = branchService.getAllBranches();
         List<BranchDto> branchDtoList = new ArrayList<BranchDto>(branches.size());
         for (Branch branch : branches) {
             branchDtoList.add(BranchDto.getDtoFor(branch));

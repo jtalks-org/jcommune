@@ -25,10 +25,18 @@ import java.util.List;
  * @author Vitaliy Kravchenko
  * @author Max Malakhov
  * @author Evgeniy Naumenko
+ * @author Eugeny Batov
  * @see org.jtalks.jcommune.model.dao.hibernate.BranchHibernateDao
  */
 
 public interface BranchDao extends ChildRepository<Branch> {
+
+    /**
+     * Get all existing branches.
+     *
+     * @return list of {@code Branch} objects
+     */
+    List<Branch> getAllBranches();
 
     /**
      * Get branches from section.

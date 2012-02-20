@@ -25,8 +25,20 @@ import java.util.List;
  *
  * @author Vitaliy Kravchenko
  * @author Max Malakhov
+ * @author Eugeny Batov
  */
 public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch> implements BranchDao {
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Branch> getAllBranches() {
+        List<Branch> branches = getSession().createQuery("from Branch b")
+                .setCacheable(true)
+                .list();
+        return branches;
+    }
 
     /**
      * {@inheritDoc}
