@@ -25,7 +25,7 @@
 </head>
 <body>
 <c:set var="authenticated" value="${false}"/>
-<div class="wrap topic_page">
+<div class="wrap user_posts_page topic_page">
     <jsp:include page="../template/topLine.jsp"/>
     <jsp:include page="../template/logo.jsp"/>
 
