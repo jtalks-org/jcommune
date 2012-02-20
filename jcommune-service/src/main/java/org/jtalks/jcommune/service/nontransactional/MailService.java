@@ -96,14 +96,15 @@ public class MailService {
      * @throws MailingFailedException when mailing failed
      */
     public void sendPasswordRecoveryMail(JCUser user, String newPassword) throws MailingFailedException {
-        String url = this.getDeploymentRootUrl() + "/login";
+        String urlSuffix = "/login";
+        String url = this.getDeploymentRootUrl() + urlSuffix;
         String name = user.getUsername();
         Locale locale = user.getLanguage().getLocale();
         Map<String, Object> model = new HashMap<String, Object>();
         model.put(NAME, name);
         model.put("newPassword", newPassword);
         model.put(LINK, url);
-        model.put(LINK_LABEL, getLinkLabel(url));
+        model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
         model.put(RECIPIENT_LOCALE, locale);
         this.sendEmail(user.getEmail(), messageSource.getMessage("passwordRecovery.subject", new Object[]{}, locale),
                 model, "passwordRecovery.vm");
@@ -115,22 +116,20 @@ public class MailService {
      * posts were added to the topic. This method won't check if user
      * is subscribed to the particular notification or not.
      *
-     * @param user  a person to be notified about updates by email
-     * @param topic topic changed (to include more detailes in email)
+     * @param recipient a person to be notified about updates by email
+     * @param topic     topic changed (to include more detailes in email)
      */
-    public void sendTopicUpdatesOnSubscription(JCUser user, Topic topic) {
+    public void sendTopicUpdatesOnSubscription(JCUser recipient, Topic topic) {
         try {
-            String url = this.getDeploymentRootUrl() + "/posts/" + topic.getLastPost().getId();
-            Locale locale = user.getLanguage().getLocale();
+            String urlSuffix = "/posts/" + topic.getLastPost().getId();
+            String url = this.getDeploymentRootUrl() + urlSuffix;
+            Locale locale = recipient.getLanguage().getLocale();
             Map<String, Object> model = new HashMap<String, Object>();
-            model.put(USER, user);
             model.put(LINK, url);
-            model.put(LINK_LABEL, getLinkLabel(url));
-            model.put(RECIPIENT_LOCALE, locale);
-            this.sendEmail(user.getEmail(), messageSource.getMessage("subscriptionNotification.subject", new Object[]{},
-                    locale), model, "subscriptionNotification.vm");
+            model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
+            sendEmailOnForumUpdates(recipient, model, locale);
         } catch (MailingFailedException e) {
-            LOGGER.error(String.format(LOG_TEMPLATE, "Topic", topic.getId(), user.getUsername()));
+            LOGGER.error(String.format(LOG_TEMPLATE, "Topic", topic.getId(), recipient.getUsername()));
         }
     }
 
@@ -139,23 +138,37 @@ public class MailService {
      * posts were added to the topic. This method won't check if user
      * is subscribed to the particular notification or not.
      *
-     * @param user   a person to be notified about updates by email
-     * @param branch branch changed (to include more detailes in email)
+     * @param recipient a person to be notified about updates by email
+     * @param branch    branch changed (to include more detailes in email)
      */
-    public void sendBranchUpdatesOnSubscription(JCUser user, Branch branch) {
+    public void sendBranchUpdatesOnSubscription(JCUser recipient, Branch branch) {
         try {
-            String url = this.getDeploymentRootUrl() + "/branches/" + branch.getId();
-            Locale locale = user.getLanguage().getLocale();
+            String urlSuffix = "/branches/" + branch.getId();
+            String url = this.getDeploymentRootUrl() + urlSuffix;
+            Locale locale = recipient.getLanguage().getLocale();
             Map<String, Object> model = new HashMap<String, Object>();
-            model.put(USER, user);
             model.put(LINK, url);
-            model.put(LINK_LABEL, getLinkLabel(url));
-            model.put(RECIPIENT_LOCALE, locale);
-            this.sendEmail(user.getEmail(), messageSource.getMessage("subscriptionNotification.subject", new Object[]{},
-                    locale), model, "subscriptionNotification.vm");
+            model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
+            sendEmailOnForumUpdates(recipient, model, locale);
         } catch (MailingFailedException e) {
-            LOGGER.error(String.format(LOG_TEMPLATE, "Branch", branch.getId(), user.getUsername()));
+            LOGGER.error(String.format(LOG_TEMPLATE, "Branch", branch.getId(), recipient.getUsername()));
         }
+    }
+
+    /**
+     * Sends email on forum updates.
+     *
+     * @param recipient a person to be notified about updates by email
+     * @param model     template params to be substituted in velocity template
+     * @param locale    recipient locale
+     * @throws MailingFailedException when mailing failed
+     */
+    private void sendEmailOnForumUpdates(JCUser recipient, Map<String, Object> model, Locale locale)
+            throws MailingFailedException {
+        model.put(USER, recipient);
+        model.put(RECIPIENT_LOCALE, locale);
+        this.sendEmail(recipient.getEmail(), messageSource.getMessage("subscriptionNotification.subject",
+                new Object[]{}, locale), model, "subscriptionNotification.vm");
     }
 
     /**
@@ -166,12 +179,13 @@ public class MailService {
      */
     public void sendReceivedPrivateMessageNotification(JCUser recipient, PrivateMessage pm) {
         try {
-            String url = this.getDeploymentRootUrl() + "/pm/" + pm.getId();
+            String urlSuffix = "/pm/" + pm.getId();
+            String url = this.getDeploymentRootUrl() + urlSuffix;
             Locale locale = recipient.getLanguage().getLocale();
             Map<String, Object> model = new HashMap<String, Object>();
             model.put("recipient", recipient);
             model.put(LINK, url);
-            model.put(LINK_LABEL, getLinkLabel(url));
+            model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
             model.put(RECIPIENT_LOCALE, locale);
             model.put("title", pm.getTitle());
             model.put("message", bbCodeService.removeBBCodes(pm.getBody()));
@@ -190,12 +204,13 @@ public class MailService {
      */
     public void sendAccountActivationMail(JCUser recipient) {
         try {
-            String url = this.getDeploymentRootUrl() + "/user/activate/" + recipient.getUuid();
+            String urlSuffix = "/user/activate/" + recipient.getUuid();
+            String url = this.getDeploymentRootUrl() + urlSuffix;
             Locale locale = recipient.getLanguage().getLocale();
             Map<String, Object> model = new HashMap<String, Object>();
             model.put(NAME, recipient.getUsername());
             model.put(LINK, url);
-            model.put(LINK_LABEL, getLinkLabel(url));
+            model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
             model.put(RECIPIENT_LOCALE, locale);
             this.sendEmail(recipient.getEmail(), messageSource.getMessage("accountActivation.subject",
                     new Object[]{}, locale), model, "accountActivation.vm");
@@ -260,25 +275,35 @@ public class MailService {
         return VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, path, model);
     }
 
-    /**
-     * Forms label for link by omitting port from url.
-     *
-     * @param url url for forming label
-     * @return label to display in mail
-     */
-    private String getLinkLabel(String url) {
-        return url.replaceFirst(":\\d+", "");
-    }
 
     /**
      * @return current deployment root, e.g. "http://myhost.com:1234/mycoolforum"
      */
     private String getDeploymentRootUrl() {
-        RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
-        HttpServletRequest request = ((ServletRequestAttributes) attributes).getRequest();
+        HttpServletRequest request = getServletRequest();
         return request.getScheme()
                 + "://" + request.getServerName()
                 + ":" + request.getServerPort()
                 + request.getContextPath();
+    }
+
+    /**
+     * Returns current deployment root without port for using as label link, for example.
+     *
+     * @return current deployment root without port, e.g. "http://myhost.com/mycoolforum"
+     */
+    private String getDeploymentRootUrlWithoutPort() {
+        HttpServletRequest request = getServletRequest();
+        return request.getScheme()
+                + "://" + request.getServerName()
+                + request.getContextPath();
+    }
+
+    /**
+     * @return native {@link HttpServletRequest}
+     */
+    private HttpServletRequest getServletRequest() {
+        RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
+        return ((ServletRequestAttributes) attributes).getRequest();
     }
 }
