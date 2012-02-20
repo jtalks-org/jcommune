@@ -27,7 +27,7 @@ import javax.validation.ConstraintValidatorContext;
  *
  * @author Evgeniy Naumenko
  */
-public class UniqueValidator implements ConstraintValidator<Unique, Object> {
+public class UniqueValidator implements ConstraintValidator<Unique, String> {
 
     private Class<? extends Entity> entity;
     private String field;
@@ -55,7 +55,7 @@ public class UniqueValidator implements ConstraintValidator<Unique, Object> {
      * {@inheritDoc}
      */
     @Override
-    public boolean isValid(Object value, ConstraintValidatorContext context) {
-        return (value != null) && dao.isResultSetEmpty(entity, field, value.toString());
+    public boolean isValid(String value, ConstraintValidatorContext context) {
+        return (value != null) && dao.isResultSetEmpty(entity, field, value);
     }
 }
