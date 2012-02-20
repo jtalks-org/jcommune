@@ -12,42 +12,39 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.entity;
+package org.jtalks.jcommune.web.validation;
 
-import org.jtalks.common.model.entity.Entity;
+import javax.validation.Constraint;
+import javax.validation.Payload;
+import java.lang.annotation.*;
 
 /**
- * Entities compared by id.
- * We need them in AJAX calls, which operate with ids, not uuids.
+ * Ensures that user specified is not the current user himself.
+ * Used to be sure user is not mailing to himself and so on.
  *
- * @author Michael Gamov
+ * Makes sense for String fields with username only
+ *
+ * @author Evgeniy Naumenko
  */
-public abstract class IdComparableEntity extends Entity {
+@Target({ElementType.FIELD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Constraint(validatedBy = NotMeValidator.class)
+public @interface NotMe {
 
     /**
-     * {@inheritDoc }
+     * Resource bundle code for error message
      */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-
-        IdComparableEntity other = (IdComparableEntity) obj;
-        return (getId() == other.getId());
-    }
+    String message();
 
     /**
-     * {@inheritDoc }
+     * Groups settings for this validation constraint
      */
-    @Override
-    public int hashCode() {
-        return Long.valueOf(getId()).hashCode();
-    }
+    Class<?>[] groups() default {};
+
+    /**
+     * Payload, not used here
+     */
+    Class<? extends Payload>[] payload() default {};
+
 }

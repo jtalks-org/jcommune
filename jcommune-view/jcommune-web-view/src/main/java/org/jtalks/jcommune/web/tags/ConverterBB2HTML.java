@@ -18,13 +18,9 @@ package org.jtalks.jcommune.web.tags;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-import ru.perm.kefir.bbcode.BBProcessorFactory;
-import ru.perm.kefir.bbcode.TextProcessor;
 
-import javax.servlet.jsp.JspContext;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.SimpleTagSupport;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
 

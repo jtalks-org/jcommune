@@ -46,75 +46,89 @@
                 <span class="forum_header_last_message"><spring:message code="label.branch.header.lastMessage"/></span>
             </div>
         </div>
-        <ul class="forum_table">
-            <jtalks:pagination uri="" pagination="${pagination}" numberLink="3" list="${topics}">
-            <c:forEach var="topic" items="${list}">
-                <li class="forum_row">
-                    <div class="forum_icon">
-                        <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png"
-                             alt=""
-                             title="Форум закрыт"/>
-                    </div>
-                    <c:choose>
-                        <c:when test="${topic.announcement=='true'}">
-                            <div class="forum_info">
-                                <h4>
-                                    <span class="sticky">
-                                        <spring:message code="label.marked_as_announcement"/>
-                                    </span>
-                                    <a class="forum_link" href="${pageContext.request.contextPath}/topics/${topic.id}">
-                                        <c:out value="${topic.title}"/>
-                                    </a>
-                                </h4>
+
+        <c:choose>
+            <c:when test="${!(empty topics)}">
+                <ul class="forum_table">
+                    <jtalks:pagination uri="" pagination="${pagination}" numberLink="3" list="${topics}">
+                    <c:forEach var="topic" items="${list}">
+                        <li class="forum_row">
+                            <div class="forum_icon">
+                                <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png"
+                                     alt=""
+                                     title="Форум закрыт"/>
                             </div>
-                        </c:when>
-                        <c:when test="${topic.sticked=='true'}">
-                            <div class="forum_info">
-                                <h4><span class="sticky">
-                                    <spring:message code="label.marked_as_sticked"/> </span><a
-                                        class="forum_link"
-                                        href="${pageContext.request.contextPath}/topics/${topic.id}">
-                                    <c:out value="${topic.title}"/></a></h4>
+                            <c:choose>
+                                <c:when test="${topic.announcement=='true'}">
+                                    <div class="forum_info">
+                                        <h4>
+                                            <span class="sticky">
+                                                <spring:message code="label.marked_as_announcement"/>
+                                            </span>
+                                            <a class="forum_link" href="${pageContext.request.contextPath}/topics/${topic.id}">
+                                                <c:out value="${topic.title}"/>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                </c:when>
+                                <c:when test="${topic.sticked=='true'}">
+                                    <div class="forum_info">
+                                        <h4><span class="sticky">
+                                            <spring:message code="label.marked_as_sticked"/> </span><a
+                                                class="forum_link"
+                                                href="${pageContext.request.contextPath}/topics/${topic.id}">
+                                            <c:out value="${topic.title}"/></a></h4>
+                                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="forum_info">
+                                        <h4><a class="forum_link"
+                                               href="${pageContext.request.contextPath}/topics/${topic.id}"><c:out
+                                                value="${topic.title}"/></a></h4>
+                                        <br>
+                                        <span class="truncated"><jtalks:bb2html bbCode="${topic.lastPost.postContent}"/></span>
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
+                            <div class="forum_author">
+                                <a href="${pageContext.request.contextPath}/users/${topic.topicStarter.encodedUsername}"
+                                   title="<spring:message code="label.topic.header.author"/>"><c:out
+                                        value="${topic.topicStarter.username}"/></a>
                             </div>
-                        </c:when>
-                        <c:otherwise>
-                            <div class="forum_info">
-                                <h4><a class="forum_link"
-                                       href="${pageContext.request.contextPath}/topics/${topic.id}"><c:out
-                                        value="${topic.title}"/></a></h4>
-                                <br>
-                                <span class="truncated"><jtalks:bb2html bbCode="${topic.lastPost.postContent}"/></span>
+                            <div class="forum_clicks">
+                                <c:out value="${topic.views}"/>
                             </div>
-                        </c:otherwise>
-                    </c:choose>
-                    <div class="forum_author">
-                        <a href="${pageContext.request.contextPath}/users/${topic.topicStarter.encodedUsername}"
-                           title="<spring:message code="label.topic.header.author"/>"><c:out
-                                value="${topic.topicStarter.username}"/></a>
-                    </div>
-                    <div class="forum_clicks">
-                        <c:out value="${topic.views}"/>
-                    </div>
-                    <div class="forum_last_message">
-                        <a href="${pageContext.request.contextPath}/topics/${topic.id}">
-                            <jtalks:format value="${topic.lastPost.creationDate}"/></a>
-                        <br/>
-                        <a class="last_message_user"
-                           href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
-                            <c:out value="${topic.lastPost.userCreated.username}"/></a>
-                        <a href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}">
-                            <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
-                                 alt="<spring:message code="label.section.header.lastMessage"/>"/>
-                        </a>
-                    </div>
-                </li>
-            </c:forEach>
-        </ul>
-        <nobr>
-            <span class="nav_bottom">
-                </jtalks:pagination>
-            </span>
-        </nobr>
+                            <div class="forum_last_message">
+                                <a href="${pageContext.request.contextPath}/topics/${topic.id}">
+                                    <jtalks:format value="${topic.lastPost.creationDate}"/></a>
+                                <br/>
+                                <a class="last_message_user"
+                                   href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
+                                    <c:out value="${topic.lastPost.userCreated.username}"/></a>
+                                <a href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}">
+                                    <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
+                                         alt="<spring:message code="label.section.header.lastMessage"/>"/>
+                                </a>
+                            </div>
+                        </li>
+                    </c:forEach>
+                </ul>
+                <nobr>
+                    <span class="nav_bottom">
+                        </jtalks:pagination>
+                    </span>
+                </nobr>
+            </c:when>
+            <c:otherwise>
+                <ul class="forum_table">
+                    <li class="forum_row">
+                        <spring:message code="label.messagesWithoutAnswers.empty"/>
+                    </li>
+                </ul>
+            </c:otherwise>
+        </c:choose>
+
+
     </div>
     <div class="footer_buffer"></div>
 </div>

@@ -37,7 +37,10 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
@@ -123,7 +126,7 @@ public class TransactionalTopicServiceTest {
         assertEquals(createdPost.getPostContent(), ANSWER_BODY);
         assertEquals(createdPost.getUserCreated(), user);
         assertEquals(user.getPostCount(), 1);
-        
+
         verify(securityService).getCurrentUser();
         verify(topicDao).get(TOPIC_ID);
         verify(securityService).grantToCurrentUser();
@@ -192,7 +195,7 @@ public class TransactionalTopicServiceTest {
 
     @Test
     public void testGetAllTopicsPastLastDayNullLastLoginDate() {
-        List<Topic> expectedList =  Collections.nCopies(2, new Topic(user, "title"));
+        List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
         when(topicDao.getTopicsUpdatedSince(any(DateTime.class))).thenReturn(expectedList);
 
         List<Topic> topics = topicService.getRecentTopics(null);
@@ -207,7 +210,7 @@ public class TransactionalTopicServiceTest {
 
     @Test
     public void testGetUnansweredTopics() {
-        List<Topic> expectedList =  Collections.nCopies(2, new Topic(user, "title"));
+        List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
         when(topicDao.getUnansweredTopics()).thenReturn(expectedList);
 
         List<Topic> topics = topicService.getUnansweredTopics();
@@ -314,5 +317,33 @@ public class TransactionalTopicServiceTest {
         when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
         topicService.updateTopic(TOPIC_ID, newTitle, newBody, newWeight, newSticked, newAnnouncement);
+    }
+
+    @Test
+    public void testMoveTopic() throws NotFoundException {
+        Topic topic = new Topic(user, "title");
+        Post firstPost = new Post(user, ANSWER_BODY);
+        topic.addPost(firstPost);
+        Branch currentBranch = new Branch(BRANCH_NAME);
+        currentBranch.addTopic(topic);
+        Branch targetBranch = new Branch("target branch");
+
+        when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
+        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
+        when(branchService.get(BRANCH_ID)).thenReturn(targetBranch);
+
+        topicService.moveTopic(TOPIC_ID, BRANCH_ID);
+
+        assertEquals(targetBranch.getTopicCount(), 1);
+        verify(branchDao).update(targetBranch);
+        verify(notificationService).topicChanged(topic);
+        verify(notificationService).branchChanged(currentBranch);
+    }
+
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testMoveNonExistentTopic() throws NotFoundException {
+        when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
+
+        topicService.moveTopic(TOPIC_ID, BRANCH_ID);
     }
 }

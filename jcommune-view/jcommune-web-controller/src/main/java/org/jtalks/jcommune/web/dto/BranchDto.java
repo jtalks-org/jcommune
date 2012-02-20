@@ -12,56 +12,62 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.entity;
+package org.jtalks.jcommune.web.dto;
 
-import org.jtalks.common.model.entity.Entity;
+import org.jtalks.jcommune.model.entity.Branch;
 
 /**
- * Stores information about the type contacts of user.
- * Used as {@code UserDetails}
+ * Dto for transferring branches to client side.
+ *
+ * @author Eugeny Batov
  */
-public class UserContactType extends Entity {
+public class BranchDto {
 
-    private String typeName;
-    private String icon;
+    private long id;
+    private String name;
 
     /**
-     * Only for hibernate usage.
+     * @return branch id
      */
-    public UserContactType() {
+    public long getId() {
+        return id;
     }
 
     /**
+     * Sets branch id.
      *
-     * @return address of icon
+     * @param id id of branch
      */
-    public String getIcon() {
-        return icon;
+    public void setId(long id) {
+        this.id = id;
     }
 
     /**
-     *
-     * @param icon address of icon
+     * @return branch name
      */
-    public void setIcon(String icon) {
-        this.icon = icon;
+    public String getName() {
+        return name;
     }
 
     /**
+     * Sets branch name.
      *
-     * @return name type of contact
+     * @param name name of branch
      */
-    public String getTypeName() {
-        return typeName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
+     * Creates dto.
      *
-     * @param typeName name type of contact
+     * @param branch branch for conversion
+     * @return dto for branch
      */
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
+    public static BranchDto getDtoFor(Branch branch) {
+        BranchDto branchDto = new BranchDto();
+        branchDto.setId(branch.getId());
+        branchDto.setName(branch.getName());
+        return branchDto;
     }
-
-
 }

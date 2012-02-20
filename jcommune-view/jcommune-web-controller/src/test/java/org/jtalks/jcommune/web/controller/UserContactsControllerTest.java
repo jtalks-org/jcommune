@@ -61,4 +61,6 @@ public class UserContactsControllerTest {
         assertEquals(types[0].getIcon(), expectedType.getIcon());
         assertEquals(types[0].getTypeName(), expectedType.getTypeName());
     }
+
+
 }

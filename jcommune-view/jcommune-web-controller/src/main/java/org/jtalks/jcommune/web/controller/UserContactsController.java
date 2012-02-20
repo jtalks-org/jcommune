@@ -67,7 +67,7 @@ public class UserContactsController {
      */
     @RequestMapping(value="/contacts/add", method = RequestMethod.POST)
     @ResponseBody public UserContactDto addContact(@RequestBody UserContact userContact) throws NotFoundException {
-        return UserContactDto.getDtoFor(service.addContact(userContact));
+        return new UserContactDto(service.addContact(userContact));
     }
 
     /**

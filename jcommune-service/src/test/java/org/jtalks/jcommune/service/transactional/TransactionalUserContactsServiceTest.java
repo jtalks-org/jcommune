@@ -102,6 +102,7 @@ public class TransactionalUserContactsServiceTest {
         UserContact userContact = new UserContact(CONTACT, createUserContactType());
         userContact.setId(1L);
         user.addContact(userContact);
+        when(userContactsDao.getContactById(1L)).thenReturn(userContact);
 
         userContactsService.removeContact(1L);
         assertEquals(user.getUserContacts().size(), 0);

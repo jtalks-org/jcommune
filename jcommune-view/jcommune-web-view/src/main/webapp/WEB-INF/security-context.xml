@@ -50,6 +50,7 @@
 
         <security:intercept-url pattern="/topics/*/subscribe" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
         <security:intercept-url pattern="/topics/*/unsubscribe" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+        <security:intercept-url pattern="/topics/json/**" access="hasAnyRole('ROLE_ADMIN')"/>
         <security:intercept-url pattern="/branches/*/subscribe" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
         <security:intercept-url pattern="/branches/*/unsubscribe" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
 

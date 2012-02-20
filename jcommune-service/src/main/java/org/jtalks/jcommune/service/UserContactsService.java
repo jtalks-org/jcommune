@@ -47,5 +47,5 @@ public interface UserContactsService extends EntityService<UserContactType> {
      * Removes contact from contacts of current user.
      * @param userContactId id of user contact to be removed
      */
-    void removeContact(Long userContactId);
+    void removeContact(long userContactId);
 }

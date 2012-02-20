@@ -116,7 +116,9 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
 
         this.changePassword(info.getCurrentPassword(), info.getNewPassword(), currentUser);
         this.changeEmail(info.getEmail(), currentUser);
-        this.changeAvatar(decodedAvatar, currentUser);
+
+        currentUser.setAvatar(decodedAvatar);
+
         currentUser.setSignature(info.getSignature());
         currentUser.setFirstName(info.getFirstName());
         currentUser.setLastName(info.getLastName());
@@ -167,19 +169,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
             } else {
                 throw new WrongPasswordException();
             }
-        }
-    }
-
-    /**
-     * Checks if byte[] passed is not empty, that means user has uploaded
-     * a new avatar image. If so, user passed will be assigned this new image.
-     *
-     * @param avatar      avatar image representation
-     * @param currentUser user to be set with new avatar image
-     */
-    private void changeAvatar(byte[] avatar, JCUser currentUser) {
-        if (avatar != null && avatar.length > 0) {
-            currentUser.setAvatar(avatar);
         }
     }
 

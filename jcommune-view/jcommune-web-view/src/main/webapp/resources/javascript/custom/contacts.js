@@ -28,10 +28,13 @@ var baseUrl = $root;
  */
 function bindDeleteHandler() {
     $("#contacts").find(".contact").find("a.button").click(function(){
-        var id = $(this).parent().find(":hidden").attr("value");
+        var id = $(this).parent().find("input:hidden").attr("value");
         $.ajax({
             url: baseUrl + '/contacts/remove/' + id,
-            type: "DELETE"
+            // this is the way Spring MVC represents HTTP DELETE for better browser compartibility
+            type: "POST",
+            data: {'_method': 'DELETE'}
+
         });
         $(this).parent().fadeOut();
     });

@@ -119,11 +119,14 @@ public class PrivateMessageController {
     /**
      * Render the page with a form for creation new Private Message for particular user.
      * This method performs no validation on username given simply passing it to the view as is.
+     * <p/>
+     * SpEL pattern in a var name indicates we want to consume all the symbols in a var,
+     * even dots, which Spring MVC uses as file extension delimiters by default.
      *
      * @param username user to send new private message to
      * @return {@code ModelAndView} with the form
      */
-    @RequestMapping(value = "/pm/new/{username}", method = RequestMethod.GET)
+    @RequestMapping(value = "/pm/new/{username:.+}", method = RequestMethod.GET)
     public ModelAndView newPmPageForUser(@PathVariable String username) {
         PrivateMessageDto dto = new PrivateMessageDto();
         dto.setRecipient(username);
@@ -186,7 +189,7 @@ public class PrivateMessageController {
     /**
      * Show page with private message details.
      *
-     * @param id     {@link PrivateMessage} id
+     * @param id {@link PrivateMessage} id
      * @return {@code ModelAndView} with a message
      * @throws NotFoundException when message not found
      */
@@ -216,7 +219,7 @@ public class PrivateMessageController {
     /**
      * Save private message as draft. As draft message is not requred to be valid
      *
-     * @param pmDto  Dto populated in form
+     * @param pmDto Dto populated in form
      * @return redirect to "drafts" folder if saved successfully or show form with error message
      * @throws NotFoundException if incorrect User is set as recipient
      */

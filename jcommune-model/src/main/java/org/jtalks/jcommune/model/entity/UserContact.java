@@ -21,7 +21,7 @@ import org.jtalks.common.model.entity.Entity;
  * Stores information about the contacts of user.
  * Used as {@code UserDetails}
  */
-public class UserContact extends IdComparableEntity {
+public class UserContact extends Entity {
 
     private String value;
     private JCUser owner;

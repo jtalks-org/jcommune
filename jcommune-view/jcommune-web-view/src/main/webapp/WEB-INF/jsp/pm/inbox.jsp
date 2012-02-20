@@ -20,55 +20,65 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <head>
-        <script language="javascript"
-            src="${pageContext.request.contextPath}/resources/javascript/custom/tableStylish.js"></script>
     <title><spring:message code="label.inbox"/></title>
 </head>
 <body>
-
 <div class="wrap pm_page">
     <jsp:include page="../../template/topLine.jsp"/>
     <jsp:include page="../../template/logo.jsp"/>
 
     <div class="all_forums">
+
+        <h2><a class="heading" href="#"><spring:message code="label.inbox"/></a></h2>
         <jsp:include page="../../template/pmNavigationMenu.jsp"/>
-        <table class="messages">
-          <tr class="head">
-                  <th class="c3"><input type = "checkbox" class="check_all"/></th> 
-                  <th class="c1"><spring:message code="label.pm.title"/></th>
-                  <th class="c2"><spring:message code="label.sender"/></th>
-                  <th class="c2"><spring:message code="label.sending_date"/></th>
-          </tr>
-                        
-                <c:forEach var="pm" items="${pmList}">
-                    <c:choose>
-                        <c:when test="${pm.read}">
-                          <tr class="mess read">
-                        </c:when>
-                        <c:otherwise>
-                          <tr class="mess">
-                        </c:otherwise>
-                    </c:choose>
-                    <td><input type = "checkbox" id = "${pm.id}" class="checker"/></td>
-                    <td class="title">
-                      <a href="${pageContext.request.contextPath}/pm/${pm.id}">
-                        <c:out value="${pm.title}"/></a>
-                    </td>
-                    <td>
-                      <a href="${pageContext.request.contextPath}/users/${pm.userFrom.encodedUsername}">
-                        <c:out value="${pm.userFrom.username}"/>
-                      </a>
-                    </td>
-                    <td>
-                       <jtalks:format value="${pm.creationDate}"/>
-                    </td>
-                </tr>
-                </c:forEach>
-           </table>
-        <div class="del">
-         <p class="counter"></p> 
-         <input type="submit" class="button" value="<spring:message code="label.delete"/>"></input>      
+
+        <div class="forum_header_table" style="width: 100%">
+            <div class="forum_header">
+                <div class="forum_header_answer" style="width: 33%">
+                    <spring:message code="label.sender"/>
+                </div>
+                <div class="forum_header_answer" style="width: 33%">
+                    <spring:message code="label.pm.title"/>
+                </div>
+                <div class="forum_header_answer" style="width: 33%">
+                    <spring:message code="label.sending_date"/>
+                </div>
+            </div>
         </div>
+        <ul class="forum_table">
+            <c:choose>
+                <c:when test="${!(empty pmList)}">
+                    <c:forEach var="pm" items="${pmList}">
+                        <c:choose>
+                            <c:when test="${pm.read}">
+                                <li class="forum_row">
+                            </c:when>
+                            <c:otherwise>
+                                <li class="forum_row" style="background: #b0c4de">
+                            </c:otherwise>
+                        </c:choose>
+                        <div class="forum_answer_left">
+                            <a href="${pageContext.request.contextPath}/users/${pm.userFrom.encodedUsername}">
+                                <c:out value="${pm.userFrom.username}"/>
+                            </a>
+                        </div>
+                        <div class="forum_answer_left">
+                            <a href="${pageContext.request.contextPath}/pm/${pm.id}">
+                                <c:out value="${pm.title}"/></a>
+                        </div>
+                        <div class="forum_answer_left">
+                            <jtalks:format value="${pm.creationDate}"/>
+                        </div>
+                        </li>
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>
+                    <li class="forum_row">
+                        <spring:message code="label.inbox.empty"/>
+                    </li>
+                </c:otherwise>
+            </c:choose>
+        </ul>
     </div>
     <div class="footer_buffer"></div>
 </div>

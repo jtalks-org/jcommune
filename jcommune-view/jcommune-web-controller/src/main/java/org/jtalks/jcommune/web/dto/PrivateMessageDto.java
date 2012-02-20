@@ -17,10 +17,9 @@ package org.jtalks.jcommune.web.dto;
 import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
-import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.web.validation.Exists;
+import org.jtalks.jcommune.web.validation.NotMe;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -43,6 +42,7 @@ public class PrivateMessageDto {
     @Size(min = PrivateMessage.MIN_MESSAGE_LENGTH, max = PrivateMessage.MAX_MESSAGE_LENGTH, message = "{body.length}")
     private String body;
 
+    @NotMe(message = "{validation.username.notMe}")
     @Exists(entity = JCUser.class, field = "username", message = "{validation.wrong_recipient}")
     private String recipient;
 

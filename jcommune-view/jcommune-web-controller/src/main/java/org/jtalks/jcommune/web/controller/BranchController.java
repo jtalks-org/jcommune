@@ -17,13 +17,14 @@ package org.jtalks.jcommune.web.controller;
 
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.nontransactional.LocationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.LocationService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
+import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.Pagination;
@@ -33,9 +34,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -152,5 +155,23 @@ public class BranchController {
         return new ModelAndView("unansweredTopics")
                 .addObject("topics", topics)
                 .addObject("pagination", pagination);
+    }
+
+    /**
+     * Provides all branches from section with given sectionId as JSON array.
+     *
+     * @param sectionId id of section
+     * @return branches list
+     * @throws NotFoundException when section with given id not found
+     */
+    @RequestMapping(value = "/branches/json/{sectionId}", method = RequestMethod.GET)
+    @ResponseBody
+    public BranchDto[] branchList(@PathVariable long sectionId) throws NotFoundException {
+        List<Branch> branches = branchService.getBranchesInSection(sectionId);
+        List<BranchDto> branchDtoList = new ArrayList<BranchDto>(branches.size());
+        for (Branch branch : branches) {
+            branchDtoList.add(BranchDto.getDtoFor(branch));
+        }
+        return branchDtoList.toArray(new BranchDto[branchDtoList.size()]);
     }
 }
