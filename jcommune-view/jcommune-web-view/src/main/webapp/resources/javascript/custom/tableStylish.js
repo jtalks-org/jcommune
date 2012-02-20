@@ -4,7 +4,6 @@ $(document).ready(function () {
 	$('.messages tr.mess:odd').css('background', '#cdcdcd');
 	$('.counter').text('0 выбрано');
 
-
 	$('.checker').on("click", function () {
 		if ($(this).is(':checked')) {
 			if (++c === $('.checker').length) {

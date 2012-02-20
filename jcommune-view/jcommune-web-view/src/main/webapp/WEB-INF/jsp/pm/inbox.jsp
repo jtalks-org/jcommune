@@ -38,7 +38,6 @@
                   <th class="c1"><spring:message code="label.pm.title"/></th>
                   <th class="c2"><spring:message code="label.sender"/></th>
                   <th class="c2"><spring:message code="label.sending_date"/></th>
-                   
           </tr>
                         
                 <c:forEach var="pm" items="${pmList}">
@@ -65,9 +64,7 @@
                     </td>
                 </tr>
                 </c:forEach>
-   
-
-        </table>
+           </table>
         <div class="del">
          <p class="counter"></p> 
          <input type="submit" class="button" value="<spring:message code="label.delete"/>"></input>      
