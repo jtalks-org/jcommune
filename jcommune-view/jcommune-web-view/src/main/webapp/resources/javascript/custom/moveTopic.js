@@ -27,58 +27,93 @@ var topicId = $topicId;
 $(document).ready(function () {
     $("#move_topic").click(function () {
         $.getJSON(baseUrl + "/sections/json", function (sections) {
-            var sectionsSize = sections.length;
-            var str = '<b>Move topic</b><br/><select name="section_name" id="section_name" size="' + sectionsSize + '">';
-            str += '<option value="all">All sections</option>';
-            $.each(sections, function (i, section) {
-                str += '<option value="' + section.id + '">' + section.name + '</option>';
-            });
-            str += '</select>';
-            str += '<select name="branch_name" id="branch_name" size="' + sectionsSize + '">';
-            str += '<option value="' + 0 + '">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>';
-            str += '</select>';
-            var branchId;
-            $.prompt(str, {
-                buttons:{ Move:true, Cancel:false},
-                loaded:function () {
-                    $("#section_name").change(function () {
-                        var sectionId = $(this).val();
-                        if (sectionId != "all") {
-                            $.ajax({
-                                url:baseUrl + '/branches/json/' + sectionId,
-                                success:function (branches) {
-                                    rebuildBranchesList(branches);
-                                }
-                            });
-                        } else {
-                            $.ajax({
-                                url:baseUrl + '/branches/json',
-                                success:function (branches) {
-                                    rebuildBranchesList(branches);
-                                }
-                            });
-                        }
-                    });
-                    $("#branch_name").change(function () {
-                        branchId = $(this).val();
-                    });
-                },
-                callback:function (value) {
-                    if (value != undefined && value) {
-                        $.ajax({
-                            url:baseUrl + '/topics/json/' + topicId,
-                            type:"POST",
-                            data:{"branchId":branchId},
-                            success:function () {
-                                document.location = baseUrl + '/topics/' + topicId;
-                            }
-                        });
-                    }
-                }
-            });
+            var htmlTemplate = prepareHtmlTemplateForModalWindow(sections);
+            showMoveTopicModalWindow(htmlTemplate);
         });
     });
 });
+
+/**
+ * Prepares and returns html code for "Move topic" modal window in string representation.
+ *
+ * @param sections list of sections
+ * @return html template for "Move topic" modal window
+ */
+function prepareHtmlTemplateForModalWindow(sections) {
+    var sectionsSize = sections.length;
+    var htmlTemplate = '<b>Move topic</b><br/><select name="section_name" id="section_name" size="' + sectionsSize + '">';
+    htmlTemplate += '<option value="all">All sections</option>';
+    $.each(sections, function (i, section) {
+        htmlTemplate += '<option value="' + section.id + '">' + section.name + '</option>';
+    });
+    htmlTemplate += '</select>';
+    htmlTemplate += '<select name="branch_name" id="branch_name" size="' + sectionsSize + '">';
+    htmlTemplate += '<option value="' + 0 + '">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>';
+    htmlTemplate += '</select>';
+    return htmlTemplate;
+}
+
+/**
+ * Shows "Move topic" modal window.
+ *
+ * @param htmlTemplate string representation of modal window html code
+ */
+function showMoveTopicModalWindow(htmlTemplate) {
+    var branchId;
+    $.prompt(htmlTemplate, {
+        buttons:{ Move:true, Cancel:false},
+        loaded:function () {
+            $("#section_name").change(function () {
+                var sectionId = $(this).val();
+                if (sectionId != "all") {
+                    displayBranchesFromSection(sectionId);
+                } else {
+                    displayAllBranches();
+                }
+            });
+            $("#branch_name").change(function () {
+                branchId = $(this).val();
+            });
+        },
+        callback:function (value) {
+            if (value != undefined && value) {
+                $.ajax({
+                    url:baseUrl + '/topics/json/' + topicId,
+                    type:"POST",
+                    data:{"branchId":branchId},
+                    success:function () {
+                        document.location = baseUrl + '/topics/' + topicId;
+                    }
+                });
+            }
+        }
+    });
+}
+
+
+/**
+ *Displays all branches from section with given sectionId.
+ */
+function displayBranchesFromSection(sectionId) {
+    $.ajax({
+        url:baseUrl + '/branches/json/' + sectionId,
+        success:function (branches) {
+            rebuildBranchesList(branches);
+        }
+    });
+}
+
+/**
+ * Displays all existing branches.
+ */
+function displayAllBranches() {
+    $.ajax({
+        url:baseUrl + '/branches/json',
+        success:function (branches) {
+            rebuildBranchesList(branches);
+        }
+    });
+}
 
 /**
  * Removes old values from branches select element and insert new values.
