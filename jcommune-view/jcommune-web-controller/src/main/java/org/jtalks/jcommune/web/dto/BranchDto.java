@@ -27,6 +27,16 @@ public class BranchDto {
     private String name;
 
     /**
+     * Creates dto for branch.
+     *
+     * @param branch branch for conversion
+     */
+    public BranchDto(Branch branch) {
+        this.id = branch.getId();
+        this.name = branch.getName();
+    }
+
+    /**
      * @return branch id
      */
     public long getId() {
@@ -58,16 +68,4 @@ public class BranchDto {
         this.name = name;
     }
 
-    /**
-     * Creates dto.
-     *
-     * @param branch branch for conversion
-     * @return dto for branch
-     */
-    public static BranchDto getDtoFor(Branch branch) {
-        BranchDto branchDto = new BranchDto();
-        branchDto.setId(branch.getId());
-        branchDto.setName(branch.getName());
-        return branchDto;
-    }
 }

@@ -27,6 +27,16 @@ public class SectionDto {
     private String name;
 
     /**
+     * Creates dto for section.
+     *
+     * @param section section for conversion
+     */
+    public SectionDto(Section section) {
+        this.id = section.getId();
+        this.name = section.getName();
+    }
+
+    /**
      * @return section id
      */
     public long getId() {
@@ -58,16 +68,4 @@ public class SectionDto {
         this.name = name;
     }
 
-    /**
-     * Creates dto.
-     *
-     * @param section section for conversion
-     * @return dto for section
-     */
-    public static SectionDto getDtoFor(Section section) {
-        SectionDto sectionDto = new SectionDto();
-        sectionDto.setId(section.getId());
-        sectionDto.setName(section.getName());
-        return sectionDto;
-    }
 }

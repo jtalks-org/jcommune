@@ -30,15 +30,10 @@ import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -161,33 +156,39 @@ public class BranchController {
      * Provides all branches from section with given sectionId as JSON array.
      *
      * @param sectionId id of section
-     * @return branches list
+     * @return branches dto array
      * @throws NotFoundException when section with given id not found
      */
     @RequestMapping(value = "/branches/json/{sectionId}", method = RequestMethod.GET)
     @ResponseBody
     public BranchDto[] getBranchesFromSection(@PathVariable long sectionId) throws NotFoundException {
         List<Branch> branches = branchService.getBranchesInSection(sectionId);
-        List<BranchDto> branchDtoList = new ArrayList<BranchDto>(branches.size());
-        for (Branch branch : branches) {
-            branchDtoList.add(BranchDto.getDtoFor(branch));
-        }
-        return branchDtoList.toArray(new BranchDto[branchDtoList.size()]);
+        return convertBranchesListToBranchDtoArray(branches);
     }
 
     /**
-     * Get all existing branches.
+     * Get all existing branches as JSON array.
      *
-     * @return branches list
+     * @return branches dto array
      */
     @RequestMapping(value = "/branches/json", method = RequestMethod.GET)
     @ResponseBody
     public BranchDto[] getAllBranches() {
         List<Branch> branches = branchService.getAllBranches();
-        List<BranchDto> branchDtoList = new ArrayList<BranchDto>(branches.size());
-        for (Branch branch : branches) {
-            branchDtoList.add(BranchDto.getDtoFor(branch));
+        return convertBranchesListToBranchDtoArray(branches);
+    }
+
+    /**
+     * Converts branch list in branch dto array.
+     *
+     * @param branches branch list
+     * @return branch dto array
+     */
+    private BranchDto[] convertBranchesListToBranchDtoArray(List<Branch> branches) {
+        BranchDto[] branchDtoArray = new BranchDto[branches.size()];
+        for (int i = 0; i < branchDtoArray.length; i++) {
+            branchDtoArray[i] = new BranchDto(branches.get(i));
         }
-        return branchDtoList.toArray(new BranchDto[branchDtoList.size()]);
+        return branchDtoArray;
     }
 }

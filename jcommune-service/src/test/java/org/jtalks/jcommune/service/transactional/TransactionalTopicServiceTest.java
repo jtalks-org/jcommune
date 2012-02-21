@@ -346,4 +346,11 @@ public class TransactionalTopicServiceTest {
 
         topicService.moveTopic(TOPIC_ID, BRANCH_ID);
     }
+
+    @Test(expectedExceptions = {NotFoundException.class})
+    public void testMoveTopicInNonExistentTargetBranch() throws NotFoundException {
+        when(branchDao.isExist(BRANCH_ID)).thenReturn(false);
+
+        topicService.moveTopic(TOPIC_ID, BRANCH_ID);
+    }
 }
