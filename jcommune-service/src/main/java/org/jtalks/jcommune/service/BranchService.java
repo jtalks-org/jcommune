@@ -21,13 +21,22 @@ import java.util.List;
 
 /**
  * The interface to manipulate with branches
- * 
+ *
  * @author Vitaliy Kravchenko
  * @author Kirill Afonin
  * @author Max Malakhov
+ * @author Eugeny Batov
  */
 
 public interface BranchService extends EntityService<Branch> {
+
+    /**
+     * Get all existing branches.
+     *
+     * @return list of {@code Branch} objects
+     */
+    List<Branch> getAllBranches();
+
     /**
      * Get branches from section.
      *

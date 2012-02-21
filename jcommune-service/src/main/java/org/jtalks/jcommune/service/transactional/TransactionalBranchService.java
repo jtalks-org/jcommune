@@ -49,6 +49,14 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
      * {@inheritDoc}
      */
     @Override
+    public List<Branch> getAllBranches() {
+        return this.getDao().getAllBranches();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<Branch> getBranchesInSection(long sectionId) throws NotFoundException {
         if (!sectionDao.isExist(sectionId)) {
             throw new NotFoundException("Section with id: " + sectionId + " not found");

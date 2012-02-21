@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,6 +45,7 @@ import java.util.List;
  * @author Max Malakhov
  * @author Alexandre Teterin
  * @author Evgeniy Naumenko
+ * @author Eugeny Batov
  */
 
 @Controller
@@ -115,11 +115,11 @@ public class SectionController {
     @ResponseBody
     public SectionDto[] sectionList() {
         List<Section> sections = sectionService.getAll();
-        List<SectionDto> sectionDtoList = new ArrayList<SectionDto>(sections.size());
-        for (Section section : sections) {
-            sectionDtoList.add(SectionDto.getDtoFor(section));
+        SectionDto[] sectionDtoArray = new SectionDto[sections.size()];
+        for (int i = 0; i < sectionDtoArray.length; i++) {
+            sectionDtoArray[i] = new SectionDto(sections.get(i));
         }
-        return sectionDtoList.toArray(new SectionDto[sectionDtoList.size()]);
+        return sectionDtoArray;
     }
 
     /**

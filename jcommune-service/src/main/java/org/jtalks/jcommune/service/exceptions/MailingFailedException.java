@@ -16,7 +16,7 @@ package org.jtalks.jcommune.service.exceptions;
 
 /**
  * Is thrown by email-related activities to indicate there are messaging problems,
- * like mail server being down or mailbox miscongiguration
+ * like mail server being down or mailbox misconfiguration
  *
  * @author Evgeniy Naumenko
  */

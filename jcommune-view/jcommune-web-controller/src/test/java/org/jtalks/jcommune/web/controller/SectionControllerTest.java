@@ -43,6 +43,7 @@ import static org.testng.Assert.assertEquals;
  * @author Max Malakhov
  * @author Alexandre Teterin
  * @author Evgeniy Naumenko
+ * @author Eugeny Batov
  */
 public class SectionControllerTest {
     private SectionService sectionService;

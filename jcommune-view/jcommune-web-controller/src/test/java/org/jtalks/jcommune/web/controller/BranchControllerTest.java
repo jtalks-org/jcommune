@@ -181,7 +181,7 @@ public class BranchControllerTest {
     }
 
     @Test
-    public void testBranchList() throws NotFoundException {
+    public void testGetBranchesFromSection() throws NotFoundException {
         long sectionId = 1L;
         long branchId = 1L;
         List<Branch> branches = new ArrayList<Branch>();
@@ -189,10 +189,28 @@ public class BranchControllerTest {
         branch.setId(branchId);
         branches.add(branch);
         when(branchService.getBranchesInSection(sectionId)).thenReturn(branches);
-        BranchDto[] branchDtoArray = controller.branchList(sectionId);
+
+        BranchDto[] branchDtoArray = controller.getBranchesFromSection(sectionId);
 
         assertEquals(branchDtoArray.length, branches.size());
         assertEquals(branchDtoArray[0].getId(), branch.getId());
         assertEquals(branchDtoArray[0].getName(), branch.getName());
     }
+
+    @Test
+    public void testGetAllBranches() throws NotFoundException {
+        long branchId = 1L;
+        List<Branch> branches = new ArrayList<Branch>();
+        Branch branch = new Branch("name");
+        branch.setId(branchId);
+        branches.add(branch);
+        when(branchService.getAllBranches()).thenReturn(branches);
+
+        BranchDto[] branchDtoArray = controller.getAllBranches();
+
+        assertEquals(branchDtoArray.length, branches.size());
+        assertEquals(branchDtoArray[0].getId(), branch.getId());
+        assertEquals(branchDtoArray[0].getName(), branch.getName());
+    }
+
 }
