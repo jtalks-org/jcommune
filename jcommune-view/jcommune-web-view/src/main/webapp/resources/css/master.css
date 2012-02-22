@@ -307,6 +307,10 @@ a.heading:hover {
 
 .info_top_lower_right .button {
     position: relative;
+    top: -3px;
+}
+
+.info_top_lower_right .button:active {
     top: -2px;
 }
 
@@ -934,6 +938,7 @@ a.page:hover {
 }
 
 .breadcrumbs a::before{
+    border-left-color: #b8b8b8;
     border-left-color: #b8b8b8;
     right: -1.1em;
     z-index: 1;
