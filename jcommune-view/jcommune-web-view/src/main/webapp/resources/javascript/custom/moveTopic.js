@@ -39,15 +39,19 @@ $(document).ready(function () {
  */
 function prepareHtmlTemplateForModalWindow(sections) {
     var sectionsSize = sections.length;
-    var htmlTemplate = '<b>Move topic</b><br/><select name="section_name" id="section_name" size="' + sectionsSize + '">';
-    htmlTemplate += '<option value="all">All sections</option>';
+    var htmlTemplate = '<b>Move topic</b><br/>' +
+        '<select name="section_name" id="section_name" size="' + sectionsSize + '">' +
+        '<option value="all">All sections</option>';
+
     $.each(sections, function (i, section) {
         htmlTemplate += '<option value="' + section.id + '">' + section.name + '</option>';
     });
-    htmlTemplate += '</select>';
-    htmlTemplate += '<select name="branch_name" id="branch_name" size="' + sectionsSize + '">';
-    htmlTemplate += '<option value="' + 0 + '">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>';
-    htmlTemplate += '</select>';
+
+    htmlTemplate += '</select>' +
+        '<select name="branch_name" id="branch_name" size="' + sectionsSize + '">' +
+        '<option value="' + 0 + '">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>' +
+        '</select>';
+
     return htmlTemplate;
 }
 
