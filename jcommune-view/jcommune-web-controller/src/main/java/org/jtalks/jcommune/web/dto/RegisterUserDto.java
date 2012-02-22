@@ -61,11 +61,13 @@ public class RegisterUserDto {
 
     /**
      * Set username.
+     * We trim username, so it is not possible
+     * to create user with spaces in username, for ex. 'username ' and ' username'
      *
      * @param username username
      */
     public void setUsername(String username) {
-        this.username = username;
+        this.username = username.trim();
     }
 
     /**
