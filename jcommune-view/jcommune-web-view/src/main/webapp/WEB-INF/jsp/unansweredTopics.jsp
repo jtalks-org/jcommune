@@ -50,7 +50,7 @@
         <c:choose>
             <c:when test="${!(empty topics)}">
                 <ul class="forum_table">
-                    <jtalks:pagination uri="" pagination="${pagination}" numberLink="3" list="${topics}">
+                    <jtalks:pagination uri="" pagination="${pagination}" list="${topics}">
                     <c:forEach var="topic" items="${list}">
                         <li class="forum_row">
                             <div class="forum_icon">

@@ -20,10 +20,8 @@
 var baseUrl = $root;
 
 /**
- * Id of topic which will move to another branch.
+ * "Move topic" button handler.
  */
-var topicId = $topicId;
-
 $(document).ready(function () {
     $("#move_topic").click(function () {
         $.getJSON(baseUrl + "/sections/json", function (sections) {
@@ -41,15 +39,19 @@ $(document).ready(function () {
  */
 function prepareHtmlTemplateForModalWindow(sections) {
     var sectionsSize = sections.length;
-    var htmlTemplate = '<b>Move topic</b><br/><select name="section_name" id="section_name" size="' + sectionsSize + '">';
-    htmlTemplate += '<option value="all">All sections</option>';
+    var htmlTemplate = '<b>Move topic</b><br/>' +
+        '<select name="section_name" id="section_name" size="' + sectionsSize + '">' +
+        '<option value="all">All sections</option>';
+
     $.each(sections, function (i, section) {
         htmlTemplate += '<option value="' + section.id + '">' + section.name + '</option>';
     });
-    htmlTemplate += '</select>';
-    htmlTemplate += '<select name="branch_name" id="branch_name" size="' + sectionsSize + '">';
-    htmlTemplate += '<option value="' + 0 + '">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>';
-    htmlTemplate += '</select>';
+
+    htmlTemplate += '</select>' +
+        '<select name="branch_name" id="branch_name" size="' + sectionsSize + '">' +
+        '<option value="' + 0 + '">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>' +
+        '</select>';
+
     return htmlTemplate;
 }
 
@@ -60,36 +62,37 @@ function prepareHtmlTemplateForModalWindow(sections) {
  */
 function showMoveTopicModalWindow(htmlTemplate) {
     var branchId;
+    var topicId = $(".topicId").attr('id');
     $.prompt(htmlTemplate, {
         buttons:{ Move:true, Cancel:false},
         loaded:function () {
-            $("#section_name").change(function () {
-                var sectionId = $(this).val();
-                if (sectionId != "all") {
-                    displayBranchesFromSection(sectionId);
-                } else {
-                    displayAllBranches();
-                }
-            });
+            displayBranches();
             $("#branch_name").change(function () {
                 branchId = $(this).val();
             });
         },
         callback:function (value) {
             if (value != undefined && value) {
-                $.ajax({
-                    url:baseUrl + '/topics/json/' + topicId,
-                    type:"POST",
-                    data:{"branchId":branchId},
-                    success:function () {
-                        document.location = baseUrl + '/topics/' + topicId;
-                    }
-                });
+                moveTopic(topicId, branchId);
             }
         }
     });
 }
 
+/**
+ * Displays branches accordingly option chosen in section select element.
+ * It may be "All sections" or particular section.
+ */
+function displayBranches() {
+    $("#section_name").change(function () {
+        var sectionId = $(this).val();
+        if (sectionId == "all") {
+            displayAllBranches();
+        } else {
+            displayBranchesFromSection(sectionId);
+        }
+    });
+}
 
 /**
  *Displays all branches from section with given sectionId.
@@ -116,7 +119,7 @@ function displayAllBranches() {
 }
 
 /**
- * Removes old values from branches select element and insert new values.
+ * Clears branches select element and inserts new values.
  *
  * @param branches list of branches to present
  */
@@ -129,7 +132,7 @@ function rebuildBranchesList(branches) {
  * Returns HTML code for options in branches select element.
  *
  * @param branches list of branches to present
- * @return html template
+ * @return html template of options in select
  */
 function getBranchItemHtml(branches) {
     var template = '';
@@ -137,5 +140,22 @@ function getBranchItemHtml(branches) {
         template += '<option value="' + branch.id + '">' + branch.name + '</option>';
     });
     return template;
+}
+
+/**
+ * Executes request to move the topic, and redirects to topic's updated location page.
+ *
+ * @param topicId it of topic which will move
+ * @param targetBranchId id of branch which topic will move in
+ */
+function moveTopic(topicId, targetBranchId) {
+    $.ajax({
+        url:baseUrl + '/topics/json/' + topicId,
+        type:"POST",
+        data:{"branchId":targetBranchId},
+        success:function () {
+            document.location = baseUrl + '/topics/' + topicId;
+        }
+    });
 }
 
