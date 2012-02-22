@@ -12,38 +12,60 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service;
+package org.jtalks.jcommune.web.dto;
 
 import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
-
-import java.util.List;
 
 /**
- * The interface to manipulate with branches
+ * Dto for transferring branches to client side.
  *
- * @author Vitaliy Kravchenko
- * @author Kirill Afonin
- * @author Max Malakhov
  * @author Eugeny Batov
  */
+public class BranchDto {
 
-public interface BranchService extends EntityService<Branch> {
-
-    /**
-     * Get all existing branches.
-     *
-     * @return list of {@code Branch} objects
-     */
-    List<Branch> getAllBranches();
+    private long id;
+    private String name;
 
     /**
-     * Get branches from section.
+     * Creates dto for branch.
      *
-     * @param sectionId section id from which we obtain branches
-     * @return list of {@code Branch} objects
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when section not found
+     * @param branch branch for conversion
      */
-    List<Branch> getBranchesInSection(long sectionId) throws NotFoundException;
+    public BranchDto(Branch branch) {
+        this.id = branch.getId();
+        this.name = branch.getName();
+    }
+
+    /**
+     * @return branch id
+     */
+    public long getId() {
+        return id;
+    }
+
+    /**
+     * Sets branch id.
+     *
+     * @param id id of branch
+     */
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    /**
+     * @return branch name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets branch name.
+     *
+     * @param name name of branch
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }

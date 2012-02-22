@@ -50,7 +50,6 @@ import static org.testng.Assert.*;
  */
 public class TransactionalUserServiceTest {
     private static final String USERNAME = "username";
-    private static final String ENCODED_USERNAME = "encodedUsername";
     private static final String FIRST_NAME = "first name";
     private static final String LAST_NAME = "last name";
     private static final String NEW_EMAIL = "new_username@mail.com";
@@ -80,7 +79,8 @@ public class TransactionalUserServiceTest {
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-        userService = new TransactionalUserService(userDao, securityService, mailService, base64Wrapper, avatarService);
+        userService = new TransactionalUserService(
+                userDao, securityService, mailService, base64Wrapper, avatarService);
     }
 
     @Test
@@ -150,38 +150,6 @@ public class TransactionalUserServiceTest {
         verify(securityService).getCurrentUser();
         verify(userDao).saveOrUpdate(user);
         assertEquals(editedUser.getEmail(), EMAIL, "Email was changed");
-    }
-
-    @Test
-    public void testEditUserProfileNullAvatar() throws Exception {
-        JCUser user = getUser(USERNAME);
-        when(securityService.getCurrentUser()).thenReturn(user);
-        when(userDao.getByEmail(EMAIL)).thenReturn(null);
-
-        JCUser editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, NEW_PASSWORD, SIGNATURE, null, LANGUAGE, PAGE_SIZE, LOCATION));
-
-        verify(securityService).getCurrentUser();
-        verify(userDao).saveOrUpdate(user);
-        assertUserUpdated(editedUser);
-        assertEquals(editedUser.getAvatar(), avatar, "avatar was changed");
-    }
-
-    @Test
-    public void testEditUserProfileEmptyAvatar() throws Exception {
-        JCUser user = getUser(USERNAME);
-        when(securityService.getCurrentUser()).thenReturn(user);
-        when(userDao.getByEmail(EMAIL)).thenReturn(null);
-
-        String newAvatar = new String(new byte[0]);
-
-        JCUser editedUser = userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                PASSWORD, NEW_PASSWORD, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, LOCATION));
-
-        verify(securityService).getCurrentUser();
-        verify(userDao).saveOrUpdate(user);
-        assertUserUpdated(editedUser);
-        assertEquals(editedUser.getAvatar(), avatar, "avatar was changed");
     }
 
     private void assertUserUpdated(JCUser user) {

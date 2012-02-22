@@ -17,13 +17,14 @@ package org.jtalks.jcommune.web.controller;
 
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.nontransactional.LocationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.LocationService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
+import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.Pagination;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
@@ -152,5 +154,45 @@ public class BranchController {
         return new ModelAndView("unansweredTopics")
                 .addObject("topics", topics)
                 .addObject("pagination", pagination);
+    }
+
+    /**
+     * Provides all branches from section with given sectionId as JSON array.
+     *
+     * @param sectionId id of section
+     * @return branches dto array
+     * @throws NotFoundException when section with given id not found
+     */
+    @RequestMapping(value = "/branches/json/{sectionId}", method = RequestMethod.GET)
+    @ResponseBody
+    public BranchDto[] getBranchesFromSection(@PathVariable long sectionId) throws NotFoundException {
+        List<Branch> branches = branchService.getBranchesInSection(sectionId);
+        return convertBranchesListToBranchDtoArray(branches);
+    }
+
+    /**
+     * Get all existing branches as JSON array.
+     *
+     * @return branches dto array
+     */
+    @RequestMapping(value = "/branches/json", method = RequestMethod.GET)
+    @ResponseBody
+    public BranchDto[] getAllBranches() {
+        List<Branch> branches = branchService.getAllBranches();
+        return convertBranchesListToBranchDtoArray(branches);
+    }
+
+    /**
+     * Converts branch list in branch dto array.
+     *
+     * @param branches branch list
+     * @return branch dto array
+     */
+    private BranchDto[] convertBranchesListToBranchDtoArray(List<Branch> branches) {
+        BranchDto[] branchDtoArray = new BranchDto[branches.size()];
+        for (int i = 0; i < branchDtoArray.length; i++) {
+            branchDtoArray[i] = new BranchDto(branches.get(i));
+        }
+        return branchDtoArray;
     }
 }

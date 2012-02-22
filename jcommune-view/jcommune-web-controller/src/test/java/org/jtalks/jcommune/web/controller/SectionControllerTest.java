@@ -16,10 +16,11 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Section;
 import org.jtalks.jcommune.service.SectionService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
+import org.jtalks.jcommune.web.dto.SectionDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.springframework.web.servlet.ModelAndView;
@@ -30,14 +31,19 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.ModelAndViewAssert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 
 /**
  * @author Max Malakhov
  * @author Alexandre Teterin
  * @author Evgeniy Naumenko
+ * @author Eugeny Batov
  */
 public class SectionControllerTest {
     private SectionService sectionService;
@@ -121,6 +127,21 @@ public class SectionControllerTest {
 
         List<String> actualViewList = assertAndReturnModelAttributeOfType(mav, "viewList", List.class);
         assertEquals(actualViewList, new ArrayList<String>());
+    }
+
+    @Test
+    public void testSectionList() {
+        List<Section> sections = new ArrayList<Section>();
+        long sectionId = 1L;
+        Section section = new Section("section name");
+        section.setId(sectionId);
+        sections.add(section);
+        when(sectionService.getAll()).thenReturn(sections);
+        SectionDto[] sectionDtoArray = controller.sectionList();
+
+        assertEquals(sectionDtoArray.length, sections.size());
+        assertEquals(sectionDtoArray[0].getId(), section.getId());
+        assertEquals(sectionDtoArray[0].getName(), section.getName());
     }
 
 }

@@ -55,7 +55,7 @@
                     <li class="forum_row">
                         <label><spring:message code="label.email"/></label>
                         <span>
-                            <form:input path="email" size="25" value="${editedUser.email}"/>
+                            <form:input path="email" value="${editedUser.email}"/>
                             <br/>
                             <form:errors path="email" cssClass="error"/>
                         </span>
@@ -63,7 +63,7 @@
                     <li class="forum_row">
                         <label><spring:message code="label.firstname"/></label>
                         <span>
-                            <form:input path="firstName" size="25" value="${editedUser.firstName}"/>
+                            <form:input path="firstName" value="${editedUser.firstName}"/>
                             <br/>
                             <form:errors path="firstName" cssClass="error"/>
                         </span>
@@ -71,7 +71,7 @@
                     <li class="forum_row">
                         <label><spring:message code="label.lastname"/></label>
                         <span>
-                            <form:input path="lastName" size="25" value="${editedUser.lastName}"/>
+                            <form:input path="lastName" value="${editedUser.lastName}"/>
                             <br/>
                             <form:errors path="lastName" cssClass="error"/>
                         </span>
@@ -79,7 +79,7 @@
                     <li class="forum_row">
                         <label><spring:message code="label.currentPassword"/></label>
                         <span>
-                            <form:input path="currentUserPassword" size="25" type="password"/>
+                            <form:input path="currentUserPassword" type="password"/>
                             <br/>
                             <form:errors path="currentUserPassword" cssClass="error"/>
                         </span>
@@ -87,7 +87,7 @@
                     <li class="forum_row">
                         <label><spring:message code="label.newPassword"/></label>
                         <span>
-                            <form:input path="newUserPassword" size="25" type="password"/>
+                            <form:input path="newUserPassword" type="password"/>
                             <br/>
                             <form:errors path="newUserPassword" cssClass="error"/>
                         </span>
@@ -95,7 +95,7 @@
                     <li class="forum_row">
                         <label><spring:message code="label.newPasswordConfirmation"/></label>
                         <span>
-                            <form:input path="newUserPasswordConfirm" size="25" type="password"/>
+                            <form:input path="newUserPasswordConfirm" type="password"/>
                             <br/>
                             <form:errors path="newUserPasswordConfirm" cssClass="error"/>
                         </span>
@@ -103,7 +103,7 @@
                     <li class="forum_row">
                         <label><spring:message code="label.signature"/></label>
                         <span>
-                            <form:input path="signature" size="40" value="${editedUser.signature}"/>
+                            <form:input path="signature" value="${editedUser.signature}"/>
                             <br/>
                             <form:errors path="signature" cssClass="error"/>
                         </span>
@@ -134,32 +134,43 @@
                     <li class="forum_row">
                         <label><spring:message code="label.location"/></label>
                         <span>
-                            <form:input path="location" size="40" value="${editedUser.location}"/>
+                            <form:input path="location" value="${editedUser.location}"/>
                             <br/>
                             <form:errors path="location" cssClass="error"/>
                         </span>
                     </li>
-                    <li class="forum_row">
-                        <label><spring:message code="label.avatar"/></label>
-                        <span class="avatar">
-                            <%--String prefix "data:image/jpeg;base64," needed for correct image rendering--%>
+                     <li class="forum_row">
+                       <label><spring:message code="label.avatar"/></label>
+                       <span class="avatar">
+                           <table>
+                               <tr>
+                                   <td rowspan="2">
+                                       <%--String prefix "data:image/jpeg;base64," needed for correct image rendering--%>
                             <img id="avatarPreview" src="data:image/jpeg;base64,${editedUser.avatar}" alt=""/>
-                        </span>
-                    </li>
-                    <li class="forum_row"></li>
-                </ul>
-                <div class="form_controls">
-                    <a id="upload" class="button"><spring:message code="label.avatar.load"/></a>
-                    <a id="removeAvatar" class="button"><spring:message code="label.avatar.remove"/></a>
-                    <input id="saveChanges" type="submit" class="button"
+                                   </td>
+                                   <td class="button_cell">
+                                       <a id="upload" class="button"><spring:message code="label.avatar.load"/></a>
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td class="button_cell">
+                                       <a id="removeAvatar" class="button"><spring:message code="label.avatar.remove"/></a>
+                                   </td>
+                               </tr>
+                           </table>
+                       </span>
+                   </li>
+               </ul>
+               <div class="form_controls">
+                   <input id="saveChanges" type="submit" class="button"
                            value="<spring:message code="label.save_changes"/>"/>
-                    <a class="button" href="${pageContext.request.contextPath}/users/${auth}">
-                        <spring:message code="label.back"/>
-                    </a>
-                </div>
-            </form:form>
-        </div>
-    </div>
+                   <a class="button" href="${pageContext.request.contextPath}/users/${auth}">
+                       <spring:message code="label.back"/>
+                   </a>
+               </div>
+           </form:form>
+       </div>
+   </div>
     <div class="footer_buffer"></div>
 </div>
 </body>
