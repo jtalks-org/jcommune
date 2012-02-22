@@ -26,6 +26,7 @@ $(document).ready(function () {
     $("#move_topic").click(function () {
         $.getJSON(baseUrl + "/sections/json", function (sections) {
             var htmlTemplate = prepareHtmlTemplateForModalWindow(sections);
+            displayAllBranches();
             showMoveTopicModalWindow(htmlTemplate);
         });
     });
@@ -49,7 +50,7 @@ function prepareHtmlTemplateForModalWindow(sections) {
     });
 
     htmlTemplate += '</select>' +
-        '<select name="branch_name" id="branch_name" size="' + sectionsSize + '">' +
+        '<select style="margin-left:30px;" name="branch_name" id="branch_name" size="' + sectionsSize + '">' +
         '<option value="' + 0 + '"></option>' +
         '</select>';
 
@@ -93,7 +94,7 @@ function displayBranches() {
             displayBranchesFromSection(sectionId);
         }
     });
-    $("#section_name").val("all").change();
+    $("#section_name").val("all");
 }
 
 /**
