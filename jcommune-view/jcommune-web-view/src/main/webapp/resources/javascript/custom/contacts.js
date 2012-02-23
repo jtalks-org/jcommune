@@ -27,16 +27,22 @@ var baseUrl = $root;
  * Binds click handler for "X" buttons (delete contact)
  */
 function bindDeleteHandler() {
-    $("#contacts").find(".contact").find("a.button").click(function(){
+    $("#contacts").find(".contact").find("a.button").click(function() {
+        var element = $(this).parent();
         var id = $(this).parent().find("input:hidden").attr("value");
-        $.ajax({
-            url: baseUrl + '/contacts/remove/' + id,
-            // this is the way Spring MVC represents HTTP DELETE for better browser compartibility
-            type: "POST",
-            data: {'_method': 'DELETE'}
-
-        });
-        $(this).parent().fadeOut();
+        $.prompt($labelDeleteContactConfirmation, {
+                buttons: { Ok: true, Cancel: false},
+                callback: function(value, message, form) {
+                    $.ajax({
+                        url: baseUrl + '/contacts/remove/' + id,
+                        // this is the way Spring MVC represents HTTP DELETE for better browser compartibility
+                        type: "POST",
+                        data: {'_method': 'DELETE'}
+                    });
+                    element.fadeOut();
+                }
+            }
+        );
     });
 }
 
@@ -47,11 +53,11 @@ function bindDeleteHandler() {
 function getContactHtml(data) {
     //HTML template for single contact. Should be in sync with corresponding JSP.
     var template = '<div class="contact">' +
-                   '     <label><img src="${icon}" alt="">${typeName}</label>' +
-                   '     <span>${value}</span>' +
-                   '     <input type="hidden" value="${id}"/>' +
-                   '     <a class="button" href="#">X</a>' +
-                   ' </div>';
+        '     <label><img src="${icon}" alt="">${typeName}</label>' +
+        '     <span>${value}</span>' +
+        '     <input type="hidden" value="${id}"/>' +
+        '     <a class="button" href="#">X</a>' +
+        ' </div>';
 
     var html = template;
     html = html.replace('${icon}', baseUrl + data.type.icon);
@@ -65,19 +71,19 @@ function getContactHtml(data) {
 $(document).ready(function() {
 
     //"Add contact" button handler
-	$("#add_contact").click(function() {
-		$.getJSON(baseUrl + "/contacts/types", function(json) {
+    $("#add_contact").click(function() {
+        $.getJSON(baseUrl + "/contacts/types", function(json) {
 
             //parse returned list of contact types and generate HTML for pop-up window
-			var str = '<b>Add contact:</b><br/><select name="contact_type" id="contact_type">';
+            var str = '<b>Add contact:</b><br/><select name="contact_type" id="contact_type">';
 
-			$.each(json, function(i, obj) {
-				str += '<option value="' + obj.id + '">' + obj.typeName +'</option>';
-			});
-			str += '</select>';
-			str += '<input type="text" name="contact" id="contact"/>'
+            $.each(json, function(i, obj) {
+                str += '<option value="' + obj.id + '">' + obj.typeName + '</option>';
+            });
+            str += '</select>';
+            str += '<input type="text" name="contact" id="contact"/>'
 
-			$.prompt(str, {
+            $.prompt(str, {
                 buttons: { Ok: true, Cancel: false},
                 callback: function(value, message, form) {
                     if (value != undefined && value) {
@@ -103,8 +109,8 @@ $(document).ready(function() {
                     }
                 }
             });
-		});
-	});
+        });
+    });
 
     bindDeleteHandler();
 });
