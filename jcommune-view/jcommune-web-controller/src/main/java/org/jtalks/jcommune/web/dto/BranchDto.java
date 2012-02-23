@@ -18,6 +18,7 @@ import org.jtalks.jcommune.model.entity.Branch;
 
 /**
  * Dto for transferring branches to client side.
+ * Dto does not contains topics in branch, just id and name.
  *
  * @author Eugeny Batov
  */

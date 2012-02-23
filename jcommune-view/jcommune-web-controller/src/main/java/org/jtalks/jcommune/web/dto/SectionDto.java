@@ -18,6 +18,7 @@ import org.jtalks.jcommune.model.entity.Section;
 
 /**
  * Dto for transferring sections to client side.
+ * Dto does not contains branches in section, just id and name.
  *
  * @author Eugeny Batov
  */

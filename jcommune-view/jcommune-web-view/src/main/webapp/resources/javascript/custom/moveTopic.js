@@ -26,6 +26,7 @@ $(document).ready(function () {
     $("#move_topic").click(function () {
         $.getJSON(baseUrl + "/sections/json", function (sections) {
             var htmlTemplate = prepareHtmlTemplateForModalWindow(sections);
+            displayAllBranches();
             showMoveTopicModalWindow(htmlTemplate);
         });
     });
@@ -39,6 +40,7 @@ $(document).ready(function () {
  */
 function prepareHtmlTemplateForModalWindow(sections) {
     var sectionsSize = sections.length;
+
     var htmlTemplate = '<b>Move topic</b><br/>' +
         '<select name="section_name" id="section_name" size="' + sectionsSize + '">' +
         '<option value="all">All sections</option>';
@@ -48,8 +50,8 @@ function prepareHtmlTemplateForModalWindow(sections) {
     });
 
     htmlTemplate += '</select>' +
-        '<select name="branch_name" id="branch_name" size="' + sectionsSize + '">' +
-        '<option value="' + 0 + '">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>' +
+        '<select style="margin-left:30px;" name="branch_name" id="branch_name" size="' + sectionsSize + '">' +
+        '<option value="' + 0 + '"></option>' +
         '</select>';
 
     return htmlTemplate;
@@ -92,6 +94,7 @@ function displayBranches() {
             displayBranchesFromSection(sectionId);
         }
     });
+    $("#section_name").val("all");
 }
 
 /**
