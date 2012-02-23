@@ -16,10 +16,10 @@
 
 -->
 <!DOCTYPE hibernate-mapping PUBLIC
-  "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-  "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
-  <class name="Section" table="SECTION">
+  <class name="Section" table="SECTIONS">
     <cache usage="nonstrict-read-write"/>
     <id column="SECTION_ID" name="id" unsaved-value="0">
       <generator class="native"/>
@@ -27,12 +27,12 @@
     <property column="UUID" name="uuid" unique="true" not-null="true"/>
     <property name="name" column="NAME" not-null="true"/>
     <property name="description" column="DESCRIPTION"/>
-    <property name="position" column="POSITION"/>
+    <property name="position" column="POSITION_"/>
 
     <list name="branches" cascade="all-delete-orphan">
       <cache usage="nonstrict-read-write"/>
       <key column="SECTION_ID" foreign-key="FK_SECTION"/>
-      <index column="BRANCHES_INDEX"/>
+      <index column="POSITION"/>
       <one-to-many class="Branch"/>
     </list>
   </class>
