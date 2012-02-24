@@ -43,7 +43,7 @@
             <ul class="forum_table" id="stylized">
                 <li class="forum_row">
                     <label><spring:message code="label.username"/></label>
-                    <span><c:out value="${user.username}"/></span>
+                    <span class="break_word"><c:out value="${user.username}"/></span>
                 </li>
                 <li class="forum_row">
                     <label><spring:message code="label.firstname"/></label>
@@ -64,7 +64,7 @@
                     <c:when test="${user.username == auth}">
                         <li class="forum_row">
                             <label><spring:message code="label.email"/></label>
-                            <span><c:out value="${user.email}"/></span>
+                            <span class="break_word"><c:out value="${user.email}"/></span>
                         </li>
                         <li class="forum_row">
                             <label><spring:message code="label.language"/></label>
@@ -78,7 +78,7 @@
                 </c:choose>
                 <li class="forum_row">
                     <label><spring:message code="label.location"/></label>
-                    <span><c:out value="${user.location}"/></span>
+                    <span class="break_word"><c:out value="${user.location}"/></span>
                 </li>
                 <li class="forum_row">
                     <label><spring:message code="label.lastlogin"/></label>
