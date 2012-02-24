@@ -112,7 +112,7 @@
                         <span><c:out value="${contact.value}"/></span>
                         <c:if test="${user.username == auth}">
                             <input type="hidden" value="${contact.id}"/>
-                            <a class="button" href="#">
+                            <a class="button" id="${contact.id}" href="#">
                                 <spring:message code="label.contacts.delete"/>
                             </a>
                         </c:if>
