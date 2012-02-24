@@ -47,11 +47,9 @@ function deleteContactHandler() {
  * Binds click handler for "X" buttons (delete contact)
  */
 function bindDeleteHandler() {
-    //var contacts = $("#contacts").find(".contact").find("a.button");
-    for (var i = 0; i < $("#contacts").find(".contact").find("a.button").length; i++) {
-        $("#contacts").find(".contact").find("a.button")[i].onclick = deleteContactHandler;
-    }
-    //$("#contacts").find(".contact").find("a.button").click(deleteContactHandler;
+    $("#contacts").find(".contact").find("a.button").each(function () {
+        this.onclick = deleteContactHandler;
+    });
 }
 
 /**
