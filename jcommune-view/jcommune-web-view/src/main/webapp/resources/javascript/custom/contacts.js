@@ -47,7 +47,9 @@ function deleteContactHandler() {
  * Binds click handler for "X" buttons (delete contact)
  */
 function bindDeleteHandler() {
-    $("#contacts").find(".contact").find("a.button").click(deleteContactHandler());
+    $("#contacts").find(".contact").find("a.button").each(function () {
+        this.onclick = deleteContactHandler;
+    });
 }
 
 /**
@@ -60,13 +62,14 @@ function getContactHtml(data) {
         '     <label><img src="${icon}" alt="">${typeName}</label>' +
         '     <span>${value}</span>' +
         '     <input type="hidden" value="${id}"/>' +
-        '     <a class="button" href="#">X</a>' +
+        '     <a class="button" id="${buttonId}" href="#">X</a>' +
         ' </div>';
 
     var html = template;
     html = html.replace('${icon}', baseUrl + data.type.icon);
     html = html.replace('${typeName}', data.type.typeName);
     html = html.replace('${id}', data.id);
+    html = html.replace('${buttonId}', data.id);
     html = html.replace('${value}', data.value);
 
     return html;
