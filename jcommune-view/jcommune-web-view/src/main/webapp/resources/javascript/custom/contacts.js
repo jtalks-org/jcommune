@@ -23,27 +23,31 @@
  */
 var baseUrl = $root;
 
-/**
- * Binds click handler for "X" buttons (delete contact)
- */
-function bindDeleteHandler() {
-    $("#contacts").find(".contact").find("a.button").click(function() {
-        var element = $(this).parent();
-        var id = $(this).parent().find("input:hidden").attr("value");
-        $.prompt($labelDeleteContactConfirmation, {
-                buttons: { Ok: true, Cancel: false},
-                callback: function(value, message, form) {
+function deleteContactHandler() {
+    var element = $(this).parent();
+    var id = $(this).parent().find("input:hidden").attr("value");
+    $.prompt($labelDeleteContactConfirmation, {
+            buttons:{ Ok:true, Cancel:false},
+            submit:function (value, message, form) {
+                if (value != undefined && value) {
                     $.ajax({
-                        url: baseUrl + '/contacts/remove/' + id,
-                        // this is the way Spring MVC represents HTTP DELETE for better browser compartibility
-                        type: "POST",
-                        data: {'_method': 'DELETE'}
+                        url:baseUrl + '/contacts/remove/' + id,
+                        // this is the way Spring MVC represents HTTP DELETE for better browser compatibility
+                        type:"POST",
+                        data:{'_method':'DELETE'}
                     });
                     element.fadeOut();
                 }
             }
-        );
-    });
+        }
+    );
+}
+
+/**
+ * Binds click handler for "X" buttons (delete contact)
+ */
+function bindDeleteHandler() {
+    $("#contacts").find(".contact").find("a.button").click(deleteContactHandler());
 }
 
 /**
@@ -68,39 +72,39 @@ function getContactHtml(data) {
     return html;
 }
 
-$(document).ready(function() {
+$(document).ready(function () {
 
     //"Add contact" button handler
-    $("#add_contact").click(function() {
-        $.getJSON(baseUrl + "/contacts/types", function(json) {
+    $("#add_contact").click(function () {
+        $.getJSON(baseUrl + "/contacts/types", function (json) {
 
             //parse returned list of contact types and generate HTML for pop-up window
             var str = '<b>Add contact:</b><br/><select name="contact_type" id="contact_type">';
 
-            $.each(json, function(i, obj) {
+            $.each(json, function (i, obj) {
                 str += '<option value="' + obj.id + '">' + obj.typeName + '</option>';
             });
             str += '</select>';
             str += '<input type="text" name="contact" id="contact"/>'
 
             $.prompt(str, {
-                buttons: { Ok: true, Cancel: false},
-                callback: function(value, message, form) {
+                buttons:{ Ok:true, Cancel:false},
+                callback:function (value, message, form) {
                     if (value != undefined && value) {
 
                         var contact = {
-                            value: form.contact,
-                            type: {
-                                id: form.contact_type
+                            value:form.contact,
+                            type:{
+                                id:form.contact_type
                             }
                         };
 
                         $.ajax({
-                            url: baseUrl + '/contacts/add',
-                            type: "POST",
-                            contentType: "application/json",
-                            data: JSON.stringify(contact),
-                            success: function(data) {
+                            url:baseUrl + '/contacts/add',
+                            type:"POST",
+                            contentType:"application/json",
+                            data:JSON.stringify(contact),
+                            success:function (data) {
                                 //populate contact template and append to page
                                 $("#contacts").append(getContactHtml(data));
                                 bindDeleteHandler();
