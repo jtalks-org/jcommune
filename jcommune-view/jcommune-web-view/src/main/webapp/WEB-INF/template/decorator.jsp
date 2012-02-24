@@ -17,6 +17,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="decorator" uri="http://www.opensymphony.com/sitemesh/decorator" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <fmt:setBundle basename="org.jtalks.jcommune.web.view.messages"/>
 <fmt:setLocale value="en"/>
 <!DOCTYPE HTML>
@@ -35,6 +36,8 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" media="screen, projection"
           href="${pageContext.request.contextPath}/resources/css/screen.css"/>
+    <link rel="stylesheet" type="text/css" media="screen, projection"
+          href="${pageContext.request.contextPath}/resources/css/i18n/<spring:message code="locale.code"/>.css"/>
     <link rel="shortcut icon" type="image/x-icon"
           href="${pageContext.request.contextPath}/resources/images/favicon.ico"/>
     <link rel="icon" type="image/png"
