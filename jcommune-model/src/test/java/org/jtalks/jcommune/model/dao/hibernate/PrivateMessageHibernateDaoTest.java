@@ -177,7 +177,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
 
         int count = dao.getNewMessagesCountFor(recipient.getUsername());
 
-        assertEquals(count, 1);
+        assertEquals(count, 2);
     }
 
     private void saveMessagesWithDifferentStatus() {
@@ -188,7 +188,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         // creating messages with different statuses
         notReadPm = ObjectsFactory.getPrivateMessage(recipient, author);
         readPm = ObjectsFactory.getPrivateMessage(recipient, author);
-        readPm.setStatus(PrivateMessageStatus.READ);
+        readPm.setRead(true);
         draftPm = ObjectsFactory.getPrivateMessage(recipient, author);
         draftPm.setStatus(PrivateMessageStatus.DRAFT);
         session.save(notReadPm);

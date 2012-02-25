@@ -104,7 +104,7 @@ public class TransactionalPrivateMessageServiceTest {
 
         PrivateMessage pm = pmService.sendMessage("body", "title", USERNAME);
 
-        assertEquals(pm.getStatus(), PrivateMessageStatus.NOT_READ);
+        assertFalse(pm.isRead());
         verify(securityService).getCurrentUser();
         verify(userService).getByUsername(USERNAME);
         verify(userDataCache).incrementNewMessageCountFor(USERNAME);
@@ -195,7 +195,7 @@ public class TransactionalPrivateMessageServiceTest {
 
         PrivateMessage pm = pmService.sendDraft(1L, "body", "title", USERNAME);
 
-        assertEquals(pm.getStatus(), PrivateMessageStatus.NOT_READ);
+        assertFalse(pm.isRead());
         verify(securityService).getCurrentUser();
         verify(userService).getByUsername(USERNAME);
         verify(userDataCache).incrementNewMessageCountFor(USERNAME);
@@ -231,23 +231,9 @@ public class TransactionalPrivateMessageServiceTest {
     }
 
     @Test
-    public void testGetNotMine() throws NotFoundException {
-        PrivateMessage expected = new PrivateMessage(null, user, "title", "body");
-        when(pmDao.get(PM_ID)).thenReturn(expected);
-        when(pmDao.isExist(PM_ID)).thenReturn(true);
-        when(securityService.getCurrentUser()).thenReturn(user);
-
-        PrivateMessage pm = pmService.get(PM_ID);
-
-        assertFalse(pm.isRead());
-        verify(pmDao, never()).saveOrUpdate(pm);
-        verify(userDataCache, never()).decrementNewMessageCountFor(USERNAME);
-    }
-
-    @Test
     public void testGetReadAlreadyRead() throws NotFoundException {
         PrivateMessage expected = new PrivateMessage(user, user, "title", "body");
-        expected.markAsRead();
+        expected.setRead(true);
         when(pmDao.get(PM_ID)).thenReturn(expected);
         when(pmDao.isExist(PM_ID)).thenReturn(true);
         when(securityService.getCurrentUser()).thenReturn(user);

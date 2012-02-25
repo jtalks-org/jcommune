@@ -76,7 +76,7 @@ public class PrivateMessageHibernateDao extends
     public int getNewMessagesCountFor(String username) {
         return ((Number) getSession().getNamedQuery("getNewMessagesCountFor")
                 .setCacheable(true)
-                .setParameter(STATUS, PrivateMessageStatus.NOT_READ)
+                .setParameter("read", false)
                 .setString("username", username)
                 .uniqueResult())
                 .intValue();

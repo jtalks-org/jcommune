@@ -97,7 +97,7 @@ public class TransactionalPrivateMessageService
         JCUser recipient = userService.getByUsername(recipientUsername);
         JCUser userFrom = securityService.getCurrentUser();
         PrivateMessage pm = new PrivateMessage(recipient, userFrom, title, body);
-        pm.setStatus(PrivateMessageStatus.NOT_READ);
+        pm.setRead(false);
         this.getDao().saveOrUpdate(pm);
 
         userDataCache.incrementNewMessageCountFor(recipientUsername);
@@ -135,7 +135,7 @@ public class TransactionalPrivateMessageService
         JCUser userFrom = securityService.getCurrentUser();
         PrivateMessage pm = new PrivateMessage(recipient, userFrom, title, body);
         pm.setId(id);
-        pm.markAsDraft();
+        pm.setStatus(PrivateMessageStatus.DRAFT);
         this.getDao().saveOrUpdate(pm);
 
         securityService.grantToCurrentUser().admin().on(pm);
@@ -176,7 +176,7 @@ public class TransactionalPrivateMessageService
         JCUser userFrom = securityService.getCurrentUser();
         PrivateMessage pm = new PrivateMessage(recipient, userFrom, title, body);
         pm.setId(id);
-        pm.setStatus(PrivateMessageStatus.NOT_READ);
+        pm.setRead(false);
         this.getDao().saveOrUpdate(pm);
 
         userDataCache.incrementNewMessageCountFor(recipientUsername);
@@ -202,7 +202,7 @@ public class TransactionalPrivateMessageService
     public PrivateMessage get(Long id) throws NotFoundException {
         PrivateMessage pm = super.get(id);
         if (securityService.getCurrentUser().equals(pm.getUserTo()) && !pm.isRead()) {
-            pm.markAsRead();
+            pm.setRead(true);
             this.getDao().saveOrUpdate(pm);
             userDataCache.decrementNewMessageCountFor(pm.getUserTo().getUsername());
         }

@@ -36,8 +36,9 @@ public class PrivateMessage extends Entity {
     private JCUser userTo;
     private String title;
     private String body;
+    private boolean read;
 
-    private PrivateMessageStatus status = PrivateMessageStatus.NOT_READ;
+    private PrivateMessageStatus status = PrivateMessageStatus.NEW;
 
     /**
      * For Hibernate use only
@@ -172,31 +173,17 @@ public class PrivateMessage extends Entity {
     }
 
     /**
-     * Mark message as read.
+     * @param read message read status
      */
-    public void markAsRead() {
-        this.status = PrivateMessageStatus.READ;
+    public void setRead(boolean read) {
+        this.read = read;
     }
 
     /**
      * @return {@code true} if message is read
      */
     public boolean isRead() {
-        return this.status == PrivateMessageStatus.READ;
-    }
-
-    /**
-     * Mark message as draft.
-     */
-    public void markAsDraft() {
-        this.status = PrivateMessageStatus.DRAFT;
-    }
-
-    /**
-     * @return {@code true} if message is draft
-     */
-    public boolean isDraft() {
-        return this.status == PrivateMessageStatus.DRAFT;
+        return read;
     }
 
 

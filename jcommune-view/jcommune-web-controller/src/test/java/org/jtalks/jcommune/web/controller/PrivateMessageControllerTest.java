@@ -16,6 +16,7 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
@@ -233,7 +234,7 @@ public class PrivateMessageControllerTest {
     public void editDraftPage() throws NotFoundException {
         PrivateMessage pm = getPrivateMessage();
         pm.setId(PM_ID);
-        pm.markAsDraft();
+        pm.setStatus(PrivateMessageStatus.DRAFT);
 
         //set expectations
         when(pmService.get(PM_ID)).thenReturn(pm);

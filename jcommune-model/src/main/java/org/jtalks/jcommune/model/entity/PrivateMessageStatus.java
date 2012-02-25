@@ -20,5 +20,5 @@ package org.jtalks.jcommune.model.entity;
  * @author Kirill Afonin
  */
 public enum PrivateMessageStatus {
-    READ, DRAFT, NOT_READ
+    NEW, DRAFT, SENT
 }
