@@ -78,6 +78,7 @@ public class PrivateMessageHibernateDao extends
                 .setCacheable(true)
                 .setParameter("read", false)
                 .setString("username", username)
+                .setParameter(STATUS, PrivateMessageStatus.SENT)
                 .uniqueResult())
                 .intValue();
     }
