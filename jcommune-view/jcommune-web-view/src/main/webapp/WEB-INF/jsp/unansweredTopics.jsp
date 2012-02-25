@@ -54,9 +54,7 @@
                     <c:forEach var="topic" items="${list}">
                         <li class="forum_row">
                             <div class="forum_icon">
-                                <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png"
-                                     alt=""
-                                     title="Форум закрыт"/>
+                                <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png"/>
                             </div>
                             <c:choose>
                                 <c:when test="${topic.announcement=='true'}">
@@ -65,7 +63,8 @@
                                             <span class="sticky">
                                                 <spring:message code="label.marked_as_announcement"/>
                                             </span>
-                                            <a class="forum_link" href="${pageContext.request.contextPath}/topics/${topic.id}">
+                                            <a class="forum_link break_word"
+                                               href="${pageContext.request.contextPath}/topics/${topic.id}">
                                                 <c:out value="${topic.title}"/>
                                             </a>
                                         </h4>
@@ -75,14 +74,14 @@
                                     <div class="forum_info">
                                         <h4><span class="sticky">
                                             <spring:message code="label.marked_as_sticked"/> </span><a
-                                                class="forum_link"
+                                                class="forum_link break_word"
                                                 href="${pageContext.request.contextPath}/topics/${topic.id}">
                                             <c:out value="${topic.title}"/></a></h4>
                                     </div>
                                 </c:when>
                                 <c:otherwise>
                                     <div class="forum_info">
-                                        <h4><a class="forum_link"
+                                        <h4><a class="forum_link break_word"
                                                href="${pageContext.request.contextPath}/topics/${topic.id}"><c:out
                                                 value="${topic.title}"/></a></h4>
                                         <br>
