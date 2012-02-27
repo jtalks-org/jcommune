@@ -1072,3 +1072,7 @@ td.button_cell {
 .error {
     color: #FF0000;
 }
+
+.striked {
+    text-decoration: line-through;
+}
