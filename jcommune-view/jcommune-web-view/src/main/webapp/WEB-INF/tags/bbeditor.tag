@@ -129,7 +129,7 @@
             <%-- <div id="helpline"><spring:message code="label.answer.tooltip"/></div>--%>
             <textarea id="tbMsg" name="${bodyParameterName}" class="editorBBCODE"
                       style="width: 90%; height: 400px;" tabindex="3"
-                      onclick="resetSizeSelector();resetIndentSelector();">${postText}</textarea>
+                      onclick="resetSizeSelector();resetIndentSelector();"><c:out value="${postText}"/></textarea>
             <br>
             <form:errors path="${bodyParameterName}" cssClass="error"/>
 
