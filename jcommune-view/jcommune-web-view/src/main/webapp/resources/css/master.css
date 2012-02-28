@@ -111,10 +111,6 @@ span.version {
     white-space: pre-wrap;
 }
 
-a.heading:hover {
-    text-decoration: underline;
-}
-
 /*Forum Header */
 .forum_header_table {
     z-index: 3;
@@ -410,8 +406,9 @@ a.heading:hover {
     text-align: left;
 }
 
-.forum_link {
+.forum_link, .forum_header_link {
     line-height: 1.2;
+    text-decoration: none;
 }
 
 a.moderator {
@@ -477,6 +474,10 @@ a.last_message_user {
     padding: 5px;
     border-bottom: 1px solid #b2b2b2;
     font-size: 11px;
+}
+
+.post_details a {
+    text-decoration: none;
 }
 
 .signature {
