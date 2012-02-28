@@ -34,10 +34,10 @@
         <jsp:include page="../../template/pmNavigationMenu.jsp"/>
         <table class="messages">
           <tr class="head">
-                  <th class="c3"><input type = "checkbox" class="check_all"/></th> 
-                  <th class="c1"><spring:message code="label.pm.title"/></th>
-                  <th class="c2"><spring:message code="label.sender"/></th>
-                  <th class="c2"><spring:message code="label.sending_date"/></th>
+                  <th class="pm_header_check"><input type = "checkbox" class="check_all"/></th>
+                  <th class="pm_header_title"><spring:message code="label.pm.title"/></th>
+                  <th class="pm_header_info"><spring:message code="label.sender"/></th>
+                  <th class="pm_header_info"><spring:message code="label.sending_date"/></th>
                    
           </tr>
                         
