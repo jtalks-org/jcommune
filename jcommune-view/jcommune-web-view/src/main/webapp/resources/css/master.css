@@ -516,6 +516,7 @@ a.last_message_user {
     padding-bottom: 5px;
     font-weight: bold;
     color: black;
+    text-decoration: none;
 }
 
 .button {
@@ -1131,6 +1132,7 @@ div.pm_right {
 .pm_body form {
     display: inline-block;
 }
+
 /* Various */
 .empty_cell {
     display: table-cell;
@@ -1152,4 +1154,12 @@ div.pm_right {
 
 .break_word {
     word-wrap: break-word;
+}
+
+.top_line a,
+a.forum_top_right_link,
+.user_posts_page .forum_userinfo a,
+.forum_author a,
+.forum_last_message a {
+    text-decoration: none;
 }
