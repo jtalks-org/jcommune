@@ -38,10 +38,11 @@
 <jsp:include page="../template/logo.jsp"/>
 <c:set var="authenticated" value="${false}"/>
 <div class="all_forums">
+<h2><a class="heading break_word" href="#"><c:out value="${topic.title}"/></a></h2>
 <div class="forum_info_top">
     <div>
         <div> <!-- top left -->
-            <h2><a class="heading break_word" href="#"><c:out value="${topic.title}"/></a></h2>
+
         </div>
         <div> <!-- top right -->
 

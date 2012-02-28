@@ -203,6 +203,7 @@ a.heading:hover {
 /* Forum Info&Buttons */
 .forum_info_top, .forum_info_bottom {
     display: table;
+    table-layout: fixed;
     width: 100%;
 }
 
@@ -281,6 +282,11 @@ a.heading:hover {
     vertical-align: middle;
     text-align: right;
     padding-bottom: 5px;
+}
+
+.topic_page .forum_info_top > div:first-child,
+.answer_page .forum_info_top > div:first-child{
+    display: none;
 }
 
 .info_top_lower > div { /* bottom row cells */
@@ -602,7 +608,6 @@ a.highlight_tab {
     width: 100%;
 }
 
-.answer_page .forum_misc_info,
 .pm_page .forum_misc_info {
     margin-bottom: 20px;
 }
@@ -984,10 +989,6 @@ td.button_cell {
     margin-top: 22px;
 }
 
-.break_word {
-    word-wrap: break-word;
-}
-
 /* Private messages */
 .pm_page .all_forums {
     width: 824px;
@@ -1146,4 +1147,8 @@ div.pm_right {
 
 .striked {
     text-decoration: line-through;
+}
+
+.break_word {
+    word-wrap: break-word;
 }
