@@ -72,10 +72,10 @@ public class AclManagerImpl implements AclManager {
         for (Sid recipient : sids) {
             for (Permission permission : permissions) {
                 // add permission to acl for recipient
-                acl.insertAce(aclIndex++, permission, recipient, true);
                 logger.debug("Added permission mask {} for Sid {} securedObject {} id {}",
                         new Object[]{permission.getMask(), recipient, target.getClass().getSimpleName(),
                                 target.getId()});
+                acl.insertAce(aclIndex++, permission, recipient, true);
             }
         }
     }
@@ -115,7 +115,7 @@ public class AclManagerImpl implements AclManager {
                             entry.getPermission().equals(permission)) {
                         acl.deleteAce(i); // delete from original list
                         logger.debug("Deleted from object {} id {} ACL permission {} for recipient {}",
-                                new Object[]{target.getClass().getName(),target.getId(), permission, recipient});
+                                new Object[]{target.getClass().getName(), target.getId(), permission, recipient});
                         i--; // because list item deleted in original list
                     }
                 }

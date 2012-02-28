@@ -34,6 +34,7 @@
               column="CREATION_DATE" not-null="true"/>
     <property name="title" column="TITLE"/>
     <property name="body" type="text" column="BODY"/>
+    <property name="read" column="READ_FLAG"/>
     <property name="status" column="STATUS">
       <type name="org.hibernate.type.EnumType">
         <param name="enumClass">org.jtalks.jcommune.model.entity.PrivateMessageStatus</param>
@@ -63,6 +64,7 @@
   <query name="getNewMessagesCountFor">
     <![CDATA[SELECT count(*) FROM PrivateMessage as pm
              WHERE pm.userTo.username = :username
-             and pm.status = :status]]>
+             and pm.status = :status
+             and pm.read = :read]]>
   </query>
 </hibernate-mapping>

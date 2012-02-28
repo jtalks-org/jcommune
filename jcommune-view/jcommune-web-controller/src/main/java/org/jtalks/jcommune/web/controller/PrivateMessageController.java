@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
@@ -209,7 +210,7 @@ public class PrivateMessageController {
     @RequestMapping(value = "/pm/{pmId}/edit", method = RequestMethod.GET)
     public ModelAndView editDraftPage(@PathVariable(PM_ID) Long id) throws NotFoundException {
         PrivateMessage pm = pmService.get(id);
-        if (!pm.isDraft()) {
+        if (!pm.getStatus().equals(PrivateMessageStatus.DRAFT)) {
             // todo: 404? we need something more meaninful here
             throw new NotFoundException("Edit allowed only for draft messages.");
         }
@@ -220,12 +221,18 @@ public class PrivateMessageController {
      * Save private message as draft. As draft message is not requred to be valid
      *
      * @param pmDto Dto populated in form
+     * @param result validation result
      * @return redirect to "drafts" folder if saved successfully or show form with error message
-     * @throws NotFoundException if incorrect User is set as recipient
      */
     @RequestMapping(value = "/pm/save", method = {RequestMethod.POST, RequestMethod.GET})
-    public String saveDraft(@ModelAttribute PrivateMessageDto pmDto) throws NotFoundException {
-        pmService.saveDraft(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
-        return "redirect:/drafts";
+    public String saveDraft(@ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
+        try {
+            pmService.saveDraft(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
+            return "redirect:/drafts";
+        } catch (NotFoundException e) {
+            result.rejectValue("recipient", "validation.wrong_recipient");
+            return PM_FORM;
+        }
     }
+
 }

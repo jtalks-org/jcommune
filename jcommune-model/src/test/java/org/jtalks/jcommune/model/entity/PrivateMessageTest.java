@@ -47,18 +47,4 @@ public class PrivateMessageTest {
         };
     }
 
-
-    @Test
-    public void testIsRead() {
-        pm.markAsRead();
-
-        assertTrue(pm.isRead());
-    }
-
-    @Test
-    public void testIsDraft() {
-        pm.markAsDraft();
-
-        assertTrue(pm.isDraft());
-    }
 }

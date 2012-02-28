@@ -52,12 +52,15 @@
             <c:when test="${!(empty topics)}">
                 <ul class="forum_table">
 
-                    <jtalks:pagination uri="" pagination="${pagination}" numberLink="3" list="${topics}">
+                <jtalks:pagination uri="" pagination="${pagination}" numberLink="3" list="${topics}">
                     <c:forEach var="topic" items="${list}">
                         <li class="forum_row">
                             <div class="forum_info">
-                                <h4><a class="forum_link"
-                                       href="${pageContext.request.contextPath}/topics/${topic.id}">${topic.title}</a>
+                                <h4>
+                                    <a class="forum_link break_word"
+                                       href="${pageContext.request.contextPath}/topics/${topic.id}">
+                                        <c:out value="${topic.title}"/>
+                                    </a>
                                 </h4>
                                 <br/>
                                 <span class="truncated"><jtalks:bb2html bbCode="${topic.lastPost.postContent}"/></span>
@@ -86,11 +89,11 @@
                             </div>
                         </li>
                     </c:forEach>
-                </ul>
-                <nobr>
+                    </ul>
+                    <nobr>
                     <span class="nav_bottom">
-                        </jtalks:pagination>
-                    </span>
+                </jtalks:pagination>
+                </span>
                 </nobr>
             </c:when>
             <c:otherwise>

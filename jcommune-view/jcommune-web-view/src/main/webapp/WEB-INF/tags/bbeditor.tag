@@ -76,8 +76,8 @@
                        value=" i " onclick="doClick('italic');"/>
                 <input id="format_u" type="button" class="button" accesskey="u" name="format_u"
                        value=" u " onclick="doClick('underline');"/>
-                <input id="format_s" type="button" class="button" accesskey="s" name="format_s"
-                       value=" s " onclick="doClick('line-through');"/>
+                <input id="format_s" type="button" class="button striked" accesskey="s" name="format_s"
+                       value=" S " onclick="doClick('line-through');"/>
                 <input id="format_highlight" type="button" class="button" accesskey="highlight"
                        name="format_highlight"
                        value=" Highlight " onclick="doClick('highlight');"/>
@@ -129,7 +129,7 @@
             <%-- <div id="helpline"><spring:message code="label.answer.tooltip"/></div>--%>
             <textarea id="tbMsg" name="${bodyParameterName}" class="editorBBCODE"
                       style="width: 90%; height: 400px;" tabindex="3"
-                      onclick="resetSizeSelector();resetIndentSelector();">${postText}</textarea>
+                      onclick="resetSizeSelector();resetIndentSelector();"><c:out value="${postText}"/></textarea>
             <br>
             <form:errors path="${bodyParameterName}" cssClass="error"/>
 

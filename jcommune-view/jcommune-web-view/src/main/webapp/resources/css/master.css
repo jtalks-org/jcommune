@@ -1143,3 +1143,7 @@ div.pm_right {
 .error {
     color: #FF0000;
 }
+
+.striked {
+    text-decoration: line-through;
+}

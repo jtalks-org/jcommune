@@ -41,7 +41,7 @@ public class JCUser extends User {
     private boolean enabled;
 
     public static final int MIN_NAME_SIZE = 2;
-    public static final int MAX_NAME_SIZE = 40;
+    public static final int MAX_NAME_SIZE = 25;
     public static final int MAX_LAST_NAME_SIZE = 255;
     public static final int MIN_PASS_SIZE = 4;
     public static final int MAX_PASS_SIZE = 20;
