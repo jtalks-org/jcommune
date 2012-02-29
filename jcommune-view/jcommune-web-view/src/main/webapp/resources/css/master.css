@@ -480,6 +480,11 @@ a.last_message_user {
     text-decoration: none;
 }
 
+.post_details .button {
+    position: relative;
+    top: -2px;
+}
+
 .signature {
     margin-top: 10px;
     border-bottom: none;
