@@ -395,15 +395,18 @@ span.version {
 
 /* Forum Cells - Main */
 .forum_icon {
-    width: 30px;
+    width: 40px;
     padding: 5px;
-    padding-right: 0;
 }
 
 .forum_info {
     width: 100%;
     padding: 5px;
     text-align: left;
+}
+
+.forum_info .forum_message_cell_text {
+    padding-left: 0;
 }
 
 .forum_link, .forum_header_link {
@@ -1158,6 +1161,10 @@ div.pm_right {
 }
 
 .break_word {
+    word-wrap: break-word;
+}
+
+.forum_last_message, .forum_author, .username {
     word-wrap: break-word;
 }
 
