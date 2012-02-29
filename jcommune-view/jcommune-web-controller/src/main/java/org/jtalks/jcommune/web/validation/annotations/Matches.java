@@ -12,7 +12,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.validation;
+package org.jtalks.jcommune.web.validation.annotations;
+
+import org.jtalks.jcommune.web.validation.validators.MatchesValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -61,7 +63,7 @@ public @interface Matches {
     /**
      * Message for display when validation fails.
      */
-    String message() default "{org.jtalks.jcommune.web.validation.Matches.message}";
+    String message() default "{org.jtalks.jcommune.web.validation.annotations.Matches.message}";
 
     /**
      * Groups element that specifies the processing groups with which the

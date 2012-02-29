@@ -20,7 +20,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
-import org.jtalks.jcommune.web.validation.Matches;
+import org.jtalks.jcommune.web.validation.annotations.Matches;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;

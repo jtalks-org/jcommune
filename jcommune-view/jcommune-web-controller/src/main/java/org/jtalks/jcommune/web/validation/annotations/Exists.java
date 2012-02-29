@@ -12,9 +12,10 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.validation;
+package org.jtalks.jcommune.web.validation.annotations;
 
 import org.jtalks.common.model.entity.Entity;
+import org.jtalks.jcommune.web.validation.validators.ExistenceValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -25,7 +26,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks the field to check it's value for non-existence in a database.
+ * Marks the field to check it's value for existence in a database.
  * You should specify an Entity and a field to search for value in.
  *
  * <p>Works only for sting variables as for now.
@@ -35,8 +36,8 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Constraint(validatedBy = UniqueValidator.class)
-public @interface Unique {
+@Constraint(validatedBy = ExistenceValidator.class)
+public @interface Exists {
 
     /**
      * Resource bundle code for error message
@@ -49,7 +50,7 @@ public @interface Unique {
     Class<?>[] groups() default {};
 
     /**
-     * Payload, no used here
+     * Payload, not used here
      */
     Class<? extends Payload>[] payload() default {};
 

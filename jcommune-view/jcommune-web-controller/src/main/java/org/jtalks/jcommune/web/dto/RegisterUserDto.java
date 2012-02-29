@@ -16,8 +16,8 @@ package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.web.validation.Matches;
-import org.jtalks.jcommune.web.validation.Unique;
+import org.jtalks.jcommune.web.validation.annotations.Matches;
+import org.jtalks.jcommune.web.validation.annotations.Unique;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;

@@ -12,9 +12,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.validation;
+package org.jtalks.jcommune.web.validation.annotations;
 
-import org.jtalks.common.model.entity.Entity;
+import org.jtalks.jcommune.web.validation.validators.ExistenceValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -25,10 +25,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks the field to check it's value for existence in a database.
- * You should specify an Entity and a field to search for value in.
- *
- * <p>Works only for sting variables as for now.
+ * Adopts default @Size annotation to ignore BB-codes
+ * when computing size. Suitable for the String fields only.
  *
  * @author Evgeniy Naumenko
  */
@@ -36,12 +34,12 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Constraint(validatedBy = ExistenceValidator.class)
-public @interface Exists {
+public @interface BbCodeAwareSize {
 
     /**
      * Resource bundle code for error message
      */
-    String message();
+    String message() default "{javax.validation.constraints.Size.message}";
 
     /**
      * Groups settings for this validation constraint
@@ -54,12 +52,13 @@ public @interface Exists {
     Class<? extends Payload>[] payload() default {};
 
     /**
-     * Entity to be verified
+     * @return size the string must be higher or equal to
      */
-    Class<? extends Entity> entity();
+    int min() default 0;
 
     /**
-     * Field to be checked
+     * @return size the string must be lower or equal to
      */
-    String field();
+    int max() default Integer.MAX_VALUE;
+
 }

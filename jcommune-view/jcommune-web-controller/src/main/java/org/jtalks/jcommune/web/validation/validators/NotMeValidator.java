@@ -12,50 +12,49 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.validation;
+package org.jtalks.jcommune.web.validation.validators;
 
-import org.jtalks.common.model.entity.Entity;
-import org.jtalks.jcommune.model.dao.ValidatorDao;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
+import org.jtalks.jcommune.web.validation.annotations.NotMe;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 /**
- * Checks string value for existence in a database.
- *
- * @author Evgeniy Naumenko
- * @see Exists
+ * Validates field with a username set if it matches the current user
+ * logged in. The main intention here is to disallow for user to set
+ * it's own name as a field value.
  */
-public class ExistenceValidator implements ConstraintValidator<Exists, String> {
+public class NotMeValidator implements ConstraintValidator<NotMe, String> {
 
-    private Class<? extends Entity> entity;
-    private String field;
-
-    private ValidatorDao<String> dao;
+    private SecurityService service;
 
     /**
-     * @param dao session factory fro database requests
+     * @param service  to get the current user
      */
     @Autowired
-    public ExistenceValidator(ValidatorDao<String> dao) {
-        this.dao = dao;
+    public NotMeValidator(SecurityService service) {
+        this.service = service;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void initialize(Exists annotation) {
-        this.entity = annotation.entity();
-        this.field = annotation.field();
+    public void initialize(NotMe constraintAnnotation) {
+        //no configuration is required
     }
 
     /**
-     * {@inheritDoc}
+     * @param value filed value to be validated
+     * @param context validator context, not used here
+     * @return true if user specified is not the current one logged in
      */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return (value != null) && !dao.isResultSetEmpty(entity, field, value);
+        JCUser user = service.getCurrentUser();
+        return (user == null) || !user.getUsername().equals(value);
     }
 }

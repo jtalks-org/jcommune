@@ -12,50 +12,31 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.validation;
+package org.jtalks.jcommune.web.validation.validators;
 
-import org.jtalks.common.model.entity.Entity;
-import org.jtalks.jcommune.model.dao.ValidatorDao;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 /**
- * Ensures uniqueness of the field value given using an hql query provided.
- * @see Unique
- *
  * @author Evgeniy Naumenko
  */
-public class UniqueValidator implements ConstraintValidator<Unique, String> {
+public class BbCodeAwareSizeValidator implements ConstraintValidator<BbCodeAwareSize, String> {
 
-    private Class<? extends Entity> entity;
-    private String field;
+    private int min;
+    private int max;
 
-    private ValidatorDao<String> dao;
-
-    /**
-     * @param dao to perform database-based validations
-     */
-    @Autowired
-    public UniqueValidator(ValidatorDao<String> dao) {
-        this.dao = dao;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void initialize(Unique annotation) {
-        this.entity = annotation.entity();
-        this.field = annotation.field();
+    public void initialize(BbCodeAwareSize constraintAnnotation) {
+        this.min = constraintAnnotation.min();
+        this.max = constraintAnnotation.max();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return (value != null) && dao.isResultSetEmpty(entity, field, value);
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
+
+
 }
