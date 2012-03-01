@@ -1192,3 +1192,14 @@ a.forum_top_right_link,
  .forum_last_message a:hover {
      text-decoration: underline;
  }
+
+.empty_container div {
+    display: table-cell;
+    vertical-align: middle;
+    height: 160px;
+}
+
+.empty {
+    font-size: 3em;
+    padding-left: 70px;
+}
