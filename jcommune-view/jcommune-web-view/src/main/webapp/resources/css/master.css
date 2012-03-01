@@ -83,6 +83,11 @@ span.version {
     text-align: left
 }
 
+.top_line .currentusername {
+    text-decoration: underline;
+}
+
+
 /* Forums */
 .all_forums {
     margin: 140px 0 0;
@@ -412,6 +417,10 @@ span.version {
 .forum_link, .forum_header_link {
     line-height: 1.2;
     text-decoration: none;
+}
+
+.forum_link:hover, .forum_header_link:hover {
+    text-decoration: underline;
 }
 
 a.moderator {
@@ -1175,3 +1184,11 @@ a.forum_top_right_link,
 .forum_last_message a {
     text-decoration: none;
 }
+
+.top_line a:hover:hover,
+ a.forum_top_right_link:hover,
+ .user_posts_page .forum_userinfo a:hover,
+ .forum_author a:hover,
+ .forum_last_message a:hover {
+     text-decoration: underline;
+ }
