@@ -14,14 +14,73 @@
  */
 package org.jtalks.jcommune.web.validation;
 
+import org.jtalks.jcommune.service.nontransactional.BBCodeService;
+import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
+import org.jtalks.jcommune.web.validation.validators.BbCodeAwareSizeValidator;
+import org.mockito.Mock;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Evgeniy Naumenko
  */
 public class BbCodeAwareSizeValidatorTest {
-    @Test
-    public void testIsValid() throws Exception {
 
+    @BbCodeAwareSize(min = 5, max = 10)
+    public String value;
+
+    private BbCodeAwareSizeValidator validator;
+
+    @Mock
+    private BBCodeService service;
+
+    @BeforeMethod
+    public void init() throws NoSuchFieldException {
+        BbCodeAwareSize annotation = (BbCodeAwareSize)
+                BbCodeAwareSizeValidatorTest.class.getField("value").getDeclaredAnnotations()[0];
+        initMocks(this);
+        validator = new BbCodeAwareSizeValidator(service);
+        validator.initialize(annotation);
+    }
+    
+    @Test
+    public void testValidationPassed() {
+        String source =  "1234567";
+        when(service.removeBBCodes(source)).thenReturn(source);
+
+        assertTrue(validator.isValid(source, null));
+
+        verify(service).removeBBCodes(source);
+    }
+
+    @Test
+    public void testNullValue() {
+        assertFalse(validator.isValid(null, null));
+    }
+
+    @Test
+    public void testValueTooLong() {
+        String source = "123456789010";
+        when(service.removeBBCodes(source)).thenReturn(source);
+
+        assertFalse(validator.isValid(source, null));
+
+        verify(service).removeBBCodes(source);
+    }
+
+    @Test
+    public void testValueTooShort() {
+        String source = "123";
+        when(service.removeBBCodes(source)).thenReturn(source);
+
+        assertFalse(validator.isValid(source, null));
+
+        verify(service).removeBBCodes(source);
     }
 }
