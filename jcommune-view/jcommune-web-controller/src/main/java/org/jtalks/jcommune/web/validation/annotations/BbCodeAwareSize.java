@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.validation.annotations;
 
+import org.jtalks.jcommune.web.validation.validators.BbCodeAwareSizeValidator;
 import org.jtalks.jcommune.web.validation.validators.ExistenceValidator;
 
 import javax.validation.Constraint;
@@ -33,7 +34,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Constraint(validatedBy = ExistenceValidator.class)
+@Constraint(validatedBy = BbCodeAwareSizeValidator.class)
 public @interface BbCodeAwareSize {
 
     /**

@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.dto;
 import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
 import org.jtalks.jcommune.web.validation.annotations.Exists;
 import org.jtalks.jcommune.web.validation.annotations.NotMe;
 
@@ -39,7 +40,8 @@ public class PrivateMessageDto {
     private String title;
 
     @NotBlank
-    @Size(min = PrivateMessage.MIN_MESSAGE_LENGTH, max = PrivateMessage.MAX_MESSAGE_LENGTH, message = "{body.length}")
+    @BbCodeAwareSize(min = PrivateMessage.MIN_MESSAGE_LENGTH,
+            max = PrivateMessage.MAX_MESSAGE_LENGTH, message = "{body.length}")
     private String body;
 
     @NotMe(message = "{validation.username.notMe}")

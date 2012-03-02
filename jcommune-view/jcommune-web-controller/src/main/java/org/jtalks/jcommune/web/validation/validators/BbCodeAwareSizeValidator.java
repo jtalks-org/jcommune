@@ -14,29 +14,52 @@
  */
 package org.jtalks.jcommune.web.validation.validators;
 
+import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 /**
+ * Extends default @Size annotation to ignore BB codes in string.
+ * As for now, applicable to string values only.
+ *
  * @author Evgeniy Naumenko
  */
 public class BbCodeAwareSizeValidator implements ConstraintValidator<BbCodeAwareSize, String> {
 
+    private BBCodeService service;
+
     private int min;
     private int max;
 
+    /**
+     * @param service dervice to remove BB-codes out of a string
+     */
+    @Autowired
+    public BbCodeAwareSizeValidator(BBCodeService service) {
+        this.service = service;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initialize(BbCodeAwareSize constraintAnnotation) {
         this.min = constraintAnnotation.min();
         this.max = constraintAnnotation.max();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        if (value == null) {
+            return false;
+        }
+        int plainTextLength = service.removeBBCodes(value).length();
+        return (plainTextLength > min) && (plainTextLength < max);
     }
-
-
 }
