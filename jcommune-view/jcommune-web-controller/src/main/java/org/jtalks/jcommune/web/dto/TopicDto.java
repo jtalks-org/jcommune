@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.dto;
 import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
 
 import javax.validation.constraints.Size;
 
@@ -33,7 +34,7 @@ public class TopicDto {
     private String topicName;
 
     @NotBlank
-    @Size(min = Post.MIN_LENGTH, max = Post.MAX_LENGTH)
+    @BbCodeAwareSize(min = Post.MIN_LENGTH, max = Post.MAX_LENGTH)
     private String bodyText;
 
     private int topicWeight;
