@@ -20,7 +20,9 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
+import org.jtalks.jcommune.web.validation.annotations.ChangedEmail;
 import org.jtalks.jcommune.web.validation.annotations.Matches;
+import org.jtalks.jcommune.web.validation.annotations.MyPassword;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -39,11 +41,13 @@ public class EditUserProfileDto {
             "*\\@((\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}(\\:\\d{1,3})?)|(((([a-zA-Z0-9][a-zA-Z0-9\\-]" +
             "+[a-zA-Z0-9])|([a-zA-Z0-9]{1,2}))[\\.]{1})+([a-zA-Z]{2,6})))$",
             message = "{validation.email.wrong.format}")
+    @ChangedEmail
     private String email;
     private String firstName;
     private String lastName;
     @Size(max = JCUser.MAX_LAST_NAME_SIZE, message = "{validation.signature.length}")
     private String signature;
+    @MyPassword
     private String currentUserPassword;
     @Length(min = JCUser.MIN_PASS_SIZE, max = JCUser.MAX_PASS_SIZE)
     private String newUserPassword;
@@ -61,7 +65,7 @@ public class EditUserProfileDto {
      * @return array of page sizes available
      */
     public int[] getPageSizesAvailable() {
-        return new int[]{5, 10, 20, 50, 100, 250};
+        return JCUser.PAGE_SIZES_AVAILABLE;
     }
 
     /**

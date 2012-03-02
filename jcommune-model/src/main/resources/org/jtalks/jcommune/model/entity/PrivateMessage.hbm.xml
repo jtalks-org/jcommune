@@ -37,11 +37,11 @@
     <property name="read" column="READ_FLAG"/>
     <property name="status" column="STATUS">
       <type name="org.hibernate.type.EnumType">
-        <param name="enumClass">org.jtalks.jcommune.model.entity.PrivateMessageStatus</param>
-        <!-- varchar -->
-        <param name="type">12</param>
+          <param name="enumClass">org.jtalks.jcommune.model.entity.PrivateMessageStatus</param>
+          <!-- varchar -->
+          <param name="type">12</param>
       </type>
-    </property>
+  </property>
   </class>
   <query name="getAllFromUser">
     <![CDATA[FROM PrivateMessage as pm 

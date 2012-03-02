@@ -14,22 +14,20 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.PostService;
-import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
-import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
+import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
-import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
+import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.mockito.Matchers;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -48,8 +46,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.ModelAndViewAssert.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -158,48 +164,6 @@ public class UserProfileControllerTest {
                 userDto.getLastName(), userDto.getCurrentUserPassword(),
                 userDto.getNewUserPassword(), anyString(),
                 SIGNATURE, LANGUAGE, PAGE_SIZE, LOCATION));
-    }
-
-    @Test
-    public void testEditProfileDuplicatedEmail() throws Exception {
-        JCUser user = getUser();
-        when(securityService.getCurrentUser()).thenReturn(user);
-        EditUserProfileDto userDto = getEditUserProfileDto();
-        BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
-
-        when(userService.editUserProfile(Matchers.<UserInfoContainer>any())).thenThrow(new DuplicateEmailException());
-
-        ModelAndView mav = profileController.editProfile(userDto, bindingResult, new MockHttpServletResponse());
-
-        assertViewName(mav, "editProfile");
-        assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
-        verify(userService).editUserProfile(Matchers.<UserInfoContainer>any());
-
-        assertContainsError(bindingResult, "email");
-    }
-
-    @Test
-    public void testEditProfileWrongPassword() throws Exception {
-        JCUser user = getUser();
-        when(securityService.getCurrentUser()).thenReturn(user);
-        EditUserProfileDto userDto = getEditUserProfileDto();
-        BindingResult bindingResult = new BeanPropertyBindingResult(userDto, "editedUser");
-
-        when(userService.editUserProfile(new UserInfoContainer(userDto.getEmail(), userDto.getFirstName(),
-                userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(),
-                anyString(),
-                SIGNATURE, LANGUAGE, PAGE_SIZE, LOCATION))).thenThrow(new WrongPasswordException());
-
-        ModelAndView mav = profileController.editProfile(userDto, bindingResult, new MockHttpServletResponse());
-
-        assertViewName(mav, "editProfile");
-        assertEquals(bindingResult.getErrorCount(), 1, "Result without errors");
-        verify(userService).editUserProfile(new UserInfoContainer(userDto.getEmail(), userDto.getFirstName(),
-                userDto.getLastName(), userDto.getCurrentUserPassword(),
-                userDto.getNewUserPassword(), anyString(),
-                SIGNATURE, LANGUAGE, PAGE_SIZE, LOCATION));
-        assertContainsError(bindingResult, "currentUserPassword");
     }
 
     @Test
