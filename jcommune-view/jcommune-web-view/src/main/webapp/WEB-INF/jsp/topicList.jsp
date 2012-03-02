@@ -135,8 +135,12 @@
             </c:when>
             <c:otherwise>
                 <ul class="forum_table">
-                    <li class="forum_row">
-                          <spring:message code="label.branch.empty"/>
+                    <li class="forum_row empty_container">
+                        <div>
+                            <span class="empty">
+                                <spring:message code="label.branch.empty"/>
+                            </span>
+                        </div>
                     </li>
                 </ul>
             </c:otherwise>

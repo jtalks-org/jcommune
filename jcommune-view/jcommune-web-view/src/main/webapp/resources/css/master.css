@@ -570,6 +570,25 @@ a.last_message_user {
     top: 1px;
 }
 
+.but_arrow {
+    vertical-align: bottom;
+    background: #c6c6c6 url(../images/arrow_right.png) no-repeat 50% 50%;
+    width: 20px;
+    height: 15px;
+}
+
+.but_arrow:hover {
+    background: #dfdfdf url(../images/arrow_right.png) no-repeat 50% 50%;
+}
+
+.arrow_left {
+    background: #c6c6c6 url(../images/arrow_left.png) no-repeat 50% 50%;
+}
+
+.arrow_left:hover {
+    background: #dfdfdf url(../images/arrow_left.png) no-repeat 50% 50%;
+}
+
 .all_forums a.button {
     color: #262626;
 }
@@ -649,13 +668,6 @@ a.highlight_tab {
     margin: 3px;
     margin-top: 0;
     margin-bottom: 5px;
-}
-
-.answer_page .button,
-.pm_page .button {
-    border: 1px solid grey;
-!important
-
 }
 
 a.disabled {
@@ -739,10 +751,6 @@ a.disabled {
 
 .reg_info {
     font-size: 11px;
-}
-
-.registration_page button, .login_page button {
-    margin: 10px 0;
 }
 
 input[type='checkbox'] {
