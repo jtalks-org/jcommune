@@ -98,6 +98,7 @@ public class TransactionalPrivateMessageService
         JCUser userFrom = securityService.getCurrentUser();
         PrivateMessage pm = new PrivateMessage(recipient, userFrom, title, body);
         pm.setRead(false);
+        pm.setStatus(PrivateMessageStatus.SENT);
         this.getDao().saveOrUpdate(pm);
 
         userDataCache.incrementNewMessageCountFor(recipientUsername);
@@ -177,6 +178,7 @@ public class TransactionalPrivateMessageService
         PrivateMessage pm = new PrivateMessage(recipient, userFrom, title, body);
         pm.setId(id);
         pm.setRead(false);
+        pm.setStatus(PrivateMessageStatus.SENT);
         this.getDao().saveOrUpdate(pm);
 
         userDataCache.incrementNewMessageCountFor(recipientUsername);

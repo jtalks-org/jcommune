@@ -32,7 +32,6 @@ import java.util.ArrayList;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -105,6 +104,7 @@ public class TransactionalPrivateMessageServiceTest {
         PrivateMessage pm = pmService.sendMessage("body", "title", USERNAME);
 
         assertFalse(pm.isRead());
+        assertEquals(pm.getStatus(), PrivateMessageStatus.SENT);
         verify(securityService).getCurrentUser();
         verify(userService).getByUsername(USERNAME);
         verify(userDataCache).incrementNewMessageCountFor(USERNAME);
@@ -196,6 +196,7 @@ public class TransactionalPrivateMessageServiceTest {
         PrivateMessage pm = pmService.sendDraft(1L, "body", "title", USERNAME);
 
         assertFalse(pm.isRead());
+        assertEquals(pm.getStatus(), PrivateMessageStatus.SENT);
         verify(securityService).getCurrentUser();
         verify(userService).getByUsername(USERNAME);
         verify(userDataCache).incrementNewMessageCountFor(USERNAME);
