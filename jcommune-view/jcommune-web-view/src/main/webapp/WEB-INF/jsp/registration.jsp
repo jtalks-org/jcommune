@@ -75,7 +75,9 @@
                 </div>
             </div>
             <div class="form_controls">
-                <button type="submit"><spring:message code="label.signup"/></button>
+                <button type="submit" class="button">
+                    <spring:message code="label.signup"/>
+                </button>
             </div>
         </form:form>
     </div>

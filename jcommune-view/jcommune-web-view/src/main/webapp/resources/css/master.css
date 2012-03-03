@@ -83,6 +83,11 @@ span.version {
     text-align: left
 }
 
+.top_line .currentusername {
+    text-decoration: underline;
+}
+
+
 /* Forums */
 .all_forums {
     margin: 140px 0 0;
@@ -414,6 +419,10 @@ span.version {
     text-decoration: none;
 }
 
+.forum_link:hover, .forum_header_link:hover {
+    text-decoration: underline;
+}
+
 a.moderator {
     font-style: italic;
     font-weight: normal;
@@ -561,6 +570,25 @@ a.last_message_user {
     top: 1px;
 }
 
+.but_arrow {
+    vertical-align: bottom;
+    background: #c6c6c6 url(../images/arrow_right.png) no-repeat 50% 50%;
+    width: 20px;
+    height: 15px;
+}
+
+.but_arrow:hover {
+    background: #dfdfdf url(../images/arrow_right.png) no-repeat 50% 50%;
+}
+
+.arrow_left {
+    background: #c6c6c6 url(../images/arrow_left.png) no-repeat 50% 50%;
+}
+
+.arrow_left:hover {
+    background: #dfdfdf url(../images/arrow_left.png) no-repeat 50% 50%;
+}
+
 .all_forums a.button {
     color: #262626;
 }
@@ -640,13 +668,6 @@ a.highlight_tab {
     margin: 3px;
     margin-top: 0;
     margin-bottom: 5px;
-}
-
-.answer_page .button,
-.pm_page .button {
-    border: 1px solid grey;
-!important
-
 }
 
 a.disabled {
@@ -730,10 +751,6 @@ a.disabled {
 
 .reg_info {
     font-size: 11px;
-}
-
-.registration_page button, .login_page button {
-    margin: 10px 0;
 }
 
 input[type='checkbox'] {
@@ -1174,4 +1191,23 @@ a.forum_top_right_link,
 .forum_author a,
 .forum_last_message a {
     text-decoration: none;
+}
+
+.top_line a:hover:hover,
+ a.forum_top_right_link:hover,
+ .user_posts_page .forum_userinfo a:hover,
+ .forum_author a:hover,
+ .forum_last_message a:hover {
+     text-decoration: underline;
+ }
+
+.empty_container div {
+    display: table-cell;
+    vertical-align: middle;
+    height: 160px;
+}
+
+.empty {
+    font-size: 3em;
+    padding-left: 70px;
 }

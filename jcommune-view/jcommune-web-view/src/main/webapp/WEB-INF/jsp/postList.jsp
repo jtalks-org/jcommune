@@ -90,13 +90,14 @@
         </div>
         <div class="info_top_lower_right"> <!-- bottom right -->
             <c:if test="${previousTopic != null}">
-                <a class="button" href="${pageContext.request.contextPath}/topics/${previousTopic.id}">
-                    <spring:message code="label.topic.previous"/>
+                <a class="button but_arrow arrow_left" href="${pageContext.request.contextPath}/topics/${previousTopic.id}">
+                    <!-- <spring:message code="label.topic.previous"/> -->
                 </a>
             </c:if>
             <c:if test="${nextTopic != null}">
-                <a class="button" href="${pageContext.request.contextPath}/topics/${nextTopic.id}">
-                    <spring:message code="label.topic.next"/>
+                <a class="button but_arrow" href="${pageContext.request.contextPath}/topics/${nextTopic.id}">
+
+                    <!--<spring:message code="label.topic.next"/>-->
                 </a>
             </c:if>
                 <span class="nav_top">

@@ -51,8 +51,6 @@
         <c:choose>
             <c:when test="${!(empty topics)}">
                 <ul class="forum_table">
-
-                <jtalks:pagination uri="" pagination="${pagination}" numberLink="3" list="${topics}">
                     <c:forEach var="topic" items="${list}">
                         <li class="forum_row">
                             <div class="forum_info">
@@ -89,17 +87,28 @@
                             </div>
                         </li>
                     </c:forEach>
-                    </ul>
-                    <nobr>
-                    <span class="nav_bottom">
-                </jtalks:pagination>
-                </span>
-                </nobr>
+                </ul>
+                <div class="forum_info_bottom">
+                    <div>
+                        <div>
+
+                        </div>
+                        <div>
+                            <span class="nav_bottom">
+                                <jtalks:pagination uri="" pagination="${pagination}" numberLink="3" list="${topics}"/>
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </c:when>
             <c:otherwise>
                 <ul class="forum_table">
-                    <li class="forum_row">
-                        <spring:message code="label.recent.empty"/>
+                    <li class="forum_row empty_container">
+                        <div>
+                            <span class="empty">
+                                <spring:message code="label.recent.empty"/>
+                            </span>
+                        </div>
                     </li>
                 </ul>
             </c:otherwise>
