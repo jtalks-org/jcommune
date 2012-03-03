@@ -15,7 +15,8 @@
 package org.jtalks.jcommune.web.validation.validators;
 
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
-import org.jtalks.jcommune.web.validation.annotations.MyPassword;
+import org.jtalks.jcommune.web.dto.EditUserProfileDto;
+import org.jtalks.jcommune.web.validation.annotations.ChangedPassword;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;
@@ -23,11 +24,13 @@ import javax.validation.ConstraintValidatorContext;
 
 /**
  * Validates if password set matches the current user's password.
+ * This check is to be performed only if new passwword has been set.
  *
  * @author Evgeniy Naumenko
  */
-public class MyPasswordValidator implements ConstraintValidator<MyPassword, String> {
+public class ChangedPasswordValidator implements ConstraintValidator<ChangedPassword, EditUserProfileDto> {
 
+    private String message;
 
     private SecurityService service;
 
@@ -35,7 +38,7 @@ public class MyPasswordValidator implements ConstraintValidator<MyPassword, Stri
      * @param service to obtain current user logged in
      */
     @Autowired
-    public MyPasswordValidator(SecurityService service) {
+    public ChangedPasswordValidator(SecurityService service) {
         this.service = service;
     }
 
@@ -43,15 +46,23 @@ public class MyPasswordValidator implements ConstraintValidator<MyPassword, Stri
      * {@inheritDoc}
      */
     @Override
-    public void initialize(MyPassword constraintAnnotation) {
-        //nothing here to init
+    public void initialize(ChangedPassword constraintAnnotation) {
+        this.message = constraintAnnotation.message();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
-        return service.getCurrentUser().getPassword().equals(value);
+    public boolean isValid(EditUserProfileDto dto, ConstraintValidatorContext context) {
+        boolean result = dto.getNewUserPassword() == null;
+        result |= service.getCurrentUser().getPassword().equals(dto.getCurrentUserPassword());
+        if (!result) {
+            // add validation error to the field
+            context.buildConstraintViolationWithTemplate(message)
+                    .addNode("currentUserPassword")
+                    .addConstraintViolation();
+        }
+        return result;
     }
 }

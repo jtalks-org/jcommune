@@ -16,6 +16,7 @@ package org.jtalks.jcommune.web.validation.validators;
 
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.web.validation.annotations.Matches;
 
 import javax.validation.ConstraintValidator;
@@ -32,8 +33,8 @@ public class MatchesValidator implements ConstraintValidator<Matches, Object> {
     private String firstPropertyName;
     private String secondPropertyName;
     private String failMessage;
-    private Object fieldValue1;
-    private Object fieldValue2;
+    private String fieldValue1;
+    private String fieldValue2;
 
     /**
      * Initialize validator fields from annotation instance.
@@ -59,11 +60,7 @@ public class MatchesValidator implements ConstraintValidator<Matches, Object> {
     public boolean isValid(Object value, ConstraintValidatorContext context) {
         getComparableFields(value);
 
-        if (isNeitherSetted()) {
-            return true;
-        }
-
-        boolean matches = isFieldsMatches();
+        boolean matches = StringUtils.equals(fieldValue1, fieldValue2);
         if (!matches) {
             constraintViolated(context);
         }
@@ -80,20 +77,6 @@ public class MatchesValidator implements ConstraintValidator<Matches, Object> {
         context.buildConstraintViolationWithTemplate(failMessage)
                 .addNode(secondPropertyName)
                 .addConstraintViolation();
-    }
-
-    /**
-     * @return {@code true} if field values are equals
-     */
-    private boolean isFieldsMatches() {
-        return (fieldValue2 != null) && fieldValue2.equals(fieldValue1);
-    }
-
-    /**
-     * @return {@code true} if neither fields are {@code null}
-     */
-    private boolean isNeitherSetted() {
-        return (fieldValue2 == null) && (fieldValue1 == null);
     }
 
     /**

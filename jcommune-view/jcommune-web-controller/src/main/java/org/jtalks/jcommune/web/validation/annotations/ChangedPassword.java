@@ -14,25 +14,30 @@
  */
 package org.jtalks.jcommune.web.validation.annotations;
 
-import org.jtalks.jcommune.web.validation.validators.MyPasswordValidator;
+import org.jtalks.jcommune.web.validation.validators.ChangedPasswordValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.TYPE;
+
 /**
- * Validates if field value matches
- * current user's password.
+ * This is to check is user entered his old password
+ * correctly when specifying a new one. Validation is only
+ * performed when user is trying to alter his password.
+ * This is the only case we require user to enter his
+ * password explicitly.
  */
-@Target({ElementType.FIELD})
+@Target({TYPE, ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Constraint(validatedBy = MyPasswordValidator.class)
-public @interface MyPassword {
+@Constraint(validatedBy = ChangedPasswordValidator.class)
+public @interface ChangedPassword {
     /**
      * Resource bundle code for error message
      */
