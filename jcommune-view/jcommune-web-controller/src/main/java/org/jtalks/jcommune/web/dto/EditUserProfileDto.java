@@ -34,6 +34,7 @@ import javax.validation.constraints.Size;
  * @author Osadchuck Eugeny
  */
 @Matches(field = "newUserPassword", verifyField = "newUserPasswordConfirm", message = "{password_not_matches}")
+@ChangedPassword
 public class EditUserProfileDto {
 
     @NotBlank(message = "{validation.email.notblank}")

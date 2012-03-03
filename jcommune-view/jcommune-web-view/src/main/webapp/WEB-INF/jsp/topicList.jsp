@@ -34,7 +34,7 @@
         <div class="forum_info_top">
             <div>
                 <div> <!-- top left -->
-                    <h2><a class="heading" href="#"><c:out value="${branch.name}"/></a></h2><br />
+                    <h2 class="heading"><c:out value="${branch.name}"/></h2><br />
                     <span class="forum_misc_info"><c:out value="${branch.description}"/></span>
                 </div>
                 <div> <!-- top right -->

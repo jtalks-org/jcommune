@@ -31,9 +31,7 @@
     <div class="all_forums">
         <div class="forum_header_table">
             <div class="forum_header">
-                <h3><a class="forum_header_link"
-                       href="${pageContext.request.contextPath}/sections/${section.id}">
-                    <c:out value="${section.name}"/></a></h3>
+                <h3 class="forum_header_link"><c:out value="${section.name}"/></h3>
                 <span class="forum_header_themes"><spring:message code="label.section.header.topics"/></span>
                 <span class="forum_header_messages"><spring:message code="label.section.header.messages"/></span>
                     <span class="forum_header_last_message"><spring:message
