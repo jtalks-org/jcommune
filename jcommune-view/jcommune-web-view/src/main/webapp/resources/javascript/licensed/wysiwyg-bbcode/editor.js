@@ -27,16 +27,12 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var myeditor, ifm;
 var body_id, textboxelement;
 var html_id, htmlboxelement;
 var content;
 var isIE = /msie|MSIE/.test(navigator.userAgent);
 var isChrome = /Chrome/.test(navigator.userAgent);
-var isSafari = /Safari/.test(navigator.userAgent) && !isChrome;
 var browser = isIE || window.opera;
-var textRange;
-var enter = 0;
 var editorVisible = false;
 
 function BBtag(name, toBBFunction, toHTMLFunction) {
@@ -294,7 +290,7 @@ var bbtags = [
     new BBtag("url",
         function (htmlToBBText) {
             var convertedText = htmlToBBText;
-            convertedText = convertedText.replace(/<a\s[^<>]*?href="?([^<>]*?)"?(\s[^<>]*)?>([\s\S]*)<\/a>/gi, "[url=$1]$3[/url]");
+            convertedText = convertedText.replace(/<a\s[^<>]*?href="?([^<>]*?)"?(\s[^<>]*)?>([^(<a)]*)<\/a>/gi, "[url=$1]$3[/url]");
             return convertedText;
         }
         ,
@@ -523,7 +519,6 @@ function doSize() {
         var selectedIndex = listSizes.selectedIndex;
         if (selectedIndex >= 0) {
             var size = listSizes.options[selectedIndex].value;
-            ifm.contentWindow.focus();
             if (size > 0)
                 AddTag('[size=' + size + ']', '[/size]');
         }
@@ -546,7 +541,6 @@ function doIndent() {
         var selectedIndex = listIndents.selectedIndex;
         if (selectedIndex >= 0) {
             var indent = listIndents.options[selectedIndex].value;
-            ifm.contentWindow.focus();
             if (indent > 0)
                 AddTag('[indent=' + indent + ']', '[/indent]');
         }
@@ -555,7 +549,6 @@ function doIndent() {
 
 function doLink() {
     if (!editorVisible) {
-        ifm.contentWindow.focus();
         var mylink = prompt("Enter a URL:", "http://");
         if ((mylink != null) && (mylink != "")) {
             AddTag('[url=' + mylink + ']', '[/url]');
@@ -565,7 +558,6 @@ function doLink() {
 
 function doImage() {
     if (!editorVisible) {
-        ifm.contentWindow.focus();
         myimg = prompt('Enter Image URL:', 'http://');
         if ((myimg != null) && (myimg != "")) {
             AddTag('[img]' + myimg + '[/img]', '');
