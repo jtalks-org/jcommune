@@ -195,14 +195,14 @@ var bbtags = [
     new BBtag("code",
         function (htmlToBBText) {
             var convertedText = htmlToBBText;
-            convertedText = convertedText.replace(/<div\s[^<>]*?class="code"([^<>]*)?>([\s\S]*)<\/div>/gi, "[code]$2[/code]");
+            convertedText = convertedText.replace(/<pre\s[^<>]*?class="brush:\s*([^<>]*)"([^<>]*)?>([\s\S]*)<\/pre>/gi, "[code=$1]$3[/code]");
             return convertedText;
         }
         ,
         function (bbToHTMLText) {
             var convertedText = bbToHTMLText;
-            convertedText = convertedText.replace(/\[code\]/gi, '<div class="code">');
-            convertedText = convertedText.replace(/\[\/code\]/gi, "</div>");
+            convertedText = convertedText.replace(/\[code=([^\[\]]*?)\]/gi, '<pre class="brush: $1">').toLowerCase();
+            convertedText = convertedText.replace(/\[\/code\]/gi, "</pre>");
             return convertedText;
         }
     ),
@@ -337,8 +337,13 @@ function ShowEditor() {
 
     myeditor.open();
     myeditor.write('<html style="background: #f8f8f8;background-image: none;">' +
-        '<head><link href="/jcommune/resources/css/screen.css" rel="Stylesheet" type="text/css" /></head>');
-    myeditor.write('<body style="height: 100%;width: 100%;margin:0px 0px 0px 0px;background: #f8f8f8;background-image: none;" class="editorWYSIWYG">');
+        '<head><link href="/jcommune/resources/css/screen.css" rel="Stylesheet" type="text/css" />' +
+        '<script src="/jcommune/resources/javascript/licensed/syntaxhighlighter_3.0.83/src/shCore.js" type="text/javascript"></script>' +
+        '<script src="/jcommune/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushSql.js" type="text/javascript"></script>' +
+        '<link rel="stylesheet" type="text/css" media="screen, projection" href="/jcommune/resources/javascript/licensed/syntaxhighlighter_3.0.83/styles/shCore.css"/>' +
+        '</head>');
+    myeditor.write('<body style="height: 100%;width: 100%;margin:0px 0px 0px 0px;background: #f8f8f8;background-image: none;" class="editorWYSIWYG">' +
+        '<script type="text/javascript">SyntaxHighlighter.all();</script>');
     myeditor.write(content);
     myeditor.write('</body></html>');
     myeditor.close();

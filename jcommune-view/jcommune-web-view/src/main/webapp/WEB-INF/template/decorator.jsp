@@ -54,6 +54,12 @@
             src="${pageContext.request.contextPath}/resources/javascript/custom/URLBuilder.js"></script>
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/global.js"></script>
+
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/src/shCore.js" type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushSql.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" media="screen, projection" href="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/styles/shCore.css"/>
+    <link href="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/css/shThemeDefault.css" rel="stylesheet" type="text/css" />
+
     <decorator:head/>
     <title><decorator:title/></title>
 </head>
