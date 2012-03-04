@@ -127,9 +127,10 @@
             <a href="" onclick="closeTags();return false;"><spring:message code="label.answer.close_tags"/></a>
             <br/><br/>
             <%-- <div id="helpline"><spring:message code="label.answer.tooltip"/></div>--%>
-            <textarea id="tbMsg" name="${bodyParameterName}" class="editorBBCODE"
-                      style="width: 90%; height: 400px;" tabindex="3"
+            <div id="editorBBCODEdiv" class="editorBBCODE">
+            <textarea id="tbMsg" name="${bodyParameterName}" tabindex="3"
                       onclick="resetSizeSelector();resetIndentSelector();"><c:out value="${postText}"/></textarea>
+            </div>
             <br>
             <form:errors path="${bodyParameterName}" cssClass="error"/>
 
@@ -153,7 +154,7 @@
 <input id="preview" type="button" class="button" tabindex="5" name="preview"
        value="<spring:message code="label.answer.preview"/>" onclick="SwitchEditor();return null;"/>
 <script type="text/javascript">
-    initEditor("tbMsg");
+    initEditor("tbMsg","editorBBCODEdiv");
 </script>
 <input id="post" type="submit" class="button" accesskey="s" tabindex="6" name="post"
        value="<spring:message code="${labelForAction}"/>"/>

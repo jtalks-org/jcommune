@@ -64,7 +64,7 @@
           href="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/styles/shCore.css"/>
     <link href="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/styles/shCoreDefault.css"
           rel="stylesheet" type="text/css"/>
-    <link href="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/css/shThemeDefault.css"
+    <link href="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/styles/shThemeDefault.css"
           rel="stylesheet" type="text/css"/>
 
     <decorator:head/>
