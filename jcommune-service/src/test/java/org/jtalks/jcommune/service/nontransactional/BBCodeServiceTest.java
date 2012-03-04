@@ -99,7 +99,7 @@ public class BBCodeServiceTest {
                         "<a title=\"\" href=\"http://narod.ru/avatar.jpg\" rel=\"prettyPhoto\">" +
                                 "<img class=\"thumbnail\" alt=\"\" src=\"http://narod.ru/avatar.jpg\"/></a>"},
                 //code
-               // {"[code]println(\"Hi!\");[/code]", "<p class=\"code\">println(&quot;Hi!&quot;);</p>"},
+                {"[code=sql]println(\"Hi!\");[/code]", "<pre class=\"brush: sql\">println(&quot;Hi!&quot;);</pre>"},
                 //qoutes
                 {"[quote]Some text[/quote]",
                         "<div class=\"quote\"><div class=\"quote_title\">Quote:" +
