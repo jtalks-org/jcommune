@@ -48,17 +48,24 @@
             src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery.prettyPhoto.js"></script>
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery.truncate.js"></script>
-        <script language="javascript"
+    <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jqery.impromptu.js"></script>
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/URLBuilder.js"></script>
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/global.js"></script>
-    <script src='${pageContext.request.contextPath}/resources/javascript/licensed/xregexp-min.js' type='text/javascript'></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/src/shCore.js" type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushSql.js" type="text/javascript"></script>
-    <link rel="stylesheet" type="text/css" media="screen, projection" href="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/styles/shCore.css"/>
-    <link href="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/css/shThemeDefault.css" rel="stylesheet" type="text/css" />
+    <script src='${pageContext.request.contextPath}/resources/javascript/licensed/xregexp-min.js'
+            type='text/javascript'></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/src/shCore.js"
+            type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushSql.js"
+            type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" media="screen, projection"
+          href="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/styles/shCore.css"/>
+    <link href="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/styles/shCoreDefault.css"
+          rel="stylesheet" type="text/css"/>
+    <link href="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/css/shThemeDefault.css"
+          rel="stylesheet" type="text/css"/>
 
     <decorator:head/>
     <title><decorator:title/></title>
@@ -74,7 +81,7 @@
     </div>
 </div>
 </body>
-<script>SyntaxHighlighter.all(null)</script>
+<script>SyntaxHighlighter.all()</script>
 <%--Online surveys to ask users for a feature--%>
 <script type="text/javascript">var _kiq = _kiq || [];</script>
 <script type="text/javascript" src="//s3.amazonaws.com/ki.js/29591/5N_.js" async="true"></script>
