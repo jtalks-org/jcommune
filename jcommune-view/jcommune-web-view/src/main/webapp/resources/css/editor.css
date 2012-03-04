@@ -8,11 +8,13 @@
 }
 
 div#editorBBCODEdiv {
-    width: 100%;
+    width: 96%;
     height: 400px;
     text-align: left;
     border:1px solid silver;
     background: #ffffff;
+    margin-left: 2%;
+    margin-left: 2%
 }
 
 div#editorBBCODEdiv textarea {

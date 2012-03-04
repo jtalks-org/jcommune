@@ -372,8 +372,6 @@ function bbcode2html() {
     content = convertedText;
 
     rep(/\n/gi, "<br\/>");
-
-    textboxelement.value = content;
 }
 
 function html2bbcode() {
@@ -390,7 +388,6 @@ function html2bbcode() {
     rep(/&nbsp;/gi, " ");
     rep(/&quot;/gi, "\"");
     rep(/&amp;/gi, "&");
-    textboxelement.value = content;
 }
 
 function closeTags() {

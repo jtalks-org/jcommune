@@ -69,10 +69,6 @@
         </form:form>
 
     </div>
-    <pre class="brush: sql">
-                          select * from table;
-            </pre>
-    <script type="text/javascript">SyntaxHighlighter.all();</script>
     <div class="footer_buffer">
     </div>
 </div>
