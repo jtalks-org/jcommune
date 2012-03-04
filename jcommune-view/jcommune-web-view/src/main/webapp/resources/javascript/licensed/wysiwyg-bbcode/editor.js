@@ -346,7 +346,6 @@ function ShowEditor() {
 
 function doCheck() {
     html2bbcode();
-    document.getElementById(body_id).value = content;
 }
 
 function SwitchEditor() {
@@ -399,7 +398,7 @@ function bbcode2html() {
 }
 
 function html2bbcode() {
-    var convertedText = content;
+    var convertedText = document.getElementById(body_id).value;
     for (var i = 0; i < tagList.length; i++) {
         convertedText = tagList[i].toBBFunction(convertedText);
     }
