@@ -7,6 +7,22 @@
     /*font: 9pt "Courier New";*/
 }
 
+div#editorBBCODEdiv {
+    width: 96%;
+    height: 400px;
+    text-align: left;
+    border:1px solid silver;
+    background: #ffffff;
+    margin-left: 2%;
+    margin-left: 2%
+}
+
+div#editorBBCODEdiv textarea {
+    width: 99.9%;
+    height: 99%;
+    border:none;
+}
+
 div.richeditor div.editbar {
     margin-top: 5px;
     border-left: 1px solid silver;
