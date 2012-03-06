@@ -69,6 +69,7 @@
         </form:form>
 
     </div>
-    <div class="footer_buffer"></div>
+    <div class="footer_buffer">
+    </div>
 </div>
 </body>

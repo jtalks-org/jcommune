@@ -27,15 +27,12 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var myeditor, ifm;
 var body_id, textboxelement;
+var html_id, htmlboxelement;
 var content;
 var isIE = /msie|MSIE/.test(navigator.userAgent);
 var isChrome = /Chrome/.test(navigator.userAgent);
-var isSafari = /Safari/.test(navigator.userAgent) && !isChrome;
 var browser = isIE || window.opera;
-var textRange;
-var enter = 0;
 var editorVisible = false;
 
 function BBtag(name, toBBFunction, toHTMLFunction) {
@@ -195,14 +192,14 @@ var bbtags = [
     new BBtag("code",
         function (htmlToBBText) {
             var convertedText = htmlToBBText;
-            convertedText = convertedText.replace(/<div\s[^<>]*?class="code"([^<>]*)?>([\s\S]*)<\/div>/gi, "[code]$2[/code]");
+            convertedText = convertedText.replace(/<pre\s[^<>]*?class="brush:\s*([^<>]*)"([^<>]*)?>([\s\S]*)<\/pre>/gi, "[code=$1]$3[/code]");
             return convertedText;
         }
         ,
         function (bbToHTMLText) {
             var convertedText = bbToHTMLText;
-            convertedText = convertedText.replace(/\[code\]/gi, '<div class="code">');
-            convertedText = convertedText.replace(/\[\/code\]/gi, "</div>");
+            convertedText = convertedText.replace(/\[code=([^\[\]]*?)\]/gi, '<pre class="brush: $1">').toLowerCase();
+            convertedText = convertedText.replace(/\[\/code\]/gi, "</pre>");
             return convertedText;
         }
     ),
@@ -293,7 +290,7 @@ var bbtags = [
     new BBtag("url",
         function (htmlToBBText) {
             var convertedText = htmlToBBText;
-            convertedText = convertedText.replace(/<a\s[^<>]*?href="?([^<>]*?)"?(\s[^<>]*)?>([\s\S]*)<\/a>/gi, "[url=$1]$3[/url]");
+            convertedText = convertedText.replace(/<a\s[^<>]*?href="?([^<>]*?)"?(\s[^<>]*)?>([^(<a)]*)<\/a>/gi, "[url=$1]$3[/url]");
             return convertedText;
         }
         ,
@@ -309,61 +306,39 @@ function rep(re, str) {
     content = content.replace(re, str);
 }
 
-function initEditor(textarea_id) {
-    body_id = textarea_id;
-    textboxelement = document.getElementById(body_id);
-    textboxelement.setAttribute('class', 'editorBBCODE');
-    textboxelement.className = "editorBBCODE";
-
-    ifm = document.createElement("iframe");
-    ifm.setAttribute("id", "rte");
-    ifm.setAttribute("class", "editorBBCODE");
-    ifm.setAttribute("frameborder", "1");
-    ifm.width = '90%';
-    ifm.height = 400;
-    textboxelement.parentNode.insertBefore(ifm, textboxelement);
-    textboxelement.style.display = 'none';
-
-    ifm.style.display = 'none';
-    textboxelement.style.display = '';
+function initEditor(textAreaId, htmlAreaId) {
+    body_id = textAreaId;
+    html_id = htmlAreaId;
+    textboxelement = document.getElementById(textAreaId);
+    htmlboxelement = document.getElementById(htmlAreaId);
+    content = textboxelement.value;
     editorVisible = false;
 }
 
-function ShowEditor() {
-    content = document.getElementById(body_id).value;
-    myeditor = ifm.contentWindow.document;
-
-    bbcode2html();
-
-    myeditor.open();
-    myeditor.write('<html style="background: #f8f8f8;background-image: none;">' +
-        '<head><link href="/jcommune/resources/css/screen.css" rel="Stylesheet" type="text/css" /></head>');
-    myeditor.write('<body style="height: 100%;width: 100%;margin:0px 0px 0px 0px;background: #f8f8f8;background-image: none;" class="editorWYSIWYG">');
-    myeditor.write(content);
-    myeditor.write('</body></html>');
-    myeditor.close();
-}
-
 function doCheck() {
-    html2bbcode();
+    if (editorVisible) {
+        htmlboxelement.innerHTML = tempBBCodeContainer;
+        textboxelement = document.getElementById(body_id);
+        htmlboxelement = document.getElementById(html_id);
+        html2bbcode();
+        textboxelement.value = content;
+        editorVisible = false;
+    }
 }
+
+var tempBBCodeContainer;
 
 function SwitchEditor() {
     if (editorVisible) {
-
         doCheck();
-
-        ifm.style.display = 'none';
-        textboxelement.style.display = '';
-        editorVisible = false;
     }
     else {
-        if (ifm) {
-            ifm.style.display = '';
-            textboxelement.style.display = 'none';
-            ShowEditor();
-            editorVisible = true;
-        }
+        content = textboxelement.value;
+        tempBBCodeContainer = htmlboxelement.innerHTML;
+        bbcode2html();
+        htmlboxelement.innerHTML = content;
+        editorVisible = true;
+        SyntaxHighlighter.all();
     }
 }
 
@@ -393,12 +368,10 @@ function bbcode2html() {
     content = convertedText;
 
     rep(/\n/gi, "<br\/>");
-
-    document.getElementById(body_id).value = content;
 }
 
 function html2bbcode() {
-    var convertedText = document.getElementById(body_id).value;
+    var convertedText = content;
     for (var i = 0; i < tagList.length; i++) {
         convertedText = tagList[i].toBBFunction(convertedText);
     }
@@ -411,11 +384,10 @@ function html2bbcode() {
     rep(/&nbsp;/gi, " ");
     rep(/&quot;/gi, "\"");
     rep(/&amp;/gi, "&");
-    document.getElementById(body_id).value = content;
 }
 
 function closeTags() {
-    var currentContent = document.getElementById(body_id).value;
+    var currentContent = textboxelement.value;
 
     currentContent = closeTag2(currentContent);
 
@@ -425,7 +397,7 @@ function closeTags() {
     currentContent = currentContent.replace(/\[indent\]/gi, '[indent=15]');
 
     content = currentContent;
-    document.getElementById(body_id).value = content;
+    textboxelement.value = content;
 }
 
 function closeTag2(text) {
@@ -547,7 +519,6 @@ function doSize() {
         var selectedIndex = listSizes.selectedIndex;
         if (selectedIndex >= 0) {
             var size = listSizes.options[selectedIndex].value;
-            ifm.contentWindow.focus();
             if (size > 0)
                 AddTag('[size=' + size + ']', '[/size]');
         }
@@ -570,7 +541,6 @@ function doIndent() {
         var selectedIndex = listIndents.selectedIndex;
         if (selectedIndex >= 0) {
             var indent = listIndents.options[selectedIndex].value;
-            ifm.contentWindow.focus();
             if (indent > 0)
                 AddTag('[indent=' + indent + ']', '[/indent]');
         }
@@ -579,7 +549,6 @@ function doIndent() {
 
 function doLink() {
     if (!editorVisible) {
-        ifm.contentWindow.focus();
         var mylink = prompt("Enter a URL:", "http://");
         if ((mylink != null) && (mylink != "")) {
             AddTag('[url=' + mylink + ']', '[/url]');
@@ -589,7 +558,6 @@ function doLink() {
 
 function doImage() {
     if (!editorVisible) {
-        ifm.contentWindow.focus();
         myimg = prompt('Enter Image URL:', 'http://');
         if ((myimg != null) && (myimg != "")) {
             AddTag('[img]' + myimg + '[/img]', '');
