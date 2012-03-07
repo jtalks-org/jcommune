@@ -84,6 +84,7 @@ public class MailServiceTest {
         velocityEngine.setProperty("resource.loader", "class");
         velocityEngine.setProperty("class.resource.loader.class",
                 "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+        velocityEngine.setProperty("runtime.log.logsystem.class","org.apache.velocity.runtime.log.NullLogSystem");
         messageSource=new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:/org/jtalks/jcommune/service/bundle/TemplatesMessages");
         service = new MailService(sender, FROM, velocityEngine, messageSource, bbCodeService);
