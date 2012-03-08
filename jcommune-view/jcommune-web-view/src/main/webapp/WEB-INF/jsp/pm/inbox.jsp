@@ -75,7 +75,6 @@
           </c:choose>
         </table>
         <div class="del">
-         <p class="counter"></p> 
          <input type="submit" class="button" value="<spring:message code="label.delete"/>"></input>      
         </div>
     </div>
