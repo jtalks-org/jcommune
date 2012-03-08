@@ -61,6 +61,13 @@ public class ChangedPasswordValidatorTest {
 	}
 	
 	@Test
+	public void testCheckNullNewPassword() {
+		editUserProfileDto.setNewUserPassword(null);
+		boolean isValid = validator.isValid(editUserProfileDto, validatorContext);
+		Assert.assertEquals(isValid, true, "The null password is not valid.");
+	}
+	
+	@Test
 	public void testChangeUserPasswordCorrect() {
 		boolean isValid = validator.isValid(editUserProfileDto, validatorContext);
 		Assert.assertEquals(isValid, true, "The old password is correct, but the check fails.");
