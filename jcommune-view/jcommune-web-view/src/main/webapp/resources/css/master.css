@@ -570,6 +570,24 @@ a.last_message_user {
     top: 1px;
 }
 
+.button_toggled {
+    -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), -1px 0 2px rgba(0, 0, 0, 0.7), 0 0 7px 1px rgba(255,0,0,0.75);
+    -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), -1px 0 2px rgba(0, 0, 0, 0.7), 0 0 7px 1px rgba(255,0,0,0.75);
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), -1px 0 2px rgba(0, 0, 0, 0.7), 0 0 7px 1px rgba(255,0,0,0.75);
+}
+
+input.button_disabled {
+    background: #a6a6a6;
+    -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), -1px 0 2px rgba(0, 0, 0, 0.7), inset 2px 2px 3px rgba(130,130,130,1);
+    -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), -1px 0 2px rgba(0, 0, 0, 0.7), inset 2px 2px 3px rgba(130,130,130,1);
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), -1px 0 2px rgba(0, 0, 0, 0.7), inset 2px 2px 3px rgba(130,130,130,1);
+    color: #cfcfcf;
+}
+
+input.button_disabled:hover {
+    background: #a6a6a6;
+}
+
 .but_arrow {
     vertical-align: bottom;
     background: #c6c6c6 url(../images/arrow_right.png) no-repeat 50% 50%;
