@@ -114,6 +114,7 @@
     <constructor-arg ref="topicBranchService"/>
     <constructor-arg ref="topicBranchDao"/>
     <constructor-arg ref="notificationService"/>
+    <property name="commonSecurityService" ref="commonSecurityService"/>
   </bean>
 
   <bean id="subscriptionService"
@@ -122,7 +123,10 @@
     <constructor-arg ref="topicBranchDao"/>
     <constructor-arg ref="topicDao"/>
   </bean>
-
+  <bean id="commonSecurityService" class="org.jtalks.common.security.SecurityService">
+    <constructor-arg index="0" ref="userDao" />
+    <constructor-arg index="1" ref="commonAclManager"/>
+  </bean>
   <bean id="securityService"
         class="org.jtalks.jcommune.service.nontransactional.SecurityService">
     <constructor-arg ref="userDao"/>

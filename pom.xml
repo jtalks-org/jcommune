@@ -20,17 +20,17 @@
             <dependency>
                 <groupId>org.jtalks.jcommune</groupId>
                 <artifactId>jcommune-model</artifactId>
-                <version>${project.version}</version>
+                <version>${project_version}</version>
             </dependency>
             <dependency>
                 <groupId>org.jtalks.jcommune</groupId>
                 <artifactId>jcommune-service</artifactId>
-                <version>${project.version}</version>
+                <version>${project_version}</version>
             </dependency>
             <dependency>
                 <groupId>org.jtalks.jcommune</groupId>
                 <artifactId>jcommune-web-controller</artifactId>
-                <version>${project.version}</version>
+                <version>${project_version}</version>
             </dependency>
             <!-- Common -->
             <dependency>
@@ -54,6 +54,11 @@
                 <artifactId>hibernate-core</artifactId>
                 <version>${hibernateVersion}</version>
             </dependency>
+          <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-c3p0</artifactId>
+            <version>${hibernateVersion}</version>
+          </dependency>
             <dependency>
                 <groupId>javax.transaction</groupId>
                 <artifactId>jta</artifactId>
@@ -158,7 +163,7 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
                 <version>${springVersion}</version>
-                <scope>compile</scope>
+                <scope>test</scope>
             </dependency>
             <!-- Spring Security -->
             <dependency>
@@ -184,7 +189,7 @@
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-acl</artifactId>
-                <version>${springVersion}</version>
+                <version>3.1.1.JAVATALKS-PATCH.RELEASE</version>
             </dependency>
             <!-- AOP -->
             <dependency>
@@ -483,6 +488,7 @@
     </distributionManagement>
 
     <properties>
+        <project_version>${project.version}</project_version>
         <jtalkscommon.version>0.12-SNAPSHOT</jtalkscommon.version>
         <hibernateVersion>3.6.6.Final</hibernateVersion>
         <springVersion>3.0.5.RELEASE</springVersion>

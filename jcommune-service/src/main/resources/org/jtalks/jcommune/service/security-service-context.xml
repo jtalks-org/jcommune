@@ -57,13 +57,15 @@
   </bean>
 
   <!-- Retrieves, modifies and strores access control lists -->
-  <bean id="aclService" class="org.jtalks.common.security.acl.ExtendedJdbcMutableAclService">
+  <bean id="aclService" class="org.springframework.security.acls.jdbc.JdbcMutableAclService">
     <constructor-arg ref="dataSource"/>
     <constructor-arg ref="lookupStrategy"/>
     <constructor-arg ref="aclCache"/>
     <property name="classIdentityQuery" value="SELECT @@IDENTITY"/>
     <property name="sidIdentityQuery" value="SELECT @@IDENTITY"/>
+    <property name="sidFactory" ref="jtalksSidFactory"/>
   </bean>
+  <bean id="jtalksSidFactory" class="org.jtalks.common.security.acl.JtalksSidFactory"/>
 
   <!-- Responsible for efficient retrieval of ACLs from database -->
   <bean id="lookupStrategy" class="org.springframework.security.acls.jdbc.BasicLookupStrategy">
@@ -93,19 +95,14 @@
 
   <!-- Authorization for ACLs administration setup -->
   <bean id="aclAuthorizationStrategy" class="org.springframework.security.acls.domain.AclAuthorizationStrategyImpl">
-    <constructor-arg>
+    <constructor-arg index="0">
       <list>
-        <bean class="org.springframework.security.core.authority.GrantedAuthorityImpl">
-          <constructor-arg value="ROLE_ADMIN"/>
-        </bean>
-        <bean class="org.springframework.security.core.authority.GrantedAuthorityImpl">
-          <constructor-arg value="ROLE_ADMIN"/>
-        </bean>
         <bean class="org.springframework.security.core.authority.GrantedAuthorityImpl">
           <constructor-arg value="ROLE_ADMIN"/>
         </bean>
       </list>
     </constructor-arg>
+    <property name="sidFactory" ref="jtalksSidFactory"/>
   </bean>
 
   <!-- http://static.springsource.org/spring-security/site/docs/3.0.x/apidocs/org/springframework/security/access/hierarchicalroles/RoleHierarchyImpl.html -->

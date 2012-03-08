@@ -28,7 +28,7 @@ import java.util.Collection;
  * @author Evgeniy Naumenko
  * @see org.jtalks.jcommune.model.dao.hibernate.UserHibernateDao
  */
-public interface UserDao extends ParentRepository<JCUser> {
+public interface UserDao extends ParentRepository<JCUser>, org.jtalks.common.model.dao.UserDao {
 
     /**
      * Get {@link JCUser} with corresponding username.
