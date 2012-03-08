@@ -55,7 +55,8 @@
             </div>
             <div class="pm_body">
                 <div class="pm_left">
-                    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                    <c:if test="${pm.replyAllowed && (pm.userTo eq user)}">
+                        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
                         <form:form action="${pageContext.request.contextPath}/reply/${pm.id}" method="GET">
                             <input class="button" type="submit" value="<spring:message code="label.reply"/>"/>
                         </form:form>
@@ -63,6 +64,7 @@
                             <input class="button" type="submit" value="<spring:message code="label.quote"/>"/>
                         </form:form>
                     </sec:authorize>
+                    </c:if>
                 </div>
                 <div class="pm_right">
                     <jtalks:bb2html bbCode="${pm.body}"/>
