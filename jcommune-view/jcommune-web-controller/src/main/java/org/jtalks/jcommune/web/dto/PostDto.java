@@ -18,8 +18,6 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
 
-import javax.validation.constraints.Size;
-
 /**
  * DTO for {@link Post} objects. Used for validation and binding to form.
  */
