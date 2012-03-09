@@ -89,4 +89,14 @@ public class LocationService {
             registerUserMap.remove(securityService.getCurrentUser());
         }
     }
+
+    /**
+     * The need for testing.
+     * 
+     * @param registerUserMap storage that contains forum location
+     * for the current user
+     */
+	void setRegisterUserMap(Map<JCUser, String> registerUserMap) {
+		this.registerUserMap = registerUserMap;
+	}
 }
