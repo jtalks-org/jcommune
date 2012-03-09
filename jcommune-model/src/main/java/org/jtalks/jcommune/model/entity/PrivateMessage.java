@@ -197,4 +197,12 @@ public class PrivateMessage extends Entity {
         return title.startsWith("Re: ") ? getTitle() : "Re: " + getTitle();
     }
 
+    /**
+     * @return true if message reply is possible
+     */
+    public boolean isReplyAllowed(){
+        return status.equals(PrivateMessageStatus.SENT)
+                || status.equals(PrivateMessageStatus.DELETED_FROM_OUTBOX);
+    }
+
 }

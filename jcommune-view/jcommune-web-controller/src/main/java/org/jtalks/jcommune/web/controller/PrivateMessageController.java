@@ -19,6 +19,7 @@ import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -48,6 +49,7 @@ public class PrivateMessageController {
     public static final String BREADCRUMB_LIST = "breadcrumbList";
     private PrivateMessageService pmService;
     private BBCodeService bbCodeService;
+    private SecurityService securityService;
 
     //constants are moved here when occurs 4 or more times, as project PMD rule states
     private static final String PM_FORM = "pm/pmForm";
@@ -70,11 +72,14 @@ public class PrivateMessageController {
     /**
      * @param pmService     for PrivateMessage-related operation
      * @param bbCodeService for qutes creation
+     * @param securityService to get current user
      */
     @Autowired
-    public PrivateMessageController(PrivateMessageService pmService, BBCodeService bbCodeService) {
+    public PrivateMessageController(PrivateMessageService pmService, BBCodeService bbCodeService,
+                                    SecurityService securityService) {
         this.pmService = pmService;
         this.bbCodeService = bbCodeService;
+        this.securityService = securityService;
     }
 
     /**
@@ -197,7 +202,9 @@ public class PrivateMessageController {
     @RequestMapping(value = "/pm/{pmId}", method = RequestMethod.GET)
     public ModelAndView showPmPage(@PathVariable(PM_ID) Long id) throws NotFoundException {
         PrivateMessage pm = pmService.get(id);
-        return new ModelAndView("pm/showPm").addObject("pm", pm);
+        return new ModelAndView("pm/showPm")
+                .addObject("pm", pm)
+                .addObject("user", securityService.getCurrentUser());
     }
 
     /**
