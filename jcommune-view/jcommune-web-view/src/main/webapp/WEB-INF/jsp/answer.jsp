@@ -29,15 +29,30 @@
 <div class="wrap answer_page">
     <jsp:include page="../template/logo.jsp"/>
     <jsp:include page="../template/topLine.jsp"/>
+
     <div class="all_forums">
         <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
-
         <div class="forum_misc_info">
             <spring:message code="label.answer.title_label"/>
         </div>
+        <div class="forum_info_top">
+            <div>
+                <div>
 
-        <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
+                </div>
+                <div>
 
+                </div>
+            </div>
+            <div class="info_top_lower">
+                <div>
+                    <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
+                </div>
+                <div class="info_top_lower_right">
+
+                </div>
+            </div>
+        </div>
         <form:form action="${pageContext.request.contextPath}/posts/new?topicId=${topicId}&page=${page}"
                    method="POST" modelAttribute="postDto" onsubmit="doCheck();return true;">
             <form:hidden path="topicId"/>
@@ -54,6 +69,7 @@
         </form:form>
 
     </div>
-    <div class="footer_buffer"></div>
+    <div class="footer_buffer">
+    </div>
 </div>
 </body>

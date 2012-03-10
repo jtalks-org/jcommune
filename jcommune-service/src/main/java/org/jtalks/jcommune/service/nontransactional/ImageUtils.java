@@ -162,7 +162,7 @@ public class ImageUtils {
      * @return SRC attribute content
      */
     public String prepareHtmlImgSrc(byte[] avatar) {
-        return HTML_SRC_TAG_PREFIX + base64Wrapper.encodeB64Bytes(avatar);
+        return base64Wrapper.encodeB64Bytes(avatar);
     }
 
     /**

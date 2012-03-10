@@ -17,13 +17,14 @@ package org.jtalks.jcommune.web.controller;
 
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.nontransactional.LocationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.LocationService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
+import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.Pagination;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
@@ -65,7 +67,7 @@ public class BranchController {
      * @param securityService   autowired object from Spring Context
      * @param locationService   autowired object from Spring Context
      * @param breadcrumbBuilder the object which provides actions on
-     *                          {@link org.jtalks.jcommune.web.util.BreadcrumbBuilder} entity
+     *                          {@link BreadcrumbBuilder} entity
      */
     @Autowired
     public BranchController(BranchService branchService,
@@ -90,7 +92,7 @@ public class BranchController {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
      */
-    @RequestMapping(value = "/branches/{branchId}", method = RequestMethod.GET)
+    @RequestMapping("/branches/{branchId}")
     public ModelAndView showPage(@PathVariable("branchId") long branchId,
                                  @RequestParam(value = PAGE, defaultValue = "1", required = false) Integer page,
                                  @RequestParam(value = PAGING_ENABLED, defaultValue = "true",
@@ -122,7 +124,7 @@ public class BranchController {
      * @param session http session to figure out last login
      * @return {@code ModelAndView} with topics list and vars for pagination
      */
-    @RequestMapping(value = "/topics/recent", method = RequestMethod.GET)
+    @RequestMapping("/topics/recent")
     public ModelAndView recentTopicsPage(@RequestParam(value = PAGE, defaultValue = "1", required = false) Integer page,
                                          HttpSession session) {
 
@@ -142,7 +144,7 @@ public class BranchController {
      * @param page page
      * @return {@code ModelAndView} with topics list and vars for pagination
      */
-    @RequestMapping(value = "/topics/unanswered", method = RequestMethod.GET)
+    @RequestMapping("/topics/unanswered")
     public ModelAndView unansweredTopicsPage(@RequestParam(value = PAGE, defaultValue = "1", required = false)
                                              Integer page) {
         JCUser currentUser = securityService.getCurrentUser();
@@ -152,5 +154,51 @@ public class BranchController {
         return new ModelAndView("unansweredTopics")
                 .addObject("topics", topics)
                 .addObject("pagination", pagination);
+    }
+
+    @RequestMapping("/branches/{id}/markread")
+    public String markAllTopicsAsRead(@PathVariable long id){
+
+        return "redirect:/branches/" + id;
+    }
+
+    /**
+     * Provides all branches from section with given sectionId as JSON array.
+     *
+     * @param sectionId id of section
+     * @return branches dto array
+     * @throws NotFoundException when section with given id not found
+     */
+    @RequestMapping("/branches/json/{sectionId}")
+    @ResponseBody
+    public BranchDto[] getBranchesFromSection(@PathVariable long sectionId) throws NotFoundException {
+        List<Branch> branches = branchService.getBranchesInSection(sectionId);
+        return convertBranchesListToBranchDtoArray(branches);
+    }
+
+    /**
+     * Get all existing branches as JSON array.
+     *
+     * @return branches dto array
+     */
+    @RequestMapping("/branches/json")
+    @ResponseBody
+    public BranchDto[] getAllBranches() {
+        List<Branch> branches = branchService.getAllBranches();
+        return convertBranchesListToBranchDtoArray(branches);
+    }
+
+    /**
+     * Converts branch list in branch dto array.
+     *
+     * @param branches branch list
+     * @return branch dto array
+     */
+    private BranchDto[] convertBranchesListToBranchDtoArray(List<Branch> branches) {
+        BranchDto[] branchDtoArray = new BranchDto[branches.size()];
+        for (int i = 0; i < branchDtoArray.length; i++) {
+            branchDtoArray[i] = new BranchDto(branches.get(i));
+        }
+        return branchDtoArray;
     }
 }

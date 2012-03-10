@@ -15,12 +15,9 @@
 package org.jtalks.jcommune.model.entity;
 
 import org.joda.time.DateTime;
-import org.jtalks.common.model.entity.Entity;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Represents the topic of the forum.
@@ -32,7 +29,7 @@ import java.util.Set;
  * @author Vitaliy Kravchenko
  * @author Max Malakhov
  */
-public class Topic extends Entity {
+public class Topic extends SubscriptionAwareEntity {
     private DateTime creationDate;
     private DateTime modificationDate;
     private JCUser topicStarter;
@@ -43,7 +40,6 @@ public class Topic extends Entity {
     private List<Post> posts = new ArrayList<Post>();
     private Branch branch;
     private int views;
-    private Set<JCUser> subscribers = new HashSet<JCUser>();
 
     public static final int MIN_NAME_SIZE = 5;
     public static final int MAX_NAME_SIZE = 255;
@@ -291,25 +287,5 @@ public class Topic extends Entity {
      */
     public void setViews(int views) {
         this.views = views;
-    }
-
-    /**
-     * Returns users subscribed to get email notifications
-     * about this branch's updates
-     *
-     * @return users to send notifications on update to
-     */
-    public Set<JCUser> getSubscribers() {
-        return subscribers;
-    }
-
-    /**
-     * Sets subscribers list for this branch.
-     * For Hibernate use only.
-     *
-     * @param subscribers users to send notifications on update to
-     */
-    protected void setSubscribers(Set<JCUser> subscribers) {
-        this.subscribers = subscribers;
     }
 }

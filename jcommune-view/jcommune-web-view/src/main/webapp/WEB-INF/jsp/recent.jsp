@@ -48,47 +48,71 @@
             </div>
         </div>
 
-        <ul class="forum_table">
-            <jtalks:pagination uri="" pagination="${pagination}" numberLink="3" list="${topics}">
-            <c:forEach var="topic" items="${list}">
-                <li class="forum_row">
-                    <div class="forum_info">
-                        <h4><a class="forum_link"
-                               href="${pageContext.request.contextPath}/topics/${topic.id}">${topic.title}</a>
-                        </h4>
-                        <br/>
-                        <span class="truncated"><jtalks:bb2html bbCode="${topic.lastPost.postContent}"/></span>
+        <c:choose>
+            <c:when test="${!(empty topics)}">
+                <ul class="forum_table">
+                    <c:forEach var="topic" items="${list}">
+                        <li class="forum_row">
+                            <div class="forum_info">
+                                <h4>
+                                    <a class="forum_link break_word"
+                                       href="${pageContext.request.contextPath}/topics/${topic.id}">
+                                        <c:out value="${topic.title}"/>
+                                    </a>
+                                </h4>
+                                <br/>
+                                <span class="truncated"><jtalks:bb2html bbCode="${topic.lastPost.postContent}"/></span>
+                            </div>
+                            <div class="forum_answers">
+                                <c:out value="${topic.postCount}"/>
+                            </div>
+                            <div class="forum_author">
+                                <a href="${pageContext.request.contextPath}/users/${topic.topicStarter.encodedUsername}"
+                                   title="<spring:message code="label.topic.header.author"/>">${topic.topicStarter.username}</a>
+                            </div>
+                            <div class="forum_clicks">
+                                <c:out value="${topic.views}"/>
+                            </div>
+                            <div class="forum_last_message">
+                                <a href="${pageContext.request.contextPath}/topics/${topic.id}">
+                                    <jtalks:format value="${topic.lastPost.creationDate}"/></a>
+                                <br/>
+                                <a class="last_message_user"
+                                   href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
+                                    <c:out value="${topic.lastPost.userCreated.username}"/></a>
+                                <a href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}">
+                                    <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
+                                         alt="<spring:message code="label.section.header.lastMessage"/>"/>
+                                </a>
+                            </div>
+                        </li>
+                    </c:forEach>
+                </ul>
+                <div class="forum_info_bottom">
+                    <div>
+                        <div>
+
+                        </div>
+                        <div>
+                            <span class="nav_bottom">
+                                <jtalks:pagination uri="" pagination="${pagination}" numberLink="3" list="${topics}"/>
+                            </span>
+                        </div>
                     </div>
-                    <div class="forum_answers">
-                        <c:out value="${topic.postCount}"/>
-                    </div>
-                    <div class="forum_author">
-                        <a href="${pageContext.request.contextPath}/users/${topic.topicStarter.encodedUsername}"
-                           title="<spring:message code="label.topic.header.author"/>">${topic.topicStarter.username}</a>
-                    </div>
-                    <div class="forum_clicks">
-                        <c:out value="${topic.views}"/>
-                    </div>
-                    <div class="forum_last_message">
-                        <a href="${pageContext.request.contextPath}/topics/${topic.id}">
-                            <jtalks:format value="${topic.lastPost.creationDate}"/></a>
-                        <br/>
-                        <a class="last_message_user"
-                           href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
-                            <c:out value="${topic.lastPost.userCreated.username}"/></a>
-                        <a href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}">
-                            <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
-                                 alt="<spring:message code="label.section.header.lastMessage"/>"/>
-                        </a>
-                    </div>
-                </li>
-            </c:forEach>
-        </ul>
-        <nobr>
-            <span class="nav_bottom">
-                </jtalks:pagination>
-            </span>
-        </nobr>
+                </div>
+            </c:when>
+            <c:otherwise>
+                <ul class="forum_table">
+                    <li class="forum_row empty_container">
+                        <div>
+                            <span class="empty">
+                                <spring:message code="label.recent.empty"/>
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+            </c:otherwise>
+        </c:choose>
     </div>
     <div class="footer_buffer"></div>
 </div>

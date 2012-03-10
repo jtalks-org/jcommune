@@ -70,10 +70,9 @@ public class TransactionalUserContactsService
     /**
     * {@inheritDoc}
     */
-    public void removeContact(Long userContactId) {
+    public void removeContact(long userContactId) {
         JCUser user = securityService.getCurrentUser();
-        UserContact contact = new UserContact(null, null);
-        contact.setId(userContactId);
+        UserContact contact = this.getDao().getContactById(userContactId);
         user.removeContact(contact);
     }
 }

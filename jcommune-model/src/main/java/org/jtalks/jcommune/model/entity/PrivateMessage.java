@@ -17,8 +17,6 @@ package org.jtalks.jcommune.model.entity;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
 
-import java.util.StringTokenizer;
-
 /**
  * Text message sent from one user to another. <br/>
  * All fields are required.
@@ -28,7 +26,7 @@ import java.util.StringTokenizer;
  */
 public class PrivateMessage extends Entity {
 
-    public static final int MAX_MESSAGE_LENGTH = 1000;
+    public static final int MAX_MESSAGE_LENGTH = 20000;
     public static final int MIN_MESSAGE_LENGTH = 2;
     public static final int MAX_TITLE_LENGTH = 22;
     public static final int MIN_TITLE_LENGTH = 2;
@@ -38,8 +36,9 @@ public class PrivateMessage extends Entity {
     private JCUser userTo;
     private String title;
     private String body;
+    private boolean read;
 
-    private PrivateMessageStatus status = PrivateMessageStatus.NOT_READ;
+    private PrivateMessageStatus status = PrivateMessageStatus.NEW;
 
     /**
      * For Hibernate use only
@@ -174,31 +173,17 @@ public class PrivateMessage extends Entity {
     }
 
     /**
-     * Mark message as read.
+     * @param read message read status
      */
-    public void markAsRead() {
-        this.status = PrivateMessageStatus.READ;
+    public void setRead(boolean read) {
+        this.read = read;
     }
 
     /**
      * @return {@code true} if message is read
      */
     public boolean isRead() {
-        return this.status == PrivateMessageStatus.READ;
-    }
-
-    /**
-     * Mark message as draft.
-     */
-    public void markAsDraft() {
-        this.status = PrivateMessageStatus.DRAFT;
-    }
-
-    /**
-     * @return {@code true} if message is draft
-     */
-    public boolean isDraft() {
-        return this.status == PrivateMessageStatus.DRAFT;
+        return read;
     }
 
 
@@ -210,6 +195,14 @@ public class PrivateMessage extends Entity {
     public String prepareTitleForReply() {
         //check the "Re: " occurrence in the title of original message and modifying it.
         return title.startsWith("Re: ") ? getTitle() : "Re: " + getTitle();
+    }
+
+    /**
+     * @return true if message reply is possible
+     */
+    public boolean isReplyAllowed(){
+        return status.equals(PrivateMessageStatus.SENT)
+                || status.equals(PrivateMessageStatus.DELETED_FROM_OUTBOX);
     }
 
 }

@@ -63,11 +63,11 @@ public class UserContactsController {
      * Handles creation of new contact for current user.
      * @param userContact user contact information
      * @return saved user contact (with updated id)
-     * @throws NotFoundException
+     * @throws NotFoundException when contact type was not found
      */
     @RequestMapping(value="/contacts/add", method = RequestMethod.POST)
     @ResponseBody public UserContactDto addContact(@RequestBody UserContact userContact) throws NotFoundException {
-        return UserContactDto.getDtoFor(service.addContact(userContact));
+        return new UserContactDto(service.addContact(userContact));
     }
 
     /**

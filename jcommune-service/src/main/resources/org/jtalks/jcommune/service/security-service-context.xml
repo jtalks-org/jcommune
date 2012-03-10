@@ -92,7 +92,9 @@
       </bean>
     </constructor-arg>
   </bean>
-
+  <bean id="sidRetrievalStrategy" class="org.springframework.security.acls.domain.SidRetrievalStrategyImpl">
+    <property name="sidFactory" ref="jtalksSidFactory"/>
+  </bean>
   <!-- Authorization for ACLs administration setup -->
   <bean id="aclAuthorizationStrategy" class="org.springframework.security.acls.domain.AclAuthorizationStrategyImpl">
     <constructor-arg index="0">

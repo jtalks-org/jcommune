@@ -221,6 +221,24 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
+    @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_ADMIN + "')")
+    public void moveTopic(Long topicId, Long branchId) throws NotFoundException {
+        Topic topic = get(topicId);
+        Branch currentBranch = topic.getBranch();
+        Branch targetBranch = branchService.get(branchId);
+        targetBranch.addTopic(topic);
+        branchDao.update(targetBranch);
+
+        logger.info("Moved topic \"{}\". Topic id: {}", topic.getTitle(), topicId);
+
+        notificationService.topicChanged(topic);
+        notificationService.branchChanged(currentBranch);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Topic get(Long id) throws NotFoundException {
         Topic topic = super.get(id);
 

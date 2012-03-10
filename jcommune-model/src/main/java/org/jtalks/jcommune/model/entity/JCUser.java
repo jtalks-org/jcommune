@@ -40,14 +40,15 @@ public class JCUser extends User {
     private DateTime registrationDate;
     private boolean enabled;
 
-    public static final int MIN_NAME_SIZE = 4;
-    public static final int MAX_NAME_SIZE = 20;
+    public static final int MIN_NAME_SIZE = 2;
+    public static final int MAX_NAME_SIZE = 25;
     public static final int MAX_LAST_NAME_SIZE = 255;
     public static final int MIN_PASS_SIZE = 4;
     public static final int MAX_PASS_SIZE = 20;
     public static final int MAX_LOCATION_SIZE = 30;
 
     public static final int DEFAULT_PAGE_SIZE = 50;
+    public static final int[] PAGE_SIZES_AVAILABLE = new int[]{5, 10, 20, 50, 100, 250};
 
     private static final long serialVersionUID = 19981017L;
     private Set<UserContact> contacts = new HashSet<UserContact>();

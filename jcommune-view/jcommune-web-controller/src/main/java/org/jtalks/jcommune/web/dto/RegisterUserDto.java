@@ -16,8 +16,8 @@ package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.web.validation.Matches;
-import org.jtalks.jcommune.web.validation.Unique;
+import org.jtalks.jcommune.web.validation.annotations.Matches;
+import org.jtalks.jcommune.web.validation.annotations.Unique;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -61,11 +61,13 @@ public class RegisterUserDto {
 
     /**
      * Set username.
+     * We trim username, so it is not possible
+     * to create user with spaces in username, for ex. 'username ' and ' username'
      *
      * @param username username
      */
     public void setUsername(String username) {
-        this.username = username;
+        this.username = username.trim();
     }
 
     /**

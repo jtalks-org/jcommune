@@ -38,15 +38,15 @@ div.jqi .jqimessage{
         color: #444444;
 }
 div.jqi .jqibuttons{
-        text-align: right;
-        padding: 5px 0 5px 0;
-        border: solid 1px #eeeeee;
+    text-align: right;
+    padding: 5px 0 5px 0;
+    border: solid 1px #eeeeee;
 }
 div.jqi button{
-        font-family: Georgia, Verdana, Geneva, Arial, Helvetica, sans-serif;
-        padding: 3px 10px;
-        margin: 0 5px;
-        -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), -1px 0 2px rgba(0, 0, 0, 0.7);
+    font-family: Georgia, Verdana, Geneva, Arial, Helvetica, sans-serif;
+    padding: 3px 10px;
+    margin: 0 5px;
+    -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), -1px 0 2px rgba(0, 0, 0, 0.7);
     -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), -1px 0 2px rgba(0, 0, 0, 0.7);
     box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), -1px 0 2px rgba(0, 0, 0, 0.7);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #c6c6c6), color-stop(1, #dfdfdf));

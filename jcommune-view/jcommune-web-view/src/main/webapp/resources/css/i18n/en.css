@@ -1,0 +1,28 @@
+/*
+Contains specific styles for English locale, used mostly to handle
+different labels length in different languages.
+*/
+
+.forum_messages, .forum_clicks, .forum_header_messages, .forum_header_clicks {
+    width: 55px;
+    min-width: 55px;
+}
+
+.forum_themes, .forum_header_themes {
+    width: 60px;
+    min-width: 60px;
+}
+
+.forum_last_message {
+    width: 150px;
+}
+
+.forum_answers, .forum_header_answers {
+    width: 85px;
+    min-width: 85px;
+}
+
+.forum_author, .forum_header_author {
+    width: 100px;
+    min-width: 100px;
+}

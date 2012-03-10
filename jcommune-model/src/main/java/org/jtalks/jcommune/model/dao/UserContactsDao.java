@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
 
 import java.util.List;
@@ -35,4 +36,12 @@ public interface UserContactsDao extends ChildRepository<UserContactType> {
      * @return valid contact type list, e.g (skype, icq, jabber, mail, cell)
      */
     List<UserContactType> getAvailableContactTypes();
+
+    /**
+     * Fetches user contact by id
+     *
+     * @param id database idetifier of the contact required
+     * @return UserContact with this id or nill, if this id is unknown
+     */
+    UserContact getContactById(long id);
 }

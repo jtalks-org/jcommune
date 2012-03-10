@@ -101,6 +101,13 @@ public final class ObjectsFactory {
         return type;
     }
 
+    public static UserContact getDefaultUserContact() {
+        UserContactType type = new UserContactType();
+        UserContact contact = new UserContact("value", type);
+        contact.setOwner(ObjectsFactory.getDefaultUser());
+        return contact;
+    }
+
     private static <T> T persist(T entity) {
         session.save(entity);
         return entity;

@@ -48,6 +48,7 @@
       <value>
         resource.loader=class
         class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+        runtime.log.logsystem.class=org.apache.velocity.runtime.log.NullLogSystem
       </value>
     </property>
   </bean>

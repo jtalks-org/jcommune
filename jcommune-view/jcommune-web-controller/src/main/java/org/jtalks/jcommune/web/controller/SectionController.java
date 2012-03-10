@@ -16,10 +16,11 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Section;
-import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.service.SectionService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.LocationService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
+import org.jtalks.jcommune.web.dto.SectionDto;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
@@ -43,6 +45,7 @@ import java.util.List;
  * @author Max Malakhov
  * @author Alexandre Teterin
  * @author Evgeniy Naumenko
+ * @author Eugeny Batov
  */
 
 @Controller
@@ -50,7 +53,7 @@ public class SectionController {
 
     private SecurityService securityService;
     private SectionService sectionService;
-    private ForumStatisticsProvider forumStaticsProvider;   
+    private ForumStatisticsProvider forumStaticsProvider;
     private LocationService locationService;
 
     /**
@@ -58,7 +61,7 @@ public class SectionController {
      *
      * @param securityService      autowired object from Spring Context
      * @param sectionService       autowired object from Spring Context
-     * @param locationService autowired object from Spring Context
+     * @param locationService      autowired object from Spring Context
      * @param forumStaticsProvider autowired object from Spring Context which provides methods for getting
      *                             forum statistic information
      */
@@ -72,7 +75,6 @@ public class SectionController {
         this.forumStaticsProvider = forumStaticsProvider;
         this.locationService = locationService;
     }
-
 
 
     /**
@@ -105,12 +107,27 @@ public class SectionController {
     }
 
     /**
+     * Provides all sections as a JSON array.
+     *
+     * @return sections list
+     */
+    @RequestMapping(value = "/sections/json", method = RequestMethod.GET)
+    @ResponseBody
+    public SectionDto[] sectionList() {
+        List<Section> sections = sectionService.getAll();
+        SectionDto[] sectionDtoArray = new SectionDto[sections.size()];
+        for (int i = 0; i < sectionDtoArray.length; i++) {
+            sectionDtoArray[i] = new SectionDto(sections.get(i));
+        }
+        return sectionDtoArray;
+    }
+
+    /**
      * Displays to user a list of branches from the chosen section.
      *
      * @param sectionId section for display
      * @return {@code ModelAndView} the chosen section
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when section not found
+     * @throws NotFoundException when section not found
      */
     @RequestMapping(value = "/sections/{sectionId}", method = RequestMethod.GET)
     public ModelAndView branchList(@PathVariable("sectionId") long sectionId) throws NotFoundException {

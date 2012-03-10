@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.web.validation.Exists;
+import org.jtalks.jcommune.web.validation.annotations.Exists;
 
 /**
  * Spring MVC command object for password restore form processing.

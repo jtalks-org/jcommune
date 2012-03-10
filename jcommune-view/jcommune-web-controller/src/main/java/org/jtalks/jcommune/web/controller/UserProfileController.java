@@ -15,13 +15,10 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
@@ -164,36 +161,17 @@ public class UserProfileController {
     @RequestMapping(value = "/users/edit", method = RequestMethod.POST)
     public ModelAndView editProfile(@Valid @ModelAttribute(EDITED_USER) EditUserProfileDto userDto,
                                     BindingResult result, HttpServletResponse response) {
-        // some fields are validated via JSR-303 in DTO
         if (result.hasErrors()) {
             return new ModelAndView(EDIT_PROFILE, EDITED_USER, userDto);
         }
-        // while the others need to be validated in service layer
-        try {
-            JCUser user = userService.editUserProfile(userDto.getUserInfoContainer());
-            // apply language changes immediately
-            applyLanguage(userDto.getLanguage(), response);
-            return new ModelAndView("redirect:/users/" + user.getEncodedUsername());
-        } catch (DuplicateEmailException e) {
-            result.rejectValue("email", "validation.duplicateemail");
-        } catch (WrongPasswordException e) {
-            result.rejectValue("currentUserPassword", "label.incorrectCurrentPassword",
-                    "Password does not match to the current password");
-        }
-        return new ModelAndView(EDIT_PROFILE, EDITED_USER, userDto);
-    }
-
-    /**
-     * This method applies language to the response as cookie for CookieLocaleResolver
-     *
-     * @param language language to be applied
-     * @param response response to be filled with new cookie
-     */
-    private void applyLanguage(Language language, HttpServletResponse response) {
-        String code = language.getLanguageCode();
+        JCUser user = userService.editUserProfile(userDto.getUserInfoContainer());
+        // apply language changes immediately
+        String code = userDto.getLanguage().getLanguageCode();
         Cookie cookie = new Cookie(CookieLocaleResolver.DEFAULT_COOKIE_NAME, code);
         cookie.setPath("/");
         response.addCookie(cookie);
+        //redirect to the view profile page
+        return new ModelAndView("redirect:/users/" + user.getEncodedUsername());
     }
 
     /**

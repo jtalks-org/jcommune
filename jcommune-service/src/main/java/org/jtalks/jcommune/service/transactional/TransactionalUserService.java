@@ -21,10 +21,8 @@ import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
-import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.MailService;
@@ -109,14 +107,18 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public JCUser editUserProfile(UserInfoContainer info) throws DuplicateEmailException, WrongPasswordException {
+    public JCUser editUserProfile(UserInfoContainer info) {
 
         JCUser currentUser = securityService.getCurrentUser();
         byte[] decodedAvatar = base64Wrapper.decodeB64Bytes(info.getB64EncodedAvatar());
 
-        this.changePassword(info.getCurrentPassword(), info.getNewPassword(), currentUser);
-        this.changeEmail(info.getEmail(), currentUser);
-        this.changeAvatar(decodedAvatar, currentUser);
+        if (info.getNewPassword() != null) {
+            currentUser.setPassword(info.getNewPassword());
+        }
+        currentUser.setEmail(info.getEmail());
+
+        currentUser.setAvatar(decodedAvatar);
+
         currentUser.setSignature(info.getSignature());
         currentUser.setFirstName(info.getFirstName());
         currentUser.setLastName(info.getLastName());
@@ -127,60 +129,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         this.getDao().saveOrUpdate(currentUser);
         logger.info("Updated user profile. Username: {}", currentUser.getUsername());
         return currentUser;
-    }
-
-    /**
-     * Checks if e-mail passed differs from the one set in the User object
-     * and new email is valid, i. e. has not been used by any other user.
-     * <p/>
-     * If no violations found, this method then will set new email value
-     * to the User object passed.
-     *
-     * @param email       new address to be validated and set
-     * @param currentUser user object to be checked
-     * @throws DuplicateEmailException if email set is already in use
-     */
-    private void changeEmail(String email, JCUser currentUser) throws DuplicateEmailException {
-        if (!currentUser.getEmail().equals(email)) {
-            JCUser user = this.getDao().getByEmail(email);
-            if (user != null) {
-                throw new DuplicateEmailException();
-            } else {
-                currentUser.setEmail(email);
-            }
-        }
-    }
-
-    /**
-     * Checks if current password was filled up correctly and if so,
-     * alters the current password to the new one
-     *
-     * @param currentPass existing password from the form to verify identity
-     * @param newPass     new password to be set
-     * @param currentUser user object from a database
-     * @throws WrongPasswordException if current password doesn't match the one stored in database
-     */
-    private void changePassword(String currentPass, String newPass, JCUser currentUser) throws WrongPasswordException {
-        if (newPass != null) {
-            if (currentUser.getPassword().equals(currentPass)) {
-                currentUser.setPassword(newPass);
-            } else {
-                throw new WrongPasswordException();
-            }
-        }
-    }
-
-    /**
-     * Checks if byte[] passed is not empty, that means user has uploaded
-     * a new avatar image. If so, user passed will be assigned this new image.
-     *
-     * @param avatar      avatar image representation
-     * @param currentUser user to be set with new avatar image
-     */
-    private void changeAvatar(byte[] avatar, JCUser currentUser) {
-        if (avatar != null && avatar.length > 0) {
-            currentUser.setAvatar(avatar);
-        }
     }
 
     /**

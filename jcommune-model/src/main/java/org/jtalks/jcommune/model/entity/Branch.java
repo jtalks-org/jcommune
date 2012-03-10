@@ -14,12 +14,8 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import org.jtalks.common.model.entity.Entity;
-
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Forum branch that contains topics related to branch theme.
@@ -28,13 +24,12 @@ import java.util.Set;
  * @author Kirill Afonin
  * @author Max Malakhov
  */
-public class Branch extends Entity {
+public class Branch extends SubscriptionAwareEntity {
 
     private String name;
     private String description;
     private List<Topic> topics = new ArrayList<Topic>();
     private Section section;
-    private Set<JCUser> subscribers = new HashSet<JCUser>();
 
     /**
      * For Hibernate use only
@@ -213,26 +208,6 @@ public class Branch extends Entity {
      */
     protected void setSection(Section section) {
         this.section = section;
-    }
-
-    /**
-     * Returns users subscribed to get email notifications
-     * about this branch's updates
-     *
-     * @return users to send notifications on update to
-     */
-    public Set<JCUser> getSubscribers() {
-        return subscribers;
-    }
-
-    /**
-     * Sets subscribers list for this branch.
-     * For Hibernate use only.
-     *
-     * @param subscribers users to send notifications on update to
-     */
-    protected void setSubscribers(Set<JCUser> subscribers) {
-        this.subscribers = subscribers;
     }
 
     /**

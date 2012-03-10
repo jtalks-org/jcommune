@@ -30,23 +30,36 @@
     <jsp:include page="../template/logo.jsp"/>
 
     <div class="all_forums">
-        &nbsp;
-        <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/recent.rss">
-            <img src="${pageContext.request.contextPath}/resources/images/RSS.png">
-        </a>
-        <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/recent">
-            <spring:message code="label.recent"/>
-        </a><br/>
-        <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/unanswered">
-            <spring:message code="label.messagesWithoutAnswers"/>
-        </a>
+        <div class="forum_info_top">
+            <div>
+                <div> <!-- top left -->
 
-        <h2><a class="heading" href="#"><spring:message code="label.section.jtalks_forum"/></a></h2>
+                </div>
+                <div> <!-- top right -->
 
-        <div class="forum_misc_info">
-            <spring:message code="label.section.prog_forum"/>
+                </div>
+            </div>
+            <div class="info_top_lower">
+                <div> <!-- bottom left -->
+                    <h2 class="heading"><spring:message code="label.section.jtalks_forum"/></h2>
+
+                    <span class="forum_misc_info">
+                        <spring:message code="label.section.prog_forum"/>
+                    </span>
+                </div>
+                <div> <!-- bottom right -->
+                    <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/recent.rss">
+                        <img src="${pageContext.request.contextPath}/resources/images/RSS.png">
+                    </a>
+                    <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/recent">
+                        <spring:message code="label.recent"/>
+                    </a><br/>
+                    <a class="forum_top_right_link" href="${pageContext.request.contextPath}/topics/unanswered">
+                        <spring:message code="label.messagesWithoutAnswers"/>
+                    </a>
+                </div>
+            </div>
         </div>
-        <br/>
         <c:forEach var="section" items="${sectionList}">
             <div class="forum_header_table">
                 <div class="forum_header">

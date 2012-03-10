@@ -26,6 +26,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.context.MessageSource;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -60,9 +61,6 @@ public class MailServiceTest {
     private MailService service;
     @Mock
     private JavaMailSender sender;
-    private VelocityEngine velocityEngine;
-    private MockHttpServletRequest request;
-    private MessageSource messageSource;
     @Mock
     private BBCodeService bbCodeService;
 
@@ -79,10 +77,13 @@ public class MailServiceTest {
     @BeforeMethod
     public void setUp() {
         initMocks(this);
-        velocityEngine = new VelocityEngine();
+        VelocityEngine velocityEngine = new VelocityEngine();
         velocityEngine.setProperty("resource.loader", "class");
         velocityEngine.setProperty("class.resource.loader.class",
                 "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+        velocityEngine.setProperty("runtime.log.logsystem.class", "org.apache.velocity.runtime.log.NullLogSystem");
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setBasename("classpath:/org/jtalks/jcommune/service/bundle/TemplatesMessages");
         service = new MailService(sender, FROM, velocityEngine, messageSource, bbCodeService);
         MimeMessage message = new MimeMessage((Session) null);
         when(sender.createMimeMessage()).thenReturn(message);
@@ -91,7 +92,7 @@ public class MailServiceTest {
 
     @BeforeMethod
     public void setUpRequestContext() {
-        request = new MockHttpServletRequest();
+        MockHttpServletRequest request = new MockHttpServletRequest();
         request.setScheme("http");
         request.setServerName("coolsite.com");
         request.setServerPort(1234);

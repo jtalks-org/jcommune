@@ -83,33 +83,4 @@ public class UserContact extends Entity {
     public void setValue(String value) {
         this.value = value;
     }
-
-    /**
-     * {@inheritDoc }
-     * We need this override because AJAX calls operate with ids, not uuids.
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-
-        UserContact other = (UserContact) obj;
-        return (getId() == other.getId());
-    }
-
-    /**
-     * {@inheritDoc }
-     * We need this override because AJAX calls operate with ids, not uuids.
-     */
-    @Override
-    public int hashCode() {
-        return new Long(getId()).hashCode();
-    }
 }

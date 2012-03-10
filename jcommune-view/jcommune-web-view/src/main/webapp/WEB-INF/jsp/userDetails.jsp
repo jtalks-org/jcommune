@@ -43,7 +43,7 @@
             <ul class="forum_table" id="stylized">
                 <li class="forum_row">
                     <label><spring:message code="label.username"/></label>
-                    <span><c:out value="${user.username}"/></span>
+                    <span class="break_word"><c:out value="${user.username}"/></span>
                 </li>
                 <li class="forum_row">
                     <label><spring:message code="label.firstname"/></label>
@@ -64,7 +64,7 @@
                     <c:when test="${user.username == auth}">
                         <li class="forum_row">
                             <label><spring:message code="label.email"/></label>
-                            <span><c:out value="${user.email}"/></span>
+                            <span class="break_word"><c:out value="${user.email}"/></span>
                         </li>
                         <li class="forum_row">
                             <label><spring:message code="label.language"/></label>
@@ -78,7 +78,7 @@
                 </c:choose>
                 <li class="forum_row">
                     <label><spring:message code="label.location"/></label>
-                    <span><c:out value="${user.location}"/></span>
+                    <span class="break_word"><c:out value="${user.location}"/></span>
                 </li>
                 <li class="forum_row">
                     <label><spring:message code="label.lastlogin"/></label>
@@ -105,22 +105,23 @@
             <label><spring:message code="label.contacts.header"/></label>
 
             <div id="contacts">
-            <c:forEach var="contact" items="${user.userContacts}" >
-                <div class="contact">
-                    <label><img src="${pageContext.request.contextPath}${contact.type.icon}" alt=""><c:out value="${contact.type.typeName}"/></label>
-                    <span><c:out value="${contact.value}"/></span>
-                    <c:if test="${user.username == auth}">
-                        <input type="hidden" value="${contact.id}"/>
-                        <a class="button" href="#">
-                            <spring:message code="label.contacts.delete"/>
-                        </a>
-                    </c:if>
-                </div>
-            </c:forEach>
+                <c:forEach var="contact" items="${user.userContacts}">
+                    <div class="contact">
+                        <label><img src="${pageContext.request.contextPath}${contact.type.icon}" alt=""><c:out
+                                value="${contact.type.typeName}"/></label>
+                        <span><c:out value="${contact.value}"/></span>
+                        <c:if test="${user.username == auth}">
+                            <input type="hidden" value="${contact.id}"/>
+                            <a class="button" id="${contact.id}" href="#">
+                                <spring:message code="label.contacts.delete"/>
+                            </a>
+                        </c:if>
+                    </div>
+                </c:forEach>
             </div>
             <c:if test="${user.username == auth}">
                 <a class="button" id="add_contact" href="#">
-                     <spring:message code="label.contacts.addMore"/>
+                    <spring:message code="label.contacts.addMore"/>
                 </a>
             </c:if>
 
@@ -134,6 +135,12 @@
                    href="${pageContext.request.contextPath}/users/${user.encodedUsername}/postList">
                     <spring:message code="label.postList"/>
                 </a>
+                <c:if test="${user.username != auth}">
+                    <a class="button"
+                       href="${pageContext.request.contextPath}/pm/new/${user.encodedUsername}">
+                        <spring:message code="label.pm.send"/>
+                    </a>
+                </c:if>
             </div>
         </div>
     </div>

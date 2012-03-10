@@ -187,8 +187,10 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         session.saveOrUpdate(recipient);
         // creating messages with different statuses
         notReadPm = ObjectsFactory.getPrivateMessage(recipient, author);
+        notReadPm.setStatus(PrivateMessageStatus.SENT);
         readPm = ObjectsFactory.getPrivateMessage(recipient, author);
-        readPm.setStatus(PrivateMessageStatus.READ);
+        readPm.setStatus(PrivateMessageStatus.SENT);
+        readPm.setRead(true);
         draftPm = ObjectsFactory.getPrivateMessage(recipient, author);
         draftPm.setStatus(PrivateMessageStatus.DRAFT);
         session.save(notReadPm);

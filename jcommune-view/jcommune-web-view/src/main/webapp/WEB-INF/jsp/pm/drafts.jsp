@@ -49,26 +49,35 @@
             </div>
         </div>
         <ul class="forum_table">
-            <c:forEach var="pm" items="${pmList}">
-                <li class="forum_row">
-                    <div class="forum_answer_left">
-                        <a href="${pageContext.request.contextPath}/users/${pm.userTo.encodedUsername}">
-                            <c:out value="${pm.userTo.username}"/>
-                        </a>
-                    </div>
-                    <div class="forum_answer_left">
-                        <a href="${pageContext.request.contextPath}/pm/${pm.id}">
-                            <c:out value="${pm.title}"/></a>
-                    </div>
-                    <div class="forum_answer_left">
-                        <jtalks:format value="${pm.creationDate}"/>
-                    </div>
-                    <div class="forum_answer_left">
-                        <a href="${pageContext.request.contextPath}/pm/${pm.id}/edit">
-                            <spring:message code="label.edit"/></a>
-                    </div>
-                </li>
-            </c:forEach>
+            <c:choose>
+                <c:when test="${!(empty pmList)}">
+                    <c:forEach var="pm" items="${pmList}">
+                        <li class="forum_row">
+                            <div class="forum_answer_left">
+                                <a href="${pageContext.request.contextPath}/users/${pm.userTo.encodedUsername}">
+                                    <c:out value="${pm.userTo.username}"/>
+                                </a>
+                            </div>
+                            <div class="forum_answer_left">
+                                <a href="${pageContext.request.contextPath}/pm/${pm.id}">
+                                    <c:out value="${pm.title}"/></a>
+                            </div>
+                            <div class="forum_answer_left">
+                                <jtalks:format value="${pm.creationDate}"/>
+                            </div>
+                            <div class="forum_answer_left">
+                                <a href="${pageContext.request.contextPath}/pm/${pm.id}/edit">
+                                    <spring:message code="label.edit"/></a>
+                            </div>
+                        </li>
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>
+                    <li class="forum_row">
+                        <spring:message code="label.drafts.empty"/>
+                    </li>
+                </c:otherwise>
+            </c:choose>
         </ul>
     </div>
     <div class="footer_buffer"></div>

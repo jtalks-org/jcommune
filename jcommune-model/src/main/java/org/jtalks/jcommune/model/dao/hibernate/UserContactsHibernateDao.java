@@ -16,18 +16,20 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.jcommune.model.dao.UserContactsDao;
+import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
 
 import java.util.List;
 
 /**
+ * This dao manages user ccontact and user contact types.
  *
+ * Types are to be configured in Poulpe, so we need to retrieve them from a database.
  *
  * @author Evgeniy Naumenko
  */
 public class UserContactsHibernateDao extends AbstractHibernateChildRepository<UserContactType>
         implements UserContactsDao {
-
 
 
     /**
@@ -39,5 +41,17 @@ public class UserContactsHibernateDao extends AbstractHibernateChildRepository<U
                 .createQuery("from UserContactType")
                 .setCacheable(true)
                 .list();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UserContact getContactById(long id) {
+        return (UserContact) getSession()
+                .createQuery("from UserContact u where u.id = ?")
+                .setCacheable(true)
+                .setLong(0, id)
+                .uniqueResult();
     }
 }

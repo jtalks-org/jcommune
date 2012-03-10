@@ -73,7 +73,7 @@ public class TransactionalBranchServiceTest {
     }
 
     @Test
-    public void testGetBrancesInSection() throws NotFoundException {
+    public void testGetBranchesInSection() throws NotFoundException {
         List<Branch> list = Collections.singletonList(new Branch(BRANCH_NAME));
         when(sectionDao.isExist(Matchers.<Long>any())).thenReturn(true);
         when(branchDao.getBranchesInSection(anyLong())).thenReturn(list);
@@ -83,8 +83,18 @@ public class TransactionalBranchServiceTest {
     }
 
     @Test(expectedExceptions = {NotFoundException.class})
-    public void testGetBrancesInSectionFail() throws NotFoundException {
+    public void testGetBranchesInSectionFail() throws NotFoundException {
         when(sectionDao.isExist(Matchers.<Long>any())).thenReturn(false);
         branchService.getBranchesInSection(BRANCH_ID);
+    }
+
+    @Test
+    public void testGetAllBranches(){
+        List<Branch> list = Collections.singletonList(new Branch(BRANCH_NAME));
+
+        when(branchDao.getAllBranches()).thenReturn(list);
+
+        List<Branch> result = branchService.getAllBranches();
+        assertEquals(list, result);
     }
 }
