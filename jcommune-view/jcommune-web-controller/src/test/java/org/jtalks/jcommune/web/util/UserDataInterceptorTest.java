@@ -83,6 +83,31 @@ public class UserDataInterceptorTest {
         verify(service).currentUserNewPmCount();
         verify(securityService).getCurrentUser();
     }
+    
+    @Test
+    public void testPostHandleWhenModelAndViewNull() {
+    	ModelAndView modelAndView = null;
+    	
+    	interceptor.postHandle(request, response, null, modelAndView);
+    	
+    	verifyNotApplied();
+    }
+    
+    @Test
+    public void testPostHandleWithRedirect() {
+    	ModelAndView modelAndView = new ModelAndView("redirect:view");
+    	
+    	interceptor.postHandle(request, response, null, modelAndView);
+    	
+    	verifyNotApplied();
+    }
+    
+    private void verifyNotApplied() {
+    	assertEquals(request.getAttribute("newPmCount"), null);
+        assertEquals(request.getAttribute("encodedUsername"), null);
+    	verify(service, never()).currentUserNewPmCount();
+        verify(securityService, never()).getCurrentUser();
+    }
 
     private JCUser getUser() {
         JCUser newUser = new JCUser(USER_NAME, EMAIL, PASSWORD);

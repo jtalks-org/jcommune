@@ -142,6 +142,7 @@
         <coderef name="url4"/>
         <coderef name="url5"/>
         <coderef name="url6"/>
+        <coderef name="url7"/>
 
         <!-- Table -->
         <coderef name="table"/>
@@ -267,13 +268,17 @@
         <pattern>[url]<var name="url" scope="escapeXml"/>[/url]</pattern>
         <template>&lt;a href=&quot;http://<var name="url"/>&quot;&gt;<var name="url"/>&lt;/a&gt;</template>
     </code>
+    <code name="url5" priority="1">
+        <pattern><var name="protocol" regex="((ht|f)tps?:|\.{1,2})?"/>/<var name="url" scope="escapeXml"/></pattern>
+        <template>&lt;a href=&quot;<var name="protocol"/>/<var name="url"/>&quot;&gt;<var name="protocol"/>/<var name="url"/>&lt;/a&gt;</template>
+    </code>
 
     <!-- MAILTO -->
-    <code name="url5" priority="2">
+    <code name="url6" priority="2">
         <pattern>[url=mailto:<var name="url" scope="escapeXml"/>]<var name="text" scope="url"/>[/url]</pattern>
         <template>&lt;a href=&quot;mailto:<var name="url"/>&quot;&gt;<var name="text"/>&lt;/a&gt;</template>
     </code>
-    <code name="url6" priority="2">
+    <code name="url7" priority="2">
         <pattern>[url]mailto:<var name="url" scope="escapeXml"/>[/url]</pattern>
         <template>&lt;a href=&quot;mailto:<var name="url"/>&quot;&gt;mailto:<var name="url"/>&lt;/a&gt;</template>
     </code>

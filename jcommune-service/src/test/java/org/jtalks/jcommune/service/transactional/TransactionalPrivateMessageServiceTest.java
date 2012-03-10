@@ -25,6 +25,7 @@ import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.nontransactional.UserDataCacheService;
 import org.jtalks.jcommune.service.security.AclBuilder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -152,6 +153,17 @@ public class TransactionalPrivateMessageServiceTest {
     }
 
     @Test
+    public void testSaveDraftRecipientUsernameNull() throws NotFoundException {
+    	when(securityService.grantToCurrentUser()).thenReturn(aclBuilder);
+    	
+    	String recipientUsername = null;
+    	pmService.saveDraft(PM_ID, "body", "title", recipientUsername);
+    	
+    	verify(userService, Mockito.never()).getByUsername(Mockito.any(String.class));
+		// other verifications are covered in main test
+    }
+
+    @Test
     public void testCurrentUserNewPmCount() {
         int expectedPmCount = 2;
         when(securityService.getCurrentUserUsername()).thenReturn(USERNAME);
@@ -243,5 +255,39 @@ public class TransactionalPrivateMessageServiceTest {
 
         verify(pmDao, never()).saveOrUpdate(pm);
         verify(userDataCache, never()).decrementNewMessageCountFor(USERNAME);
+    }
+    
+    @Test
+    public void testGetPrivateMessageInDraftStatus() throws NotFoundException {
+    	PrivateMessage message = new PrivateMessage(user, user, "title", "body");
+    	message.setStatus(PrivateMessageStatus.DRAFT);
+    	
+    	when(securityService.getCurrentUser()).thenReturn(user);
+    	when(pmDao.get(PM_ID)).thenReturn(message);
+    	when(pmDao.isExist(PM_ID)).thenReturn(true);
+    	
+    	PrivateMessage resultMessage = pmService.get(PM_ID);
+    	
+    	assertEquals(resultMessage.isRead(), false, 
+    			"Message status is draft, so message shouldn't be marked as read");
+    	verify(pmDao, never()).saveOrUpdate(resultMessage);
+    	verify(userDataCache, never()).decrementNewMessageCountFor(USERNAME);
+    }
+    
+    @Test
+    public void testGetPrivateMessageUserToNotCurrentUser() throws NotFoundException {
+    	PrivateMessage message = new PrivateMessage(user, user, "title", "body");
+    	JCUser currentUser = new JCUser(USERNAME, "email", "password");
+    	
+    	when(securityService.getCurrentUser()).thenReturn(currentUser);
+    	when(pmDao.get(PM_ID)).thenReturn(message);
+    	when(pmDao.isExist(PM_ID)).thenReturn(true);
+    	
+    	PrivateMessage resultMessage = pmService.get(PM_ID);
+    	
+    	assertEquals(resultMessage.isRead(), false, 
+    			"The message isn't addressed to the current user, so message shouldn't be marked as read.");
+    	verify(pmDao, never()).saveOrUpdate(resultMessage);
+    	verify(userDataCache, never()).decrementNewMessageCountFor(USERNAME);
     }
 }
