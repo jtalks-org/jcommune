@@ -18,12 +18,13 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+
 
 /**
  * @author Alexandre Teterin
  */
-public class PrivateMessageTest {
+public class
+        PrivateMessageTest {
 
     private PrivateMessage pm = new PrivateMessage();
 
@@ -34,6 +35,12 @@ public class PrivateMessageTest {
         String result = pm.prepareTitleForReply();
         assertEquals(result, expectedReTitle);
 
+    }
+
+    @Test(dataProvider = "status-provider")
+    public void testIsReplyAllowed(PrivateMessageStatus status, boolean expectedResult) {
+        pm.setStatus(status);
+        assertEquals(expectedResult, pm.isReplyAllowed());
     }
 
     @DataProvider(name = "title-provider")
@@ -47,4 +54,15 @@ public class PrivateMessageTest {
         };
     }
 
+    // PM statuses eligible for reply & quote operations
+    @DataProvider(name = "status-provider")
+    public Object[][] statusData() {
+        return new Object[][]{
+                {PrivateMessageStatus.NEW, false},
+                {PrivateMessageStatus.DRAFT, false},
+                {PrivateMessageStatus.SENT, true},
+                {PrivateMessageStatus.DELETED_FROM_INBOX, false},
+                {PrivateMessageStatus.DELETED_FROM_OUTBOX, true}
+        };
+    }
 }

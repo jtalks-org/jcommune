@@ -27,15 +27,12 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -162,6 +159,16 @@ public class AvatarServiceTest {
     public void inputDataForValidateAvatarSizeIsNull() throws Exception {
         //invoke object under test
         avatarService.validateAvatarSize(null);
+    }
+    
+    @Test
+    public void inputDataForValidateAvatarSizeIsValid() {
+    	byte[] bytes = new byte[AvatarService.MAX_SIZE];
+    	try {
+			avatarService.validateAvatarSize(bytes);
+		} catch (ImageSizeException e) {
+			assertTrue(true, "The correct picture is not passed the test.");
+		}
     }
 
 

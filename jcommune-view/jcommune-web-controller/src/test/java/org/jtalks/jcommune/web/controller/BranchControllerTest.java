@@ -212,5 +212,11 @@ public class BranchControllerTest {
         assertEquals(branchDtoArray[0].getId(), branch.getId());
         assertEquals(branchDtoArray[0].getName(), branch.getName());
     }
-
+    
+    @Test 
+    public void testMarkAllTopicsAsRead() {
+    	Long id = Long.valueOf(1);
+    	String result = controller.markAllTopicsAsRead(id);
+    	assertEquals(result, "redirect:/branches/" + String.valueOf(id));
+    }
 }

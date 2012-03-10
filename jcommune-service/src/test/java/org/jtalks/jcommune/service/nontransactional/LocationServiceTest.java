@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.mockito.Mockito;
 import org.springframework.security.core.session.SessionRegistry;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -27,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 
 /**
  * @author Andrey Kluev
@@ -78,7 +80,6 @@ public class LocationServiceTest {
 
     @Test
     public void testCurrentUserIsAnonymous() {
-        when(securityService.getCurrentUser()).thenReturn(user);
         when(sessionRegistry.getAllPrincipals()).thenReturn(list);
 
         locationService.getUsersViewing(topic);
@@ -90,5 +91,13 @@ public class LocationServiceTest {
         when(securityService.getCurrentUser()).thenReturn(user);
 
         locationService.clearUserLocation();
+    }
+    
+    @Test
+    public void testClearUserLocationForAnonymous() {
+    	locationService.clearUserLocation();
+    	@SuppressWarnings("unchecked")
+		Map<JCUser, String> registerUserMap = mock(Map.class);
+    	verify(registerUserMap, Mockito.never()).remove(Mockito.any());
     }
 }

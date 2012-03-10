@@ -163,4 +163,12 @@ public class PaginatorTest {
         assertEquals(paginator.createPagingLink(5, "1"),
                 "<a class='page' href='1?page=1'>1</a><span class='page'>2</span><a class='page' href='1?page=3'>3</a>");
     }
+    
+    @Test
+    public void testCreatePagingLinkWithSinglePage() {
+    	Pagination pagination = new Pagination(1, user, 5, true);
+        paginator.setPagination(pagination);
+        String pagingLink = paginator.createPagingLink(5, "1"); 
+        assertEquals(pagingLink, "");
+    }
 }
