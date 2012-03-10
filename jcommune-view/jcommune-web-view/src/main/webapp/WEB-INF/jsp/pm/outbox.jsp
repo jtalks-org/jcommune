@@ -69,9 +69,7 @@
             </c:otherwise>
           </c:choose>
         </table>
-        <div class="del">
-          <input type="submit" class="button" value="<spring:message code="label.delete"/>"></input>      
-        </div>
+        <input type="submit" class="button" value="<spring:message code="label.delete"/>"></input>
     </div>
     <div class="footer_buffer"></div>
 </div>

@@ -571,6 +571,7 @@ a.last_message_user {
 }
 
 .button_toggled {
+    /*border: 1px solid #7a7a7a;*/
     -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), -1px 0 2px rgba(0, 0, 0, 0.7), 0 0 7px 1px rgba(255,0,0,0.75);
     -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), -1px 0 2px rgba(0, 0, 0, 0.7), 0 0 7px 1px rgba(255,0,0,0.75);
     box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), -1px 0 2px rgba(0, 0, 0, 0.7), 0 0 7px 1px rgba(255,0,0,0.75);
@@ -1096,20 +1097,6 @@ td.button_cell {
     color:#D3D3D3;
 }
 
-.del {
-    padding-left:25px;
-    padding-top:5px;
-    color:#696969;
-    font-size:12pt;
-    width:100px;
-    height:60px;
-}
-
-.del input{
-    float:left;
-    position:relative;
-}
-
 .pm_read {
     display: table;
     width: 100%;
@@ -1223,7 +1210,6 @@ a.forum_top_right_link,
     display: table-cell;
     vertical-align: middle;
     height: 160px;
-    text-align: center;
 }
 
 .empty {

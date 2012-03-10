@@ -51,7 +51,7 @@
                           <tr class="mess">
                         </c:otherwise>
                     </c:choose>
-                    <td><input type = "checkbox" id = "${pm.id}" class="checker"/></td>
+                    <td><input type="checkbox" id="${pm.id}" class="checker"/></td>
                     <td>
                       <a href="${pageContext.request.contextPath}/users/${pm.userFrom.encodedUsername}">
                         <c:out value="${pm.userFrom.username}"/>
@@ -74,9 +74,7 @@
             </c:otherwise>
           </c:choose>
         </table>
-        <div class="del">
-         <input type="submit" class="button" value="<spring:message code="label.delete"/>"></input>      
-        </div>
+        <input type="submit" class="button" value="<spring:message code="label.delete"/>"></input>
     </div>
     <div class="footer_buffer"></div>
 </div>

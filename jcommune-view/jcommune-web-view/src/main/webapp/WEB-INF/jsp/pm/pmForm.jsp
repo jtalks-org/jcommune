@@ -31,8 +31,6 @@
 
     <div class="all_forums">
         <h2><a class="heading" href="#"><spring:message code="label.new_pm"/></a></h2>
-        <div class="forum_misc_info">
-        </div>
         <jsp:include page="../../template/pmNavigationMenu.jsp"/>
         <form:form action="${pageContext.request.contextPath}/pm"
                    method="POST" modelAttribute="privateMessageDto" name="editForm"
