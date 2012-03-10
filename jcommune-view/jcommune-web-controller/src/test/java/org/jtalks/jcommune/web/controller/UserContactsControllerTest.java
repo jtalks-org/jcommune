@@ -14,8 +14,12 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
 import org.jtalks.jcommune.service.UserContactsService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.web.dto.UserContactDto;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -41,13 +45,13 @@ public class UserContactsControllerTest {
     private UserContactsService service;
 
     @BeforeMethod
-    private void setUp() {
+    public void setUp() {
         initMocks(this);
         controller = new UserContactsController(service);    
     }
     
     @Test
-    private void testGetContactTypes() {
+    public void testGetContactTypes() {
         List<UserContactType> expectedTypes = new ArrayList<UserContactType>();
         UserContactType expectedType = new UserContactType();
         expectedType.setIcon(ICON);
@@ -62,5 +66,30 @@ public class UserContactsControllerTest {
         assertEquals(types[0].getTypeName(), expectedType.getTypeName());
     }
 
-
+    @Test
+    public void testAddContact() throws NotFoundException {
+    	UserContactType contactType = new UserContactType();
+        contactType.setTypeName(TYPENAME);
+        JCUser owner = new JCUser("username", "email", "password");
+        owner.setId(1);
+    	UserContact contact = new UserContact("gateway", contactType);
+    	contact.setOwner(owner);
+    	
+    	when(service.addContact(contact)).thenReturn(contact);
+    	
+    	UserContactDto contactDto = controller.addContact(contact);
+    	
+    	assertEquals(contactDto.getType(), contactType, "Type of contact should be the same.");
+    	assertEquals(contactDto.getValue(), contact.getValue(), "Type of contact should be the same.");
+    	assertEquals(contactDto.getOwnerId(), Long.valueOf(owner.getId()), "Owner id should be the same.");  	
+    }
+    
+    @Test
+    public void testRemoveContact() {
+    	Long contactId = Long.valueOf(1);
+    	controller.removeContact(contactId);
+    	
+    	verify(service).removeContact(contactId);
+    }
+    
 }
