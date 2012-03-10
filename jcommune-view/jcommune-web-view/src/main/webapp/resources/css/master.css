@@ -1223,6 +1223,7 @@ a.forum_top_right_link,
     display: table-cell;
     vertical-align: middle;
     height: 160px;
+    text-align: center;
 }
 
 .empty {
