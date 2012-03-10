@@ -20,6 +20,7 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
@@ -55,6 +56,7 @@ public class BranchController {
     public static final String PAGING_ENABLED = "pagingEnabled";
     private BranchService branchService;
     private TopicService topicService;
+    private PostService postService;
     private SecurityService securityService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private LocationService locationService;
@@ -64,6 +66,7 @@ public class BranchController {
      *
      * @param branchService     autowired object from Spring Context
      * @param topicService      autowired object from Spring Context
+     * @param postService       service to retrieve unread posts information
      * @param securityService   autowired object from Spring Context
      * @param locationService   autowired object from Spring Context
      * @param breadcrumbBuilder the object which provides actions on
@@ -72,11 +75,13 @@ public class BranchController {
     @Autowired
     public BranchController(BranchService branchService,
                             TopicService topicService,
+                            PostService postService,
                             SecurityService securityService,
                             BreadcrumbBuilder breadcrumbBuilder,
                             LocationService locationService) {
         this.branchService = branchService;
         this.topicService = topicService;
+        this.postService = postService;
         this.securityService = securityService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.locationService = locationService;

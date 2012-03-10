@@ -16,12 +16,14 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.BranchDao;
+import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
@@ -78,6 +80,8 @@ public class TransactionalTopicServiceTest {
     private BranchDao branchDao;
     @Mock
     private NotificationService notificationService;
+    @Mock
+    private PostDao postDao;
 
     private AclBuilder aclBuilder;
 
@@ -86,7 +90,7 @@ public class TransactionalTopicServiceTest {
         aclBuilder = mockAclBuilder();
         initMocks(this);
         topicService = new TransactionalTopicService(topicDao, securityService,
-                branchService, branchDao, notificationService);
+                branchService, branchDao, postDao, notificationService);
         user = new JCUser(USERNAME, "email@mail.com", "password");
     }
 
@@ -136,13 +140,6 @@ public class TransactionalTopicServiceTest {
         verify(notificationService).topicChanged(answeredTopic);
     }
 
-    @Test(expectedExceptions = {IllegalStateException.class})
-    public void testReplyToTopicWithoutCurrentUser() throws NotFoundException {
-        when(securityService.getCurrentUser()).thenReturn(null);
-
-        topicService.replyToTopic(TOPIC_ID, ANSWER_BODY);
-    }
-
     @Test
     public void testCreateTopic() throws NotFoundException {
         Branch branch = new Branch(BRANCH_NAME);
@@ -171,14 +168,6 @@ public class TransactionalTopicServiceTest {
         verify(aclBuilder).on(createdPost);
         verify(notificationService).branchChanged(branch);
     }
-
-    @Test(expectedExceptions = {IllegalStateException.class})
-    public void testCreateTopicWithoutCurrentUser() throws NotFoundException {
-        when(securityService.getCurrentUser()).thenReturn(null);
-
-        topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, 1L);
-    }
-
 
     @Test
     public void testGetAllTopicsPastLastDay() throws NotFoundException {

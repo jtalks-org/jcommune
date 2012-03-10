@@ -17,6 +17,7 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.PostService;
@@ -27,7 +28,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Post service class. This class contains method needed to manipulate with Post persistent entity.
@@ -117,5 +120,29 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         } else {
             return pageNum + 1;
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<Topic, LastReadPost> getLastReadPostForTopics(List<Topic> topics) {
+        JCUser current = securityService.getCurrentUser();
+        Map<Topic, LastReadPost> posts = new HashMap<Topic, LastReadPost>();
+        if (current != null) { // topics are allways unread for anonymous users
+            for (LastReadPost post : this.getDao().getLastReadPosts(current, topics)) {
+                posts.put(post.getTopic(), post);
+            }
+        }
+        return posts;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public LastReadPost getLastReadPostForTopic(Topic topic) {
+        JCUser current = securityService.getCurrentUser();
+        return this.getDao().getLastReadPost(current, topic);
     }
 }

@@ -75,7 +75,8 @@ resolves a problem of multiple DAO beans definition -->
         <property name="username" value="${jdbc.username:root}"/>
         <property name="password" value="${jdbc.password:root}"/>
     </bean>
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" depends-on="flyway_jcommune">
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
+          depends-on="flyway_jcommune">
         <property name="dataSource" ref="dataSource"/>
         <property name="mappingResources">
             <list>
@@ -87,6 +88,7 @@ resolves a problem of multiple DAO beans definition -->
                 <value>/org/jtalks/jcommune/model/entity/Section.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/UserContact.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/UserContactType.hbm.xml</value>
+                <value>/org/jtalks/jcommune/model/entity/LastReadPost.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -134,8 +136,8 @@ resolves a problem of multiple DAO beans definition -->
         <property name="table" value="common_schema_version"/>
         <property name="enabled" value="${migrations_enabled}"/>
     </bean>
-        <bean id="flyway_jcommune_init" class="org.jtalks.common.util.FlywayWrapper" init-method="smartInit"
-              depends-on="flyway_common">
+    <bean id="flyway_jcommune_init" class="org.jtalks.common.util.FlywayWrapper" init-method="smartInit"
+          depends-on="flyway_common">
         <property name="dataSource" ref="dataSource"/>
         <property name="table" value="jcommune_schema_version"/>
         <property name="enabled" value="${migrations_enabled}"/>

@@ -14,11 +14,16 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+
+import org.hibernate.criterion.Property;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Topic;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -53,5 +58,4 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
                 "ORDER BY modificationDate DESC")
                 .list();
     }
-
 }

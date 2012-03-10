@@ -186,10 +186,13 @@
                             </div>
                         </sec:authorize>
                     </c:if>
-                    <a name="${post.id}" href="#${post.id}">
+                    <c:if test="${lastReadPost == null || i.index > lastReadPost.postIndex}">
+                        <span style="color: red;"><%--[NEW]--%></span>
+                    </c:if>
+                    <span name="${post.id}">
                         <spring:message code="label.added"/>&nbsp;
                         <jtalks:format value="${post.creationDate}"/>
-                    </a>
+                    </span>
                 </div>
                 <div class="forum_message_cell_text">
                     <jtalks:bb2html bbCode="${post.postContent}"/>

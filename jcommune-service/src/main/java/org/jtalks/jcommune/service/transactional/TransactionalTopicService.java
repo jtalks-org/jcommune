@@ -16,9 +16,11 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.BranchDao;
+import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
@@ -31,7 +33,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Topic service class. This class contains method needed to manipulate with Topic persistent entity.
@@ -51,6 +56,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     private SecurityService securityService;
     private BranchService branchService;
     private BranchDao branchDao;
+    private PostDao postDao;
     private NotificationService notificationService;
 
     /**
@@ -60,15 +66,17 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * @param securityService     {@link SecurityService} for retrieving current user
      * @param branchService       {@link org.jtalks.jcommune.service.BranchService} instance to be injected
      * @param branchDao           used for checking branch existence
+     * @param postDao             to mark posts as read
      * @param notificationService to send email nofications on topic updates to subscribed users
      */
     public TransactionalTopicService(TopicDao dao, SecurityService securityService,
-                                     BranchService branchService, BranchDao branchDao,
+                                     BranchService branchService, BranchDao branchDao, PostDao postDao,
                                      NotificationService notificationService) {
         super(dao);
         this.securityService = securityService;
         this.branchService = branchService;
         this.branchDao = branchDao;
+        this.postDao = postDao;
         this.notificationService = notificationService;
     }
 
@@ -79,11 +87,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
     public Post replyToTopic(long topicId, String answerBody) throws NotFoundException {
         JCUser currentUser = securityService.getCurrentUser();
-        if (currentUser == null) { // it shouldn't happen because only registered user can have this roles
-            String msg = "JCUser should log in to post answers.";
-            logger.error(msg);
-            throw new IllegalStateException(msg);
-        }
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
         Topic topic = get(topicId);
@@ -106,11 +109,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
     public Topic createTopic(String topicName, String bodyText, long branchId) throws NotFoundException {
         JCUser currentUser = securityService.getCurrentUser();
-        if (currentUser == null) { // it shouldn't happen because only registered user can have this roles
-            String msg = "JCUser should log in to create topic.";
-            logger.error(msg);
-            throw new IllegalStateException(msg);
-        }
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
         Branch branch = branchService.get(branchId);
@@ -233,10 +231,59 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @Override
     public Topic get(Long id) throws NotFoundException {
         Topic topic = super.get(id);
-
         topic.setViews(topic.getViews() + 1);
         this.getDao().update(topic);
-
         return topic;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void markTopicPageAsRead(Topic topic, int pageNum, boolean pagingEnabled) {
+        JCUser current = securityService.getCurrentUser();
+        if (current != null) { // topics are allways unread for anonymous users
+            int postIndex = this.calculatePostIndex(current, topic, pageNum, pagingEnabled);
+            saveLastReadPost(current, topic, postIndex);
+        }
+    }
+
+    /**
+     * Computes new last read post index based on the topic size and
+     * current pagination settings.
+     *
+     * @param user user to calculate index for
+     * @param topic topic to calculate index for
+     * @param pageNum page number co calculate last post seen by the user
+     * @param pagingEnabled if paging is enabled on page. If so, last post index in topic is returned
+     * @return new last post index, counting from 0
+     */
+    @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
+    private int calculatePostIndex(JCUser user, Topic topic, int pageNum, boolean pagingEnabled) {
+        if (pagingEnabled) {  // last post on the page given
+            int maxPostIndex = user.getPageSize() * pageNum;
+            return Math.min(topic.getPostCount() - 1, maxPostIndex);
+        } else {              // last post in the topic
+            return topic.getPostCount() - 1;
+        }
+    }
+
+    /**
+     * Stores last read post info in a database for the particular
+     * topic and user.
+     *
+     * @param user user to save last read post data for
+     * @param topic topic to store info for
+     * @param postIndex actual post index, starting from 0
+     */
+    @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
+    private void saveLastReadPost(JCUser user, Topic topic, int postIndex) {
+        LastReadPost post = postDao.getLastReadPost(user, topic);
+        if (post == null) {
+            post = new LastReadPost(user, topic, postIndex);
+        } else {
+            post.setPostIndex(postIndex);
+        }
+        postDao.saveLastReadPost(post);
     }
 }

@@ -16,8 +16,11 @@ package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -37,4 +40,25 @@ public interface PostDao extends ChildRepository<Post> {
      * @return post list of user
      */
     List<Post> getUserPosts(JCUser author);
+
+    /**
+     *
+     * @param forWho
+     * @param topics
+     * @return
+     */
+    List<LastReadPost> getLastReadPosts(JCUser forWho, List<Topic> topics);
+
+        /**
+     *
+     * @param forWho
+     * @return
+     */
+    LastReadPost getLastReadPost(JCUser forWho, Topic topic);
+
+    /**
+     *
+     * @param post
+     */
+    void saveLastReadPost(LastReadPost post);
 }

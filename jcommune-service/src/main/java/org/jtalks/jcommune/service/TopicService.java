@@ -16,11 +16,14 @@ package org.jtalks.jcommune.service;
 
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * This interface should have methods which give us more abilities in manipulating Topic persistent entity.
@@ -117,5 +120,17 @@ public interface TopicService extends EntityService<Topic> {
      */
     void moveTopic(Long topicId, Long branchId) throws NotFoundException;
 
+    /**
+     * Marks topic page as read for the current user.
+     * That means all posts there are to marked as read.
+     * If paging as disabled all posts in the topic will be marked as read.
+     * <p/>
+     * For anonymous user call will have no effect.
+     *
+     * @param topic   topic to mark as read
+     * @param pageNum page to mark as read
+     * @param pagingEnabled if paging has been enabled, will affect how many posts are to marked as read
+     */
+    void markTopicPageAsRead(Topic topic, int pageNum, boolean pagingEnabled);
 
 }
