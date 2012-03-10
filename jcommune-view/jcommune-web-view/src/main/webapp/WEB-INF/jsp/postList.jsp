@@ -138,7 +138,7 @@
                         <a class="button postLink" rel="${post.id}">
                             <spring:message code="label.link"/>
                         </a>
-                        <sec:accesscontrollist hasPermission="8,16" domainObject="${post}">
+                        <sec:accesscontrollist hasPermission="8,4" domainObject="${post}">
                             <c:choose>
                                 <c:when test="${pag.page == 1 && i.index == 0}">
                                     <%-- first post - urls to delete & edit topic --%>

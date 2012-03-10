@@ -23,10 +23,10 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.nontransactional.NotificationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.NotificationService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +49,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private SecurityService securityService;
     private BranchService branchService;
     private BranchDao branchDao;
     private NotificationService notificationService;
@@ -63,16 +62,13 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * Create an instance of User entity based service
      *
      * @param dao                 data access object, which should be able do all CRUD operations with topic entity
-     * @param securityService     {@link SecurityService} for retrieving current user
      * @param branchService       {@link org.jtalks.jcommune.service.BranchService} instance to be injected
      * @param branchDao           used for checking branch existence
      * @param notificationService to send email nofications on topic updates to subscribed users
      */
-    public TransactionalTopicService(TopicDao dao, SecurityService securityService,
-                                     BranchService branchService, BranchDao branchDao,
+    public TransactionalTopicService(TopicDao dao, BranchService branchService, BranchDao branchDao,
                                      NotificationService notificationService) {
         super(dao);
-        this.securityService = securityService;
         this.branchService = branchService;
         this.branchDao = branchDao;
         this.notificationService = notificationService;
@@ -84,7 +80,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @Override
     @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
     public Post replyToTopic(long topicId, String answerBody) throws NotFoundException {
-        JCUser currentUser = securityService.getCurrentUser();
+        JCUser currentUser = (JCUser) commonSecurityService.getCurrentUser();
         if (currentUser == null) { // it shouldn't happen because only registered user can have this roles
             String msg = "JCUser should log in to post answers.";
             logger.error(msg);
@@ -97,7 +93,10 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         topic.addPost(answer);
         this.getDao().update(topic);
 
-        securityService.grantToCurrentUser().role(SecurityConstants.ROLE_ADMIN).admin().on(answer);
+        commonSecurityService.createAclBuilder()
+                .grant(GeneralPermission.WRITE)
+                .to(commonSecurityService.getCurrentUser())
+                .on(answer).flush();
         notificationService.topicChanged(topic);
         logger.debug("New post in topic. Topic id={}, Post id={}, Post author={}",
                 new Object[]{topicId, answer.getId(), currentUser.getUsername()});
@@ -117,7 +116,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
             logger.error(msg);
             throw new IllegalStateException(msg);
         }
-        
+
         currentUser.setPostCount(currentUser.getPostCount() + 1);
         Branch branch = branchService.get(branchId);
         Topic topic = new Topic(currentUser, topicName);
@@ -201,17 +200,17 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
             "hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', delete)")
     public Branch deleteTopic(long topicId) throws NotFoundException {
         Topic topic = get(topicId);
-        
-        for (Post post: topic.getPosts()) {
+
+        for (Post post : topic.getPosts()) {
             JCUser user = post.getUserCreated();
             user.setPostCount(user.getPostCount() - 1);
         }
-        
+
         Branch branch = topic.getBranch();
         branch.deleteTopic(topic);
         branchDao.update(branch);
 
-        securityService.deleteFromAcl(Topic.class, topicId);
+        commonSecurityService.deleteFromAcl(Topic.class, topicId);
         notificationService.branchChanged(branch);
 
         logger.info("Deleted topic \"{}\". Topic id: {}", topic.getTitle(), topicId);

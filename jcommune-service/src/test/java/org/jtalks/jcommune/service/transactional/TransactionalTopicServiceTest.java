@@ -82,7 +82,7 @@ public class TransactionalTopicServiceTest {
     public void setUp() throws Exception {
         aclBuilder = mockAclBuilder();
         initMocks(this);
-        topicService = new TransactionalTopicService(topicDao, securityService,
+        topicService = new TransactionalTopicService(topicDao,
                 branchService, branchDao, notificationService);
         user = new JCUser(USERNAME, "email@mail.com", "password");
     }
