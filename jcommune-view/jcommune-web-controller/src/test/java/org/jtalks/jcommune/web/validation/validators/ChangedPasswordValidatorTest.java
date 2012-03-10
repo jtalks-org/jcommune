@@ -12,7 +12,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.validation.validator;
+package org.jtalks.jcommune.web.validation.validators;
 
 
 import javax.validation.ConstraintValidatorContext;
@@ -58,6 +58,13 @@ public class ChangedPasswordValidatorTest {
 		//
 		editUserProfileDto.setCurrentUserPassword(userCurrentPassword);
 		editUserProfileDto.setNewUserPassword(userNewPassword);
+	}
+	
+	@Test
+	public void testCheckNullNewPassword() {
+		editUserProfileDto.setNewUserPassword(null);
+		boolean isValid = validator.isValid(editUserProfileDto, validatorContext);
+		Assert.assertEquals(isValid, true, "The null password is not valid.");
 	}
 	
 	@Test

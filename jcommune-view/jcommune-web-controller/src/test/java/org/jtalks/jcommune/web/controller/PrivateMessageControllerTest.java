@@ -20,6 +20,7 @@ import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -47,6 +48,7 @@ import static org.testng.Assert.assertEquals;
  * @author Pavel Vervenko
  * @author Max Malakhov
  * @author Alexandre Teterin
+ * @author Evheniy Naumenko
  */
 public class PrivateMessageControllerTest {
 
@@ -56,14 +58,14 @@ public class PrivateMessageControllerTest {
     @Mock
     private PrivateMessageService pmService;
     @Mock
-    private PrivateMessageDto pmDto;
-    @Mock
     private BBCodeService bbCodeService;
+    @Mock
+    private SecurityService securityService;
 
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
-        controller = new PrivateMessageController(pmService, bbCodeService);
+        controller = new PrivateMessageController(pmService, bbCodeService, securityService);
     }
 
     @Test

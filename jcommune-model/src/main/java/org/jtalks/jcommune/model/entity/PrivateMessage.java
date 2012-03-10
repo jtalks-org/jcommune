@@ -26,7 +26,7 @@ import org.jtalks.common.model.entity.Entity;
  */
 public class PrivateMessage extends Entity {
 
-    public static final int MAX_MESSAGE_LENGTH = 1000;
+    public static final int MAX_MESSAGE_LENGTH = 20000;
     public static final int MIN_MESSAGE_LENGTH = 2;
     public static final int MAX_TITLE_LENGTH = 22;
     public static final int MIN_TITLE_LENGTH = 2;
@@ -195,6 +195,14 @@ public class PrivateMessage extends Entity {
     public String prepareTitleForReply() {
         //check the "Re: " occurrence in the title of original message and modifying it.
         return title.startsWith("Re: ") ? getTitle() : "Re: " + getTitle();
+    }
+
+    /**
+     * @return true if message reply is possible
+     */
+    public boolean isReplyAllowed(){
+        return status.equals(PrivateMessageStatus.SENT)
+                || status.equals(PrivateMessageStatus.DELETED_FROM_OUTBOX);
     }
 
 }

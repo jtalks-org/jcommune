@@ -67,7 +67,7 @@ public class BranchController {
      * @param securityService   autowired object from Spring Context
      * @param locationService   autowired object from Spring Context
      * @param breadcrumbBuilder the object which provides actions on
-     *                          {@link org.jtalks.jcommune.web.util.BreadcrumbBuilder} entity
+     *                          {@link BreadcrumbBuilder} entity
      */
     @Autowired
     public BranchController(BranchService branchService,
@@ -92,7 +92,7 @@ public class BranchController {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
      */
-    @RequestMapping(value = "/branches/{branchId}", method = RequestMethod.GET)
+    @RequestMapping("/branches/{branchId}")
     public ModelAndView showPage(@PathVariable("branchId") long branchId,
                                  @RequestParam(value = PAGE, defaultValue = "1", required = false) Integer page,
                                  @RequestParam(value = PAGING_ENABLED, defaultValue = "true",
@@ -124,7 +124,7 @@ public class BranchController {
      * @param session http session to figure out last login
      * @return {@code ModelAndView} with topics list and vars for pagination
      */
-    @RequestMapping(value = "/topics/recent", method = RequestMethod.GET)
+    @RequestMapping("/topics/recent")
     public ModelAndView recentTopicsPage(@RequestParam(value = PAGE, defaultValue = "1", required = false) Integer page,
                                          HttpSession session) {
 
@@ -144,7 +144,7 @@ public class BranchController {
      * @param page page
      * @return {@code ModelAndView} with topics list and vars for pagination
      */
-    @RequestMapping(value = "/topics/unanswered", method = RequestMethod.GET)
+    @RequestMapping("/topics/unanswered")
     public ModelAndView unansweredTopicsPage(@RequestParam(value = PAGE, defaultValue = "1", required = false)
                                              Integer page) {
         JCUser currentUser = securityService.getCurrentUser();
@@ -156,6 +156,12 @@ public class BranchController {
                 .addObject("pagination", pagination);
     }
 
+    @RequestMapping("/branches/{id}/markread")
+    public String markAllTopicsAsRead(@PathVariable long id){
+
+        return "redirect:/branches/" + id;
+    }
+
     /**
      * Provides all branches from section with given sectionId as JSON array.
      *
@@ -163,7 +169,7 @@ public class BranchController {
      * @return branches dto array
      * @throws NotFoundException when section with given id not found
      */
-    @RequestMapping(value = "/branches/json/{sectionId}", method = RequestMethod.GET)
+    @RequestMapping("/branches/json/{sectionId}")
     @ResponseBody
     public BranchDto[] getBranchesFromSection(@PathVariable long sectionId) throws NotFoundException {
         List<Branch> branches = branchService.getBranchesInSection(sectionId);
@@ -175,7 +181,7 @@ public class BranchController {
      *
      * @return branches dto array
      */
-    @RequestMapping(value = "/branches/json", method = RequestMethod.GET)
+    @RequestMapping("/branches/json")
     @ResponseBody
     public BranchDto[] getAllBranches() {
         List<Branch> branches = branchService.getAllBranches();

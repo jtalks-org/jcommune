@@ -53,6 +53,7 @@ import static org.testng.Assert.assertTrue;
  * @author Kirill Afonin
  * @author Osadchuck Eugeny
  * @author Evgeniy Naumenko
+ * @author Anuar Nurmakanov
  */
 public class TransactionalUserServiceTest {
     private static final String USERNAME = "username";
@@ -140,6 +141,18 @@ public class TransactionalUserServiceTest {
         verify(userDao).saveOrUpdate(user);
         assertUserUpdated(editedUser);
         assertEquals(editedUser.getLanguage(), LANGUAGE, "language was not changed");
+    }
+
+    @Test
+    public void testEditUserProfileNewPasswordNull() {
+    	JCUser user = getUser(USERNAME);
+    	when(securityService.getCurrentUser()).thenReturn(user);
+    	String newAvatar = new String(new byte[12]);
+    	String newPassword = null;
+    	UserInfoContainer userInfo = new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
+                PASSWORD, newPassword, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, LOCATION);
+    	JCUser editedUser = userService.editUserProfile(userInfo);
+    	assertEquals(editedUser.getPassword(), user.getPassword());
     }
 
     @Test
