@@ -21,7 +21,6 @@ import org.jtalks.common.security.acl.ExtendedMutableAcl;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.acls.AclPermissionEvaluator;
 import org.springframework.security.acls.domain.ObjectIdentityRetrievalStrategyImpl;
-import org.springframework.security.acls.jdbc.JdbcMutableAclService;
 import org.springframework.security.acls.model.*;
 import org.springframework.security.core.Authentication;
 
@@ -49,32 +48,54 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
         AclUtil aclUtil = new AclUtil(jdbcAclService);
-        ObjectIdentity objectIdentity = objectIdentityGenerator.createObjectIdentity(targetId, targetType);//TODO: think about adding such a method to the AclUtil
-
-        Permission jtalksPermission = GeneralPermission.ADMIN;
-        ExtendedMutableAcl extendedMutableAcl = ExtendedMutableAcl.castAndCreate(jdbcAclService.readAclById(objectIdentity));
-        List<AccessControlEntry> accessControlEntries = extendedMutableAcl.getEntries();
-        boolean hasPermission = false;
-        boolean init = false;
-        for (AccessControlEntry controlEntry : accessControlEntries) {
-//            controlEntry.getPermission()
-            if (controlEntry.getPermission().equals(jtalksPermission)) {//todo getting permission
-                if (!init)
-                    hasPermission = true;
-                init = true;
-                hasPermission = hasPermission && controlEntry.isGranting();
-            }
-            if (init && !hasPermission)
-                break;
+        ObjectIdentity objectIdentity = objectIdentityGenerator.createObjectIdentity(targetId, targetType);
+        Permission jtalksPermission = getPermission(permission);
+        List<AccessControlEntry> aces = aclUtil.getAclFor(objectIdentity).getEntries();
+        if(isRestricted(aces, jtalksPermission)){
+            return false;
+        } else if(isAllowed(aces, jtalksPermission)){
+            return true;
         }
+        return false;
+    }
 
-        return hasPermission;
+    private boolean isAllowed(List<AccessControlEntry> controlEntries, Permission permission) {
+        for(AccessControlEntry ace: controlEntries){
+            if(permission.equals(ace.getPermission()) && ace.isGranting()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isRestricted(List<AccessControlEntry> controlEntries, Permission permission){
+        for(AccessControlEntry ace: controlEntries){
+            if(permission.equals(ace.getPermission()) && !ace.isGranting()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Permission getPermission(Object permission) {
+        String permissionName = (String) permission;
+        if ((permissionName).startsWith(GeneralPermission.class.getSimpleName())) {
+            String particularPermission = permissionName.replace(GeneralPermission.class.getSimpleName() + ".", "");
+            return GeneralPermission.valueOf(particularPermission);
+        } else {
+            throw new IllegalArgumentException("No other permissions that GeneralPermission are supported now. " +
+                    "Was specified: " + permission);
+        }
     }
 
     public void setJdbcAclService(MutableAclService jdbcAclService) {
         this.jdbcAclService = jdbcAclService;
     }
+
 }
