@@ -122,7 +122,7 @@
                         <option value="25">25</option>
                     </select>
 
-                    <label for="select_code">Code style:
+                    <label for="select_code"> <spring:message code="label.answer.font_code"/>
                     </label>
                     <select id="select_code" name="select_code" onchange="doCode();">
                         <option value="0" selected="selected">
