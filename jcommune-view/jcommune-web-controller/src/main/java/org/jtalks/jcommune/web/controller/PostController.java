@@ -55,6 +55,7 @@ public class PostController {
     public static final String TOPIC_ID = "topicId";
     public static final String POST_ID = "postId";
     public static final String POST_DTO = "postDto";
+    public static final String POST_BB_CONTENT = "bbContent";
     public static final String PAGE = "page";
     public static final String TOPIC_TITLE = "topicTitle";
 
@@ -187,7 +188,7 @@ public class PostController {
         Post source = postService.get(postId);
         ModelAndView mav = addPost(source.getTopic().getId());
         PostDto dto = (PostDto) mav.getModel().get(POST_DTO);
-        String content =  StringUtils.defaultString(selection, source.getPostContent());
+        String content = StringUtils.defaultString(selection, source.getPostContent());
         dto.setBodyText(bbCodeService.quote(content, source.getUserCreated()));
         return mav;
     }
@@ -233,5 +234,17 @@ public class PostController {
                 .append("#")
                 .append(postId)
                 .toString();
+    }
+
+    /**
+     * Delete post by given id
+     *
+     * @param bbContent post
+     * @return redirect to topic page
+     * @throws NotFoundException when topic or post not found
+     */
+    @RequestMapping(method = RequestMethod.POST, value = "/posts/bbToNtml")
+    public String bbCodeToHtml(@PathVariable(POST_BB_CONTENT) String bbContent) throws NotFoundException {
+        return bbCodeService.convertBbToHtml(bbContent);
     }
 }

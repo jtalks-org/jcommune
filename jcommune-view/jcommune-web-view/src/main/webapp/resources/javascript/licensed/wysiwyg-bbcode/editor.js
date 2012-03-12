@@ -28,7 +28,8 @@
  */
 
 var body_id, textboxelement;
-var html_id, htmlboxelement;
+var baseHtmlElement_id, baseDivElement;
+var html_content_id,htmlcontentelement;
 var content;
 var isIE = /msie|MSIE/.test(navigator.userAgent);
 var isChrome = /Chrome/.test(navigator.userAgent);
@@ -306,39 +307,33 @@ function rep(re, str) {
     content = content.replace(re, str);
 }
 
-function initEditor(textAreaId, htmlAreaId) {
+function initEditor(textAreaId, htmlAreaId, baseDivId) {
     body_id = textAreaId;
-    html_id = htmlAreaId;
+    baseHtmlElement_id = htmlAreaId;
+    html_content_id = baseDivId;
     textboxelement = document.getElementById(textAreaId);
-    htmlboxelement = document.getElementById(htmlAreaId);
+    baseDivElement = document.getElementById(htmlAreaId);
+    htmlcontentelement= document.getElementById(baseDivId);
+    htmlcontentelement.style.display="none";
     content = textboxelement.value;
     editorVisible = false;
 }
 
-function doCheck() {
-    if (editorVisible) {
-        htmlboxelement.innerHTML = tempBBCodeContainer;
-        textboxelement = document.getElementById(body_id);
-        htmlboxelement = document.getElementById(html_id);
-        html2bbcode();
-        textboxelement.value = content;
-        editorVisible = false;
-    }
-}
-
-var tempBBCodeContainer;
-
 function SwitchEditor() {
     if (editorVisible) {
-        doCheck();
+        textboxelement.style.display="";
+        htmlcontentelement.style.display="none";
+        editorVisible = false;
     }
     else {
         content = textboxelement.value;
-        tempBBCodeContainer = htmlboxelement.innerHTML;
         bbcode2html();
-        htmlboxelement.innerHTML = content;
+        htmlcontentelement.innerHTML=content;
+        htmlcontentelement.style.display="";
+        textboxelement.style.display="none";
+
         editorVisible = true;
-        SyntaxHighlighter.all();
+        SyntaxHighlighter.highlight();
     }
 }
 
@@ -368,6 +363,9 @@ function bbcode2html() {
     content = convertedText;
 
     rep(/\n/gi, "<br\/>");
+    /*$.post($root + '/posts/bbToNtml',{"bbContent":textboxelement.value}, function(data) {
+        content = data;
+    });*/
 }
 
 function html2bbcode() {
@@ -479,9 +477,6 @@ function doClick(command) {
             case 'bold':
                 AddTag('[b]', '[/b]');
                 break;
-            case 'code':
-                AddTag('[code]', '[/code]');
-                break;
             case 'italic':
                 AddTag('[i]', '[/i]');
                 break;
@@ -525,6 +520,24 @@ function doSize() {
     }
 }
 
+function doCode() {
+    if (!editorVisible) {
+        var listCodes = document.getElementById("select_code");
+        var selectedIndex = listCodes.selectedIndex;
+        if (selectedIndex >= 0) {
+            var code = listCodes.options[selectedIndex].value;
+            if (code != '0')
+                AddTag('[code=' + code + ']', '[/code]');
+        }
+    }
+}
+
+function resetSelectors(){
+    resetSizeSelector();
+    resetIndentSelector();
+    resetCodeSelector();
+}
+
 function resetSizeSelector() {
     var listSizes = document.getElementById("select_size");
     listSizes.options[0].selected = 'selected';
@@ -532,6 +545,11 @@ function resetSizeSelector() {
 
 function resetIndentSelector() {
     var listIndents = document.getElementById("select_indent");
+    listIndents.options[0].selected = 'selected';
+}
+
+function resetCodeSelector() {
+    var listIndents = document.getElementById("select_code");
     listIndents.options[0].selected = 'selected';
 }
 

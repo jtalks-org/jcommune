@@ -34,7 +34,7 @@
     <div class="all_forums">
         <form:form name="editForm"
                    action="${pageContext.request.contextPath}/topics/${topicId}/edit?branchId=${branchId}"
-                   method="POST" modelAttribute="topicDto" onsubmit="doCheck();return true;">
+                   method="POST" modelAttribute="topicDto">
             <form:hidden path="id"/>
 
             <div class="forum_misc_info">

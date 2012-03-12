@@ -92,8 +92,6 @@
                 <span id="colorpicker201" class="colorpicker201"></span>
                 <input id="format_quote" type="button" class="button" accesskey="q" name="format_quote"
                        value="Quote" onclick="doQuote();"/>
-                <input id="format_code" type="button" class="button" accesskey="c" name="format_code"
-                       value="Code" onclick="doClick('code');"/>
                 <input id="format_list" type="button" class="button" accesskey="l" name="format_list"
                        value="List" onclick="doClick('InsertUnorderedList');"/>
                 <input id="format_listeq" type="button" class="button" accesskey="o" name="format_listeq"
@@ -123,13 +121,33 @@
                         <option value="20">20</option>
                         <option value="25">25</option>
                     </select>
+
+                    <label for="select_code">Code style:
+                    </label>
+                    <select id="select_code" name="select_code" onchange="doCode();">
+                        <option value="0" selected="selected">
+                            <spring:message code="label.answer.none"/></option>
+                        <option value="cpp">C/C++</option>
+                        <option value="csharp">C#</option>
+                        <option value="java">Java</option>
+                        <option value="php">PHP</option>
+                        <option value="python">Python</option>
+                        <option value="pascal">Pascal</option>
+                        <option value="bash">Bash</option>
+                        <option value="js">JavaScript</option>
+                        <option value="xml">HTML</option>
+                        <option value="css">CSS</option>
+                        <option value="sql">SQL</option>
+                        <option value="xml">XML</option>
+                    </select>
 				</span>
             <a href="" onclick="closeTags();return false;"><spring:message code="label.answer.close_tags"/></a>
             <br/><br/>
             <%-- <div id="helpline"><spring:message code="label.answer.tooltip"/></div>--%>
             <div id="editorBBCODEdiv" class="editorBBCODE">
-            <textarea id="tbMsg" name="${bodyParameterName}" tabindex="3"
-                      onclick="resetSizeSelector();resetIndentSelector();"><c:out value="${postText}"/></textarea>
+                <div id="htmlContent"></div>
+                <textarea id="tbMsg" name="${bodyParameterName}" tabindex="3"
+                          onclick="resetSelectors();"><c:out value="${postText}"/></textarea>
             </div>
             <br>
             <form:errors path="${bodyParameterName}" cssClass="error"/>
@@ -154,7 +172,7 @@
 <input id="preview" type="button" class="button" tabindex="5" name="preview"
        value="<spring:message code="label.answer.preview"/>" onclick="SwitchEditor();return null;"/>
 <script type="text/javascript">
-    initEditor("tbMsg","editorBBCODEdiv");
+    initEditor("tbMsg", "editorBBCODEdiv", "htmlContent");
 </script>
 <input id="post" type="submit" class="button" accesskey="s" tabindex="6" name="post"
        value="<spring:message code="${labelForAction}"/>"/>
