@@ -41,6 +41,7 @@
             <div class="forum_header">
                 <span class="forum_header_icon"></span>
                 <span class="forum_header_topics"><spring:message code="label.branch.header.topics"/></span>
+                <span class="forum_header_topics"><spring:message code="label.branch.header.branches"/></span>
                 <span class="forum_header_author"><spring:message code="label.branch.header.author"/></span>
                 <span class="forum_header_clicks"><spring:message code="label.branch.header.views"/></span>
                 <span class="forum_header_last_message"><spring:message code="label.branch.header.lastMessage"/></span>
@@ -88,6 +89,14 @@
                                     </div>
                                 </c:otherwise>
                             </c:choose>
+                             <div class="forum_branches">
+                                <h4>
+                                    <a class="forum_link break_word"
+                                       href="${pageContext.request.contextPath}/branches/${topic.branch.id}">
+                                        <c:out value="${topic.branch.name}"/>
+                                    </a>
+                                </h4>
+                            </div>
                             <div class="forum_author">
                                 <a href="${pageContext.request.contextPath}/users/${topic.topicStarter.encodedUsername}"
                                    title="<spring:message code="label.topic.header.author"/>"><c:out
