@@ -36,9 +36,8 @@ var isChrome = /Chrome/.test(navigator.userAgent);
 var browser = isIE || window.opera;
 var editorVisible = false;
 
-function BBtag(name, toBBFunction, toHTMLFunction) {
+function BBtag(name, toHTMLFunction) {
     this.name = name;
-    this.toBBFunction = toBBFunction;
     this.toHTMLFunction = toHTMLFunction;
 }
 
@@ -53,14 +52,6 @@ function findTag(tagName) {
 
 var bbtags = [
     new BBtag("b",
-        function (htmlToBBText) {
-            var convertedText = htmlToBBText;
-            convertedText = convertedText.replace(/<\/b>/gi, "[/b]");
-            convertedText = convertedText.replace(/<b(\s[^<>]*)?>/gi, "[b]");
-            convertedText = convertedText.replace(/<span\s[^<>]*?style="font-weight: bold;"(\s[^<>]*)?>(.*?)<\/span>/gi, "[b]$2[/b]");
-            return convertedText;
-        }
-        ,
         function (bbToHTMLText) {
             var convertedText = bbToHTMLText;
             if (browser) {
@@ -74,14 +65,6 @@ var bbtags = [
         }
     ),
     new BBtag("i",
-        function (htmlToBBText) {
-            var convertedText = htmlToBBText;
-            convertedText = convertedText.replace(/<\/i>/gi, "[/i]");
-            convertedText = convertedText.replace(/<i(\s[^<>]*)?>/gi, "[i]");
-            convertedText = convertedText.replace(/<span\s[^<>]*?style="font-style: italic;"(\s[^<>]*)?>([\s\S]*)<\/span>/gi, "[i]$2[/i]");
-            return convertedText;
-        }
-        ,
         function (bbToHTMLText) {
             var convertedText = bbToHTMLText;
             if (browser) {
@@ -95,14 +78,6 @@ var bbtags = [
         }
     ),
     new BBtag("u",
-        function (htmlToBBText) {
-            var convertedText = htmlToBBText;
-            convertedText = convertedText.replace(/<\/u>/gi, "[/u]");
-            convertedText = convertedText.replace(/<u(\s[^<>]*)?>/gi, "[u]");
-            convertedText = convertedText.replace(/<span\s[^<>]*?style="text-decoration: underline;"(\s[^<>]*)?>([\s\S]*)<\/span>/gi, "[u]$2[/u]");
-            return convertedText;
-        }
-        ,
         function (bbToHTMLText) {
             var convertedText = bbToHTMLText;
             if (browser) {
@@ -116,12 +91,6 @@ var bbtags = [
         }
     ),
     new BBtag("s",
-        function (htmlToBBText) {
-            var convertedText = htmlToBBText;
-            convertedText = convertedText.replace(/<span\s[^<>]*?style="text-decoration: line-through;"(\s[^<>]*)?>([\s\S]*)<\/span>/gi, "[s]$2[/s]");
-            return convertedText;
-        }
-        ,
         function (bbToHTMLText) {
             var convertedText = bbToHTMLText;
             convertedText = convertedText.replace(/\[s\]/gi, "<span style=\"text-decoration: line-through;\">");
@@ -130,12 +99,6 @@ var bbtags = [
         }
     ),
     new BBtag("left",
-        function (htmlToBBText) {
-            var convertedText = htmlToBBText;
-            convertedText = convertedText.replace(/<p\s[^<>]*?class="leftText"([^<>]*)?>([\s\S]*)<\/p>/gi, "[left]$2[/left]");
-            return convertedText;
-        }
-        ,
         function (bbToHTMLText) {
             var convertedText = bbToHTMLText;
             convertedText = convertedText.replace(/\[left\]/gi, '<p class="leftText">');
@@ -144,12 +107,6 @@ var bbtags = [
         }
     ),
     new BBtag("center",
-        function (htmlToBBText) {
-            var convertedText = htmlToBBText;
-            convertedText = convertedText.replace(/<p\s[^<>]*?class="centerText"([^<>]*)?>([\s\S]*)<\/p>/gi, "[center]$2[/center]");
-            return convertedText;
-        }
-        ,
         function (bbToHTMLText) {
             var convertedText = bbToHTMLText;
             convertedText = convertedText.replace(/\[center\]/gi, '<p class="centerText">');
@@ -158,12 +115,6 @@ var bbtags = [
         }
     ),
     new BBtag("right",
-        function (htmlToBBText) {
-            var convertedText = htmlToBBText;
-            convertedText = convertedText.replace(/<p\s[^<>]*?class="rightText"([^<>]*)?>([\s\S]*)<\/p>/gi, "[right]$2[/right]");
-            return convertedText;
-        }
-        ,
         function (bbToHTMLText) {
             var convertedText = bbToHTMLText;
             convertedText = convertedText.replace(/\[right\]/gi, '<p class="rightText">');
@@ -172,16 +123,6 @@ var bbtags = [
         }
     ),
     new BBtag("quote",
-        function (htmlToBBText) {
-            var convertedText = htmlToBBText;
-            convertedText = convertedText.replace(/<div class="quote"><div class="quote_title">Quote:<\/div><blockquote>/gi, "[quote]");
-            convertedText = convertedText.replace(/<::after>/gi, "");
-            convertedText = convertedText.replace(/<\/div><blockquote>/gi, "");
-            convertedText = convertedText.replace(/<\/blockquote><\/div>/gi, "[/quote]");
-            convertedText = convertedText.replace(/<div class="quote"><div class="quote_title">([^<>]*?):/gi, "[quote=\"$1\"]");
-            return convertedText;
-        }
-        ,
         function (bbToHTMLText) {
             var convertedText = bbToHTMLText;
             convertedText = convertedText.replace(/\[quote="([^\[\]]*?)"\]/gi, '<div class="quote"><div class="quote_title">$1:</div><blockquote>');
@@ -191,12 +132,6 @@ var bbtags = [
         }
     ),
     new BBtag("code",
-        function (htmlToBBText) {
-            var convertedText = htmlToBBText;
-            convertedText = convertedText.replace(/<pre\s[^<>]*?class="brush:\s*([^<>]*)"([^<>]*)?>([\s\S]*)<\/pre>/gi, "[code=$1]$3[/code]");
-            return convertedText;
-        }
-        ,
         function (bbToHTMLText) {
             var convertedText = bbToHTMLText;
             convertedText = convertedText.replace(/\[code=([^\[\]]*?)\]/gi, '<pre class="brush: $1">').toLowerCase();
@@ -205,12 +140,6 @@ var bbtags = [
         }
     ),
     new BBtag("img",
-        function (htmlToBBText) {
-            var convertedText = htmlToBBText;
-            convertedText = convertedText.replace(/<img\s[^<>]*?src="?([^<>]*?)"?(\s[^<>]*)?\/?>/gi, "[img]$1[/img]");
-            return convertedText;
-        }
-        ,
         function (bbToHTMLText) {
             var convertedText = bbToHTMLText;
             convertedText = convertedText.replace(/\[img\]([^"]*?)\[\/img\]/gi, "<img src=\"$1\" />");
@@ -218,12 +147,6 @@ var bbtags = [
         }
     ),
     new BBtag("highlight",
-        function (htmlToBBText) {
-            var convertedText = htmlToBBText;
-            convertedText = convertedText.replace(/<font\s[^<>]*?class="highlight"([^<>]*)?>([\s\S]*)<\/font>/gi, "[highlight]$2[/highlight]");
-            return convertedText;
-        }
-        ,
         function (bbToHTMLText) {
             var convertedText = bbToHTMLText;
             convertedText = convertedText.replace(/\[highlight\]/gi, '<font class="highlight">');
@@ -232,15 +155,6 @@ var bbtags = [
         }
     ),
     new BBtag("list",
-        function (htmlToBBText) {
-            var convertedText = htmlToBBText;
-            convertedText = convertedText.replace(/<\/ul>/gi, "[/list]");
-            convertedText = convertedText.replace(/<ul>/gi, "[list]\n");
-            convertedText = convertedText.replace(/<li>/gi, "[*]");
-            convertedText = convertedText.replace(/<\/li>/gi, "");
-            return convertedText;
-        }
-        ,
         function (bbToHTMLText) {
             var convertedText = bbToHTMLText;
             convertedText = convertedText.replace(/\[list\]\s*\[\*\]/gi, "<ul><li>");
@@ -250,12 +164,6 @@ var bbtags = [
         }
     ),
     new BBtag("color",
-        function (htmlToBBText) {
-            var convertedText = htmlToBBText;
-            convertedText = convertedText.replace(/<font\s[^<>]*?color="#?([^<>]*?)"?(\s[^<>]*)?>([\s\S]*)<\/font>/gi, "[color=$1]$3[/color]");
-            return convertedText;
-        }
-        ,
         function (bbToHTMLText) {
             var convertedText = bbToHTMLText;
             convertedText = convertedText.replace(/\[color=([^\]]*?)\]([\s\S]*?)\[\/color\]/gi, "<font color=\"$1\">$2</font>");
@@ -263,12 +171,6 @@ var bbtags = [
         }
     ),
     new BBtag("size",
-        function (htmlToBBText) {
-            var convertedText = htmlToBBText;
-            convertedText = convertedText.replace(/<font\s[^<>]*?class="textSize(\d*)"[^<>]*?>([\s\S]*)<\/font>/gi, "[size=$1]$2[/size]");
-            return convertedText;
-        }
-        ,
         function (bbToHTMLText) {
             var convertedText = bbToHTMLText;
             convertedText = convertedText.replace(/\[size=([^\]]+)\]([\s\S]*?)\[\/size\]/gi, '<font class="textSize$1">$2</font>');
@@ -276,12 +178,6 @@ var bbtags = [
         }
     ),
     new BBtag("indent",
-        function (htmlToBBText) {
-            var convertedText = htmlToBBText;
-            convertedText = convertedText.replace(/<font\s[^<>]*?class="marginLeft(\d*)"[^<>]*?>([\s\S]*)<\/font>/gi, "[indent=$1]$2[/indent]");
-            return convertedText;
-        }
-        ,
         function (bbToHTMLText) {
             var convertedText = bbToHTMLText;
             convertedText = convertedText.replace(/\[indent=([^\]]+)\]([\s\S]*?)\[\/indent\]/gi, '<font class="marginLeft$1">$2</font>');
@@ -289,12 +185,6 @@ var bbtags = [
         }
     ),
     new BBtag("url",
-        function (htmlToBBText) {
-            var convertedText = htmlToBBText;
-            convertedText = convertedText.replace(/<a\s[^<>]*?href="?([^<>]*?)"?(\s[^<>]*)?>([^(<a)]*)<\/a>/gi, "[url=$1]$3[/url]");
-            return convertedText;
-        }
-        ,
         function (bbToHTMLText) {
             var convertedText = bbToHTMLText;
             convertedText = convertedText.replace(/\[url=([^\]]+)\]([\s\S]*?)\[\/url\]/gi, "<a href=\"$1\">$2</a>");
@@ -366,22 +256,6 @@ function bbcode2html() {
     /*$.post($root + '/posts/bbToNtml',{"bbContent":textboxelement.value}, function(data) {
         content = data;
     });*/
-}
-
-function html2bbcode() {
-    var convertedText = content;
-    for (var i = 0; i < tagList.length; i++) {
-        convertedText = tagList[i].toBBFunction(convertedText);
-    }
-    content = convertedText;
-
-    rep(/<br\/?>/gi, "\n");
-
-    rep(/&lt;/gi, "<");
-    rep(/&gt;/gi, ">");
-    rep(/&nbsp;/gi, " ");
-    rep(/&quot;/gi, "\"");
-    rep(/&amp;/gi, "&");
 }
 
 function closeTags() {
@@ -464,11 +338,6 @@ function doQuote() {
     if (!editorVisible) {
         AddTag('[quote]', '[/quote]');
     }
-}
-
-function InsertText(txt) {
-    if (!editorVisible)
-        textboxelement.value += txt;
 }
 
 function doClick(command) {
