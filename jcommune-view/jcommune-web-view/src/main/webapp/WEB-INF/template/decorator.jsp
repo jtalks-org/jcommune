@@ -53,6 +53,8 @@
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/URLBuilder.js"></script>
     <script language="javascript"
+            src="${pageContext.request.contextPath}/resources/javascript/custom/registration.js"></script>
+    <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/global.js"></script>
     <script src='${pageContext.request.contextPath}/resources/javascript/licensed/xregexp-min.js'
             type='text/javascript'></script>
