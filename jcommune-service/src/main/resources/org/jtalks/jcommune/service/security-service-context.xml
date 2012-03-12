@@ -43,10 +43,13 @@
   <!-- Evaluates hasPermission expression -->
   <bean id="aclGroupPermissionEvaluator" class="org.jtalks.jcommune.service.security.AclGroupPermissionEvaluator">
     <!-- Link to actual ACL Service -->
-    <constructor-arg index="0" ref="basicPermissionEvaluator"/>
-    <constructor-arg index="1" ref="commonAclManager"/>
-    <property name="jdbcAclService" ref="aclService"/>
+    <constructor-arg index="0" ref="commonAclManager"/>
+    <constructor-arg index="1" ref="aclUtil"/>
   </bean>
+  <bean id="aclUtil" class="org.jtalks.common.security.acl.AclUtil">
+    <constructor-arg index="0" ref="aclService"/>
+  </bean>
+
 
   <bean id="basicPermissionEvaluator" class="org.springframework.security.acls.AclPermissionEvaluator">
     <!-- Link to actual ACL Service -->
@@ -65,7 +68,7 @@
     <property name="sidIdentityQuery" value="SELECT @@IDENTITY"/>
     <property name="sidFactory" ref="jtalksSidFactory"/>
   </bean>
-  <bean id="jtalksSidFactory" class="org.jtalks.common.security.acl.JtalksSidFactory"/>
+  <bean id="jtalksSidFactory" class="org.jtalks.common.security.acl.sids.JtalksSidFactory"/>
 
   <!-- Responsible for efficient retrieval of ACLs from database -->
   <bean id="lookupStrategy" class="org.springframework.security.acls.jdbc.BasicLookupStrategy">

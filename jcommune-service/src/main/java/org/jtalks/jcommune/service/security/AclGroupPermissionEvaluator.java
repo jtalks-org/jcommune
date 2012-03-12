@@ -15,13 +15,12 @@
 package org.jtalks.jcommune.service.security;
 
 import org.jtalks.common.model.permissions.GeneralPermission;
-import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.common.security.acl.AclUtil;
-import org.jtalks.common.security.acl.ExtendedMutableAcl;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.acls.AclPermissionEvaluator;
-import org.springframework.security.acls.domain.ObjectIdentityRetrievalStrategyImpl;
-import org.springframework.security.acls.model.*;
+import org.springframework.security.acls.model.AccessControlEntry;
+import org.springframework.security.acls.model.ObjectIdentity;
+import org.springframework.security.acls.model.Permission;
 import org.springframework.security.core.Authentication;
 
 import javax.annotation.Nonnull;
@@ -29,20 +28,23 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- *
+ * @author Elena Lepaeva
+ * @author stanislav bashkirtsev
  */
 public class AclGroupPermissionEvaluator implements PermissionEvaluator {
-    private final AclPermissionEvaluator basicPermissionEvaluator;
     private final org.jtalks.common.security.acl.AclManager aclManager;
-    private ObjectIdentityGenerator objectIdentityGenerator = new ObjectIdentityRetrievalStrategyImpl();
-    private MutableAclService jdbcAclService;
+    private final AclUtil aclUtil;
 
-    public AclGroupPermissionEvaluator(@Nonnull AclPermissionEvaluator basicPermissionEvaluator,
-                                       @Nonnull org.jtalks.common.security.acl.AclManager aclManager) {
-        this.basicPermissionEvaluator = basicPermissionEvaluator;
+    public AclGroupPermissionEvaluator(@Nonnull org.jtalks.common.security.acl.AclManager aclManager,
+                                       @Nonnull AclUtil aclUtil) {
         this.aclManager = aclManager;
+        this.aclUtil = aclUtil;
+
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
         return false;
@@ -53,30 +55,29 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
      */
     @Override
     public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
-        AclUtil aclUtil = new AclUtil(jdbcAclService);
-        ObjectIdentity objectIdentity = objectIdentityGenerator.createObjectIdentity(targetId, targetType);
+        ObjectIdentity objectIdentity = aclUtil.createIdentity(targetId, targetType);
         Permission jtalksPermission = getPermission(permission);
         List<AccessControlEntry> aces = aclUtil.getAclFor(objectIdentity).getEntries();
-        if(isRestricted(aces, jtalksPermission)){
+        if (isRestricted(aces, jtalksPermission)) {
             return false;
-        } else if(isAllowed(aces, jtalksPermission)){
+        } else if (isAllowed(aces, jtalksPermission)) {
             return true;
         }
         return false;
     }
 
     private boolean isAllowed(List<AccessControlEntry> controlEntries, Permission permission) {
-        for(AccessControlEntry ace: controlEntries){
-            if(permission.equals(ace.getPermission()) && ace.isGranting()){
+        for (AccessControlEntry ace : controlEntries) {
+            if (permission.equals(ace.getPermission()) && ace.isGranting()) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean isRestricted(List<AccessControlEntry> controlEntries, Permission permission){
-        for(AccessControlEntry ace: controlEntries){
-            if(permission.equals(ace.getPermission()) && !ace.isGranting()){
+    private boolean isRestricted(List<AccessControlEntry> controlEntries, Permission permission) {
+        for (AccessControlEntry ace : controlEntries) {
+            if (permission.equals(ace.getPermission()) && !ace.isGranting()) {
                 return true;
             }
         }
@@ -92,10 +93,6 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
             throw new IllegalArgumentException("No other permissions that GeneralPermission are supported now. " +
                     "Was specified: " + permission);
         }
-    }
-
-    public void setJdbcAclService(MutableAclService jdbcAclService) {
-        this.jdbcAclService = jdbcAclService;
     }
 
 }
