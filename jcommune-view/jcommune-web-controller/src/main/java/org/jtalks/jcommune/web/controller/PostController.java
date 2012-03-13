@@ -234,14 +234,13 @@ public class PostController {
     }
 
     /**
-     * Delete post by given id
+     * Converted post with bb codes to HTML
      *
-     * @param bbContent post
-     * @return redirect to topic page
-     * @throws NotFoundException when topic or post not found
+     * @param bbContent post with bb codes
+     * @return HTML content for post
      */
     @RequestMapping(method = RequestMethod.POST, value = "/posts/bbToNtml")
-    public ResponseEntity<String> bbCodeToHtml(@RequestParam(POST_BB_CONTENT) String bbContent) throws NotFoundException {
+    public ResponseEntity<String> bbCodeToHtml(@RequestParam(POST_BB_CONTENT) String bbContent) {
         return new ResponseEntity<String>(bbCodeService.convertBbToHtml(bbContent), null, HttpStatus.OK);
     }
 }

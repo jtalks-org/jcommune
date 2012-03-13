@@ -184,7 +184,7 @@ public class PostControllerTest {
         String expected = "[quote=\"user\"]" + POST_CONTENT + "[/quote]";
         topic.addPost(post);
         when(postService.get(anyLong())).thenReturn(post);
-        when(bbCodeService.quote(POST_CONTENT ,user)).thenReturn(expected);
+        when(bbCodeService.quote(POST_CONTENT, user)).thenReturn(expected);
 
         ModelAndView mav = controller.addPostWithQuote(post.getId(), null);
         //check expectations
@@ -201,7 +201,7 @@ public class PostControllerTest {
         Post post = new Post(user, POST_CONTENT);
         topic.addPost(post);
         when(postService.get(anyLong())).thenReturn(post);
-        when(bbCodeService.quote(selection,user)).thenReturn(expected);
+        when(bbCodeService.quote(selection, user)).thenReturn(expected);
 
         ModelAndView mav = controller.addPostWithQuote(TOPIC_ID, selection);
         //check expectations
@@ -268,6 +268,15 @@ public class PostControllerTest {
         doThrow(new NotFoundException()).when(postService).get(anyLong());
 
         controller.redirectToPageWithPost(POST_ID);
+    }
+
+    @Test
+    public void testBbCodeToHtml() {
+        String postText = "[code]123[/code]";
+        String html = "<code>123</code>";
+        when(bbCodeService.convertBbToHtml(anyString())).thenReturn(html);
+        assertEquals(controller.bbCodeToHtml(postText).getBody(), html);
+        verify(bbCodeService).convertBbToHtml(postText);
     }
 
     private void assertAnswerMavIsCorrect(ModelAndView mav) {
