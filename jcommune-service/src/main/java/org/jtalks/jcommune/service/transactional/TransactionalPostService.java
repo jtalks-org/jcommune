@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -128,10 +129,14 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     @Override
     public Map<Topic, LastReadPost> getLastReadPostForTopics(List<Topic> topics) {
         JCUser current = securityService.getCurrentUser();
-        Map<Topic, LastReadPost> posts = new HashMap<Topic, LastReadPost>();
-        if (current != null) { // topics are allways unread for anonymous users
-            for (LastReadPost post : this.getDao().getLastReadPosts(current, topics)) {
-                posts.put(post.getTopic(), post);
+        Map<Topic, LastReadPost> posts = new LinkedHashMap<Topic, LastReadPost>(topics.size(), 1);
+        for (Topic topic : topics) {
+            // todo: find more efficient solution not to perform queries in loop
+            if (current != null) {
+                LastReadPost post = this.getDao().getLastReadPost(current, topic);
+                posts.put(topic, post);
+            } else {  // topics are allways unread for anonymous users
+                posts.put(topic, null);
             }
         }
         return posts;
