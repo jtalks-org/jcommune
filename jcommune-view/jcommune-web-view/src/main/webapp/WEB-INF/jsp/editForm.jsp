@@ -37,7 +37,7 @@
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
         <div id="answer">
             <form:form action="${pageContext.request.contextPath}/posts/${postId}/edit?topicId=${topicId}"
-                       method="POST" modelAttribute="postDto" onsubmit="doCheck();return true;">
+                       method="POST" modelAttribute="postDto">
                 <form:hidden path="topicId"/>
                 <form:hidden path="id"/>
                 <div class="forum_header_table">
