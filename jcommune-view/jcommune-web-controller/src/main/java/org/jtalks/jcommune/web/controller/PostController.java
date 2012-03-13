@@ -21,19 +21,16 @@ import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
-import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.PostDto;
+import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -244,7 +241,7 @@ public class PostController {
      * @throws NotFoundException when topic or post not found
      */
     @RequestMapping(method = RequestMethod.POST, value = "/posts/bbToNtml")
-    public String bbCodeToHtml(@PathVariable(POST_BB_CONTENT) String bbContent) throws NotFoundException {
-        return bbCodeService.convertBbToHtml(bbContent);
+    public ResponseEntity<String> bbCodeToHtml(@RequestParam(POST_BB_CONTENT) String bbContent) throws NotFoundException {
+        return new ResponseEntity<String>(bbCodeService.convertBbToHtml(bbContent), null, HttpStatus.OK);
     }
 }

@@ -29,7 +29,7 @@
 
 var body_id, textboxelement;
 var baseHtmlElement_id, baseDivElement;
-var html_content_id,htmlcontentelement;
+var html_content_id, htmlcontentelement;
 var content;
 var isIE = /msie|MSIE/.test(navigator.userAgent);
 var isChrome = /Chrome/.test(navigator.userAgent);
@@ -203,59 +203,61 @@ function initEditor(textAreaId, htmlAreaId, baseDivId) {
     html_content_id = baseDivId;
     textboxelement = document.getElementById(textAreaId);
     baseDivElement = document.getElementById(htmlAreaId);
-    htmlcontentelement= document.getElementById(baseDivId);
-    htmlcontentelement.style.display="none";
+    htmlcontentelement = document.getElementById(baseDivId);
+    htmlcontentelement.style.display = "none";
     content = textboxelement.value;
     editorVisible = false;
 }
 
 function SwitchEditor() {
     if (editorVisible) {
-        textboxelement.style.display="";
-        htmlcontentelement.style.display="none";
+        textboxelement.style.display = "";
+        htmlcontentelement.style.display = "none";
         editorVisible = false;
     }
     else {
         content = textboxelement.value;
         bbcode2html();
-        htmlcontentelement.innerHTML=content;
-        htmlcontentelement.style.display="";
-        textboxelement.style.display="none";
+        /*htmlcontentelement.innerHTML=content;
+         htmlcontentelement.style.display="";
+         textboxelement.style.display="none";
 
-        editorVisible = true;
-        SyntaxHighlighter.highlight();
+         editorVisible = true;
+         SyntaxHighlighter.highlight();*/
     }
 }
 
-// tag list for convertation to bb code or html
-var tagList;
 // open tag regexp
 var patternForOpenBBtag = "\\[([^\\/\\[\\]]*?)(=[^\\[\\]]*)?\\]";
 
 function bbcode2html() {
-    rep(/\</gi, "&lt;");
-    rep(/\>/gi, "&gt;");
+    $.post($root + '/posts/bbToNtml', {bbContent:textboxelement.value}, function (data) {
+        if (data.toString() == "[object XMLDocument]") {
+            htmlcontentelement.innerHTML = XMLtoString(data);
+        } else {
+            htmlcontentelement.innerHTML = data;
+        }
+        htmlcontentelement.style.display = "";
+        textboxelement.style.display = "none";
 
-    tagList = [];
+        editorVisible = true;
+        SyntaxHighlighter.highlight();
+    });
+}
 
-    var convertedText = content;
-    var reglt = new RegExp(patternForOpenBBtag, 'ig');
-    var result = reglt.exec(convertedText);
-    var i = 0;
-    while (result != null) {
-        var tag = findTag(result[1]);
-        tagList[i] = tag;
-        convertedText = tag.toHTMLFunction(convertedText);
-        reglt = new RegExp(patternForOpenBBtag, 'ig');
-        result = reglt.exec(convertedText);
-        i++;
+function XMLtoString(elem) {
+    var serialized;
+
+    try {
+        // XMLSerializer exists in current Mozilla browsers
+        serializer = new XMLSerializer();
+        serialized = serializer.serializeToString(elem);
     }
-    content = convertedText;
-
-    rep(/\n/gi, "<br\/>");
-    /*$.post($root + '/posts/bbToNtml',{"bbContent":textboxelement.value}, function(data) {
-        content = data;
-    });*/
+    catch (e) {
+        // Internet Explorer has a different approach to serializing XML
+        serialized = elem.xml;
+    }
+    return serialized;
 }
 
 function closeTags() {
@@ -401,7 +403,7 @@ function doCode() {
     }
 }
 
-function resetSelectors(){
+function resetSelectors() {
     resetSizeSelector();
     resetIndentSelector();
     resetCodeSelector();
