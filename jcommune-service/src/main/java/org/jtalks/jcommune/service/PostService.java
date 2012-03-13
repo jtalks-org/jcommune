@@ -69,15 +69,14 @@ public interface PostService extends EntityService<Post> {
     int calculatePageForPost(Post post);
 
     /**
-     * Returns last read post for each topic or null, if there is no
-     * last read post for the current user and topic given.
-     * <p/>
-     * Will allways return empty map for anonymous users.
+     * Fills topics with last read post information based
+     * on the current user set. No data will be set
+     * for anonymous users.
      *
-     * @param topic topics to get last read post for
-     * @return last read post info for these topics and current user
+     * @param topics topics to get last read post for
+     * @return topic collection with last read posts data set
      */
-    Map<Topic, LastReadPost> getLastReadPostForTopics(List<Topic> topic);
+    List<Topic> fillLastReadPostForTopics(List<Topic> topics);
 
     /**
      * Returns last read post for topic or null, if there is no

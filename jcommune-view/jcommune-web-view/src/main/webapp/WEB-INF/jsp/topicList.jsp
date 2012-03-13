@@ -106,6 +106,9 @@
                                             <span class="sticky"><spring:message code="label.marked_as_sticked"/></span>
                                         </c:when>
                                     </c:choose>
+                                    <c:if test="${topic.hasUpdates}">
+                                        <span style="color: red;"><%--[NEW]--%></span>
+                                    </c:if>
                                     <a class="forum_link" href="${pageContext.request.contextPath}/topics/${topic.id}">
                                         <span class="forum_message_cell_text"><c:out value="${topic.title}"/></span>
                                     </a>

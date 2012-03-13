@@ -127,19 +127,18 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public Map<Topic, LastReadPost> getLastReadPostForTopics(List<Topic> topics) {
+    public List<Topic> fillLastReadPostForTopics(List<Topic> topics) {
         JCUser current = securityService.getCurrentUser();
-        Map<Topic, LastReadPost> posts = new LinkedHashMap<Topic, LastReadPost>(topics.size(), 1);
-        for (Topic topic : topics) {
-            // todo: find more efficient solution not to perform queries in loop
-            if (current != null) {
+        if (current != null) {
+            for (Topic topic : topics) {
+                // todo: find more efficient solution not to perform queries in loop
                 LastReadPost post = this.getDao().getLastReadPost(current, topic);
-                posts.put(topic, post);
-            } else {  // topics are allways unread for anonymous users
-                posts.put(topic, null);
+                if (post != null) {
+                    topic.setLastReadPostIndex(post.getPostIndex());
+                }
             }
         }
-        return posts;
+        return topics;
     }
 
     /**
