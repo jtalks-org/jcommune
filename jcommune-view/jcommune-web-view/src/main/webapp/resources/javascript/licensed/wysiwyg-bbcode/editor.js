@@ -242,6 +242,7 @@ function bbcode2html() {
 
         editorVisible = true;
         SyntaxHighlighter.highlight();
+        $("a[rel^='prettyPhoto']").prettyPhoto({social_tools:false});
     });
 }
 
