@@ -41,6 +41,7 @@
         <div class="forum_header_table">
             <div class="forum_header">
                 <span class="forum_header_topics"><spring:message code="label.branch.header.topics"/></span>
+                <span class="forum_header_branches"><spring:message code="label.branch.header.branches"/></span>
                 <span class="forum_header_answers"><spring:message code="label.section.header.messages"/></span>
                 <span class="forum_header_author"><spring:message code="label.branch.header.author"/></span>
                 <span class="forum_header_clicks"><spring:message code="label.branch.header.views"/></span>
@@ -62,6 +63,14 @@
                                 </h4>
                                 <br/>
                                 <span class="truncated"><jtalks:bb2html bbCode="${map.lastPost.postContent}"/></span>
+                            </div>
+                            <div class="forum_branches">
+                                <h4>
+                                    <a class="forum_link break_word"
+                                       href="${pageContext.request.contextPath}/branches/${topic.branch.id}">
+                                        <c:out value="${topic.branch.name}"/>
+                                    </a>
+                                </h4>
                             </div>
                             <div class="forum_answers">
                                 <c:out value="${map.postCount}"/>
