@@ -92,7 +92,8 @@ public class LocationService {
 
     /**
      * The need for testing.
-     * 
+     * //todo: rewrite tests to eliminate it
+     *
      * @param registerUserMap storage that contains forum location
      * for the current user
      */

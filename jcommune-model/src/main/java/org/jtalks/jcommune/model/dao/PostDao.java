@@ -41,14 +41,6 @@ public interface PostDao extends ChildRepository<Post> {
      */
     List<Post> getUserPosts(JCUser author);
 
-    /**
-     *
-     * @param forWho
-     * @param topics
-     * @return
-     */
-    List<LastReadPost> getLastReadPosts(JCUser forWho, List<Topic> topics);
-
         /**
      *
      * @param forWho

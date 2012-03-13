@@ -383,6 +383,7 @@ span.version {
 .forum_messages,
 .forum_last_message,
 .forum_answers,
+.forum_branches,
 .forum_author,
 .forum_clicks,
 .forum_userinfo,
@@ -392,7 +393,7 @@ span.version {
 .userdetails_page li label,
 .userdetails_page li span {
     display: table-cell;
-    padding: 0;
+    padding: 0;                       ,
     border-bottom: 1px solid #b2b2b2;
     vertical-align: middle;
     text-align: center;
@@ -449,6 +450,18 @@ a.last_message_user {
 .forum_answers, .forum_header_answers {
     width: 90px;
     min-width: 90px;
+}
+
+.forum_branches {
+    width: 130px;
+    min-width: 130px;
+}
+
+.forum_header_branches {
+    display: table-cell;
+    width: 100%;
+    padding: 0 40px;
+    vertical-align: middle;
 }
 
 .forum_author, .forum_header_author {

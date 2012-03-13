@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.criterion.Property;
+import org.hibernate.transform.Transformers;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.entity.LastReadPost;
@@ -48,26 +49,12 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
      * @inheritDoc
      */
     @Override
-    public List<LastReadPost> getLastReadPosts(JCUser forWho, List<Topic> topics) {
-        Property userProperty = Property.forName("user");
-        Property topicProperty = Property.forName("topic");
-        return getSession().createCriteria(LastReadPost.class)
-                .add(userProperty.eq(forWho))
-                .add(topicProperty.in(topics))
-                .setCacheable(false)
-                .list();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Override
     public LastReadPost getLastReadPost(JCUser forWho, Topic topic) {
-         return (LastReadPost) getSession().createQuery("FROM LastReadPost p WHERE p.topic = ? and p.user = ?")
-                 .setParameter(0, topic)
-                 .setParameter(1, forWho)
-                 .setCacheable(false)
-                 .uniqueResult();
+        return (LastReadPost) getSession().createQuery("FROM LastReadPost p WHERE p.topic = ? and p.user = ?")
+                .setParameter(0, topic)
+                .setParameter(1, forWho)
+                .setCacheable(false)
+                .uniqueResult();
 
     }
 
