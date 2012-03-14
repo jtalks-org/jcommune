@@ -41,11 +41,11 @@ public class Topic extends SubscriptionAwareEntity {
     private Branch branch;
     private int views;
 
-    // transient, makes sence for current user only if set explicitly
+    // transient, makes sense for current user only if set explicitly
     private boolean hasUpdates = true;
 
     public static final int MIN_NAME_SIZE = 5;
-    public static final int MAX_NAME_SIZE = 255;
+    public static final int MAX_NAME_SIZE = 120;
 
     /**
      * Used only by hibernate.
