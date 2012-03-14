@@ -93,7 +93,7 @@
                                 <h4>
                                     <a class="forum_link break_word"
                                        href="${pageContext.request.contextPath}/branches/${topic.branch.id}">
-                                        <c:out value="${topic.branch.name}"/>
+                                        <c:out value="${map.branch.name}"/>
                                     </a>
                                 </h4>
                             </div>
