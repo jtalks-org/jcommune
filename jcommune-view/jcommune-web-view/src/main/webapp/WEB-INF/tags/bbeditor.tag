@@ -135,7 +135,7 @@
                         <option value="pascal">Pascal</option>
                         <option value="bash">Bash</option>
                         <option value="js">JavaScript</option>
-                        <option value="xml">HTML</option>
+                        <option value="html">HTML</option>
                         <option value="css">CSS</option>
                         <option value="sql">SQL</option>
                         <option value="xml">XML</option>
@@ -146,7 +146,7 @@
             <%-- <div id="helpline"><spring:message code="label.answer.tooltip"/></div>--%>
             <div id="editorBBCODEdiv" class="editorBBCODE">
                 <pre id="htmlContent"></pre>
-                <textarea id="tbMsg" name="${bodyParameterName}" tabindex="3">
+                <textarea id="tbMsg" name="${bodyParameterName}">
                     <c:out value="${postText}"/></textarea>
             </div>
             <br>
