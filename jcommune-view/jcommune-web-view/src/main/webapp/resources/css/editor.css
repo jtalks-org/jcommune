@@ -12,9 +12,15 @@ div#editorBBCODEdiv {
     height: 400px;
     text-align: left;
     border:1px solid silver;
-    background: #ffffff;
+    background: #efefef;
     margin-left: 2%;
-    margin-left: 2%
+    margin-left: 2%;
+    padding: 10px;
+}
+
+#htmlContent{
+    overflow: auto;
+    height: 100%
 }
 
 div#editorBBCODEdiv textarea {

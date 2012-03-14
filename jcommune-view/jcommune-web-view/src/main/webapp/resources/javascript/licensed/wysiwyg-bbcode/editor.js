@@ -390,6 +390,7 @@ function doSize() {
                 AddTag('[size=' + size + ']', '[/size]');
         }
     }
+    resetSizeSelector();
 }
 
 function doCode() {
@@ -402,11 +403,6 @@ function doCode() {
                 AddTag('[code=' + code + ']', '[/code]');
         }
     }
-}
-
-function resetSelectors() {
-    resetSizeSelector();
-    resetIndentSelector();
     resetCodeSelector();
 }
 
@@ -435,6 +431,7 @@ function doIndent() {
                 AddTag('[indent=' + indent + ']', '[/indent]');
         }
     }
+    resetIndentSelector();
 }
 
 function doLink() {
