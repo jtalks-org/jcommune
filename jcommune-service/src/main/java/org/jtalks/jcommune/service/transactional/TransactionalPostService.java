@@ -28,10 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Post service class. This class contains method needed to manipulate with Post persistent entity.
@@ -44,7 +41,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
 
     private TopicDao topicDao;
     private SecurityService securityService;
-    private NotificationService notificationServise;
+    private NotificationService notificationService;
 
     /**
      * Create an instance of Post entity based service
@@ -52,14 +49,14 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * @param dao                 data access object, which should be able do all CRUD operations with post entity.
      * @param topicDao            this dao used for checking branch existance
      * @param securityService     service for authorization
-     * @param notificationServise to send email updates for subscribed users
+     * @param notificationService to send email updates for subscribed users
      */
     public TransactionalPostService(PostDao dao, TopicDao topicDao, SecurityService securityService,
-                                    NotificationService notificationServise) {
+                                    NotificationService notificationService) {
         super(dao);
         this.topicDao = topicDao;
         this.securityService = securityService;
-        this.notificationServise = notificationServise;
+        this.notificationService = notificationService;
     }
 
     /**
@@ -73,7 +70,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         post.updateModificationDate();
 
         this.getDao().update(post);
-        notificationServise.topicChanged(post.getTopic());
+        notificationService.topicChanged(post.getTopic());
 
         logger.debug("Post id={} updated.", post.getId());
     }
@@ -93,7 +90,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
 
         topicDao.update(topic);
         securityService.deleteFromAcl(post);
-        notificationServise.topicChanged(topic);
+        notificationService.topicChanged(topic);
 
         logger.debug("Deleted post id={}", postId);
     }
