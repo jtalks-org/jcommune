@@ -145,7 +145,7 @@
             <br/><br/>
             <%-- <div id="helpline"><spring:message code="label.answer.tooltip"/></div>--%>
             <div id="editorBBCODEdiv" class="editorBBCODE">
-                <div id="htmlContent" style="overflow:auto;"></div>
+                <pre id="htmlContent" style="overflow: scroll; height: 100%"></pre>
                 <textarea id="tbMsg" name="${bodyParameterName}" tabindex="3"
                           onclick="resetSelectors();"><c:out value="${postText}"/></textarea>
             </div>
