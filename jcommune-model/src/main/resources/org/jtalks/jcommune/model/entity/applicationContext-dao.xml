@@ -111,6 +111,10 @@ resolves a problem of multiple DAO beans definition -->
                     /org/jtalks/jcommune/model/entity/ehcache.xml
                 </prop>
                 <prop key="hibernate.generate_statistics">${hibernate.generate_statistics}</prop>
+                <prop key="hibernate.search.default.directory_provider">
+                	${hibernate.search.default.directory_provider}
+                </prop>
+                <prop key="hibernate.search.default.indexBase">${hibernate.search.default.indexBase}</prop>
             </props>
         </property>
     </bean>

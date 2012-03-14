@@ -20,7 +20,6 @@ import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -49,7 +48,7 @@ public interface PostDao extends ChildRepository<Post> {
      */
     List<LastReadPost> getLastReadPosts(JCUser forWho, List<Topic> topics);
 
-        /**
+    /**
      *
      * @param forWho
      * @return
@@ -61,4 +60,12 @@ public interface PostDao extends ChildRepository<Post> {
      * @param post
      */
     void saveLastReadPost(LastReadPost post);
+    
+    /**
+     * Search posts for their content.
+     * 
+     * @param searchText contents of the post.
+     * @return list of posts
+     */
+    List<Post> searchPosts(String searchText);
 }

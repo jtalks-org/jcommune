@@ -60,6 +60,12 @@
                 <artifactId>javassist</artifactId>
                 <version>3.12.1.GA</version>
             </dependency>
+		    <!-- Hibernate Search -->
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-search</artifactId>
+				<version>3.4.2.Final</version>
+			</dependency>
             <!-- Validator -->
             <dependency>
                 <groupId>javax.validation</groupId>

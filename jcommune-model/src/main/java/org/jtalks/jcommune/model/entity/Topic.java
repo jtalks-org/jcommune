@@ -14,6 +14,9 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
@@ -29,6 +32,7 @@ import java.util.List;
  * @author Vitaliy Kravchenko
  * @author Max Malakhov
  */
+@Indexed
 public class Topic extends SubscriptionAwareEntity {
     private DateTime creationDate;
     private DateTime modificationDate;
@@ -130,6 +134,7 @@ public class Topic extends SubscriptionAwareEntity {
      *
      * @return the topicName
      */
+    @Field
     public String getTitle() {
         return title;
     }
@@ -288,4 +293,13 @@ public class Topic extends SubscriptionAwareEntity {
     public void setViews(int views) {
         this.views = views;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @DocumentId
+	@Override
+	public long getId() {
+		return super.getId();
+	}
 }
