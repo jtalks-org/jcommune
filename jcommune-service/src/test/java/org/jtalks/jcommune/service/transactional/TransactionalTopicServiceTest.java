@@ -20,10 +20,10 @@ import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
@@ -31,6 +31,7 @@ import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.security.AclBuilder;
 import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -39,9 +40,11 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
+import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
@@ -341,5 +344,78 @@ public class TransactionalTopicServiceTest {
         when(branchDao.isExist(BRANCH_ID)).thenReturn(false);
 
         topicService.moveTopic(TOPIC_ID, BRANCH_ID);
+    }
+
+    @Test
+    public void testMarkTopicAsReadAnonymous() {
+        Topic topic = this.createTestTopic();
+
+        topicService.markTopicPageAsRead(topic, 1, true);
+        verifyZeroInteractions(postDao);
+    }
+
+    @Test
+    public void testMarkTopicAsReadLoggedIn() {
+        final Topic topic = this.createTestTopic();
+        when(securityService.getCurrentUser()).thenReturn(user);
+
+        topicService.markTopicPageAsRead(topic, 1, false);
+        
+        verify(postDao).saveLastReadPost(argThat(
+                new LastReadPostMatcher(topic, topic.getPostCount() -1)));
+    }
+
+    @Test
+    public void testMarkTopicAsReadPagingEnabled() {
+        final Topic topic = this.createTestTopic();
+        user.setPageSize(3);
+        when(securityService.getCurrentUser()).thenReturn(user);
+
+        topicService.markTopicPageAsRead(topic, 2, true);
+
+        verify(postDao).saveLastReadPost(argThat(
+                new LastReadPostMatcher(topic, 6)));
+    }
+
+    @Test
+    public void testMarkTopicAsReadUpdateExistingDbRecord() {
+        final Topic topic = this.createTestTopic();
+        LastReadPost post = new LastReadPost(user, topic, 0);
+        when(securityService.getCurrentUser()).thenReturn(user);
+        when(postDao.getLastReadPost(user, topic)).thenReturn(post);
+
+        topicService.markTopicPageAsRead(topic, 1, false);
+
+        verify(postDao).saveLastReadPost(argThat(
+                new LastReadPostMatcher(topic, topic.getPostCount() -1)));
+    }
+
+
+    private Topic createTestTopic() {
+        Topic topic = new Topic(user, "title");
+        for (int i=0; i< 10; i++) {
+            topic.addPost(new Post(user, "content"));
+        }
+        return topic;
+    }
+    
+    private class LastReadPostMatcher extends ArgumentMatcher<LastReadPost>{
+        
+        private Topic topic;
+        private int index;
+
+        private LastReadPostMatcher(Topic topic, int index) {
+            this.topic = topic;
+            this.index = index;
+        }
+
+        @Override
+        public boolean matches(Object argument) {
+            LastReadPost post = (LastReadPost) argument;
+            boolean result = post.getTopic().equals(topic);
+            result &= post.getUser().equals(user);
+            result &= (post.getPostIndex() == index);
+            return result;
+        }
     }
 }

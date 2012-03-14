@@ -33,10 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Topic service class. This class contains method needed to manipulate with Topic persistent entity.
@@ -52,6 +49,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         implements TopicService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    private static final String AUTHENTICATED =
+            "hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')";
 
     private SecurityService securityService;
     private BranchService branchService;
@@ -84,7 +83,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
+    @PreAuthorize(AUTHENTICATED)
     public Post replyToTopic(long topicId, String answerBody) throws NotFoundException {
         JCUser currentUser = securityService.getCurrentUser();
 
@@ -106,7 +105,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
+    @PreAuthorize(AUTHENTICATED)
     public Topic createTopic(String topicName, String bodyText, long branchId) throws NotFoundException {
         JCUser currentUser = securityService.getCurrentUser();
 
@@ -242,7 +241,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @Override
     public void markTopicPageAsRead(Topic topic, int pageNum, boolean pagingEnabled) {
         JCUser current = securityService.getCurrentUser();
-        if (current != null) { // topics are allways unread for anonymous users
+        if (current != null) { // topics are always unread for anonymous users
             int postIndex = this.calculatePostIndex(current, topic, pageNum, pagingEnabled);
             saveLastReadPost(current, topic, postIndex);
         }
@@ -252,13 +251,13 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * Computes new last read post index based on the topic size and
      * current pagination settings.
      *
-     * @param user user to calculate index for
-     * @param topic topic to calculate index for
-     * @param pageNum page number co calculate last post seen by the user
+     * @param user          user to calculate index for
+     * @param topic         topic to calculate index for
+     * @param pageNum       page number co calculate last post seen by the user
      * @param pagingEnabled if paging is enabled on page. If so, last post index in topic is returned
      * @return new last post index, counting from 0
      */
-    @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
+    @PreAuthorize(AUTHENTICATED)
     private int calculatePostIndex(JCUser user, Topic topic, int pageNum, boolean pagingEnabled) {
         if (pagingEnabled) {  // last post on the page given
             int maxPostIndex = user.getPageSize() * pageNum;
@@ -272,11 +271,11 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * Stores last read post info in a database for the particular
      * topic and user.
      *
-     * @param user user to save last read post data for
-     * @param topic topic to store info for
+     * @param user      user to save last read post data for
+     * @param topic     topic to store info for
      * @param postIndex actual post index, starting from 0
      */
-    @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
+    @PreAuthorize(AUTHENTICATED)
     private void saveLastReadPost(JCUser user, Topic topic, int postIndex) {
         LastReadPost post = postDao.getLastReadPost(user, topic);
         if (post == null) {

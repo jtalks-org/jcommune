@@ -45,7 +45,7 @@ public class Topic extends SubscriptionAwareEntity {
     private boolean hasUpdates = true;
 
     public static final int MIN_NAME_SIZE = 5;
-    public static final int MAX_NAME_SIZE = 255;
+    public static final int MAX_NAME_SIZE = 100;
 
     /**
      * Used only by hibernate.
