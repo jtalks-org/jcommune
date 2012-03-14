@@ -14,19 +14,15 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.hibernate.Query;
+import java.util.List;
+
 import org.hibernate.criterion.Property;
-import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
-import org.hibernate.search.query.dsl.QueryBuilder;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.jcommune.model.dao.PostDao;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
-
-import java.util.List;
 
 /**
  * The implementation of PostDao based on Hibernate.
@@ -81,30 +77,4 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
     public void saveLastReadPost(LastReadPost post) {
         getSession().saveOrUpdate(post);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-	@Override
-	public List<Post> searchPosts(String searchText) {
-		FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-		Query query = createSearchPostsQuery(fullTextSession, searchText);
-		@SuppressWarnings("unchecked")
-		List<Post> posts = query.list();
-		return posts;
-	}
-
-	private Query createSearchPostsQuery(FullTextSession fullTextSession, String searchText) {
-		QueryBuilder queryBuilder = fullTextSession.
-				getSearchFactory().
-				buildQueryBuilder().
-				forEntity(Post.class).
-				get();
-		org.apache.lucene.search.Query luceneQuery = queryBuilder.phrase().
-				onField("postContent").
-				sentence(searchText).
-				createQuery(); 
-		Query query = fullTextSession.createFullTextQuery(luceneQuery);
-		return query;
-	}
 }

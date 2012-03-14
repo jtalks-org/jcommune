@@ -60,12 +60,4 @@ public interface PostDao extends ChildRepository<Post> {
      * @param post
      */
     void saveLastReadPost(LastReadPost post);
-    
-    /**
-     * Search posts for their content.
-     * 
-     * @param searchText contents of the post.
-     * @return list of posts
-     */
-    List<Post> searchPosts(String searchText);
 }

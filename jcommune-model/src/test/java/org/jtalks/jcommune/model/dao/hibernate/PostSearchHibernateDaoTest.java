@@ -22,7 +22,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.jtalks.jcommune.model.ObjectsFactory;
-import org.jtalks.jcommune.model.dao.PostDao;
+import org.jtalks.jcommune.model.dao.search.PostSearchDao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,7 @@ public class PostSearchHibernateDaoTest extends AbstractTransactionalTestNGSprin
 	@Autowired
 	private SessionFactory sessionFactory;
 	@Autowired
-	private PostDao postDao;
+	private PostSearchDao postSearchDao;
 	private FullTextSession fullTextSession;
 	
 	@BeforeMethod
@@ -75,15 +75,15 @@ public class PostSearchHibernateDaoTest extends AbstractTransactionalTestNGSprin
 	public void testFullPhraseSearchPosts(String postContent) {
 		Post expectedPost = ObjectsFactory.getDefaultPost();
 		
-		fullTextSession.save(expectedPost);
-		fullTextSession.flushToIndexes();
+		saveAndFlushIndexes(Arrays.asList(expectedPost));
 		
-		List<Post> searchResultPosts = postDao.searchPosts(expectedPost.getPostContent());
+		List<Post> searchResultPosts = postSearchDao.searchPosts(expectedPost.getPostContent());
 		
 		Assert.assertTrue(searchResultPosts != null, "Search result must not be null.");
 		Assert.assertTrue(searchResultPosts.size() != 0, "Search result must not be empty.");
 		for (Post post : searchResultPosts) {
-			Assert.assertEquals(expectedPost.getPostContent(), post.getPostContent());
+			Assert.assertEquals(expectedPost.getPostContent(), post.getPostContent(), 
+					"Content from the posts index should be the same as in the database.");
 		}
 	}
 	
@@ -105,21 +105,49 @@ public class PostSearchHibernateDaoTest extends AbstractTransactionalTestNGSprin
 		Post expectedPost = ObjectsFactory.getDefaultPost();
 		expectedPost.setPostContent(postContent);
 		
-		fullTextSession.save(expectedPost);
-		fullTextSession.flushToIndexes();
+		saveAndFlushIndexes(Arrays.asList(expectedPost));
 		
 		for (String piece: Arrays.asList(firstPiece, secondPiece)) {
-			List<Post> searchResultPosts = postDao.searchPosts(piece);
+			List<Post> searchResultPosts = postSearchDao.searchPosts(piece);
 			Assert.assertTrue(searchResultPosts != null, "Search result must not be null.");
 			Assert.assertTrue(searchResultPosts.size() != 0, "Search result must not be empty.");
 		}
 	}
 	
-	@DataProvider
-	public Object[] [] parameterPiecePhraseSearchPosts() {
+	@DataProvider(name = "parameterPiecePhraseSearchPosts")
+	public Object[][] parameterPiecePhraseSearchPosts() {
 		return new Object[][] {
 				{"Содержимое", ' ',  "поста"},
 				{"Post", ' ', "content"}
 		};
 	}
+	
+	@Test(dataProvider = "parameterIncorrectPhraseSearchPost")
+	public void testIncorrectPhraseSearchPosts(String correct, String incorrect) {
+		Post expectedPost = ObjectsFactory.getDefaultPost();
+		expectedPost.setPostContent(correct);
+		
+		saveAndFlushIndexes(Arrays.asList(expectedPost));
+		
+		List<Post> searchResultPosts = postSearchDao.searchPosts(incorrect);
+		
+		Assert.assertTrue(searchResultPosts != null, "Search result must not be null.");
+		Assert.assertTrue(searchResultPosts.size() == 0, "Search result must be empty.");
+	}
+	
+	private void saveAndFlushIndexes(List<Post> postList) {
+		for (Post post : postList) {
+			fullTextSession.save(post);
+		}
+		fullTextSession.flushToIndexes();
+	}
+	
+	@DataProvider(name = "parameterIncorrectPhraseSearchPost")
+	public Object[][] parameterIncorrectPhraseSearchPost() {
+		return new Object[][] {
+				{"Содержимое поста", "Железный человек"},
+				{"Post content", "Iron Man"}
+		};
+	}
+	
 }
