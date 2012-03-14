@@ -15,55 +15,75 @@
 package org.jtalks.jcommune.model.entity;
 
 
-import org.jtalks.common.model.entity.User;
-
 import java.io.Serializable;
 
 /**
- *
  * The only reason why this class is serializable is that is required by
  * Hibernate 'cause we're using composite id here.
  *
  * @author Evgeniy Naumenko
  */
-public class LastReadPost implements Serializable{
+public class LastReadPost implements Serializable {
     private Topic topic;
     private JCUser user;
     private int postIndex;
 
     /**
-     * For hibernate only
+     * For hibernate use only
      */
     protected LastReadPost() {
     }
 
+    /**
+     * @param user user to track last read post for
+     * @param topic topic we're marking last read post in
+     * @param postIndex post index, starting from 0
+     */
     public LastReadPost(JCUser user, Topic topic, int postIndex) {
         this.topic = topic;
         this.postIndex = postIndex;
         this.user = user;
     }
 
+    /**
+     * @return topic we're tracking last read post for
+     */
     public Topic getTopic() {
         return topic;
     }
 
-    public void setTopic(Topic topic) {
+    /**
+     * @param topic topic we're tracking last read post for
+     */
+    protected void setTopic(Topic topic) {
         this.topic = topic;
     }
 
+    /**
+     * @return last read post index in topic's collection, starting from 0
+     */
     public int getPostIndex() {
         return postIndex;
     }
 
-    public void setPostIndex(int postIndex) {
+    /**
+     * @param postIndex last read post index in topic's collection, starting from 0
+     */
+    protected void setPostIndex(int postIndex) {
         this.postIndex = postIndex;
     }
 
+    /**
+     * @return user we're tracking last read post for
+     */
     public JCUser getUser() {
         return user;
     }
 
-    public void setUser(JCUser user) {
+    /**
+     * @param user user to track last read post for
+     */
+    protected void setUser(JCUser user) {
         this.user = user;
     }
 }
