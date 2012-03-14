@@ -69,7 +69,7 @@ public class LastReadPost implements Serializable {
     /**
      * @param postIndex last read post index in topic's collection, starting from 0
      */
-    protected void setPostIndex(int postIndex) {
+    public void setPostIndex(int postIndex) {
         this.postIndex = postIndex;
     }
 
