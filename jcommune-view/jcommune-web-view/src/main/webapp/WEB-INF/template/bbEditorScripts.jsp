@@ -43,9 +43,9 @@
             type="text/javascript"></script>
     <link rel="stylesheet" type="text/css" media="screen, projection"
           href="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/styles/shCore.css"/>
-    <link href="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/styles/shCoreDefault.css"
+    <link href="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/styles/shCoreEclipse.css"
           rel="stylesheet" type="text/css"/>
-    <link href="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/styles/shThemeDefault.css"
+    <link href="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/styles/shThemeEclipse.css"
           rel="stylesheet" type="text/css"/>
 </head>
 </html>

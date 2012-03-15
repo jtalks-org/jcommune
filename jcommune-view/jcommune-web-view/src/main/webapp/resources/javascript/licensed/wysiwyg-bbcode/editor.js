@@ -32,13 +32,10 @@ var baseHtmlElement_id, baseDivElement;
 var html_content_id, htmlcontentelement;
 var content;
 var isIE = /msie|MSIE/.test(navigator.userAgent);
-var isChrome = /Chrome/.test(navigator.userAgent);
-var browser = isIE || window.opera;
 var editorVisible = false;
 
-function BBtag(name, toHTMLFunction) {
+function BBtag(name) {
     this.name = name;
-    this.toHTMLFunction = toHTMLFunction;
 }
 
 function findTag(tagName) {
@@ -51,151 +48,22 @@ function findTag(tagName) {
 }
 
 var bbtags = [
-    new BBtag("b",
-        function (bbToHTMLText) {
-            var convertedText = bbToHTMLText;
-            if (browser) {
-                convertedText = convertedText.replace(/\[b\]/gi, "<b>");
-                convertedText = convertedText.replace(/\[\/b\]/gi, "</b>");
-            } else {
-                convertedText = convertedText.replace(/\[b\]/gi, "<span style=\"font-weight: bold;\">");
-                convertedText = convertedText.replace(/\[\/b\]/gi, "</span>");
-            }
-            return convertedText;
-        }
-    ),
-    new BBtag("i",
-        function (bbToHTMLText) {
-            var convertedText = bbToHTMLText;
-            if (browser) {
-                convertedText = convertedText.replace(/\[i\]/gi, "<i>");
-                convertedText = convertedText.replace(/\[\/i\]/gi, "</i>");
-            } else {
-                convertedText = convertedText.replace(/\[i\]/gi, "<span style=\"font-style: italic;\">");
-                convertedText = convertedText.replace(/\[\/i\]/gi, "</span>");
-            }
-            return convertedText;
-        }
-    ),
-    new BBtag("u",
-        function (bbToHTMLText) {
-            var convertedText = bbToHTMLText;
-            if (browser) {
-                convertedText = convertedText.replace(/\[u\]/gi, "<u>");
-                convertedText = convertedText.replace(/\[\/u\]/gi, "</u>");
-            } else {
-                convertedText = convertedText.replace(/\[u\]/gi, "<span style=\"text-decoration: underline;\">");
-                convertedText = convertedText.replace(/\[\/u\]/gi, "</span>");
-            }
-            return convertedText;
-        }
-    ),
-    new BBtag("s",
-        function (bbToHTMLText) {
-            var convertedText = bbToHTMLText;
-            convertedText = convertedText.replace(/\[s\]/gi, "<span style=\"text-decoration: line-through;\">");
-            convertedText = convertedText.replace(/\[\/s\]/gi, "</span>");
-            return convertedText;
-        }
-    ),
-    new BBtag("left",
-        function (bbToHTMLText) {
-            var convertedText = bbToHTMLText;
-            convertedText = convertedText.replace(/\[left\]/gi, '<p class="leftText">');
-            convertedText = convertedText.replace(/\[\/left\]/gi, "</p>");
-            return convertedText;
-        }
-    ),
-    new BBtag("center",
-        function (bbToHTMLText) {
-            var convertedText = bbToHTMLText;
-            convertedText = convertedText.replace(/\[center\]/gi, '<p class="centerText">');
-            convertedText = convertedText.replace(/\[\/center\]/gi, "</p>");
-            return convertedText;
-        }
-    ),
-    new BBtag("right",
-        function (bbToHTMLText) {
-            var convertedText = bbToHTMLText;
-            convertedText = convertedText.replace(/\[right\]/gi, '<p class="rightText">');
-            convertedText = convertedText.replace(/\[\/right\]/gi, "</p>");
-            return convertedText;
-        }
-    ),
-    new BBtag("quote",
-        function (bbToHTMLText) {
-            var convertedText = bbToHTMLText;
-            convertedText = convertedText.replace(/\[quote="([^\[\]]*?)"\]/gi, '<div class="quote"><div class="quote_title">$1:</div><blockquote>');
-            convertedText = convertedText.replace(/\[quote\]/gi, '<div class="quote"><div class="quote_title">Quote:</div><blockquote>');
-            convertedText = convertedText.replace(/\[\/quote\]/gi, "</blockquote></div>");
-            return convertedText;
-        }
-    ),
-    new BBtag("code",
-        function (bbToHTMLText) {
-            var convertedText = bbToHTMLText;
-            convertedText = convertedText.replace(/\[code=([^\[\]]*?)\]/gi, '<pre class="brush: $1">').toLowerCase();
-            convertedText = convertedText.replace(/\[\/code\]/gi, "</pre>");
-            return convertedText;
-        }
-    ),
-    new BBtag("img",
-        function (bbToHTMLText) {
-            var convertedText = bbToHTMLText;
-            convertedText = convertedText.replace(/\[img\]([^"]*?)\[\/img\]/gi, "<img src=\"$1\" />");
-            return convertedText;
-        }
-    ),
-    new BBtag("highlight",
-        function (bbToHTMLText) {
-            var convertedText = bbToHTMLText;
-            convertedText = convertedText.replace(/\[highlight\]/gi, '<font class="highlight">');
-            convertedText = convertedText.replace(/\[\/highlight\]/gi, "</font>");
-            return convertedText;
-        }
-    ),
-    new BBtag("list",
-        function (bbToHTMLText) {
-            var convertedText = bbToHTMLText;
-            convertedText = convertedText.replace(/\[list\]\s*\[\*\]/gi, "<ul><li>");
-            convertedText = convertedText.replace(/\[\/list\]/gi, "</li></ul>");
-            convertedText = convertedText.replace(/\[\*\]/gi, "</li><li>");
-            return convertedText;
-        }
-    ),
-    new BBtag("color",
-        function (bbToHTMLText) {
-            var convertedText = bbToHTMLText;
-            convertedText = convertedText.replace(/\[color=([^\]]*?)\]([\s\S]*?)\[\/color\]/gi, "<font color=\"$1\">$2</font>");
-            return convertedText;
-        }
-    ),
-    new BBtag("size",
-        function (bbToHTMLText) {
-            var convertedText = bbToHTMLText;
-            convertedText = convertedText.replace(/\[size=([^\]]+)\]([\s\S]*?)\[\/size\]/gi, '<font class="textSize$1">$2</font>');
-            return convertedText;
-        }
-    ),
-    new BBtag("indent",
-        function (bbToHTMLText) {
-            var convertedText = bbToHTMLText;
-            convertedText = convertedText.replace(/\[indent=([^\]]+)\]([\s\S]*?)\[\/indent\]/gi, '<font class="marginLeft$1">$2</font>');
-            return convertedText;
-        }
-    ),
-    new BBtag("url",
-        function (bbToHTMLText) {
-            var convertedText = bbToHTMLText;
-            convertedText = convertedText.replace(/\[url=([^\]]+)\]([\s\S]*?)\[\/url\]/gi, "<a href=\"$1\">$2</a>");
-            convertedText = convertedText.replace(/\[url\]([\s\S]*?)\[\/url\]/gi, "<a href=\"$1\">$1</a>");
-            return convertedText;
-        }
-    ) ];
-
-function rep(re, str) {
-    content = content.replace(re, str);
-}
+    new BBtag("b"),
+    new BBtag("i"),
+    new BBtag("u"),
+    new BBtag("s"),
+    new BBtag("left"),
+    new BBtag("center"),
+    new BBtag("right"),
+    new BBtag("quote"),
+    new BBtag("code"),
+    new BBtag("img"),
+    new BBtag("highlight"),
+    new BBtag("list"),
+    new BBtag("color"),
+    new BBtag("size"),
+    new BBtag("indent"),
+    new BBtag("url") ];
 
 function initEditor(textAreaId, htmlAreaId, baseDivId) {
     body_id = textAreaId;
@@ -218,12 +86,6 @@ function SwitchEditor() {
     else {
         content = textboxelement.value;
         bbcode2html();
-        /*htmlcontentelement.innerHTML=content;
-         htmlcontentelement.style.display="";
-         textboxelement.style.display="none";
-
-         editorVisible = true;
-         SyntaxHighlighter.highlight();*/
     }
 }
 
@@ -390,6 +252,7 @@ function doSize() {
                 AddTag('[size=' + size + ']', '[/size]');
         }
     }
+    resetSizeSelector();
 }
 
 function doCode() {
@@ -402,11 +265,6 @@ function doCode() {
                 AddTag('[code=' + code + ']', '[/code]');
         }
     }
-}
-
-function resetSelectors() {
-    resetSizeSelector();
-    resetIndentSelector();
     resetCodeSelector();
 }
 
@@ -435,6 +293,7 @@ function doIndent() {
                 AddTag('[indent=' + indent + ']', '[/indent]');
         }
     }
+    resetIndentSelector();
 }
 
 function doLink() {
