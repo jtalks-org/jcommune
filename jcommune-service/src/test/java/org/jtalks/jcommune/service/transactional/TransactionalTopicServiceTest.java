@@ -15,6 +15,9 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
+import org.jtalks.common.model.entity.User;
+import org.jtalks.common.model.permissions.GeneralPermission;
+import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -25,7 +28,7 @@ import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.service.security.AclBuilder;
 import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.mockito.ArgumentCaptor;
@@ -79,14 +82,14 @@ public class TransactionalTopicServiceTest {
     @Mock
     private NotificationService notificationService;
 
-    private AclBuilder aclBuilder;
+    private CompoundAclBuilder<User> aclBuilder;
 
     @BeforeMethod
     public void setUp() throws Exception {
         aclBuilder = mockAclBuilder();
         initMocks(this);
         topicService = new TransactionalTopicService(topicDao,
-                branchService, branchDao, notificationService);
+                branchService, branchDao, notificationService, securityService);
         user = new JCUser(USERNAME, "email@mail.com", "password");
     }
 
@@ -119,7 +122,7 @@ public class TransactionalTopicServiceTest {
         when(securityService.getCurrentUser()).thenReturn(user);
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(answeredTopic);
-        when(securityService.grantToCurrentUser()).thenReturn(aclBuilder);
+        when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
         Post createdPost = topicService.replyToTopic(TOPIC_ID, ANSWER_BODY);
 
@@ -127,12 +130,10 @@ public class TransactionalTopicServiceTest {
         assertEquals(createdPost.getUserCreated(), user);
         assertEquals(user.getPostCount(), 1);
 
-        verify(securityService).getCurrentUser();
-        verify(topicDao).get(TOPIC_ID);
-        verify(securityService).grantToCurrentUser();
-        verify(aclBuilder).role(SecurityConstants.ROLE_ADMIN);
-        verify(aclBuilder).admin();
+        verify(aclBuilder).grant(GeneralPermission.WRITE);
+        verify(aclBuilder).to(user);
         verify(aclBuilder).on(createdPost);
+        verify(aclBuilder).flush();
         verify(notificationService).topicChanged(answeredTopic);
     }
 
@@ -148,7 +149,7 @@ public class TransactionalTopicServiceTest {
         Branch branch = new Branch(BRANCH_NAME);
         when(securityService.getCurrentUser()).thenReturn(user);
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
-        when(securityService.grantToCurrentUser()).thenReturn(aclBuilder);
+        when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
         Topic createdTopic = topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, BRANCH_ID);
 
@@ -160,13 +161,8 @@ public class TransactionalTopicServiceTest {
         assertEquals(createdPost.getPostContent(), ANSWER_BODY);
         assertEquals(user.getPostCount(), 1);
 
-        verify(securityService).getCurrentUser();
-        verify(branchDao).update(branch);
-        verify(branchService).get(BRANCH_ID);
-        verify(securityService).grantToCurrentUser();
-        verify(aclBuilder, times(2)).role(SecurityConstants.ROLE_ADMIN);
-        verify(aclBuilder, times(2)).admin();
-        verify(aclBuilder).user(USERNAME);
+        verify(aclBuilder, times(2)).grant(GeneralPermission.WRITE);
+        verify(aclBuilder, times(2)).to(user);
         verify(aclBuilder).on(createdTopic);
         verify(aclBuilder).on(createdPost);
         verify(notificationService).branchChanged(branch);

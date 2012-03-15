@@ -22,7 +22,6 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,7 +38,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private TopicDao topicDao;
-    private SecurityService securityService;
+    private org.jtalks.common.security.SecurityService securityService;
     private NotificationService notificationServise;
 
     /**
@@ -50,7 +49,8 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * @param securityService     service for authorization
      * @param notificationServise to send email updates for subscribed users
      */
-    public TransactionalPostService(PostDao dao, TopicDao topicDao, SecurityService securityService,
+    public TransactionalPostService(PostDao dao, TopicDao topicDao,
+                                    org.jtalks.common.security.SecurityService securityService,
                                     NotificationService notificationServise) {
         super(dao);
         this.topicDao = topicDao;
@@ -107,7 +107,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     @Override
     public int calculatePageForPost(Post post) {
         Topic topic = post.getTopic();
-        JCUser user = securityService.getCurrentUser();
+        JCUser user = (JCUser) securityService.getCurrentUser();
         int index = topic.getPosts().indexOf(post) + 1;
         int pageSize = (user == null) ? JCUser.DEFAULT_PAGE_SIZE : user.getPageSize();
         int pageNum = index / pageSize;

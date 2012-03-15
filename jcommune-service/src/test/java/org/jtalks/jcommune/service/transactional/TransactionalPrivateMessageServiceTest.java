@@ -14,6 +14,10 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.model.entity.User;
+import org.jtalks.common.model.permissions.GeneralPermission;
+import org.jtalks.common.security.SecurityService;
+import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
@@ -21,9 +25,7 @@ import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.MailService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.nontransactional.UserDataCacheService;
-import org.jtalks.jcommune.service.security.AclBuilder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
@@ -32,14 +34,9 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 /**
  * @author Pavel Vervenko
@@ -63,7 +60,7 @@ public class TransactionalPrivateMessageServiceTest {
 
     private static final long PM_ID = 1L;
     private static final String USERNAME = "username";
-    private AclBuilder aclBuilder;
+    private CompoundAclBuilder<User> aclBuilder;
 
     JCUser user = new JCUser(USERNAME, "email", "password");
 
@@ -71,13 +68,11 @@ public class TransactionalPrivateMessageServiceTest {
     public void setUp() throws Exception {
         initMocks(this);
         aclBuilder = mockAclBuilder();
-        pmService = new TransactionalPrivateMessageService(pmDao, securityService, userService, userDataCache,
-                mailService);
+        pmService = new TransactionalPrivateMessageService(pmDao, userService, userDataCache, mailService, securityService);
     }
 
     @Test
     public void testGetInboxForCurrentUser() {
-
         when(pmDao.getAllForUser(user)).thenReturn(new ArrayList<PrivateMessage>());
         when(securityService.getCurrentUser()).thenReturn(user);
 
@@ -93,14 +88,15 @@ public class TransactionalPrivateMessageServiceTest {
         when(securityService.getCurrentUser()).thenReturn(user);
 
         pmService.getOutboxForCurrentUser();
-
         verify(pmDao).getAllFromUser(user);
         verify(securityService).getCurrentUser();
     }
 
     @Test
     public void testSendMessage() throws NotFoundException {
-        when(securityService.grantToCurrentUser()).thenReturn(aclBuilder);
+        JCUser receipient = new JCUser("receipient", "mail", "password");
+        when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
+        when(userService.getByUsername(USERNAME)).thenReturn(receipient);
 
         PrivateMessage pm = pmService.sendMessage("body", "title", USERNAME);
 
@@ -111,10 +107,11 @@ public class TransactionalPrivateMessageServiceTest {
         verify(userDataCache).incrementNewMessageCountFor(USERNAME);
         verify(mailService).sendReceivedPrivateMessageNotification(userService.getByUsername(USERNAME), pm);
         verify(pmDao).saveOrUpdate(pm);
-        verify(securityService).grantToCurrentUser();
-        verify(aclBuilder).user(USERNAME);
-        verify(aclBuilder).read();
+        verify(securityService).createAclBuilder();
+        verify(aclBuilder).to(receipient);
+        verify(aclBuilder).grant(GeneralPermission.READ);
         verify(aclBuilder).on(pm);
+        verify(aclBuilder).flush();
     }
 
     @Test(expectedExceptions = NotFoundException.class)
@@ -140,27 +137,27 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testSaveDraft() throws NotFoundException {
-        when(securityService.grantToCurrentUser()).thenReturn(aclBuilder);
+        when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
+        when(securityService.getCurrentUser()).thenReturn(user);
 
         PrivateMessage pm = pmService.saveDraft(PM_ID, "body", "title", USERNAME);
 
         assertEquals(pm.getId(), PM_ID);
-        verify(securityService).getCurrentUser();
-        verify(userService).getByUsername(USERNAME);
         verify(pmDao).saveOrUpdate(pm);
-        verify(aclBuilder).admin();
+        verify(aclBuilder).grant(GeneralPermission.WRITE);
+        verify(aclBuilder).to(user);
         verify(aclBuilder).on(pm);
     }
 
     @Test
     public void testSaveDraftRecipientUsernameNull() throws NotFoundException {
-    	when(securityService.grantToCurrentUser()).thenReturn(aclBuilder);
-    	
-    	String recipientUsername = null;
-    	pmService.saveDraft(PM_ID, "body", "title", recipientUsername);
-    	
-    	verify(userService, Mockito.never()).getByUsername(Mockito.any(String.class));
-		// other verifications are covered in main test
+        when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
+
+        String recipientUsername = null;
+        pmService.saveDraft(PM_ID, "body", "title", recipientUsername);
+
+        verify(userService, Mockito.never()).getByUsername(Mockito.any(String.class));
+        // other verifications are covered in main test
     }
 
     @Test
@@ -203,21 +200,19 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testSendDraft() throws NotFoundException {
-        when(securityService.grantToCurrentUser()).thenReturn(aclBuilder);
+        when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
+        when(securityService.getCurrentUser()).thenReturn(user);
 
         PrivateMessage pm = pmService.sendDraft(1L, "body", "title", USERNAME);
 
         assertFalse(pm.isRead());
         assertEquals(pm.getStatus(), PrivateMessageStatus.SENT);
-        verify(securityService).getCurrentUser();
-        verify(userService).getByUsername(USERNAME);
         verify(userDataCache).incrementNewMessageCountFor(USERNAME);
         verify(mailService).sendReceivedPrivateMessageNotification(userService.getByUsername(USERNAME), pm);
         verify(pmDao).saveOrUpdate(pm);
         verify(securityService).deleteFromAcl(pm);
-        verify(securityService).grantToCurrentUser();
-        verify(aclBuilder).user(USERNAME);
-        verify(aclBuilder).read();
+        verify(aclBuilder).to(user);
+        verify(aclBuilder).grant(GeneralPermission.READ);
         verify(aclBuilder).on(pm);
     }
 
@@ -256,38 +251,38 @@ public class TransactionalPrivateMessageServiceTest {
         verify(pmDao, never()).saveOrUpdate(pm);
         verify(userDataCache, never()).decrementNewMessageCountFor(USERNAME);
     }
-    
+
     @Test
     public void testGetPrivateMessageInDraftStatus() throws NotFoundException {
-    	PrivateMessage message = new PrivateMessage(user, user, "title", "body");
-    	message.setStatus(PrivateMessageStatus.DRAFT);
-    	
-    	when(securityService.getCurrentUser()).thenReturn(user);
-    	when(pmDao.get(PM_ID)).thenReturn(message);
-    	when(pmDao.isExist(PM_ID)).thenReturn(true);
-    	
-    	PrivateMessage resultMessage = pmService.get(PM_ID);
-    	
-    	assertEquals(resultMessage.isRead(), false, 
-    			"Message status is draft, so message shouldn't be marked as read");
-    	verify(pmDao, never()).saveOrUpdate(resultMessage);
-    	verify(userDataCache, never()).decrementNewMessageCountFor(USERNAME);
+        PrivateMessage message = new PrivateMessage(user, user, "title", "body");
+        message.setStatus(PrivateMessageStatus.DRAFT);
+
+        when(securityService.getCurrentUser()).thenReturn(user);
+        when(pmDao.get(PM_ID)).thenReturn(message);
+        when(pmDao.isExist(PM_ID)).thenReturn(true);
+
+        PrivateMessage resultMessage = pmService.get(PM_ID);
+
+        assertEquals(resultMessage.isRead(), false,
+                "Message status is draft, so message shouldn't be marked as read");
+        verify(pmDao, never()).saveOrUpdate(resultMessage);
+        verify(userDataCache, never()).decrementNewMessageCountFor(USERNAME);
     }
-    
+
     @Test
     public void testGetPrivateMessageUserToNotCurrentUser() throws NotFoundException {
-    	PrivateMessage message = new PrivateMessage(user, user, "title", "body");
-    	JCUser currentUser = new JCUser(USERNAME, "email", "password");
-    	
-    	when(securityService.getCurrentUser()).thenReturn(currentUser);
-    	when(pmDao.get(PM_ID)).thenReturn(message);
-    	when(pmDao.isExist(PM_ID)).thenReturn(true);
-    	
-    	PrivateMessage resultMessage = pmService.get(PM_ID);
-    	
-    	assertEquals(resultMessage.isRead(), false, 
-    			"The message isn't addressed to the current user, so message shouldn't be marked as read.");
-    	verify(pmDao, never()).saveOrUpdate(resultMessage);
-    	verify(userDataCache, never()).decrementNewMessageCountFor(USERNAME);
+        PrivateMessage message = new PrivateMessage(user, user, "title", "body");
+        JCUser currentUser = new JCUser(USERNAME, "email", "password");
+
+        when(securityService.getCurrentUser()).thenReturn(currentUser);
+        when(pmDao.get(PM_ID)).thenReturn(message);
+        when(pmDao.isExist(PM_ID)).thenReturn(true);
+
+        PrivateMessage resultMessage = pmService.get(PM_ID);
+
+        assertEquals(resultMessage.isRead(), false,
+                "The message isn't addressed to the current user, so message shouldn't be marked as read.");
+        verify(pmDao, never()).saveOrUpdate(resultMessage);
+        verify(userDataCache, never()).decrementNewMessageCountFor(USERNAME);
     }
 }

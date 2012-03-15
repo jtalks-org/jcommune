@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
 import org.jtalks.common.model.permissions.GeneralPermission;
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -51,11 +52,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     private BranchService branchService;
     private BranchDao branchDao;
     private NotificationService notificationService;
-    private org.jtalks.common.security.SecurityService commonSecurityService;
-
-    public void setCommonSecurityService(org.jtalks.common.security.SecurityService commonSecurityService) {
-        this.commonSecurityService = commonSecurityService;
-    }
+    private SecurityService securityService;
 
     /**
      * Create an instance of User entity based service
@@ -66,11 +63,12 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * @param notificationService to send email nofications on topic updates to subscribed users
      */
     public TransactionalTopicService(TopicDao dao, BranchService branchService, BranchDao branchDao,
-                                     NotificationService notificationService) {
+                                     NotificationService notificationService, SecurityService securityService) {
         super(dao);
         this.branchService = branchService;
         this.branchDao = branchDao;
         this.notificationService = notificationService;
+        this.securityService = securityService;
     }
 
     /**
@@ -79,7 +77,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @Override
     @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
     public Post replyToTopic(long topicId, String answerBody) throws NotFoundException {
-        JCUser currentUser = (JCUser) commonSecurityService.getCurrentUser();
+        JCUser currentUser = (JCUser) securityService.getCurrentUser();
         if (currentUser == null) { // it shouldn't happen because only registered user can have this roles
             String msg = "JCUser should log in to post answers.";
             logger.error(msg);
@@ -92,9 +90,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         topic.addPost(answer);
         this.getDao().update(topic);
 
-        commonSecurityService.createAclBuilder()
+        securityService.createAclBuilder()
                 .grant(GeneralPermission.WRITE)
-                .to(commonSecurityService.getCurrentUser())
+                .to(securityService.getCurrentUser())
                 .on(answer).flush();
         notificationService.topicChanged(topic);
         logger.debug("New post in topic. Topic id={}, Post id={}, Post author={}",
@@ -109,7 +107,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @Override
     @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
     public Topic createTopic(String topicName, String bodyText, long branchId) throws NotFoundException {
-        JCUser currentUser = (JCUser) commonSecurityService.getCurrentUser();
+        JCUser currentUser = (JCUser) securityService.getCurrentUser();
         if (currentUser == null) { // it shouldn't happen because only registered user can have this roles
             String msg = "JCUser should log in to create topic.";
             logger.error(msg);
@@ -123,11 +121,11 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         topic.addPost(first);
         branch.addTopic(topic);
         branchDao.update(branch);
-        commonSecurityService.createAclBuilder().grant(GeneralPermission.WRITE)
-                .to(commonSecurityService.getCurrentUser())
+        securityService.createAclBuilder().grant(GeneralPermission.WRITE)
+                .to(securityService.getCurrentUser())
                 .on(topic).flush();
-        commonSecurityService.createAclBuilder().grant(GeneralPermission.WRITE)
-                .to(commonSecurityService.getCurrentUser())
+        securityService.createAclBuilder().grant(GeneralPermission.WRITE)
+                .to(securityService.getCurrentUser())
                 .on(first).flush();
         notificationService.branchChanged(branch);
 
@@ -208,7 +206,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         branch.deleteTopic(topic);
         branchDao.update(branch);
 
-        commonSecurityService.deleteFromAcl(Topic.class, topicId);
+        securityService.deleteFromAcl(Topic.class, topicId);
         notificationService.branchChanged(branch);
 
         logger.info("Deleted topic \"{}\". Topic id: {}", topic.getTitle(), topicId);

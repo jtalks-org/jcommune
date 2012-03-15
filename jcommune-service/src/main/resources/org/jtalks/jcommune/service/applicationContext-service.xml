@@ -83,7 +83,7 @@
         class="org.jtalks.jcommune.service.transactional.TransactionalPostService">
     <constructor-arg ref="postDao"/>
     <constructor-arg ref="topicDao"/>
-    <constructor-arg ref="securityService"/>
+    <constructor-arg ref="commonSecurityService"/>
     <constructor-arg ref="notificationService"/>
   </bean>
 
@@ -101,10 +101,10 @@
   <bean id="pmService"
         class="org.jtalks.jcommune.service.transactional.TransactionalPrivateMessageService">
     <constructor-arg ref="privateMessageDao"/>
-    <constructor-arg ref="securityService"/>
     <constructor-arg ref="userService"/>
     <constructor-arg ref="userDataCacheService"/>
     <constructor-arg ref="mailService"/>
+    <constructor-arg ref="commonSecurityService"/>
   </bean>
 
   <bean id="topicService"
@@ -118,7 +118,7 @@
 
   <bean id="subscriptionService"
         class="org.jtalks.jcommune.service.transactional.TransactionalSubscriptionService">
-    <constructor-arg ref="securityService"/>
+    <constructor-arg ref="commonSecurityService"/>
     <constructor-arg ref="topicBranchDao"/>
     <constructor-arg ref="topicDao"/>
   </bean>

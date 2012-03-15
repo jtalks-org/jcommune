@@ -19,23 +19,20 @@ import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.SubscriptionService;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
- * Implements database-backed durable subscriptions on forum object's updates.
- * All the subscriptions are performed on behalf of the current user, so there
- * is no way to subscribe someone else.
- * Current implementation just stores the subscription status in a database
- * leaving notifications to the collaborating classes.
+ * Implements database-backed durable subscriptions on forum object's updates. All the subscriptions are performed on
+ * behalf of the current user, so there is no way to subscribe someone else. Current implementation just stores the
+ * subscription status in a database leaving notifications to the collaborating classes.
  *
  * @author Evgeniy Naumenko
  */
 @PreAuthorize("hasRole('ROLE_USER')")
 public class TransactionalSubscriptionService implements SubscriptionService {
 
-    private SecurityService securityService;
+    private org.jtalks.common.security.SecurityService securityService;
     private BranchDao branchDao;
     private TopicDao topicDao;
 
@@ -44,7 +41,8 @@ public class TransactionalSubscriptionService implements SubscriptionService {
      * @param branchDao       for branch subscription updates
      * @param topicDao        for topic subscription updates
      */
-    public TransactionalSubscriptionService(SecurityService securityService, BranchDao branchDao, TopicDao topicDao) {
+    public TransactionalSubscriptionService(org.jtalks.common.security.SecurityService securityService,
+                                            BranchDao branchDao, TopicDao topicDao) {
         this.securityService = securityService;
         this.branchDao = branchDao;
         this.topicDao = topicDao;
@@ -55,7 +53,7 @@ public class TransactionalSubscriptionService implements SubscriptionService {
      */
     @Override
     public void toggleTopicSubscription(Topic topic) {
-        JCUser current = securityService.getCurrentUser();
+        JCUser current = (JCUser) securityService.getCurrentUser();
         if (topic.getSubscribers().contains(current)) {
             topic.getSubscribers().remove(current);
         } else {
@@ -69,7 +67,7 @@ public class TransactionalSubscriptionService implements SubscriptionService {
      */
     @Override
     public void toggleBranchSubscription(Branch branch) {
-        JCUser current = securityService.getCurrentUser();
+        JCUser current = (JCUser) securityService.getCurrentUser();
         if (branch.getSubscribers().contains(current)) {
             branch.getSubscribers().remove(current);
         } else {

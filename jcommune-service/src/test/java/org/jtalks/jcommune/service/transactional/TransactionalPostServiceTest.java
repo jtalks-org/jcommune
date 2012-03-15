@@ -22,7 +22,7 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
+import org.jtalks.common.security.SecurityService;
 import org.mockito.Mock;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;

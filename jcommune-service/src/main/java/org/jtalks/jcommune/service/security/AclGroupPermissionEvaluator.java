@@ -17,7 +17,6 @@ package org.jtalks.jcommune.service.security;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.acl.AclUtil;
 import org.springframework.security.access.PermissionEvaluator;
-import org.springframework.security.acls.AclPermissionEvaluator;
 import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.Permission;
@@ -28,6 +27,13 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
+ * This evaluator is used to process the annotations of the Spring Security like {@link
+ * org.springframework.security.access.prepost.PreAuthorize}. In order to be able to use it, you need to specify the id
+ * of object identity, the class of object identity and one of implementation of {@link
+ * org.jtalks.common.model.permissions.JtalksPermission}. So it should look precisely like this:<br/> <code>
+ * \@PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic',
+ * 'GeneralPermission.WRITE')")</code>
+ *
  * @author Elena Lepaeva
  * @author stanislav bashkirtsev
  */
