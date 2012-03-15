@@ -33,7 +33,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -162,6 +161,14 @@ public class BranchController {
                 .addObject("pagination", pagination);
     }
 
+    /**
+     * Marks all topics in branch as read regardless
+     * of pagination settings or whatever else.
+     *
+     * @param id branch id to find the appropriate topics
+     * @return redirect to the same branch page
+     * @throws NotFoundException if no branch matches id given
+     */
     @RequestMapping("/branches/{id}/markread")
     public String markAllTopicsAsRead(@PathVariable long id) throws NotFoundException {
         Branch branch = branchService.get(id);
