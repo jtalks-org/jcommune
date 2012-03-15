@@ -374,7 +374,7 @@ public class TransactionalTopicServiceTest {
         topicService.markTopicPageAsRead(topic, 2, true);
 
         verify(postDao).saveLastReadPost(argThat(
-                new LastReadPostMatcher(topic, 6)));
+                new LastReadPostMatcher(topic, 5)));
     }
 
     @Test

@@ -16,7 +16,6 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
@@ -186,7 +185,7 @@ public class TopicController {
         JCUser currentUser = securityService.getCurrentUser();
         List<Post> posts = topic.getPosts();
         Pagination pag = new Pagination(page, currentUser, posts.size(), pagingEnabled);
-        LastReadPost post = postService.getLastReadPostForTopic(topic);
+        Integer lastReadPostIndex = postService.getLastReadPostForTopic(topic);
         topicService.markTopicPageAsRead(topic, page, pagingEnabled);
         //todo: optimize this binding
         return new ModelAndView("postList")
@@ -202,7 +201,7 @@ public class TopicController {
                 .addObject(TOPIC_ID, topicId)
                 .addObject("subscribed", topic.getSubscribers().contains(currentUser))
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic))
-                .addObject("lastReadPost", post);
+                .addObject("lastReadPost", lastReadPostIndex);
     }
 
     /**

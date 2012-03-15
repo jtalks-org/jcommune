@@ -266,7 +266,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         JCUser user = securityService.getCurrentUser();
         if (user != null) {
             for (Topic topic : branch.getTopics()) {
-                this.saveLastReadPost(user, topic, topic.getPostCount() -1);
+                this.saveLastReadPost(user, topic, topic.getPostCount() - 1);
             }
         }
     }
@@ -284,7 +284,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @PreAuthorize(AUTHENTICATED)
     private int calculatePostIndex(JCUser user, Topic topic, int pageNum, boolean pagingEnabled) {
         if (pagingEnabled) {  // last post on the page given
-            int maxPostIndex = user.getPageSize() * pageNum;
+            int maxPostIndex = user.getPageSize() * pageNum - 1;
             return Math.min(topic.getPostCount() - 1, maxPostIndex);
         } else {              // last post in the topic
             return topic.getPostCount() - 1;
@@ -305,7 +305,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         if (post == null) {
             post = new LastReadPost(user, topic, postIndex);
         } else {
-            post.setPostIndex(postIndex);
+            post.setPostIndex(Math.max(post.getPostIndex(), postIndex));
         }
         postDao.saveLastReadPost(post);
     }

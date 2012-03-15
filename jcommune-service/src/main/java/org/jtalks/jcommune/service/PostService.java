@@ -14,14 +14,12 @@
  */
 package org.jtalks.jcommune.service;
 
-import org.jtalks.jcommune.model.entity.LastReadPost;
-import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * This interface should have methods which give us more abilities in manipulating Post persistent entity.
@@ -79,13 +77,13 @@ public interface PostService extends EntityService<Post> {
     List<Topic> fillLastReadPostForTopics(List<Topic> topics);
 
     /**
-     * Returns last read post for topic or null, if there is no
+     * Returns last read post index for topic or null, if there is no
      * last read post for the current user and topic given.
      * <p/>
-     * Will allways return null for anonymous users.
+     * Will always return null for anonymous users.
      *
      * @param topic topics to get last read post for
-     * @return last read post info for these topics and current user
+     * @return last read post index for these topics and current user
      */
-    LastReadPost getLastReadPostForTopic(Topic topic);
+    Integer getLastReadPostForTopic(Topic topic);
 }

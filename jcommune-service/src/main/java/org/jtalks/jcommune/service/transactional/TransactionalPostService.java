@@ -142,8 +142,9 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public LastReadPost getLastReadPostForTopic(Topic topic) {
+    public Integer getLastReadPostForTopic(Topic topic) {
         JCUser current = securityService.getCurrentUser();
-        return this.getDao().getLastReadPost(current, topic);
+        LastReadPost post=  this.getDao().getLastReadPost(current, topic);
+        return (post == null)? null : post.getPostIndex();
     }
 }

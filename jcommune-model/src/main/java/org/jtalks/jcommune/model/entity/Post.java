@@ -58,6 +58,10 @@ public class Post extends Entity {
         this.postContent = postContent;
     }
 
+    public int getPostIndexInTopic(){
+        return topic.getPosts().indexOf(this);
+    }
+    
     /**
      * @return the postDate
      */

@@ -188,7 +188,7 @@
                         </sec:authorize>
                     </c:if>
                     <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                        <c:if test="${lastReadPost == null || i.index > lastReadPost.postIndex}">
+                        <c:if test="${lastReadPost == null || post.postIndexInTopic > lastReadPost}">
                             <span style="color: red;">[NEW]</span>
                         </c:if>
                     </sec:authorize>
