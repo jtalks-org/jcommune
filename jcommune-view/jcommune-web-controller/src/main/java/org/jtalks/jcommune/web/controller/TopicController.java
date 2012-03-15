@@ -88,7 +88,7 @@ public class TopicController {
     /**
      * @param topicService      the object which provides actions on {@link Topic} entity
      * @param branchService     the object which provides actions on  {@link Branch} entity
-     * @param postSerice        to perform post-related actions
+     * @param postService        to perform post-related actions
      * @param locationService   to track user location on forum (what page he is viewing now)
      * @param sessionRegistry   to obtain list of users currently online
      * @param securityService   to determine the current user logged in
@@ -97,14 +97,14 @@ public class TopicController {
     @Autowired
     public TopicController(TopicService topicService,
                            BranchService branchService,
-                           PostService postSerice,
+                           PostService postService,
                            SecurityService securityService,
                            BreadcrumbBuilder breadcrumbBuilder,
                            LocationService locationService,
                            SessionRegistry sessionRegistry) {
         this.topicService = topicService;
         this.branchService = branchService;
-        this.postService = postSerice;
+        this.postService = postService;
         this.securityService = securityService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.locationService = locationService;
@@ -148,6 +148,7 @@ public class TopicController {
         }
 
         Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(), branchId);
+        topicService.markTopicAsRead(createdTopic);
         return new ModelAndView("redirect:/topics/" + createdTopic.getId());
     }
 

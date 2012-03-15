@@ -39,6 +39,7 @@
 <c:set var="authenticated" value="${false}"/>
 <div class="all_forums">
 <h2 class="heading break_word"><c:out value="${topic.title}"/></h2>
+
 <div class="forum_info_top">
     <div>
         <div> <!-- top left -->
@@ -186,9 +187,11 @@
                             </div>
                         </sec:authorize>
                     </c:if>
-                    <c:if test="${lastReadPost == null || i.index > lastReadPost.postIndex}">
-                        <span style="color: red;"><%--[NEW]--%></span>
-                    </c:if>
+                    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                        <c:if test="${lastReadPost == null || i.index > lastReadPost.postIndex}">
+                            <span style="color: red;">[NEW]</span>
+                        </c:if>
+                    </sec:authorize>
                     <span name="${post.id}">
                         <spring:message code="label.added"/>&nbsp;
                         <jtalks:format value="${post.creationDate}"/>

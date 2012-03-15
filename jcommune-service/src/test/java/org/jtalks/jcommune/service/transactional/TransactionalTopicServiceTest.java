@@ -347,7 +347,7 @@ public class TransactionalTopicServiceTest {
     }
 
     @Test
-    public void testMarkTopicAsReadAnonymous() {
+    public void testMarkTopicPageAsReadAnonymous() {
         Topic topic = this.createTestTopic();
 
         topicService.markTopicPageAsRead(topic, 1, true);
@@ -355,7 +355,7 @@ public class TransactionalTopicServiceTest {
     }
 
     @Test
-    public void testMarkTopicAsReadLoggedIn() {
+    public void testMarkTopicPageAsReadLoggedIn() {
         final Topic topic = this.createTestTopic();
         when(securityService.getCurrentUser()).thenReturn(user);
 
@@ -366,7 +366,7 @@ public class TransactionalTopicServiceTest {
     }
 
     @Test
-    public void testMarkTopicAsReadPagingEnabled() {
+    public void testMarkTopicPageAsReadPagingEnabled() {
         final Topic topic = this.createTestTopic();
         user.setPageSize(3);
         when(securityService.getCurrentUser()).thenReturn(user);
@@ -390,6 +390,46 @@ public class TransactionalTopicServiceTest {
                 new LastReadPostMatcher(topic, topic.getPostCount() -1)));
     }
 
+    @Test
+    public void testMarkAllTopicReadAnonymous(){
+        Branch branch = new Branch(BRANCH_NAME);
+
+        topicService.markAllTopicsAsRead(branch);
+
+        verifyZeroInteractions(postDao);
+    }
+
+    @Test
+    public void testMarkAllTopicRead(){
+        Branch branch = new Branch(BRANCH_NAME);
+        Topic topic = this.createTestTopic();
+        branch.addTopic(topic);
+        when(securityService.getCurrentUser()).thenReturn(user);
+        
+        topicService.markAllTopicsAsRead(branch);
+
+        verify(postDao).saveLastReadPost(argThat(
+                new LastReadPostMatcher(topic, topic.getPostCount() -1)));
+    }
+
+    @Test
+    public void testMarkTopicAsRead(){
+        final Topic topic = this.createTestTopic();
+        when(securityService.getCurrentUser()).thenReturn(user);
+
+        topicService.markTopicAsRead(topic);
+
+        verify(postDao).saveLastReadPost(argThat(
+                new LastReadPostMatcher(topic, topic.getPostCount() -1)));
+    }
+
+    @Test
+    public void testMarkTopicAsReadAnonymous(){
+        Topic topic = this.createTestTopic();
+
+        topicService.markTopicAsRead(topic);
+        verifyZeroInteractions(postDao);
+    }
 
     private Topic createTestTopic() {
         Topic topic = new Topic(user, "title");

@@ -251,6 +251,17 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
+    public void markTopicAsRead(Topic topic) {
+        JCUser current = securityService.getCurrentUser();
+        if (current != null) { // topics are always unread for anonymous users
+            saveLastReadPost(current, topic, topic.getPostCount() - 1);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void markAllTopicsAsRead(Branch branch) {
         JCUser user = securityService.getCurrentUser();
         if (user != null) {

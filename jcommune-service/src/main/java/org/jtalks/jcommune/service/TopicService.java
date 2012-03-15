@@ -16,14 +16,11 @@ package org.jtalks.jcommune.service;
 
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * This interface should have methods which give us more abilities in manipulating Topic persistent entity.
@@ -96,8 +93,7 @@ public interface TopicService extends EntityService<Topic> {
      * @param topicWeight  priority for sticked topic
      * @param sticked      flag for sticking a topic
      * @param announcement flag, which set topic as announcement
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when topic not found
+     * @throws NotFoundException when topic not found
      */
     void updateTopic(long topicId, String topicName, String bodyText, int topicWeight,
                      boolean sticked, boolean announcement) throws NotFoundException;
@@ -122,7 +118,7 @@ public interface TopicService extends EntityService<Topic> {
 
     /**
      * Marks topic page as read for the current user.
-     * That means all posts there are to marked as read.
+     * That means all posts on this page are to marked as read.
      * If paging as disabled all posts in the topic will be marked as read.
      * <p/>
      * For anonymous user call will have no effect.
@@ -134,8 +130,20 @@ public interface TopicService extends EntityService<Topic> {
     void markTopicPageAsRead(Topic topic, int pageNum, boolean pagingEnabled);
 
     /**
+     * Marks the whole topic as read for the current user.
+     * That means all posts there are to marked as read.
+     * <p/>
+     * For anonymous user call will have no effect.
      *
-     * @param branch
+     * @param topic   topic to mark as read
+     */
+    void markTopicAsRead(Topic topic);
+
+    /**
+     * Marks all topics in the current branch as read
+     * for the current user.
+     *
+     * @param branch branch to update topics
      */
     void markAllTopicsAsRead(Branch branch);
 }

@@ -53,7 +53,6 @@ public class PostController {
     public static final String POST_ID = "postId";
     public static final String POST_DTO = "postDto";
     public static final String POST_BB_CONTENT = "bbContent";
-    public static final String PAGE = "page";
     public static final String TOPIC_TITLE = "topicTitle";
 
     private PostService postService;
@@ -208,6 +207,7 @@ public class PostController {
             return mav;
         }
         Post newbie = topicService.replyToTopic(postDto.getTopicId(), postDto.getBodyText());
+        topicService.markTopicAsRead(newbie.getTopic());
         return new ModelAndView(this.redirectToPageWithPost(newbie.getId()));
     }
 
