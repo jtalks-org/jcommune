@@ -60,6 +60,6 @@ public class BbCodeAwareSizeValidator implements ConstraintValidator<BbCodeAware
             return false;
         }
         int plainTextLength = service.removeBBCodes(value).length();
-        return (plainTextLength > min) && (plainTextLength < max);
+        return (plainTextLength >= min) && (plainTextLength <= max);
     }
 }

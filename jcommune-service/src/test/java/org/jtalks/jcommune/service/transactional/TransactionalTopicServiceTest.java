@@ -19,12 +19,15 @@ import org.jtalks.common.model.entity.User;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
 import org.jtalks.jcommune.model.dao.BranchDao;
+import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
@@ -32,6 +35,7 @@ import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.service.security.AclBuilder;
 import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -40,9 +44,11 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
+import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
@@ -137,13 +143,6 @@ public class TransactionalTopicServiceTest {
         verify(notificationService).topicChanged(answeredTopic);
     }
 
-    @Test(expectedExceptions = {IllegalStateException.class})
-    public void testReplyToTopicWithoutCurrentUser() throws NotFoundException {
-        when(securityService.getCurrentUser()).thenReturn(null);
-
-        topicService.replyToTopic(TOPIC_ID, ANSWER_BODY);
-    }
-
     @Test
     public void testCreateTopic() throws NotFoundException {
         Branch branch = new Branch(BRANCH_NAME);
@@ -167,14 +166,6 @@ public class TransactionalTopicServiceTest {
         verify(aclBuilder).on(createdPost);
         verify(notificationService).branchChanged(branch);
     }
-
-    @Test(expectedExceptions = {IllegalStateException.class})
-    public void testCreateTopicWithoutCurrentUser() throws NotFoundException {
-        when(securityService.getCurrentUser()).thenReturn(null);
-
-        topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, 1L);
-    }
-
 
     @Test
     public void testGetAllTopicsPastLastDay() throws NotFoundException {

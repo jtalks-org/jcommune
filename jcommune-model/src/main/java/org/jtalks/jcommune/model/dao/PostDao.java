@@ -16,7 +16,9 @@ package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 
 import java.util.List;
 
@@ -37,4 +39,21 @@ public interface PostDao extends ChildRepository<Post> {
      * @return post list of user
      */
     List<Post> getUserPosts(JCUser author);
+
+    /**
+     * Fetches last read post information for particular user and topic.
+     *
+     * @param forWho user to find last read post for
+     * @param topic topic we're interesting in
+     * @return last read post for the particular topic or null if user had never opened this topic
+     */
+    LastReadPost getLastReadPost(JCUser forWho, Topic topic);
+
+    /**
+     * Saves last read post for the particular topic and user.
+     * May update the existing value or create a new one.
+     *
+     * @param post last read post representation
+     */
+    void saveLastReadPost(LastReadPost post);
 }
