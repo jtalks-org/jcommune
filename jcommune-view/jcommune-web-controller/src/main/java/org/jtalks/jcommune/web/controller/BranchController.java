@@ -163,8 +163,9 @@ public class BranchController {
     }
 
     @RequestMapping("/branches/{id}/markread")
-    public String markAllTopicsAsRead(@PathVariable long id){
-
+    public String markAllTopicsAsRead(@PathVariable long id) throws NotFoundException {
+        Branch branch = branchService.get(id);
+        topicService.markAllTopicsAsRead(branch);
         return "redirect:/branches/" + id;
     }
 

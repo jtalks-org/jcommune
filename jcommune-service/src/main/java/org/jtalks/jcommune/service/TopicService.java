@@ -133,4 +133,9 @@ public interface TopicService extends EntityService<Topic> {
      */
     void markTopicPageAsRead(Topic topic, int pageNum, boolean pagingEnabled);
 
+    /**
+     *
+     * @param branch
+     */
+    void markAllTopicsAsRead(Branch branch);
 }

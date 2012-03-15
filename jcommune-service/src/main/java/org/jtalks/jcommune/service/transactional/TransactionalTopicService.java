@@ -248,6 +248,19 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void markAllTopicsAsRead(Branch branch) {
+        JCUser user = securityService.getCurrentUser();
+        if (user != null) {
+            for (Topic topic : branch.getTopics()) {
+                this.saveLastReadPost(user, topic, topic.getPostCount() -1);
+            }
+        }
+    }
+
+    /**
      * Computes new last read post index based on the topic size and
      * current pagination settings.
      *

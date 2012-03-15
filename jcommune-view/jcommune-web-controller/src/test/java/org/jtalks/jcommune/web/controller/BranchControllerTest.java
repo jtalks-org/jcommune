@@ -218,7 +218,7 @@ public class BranchControllerTest {
     }
     
     @Test 
-    public void testMarkAllTopicsAsRead() {
+    public void testMarkAllTopicsAsRead() throws NotFoundException {
     	Long id = Long.valueOf(1);
     	String result = controller.markAllTopicsAsRead(id);
     	assertEquals(result, "redirect:/branches/" + String.valueOf(id));
