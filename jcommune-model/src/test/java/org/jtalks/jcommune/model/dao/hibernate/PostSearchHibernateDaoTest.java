@@ -24,7 +24,6 @@ import org.hibernate.search.Search;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.search.PostSearchDao;
 import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -67,7 +66,6 @@ public class PostSearchHibernateDaoTest extends AbstractTransactionalTestNGSprin
 	@AfterMethod
 	public void clearIndexes() {
 		fullTextSession.purgeAll(Post.class);
-		fullTextSession.purgeAll(Topic.class);
 		fullTextSession.flushToIndexes();
 	}
 	

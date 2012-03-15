@@ -14,13 +14,12 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import org.hibernate.search.annotations.DocumentId;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
-import org.joda.time.DateTime;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.joda.time.DateTime;
 
 /**
  * Represents the topic of the forum.
@@ -32,7 +31,6 @@ import java.util.List;
  * @author Vitaliy Kravchenko
  * @author Max Malakhov
  */
-@Indexed
 public class Topic extends SubscriptionAwareEntity {
     private DateTime creationDate;
     private DateTime modificationDate;

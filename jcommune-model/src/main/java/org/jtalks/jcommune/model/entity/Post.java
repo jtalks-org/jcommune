@@ -23,6 +23,7 @@ import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.TokenFilterDef;
 import org.hibernate.search.annotations.TokenizerDef;
 import org.joda.time.DateTime;
@@ -153,6 +154,7 @@ public class Post extends Entity {
     /**
      * @return the topic
      */
+    @IndexedEmbedded
     public Topic getTopic() {
         return topic;
     }
