@@ -14,6 +14,18 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import org.apache.solr.analysis.SnowballPorterFilterFactory;
+import org.apache.solr.analysis.StandardTokenizerFactory;
+import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.AnalyzerDef;
+import org.hibernate.search.annotations.AnalyzerDefs;
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.TokenFilterDef;
+import org.hibernate.search.annotations.TokenizerDef;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
 
@@ -27,7 +39,17 @@ import org.jtalks.common.model.entity.Entity;
  *
  * @author Pavel Vervenko
  * @author Kirill Afonin
+ * @author Anuar Nurmakanov
  */
+@AnalyzerDefs({
+	@AnalyzerDef(name = "jtalksAnalyzer",
+		tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+	    filters = {
+	      @TokenFilterDef(factory = SnowballPorterFilterFactory.class)
+		})
+})
+@Analyzer(definition = "jtalksAnalyzer")
+@Indexed
 public class Post extends Entity {
 
     private DateTime creationDate;
@@ -117,6 +139,7 @@ public class Post extends Entity {
     /**
      * @return the postContent
      */
+    @Field(index = Index.TOKENIZED)
     public String getPostContent() {
         return postContent;
     }
@@ -131,6 +154,7 @@ public class Post extends Entity {
     /**
      * @return the topic
      */
+    @IndexedEmbedded
     public Topic getTopic() {
         return topic;
     }
@@ -141,4 +165,13 @@ public class Post extends Entity {
     protected void setTopic(Topic topic) {
         this.topic = topic;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @DocumentId
+	@Override
+	public long getId() {
+		return super.getId();
+	}
 }
