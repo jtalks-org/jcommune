@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -60,6 +61,8 @@ public class PostControllerTest {
     private TopicService topicService;
     @Mock
     private BreadcrumbBuilder breadcrumbBuilder;
+    @Mock
+    private LastReadPostService lastReadPostService;
 
     public static final long POST_ID = 1;
     public static final long TOPIC_ID = 1L;
@@ -72,7 +75,8 @@ public class PostControllerTest {
     @BeforeMethod
     public void init() throws NotFoundException {
         initMocks(this);
-        controller = new PostController(postService, breadcrumbBuilder, topicService, bbCodeService);
+        controller = new PostController(
+                postService, breadcrumbBuilder, topicService, bbCodeService, lastReadPostService);
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
         topic = new Topic(null, "");

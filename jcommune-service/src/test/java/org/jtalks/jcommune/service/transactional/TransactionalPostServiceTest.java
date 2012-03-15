@@ -237,35 +237,4 @@ public class TransactionalPostServiceTest {
 
         assertEquals(postService.calculatePageForPost(post), 1);
     }
-
-    @Test
-    public void testFillLastReadPostsForTopics() {
-        Topic topic = new Topic(user, "title");
-        LastReadPost post = new LastReadPost(user, topic, 0);
-        when(securityService.getCurrentUser()).thenReturn(user);
-        when(postDao.getLastReadPost(user, topic)).thenReturn(post);
-
-        List<Topic> result = postService.fillLastReadPostForTopics(Collections.singletonList(topic));
-
-        assertEquals(1, result.size());
-        assertFalse(result.get(0).isHasUpdates());
-    }
-
-    @Test
-    public void testFillLastReadPostsForTopicsAnonymous() {
-        postService.fillLastReadPostForTopics(new ArrayList<Topic>());
-
-        verify(postDao, never()).getLastReadPost(Matchers.<JCUser>any(), Matchers.<Topic>any());
-    }
-
-    @Test
-    public void testFillLastReadPostsForTopicsNoLastReadPostRecordExists() {
-        Topic topic = new Topic(user, "title");
-        when(securityService.getCurrentUser()).thenReturn(user);
-
-        List<Topic> result = postService.fillLastReadPostForTopics(Collections.singletonList(topic));
-
-        assertEquals(1, result.size());
-        assertTrue(result.get(0).isHasUpdates());
-    }
 }

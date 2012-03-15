@@ -35,6 +35,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
+import static org.jtalks.jcommune.service.security.SecurityConstants.*;
+
 /**
  * Topic service class. This class contains method needed to manipulate with Topic persistent entity.
  *
@@ -49,13 +51,10 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         implements TopicService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private static final String AUTHENTICATED =
-            "hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')";
 
     private SecurityService securityService;
     private BranchService branchService;
     private BranchDao branchDao;
-    private PostDao postDao;
     private NotificationService notificationService;
 
     /**
@@ -65,17 +64,15 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * @param securityService     {@link SecurityService} for retrieving current user
      * @param branchService       {@link org.jtalks.jcommune.service.BranchService} instance to be injected
      * @param branchDao           used for checking branch existence
-     * @param postDao             to mark posts as read
      * @param notificationService to send email nofications on topic updates to subscribed users
      */
     public TransactionalTopicService(TopicDao dao, SecurityService securityService,
-                                     BranchService branchService, BranchDao branchDao, PostDao postDao,
+                                     BranchService branchService, BranchDao branchDao,
                                      NotificationService notificationService) {
         super(dao);
         this.securityService = securityService;
         this.branchService = branchService;
         this.branchDao = branchDao;
-        this.postDao = postDao;
         this.notificationService = notificationService;
     }
 
@@ -83,7 +80,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize(AUTHENTICATED)
+    @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
     public Post replyToTopic(long topicId, String answerBody) throws NotFoundException {
         JCUser currentUser = securityService.getCurrentUser();
 
@@ -93,7 +90,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         topic.addPost(answer);
         this.getDao().update(topic);
 
-        securityService.grantToCurrentUser().role(SecurityConstants.ROLE_ADMIN).admin().on(answer);
+        securityService.grantToCurrentUser().role(ROLE_ADMIN).admin().on(answer);
         notificationService.topicChanged(topic);
         logger.debug("New post in topic. Topic id={}, Post id={}, Post author={}",
                 new Object[]{topicId, answer.getId(), currentUser.getUsername()});
@@ -105,7 +102,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize(AUTHENTICATED)
+    @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
     public Topic createTopic(String topicName, String bodyText, long branchId) throws NotFoundException {
         JCUser currentUser = securityService.getCurrentUser();
 
@@ -117,8 +114,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         branch.addTopic(topic);
         branchDao.update(branch);
 
-        securityService.grantToCurrentUser().role(SecurityConstants.ROLE_ADMIN).admin().on(topic)
-                .user(currentUser.getUsername()).role(SecurityConstants.ROLE_ADMIN).admin().on(first);
+        securityService.grantToCurrentUser().role(ROLE_ADMIN).admin().on(topic)
+                .user(currentUser.getUsername()).role(ROLE_ADMIN).admin().on(first);
         notificationService.branchChanged(branch);
 
         logger.debug("Created new topic id={}, branch id={}, author={}",
@@ -210,7 +207,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_ADMIN + "')")
+    @PreAuthorize(HAS_ADMIN_ROLE)
     public void moveTopic(Long topicId, Long branchId) throws NotFoundException {
         Topic topic = get(topicId);
         Branch currentBranch = topic.getBranch();
@@ -233,80 +230,5 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         topic.setViews(topic.getViews() + 1);
         this.getDao().update(topic);
         return topic;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void markTopicPageAsRead(Topic topic, int pageNum, boolean pagingEnabled) {
-        JCUser current = securityService.getCurrentUser();
-        if (current != null) { // topics are always unread for anonymous users
-            int postIndex = this.calculatePostIndex(current, topic, pageNum, pagingEnabled);
-            saveLastReadPost(current, topic, postIndex);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void markTopicAsRead(Topic topic) {
-        JCUser current = securityService.getCurrentUser();
-        if (current != null) { // topics are always unread for anonymous users
-            saveLastReadPost(current, topic, topic.getPostCount() - 1);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void markAllTopicsAsRead(Branch branch) {
-        JCUser user = securityService.getCurrentUser();
-        if (user != null) {
-            for (Topic topic : branch.getTopics()) {
-                this.saveLastReadPost(user, topic, topic.getPostCount() - 1);
-            }
-        }
-    }
-
-    /**
-     * Computes new last read post index based on the topic size and
-     * current pagination settings.
-     *
-     * @param user          user to calculate index for
-     * @param topic         topic to calculate index for
-     * @param pageNum       page number co calculate last post seen by the user
-     * @param pagingEnabled if paging is enabled on page. If so, last post index in topic is returned
-     * @return new last post index, counting from 0
-     */
-    @PreAuthorize(AUTHENTICATED)
-    private int calculatePostIndex(JCUser user, Topic topic, int pageNum, boolean pagingEnabled) {
-        if (pagingEnabled) {  // last post on the page given
-            int maxPostIndex = user.getPageSize() * pageNum - 1;
-            return Math.min(topic.getPostCount() - 1, maxPostIndex);
-        } else {              // last post in the topic
-            return topic.getPostCount() - 1;
-        }
-    }
-
-    /**
-     * Stores last read post info in a database for the particular
-     * topic and user.
-     *
-     * @param user      user to save last read post data for
-     * @param topic     topic to store info for
-     * @param postIndex actual post index, starting from 0
-     */
-    @PreAuthorize(AUTHENTICATED)
-    private void saveLastReadPost(JCUser user, Topic topic, int postIndex) {
-        LastReadPost post = postDao.getLastReadPost(user, topic);
-        if (post == null) {
-            post = new LastReadPost(user, topic, postIndex);
-        } else {
-            post.setPostIndex(Math.max(post.getPostIndex(), postIndex));
-        }
-        postDao.saveLastReadPost(post);
     }
 }

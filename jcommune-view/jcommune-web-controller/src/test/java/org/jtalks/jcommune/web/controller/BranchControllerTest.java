@@ -19,6 +19,7 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -68,7 +69,9 @@ public class BranchControllerTest {
     @Mock
     private ForumStatisticsProvider forumStatisticsProvider;
     @Mock
-    private PostService postService;
+    private LastReadPostService lastReadPostService;
+    @Mock
+    private SecurityService securityService;
 
     private BranchController controller;
 
@@ -77,8 +80,8 @@ public class BranchControllerTest {
     @BeforeMethod
     public void init() {
         initMocks(this);
-        controller = new BranchController(branchService, topicService, postService,
-                mock(SecurityService.class), breadcrumbBuilder, locationServiceImpl);
+        controller = new BranchController(branchService, topicService, lastReadPostService,
+               securityService, breadcrumbBuilder, locationServiceImpl);
     }
 
     @Test
