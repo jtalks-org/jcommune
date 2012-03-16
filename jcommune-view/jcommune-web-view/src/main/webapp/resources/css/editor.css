@@ -27,6 +27,7 @@ div#editorBBCODEdiv textarea {
     width: 99.9%;
     height: 99%;
     border:none;
+    overflow: auto;
 }
 
 div.richeditor div.editbar {
@@ -181,7 +182,7 @@ blockquote:after {
     max-width: 150px;
 }
 
-pre {
+pre div#editorBBCODEdiv{
     white-space: pre-wrap;       /* css-3 */
     white-space: -moz-pre-wrap;  /* Mozilla, начиная с 1999 года */
     white-space: -pre-wrap;      /* Opera 4-6 */
