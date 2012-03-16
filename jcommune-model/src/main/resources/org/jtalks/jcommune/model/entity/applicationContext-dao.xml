@@ -63,7 +63,7 @@
           parent="abstractHibernateDao"/>
     
     <!-- Declaration of Hibernate Search DAO beans -->
-	<bean id="postHibernateSearchDao" class="org.jtalks.jcommune.model.dao.search.hibernate.PostHibernateSearchDao"
+	<bean id="postSearchDao" class="org.jtalks.jcommune.model.dao.search.hibernate.PostHibernateSearchDao"
 		  parent="abstractHibernateSearchDao"/>
 	
     <!--Injecting sessionFactory bean to class AbstractHibernateChildRepository, this way
