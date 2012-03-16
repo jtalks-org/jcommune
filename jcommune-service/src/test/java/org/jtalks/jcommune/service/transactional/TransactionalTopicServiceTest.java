@@ -24,6 +24,7 @@ import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
@@ -83,8 +84,6 @@ public class TransactionalTopicServiceTest {
     private BranchDao branchDao;
     @Mock
     private NotificationService notificationService;
-    @Mock
-    private PostDao postDao;
 
     private AclBuilder aclBuilder;
 
@@ -93,7 +92,7 @@ public class TransactionalTopicServiceTest {
         aclBuilder = mockAclBuilder();
         initMocks(this);
         topicService = new TransactionalTopicService(topicDao, securityService,
-                branchService, branchDao, postDao, notificationService);
+                branchService, branchDao,  notificationService);
         user = new JCUser(USERNAME, "email@mail.com", "password");
     }
 
@@ -344,118 +343,5 @@ public class TransactionalTopicServiceTest {
         when(branchDao.isExist(BRANCH_ID)).thenReturn(false);
 
         topicService.moveTopic(TOPIC_ID, BRANCH_ID);
-    }
-
-    @Test
-    public void testMarkTopicPageAsReadAnonymous() {
-        Topic topic = this.createTestTopic();
-
-        topicService.markTopicPageAsRead(topic, 1, true);
-        verifyZeroInteractions(postDao);
-    }
-
-    @Test
-    public void testMarkTopicPageAsReadLoggedIn() {
-        final Topic topic = this.createTestTopic();
-        when(securityService.getCurrentUser()).thenReturn(user);
-
-        topicService.markTopicPageAsRead(topic, 1, false);
-        
-        verify(postDao).saveLastReadPost(argThat(
-                new LastReadPostMatcher(topic, topic.getPostCount() -1)));
-    }
-
-    @Test
-    public void testMarkTopicPageAsReadPagingEnabled() {
-        final Topic topic = this.createTestTopic();
-        user.setPageSize(3);
-        when(securityService.getCurrentUser()).thenReturn(user);
-
-        topicService.markTopicPageAsRead(topic, 2, true);
-
-        verify(postDao).saveLastReadPost(argThat(
-                new LastReadPostMatcher(topic, 6)));
-    }
-
-    @Test
-    public void testMarkTopicAsReadUpdateExistingDbRecord() {
-        final Topic topic = this.createTestTopic();
-        LastReadPost post = new LastReadPost(user, topic, 0);
-        when(securityService.getCurrentUser()).thenReturn(user);
-        when(postDao.getLastReadPost(user, topic)).thenReturn(post);
-
-        topicService.markTopicPageAsRead(topic, 1, false);
-
-        verify(postDao).saveLastReadPost(argThat(
-                new LastReadPostMatcher(topic, topic.getPostCount() -1)));
-    }
-
-    @Test
-    public void testMarkAllTopicReadAnonymous(){
-        Branch branch = new Branch(BRANCH_NAME);
-
-        topicService.markAllTopicsAsRead(branch);
-
-        verifyZeroInteractions(postDao);
-    }
-
-    @Test
-    public void testMarkAllTopicRead(){
-        Branch branch = new Branch(BRANCH_NAME);
-        Topic topic = this.createTestTopic();
-        branch.addTopic(topic);
-        when(securityService.getCurrentUser()).thenReturn(user);
-        
-        topicService.markAllTopicsAsRead(branch);
-
-        verify(postDao).saveLastReadPost(argThat(
-                new LastReadPostMatcher(topic, topic.getPostCount() -1)));
-    }
-
-    @Test
-    public void testMarkTopicAsRead(){
-        final Topic topic = this.createTestTopic();
-        when(securityService.getCurrentUser()).thenReturn(user);
-
-        topicService.markTopicAsRead(topic);
-
-        verify(postDao).saveLastReadPost(argThat(
-                new LastReadPostMatcher(topic, topic.getPostCount() -1)));
-    }
-
-    @Test
-    public void testMarkTopicAsReadAnonymous(){
-        Topic topic = this.createTestTopic();
-
-        topicService.markTopicAsRead(topic);
-        verifyZeroInteractions(postDao);
-    }
-
-    private Topic createTestTopic() {
-        Topic topic = new Topic(user, "title");
-        for (int i=0; i< 10; i++) {
-            topic.addPost(new Post(user, "content"));
-        }
-        return topic;
-    }
-    
-    private class LastReadPostMatcher extends ArgumentMatcher<LastReadPost>{
-        
-        private Topic topic;
-        private int index;
-
-        private LastReadPostMatcher(Topic topic, int index) {
-            this.topic = topic;
-            this.index = index;
-        }
-
-        @Override
-        public boolean matches(Object argument) {
-            LastReadPost post = (LastReadPost) argument;
-            boolean result = post.getTopic().equals(topic);
-            result &= post.getUser().equals(user);
-            result &= (post.getPostIndex() == index);
-            return result;
-        }
     }
 }

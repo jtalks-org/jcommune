@@ -120,30 +120,4 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Topic> fillLastReadPostForTopics(List<Topic> topics) {
-        JCUser current = securityService.getCurrentUser();
-        if (current != null) {
-            for (Topic topic : topics) {
-                // todo: find more efficient solution not to perform queries in loop
-                LastReadPost post = this.getDao().getLastReadPost(current, topic);
-                if (post != null) {
-                    topic.setLastReadPostIndex(post.getPostIndex());
-                }
-            }
-        }
-        return topics;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public LastReadPost getLastReadPostForTopic(Topic topic) {
-        JCUser current = securityService.getCurrentUser();
-        return this.getDao().getLastReadPost(current, topic);
-    }
 }

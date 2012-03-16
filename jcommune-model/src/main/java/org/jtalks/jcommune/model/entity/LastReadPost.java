@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.model.entity;
 
 
-import java.io.Serializable;
+import org.jtalks.common.model.entity.Entity;
 
 /**
  * The only reason why this class is serializable is that is required by
@@ -23,7 +23,7 @@ import java.io.Serializable;
  *
  * @author Evgeniy Naumenko
  */
-public class LastReadPost implements Serializable {
+public class LastReadPost extends Entity {
     private Topic topic;
     private JCUser user;
     private int postIndex;
@@ -44,7 +44,7 @@ public class LastReadPost implements Serializable {
         this.postIndex = postIndex;
         this.user = user;
     }
-
+    
     /**
      * @return topic we're tracking last read post for
      */

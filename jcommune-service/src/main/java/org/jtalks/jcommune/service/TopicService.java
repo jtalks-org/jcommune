@@ -115,35 +115,4 @@ public interface TopicService extends EntityService<Topic> {
      * @throws NotFoundException when topic or branch with given id not found
      */
     void moveTopic(Long topicId, Long branchId) throws NotFoundException;
-
-    /**
-     * Marks topic page as read for the current user.
-     * That means all posts on this page are to marked as read.
-     * If paging as disabled all posts in the topic will be marked as read.
-     * <p/>
-     * For anonymous user call will have no effect.
-     *
-     * @param topic   topic to mark as read
-     * @param pageNum page to mark as read
-     * @param pagingEnabled if paging has been enabled, will affect how many posts are to marked as read
-     */
-    void markTopicPageAsRead(Topic topic, int pageNum, boolean pagingEnabled);
-
-    /**
-     * Marks the whole topic as read for the current user.
-     * That means all posts there are to marked as read.
-     * <p/>
-     * For anonymous user call will have no effect.
-     *
-     * @param topic   topic to mark as read
-     */
-    void markTopicAsRead(Topic topic);
-
-    /**
-     * Marks all topics in the current branch as read
-     * for the current user.
-     *
-     * @param branch branch to update topics
-     */
-    void markAllTopicsAsRead(Branch branch);
 }

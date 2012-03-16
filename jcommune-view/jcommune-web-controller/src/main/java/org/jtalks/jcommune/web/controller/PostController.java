@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.controller;
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -56,6 +57,7 @@ public class PostController {
     public static final String TOPIC_TITLE = "topicTitle";
 
     private PostService postService;
+    private LastReadPostService lastReadPostService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private TopicService topicService;
     private BBCodeService bbCodeService;
@@ -78,14 +80,17 @@ public class PostController {
      * @param breadcrumbBuilder the object which provides actions on {@link BreadcrumbBuilder} entity
      * @param topicService      {@link TopicService} to be injected
      * @param bbCodeService     to create valid quotes
+     * @param lastReadPostService not to track user posts as updates for himself
      */
     @Autowired
     public PostController(PostService postService, BreadcrumbBuilder breadcrumbBuilder,
-                          TopicService topicService, BBCodeService bbCodeService) {
+                          TopicService topicService, BBCodeService bbCodeService,
+                          LastReadPostService lastReadPostService) {
         this.postService = postService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.topicService = topicService;
         this.bbCodeService = bbCodeService;
+        this.lastReadPostService = lastReadPostService;
     }
 
     /**
@@ -207,7 +212,7 @@ public class PostController {
             return mav;
         }
         Post newbie = topicService.replyToTopic(postDto.getTopicId(), postDto.getBodyText());
-        topicService.markTopicAsRead(newbie.getTopic());
+        lastReadPostService.markTopicAsRead(newbie.getTopic());
         return new ModelAndView(this.redirectToPageWithPost(newbie.getId()));
     }
 

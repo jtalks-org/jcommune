@@ -118,7 +118,6 @@
         <constructor-arg ref="securityService"/>
         <constructor-arg ref="topicBranchService"/>
         <constructor-arg ref="topicBranchDao"/>
-        <constructor-arg ref="postDao"/>
         <constructor-arg ref="notificationService"/>
     </bean>
 
@@ -139,6 +138,11 @@
     <bean id="forumStatisticsService"
           class="org.jtalks.jcommune.service.nontransactional.ForumStatisticsService">
         <constructor-arg ref="forumStatisticsDAO"/>
+    </bean>
+
+    <bean id="lastReadPosrService" class="org.jtalks.jcommune.service.transactional.TransactionalLastReadPostService">
+        <constructor-arg ref="securityService"/>
+        <constructor-arg ref="postDao"/>
     </bean>
 
     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
