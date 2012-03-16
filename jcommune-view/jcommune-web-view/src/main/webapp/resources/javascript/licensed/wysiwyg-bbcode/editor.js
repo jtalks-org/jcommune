@@ -296,9 +296,12 @@ function doIndent() {
     resetIndentSelector();
 }
 
+var mylink = '';
+
 function doLink() {
+    mylink = '';
     if (!editorVisible) {
-        var mylink = prompt("Enter a URL:", "http://");
+        mylink = prompt("Enter a URL:", "http://");
         if ((mylink != null) && (mylink != "")) {
             AddTag('[url=' + mylink + ']', '[/url]');
         }
@@ -329,13 +332,22 @@ function AddTag(t1, t2) {
             var str = document.selection.createRange();
 
             if (str.text == "") {
-                str.text = t1 + t2;
+                if (t2 == "[/url]") {
+                    str.text = t1 + mylink + t2;
+                } else {
+                    str.text = t1 + t2;
+                }
             }
             else if (txt.indexOf(str.text) >= 0) {
                 str.text = t1 + str.text + t2;
             }
             else {
-                element.value = txt + t1 + t2;
+                if (t2 == "[/url]") {
+                    element.value = txt + t1 + mylink + t2;
+                } else {
+                    element.value = txt + t1 + t2;
+                }
+
             }
             str.select();
         }
@@ -344,13 +356,23 @@ function AddTag(t1, t2) {
         var sel_start = element.selectionStart;
         var sel_end = element.selectionEnd;
         MozillaInsertText(element, t1, sel_start);
-        MozillaInsertText(element, t2, sel_end + t1.length);
+        if(sel_start==sel_end && t2 == "[/url]"){
+            MozillaInsertText(element, mylink+t2, sel_end + t1.length);
+            element.selectionEnd = sel_end + t1.length + t2.length+mylink.length;
+        }   else{
+            MozillaInsertText(element, t2, sel_end + t1.length);
+            element.selectionEnd = sel_end + t1.length + t2.length;
+        }
         element.selectionStart = sel_start;
-        element.selectionEnd = sel_end + t1.length + t2.length;
+
         element.focus();
     }
     else {
-        element.value = element.value + t1 + t2;
+        if (t2 == "[/url]") {
+            element.value = element.value + t1 + mylink + t2;
+        } else {
+            element.value = element.value + t1 + t2;
+        }
     }
 }
 
