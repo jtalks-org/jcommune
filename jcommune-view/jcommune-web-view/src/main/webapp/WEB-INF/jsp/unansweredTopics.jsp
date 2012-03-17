@@ -51,42 +51,42 @@
         <c:choose>
             <c:when test="${!(empty topics)}">
                 <ul class="forum_table">
-                    <c:forEach var="map" items="${list}">
+                    <c:forEach var="item" items="${list}">
                         <li class="forum_row">
                             <div class="forum_icon">
                                 <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png"/>
                             </div>
                             <c:choose>
-                                <c:when test="${map.announcement=='true'}">
+                                <c:when test="${item.announcement=='true'}">
                                     <div class="forum_info">
                                         <h4>
                                             <span class="sticky">
                                                 <spring:message code="label.marked_as_announcement"/>
                                             </span>
                                             <a class="forum_link break_word"
-                                               href="${pageContext.request.contextPath}/topics/${map.id}">
-                                                <c:out value="${map.title}"/>
+                                               href="${pageContext.request.contextPath}/topics/${item.id}">
+                                                <c:out value="${item.title}"/>
                                             </a>
                                         </h4>
                                     </div>
                                 </c:when>
-                                <c:when test="${map.sticked=='true'}">
+                                <c:when test="${item.sticked=='true'}">
                                     <div class="forum_info">
                                         <h4><span class="sticky">
                                             <spring:message code="label.marked_as_sticked"/> </span><a
                                                 class="forum_link break_word"
-                                                href="${pageContext.request.contextPath}/topics/${map.id}">
-                                            <c:out value="${map.title}"/></a></h4>
+                                                href="${pageContext.request.contextPath}/topics/${item.id}">
+                                            <c:out value="${item.title}"/></a></h4>
                                     </div>
                                 </c:when>
                                 <c:otherwise>
                                     <div class="forum_info">
                                         <h4><a class="forum_link break_word"
-                                               href="${pageContext.request.contextPath}/topics/${map.id}"><c:out
-                                                value="${map.title}"/></a></h4>
+                                               href="${pageContext.request.contextPath}/topics/${item.id}"><c:out
+                                                value="${item.title}"/></a></h4>
                                         <br>
                                         <span class="truncated break_word">
-                                            <jtalks:bb2html bbCode="${map.lastPost.postContent}"/>
+                                            <jtalks:bb2html bbCode="${item.lastPost.postContent}"/>
                                         </span>
                                     </div>
                                 </c:otherwise>
@@ -94,27 +94,27 @@
                              <div class="forum_branches">
                                 <h4>
                                     <a class="forum_link break_word"
-                                       href="${pageContext.request.contextPath}/branches/${map.branch.id}">
-                                        <c:out value="${map.branch.name}"/>
+                                       href="${pageContext.request.contextPath}/branches/${item.branch.id}">
+                                        <c:out value="${item.branch.name}"/>
                                     </a>
                                 </h4>
                             </div>
                             <div class="forum_author">
-                                <a href="${pageContext.request.contextPath}/users/${map.topicStarter.encodedUsername}"
+                                <a href="${pageContext.request.contextPath}/users/${item.topicStarter.encodedUsername}"
                                    title="<spring:message code="label.topic.header.author"/>"><c:out
-                                        value="${map.topicStarter.username}"/></a>
+                                        value="${item.topicStarter.username}"/></a>
                             </div>
                             <div class="forum_clicks">
-                                <c:out value="${map.views}"/>
+                                <c:out value="${item.views}"/>
                             </div>
                             <div class="forum_last_message">
-                                <a href="${pageContext.request.contextPath}/topics/${map.id}">
-                                    <jtalks:format value="${map.lastPost.creationDate}"/></a>
+                                <a href="${pageContext.request.contextPath}/topics/${item.id}">
+                                    <jtalks:format value="${item.lastPost.creationDate}"/></a>
                                 <br/>
                                 <a class="last_message_user"
-                                   href="${pageContext.request.contextPath}/users/${map.lastPost.userCreated.encodedUsername}">
-                                    <c:out value="${map.lastPost.userCreated.username}"/></a>
-                                <a href="${pageContext.request.contextPath}/posts/${map.lastPost.id}">
+                                   href="${pageContext.request.contextPath}/users/${item.lastPost.userCreated.encodedUsername}">
+                                    <c:out value="${item.lastPost.userCreated.username}"/></a>
+                                <a href="${pageContext.request.contextPath}/posts/${item.lastPost.id}">
                                     <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
                                          alt="<spring:message code="label.section.header.lastMessage"/>"/>
                                 </a>

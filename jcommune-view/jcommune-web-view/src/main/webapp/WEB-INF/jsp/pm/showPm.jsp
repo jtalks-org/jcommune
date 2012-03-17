@@ -68,7 +68,15 @@
                 </div>
                 <div class="pm_right">
                     <jtalks:bb2html bbCode="${pm.body}"/>
+                    <c:if test="${pm.userFrom.signature!=null}">
+                    <div class="signature">
+                        -------------------------
+                        <br/>
+                        <span><c:out value="${pm.userFrom.signature}"/></span>
+                    </div>
+                </c:if>
                 </div>
+
             </div>
         </div>
     </div>
