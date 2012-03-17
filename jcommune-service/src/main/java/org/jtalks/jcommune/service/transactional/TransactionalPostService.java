@@ -17,6 +17,7 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.PostService;
@@ -40,7 +41,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
 
     private TopicDao topicDao;
     private SecurityService securityService;
-    private NotificationService notificationServise;
+    private NotificationService notificationService;
 
     /**
      * Create an instance of Post entity based service
@@ -48,14 +49,14 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * @param dao                 data access object, which should be able do all CRUD operations with post entity.
      * @param topicDao            this dao used for checking branch existance
      * @param securityService     service for authorization
-     * @param notificationServise to send email updates for subscribed users
+     * @param notificationService to send email updates for subscribed users
      */
     public TransactionalPostService(PostDao dao, TopicDao topicDao, SecurityService securityService,
-                                    NotificationService notificationServise) {
+                                    NotificationService notificationService) {
         super(dao);
         this.topicDao = topicDao;
         this.securityService = securityService;
-        this.notificationServise = notificationServise;
+        this.notificationService = notificationService;
     }
 
     /**
@@ -69,7 +70,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         post.updateModificationDate();
 
         this.getDao().update(post);
-        notificationServise.topicChanged(post.getTopic());
+        notificationService.topicChanged(post.getTopic());
 
         logger.debug("Post id={} updated.", post.getId());
     }
@@ -89,7 +90,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
 
         topicDao.update(topic);
         securityService.deleteFromAcl(post);
-        notificationServise.topicChanged(topic);
+        notificationService.topicChanged(topic);
 
         logger.debug("Deleted post id={}", postId);
     }
@@ -118,4 +119,5 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
             return pageNum + 1;
         }
     }
+
 }

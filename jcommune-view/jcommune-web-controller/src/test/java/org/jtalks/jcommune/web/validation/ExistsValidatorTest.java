@@ -16,6 +16,7 @@ package org.jtalks.jcommune.web.validation;
 
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.dao.ValidatorDao;
+import org.jtalks.jcommune.web.validation.validators.ExistenceValidator;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;

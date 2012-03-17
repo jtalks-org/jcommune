@@ -21,10 +21,8 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
-import org.jtalks.jcommune.service.exceptions.DuplicateEmailException;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.MailService;
@@ -39,14 +37,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.matches;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Kirill Afonin
  * @author Osadchuck Eugeny
  * @author Evgeniy Naumenko
+ * @author Anuar Nurmakanov
  */
 public class TransactionalUserServiceTest {
     private static final String USERNAME = "username";
@@ -137,6 +144,18 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
+    public void testEditUserProfileNewPasswordNull() {
+    	JCUser user = getUser(USERNAME);
+    	when(securityService.getCurrentUser()).thenReturn(user);
+    	String newAvatar = new String(new byte[12]);
+    	String newPassword = null;
+    	UserInfoContainer userInfo = new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
+                PASSWORD, newPassword, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, LOCATION);
+    	JCUser editedUser = userService.editUserProfile(userInfo);
+    	assertEquals(editedUser.getPassword(), user.getPassword());
+    }
+
+    @Test
     public void testEditUserProfileSameEmail() throws Exception {
         JCUser user = getUser(USERNAME);
         when(securityService.getCurrentUser()).thenReturn(user);
@@ -160,20 +179,7 @@ public class TransactionalUserServiceTest {
         assertEquals(user.getPassword(), NEW_PASSWORD, "new password was not accepted");
     }
 
-    @Test(expectedExceptions = WrongPasswordException.class)
-    public void testEditUserProfileWrongPassword() throws Exception {
-        JCUser user = getUser(USERNAME);
-        when(securityService.getCurrentUser()).thenReturn(user);
-
-        userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                "abracodabra", NEW_PASSWORD, SIGNATURE, null, LANGUAGE, PAGE_SIZE, LOCATION));
-
-        verify(securityService).getCurrentUser();
-        verify(userDao, never()).getByEmail(anyString());
-        verify(userDao, never()).saveOrUpdate(any(JCUser.class));
-    }
-
-    @Test(expectedExceptions = WrongPasswordException.class)
+/*    @Test(expectedExceptions = WrongPasswordException.class)
     public void testEditUserProfileCurrentPasswordNull() throws Exception {
         JCUser user = getUser(USERNAME);
         when(securityService.getCurrentUser()).thenReturn(user);
@@ -184,21 +190,7 @@ public class TransactionalUserServiceTest {
         verify(securityService).getCurrentUser();
         verify(userDao, never()).getByEmail(anyString());
         verify(userDao, never()).saveOrUpdate(any(JCUser.class));
-    }
-
-    @Test(expectedExceptions = DuplicateEmailException.class)
-    public void testEditUserProfileDuplicateEmail() throws Exception {
-        JCUser user = getUser(USERNAME);
-        when(securityService.getCurrentUser()).thenReturn(user);
-        when(userDao.getByEmail(NEW_EMAIL)).thenReturn(user);
-
-        userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, NEW_EMAIL,
-                null, null, SIGNATURE, null, LANGUAGE, PAGE_SIZE, LOCATION));
-
-        verify(securityService).getCurrentUser();
-        verify(userDao).getByEmail(NEW_EMAIL);
-        verify(userDao, never()).saveOrUpdate(any(JCUser.class));
-    }
+    }*/
 
     @Test
     public void testGet() throws NotFoundException {
@@ -270,7 +262,6 @@ public class TransactionalUserServiceTest {
 
     @Test(expectedExceptions = NotFoundException.class)
     public void activateNotFoundAccountTest() throws NotFoundException {
-        JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
         when(userDao.getByUsername(USERNAME)).thenReturn(null);
 
         userService.activateAccount(USERNAME);

@@ -16,9 +16,11 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.BranchDao;
+import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
@@ -32,6 +34,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
+
+import static org.jtalks.jcommune.service.security.SecurityConstants.*;
 
 /**
  * Topic service class. This class contains method needed to manipulate with Topic persistent entity.
@@ -76,14 +80,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
+    @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
     public Post replyToTopic(long topicId, String answerBody) throws NotFoundException {
         JCUser currentUser = securityService.getCurrentUser();
-        if (currentUser == null) { // it shouldn't happen because only registered user can have this roles
-            String msg = "JCUser should log in to post answers.";
-            logger.error(msg);
-            throw new IllegalStateException(msg);
-        }
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
         Topic topic = get(topicId);
@@ -91,7 +90,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         topic.addPost(answer);
         this.getDao().update(topic);
 
-        securityService.grantToCurrentUser().role(SecurityConstants.ROLE_ADMIN).admin().on(answer);
+        securityService.grantToCurrentUser().role(ROLE_ADMIN).admin().on(answer);
         notificationService.topicChanged(topic);
         logger.debug("New post in topic. Topic id={}, Post id={}, Post author={}",
                 new Object[]{topicId, answer.getId(), currentUser.getUsername()});
@@ -103,14 +102,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
+    @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
     public Topic createTopic(String topicName, String bodyText, long branchId) throws NotFoundException {
         JCUser currentUser = securityService.getCurrentUser();
-        if (currentUser == null) { // it shouldn't happen because only registered user can have this roles
-            String msg = "JCUser should log in to create topic.";
-            logger.error(msg);
-            throw new IllegalStateException(msg);
-        }
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
         Branch branch = branchService.get(branchId);
@@ -120,8 +114,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         branch.addTopic(topic);
         branchDao.update(branch);
 
-        securityService.grantToCurrentUser().role(SecurityConstants.ROLE_ADMIN).admin().on(topic)
-                .user(currentUser.getUsername()).role(SecurityConstants.ROLE_ADMIN).admin().on(first);
+        securityService.grantToCurrentUser().role(ROLE_ADMIN).admin().on(topic)
+                .user(currentUser.getUsername()).role(ROLE_ADMIN).admin().on(first);
         notificationService.branchChanged(branch);
 
         logger.debug("Created new topic id={}, branch id={}, author={}",
@@ -213,7 +207,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_ADMIN + "')")
+    @PreAuthorize(HAS_ADMIN_ROLE)
     public void moveTopic(Long topicId, Long branchId) throws NotFoundException {
         Topic topic = get(topicId);
         Branch currentBranch = topic.getBranch();
@@ -233,10 +227,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @Override
     public Topic get(Long id) throws NotFoundException {
         Topic topic = super.get(id);
-
         topic.setViews(topic.getViews() + 1);
         this.getDao().update(topic);
-
         return topic;
     }
 }

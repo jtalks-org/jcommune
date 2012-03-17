@@ -41,7 +41,7 @@
             </div>
             <div class="info_top_lower">
                 <div> <!-- bottom left -->
-                    <h2><a class="heading" href="#"><spring:message code="label.section.jtalks_forum"/></a></h2>
+                    <h2 class="heading"><spring:message code="label.section.jtalks_forum"/></h2>
 
                     <span class="forum_misc_info">
                         <spring:message code="label.section.prog_forum"/>

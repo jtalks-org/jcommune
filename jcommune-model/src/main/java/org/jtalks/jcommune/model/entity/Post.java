@@ -37,7 +37,7 @@ public class Post extends Entity {
     private Topic topic;
 
     public static final int MAX_LENGTH = 20000;
-    public static final int MIN_LENGTH = 5;
+    public static final int MIN_LENGTH = 2;
 
     /**
      * For Hibernate use only
@@ -58,6 +58,10 @@ public class Post extends Entity {
         this.postContent = postContent;
     }
 
+    public int getPostIndexInTopic(){
+        return topic.getPosts().indexOf(this);
+    }
+    
     /**
      * @return the postDate
      */

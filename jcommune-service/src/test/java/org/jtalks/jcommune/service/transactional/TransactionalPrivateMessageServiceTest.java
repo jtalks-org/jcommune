@@ -25,6 +25,7 @@ import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.nontransactional.UserDataCacheService;
 import org.jtalks.jcommune.service.security.AclBuilder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -32,7 +33,6 @@ import java.util.ArrayList;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -104,7 +104,8 @@ public class TransactionalPrivateMessageServiceTest {
 
         PrivateMessage pm = pmService.sendMessage("body", "title", USERNAME);
 
-        assertEquals(pm.getStatus(), PrivateMessageStatus.NOT_READ);
+        assertFalse(pm.isRead());
+        assertEquals(pm.getStatus(), PrivateMessageStatus.SENT);
         verify(securityService).getCurrentUser();
         verify(userService).getByUsername(USERNAME);
         verify(userDataCache).incrementNewMessageCountFor(USERNAME);
@@ -152,6 +153,17 @@ public class TransactionalPrivateMessageServiceTest {
     }
 
     @Test
+    public void testSaveDraftRecipientUsernameNull() throws NotFoundException {
+    	when(securityService.grantToCurrentUser()).thenReturn(aclBuilder);
+    	
+    	String recipientUsername = null;
+    	pmService.saveDraft(PM_ID, "body", "title", recipientUsername);
+    	
+    	verify(userService, Mockito.never()).getByUsername(Mockito.any(String.class));
+		// other verifications are covered in main test
+    }
+
+    @Test
     public void testCurrentUserNewPmCount() {
         int expectedPmCount = 2;
         when(securityService.getCurrentUserUsername()).thenReturn(USERNAME);
@@ -195,7 +207,8 @@ public class TransactionalPrivateMessageServiceTest {
 
         PrivateMessage pm = pmService.sendDraft(1L, "body", "title", USERNAME);
 
-        assertEquals(pm.getStatus(), PrivateMessageStatus.NOT_READ);
+        assertFalse(pm.isRead());
+        assertEquals(pm.getStatus(), PrivateMessageStatus.SENT);
         verify(securityService).getCurrentUser();
         verify(userService).getByUsername(USERNAME);
         verify(userDataCache).incrementNewMessageCountFor(USERNAME);
@@ -231,30 +244,50 @@ public class TransactionalPrivateMessageServiceTest {
     }
 
     @Test
-    public void testGetNotMine() throws NotFoundException {
-        PrivateMessage expected = new PrivateMessage(null, user, "title", "body");
+    public void testGetReadAlreadyRead() throws NotFoundException {
+        PrivateMessage expected = new PrivateMessage(user, user, "title", "body");
+        expected.setRead(true);
         when(pmDao.get(PM_ID)).thenReturn(expected);
         when(pmDao.isExist(PM_ID)).thenReturn(true);
         when(securityService.getCurrentUser()).thenReturn(user);
 
         PrivateMessage pm = pmService.get(PM_ID);
 
-        assertFalse(pm.isRead());
         verify(pmDao, never()).saveOrUpdate(pm);
         verify(userDataCache, never()).decrementNewMessageCountFor(USERNAME);
     }
-
+    
     @Test
-    public void testGetReadAlreadyRead() throws NotFoundException {
-        PrivateMessage expected = new PrivateMessage(user, user, "title", "body");
-        expected.markAsRead();
-        when(pmDao.get(PM_ID)).thenReturn(expected);
-        when(pmDao.isExist(PM_ID)).thenReturn(true);
-        when(securityService.getCurrentUser()).thenReturn(user);
-
-        PrivateMessage pm = pmService.get(PM_ID);
-
-        verify(pmDao, never()).saveOrUpdate(pm);
-        verify(userDataCache, never()).decrementNewMessageCountFor(USERNAME);
+    public void testGetPrivateMessageInDraftStatus() throws NotFoundException {
+    	PrivateMessage message = new PrivateMessage(user, user, "title", "body");
+    	message.setStatus(PrivateMessageStatus.DRAFT);
+    	
+    	when(securityService.getCurrentUser()).thenReturn(user);
+    	when(pmDao.get(PM_ID)).thenReturn(message);
+    	when(pmDao.isExist(PM_ID)).thenReturn(true);
+    	
+    	PrivateMessage resultMessage = pmService.get(PM_ID);
+    	
+    	assertEquals(resultMessage.isRead(), false, 
+    			"Message status is draft, so message shouldn't be marked as read");
+    	verify(pmDao, never()).saveOrUpdate(resultMessage);
+    	verify(userDataCache, never()).decrementNewMessageCountFor(USERNAME);
+    }
+    
+    @Test
+    public void testGetPrivateMessageUserToNotCurrentUser() throws NotFoundException {
+    	PrivateMessage message = new PrivateMessage(user, user, "title", "body");
+    	JCUser currentUser = new JCUser(USERNAME, "email", "password");
+    	
+    	when(securityService.getCurrentUser()).thenReturn(currentUser);
+    	when(pmDao.get(PM_ID)).thenReturn(message);
+    	when(pmDao.isExist(PM_ID)).thenReturn(true);
+    	
+    	PrivateMessage resultMessage = pmService.get(PM_ID);
+    	
+    	assertEquals(resultMessage.isRead(), false, 
+    			"The message isn't addressed to the current user, so message shouldn't be marked as read.");
+    	verify(pmDao, never()).saveOrUpdate(resultMessage);
+    	verify(userDataCache, never()).decrementNewMessageCountFor(USERNAME);
     }
 }

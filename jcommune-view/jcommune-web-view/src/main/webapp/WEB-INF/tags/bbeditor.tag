@@ -76,8 +76,8 @@
                        value=" i " onclick="doClick('italic');"/>
                 <input id="format_u" type="button" class="button" accesskey="u" name="format_u"
                        value=" u " onclick="doClick('underline');"/>
-                <input id="format_s" type="button" class="button" accesskey="s" name="format_s"
-                       value=" s " onclick="doClick('line-through');"/>
+                <input id="format_s" type="button" class="button striked" accesskey="s" name="format_s"
+                       value=" S " onclick="doClick('line-through');"/>
                 <input id="format_highlight" type="button" class="button" accesskey="highlight"
                        name="format_highlight"
                        value=" Highlight " onclick="doClick('highlight');"/>
@@ -92,8 +92,6 @@
                 <span id="colorpicker201" class="colorpicker201"></span>
                 <input id="format_quote" type="button" class="button" accesskey="q" name="format_quote"
                        value="Quote" onclick="doQuote();"/>
-                <input id="format_code" type="button" class="button" accesskey="c" name="format_code"
-                       value="Code" onclick="doClick('code');"/>
                 <input id="format_list" type="button" class="button" accesskey="l" name="format_list"
                        value="List" onclick="doClick('InsertUnorderedList');"/>
                 <input id="format_listeq" type="button" class="button" accesskey="o" name="format_listeq"
@@ -123,13 +121,34 @@
                         <option value="20">20</option>
                         <option value="25">25</option>
                     </select>
+
+                    <label for="select_code"> <spring:message code="label.answer.font_code"/>
+                    </label>
+                    <select id="select_code" name="select_code" onchange="doCode();">
+                        <option value="0" selected="selected">
+                            <spring:message code="label.answer.none"/></option>
+                        <option value="cpp">C/C++</option>
+                        <option value="csharp">C#</option>
+                        <option value="java">Java</option>
+                        <option value="php">PHP</option>
+                        <option value="python">Python</option>
+                        <option value="pascal">Pascal</option>
+                        <option value="bash">Bash</option>
+                        <option value="js">JavaScript</option>
+                        <option value="html">HTML</option>
+                        <option value="css">CSS</option>
+                        <option value="sql">SQL</option>
+                        <option value="xml">XML</option>
+                    </select>
 				</span>
             <a href="" onclick="closeTags();return false;"><spring:message code="label.answer.close_tags"/></a>
             <br/><br/>
             <%-- <div id="helpline"><spring:message code="label.answer.tooltip"/></div>--%>
-            <textarea id="tbMsg" name="${bodyParameterName}" class="editorBBCODE"
-                      style="width: 90%; height: 400px;" tabindex="3"
-                      onclick="resetSizeSelector();resetIndentSelector();">${postText}</textarea>
+            <div id="editorBBCODEdiv" class="editorBBCODE">
+                <pre id="htmlContent"></pre>
+                <textarea id="tbMsg" name="${bodyParameterName}">
+                    <c:out value="${postText}"/></textarea>
+            </div>
             <br>
             <form:errors path="${bodyParameterName}" cssClass="error"/>
 
@@ -153,7 +172,7 @@
 <input id="preview" type="button" class="button" tabindex="5" name="preview"
        value="<spring:message code="label.answer.preview"/>" onclick="SwitchEditor();return null;"/>
 <script type="text/javascript">
-    initEditor("tbMsg");
+    initEditor("tbMsg", "editorBBCODEdiv", "htmlContent");
 </script>
 <input id="post" type="submit" class="button" accesskey="s" tabindex="6" name="post"
        value="<spring:message code="${labelForAction}"/>"/>

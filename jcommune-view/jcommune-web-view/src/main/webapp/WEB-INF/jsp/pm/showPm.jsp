@@ -29,55 +29,55 @@
 
     <div class="all_forums">
         <jsp:include page="../../template/pmNavigationMenu.jsp"/>
-        <div class="forum_misc_info">
-        </div>
-        <div>
-            <div style="float: left">
-                <h3><c:out value="${pm.title}"/></h3>
-            </div>
-            <div style="float: right">
-                <h3><jtalks:format value="${pm.creationDate}"/></h3>
-            </div>
-            <div style="clear:right;"></div>
-            <table cellspacing=0 cellpadding=5 border="1">
-                <tr>
-                    <td><spring:message code="label.sender"/></td>
-                    <td>
+        <div class="pm_read">
+            <div class="pm_header">
+                <div class="pm_left">
+                    <div>
+                        <span>Date</span>
+                        <jtalks:format value="${pm.creationDate}"/>
+                    </div>
+                    <div>
+                        <span><spring:message code="label.sender"/></span>
                         <a href="${pageContext.request.contextPath}/users/${pm.userFrom.encodedUsername}">
-                            <c:out value="${pm.userFrom.username}"/>
+                         <c:out value="${pm.userFrom.username}"/>
                         </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td><spring:message code="label.pm.recipient"/></td>
-                    <td>
+                    </div>
+                    <div>
+                        <span><spring:message code="label.pm.recipient"/></span>
                         <a href="${pageContext.request.contextPath}/users/${pm.userTo.encodedUsername}">
-                            <c:out value="${pm.userTo.username}"/>
+                         <c:out value="${pm.userTo.username}"/>
                         </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td valign="top"><spring:message code="label.body"/></td>
-                    <td><jtalks:bb2html bbCode="${pm.body}"/></td>
-                </tr>
-            </table>
+                    </div>
+                </div>
+                <div class="pm_right">
+                    <c:out value="${pm.title}"/>
+                </div>
+            </div>
+            <div class="pm_body">
+                <div class="pm_left">
+                    <c:if test="${pm.replyAllowed && (pm.userTo eq user)}">
+                        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                        <form:form action="${pageContext.request.contextPath}/reply/${pm.id}" method="GET">
+                            <input class="button" type="submit" value="<spring:message code="label.reply"/>"/>
+                        </form:form>
+                        <form:form action="${pageContext.request.contextPath}/quote/${pm.id}" method="GET">
+                            <input class="button" type="submit" value="<spring:message code="label.quote"/>"/>
+                        </form:form>
+                    </sec:authorize>
+                    </c:if>
+                </div>
+                <div class="pm_right">
+                    <jtalks:bb2html bbCode="${pm.body}"/>
+                    <c:if test="${pm.userFrom.signature!=null}">
+                    <div class="signature">
+                        -------------------------
+                        <br/>
+                        <span><c:out value="${pm.userFrom.signature}"/></span>
+                    </div>
+                </c:if>
+                </div>
 
-            <table>
-                <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                    <tr>
-                        <td>
-                            <form:form action="${pageContext.request.contextPath}/reply/${pm.id}" method="GET">
-                                <input type="submit" value="<spring:message code="label.reply"/>"/>
-                            </form:form>
-                        </td>
-                        <td>
-                            <form:form action="${pageContext.request.contextPath}/quote/${pm.id}" method="GET">
-                                <input type="submit" value="<spring:message code="label.quote"/>"/>
-                            </form:form>
-                        </td>
-                    </tr>
-                </sec:authorize>
-            </table>
+            </div>
         </div>
     </div>
     <div class="footer_buffer"></div>

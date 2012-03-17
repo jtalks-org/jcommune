@@ -41,6 +41,7 @@
         <div class="forum_header_table">
             <div class="forum_header">
                 <span class="forum_header_topics"><spring:message code="label.branch.header.topics"/></span>
+                <span class="forum_header_branches"><spring:message code="label.branch.header.branches"/></span>
                 <span class="forum_header_answers"><spring:message code="label.section.header.messages"/></span>
                 <span class="forum_header_author"><spring:message code="label.branch.header.author"/></span>
                 <span class="forum_header_clicks"><spring:message code="label.branch.header.views"/></span>
@@ -51,35 +52,44 @@
         <c:choose>
             <c:when test="${!(empty topics)}">
                 <ul class="forum_table">
-
-                    <jtalks:pagination uri="" pagination="${pagination}" numberLink="3" list="${topics}">
-                    <c:forEach var="topic" items="${list}">
+                    <c:forEach var="map" items="${list}">
                         <li class="forum_row">
                             <div class="forum_info">
-                                <h4><a class="forum_link"
-                                       href="${pageContext.request.contextPath}/topics/${topic.id}">${topic.title}</a>
+                                <h4>
+                                    <a class="forum_link break_word"
+                                       href="${pageContext.request.contextPath}/topics/${map.id}">
+                                        <c:out value="${map.title}"/>
+                                    </a>
                                 </h4>
                                 <br/>
-                                <span class="truncated"><jtalks:bb2html bbCode="${topic.lastPost.postContent}"/></span>
+                                <span class="truncated"><jtalks:bb2html bbCode="${map.lastPost.postContent}"/></span>
+                            </div>
+                            <div class="forum_branches">
+                                <h4>
+                                    <a class="forum_link break_word"
+                                       href="${pageContext.request.contextPath}/branches/${map.branch.id}">
+                                        <c:out value="${map.branch.name}"/>
+                                    </a>
+                                </h4>
                             </div>
                             <div class="forum_answers">
-                                <c:out value="${topic.postCount}"/>
+                                <c:out value="${map.postCount}"/>
                             </div>
                             <div class="forum_author">
-                                <a href="${pageContext.request.contextPath}/users/${topic.topicStarter.encodedUsername}"
-                                   title="<spring:message code="label.topic.header.author"/>">${topic.topicStarter.username}</a>
+                                <a href="${pageContext.request.contextPath}/users/${map.topicStarter.encodedUsername}"
+                                   title="<spring:message code="label.topic.header.author"/>">${map.topicStarter.username}</a>
                             </div>
                             <div class="forum_clicks">
-                                <c:out value="${topic.views}"/>
+                                <c:out value="${map.views}"/>
                             </div>
                             <div class="forum_last_message">
-                                <a href="${pageContext.request.contextPath}/topics/${topic.id}">
-                                    <jtalks:format value="${topic.lastPost.creationDate}"/></a>
+                                <a href="${pageContext.request.contextPath}/topics/${map.id}">
+                                    <jtalks:format value="${map.lastPost.creationDate}"/></a>
                                 <br/>
                                 <a class="last_message_user"
-                                   href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
-                                    <c:out value="${topic.lastPost.userCreated.username}"/></a>
-                                <a href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}">
+                                   href="${pageContext.request.contextPath}/users/${map.lastPost.userCreated.encodedUsername}">
+                                    <c:out value="${map.lastPost.userCreated.username}"/></a>
+                                <a href="${pageContext.request.contextPath}/posts/${map.lastPost.id}">
                                     <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
                                          alt="<spring:message code="label.section.header.lastMessage"/>"/>
                                 </a>
@@ -87,16 +97,27 @@
                         </li>
                     </c:forEach>
                 </ul>
-                <nobr>
-                    <span class="nav_bottom">
-                        </jtalks:pagination>
-                    </span>
-                </nobr>
+                <div class="forum_info_bottom">
+                    <div>
+                        <div>
+
+                        </div>
+                        <div>
+                            <span class="nav_bottom">
+                                <jtalks:pagination uri="" pagination="${pagination}" numberLink="3" list="${topics}"/>
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </c:when>
             <c:otherwise>
                 <ul class="forum_table">
-                    <li class="forum_row">
-                        <spring:message code="label.recent.empty"/>
+                    <li class="forum_row empty_container">
+                        <div>
+                            <span class="empty">
+                                <spring:message code="label.recent.empty"/>
+                            </span>
+                        </div>
                     </li>
                 </ul>
             </c:otherwise>

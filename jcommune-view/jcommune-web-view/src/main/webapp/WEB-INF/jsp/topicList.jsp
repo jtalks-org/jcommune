@@ -34,17 +34,23 @@
         <div class="forum_info_top">
             <div>
                 <div> <!-- top left -->
-                    <h2><a class="heading" href="#"><c:out value="${branch.name}"/></a></h2><br />
+                    <h2 class="heading"><c:out value="${branch.name}"/></h2><br/>
                     <span class="forum_misc_info"><c:out value="${branch.description}"/></span>
                 </div>
                 <div> <!-- top right -->
-                    <a class="forum_top_right_link" href="#"><spring:message code="label.mark_all_topics"/></a>
+                    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                        <a class="forum_top_right_link"
+                           href="${pageContext.request.contextPath}/branches/${branch.id}/markread">
+                            <spring:message code="label.mark_all_topics"/>
+                        </a>
+                    </sec:authorize>
                 </div>
             </div>
             <div class="info_top_lower"> <!-- bottom left -->
                 <div>
                     <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                        <a class="button top_button" href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}">
+                        <a class="button top_button"
+                           href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}">
                             <spring:message code="label.addtopic"/>
                         </a>
                         <c:choose>
@@ -86,7 +92,8 @@
                     <c:forEach var="topic" items="${list}">
                         <li class="forum_row">
                             <div class="forum_icon">
-                                <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png"
+                                <img class="icon"
+                                     src="${pageContext.request.contextPath}/resources/images/closed_cup.png"
                                      alt=""
                                      title="<spring:message code="label.section.close_forum"/>"/>
                             </div>
@@ -94,13 +101,19 @@
                                 <h4>
                                     <c:choose>  <%--Some topic types should have a special prefix when displayed--%>
                                         <c:when test="${topic.announcement=='true'}">
-                                            <span class="sticky"><spring:message code="label.marked_as_announcement"/> </span>
+                                            <span class="sticky"><spring:message
+                                                    code="label.marked_as_announcement"/> </span>
                                         </c:when>
                                         <c:when test="${topic.sticked=='true'}">
                                             <span class="sticky"><spring:message code="label.marked_as_sticked"/></span>
                                         </c:when>
                                     </c:choose>
-                                    <a class="forum_link"  href="${pageContext.request.contextPath}/topics/${topic.id}">
+                                    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                                        <c:if test="${topic.hasUpdates}">
+                                            <span style="color: red;">[NEW]</span>
+                                        </c:if>
+                                    </sec:authorize>
+                                    <a class="forum_link" href="${pageContext.request.contextPath}/topics/${topic.id}">
                                         <span class="forum_message_cell_text"><c:out value="${topic.title}"/></span>
                                     </a>
                                 </h4>
@@ -135,8 +148,12 @@
             </c:when>
             <c:otherwise>
                 <ul class="forum_table">
-                    <li class="forum_row">
-                          <spring:message code="label.branch.empty"/>
+                    <li class="forum_row empty_container">
+                        <div>
+                            <span class="empty">
+                                <spring:message code="label.branch.empty"/>
+                            </span>
+                        </div>
                     </li>
                 </ul>
             </c:otherwise>
@@ -165,7 +182,7 @@
                 </div>
                 <div>
                     <span class="nav_bottom">
-                        <jtalks:pagination uri="${branch.id}" pagination="${pagination}" list="${topics}" />
+                        <jtalks:pagination uri="${branch.id}" pagination="${pagination}" list="${topics}"/>
                     </span>
                 </div>
             </div>

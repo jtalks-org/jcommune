@@ -38,10 +38,12 @@
 <jsp:include page="../template/logo.jsp"/>
 <c:set var="authenticated" value="${false}"/>
 <div class="all_forums">
+<h2 class="heading break_word"><c:out value="${topic.title}"/></h2>
+
 <div class="forum_info_top">
     <div>
         <div> <!-- top left -->
-            <h2><a class="heading break_word" href="#"><c:out value="${topic.title}"/></a></h2>
+
         </div>
         <div> <!-- top right -->
 
@@ -89,13 +91,15 @@
         </div>
         <div class="info_top_lower_right"> <!-- bottom right -->
             <c:if test="${previousTopic != null}">
-                <a class="button" href="${pageContext.request.contextPath}/topics/${previousTopic.id}">
-                    <spring:message code="label.topic.previous"/>
+                <a class="button but_arrow arrow_left"
+                   href="${pageContext.request.contextPath}/topics/${previousTopic.id}"
+                   title="<spring:message code='label.topic.previous'/>">
                 </a>
             </c:if>
             <c:if test="${nextTopic != null}">
-                <a class="button" href="${pageContext.request.contextPath}/topics/${nextTopic.id}">
-                    <spring:message code="label.topic.next"/>
+                <a class="button but_arrow"
+                   href="${pageContext.request.contextPath}/topics/${nextTopic.id}"
+                   title="<spring:message code='label.topic.next'/>">
                 </a>
             </c:if>
                 <span class="nav_top">
@@ -183,10 +187,15 @@
                             </div>
                         </sec:authorize>
                     </c:if>
-                    <a name="${post.id}" href="#${post.id}">
+                    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                        <c:if test="${lastReadPost == null || post.postIndexInTopic > lastReadPost}">
+                            <span style="color: red;">[NEW]</span>
+                        </c:if>
+                    </sec:authorize>
+                    <span name="${post.id}">
                         <spring:message code="label.added"/>&nbsp;
                         <jtalks:format value="${post.creationDate}"/>
-                    </a>
+                    </span>
                 </div>
                 <div class="forum_message_cell_text">
                     <jtalks:bb2html bbCode="${post.postContent}"/>

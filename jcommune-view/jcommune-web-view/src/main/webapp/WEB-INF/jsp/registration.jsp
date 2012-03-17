@@ -42,7 +42,7 @@
                 <div class="forum_row">
                     <form:label path="username"> <spring:message code="label.username"/></form:label>
                     <div>
-                        <form:input path="username" class="reg_input" type="text"/>
+                        <form:input path="username" class="reg_input" type="text"/></br>
                         <form:errors path="username" cssClass="error"/>
                     </div>
                     <span class="reg_info"><spring:message code="label.tip.username"/></span>
@@ -50,7 +50,7 @@
                 <div class="forum_row">
                     <form:label path="email"><spring:message code="label.email"/></form:label>
                     <div>
-                        <form:input path="email" class="reg_input" type="text"/>
+                        <form:input path="email" class="reg_input" type="text"/></br>
                         <form:errors path="email" cssClass="error"/>
                     </div>
                     <span class="reg_info"><spring:message code="label.tip.email"/></span>
@@ -59,7 +59,7 @@
                     <form:label path="password"><spring:message code="label.password"/></form:label>
 
                     <div>
-                        <form:input path="password" class="reg_input" type="password"/>
+                        <form:input path="password" class="reg_input" type="password"/></br>
                         <form:errors path="password" cssClass="error"/>
                     </div>
                     <span class="reg_info"><spring:message code="label.tip.password"/></span>
@@ -68,14 +68,16 @@
                     <form:label path="passwordConfirm"><spring:message code="label.confirmation"/></form:label>
 
                     <div>
-                        <form:input path="passwordConfirm" class="reg_input" type="password"/>
+                        <form:input path="passwordConfirm" class="reg_input" type="password"/></br>
                         <form:errors path="passwordConfirm" cssClass="error"/>
                     </div>
                     <span class="reg_info"><spring:message code="label.tip.confirmation"/></span>
                 </div>
             </div>
             <div class="form_controls">
-                <button type="submit"><spring:message code="label.signup"/></button>
+                <button type="submit" class="button">
+                    <spring:message code="label.signup"/>
+                </button>
             </div>
         </form:form>
     </div>

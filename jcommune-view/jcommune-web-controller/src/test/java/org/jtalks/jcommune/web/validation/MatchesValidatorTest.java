@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.web.validation;
 
+import org.jtalks.jcommune.web.validation.annotations.Matches;
+import org.jtalks.jcommune.web.validation.validators.MatchesValidator;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;

@@ -97,7 +97,8 @@ public class TransactionalPrivateMessageService
         JCUser recipient = userService.getByUsername(recipientUsername);
         JCUser userFrom = securityService.getCurrentUser();
         PrivateMessage pm = new PrivateMessage(recipient, userFrom, title, body);
-        pm.setStatus(PrivateMessageStatus.NOT_READ);
+        pm.setRead(false);
+        pm.setStatus(PrivateMessageStatus.SENT);
         this.getDao().saveOrUpdate(pm);
 
         userDataCache.incrementNewMessageCountFor(recipientUsername);
@@ -135,7 +136,7 @@ public class TransactionalPrivateMessageService
         JCUser userFrom = securityService.getCurrentUser();
         PrivateMessage pm = new PrivateMessage(recipient, userFrom, title, body);
         pm.setId(id);
-        pm.markAsDraft();
+        pm.setStatus(PrivateMessageStatus.DRAFT);
         this.getDao().saveOrUpdate(pm);
 
         securityService.grantToCurrentUser().admin().on(pm);
@@ -176,7 +177,8 @@ public class TransactionalPrivateMessageService
         JCUser userFrom = securityService.getCurrentUser();
         PrivateMessage pm = new PrivateMessage(recipient, userFrom, title, body);
         pm.setId(id);
-        pm.setStatus(PrivateMessageStatus.NOT_READ);
+        pm.setRead(false);
+        pm.setStatus(PrivateMessageStatus.SENT);
         this.getDao().saveOrUpdate(pm);
 
         userDataCache.incrementNewMessageCountFor(recipientUsername);
@@ -201,11 +203,26 @@ public class TransactionalPrivateMessageService
             "hasPermission(#id, 'org.jtalks.jcommune.model.entity.PrivateMessage', read)")
     public PrivateMessage get(Long id) throws NotFoundException {
         PrivateMessage pm = super.get(id);
-        if (securityService.getCurrentUser().equals(pm.getUserTo()) && !pm.isRead()) {
-            pm.markAsRead();
+        if (this.ifMessageShouldBeMarkedAsRead(pm)) {
+            pm.setRead(true);
             this.getDao().saveOrUpdate(pm);
             userDataCache.decrementNewMessageCountFor(pm.getUserTo().getUsername());
         }
         return pm;
+    }
+
+    /**
+     * Checks if the private message should be marked as read.
+     * The follwing conditions are checked:
+     * <p>1. Current user is the recepient
+     * <p>2. Message is not read already
+     * <p>3. Message is not a draft
+     * @param pm private messag to be tested
+     * @return if message should be marked as read
+     */
+    private boolean ifMessageShouldBeMarkedAsRead(PrivateMessage pm){
+        return securityService.getCurrentUser().equals(pm.getUserTo())
+                && !pm.isRead()
+                && !pm.getStatus().equals(PrivateMessageStatus.DRAFT);
     }
 }

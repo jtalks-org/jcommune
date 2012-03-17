@@ -93,8 +93,7 @@ public interface TopicService extends EntityService<Topic> {
      * @param topicWeight  priority for sticked topic
      * @param sticked      flag for sticking a topic
      * @param announcement flag, which set topic as announcement
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when topic not found
+     * @throws NotFoundException when topic not found
      */
     void updateTopic(long topicId, String topicName, String bodyText, int topicWeight,
                      boolean sticked, boolean announcement) throws NotFoundException;
@@ -116,6 +115,4 @@ public interface TopicService extends EntityService<Topic> {
      * @throws NotFoundException when topic or branch with given id not found
      */
     void moveTopic(Long topicId, Long branchId) throws NotFoundException;
-
-
 }

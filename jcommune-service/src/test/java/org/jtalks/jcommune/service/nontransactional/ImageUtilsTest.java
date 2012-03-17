@@ -79,15 +79,27 @@ public class ImageUtilsTest {
         assertEquals(actualResult, expectedResult);
     }
 
-    @Test
-    public void testResizeImage() throws IOException {
+    @Test(dataProvider = "parameterResizeImage")
+    public void testResizeImage(int maxWidth, int maxHeight, int imageType) throws IOException {
         int expectedWidth = 4;
         int expectedHeight = 4;
         BufferedImage originalImage = ImageIO.read(new MockMultipartFile("test_image", "test_image", "image/png",
                 originalImageByteArray).getInputStream());
-        Image modifiedImage = imageUtils.resizeImage(originalImage, ImageUtils.IMAGE_PNG, expectedWidth, expectedHeight);
+        Image modifiedImage = imageUtils.resizeImage(originalImage, imageType, maxWidth, maxHeight);
         assertEquals(modifiedImage.getWidth(null), expectedWidth);
         assertEquals(modifiedImage.getHeight(null), expectedHeight);
+    }
+    
+    @DataProvider(name = "parameterResizeImage")
+    public Object[][] parameterResizeImage() {
+    	int widthWithAspectRatioOne = 4;
+    	int heightWithAspectRatioOne = 4;
+    	int widthWithAspectRationMoreThatOne = 5;
+    	int heightWithAspectRatioMoreThatOne = 4;
+    	return new Object[][] {
+    			{widthWithAspectRatioOne, heightWithAspectRatioOne, ImageUtils.IMAGE_JPEG},
+    			{widthWithAspectRationMoreThatOne, heightWithAspectRatioMoreThatOne, ImageUtils.IMAGE_PNG}
+    	};
     }
 
     @Test
