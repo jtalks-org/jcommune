@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import org.apache.solr.analysis.LowerCaseFilterFactory;
 import org.apache.solr.analysis.SnowballPorterFilterFactory;
 import org.apache.solr.analysis.StandardTokenizerFactory;
 import org.hibernate.search.annotations.Analyzer;
@@ -21,9 +22,10 @@ import org.hibernate.search.annotations.AnalyzerDef;
 import org.hibernate.search.annotations.AnalyzerDefs;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.Parameter;
 import org.hibernate.search.annotations.TokenFilterDef;
 import org.hibernate.search.annotations.TokenizerDef;
 import org.joda.time.DateTime;
@@ -42,13 +44,23 @@ import org.jtalks.common.model.entity.Entity;
  * @author Anuar Nurmakanov
  */
 @AnalyzerDefs({
-	@AnalyzerDef(name = "jtalksAnalyzer",
+	@AnalyzerDef(name = "russianJtalksAnalyzer",
 		tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
 	    filters = {
-	      @TokenFilterDef(factory = SnowballPorterFilterFactory.class)
-		})
+			@TokenFilterDef(factory = LowerCaseFilterFactory.class),
+	      	@TokenFilterDef(factory = SnowballPorterFilterFactory.class, 
+	      					params =  @Parameter(name="language", value="Russian"))
+			}
+	),
+	@AnalyzerDef(name = "englishJtalksAnalyzer",
+		tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+		filters = {
+			@TokenFilterDef(factory = LowerCaseFilterFactory.class),
+	      	@TokenFilterDef(factory = SnowballPorterFilterFactory.class, 
+	      					params =  @Parameter(name="language", value="English"))
+		}
+	)
 })
-@Analyzer(definition = "jtalksAnalyzer")
 @Indexed
 public class Post extends Entity {
 
@@ -60,6 +72,9 @@ public class Post extends Entity {
 
     public static final int MAX_LENGTH = 20000;
     public static final int MIN_LENGTH = 2;
+    
+    public static final String POST_CONTENT_FIELD_RU = "postContent";
+    public static final String POST_CONTENT_FIELD_EN = "postContentEn";
 
     /**
      * For Hibernate use only
@@ -143,7 +158,12 @@ public class Post extends Entity {
     /**
      * @return the postContent
      */
-    @Field(index = Index.TOKENIZED)
+    @Fields({
+    	@Field(name = POST_CONTENT_FIELD_RU,
+    			index = Index.TOKENIZED, analyzer = @Analyzer(definition = "russianJtalksAnalyzer")),
+    	@Field(name = POST_CONTENT_FIELD_EN, 
+    			index = Index.TOKENIZED, analyzer = @Analyzer(definition = "englishJtalksAnalyzer"))	
+    })
     public String getPostContent() {
         return postContent;
     }
@@ -158,7 +178,6 @@ public class Post extends Entity {
     /**
      * @return the topic
      */
-    @IndexedEmbedded
     public Topic getTopic() {
         return topic;
     }

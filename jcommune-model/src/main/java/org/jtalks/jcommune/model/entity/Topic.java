@@ -17,8 +17,6 @@ package org.jtalks.jcommune.model.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.search.annotations.DocumentId;
-import org.hibernate.search.annotations.Field;
 import org.joda.time.DateTime;
 
 /**
@@ -135,7 +133,6 @@ public class Topic extends SubscriptionAwareEntity {
      *
      * @return the topicName
      */
-    @Field
     public String getTitle() {
         return title;
     }
@@ -315,13 +312,4 @@ public class Topic extends SubscriptionAwareEntity {
     public boolean isHasUpdates(){
        return hasUpdates;
     }
-    
-	/**
-     * {@inheritDoc}
-     */
-    @DocumentId
-	@Override
-	public long getId() {
-		return super.getId();
-	}
 }

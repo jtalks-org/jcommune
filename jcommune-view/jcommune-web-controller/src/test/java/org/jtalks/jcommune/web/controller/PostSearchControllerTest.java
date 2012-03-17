@@ -17,8 +17,10 @@ package org.jtalks.jcommune.web.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.PostSearchService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -35,21 +37,26 @@ public class PostSearchControllerTest {
 	private static final String DEFAULT_SEARCH_TEXT = "post content";
 	@Mock
 	private PostSearchService postSearchService;
+	@Mock
+	private SecurityService securityService;
 	private PostSearchController postSearchController;
 
 	@BeforeMethod
 	public void init() {
 		MockitoAnnotations.initMocks(this);
-		postSearchController = new PostSearchController(postSearchService);
+		postSearchController = new PostSearchController(postSearchService, securityService);
 	}
 
 	@Test
 	public void testSearchPosts() {
 		List<Post> resultPosts = new ArrayList<Post>();
+		JCUser user = new JCUser("username", "email", "password");
+		
 		Mockito.when(postSearchService.searchPostsByPhrase(DEFAULT_SEARCH_TEXT))
 				.thenReturn(resultPosts);
+		Mockito.when(securityService.getCurrentUser()).thenReturn(user);
 		
-		ModelAndView modelAndView = postSearchController.search(DEFAULT_SEARCH_TEXT);
+		ModelAndView modelAndView = postSearchController.initSearch(DEFAULT_SEARCH_TEXT);
 		
 		Assert.assertEquals(resultPosts, modelAndView.getModel().get("posts"), 
 				"The controller must return the result of PostSearchService.");
