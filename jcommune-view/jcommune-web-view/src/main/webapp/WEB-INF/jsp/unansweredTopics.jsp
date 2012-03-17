@@ -85,7 +85,9 @@
                                                href="${pageContext.request.contextPath}/topics/${map.id}"><c:out
                                                 value="${map.title}"/></a></h4>
                                         <br>
-                                        <span class="truncated"><jtalks:bb2html bbCode="${map.lastPost.postContent}"/></span>
+                                        <span class="truncated break_word">
+                                            <jtalks:bb2html bbCode="${map.lastPost.postContent}"/>
+                                        </span>
                                     </div>
                                 </c:otherwise>
                             </c:choose>
