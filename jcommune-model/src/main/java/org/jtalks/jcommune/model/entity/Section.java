@@ -28,7 +28,7 @@ public class Section extends Entity {
 
     private String name;
     private String description;
-    private Long position;
+    private Integer position;
     private List<Branch> branches = new ArrayList<Branch>();
 
     /**
@@ -88,7 +88,7 @@ public class Section extends Entity {
      *
      * @param position section position
      */
-    public void setPosition(Long position) {
+    public void setPosition(Integer position) {
         this.position = position;
     }
 
@@ -97,7 +97,7 @@ public class Section extends Entity {
      *
      * @return section position
      */
-    public Long getPosition() {
+    public Integer getPosition() {
         return position;
     }
 
