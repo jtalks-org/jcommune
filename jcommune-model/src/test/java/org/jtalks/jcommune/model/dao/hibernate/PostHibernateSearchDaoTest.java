@@ -43,7 +43,7 @@ import org.testng.annotations.Test;
 @ContextConfiguration(locations = { "classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml" })
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
-public class PostSearchHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
+public class PostHibernateSearchDaoTest extends AbstractTransactionalTestNGSpringContextTests {
 	@Autowired
 	private SessionFactory sessionFactory;
 	@Autowired
@@ -145,6 +145,27 @@ public class PostSearchHibernateDaoTest extends AbstractTransactionalTestNGSprin
 		return new Object[][] {
 				{"Содержимое поста", "Железный человек"},
 				{"Post content", "Iron Man"}
+		};
+	}
+	
+	@Test(dataProvider = "parameterSearchPostsByRoot")
+	public void testSearchPostsByRoot(String word, String wordWithSameRoot) {
+		Post expectedPost = ObjectsFactory.getDefaultPost();
+		expectedPost.setPostContent(word);
+		
+		saveAndFlushIndexes(Arrays.asList(expectedPost));
+		
+		List<Post> searchResultPosts = postSearchDao.searchPosts(wordWithSameRoot);
+		Assert.assertTrue(searchResultPosts.size() != 0, "Search result must not be empty.");
+	}
+	
+	@DataProvider(name = "parameterSearchPostsByRoot")
+	public Object[][] parameterSearchPostsByRoot() {
+		return new Object[][] {
+				{"Keys", "Key"},
+				{"Key", "Keys"},
+				{"Полеты", "полет"},
+				{"барабан", "барабаны"}
 		};
 	}
 	

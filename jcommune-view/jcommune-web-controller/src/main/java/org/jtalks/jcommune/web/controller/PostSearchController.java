@@ -37,7 +37,6 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Controller
 public class PostSearchController {
-	private static final String URI_TEMPLATE = "search/%s";
 	private PostSearchService postSearchService;
 	private SecurityService securityService;
 	
@@ -54,7 +53,7 @@ public class PostSearchController {
 	}
 	
 	/**
-	 * Full-text search for posts.
+	 * Full-text search for posts. It needed to start the search.
 	 * 
 	 * @param searchText search text
 	 * @return redirect to answer page
@@ -66,10 +65,11 @@ public class PostSearchController {
 	}
 	
 	/**
+	 * Full-text search for posts. It needed to continue the search.
 	 * 
-	 * @param searchText
-	 * @param page
-	 * @return
+	 * @param searchText search text
+	 * @param page page number
+	 * @return redirect to answer page
 	 */
 	@RequestMapping(value = "/search/{searchText}", method = RequestMethod.GET)
 	public ModelAndView continueSearch(@PathVariable String searchText,
@@ -80,7 +80,7 @@ public class PostSearchController {
 	private ModelAndView search(String searchText, int page) {
 		JCUser currentUser = securityService.getCurrentUser();
 		List<Post> posts = postSearchService.searchPostsByPhrase(searchText);
-		String uri = String.format(URI_TEMPLATE, searchText);
+		String uri = searchText;
 		Pagination pagination = new Pagination(page, currentUser, posts.size(), true);
 		return new ModelAndView("postSearchResult").
 				addObject("posts", posts).

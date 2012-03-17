@@ -66,7 +66,7 @@
             </li>
         </sec:authorize>
        <li>
-            <form action='<c:url value="/search"/>' method="GET" name="form" id="form">
+            <form action='<c:url value="/search/"/>' method="GET" name="form" id="form">
                 <input type="text" name="searchText" id="searchText">
                 <input type="submit" value="<fmt:message key="label.search"/>" />
             </form>
