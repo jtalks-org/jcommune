@@ -420,7 +420,7 @@ span.version {
     text-decoration: none;
 }
 
-.forum_link:hover, .forum_header_link:hover {
+a.forum_link:hover, a.forum_header_link:hover {
     text-decoration: underline;
 }
 
