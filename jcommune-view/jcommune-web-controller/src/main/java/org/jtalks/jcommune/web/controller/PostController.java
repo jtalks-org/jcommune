@@ -244,8 +244,8 @@ public class PostController {
      * @param bbContent post with bb codes
      * @return HTML content for post
      */
-    @RequestMapping(method = RequestMethod.POST, value = "/posts/bbToNtml")
+    @RequestMapping(method = RequestMethod.POST, value = "/posts/bbToHtml")
     public ResponseEntity<String> bbCodeToHtml(@RequestParam(POST_BB_CONTENT) String bbContent) {
-        return new ResponseEntity<String>(bbCodeService.convertBbToHtml(bbContent), null, HttpStatus.OK);
+        return new ResponseEntity<String>(bbCodeService.convertBbToHtml(bbContent), HttpStatus.OK);
     }
 }
