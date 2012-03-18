@@ -37,6 +37,7 @@ div.jqi .jqimessage{
         line-height: 20px;
         color: #444444;
 }
+
 div.jqi .jqibuttons{
     text-align: right;
     padding: 5px 0 5px 0;
@@ -287,3 +288,44 @@ div.jqismooth button{ padding: 3px 10px; margin: 0 10px; background-color: #2F60
 div.jqismooth button:hover{ background-color: #728A8C; }
 div.jqismooth button.jqismoothdefaultbutton{ background-color: #BF5E26; }
 .jqismoothwarning .jqismooth .jqismoothbuttons{ background-color: #BF5E26; }
+
+/*
+*------------------------
+*   html in prompt
+*------------------------
+*/
+div.jqi .jqimessage input[type="text"],div.jqi .jqimessage input[type="password"]{
+    -moz-border-radius: 7px 7px 7px 7px;
+    -moz-box-shadow: 3px 4px 4px gray;
+    border: 1px solid gray;
+    font-size: 15px;
+    margin: 8px;
+    padding: 6px;
+    width: 300px;
+}
+
+div.jqi .jqimessage label{
+	font-size: 15px;
+	margin: 4px;
+	padding: 2px;
+	width: 220px;
+}
+
+div.jqi .jqimessage span[class="error"]{
+	font-size: 10px;
+	color: red;            
+	width: 200px;
+}
+
+div.jqi .jqimessage span[class="reg_info"]{
+	font-size: 10px;
+	color: gray;            
+	margin: 4px;
+	padding: 2px;
+	width: 200px;
+}
+
+div.jqi .jqimessage h6{
+	font-size: 11px;
+}        
+
