@@ -38,10 +38,12 @@
                     <span class="forum_misc_info"><c:out value="${branch.description}"/></span>
                 </div>
                 <div> <!-- top right -->
-                    <a class="forum_top_right_link"
-                       href="${pageContext.request.contextPath}/branches/${branch.id}/markread">
-                        <spring:message code="label.mark_all_topics"/>
-                    </a>
+                    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                        <a class="forum_top_right_link"
+                           href="${pageContext.request.contextPath}/branches/${branch.id}/markread">
+                            <spring:message code="label.mark_all_topics"/>
+                        </a>
+                    </sec:authorize>
                 </div>
             </div>
             <div class="info_top_lower"> <!-- bottom left -->
@@ -106,6 +108,11 @@
                                             <span class="sticky"><spring:message code="label.marked_as_sticked"/></span>
                                         </c:when>
                                     </c:choose>
+                                    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                                        <c:if test="${topic.hasUpdates}">
+                                            <span style="color: red;">[NEW]</span>
+                                        </c:if>
+                                    </sec:authorize>
                                     <a class="forum_link" href="${pageContext.request.contextPath}/topics/${topic.id}">
                                         <span class="forum_message_cell_text"><c:out value="${topic.title}"/></span>
                                     </a>

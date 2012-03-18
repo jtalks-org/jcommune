@@ -73,7 +73,7 @@ public final class ObjectsFactory {
     public static Section getDefaultSection() {
         Section newSection = new Section("section name");
         newSection.setDescription("branch description");
-        newSection.setPosition(1L);
+        newSection.setPosition(1);
         return newSection;
     }
 

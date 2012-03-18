@@ -33,8 +33,7 @@
         <h2><a class="heading" href="#"><spring:message code="label.new_pm"/></a></h2>
         <jsp:include page="../../template/pmNavigationMenu.jsp"/>
         <form:form action="${pageContext.request.contextPath}/pm"
-                   method="POST" modelAttribute="privateMessageDto" name="editForm"
-                   onsubmit="doCheck();">
+                   method="POST" modelAttribute="privateMessageDto" name="editForm">
             <form:hidden path="id"/>
             <ul class="forum_table">
                 <li class="forum_row">
@@ -63,7 +62,7 @@
                              bodyParameterName="body"
                              back="${pageContext.request.contextPath}/inbox"/>
             <input id="save_pm" type="submit" class="button" name="save_pm" value="<spring:message code="label.save"/>"
-                   onclick="document.editForm.action='${pageContext.request.contextPath}/pm/save';doCheck();return true;"/>
+                   onclick="document.editForm.action='${pageContext.request.contextPath}/pm/save';return true;"/>
         </form:form>
     </div>
     <div class="footer_buffer"></div>

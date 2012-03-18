@@ -90,4 +90,21 @@ public class TopicTest {
 
         assertEquals(topic.getTopicWeight(), 10);
     }
+
+    @Test
+    public void testHasUpdatesDefault() {
+        assertTrue(topic.isHasUpdates());
+    }
+
+    @Test
+    public void testHasUpdatesWithUpdates() {
+        topic.setLastReadPostIndex(0);
+        assertTrue(topic.isHasUpdates());
+    }
+
+    @Test
+    public void testHasUpdatesWithoutUpdates() {
+        topic.setLastReadPostIndex(1);
+        assertFalse(topic.isHasUpdates());
+    }
 }

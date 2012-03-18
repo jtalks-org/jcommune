@@ -14,8 +14,9 @@
  */
 package org.jtalks.jcommune.service;
 
-import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 import java.util.List;
@@ -59,8 +60,10 @@ public interface PostService extends EntityService<Post> {
     /**
      * Calculates page number for post based on the current user
      * paging settings and total post amount in the topic
+     *
      * @param post post to find a page for
      * @return number of the page where the post will actually be
      */
     int calculatePageForPost(Post post);
+
 }

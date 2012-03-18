@@ -282,7 +282,7 @@ qq.FileUploaderBasic = function (o) {
             onLeave:"The files are being uploaded, if you leave now the upload will be cancelled."
         },
         showMessage:function (message) {
-            alert(message);
+            $.prompt(message, {buttons:{}, persistent:false});
         }
     };
     qq.extend(this._options, o);

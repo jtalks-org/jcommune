@@ -52,14 +52,9 @@ $(document).ready(function () {
         allowedExtensions:['jpg', 'jpeg', 'png', 'gif'],
         // max uploaded file size (bytes)
         sizeLimit:4194304,
-        onSubmit:function (id, filename) {
-            console.log('File upload: %s, ID: %s', filename, id);
-        },
-        onProgress:function (id, filename, loaded, total) {
-            console.log('Progress for file: %s, ID: %s, loaded: %s, total: %s', filename, id, loaded, total);
-        },
+        onSubmit:function (id, filename) {},
+        onProgress:function (id, filename, loaded, total) {},
         onComplete:function (id, filename, responseJSON) {
-            console.log('File upload for file %s, id %s done with status %s', filename, id, responseJSON);
             if (responseJSON.success == "true") {
                 //if server side avatar uploading successful  a processed image displayed
                 document.getElementById('avatarPreview').setAttribute('src', responseJSON.srcPrefix

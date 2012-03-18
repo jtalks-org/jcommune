@@ -41,8 +41,11 @@ public class Topic extends SubscriptionAwareEntity {
     private Branch branch;
     private int views;
 
+    // transient, makes sense for current user only if set explicitly
+    private boolean hasUpdates = true;
+
     public static final int MIN_NAME_SIZE = 5;
-    public static final int MAX_NAME_SIZE = 255;
+    public static final int MAX_NAME_SIZE = 120;
 
     /**
      * Used only by hibernate.
@@ -287,5 +290,26 @@ public class Topic extends SubscriptionAwareEntity {
      */
     public void setViews(int views) {
         this.views = views;
+    }
+
+    /**
+     * @param index last read post index in this topic for current user
+     * (0 means first post is the last read one)
+     */
+    public void setLastReadPostIndex(int index){
+       hasUpdates = (index + 1 < posts.size());
+    }
+
+    /**
+     * This method will return true if there are unread posts in that topic
+     * for the current user. This state is NOT persisted and must be
+     * explicitly set by calling  Topic.setLastReadPostIndex().
+     *
+     * If setter has not been called this method will always return no updates
+     *
+     * @return if current topic has posts still unread by the current user
+     */
+    public boolean isHasUpdates(){
+       return hasUpdates;
     }
 }

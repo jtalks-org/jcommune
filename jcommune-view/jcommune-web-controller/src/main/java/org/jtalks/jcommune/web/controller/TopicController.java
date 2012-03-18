@@ -19,6 +19,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
@@ -64,6 +65,7 @@ public class TopicController {
 
     private TopicService topicService;
     private BranchService branchService;
+    private LastReadPostService lastReadPostService;
     private SecurityService securityService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private LocationService locationService;
@@ -85,6 +87,7 @@ public class TopicController {
     /**
      * @param topicService      the object which provides actions on {@link Topic} entity
      * @param branchService     the object which provides actions on  {@link Branch} entity
+     * @param lastReadPostService        to perform post-related actions
      * @param locationService   to track user location on forum (what page he is viewing now)
      * @param sessionRegistry   to obtain list of users currently online
      * @param securityService   to determine the current user logged in
@@ -93,12 +96,14 @@ public class TopicController {
     @Autowired
     public TopicController(TopicService topicService,
                            BranchService branchService,
+                           LastReadPostService lastReadPostService,
                            SecurityService securityService,
                            BreadcrumbBuilder breadcrumbBuilder,
                            LocationService locationService,
                            SessionRegistry sessionRegistry) {
         this.topicService = topicService;
         this.branchService = branchService;
+        this.lastReadPostService = lastReadPostService;
         this.securityService = securityService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.locationService = locationService;
@@ -142,6 +147,7 @@ public class TopicController {
         }
 
         Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(), branchId);
+        lastReadPostService.markTopicAsRead(createdTopic);
         return new ModelAndView("redirect:/topics/" + createdTopic.getId());
     }
 
@@ -176,11 +182,11 @@ public class TopicController {
 
         Topic topic = topicService.get(topicId);
         Branch branch = topic.getBranch();
-
         JCUser currentUser = securityService.getCurrentUser();
-
         List<Post> posts = topic.getPosts();
         Pagination pag = new Pagination(page, currentUser, posts.size(), pagingEnabled);
+        Integer lastReadPostIndex = lastReadPostService.getLastReadPostForTopic(topic);
+        lastReadPostService.markTopicPageAsRead(topic, page, pagingEnabled);
         //todo: optimize this binding
         return new ModelAndView("postList")
                 .addObject("viewList", locationService.getUsersViewing(topic))
@@ -194,7 +200,8 @@ public class TopicController {
                 .addObject(BRANCH_ID, branch.getId())
                 .addObject(TOPIC_ID, topicId)
                 .addObject("subscribed", topic.getSubscribers().contains(currentUser))
-                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
+                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic))
+                .addObject("lastReadPost", lastReadPostIndex);
     }
 
     /**

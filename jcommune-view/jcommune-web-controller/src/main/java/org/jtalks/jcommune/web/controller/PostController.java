@@ -17,23 +17,21 @@ package org.jtalks.jcommune.web.controller;
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
-import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.PostDto;
+import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -55,10 +53,11 @@ public class PostController {
     public static final String TOPIC_ID = "topicId";
     public static final String POST_ID = "postId";
     public static final String POST_DTO = "postDto";
-    public static final String PAGE = "page";
+    public static final String POST_BB_CONTENT = "bbContent";
     public static final String TOPIC_TITLE = "topicTitle";
 
     private PostService postService;
+    private LastReadPostService lastReadPostService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private TopicService topicService;
     private BBCodeService bbCodeService;
@@ -81,14 +80,17 @@ public class PostController {
      * @param breadcrumbBuilder the object which provides actions on {@link BreadcrumbBuilder} entity
      * @param topicService      {@link TopicService} to be injected
      * @param bbCodeService     to create valid quotes
+     * @param lastReadPostService not to track user posts as updates for himself
      */
     @Autowired
     public PostController(PostService postService, BreadcrumbBuilder breadcrumbBuilder,
-                          TopicService topicService, BBCodeService bbCodeService) {
+                          TopicService topicService, BBCodeService bbCodeService,
+                          LastReadPostService lastReadPostService) {
         this.postService = postService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.topicService = topicService;
         this.bbCodeService = bbCodeService;
+        this.lastReadPostService = lastReadPostService;
     }
 
     /**
@@ -187,7 +189,7 @@ public class PostController {
         Post source = postService.get(postId);
         ModelAndView mav = addPost(source.getTopic().getId());
         PostDto dto = (PostDto) mav.getModel().get(POST_DTO);
-        String content =  StringUtils.defaultString(selection, source.getPostContent());
+        String content = StringUtils.defaultString(selection, source.getPostContent());
         dto.setBodyText(bbCodeService.quote(content, source.getUserCreated()));
         return mav;
     }
@@ -210,6 +212,7 @@ public class PostController {
             return mav;
         }
         Post newbie = topicService.replyToTopic(postDto.getTopicId(), postDto.getBodyText());
+        lastReadPostService.markTopicAsRead(newbie.getTopic());
         return new ModelAndView(this.redirectToPageWithPost(newbie.getId()));
     }
 
@@ -233,5 +236,16 @@ public class PostController {
                 .append("#")
                 .append(postId)
                 .toString();
+    }
+
+    /**
+     * Converted post with bb codes to HTML
+     *
+     * @param bbContent post with bb codes
+     * @return HTML content for post
+     */
+    @RequestMapping(method = RequestMethod.POST, value = "/posts/bbToNtml")
+    public ResponseEntity<String> bbCodeToHtml(@RequestParam(POST_BB_CONTENT) String bbContent) {
+        return new ResponseEntity<String>(bbCodeService.convertBbToHtml(bbContent), null, HttpStatus.OK);
     }
 }
