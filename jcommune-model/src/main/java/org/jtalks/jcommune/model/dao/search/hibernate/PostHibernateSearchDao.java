@@ -28,7 +28,7 @@ import org.jtalks.jcommune.model.entity.Post;
  *
  */
 public class PostHibernateSearchDao extends AbstractHibernateSearchDao implements PostSearchDao {
-
+	public static final int DEFAULT_MAX_RECORD = 100;
 	/**
 	 * {@inheritDoc}
 	 */
@@ -53,6 +53,7 @@ public class PostHibernateSearchDao extends AbstractHibernateSearchDao implement
 				sentence(searchText).
 				createQuery(); 
 		Query query = fullTextSession.createFullTextQuery(luceneQuery);
+		query.setMaxResults(DEFAULT_MAX_RECORD);
 		return query;
 	}
 }

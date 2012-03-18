@@ -40,23 +40,39 @@
                </div>
            </div>
  		   <div>
-	           <ul class="forum_table">
-	               <c:forEach var="post" items="${list}" varStatus="i">
-	                   <li class="forum_row">
-	                       <div class="forum_info">
-								<h4>
-									<a class="forum_link" href="${pageContext.request.contextPath}/topics/${post.topic.id}"> 
-										<c:out value="${post.topic.title}"/>
-									</a>
-								</h4>
-								<div class="forum_message_cell_text">
-	                               ${post.postContent}
-	                               <br/>
-	                           </div>
-	                       </div>
-	                   </li>
-	               </c:forEach>
-	           </ul>
+ 		   	   <c:choose>
+	 		   	   <c:when test="${!(empty posts)}">
+			           <ul class="forum_table">
+			               <c:forEach var="post" items="${list}" varStatus="i">
+			                   <li class="forum_row">
+			                       <div class="forum_info">
+										<h4>
+											<a class="forum_link" href="${pageContext.request.contextPath}/topics/${post.topic.id}"> 
+												<c:out value="${post.topic.title}"/>
+											</a>
+										</h4>
+										<div class="forum_message_cell_text">
+											<span class="truncated break_word">
+												<c:out value="${post.postContent}"/>
+											</span>
+			                           </div>
+			                       </div>
+			                   </li>
+			               </c:forEach>
+			           </ul>
+		           </c:when>
+		           <c:otherwise>
+		           		<ul class="forum_table">
+		                    <li class="forum_row empty_container">
+		                        <div>
+		                            <span class="empty">
+		                                <spring:message code="label.search.empty"/>
+		                            </span>
+		                        </div>
+		                    </li>
+                		</ul>
+		           </c:otherwise>
+	           </c:choose>
            </div>
            <div class="forum_info_bottom">
 		        <span class="nav_bottom">
