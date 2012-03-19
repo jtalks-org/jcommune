@@ -52,12 +52,11 @@ import org.jtalks.common.model.entity.Entity;
 	      					params =  @Parameter(name="language", value="Russian"))
 			}
 	),
-	@AnalyzerDef(name = "englishJtalksAnalyzer",
+	@AnalyzerDef(name = "defaultJtalksAnalyzer",
 		tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
 		filters = {
 			@TokenFilterDef(factory = LowerCaseFilterFactory.class),
-	      	@TokenFilterDef(factory = SnowballPorterFilterFactory.class, 
-	      					params =  @Parameter(name="language", value="English"))
+	      	@TokenFilterDef(factory = SnowballPorterFilterFactory.class)
 		}
 	)
 })
@@ -73,8 +72,8 @@ public class Post extends Entity {
     public static final int MAX_LENGTH = 20000;
     public static final int MIN_LENGTH = 2;
     
-    public static final String POST_CONTENT_FIELD_RU = "postContent";
-    public static final String POST_CONTENT_FIELD_EN = "postContentEn";
+    public static final String POST_CONTENT_FIELD_RU = "postContentRu";
+    public static final String POST_CONTENT_FIELD_DEF = "postContent";
 
     /**
      * For Hibernate use only
@@ -161,8 +160,8 @@ public class Post extends Entity {
     @Fields({
     	@Field(name = POST_CONTENT_FIELD_RU,
     			index = Index.TOKENIZED, analyzer = @Analyzer(definition = "russianJtalksAnalyzer")),
-    	@Field(name = POST_CONTENT_FIELD_EN, 
-    			index = Index.TOKENIZED, analyzer = @Analyzer(definition = "englishJtalksAnalyzer"))	
+    	@Field(name = POST_CONTENT_FIELD_DEF, 
+    			index = Index.TOKENIZED, analyzer = @Analyzer(definition = "defaultJtalksAnalyzer"))	
     })
     public String getPostContent() {
         return postContent;

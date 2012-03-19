@@ -49,7 +49,7 @@ public class PostHibernateSearchDao extends AbstractHibernateSearchDao implement
 				get();
 		org.apache.lucene.search.Query luceneQuery = queryBuilder.phrase().
 				onField(Post.POST_CONTENT_FIELD_RU).
-				andField(Post.POST_CONTENT_FIELD_EN).
+				andField(Post.POST_CONTENT_FIELD_DEF).
 				sentence(searchText).
 				createQuery(); 
 		Query query = fullTextSession.createFullTextQuery(luceneQuery);

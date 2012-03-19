@@ -33,11 +33,13 @@
 	            	<jtalks:pagination uri="${uri}" pagination="${pagination}" list="${posts}"/>
 	          	</span>
  	   		</div>
-			<div class="forum_header_table">
-               <div class="forum_header">
-                   <h3><fmt:message key="label.search.result"/></h3>
-                   <span class="empty_cell"></span>
-               </div>
+           <div class="forum_header_table">
+	            <div class="forum_header">
+	                <h3 class="forum_header_link"><spring:message code="label.search.header.message"/></h3>
+	                <span class="forum_header_branches"><spring:message code="label.search.header.branch"/></span>
+	                <span class="forum_header_author"><spring:message code="label.search.header.author"/></span>
+	                <span class="forum_header_last_message"><spring:message code="label.search.header.date"/></span>
+	            </div>
            </div>
  		   <div>
  		   	   <c:choose>
@@ -57,7 +59,21 @@
 											</span>
 			                           </div>
 			                       </div>
-			                   </li>
+			                       <div class="forum_branches">
+			                       		<a class="forum_link" href="${pageContext.request.contextPath}/branches/${post.topic.branch.id}"> 
+			                       			<c:out value="${post.topic.branch.name}"/>
+			                       		</a>
+			                       </div>
+								   <div class="forum_author">
+										<a href="${pageContext.request.contextPath}/users/${search_header.encodedUsername}"
+											title="<spring:message code="label.topic.header.author"/>"><c:out
+												value="${post.userCreated.username}"/></a>
+								   </div>
+								   <div class="forum_last_message">
+								   		<a href="${pageContext.request.contextPath}/topics/${post.topic.id}">
+	                                    <jtalks:format value="${post.creationDate}"/></a>
+								   </div>
+								</li>
 			               </c:forEach>
 			           </ul>
 		           </c:when>
