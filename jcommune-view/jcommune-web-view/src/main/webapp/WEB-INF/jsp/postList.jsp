@@ -146,7 +146,7 @@
             </div>
             <div class="forum_message_cell">
                 <div class="post_details">
-                    <a class="button" href="#">&#8657;</a>
+                    <a class="button" name="${post.id}" href="#">&#8657;</a>
                     <a class="button postLink" rel="${post.id}">
                         <spring:message code="label.link"/>
                     </a>

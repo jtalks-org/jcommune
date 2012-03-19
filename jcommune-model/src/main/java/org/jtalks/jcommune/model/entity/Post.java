@@ -58,6 +58,12 @@ public class Post extends Entity {
         this.postContent = postContent;
     }
 
+    /**
+     * Used to find out the current post index on JSP page.
+     * We can't invoke a method there so use an explicit getter.
+     *
+     * @return index of this post ina  topic, starting from 0
+     */
     public int getPostIndexInTopic(){
         return topic.getPosts().indexOf(this);
     }
