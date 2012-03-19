@@ -40,10 +40,10 @@
             </div>
             <div class="info_top_lower">
                 <div> <!-- bottom left -->
-                    <h2 class="heading"><spring:message code="label.section.jtalks_forum"/></h2>
+                    <h2 class="heading"><c:out value="${section.name}"/></h2>
 
                     <span class="forum_misc_info">
-                        <spring:message code="label.section.prog_forum"/>
+                        <c:out value="${section.description}"/>
                     </span>
                 </div>
                 <div> <!-- bottom right -->
@@ -53,7 +53,7 @@
         </div>
         <div class="forum_header_table">
             <div class="forum_header">
-                <h3 class="forum_header_link"><c:out value="${section.name}"/></h3>
+                <h3 class="forum_header_link"><spring:message code="label.section.header.branches"/></h3>
                 <span class="forum_header_themes"><spring:message code="label.section.header.topics"/></span>
                 <span class="forum_header_messages"><spring:message code="label.section.header.messages"/></span>
                     <span class="forum_header_last_message"><spring:message
