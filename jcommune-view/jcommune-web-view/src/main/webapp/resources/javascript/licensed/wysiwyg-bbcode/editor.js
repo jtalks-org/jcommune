@@ -93,18 +93,36 @@ function SwitchEditor() {
 var patternForOpenBBtag = "\\[([^\\/\\[\\]]*?)(=[^\\[\\]]*)?\\]";
 
 function bbcode2html() {
-    $.post($root + '/posts/bbToNtml', {bbContent:textboxelement.value}, function (data) {
-        if (data.toString() == "[object XMLDocument]") {
-            htmlcontentelement.innerHTML = XMLtoString(data);
-        } else {
-            htmlcontentelement.innerHTML = data;
-        }
-        htmlcontentelement.style.display = "";
-        textboxelement.style.display = "none";
+    var textdata = " " + textboxelement.value;
+    textdata = textdata.replace(/%5D/gi, "@w0956756wo@");
+    textdata = textdata.replace(/%5B/gi, "@ywdffgg434y@");
+    textdata = textdata.replace(/%22/gi, "14@123435vggv4f");
+    textdata = encodeURI(textdata);
+    textdata = textdata.replace(/%5D/gi, "]");
+    textdata = textdata.replace(/%5B/gi, "[");
+    textdata = textdata.replace(/%22/gi, "\"");
+    $.ajax({
+        type:"POST",
+        url:$root + '/posts/bbToHtml', //todo
+        data:{bbContent:textdata},
+        success:function (data) {
+            var result;
+            if (data.toString() == "[object XMLDocument]") {
+                result = decodeURI(XMLtoString(data));
+            } else {
+                result = decodeURI(data);
+            }
+            result = result.replace(/@w0956756wo@/gi, "%5D");
+            result = result.replace(/@ywdffgg434y@/gi, "%5B");
+            result = result.replace(/14@123435vggv4f/gi, "%22");
+            htmlcontentelement.innerHTML = result;
+            htmlcontentelement.style.display = "";
+            textboxelement.style.display = "none";
 
-        editorVisible = true;
-        SyntaxHighlighter.highlight();
-        $("a[rel^='prettyPhoto']").prettyPhoto({social_tools:false});
+            editorVisible = true;
+            SyntaxHighlighter.highlight();
+            $("a[rel^='prettyPhoto']").prettyPhoto({social_tools:false});
+        }
     });
 }
 
@@ -356,10 +374,10 @@ function AddTag(t1, t2) {
         var sel_start = element.selectionStart;
         var sel_end = element.selectionEnd;
         MozillaInsertText(element, t1, sel_start);
-        if(sel_start==sel_end && t2 == "[/url]"){
-            MozillaInsertText(element, mylink+t2, sel_end + t1.length);
-            element.selectionEnd = sel_end + t1.length + t2.length+mylink.length;
-        }   else{
+        if (sel_start == sel_end && t2 == "[/url]") {
+            MozillaInsertText(element, mylink + t2, sel_end + t1.length);
+            element.selectionEnd = sel_end + t1.length + t2.length + mylink.length;
+        } else {
             MozillaInsertText(element, t2, sel_end + t1.length);
             element.selectionEnd = sel_end + t1.length + t2.length;
         }

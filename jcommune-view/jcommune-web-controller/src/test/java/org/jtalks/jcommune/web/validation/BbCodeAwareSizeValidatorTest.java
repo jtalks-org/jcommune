@@ -48,10 +48,10 @@ public class BbCodeAwareSizeValidatorTest {
         validator = new BbCodeAwareSizeValidator(service);
         validator.initialize(annotation);
     }
-    
+
     @Test
     public void testValidationPassed() {
-        String source =  "1234567";
+        String source = "1234567";
         when(service.removeBBCodes(source)).thenReturn(source);
 
         assertTrue(validator.isValid(source, null));
@@ -77,6 +77,16 @@ public class BbCodeAwareSizeValidatorTest {
     @Test
     public void testValueTooShort() {
         String source = "123";
+        when(service.removeBBCodes(source)).thenReturn(source);
+
+        assertFalse(validator.isValid(source, null));
+
+        verify(service).removeBBCodes(source);
+    }
+
+    @Test
+    public void testSpaces() {
+        String source = "             ";
         when(service.removeBBCodes(source)).thenReturn(source);
 
         assertFalse(validator.isValid(source, null));

@@ -42,7 +42,7 @@ public class Topic extends SubscriptionAwareEntity {
     private int views;
 
     // transient, makes sense for current user only if set explicitly
-    private boolean hasUpdates = true;
+    private Integer lastReadPostIndex;
 
     public static final int MIN_NAME_SIZE = 5;
     public static final int MAX_NAME_SIZE = 120;
@@ -294,22 +294,40 @@ public class Topic extends SubscriptionAwareEntity {
 
     /**
      * @param index last read post index in this topic for current user
-     * (0 means first post is the last read one)
+     *              (0 means first post is the last read one)
      */
-    public void setLastReadPostIndex(int index){
-       hasUpdates = (index + 1 < posts.size());
+    public void setLastReadPostIndex(int index) {
+        if (index >= posts.size()) {
+            throw new IllegalArgumentException("Last read post index is bigger than post count in the topic");
+        }
+        lastReadPostIndex = index;
+    }
+
+    /**
+     * Returns first unread post for current user. If no unread post
+     * information has been set explicitly this method will return
+     * first topic's post id, considering all topic as unread.
+     *
+     * @return returns first unread post id for the current user
+     */
+    public Long getFirstUnreadPostId() {
+        if (lastReadPostIndex == null) {
+            return posts.get(0).getId();
+        } else {
+            return posts.get(lastReadPostIndex + 1).getId();
+        }
     }
 
     /**
      * This method will return true if there are unread posts in that topic
      * for the current user. This state is NOT persisted and must be
      * explicitly set by calling  Topic.setLastReadPostIndex().
-     *
+     * <p/>
      * If setter has not been called this method will always return no updates
      *
      * @return if current topic has posts still unread by the current user
      */
-    public boolean isHasUpdates(){
-       return hasUpdates;
+    public boolean isHasUpdates() {
+        return (lastReadPostIndex == null) || (lastReadPostIndex + 1 < posts.size());
     }
 }

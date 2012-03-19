@@ -420,7 +420,7 @@ span.version {
     text-decoration: none;
 }
 
-.forum_link:hover, .forum_header_link:hover {
+a.forum_link:hover, a.forum_header_link:hover {
     text-decoration: underline;
 }
 
@@ -581,6 +581,25 @@ a.last_message_user {
 .button:active {
     position: relative;
     top: 1px;
+}
+
+.button_toggled {
+    /*border: 1px solid #7a7a7a;*/
+    -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), -1px 0 2px rgba(0, 0, 0, 0.7), 0 0 7px 1px rgba(255,0,0,0.75);
+    -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), -1px 0 2px rgba(0, 0, 0, 0.7), 0 0 7px 1px rgba(255,0,0,0.75);
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), -1px 0 2px rgba(0, 0, 0, 0.7), 0 0 7px 1px rgba(255,0,0,0.75);
+}
+
+input.button_disabled {
+    background: #a6a6a6;
+    -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), -1px 0 2px rgba(0, 0, 0, 0.7), inset 2px 2px 3px rgba(130,130,130,1);
+    -moz-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), -1px 0 2px rgba(0, 0, 0, 0.7), inset 2px 2px 3px rgba(130,130,130,1);
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7), -1px 0 2px rgba(0, 0, 0, 0.7), inset 2px 2px 3px rgba(130,130,130,1);
+    color: #cfcfcf;
+}
+
+input.button_disabled:hover {
+    background: #a6a6a6;
 }
 
 .but_arrow {
@@ -1091,20 +1110,6 @@ td.button_cell {
     color:#D3D3D3;
 }
 
-.del {
-    padding-left:25px;
-    padding-top:5px;
-    color:#696969;
-    font-size:12pt;
-    width:100px;
-    height:60px;
-}
-
-.del input{
-    float:left;
-    position:relative;
-}
-
 .pm_read {
     display: table;
     width: 100%;
@@ -1217,6 +1222,7 @@ a.forum_top_right_link,
 .empty_container div {
     display: table-cell;
     vertical-align: middle;
+    text-align: center;
     height: 160px;
 }
 
