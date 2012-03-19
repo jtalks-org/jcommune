@@ -110,7 +110,9 @@
                                     </c:choose>
                                     <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
                                         <c:if test="${topic.hasUpdates}">
-                                            <span style="color: red;">[NEW]</span>
+                                            <a style="color: red;"
+                                               href="${pageContext.request.contextPath}/posts/${topic.firstUnreadPostId}">
+                                                [NEW]</a>
                                         </c:if>
                                     </sec:authorize>
                                     <a class="forum_link" href="${pageContext.request.contextPath}/topics/${topic.id}">

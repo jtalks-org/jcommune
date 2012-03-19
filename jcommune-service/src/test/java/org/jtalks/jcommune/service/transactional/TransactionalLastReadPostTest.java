@@ -62,9 +62,10 @@ public class TransactionalLastReadPostTest {
         lastReadPostService = new TransactionalLastReadPostService(securityService, postDao);
     }
 
-        @Test
+    @Test
     public void testFillLastReadPostsForTopics() {
         Topic topic = new Topic(user, "title");
+        topic.addPost(new Post(user, "content"));
         LastReadPost post = new LastReadPost(user, topic, 0);
         when(securityService.getCurrentUser()).thenReturn(user);
         when(postDao.getLastReadPost(user, topic)).thenReturn(post);
