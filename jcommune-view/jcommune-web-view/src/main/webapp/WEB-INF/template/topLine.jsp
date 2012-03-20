@@ -65,12 +65,12 @@
                 </a>
             </li>
         </sec:authorize>
-       <li>
+       <!--<li>
             <form action='<c:url value="/search/"/>' method="GET" name="form" id="form">
                 <input type="text" name="searchText" id="searchText">
                 <input type="submit" value="<fmt:message key="label.search"/>" />
             </form>
-        </li>
+        </li>  -->
         <li class="flag no_border">
             <a href="#" onclick="window.location = getLanguageLink('en')">
                 <img src="${pageContext.request.contextPath}/resources/images/flags/great britain.png" alt=""/>
