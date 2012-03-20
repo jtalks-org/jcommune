@@ -445,9 +445,21 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.2.1</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
-
+    <scm>
+        <connection>scm:git:git@jtalks.org:jcommune</connection>
+        <developerConnection>scm:git:git@jtalks.org:jcommune</developerConnection>
+        <url>scm:git:git@jtalks.org:jcommune</url>
+    </scm>
     <repositories>
         <repository>
             <id>jtalks-nexus</id>
@@ -459,13 +471,10 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
-
         <repository>
             <id>codehaus</id>
             <url>http://repository.codehaus.org</url>
         </repository>
-
-
     </repositories>
     <distributionManagement>
         <repository>
