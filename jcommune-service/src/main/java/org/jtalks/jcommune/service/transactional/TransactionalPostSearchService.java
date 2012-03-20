@@ -50,4 +50,12 @@ public class TransactionalPostSearchService implements PostSearchService {
 			return Collections.emptyList();
 		}
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void rebuildIndex() {
+		postSearchDao.rebuildIndex(Post.class);
+	}
 }

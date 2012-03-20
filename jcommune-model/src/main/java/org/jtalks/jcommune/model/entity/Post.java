@@ -61,7 +61,7 @@ import org.jtalks.common.model.entity.Entity;
 	)
 })
 @Indexed
-public class Post extends Entity {
+public class Post extends Entity implements IndexedEntity {
 
     private DateTime creationDate;
     private DateTime modificationDate;

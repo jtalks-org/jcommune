@@ -12,24 +12,13 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao.search;
-
-import java.util.List;
-
-import org.jtalks.jcommune.model.entity.Post;
+package org.jtalks.jcommune.model.entity;
 
 /**
- * This interface describes the contract of the DAO for full-text posts search.
+ * Marks an entity as indexed entity.
  * 
  * @author Anuar Nurmakanov
- * @see org.jtalks.jcommune.model.dao.search.hibernate.PostHibernateSearchDao
+ *
  */
-public interface PostSearchDao extends SearchDao<Post>{
-	/**
-     * Search posts for their content.
-     * 
-     * @param searchText contents of the post.
-     * @return list of posts
-     */
-    List<Post> searchPosts(String searchText);
+public interface IndexedEntity {
 }

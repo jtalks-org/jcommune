@@ -32,4 +32,9 @@ public interface PostSearchService {
 	 * @return list of posts
 	 */
 	List<Post> searchPostsByPhrase(String phrase);
+	
+	/**
+	 * Indexing posts from the database.
+	 */
+	void rebuildIndex();
 }

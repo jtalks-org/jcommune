@@ -27,7 +27,7 @@ import org.jtalks.jcommune.model.entity.Post;
  * @author Anuar Nurmakanov
  *
  */
-public class PostHibernateSearchDao extends AbstractHibernateSearchDao implements PostSearchDao {
+public class PostHibernateSearchDao extends AbstractHibernateSearchDao<Post> implements PostSearchDao {
 	public static final int DEFAULT_MAX_RECORD = 100;
 	/**
 	 * {@inheritDoc}

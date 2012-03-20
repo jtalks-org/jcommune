@@ -14,22 +14,20 @@
  */
 package org.jtalks.jcommune.model.dao.search;
 
-import java.util.List;
-
-import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.IndexedEntity;
 
 /**
- * This interface describes the contract of the DAO for full-text posts search.
+ * Base DAO for the full-text search.
  * 
- * @author Anuar Nurmakanov
- * @see org.jtalks.jcommune.model.dao.search.hibernate.PostHibernateSearchDao
+ * @author Anuar_Nurmakanov
+ *
+ * @param <E> indexed entity
  */
-public interface PostSearchDao extends SearchDao<Post>{
+public interface SearchDao<E extends IndexedEntity> {
 	/**
-     * Search posts for their content.
-     * 
-     * @param searchText contents of the post.
-     * @return list of posts
-     */
-    List<Post> searchPosts(String searchText);
+	 * Indexing data from the database.
+	 * 
+	 * @param entityClass
+	 */
+	void rebuildIndex(Class<E> entityClass);
 }

@@ -18,15 +18,19 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
+import org.jtalks.jcommune.model.dao.search.SearchDao;
+import org.jtalks.jcommune.model.entity.IndexedEntity;
 
 /**
  * The base class for full-text search.
  * The implementation is based on the Hibernate Search.
  * 
  * @author Anuar Nurmakanov
- *
+ * 
+ * @param <E> indexed entity
  */
-public abstract class AbstractHibernateSearchDao {
+public abstract class AbstractHibernateSearchDao<E extends IndexedEntity>
+		implements SearchDao<E> {
 	/**
 	 * Hibernate SessionFactory
 	 */
@@ -50,5 +54,13 @@ public abstract class AbstractHibernateSearchDao {
 		Session session = sessionFactory.getCurrentSession();
 		FullTextSession fullTextSession = Search.getFullTextSession(session);
 		return fullTextSession;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void rebuildIndex(Class<E> entityClass) {
+		getFullTextSession().createIndexer(entityClass).start();
 	}
 }

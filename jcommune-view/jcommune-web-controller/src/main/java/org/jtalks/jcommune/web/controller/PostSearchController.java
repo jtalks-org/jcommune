@@ -37,6 +37,7 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Controller
 public class PostSearchController {
+	private static final String SEARCH_RESULT_VIEW_NAME = "postSearchResult";
 	private PostSearchService postSearchService;
 	private SecurityService securityService;
 	
@@ -50,6 +51,14 @@ public class PostSearchController {
 	public PostSearchController(PostSearchService postSearchService, SecurityService securityService) {
 		this.postSearchService = postSearchService;
 		this.securityService = securityService;
+	}
+	
+	/**
+	 * This method performs indexing the data from the database.
+	 */
+	@RequestMapping(value = "/search/index/rebuild")
+	public void rebuildIndexes() {
+		postSearchService.rebuildIndex();
 	}
 	
 	/**
@@ -73,7 +82,7 @@ public class PostSearchController {
 	 */
 	@RequestMapping(value = "/search/{searchText}", method = RequestMethod.GET)
 	public ModelAndView continueSearch(@PathVariable String searchText,
-			@RequestParam(value = "page", defaultValue = "1", required = false) Integer page) {
+			@RequestParam(value = "page", defaultValue = "1", required = true) Integer page) {
 		return search(searchText, page);
 	}
 	
@@ -82,7 +91,7 @@ public class PostSearchController {
 		List<Post> posts = postSearchService.searchPostsByPhrase(searchText);
 		String uri = searchText;
 		Pagination pagination = new Pagination(page, currentUser, posts.size(), true);
-		return new ModelAndView("postSearchResult").
+		return new ModelAndView(SEARCH_RESULT_VIEW_NAME).
 				addObject("posts", posts).
 				addObject("pagination", pagination).
 				addObject("uri", uri).
