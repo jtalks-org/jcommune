@@ -16,11 +16,13 @@ package org.jtalks.jcommune.web.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.PostSearchService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
+import org.jtalks.jcommune.web.util.Pagination;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -48,7 +50,14 @@ public class PostSearchControllerTest {
 	}
 
 	@Test
-	public void testSearchPosts() {
+	public void testRebuildIndexes() {
+		postSearchController.rebuildIndexes();
+		
+		Mockito.verify(postSearchService).rebuildIndex();
+	}
+	
+	@Test
+	public void testInitSearchPosts() {
 		List<Post> resultPosts = new ArrayList<Post>();
 		JCUser user = new JCUser("username", "email", "password");
 		
@@ -57,9 +66,35 @@ public class PostSearchControllerTest {
 		Mockito.when(securityService.getCurrentUser()).thenReturn(user);
 		
 		ModelAndView modelAndView = postSearchController.initSearch(DEFAULT_SEARCH_TEXT);
+		Map<String, Object> model = modelAndView.getModel();
+		Pagination pagination = (Pagination) model.get(PostSearchController.PAGINATION_ATTRIBUTE_NAME);
 		
-		Assert.assertEquals(resultPosts, modelAndView.getModel().get("posts"), 
+		Assert.assertEquals(resultPosts, model.get(PostSearchController.POSTS_ATTRIBUTE_NAME), 
 				"The controller must return the result of PostSearchService.");
+		Assert.assertEquals(DEFAULT_SEARCH_TEXT, model.get(PostSearchController.URI_ATTRIBUTE_NAME),
+				"Uri and the search text must be identical.");
+		Assert.assertEquals(Integer.valueOf(1), pagination.getPage(), "The page number should be the first.");
+		Mockito.verify(postSearchService).searchPostsByPhrase(DEFAULT_SEARCH_TEXT);
+	}
+	
+	public void testContinueSearchPosts() {
+		List<Post> resultPosts = new ArrayList<Post>();
+		JCUser user = new JCUser("username", "email", "password");
+		int page = 2;
+		
+		Mockito.when(postSearchService.searchPostsByPhrase(DEFAULT_SEARCH_TEXT))
+				.thenReturn(resultPosts);
+		Mockito.when(securityService.getCurrentUser()).thenReturn(user);
+		
+		ModelAndView modelAndView = postSearchController.continueSearch(DEFAULT_SEARCH_TEXT, page);
+		Map<String, Object> model = modelAndView.getModel();
+		Pagination pagination = (Pagination) model.get(PostSearchController.PAGINATION_ATTRIBUTE_NAME);
+		
+		Assert.assertEquals(resultPosts, model.get(PostSearchController.POSTS_ATTRIBUTE_NAME), 
+				"The controller must return the result of PostSearchService.");
+		Assert.assertEquals(DEFAULT_SEARCH_TEXT, model.get(PostSearchController.URI_ATTRIBUTE_NAME),
+				"Uri and the search text must be identical.");
+		Assert.assertEquals(Integer.valueOf(page), pagination.getPage(), "The page number should be the first.");
 		Mockito.verify(postSearchService).searchPostsByPhrase(DEFAULT_SEARCH_TEXT);
 	}
 }

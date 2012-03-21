@@ -43,7 +43,7 @@ public class TransactionalPostSearchService implements PostSearchService {
 	 */
 	@Override
 	public List<Post> searchPostsByPhrase(String phrase) {
-		if (!StringUtils.isEmpty(phrase)) {
+		if (!StringUtils.isEmpty(phrase) && !StringUtils.isEmpty(phrase.trim())) {
 			List<Post> posts = postSearchDao.searchPosts(phrase);
 			return posts;
 		} else {

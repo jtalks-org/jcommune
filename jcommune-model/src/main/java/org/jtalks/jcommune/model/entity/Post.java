@@ -16,6 +16,7 @@ package org.jtalks.jcommune.model.entity;
 
 import org.apache.solr.analysis.LowerCaseFilterFactory;
 import org.apache.solr.analysis.SnowballPorterFilterFactory;
+import org.apache.solr.analysis.StandardFilterFactory;
 import org.apache.solr.analysis.StandardTokenizerFactory;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.AnalyzerDef;
@@ -55,6 +56,7 @@ import org.jtalks.common.model.entity.Entity;
 	@AnalyzerDef(name = "defaultJtalksAnalyzer",
 		tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
 		filters = {
+			@TokenFilterDef(factory = StandardFilterFactory.class),
 			@TokenFilterDef(factory = LowerCaseFilterFactory.class),
 	      	@TokenFilterDef(factory = SnowballPorterFilterFactory.class)
 		}

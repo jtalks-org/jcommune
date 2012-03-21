@@ -37,6 +37,22 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Controller
 public class PostSearchController {
+	/**
+	 * The name attribute for the uri.
+	 */
+	public static final String URI_ATTRIBUTE_NAME = "uri";
+	/**
+	 * The name attribute for posts.
+	 */
+	public static final String POSTS_ATTRIBUTE_NAME = "posts";
+	/**
+	 * The name attribute for the pagination.
+	 */
+	public static final String PAGINATION_ATTRIBUTE_NAME = "pagination";
+	/**
+	 * The name attribute for the search text.
+	 */
+	public static final String SEARCH_TEXT_MODEL_NAME = "searchText";
 	private static final String SEARCH_RESULT_VIEW_NAME = "postSearchResult";
 	private PostSearchService postSearchService;
 	private SecurityService securityService;
@@ -92,9 +108,9 @@ public class PostSearchController {
 		String uri = searchText;
 		Pagination pagination = new Pagination(page, currentUser, posts.size(), true);
 		return new ModelAndView(SEARCH_RESULT_VIEW_NAME).
-				addObject("posts", posts).
-				addObject("pagination", pagination).
-				addObject("uri", uri).
-				addObject("searchText", searchText);
+				addObject(POSTS_ATTRIBUTE_NAME, posts).
+				addObject(PAGINATION_ATTRIBUTE_NAME, pagination).
+				addObject(URI_ATTRIBUTE_NAME, uri).
+				addObject(SEARCH_TEXT_MODEL_NAME, searchText);
 	}
 }

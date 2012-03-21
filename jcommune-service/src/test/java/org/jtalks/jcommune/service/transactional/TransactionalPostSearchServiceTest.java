@@ -55,7 +55,7 @@ public class TransactionalPostSearchServiceTest {
 	@DataProvider(name = "parameterSearchPostsByEmptyPhrase")
 	public Object[][] parameterSearchPostsByEmptyPhrase() {
 		return new Object[][] {
-				{null}, {StringUtils.EMPTY}
+				{null}, {StringUtils.EMPTY}, {" "}
 		};
 	}
 	
@@ -67,5 +67,12 @@ public class TransactionalPostSearchServiceTest {
 		List<Post> searchResult = postSearchService.searchPostsByPhrase(phrase);
 		
 		Mockito.verify(postSearchDao).searchPosts(phrase);
+	}
+	
+	@Test
+	public void testRebuildIndex() {
+		postSearchService.rebuildIndex();
+		
+		Mockito.verify(postSearchDao).rebuildIndex(Post.class);
 	}
 }
