@@ -28,7 +28,11 @@ import org.jtalks.jcommune.model.entity.Post;
  *
  */
 public class PostHibernateSearchDao extends AbstractHibernateSearchDao<Post> implements PostSearchDao {
+	/**
+	 * The number of records by default.
+	 */
 	public static final int DEFAULT_MAX_RECORD = 100;
+	
 	/**
 	 * {@inheritDoc}
 	 */
