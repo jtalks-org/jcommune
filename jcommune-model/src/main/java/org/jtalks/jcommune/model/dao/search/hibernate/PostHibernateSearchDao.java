@@ -51,10 +51,10 @@ public class PostHibernateSearchDao extends AbstractHibernateSearchDao<Post> imp
 				buildQueryBuilder().
 				forEntity(Post.class).
 				get();
-		org.apache.lucene.search.Query luceneQuery = queryBuilder.phrase().
+		org.apache.lucene.search.Query luceneQuery = queryBuilder.keyword().
 				onField(Post.POST_CONTENT_FIELD_RU).
 				andField(Post.POST_CONTENT_FIELD_DEF).
-				sentence(searchText).
+				matching(searchText).
 				createQuery(); 
 		Query query = fullTextSession.createFullTextQuery(luceneQuery);
 		query.setMaxResults(DEFAULT_MAX_RECORD);
