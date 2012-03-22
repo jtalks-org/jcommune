@@ -28,10 +28,18 @@
        <jsp:include page="../template/topLine.jsp"/>
        <jsp:include page="../template/logo.jsp"/>
        <div class="all_forums">
-       		<div class="info_top_lower">
-	 	   		<span class="nav_top">
-	            	<jtalks:pagination uri="${uri}" pagination="${pagination}" list="${posts}"/>
-	          	</span>
+       		<div class="forum_info_top">
+	       		<div>
+	                <div> 
+	                    <h2 class="heading"><spring:message code="label.search.result" arguments="${searchText}"/></h2>
+	                    <br/>
+	                </div>
+	            </div>
+	       		<div class="info_top_lower">
+		 	   		<span class="nav_top">
+		            	<jtalks:pagination uri="${uri}" pagination="${pagination}" list="${posts}"/>
+		          	</span>
+	 	   		</div>
  	   		</div>
            <div class="forum_header_table">
 	            <div class="forum_header">
