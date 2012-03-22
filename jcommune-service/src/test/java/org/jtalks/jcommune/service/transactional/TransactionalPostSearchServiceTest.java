@@ -43,8 +43,8 @@ public class TransactionalPostSearchServiceTest {
 		postSearchService = new TransactionalPostSearchService(postSearchDao);
 	}
 	
-	@Test(dataProvider = "parameterSearchPostsByEmptyPhrase")
-	public void testSearchPostsByEmptyPhrase(String emptyPhrase) {
+	@Test(dataProvider = "parameterSearchPostsByIncorrectPrase")
+	public void testSearchPostsByIncorrectPrase(String emptyPhrase) {
 		List<Post> searchResult = postSearchService.searchPostsByPhrase(emptyPhrase);
 		
 		Assert.assertTrue(searchResult.isEmpty(), 
@@ -52,10 +52,11 @@ public class TransactionalPostSearchServiceTest {
 		Mockito.verify(postSearchDao, Mockito.never()).searchPosts(emptyPhrase);
 	}
 	
-	@DataProvider(name = "parameterSearchPostsByEmptyPhrase")
+	@DataProvider(name = "parameterSearchPostsByIncorrectPrase")
 	public Object[][] parameterSearchPostsByEmptyPhrase() {
 		return new Object[][] {
-				{null}, {StringUtils.EMPTY}, {" "}
+				{null}, {StringUtils.EMPTY},
+				{" "}, {" !@#$%^&*()-+=/<>_ "}
 		};
 	}
 	
