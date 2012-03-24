@@ -18,13 +18,13 @@ import org.apache.solr.analysis.LowerCaseFilterFactory;
 import org.apache.solr.analysis.SnowballPorterFilterFactory;
 import org.apache.solr.analysis.StandardFilterFactory;
 import org.apache.solr.analysis.StandardTokenizerFactory;
+import org.apache.solr.analysis.StopFilterFactory;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.AnalyzerDef;
 import org.hibernate.search.annotations.AnalyzerDefs;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Fields;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Parameter;
 import org.hibernate.search.annotations.TokenFilterDef;
@@ -49,8 +49,18 @@ import org.jtalks.common.model.entity.Entity;
 		tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
 	    filters = {
 			@TokenFilterDef(factory = LowerCaseFilterFactory.class),
+			@TokenFilterDef(factory = StopFilterFactory.class,
+				params = {
+					@Parameter(name = "words", value = "org/jtalks/jcommune/lucene/english_stop.txt"),
+					@Parameter(name = "ignoreCase", value = "true")
+				}),
+			@TokenFilterDef(factory = StopFilterFactory.class,
+				params = {
+					@Parameter(name = "words", value = "org/jtalks/jcommune/lucene/russian_stop.txt"),
+					@Parameter(name = "ignoreCase", value = "true")
+				}),
 	      	@TokenFilterDef(factory = SnowballPorterFilterFactory.class, 
-	      					params =  @Parameter(name="language", value="Russian"))
+				params =  @Parameter(name="language", value="Russian"))
 			}
 	),
 	@AnalyzerDef(name = "defaultJtalksAnalyzer",
@@ -58,6 +68,16 @@ import org.jtalks.common.model.entity.Entity;
 		filters = {
 			@TokenFilterDef(factory = StandardFilterFactory.class),
 			@TokenFilterDef(factory = LowerCaseFilterFactory.class),
+			@TokenFilterDef(factory = StopFilterFactory.class,
+				params = {
+					@Parameter(name = "words", value = "org/jtalks/jcommune/lucene/english_stop.txt"),
+					@Parameter(name = "ignoreCase", value = "true")
+			}),
+			@TokenFilterDef(factory = StopFilterFactory.class,
+				params = {
+					@Parameter(name = "words", value = "org/jtalks/jcommune/lucene/russian_stop.txt"),
+					@Parameter(name = "ignoreCase", value = "true")
+			}),
 	      	@TokenFilterDef(factory = SnowballPorterFilterFactory.class)
 		}
 	)
@@ -167,9 +187,9 @@ public class Post extends Entity implements IndexedEntity {
      */
     @Fields({
     	@Field(name = POST_CONTENT_FIELD_RU,
-    			index = Index.TOKENIZED, analyzer = @Analyzer(definition = "russianJtalksAnalyzer")),
+    			analyzer = @Analyzer(definition = "russianJtalksAnalyzer")),
     	@Field(name = POST_CONTENT_FIELD_DEF, 
-    			index = Index.TOKENIZED, analyzer = @Analyzer(definition = "defaultJtalksAnalyzer"))	
+    			analyzer = @Analyzer(definition = "defaultJtalksAnalyzer"))	
     })
     public String getPostContent() {
         return postContent;

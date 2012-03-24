@@ -17,6 +17,7 @@ package org.jtalks.jcommune.model.dao.search.hibernate;
 import java.util.List;
 
 import org.hibernate.Query;
+import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.jtalks.jcommune.model.dao.search.PostSearchDao;
@@ -56,8 +57,23 @@ public class PostHibernateSearchDao extends AbstractHibernateSearchDao<Post> imp
 				andField(Post.POST_CONTENT_FIELD_DEF).
 				matching(searchText).
 				createQuery(); 
-		Query query = fullTextSession.createFullTextQuery(luceneQuery);
+		FullTextQuery query = fullTextSession.
+				createFullTextQuery(luceneQuery);
 		query.setMaxResults(DEFAULT_MAX_RECORD);
 		return query;
 	}
+	
+	/*
+	private String removeStopWords(String searchText) {
+		Reader reader = new StringReader(searchText);
+		StandardTokenizer tokenFilter = new StandardTokenizerFactory().create(reader);
+		StopFilterFactory filterFactory = new StopFilterFactory();
+		Map<String, String> arguments = new HashMap<String, String>();
+		arguments.put("words", "org/jtalks/jcommune/lucene/english_stop.txt");
+		arguments.put("ignoreCase", Boolean.TRUE.toString());
+		filterFactory.init(arguments);
+		StopFilter stopFilter = filterFactory.create(tokenFilter);
+		return null;
+	}
+	*/
 }

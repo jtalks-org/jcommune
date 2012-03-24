@@ -426,6 +426,7 @@
                     <excludes>
                         <exclude>target/**</exclude>
                         <exclude>**/*.properties</exclude>
+                        <exclude>**/*.txt</exclude>
                         <exclude>**/*.sql</exclude>
                         <exclude>**/*.css</exclude>
                         <exclude>**/*.vm</exclude>

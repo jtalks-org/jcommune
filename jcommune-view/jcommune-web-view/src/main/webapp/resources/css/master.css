@@ -1047,7 +1047,35 @@ td.button_cell {
 #upload {
     margin-top: 22px;
 }
+/*Full text search*/
 
+.searchform {
+    width:200px;
+    margin:0 auto;
+}
+
+.lighter {
+    width:95%;
+    height:8px;
+}
+
+.lighter input[type=text]{
+	color:#bcbcbc;
+    border:1px solid #d0d0d0;
+    background-color:#fcfcfc;
+}
+
+.search {
+    padding:3px 10px 4px 23px;
+    margin:-6px;
+    background: url('../images/search.png') no-repeat 8px 6px;
+}
+
+.rounded {
+    border-radius:15px;
+    -moz-border-radius:15px;
+    -webkit-border-radius:15px;
+}
 /* Private messages */
 .pm_page .all_forums {
     width: 824px;

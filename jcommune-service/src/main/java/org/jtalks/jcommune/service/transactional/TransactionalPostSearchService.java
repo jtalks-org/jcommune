@@ -51,8 +51,9 @@ public class TransactionalPostSearchService implements PostSearchService {
 			return Collections.emptyList();
 		}
 	}
+	
 	//TODO Hibernate Search must have a solution out of the box.
-	private String removeAllPunctuationMarks(String string) {
+	private String removeAllPunctuationMarks(String string) {	
 		return string.replaceAll("\\p{Punct}", "").trim();
 	}
 

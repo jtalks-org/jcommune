@@ -26,6 +26,14 @@
         </a>!
     </sec:authorize>
     <ul class="top_menu">
+	   	<li class="no_border">
+	       	<div class="lighter">
+				<form class="searchform" action='<c:url value="/search/"/>' method="GET" name="form" id="form">
+					<span><input type="text" name="searchText" class="search rounded" 
+								placeholder="<fmt:message key="label.search"/>"></span>
+				</form>
+			</div>
+        </li>
         <li class="no_border">
             <a href="${pageContext.request.contextPath}">
                 <fmt:message key="label.forum"/>
@@ -65,12 +73,6 @@
                 </a>
             </li>
         </sec:authorize>
-       <!--<li>
-            <form action='<c:url value="/search/"/>' method="GET" name="form" id="form">
-                <input type="text" name="searchText" id="searchText">
-                <input type="submit" value="<fmt:message key="label.search"/>" />
-            </form>
-        </li>  -->
         <li class="flag no_border">
             <a href="#" onclick="window.location = getLanguageLink('en')">
                 <img src="${pageContext.request.contextPath}/resources/images/flags/great britain.png" alt=""/>
