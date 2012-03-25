@@ -14,13 +14,16 @@
  */
 package org.jtalks.jcommune.model.dao.search.hibernate;
 
+import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.jtalks.jcommune.model.dao.search.PostSearchDao;
+import org.jtalks.jcommune.model.dao.search.hibernate.filter.SearchRequestFilter;
 import org.jtalks.jcommune.model.entity.Post;
 /**
  * Hibernate Search DAO implementation for operations with a {@link Post}.
@@ -30,20 +33,36 @@ import org.jtalks.jcommune.model.entity.Post;
  */
 public class PostHibernateSearchDao extends AbstractHibernateSearchDao<Post> implements PostSearchDao {
 	/**
-	 * The number of records by default.
+	 * The number of records by default
 	 */
 	public static final int DEFAULT_MAX_RECORD = 100;
+	private List<SearchRequestFilter> filters;
 	
+	/**
+	 * @param filters the list of filters to correct the dirty search requests
+	 */
+	public PostHibernateSearchDao(List<SearchRequestFilter> filters) {
+		this.filters = filters;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public List<Post> searchPosts(String searchText) {
-		FullTextSession fullTextSession = getFullTextSession();
-		Query query = createSearchPostsQuery(fullTextSession, searchText);
-		@SuppressWarnings("unchecked")
-		List<Post> posts = query.list();
-		return posts;
+		//TODO The latest versions of the library filtering is not needed.
+		for (SearchRequestFilter filter : filters) {
+			searchText = filter.filter(searchText);
+		}
+		if (!StringUtils.isEmpty(searchText.trim())) {
+			FullTextSession fullTextSession = getFullTextSession();
+			Query query = createSearchPostsQuery(fullTextSession, searchText);
+			@SuppressWarnings("unchecked")
+			List<Post> posts = query.list();
+			return posts;
+		} else {
+			return Collections.emptyList();
+		}
 	}
 
 	private Query createSearchPostsQuery(FullTextSession fullTextSession, String searchText) {
@@ -62,18 +81,4 @@ public class PostHibernateSearchDao extends AbstractHibernateSearchDao<Post> imp
 		query.setMaxResults(DEFAULT_MAX_RECORD);
 		return query;
 	}
-	
-	/*
-	private String removeStopWords(String searchText) {
-		Reader reader = new StringReader(searchText);
-		StandardTokenizer tokenFilter = new StandardTokenizerFactory().create(reader);
-		StopFilterFactory filterFactory = new StopFilterFactory();
-		Map<String, String> arguments = new HashMap<String, String>();
-		arguments.put("words", "org/jtalks/jcommune/lucene/english_stop.txt");
-		arguments.put("ignoreCase", Boolean.TRUE.toString());
-		filterFactory.init(arguments);
-		StopFilter stopFilter = filterFactory.create(tokenFilter);
-		return null;
-	}
-	*/
 }

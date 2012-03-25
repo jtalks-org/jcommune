@@ -43,18 +43,12 @@ public class TransactionalPostSearchService implements PostSearchService {
 	 */
 	@Override
 	public List<Post> searchPostsByPhrase(String phrase) {
-		if (!StringUtils.isEmpty(phrase) && 
-				!StringUtils.isEmpty(removeAllPunctuationMarks(phrase))) {
+		if (!StringUtils.isEmpty(phrase)) {
 			List<Post> posts = postSearchDao.searchPosts(phrase);
 			return posts;
 		} else {
 			return Collections.emptyList();
 		}
-	}
-	
-	//TODO Hibernate Search must have a solution out of the box.
-	private String removeAllPunctuationMarks(String string) {	
-		return string.replaceAll("\\p{Punct}", "").trim();
 	}
 
 	/**

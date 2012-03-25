@@ -64,7 +64,25 @@
     
     <!-- Declaration of Hibernate Search DAO beans -->
 	<bean id="postSearchDao" class="org.jtalks.jcommune.model.dao.search.hibernate.PostHibernateSearchDao"
-		  parent="abstractHibernateSearchDao"/>
+		  parent="abstractHibernateSearchDao">
+		  <constructor-arg>
+		  	<list>
+		  		<ref bean="punctuationMarksFilter"/>
+		  		<ref bean="stopWordsFilter"/>
+		  	</list>
+		  </constructor-arg>
+	</bean>
+	<bean id="punctuationMarksFilter" 
+		  class="org.jtalks.jcommune.model.dao.search.hibernate.filter.PunctuationMarksFilter"/>
+	<bean id="stopWordsFilter" class="org.jtalks.jcommune.model.dao.search.hibernate.filter.StopWordsFilter">
+		<constructor-arg>
+			<list>
+				<value>org/jtalks/jcommune/lucene/english_stop.txt</value>
+				<value>org/jtalks/jcommune/lucene/russian_stop.txt</value>
+			</list>
+		</constructor-arg>
+		<constructor-arg value="true"/>
+	</bean>
 	
     <!--Injecting sessionFactory bean to class AbstractHibernateChildRepository, this way
 resolves a problem of multiple DAO beans definition -->

@@ -12,7 +12,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao.hibernate;
+package org.jtalks.jcommune.model.dao.search.hibernate;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +22,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.jtalks.jcommune.model.ObjectsFactory;
-import org.jtalks.jcommune.model.dao.search.PostSearchDao;
+import org.jtalks.jcommune.model.dao.search.hibernate.PostHibernateSearchDao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -47,7 +47,7 @@ public class PostHibernateSearchDaoTest extends AbstractTransactionalTestNGSprin
 	@Autowired
 	private SessionFactory sessionFactory;
 	@Autowired
-	private PostSearchDao postSearchDao;
+	private PostHibernateSearchDao postSearchDao;
 	private FullTextSession fullTextSession;
 	
 	@BeforeMethod
@@ -169,4 +169,22 @@ public class PostHibernateSearchDaoTest extends AbstractTransactionalTestNGSprin
 		};
 	}
 	
+	@Test(dataProvider = "parameterSearchPostsByStopWords")
+	public void testSearchPostsByStopWords(String stopWord, String searchText) {
+		Post expectedPost = ObjectsFactory.getDefaultPost();
+		expectedPost.setPostContent(searchText);
+		
+		saveAndFlushIndexes(Arrays.asList(expectedPost));
+		
+		List<Post> searchResultPosts = postSearchDao.searchPosts(stopWord);
+		Assert.assertTrue(searchResultPosts.size() == 0, "Search result must be empty.");
+	}
+	
+	@DataProvider(name = "parameterSearchPostsByStopWords")
+	public Object[][] parameterSearchPostsByStopWords() {
+		return new Object[][] {
+				{"the", "the book"},
+				{"и", "Проекты и управление ими"}
+		};
+	}
 }
