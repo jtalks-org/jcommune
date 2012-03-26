@@ -20,6 +20,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <head>
+    <script language="javascript"
+      src="${pageContext.request.contextPath}/resources/javascript/custom/privateMessages.js"></script>
     <title><spring:message code="label.pm_title"/></title>
 </head>
 <body>
@@ -65,6 +67,14 @@
                         </form:form>
                     </sec:authorize>
                     </c:if>
+                    <div class="del">
+                      <a id="deleteOnePM" class="button delete" href="${pageContext.request.contextPath}/pm"
+                        rel="<spring:message code="label.deletePMConfirmation"/>">
+                        <spring:message code="label.delete"/>
+                      </a>
+                      <input id="PMId" hidden="true" value="${pm.id}"/>
+                      <form:form id="deleteForm" method="DELETE"/>
+                    </div>
                 </div>
                 <div class="pm_right">
                     <jtalks:bb2html bbCode="${pm.body}"/>

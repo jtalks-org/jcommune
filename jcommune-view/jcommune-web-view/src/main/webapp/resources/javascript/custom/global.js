@@ -27,7 +27,7 @@ $(document).ready(function () {
                 {buttons:{}, persistent:false});
         })
     })
-    // popups to confirm post/topic deletion
+    // popups to confirm post/topic/pm deletion
     $("a.delete").each(function () {
         $(this).click(function (e) {
             e.preventDefault();

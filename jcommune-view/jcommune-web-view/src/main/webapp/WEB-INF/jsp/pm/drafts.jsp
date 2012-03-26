@@ -19,9 +19,12 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <head>
     <script language="javascript"
       src="${pageContext.request.contextPath}/resources/javascript/custom/tableStylish.js"></script>
+    <script language="javascript"
+      src="${pageContext.request.contextPath}/resources/javascript/custom/privateMessages.js"></script>
     <title><spring:message code="label.drafts"/></title>
 </head>
 <body>
@@ -45,7 +48,7 @@
           <c:choose>
             <c:when test="${!(empty pmList)}">
               <c:forEach var="pm" items="${pmList}">
-                <tr class="mess read">
+                <tr id="${pm.id}" class="mess read">
                   <td><input type="checkbox" id="${pm.id}" class="checker"/></td>
                   <td>
                     <a href="${pageContext.request.contextPath}/users/${pm.userTo.encodedUsername}">
@@ -75,7 +78,13 @@
             </c:otherwise>
           </c:choose>
         </table>
-        <input type="submit" class="button" value="<spring:message code="label.delete"/>"></input>
+        <div class="del">
+          <a id="deleteCheckedPM" class="button delete" href="${pageContext.request.contextPath}/pm"
+            rel="<spring:message code="label.deletePMConfirmation"/>">
+            <spring:message code="label.delete"/>
+          </a>
+          <form:form id="deleteForm" method="DELETE"/>
+        </div>
         <a class="button" href="${pageContext.request.contextPath}/pm/${pm.id}/edit">
             <spring:message code="label.edit"/>
         </a>

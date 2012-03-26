@@ -19,9 +19,12 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <head>
         <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/tableStylish.js"></script>
+        <script language="javascript"
+          src="${pageContext.request.contextPath}/resources/javascript/custom/privateMessages.js"></script>
     <title><spring:message code="label.inbox"/></title>
 </head>
 <body>
@@ -45,13 +48,13 @@
                 <c:forEach var="pm" items="${pmList}">
                     <c:choose>
                         <c:when test="${pm.read}">
-                          <tr class="mess read">
+                          <tr id="${pm.id}" class="mess read">
                         </c:when>
                         <c:otherwise>
-                          <tr class="mess">
+                          <tr id="${pm.id}" class="mess">
                         </c:otherwise>
                     </c:choose>
-                    <td><input type="checkbox" id="${pm.id}" class="checker"/></td>
+                    <td><input type = "checkbox" id = "${pm.id}" class="checker"/></td>
                     <td>
                       <a href="${pageContext.request.contextPath}/users/${pm.userFrom.encodedUsername}">
                         <c:out value="${pm.userFrom.username}"/>
@@ -74,7 +77,13 @@
             </c:otherwise>
           </c:choose>
         </table>
-        <input type="submit" class="button" value="<spring:message code="label.delete"/>"></input>
+        <div class="del">
+          <a id="deleteCheckedPM" class="button delete" href="${pageContext.request.contextPath}/pm"
+            rel="<spring:message code="label.deletePMConfirmation"/>">
+            <spring:message code="label.delete"/>
+          </a>
+          <form:form id="deleteForm" method="DELETE"/>
+        </div>
     </div>
     <div class="footer_buffer"></div>
 </div>
