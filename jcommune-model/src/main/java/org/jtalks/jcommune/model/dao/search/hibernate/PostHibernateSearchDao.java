@@ -37,11 +37,13 @@ public class PostHibernateSearchDao extends AbstractHibernateSearchDao<Post> imp
 	 */
 	public static final int DEFAULT_MAX_RECORD = 100;
 	private List<SearchRequestFilter> filters;
-	
+
 	/**
+	 * Injects filters for search requests.
+	 * 
 	 * @param filters the list of filters to correct the dirty search requests
 	 */
-	public PostHibernateSearchDao(List<SearchRequestFilter> filters) {
+	public void setFilters(List<SearchRequestFilter> filters) {
 		this.filters = filters;
 	}
 

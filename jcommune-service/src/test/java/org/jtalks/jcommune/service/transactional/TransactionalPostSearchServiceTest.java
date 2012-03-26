@@ -16,12 +16,15 @@ package org.jtalks.jcommune.service.transactional;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.dao.search.PostSearchDao;
 import org.jtalks.jcommune.model.entity.Post;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -44,10 +47,24 @@ public class TransactionalPostSearchServiceTest {
 	public void testSearchPosts() {
 		String phrase = "phrase";
 		
-		@SuppressWarnings("unused")
-		List<Post> searchResult = postSearchService.searchPostsByPhrase(phrase);
+		postSearchService.searchPostsByPhrase(phrase);
 		
 		Mockito.verify(postSearchDao).searchPosts(phrase);
+	}
+	
+	@Test(dataProvider = "parameterSearchPostsWithEmptySearchPhrase")
+	public void testSearchPostsWithEmptySearchPhrase(String phrase) {
+		List<Post> searchResult = postSearchService.searchPostsByPhrase(phrase);
+		
+		Assert.assertTrue(searchResult.isEmpty(), "The search result must be empty.");
+	}
+	
+	@DataProvider(name = "parameterSearchPostsWithEmptySearchPhrase")
+	public Object[][] parameterSearchPostsWithEmptySearchPhrase() {
+		return new Object[][] {
+			{StringUtils.EMPTY},
+			{null}	
+		};
 	}
 	
 	@Test

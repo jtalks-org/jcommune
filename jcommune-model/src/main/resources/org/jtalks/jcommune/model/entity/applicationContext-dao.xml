@@ -65,12 +65,12 @@
     <!-- Declaration of Hibernate Search DAO beans -->
 	<bean id="postSearchDao" class="org.jtalks.jcommune.model.dao.search.hibernate.PostHibernateSearchDao"
 		  parent="abstractHibernateSearchDao">
-		  <constructor-arg>
+		  <property name="filters">
 		  	<list>
 		  		<ref bean="punctuationMarksFilter"/>
 		  		<ref bean="stopWordsFilter"/>
 		  	</list>
-		  </constructor-arg>
+		  </property>
 	</bean>
 	<bean id="punctuationMarksFilter" 
 		  class="org.jtalks.jcommune.model.dao.search.hibernate.filter.PunctuationMarksFilter"/>

@@ -17,13 +17,20 @@ package org.jtalks.jcommune.model.dao.search.hibernate;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.search.hibernate.PostHibernateSearchDao;
+import org.jtalks.jcommune.model.dao.search.hibernate.filter.PunctuationMarksFilter;
+import org.jtalks.jcommune.model.dao.search.hibernate.filter.SearchRequestFilter;
+import org.jtalks.jcommune.model.dao.search.hibernate.filter.StopWordsFilter;
 import org.jtalks.jcommune.model.entity.Post;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -48,12 +55,26 @@ public class PostHibernateSearchDaoTest extends AbstractTransactionalTestNGSprin
 	private SessionFactory sessionFactory;
 	@Autowired
 	private PostHibernateSearchDao postSearchDao;
+	@Mock
+	private PunctuationMarksFilter punctuationMarksFilter;
+	@Mock
+	private StopWordsFilter stopWordsFilter;
+	
 	private FullTextSession fullTextSession;
 	
 	@BeforeMethod
 	public void init() {
 		Session session = sessionFactory.getCurrentSession();
         ObjectsFactory.setSession(session);
+        
+        MockitoAnnotations.initMocks(this);
+        List<SearchRequestFilter> filters = Arrays.asList(punctuationMarksFilter, stopWordsFilter);
+        postSearchDao.setFilters(filters);
+	}
+	
+	private void configureMocks(String searchText, String result) {
+		Mockito.when(punctuationMarksFilter.filter(searchText)).thenReturn(result);
+		Mockito.when(stopWordsFilter.filter(searchText)).thenReturn(result);
 	}
 	
 	@BeforeMethod
@@ -69,13 +90,24 @@ public class PostHibernateSearchDaoTest extends AbstractTransactionalTestNGSprin
 		fullTextSession.flushToIndexes();
 	}
 	
+	@Test
+	public void testSearchWithFullyDirtySearchText() {
+		configureMocks(StringUtils.EMPTY, StringUtils.EMPTY);
+		
+		List<Post> searchResultPosts = postSearchDao.searchPosts(StringUtils.EMPTY);
+		
+		Assert.assertTrue(searchResultPosts.size() == 0, "Search result must be empty.");
+	}
+	
 	@Test(dataProvider = "parameterFullPhraseSearchPosts")
 	public void testFullPhraseSearchPosts(String postContent) {
 		Post expectedPost = ObjectsFactory.getDefaultPost();
+		expectedPost.setPostContent(postContent);
 		
 		saveAndFlushIndexes(Arrays.asList(expectedPost));
+		configureMocks(postContent, postContent);
 		
-		List<Post> searchResultPosts = postSearchDao.searchPosts(expectedPost.getPostContent());
+		List<Post> searchResultPosts = postSearchDao.searchPosts(postContent);
 		
 		Assert.assertTrue(searchResultPosts != null, "Search result must not be null.");
 		Assert.assertTrue(searchResultPosts.size() != 0, "Search result must not be empty.");
@@ -106,7 +138,10 @@ public class PostHibernateSearchDaoTest extends AbstractTransactionalTestNGSprin
 		saveAndFlushIndexes(Arrays.asList(expectedPost));
 		
 		for (String piece: Arrays.asList(firstPiece, secondPiece)) {
+			configureMocks(piece, piece);
+			
 			List<Post> searchResultPosts = postSearchDao.searchPosts(piece);
+			
 			Assert.assertTrue(searchResultPosts != null, "Search result must not be null.");
 			Assert.assertTrue(searchResultPosts.size() != 0, "Search result must not be empty.");
 		}
@@ -126,6 +161,7 @@ public class PostHibernateSearchDaoTest extends AbstractTransactionalTestNGSprin
 		expectedPost.setPostContent(correct);
 		
 		saveAndFlushIndexes(Arrays.asList(expectedPost));
+		configureMocks(incorrect, incorrect);
 		
 		List<Post> searchResultPosts = postSearchDao.searchPosts(incorrect);
 		
@@ -154,6 +190,7 @@ public class PostHibernateSearchDaoTest extends AbstractTransactionalTestNGSprin
 		expectedPost.setPostContent(word);
 		
 		saveAndFlushIndexes(Arrays.asList(expectedPost));
+		configureMocks(wordWithSameRoot, wordWithSameRoot);
 		
 		List<Post> searchResultPosts = postSearchDao.searchPosts(wordWithSameRoot);
 		Assert.assertTrue(searchResultPosts.size() != 0, "Search result must not be empty.");
@@ -166,25 +203,6 @@ public class PostHibernateSearchDaoTest extends AbstractTransactionalTestNGSprin
 				{"Key", "Keys"},
 				{"Полеты", "полет"},
 				{"барабан", "барабаны"}
-		};
-	}
-	
-	@Test(dataProvider = "parameterSearchPostsByStopWords")
-	public void testSearchPostsByStopWords(String stopWord, String searchText) {
-		Post expectedPost = ObjectsFactory.getDefaultPost();
-		expectedPost.setPostContent(searchText);
-		
-		saveAndFlushIndexes(Arrays.asList(expectedPost));
-		
-		List<Post> searchResultPosts = postSearchDao.searchPosts(stopWord);
-		Assert.assertTrue(searchResultPosts.size() == 0, "Search result must be empty.");
-	}
-	
-	@DataProvider(name = "parameterSearchPostsByStopWords")
-	public Object[][] parameterSearchPostsByStopWords() {
-		return new Object[][] {
-				{"the", "the book"},
-				{"и", "Проекты и управление ими"}
 		};
 	}
 }

@@ -68,15 +68,12 @@ public class StopWordsFilter implements SearchRequestFilter {
 		filterFactory.inform(new HibernateSearchResourceLoader());
 		
 		Set<?> stopWords = filterFactory.getStopWords();
-		if (stopWords != null) {
-			List<String> searchTerms = splitSearchText(searchText);
-			for(Object stopWord: (CharArraySet) stopWords) {
-				String stopWordString = String.valueOf((char[]) stopWord).trim();
-				searchTerms.remove(stopWordString);
-			}
-			return joinSearchTerms(searchTerms);
+		List<String> searchTerms = splitSearchText(searchText);
+		for(Object stopWord: (CharArraySet) stopWords) {
+			String stopWordString = String.valueOf((char[]) stopWord).trim();
+			searchTerms.remove(stopWordString);
 		}
-		return searchText;
+		return joinSearchTerms(searchTerms);
 	}
 	
 	private List<String> splitSearchText(String searchText) {
