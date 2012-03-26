@@ -97,6 +97,11 @@ function bbcode2html() {
     textdata = textdata.replace(/%5D/gi, "@w0956756wo@");
     textdata = textdata.replace(/%5B/gi, "@ywdffgg434y@");
     textdata = textdata.replace(/%22/gi, "14@123435vggv4f");
+    var reg = /(<)([^\[]*\[\/code\])/gi;
+    while (reg.exec(textdata) != null) {
+        textdata = textdata.replace(reg, "rte@@tet345345frdgfv$2");
+    }
+    textdata = textdata.replace(/</gi, "gertfgertgf@@@@@#4324234");
     textdata = encodeURI(textdata);
     textdata = textdata.replace(/%5D/gi, "]");
     textdata = textdata.replace(/%5B/gi, "[");
@@ -115,6 +120,8 @@ function bbcode2html() {
             result = result.replace(/@w0956756wo@/gi, "%5D");
             result = result.replace(/@ywdffgg434y@/gi, "%5B");
             result = result.replace(/14@123435vggv4f/gi, "%22");
+            result = result.replace(/rte@@tet345345frdgfv/gi, "<");
+            result = result.replace(/gertfgertgf@@@@@#4324234/gi, "<![CDATA[<]]>");
             htmlcontentelement.innerHTML = result;
             htmlcontentelement.style.display = "";
             textboxelement.style.display = "none";
