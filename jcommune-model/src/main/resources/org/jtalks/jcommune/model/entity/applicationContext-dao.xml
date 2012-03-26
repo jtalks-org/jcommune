@@ -61,11 +61,19 @@
     <bean id="userContactsDao"
           class="org.jtalks.jcommune.model.dao.hibernate.UserContactsHibernateDao"
           parent="abstractHibernateDao"/>
-
+    
+    <!-- Declaration of Hibernate Search DAO beans -->
+	<bean id="postSearchDao" class="org.jtalks.jcommune.model.dao.search.hibernate.PostHibernateSearchDao"
+		  parent="abstractHibernateSearchDao"/>
+	
     <!--Injecting sessionFactory bean to class AbstractHibernateChildRepository, this way
 resolves a problem of multiple DAO beans definition -->
     <bean id="abstractHibernateDao" abstract="true">
         <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <!--Injecting sessionFactory bean to class AbstractHibernatSearchDao -->
+    <bean id="abstractHibernateSearchDao" abstract="true">
+    	<property name="sessionFactory" ref="sessionFactory"/>
     </bean>
     <!--Declaration and setting up datasource, sessionFactory and transactionalManager
    beans -->
@@ -111,6 +119,10 @@ resolves a problem of multiple DAO beans definition -->
                     /org/jtalks/jcommune/model/entity/ehcache.xml
                 </prop>
                 <prop key="hibernate.generate_statistics">${hibernate.generate_statistics}</prop>
+                <prop key="hibernate.search.default.directory_provider">
+                	${hibernate.search.default.directory_provider}
+                </prop>
+                <prop key="hibernate.search.default.indexBase">${hibernate.search.default.indexBase}</prop>
             </props>
         </property>
     </bean>

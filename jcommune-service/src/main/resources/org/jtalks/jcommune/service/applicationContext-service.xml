@@ -86,7 +86,12 @@
         <constructor-arg ref="securityService"/>
         <constructor-arg ref="notificationService"/>
     </bean>
-
+    
+    <bean id="postSearchService" 
+    	  class="org.jtalks.jcommune.service.transactional.TransactionalPostSearchService">
+    	  <constructor-arg ref="postSearchDao"/>
+    </bean>
+    
     <bean id="topicBranchService"
           class="org.jtalks.jcommune.service.transactional.TransactionalBranchService">
         <constructor-arg ref="topicBranchDao"/>

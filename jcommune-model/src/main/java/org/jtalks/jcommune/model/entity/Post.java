@@ -14,6 +14,21 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import org.apache.solr.analysis.LowerCaseFilterFactory;
+import org.apache.solr.analysis.SnowballPorterFilterFactory;
+import org.apache.solr.analysis.StandardFilterFactory;
+import org.apache.solr.analysis.StandardTokenizerFactory;
+import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.AnalyzerDef;
+import org.hibernate.search.annotations.AnalyzerDefs;
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Fields;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Parameter;
+import org.hibernate.search.annotations.TokenFilterDef;
+import org.hibernate.search.annotations.TokenizerDef;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
 
@@ -27,8 +42,28 @@ import org.jtalks.common.model.entity.Entity;
  *
  * @author Pavel Vervenko
  * @author Kirill Afonin
+ * @author Anuar Nurmakanov
  */
-public class Post extends Entity {
+@AnalyzerDefs({
+	@AnalyzerDef(name = "russianJtalksAnalyzer",
+		tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+	    filters = {
+			@TokenFilterDef(factory = LowerCaseFilterFactory.class),
+	      	@TokenFilterDef(factory = SnowballPorterFilterFactory.class, 
+	      					params =  @Parameter(name="language", value="Russian"))
+			}
+	),
+	@AnalyzerDef(name = "defaultJtalksAnalyzer",
+		tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+		filters = {
+			@TokenFilterDef(factory = StandardFilterFactory.class),
+			@TokenFilterDef(factory = LowerCaseFilterFactory.class),
+	      	@TokenFilterDef(factory = SnowballPorterFilterFactory.class)
+		}
+	)
+})
+@Indexed
+public class Post extends Entity implements IndexedEntity {
 
     private DateTime creationDate;
     private DateTime modificationDate;
@@ -38,6 +73,9 @@ public class Post extends Entity {
 
     public static final int MAX_LENGTH = 20000;
     public static final int MIN_LENGTH = 2;
+    
+    public static final String POST_CONTENT_FIELD_RU = "postContentRu";
+    public static final String POST_CONTENT_FIELD_DEF = "postContent";
 
     /**
      * For Hibernate use only
@@ -58,6 +96,12 @@ public class Post extends Entity {
         this.postContent = postContent;
     }
 
+    /**
+     * Used to find out the current post index on JSP page.
+     * We can't invoke a method there so use an explicit getter.
+     *
+     * @return index of this post ina  topic, starting from 0
+     */
     public int getPostIndexInTopic(){
         return topic.getPosts().indexOf(this);
     }
@@ -121,6 +165,12 @@ public class Post extends Entity {
     /**
      * @return the postContent
      */
+    @Fields({
+    	@Field(name = POST_CONTENT_FIELD_RU,
+    			index = Index.TOKENIZED, analyzer = @Analyzer(definition = "russianJtalksAnalyzer")),
+    	@Field(name = POST_CONTENT_FIELD_DEF, 
+    			index = Index.TOKENIZED, analyzer = @Analyzer(definition = "defaultJtalksAnalyzer"))	
+    })
     public String getPostContent() {
         return postContent;
     }
@@ -145,4 +195,13 @@ public class Post extends Entity {
     protected void setTopic(Topic topic) {
         this.topic = topic;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @DocumentId
+	@Override
+	public long getId() {
+		return super.getId();
+	}
 }

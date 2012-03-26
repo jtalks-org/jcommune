@@ -14,10 +14,10 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import org.joda.time.DateTime;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.joda.time.DateTime;
 
 /**
  * Represents the topic of the forum.
@@ -304,8 +304,9 @@ public class Topic extends SubscriptionAwareEntity {
     }
 
     /**
-     * This method is useless until setLastReadPostIndex
-     * has been called explicitly.
+     * Returns first unread post for current user. If no unread post
+     * information has been set explicitly this method will return
+     * first topic's post id, considering all topic as unread.
      *
      * @return returns first unread post id for the current user
      */
@@ -327,7 +328,6 @@ public class Topic extends SubscriptionAwareEntity {
      * @return if current topic has posts still unread by the current user
      */
     public boolean isHasUpdates() {
-        return (lastReadPostIndex == null) ||
-                (lastReadPostIndex + 1 < posts.size());
+        return (lastReadPostIndex == null) || (lastReadPostIndex + 1 < posts.size());
     }
 }
