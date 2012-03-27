@@ -21,12 +21,12 @@ package org.jtalks.jcommune.model.dao.search.hibernate.filter;
  *
  */
 public class PunctuationMarksFilter implements SearchRequestFilter {
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String filter(String searchText) {
-		return searchText.replaceAll("\\p{Punct}", " ").trim();
-	}
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String filter(String searchText) {
+        return searchText.replaceAll("\\p{Punct}", " ").trim();
+    }
 }

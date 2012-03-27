@@ -21,12 +21,12 @@ package org.jtalks.jcommune.model.dao.search.hibernate.filter;
  *
  */
 public interface SearchRequestFilter {
-	
-	/**
-	 * Filter the  search text.
-	 * 
-	 * @param searchText search text
-	 * @return correct search text
-	 */
-	String filter(String searchText);
+    
+    /**
+     * Filter the  search text.
+     * 
+     * @param searchText search text
+     * @return correct search text
+     */
+    String filter(String searchText);
 }

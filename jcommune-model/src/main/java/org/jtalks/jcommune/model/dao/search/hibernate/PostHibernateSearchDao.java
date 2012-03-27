@@ -32,55 +32,60 @@ import org.jtalks.jcommune.model.entity.Post;
  *
  */
 public class PostHibernateSearchDao extends AbstractHibernateSearchDao<Post> implements PostSearchDao {
-	/**
-	 * The number of records by default
-	 */
-	public static final int DEFAULT_MAX_RECORD = 100;
-	private List<SearchRequestFilter> filters;
-
-	/**
-	 * Injects filters for search requests.
-	 * 
-	 * @param filters the list of filters to correct the dirty search requests
-	 */
-	public void setFilters(List<SearchRequestFilter> filters) {
-		this.filters = filters;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<Post> searchPosts(String searchText) {
-		//TODO The latest versions of the library filtering is not needed.
-		for (SearchRequestFilter filter : filters) {
-			searchText = filter.filter(searchText);
-		}
-		if (!StringUtils.isEmpty(searchText.trim())) {
-			FullTextSession fullTextSession = getFullTextSession();
-			Query query = createSearchPostsQuery(fullTextSession, searchText);
-			@SuppressWarnings("unchecked")
-			List<Post> posts = query.list();
-			return posts;
-		} else {
-			return Collections.emptyList();
-		}
-	}
-
-	private Query createSearchPostsQuery(FullTextSession fullTextSession, String searchText) {
-		QueryBuilder queryBuilder = fullTextSession.
-				getSearchFactory().
-				buildQueryBuilder().
-				forEntity(Post.class).
-				get();
-		org.apache.lucene.search.Query luceneQuery = queryBuilder.keyword().
-				onField(Post.POST_CONTENT_FIELD_RU).
-				andField(Post.POST_CONTENT_FIELD_DEF).
-				matching(searchText).
-				createQuery(); 
-		FullTextQuery query = fullTextSession.
-				createFullTextQuery(luceneQuery);
-		query.setMaxResults(DEFAULT_MAX_RECORD);
-		return query;
-	}
+    /**
+     * The number of records by default
+     */
+    public static final int DEFAULT_MAX_RECORD = 100;
+    private List<SearchRequestFilter> filters;
+    
+    /**
+     * Injects filters for search requests.
+     * 
+     * @param filters the list of filters to correct the dirty search requests
+     */
+    public void setFilters(List<SearchRequestFilter> filters) {
+        this.filters = filters;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Post> searchPosts(String searchText) {
+        //TODO The latest versions of the library filtering is not needed.
+        for (SearchRequestFilter filter : filters) {
+            searchText = filter.filter(searchText);
+        }
+        if (!StringUtils.isEmpty(searchText.trim())) {
+            FullTextSession fullTextSession = getFullTextSession();
+            Query query = createSearchPostsQuery(fullTextSession, searchText);
+            return query.list();
+        } else {
+            return Collections.emptyList();
+        }
+    }
+    
+    /**
+     * This method builds the search query.
+     * 
+     * @param fullTextSession Hibernate Search full-text session
+     * @param searchText search text
+     * @return search query
+     */
+    private Query createSearchPostsQuery(FullTextSession fullTextSession, String searchText) {
+        QueryBuilder queryBuilder = fullTextSession.
+                getSearchFactory().
+                buildQueryBuilder().
+                forEntity(Post.class).
+                get();
+        org.apache.lucene.search.Query luceneQuery = queryBuilder.keyword().
+                onField(Post.POST_CONTENT_FIELD_RU).
+                andField(Post.POST_CONTENT_FIELD_DEF).
+                matching(searchText).
+                createQuery(); 
+        FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery);
+        query.setMaxResults(DEFAULT_MAX_RECORD);
+        return query;
+    }
 }

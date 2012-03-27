@@ -97,7 +97,7 @@ public class LocationService {
      * @param registerUserMap storage that contains forum location
      * for the current user
      */
-	void setRegisterUserMap(Map<JCUser, String> registerUserMap) {
-		this.registerUserMap = registerUserMap;
-	}
+    void setRegisterUserMap(Map<JCUser, String> registerUserMap) {
+        this.registerUserMap = registerUserMap;
+    }
 }

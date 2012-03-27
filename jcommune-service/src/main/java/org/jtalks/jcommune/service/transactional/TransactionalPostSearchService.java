@@ -29,33 +29,32 @@ import org.jtalks.jcommune.service.PostSearchService;
  *
  */
 public class TransactionalPostSearchService implements PostSearchService {
-	private PostSearchDao postSearchDao;
-	
-	/**
-	 * @param postSearchDao for full-text search operations
-	 */
-	public TransactionalPostSearchService(PostSearchDao postSearchDao) {
-		this.postSearchDao = postSearchDao;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<Post> searchPostsByPhrase(String phrase) {
-		if (!StringUtils.isEmpty(phrase)) {
-			List<Post> posts = postSearchDao.searchPosts(phrase);
-			return posts;
-		} else {
-			return Collections.emptyList();
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void rebuildIndex() {
-		postSearchDao.rebuildIndex(Post.class);
-	}
+    private PostSearchDao postSearchDao;
+    
+    /**
+     * @param postSearchDao for full-text search operations
+     */
+    public TransactionalPostSearchService(PostSearchDao postSearchDao) {
+        this.postSearchDao = postSearchDao;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Post> searchPostsByPhrase(String phrase) {
+        if (!StringUtils.isEmpty(phrase)) {
+            return postSearchDao.searchPosts(phrase);
+        } else {
+            return Collections.emptyList();
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void rebuildIndex() {
+        postSearchDao.rebuildIndex(Post.class);
+    }
 }

@@ -23,10 +23,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.jtalks.jcommune.model.ObjectsFactory;
-import org.jtalks.jcommune.model.dao.search.hibernate.PostHibernateSearchDao;
-import org.jtalks.jcommune.model.dao.search.hibernate.filter.PunctuationMarksFilter;
 import org.jtalks.jcommune.model.dao.search.hibernate.filter.SearchRequestFilter;
-import org.jtalks.jcommune.model.dao.search.hibernate.filter.StopWordsFilter;
 import org.jtalks.jcommune.model.entity.Post;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -56,9 +53,9 @@ public class PostHibernateSearchDaoTest extends AbstractTransactionalTestNGSprin
 	@Autowired
 	private PostHibernateSearchDao postSearchDao;
 	@Mock
-	private PunctuationMarksFilter punctuationMarksFilter;
+	private SearchRequestFilter punctuationMarksFilter;
 	@Mock
-	private StopWordsFilter stopWordsFilter;
+	private SearchRequestFilter stopWordsFilter;
 	
 	private FullTextSession fullTextSession;
 	

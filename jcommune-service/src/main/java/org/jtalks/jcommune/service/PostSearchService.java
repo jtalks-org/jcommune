@@ -25,16 +25,16 @@ import org.jtalks.jcommune.model.entity.Post;
  *
  */
 public interface PostSearchService {
-	/**
-	 * Search for posts, which may correspond to the phrase.
-	 * 
-	 * @param phrase phrase
-	 * @return list of posts
-	 */
-	List<Post> searchPostsByPhrase(String phrase);
-	
-	/**
-	 * Indexing posts from the database.
-	 */
-	void rebuildIndex();
+    /**
+     * Search for posts, which may correspond to the phrase.
+     * 
+     * @param phrase phrase
+     * @return list of posts
+     */
+    List<Post> searchPostsByPhrase(String phrase);
+    
+    /**
+     * Indexing posts from the database.
+     */
+    void rebuildIndex();
 }

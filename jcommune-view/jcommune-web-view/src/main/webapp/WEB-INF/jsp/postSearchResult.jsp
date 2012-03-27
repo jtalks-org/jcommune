@@ -32,7 +32,6 @@
 	       		<div>
 	                <div> 
 	                    <h2 class="heading"><spring:message code="label.search.result" arguments="${searchText}"/></h2>
-	                    <br/>
 	                </div>
 	            </div>
 	       		<div class="info_top_lower">
@@ -41,6 +40,7 @@
 		          	</span>
 	 	   		</div>
  	   		</div>
+ 	   		<br/>
            <div class="forum_header_table">
 	            <div class="forum_header">
 	                <h3 class="forum_header_link"><spring:message code="label.search.header.message"/></h3>

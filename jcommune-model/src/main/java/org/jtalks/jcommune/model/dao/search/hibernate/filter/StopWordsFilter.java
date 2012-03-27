@@ -34,58 +34,77 @@ import org.hibernate.search.util.HibernateSearchResourceLoader;
  *
  */
 public class StopWordsFilter implements SearchRequestFilter {
-	private static final String SPACE_STRING = " ";
-	private List<String> stopWordsFiles;
-	private boolean ignoreCase;
-	
-	/**
-	 * @param stopWordsFiles list of files that contain stop words
-	 * @param ignoreCase ignore case
-	 */
-	public StopWordsFilter(List<String> stopWordsFiles, boolean ignoreCase) {
-		this.stopWordsFiles = stopWordsFiles;
-		this.ignoreCase = ignoreCase;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String filter(String searchText) {
-		for(String stopWordsFile: stopWordsFiles) {
-			searchText = filter(searchText, stopWordsFile);
-		}
-		return searchText;
-	}
-	
-	private String filter(String searchText, String stopWordsFile) {
-		StopFilterFactory filterFactory = new StopFilterFactory();
-		Map<String, String> arguments = new HashMap<String, String>();
-		arguments.put("words", stopWordsFile);
-		arguments.put("luceneMatchVersion", String.valueOf(Version.LUCENE_31));
-		arguments.put("ignoreCase", String.valueOf(ignoreCase));
-		filterFactory.init(arguments);
-		filterFactory.inform(new HibernateSearchResourceLoader());
-		
-		Set<?> stopWords = filterFactory.getStopWords();
-		List<String> searchTerms = splitSearchText(searchText);
-		for(Object stopWord: (CharArraySet) stopWords) {
-			String stopWordString = String.valueOf((char[]) stopWord).trim();
-			searchTerms.remove(stopWordString);
-		}
-		return joinSearchTerms(searchTerms);
-	}
-	
-	private List<String> splitSearchText(String searchText) {
-		if (ignoreCase) {
-			searchText = searchText.toLowerCase();
-		}
-		return new ArrayList<String>(
-				Arrays.asList(searchText.split(SPACE_STRING))
-		);
-	}
-	
-	private String joinSearchTerms(List<String> searchTerms) {
-		return StringUtils.join(searchTerms, SPACE_STRING);
-	}
+    private static final String SPACE_STRING = " ";
+    private List<String> stopWordsFiles;
+    private boolean ignoreCase;
+    
+    /**
+     * @param stopWordsFiles list of files that contain stop words
+     * @param ignoreCase ignore case
+     */
+    public StopWordsFilter(List<String> stopWordsFiles, boolean ignoreCase) {
+        this.stopWordsFiles = stopWordsFiles;
+        this.ignoreCase = ignoreCase;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String filter(String searchText) {
+        for (String stopWordsFile : stopWordsFiles) {
+            searchText = filter(searchText, stopWordsFile);
+        }
+        return searchText;
+    }
+    
+    /**
+     * This method performs a filtration of the search text.
+     *  
+     * @param searchText search text
+     * @param stopWordsFile file that contains stop words
+     * @return result of filtration
+     */
+    private String filter(String searchText, String stopWordsFile) {
+        StopFilterFactory filterFactory = new StopFilterFactory();
+        Map<String, String> arguments = new HashMap<String, String>();
+        arguments.put("words", stopWordsFile);
+        arguments.put("luceneMatchVersion", String.valueOf(Version.LUCENE_31));
+        arguments.put("ignoreCase", String.valueOf(ignoreCase));
+        filterFactory.init(arguments);
+        filterFactory.inform(new HibernateSearchResourceLoader());
+        
+        Set<?> stopWords = filterFactory.getStopWords();
+        List<String> searchTerms = splitSearchText(searchText);
+        for(Object stopWord: (CharArraySet) stopWords) {
+            String stopWordString = String.valueOf((char[]) stopWord).trim();
+            searchTerms.remove(stopWordString);
+        }
+        return joinSearchTerms(searchTerms);
+    }
+    
+    /**
+     * Performs a splitting the search text.
+     * 
+     * @param searchText search text
+     * @return list of terms
+     */
+    private List<String> splitSearchText(String searchText) {
+        if (ignoreCase) {
+            searchText = searchText.toLowerCase();
+        }
+        return new ArrayList<String>(
+                Arrays.asList(searchText.split(SPACE_STRING))
+        );
+    }
+    
+    /**
+     * Creates the single string from list of terms.
+     * 
+     * @param searchTerms search text
+     * @return the single string from list of terms
+     */
+    private String joinSearchTerms(List<String> searchTerms) {
+        return StringUtils.join(searchTerms, SPACE_STRING);
+    }
 }

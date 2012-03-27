@@ -24,10 +24,10 @@ import org.jtalks.jcommune.model.entity.IndexedEntity;
  * @param <E> indexed entity
  */
 public interface SearchDao<E extends IndexedEntity> {
-	/**
-	 * Indexing data from the database.
-	 * 
-	 * @param entityClass
-	 */
-	void rebuildIndex(Class<E> entityClass);
+    /**
+     * Indexes the data from the database.
+     * 
+     * @param entityClass class of indexed entity
+     */
+    void rebuildIndex(Class<E> entityClass);
 }

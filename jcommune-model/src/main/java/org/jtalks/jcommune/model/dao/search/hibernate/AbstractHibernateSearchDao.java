@@ -30,37 +30,36 @@ import org.jtalks.jcommune.model.entity.IndexedEntity;
  * @param <E> indexed entity
  */
 public abstract class AbstractHibernateSearchDao<E extends IndexedEntity>
-		implements SearchDao<E> {
-	/**
-	 * Hibernate SessionFactory
-	 */
+        implements SearchDao<E> {
+    /**
+     * Hibernate SessionFactory
+     */
     private SessionFactory sessionFactory;
-
+    
     /**
      * Setter for Hibernate SessionFactory.
      *
      * @param sessionFactory the sessionFactory to set
      */
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
-	
-	/**
-	 * Get Hibernate Search session.
-	 * 
-	 * @return full text session
-	 */
-	protected FullTextSession getFullTextSession() {
-		Session session = sessionFactory.getCurrentSession();
-		FullTextSession fullTextSession = Search.getFullTextSession(session);
-		return fullTextSession;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void rebuildIndex(Class<E> entityClass) {
-		getFullTextSession().createIndexer(entityClass).start();
-	}
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+    
+    /**
+     * Get Hibernate Search session.
+     * 
+     * @return full text session
+     */
+    protected FullTextSession getFullTextSession() {
+        Session session = sessionFactory.getCurrentSession();
+        return Search.getFullTextSession(session);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void rebuildIndex(Class<E> entityClass) {
+        getFullTextSession().createIndexer(entityClass).start();
+    }
 }

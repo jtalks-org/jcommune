@@ -45,42 +45,46 @@ import org.jtalks.common.model.entity.Entity;
  * @author Anuar Nurmakanov
  */
 @AnalyzerDefs({
-	@AnalyzerDef(name = "russianJtalksAnalyzer",
-		tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
-	    filters = {
-			@TokenFilterDef(factory = LowerCaseFilterFactory.class),
-			@TokenFilterDef(factory = StopFilterFactory.class,
-				params = {
-					@Parameter(name = "words", value = "org/jtalks/jcommune/lucene/english_stop.txt"),
-					@Parameter(name = "ignoreCase", value = "true")
-				}),
-			@TokenFilterDef(factory = StopFilterFactory.class,
-				params = {
-					@Parameter(name = "words", value = "org/jtalks/jcommune/lucene/russian_stop.txt"),
-					@Parameter(name = "ignoreCase", value = "true")
-				}),
-	      	@TokenFilterDef(factory = SnowballPorterFilterFactory.class, 
-				params =  @Parameter(name="language", value="Russian"))
-			}
-	),
-	@AnalyzerDef(name = "defaultJtalksAnalyzer",
-		tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
-		filters = {
-			@TokenFilterDef(factory = StandardFilterFactory.class),
-			@TokenFilterDef(factory = LowerCaseFilterFactory.class),
-			@TokenFilterDef(factory = StopFilterFactory.class,
-				params = {
-					@Parameter(name = "words", value = "org/jtalks/jcommune/lucene/english_stop.txt"),
-					@Parameter(name = "ignoreCase", value = "true")
-			}),
-			@TokenFilterDef(factory = StopFilterFactory.class,
-				params = {
-					@Parameter(name = "words", value = "org/jtalks/jcommune/lucene/russian_stop.txt"),
-					@Parameter(name = "ignoreCase", value = "true")
-			}),
-	      	@TokenFilterDef(factory = SnowballPorterFilterFactory.class)
-		}
-	)
+    @AnalyzerDef(name = "russianJtalksAnalyzer",
+        tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+        filters = {
+            @TokenFilterDef(factory = LowerCaseFilterFactory.class),
+            @TokenFilterDef(factory = StopFilterFactory.class,
+                params = {
+                    @Parameter(name = "words",
+                            value = "org/jtalks/jcommune/lucene/english_stop.txt"),
+                    @Parameter(name = "ignoreCase", value = "true")
+                }),
+            @TokenFilterDef(factory = StopFilterFactory.class,
+                params = {
+                    @Parameter(name = "words", 
+                            value = "org/jtalks/jcommune/lucene/russian_stop.txt"),
+                    @Parameter(name = "ignoreCase", value = "true")
+                }),
+            @TokenFilterDef(factory = SnowballPorterFilterFactory.class, 
+                params =  @Parameter(name="language", value="Russian"))
+        }
+    ),
+    @AnalyzerDef(name = "defaultJtalksAnalyzer",
+        tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+        filters = {
+            @TokenFilterDef(factory = StandardFilterFactory.class),
+            @TokenFilterDef(factory = LowerCaseFilterFactory.class),
+            @TokenFilterDef(factory = StopFilterFactory.class,
+                params = {
+                    @Parameter(name = "words", 
+                            value = "org/jtalks/jcommune/lucene/english_stop.txt"),
+                    @Parameter(name = "ignoreCase", value = "true")
+            }),
+            @TokenFilterDef(factory = StopFilterFactory.class,
+                params = {
+                    @Parameter(name = "words", 
+                            value = "org/jtalks/jcommune/lucene/russian_stop.txt"),
+                    @Parameter(name = "ignoreCase", value = "true")
+            }),
+            @TokenFilterDef(factory = SnowballPorterFilterFactory.class)
+        }
+    )
 })
 @Indexed
 public class Post extends Entity implements IndexedEntity {
@@ -186,10 +190,10 @@ public class Post extends Entity implements IndexedEntity {
      * @return the postContent
      */
     @Fields({
-    	@Field(name = POST_CONTENT_FIELD_RU,
-    			analyzer = @Analyzer(definition = "russianJtalksAnalyzer")),
-    	@Field(name = POST_CONTENT_FIELD_DEF, 
-    			analyzer = @Analyzer(definition = "defaultJtalksAnalyzer"))	
+        @Field(name = POST_CONTENT_FIELD_RU,
+            analyzer = @Analyzer(definition = "russianJtalksAnalyzer")),
+        @Field(name = POST_CONTENT_FIELD_DEF,
+            analyzer = @Analyzer(definition = "defaultJtalksAnalyzer"))
     })
     public String getPostContent() {
         return postContent;
@@ -220,8 +224,8 @@ public class Post extends Entity implements IndexedEntity {
      * {@inheritDoc}
      */
     @DocumentId
-	@Override
-	public long getId() {
-		return super.getId();
-	}
+    @Override
+    public long getId() {
+        return super.getId();
+    }
 }

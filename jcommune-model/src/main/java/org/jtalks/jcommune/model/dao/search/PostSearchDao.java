@@ -25,7 +25,7 @@ import org.jtalks.jcommune.model.entity.Post;
  * @see org.jtalks.jcommune.model.dao.search.hibernate.PostHibernateSearchDao
  */
 public interface PostSearchDao extends SearchDao<Post>{
-	/**
+    /**
      * Search posts for their content.
      * 
      * @param searchText contents of the post.

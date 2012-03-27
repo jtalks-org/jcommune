@@ -37,80 +37,87 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Controller
 public class PostSearchController {
-	/**
-	 * The name attribute for the uri.
-	 */
-	public static final String URI_ATTRIBUTE_NAME = "uri";
-	/**
-	 * The name attribute for posts.
-	 */
-	public static final String POSTS_ATTRIBUTE_NAME = "posts";
-	/**
-	 * The name attribute for the pagination.
-	 */
-	public static final String PAGINATION_ATTRIBUTE_NAME = "pagination";
-	/**
-	 * The name attribute for the search text.
-	 */
-	public static final String SEARCH_TEXT_MODEL_NAME = "searchText";
-	private static final String SEARCH_RESULT_VIEW_NAME = "postSearchResult";
-	private PostSearchService postSearchService;
-	private SecurityService securityService;
-	
-	/**
-	 * Constructor for controller instantiating, dependencies injected via autowiring.
-	 * 
-	 * @param postSearchService {@link PostSearchService} instance to be injected
-	 * @param securityService {@link SecurityService} instance to be injected
-	 */
-	@Autowired
-	public PostSearchController(PostSearchService postSearchService, SecurityService securityService) {
-		this.postSearchService = postSearchService;
-		this.securityService = securityService;
-	}
-	
-	/**
-	 * This method performs indexing the data from the database.
-	 */
-	@RequestMapping(value = "/search/index/rebuild")
-	public void rebuildIndexes() {
-		postSearchService.rebuildIndex();
-	}
-	
-	/**
-	 * Full-text search for posts. It needed to start the search.
-	 * 
-	 * @param searchText search text
-	 * @return redirect to answer page
-	 */
-	@RequestMapping(value = "/search", method = RequestMethod.GET)
-	public ModelAndView initSearch(@RequestParam String searchText) {
-		int firstPage = 1; 
-		return search(searchText, firstPage);
-	}
-	
-	/**
-	 * Full-text search for posts. It needed to continue the search.
-	 * 
-	 * @param searchText search text
-	 * @param page page number
-	 * @return redirect to answer page
-	 */
-	@RequestMapping(value = "/search/{searchText}", method = RequestMethod.GET)
-	public ModelAndView continueSearch(@PathVariable String searchText,
-			@RequestParam(value = "page", defaultValue = "1", required = true) Integer page) {
-		return search(searchText, page);
-	}
-	
-	private ModelAndView search(String searchText, int page) {
-		JCUser currentUser = securityService.getCurrentUser();
-		List<Post> posts = postSearchService.searchPostsByPhrase(searchText);
-		String uri = searchText;
-		Pagination pagination = new Pagination(page, currentUser, posts.size(), true);
-		return new ModelAndView(SEARCH_RESULT_VIEW_NAME).
-				addObject(POSTS_ATTRIBUTE_NAME, posts).
-				addObject(PAGINATION_ATTRIBUTE_NAME, pagination).
-				addObject(URI_ATTRIBUTE_NAME, uri).
-				addObject(SEARCH_TEXT_MODEL_NAME, searchText);
-	}
+    /**
+     * The name attribute for the uri.
+     */
+    public static final String URI_ATTRIBUTE_NAME = "uri";
+    /**
+     * The name attribute for posts.
+     */
+    public static final String POSTS_ATTRIBUTE_NAME = "posts";
+    /**
+     * The name attribute for the pagination.
+     */
+    public static final String PAGINATION_ATTRIBUTE_NAME = "pagination";
+    /**
+     * The name attribute for the search text.
+     */
+    public static final String SEARCH_TEXT_MODEL_NAME = "searchText";
+    private static final String SEARCH_RESULT_VIEW_NAME = "postSearchResult";
+    private PostSearchService postSearchService;
+    private SecurityService securityService;
+    
+    /**
+     * Constructor for controller instantiating, dependencies injected via autowiring.
+     * 
+     * @param postSearchService {@link PostSearchService} instance to be injected
+     * @param securityService {@link SecurityService} instance to be injected
+     */
+    @Autowired
+    public PostSearchController(PostSearchService postSearchService, SecurityService securityService) {
+        this.postSearchService = postSearchService;
+        this.securityService = securityService;
+    }
+    
+    /**
+     * This method performs a indexing the data from the database.
+     */
+    @RequestMapping(value = "/search/index/rebuild")
+    public void rebuildIndexes() {
+        postSearchService.rebuildIndex();
+    }
+    
+    /**
+     * Full-text search for posts. It needed to start the search.
+     * 
+     * @param searchText search text
+     * @return redirect to answer page
+     */
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    public ModelAndView initSearch(@RequestParam String searchText) {
+        int firstPage = 1; 
+        return search(searchText, firstPage);
+    }
+    
+    /**
+     * Full-text search for posts. It needed to continue the search.
+     * 
+     * @param searchText search text
+     * @param page page number
+     * @return redirect to answer page
+     */
+    @RequestMapping(value = "/search/{searchText}", method = RequestMethod.GET)
+    public ModelAndView continueSearch(@PathVariable String searchText,
+            @RequestParam(value = "page", defaultValue = "1", required = true) Integer page) {
+        return search(searchText, page);
+    }
+    
+    /**
+     * Contains a common logic for searching the text.
+     * 
+     * @param searchText search text
+     * @param page page number
+     * @return result of the search
+     */
+    private ModelAndView search(String searchText, int page) {
+        JCUser currentUser = securityService.getCurrentUser();
+        List<Post> posts = postSearchService.searchPostsByPhrase(searchText);
+        String uri = searchText;
+        Pagination pagination = new Pagination(page, currentUser, posts.size(), true);
+        return new ModelAndView(SEARCH_RESULT_VIEW_NAME).
+                addObject(POSTS_ATTRIBUTE_NAME, posts).
+                addObject(PAGINATION_ATTRIBUTE_NAME, pagination).
+                addObject(URI_ATTRIBUTE_NAME, uri).
+                addObject(SEARCH_TEXT_MODEL_NAME, searchText);
+    }
 }
