@@ -225,4 +225,35 @@ public class TransactionalPrivateMessageService
                 && !pm.isRead()
                 && !pm.getStatus().equals(PrivateMessageStatus.DRAFT);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String delete(List<Long> ids) throws NotFoundException {
+        JCUser currentUser = securityService.getCurrentUser();
+        for (Long id : ids) {
+            PrivateMessage message = get(id);
+            switch (message.getStatus()) {
+            case DRAFT:
+                this.getDao().delete(message);
+                return "drafts";
+            case DELETED_FROM_INBOX:
+                this.getDao().delete(message);
+                return "outbox";
+            case DELETED_FROM_OUTBOX:
+                this.getDao().delete(message);
+                return "inbox";
+            case SENT:
+                if (currentUser.equals(message.getUserFrom())) {
+                    message.setStatus(PrivateMessageStatus.DELETED_FROM_OUTBOX);
+                    return "outbox";
+                } else {
+                    message.setStatus(PrivateMessageStatus.DELETED_FROM_INBOX);
+                    return "inbox";
+                }
+            }
+        }
+        return "inbox";
+    }
 }

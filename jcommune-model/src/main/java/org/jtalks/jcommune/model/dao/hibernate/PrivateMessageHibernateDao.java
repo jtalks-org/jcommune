@@ -27,20 +27,23 @@ import java.util.List;
  * 
  * @author Pavel Vervenko
  * @author Kirill Afonin
+ * @author Guram Savinov
  */
 public class PrivateMessageHibernateDao extends
         AbstractHibernateParentRepository<PrivateMessage> implements PrivateMessageDao {
 
     private static final String STATUS = "status";
+    private static final String STATUSES = "statuses";
 
     /**
      * {@inheritDoc}
      */
     @Override
     public List<PrivateMessage> getAllFromUser(JCUser userFrom) {
+        PrivateMessageStatus[] statuses = {PrivateMessageStatus.DRAFT, PrivateMessageStatus.DELETED_FROM_OUTBOX};
         return getSession().getNamedQuery("getAllFromUser")
                 .setCacheable(true)
-                .setParameter(STATUS, PrivateMessageStatus.DRAFT)
+                .setParameterList(STATUSES, statuses)
                 .setEntity("user", userFrom)
                 .list();
     }
@@ -50,9 +53,10 @@ public class PrivateMessageHibernateDao extends
      */
     @Override
     public List<PrivateMessage> getAllForUser(JCUser userTo) {
+        PrivateMessageStatus[] statuses = {PrivateMessageStatus.DRAFT, PrivateMessageStatus.DELETED_FROM_INBOX};
         return getSession().getNamedQuery("getAllToUser")
                 .setCacheable(true)
-                .setParameter(STATUS, PrivateMessageStatus.DRAFT)
+                .setParameterList(STATUSES, statuses)
                 .setEntity("user", userTo)
                 .list();
     }
