@@ -16,6 +16,7 @@ package org.jtalks.jcommune.web.listeners;
 
 import javax.servlet.http.HttpSessionEvent;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Custom session listener implementation to track active user sessions
@@ -26,37 +27,44 @@ public class HttpSessionStatisticListenerImpl implements HttpSessionStatisticLis
 
     //todo: make timeout configurable from poulpe
     public static final int SESSION_TIMEOUT = (int) TimeUnit.SECONDS.convert(24, TimeUnit.HOURS);
-    private static volatile long totalActiveSessions;
+    private static volatile AtomicLong totalActiveSessions;
 
     /**
      * @return active sessions count
      */
     public long getTotalActiveSessions() {
-        return totalActiveSessions;
+        return totalActiveSessions.get();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public synchronized void sessionCreated(HttpSessionEvent se) {
+    public void sessionCreated(HttpSessionEvent se) {
         se.getSession().setMaxInactiveInterval(SESSION_TIMEOUT);
-        totalActiveSessions++;
+        totalActiveSessions.incrementAndGet();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public synchronized void sessionDestroyed(HttpSessionEvent se) {
+    public void sessionDestroyed(HttpSessionEvent se) {
         /*
         Tomcat may not invalidate HTTP session on server restart while counter variable
         will be set to 0 on class reload. So we can quickly get our session count negative when
         persisted sessions will expire. This check provides us with a self-correcting facility
         to overcome this problem
          */
-        if (totalActiveSessions > 0) {
-            totalActiveSessions--;
+        for (;;) {
+            long current = totalActiveSessions.get();
+            if (current <= 0) {
+                return;
+            } else {
+                if (totalActiveSessions.compareAndSet(current, current - 1)) {
+                    return;
+                }
+            }
         }
     }
 }
