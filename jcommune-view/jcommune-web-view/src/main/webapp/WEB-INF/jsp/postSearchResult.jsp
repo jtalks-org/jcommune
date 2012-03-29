@@ -29,18 +29,12 @@
        <jsp:include page="../template/logo.jsp"/>
        <div class="all_forums">
        		<div class="forum_info_top">
-	       		<div>
-	                <div> 
-	                    <h2 class="heading"><spring:message code="label.search.result" arguments="${searchText}"/></h2>
-	                </div>
-	            </div>
 	       		<div class="info_top_lower">
 		 	   		<span class="nav_top">
 		            	<jtalks:pagination uri="${uri}" pagination="${pagination}" list="${posts}"/>
 		          	</span>
 	 	   		</div>
  	   		</div>
- 	   		<br/>
            <div class="forum_header_table">
 	            <div class="forum_header">
 	                <h3 class="forum_header_link"><spring:message code="label.search.header.message"/></h3>

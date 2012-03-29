@@ -52,7 +52,7 @@ public class PostSearchController {
     /**
      * The name attribute for the search text.
      */
-    public static final String SEARCH_TEXT_MODEL_NAME = "searchText";
+    public static final String SEARCH_TEXT_ATTRIBUTE_NAME = "searchText";
     private static final String SEARCH_RESULT_VIEW_NAME = "postSearchResult";
     private PostSearchService postSearchService;
     private SecurityService securityService;
@@ -118,6 +118,6 @@ public class PostSearchController {
                 addObject(POSTS_ATTRIBUTE_NAME, posts).
                 addObject(PAGINATION_ATTRIBUTE_NAME, pagination).
                 addObject(URI_ATTRIBUTE_NAME, uri).
-                addObject(SEARCH_TEXT_MODEL_NAME, searchText);
+                addObject(SEARCH_TEXT_ATTRIBUTE_NAME, searchText);
     }
 }
