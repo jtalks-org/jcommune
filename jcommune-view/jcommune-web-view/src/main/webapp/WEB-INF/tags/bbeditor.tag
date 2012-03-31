@@ -70,36 +70,53 @@
         </div>
         <div class="forum_answer_right">
             <div class="formatting_buttons">
-                <input id="format_b" type="button" class="button" accesskey="b" name="format_b"
-                       value=" B " onclick="doClick('bold');"/>
-                <input id="format_i" type="button" class="button" accesskey="i" name="format_i"
-                       value=" i " onclick="doClick('italic');"/>
-                <input id="format_u" type="button" class="button" accesskey="u" name="format_u"
-                       value=" u " onclick="doClick('underline');"/>
-                <input id="format_s" type="button" class="button striked" accesskey="s" name="format_s"
-                       value=" S " onclick="doClick('line-through');"/>
-                <input id="format_highlight" type="button" class="button" accesskey="highlight"
-                       name="format_highlight"
-                       value=" Highlight " onclick="doClick('highlight');"/>
-                <input id="format_left" type="button" class="button" accesskey="left" name="format_left"
-                       value=" Left " onclick="doClick('left');"/>
-                <input id="format_center" type="button" class="button" accesskey="center"
-                       name="format_center" value=" Center " onclick="doClick('center');"/>
-                <input id="format_right" type="button" class="button" accesskey="right" name="format_right"
-                       value=" Right " onclick="doClick('right');"/>
-                <input id="select_color" type="button" class="button" name="select_color"
-                       value="Color" onclick="showColorGrid2('none')"/>
+                <a id="format_b" class="button" accesskey="b" name="format_b" onclick="doClick('bold');">
+                    &nbsp;B&nbsp;
+                </a>
+                <a id="format_i" class="button" accesskey="i" name="format_i" onclick="doClick('italic');">
+                    <span class="italic">&nbsp;i&nbsp;</span>
+                </a>
+                <a id="format_u" class="button" accesskey="u" name="format_u" onclick="doClick('underline');">
+                    <span class="underline">&nbsp;U&nbsp;</span>
+                </a>
+                <a id="format_s" class="button" accesskey="s" name="format_s" onclick="doClick('line-through');">
+                    <span class="striked">&nbsp;S&nbsp;</span>
+                </a>
+                <a id="format_highlight" class="button" accesskey="h" name="format_highlight"
+                   onclick="doClick('highlight');">
+                    &nbsp;Highlight&nbsp;
+                </a>
+                <a id="format_left" class="button" accesskey="left" name="format_left" onclick="doClick('left');">
+                    &nbsp;Left&nbsp;
+                </a>
+                <a id="format_center" class="button" accesskey="c" name="format_center" onclick="doClick('center');">
+                    &nbsp;Center&nbsp;
+                </a>
+                <a id="format_right" class="button" accesskey="right" name="format_right"
+                   value=" Right " onclick="doClick('right');">
+                    &nbsp;Right&nbsp;
+                </a>
+                <a id="select_color" class="button" name="select_color" onclick="showColorGrid2('none')">
+                    Color
+                </a>
                 <span id="colorpicker201" class="colorpicker201"></span>
-                <input id="format_quote" type="button" class="button" accesskey="q" name="format_quote"
-                       value="Quote" onclick="doQuote();"/>
-                <input id="format_list" type="button" class="button" accesskey="l" name="format_list"
-                       value="List" onclick="doClick('InsertUnorderedList');"/>
-                <input id="format_listeq" type="button" class="button" accesskey="o" name="format_listeq"
-                       value="List=" onclick="doClick('listElement');"/>
-                <input id="format_img" type="button" class="button" accesskey="p" name="format_img"
-                       value="Img" onclick="doImage();"/>
-                <input id="format_url" type="button" class="button" accesskey="w" name="format_url"
-                       value="URL" onclick="doLink();"/>
+                <a id="format_quote" class="button" accesskey="q" name="format_quote" onclick="doQuote();">
+                    Quote
+                </a>
+                <a id="format_list" class="button" accesskey="l" name="format_list"
+                   onclick="doClick('InsertUnorderedList');">
+                    List
+                </a>
+                <a id="format_listeq" class="button" accesskey="o" name="format_listeq"
+                   onclick="doClick('listElement');">
+                    List=
+                </a>
+                <a id="format_img" class="button" accesskey="p" name="format_img" onclick="doImage();">
+                    Img
+                </a>
+                <a id="format_url" class="button" accesskey="w" name="format_url" onclick="doLink();">
+                    <span class="underline">&nbsp;URL&nbsp;</span>
+                </a>
             </div>
 				<span class="genmed">
 					<label for="select_size">
