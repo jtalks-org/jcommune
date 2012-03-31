@@ -136,6 +136,7 @@ public class BranchController {
         DateTime lastLogin = (DateTime) session.getAttribute("lastlogin");
         JCUser currentUser = securityService.getCurrentUser();
         List<Topic> topics = topicService.getRecentTopics(lastLogin);
+        topics = lastReadPostService.fillLastReadPostForTopics(topics);
         Pagination pagination = new Pagination(page, currentUser, topics.size(), true);
 
         return new ModelAndView("recent")
@@ -154,6 +155,7 @@ public class BranchController {
                                              Integer page) {
         JCUser currentUser = securityService.getCurrentUser();
         List<Topic> topics = topicService.getUnansweredTopics();
+        topics = lastReadPostService.fillLastReadPostForTopics(topics);
         Pagination pagination = new Pagination(page, currentUser, topics.size(), true);
 
         return new ModelAndView("unansweredTopics")
