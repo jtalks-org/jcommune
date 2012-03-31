@@ -17,8 +17,8 @@ package org.jtalks.jcommune.web.controller;
 import java.util.List;
 
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.service.PostSearchService;
+import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.TopicFullSearchService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,21 +30,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- * The controller for the full-text search posts.
+ * The controller for the full-text search topics.
  * 
  * @author Anuar Nurmakanov
  *
  */
 @Controller
-public class PostSearchController {
+public class TopicSearchController {
     /**
      * The name attribute for the uri.
      */
     public static final String URI_ATTRIBUTE_NAME = "uri";
     /**
-     * The name attribute for posts.
+     * The name attribute for topics.
      */
-    public static final String POSTS_ATTRIBUTE_NAME = "posts";
+    public static final String TOPICS_ATTRIBUTE_NAME = "topics";
     /**
      * The name attribute for the pagination.
      */
@@ -53,19 +53,19 @@ public class PostSearchController {
      * The name attribute for the search text.
      */
     public static final String SEARCH_TEXT_ATTRIBUTE_NAME = "searchText";
-    private static final String SEARCH_RESULT_VIEW_NAME = "postSearchResult";
-    private PostSearchService postSearchService;
+    private static final String SEARCH_RESULT_VIEW_NAME = "searchResult";
+    private TopicFullSearchService topicSearchService;
     private SecurityService securityService;
     
     /**
      * Constructor for controller instantiating, dependencies injected via autowiring.
      * 
-     * @param postSearchService {@link PostSearchService} instance to be injected
+     * @param topicSearchService {@link TopicFullSearchService} instance to be injected
      * @param securityService {@link SecurityService} instance to be injected
      */
     @Autowired
-    public PostSearchController(PostSearchService postSearchService, SecurityService securityService) {
-        this.postSearchService = postSearchService;
+    public TopicSearchController(TopicFullSearchService topicSearchService, SecurityService securityService) {
+        this.topicSearchService = topicSearchService;
         this.securityService = securityService;
     }
     
@@ -74,14 +74,14 @@ public class PostSearchController {
      */
     @RequestMapping(value = "/search/index/rebuild")
     public void rebuildIndexes() {
-        postSearchService.rebuildIndex();
+        topicSearchService.rebuildIndex();
     }
     
     /**
-     * Full-text search for posts. It needed to start the search.
+     * Full-text search for topics. It needed to start the search.
      * 
      * @param searchText search text
-     * @return redirect to answer page
+     * @return redirect to the answer page
      */
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     public ModelAndView initSearch(@RequestParam String searchText) {
@@ -90,7 +90,7 @@ public class PostSearchController {
     }
     
     /**
-     * Full-text search for posts. It needed to continue the search.
+     * Full-text search for topics. It needed to continue the search.
      * 
      * @param searchText search text
      * @param page page number
@@ -111,11 +111,11 @@ public class PostSearchController {
      */
     private ModelAndView search(String searchText, int page) {
         JCUser currentUser = securityService.getCurrentUser();
-        List<Post> posts = postSearchService.searchPostsByPhrase(searchText);
+        List<Topic> topics = topicSearchService.search(searchText);
         String uri = searchText;
-        Pagination pagination = new Pagination(page, currentUser, posts.size(), true);
+        Pagination pagination = new Pagination(page, currentUser, topics.size(), true);
         return new ModelAndView(SEARCH_RESULT_VIEW_NAME).
-                addObject(POSTS_ATTRIBUTE_NAME, posts).
+                addObject(TOPICS_ATTRIBUTE_NAME, topics).
                 addObject(PAGINATION_ATTRIBUTE_NAME, pagination).
                 addObject(URI_ATTRIBUTE_NAME, uri).
                 addObject(SEARCH_TEXT_ATTRIBUTE_NAME, searchText);

@@ -17,8 +17,8 @@ package org.jtalks.jcommune.service.transactional;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.jtalks.jcommune.model.dao.search.PostSearchDao;
-import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.dao.search.TopicSearchDao;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -32,29 +32,29 @@ import org.testng.annotations.Test;
  * @author Anuar Nurmakanov
  * 
  */
-public class TransactionalPostSearchServiceTest {
+public class TransactionalTopicFullSearchServiceTest {
 	@Mock
-	private PostSearchDao postSearchDao;
-	private TransactionalPostSearchService postSearchService;
+	private TopicSearchDao topicSearchDao;
+	private TransactionalTopicFullSearchService topicSearchService;
 	
 	@BeforeMethod
 	public void init() {
 		MockitoAnnotations.initMocks(this);
-		postSearchService = new TransactionalPostSearchService(postSearchDao);
+		topicSearchService = new TransactionalTopicFullSearchService(topicSearchDao);
 	}
 	
 	@Test
 	public void testSearchPosts() {
 		String phrase = "phrase";
 		
-		postSearchService.searchPostsByPhrase(phrase);
+		topicSearchService.search(phrase);
 		
-		Mockito.verify(postSearchDao).searchPosts(phrase);
+		Mockito.verify(topicSearchDao).search(phrase);
 	}
 	
 	@Test(dataProvider = "parameterSearchPostsWithEmptySearchPhrase")
 	public void testSearchPostsWithEmptySearchPhrase(String phrase) {
-		List<Post> searchResult = postSearchService.searchPostsByPhrase(phrase);
+		List<Topic> searchResult = topicSearchService.search(phrase);
 		
 		Assert.assertTrue(searchResult.isEmpty(), "The search result must be empty.");
 	}
@@ -69,8 +69,8 @@ public class TransactionalPostSearchServiceTest {
 	
 	@Test
 	public void testRebuildIndex() {
-		postSearchService.rebuildIndex();
+		topicSearchService.rebuildIndex();
 		
-		Mockito.verify(postSearchDao).rebuildIndex(Post.class);
+		Mockito.verify(topicSearchDao).rebuildIndex(Topic.class);
 	}
 }

@@ -14,11 +14,17 @@
  */
 package org.jtalks.jcommune.model.dao.search.hibernate;
 
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.jtalks.jcommune.model.dao.search.SearchDao;
+import org.jtalks.jcommune.model.dao.search.hibernate.filter.SearchRequestFilter;
 import org.jtalks.jcommune.model.entity.IndexedEntity;
 
 /**
@@ -37,7 +43,12 @@ public abstract class AbstractHibernateSearchDao<E extends IndexedEntity>
     private SessionFactory sessionFactory;
     
     /**
-     * Setter for Hibernate SessionFactory.
+     * List of filters
+     */
+    private List<SearchRequestFilter> filters = Collections.emptyList();
+ 
+    /**
+     * Injects the Hibernate SessionFactory.
      *
      * @param sessionFactory the sessionFactory to set
      */
@@ -46,9 +57,18 @@ public abstract class AbstractHibernateSearchDao<E extends IndexedEntity>
     }
     
     /**
-     * Get Hibernate Search session.
+     * Injects filters for search requests.
      * 
-     * @return full text session
+     * @param filters the list of filters to correct the dirty search requests
+     */
+    public void setFilters(List<SearchRequestFilter> filters) {
+        this.filters = filters;
+    }
+    
+    /**
+     * Gets the Hibernate Search session.
+     * 
+     * @return the full text session
      */
     protected FullTextSession getFullTextSession() {
         Session session = sessionFactory.getCurrentSession();
@@ -61,5 +81,45 @@ public abstract class AbstractHibernateSearchDao<E extends IndexedEntity>
     @Override
     public void rebuildIndex(Class<E> entityClass) {
         getFullTextSession().createIndexer(entityClass).start();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<E> search(String searchText) {
+        //TODO The latest versions of the library filtering is not needed.
+        String filteredSearchText = applyFilters(searchText, filters).trim();
+        if (!StringUtils.isEmpty(filteredSearchText)) {
+            FullTextSession fullTextSession = getFullTextSession();
+            Query query = createSearchQuery(fullTextSession, filteredSearchText);
+            return query.list();
+        } else {
+            return Collections.emptyList();
+        }
+    }
+    
+    /**
+     * Builds a search query.
+     * 
+     * @param fullTextSession the Hibernate Search session
+     * @param searchText the search text
+     * @return the search query
+     */
+    protected abstract Query createSearchQuery(FullTextSession fullTextSession, String searchText);
+
+    /**
+     * This method filters the text.
+     * 
+     * @param searchText the search text
+     * @param filters the list of filters
+     * @return the filtered search text
+     */
+    private String applyFilters(String searchText, List<SearchRequestFilter> filters) {
+        for (SearchRequestFilter filter : filters) {
+            searchText = filter.filter(searchText);
+        }
+        return searchText;
     }
 }

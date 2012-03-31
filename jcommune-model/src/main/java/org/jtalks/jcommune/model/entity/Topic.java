@@ -17,6 +17,22 @@ package org.jtalks.jcommune.model.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.solr.analysis.LowerCaseFilterFactory;
+import org.apache.solr.analysis.SnowballPorterFilterFactory;
+import org.apache.solr.analysis.StandardFilterFactory;
+import org.apache.solr.analysis.StandardTokenizerFactory;
+import org.apache.solr.analysis.StopFilterFactory;
+import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.AnalyzerDef;
+import org.hibernate.search.annotations.AnalyzerDefs;
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Fields;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.Parameter;
+import org.hibernate.search.annotations.TokenFilterDef;
+import org.hibernate.search.annotations.TokenizerDef;
 import org.joda.time.DateTime;
 
 /**
@@ -29,7 +45,50 @@ import org.joda.time.DateTime;
  * @author Vitaliy Kravchenko
  * @author Max Malakhov
  */
-public class Topic extends SubscriptionAwareEntity {
+@AnalyzerDefs({
+    @AnalyzerDef(name = "russianJtalksAnalyzer",
+        tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+        filters = {
+            @TokenFilterDef(factory = LowerCaseFilterFactory.class),
+            @TokenFilterDef(factory = StopFilterFactory.class,
+                params = {
+                    @Parameter(name = "words",
+                            value = "org/jtalks/jcommune/lucene/english_stop.txt"),
+                    @Parameter(name = "ignoreCase", value = "true")
+                }),
+            @TokenFilterDef(factory = StopFilterFactory.class,
+                params = {
+                    @Parameter(name = "words", 
+                            value = "org/jtalks/jcommune/lucene/russian_stop.txt"),
+                    @Parameter(name = "ignoreCase", value = "true")
+                }),
+            @TokenFilterDef(factory = SnowballPorterFilterFactory.class, 
+                params =  @Parameter(name="language", value="Russian"))
+        }
+    ),
+    @AnalyzerDef(name = "defaultJtalksAnalyzer",
+        tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+        filters = {
+            @TokenFilterDef(factory = StandardFilterFactory.class),
+            @TokenFilterDef(factory = LowerCaseFilterFactory.class),
+            @TokenFilterDef(factory = StopFilterFactory.class,
+                params = {
+                    @Parameter(name = "words", 
+                            value = "org/jtalks/jcommune/lucene/english_stop.txt"),
+                    @Parameter(name = "ignoreCase", value = "true")
+            }),
+            @TokenFilterDef(factory = StopFilterFactory.class,
+                params = {
+                    @Parameter(name = "words", 
+                            value = "org/jtalks/jcommune/lucene/russian_stop.txt"),
+                    @Parameter(name = "ignoreCase", value = "true")
+            }),
+            @TokenFilterDef(factory = SnowballPorterFilterFactory.class)
+        }
+    )
+})
+@Indexed
+public class Topic extends SubscriptionAwareEntity implements IndexedEntity {
     private DateTime creationDate;
     private DateTime modificationDate;
     private JCUser topicStarter;
@@ -46,6 +105,11 @@ public class Topic extends SubscriptionAwareEntity {
 
     public static final int MIN_NAME_SIZE = 5;
     public static final int MAX_NAME_SIZE = 120;
+    
+    public static final String TOPIC_TITLE_FIELD_RU = "topicTitleRu";
+    public static final String TOPIC_TITLE_FIELD_DEF = "topicTitle";
+    public static final String TOPIC_POSTS_PREFIX = "topicPosts.";
+    
 
     /**
      * Used only by hibernate.
@@ -133,6 +197,12 @@ public class Topic extends SubscriptionAwareEntity {
      *
      * @return the topicName
      */
+    @Fields({
+        @Field(name = TOPIC_TITLE_FIELD_RU,
+            analyzer = @Analyzer(definition = "russianJtalksAnalyzer")),
+        @Field(name = TOPIC_TITLE_FIELD_DEF,
+            analyzer = @Analyzer(definition = "defaultJtalksAnalyzer"))
+    })
     public String getTitle() {
         return title;
     }
@@ -151,6 +221,7 @@ public class Topic extends SubscriptionAwareEntity {
      *
      * @return the list of posts
      */
+    @IndexedEmbedded(prefix = TOPIC_POSTS_PREFIX)
     public List<Post> getPosts() {
         return posts;
     }
@@ -329,5 +400,15 @@ public class Topic extends SubscriptionAwareEntity {
      */
     public boolean isHasUpdates() {
         return (lastReadPostIndex == null) || (lastReadPostIndex + 1 < posts.size());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @DocumentId
+    @Override
+    public long getId() {
+        // TODO Auto-generated method stub
+        return super.getId();
     }
 }

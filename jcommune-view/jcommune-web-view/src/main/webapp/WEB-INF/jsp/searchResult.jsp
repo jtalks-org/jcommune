@@ -28,16 +28,14 @@
        <jsp:include page="../template/topLine.jsp"/>
        <jsp:include page="../template/logo.jsp"/>
        <div class="all_forums">
-       		<div class="forum_info_top">
-	       		<div class="info_top_lower">
-		 	   		<span class="nav_top">
-		            	<jtalks:pagination uri="${uri}" pagination="${pagination}" list="${posts}"/>
-		          	</span>
-	 	   		</div>
- 	   		</div>
+	   		<div class="forum_info_top">
+		  		<span class="nav_top">
+		         	<jtalks:pagination uri="${uri}" pagination="${pagination}" list="${topics}"/>
+		       	</span>
+	 		</div>
            <div class="forum_header_table">
 	            <div class="forum_header">
-	                <h3 class="forum_header_link"><spring:message code="label.search.header.message"/></h3>
+	                <h3 class="forum_header_link"><spring:message code="label.search.header.topic"/></h3>
 	                <span class="forum_header_branches"><spring:message code="label.search.header.branch"/></span>
 	                <span class="forum_header_author"><spring:message code="label.search.header.author"/></span>
 	                <span class="forum_header_last_message"><spring:message code="label.search.header.date"/></span>
@@ -45,35 +43,30 @@
            </div>
  		   <div>
  		   	   <c:choose>
-	 		   	   <c:when test="${!(empty posts)}">
+	 		   	   <c:when test="${!(empty topics)}">
 			           <ul class="forum_table">
-			               <c:forEach var="post" items="${list}" varStatus="i">
+			               <c:forEach var="topic" items="${list}" varStatus="i">
 			                   <li class="forum_row">
 			                       <div class="forum_info">
 										<h4>
-											<a class="forum_link" href="${pageContext.request.contextPath}/topics/${post.topic.id}"> 
-												<c:out value="${post.topic.title}"/>
+											<a class="forum_link" href="${pageContext.request.contextPath}/topics/${topic.id}"> 
+												<c:out value="${topic.title}"/>
 											</a>
 										</h4>
-										<div class="forum_message_cell_text">
-											<span class="truncated break_word">
-												<c:out value="${post.postContent}"/>
-											</span>
-			                           </div>
 			                       </div>
 			                       <div class="forum_branches">
-			                       		<a class="forum_link" href="${pageContext.request.contextPath}/branches/${post.topic.branch.id}"> 
-			                       			<c:out value="${post.topic.branch.name}"/>
+			                       		<a class="forum_link" href="${pageContext.request.contextPath}/branches/${topic.branch.id}"> 
+			                       			<c:out value="${topic.branch.name}"/>
 			                       		</a>
 			                       </div>
 								   <div class="forum_author">
 										<a href="${pageContext.request.contextPath}/users/${search_header.encodedUsername}"
 											title="<spring:message code="label.topic.header.author"/>"><c:out
-												value="${post.userCreated.username}"/></a>
+												value="${topic.topicStarter.username}"/></a>
 								   </div>
 								   <div class="forum_last_message">
 								   		<a href="${pageContext.request.contextPath}/topics/${post.topic.id}">
-	                                    <jtalks:format value="${post.creationDate}"/></a>
+	                                    <jtalks:format value="${topic.creationDate}"/></a>
 								   </div>
 								</li>
 			               </c:forEach>
@@ -94,7 +87,7 @@
            </div>
            <div class="forum_info_bottom">
 		        <span class="nav_bottom">
-		            <jtalks:pagination uri="${uri}" pagination="${pagination}" list="${posts}"/>
+		            <jtalks:pagination uri="${uri}" pagination="${pagination}" list="${topics}"/>
 		        </span>	
            </div>
        </div>

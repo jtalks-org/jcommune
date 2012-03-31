@@ -14,11 +14,13 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+
 /**
  * Marks an entity as indexed entity.
  * 
  * @author Anuar Nurmakanov
  *
  */
+
 public interface IndexedEntity {
 }

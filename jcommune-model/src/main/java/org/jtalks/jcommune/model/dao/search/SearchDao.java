@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.model.dao.search;
 
+import java.util.List;
+
 import org.jtalks.jcommune.model.entity.IndexedEntity;
 
 /**
@@ -30,4 +32,12 @@ public interface SearchDao<E extends IndexedEntity> {
      * @param entityClass class of indexed entity
      */
     void rebuildIndex(Class<E> entityClass);
+    
+    /**
+     * Standard search text.
+     * 
+     * @param searchText the search text
+     * @return the list of indexed entities
+     */
+    List<E> search(String searchText);
 }

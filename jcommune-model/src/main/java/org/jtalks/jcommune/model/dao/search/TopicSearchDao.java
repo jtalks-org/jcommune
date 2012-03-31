@@ -14,22 +14,14 @@
  */
 package org.jtalks.jcommune.model.dao.search;
 
-import java.util.List;
-
-import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 
 /**
- * This interface describes the contract of the DAO for full-text posts search.
+ * This interface describes the contract of the DAO for full-text search of topics.
  * 
  * @author Anuar Nurmakanov
- * @see org.jtalks.jcommune.model.dao.search.hibernate.PostHibernateSearchDao
+ * @see org.jtalks.jcommune.model.dao.search.hibernate.TopicHibernateSearchDao
+ * @see org.jtalks.jcommune.model.entity.Topic
  */
-public interface PostSearchDao extends SearchDao<Post>{
-    /**
-     * Search posts for their content.
-     * 
-     * @param searchText contents of the post.
-     * @return list of posts
-     */
-    List<Post> searchPosts(String searchText);
+public interface TopicSearchDao extends SearchDao<Topic> {
 }

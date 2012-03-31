@@ -18,33 +18,33 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.jtalks.jcommune.model.dao.search.PostSearchDao;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.service.PostSearchService;
+import org.jtalks.jcommune.model.dao.search.TopicSearchDao;
+import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.TopicFullSearchService;
 
 /**
- * The implementation of PostSearchService.
+ * The implementation of TopicFullSearchService.
  * 
  * @author Anuar Nurmakanov
  *
  */
-public class TransactionalPostSearchService implements PostSearchService {
-    private PostSearchDao postSearchDao;
+public class TransactionalTopicFullSearchService implements TopicFullSearchService {
+    private TopicSearchDao topicSearchDao;
     
     /**
-     * @param postSearchDao for full-text search operations
+     * @param topicSearchDao for full-text search operations
      */
-    public TransactionalPostSearchService(PostSearchDao postSearchDao) {
-        this.postSearchDao = postSearchDao;
+    public TransactionalTopicFullSearchService(TopicSearchDao postSearchDao) {
+        this.topicSearchDao = postSearchDao;
     }
     
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<Post> searchPostsByPhrase(String phrase) {
+    public List<Topic> search(String phrase) {
         if (!StringUtils.isEmpty(phrase)) {
-            return postSearchDao.searchPosts(phrase);
+            return topicSearchDao.search(phrase);
         } else {
             return Collections.emptyList();
         }
@@ -55,6 +55,6 @@ public class TransactionalPostSearchService implements PostSearchService {
      */
     @Override
     public void rebuildIndex() {
-        postSearchDao.rebuildIndex(Post.class);
+        topicSearchDao.rebuildIndex(Topic.class);
     }
 }

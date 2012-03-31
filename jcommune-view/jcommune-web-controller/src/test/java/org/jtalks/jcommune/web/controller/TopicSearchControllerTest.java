@@ -14,13 +14,13 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.service.PostSearchService;
+import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.TopicFullSearchService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.mockito.Mock;
@@ -35,66 +35,66 @@ import org.testng.annotations.Test;
  * @author Anuar Nurmakanov
  *
  */
-public class PostSearchControllerTest {
-	private static final String DEFAULT_SEARCH_TEXT = "post content";
+public class TopicSearchControllerTest {
+	private static final String DEFAULT_SEARCH_TEXT = "topic content";
 	@Mock
-	private PostSearchService postSearchService;
+	private TopicFullSearchService topicFullSearchService;
 	@Mock
 	private SecurityService securityService;
-	private PostSearchController postSearchController;
+	private TopicSearchController topicSearchController;
 
 	@BeforeMethod
 	public void init() {
 		MockitoAnnotations.initMocks(this);
-		postSearchController = new PostSearchController(postSearchService, securityService);
+		topicSearchController = new TopicSearchController(topicFullSearchService, securityService);
 	}
 
 	@Test
 	public void testRebuildIndexes() {
-		postSearchController.rebuildIndexes();
+		topicSearchController.rebuildIndexes();
 		
-		Mockito.verify(postSearchService).rebuildIndex();
+		Mockito.verify(topicFullSearchService).rebuildIndex();
 	}
 	
 	@Test
-	public void testInitSearchPosts() {
-		List<Post> resultPosts = new ArrayList<Post>();
+	public void testInitSearch() {
+		List<Topic> resultTopics = Collections.emptyList();
 		JCUser user = new JCUser("username", "email", "password");
 		
-		Mockito.when(postSearchService.searchPostsByPhrase(DEFAULT_SEARCH_TEXT))
-				.thenReturn(resultPosts);
+		Mockito.when(topicFullSearchService.search(DEFAULT_SEARCH_TEXT))
+				.thenReturn(resultTopics);
 		Mockito.when(securityService.getCurrentUser()).thenReturn(user);
 		
-		ModelAndView modelAndView = postSearchController.initSearch(DEFAULT_SEARCH_TEXT);
+		ModelAndView modelAndView = topicSearchController.initSearch(DEFAULT_SEARCH_TEXT);
 		Map<String, Object> model = modelAndView.getModel();
-		Pagination pagination = (Pagination) model.get(PostSearchController.PAGINATION_ATTRIBUTE_NAME);
+		Pagination pagination = (Pagination) model.get(TopicSearchController.PAGINATION_ATTRIBUTE_NAME);
 		
-		Assert.assertEquals(resultPosts, model.get(PostSearchController.POSTS_ATTRIBUTE_NAME), 
-				"The controller must return the result of PostSearchService.");
-		Assert.assertEquals(DEFAULT_SEARCH_TEXT, model.get(PostSearchController.URI_ATTRIBUTE_NAME),
+		Assert.assertEquals(resultTopics, model.get(TopicSearchController.TOPICS_ATTRIBUTE_NAME), 
+				"The controller must return the result of TopicFullSearchService.");
+		Assert.assertEquals(DEFAULT_SEARCH_TEXT, model.get(TopicSearchController.URI_ATTRIBUTE_NAME),
 				"Uri and the search text must be identical.");
 		Assert.assertEquals(Integer.valueOf(1), pagination.getPage(), "The page number should be the first.");
-		Mockito.verify(postSearchService).searchPostsByPhrase(DEFAULT_SEARCH_TEXT);
+		Mockito.verify(topicFullSearchService).search(DEFAULT_SEARCH_TEXT);
 	}
 	
-	public void testContinueSearchPosts() {
-		List<Post> resultPosts = new ArrayList<Post>();
+	public void testContinueSearch() {
+		List<Topic> resultTopics = Collections.emptyList();
 		JCUser user = new JCUser("username", "email", "password");
 		int page = 2;
 		
-		Mockito.when(postSearchService.searchPostsByPhrase(DEFAULT_SEARCH_TEXT))
-				.thenReturn(resultPosts);
+		Mockito.when(topicFullSearchService.search(DEFAULT_SEARCH_TEXT))
+				.thenReturn(resultTopics);
 		Mockito.when(securityService.getCurrentUser()).thenReturn(user);
 		
-		ModelAndView modelAndView = postSearchController.continueSearch(DEFAULT_SEARCH_TEXT, page);
+		ModelAndView modelAndView = topicSearchController.continueSearch(DEFAULT_SEARCH_TEXT, page);
 		Map<String, Object> model = modelAndView.getModel();
-		Pagination pagination = (Pagination) model.get(PostSearchController.PAGINATION_ATTRIBUTE_NAME);
+		Pagination pagination = (Pagination) model.get(TopicSearchController.PAGINATION_ATTRIBUTE_NAME);
 		
-		Assert.assertEquals(resultPosts, model.get(PostSearchController.POSTS_ATTRIBUTE_NAME), 
-				"The controller must return the result of PostSearchService.");
-		Assert.assertEquals(DEFAULT_SEARCH_TEXT, model.get(PostSearchController.URI_ATTRIBUTE_NAME),
+		Assert.assertEquals(resultTopics, model.get(TopicSearchController.TOPICS_ATTRIBUTE_NAME), 
+				"The controller must return the result of TopicFullSearchService.");
+		Assert.assertEquals(DEFAULT_SEARCH_TEXT, model.get(TopicSearchController.URI_ATTRIBUTE_NAME),
 				"Uri and the search text must be identical.");
 		Assert.assertEquals(Integer.valueOf(page), pagination.getPage(), "The page number should be the first.");
-		Mockito.verify(postSearchService).searchPostsByPhrase(DEFAULT_SEARCH_TEXT);
+		Mockito.verify(topicFullSearchService).search(DEFAULT_SEARCH_TEXT);
 	}
 }

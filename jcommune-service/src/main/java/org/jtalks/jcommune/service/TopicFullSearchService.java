@@ -16,25 +16,25 @@ package org.jtalks.jcommune.service;
 
 import java.util.List;
 
-import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 
 /**
- * This service provides full-text search posts.
+ * This service provides full-text search topics.
  * 
  * @author Anuar Nurmakanov
  *
  */
-public interface PostSearchService {
+public interface TopicFullSearchService {
     /**
-     * Search for posts, which may correspond to the phrase.
+     * Search for topics, which may correspond to the phrase.
      * 
      * @param phrase phrase
-     * @return list of posts
+     * @return list of topics
      */
-    List<Post> searchPostsByPhrase(String phrase);
+    List<Topic> search(String phrase);
     
     /**
-     * Indexing posts from the database.
+     * Indexing topics from the database.
      */
     void rebuildIndex();
 }
