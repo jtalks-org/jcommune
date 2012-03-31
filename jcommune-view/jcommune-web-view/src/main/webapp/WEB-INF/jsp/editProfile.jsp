@@ -164,7 +164,7 @@
                <div class="form_controls">
                    <input id="saveChanges" type="submit" class="button"
                            value="<spring:message code="label.save_changes"/>"/>
-                   <a class="button" href="${pageContext.request.contextPath}/users/${auth}">
+                   <a class="button" href="${pageContext.request.contextPath}/user">
                        <spring:message code="label.back"/>
                    </a>
                </div>
