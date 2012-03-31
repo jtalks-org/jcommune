@@ -393,7 +393,7 @@ span.version {
 .userdetails_page li label,
 .userdetails_page li span {
     display: table-cell;
-    padding: 0;                       ,
+    padding: 0;
     border-bottom: 1px solid #b2b2b2;
     vertical-align: middle;
     text-align: center;
@@ -721,11 +721,11 @@ a.disabled {
     margin: 5px auto;
 }
 
-#format_i {
+.italic {
     font-style: italic;
 }
 
-#format_u, #format_url {
+.underline {
     text-decoration: underline;
 }
 

@@ -60,7 +60,7 @@
                              authentication-failure-url="/login?login_error=1" default-target-url="/"
                              authentication-success-handler-ref="successAuthHandler"/>
         <security:logout logout-url="/logout" logout-success-url="/" invalidate-session="true"/>
-        <security:remember-me user-service-ref="securityService" key="JTalks"/>
+        <security:remember-me data-source-ref="dataSource" key="JTalks"/>
     </security:http>
 
     <bean id="successAuthHandler" class="org.jtalks.jcommune.web.util.SuccessfulAuthenticationHandler">

@@ -81,6 +81,13 @@
                                 </c:when>
                                 <c:otherwise>
                                     <div class="forum_info">
+                                        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                                        <c:if test="${item.hasUpdates}">
+                                            <a style="color: red;"
+                                               href="${pageContext.request.contextPath}/posts/${item.firstUnreadPostId}">
+                                                [NEW]</a>
+                                        </c:if>
+                                    </sec:authorize>
                                         <h4><a class="forum_link break_word"
                                                href="${pageContext.request.contextPath}/topics/${item.id}"><c:out
                                                 value="${item.title}"/></a></h4>
