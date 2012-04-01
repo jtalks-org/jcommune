@@ -63,35 +63,30 @@
           parent="abstractHibernateDao"/>
     
     <!-- Declaration of Hibernate Search DAO beans -->
-	<bean id="topicSearchDao" class="org.jtalks.jcommune.model.dao.search.hibernate.TopicHibernateSearchDao"
-		  parent="abstractHibernateSearchDao">
-		  <property name="filters">
-		  	<list>
-		  		<ref bean="punctuationMarksFilter"/>
-		  		<ref bean="stopWordsFilter"/>
-		  	</list>
-		  </property>
-	</bean>
-	<bean id="punctuationMarksFilter" 
-		  class="org.jtalks.jcommune.model.dao.search.hibernate.filter.PunctuationMarksFilter"/>
-	<bean id="stopWordsFilter" class="org.jtalks.jcommune.model.dao.search.hibernate.filter.StopWordsFilter">
-		<constructor-arg>
-			<list>
-				<value>org/jtalks/jcommune/lucene/english_stop.txt</value>
-				<value>org/jtalks/jcommune/lucene/russian_stop.txt</value>
-			</list>
-		</constructor-arg>
-		<constructor-arg value="true"/>
-	</bean>
-	
+    <bean id="topicSearchDao" class="org.jtalks.jcommune.model.dao.search.hibernate.TopicHibernateSearchDao">
+        <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+        <constructor-arg name="filters">
+            <list>
+                <ref bean="punctuationMarksFilter"/>
+                <ref bean="stopWordsFilter"/>
+            </list>
+        </constructor-arg>
+    </bean>
+    <bean id="punctuationMarksFilter" 
+          class="org.jtalks.jcommune.model.dao.search.hibernate.filter.PunctuationMarksFilter"/>
+    <bean id="stopWordsFilter" class="org.jtalks.jcommune.model.dao.search.hibernate.filter.StopWordsFilter">
+        <constructor-arg>
+            <list>
+                <value>org/jtalks/jcommune/lucene/english_stop.txt</value>
+                <value>org/jtalks/jcommune/lucene/russian_stop.txt</value>
+            </list>
+        </constructor-arg>
+        <constructor-arg value="true"/>
+    </bean>
     <!--Injecting sessionFactory bean to class AbstractHibernateChildRepository, this way
 resolves a problem of multiple DAO beans definition -->
     <bean id="abstractHibernateDao" abstract="true">
         <property name="sessionFactory" ref="sessionFactory"/>
-    </bean>
-    <!--Injecting sessionFactory bean to class AbstractHibernatSearchDao -->
-    <bean id="abstractHibernateSearchDao" abstract="true">
-    	<property name="sessionFactory" ref="sessionFactory"/>
     </bean>
     <!--Declaration and setting up datasource, sessionFactory and transactionalManager
    beans -->

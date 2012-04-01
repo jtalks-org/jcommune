@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.model.entity;
 
 import org.hibernate.search.annotations.Analyzer;
-import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Fields;
 import org.joda.time.DateTime;
@@ -45,7 +44,13 @@ public class Post extends Entity {
     public static final int MAX_LENGTH = 20000;
     public static final int MIN_LENGTH = 2;
     
+    /**
+     * Name of the field in the index for Russian.
+     */
     public static final String POST_CONTENT_FIELD_RU = "postContentRu";
+    /**
+     * Name of the field in the index for default language(English).
+     */
     public static final String POST_CONTENT_FIELD_DEF = "postContent";
 
     /**
@@ -165,14 +170,5 @@ public class Post extends Entity {
      */
     protected void setTopic(Topic topic) {
         this.topic = topic;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @DocumentId
-    @Override
-    public long getId() {
-        return super.getId();
     }
 }

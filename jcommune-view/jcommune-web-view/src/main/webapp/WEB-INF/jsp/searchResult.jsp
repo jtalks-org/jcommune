@@ -50,7 +50,7 @@
 			                       <div class="forum_info">
 										<h4>
 											<a class="forum_link" href="${pageContext.request.contextPath}/topics/${topic.id}"> 
-												<c:out value="${topic.title}"/>
+												<span class="forum_message_cell_text"><c:out value="${topic.title}"/></span>
 											</a>
 										</h4>
 			                       </div>

@@ -47,14 +47,14 @@ public class TransactionalTopicFullSearchServiceTest {
 	public void testSearchPosts() {
 		String phrase = "phrase";
 		
-		topicSearchService.search(phrase);
+		topicSearchService.searchByTitleAndContent(phrase);
 		
-		Mockito.verify(topicSearchDao).search(phrase);
+		Mockito.verify(topicSearchDao).searchByTitleAndContent(phrase);
 	}
 	
 	@Test(dataProvider = "parameterSearchPostsWithEmptySearchPhrase")
 	public void testSearchPostsWithEmptySearchPhrase(String phrase) {
-		List<Topic> searchResult = topicSearchService.search(phrase);
+		List<Topic> searchResult = topicSearchService.searchByTitleAndContent(phrase);
 		
 		Assert.assertTrue(searchResult.isEmpty(), "The search result must be empty.");
 	}
@@ -71,6 +71,6 @@ public class TransactionalTopicFullSearchServiceTest {
 	public void testRebuildIndex() {
 		topicSearchService.rebuildIndex();
 		
-		Mockito.verify(topicSearchDao).rebuildIndex(Topic.class);
+		Mockito.verify(topicSearchDao).rebuildIndex();
 	}
 }

@@ -23,7 +23,11 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicFullSearchService;
 
 /**
- * The implementation of TopicFullSearchService.
+ * The implementation of TopicFullSearchService, that provides possibility
+ * to search for topics. Searches for data in the index that have been indexed
+ * using the Hibernate Search functionality. Hibernate Search keeps track of all
+ * the data that have been saved or updated by using Hibernate. The data that 
+ * have been saved or updated without Hibernate will not be indexed. 
  * 
  * @author Anuar Nurmakanov
  *
@@ -34,17 +38,17 @@ public class TransactionalTopicFullSearchService implements TopicFullSearchServi
     /**
      * @param topicSearchDao for full-text search operations
      */
-    public TransactionalTopicFullSearchService(TopicSearchDao postSearchDao) {
-        this.topicSearchDao = postSearchDao;
+    public TransactionalTopicFullSearchService(TopicSearchDao topicSearchDao) {
+        this.topicSearchDao = topicSearchDao;
     }
     
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<Topic> search(String phrase) {
+    public List<Topic> searchByTitleAndContent(String phrase) {
         if (!StringUtils.isEmpty(phrase)) {
-            return topicSearchDao.search(phrase);
+            return topicSearchDao.searchByTitleAndContent(phrase);
         } else {
             return Collections.emptyList();
         }
@@ -55,6 +59,6 @@ public class TransactionalTopicFullSearchService implements TopicFullSearchServi
      */
     @Override
     public void rebuildIndex() {
-        topicSearchDao.rebuildIndex(Topic.class);
+        topicSearchDao.rebuildIndex();
     }
 }

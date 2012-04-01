@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.model.dao.search;
 
+import java.util.List;
+
 import org.jtalks.jcommune.model.entity.Topic;
 
 /**
@@ -23,5 +25,21 @@ import org.jtalks.jcommune.model.entity.Topic;
  * @see org.jtalks.jcommune.model.dao.search.hibernate.TopicHibernateSearchDao
  * @see org.jtalks.jcommune.model.entity.Topic
  */
-public interface TopicSearchDao extends SearchDao<Topic> {
+public interface TopicSearchDao {
+
+    /**
+     * Performs the full-text search by the topic title and
+     * his content(the list of posts).
+     * 
+     * @param searchText the search text
+     * @return the list of topics
+     */
+    List<Topic> searchByTitleAndContent(String searchText);
+
+    /**
+     * Indexes the data from the database.
+     * This functionality is required either when data exists in the database,
+     * but the index doesn't contain this data or the index is re-created.
+     */
+    void rebuildIndex();
 }

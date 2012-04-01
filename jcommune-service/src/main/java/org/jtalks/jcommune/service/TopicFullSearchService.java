@@ -26,15 +26,17 @@ import org.jtalks.jcommune.model.entity.Topic;
  */
 public interface TopicFullSearchService {
     /**
-     * Search for topics, which may correspond to the phrase.
+     * Search by topics, title and content of which corresponds to the text of search.
      * 
      * @param phrase phrase
      * @return list of topics
      */
-    List<Topic> search(String phrase);
+    List<Topic> searchByTitleAndContent(String phrase);
     
     /**
      * Indexing topics from the database.
+     * This functionality is required either when data exists in the database,
+     * but the index doesn't contain this data or the index is re-created.
      */
     void rebuildIndex();
 }

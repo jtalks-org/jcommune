@@ -61,7 +61,7 @@ public class TopicSearchControllerTest {
 		List<Topic> resultTopics = Collections.emptyList();
 		JCUser user = new JCUser("username", "email", "password");
 		
-		Mockito.when(topicFullSearchService.search(DEFAULT_SEARCH_TEXT))
+		Mockito.when(topicFullSearchService.searchByTitleAndContent(DEFAULT_SEARCH_TEXT))
 				.thenReturn(resultTopics);
 		Mockito.when(securityService.getCurrentUser()).thenReturn(user);
 		
@@ -74,7 +74,7 @@ public class TopicSearchControllerTest {
 		Assert.assertEquals(DEFAULT_SEARCH_TEXT, model.get(TopicSearchController.URI_ATTRIBUTE_NAME),
 				"Uri and the search text must be identical.");
 		Assert.assertEquals(Integer.valueOf(1), pagination.getPage(), "The page number should be the first.");
-		Mockito.verify(topicFullSearchService).search(DEFAULT_SEARCH_TEXT);
+		Mockito.verify(topicFullSearchService).searchByTitleAndContent(DEFAULT_SEARCH_TEXT);
 	}
 	
 	public void testContinueSearch() {
@@ -82,7 +82,7 @@ public class TopicSearchControllerTest {
 		JCUser user = new JCUser("username", "email", "password");
 		int page = 2;
 		
-		Mockito.when(topicFullSearchService.search(DEFAULT_SEARCH_TEXT))
+		Mockito.when(topicFullSearchService.searchByTitleAndContent(DEFAULT_SEARCH_TEXT))
 				.thenReturn(resultTopics);
 		Mockito.when(securityService.getCurrentUser()).thenReturn(user);
 		
@@ -95,6 +95,6 @@ public class TopicSearchControllerTest {
 		Assert.assertEquals(DEFAULT_SEARCH_TEXT, model.get(TopicSearchController.URI_ATTRIBUTE_NAME),
 				"Uri and the search text must be identical.");
 		Assert.assertEquals(Integer.valueOf(page), pagination.getPage(), "The page number should be the first.");
-		Mockito.verify(topicFullSearchService).search(DEFAULT_SEARCH_TEXT);
+		Mockito.verify(topicFullSearchService).searchByTitleAndContent(DEFAULT_SEARCH_TEXT);
 	}
 }

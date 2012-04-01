@@ -111,7 +111,7 @@ public class TopicSearchController {
      */
     private ModelAndView search(String searchText, int page) {
         JCUser currentUser = securityService.getCurrentUser();
-        List<Topic> topics = topicSearchService.search(searchText);
+        List<Topic> topics = topicSearchService.searchByTitleAndContent(searchText);
         String uri = searchText;
         Pagination pagination = new Pagination(page, currentUser, topics.size(), true);
         return new ModelAndView(SEARCH_RESULT_VIEW_NAME).

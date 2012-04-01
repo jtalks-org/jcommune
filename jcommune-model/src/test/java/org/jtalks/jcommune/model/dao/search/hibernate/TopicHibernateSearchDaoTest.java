@@ -24,7 +24,6 @@ import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.search.hibernate.filter.SearchRequestFilter;
-import org.jtalks.jcommune.model.entity.IndexedEntity;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -92,7 +91,7 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
 	public void testSearchWithFullyDirtySearchText() {
 		configureMocks(StringUtils.EMPTY, StringUtils.EMPTY);
 		
-		List<Topic> searchResults = topicSearchDao.search(StringUtils.EMPTY);
+		List<Topic> searchResults = topicSearchDao.searchByTitleAndContent(StringUtils.EMPTY);
 		
 		Assert.assertTrue(searchResults.size() == 0, "Search result must be empty.");
 	}
@@ -105,7 +104,7 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
 		saveAndFlushIndexes(Arrays.asList(expectedTopic));
 		configureMocks(content, content);
 		
-		List<Topic> searchResult = topicSearchDao.search(content);
+		List<Topic> searchResult = topicSearchDao.searchByTitleAndContent(content);
 		
 		Assert.assertTrue(searchResult != null, "Search result must not be null.");
 		Assert.assertTrue(searchResult.size() != 0, "Search result must not be empty.");
@@ -123,7 +122,7 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
 	    saveAndFlushIndexes(Arrays.asList(expectedTopic));
         configureMocks(content, content);
 	    
-	    List<Topic> searchResult = topicSearchDao.search(content);
+	    List<Topic> searchResult = topicSearchDao.searchByTitleAndContent(content);
         
         Assert.assertTrue(searchResult != null, "Search result must not be null.");
         Assert.assertTrue(searchResult.size() != 0, "Search result must not be empty.");
@@ -157,7 +156,7 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
 		for (String piece: Arrays.asList(firstPiece, secondPiece)) {
 			configureMocks(piece, piece);
 			
-			List<Topic> searchResults = topicSearchDao.search(piece);
+			List<Topic> searchResults = topicSearchDao.searchByTitleAndContent(piece);
 			
 			Assert.assertTrue(searchResults != null, "Search result must not be null.");
 			Assert.assertTrue(searchResults.size() != 0, "Search result must not be empty.");
@@ -180,13 +179,13 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
 		saveAndFlushIndexes(Arrays.asList(expectedTopic));
 		configureMocks(incorrect, incorrect);
 		
-		List<Topic> searchResults = topicSearchDao.search(incorrect);
+		List<Topic> searchResults = topicSearchDao.searchByTitleAndContent(incorrect);
 		
 		Assert.assertTrue(searchResults != null, "Search result must not be null.");
 		Assert.assertTrue(searchResults.size() == 0, "Search result must be empty.");
 	}
 	
-    private <E extends IndexedEntity> void saveAndFlushIndexes(List<E> entityList) {
+    private <E> void saveAndFlushIndexes(List<E> entityList) {
 		for (E entity : entityList) {
 			fullTextSession.save(entity);
 		}
@@ -209,7 +208,7 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
 		saveAndFlushIndexes(Arrays.asList(expectedTopic));
 		configureMocks(wordWithSameRoot, wordWithSameRoot);
 		
-		List<Topic> searchResults = topicSearchDao.search(wordWithSameRoot);
+		List<Topic> searchResults = topicSearchDao.searchByTitleAndContent(wordWithSameRoot);
 		Assert.assertTrue(searchResults.size() != 0, "Search result must not be empty.");
 	}
 	

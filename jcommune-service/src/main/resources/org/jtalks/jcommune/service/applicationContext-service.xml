@@ -88,8 +88,8 @@
     </bean>
     
     <bean id="topicSearchService" 
-    	  class="org.jtalks.jcommune.service.transactional.TransactionalTopicFullSearchService">
-    	  <constructor-arg ref="topicSearchDao"/>
+          class="org.jtalks.jcommune.service.transactional.TransactionalTopicFullSearchService">
+        <constructor-arg ref="topicSearchDao"/>
     </bean>
     
     <bean id="topicBranchService"

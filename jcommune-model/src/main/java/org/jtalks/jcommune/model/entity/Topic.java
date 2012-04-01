@@ -44,12 +44,23 @@ import org.joda.time.DateTime;
  * @author Pavel Vervenko
  * @author Vitaliy Kravchenko
  * @author Max Malakhov
+ * @author Anuar Nurmakanov
  */
 @AnalyzerDefs({
+    /*
+     * Describes the analyzer for Russian.
+     */
     @AnalyzerDef(name = "russianJtalksAnalyzer",
         tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
         filters = {
+            /*
+             * All "terms" of the search text will be converted to lower case.
+             */
             @TokenFilterDef(factory = LowerCaseFilterFactory.class),
+            /*
+             * Several words in language doesn't have a significant value.
+             * These filters exclude those words from the index.
+             */
             @TokenFilterDef(factory = StopFilterFactory.class,
                 params = {
                     @Parameter(name = "words",
@@ -62,15 +73,29 @@ import org.joda.time.DateTime;
                             value = "org/jtalks/jcommune/lucene/russian_stop.txt"),
                     @Parameter(name = "ignoreCase", value = "true")
                 }),
+            /*
+             * Provides the search by a root of a word.
+             * If two words have the same root, then they are equal in the terminology of search.
+             */
             @TokenFilterDef(factory = SnowballPorterFilterFactory.class, 
                 params =  @Parameter(name="language", value="Russian"))
         }
     ),
+    /*
+     * Describes the analyzer for default language(English).
+     */
     @AnalyzerDef(name = "defaultJtalksAnalyzer",
         tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
         filters = {
             @TokenFilterDef(factory = StandardFilterFactory.class),
+            /*
+             * All "terms" of the search text will be converted to lower case.
+             */
             @TokenFilterDef(factory = LowerCaseFilterFactory.class),
+            /*
+             * Several words in language doesn't have a significant value.
+             * These filters exclude those words from the index.
+             */
             @TokenFilterDef(factory = StopFilterFactory.class,
                 params = {
                     @Parameter(name = "words", 
@@ -83,12 +108,16 @@ import org.joda.time.DateTime;
                             value = "org/jtalks/jcommune/lucene/russian_stop.txt"),
                     @Parameter(name = "ignoreCase", value = "true")
             }),
+            /*
+             * Provides the search by a root of a word.
+             * If two words have the same root, then they are equal in the terminology of search.
+             */
             @TokenFilterDef(factory = SnowballPorterFilterFactory.class)
         }
     )
 })
 @Indexed
-public class Topic extends SubscriptionAwareEntity implements IndexedEntity {
+public class Topic extends SubscriptionAwareEntity {
     private DateTime creationDate;
     private DateTime modificationDate;
     private JCUser topicStarter;
@@ -106,8 +135,17 @@ public class Topic extends SubscriptionAwareEntity implements IndexedEntity {
     public static final int MIN_NAME_SIZE = 5;
     public static final int MAX_NAME_SIZE = 120;
     
+    /**
+     * Name of the field in the index for Russian.
+     */
     public static final String TOPIC_TITLE_FIELD_RU = "topicTitleRu";
+    /**
+     * Name of the field in the index for default language(English).
+     */
     public static final String TOPIC_TITLE_FIELD_DEF = "topicTitle";
+    /**
+     * Name of the prefix for collection of posts.
+     */
     public static final String TOPIC_POSTS_PREFIX = "topicPosts.";
     
 
@@ -408,7 +446,6 @@ public class Topic extends SubscriptionAwareEntity implements IndexedEntity {
     @DocumentId
     @Override
     public long getId() {
-        // TODO Auto-generated method stub
         return super.getId();
     }
 }

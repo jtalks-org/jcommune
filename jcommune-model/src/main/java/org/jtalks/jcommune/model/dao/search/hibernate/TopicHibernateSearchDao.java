@@ -14,11 +14,17 @@
  */
 package org.jtalks.jcommune.model.dao.search.hibernate;
 
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
+import org.hibernate.SessionFactory;
 import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.jtalks.jcommune.model.dao.search.TopicSearchDao;
+import org.jtalks.jcommune.model.dao.search.hibernate.filter.SearchRequestFilter;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 /**
@@ -27,17 +33,59 @@ import org.jtalks.jcommune.model.entity.Topic;
  * @author Anuar Nurmakanov
  *
  */
-public class TopicHibernateSearchDao extends AbstractHibernateSearchDao<Topic> implements TopicSearchDao {
+public class TopicHibernateSearchDao extends AbstractHibernateSearchDao
+        implements TopicSearchDao {
     /**
-     * The number of records by default
+     * The number of records by default.
      */
     public static final int DEFAULT_MAX_RECORD = 100;
+    /**
+     * List of filters.
+     */
+    private List<SearchRequestFilter> filters = Collections.emptyList();
+    
+    /**
+     * @param sessionFactory the Hibernate SessionFactory
+     * @param filters the list of filters to correct the dirty search requests
+     */
+    public TopicHibernateSearchDao(SessionFactory sessionFactory, List<SearchRequestFilter> filters) {
+        super(sessionFactory);
+        this.filters = filters;
+    }
+
+    /**
+     * Injects filters for search requests. It needed for testing.
+     * 
+     * @param filters the list of filters to correct the dirty search requests
+     */
+    void setFilters(List<SearchRequestFilter> filters) {
+        this.filters = filters;
+    }
     
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     @Override
-    protected Query createSearchQuery(FullTextSession fullTextSession,
+    public List<Topic> searchByTitleAndContent(String searchText) {
+        //TODO The latest versions of the library filtering is not needed.
+        String filteredSearchText = applyFilters(searchText, filters).trim();
+        if (!StringUtils.isEmpty(filteredSearchText)) {
+            Query query = createSearchQuery(getFullTextSession(), filteredSearchText);
+            return query.list();
+        } else {
+            return Collections.emptyList();
+        }
+    }
+    
+    /**
+     * Builds a search query.
+     * 
+     * @param fullTextSession the Hibernate Search session
+     * @param searchText the search text
+     * @return the search query
+     */
+    private Query createSearchQuery(FullTextSession fullTextSession,
             String searchText) {
         QueryBuilder queryBuilder = fullTextSession.
                 getSearchFactory().
@@ -55,5 +103,28 @@ public class TopicHibernateSearchDao extends AbstractHibernateSearchDao<Topic> i
         FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery);
         query.setMaxResults(DEFAULT_MAX_RECORD);
         return query;
+    }
+    
+    /**
+     * This method filters the text.
+     * 
+     * @param searchText the search text
+     * @param filters the list of filters
+     * @return the filtered search text
+     */
+    private String applyFilters(String searchText, List<SearchRequestFilter> filters) {
+        for (SearchRequestFilter filter : filters) {
+            searchText = filter.filter(searchText);
+        }
+        return searchText;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void rebuildIndex() {
+        //TODO We need a testing of performance.
+        getFullTextSession().createIndexer(Topic.class).start();
     }
 }
