@@ -22,10 +22,10 @@
 <cacheManagerPeerProviderFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheManagerPeerProviderFactory"
     properties="file=jgroups-udp.xml"/>-->
 
-    <cacheManagerPeerProviderFactory
+<!--    <cacheManagerPeerProviderFactory
             class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
             properties="peerDiscovery=automatic, multicastGroupAddress=230.0.0.1,
-                                        multicastGroupPort=4446, timeToLive=32"/>
+                                        multicastGroupPort=4446, timeToLive=32"/>-->
 
     <defaultCache maxElementsInMemory="1000"
                   eternal="false"
@@ -38,12 +38,12 @@
                                  properties="replicateAsynchronously=true, replicatePuts=true,
         replicateUpdates=true, replicateUpdatesViaCopy=false,
         replicateRemovals=true"/>-->
-        <cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"
+<!--        <cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"
                                    properties="replicateAsynchronously=true,
                  replicatePuts=true,
                  replicateUpdates=true,
                  replicateUpdatesViaCopy=true,
-                 replicateRemovals=true "/>
+                 replicateRemovals=true "/>-->
     </defaultCache>
 
     <cache name="org.hibernate.cache.StandardQueryCache"
