@@ -51,7 +51,6 @@ public class NotificationService {
      */
     public void topicChanged(Topic topic) {
         JCUser current = securityService.getCurrentUser();
-        this.branchChanged(topic.getBranch());
         for (JCUser user : topic.getSubscribers()) {
             if (!user.equals(current)) {
                 mailService.sendTopicUpdatesOnSubscription(user, topic);
