@@ -120,7 +120,7 @@ function bbcode2html() {
             result = result.replace(/@w0956756wo@/gi, "%5D");
             result = result.replace(/@ywdffgg434y@/gi, "%5B");
             result = result.replace(/14@123435vggv4f/gi, "%22");
-            result = result.replace(/rte@@tet345345frdgfv/gi, "<");
+            result = result.replace(/rte@@tet345345frdgfv/gi, "&lt;");
             result = result.replace(/gertfgertgf@@@@@#4324234/gi, "<![CDATA[<]]>");
             htmlcontentelement.innerHTML = result;
             htmlcontentelement.style.display = "";
