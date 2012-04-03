@@ -217,17 +217,4 @@ public class JCUser extends User {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
-
-    /**
-     * We're overriding base method 'cause it's factualy incorrect:
-     * It replaces spaces with a plus sign, while we need %20.
-     * <p/>
-     * todo: fix it in Common Model component
-     *
-     * @return encoded username, safe for URLs
-     */
-    @Override
-    public String getEncodedUsername() {
-        return super.getEncodedUsername().replace("+", "%20");
-    }
 }
