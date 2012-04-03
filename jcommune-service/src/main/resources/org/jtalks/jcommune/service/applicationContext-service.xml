@@ -136,6 +136,11 @@
         <constructor-arg ref="forumStatisticsDAO"/>
     </bean>
 
+    <bean id="samplePageService"
+          class="org.jtalks.jcommune.service.transactional.TransactionalSapmlePageService">
+        <constructor-arg ref="samplePageDao"/>
+    </bean>
+
     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
         <property name="configLocation" value="classpath:/org/jtalks/jcommune/service/ehcache.xml"/>
     </bean>

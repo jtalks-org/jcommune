@@ -61,6 +61,10 @@
     <bean id="userContactsDao"
           class="org.jtalks.jcommune.model.dao.hibernate.UserContactsHibernateDao"
           parent="abstractHibernateDao"/>
+    
+    <bean id="samplePageDao"
+          class="org.jtalks.jcommune.model.dao.hibernate.SamplePageHibernateDao"
+          parent="abstractHibernateDao"/>
 
     <!--Injecting sessionFactory bean to class AbstractHibernateChildRepository, this way
 resolves a problem of multiple DAO beans definition -->

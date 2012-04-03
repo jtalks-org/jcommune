@@ -32,14 +32,14 @@
         <form:form id="form" name="form" action='${pageContext.request.contextPath}/user/new'
                      modelAttribute="newUser" method="POST">
             <div class="forum_header_table">
-                <div class="forum_header">
-                    <span class="forum_header_answer"><spring:message code="label.fillmessage"/></span>
-                    <span class="empty_cell"></span>
+                    <div class="forum_header">
+                        <span class="forum_header_answer"><spring:message code="label.fillmessage"/></span>
+                        <span class="empty_cell"></span>
+                    </div>
                 </div>
-            </div>
-            <div class="forum_table" id="stylized">
+                    <div class="forum_table" id="stylized">
 
-                <div class="forum_row">
+                        <div class="forum_row">
                     <form:label path="username"> <spring:message code="label.username"/></form:label>
                     <div>
                         <form:input path="username" class="reg_input" type="text"/></br>
@@ -56,14 +56,14 @@
                     <span class="reg_info"><spring:message code="label.tip.email"/></span>
                 </div>
                 <div class="forum_row">
-                    <form:label path="password"><spring:message code="label.password"/></form:label>
+                        <form:label path="password"><spring:message code="label.password"/></form:label>
 
-                    <div>
-                        <form:input path="password" class="reg_input" type="password"/></br>
-                        <form:errors path="password" cssClass="error"/>
+                        <div>
+                                <form:input path="password" class="reg_input" type="password"/></br>
+                            <form:errors path="password" cssClass="error"/>
+                        </div>
+                        <span class="reg_info"><spring:message code="label.tip.password"/></span>
                     </div>
-                    <span class="reg_info"><spring:message code="label.tip.password"/></span>
-                </div>
                 <div class="forum_row">
                     <form:label path="passwordConfirm"><spring:message code="label.confirmation"/></form:label>
 

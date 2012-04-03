@@ -43,7 +43,7 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="${pageContext.request.contextPath}/pages/1">
                     <fmt:message key="label.newbies"/>
                 </a>
             </li>

@@ -14,55 +14,26 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
-<html>
 <head>
-    <title>Редактирование</title>
+    <title><c:out value="${samplePageDto.nameText}"/></title>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
             type="text/javascript"></script>
 </head>
 <body>
-<div class="wrap login_page">
+<div class="wrap answer_page">
     <jsp:include page="../template/topLine.jsp"/>
     <jsp:include page="../template/logo.jsp"/>
-    <div class="all_forums">
 
-        <div id="answer">
-            <form:form action="${pageContext.request.contextPath}/pages/${pageId}/edit"
-                       method="POST" modelAttribute="samplePageDtoDto" onsubmit="doCheck();return true;">
+    <c:out value="${samplePageDto.contentText}"/>
 
-                <div class="forum_header_table">
-                    <div class="forum_header">
-                        <span class="forum_header_answer"><spring:message code="label.post.edit"/></span>
-                        <span class="empty_cell"></span>
-                    </div>
-                </div>
-
-                <div class="forum_row">
-                    <form:label path="nameText"><spring:message code="label.password"/></form:label>
-
-                    <div>
-                        <form:input path="nameText" class="reg_input" type="text"/></br>
-                        <form:errors path="nameText" cssClass="error"/>
-                    </div>
-                    <span class="reg_info"><spring:message code="label.tip.password"/></span>
-                </div>
-
-                <jtalks:bbeditor labelForAction="label.post.edit"
-                                 postText="${samplePageDto.contentText}"
-                                 bodyParameterName="contentText"
-                                 back="${pageContext.request.contextPath}"/>
-            </form:form>
-        </div>
+    <br/>
+    <a href="${pageContext.request.contextPath}/pages/${samplePageDto.id}">Edit</a>
     </div>
-
     <div class="footer_buffer"></div>
-    </div>
 </div>
 </body>
-</html>
