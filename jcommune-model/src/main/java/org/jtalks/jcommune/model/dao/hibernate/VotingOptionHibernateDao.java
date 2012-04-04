@@ -26,5 +26,4 @@ import org.jtalks.jcommune.model.entity.VotingOption;
  */
 public class VotingOptionHibernateDao extends AbstractHibernateChildRepository<VotingOption> 
         implements VotingOptionDao {
-
 }

@@ -22,8 +22,9 @@ import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
 
 /**
- * Represents the voting of the topic.
- * Contains the list of related {@link VotingOption}.
+ * Represents the voting of the topic. Contains the list of related {@link VotingOption}.
+ * Voting may be either "single type" or "multiple type" also topic may have an end date.
+ * Voting is tied to the life cycle of the topic({@link Topic}).
  * 
  * @author Anuar Nurmakanov
  */
@@ -70,16 +71,20 @@ public class Voting extends Entity {
     }
 
     /**
+     * Voting may be either "single type" or "multiple type".
      * 
-     * @return
+     * @return <tt>true</tt> if the voting is "single type", 
+     * <tt>false</tt> if the voting is "multiple type"
      */
     public boolean isSingle() {
         return single;
     }
 
     /**
+     * Set the voting type. Voting may be either "single type" or "multiple type".
      * 
-     * @param single
+     * @param single <tt>true</tt> if the voting is "single type", 
+     * <tt>false</tt> if the voting is "multiple type"
      */
     public void setSingle(boolean single) {
         this.single = single;
@@ -140,8 +145,9 @@ public class Voting extends Entity {
     }
     
     /**
+     * Add the voting option to this voting.
      * 
-     * @param option
+     * @param option the voting option
      */
     public void addVotingOption(VotingOption option) {
         option.setVoting(this);
