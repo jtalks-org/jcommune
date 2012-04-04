@@ -75,9 +75,14 @@ public class UserContactsControllerTest {
     	UserContact contact = new UserContact("gateway", contactType);
     	contact.setOwner(owner);
     	
-    	when(service.addContact(contact)).thenReturn(contact);
+    	UserContactDto incomingContactDto = new UserContactDto();
+    	incomingContactDto.setOwnerId(owner.getId());
+    	incomingContactDto.setValue(contact.getValue());
+    	incomingContactDto.setType(contactType);
     	
-    	UserContactDto contactDto = controller.addContact(contact);
+    	when(service.addContact(contact.getValue(), contact.getType())).thenReturn(contact);
+    	
+    	UserContactDto contactDto = controller.addContact(incomingContactDto);
     	
     	assertEquals(contactDto.getType(), contactType, "Type of contact should be the same.");
     	assertEquals(contactDto.getValue(), contact.getValue(), "Type of contact should be the same.");

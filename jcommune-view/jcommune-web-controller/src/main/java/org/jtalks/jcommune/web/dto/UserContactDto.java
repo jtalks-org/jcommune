@@ -41,6 +41,9 @@ public class UserContactDto {
         value = contact.getValue();
         type = contact.getType();
     }
+    
+    public UserContactDto() { 	
+    }
 
     /**
      * @return id
