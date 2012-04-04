@@ -51,5 +51,8 @@
             <key column="TOPIC_ID"/>
             <many-to-many column="USER_ID" class="org.jtalks.jcommune.model.entity.JCUser"/>
         </set>
+        
+        <one-to-one name="voting" class="org.jtalks.jcommune.model.entity.Voting"
+                    cascade="save-update"/>
     </class>
 </hibernate-mapping>

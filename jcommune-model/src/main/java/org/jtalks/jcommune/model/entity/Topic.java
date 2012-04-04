@@ -93,7 +93,7 @@ import org.joda.time.DateTime;
              */
             @TokenFilterDef(factory = LowerCaseFilterFactory.class),
             /*
-             * Several words in language doesn't have a significant value.
+             * Several words in language don't have a significant value.
              * These filters exclude those words from the index.
              */
             @TokenFilterDef(factory = StopFilterFactory.class,
@@ -128,6 +128,7 @@ public class Topic extends SubscriptionAwareEntity {
     private List<Post> posts = new ArrayList<Post>();
     private Branch branch;
     private int views;
+    private Voting voting;
 
     // transient, makes sense for current user only if set explicitly
     private Integer lastReadPostIndex;
@@ -399,6 +400,24 @@ public class Topic extends SubscriptionAwareEntity {
      */
     public void setViews(int views) {
         this.views = views;
+    }
+    
+    /**
+     * Get the voting for this topic.
+     * 
+     * @return the voting for this topic
+     */
+    public Voting getVoting() {
+        return voting;
+    }
+
+    /**
+     * Set the voting for this topic.
+     * 
+     * @param voting the voting for this topic
+     */
+    public void setVoting(Voting voting) {
+        this.voting = voting;
     }
 
     /**

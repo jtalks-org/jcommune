@@ -126,4 +126,20 @@ public final class ObjectsFactory {
         return posts;
     }
 
+    public static Voting createDefaultVoting() {
+        Topic topic = getDefaultTopic();
+        Voting voting = new Voting("New voting");
+        topic.setVoting(voting);
+        voting.setTopic(topic);
+        persist(topic);
+        return voting;
+    }
+    
+    public static VotingOption createDefaultVotingOption() {
+        Voting voting = createDefaultVoting();
+        persist(voting);
+        VotingOption option = new VotingOption("First voting option");
+        voting.addVotingOption(option);
+        return option;
+    }
 }
