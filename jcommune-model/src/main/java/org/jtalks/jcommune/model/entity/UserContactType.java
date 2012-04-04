@@ -22,8 +22,14 @@ import org.jtalks.common.model.entity.Entity;
  */
 public class UserContactType extends Entity {
 
+	/** Where to place content in display pattern */
+	public final static String KWD_CONTENT = "${content}";
+	
     private String typeName;
     private String icon;
+    private String mask;
+    private String displayPattern;
+    private String validationPattern;
 
     /**
      * Only for hibernate usage.
@@ -63,5 +69,47 @@ public class UserContactType extends Entity {
         this.typeName = typeName;
     }
 
+	/**
+	 * @return the mask for editing
+	 */
+	public String getMask() {
+		return mask;
+	}
 
+	/**
+	 * @param mask the mask for editing
+	 */
+	public void setMask(String mask) {
+		this.mask = mask;
+	}
+
+	/**
+	 * @return the display pattern contact
+	 */
+	public String getDisplayPattern() {
+		return displayPattern;
+	}
+
+	/**
+	 * @param displayPattern the display pattern for contact
+	 */
+	public void setDisplayPattern(String displayPattern) {
+		this.displayPattern = displayPattern;
+	}
+
+	/**
+	 * @return the validation regexp of contact type
+	 */
+	public String getValidationPattern() {
+		return validationPattern;
+	}
+
+	/**
+	 * @param validationPattern validation regexp of contact type
+	 */
+	public void setValidationPattern(String validationPattern) {
+		this.validationPattern = validationPattern;
+	}
+    
+    
 }
