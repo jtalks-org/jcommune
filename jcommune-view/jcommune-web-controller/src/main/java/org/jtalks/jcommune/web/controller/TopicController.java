@@ -18,6 +18,8 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.Voting;
+import org.jtalks.jcommune.model.entity.VotingOption;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.TopicService;
@@ -42,6 +44,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -181,6 +185,13 @@ public class TopicController {
                                               required = false) Boolean pagingEnabled) throws NotFoundException {
 
         Topic topic = topicService.get(topicId);
+        
+        Voting poll = topic.getVoting();
+        List<VotingOption> pollOptions = getPollOptions(poll);
+        if (poll != null) {
+            poll.setTotalVoteCount(calculateTotalVoteCount(pollOptions));
+        }
+        
         Branch branch = topic.getBranch();
         JCUser currentUser = securityService.getCurrentUser();
         List<Post> posts = topic.getPosts();
@@ -201,7 +212,25 @@ public class TopicController {
                 .addObject(TOPIC_ID, topicId)
                 .addObject("subscribed", topic.getSubscribers().contains(currentUser))
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic))
-                .addObject("lastReadPost", lastReadPostIndex);
+                .addObject("lastReadPost", lastReadPostIndex)
+                .addObject("poll", poll)
+                .addObject("pollOptions", pollOptions);
+    }
+    
+    private List<VotingOption> getPollOptions(Voting poll) {
+        if (poll != null) {
+            return poll.getVotingOptions();
+        }
+        return Collections.emptyList();
+    }
+    
+    //TODO move in service
+    private int calculateTotalVoteCount(List<VotingOption> options) {
+        int totalVoteCount = 0;
+        for (VotingOption option : options) {
+            totalVoteCount += option.getVoteCount();
+        }
+        return totalVoteCount;
     }
 
     /**

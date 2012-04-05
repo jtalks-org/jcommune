@@ -34,6 +34,8 @@ public class Voting extends Entity {
     private DateTime endingDate;
     private List<VotingOption> votingOptions = new ArrayList<VotingOption>();
     private Topic topic;
+    //transient field
+    private int totalVoteCount;
     
     /**
      * Used only by Hibernate.
@@ -144,6 +146,7 @@ public class Voting extends Entity {
         this.topic = topic;
     }
     
+    
     /**
      * Add the voting option to this voting.
      * 
@@ -152,5 +155,13 @@ public class Voting extends Entity {
     public void addVotingOption(VotingOption option) {
         option.setVoting(this);
         this.votingOptions.add(option);
+    }
+
+    public int getTotalVoteCount() {
+        return totalVoteCount;
+    }
+
+    public void setTotalVoteCount(int totalVoteCount) {
+        this.totalVoteCount = totalVoteCount;
     }
 }

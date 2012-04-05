@@ -31,6 +31,8 @@
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/moveTopic.js"
             type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/poll.js"
+            type="text/javascript"></script>
 </head>
 <body>
 <div class="wrap topic_page">
@@ -115,6 +117,38 @@
     </div>
 </div>
 <ul class="forum_table">
+	<c:if test="${poll != null}">
+		<div class="forum_row">
+			<div class="forum_userinfo">
+                <a class="username"
+                   href="${pageContext.request.contextPath}/users/${topic.topicStarter.encodedUsername}">
+                    <c:out value="${topic.topicStarter.username}"/>
+                </a>
+                <div class="status">
+                    <spring:message var="online" code="label.topic.online_users"/>
+                    <spring:message var="offline" code="label.topic.offline_users"/>
+                    <jtalks:ifContains collection="${usersOnline}" object="${topic.topicStarter}"
+                                       successMessage="${online}" failMessage="${offline}"/>
+                </div>
+                <img src="${pageContext.request.contextPath}/${topic.topicStarter.encodedUsername}/avatar"
+                     class="avatar"/>
+                <br/>
+                <div class="user_misc_info">
+                    <span class="status"><spring:message code="label.topic.registered"/></span>
+                    <jtalks:format pattern="dd.MM.yy" value="${topic.topicStarter.registrationDate}"/><br/>
+                    <span class="status"><spring:message code="label.topic.message_count"/></span>
+                    <c:out value="${topic.topicStarter.postCount}"/><br/>
+                    <c:if test="${topic.topicStarter.location != null}">
+                        <span class="status"><spring:message code="label.topic.from_whence"/></span>
+                        <span class="break_word"><c:out value="${topic.topicStarter.location}"/></span>
+                    </c:if>
+                </div>
+            </div>
+            <div class="forum_message_cell">
+				<jtalks:poll pollEnabled="true" pollOptions="${pollOptions}" poll="${poll}"/>
+			</div>
+		</div>
+	</c:if>
     <c:forEach var="post" items="${list}" varStatus="i">
         <li class="forum_row">
             <div class="forum_userinfo">
