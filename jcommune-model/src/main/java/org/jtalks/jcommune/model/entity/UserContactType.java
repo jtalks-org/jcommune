@@ -22,9 +22,6 @@ import org.jtalks.common.model.entity.Entity;
  */
 public class UserContactType extends Entity {
 
-	/** Where to place content in display pattern */
-	public final static String KWD_CONTENT = "${content}";
-	
     private String typeName;
     private String icon;
     private String mask;

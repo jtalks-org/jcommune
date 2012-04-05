@@ -1,7 +1,7 @@
 ALTER TABLE CONTACT_TYPE 
     ADD MASK VARCHAR(50) NOT NULL DEFAULT '',
-    ADD DISPLAY_PATTERN VARCHAR(50) NOT NULL DEFAULT '${contact}',
+    ADD DISPLAY_PATTERN VARCHAR(50) NOT NULL DEFAULT '%s',
     ADD VALIDATION_PATTERN VARCHAR(255) NOT NULL DEFAULT '.+';
 
 UPDATE CONTACT_TYPE SET MASK='000111222', VALIDATION_PATTERN='^([0-9]){5,9}$' WHERE TYPE_ID = 1;
-UPDATE CONTACT_TYPE SET MASK='mail@server.com', DISPLAY_PATTERN='mailto:${content}', VALIDATION_PATTERN='[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?' WHERE TYPE_ID = 3;
+UPDATE CONTACT_TYPE SET MASK='mail@server.com', DISPLAY_PATTERN='mailto:%s', VALIDATION_PATTERN='[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?' WHERE TYPE_ID = 3;
