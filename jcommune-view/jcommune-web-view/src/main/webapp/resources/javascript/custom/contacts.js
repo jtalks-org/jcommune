@@ -76,11 +76,67 @@ function getContactHtml(data) {
 }
 
 $(document).ready(function () {
-
+	
+	var AddContact = {};
+	
+	AddContact.selectedContactType = null;
+	
+	// all contact types
+	AddContact.contactTypes = null;
+	
+	// if entered contact is valid
+	AddContact.isValueValid = true;
+	
+	AddContact.getContactType = function(id, contactTypes) {
+		var result = null;
+		
+		if (id !== undefined && contactTypes !== undefined) {
+			$.each(contactTypes, function (i, obj) {
+                if (obj.id == id) {
+                	result = obj;
+                	return;
+                }
+            });
+		}
+		
+		return result;
+	}
+	
+	AddContact.resetVariables = function() {
+		AddContact.isValueValid = true;
+		AddContact.contactTypes = null;
+		AddContact.selectedContactType = null;
+	}
+	
+	$('body').on('keyup', '#contact', function() {
+		var value = $(this).val();
+		if (!value.match(new RegExp(AddContact.selectedContactType.validationPattern))) {
+			$('#contact-error-status').text('$validationUsercontactNotblack');
+			AddContact.isValueValid = false;
+		} else {
+			$('#contact-error-status').text('');
+			AddContact.isValueValid = true;
+		}
+	});
+	
+	// when user selects other contact type 
+	$('body').on('change', '#contact_type', function() {
+		var contactId = $(this).val();
+		AddContact.selectedContactType = AddContact.getContactType(contactId, AddContact.contactTypes); 
+		$('#contact').val(AddContact.selectedContactType.mask);
+		$('#contact').keyup();
+	});
+	
     //"Add contact" button handler
     $("#add_contact").click(function () {
+    	
+    	AddContact.resetVariables();
+    	
         $.getJSON(baseUrl + "/contacts/types", function (json) {
 
+        	AddContact.contactTypes = json;
+			AddContact.selectedContactType = json[0];
+        	
             //parse returned list of contact types and generate HTML for pop-up window
             var str = '<b>Add contact:</b><br/><select name="contact_type" id="contact_type">';
 
@@ -88,12 +144,13 @@ $(document).ready(function () {
                 str += '<option value="' + obj.id + '">' + obj.typeName + '</option>';
             });
             str += '</select>';
-            str += '<input type="text" name="contact" id="contact"/>'
+            str += '<input type="text" name="contact" id="contact" value="' + AddContact.selectedContactType.mask + '" />';
+            str += '<label for="contact" id="contact-error-status" class="error"/>';
 
             $.prompt(str, {
                 buttons:{ Ok:true, Cancel:false},
                 callback:function (value, message, form) {
-                    if (value != undefined && value) {
+                    if (AddContact.isValueValid && value != undefined && value) {
 
                         var contact = {
                             value:form.contact,
