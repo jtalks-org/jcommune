@@ -128,7 +128,7 @@ public class Topic extends SubscriptionAwareEntity {
     private List<Post> posts = new ArrayList<Post>();
     private Branch branch;
     private int views;
-    private Voting voting;
+    private Poll poll;
 
     // transient, makes sense for current user only if set explicitly
     private Integer lastReadPostIndex;
@@ -403,21 +403,21 @@ public class Topic extends SubscriptionAwareEntity {
     }
     
     /**
-     * Get the voting for this topic.
+     * Get the poll for this topic.
      * 
-     * @return the voting for this topic
+     * @return the poll for this topic
      */
-    public Voting getVoting() {
-        return voting;
+    public Poll getPoll() {
+        return poll;
     }
 
     /**
-     * Set the voting for this topic.
+     * Set the poll for this topic.
      * 
-     * @param voting the voting for this topic
+     * @param poll the poll for this topic
      */
-    public void setVoting(Voting voting) {
-        this.voting = voting;
+    public void setPoll(Poll poll) {
+        this.poll = poll;
     }
 
     /**

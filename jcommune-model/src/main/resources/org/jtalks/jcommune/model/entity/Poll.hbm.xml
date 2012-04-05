@@ -19,15 +19,16 @@
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
-    <class name="VotingOption" table="VOTING_OPTIONS">
+    <class name="Poll" table="POLLS">
         <cache usage="read-write"/>
-        <id column="VO_ID" name="id" unsaved-value="0">
+        <id column="POLL_ID" name="id" unsaved-value="0">
             <generator class="native"/>
         </id>
         <property column="UUID" name="uuid" unique="true" not-null="true"/>
-        <property column="NAME" name="name" not-null="true"/>
-        <property column="VOTE_COUNT" name="voteCount"/>
-        <many-to-one name="voting" column="VOTING_ID" not-null="false"
-                     foreign-key="FK_VOTING" class="org.jtalks.jcommune.model.entity.Voting" />
+        <property column="TITLE" name="title" not-null="true"/>
+        <property column="ENDING_DATE" name="endingDate" not-null="false"
+                  type="org.joda.time.contrib.hibernate.PersistentDateTime"/>
+        <property column="SINGLE" name="single" not-null="true"/>
+        <one-to-one name="topic" class="org.jtalks.jcommune.model.entity.Topic"/>
     </class>
 </hibernate-mapping>

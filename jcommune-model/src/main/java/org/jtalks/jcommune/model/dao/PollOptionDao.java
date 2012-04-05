@@ -12,20 +12,18 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
 package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.common.model.dao.ChildRepository;
-import org.jtalks.jcommune.model.dao.hibernate.VotingHibernateDao;
-import org.jtalks.jcommune.model.entity.Voting;
+import org.jtalks.jcommune.model.entity.PollOption;
 
 /**
- * Interface allows to make basic CRUD operations with the {@link Voting} objects.
+ * Interface allows to make basic CRUD operations with the {@link PollOption} objects.
  * Except of basic CRUD operations from {@link ChildRepository}.
- * This DAO doesn't contain specific operations with voting, because the lifecycle
- * of the vote relates to the lifecycle of the topic.
- *  
+ * 
  * @author Anuar Nurmakanov
- * @see VotingHibernateDao
  */
-public interface VotingDao extends ChildRepository<Voting> {
+public interface PollOptionDao extends ChildRepository<PollOption> {
+
 }

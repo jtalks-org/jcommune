@@ -62,12 +62,12 @@
           class="org.jtalks.jcommune.model.dao.hibernate.UserContactsHibernateDao"
           parent="abstractHibernateDao"/>
           
-    <bean id="votingDao"
-          class="org.jtalks.jcommune.model.dao.hibernate.VotingHibernateDao"
+    <bean id="pollDao"
+          class="org.jtalks.jcommune.model.dao.hibernate.PollHibernateDao"
           parent="abstractHibernateDao"/>
           
-    <bean id="votingOptionDao"
-          class="org.jtalks.jcommune.model.dao.hibernate.VotingOptionHibernateDao"
+    <bean id="pollOptionDao"
+          class="org.jtalks.jcommune.model.dao.hibernate.PollOptionHibernateDao"
           parent="abstractHibernateDao"/>
     
     <!-- Declaration of Hibernate Search DAO beans -->
@@ -118,8 +118,8 @@ resolves a problem of multiple DAO beans definition -->
                 <value>/org/jtalks/jcommune/model/entity/UserContact.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/UserContactType.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/LastReadPost.hbm.xml</value>
-                <value>/org/jtalks/jcommune/model/entity/Voting.hbm.xml</value>
-                <value>/org/jtalks/jcommune/model/entity/VotingOption.hbm.xml</value>
+                <value>/org/jtalks/jcommune/model/entity/Poll.hbm.xml</value>
+                <value>/org/jtalks/jcommune/model/entity/PollOption.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">

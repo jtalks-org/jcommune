@@ -15,16 +15,15 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
-import org.jtalks.jcommune.model.dao.VotingDao;
-import org.jtalks.jcommune.model.entity.Voting;
+import org.jtalks.jcommune.model.dao.PollOptionDao;
+import org.jtalks.jcommune.model.entity.PollOption;
 
 /**
- * The implementation of the {@link VotingDao} based on Hibernate.
- * The class is responsible for loading {@link Voting} objects from database and update them.
+ * The implementation of the {@link PollOptionDao} based on Hibernate.
+ * The class is responsible for loading {@link PollOption} objects from database and update them.
  * 
  * @author Anuar Nurmakanov
  */
-public class VotingHibernateDao extends AbstractHibernateChildRepository<Voting>
-        implements VotingDao {
-
+public class PollOptionHibernateDao extends AbstractHibernateChildRepository<PollOption> 
+        implements PollOptionDao {
 }

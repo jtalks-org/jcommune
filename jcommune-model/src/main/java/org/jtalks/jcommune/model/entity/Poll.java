@@ -22,17 +22,17 @@ import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
 
 /**
- * Represents the voting of the topic. Contains the list of related {@link VotingOption}.
- * Voting may be either "single type" or "multiple type" also topic may have an end date.
- * Voting is tied to the life cycle of the topic({@link Topic}).
+ * Represents the poll of the topic. Contains the list of related {@link PollOption}.
+ * Poll may be either "single type" or "multiple type" also topic may have an end date.
+ * Poll is tied to the life cycle of the topic({@link Topic}).
  * 
  * @author Anuar Nurmakanov
  */
-public class Voting extends Entity {
+public class Poll extends Entity {
     private String title;
     private boolean single;
     private DateTime endingDate;
-    private List<VotingOption> votingOptions = new ArrayList<VotingOption>();
+    private List<PollOption> pollOptions = new ArrayList<PollOption>();
     private Topic topic;
     //transient field
     private int totalVoteCount;
@@ -40,7 +40,7 @@ public class Voting extends Entity {
     /**
      * Used only by Hibernate.
      */
-    protected Voting() {
+    protected Poll() {
     }
     
     /**
@@ -49,7 +49,7 @@ public class Voting extends Entity {
      * 
      * @param title the voting title
      */
-    public Voting(String title) {
+    public Poll(String title) {
         this.title = title;
         this.single = true;
     }
@@ -115,17 +115,17 @@ public class Voting extends Entity {
      * 
      * @return the list of voting options
      */
-    public List<VotingOption> getVotingOptions() {
-        return votingOptions;
+    public List<PollOption> getPollOptions() {
+        return pollOptions;
     }
 
     /**
      * Set the list of voting options.
      * 
-     * @param votingOptions the list of voting options
+     * @param pollOptions the list of voting options
      */
-    protected void setVotingOptions(List<VotingOption> votingOptions) {
-        this.votingOptions = votingOptions;
+    protected void setPollOptions(List<PollOption> pollOptions) {
+        this.pollOptions = pollOptions;
     }
 
     /**
@@ -152,9 +152,9 @@ public class Voting extends Entity {
      * 
      * @param option the voting option
      */
-    public void addVotingOption(VotingOption option) {
-        option.setVoting(this);
-        this.votingOptions.add(option);
+    public void addVotingOption(PollOption option) {
+        option.setPoll(this);
+        this.pollOptions.add(option);
     }
 
     public int getTotalVoteCount() {

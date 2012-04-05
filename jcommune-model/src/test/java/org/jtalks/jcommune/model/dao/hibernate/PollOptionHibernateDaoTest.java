@@ -17,8 +17,8 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.ObjectsFactory;
-import org.jtalks.jcommune.model.dao.VotingDao;
-import org.jtalks.jcommune.model.entity.Voting;
+import org.jtalks.jcommune.model.dao.PollOptionDao;
+import org.jtalks.jcommune.model.entity.PollOption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -36,11 +36,11 @@ import org.testng.annotations.Test;
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
-public class VotingHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
+public class PollOptionHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
-    private VotingDao votingDao;
+    private PollOptionDao pollOptionDao;
     private Session session;
     
     @BeforeMethod
@@ -53,35 +53,35 @@ public class VotingHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     
     @Test
     public void testGet() {
-        Voting expectedVoting = ObjectsFactory.createDefaultVoting();
-        session.save(expectedVoting);
+        PollOption expectedOption = ObjectsFactory.createDefaultVotingOption();
+        session.save(expectedOption);
         
-        Voting resultVoting = votingDao.get(expectedVoting.getId());
+        PollOption resultOption = pollOptionDao.get(expectedOption.getId());
         
-        Assert.assertNotNull(resultVoting);
-        Assert.assertEquals(resultVoting.getId(), expectedVoting.getId());
+        Assert.assertNotNull(resultOption);
+        Assert.assertEquals(resultOption.getId(), expectedOption.getId());
     }
     
     @Test
     public void testGetInvalidId() {
-        Voting voting = votingDao.get(-111111L);
+        PollOption option = pollOptionDao.get(-11111L);
         
-        Assert.assertNull(voting);
+        Assert.assertNull(option);
     }
     
     @Test
     public void testUpdate() {
-        String newTitle = "Changed title";
-        Voting voting = ObjectsFactory.createDefaultVoting();
-        session.save(voting);
+        String newName = "Changed name";
+        PollOption option = ObjectsFactory.createDefaultVotingOption();
+        session.save(option);
         
-        voting.setTitle(newTitle);
-        votingDao.update(voting);
-        session.evict(voting);
+        option.setName(newName);
+        pollOptionDao.update(option);
+        session.evict(option);
         
-        Voting changedVoting = (Voting) session.get(Voting.class, voting.getId());
+        PollOption changedOption = (PollOption)session.get(PollOption.class, option.getId());
         
-        Assert.assertNotNull(changedVoting);
-        Assert.assertEquals(newTitle, changedVoting.getTitle());
+        Assert.assertNotNull(changedOption);
+        Assert.assertEquals(newName, changedOption.getName());
     }
 }

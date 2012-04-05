@@ -126,19 +126,19 @@ public final class ObjectsFactory {
         return posts;
     }
 
-    public static Voting createDefaultVoting() {
+    public static Poll createDefaultVoting() {
         Topic topic = getDefaultTopic();
-        Voting voting = new Voting("New voting");
-        topic.setVoting(voting);
+        Poll voting = new Poll("New voting");
+        topic.setPoll(voting);
         voting.setTopic(topic);
         persist(topic);
         return voting;
     }
     
-    public static VotingOption createDefaultVotingOption() {
-        Voting voting = createDefaultVoting();
+    public static PollOption createDefaultVotingOption() {
+        Poll voting = createDefaultVoting();
         persist(voting);
-        VotingOption option = new VotingOption("First voting option");
+        PollOption option = new PollOption("First voting option");
         voting.addVotingOption(option);
         return option;
     }

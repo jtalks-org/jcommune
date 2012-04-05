@@ -18,20 +18,20 @@ package org.jtalks.jcommune.model.entity;
 import org.jtalks.common.model.entity.Entity;
 
 /**
- * Represents the option of voting of the topic.
+ * Represents the option of poll of the topic.
  * 
  * @author Anuar Nurmakanov
  * 
  */
-public class VotingOption extends Entity {
+public class PollOption extends Entity {
     private String name;
     private int voteCount;
-    private Voting voting;
+    private Poll poll;
     
     /**
      * Used only by Hibernate.
      */
-    protected VotingOption() {
+    protected PollOption() {
     }
     
 
@@ -40,7 +40,7 @@ public class VotingOption extends Entity {
      * 
      * @param name the name of the voting option
      */
-    public VotingOption(String name) {
+    public PollOption(String name) {
         this.name = name;
     }
 
@@ -81,20 +81,20 @@ public class VotingOption extends Entity {
     }
     
     /**
-     * Get the voting that contains this voting option.
+     * Get the voting that contains this poll option.
      * 
-     * @return the voting that contains this voting option
+     * @return the voting that contains this poll option
      */
-    public Voting getVoting() {
-        return voting;
+    public Poll getPoll() {
+        return poll;
     }
     
     /**
-     * Set the voting that contains this voting option.
+     * Set the poll that contains this voting option.
      * 
-     * @param voting the voting that contains this voting option
+     * @param poll the poll that contains this voting option
      */
-    public void setVoting(Voting voting) {
-        this.voting = voting;
+    public void setPoll(Poll poll) {
+        this.poll = poll;
     }
 }

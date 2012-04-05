@@ -18,8 +18,8 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.Voting;
-import org.jtalks.jcommune.model.entity.VotingOption;
+import org.jtalks.jcommune.model.entity.Poll;
+import org.jtalks.jcommune.model.entity.PollOption;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.TopicService;
@@ -186,8 +186,8 @@ public class TopicController {
 
         Topic topic = topicService.get(topicId);
         
-        Voting poll = topic.getVoting();
-        List<VotingOption> pollOptions = getPollOptions(poll);
+        Poll poll = topic.getPoll();
+        List<PollOption> pollOptions = getPollOptions(poll);
         if (poll != null) {
             poll.setTotalVoteCount(calculateTotalVoteCount(pollOptions));
         }
@@ -217,17 +217,17 @@ public class TopicController {
                 .addObject("pollOptions", pollOptions);
     }
     
-    private List<VotingOption> getPollOptions(Voting poll) {
+    private List<PollOption> getPollOptions(Poll poll) {
         if (poll != null) {
-            return poll.getVotingOptions();
+            return poll.getPollOptions();
         }
         return Collections.emptyList();
     }
     
     //TODO move in service
-    private int calculateTotalVoteCount(List<VotingOption> options) {
+    private int calculateTotalVoteCount(List<PollOption> options) {
         int totalVoteCount = 0;
-        for (VotingOption option : options) {
+        for (PollOption option : options) {
             totalVoteCount += option.getVoteCount();
         }
         return totalVoteCount;
