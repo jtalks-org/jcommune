@@ -21,10 +21,11 @@ import org.jtalks.jcommune.model.entity.Voting;
 /**
  * Interface allows to make basic CRUD operations with the {@link Voting} objects.
  * Except of basic CRUD operations from {@link ChildRepository}.
- * 
+ * This DAO doesn't contain specific operations with voting, because the lifecycle
+ * of the vote relates to the lifecycle of the topic.
+ *  
  * @author Anuar Nurmakanov
  * @see VotingHibernateDao
  */
 public interface VotingDao extends ChildRepository<Voting> {
-
 }
