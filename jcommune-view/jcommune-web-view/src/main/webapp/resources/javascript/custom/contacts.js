@@ -113,7 +113,7 @@ $(document).ready(function () {
 	$('body').on('keyup', '#contact', function() {
 		var value = $(this).val();
 		if (!value.match(new RegExp(AddContact.selectedContactType.validationPattern))) {
-			$('#contact-error-status').text('$validationUsercontactNotblack');
+			$('#contact-error-status').text($labelValidationUsercontactNotblack);
 			AddContact.isValueValid = false;
 		} else {
 			$('#contact-error-status').text('');
