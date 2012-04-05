@@ -4,4 +4,4 @@ ALTER TABLE CONTACT_TYPE
     ADD VALIDATION_PATTERN VARCHAR(255) NOT NULL DEFAULT '.+';
 
 UPDATE CONTACT_TYPE SET MASK='000111222', VALIDATION_PATTERN='^([0-9]){5,9}$' WHERE TYPE_ID = 1;
-UPDATE CONTACT_TYPE SET MASK='mail@server.com', DISPLAY_PATTERN='mailto:%s', VALIDATION_PATTERN='[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?' WHERE TYPE_ID = 3;
+UPDATE CONTACT_TYPE SET MASK='mail@server.com', DISPLAY_PATTERN='<a href="mailto:%s">%s</a>', VALIDATION_PATTERN='[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?' WHERE TYPE_ID = 3;

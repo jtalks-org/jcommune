@@ -65,6 +65,8 @@ function getContactHtml(data) {
         '     <a class="button" id="${buttonId}" href="#">X</a>' +
         ' </div>';
 
+    var actualValue = data.type.mask.replace(new RegExp('%s'), data.value);
+    
     var html = template;
     html = html.replace('${icon}', baseUrl + data.type.icon);
     html = html.replace('${typeName}', data.type.typeName);

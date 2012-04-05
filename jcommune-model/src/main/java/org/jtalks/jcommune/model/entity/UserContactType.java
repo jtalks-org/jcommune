@@ -22,6 +22,9 @@ import org.jtalks.common.model.entity.Entity;
  */
 public class UserContactType extends Entity {
 
+	/** Where to place content in display pattern */
+	public final static String KWD_CONTENT = "%s";
+	
     private String typeName;
     private String icon;
     private String mask;
@@ -106,6 +109,10 @@ public class UserContactType extends Entity {
 	 */
 	public void setValidationPattern(String validationPattern) {
 		this.validationPattern = validationPattern;
+	}
+
+	public String getDisplayValue(String value) {
+		return displayPattern.replaceAll(UserContactType.KWD_CONTENT, value);
 	}
     
     
