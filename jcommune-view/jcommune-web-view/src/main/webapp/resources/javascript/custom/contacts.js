@@ -61,18 +61,18 @@ function getContactHtml(data) {
     var template = '<div class="contact">' +
         '     <label><img src="${icon}" alt="">${typeName}</label>' +
         '     <span>${value}</span>' +
-        '     <input type="hidden" value="${id}"/>' +
+        '     <input type="hidden" value="${contactId}"/>' +
         '     <a class="button" id="${buttonId}" href="#">X</a>' +
         ' </div>';
 
-    var actualValue = data.type.mask.replace(new RegExp('%s'), data.value);
+    var actualValue = data.type.displayPattern.replace(new RegExp('%s', 'gi'), data.value);
     
     var html = template;
     html = html.replace('${icon}', baseUrl + data.type.icon);
     html = html.replace('${typeName}', data.type.typeName);
-    html = html.replace('${id}', data.id);
+    html = html.replace('${contactId}', data.id);
     html = html.replace('${buttonId}', data.id);
-    html = html.replace('${value}', data.value);
+    html = html.replace('${value}', actualValue);
 
     return html;
 }

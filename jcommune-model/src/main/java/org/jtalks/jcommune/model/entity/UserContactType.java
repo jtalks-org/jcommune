@@ -111,6 +111,12 @@ public class UserContactType extends Entity {
 		this.validationPattern = validationPattern;
 	}
 
+	/**
+	 * Get value ready to display based on <code>displayPattern</code> and 
+	 * given contact value
+	 * @param value contact value
+	 * @return
+	 */
 	public String getDisplayValue(String value) {
 		return displayPattern.replaceAll(UserContactType.KWD_CONTENT, value);
 	}
