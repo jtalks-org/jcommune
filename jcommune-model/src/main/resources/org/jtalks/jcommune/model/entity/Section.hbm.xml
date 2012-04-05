@@ -27,7 +27,7 @@
     <property column="UUID" name="uuid" unique="true" not-null="true"/>
     <property name="name" column="NAME" not-null="true"/>
     <property name="description" column="DESCRIPTION"/>
-    <property name="position" column="POSITION_"/>
+    <property name="position" column="POSITION"/>
 
     <list name="branches" cascade="all-delete-orphan">
       <cache usage="nonstrict-read-write"/>
