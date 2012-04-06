@@ -83,14 +83,6 @@ public class UserContactsController {
     	return new UserContactDto(service.addContact(userContact.getValue(), userContact.getType()));
     }
     
-    @ExceptionHandler
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public String handleMethodArgumentNotValidException(
-            MethodArgumentNotValidException error) {
-        return "Bad request: " + error.getMessage();
-    }
-
     /**
      * Removes contact identified by contactId from user contacts.
      * @param contactId identifier of contact to be removed
