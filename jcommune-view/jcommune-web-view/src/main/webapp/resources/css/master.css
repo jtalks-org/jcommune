@@ -1079,7 +1079,7 @@ td.button_cell {
 /* Poll */
 
 #pollWrap {
-	width: 400px;
+	width: 100%;
 }
 
 #pollWrap h3 {

@@ -34,8 +34,6 @@ public class Poll extends Entity {
     private DateTime endingDate;
     private List<PollOption> pollOptions = new ArrayList<PollOption>();
     private Topic topic;
-    //transient field
-    private int totalVoteCount;
     
     /**
      * Used only by Hibernate.
@@ -157,11 +155,26 @@ public class Poll extends Entity {
         this.pollOptions.add(option);
     }
 
+    /**
+     * Counts the total number of votes in the poll.
+     * 
+     * @return the total number of votes in the poll
+     */
     public int getTotalVoteCount() {
+        int totalVoteCount = 0;
+        for (PollOption option : pollOptions) {
+            totalVoteCount += option.getVoteCount();
+        }
         return totalVoteCount;
     }
-
-    public void setTotalVoteCount(int totalVoteCount) {
-        this.totalVoteCount = totalVoteCount;
+    
+    /**
+     * Evaluates the current activity of poll.
+     * 
+     * @return <tt>true</tt>  if the poll is active
+     *         <tt>false</tt>  if the poll is inactive
+     */
+    public boolean isActive() {
+        return endingDate.isAfterNow();
     }
 }

@@ -17,20 +17,34 @@
 <%@ tag language="java" pageEncoding="UTF-8"%>
 <%@ tag body-content="empty" %>
 <%@ attribute name="pollOptions" required="true" type="java.util.List" %>
-<%@ attribute name="poll" required="true" type="org.jtalks.jcommune.model.entity.Voting" %>
+<%@ attribute name="poll" required="true" type="org.jtalks.jcommune.model.entity.Poll" %>
 <%@ attribute name="pollEnabled" required="true" type="java.lang.Boolean" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <div id="pollWrap">
 	<form name="pollForm" method="post" action="">
 		<!-- Poll title -->
-		<h3><c:out value="${poll.title}"/></h3>
+		<h3>
+			<c:choose>
+				<c:when test="${poll.endingDate==null}">
+					<c:out value="${poll.title}"/>
+				</c:when>
+				<c:otherwise>
+					<fmt:message key="label.poll.title.with.ending">
+						<fmt:param>${poll.title}</fmt:param>
+						<fmt:param><jtalks:format value="${poll.endingDate}"/></fmt:param>
+					</fmt:message>
+				</c:otherwise>
+			</c:choose>
+		</h3>
 		<!-- List of poll options -->
 		<ul>
 			<c:forEach items="${pollOptions}" var="option">
 				<li>
-					<c:if test="${pollEnabled}">
+					<!-- RadioButton/CheckBox. Available when poll is active and user not voted. -->
+					<c:if test="${pollEnabled} && ${poll.active}">
 						<sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
 							<c:choose>
 								<c:when test="${poll.single}">
@@ -44,15 +58,27 @@
 							</c:choose>
 						</sec:authorize>
 					</c:if>
-					<c:out value="${option.name} (${option.voteCount/poll.totalVoteCount*100}%-${option.voteCount})"/>
+					<c:out value="${option.name}"/>
+					<!-- Available to anonymous users and voted users. -->
+					<sec:authorize access="isAnonymous()">
+						<fmt:message key="label.poll.option.vote.info">
+							<fmt:param>
+								<fmt:formatNumber value="${option.voteCount/poll.totalVoteCount*100}" maxFractionDigits="2"/>
+							</fmt:param>
+							<fmt:param>${option.voteCount}</fmt:param>
+						</fmt:message>
+					</sec:authorize>
 					<span id="pollAnswer${option.id}"></span>
 				</li>
-			    <li style="width:${option.voteCount/poll.totalVoteCount*100}%; background-color:#00ff00" 
-			    	class="pollChart pollChart${option.id}"/>
+				<!-- Available to anonymous users and voted users. -->
+				<sec:authorize access="isAnonymous()">
+				    <li style="width:${option.voteCount/poll.totalVoteCount*100}%; background-color:#00ff00" 
+				    	class="pollChart pollChart${option.id}"/>
+			    </sec:authorize>
 			</c:forEach>
 		</ul>
-		<!-- Poll button -->
-		<c:if test="${pollEnabled}">
+		<!-- Poll button. Available when poll is active and user not voted. -->
+		<c:if test="${pollEnabled} && ${poll.active}">
 			<sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
 				<input type="submit" name="pollSubmit" id="pollSubmit" value="<fmt:message key="label.poll.vote"/>">
 			</sec:authorize>
