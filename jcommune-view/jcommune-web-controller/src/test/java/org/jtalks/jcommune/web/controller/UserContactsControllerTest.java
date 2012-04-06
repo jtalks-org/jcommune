@@ -30,6 +30,8 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 
 /**
  * @author Michael Gamov
@@ -67,9 +69,9 @@ public class UserContactsControllerTest {
     }
 
     @Test
-    public void testAddContact() throws NotFoundException {
+    public void testAddContactSuccess() throws NotFoundException {
     	UserContactType contactType = new UserContactType();
-        contactType.setTypeName(TYPENAME);
+    	contactType.setTypeName(TYPENAME);
         JCUser owner = new JCUser("username", "email", "password");
         owner.setId(1);
     	UserContact contact = new UserContact("gateway", contactType);
@@ -86,7 +88,7 @@ public class UserContactsControllerTest {
     	
     	assertEquals(contactDto.getType(), contactType, "Type of contact should be the same.");
     	assertEquals(contactDto.getValue(), contact.getValue(), "Type of contact should be the same.");
-    	assertEquals(contactDto.getOwnerId(), Long.valueOf(owner.getId()), "Owner id should be the same.");  	
+    	assertEquals(contactDto.getOwnerId(), Long.valueOf(owner.getId()), "Owner id should be the same.");
     }
     
     @Test

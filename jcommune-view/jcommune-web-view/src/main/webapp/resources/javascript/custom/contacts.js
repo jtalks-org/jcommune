@@ -151,9 +151,13 @@ $(document).ready(function () {
 
             $.prompt(str, {
                 buttons:{ Ok:true, Cancel:false},
-                submit:function (event, value, message, form) {
+                submit:function (value, message, form) {
                 	var result = false;
-                    if (AddContact.isValueValid && value != undefined && value) {
+					
+					if (!value) {
+						// cancel is pressed
+						result = true
+					} else if (AddContact.isValueValid && value != undefined && value) {
 
                         var contact = {
                             value:form.contact,
@@ -166,20 +170,20 @@ $(document).ready(function () {
                             url:baseUrl + '/contacts/add',
                             type:"POST",
                             contentType:"application/json",
+							async: false,
                             data:JSON.stringify(contact),
                             success:function (data) {
-                            	if (data.errroMessage != null) {
-                            		$('#contact-error-status').text(data.errorMessage);
-                        			AddContact.isValueValid = false;
-                            	} else {
                             		//populate contact template and append to page
                             		$("#contacts").append(getContactHtml(data));
                             		bindDeleteHandler();
                             		
                             		// allow close popup
                             		result = true;
-                            	}
-                            }
+                            },
+							error : function(data) {
+								$('#contact-error-status').text($labelValidationUsercontactNotMatch);
+                        		AddContact.isValueValid = false;
+							}
                         });
                     }
                     return result;

@@ -35,9 +35,6 @@ public class UserContactDto {
     
     private UserContactType type;
     
-    /** Error message to be sent to client if validation fails. */
-    private String errorMessage;
-
     /**
      * Create dto from {@link UserContact)
      *
@@ -116,22 +113,5 @@ public class UserContactDto {
     public void setType(UserContactType type) {
         this.type = type;
     }
-
-	/**
-	 * @return the error message
-	 */
-	public String getErrorMessage() {
-		return errorMessage;
-	}
-
-	/**
-	 * Set error message
-	 * @param errorMessage the error message to set
-	 */
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
-	}
-    
-    
 
 }
