@@ -113,7 +113,7 @@ $(document).ready(function () {
 	$('body').on('keyup', '#contact', function() {
 		var value = $(this).val();
 		if (!value.match(new RegExp(AddContact.selectedContactType.validationPattern))) {
-			$('#contact-error-status').text($labelValidationUsercontactNotblack);
+			$('#contact-error-status').text($labelValidationUsercontactNotMatch);
 			AddContact.isValueValid = false;
 		} else {
 			$('#contact-error-status').text('');
@@ -151,7 +151,8 @@ $(document).ready(function () {
 
             $.prompt(str, {
                 buttons:{ Ok:true, Cancel:false},
-                callback:function (value, message, form) {
+                submit:function (event, value, message, form) {
+                	var result = false;
                     if (AddContact.isValueValid && value != undefined && value) {
 
                         var contact = {
@@ -167,12 +168,21 @@ $(document).ready(function () {
                             contentType:"application/json",
                             data:JSON.stringify(contact),
                             success:function (data) {
-                                //populate contact template and append to page
-                                $("#contacts").append(getContactHtml(data));
-                                bindDeleteHandler();
+                            	if (data.errroMessage != null) {
+                            		$('#contact-error-status').text(data.errorMessage);
+                        			AddContact.isValueValid = false;
+                            	} else {
+                            		//populate contact template and append to page
+                            		$("#contacts").append(getContactHtml(data));
+                            		bindDeleteHandler();
+                            		
+                            		// allow close popup
+                            		result = true;
+                            	}
                             }
                         });
                     }
+                    return result;
                 }
             });
         });
