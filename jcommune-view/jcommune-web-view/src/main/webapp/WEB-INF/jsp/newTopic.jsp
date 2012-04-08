@@ -25,6 +25,15 @@
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/datepicker.js"
             type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-ui.min.js"
+            type="text/javascript"></script>
+    <%--todo need to set proper localization
+        <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-ui-i18n.min.js"
+                type="text/javascript"></script>
+    --%>
+    <link rel="stylesheet"
+          href="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/styles/jquery-ui.css"
+          type="text/css" media="all"/>
 </head>
 <body>
 <div class="wrap answer_page">
@@ -66,6 +75,7 @@
                              postText="${topicDto.bodyText}"
                              bodyParameterName="bodyText"
                              back="${pageContext.request.contextPath}/branches/${branchId}"/>
+            <jtalks:newPoll/>
 
         </form:form>
     </div>

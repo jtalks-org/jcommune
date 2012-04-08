@@ -14,6 +14,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 --%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ tag body-content="empty" %>
 
 <div class="forum_header_table">
@@ -27,7 +28,7 @@
                 <spring:message code="label.poll.title"/>
             </div>
             <div class="forum_answer_right">
-                <input type="text" name="titleValue">
+                <input type="text" name="titleValue"/>
             </div>
         </li>
         <li class="forum_row">
@@ -35,7 +36,7 @@
                 <spring:message code="label.poll.options.title"/>
             </div>
             <div class="forum_answer_right">
-                <textarea name="optionListValue"/>
+                <textarea name="optionListValue"></textarea>
             </div>
         </li>
         <li class="forum_row">

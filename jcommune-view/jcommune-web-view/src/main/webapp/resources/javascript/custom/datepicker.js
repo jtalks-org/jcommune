@@ -15,8 +15,13 @@
 
 /**
  * This script provides jQuery datepicker functionality
+ * Depend on jquery-ui-i18n.min.js, jquery-ui.min.js, jquery-ui.css files
+ * TODO need to code proper locale selecting
  */
 
 $(function () {
+//    $.datepicker.setDefaults($.datepicker.regional['']);
+    $.datepicker.setDefaults({ dateFormat:'dd-mm-yy' });
     $("#datepicker").datepicker();
+
 });
