@@ -127,6 +127,12 @@
         <constructor-arg ref="topicBranchDao"/>
         <constructor-arg ref="topicDao"/>
     </bean>
+    
+    <bean id="pollService"
+          class="org.jtalks.jcommune.service.transactional.TransactionalPollService">
+          <constructor-arg ref="pollDao"/>
+          <constructor-arg ref="pollOptionDao"/>
+    </bean>
 
     <bean id="securityService"
           class="org.jtalks.jcommune.service.nontransactional.SecurityService">

@@ -41,8 +41,8 @@ public class PollTest {
         PollOption secondOption = new PollOption("Second option");
         secondOption.setVoteCount(secondOptionVotesCount);
         
-        poll.addVotingOption(firstOption);
-        poll.addVotingOption(secondOption);
+        poll.addPollOption(firstOption);
+        poll.addPollOption(secondOption);
         
         int totalVotesCount = poll.getTotalVoteCount();
         

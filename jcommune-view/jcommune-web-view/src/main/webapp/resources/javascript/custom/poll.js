@@ -12,25 +12,121 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+/**
+ * 
+ */
+var baseUrl = $root;
 
 $(document).ready(function() {   
 
 	$("#pollAjaxLoader").hide(); //hide the ajax loader
 	$("#pollMessage").hide(); //hide the ajax loader
 	$("#pollSubmit").click(function() {
-		var pollAnswerVal = $('input:radio[name=pollAnswer]:checked').val();//Getting the value of a selected radio element.
-		if ($('input:radio[name=pollAnswer]:checked').length) {
+		var pollId = $("input:hidden[name=pollId]").val();
+		var pollOptionId = getPollOptionForSingleVote();
+		if (pollOptionId != null) {
 			$("#pollAjaxLoader").show(); //show the ajax loader
+			var poll = addSingleVote(pollOptionId, pollId);
 			return false; 
 		} else {
-			$("#pollMessage").html("please select an answer.").fadeTo("slow", 1, function(){
-				setTimeout(function() {
-					$("#pollMessage").fadeOut("slow");
-				}, 3000);																		 
-			});
-			return false;
+			var pollDto = getPollDtoForMultipleVote(pollId);
+			if (pollDto.pollOptions != null) {
+				$("#pollAjaxLoader").show(); //show the ajax loader
+				var poll = addMultipleVote(pollDto, pollId);
+				return false;
+			} else {
+				$("#pollMessage").html("please select an answer.").fadeTo("slow", 1, function(){
+					setTimeout(function() {
+						$("#pollMessage").fadeOut("slow");
+					}, 3000);																		 
+				});
+				return false;
+			}
 		}
-	
 	});
-
 });
+
+/**
+ * Creates the data transfer object that contains list of selected options.
+ * This method used in case when poll is "multiple type".
+ * 
+ * @param pollId the poll id
+ * @returns the data transfer object that contains list of selected options
+ */
+function getPollDtoForMultipleVote(pollId) {
+	var pollOptionDtos = [];
+	$('input:checkbox[name=pollAnswer]:checked').each(function() {
+		var optionDto = new Object();
+		optionDto.id = $(this).val();
+		optionDto.voteCount = 0;//it isn't important in this case
+		pollOptionDtos.push(optionDto);
+	 });
+	var pollDto = new Object();
+	pollDto.id = pollId;
+	pollDto.totalVoteCount = 0;//it isn't important in this case
+	pollDto.pollOptions = pollOptionDtos;
+	return pollDto;
+}
+
+/**
+ * Get id of selected option.
+ * This method used in case when poll is "single type".
+ * 
+ * @returns the id of selected option
+ */
+function getPollOptionForSingleVote() {
+	var pollOptionId = $('input:radio[name=pollAnswer]:checked').val();
+	return pollOptionId;
+}
+
+/**
+ * Performs all operations after voting.
+ * 
+ * @param poll the poll
+ */
+function applyPollResult(poll) {
+	for ( var i = 0; i < poll.pollOptions.length; i++) {
+		var pollOption = poll.pollOptions[i];
+		var pollOptionId = pollOption.id;
+		var pollPercentage = pollOption.voteCount/poll.totalVoteCount * 100;
+		$(".pollChart" + pollOptionId).animate({width:pollPercentage + "%"});
+	}
+	$("#pollAjaxLoader").hide(); //hide the ajax loader again
+	$("#pollSubmit").attr("disabled", "disabled"); //disable the submit button
+}
+
+/**
+ * Send AJAX request to the server for "single type" vote.
+ * 
+ * @param pollOptionId the id of selected option
+ * @param pollId the poll id
+ */
+function addSingleVote(pollOptionId, pollId) {
+   $.ajax({
+       url:baseUrl + '/poll/' + pollId + '/single',
+       type:"POST",
+       data:{"pollOptionId":pollOptionId},
+       success:function (data) {
+    	   return poll;
+       }
+   });
+}
+
+/**
+ * Send AJAX request to the server for "multiple type" vote.
+ * 
+ * @param pollDto the data transfer object, that contains the list
+ * 				  of selected options
+ * @param pollId the poll id
+ */
+function addMultipleVote(pollDto, pollId) {
+  $.ajax({
+       url:baseUrl + "/poll/" + pollId + '/multiple',
+       type:"POST",
+       contentType:"application/json",
+       data:JSON.stringify(pollDto),
+       success:function (data) {
+    	   return poll;
+       }
+   });
+}

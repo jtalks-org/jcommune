@@ -150,7 +150,7 @@ public class Poll extends Entity {
      * 
      * @param option the voting option
      */
-    public void addVotingOption(PollOption option) {
+    public void addPollOption(PollOption option) {
         option.setPoll(this);
         this.pollOptions.add(option);
     }
@@ -175,6 +175,6 @@ public class Poll extends Entity {
      *         <tt>false</tt>  if the poll is inactive
      */
     public boolean isActive() {
-        return endingDate.isAfterNow();
+        return endingDate == null || endingDate.isAfterNow();
     }
 }

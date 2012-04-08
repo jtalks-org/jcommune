@@ -44,7 +44,7 @@
 			<c:forEach items="${pollOptions}" var="option">
 				<li>
 					<!-- RadioButton/CheckBox. Available when poll is active and user not voted. -->
-					<c:if test="${pollEnabled} && ${poll.active}">
+					<c:if test="${pollEnabled && poll.active}">
 						<sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
 							<c:choose>
 								<c:when test="${poll.single}">
@@ -52,7 +52,7 @@
 							 	   		   type="radio" value="${option.id}">
 								</c:when>
 								<c:otherwise>
-									<input name="pollAnswer + ${option.id}" id="pollRadioButton${option.id}"
+									<input name="pollAnswer" id="pollRadioButton${option.id}"
 							 	   		   type="checkbox" value="${option.id}">
 								</c:otherwise>
 							</c:choose>
@@ -78,7 +78,7 @@
 			</c:forEach>
 		</ul>
 		<!-- Poll button. Available when poll is active and user not voted. -->
-		<c:if test="${pollEnabled} && ${poll.active}">
+		<c:if test="${pollEnabled && poll.active}">
 			<sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
 				<input type="submit" name="pollSubmit" id="pollSubmit" value="<fmt:message key="label.poll.vote"/>">
 			</sec:authorize>
@@ -87,5 +87,6 @@
 		<span id="pollMessage" style="display: none; "></span>
 		<img src="${pageContext.request.contextPath}/resources/images/ajaxLoader.gif"
 			 alt="Ajax Loader" id="pollAjaxLoader" style="display: none; ">
+		<input type="hidden" name="pollId" value = "${poll.id}"/>
 	</form>
 </div>

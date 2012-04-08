@@ -30,5 +30,12 @@
                   type="org.joda.time.contrib.hibernate.PersistentDateTime"/>
         <property column="SINGLE" name="single" not-null="true"/>
         <one-to-one name="topic" class="org.jtalks.jcommune.model.entity.Topic"/>
+        
+        <list name="pollOptions" cascade="all-delete-orphan">
+            <cache usage="nonstrict-read-write"/>
+            <key column="POLL_ID" foreign-key="FK_POLL"/>
+            <index column="LIST_INDEX"/>
+            <one-to-many class="PollOption"/>
+        </list>
     </class>
 </hibernate-mapping>
