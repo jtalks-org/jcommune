@@ -1,0 +1,66 @@
+<%--
+
+    Copyright (C) 2011  JTalks.org Team
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+--%>
+<%@ tag body-content="empty" %>
+
+<div class="forum_header_table">
+    <div class="forum_header">
+        <span class="forum_header_answer"><spring:message code="label.poll.header"/></span>
+        <span class="empty_cell"></span>
+    </div>
+    <ul class="forum_table">
+        <li class="forum_row">
+            <div class="forum_answer_left">
+                <spring:message code="label.poll.title"/>
+            </div>
+            <div class="forum_answer_right">
+                <input type="text" name="titleValue">
+            </div>
+        </li>
+        <li class="forum_row">
+            <div class="forum_answer_left">
+                <spring:message code="label.poll.options.title"/>
+            </div>
+            <div class="forum_answer_right">
+                <textarea name="optionListValue"/>
+            </div>
+        </li>
+        <li class="forum_row">
+            <div class="forum_answer_left">
+                <spring:message code="label.poll.single.title"/>
+            </div>
+            <div class="forum_answer_right">
+                <input type="radio" name="polltype" value="single"/>
+            </div>
+        </li>
+        <li class="forum_row">
+            <div class="forum_answer_left">
+                <spring:message code="label.poll.multiple.title"/>
+            </div>
+            <div class="forum_answer_right">
+                <input type="radio" name="polltype" value="multiple"/>
+            </div>
+        </li>
+        <li class="forum_row">
+            <div class="forum_answer_left">
+                <spring:message code="label.poll.date"/>
+            </div>
+            <div class="forum_answer_right">
+                <input id="datepicker" type="text" name="endingDate">
+            </div>
+        </li>
+    </ul>
+</div>

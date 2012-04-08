@@ -23,6 +23,8 @@
     <title><spring:message code="h.new_topic"/></title>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
             type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/datepicker.js"
+            type="text/javascript"></script>
 </head>
 <body>
 <div class="wrap answer_page">
