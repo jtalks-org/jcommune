@@ -15,11 +15,18 @@
 package org.jtalks.jcommune.model;
 
 import org.hibernate.Session;
-import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Poll;
+import org.jtalks.jcommune.model.entity.PollOption;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.jtalks.jcommune.model.entity.Section;
+import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.UserContact;
+import org.jtalks.jcommune.model.entity.UserContactType;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -126,20 +133,20 @@ public final class ObjectsFactory {
         return posts;
     }
 
-    public static Voting createDefaultVoting() {
+    public static Poll createDefaultVoting() {
         Topic topic = getDefaultTopic();
-        Voting voting = new Voting("New voting");
-        topic.setVoting(voting);
+        Poll voting = new Poll("New voting");
+        topic.setPoll(voting);
         voting.setTopic(topic);
         persist(topic);
         return voting;
     }
-    
-    public static VotingOption createDefaultVotingOption() {
-        Voting voting = createDefaultVoting();
+
+    public static PollOption createDefaultVotingOption() {
+        Poll voting = createDefaultVoting();
         persist(voting);
-        VotingOption option = new VotingOption("First voting option");
-        voting.addVotingOption(option);
+        PollOption option = new PollOption("First voting option");
+        voting.addPollOption(option);
         return option;
     }
 }

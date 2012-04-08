@@ -12,20 +12,35 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao;
+package org.jtalks.jcommune.service;
 
-import org.jtalks.common.model.dao.ChildRepository;
-import org.jtalks.jcommune.model.dao.hibernate.VotingHibernateDao;
-import org.jtalks.jcommune.model.entity.Voting;
+import org.jtalks.jcommune.model.entity.Poll;
+
+import java.util.List;
 
 /**
- * Interface allows to make basic CRUD operations with the {@link Voting} objects.
- * Except of basic CRUD operations from {@link ChildRepository}.
- * This DAO doesn't contain specific operations with voting, because the lifecycle
- * of the vote relates to the lifecycle of the topic.
- *  
+ * Service for working with the poll.
+ * Performs all needed operations for voting.
+ *
  * @author Anuar Nurmakanov
- * @see VotingHibernateDao
+ * @see org.jtalks.jcommune.model.entity.Poll
  */
-public interface VotingDao extends ChildRepository<Voting> {
+public interface PollService extends EntityService<Poll> {
+    /**
+     * Adds one vote for the option of poll.
+     *
+     * @param pollId       id of a poll
+     * @param pollOptionId id of a option of a poll
+     * @return changed poll
+     */
+    Poll addSingleVote(Long pollId, Long pollOptionId);
+
+    /**
+     * Adds one vote for all selected options of poll.
+     *
+     * @param pollId        id of a poll
+     * @param pollOptionIds id of a option of a poll
+     * @return changed poll
+     */
+    Poll addMultipleVote(Long pollId, List<Long> pollOptionIds);
 }

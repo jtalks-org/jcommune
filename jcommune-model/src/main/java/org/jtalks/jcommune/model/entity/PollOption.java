@@ -18,83 +18,82 @@ package org.jtalks.jcommune.model.entity;
 import org.jtalks.common.model.entity.Entity;
 
 /**
- * Represents the option of voting of the topic.
- * 
+ * Represents the option of poll of the topic.
+ *
  * @author Anuar Nurmakanov
- * 
  */
-public class VotingOption extends Entity {
+public class PollOption extends Entity {
     private String name;
     private int voteCount;
-    private Voting voting;
-    
+    private Poll poll;
+
     /**
      * Used only by Hibernate.
      */
-    protected VotingOption() {
+    protected PollOption() {
     }
-    
+
 
     /**
      * Constructs the VotingOption instance with required fields.
-     * 
+     *
      * @param name the name of the voting option
      */
-    public VotingOption(String name) {
+    public PollOption(String name) {
         this.name = name;
     }
 
     /**
      * Get the voting option name.
-     * 
+     *
      * @return the voting option name
      */
     public String getName() {
         return name;
     }
-    
+
     /**
      * Set the voting option name.
-     * 
+     *
      * @param name the voting option name
      */
     public void setName(String name) {
         this.name = name;
     }
-    
+
     /**
      * Get the count of votes for this option.
-     * 
+     *
      * @return the count of votes for this option
      */
     public int getVoteCount() {
         return voteCount;
     }
-    
+
     /**
      * Set the count of votes for this option.
-     * 
+     *
      * @param voteCount the count of votes for this option
      */
     public void setVoteCount(int voteCount) {
         this.voteCount = voteCount;
     }
-    
+
     /**
-     * Get the voting that contains this voting option.
-     * 
-     * @return the voting that contains this voting option
+     * Get the voting that contains this poll option.
+     *
+     * @return the voting that contains this poll option
      */
-    public Voting getVoting() {
-        return voting;
+    public Poll getPoll() {
+        return poll;
     }
-    
+
     /**
-     * Set the voting that contains this voting option.
-     * 
-     * @param voting the voting that contains this voting option
+     * Set the poll that contains this voting option.
+     *
+     * @param poll the poll that contains this voting option
      */
-    public void setVoting(Voting voting) {
-        this.voting = voting;
+    public void setPoll(Poll poll) {
+        this.poll = poll;
     }
 }

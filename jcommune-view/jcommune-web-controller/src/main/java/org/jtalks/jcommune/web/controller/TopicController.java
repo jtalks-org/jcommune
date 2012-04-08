@@ -16,6 +16,8 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Poll;
+import org.jtalks.jcommune.model.entity.PollOption;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
@@ -42,6 +44,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -85,13 +88,13 @@ public class TopicController {
     }
 
     /**
-     * @param topicService      the object which provides actions on {@link Topic} entity
-     * @param branchService     the object which provides actions on  {@link Branch} entity
-     * @param lastReadPostService        to perform post-related actions
-     * @param locationService   to track user location on forum (what page he is viewing now)
-     * @param sessionRegistry   to obtain list of users currently online
-     * @param securityService   to determine the current user logged in
-     * @param breadcrumbBuilder to create Breadcrumbs for pages
+     * @param topicService        the object which provides actions on {@link Topic} entity
+     * @param branchService       the object which provides actions on  {@link Branch} entity
+     * @param lastReadPostService to perform post-related actions
+     * @param locationService     to track user location on forum (what page he is viewing now)
+     * @param sessionRegistry     to obtain list of users currently online
+     * @param securityService     to determine the current user logged in
+     * @param breadcrumbBuilder   to create Breadcrumbs for pages
      */
     @Autowired
     public TopicController(TopicService topicService,
@@ -181,6 +184,10 @@ public class TopicController {
                                               required = false) Boolean pagingEnabled) throws NotFoundException {
 
         Topic topic = topicService.get(topicId);
+
+        Poll poll = topic.getPoll();
+        List<PollOption> pollOptions = getPollOptions(poll);
+
         Branch branch = topic.getBranch();
         JCUser currentUser = securityService.getCurrentUser();
         List<Post> posts = topic.getPosts();
@@ -201,7 +208,23 @@ public class TopicController {
                 .addObject(TOPIC_ID, topicId)
                 .addObject("subscribed", topic.getSubscribers().contains(currentUser))
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic))
-                .addObject("lastReadPost", lastReadPostIndex);
+                .addObject("lastReadPost", lastReadPostIndex)
+                .addObject("poll", poll)
+                .addObject("pollOptions", pollOptions);
+    }
+
+    /**
+     * Get list of options from Poll.
+     * If the object is null, will return an empty list.
+     *
+     * @param poll poll instance
+     * @return list of options
+     */
+    private List<PollOption> getPollOptions(Poll poll) {
+        if (poll != null) {
+            return poll.getPollOptions();
+        }
+        return Collections.emptyList();
     }
 
     /**

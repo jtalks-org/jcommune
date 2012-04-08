@@ -17,8 +17,8 @@ package org.jtalks.jcommune.model.dao.hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.ObjectsFactory;
-import org.jtalks.jcommune.model.dao.VotingOptionDao;
-import org.jtalks.jcommune.model.entity.VotingOption;
+import org.jtalks.jcommune.model.dao.PollDao;
+import org.jtalks.jcommune.model.entity.Poll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -29,59 +29,57 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * 
  * @author Anuar Nurmakanov
- *
  */
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
-public class VotingOptionHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
+public class PollHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
-    private VotingOptionDao votingOptionDao;
+    private PollDao pollDao;
     private Session session;
-    
+
     @BeforeMethod
     public void setUp() {
         session = sessionFactory.getCurrentSession();
         ObjectsFactory.setSession(session);
     }
-    
+
     /*===== Common methods =====*/
-    
+
     @Test
     public void testGet() {
-        VotingOption expectedOption = ObjectsFactory.createDefaultVotingOption();
-        session.save(expectedOption);
-        
-        VotingOption resultOption = votingOptionDao.get(expectedOption.getId());
-        
-        Assert.assertNotNull(resultOption);
-        Assert.assertEquals(resultOption.getId(), expectedOption.getId());
+        Poll expectedPoll = ObjectsFactory.createDefaultVoting();
+        session.save(expectedPoll);
+
+        Poll resultPoll = pollDao.get(expectedPoll.getId());
+
+        Assert.assertNotNull(resultPoll);
+        Assert.assertEquals(resultPoll.getId(), expectedPoll.getId());
     }
-    
+
     @Test
     public void testGetInvalidId() {
-        VotingOption option = votingOptionDao.get(-11111L);
-        
-        Assert.assertNull(option);
+        Poll poll = pollDao.get(-111111L);
+
+        Assert.assertNull(poll);
     }
-    
+
     @Test
     public void testUpdate() {
-        String newName = "Changed name";
-        VotingOption option = ObjectsFactory.createDefaultVotingOption();
-        session.save(option);
-        
-        option.setName(newName);
-        votingOptionDao.update(option);
-        session.evict(option);
-        
-        VotingOption changedOption = (VotingOption)session.get(VotingOption.class, option.getId());
-        
-        Assert.assertNotNull(changedOption);
-        Assert.assertEquals(newName, changedOption.getName());
+        String newTitle = "Changed title";
+        Poll poll = ObjectsFactory.createDefaultVoting();
+        session.save(poll);
+
+        poll.setTitle(newTitle);
+        pollDao.update(poll);
+        session.evict(poll);
+
+        Poll changedPoll = (Poll) session.get(Poll.class, poll.getId());
+
+        Assert.assertNotNull(changedPoll);
+        Assert.assertEquals(newTitle, changedPoll.getTitle());
     }
 }
