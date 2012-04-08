@@ -33,7 +33,7 @@ $(function() {
         //POST-query
         $.ajax({
                  type:"POST",
-                 url:"/jcommune/user/new",
+                 url:$root+"/user/new",
                  data: query,
                  dataType: "html",
                  //handling query answer, create registration form

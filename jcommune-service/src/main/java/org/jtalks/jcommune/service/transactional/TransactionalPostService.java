@@ -20,6 +20,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
@@ -42,6 +43,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     private TopicDao topicDao;
     private SecurityService securityService;
     private NotificationService notificationService;
+    private LastReadPostService lastReadPostService;
 
     /**
      * Create an instance of Post entity based service
@@ -50,13 +52,15 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * @param topicDao            this dao used for checking branch existance
      * @param securityService     service for authorization
      * @param notificationService to send email updates for subscribed users
+     * @param lastReadPostService to modify last read post information when topic structure is changed
      */
     public TransactionalPostService(PostDao dao, TopicDao topicDao, SecurityService securityService,
-                                    NotificationService notificationService) {
+                                    NotificationService notificationService, LastReadPostService lastReadPostService) {
         super(dao);
         this.topicDao = topicDao;
         this.securityService = securityService;
         this.notificationService = notificationService;
+        this.lastReadPostService = lastReadPostService;
     }
 
     /**
@@ -88,9 +92,11 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         Topic topic = post.getTopic();
         topic.removePost(post);
 
+        // todo: event API?
         topicDao.update(topic);
         securityService.deleteFromAcl(post);
         notificationService.topicChanged(topic);
+        lastReadPostService.updateLastReadPostsWhenPostIsDeleted(post);
 
         logger.debug("Deleted post id={}", postId);
     }

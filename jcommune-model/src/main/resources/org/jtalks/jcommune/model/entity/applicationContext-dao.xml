@@ -51,6 +51,8 @@
           parent="abstractHibernateDao"/>
     <bean id="branchSectionDao" class="org.jtalks.jcommune.model.dao.hibernate.SectionHibernateDao"
           parent="abstractHibernateDao"/>
+    <bean id="lastReadPostHibernateDao" class="org.jtalks.jcommune.model.dao.hibernate.LastReadPostHibernateDao"
+          parent="abstractHibernateDao"/>
     <bean id="forumStatisticsDAO" class="org.jtalks.jcommune.model.dao.hibernate.ForumStatisticsHibernateDao">
         <constructor-arg index="0" ref="sessionFactory"/>
     </bean>
@@ -61,7 +63,7 @@
     <bean id="userContactsDao"
           class="org.jtalks.jcommune.model.dao.hibernate.UserContactsHibernateDao"
           parent="abstractHibernateDao"/>
-    
+
     <!-- Declaration of Hibernate Search DAO beans -->
     <bean id="topicSearchDao" class="org.jtalks.jcommune.model.dao.search.hibernate.TopicHibernateSearchDao">
         <constructor-arg name="sessionFactory" ref="sessionFactory"/>
@@ -72,7 +74,7 @@
             </list>
         </constructor-arg>
     </bean>
-    <bean id="punctuationMarksFilter" 
+    <bean id="punctuationMarksFilter"
           class="org.jtalks.jcommune.model.dao.search.hibernate.filter.PunctuationMarksFilter"/>
     <bean id="stopWordsFilter" class="org.jtalks.jcommune.model.dao.search.hibernate.filter.StopWordsFilter">
         <constructor-arg>
@@ -133,7 +135,7 @@ resolves a problem of multiple DAO beans definition -->
                 </prop>
                 <prop key="hibernate.generate_statistics">${hibernate.generate_statistics}</prop>
                 <prop key="hibernate.search.default.directory_provider">
-                	${hibernate.search.default.directory_provider}
+                    ${hibernate.search.default.directory_provider}
                 </prop>
                 <prop key="hibernate.search.default.indexBase">${hibernate.search.default.indexBase}</prop>
             </props>
