@@ -20,3 +20,4 @@
  This page contains localized messages to be used in JS files on a client side
 --%>
 $labelDeleteContactConfirmation = '<spring:message code="label.deleteContactConfirmation"/>';
+$labelRegistrationSuccess = '<spring:message code="label.registration.success"/>';

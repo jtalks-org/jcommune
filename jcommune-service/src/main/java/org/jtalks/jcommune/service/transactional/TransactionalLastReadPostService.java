@@ -41,7 +41,6 @@ public class TransactionalLastReadPostService implements LastReadPostService {
 
     private SecurityService securityService;
     private LastReadPostDao lastReadPostDao;
-    private TopicDao topicDao;
 
     /**
      * @param securityService to figure out the current user logged in
@@ -50,7 +49,6 @@ public class TransactionalLastReadPostService implements LastReadPostService {
     public TransactionalLastReadPostService(SecurityService securityService, LastReadPostDao lastReadPostDao) {
         this.securityService = securityService;
         this.lastReadPostDao = lastReadPostDao;
-        this.topicDao = topicDao;
     }
 
     /**
