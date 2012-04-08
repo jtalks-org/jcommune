@@ -26,13 +26,13 @@ $(document).ready(function() {
 		var pollOptionId = getPollOptionForSingleVote();
 		if (pollOptionId != null) {
 			$("#pollAjaxLoader").show(); //show the ajax loader
-			var poll = addSingleVote(pollOptionId, pollId);
+			addSingleVote(pollOptionId, pollId);
 			return false; 
 		} else {
 			var pollDto = getPollDtoForMultipleVote(pollId);
 			if (pollDto.pollOptions != null) {
 				$("#pollAjaxLoader").show(); //show the ajax loader
-				var poll = addMultipleVote(pollDto, pollId);
+				addMultipleVote(pollDto, pollId);
 				return false;
 			} else {
 				$("#pollMessage").html("please select an answer.").fadeTo("slow", 1, function(){
@@ -85,14 +85,27 @@ function getPollOptionForSingleVote() {
  * @param poll the poll
  */
 function applyPollResult(poll) {
+	//disable and hide all check boxes
+	$('input:checkbox[name=pollAnswer]').each(function() {
+		$(this).attr("disabled", "disabled");
+		$(this).hide();
+	});
+	//disable and hide all radio buttons
+	$('input:radio[name=pollAnswer]').each(function(){
+		$(this).attr("disabled", "disabled");
+		$(this).hide();
+	});
+	//animate charts
 	for ( var i = 0; i < poll.pollOptions.length; i++) {
 		var pollOption = poll.pollOptions[i];
 		var pollOptionId = pollOption.id;
 		var pollPercentage = pollOption.voteCount/poll.totalVoteCount * 100;
 		$(".pollChart" + pollOptionId).animate({width:pollPercentage + "%"});
 	}
+	//disable and hide vote button
 	$("#pollAjaxLoader").hide(); //hide the ajax loader again
 	$("#pollSubmit").attr("disabled", "disabled"); //disable the submit button
+	$("#pollSubmit").hide();
 }
 
 /**
@@ -106,8 +119,8 @@ function addSingleVote(pollOptionId, pollId) {
        url:baseUrl + '/poll/' + pollId + '/single',
        type:"POST",
        data:{"pollOptionId":pollOptionId},
-       success:function (data) {
-    	   return poll;
+       success:function (poll) {
+    	   applyPollResult(poll);
        }
    });
 }
@@ -125,8 +138,8 @@ function addMultipleVote(pollDto, pollId) {
        type:"POST",
        contentType:"application/json",
        data:JSON.stringify(pollDto),
-       success:function (data) {
-    	   return poll;
+       success:function (poll) {
+    	   applyPollResult(poll);
        }
    });
 }

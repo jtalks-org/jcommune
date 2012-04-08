@@ -52,7 +52,7 @@
 							 	   		   type="radio" value="${option.id}">
 								</c:when>
 								<c:otherwise>
-									<input name="pollAnswer" id="pollRadioButton${option.id}"
+									<input name="pollAnswer" id="pollCheckBox${option.id}"
 							 	   		   type="checkbox" value="${option.id}">
 								</c:otherwise>
 							</c:choose>
