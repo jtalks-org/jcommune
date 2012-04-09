@@ -19,15 +19,15 @@
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
-    <class name="PollOption" table="POLL_OPTIONS">
-        <cache usage="read-write"/>
-        <id column="PO_ID" name="id" unsaved-value="0">
-            <generator class="native"/>
-        </id>
-        <property column="UUID" name="uuid" unique="true" not-null="true"/>
-        <property column="NAME" name="name" not-null="true"/>
-        <property column="VOTE_COUNT" name="voteCount"/>
-        <many-to-one name="poll" column="POLL_ID" not-null="false"
-                     foreign-key="FK_POLL" class="org.jtalks.jcommune.model.entity.Poll" />
-    </class>
+  <class name="PollOption" table="POLL_OPTIONS">
+    <cache usage="read-write"/>
+    <id column="PO_ID" name="id" unsaved-value="0">
+      <generator class="native"/>
+    </id>
+    <property column="UUID" name="uuid" unique="true" not-null="true"/>
+    <property column="NAME" name="name" not-null="true"/>
+    <property column="VOTE_COUNT" name="voteCount"/>
+    <many-to-one name="poll" column="POLL_ID" not-null="false"
+                 foreign-key="FK_POLL" class="org.jtalks.jcommune.model.entity.Poll"/>
+  </class>
 </hibernate-mapping>

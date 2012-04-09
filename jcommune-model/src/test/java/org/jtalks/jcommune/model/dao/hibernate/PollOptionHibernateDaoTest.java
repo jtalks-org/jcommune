@@ -29,9 +29,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * 
  * @author Anuar Nurmakanov
- *
  */
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
@@ -42,45 +40,45 @@ public class PollOptionHibernateDaoTest extends AbstractTransactionalTestNGSprin
     @Autowired
     private PollOptionDao pollOptionDao;
     private Session session;
-    
+
     @BeforeMethod
     public void setUp() {
         session = sessionFactory.getCurrentSession();
         ObjectsFactory.setSession(session);
     }
-    
+
     /*===== Common methods =====*/
-    
+
     @Test
     public void testGet() {
         PollOption expectedOption = ObjectsFactory.createDefaultVotingOption();
         session.save(expectedOption);
-        
+
         PollOption resultOption = pollOptionDao.get(expectedOption.getId());
-        
+
         Assert.assertNotNull(resultOption);
         Assert.assertEquals(resultOption.getId(), expectedOption.getId());
     }
-    
+
     @Test
     public void testGetInvalidId() {
         PollOption option = pollOptionDao.get(-11111L);
-        
+
         Assert.assertNull(option);
     }
-    
+
     @Test
     public void testUpdate() {
         String newName = "Changed name";
         PollOption option = ObjectsFactory.createDefaultVotingOption();
         session.save(option);
-        
+
         option.setName(newName);
         pollOptionDao.update(option);
         session.evict(option);
-        
-        PollOption changedOption = (PollOption)session.get(PollOption.class, option.getId());
-        
+
+        PollOption changedOption = (PollOption) session.get(PollOption.class, option.getId());
+
         Assert.assertNotNull(changedOption);
         Assert.assertEquals(newName, changedOption.getName());
     }

@@ -19,25 +19,24 @@ import org.jtalks.common.model.entity.Entity;
 
 /**
  * Represents the option of poll of the topic.
- * 
+ *
  * @author Anuar Nurmakanov
- * 
  */
 public class PollOption extends Entity {
     private String name;
     private int voteCount;
     private Poll poll;
-    
+
     /**
      * Used only by Hibernate.
      */
     protected PollOption() {
     }
-    
+
 
     /**
      * Constructs the VotingOption instance with required fields.
-     * 
+     *
      * @param name the name of the voting option
      */
     public PollOption(String name) {
@@ -46,52 +45,52 @@ public class PollOption extends Entity {
 
     /**
      * Get the voting option name.
-     * 
+     *
      * @return the voting option name
      */
     public String getName() {
         return name;
     }
-    
+
     /**
      * Set the voting option name.
-     * 
+     *
      * @param name the voting option name
      */
     public void setName(String name) {
         this.name = name;
     }
-    
+
     /**
      * Get the count of votes for this option.
-     * 
+     *
      * @return the count of votes for this option
      */
     public int getVoteCount() {
         return voteCount;
     }
-    
+
     /**
      * Set the count of votes for this option.
-     * 
+     *
      * @param voteCount the count of votes for this option
      */
     public void setVoteCount(int voteCount) {
         this.voteCount = voteCount;
     }
-    
+
     /**
      * Get the voting that contains this poll option.
-     * 
+     *
      * @return the voting that contains this poll option
      */
     public Poll getPoll() {
         return poll;
     }
-    
+
     /**
      * Set the poll that contains this voting option.
-     * 
+     *
      * @param poll the poll that contains this voting option
      */
     public void setPoll(Poll poll) {

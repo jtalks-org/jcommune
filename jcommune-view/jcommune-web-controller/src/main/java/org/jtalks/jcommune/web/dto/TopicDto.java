@@ -28,7 +28,6 @@ import javax.validation.constraints.Size;
  * @author Max Malakhov
  */
 public class TopicDto {
-
     @NotBlank
     @Size(min = Topic.MIN_NAME_SIZE, max = Topic.MAX_NAME_SIZE)
     private String topicName;
@@ -44,23 +43,33 @@ public class TopicDto {
 
     private long id;
 
+    private String pollTitle;
+    private String pollOptions;
+    private String single;
+    private String endingDate;
+
     /**
      * Plain object for topic creation
      */
-    public TopicDto(){}
+    public TopicDto() {
+    }
 
     /**
      * Create dto from {@link Topic}
      *
      * @param topic topic for conversion
      */
-    public TopicDto (Topic topic) {
+    public TopicDto(Topic topic) {
         topicName = topic.getTitle();
         bodyText = topic.getFirstPost().getPostContent();
         id = topic.getId();
         topicWeight = topic.getTopicWeight();
         sticked = topic.isSticked();
         announcement = topic.isAnnouncement();
+        pollTitle = topic.getPoll().getTitle();
+        pollOptions = topic.getPoll().getPollOptions().toString();
+        single = String.valueOf(topic.getPoll().isSingle());
+        endingDate = topic.getPoll().getEndingDate().toString();
     }
 
     /**
@@ -161,5 +170,38 @@ public class TopicDto {
      */
     public void setAnnouncement(boolean announcement) {
         this.announcement = announcement;
+    }
+
+    public String getPollTitle() {
+        return pollTitle;
+    }
+
+    public String getPollOptions() {
+        return pollOptions;
+    }
+
+    public String getSingle() {
+        return single;
+    }
+
+    public String getEndingDate() {
+        return endingDate;
+    }
+
+    public void setPollTitle(String pollTitle) {
+        this.pollTitle = pollTitle;
+    }
+
+    public void setPollOptions(String pollOptions) {
+        this.pollOptions = pollOptions;
+    }
+
+    public void setSingle(String single) {
+        this.single = single;
+    }
+
+
+    public void setEndingDate(String endingDate) {
+        this.endingDate = endingDate;
     }
 }

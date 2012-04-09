@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2011  JTalks.org Team
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -12,19 +12,16 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao.hibernate;
-
-import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
-import org.jtalks.jcommune.model.dao.PollDao;
-import org.jtalks.jcommune.model.entity.Poll;
 
 /**
- * The implementation of the {@link PollDao} based on Hibernate.
- * The class is responsible for loading {@link Poll} objects from database and update them.
- *
- * @author Anuar Nurmakanov
+ * This script provides jQuery datepicker functionality
+ * Depend on jquery-ui-i18n.min.js, jquery-ui.min.js, jquery-ui.css files
+ * TODO need to code proper locale selecting
  */
-public class PollHibernateDao extends AbstractHibernateChildRepository<Poll>
-        implements PollDao {
 
-}
+$(function () {
+//    $.datepicker.setDefaults($.datepicker.regional['']);
+    $.datepicker.setDefaults({ dateFormat:'dd-mm-yy' });
+    $("#datepicker").datepicker();
+
+});

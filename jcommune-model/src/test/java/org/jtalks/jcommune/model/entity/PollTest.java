@@ -20,18 +20,16 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * 
  * @author Anuar Nurmakanov
- *
  */
 public class PollTest {
     private Poll poll;
-    
+
     @BeforeMethod
     public void init() {
         poll = new Poll("It's one of the bost polls in history.");
     }
-    
+
     @Test
     public void testCalculateTotaVotesCount() {
         int firstOptionVotesCount = 10;
@@ -40,36 +38,36 @@ public class PollTest {
         int secondOptionVotesCount = 50;
         PollOption secondOption = new PollOption("Second option");
         secondOption.setVoteCount(secondOptionVotesCount);
-        
-        poll.addPollOption(firstOption);
-        poll.addPollOption(secondOption);
-        
+
+        poll.addPollOptions(firstOption);
+        poll.addPollOptions(secondOption);
+
         int totalVotesCount = poll.getTotalVoteCount();
-        
-        Assert.assertEquals(totalVotesCount, firstOptionVotesCount + secondOptionVotesCount, 
+
+        Assert.assertEquals(totalVotesCount, firstOptionVotesCount + secondOptionVotesCount,
                 "The total count of votes calculats wrong.");
-        
+
     }
-    
+
     @Test
     public void testIsPollActive() {
         DateTime endingDate = new DateTime(3225, 1, 1, 0, 0, 0, 0);
         poll.setEndingDate(endingDate);
         boolean expected = true;
-        
+
         boolean result = poll.isActive();
-        
+
         Assert.assertEquals(result, expected, "Poll must be active");
     }
-    
+
     @Test
     public void testIsPollInactive() {
         DateTime endingDate = new DateTime(1999, 1, 1, 0, 0, 0, 0);
         poll.setEndingDate(endingDate);
         boolean expected = false;
-        
+
         boolean result = poll.isActive();
-        
+
         Assert.assertEquals(result, expected, "Poll must be inactive");
     }
 }

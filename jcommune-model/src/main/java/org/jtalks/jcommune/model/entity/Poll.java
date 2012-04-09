@@ -15,17 +15,18 @@
 
 package org.jtalks.jcommune.model.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Represents the poll of the topic. Contains the list of related {@link PollOption}.
  * Poll may be either "single type" or "multiple type" also topic may have an end date.
  * Poll is tied to the life cycle of the topic({@link Topic}).
- * 
+ *
  * @author Anuar Nurmakanov
  */
 public class Poll extends Entity {
@@ -34,17 +35,17 @@ public class Poll extends Entity {
     private DateTime endingDate;
     private List<PollOption> pollOptions = new ArrayList<PollOption>();
     private Topic topic;
-    
+
     /**
      * Used only by Hibernate.
      */
     protected Poll() {
     }
-    
+
     /**
      * Creates the Voting instance with required fields.
      * Voting is "single type" by default.
-     * 
+     *
      * @param title the voting title
      */
     public Poll(String title) {
@@ -54,7 +55,7 @@ public class Poll extends Entity {
 
     /**
      * Get the voting title.
-     * 
+     *
      * @return the voting title
      */
     public String getTitle() {
@@ -63,7 +64,7 @@ public class Poll extends Entity {
 
     /**
      * Set the the voting title.
-     * 
+     *
      * @param title the voting title
      */
     public void setTitle(String title) {
@@ -72,9 +73,9 @@ public class Poll extends Entity {
 
     /**
      * Voting may be either "single type" or "multiple type".
-     * 
-     * @return <tt>true</tt> if the voting is "single type", 
-     * <tt>false</tt> if the voting is "multiple type"
+     *
+     * @return <tt>true</tt> if the voting is "single type",
+     *         <tt>false</tt> if the voting is "multiple type"
      */
     public boolean isSingle() {
         return single;
@@ -82,9 +83,9 @@ public class Poll extends Entity {
 
     /**
      * Set the voting type. Voting may be either "single type" or "multiple type".
-     * 
-     * @param single <tt>true</tt> if the voting is "single type", 
-     * <tt>false</tt> if the voting is "multiple type"
+     *
+     * @param single <tt>true</tt> if the voting is "single type",
+     *               <tt>false</tt> if the voting is "multiple type"
      */
     public void setSingle(boolean single) {
         this.single = single;
@@ -92,7 +93,7 @@ public class Poll extends Entity {
 
     /**
      * Get the voting ending date.
-     * 
+     *
      * @return the voting ending date
      */
     public DateTime getEndingDate() {
@@ -101,16 +102,16 @@ public class Poll extends Entity {
 
     /**
      * Set the voting ending date.
-     * 
+     *
      * @param endingDate the voting ending date
      */
     public void setEndingDate(DateTime endingDate) {
         this.endingDate = endingDate;
     }
-    
+
     /**
      * Get the list of voting options.
-     * 
+     *
      * @return the list of voting options
      */
     public List<PollOption> getPollOptions() {
@@ -119,7 +120,7 @@ public class Poll extends Entity {
 
     /**
      * Set the list of voting options.
-     * 
+     *
      * @param pollOptions the list of voting options
      */
     protected void setPollOptions(List<PollOption> pollOptions) {
@@ -128,7 +129,7 @@ public class Poll extends Entity {
 
     /**
      * Get the topic that contains this voting.
-     * 
+     *
      * @return the topic that contains this voting
      */
     public Topic getTopic() {
@@ -137,27 +138,33 @@ public class Poll extends Entity {
 
     /**
      * Get the topic that contains this voting.
-     * 
+     *
      * @param topic the topic that contains this voting
      */
     public void setTopic(Topic topic) {
         this.topic = topic;
     }
-    
-    
+
+
     /**
      * Add the voting option to this voting.
-     * 
-     * @param option the voting option
+     *
+     * @param options the voting option
      */
-    public void addPollOption(PollOption option) {
-        option.setPoll(this);
-        this.pollOptions.add(option);
+    public void addPollOptions(PollOption... options) {
+        addPollOptions(Arrays.asList(options));
+    }
+
+    public void addPollOptions(List<PollOption> options) {
+        for (PollOption option : options) {
+            option.setPoll(this);
+            this.pollOptions.add(option);
+        }
     }
 
     /**
      * Counts the total number of votes in the poll.
-     * 
+     *
      * @return the total number of votes in the poll
      */
     public int getTotalVoteCount() {
@@ -167,10 +174,10 @@ public class Poll extends Entity {
         }
         return totalVoteCount;
     }
-    
+
     /**
      * Evaluates the current activity of poll.
-     * 
+     *
      * @return <tt>true</tt>  if the poll is active
      *         <tt>false</tt>  if the poll is inactive
      */

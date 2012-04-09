@@ -29,9 +29,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * 
  * @author Anuar Nurmakanov
- *
  */
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
@@ -42,45 +40,45 @@ public class PollHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     @Autowired
     private PollDao pollDao;
     private Session session;
-    
+
     @BeforeMethod
     public void setUp() {
         session = sessionFactory.getCurrentSession();
         ObjectsFactory.setSession(session);
     }
-    
+
     /*===== Common methods =====*/
-    
+
     @Test
     public void testGet() {
         Poll expectedPoll = ObjectsFactory.createDefaultVoting();
         session.save(expectedPoll);
-        
+
         Poll resultPoll = pollDao.get(expectedPoll.getId());
-        
+
         Assert.assertNotNull(resultPoll);
         Assert.assertEquals(resultPoll.getId(), expectedPoll.getId());
     }
-    
+
     @Test
     public void testGetInvalidId() {
         Poll poll = pollDao.get(-111111L);
-        
+
         Assert.assertNull(poll);
     }
-    
+
     @Test
     public void testUpdate() {
         String newTitle = "Changed title";
         Poll poll = ObjectsFactory.createDefaultVoting();
         session.save(poll);
-        
+
         poll.setTitle(newTitle);
         pollDao.update(poll);
         session.evict(poll);
-        
+
         Poll changedPoll = (Poll) session.get(Poll.class, poll.getId());
-        
+
         Assert.assertNotNull(changedPoll);
         Assert.assertEquals(newTitle, changedPoll.getTitle());
     }

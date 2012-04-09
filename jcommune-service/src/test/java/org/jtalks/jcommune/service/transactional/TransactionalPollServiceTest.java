@@ -14,9 +14,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.jtalks.jcommune.model.dao.PollDao;
 import org.jtalks.jcommune.model.dao.PollOptionDao;
 import org.jtalks.jcommune.model.entity.Poll;
@@ -30,10 +27,11 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
- * 
  * @author Anuar Nurmakanov
- *
  */
 public class TransactionalPollServiceTest {
     private PollService pollService;
@@ -44,13 +42,12 @@ public class TransactionalPollServiceTest {
     @Mock
     private SecurityService securityService;
     
-    
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
         pollService = new TransactionalPollService(pollDao, pollOptionDao, securityService);
     }
-    
+
     @Test
     public void testAddSingleVote() {
         long pollId = 1;
@@ -60,17 +57,17 @@ public class TransactionalPollServiceTest {
         poll.setId(pollId);
         PollOption option = new PollOption("Option");
         option.setVoteCount(initialVoteCount);
-        poll.addPollOption(option);
-        
+        poll.addPollOptions(option);
+
         Mockito.when(pollOptionDao.get(pollOptionId)).thenReturn(option);
-        
+
         Poll resultPoll = pollService.addSingleVote(pollId, pollOptionId);
         PollOption resultPollOption = resultPoll.getPollOptions().get(0);
-        
-        Assert.assertEquals(resultPollOption.getVoteCount(), initialVoteCount + 1, 
+
+        Assert.assertEquals(resultPollOption.getVoteCount(), initialVoteCount + 1,
                 "Count of votes should be increased.");
     }
-    
+
     @Test
     public void testAddMultipleVotes() {
         long pollId = 1;
@@ -82,13 +79,13 @@ public class TransactionalPollServiceTest {
             PollOption option = new PollOption("Option:" + String.valueOf(id));
             option.setId(id);
             option.setVoteCount(initialVoteCount);
-            poll.addPollOption(option);
+            poll.addPollOptions(option);
         }
-        
+
         Mockito.when(pollDao.get(Mockito.anyLong())).thenReturn(poll);
-        
+
         Poll resultPoll = pollService.addMultipleVote(pollId, pollOptionIds);
-        
+
         for (PollOption option : resultPoll.getPollOptions()) {
             Assert.assertEquals(option.getVoteCount(), initialVoteCount + 1,
                     "Count of votes should be increased.");

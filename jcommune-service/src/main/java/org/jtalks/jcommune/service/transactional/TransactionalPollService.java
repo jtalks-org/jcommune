@@ -14,37 +14,46 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import static org.jtalks.jcommune.service.security.SecurityConstants.HAS_USER_OR_ADMIN_ROLE;
-
-import java.util.List;
-
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.jtalks.jcommune.model.dao.PollDao;
 import org.jtalks.jcommune.model.dao.PollOptionDao;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollOption;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.jtalks.jcommune.service.security.SecurityConstants.HAS_USER_OR_ADMIN_ROLE;
+
 /**
  * The implementation of the {@link PollService}.
- * 
+ *
  * @author Anuar Nurmakanov
+ * @author Alexandre Teterin
  * @see org.jtalks.jcommune.model.entity.Poll
  */
-public class TransactionalPollService extends AbstractTransactionalEntityService<Poll, PollDao> 
+public class TransactionalPollService extends AbstractTransactionalEntityService<Poll, PollDao>
         implements PollService {
     private PollOptionDao pollOptionDao;
     private SecurityService securityService;
-    
+
     /**
      * Create an instance of service for operations with a poll.
-     * 
+     *
      * @param pollDao data access object, which should be able do
-     *        all CRUD operations with {@link Poll}.
+ *                    all CRUD operations with {@link Poll}.
      * @param pollOptionDao data access object, which should be able do
-     *        all CRUD operations with {@link PollOption}.
+ *                    all CRUD operations with {@link PollOption}.
      * @param securityService the service for security operations
+     *                all CRUD operations with {@link PollOption}.
      */
     public TransactionalPollService(PollDao pollDao, PollOptionDao pollOptionDao,
             SecurityService securityService) {
@@ -86,10 +95,52 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
         }
         return poll;
     }
-       
+
+    @Override
+    public void createPoll(String pollTitle, String pollOptions, String single, String endingDate, Topic topic) {
+        Poll poll = new Poll(pollTitle);
+        //TODO is need to handle broken string here?
+        poll.setSingle(Boolean.parseBoolean(single));
+        poll.setEndingDate(parseDate(endingDate));
+        poll.setTopic(topic);
+        try {
+            poll.addPollOptions(parseOptions(pollOptions));
+        } catch (IOException e) {
+            poll = null;
+        }
+
+        if (poll != null) {
+            this.getDao().update(poll);
+            for (PollOption option : poll.getPollOptions()) {
+                pollOptionDao.update(option);
+            }
+        }
+    }
+
+    private List<PollOption> parseOptions(String pollOptions) throws IOException {
+        BufferedReader reader = new BufferedReader(new StringReader(pollOptions));
+        String line;
+        List<PollOption> result = new ArrayList<PollOption>();
+        while ((line = reader.readLine()) != null) {
+            if (!line.equals("")) {
+                PollOption option = new PollOption(line);
+                result.add(option);
+            }
+        }
+        return result;
+    }
+
+    private DateTime parseDate(String date) {
+        try {
+            return DateTimeFormat.forPattern("dd-MM-yyyy").parseDateTime(date);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
     /**
      * Increases a vote count in the option of poll.
-     * 
+     *
      * @param option the option of poll
      */
     private void increaseVoteCount(PollOption option) {

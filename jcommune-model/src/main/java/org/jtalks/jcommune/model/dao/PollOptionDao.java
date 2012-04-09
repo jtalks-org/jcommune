@@ -21,7 +21,7 @@ import org.jtalks.jcommune.model.entity.PollOption;
 /**
  * Interface allows to make basic CRUD operations with the {@link PollOption} objects.
  * Except of basic CRUD operations from {@link ChildRepository}.
- * 
+ *
  * @author Anuar Nurmakanov
  */
 public interface PollOptionDao extends ChildRepository<PollOption> {

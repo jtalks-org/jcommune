@@ -15,11 +15,18 @@
 package org.jtalks.jcommune.model;
 
 import org.hibernate.Session;
-import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Poll;
+import org.jtalks.jcommune.model.entity.PollOption;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.jtalks.jcommune.model.entity.Section;
+import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.UserContact;
+import org.jtalks.jcommune.model.entity.UserContactType;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -134,12 +141,12 @@ public final class ObjectsFactory {
         persist(topic);
         return voting;
     }
-    
+
     public static PollOption createDefaultVotingOption() {
         Poll voting = createDefaultVoting();
         persist(voting);
         PollOption option = new PollOption("First voting option");
-        voting.addPollOption(option);
+        voting.addPollOptions(option);
         return option;
     }
 }

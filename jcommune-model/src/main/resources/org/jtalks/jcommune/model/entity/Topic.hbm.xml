@@ -19,40 +19,40 @@
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
-    <class name="Topic" table="TOPIC">
-        <cache usage="read-write"/>
-        <id column="TOPIC_ID" name="id" unsaved-value="0">
-            <generator class="native"/>
-        </id>
-        <property column="UUID" name="uuid" unique="true" not-null="true"/>
-        <property column="TITLE" name="title" not-null="true"/>
-        <property name="creationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
-                  column="CREATION_DATE" not-null="true"/>
-        <property name="modificationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
-                  column="MODIFICATION_DATE" not-null="false"/>
-        <property name="topicWeight" column="TOPIC_WEIGHT" not-null="true"/>
-        <property name="sticked" column="STICKED" not-null="true"/>
-        <property name="views" column="VIEWS"/>
-        <property name="announcement" column="ANNOUNCEMENT" not-null="true"/>
+  <class name="Topic" table="TOPIC">
+    <cache usage="read-write"/>
+    <id column="TOPIC_ID" name="id" unsaved-value="0">
+      <generator class="native"/>
+    </id>
+    <property column="UUID" name="uuid" unique="true" not-null="true"/>
+    <property column="TITLE" name="title" not-null="true"/>
+    <property name="creationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
+              column="CREATION_DATE" not-null="true"/>
+    <property name="modificationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
+              column="MODIFICATION_DATE" not-null="false"/>
+    <property name="topicWeight" column="TOPIC_WEIGHT" not-null="true"/>
+    <property name="sticked" column="STICKED" not-null="true"/>
+    <property name="views" column="VIEWS"/>
+    <property name="announcement" column="ANNOUNCEMENT" not-null="true"/>
 
-        <list name="posts" cascade="all-delete-orphan">
-            <cache usage="nonstrict-read-write"/>
-            <key column="TOPIC_ID" foreign-key="FK_TOPIC"/>
-            <index column="LIST_INDEX"/>
-            <one-to-many class="Post"/>
-        </list>
+    <list name="posts" cascade="all-delete-orphan">
+      <cache usage="nonstrict-read-write"/>
+      <key column="TOPIC_ID" foreign-key="FK_TOPIC"/>
+      <index column="LIST_INDEX"/>
+      <one-to-many class="Post"/>
+    </list>
 
-        <many-to-one name="topicStarter" column="TOPIC_STARTER" class="JCUser" lazy="false"
-                     not-null="true" foreign-key="FK_TOPIC_STARTER"/>
-        <many-to-one name="branch" column="BRANCH_ID" class="Branch"
-                     not-null="false"/>
+    <many-to-one name="topicStarter" column="TOPIC_STARTER" class="JCUser" lazy="false"
+                 not-null="true" foreign-key="FK_TOPIC_STARTER"/>
+    <many-to-one name="branch" column="BRANCH_ID" class="Branch"
+                 not-null="false"/>
 
-        <set name="subscribers" table="TOPIC_SUBSCRIPTIONS" cascade="all">
-            <key column="TOPIC_ID"/>
-            <many-to-many column="USER_ID" class="org.jtalks.jcommune.model.entity.JCUser"/>
-        </set>
-        
-        <one-to-one name="poll" class="org.jtalks.jcommune.model.entity.Poll"
-                    cascade="save-update"/>
-    </class>
+    <set name="subscribers" table="TOPIC_SUBSCRIPTIONS" cascade="all">
+      <key column="TOPIC_ID"/>
+      <many-to-many column="USER_ID" class="org.jtalks.jcommune.model.entity.JCUser"/>
+    </set>
+
+    <one-to-one name="poll" class="org.jtalks.jcommune.model.entity.Poll"
+                cascade="save-update"/>
+  </class>
 </hibernate-mapping>

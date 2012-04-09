@@ -19,9 +19,8 @@ import org.jtalks.jcommune.model.entity.PollOption;
 
 /**
  * Data transfer object for transferring poll option to the client side.
- * 
- * @author Anuar Nurmakanov
  *
+ * @author Anuar Nurmakanov
  */
 public class PollOptionDto {
     private long id;
@@ -36,7 +35,7 @@ public class PollOptionDto {
 
     /**
      * Creates a dto with the passed data.
-     * 
+     *
      * @param id id of poll option
      * @param voteCount the count of the votes
      */
@@ -47,7 +46,7 @@ public class PollOptionDto {
 
     /**
      * Get the poll option id.
-     * 
+     *
      * @return the poll option id
      */
     public long getId() {
@@ -57,7 +56,7 @@ public class PollOptionDto {
     /**
      * Set the poll option id.
      * It is also required for JSON.
-     * 
+     *
      * @param id the poll option id
      */
     public void setId(long id) {
@@ -66,7 +65,7 @@ public class PollOptionDto {
 
     /**
      * Get the count of votes.
-     * 
+     *
      * @return the count of votes
      */
     public int getVoteCount() {
@@ -76,7 +75,7 @@ public class PollOptionDto {
     /**
      * Set the count of votes.
      * It is also required for JSON.
-     * 
+     *
      * @param voteCount the count of votes
      */
     public void setVoteCount(int voteCount) {

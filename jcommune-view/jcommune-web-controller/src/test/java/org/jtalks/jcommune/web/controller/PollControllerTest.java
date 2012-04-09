@@ -52,10 +52,8 @@ public class PollControllerTest {
         poll.setId(pollId);
         long pollOptionId = 1;
         int voteCount = 10;
-        PollOption option = new PollOption("New poll option");
-        option.setVoteCount(voteCount);
-        option.setId(pollOptionId);
-        poll.addPollOption(option);
+        PollOption option = createPollOption("Poll options", pollOptionId, voteCount);
+        poll.addPollOptions(option);
         
         Mockito.when(pollService.addSingleVote(pollId, pollOptionId)).thenReturn(poll);
         
@@ -77,10 +75,8 @@ public class PollControllerTest {
         int voteCount = 10;
         PollOption firstOption = createPollOption("First option", firstOptionId, voteCount);
         PollOption secondOption = createPollOption("Second option", secondOptionId, voteCount);
-        poll.addPollOption(firstOption);
-        poll.addPollOption(secondOption);
+        poll.addPollOptions(firstOption, secondOption);
         PollDto pollDto = PollDto.getDtoFor(poll);
-        
         
         Mockito.when(pollService.addMultipleVote(pollId, optionIds)).thenReturn(poll);
         

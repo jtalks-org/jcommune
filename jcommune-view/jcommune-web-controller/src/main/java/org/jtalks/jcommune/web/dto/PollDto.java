@@ -23,15 +23,14 @@ import org.jtalks.jcommune.model.entity.PollOption;
 
 /**
  * Data transfer object for transferring poll to the client side.
- * 
- * @author Anuar Nurmakanov
  *
+ * @author Anuar Nurmakanov
  */
 public class PollDto {
     private long id;
     private int totalVoteCount;
     private List<PollOptionDto> pollOptions;
-    
+
     /**
      * Default constructor.
      * It is also required for JSON.
@@ -41,10 +40,10 @@ public class PollDto {
 
     /**
      * Creates a dto with the passed data.
-     * 
-     * @param id id of poll
+     *
+     * @param id             id of poll
      * @param totalVoteCount total vote count
-     * @param pollOptions the list of poll options
+     * @param pollOptions    the list of poll options
      */
     public PollDto(long id, int totalVoteCount, List<PollOptionDto> pollOptions) {
         this.id = id;
@@ -54,17 +53,17 @@ public class PollDto {
 
     /**
      * Get the poll id.
-     * 
+     *
      * @return the poll id
      */
     public long getId() {
         return id;
     }
-    
+
     /**
      * Set the poll id.
      * It is also required for JSON.
-     * 
+     *
      * @param id the poll id
      */
     public void setId(long id) {
@@ -73,7 +72,7 @@ public class PollDto {
 
     /**
      * Get the total count of votes.
-     * 
+     *
      * @return the total count of votes
      */
     public int getTotalVoteCount() {
@@ -83,7 +82,7 @@ public class PollDto {
     /**
      * Set the total count of votes.
      * It is also required for JSON.
-     * 
+     *
      * @param totalVoteCount the total count of votes
      */
     public void setTotalVoteCount(int totalVoteCount) {
@@ -91,10 +90,10 @@ public class PollDto {
     }
 
     /**
-     * Get the list of data transfer objects, that represent info 
+     * Get the list of data transfer objects, that represent info
      * about poll options.
-     * 
-     * @return the list of data transfer objects, that represent info 
+     *
+     * @return the list of data transfer objects, that represent info
      *         about poll options.
      */
     public List<PollOptionDto> getPollOptions() {
@@ -102,10 +101,10 @@ public class PollDto {
     }
 
     /**
-     * Get the list of data transfer objects, that represent info 
+     * Get the list of data transfer objects, that represent info
      * about poll options. It is also required for JSON.
-     * 
-     * @param pollOptions the list of data transfer objects, that represent info 
+     *
+     * @param pollOptions the list of data transfer objects, that represent info
      *                    about poll options.
      */
     public void setPollOptions(List<PollOptionDto> pollOptions) {

@@ -14,35 +14,36 @@
  */
 package org.jtalks.jcommune.service;
 
+import org.jtalks.jcommune.model.entity.Poll;
+import org.jtalks.jcommune.model.entity.Topic;
+
 import java.util.List;
 
-import org.jtalks.jcommune.model.entity.Poll;
-
 /**
- * Service for working with the poll. 
+ * Service for working with the poll.
  * Performs all needed operations for voting.
- * 
+ *
  * @author Anuar Nurmakanov
  * @see org.jtalks.jcommune.model.entity.Poll
  */
 public interface PollService extends EntityService<Poll> {
     /**
      * Adds one vote for the option of poll.
-     * 
-     * @param pollId id of a poll
+     *
+     * @param pollId       id of a poll
      * @param pollOptionId id of a option of a poll
-     * 
      * @return changed poll
      */
     Poll addSingleVote(Long pollId, Long pollOptionId);
-    
+
     /**
      * Adds one vote for all selected options of poll.
-     * 
-     * @param pollId id of a poll
+     *
+     * @param pollId        id of a poll
      * @param pollOptionIds id of a option of a poll
-     * 
      * @return changed poll
      */
     Poll addMultipleVote(Long pollId, List<Long> pollOptionIds);
+
+    void createPoll(String pollTitle, String pollOptions, String single, String endingDate, Topic topic);
 }

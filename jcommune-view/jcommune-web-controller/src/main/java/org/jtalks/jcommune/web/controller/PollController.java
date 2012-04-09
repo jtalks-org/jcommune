@@ -32,9 +32,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * Serves web requests for operations with poll({@link Poll}).
- * 
- * @author Anuar Nurmakanov
  *
+ * @author Anuar Nurmakanov
  */
 @Controller
 public class PollController {
@@ -42,56 +41,58 @@ public class PollController {
 
     /**
      * Constructor for controller instantiating, dependencies injected via autowiring.
-     * 
+     *
      * @param pollService the service which provides actions on poll
      */
     @Autowired
     public PollController(PollService pollService) {
         this.pollService = pollService;
     }
-    
+
     /**
      * Adds a single vote for the option of the poll.
      * This method is needed for "single type" polls.
-     * 
-     * @param pollId id of poll
+     *
+     * @param pollId       id of poll
      * @param pollOptionId id of option of poll
      * @return data transfer object, that contains data about poll
      */
     @RequestMapping(value = "/poll/{pollId}/single", method = RequestMethod.POST)
     @ResponseBody
-    public PollDto addSingleVote(@PathVariable Long pollId, @RequestParam Long pollOptionId) {
+    public PollDto addSingleVote(@PathVariable Long pollId,
+                          @RequestParam Long pollOptionId) {
         Poll poll = pollService.addSingleVote(pollId, pollOptionId);
         return PollDto.getDtoFor(poll);
     }
-    
+
     /**
      * Adds a multiple votes.
      * This method needed for "multiple type" polls.
-     * 
-     * @param pollId id of poll
+     *
+     * @param pollId  id of poll
      * @param pollDto data transfer object, that contains
      *                identifiers of selected options.
      * @return data transfer object, that contains data about poll
      */
     @RequestMapping(value = "/poll/{pollId}/multiple", method = RequestMethod.POST)
-    @ResponseBody 
-    public PollDto addMultipleVote(@PathVariable Long pollId, @RequestBody PollDto pollDto) {
+    @ResponseBody
+    public PollDto addMultipleVote(@PathVariable Long pollId,
+                            @RequestBody PollDto pollDto) {
         List<Long> pollOptionIds = getPollOptionIds(pollDto.getPollOptions());
         Poll poll = pollService.addMultipleVote(pollId, pollOptionIds);
         return PollDto.getDtoFor(poll);
     }
-    
+
     /**
      * Gets identifiers of selected options from data transfer objects.
-     * 
+     *
      * @param pollOptionDtos list of data transfer objects, that
      *                       represents an info about selected options.
-     * @return identifiers of selected options 
+     * @return identifiers of selected options
      */
     private List<Long> getPollOptionIds(List<PollOptionDto> pollOptionDtos) {
         List<Long> pollOptionIds = new ArrayList<Long>();
-        for(PollOptionDto dto: pollOptionDtos) {
+        for (PollOptionDto dto : pollOptionDtos) {
             pollOptionIds.add(dto.getId());
         }
         return pollOptionIds;

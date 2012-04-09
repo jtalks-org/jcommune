@@ -23,7 +23,7 @@ import org.jtalks.jcommune.model.entity.Poll;
  * Except of basic CRUD operations from {@link ChildRepository}.
  * This DAO doesn't contain specific operations with voting, because the lifecycle
  * of the poll relates to the lifecycle of the topic.
- *  
+ *
  * @author Anuar Nurmakanov
  * @see PollHibernateDao
  */

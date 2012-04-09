@@ -117,13 +117,14 @@
     </div>
 </div>
 <ul class="forum_table">
-	<c:if test="${poll != null}">
-		<div class="forum_row">
-			<div class="forum_userinfo">
+    <c:if test="${poll != null}">
+        <div class="forum_row">
+            <div class="forum_userinfo">
                 <a class="username"
                    href="${pageContext.request.contextPath}/users/${topic.topicStarter.encodedUsername}">
                     <c:out value="${topic.topicStarter.username}"/>
                 </a>
+
                 <div class="status">
                     <spring:message var="online" code="label.topic.online_users"/>
                     <spring:message var="offline" code="label.topic.offline_users"/>
@@ -133,6 +134,7 @@
                 <img src="${pageContext.request.contextPath}/${topic.topicStarter.encodedUsername}/avatar"
                      class="avatar"/>
                 <br/>
+
                 <div class="user_misc_info">
                     <span class="status"><spring:message code="label.topic.registered"/></span>
                     <jtalks:format pattern="dd.MM.yy" value="${topic.topicStarter.registrationDate}"/><br/>
@@ -145,10 +147,10 @@
                 </div>
             </div>
             <div class="forum_message_cell">
-				<jtalks:poll pollEnabled="true" pollOptions="${pollOptions}" poll="${poll}"/>
-			</div>
-		</div>
-	</c:if>
+                <jtalks:poll pollEnabled="true" pollOptions="${pollOptions}" poll="${poll}"/>
+            </div>
+        </div>
+    </c:if>
     <c:forEach var="post" items="${list}" varStatus="i">
         <li class="forum_row">
             <div class="forum_userinfo">

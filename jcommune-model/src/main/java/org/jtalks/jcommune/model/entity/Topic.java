@@ -14,9 +14,6 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.solr.analysis.LowerCaseFilterFactory;
 import org.apache.solr.analysis.SnowballPorterFilterFactory;
 import org.apache.solr.analysis.StandardFilterFactory;
@@ -35,6 +32,9 @@ import org.hibernate.search.annotations.TokenFilterDef;
 import org.hibernate.search.annotations.TokenizerDef;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Represents the topic of the forum.
  * Contains the list of related {@link Post}.
@@ -47,74 +47,74 @@ import org.joda.time.DateTime;
  * @author Anuar Nurmakanov
  */
 @AnalyzerDefs({
-    /*
-     * Describes the analyzer for Russian.
-     */
-    @AnalyzerDef(name = "russianJtalksAnalyzer",
-        tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
-        filters = {
-            /*
-             * All "terms" of the search text will be converted to lower case.
-             */
-            @TokenFilterDef(factory = LowerCaseFilterFactory.class),
-            /*
-             * Several words in language doesn't have a significant value.
-             * These filters exclude those words from the index.
-             */
-            @TokenFilterDef(factory = StopFilterFactory.class,
-                params = {
-                    @Parameter(name = "words",
-                            value = "org/jtalks/jcommune/lucene/english_stop.txt"),
-                    @Parameter(name = "ignoreCase", value = "true")
-                }),
-            @TokenFilterDef(factory = StopFilterFactory.class,
-                params = {
-                    @Parameter(name = "words", 
-                            value = "org/jtalks/jcommune/lucene/russian_stop.txt"),
-                    @Parameter(name = "ignoreCase", value = "true")
-                }),
-            /*
-             * Provides the search by a root of a word.
-             * If two words have the same root, then they are equal in the terminology of search.
-             */
-            @TokenFilterDef(factory = SnowballPorterFilterFactory.class, 
-                params =  @Parameter(name="language", value="Russian"))
-        }
-    ),
-    /*
-     * Describes the analyzer for default language(English).
-     */
-    @AnalyzerDef(name = "defaultJtalksAnalyzer",
-        tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
-        filters = {
-            @TokenFilterDef(factory = StandardFilterFactory.class),
-            /*
-             * All "terms" of the search text will be converted to lower case.
-             */
-            @TokenFilterDef(factory = LowerCaseFilterFactory.class),
-            /*
-             * Several words in language don't have a significant value.
-             * These filters exclude those words from the index.
-             */
-            @TokenFilterDef(factory = StopFilterFactory.class,
-                params = {
-                    @Parameter(name = "words", 
-                            value = "org/jtalks/jcommune/lucene/english_stop.txt"),
-                    @Parameter(name = "ignoreCase", value = "true")
-            }),
-            @TokenFilterDef(factory = StopFilterFactory.class,
-                params = {
-                    @Parameter(name = "words", 
-                            value = "org/jtalks/jcommune/lucene/russian_stop.txt"),
-                    @Parameter(name = "ignoreCase", value = "true")
-            }),
-            /*
-             * Provides the search by a root of a word.
-             * If two words have the same root, then they are equal in the terminology of search.
-             */
-            @TokenFilterDef(factory = SnowballPorterFilterFactory.class)
-        }
-    )
+        /*
+        * Describes the analyzer for Russian.
+        */
+        @AnalyzerDef(name = "russianJtalksAnalyzer",
+                tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+                filters = {
+                        /*
+                        * All "terms" of the search text will be converted to lower case.
+                        */
+                        @TokenFilterDef(factory = LowerCaseFilterFactory.class),
+                        /*
+                        * Several words in language doesn't have a significant value.
+                        * These filters exclude those words from the index.
+                        */
+                        @TokenFilterDef(factory = StopFilterFactory.class,
+                                params = {
+                                        @Parameter(name = "words",
+                                                value = "org/jtalks/jcommune/lucene/english_stop.txt"),
+                                        @Parameter(name = "ignoreCase", value = "true")
+                                }),
+                        @TokenFilterDef(factory = StopFilterFactory.class,
+                                params = {
+                                        @Parameter(name = "words",
+                                                value = "org/jtalks/jcommune/lucene/russian_stop.txt"),
+                                        @Parameter(name = "ignoreCase", value = "true")
+                                }),
+                        /*
+                        * Provides the search by a root of a word.
+                        * If two words have the same root, then they are equal in the terminology of search.
+                        */
+                        @TokenFilterDef(factory = SnowballPorterFilterFactory.class,
+                                params = @Parameter(name = "language", value = "Russian"))
+                }
+        ),
+        /*
+        * Describes the analyzer for default language(English).
+        */
+        @AnalyzerDef(name = "defaultJtalksAnalyzer",
+                tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+                filters = {
+                        @TokenFilterDef(factory = StandardFilterFactory.class),
+                        /*
+                        * All "terms" of the search text will be converted to lower case.
+                        */
+                        @TokenFilterDef(factory = LowerCaseFilterFactory.class),
+                        /*
+                        * Several words in language don't have a significant value.
+                        * These filters exclude those words from the index.
+                        */
+                        @TokenFilterDef(factory = StopFilterFactory.class,
+                                params = {
+                                        @Parameter(name = "words",
+                                                value = "org/jtalks/jcommune/lucene/english_stop.txt"),
+                                        @Parameter(name = "ignoreCase", value = "true")
+                                }),
+                        @TokenFilterDef(factory = StopFilterFactory.class,
+                                params = {
+                                        @Parameter(name = "words",
+                                                value = "org/jtalks/jcommune/lucene/russian_stop.txt"),
+                                        @Parameter(name = "ignoreCase", value = "true")
+                                }),
+                        /*
+                        * Provides the search by a root of a word.
+                        * If two words have the same root, then they are equal in the terminology of search.
+                        */
+                        @TokenFilterDef(factory = SnowballPorterFilterFactory.class)
+                }
+        )
 })
 @Indexed
 public class Topic extends SubscriptionAwareEntity {
@@ -135,7 +135,7 @@ public class Topic extends SubscriptionAwareEntity {
 
     public static final int MIN_NAME_SIZE = 5;
     public static final int MAX_NAME_SIZE = 120;
-    
+
     /**
      * Name of the field in the index for Russian.
      */
@@ -148,7 +148,7 @@ public class Topic extends SubscriptionAwareEntity {
      * Name of the prefix for collection of posts.
      */
     public static final String TOPIC_POSTS_PREFIX = "topicPosts.";
-    
+
 
     /**
      * Used only by hibernate.
@@ -237,10 +237,10 @@ public class Topic extends SubscriptionAwareEntity {
      * @return the topicName
      */
     @Fields({
-        @Field(name = TOPIC_TITLE_FIELD_RU,
-            analyzer = @Analyzer(definition = "russianJtalksAnalyzer")),
-        @Field(name = TOPIC_TITLE_FIELD_DEF,
-            analyzer = @Analyzer(definition = "defaultJtalksAnalyzer"))
+            @Field(name = TOPIC_TITLE_FIELD_RU,
+                    analyzer = @Analyzer(definition = "russianJtalksAnalyzer")),
+            @Field(name = TOPIC_TITLE_FIELD_DEF,
+                    analyzer = @Analyzer(definition = "defaultJtalksAnalyzer"))
     })
     public String getTitle() {
         return title;
@@ -401,10 +401,10 @@ public class Topic extends SubscriptionAwareEntity {
     public void setViews(int views) {
         this.views = views;
     }
-    
+
     /**
      * Get the poll for this topic.
-     * 
+     *
      * @return the poll for this topic
      */
     public Poll getPoll() {
@@ -413,7 +413,7 @@ public class Topic extends SubscriptionAwareEntity {
 
     /**
      * Set the poll for this topic.
-     * 
+     *
      * @param poll the poll for this topic
      */
     public void setPoll(Poll poll) {
