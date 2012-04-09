@@ -12,14 +12,15 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
 /**
  * This script handles registration popup
  * todo: split and refine it
  */
 //handling click on menu link Sign Up 
-$(function() {
+$(function () {
     var firstView;
-    $("#signup").on('click', function(e) {
+    $("#signup").on('click', function (e) {
         firstView = true;
         signupPopup();
         //if JS off, then open standart page
@@ -41,12 +42,12 @@ $(function() {
         $.ajax({
             type:"POST",
             url:$root + "/user/new",
-            data: query,
-            dataType: "html",
+            data:query,
+            dataType:"html",
             //handling query answer, create registration form
-            success: function(data) {
+            success:function (data) {
                 var form_elements = [];
-                $.each($(data).find("div.forum_row"), function(index, value) {
+                $.each($(data).find("div.forum_row"), function (index, value) {
                     if (firstView)$(value).find("span.error").remove();
                     form_elements[index] = $(value).html();
                 });
@@ -57,8 +58,8 @@ $(function() {
                 if ($(data).find("span.forum_header_answer").html() != null) {
                     firstView = false;
                     $.prompt(content,
-                        {buttons:{OK:true},  focus:0,
-                            submit: SignupPopup});
+                        {buttons:{OK:true}, focus:0,
+                            submit:signupPopup});
                 } else {
                     $.prompt($labelRegistrationSuccess);
                 }
