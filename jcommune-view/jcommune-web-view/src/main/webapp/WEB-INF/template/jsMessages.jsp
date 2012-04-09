@@ -21,3 +21,8 @@
 --%>
 $labelDeleteContactConfirmation = '<spring:message code="label.deleteContactConfirmation"/>';
 $labelRegistrationSuccess = '<spring:message code="label.registration.success"/>';
+$labelUrlHeader = '<spring:message code="label.url.header"/>';
+$labelUrlText = '<spring:message code="label.url.text"/>';
+$labelUrl = '<spring:message code="label.url"/>';
+$labelUrlInfo = '<spring:message code="label.url.info"/>';
+

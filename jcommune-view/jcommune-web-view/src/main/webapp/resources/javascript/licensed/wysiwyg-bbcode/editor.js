@@ -335,12 +335,12 @@ function doLink() {
         str = element.value.substring(sel_start, sel_end);
     }
     if (!editorVisible) {
-        var content = '<ul><div>' + "Заполните поля для URL:" + '</div>' +
+        var content = '<ul><div>' + $labelUrlHeader + '</div>' +
             '<span class="empty_cell"></span>' +
             '<br/>' +
-            createFormRow("Текст для отображения", str, "urlAltId",
-                "Если это поле не будет заполнено, то в качестве текста ссылки отобразится сама ссылка") +
-            createFormRow("Ссылка", "", "urlId",
+            createFormRow($labelUrlText, str, "urlAltId",
+                $labelUrlInfo) +
+            createFormRow($labelUrl, "", "urlId",
                 "") +
             '</ul>';
         $.prompt(content,
