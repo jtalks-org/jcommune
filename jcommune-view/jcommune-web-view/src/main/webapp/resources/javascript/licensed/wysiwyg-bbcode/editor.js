@@ -338,10 +338,8 @@ function doLink() {
         var content = '<ul><div>' + $labelUrlHeader + '</div>' +
             '<span class="empty_cell"></span>' +
             '<br/>' +
-            createFormRow($labelUrlText, str, "urlAltId",
-                $labelUrlInfo) +
-            createFormRow($labelUrl, "", "urlId",
-                $labelUrlRequired) +
+            createFormRow($labelUrlText, str, "urlAltId", $labelUrlInfo) +
+            createFormRow($labelUrl, "", "urlId", $labelUrlRequired) +
             '</ul>';
         $.prompt(content,
             {buttons:{OK:true}, focus:0,
@@ -370,10 +368,9 @@ function createFormRow(text, value, idForElement, info) {
 
 function doImage() {
     if (!editorVisible) {
-        var content = '<ul><div>' + "Enter Image URL:" + '</div>' +
+        var content = '<ul><div>' + $labelImgHeader + '</div>' +
             '<br/>' +
-            createFormRow("", "", "imgId",
-                $labelUrlRequired) +
+            createFormRow($labelUrl, "", "imgId", $labelUrlRequired) +
             '</ul>';
 
         $.prompt(content,
@@ -384,7 +381,6 @@ function doImage() {
                         AddTag('[img]' + myimg + '[/img]', '');
                     }
                 }});
-
     }
 }
 
