@@ -43,4 +43,6 @@ public interface PollService extends EntityService<Poll> {
      * @return changed poll
      */
     Poll addMultipleVote(Long pollId, List<Long> pollOptionIds);
+
+    Poll createPoll(String pollTitle, String pollOptions, String single, String endingDate, Long topicId);
 }

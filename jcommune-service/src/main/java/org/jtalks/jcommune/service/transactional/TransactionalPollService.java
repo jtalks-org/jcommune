@@ -21,6 +21,11 @@ import org.jtalks.jcommune.model.entity.PollOption;
 import org.jtalks.jcommune.service.PollService;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.jtalks.jcommune.service.security.SecurityConstants.HAS_USER_OR_ADMIN_ROLE;
@@ -81,6 +86,39 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
         }
         return poll;
     }
+
+    @Override
+    public Poll createPoll(String pollTitle, String pollOptions, String single, String endingDate, Long topicId) {
+        Poll poll = new Poll(pollTitle);
+        //poll.setPollOptions(parseOptions(pollOptions));
+        poll.setSingle(parseSingle(single));
+        //poll.setEndingDate(parseDate(endingDate));
+        return null;
+    }
+
+    private ArrayList<PollOption> parseOptions(String pollOptions) {
+        PollOption pollOption = new PollOption(pollOptions);
+        ArrayList<PollOption> pollOptionList = new ArrayList<PollOption>();
+        pollOptionList.add(pollOption);
+        return pollOptionList;
+    }
+
+    private boolean parseSingle(String single) {
+        return Boolean.parseBoolean(single);
+    }
+
+    private Date parseDate(String date) {
+        DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        Date result;
+        try {
+            result = formatter.parse(date);
+        } catch (ParseException e) {
+            result = null;
+        }
+
+        return result;
+    }
+
 
     /**
      * Increases a vote count in the option of poll.

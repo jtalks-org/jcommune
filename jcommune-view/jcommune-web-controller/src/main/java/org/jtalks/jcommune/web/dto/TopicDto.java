@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
@@ -44,23 +45,33 @@ public class TopicDto {
 
     private long id;
 
+    private String pollTitle;
+    private String pollOptions;
+    private boolean single;
+    private DateTime endingDate;
+
     /**
      * Plain object for topic creation
      */
-    public TopicDto(){}
+    public TopicDto() {
+    }
 
     /**
      * Create dto from {@link Topic}
      *
      * @param topic topic for conversion
      */
-    public TopicDto (Topic topic) {
+    public TopicDto(Topic topic) {
         topicName = topic.getTitle();
         bodyText = topic.getFirstPost().getPostContent();
         id = topic.getId();
         topicWeight = topic.getTopicWeight();
         sticked = topic.isSticked();
         announcement = topic.isAnnouncement();
+        pollTitle = topic.getPoll().getTitle();
+        pollOptions = topic.getPoll().getPollOptions().toString();
+        single = topic.getPoll().isSingle();
+        endingDate = topic.getPoll().getEndingDate();
     }
 
     /**
