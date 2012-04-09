@@ -25,4 +25,6 @@ $labelUrlHeader = '<spring:message code="label.url.header"/>';
 $labelUrlText = '<spring:message code="label.url.text"/>';
 $labelUrl = '<spring:message code="label.url"/>';
 $labelUrlInfo = '<spring:message code="label.url.info"/>';
+$labelUrlRequired = '<spring:message code="label.url.required"/>';
+
 
