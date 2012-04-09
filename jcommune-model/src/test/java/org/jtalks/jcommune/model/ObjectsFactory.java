@@ -146,7 +146,7 @@ public final class ObjectsFactory {
         Poll voting = createDefaultVoting();
         persist(voting);
         PollOption option = new PollOption("First voting option");
-        voting.addPollOption(option);
+        voting.addPollOptions(option);
         return option;
     }
 }

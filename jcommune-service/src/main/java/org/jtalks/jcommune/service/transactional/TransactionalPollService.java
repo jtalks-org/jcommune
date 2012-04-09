@@ -14,18 +14,20 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.jtalks.jcommune.model.dao.PollDao;
 import org.jtalks.jcommune.model.dao.PollOptionDao;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollOption;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.PollService;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.jtalks.jcommune.service.security.SecurityConstants.HAS_USER_OR_ADMIN_ROLE;
@@ -88,35 +90,46 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
     }
 
     @Override
-    public Poll createPoll(String pollTitle, String pollOptions, String single, String endingDate, Long topicId) {
+    public void createPoll(String pollTitle, String pollOptions, String single, String endingDate, Topic topic) {
         Poll poll = new Poll(pollTitle);
-        //poll.setPollOptions(parseOptions(pollOptions));
         poll.setSingle(parseSingle(single));
-        //poll.setEndingDate(parseDate(endingDate));
-        return null;
+        poll.setEndingDate(parseDate(endingDate));
+        poll.setTopic(topic);
+        try {
+            poll.addPollOptions(parseOptions(pollOptions));
+        } catch (IOException e) {
+            poll = null;
+        }
+
+        if (poll != null) {
+            this.getDao().update(poll);
+            for (PollOption option : poll.getPollOptions()) {
+                pollOptionDao.update(option);
+            }
+        }
     }
 
-    private ArrayList<PollOption> parseOptions(String pollOptions) {
-        PollOption pollOption = new PollOption(pollOptions);
-        ArrayList<PollOption> pollOptionList = new ArrayList<PollOption>();
-        pollOptionList.add(pollOption);
-        return pollOptionList;
+    private List<PollOption> parseOptions(String pollOptions) throws IOException {
+        BufferedReader reader = new BufferedReader(new StringReader(pollOptions));
+        String line;
+        List<PollOption> result = new ArrayList<PollOption>();
+        while ((line = reader.readLine()) != null) {
+            PollOption option = new PollOption(line);
+            result.add(option);
+        }
+        return result;
     }
 
     private boolean parseSingle(String single) {
         return Boolean.parseBoolean(single);
     }
 
-    private Date parseDate(String date) {
-        DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-        Date result;
+    private DateTime parseDate(String date) {
         try {
-            result = formatter.parse(date);
-        } catch (ParseException e) {
-            result = null;
+            return DateTimeFormat.forPattern("dd-MM-yyyy").parseDateTime(date);
+        } catch (IllegalArgumentException e) {
+            return null;
         }
-
-        return result;
     }
 
 

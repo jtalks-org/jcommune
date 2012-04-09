@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
-import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
@@ -47,8 +46,8 @@ public class TopicDto {
 
     private String pollTitle;
     private String pollOptions;
-    private boolean single;
-    private DateTime endingDate;
+    private String single;
+    private String endingDate;
 
     /**
      * Plain object for topic creation
@@ -70,8 +69,8 @@ public class TopicDto {
         announcement = topic.isAnnouncement();
         pollTitle = topic.getPoll().getTitle();
         pollOptions = topic.getPoll().getPollOptions().toString();
-        single = topic.getPoll().isSingle();
-        endingDate = topic.getPoll().getEndingDate();
+        single = topic.getPoll().isSingle().toString();
+        endingDate = topic.getPoll().getEndingDate().toString();
     }
 
     /**
@@ -172,5 +171,21 @@ public class TopicDto {
      */
     public void setAnnouncement(boolean announcement) {
         this.announcement = announcement;
+    }
+
+    public String getPollTitle() {
+        return pollTitle;
+    }
+
+    public String getPollOptions() {
+        return pollOptions;
+    }
+
+    public String getSingle() {
+        return single;
+    }
+
+    public String getEndingDate() {
+        return endingDate;
     }
 }

@@ -22,6 +22,7 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.LastReadPostService;
+import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
@@ -73,6 +74,7 @@ public class TopicController {
     private BreadcrumbBuilder breadcrumbBuilder;
     private LocationService locationService;
     private SessionRegistry sessionRegistry;
+    private PollService pollService;
 
     /**
      * This method turns the trim binder on. Trim binder
@@ -103,7 +105,8 @@ public class TopicController {
                            SecurityService securityService,
                            BreadcrumbBuilder breadcrumbBuilder,
                            LocationService locationService,
-                           SessionRegistry sessionRegistry) {
+                           SessionRegistry sessionRegistry,
+                           PollService pollService) {
         this.topicService = topicService;
         this.branchService = branchService;
         this.lastReadPostService = lastReadPostService;
@@ -111,6 +114,7 @@ public class TopicController {
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.locationService = locationService;
         this.sessionRegistry = sessionRegistry;
+        this.pollService = pollService;
     }
 
     /**
@@ -150,6 +154,12 @@ public class TopicController {
         }
 
         Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(), branchId);
+        pollService.createPoll(
+                topicDto.getPollTitle(),
+                topicDto.getPollOptions(),
+                topicDto.getSingle(),
+                topicDto.getEndingDate(),
+                createdTopic);
         lastReadPostService.markTopicAsRead(createdTopic);
         return new ModelAndView("redirect:/topics/" + createdTopic.getId());
     }

@@ -19,6 +19,7 @@ import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ import java.util.List;
  */
 public class Poll extends Entity {
     private String title;
-    private boolean single;
+    private Boolean single;
     private DateTime endingDate;
     private List<PollOption> pollOptions = new ArrayList<PollOption>();
     private Topic topic;
@@ -76,7 +77,7 @@ public class Poll extends Entity {
      * @return <tt>true</tt> if the voting is "single type",
      *         <tt>false</tt> if the voting is "multiple type"
      */
-    public boolean isSingle() {
+    public Boolean isSingle() {
         return single;
     }
 
@@ -148,11 +149,17 @@ public class Poll extends Entity {
     /**
      * Add the voting option to this voting.
      *
-     * @param option the voting option
+     * @param options the voting option
      */
-    public void addPollOption(PollOption option) {
-        option.setPoll(this);
-        this.pollOptions.add(option);
+    public void addPollOptions(PollOption... options) {
+        addPollOptions(Arrays.asList(options));
+    }
+
+    public void addPollOptions(List<PollOption> options) {
+        for (PollOption option : options) {
+            option.setPoll(this);
+            this.pollOptions.add(option);
+        }
     }
 
     /**

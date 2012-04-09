@@ -54,7 +54,7 @@ public class TransactionalPollServiceTest {
         poll.setId(pollId);
         PollOption option = new PollOption("Option");
         option.setVoteCount(initialVoteCount);
-        poll.addPollOption(option);
+        poll.addPollOptions(option);
 
         Mockito.when(pollOptionDao.get(pollOptionId)).thenReturn(option);
 
@@ -76,7 +76,7 @@ public class TransactionalPollServiceTest {
             PollOption option = new PollOption("Option:" + String.valueOf(id));
             option.setId(id);
             option.setVoteCount(initialVoteCount);
-            poll.addPollOption(option);
+            poll.addPollOptions(option);
         }
 
         Mockito.when(pollDao.get(Mockito.anyLong())).thenReturn(poll);
