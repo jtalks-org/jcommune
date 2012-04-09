@@ -28,7 +28,6 @@ import javax.validation.constraints.Size;
  * @author Max Malakhov
  */
 public class TopicDto {
-
     @NotBlank
     @Size(min = Topic.MIN_NAME_SIZE, max = Topic.MAX_NAME_SIZE)
     private String topicName;
@@ -187,5 +186,22 @@ public class TopicDto {
 
     public String getEndingDate() {
         return endingDate;
+    }
+
+    public void setPollTitle(String pollTitle) {
+        this.pollTitle = pollTitle;
+    }
+
+    public void setPollOptions(String pollOptions) {
+        this.pollOptions = pollOptions;
+    }
+
+    public void setSingle(String single) {
+        this.single = single;
+    }
+
+
+    public void setEndingDate(String endingDate) {
+        this.endingDate = endingDate;
     }
 }

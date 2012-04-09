@@ -71,11 +71,18 @@
                     </div>
                 </li>
             </ul>
+
+            <jtalks:newPoll titleNameValue="pollTitle"
+                            pollOptionsNameValue="pollOptions"
+                            singleNameValue="single"
+                            singleValue="${singlePollType}"
+                            multipleValue="${multiplePollType}"
+                            endingDateNameValue="endingDate"/>
+
             <jtalks:bbeditor labelForAction="label.addtopic"
                              postText="${topicDto.bodyText}"
                              bodyParameterName="bodyText"
                              back="${pageContext.request.contextPath}/branches/${branchId}"/>
-            <jtalks:newPoll/>
 
         </form:form>
     </div>

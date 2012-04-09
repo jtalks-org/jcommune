@@ -36,6 +36,7 @@ import static org.jtalks.jcommune.service.security.SecurityConstants.HAS_USER_OR
  * The implementation of the {@link PollService}.
  *
  * @author Anuar Nurmakanov
+ * @author Alexandre Teterin
  * @see org.jtalks.jcommune.model.entity.Poll
  */
 public class TransactionalPollService extends AbstractTransactionalEntityService<Poll, PollDao>
@@ -92,7 +93,8 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
     @Override
     public void createPoll(String pollTitle, String pollOptions, String single, String endingDate, Topic topic) {
         Poll poll = new Poll(pollTitle);
-        poll.setSingle(parseSingle(single));
+        //TODO is need to handle broken string here?
+        poll.setSingle(Boolean.parseBoolean(single));
         poll.setEndingDate(parseDate(endingDate));
         poll.setTopic(topic);
         try {
@@ -114,15 +116,14 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
         String line;
         List<PollOption> result = new ArrayList<PollOption>();
         while ((line = reader.readLine()) != null) {
-            PollOption option = new PollOption(line);
-            result.add(option);
+            if (!line.equals("")) {
+                PollOption option = new PollOption(line);
+                result.add(option);
+            }
         }
         return result;
     }
 
-    private boolean parseSingle(String single) {
-        return Boolean.parseBoolean(single);
-    }
 
     private DateTime parseDate(String date) {
         try {

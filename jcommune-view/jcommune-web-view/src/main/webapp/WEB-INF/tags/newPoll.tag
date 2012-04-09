@@ -18,7 +18,12 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/xml_rt" %>
 <%@ tag body-content="empty" %>
-<%@ attribute name="titleValue" required="false" rtexprvalue="true" type="java.lang.String" %>
+<%@ attribute name="titleNameValue" required="true" rtexprvalue="true" type="java.lang.String" %>
+<%@ attribute name="pollOptionsNameValue" required="true" rtexprvalue="true" type="java.lang.String" %>
+<%@ attribute name="singleNameValue" required="true" rtexprvalue="true" type="java.lang.String" %>
+<%@ attribute name="singleValue" required="true" rtexprvalue="true" type="java.lang.String" %>
+<%@ attribute name="multipleValue" required="true" rtexprvalue="true" type="java.lang.String" %>
+<%@ attribute name="endingDateNameValue" required="true" rtexprvalue="true" type="java.lang.String" %>
 
 <div class="forum_header_table">
     <div class="forum_header">
@@ -31,23 +36,24 @@
                 <spring:message code="label.poll.title"/>
             </div>
             <div class="forum_answer_right">
-                <input type="text" name="${pollTitle}/>
+                <input type="text" name="${titleNameValue}"/>
             </div>
         </li>
         <li class=" forum_row">
-                <div class="forum_answer_left">
-                    <spring:message code="label.poll.options.title"/>
-                </div>
-                <div class="forum_answer_right">
-                    <textarea name="${pollOptions}"></textarea>
-                </div>
+            <div class="forum_answer_left">
+                <spring:message code="label.poll.options.title"/>
+            </div>
+            <div class="forum_answer_right">
+                <textarea name="${pollOptionsNameValue}" rows="5"></textarea>
+            </div>
         </li>
         <li class="forum_row">
             <div class="forum_answer_left">
                 <spring:message code="label.poll.single.title"/>
             </div>
             <div class="forum_answer_right">
-                <input type="radio" name="${single}" checked="checked"/>
+                <input type="radio" name="${singleNameValue}" checked="checked"
+                       value="${singleValue}"/>
             </div>
         </li>
         <li class="forum_row">
@@ -55,7 +61,8 @@
                 <spring:message code="label.poll.multiple.title"/>
             </div>
             <div class="forum_answer_right">
-                <input type="radio" name="${single}"/>
+                <input type="radio" name="${singleNameValue}"
+                       value="${multipleValue}"/>
             </div>
         </li>
         <li class="forum_row">
@@ -63,7 +70,7 @@
                 <spring:message code="label.poll.date"/>
             </div>
             <div class="forum_answer_right">
-                <input id="datepicker" type="text" name="${endingDate}">
+                <input id="datepicker" type="text" name="${endingDateNameValue}">
             </div>
         </li>
     </ul>
