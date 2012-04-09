@@ -22,6 +22,7 @@ import org.jtalks.jcommune.model.dao.PollOptionDao;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollOption;
 import org.jtalks.jcommune.service.PollService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -40,11 +41,14 @@ public class TransactionalPollServiceTest {
     private PollOptionDao pollOptionDao;
     @Mock
     private PollDao pollDao;
+    @Mock
+    private SecurityService securityService;
+    
     
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
-        pollService = new TransactionalPollService(pollDao, pollOptionDao);
+        pollService = new TransactionalPollService(pollDao, pollOptionDao, securityService);
     }
     
     @Test

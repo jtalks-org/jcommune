@@ -30,12 +30,13 @@ $(document).ready(function() {
 			return false; 
 		} else {
 			var pollDto = getPollDtoForMultipleVote(pollId);
-			if (pollDto.pollOptions != null) {
+			if (pollDto.pollOptions != null && pollDto.pollOptions.length != 0) {
 				$("#pollAjaxLoader").show(); //show the ajax loader
 				addMultipleVote(pollDto, pollId);
 				return false;
-			} else {
-				$("#pollMessage").html("please select an answer.").fadeTo("slow", 1, function(){
+			} else {//nothing is selected
+				//show error message
+				$("#pollMessage").fadeTo("slow", 1, function(){
 					setTimeout(function() {
 						$("#pollMessage").fadeOut("slow");
 					}, 3000);																		 
@@ -106,6 +107,8 @@ function applyPollResult(poll) {
 	$("#pollAjaxLoader").hide(); //hide the ajax loader again
 	$("#pollSubmit").attr("disabled", "disabled"); //disable the submit button
 	$("#pollSubmit").hide();
+	//TODO We must find a way without a full page reload.
+	window.location.reload();
 }
 
 /**

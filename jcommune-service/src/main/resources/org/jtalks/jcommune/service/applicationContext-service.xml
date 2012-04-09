@@ -132,6 +132,7 @@
           class="org.jtalks.jcommune.service.transactional.TransactionalPollService">
           <constructor-arg ref="pollDao"/>
           <constructor-arg ref="pollOptionDao"/>
+          <constructor-arg ref="securityService"/>
     </bean>
 
     <bean id="securityService"

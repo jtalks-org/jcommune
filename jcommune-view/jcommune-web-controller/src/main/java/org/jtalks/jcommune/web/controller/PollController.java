@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jtalks.jcommune.model.entity.Poll;
-import org.jtalks.jcommune.model.entity.PollOption;
 import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.web.dto.PollDto;
 import org.jtalks.jcommune.web.dto.PollOptionDto;
@@ -60,10 +59,10 @@ public class PollController {
      * @return data transfer object, that contains data about poll
      */
     @RequestMapping(value = "/poll/{pollId}/single", method = RequestMethod.POST)
-    public @ResponseBody PollDto addSingleVote(@PathVariable Long pollId,
-            @RequestParam Long pollOptionId) {
+    @ResponseBody
+    public PollDto addSingleVote(@PathVariable Long pollId, @RequestParam Long pollOptionId) {
         Poll poll = pollService.addSingleVote(pollId, pollOptionId);
-        return convertPollToDto(poll);
+        return PollDto.getDtoFor(poll);
     }
     
     /**
@@ -76,11 +75,11 @@ public class PollController {
      * @return data transfer object, that contains data about poll
      */
     @RequestMapping(value = "/poll/{pollId}/multiple", method = RequestMethod.POST)
-    public @ResponseBody PollDto addMultipleVote(@PathVariable Long pollId,
-            @RequestBody PollDto pollDto) {
+    @ResponseBody 
+    public PollDto addMultipleVote(@PathVariable Long pollId, @RequestBody PollDto pollDto) {
         List<Long> pollOptionIds = getPollOptionIds(pollDto.getPollOptions());
         Poll poll = pollService.addMultipleVote(pollId, pollOptionIds);
-        return convertPollToDto(poll);
+        return PollDto.getDtoFor(poll);
     }
     
     /**
@@ -96,20 +95,5 @@ public class PollController {
             pollOptionIds.add(dto.getId());
         }
         return pollOptionIds;
-    }
-    
-    /**
-     * Converts an instance of {@link Poll} to specific data transfer object.
-     * This data transfer object needed for retrieving data to the client side.
-     * 
-     * @param poll an instance of {@link Poll}
-     * @return data transfer object, that contains data about poll
-     */
-    private PollDto convertPollToDto(Poll poll) {
-        List<PollOptionDto> pollOptionDtos = new ArrayList<PollOptionDto>();
-        for (PollOption option : poll.getPollOptions()) {
-            pollOptionDtos.add(new PollOptionDto(option.getId(), option.getVoteCount()));
-        }
-        return new PollDto(poll.getId(), poll.getTotalVoteCount(), pollOptionDtos);
     }
 }

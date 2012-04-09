@@ -15,7 +15,11 @@
 
 package org.jtalks.jcommune.web.dto;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.jtalks.jcommune.model.entity.Poll;
+import org.jtalks.jcommune.model.entity.PollOption;
 
 /**
  * Data transfer object for transferring poll to the client side.
@@ -106,5 +110,19 @@ public class PollDto {
      */
     public void setPollOptions(List<PollOptionDto> pollOptions) {
         this.pollOptions = pollOptions;
+    }
+    
+    /**
+     * Creates data transfer object, that represents info about the poll.
+     * 
+     * @param poll the poll
+     * @return data transfer object, that represents info about the poll
+     */
+    public static PollDto getDtoFor(Poll poll) {
+        List<PollOptionDto> optionDtos = new ArrayList<PollOptionDto>();
+        for (PollOption option : poll.getPollOptions()) {
+            optionDtos.add(PollOptionDto.getDtoFor(option));
+        }
+        return new PollDto(poll.getId(), poll.getTotalVoteCount(), optionDtos);
     }
 }

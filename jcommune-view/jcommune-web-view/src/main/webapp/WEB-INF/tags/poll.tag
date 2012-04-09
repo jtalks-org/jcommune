@@ -24,7 +24,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <div id="pollWrap">
-	<form name="pollForm" method="post" action="">
+	<form name="pollForm" action="#">
 		<!-- Poll title -->
 		<h3>
 			<c:choose>
@@ -84,7 +84,7 @@
 			</sec:authorize>
 		</c:if>
 		<!-- Additional components -->
-		<span id="pollMessage" style="display: none; "></span>
+		<span id="pollMessage" style="display: none; "><fmt:message key="label.poll.message.error"/></span>
 		<img src="${pageContext.request.contextPath}/resources/images/ajaxLoader.gif"
 			 alt="Ajax Loader" id="pollAjaxLoader" style="display: none; ">
 		<input type="hidden" name="pollId" value = "${poll.id}"/>

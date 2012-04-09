@@ -23,6 +23,7 @@ import org.jtalks.jcommune.model.dao.PollOptionDao;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollOption;
 import org.jtalks.jcommune.service.PollService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -34,6 +35,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public class TransactionalPollService extends AbstractTransactionalEntityService<Poll, PollDao> 
         implements PollService {
     private PollOptionDao pollOptionDao;
+    private SecurityService securityService;
     
     /**
      * Create an instance of service for operations with a poll.
@@ -42,10 +44,13 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
      *        all CRUD operations with {@link Poll}.
      * @param pollOptionDao data access object, which should be able do
      *        all CRUD operations with {@link PollOption}.
+     * @param securityService the service for security operations
      */
-    public TransactionalPollService(PollDao pollDao, PollOptionDao pollOptionDao) {
+    public TransactionalPollService(PollDao pollDao, PollOptionDao pollOptionDao,
+            SecurityService securityService) {
         super(pollDao);
         this.pollOptionDao = pollOptionDao;
+        this.securityService = securityService;
     }
 
     /**
@@ -81,7 +86,7 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
         }
         return poll;
     }
-    
+       
     /**
      * Increases a vote count in the option of poll.
      * 
