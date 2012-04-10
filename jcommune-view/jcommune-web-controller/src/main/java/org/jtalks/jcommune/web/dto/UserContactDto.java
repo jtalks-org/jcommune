@@ -17,7 +17,7 @@ package org.jtalks.jcommune.web.dto;
 
 import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
-import org.jtalks.jcommune.web.validation.annotations.MatchesDynamicPattern;
+import org.jtalks.jcommune.web.validation.annotations.MatchesUserContacts;
 
 /**
  * Dto for transferring user contacts to client side.
@@ -25,7 +25,7 @@ import org.jtalks.jcommune.web.validation.annotations.MatchesDynamicPattern;
  * @author Michael Gamov
  */
 
-@MatchesDynamicPattern(field="value", fieldWithPattern="type.validationPattern")
+@MatchesUserContacts(field="value", storedTypeId="type.id")
 public class UserContactDto {
 
     private Long id;

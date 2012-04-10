@@ -21,54 +21,48 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import org.jtalks.jcommune.web.validation.validators.MatchesDynamicPatternValidator;
+import org.jtalks.jcommune.model.entity.UserContactType;
+import org.jtalks.jcommune.web.validation.validators.MatchesUserContactsDtoValidator;
 import org.jtalks.jcommune.web.validation.validators.MatchesValidator;
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;;
 
 /**
- * Constraint for checking that property matches regular expression stored
- * in other property.
+ * Constraint for checking that user contact is valid (matches regular 
+ * expression for its type).
  * This constraint for use with JSR-303 validator.
  * <p/>
- * You must annotate your class with {@link MatchesDynamicPattern} annotation
- * You must fill in the parameters <code>field</code> and <code>fieldWithPattern</code>
- * field names to test. Fields must have getters. Both fields must be of type
- * {@link java.lang.String} 
+ * You must annotate your class with {@link MatchesUserContacts} annotation
+ * You must fill in the parameters <code>field</code> and <code>storedTypeId</code>
+ * field names to test. Fields must have getters. <code>field</code> fields 
+ * must be of type {@link java.lang.String}, <code>storedTypeId</code> must
+ * be numeric
  * <p/>
  * Example:
- * Validate that <code>field1</code> matches regular expression stored in
- * <code>child.field2</code>.
+ * Validate that <code>field1</code> is valid contact
  * {@code
- * &#064;MatchesDynamicPattern(field = "field1", fieldWithPattern = "child.field2")
+ * &#064;MatchesDynamicPattern(field = "field1", fieldWithPattern = "typeId")
  * class Test {
  * private String field1;
- * private ChildTest child;
+ * private Integer typeId;
  * public String getField1() {
  * return field1;
  * }
- * public ChildTest getChild() {
- * return child;
+ * public Integer getTypeId() {
+ * return typeId;
  * }
  * }
  * 
- * class ChildTest {
- * private String field2;
- * public String getField2() {
- * return field2;
- * } 
- * }
- * }
  *
  * @author Vyacheslav Mishcheryakov
  * @see MatchesValidator
  */
 @Target({TYPE, ANNOTATION_TYPE})
 @Retention(RUNTIME)
-@Constraint(validatedBy=MatchesDynamicPatternValidator.class)
+@Constraint(validatedBy=MatchesUserContactsDtoValidator.class)
 @Documented
-public @interface MatchesDynamicPattern {
+public @interface MatchesUserContacts {
 
 	/**
      * Message for display when validation fails.
@@ -93,7 +87,7 @@ public @interface MatchesDynamicPattern {
     String field();
 
     /**
-     * Path to property containing validation pattern (regular expression).
+     * Path to property containing id of {@link UserContactType} to get pattern from it.
      */
-    String fieldWithPattern();
+    String storedTypeId();
 }

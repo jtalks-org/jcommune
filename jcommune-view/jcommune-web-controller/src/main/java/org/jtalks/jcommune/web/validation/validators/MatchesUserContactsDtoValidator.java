@@ -18,39 +18,54 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.jtalks.jcommune.web.validation.annotations.MatchesDynamicPattern;
+import org.jtalks.jcommune.model.entity.UserContactType;
+import org.jtalks.jcommune.service.UserContactsService;
+import org.jtalks.jcommune.web.validation.annotations.MatchesUserContacts;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Validator for {@link MatchesDynamicPattern}. Checks that one string property 
+ * Validator for {@link MatchesUserContacts}. Checks that one string property 
  * matches regular expression stored in other string property.
  *
  * @author Vyacheslav Mishcheryakov
- * @see MatchesDynamicPattern
+ * @see MatchesUserContacts
  */
-public class MatchesDynamicPatternValidator implements ConstraintValidator<MatchesDynamicPattern, Object>{
+public class MatchesUserContactsDtoValidator implements ConstraintValidator<MatchesUserContacts, Object>{
 
 	private String propertyToValidate;
-	private String propertyWithPattern;
+	private String pathToTypeId;
 	private String fieldValue;
 	private String pattern;
 	
+	
+	private UserContactsService contactsService;
+	
+	
+	/**
+	 * @param contactsService the contactsService to set
+	 */
+	@Autowired
+	public void setContactsService(UserContactsService contactsService) {
+		this.contactsService = contactsService;
+	}
+
 	/**
      * Initialize validator fields from annotation instance.
      *
-     * @param constraintAnnotation {@link MatchesDynamicPattern} annotation from class
-     * @see MatchesDynamicPattern
+     * @param constraintAnnotation {@link MatchesUserContacts} annotation from class
+     * @see MatchesUserContacts
      */
 	@Override
-	public void initialize(MatchesDynamicPattern constraintAnnotation) {
+	public void initialize(MatchesUserContacts constraintAnnotation) {
 		this.propertyToValidate = constraintAnnotation.field();
-		this.propertyWithPattern = constraintAnnotation.fieldWithPattern();
+		this.pathToTypeId = constraintAnnotation.storedTypeId();
 		
 	}
 
 	/**
-     * Validate object with {@link MatchesDynamicPattern} annotation.
+     * Validate object with {@link MatchesUserContacts} annotation.
      *
-     * @param value   object with {@link MatchesDynamicPattern} annotation
+     * @param value   object with {@link MatchesUserContacts} annotation
      * @param context validation context
      * @return {@code true} if validation successful or false if fails
      */
@@ -77,7 +92,9 @@ public class MatchesDynamicPatternValidator implements ConstraintValidator<Match
 	private void fetchDataForValidation(Object value) {
         try {
             fieldValue = BeanUtils.getProperty(value, propertyToValidate);
-            pattern = BeanUtils.getProperty(value, propertyWithPattern);
+            long typeId = Long.parseLong(BeanUtils.getProperty(value, pathToTypeId));
+            UserContactType type = contactsService.get(typeId);
+            pattern = type.getValidationPattern();
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
