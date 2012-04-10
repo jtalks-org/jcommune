@@ -55,7 +55,7 @@ public class UserContactDtoTest {
 				"The problem of copying data. Value - value.");
 		assertEquals(contactDto.getOwnerId(), USER_ID_TEST_VALUE,
 				"The problem of copying data. Value - ownerId.");
-		assertEquals(contactDto.getType(), contactType, 
+		assertEquals(contactDto.getTypeId(), contactType.getId(), 
 				"The problem of copying data. Value - type.");
 	}
 }

@@ -56,11 +56,11 @@ public class TransactionalUserContactsService
     /**
      * {@inheritDoc}
      */
-    public UserContact addContact(String value, UserContactType type) throws NotFoundException {
+    public UserContact addContact(String value, long typeId) throws NotFoundException {
         JCUser user = securityService.getCurrentUser();
 
         //explicitly getting UserContactType because we need to populate it with data before returning
-        UserContactType actualType = get(type.getId());
+        UserContactType actualType = get(typeId);
         UserContact contact = new UserContact(value, actualType);
         user.addContact(contact);
         return contact;

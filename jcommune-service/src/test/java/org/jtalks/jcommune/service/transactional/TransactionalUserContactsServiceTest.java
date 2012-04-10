@@ -82,7 +82,7 @@ public class TransactionalUserContactsServiceTest {
         when(userContactsDao.isExist(type.getId())).thenReturn(true);
         when(userContactsDao.get(type.getId())).thenReturn(type);
         
-        UserContact addedContact = userContactsService.addContact(contact.getValue(), contact.getType());
+        UserContact addedContact = userContactsService.addContact(contact.getValue(), contact.getType().getId());
         assertEquals(addedContact.getValue(), CONTACT);
         assertEquals(addedContact.getType(), type);
     }

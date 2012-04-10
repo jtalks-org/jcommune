@@ -23,6 +23,20 @@
  */
 var baseUrl = $root;
 
+/**
+ * Namespace for this file.
+ */
+var AddContact = {};
+
+/** Currently selected contact type */
+AddContact.selectedContactType = null;
+
+/** Aall contact types */
+AddContact.contactTypes = null;
+
+/** if entered contact is valid */
+AddContact.isValueValid = true;
+
 function deleteContactHandler() {
     var element = $(this).parent();
     var id = $(this).parent().find("input:hidden").attr("value");
@@ -65,11 +79,12 @@ function getContactHtml(data) {
         '     <a class="button" id="${buttonId}" href="#">X</a>' +
         ' </div>';
 
-    var actualValue = data.type.displayPattern.replace(new RegExp('%s', 'gi'), data.value);
+	var contactTypeInfo = AddContact.getContactType(data.typeId, AddContact.contactTypes);
+    var actualValue = contactTypeInfo.displayPattern.replace(new RegExp('%s', 'gi'), data.value);
     
     var html = template;
-    html = html.replace('${icon}', baseUrl + data.type.icon);
-    html = html.replace('${typeName}', data.type.typeName);
+    html = html.replace('${icon}', baseUrl + contactTypeInfo.icon);
+    html = html.replace('${typeName}', contactTypeInfo.typeName);
     html = html.replace('${contactId}', data.id);
     html = html.replace('${buttonId}', data.id);
     html = html.replace('${value}', actualValue);
@@ -77,38 +92,36 @@ function getContactHtml(data) {
     return html;
 }
 
+/** 
+ * Find contact type with given id in given array and return it
+ */
+AddContact.getContactType = function(id, contactTypes) {
+	var result = null;
+	
+	if (id !== undefined && contactTypes !== undefined) {
+		$.each(contactTypes, function (i, obj) {
+            if (obj.id == id) {
+            	result = obj;
+            	return;
+            }
+        });
+	}
+	
+	return result;
+}
+
+/**
+ * Reset all variables. Used when new popup is displayed
+ */
+AddContact.resetVariables = function() {
+	AddContact.isValueValid = true;
+	AddContact.contactTypes = null;
+	AddContact.selectedContactType = null;
+}
+
+
 $(document).ready(function () {
 	
-	var AddContact = {};
-	
-	AddContact.selectedContactType = null;
-	
-	// all contact types
-	AddContact.contactTypes = null;
-	
-	// if entered contact is valid
-	AddContact.isValueValid = true;
-	
-	AddContact.getContactType = function(id, contactTypes) {
-		var result = null;
-		
-		if (id !== undefined && contactTypes !== undefined) {
-			$.each(contactTypes, function (i, obj) {
-                if (obj.id == id) {
-                	result = obj;
-                	return;
-                }
-            });
-		}
-		
-		return result;
-	}
-	
-	AddContact.resetVariables = function() {
-		AddContact.isValueValid = true;
-		AddContact.contactTypes = null;
-		AddContact.selectedContactType = null;
-	}
 	
 	$('body').on('keyup', '#contact', function() {
 		var value = $(this).val();
@@ -161,9 +174,7 @@ $(document).ready(function () {
 
                         var contact = {
                             value:form.contact,
-                            type:{
-                                id:form.contact_type
-                            }
+                            typeId: form.contact_type
                         };
 
                         $.ajax({

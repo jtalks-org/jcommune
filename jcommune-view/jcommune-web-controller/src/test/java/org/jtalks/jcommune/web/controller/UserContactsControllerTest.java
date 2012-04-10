@@ -30,8 +30,6 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
 
 /**
  * @author Michael Gamov
@@ -80,13 +78,13 @@ public class UserContactsControllerTest {
     	UserContactDto incomingContactDto = new UserContactDto();
     	incomingContactDto.setOwnerId(owner.getId());
     	incomingContactDto.setValue(contact.getValue());
-    	incomingContactDto.setType(contactType);
+    	incomingContactDto.setTypeId(contactType.getId());
     	
-    	when(service.addContact(contact.getValue(), contact.getType())).thenReturn(contact);
+    	when(service.addContact(contact.getValue(), contact.getType().getId())).thenReturn(contact);
     	
     	UserContactDto contactDto = controller.addContact(incomingContactDto);
     	
-    	assertEquals(contactDto.getType(), contactType, "Type of contact should be the same.");
+    	assertEquals(contactDto.getTypeId(), contactType.getId(), "Type of contact should be the same.");
     	assertEquals(contactDto.getValue(), contact.getValue(), "Type of contact should be the same.");
     	assertEquals(contactDto.getOwnerId(), Long.valueOf(owner.getId()), "Owner id should be the same.");
     }
