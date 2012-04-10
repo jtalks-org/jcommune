@@ -20,14 +20,25 @@ import org.jtalks.jcommune.service.UserContactsService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.UserContactDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.ValidationUtils;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
+
+import javax.validation.Valid;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 /**
  * This controller handles creation and deletion of user contacts.
@@ -62,14 +73,16 @@ public class UserContactsController {
     /**
      * Handles creation of new contact for current user.
      * @param userContact user contact information
+     * @param result {@link BindingResult} validation result
      * @return saved user contact (with updated id)
      * @throws NotFoundException when contact type was not found
      */
     @RequestMapping(value="/contacts/add", method = RequestMethod.POST)
-    @ResponseBody public UserContactDto addContact(@RequestBody UserContact userContact) throws NotFoundException {
-        return new UserContactDto(service.addContact(userContact));
+    @ResponseBody 
+    public UserContactDto addContact(@Valid @RequestBody UserContactDto userContact) throws NotFoundException {
+    	return new UserContactDto(service.addContact(userContact.getValue(), userContact.getTypeId()));
     }
-
+    
     /**
      * Removes contact identified by contactId from user contacts.
      * @param contactId identifier of contact to be removed

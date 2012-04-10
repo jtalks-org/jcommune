@@ -325,20 +325,62 @@ var mylink = '';
 
 function doLink() {
     mylink = '';
-    if (!editorVisible) {
-        mylink = prompt("Enter a URL:", "http://");
-        if ((mylink != null) && (mylink != "")) {
-            AddTag('[url=' + mylink + ']', '[/url]');
-        }
+    var str;
+    var element = textboxelement;
+    if (isIE) {
+        str = document.selection.createRange().text;
+    } else if (typeof(element.selectionStart) != 'undefined') {
+        var sel_start = element.selectionStart;
+        var sel_end = element.selectionEnd;
+        str = element.value.substring(sel_start, sel_end);
     }
+    if (!editorVisible) {
+        var content = '<ul><div>' + $labelUrlHeader + '</div>' +
+            '<span class="empty_cell"></span>' +
+            '<br/>' +
+            createFormRow($labelUrlText, str, "urlAltId", $labelUrlInfo) +
+            createFormRow($labelUrl, "", "urlId", $labelUrlRequired) +
+            '</ul>';
+        $.prompt(content,
+            {buttons:{OK:true}, focus:0,
+                submit:function () {
+                    mylink = document.getElementById("urlAltId").value;
+                    var link = document.getElementById("urlId").value;
+                    if ((link != null) && (link != "")) {
+                        if (mylink == null || mylink == "") {
+                            mylink = link;
+                        }
+                        AddTag('[url=' + link + ']', '[/url]');
+                    }
+                }});
+    }
+}
+
+function createFormRow(text, value, idForElement, info) {
+    return         '<label for="' + idForElement + '">' + text + '</label>' +
+        '<div>' +
+        '<input id="' + idForElement + '" class="reg_input" type="text" value="' +
+        value + '" name="' + idForElement + '">' +
+        '<br>' +
+        '</div>' +
+        '<span class="reg_info">' + info + '</span>';
 }
 
 function doImage() {
     if (!editorVisible) {
-        myimg = prompt('Enter Image URL:', 'http://');
-        if ((myimg != null) && (myimg != "")) {
-            AddTag('[img]' + myimg + '[/img]', '');
-        }
+        var content = '<ul><div>' + $labelImgHeader + '</div>' +
+            '<br/>' +
+            createFormRow($labelUrl, "", "imgId", $labelUrlRequired) +
+            '</ul>';
+
+        $.prompt(content,
+            {buttons:{OK:true}, focus:0,
+                submit:function () {
+                    myimg = document.getElementById("imgId").value;
+                    if ((myimg != null) && (myimg != "")) {
+                        AddTag('[img]' + myimg + '[/img]', '');
+                    }
+                }});
     }
 }
 
@@ -358,7 +400,11 @@ function AddTag(t1, t2) {
 
             if (str.text == "") {
                 if (t2 == "[/url]") {
-                    str.text = t1 + mylink + t2;
+                    if (str.text != mylink) {
+                        str.text = str.text + t1 + mylink + t2;
+                    } else {
+                        str.text = t1 + mylink + t2;
+                    }
                 } else {
                     str.text = t1 + t2;
                 }
@@ -380,6 +426,9 @@ function AddTag(t1, t2) {
     else if (typeof(element.selectionStart) != 'undefined') {
         var sel_start = element.selectionStart;
         var sel_end = element.selectionEnd;
+        if (element.value.substring(sel_start, sel_end) != mylink && t2 == "[/url]") {
+            sel_start = sel_end;
+        }
         MozillaInsertText(element, t1, sel_start);
         if (sel_start == sel_end && t2 == "[/url]") {
             MozillaInsertText(element, mylink + t2, sel_end + t1.length);
