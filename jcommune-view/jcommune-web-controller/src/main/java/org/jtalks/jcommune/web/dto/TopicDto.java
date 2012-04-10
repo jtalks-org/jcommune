@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
@@ -43,6 +44,7 @@ public class TopicDto {
 
     private long id;
 
+    @Size(min = Poll.MIN_TITLE_LENGTH, max = Poll.MAX_TITLE_LENGTH)
     private String pollTitle;
     private String pollOptions;
     private String single;

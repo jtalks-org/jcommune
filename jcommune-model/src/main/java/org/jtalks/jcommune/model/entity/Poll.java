@@ -35,7 +35,10 @@ public class Poll extends Entity {
     private DateTime endingDate;
     private List<PollOption> pollOptions = new ArrayList<PollOption>();
     private Topic topic;
-    
+
+    public static final int MIN_TITLE_LENGTH = 3;
+    public static final int MAX_TITLE_LENGTH = 120;
+
     /**
      * Used only by Hibernate.
      */
@@ -157,7 +160,7 @@ public class Poll extends Entity {
 
     /**
      * Add the list of poll options to this poll.
-     * 
+     *
      * @param options the list of poll options to this poll
      */
     public void addPollOptions(List<PollOption> options) {

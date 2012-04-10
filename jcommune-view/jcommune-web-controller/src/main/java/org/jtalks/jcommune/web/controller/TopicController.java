@@ -156,12 +156,14 @@ public class TopicController {
         }
 
         Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(), branchId);
-        pollService.createPoll(
-                topicDto.getPollTitle(),
-                topicDto.getPollOptions(),
-                topicDto.getSingle(),
-                topicDto.getEndingDate(),
-                createdTopic);
+        if ((topicDto.getPollTitle() != null) && (topicDto.getPollOptions() != null)) {
+            pollService.createPoll(
+                    topicDto.getPollTitle(),
+                    topicDto.getPollOptions(),
+                    topicDto.getSingle(),
+                    topicDto.getEndingDate(),
+                    createdTopic);
+        }
         lastReadPostService.markTopicAsRead(createdTopic);
         return new ModelAndView("redirect:/topics/" + createdTopic.getId());
     }

@@ -48,15 +48,15 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
     /**
      * Create an instance of service for operations with a poll.
      *
-     * @param pollDao data access object, which should be able do
-     *                all CRUD operations with {@link Poll}.
-     * @param pollOptionDao data access object, which should be able do
-     *                      all CRUD operations with {@link PollOption}.
+     * @param pollDao         data access object, which should be able do
+     *                        all CRUD operations with {@link Poll}.
+     * @param pollOptionDao   data access object, which should be able do
+     *                        all CRUD operations with {@link PollOption}.
      * @param securityService the service for security operations
-     *                all CRUD operations with {@link PollOption}.
+     *                        all CRUD operations with {@link PollOption}.
      */
     public TransactionalPollService(PollDao pollDao, PollOptionDao pollOptionDao,
-            SecurityService securityService) {
+                                    SecurityService securityService) {
         super(pollDao);
         this.pollOptionDao = pollOptionDao;
         this.securityService = securityService;
@@ -96,10 +96,10 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
         }
         return poll;
     }
-    
+
     /**
      * Prohibit the re-vote. In this poll a user will no longer be able to participate.
-     * 
+     *
      * @param poll a poll, in which the user will no longer be able to participate
      */
     private void prohibitRevote(Poll poll) {
@@ -112,7 +112,9 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
         Poll poll = new Poll(pollTitle);
         //TODO is need to handle broken string here?
         poll.setSingle(Boolean.parseBoolean(single));
-        poll.setEndingDate(parseDate(endingDate));
+        if (endingDate != null) {
+            poll.setEndingDate(parseDate(endingDate));
+        }
         poll.setTopic(topic);
         try {
             poll.addPollOptions(parseOptions(pollOptions));
