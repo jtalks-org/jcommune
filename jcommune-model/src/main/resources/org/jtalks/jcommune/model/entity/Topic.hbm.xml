@@ -52,7 +52,5 @@
       <many-to-many column="USER_ID" class="org.jtalks.jcommune.model.entity.JCUser"/>
     </set>
 
-    <one-to-one name="poll" class="org.jtalks.jcommune.model.entity.Poll"
-                cascade="save-update"/>
   </class>
 </hibernate-mapping>

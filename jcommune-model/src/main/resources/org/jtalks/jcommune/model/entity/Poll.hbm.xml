@@ -29,7 +29,7 @@
     <property column="ENDING_DATE" name="endingDate" not-null="false"
               type="org.joda.time.contrib.hibernate.PersistentDateTime"/>
     <property column="SINGLE" name="single" not-null="true"/>
-    <one-to-one name="topic" class="org.jtalks.jcommune.model.entity.Topic"/>
+    <one-to-one name="topic" class="org.jtalks.jcommune.model.entity.Topic" cascade="save-update"/>
 
     <list name="pollOptions" cascade="all-delete-orphan">
       <cache usage="nonstrict-read-write"/>
