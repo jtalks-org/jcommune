@@ -40,7 +40,7 @@ $(document).ready(function () {
  */
 function prepareHtmlTemplateForModalWindow(sections) {
     var htmlTemplate = '<b>Move topic</b><br/>' +
-        '<select name="section_name" id="section_name" size="10">' +
+        '<select style="width: 45%" name="section_name" id="section_name" size="10">' +
         '<option value="all">All sections</option>';
 
     $.each(sections, function (i, section) {
@@ -48,7 +48,7 @@ function prepareHtmlTemplateForModalWindow(sections) {
     });
 
     htmlTemplate += '</select>' +
-        '<select style="margin-left:30px;" name="branch_name" id="branch_name" size="10">' +
+        '<select style="margin-left:30px; width: 45%" name="branch_name" id="branch_name" size="10">' +
         '<option value="' + 0 + '"></option>' +
         '</select>';
 

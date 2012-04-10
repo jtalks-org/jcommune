@@ -11,6 +11,6 @@ The installation guide can be found here:
 
 DEVELOPMENT
 ---------------------------------------------------------
-Developer's guides and materials can be foun in developer's wiki:
+Developer's guides and materials can be found in developer's wiki:
  http://jtalks.org/display/jcommune/Development
 ---------------------------------------------------------
