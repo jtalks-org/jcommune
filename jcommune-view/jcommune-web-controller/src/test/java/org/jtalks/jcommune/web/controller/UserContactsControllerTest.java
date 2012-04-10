@@ -67,21 +67,26 @@ public class UserContactsControllerTest {
     }
 
     @Test
-    public void testAddContact() throws NotFoundException {
+    public void testAddContactSuccess() throws NotFoundException {
     	UserContactType contactType = new UserContactType();
-        contactType.setTypeName(TYPENAME);
+    	contactType.setTypeName(TYPENAME);
         JCUser owner = new JCUser("username", "email", "password");
         owner.setId(1);
     	UserContact contact = new UserContact("gateway", contactType);
     	contact.setOwner(owner);
     	
-    	when(service.addContact(contact)).thenReturn(contact);
+    	UserContactDto incomingContactDto = new UserContactDto();
+    	incomingContactDto.setOwnerId(owner.getId());
+    	incomingContactDto.setValue(contact.getValue());
+    	incomingContactDto.setTypeId(contactType.getId());
     	
-    	UserContactDto contactDto = controller.addContact(contact);
+    	when(service.addContact(contact.getValue(), contact.getType().getId())).thenReturn(contact);
     	
-    	assertEquals(contactDto.getType(), contactType, "Type of contact should be the same.");
+    	UserContactDto contactDto = controller.addContact(incomingContactDto);
+    	
+    	assertEquals(contactDto.getTypeId(), contactType.getId(), "Type of contact should be the same.");
     	assertEquals(contactDto.getValue(), contact.getValue(), "Type of contact should be the same.");
-    	assertEquals(contactDto.getOwnerId(), Long.valueOf(owner.getId()), "Owner id should be the same.");  	
+    	assertEquals(contactDto.getOwnerId(), Long.valueOf(owner.getId()), "Owner id should be the same.");
     }
     
     @Test
