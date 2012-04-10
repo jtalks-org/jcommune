@@ -54,10 +54,9 @@ public class SamplePageController {
     }
 
     @Autowired
-    public SamplePageController(SamplePageService samplePageService, BreadcrumbBuilder breadcrumbBuilder, BBCodeService bbCodeService) {
+    public SamplePageController(SamplePageService samplePageService) {
         this.samplePageService = samplePageService;
-        this.bbCodeService = bbCodeService;
-        this.breadcrumbBuilder = breadcrumbBuilder;
+
     }
 
 

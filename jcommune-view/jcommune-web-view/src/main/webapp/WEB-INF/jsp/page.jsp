@@ -20,7 +20,9 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <head>
-    <title><c:out value="${samplePageDto.nameText}"/></title>
+    <title>
+        <c:out value="${samplePageDto.id}"/>
+        <c:out value="${samplePageDto.nameText}"/></title>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
             type="text/javascript"></script>
 </head>

@@ -26,7 +26,7 @@
         </id>
         <property name="uuid" column="UUID" unique="true" not-null="true"/>
         <property name="name" column="NAME" type="text"  not-null="true"/>
-        <property name="content" column="CONTENT" type="text"  not-null="true"/>
+        <property name="content" column="POST_CONTENT" type="text"  not-null="true"/>
     </class>
 
 </hibernate-mapping>

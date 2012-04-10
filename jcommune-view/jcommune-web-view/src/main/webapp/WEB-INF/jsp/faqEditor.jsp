@@ -34,7 +34,7 @@
 
         <div id="answer">
             <form:form action="${pageContext.request.contextPath}/pages/${pageId}/edit"
-                       method="POST" modelAttribute="samplePageDtoDto" onsubmit="doCheck();return true;">
+                       method="POST" modelAttribute="samplePageDto" onsubmit="doCheck();return true;">
 
                 <div class="forum_header_table">
                     <div class="forum_header">
