@@ -35,27 +35,27 @@ public class PollOption extends Entity {
 
 
     /**
-     * Constructs the VotingOption instance with required fields.
+     * Constructs the PollOption instance with required fields.
      *
-     * @param name the name of the voting option
+     * @param name the name of the poll option
      */
     public PollOption(String name) {
         this.name = name;
     }
 
     /**
-     * Get the voting option name.
+     * Get the poll option name.
      *
-     * @return the voting option name
+     * @return the poll option name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Set the voting option name.
+     * Set the poll option name.
      *
-     * @param name the voting option name
+     * @param name the poll option name
      */
     public void setName(String name) {
         this.name = name;
@@ -80,18 +80,18 @@ public class PollOption extends Entity {
     }
 
     /**
-     * Get the voting that contains this poll option.
+     * Get the poll that contains this poll option.
      *
-     * @return the voting that contains this poll option
+     * @return the poll that contains this poll option
      */
     public Poll getPoll() {
         return poll;
     }
 
     /**
-     * Set the poll that contains this voting option.
+     * Set the poll that contains this poll option.
      *
-     * @param poll the poll that contains this voting option
+     * @param poll the poll that contains this poll option
      */
     public void setPoll(Poll poll) {
         this.poll = poll;

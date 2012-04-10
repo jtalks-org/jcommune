@@ -49,9 +49,9 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
      * Create an instance of service for operations with a poll.
      *
      * @param pollDao data access object, which should be able do
- *                    all CRUD operations with {@link Poll}.
+     *                all CRUD operations with {@link Poll}.
      * @param pollOptionDao data access object, which should be able do
- *                    all CRUD operations with {@link PollOption}.
+     *                      all CRUD operations with {@link PollOption}.
      * @param securityService the service for security operations
      *                all CRUD operations with {@link PollOption}.
      */
@@ -68,13 +68,13 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
     @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
     @Override
     public Poll addSingleVote(Long pollId, Long selectedOptionId) {
-        PollOption option = pollOptionDao.get(selectedOptionId);
-        Poll poll = option.getPoll();
+        Poll poll = getDao().get(pollId);
+        prohibitRevote(poll);
         if (poll.isActive()) {
+            PollOption option = pollOptionDao.get(selectedOptionId);
             increaseVoteCount(option);
             pollOptionDao.update(option);
         }
-        //TODO is exception needed?
         return poll;
     }
 
@@ -85,6 +85,7 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
     @Override
     public Poll addMultipleVote(Long pollId, List<Long> selectedOptionIds) {
         Poll poll = getDao().get(pollId);
+        prohibitRevote(poll);
         if (poll.isActive()) {
             for (PollOption option : poll.getPollOptions()) {
                 if (selectedOptionIds.contains(option.getId())) {
@@ -94,6 +95,16 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
             }
         }
         return poll;
+    }
+    
+    /**
+     * Prohibit the re-vote. In this poll a user will no longer be able to participate.
+     * 
+     * @param poll a poll, in which the user will no longer be able to participate
+     */
+    private void prohibitRevote(Poll poll) {
+        //TODO It should be changed after the transition to the new security.
+        securityService.grantToCurrentUser().write().on(poll);
     }
 
     @Override

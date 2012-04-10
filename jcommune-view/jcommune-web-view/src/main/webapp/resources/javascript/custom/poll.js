@@ -101,14 +101,14 @@ function applyPollResult(poll) {
 		var pollOption = poll.pollOptions[i];
 		var pollOptionId = pollOption.id;
 		var pollPercentage = pollOption.voteCount/poll.totalVoteCount * 100;
+		var roundedPollPercentage = (Math.round(pollPercentage*100)/100).toFixed(2);
 		$(".pollChart" + pollOptionId).animate({width:pollPercentage + "%"});
+		$("#pollAnswer" + pollOptionId).text("(" + pollOption.voteCount + " - " + roundedPollPercentage + "%)");
 	}
 	//disable and hide vote button
 	$("#pollAjaxLoader").hide(); //hide the ajax loader again
 	$("#pollSubmit").attr("disabled", "disabled"); //disable the submit button
 	$("#pollSubmit").hide();
-	//TODO We must find a way without a full page reload.
-	window.location.reload();
 }
 
 /**

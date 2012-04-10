@@ -35,7 +35,7 @@ public class Poll extends Entity {
     private DateTime endingDate;
     private List<PollOption> pollOptions = new ArrayList<PollOption>();
     private Topic topic;
-
+    
     /**
      * Used only by Hibernate.
      */
@@ -43,10 +43,10 @@ public class Poll extends Entity {
     }
 
     /**
-     * Creates the Voting instance with required fields.
-     * Voting is "single type" by default.
+     * Creates the Poll instance with required fields.
+     * Poll is "single type" by default.
      *
-     * @param title the voting title
+     * @param title the poll title
      */
     public Poll(String title) {
         this.title = title;
@@ -54,92 +54,92 @@ public class Poll extends Entity {
     }
 
     /**
-     * Get the voting title.
+     * Get the poll title.
      *
-     * @return the voting title
+     * @return the poll title
      */
     public String getTitle() {
         return title;
     }
 
     /**
-     * Set the the voting title.
+     * Set the the poll title.
      *
-     * @param title the voting title
+     * @param title the poll title
      */
     public void setTitle(String title) {
         this.title = title;
     }
 
     /**
-     * Voting may be either "single type" or "multiple type".
+     * Poll may be either "single type" or "multiple type".
      *
-     * @return <tt>true</tt> if the voting is "single type",
-     *         <tt>false</tt> if the voting is "multiple type"
+     * @return <tt>true</tt> if the poll is "single type",
+     *         <tt>false</tt> if the poll is "multiple type"
      */
     public boolean isSingle() {
         return single;
     }
 
     /**
-     * Set the voting type. Voting may be either "single type" or "multiple type".
+     * Set the poll type. Poll may be either "single type" or "multiple type".
      *
-     * @param single <tt>true</tt> if the voting is "single type",
-     *               <tt>false</tt> if the voting is "multiple type"
+     * @param single <tt>true</tt> if the poll is "single type",
+     *               <tt>false</tt> if the poll is "multiple type"
      */
     public void setSingle(boolean single) {
         this.single = single;
     }
 
     /**
-     * Get the voting ending date.
+     * Get the poll ending date.
      *
-     * @return the voting ending date
+     * @return the poll ending date
      */
     public DateTime getEndingDate() {
         return endingDate;
     }
 
     /**
-     * Set the voting ending date.
+     * Set the poll ending date.
      *
-     * @param endingDate the voting ending date
+     * @param endingDate the poll ending date
      */
     public void setEndingDate(DateTime endingDate) {
         this.endingDate = endingDate;
     }
 
     /**
-     * Get the list of voting options.
+     * Get the list of poll options.
      *
-     * @return the list of voting options
+     * @return the list of poll options
      */
     public List<PollOption> getPollOptions() {
         return pollOptions;
     }
 
     /**
-     * Set the list of voting options.
+     * Set the list of poll options.
      *
-     * @param pollOptions the list of voting options
+     * @param pollOptions the list of poll options
      */
     protected void setPollOptions(List<PollOption> pollOptions) {
         this.pollOptions = pollOptions;
     }
 
     /**
-     * Get the topic that contains this voting.
+     * Get the topic that contains this poll.
      *
-     * @return the topic that contains this voting
+     * @return the topic that contains this poll
      */
     public Topic getTopic() {
         return topic;
     }
 
     /**
-     * Get the topic that contains this voting.
+     * Get the topic that contains this poll.
      *
-     * @param topic the topic that contains this voting
+     * @param topic the topic that contains this poll
      */
     public void setTopic(Topic topic) {
         this.topic = topic;
@@ -147,14 +147,19 @@ public class Poll extends Entity {
 
 
     /**
-     * Add the voting option to this voting.
+     * Add the poll options to this poll.
      *
-     * @param options the voting option
+     * @param options the poll option
      */
     public void addPollOptions(PollOption... options) {
         addPollOptions(Arrays.asList(options));
     }
 
+    /**
+     * Add the list of poll options to this poll.
+     * 
+     * @param options the list of poll options to this poll
+     */
     public void addPollOptions(List<PollOption> options) {
         for (PollOption option : options) {
             option.setPoll(this);
