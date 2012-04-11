@@ -13,4 +13,4 @@ DEVELOPMENT
 ---------------------------------------------------------
 Developer's guides and materials can be found in developer's wiki:
  http://jtalks.org/display/jcommune/Development
----------------------------------------------------------
+----------------------------------------------------------------
