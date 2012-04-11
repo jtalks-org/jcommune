@@ -18,13 +18,14 @@ package org.jtalks.jcommune.model.entity;
 import org.jtalks.common.model.entity.Entity;
 
 /**
- * Represents the option of poll of the topic.
+ * Represents the option of poll of the topic. Counts the number of votes
+ * for each option, but it doesn't track the selected answer for each user.
  *
  * @author Anuar Nurmakanov
  */
 public class PollOption extends Entity {
     private String name;
-    private int voteCount;
+    private int pollCount;
     private Poll poll;
 
     public static final int MIN_OPTION_LENGTH = 3;
@@ -65,21 +66,21 @@ public class PollOption extends Entity {
     }
 
     /**
-     * Get the count of votes for this option.
+     * Get the poll count for this option.
      *
-     * @return the count of votes for this option
+     * @return the poll count for this option
      */
-    public int getVoteCount() {
-        return voteCount;
+    public int getPollCount() {
+        return pollCount;
     }
 
     /**
-     * Set the count of votes for this option.
+     * Set the poll count for this option.
      *
-     * @param voteCount the count of votes for this option
+     * @param pollCount the poll count for this option
      */
-    public void setVoteCount(int voteCount) {
-        this.voteCount = voteCount;
+    public void setPollCount(int pollCount) {
+        this.pollCount = pollCount;
     }
 
     /**
@@ -98,5 +99,12 @@ public class PollOption extends Entity {
      */
     public void setPoll(Poll poll) {
         this.poll = poll;
+    }
+
+    /**
+     * Increases a poll count in the option of poll.
+     */
+    public void increasePollCount() {
+        this.pollCount++;
     }
 }

@@ -21,56 +21,58 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd
        ">
-    <!-- Http Security -->
-    <security:http auto-config="true" use-expressions="true" create-session="ifRequired">
+  <!-- Http Security -->
+  <security:http auto-config="true" use-expressions="true" create-session="ifRequired">
 
-        <security:session-management session-authentication-strategy-ref="concurrentSessionControlStrategy"/>
+    <security:session-management session-authentication-strategy-ref="concurrentSessionControlStrategy"/>
 
-        <security:intercept-url pattern="/topics/new" method="GET" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+    <security:intercept-url pattern="/topics/new" method="GET" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
 
-        <security:intercept-url pattern="/posts/new" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
-        <security:intercept-url pattern="/posts/*/delete" method="GET" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
-        <security:intercept-url pattern="/posts/*" method="DELETE" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+    <security:intercept-url pattern="/posts/new" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+    <security:intercept-url pattern="/posts/*/delete" method="GET" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+    <security:intercept-url pattern="/posts/*" method="DELETE" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
 
-        <security:intercept-url pattern="/users/new" method="GET" access="permitAll"/>
-        <security:intercept-url pattern="/user" method="GET" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
-        <security:intercept-url pattern="/users/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
-        <security:intercept-url pattern="/user/activate/**" access="permitAll"/>
+    <security:intercept-url pattern="/users/new" method="GET" access="permitAll"/>
+    <security:intercept-url pattern="/user" method="GET" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+    <security:intercept-url pattern="/users/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+    <security:intercept-url pattern="/user/activate/**" access="permitAll"/>
 
-        <security:intercept-url pattern="/pm/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
-        <security:intercept-url pattern="/pm/new/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
-        <security:intercept-url pattern="/inbox" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
-        <security:intercept-url pattern="/inbox/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
-        <security:intercept-url pattern="/outbox" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
-        <security:intercept-url pattern="/reply/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
-        <security:intercept-url pattern="/quote/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
-        <security:intercept-url pattern="/drafts" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
-        <security:intercept-url pattern="/outbox" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
-        <security:intercept-url pattern="/answer" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+    <security:intercept-url pattern="/pm/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+    <security:intercept-url pattern="/pm/new/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+    <security:intercept-url pattern="/inbox" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+    <security:intercept-url pattern="/inbox/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+    <security:intercept-url pattern="/outbox" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+    <security:intercept-url pattern="/reply/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+    <security:intercept-url pattern="/quote/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+    <security:intercept-url pattern="/drafts" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+    <security:intercept-url pattern="/outbox" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+    <security:intercept-url pattern="/answer" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
 
-        <security:intercept-url pattern="/topics/*/subscribe" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
-        <security:intercept-url pattern="/topics/*/unsubscribe" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
-        <security:intercept-url pattern="/topics/json/**" access="hasAnyRole('ROLE_ADMIN')"/>
-        <security:intercept-url pattern="/branches/*/subscribe" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
-        <security:intercept-url pattern="/branches/*/unsubscribe" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+    <security:intercept-url pattern="/topics/*/subscribe" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+    <security:intercept-url pattern="/topics/*/unsubscribe" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+    <security:intercept-url pattern="/topics/json/**" access="hasAnyRole('ROLE_ADMIN')"/>
+    <security:intercept-url pattern="/branches/*/subscribe" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+    <security:intercept-url pattern="/branches/*/unsubscribe" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
 
-        <security:intercept-url pattern="*" access="permitAll"/>
+    <security:intercept-url pattern="/poll/**" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
 
-        <security:form-login login-page="/login" login-processing-url="/j_spring_security_check"
-                             authentication-failure-url="/login?login_error=1" default-target-url="/"
-                             authentication-success-handler-ref="successAuthHandler"/>
-        <security:logout logout-url="/logout" logout-success-url="/" invalidate-session="true"/>
-        <security:remember-me data-source-ref="dataSource" key="JTalks"/>
-    </security:http>
+    <security:intercept-url pattern="*" access="permitAll"/>
 
-    <bean id="successAuthHandler" class="org.jtalks.jcommune.web.util.SuccessfulAuthenticationHandler">
-        <constructor-arg ref="userService"/>
-    </bean>
+    <security:form-login login-page="/login" login-processing-url="/j_spring_security_check"
+                         authentication-failure-url="/login?login_error=1" default-target-url="/"
+                         authentication-success-handler-ref="successAuthHandler"/>
+    <security:logout logout-url="/logout" logout-success-url="/" invalidate-session="true"/>
+    <security:remember-me data-source-ref="dataSource" key="JTalks"/>
+  </security:http>
 
-    <bean id="concurrentSessionControlStrategy"
-          class="org.springframework.security.web.authentication.session.ConcurrentSessionControlStrategy">
-        <constructor-arg name="sessionRegistry" ref="sessionRegistry"/>
-        <property name="maximumSessions" value="1"/>
-    </bean>
+  <bean id="successAuthHandler" class="org.jtalks.jcommune.web.util.SuccessfulAuthenticationHandler">
+    <constructor-arg ref="userService"/>
+  </bean>
+
+  <bean id="concurrentSessionControlStrategy"
+        class="org.springframework.security.web.authentication.session.ConcurrentSessionControlStrategy">
+    <constructor-arg name="sessionRegistry" ref="sessionRegistry"/>
+    <property name="maximumSessions" value="1"/>
+  </bean>
 
 </beans>

@@ -15,11 +15,11 @@
 
 package org.jtalks.jcommune.web.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollOption;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Data transfer object for transferring poll to the client side.
@@ -28,8 +28,8 @@ import org.jtalks.jcommune.model.entity.PollOption;
  */
 public class PollDto {
     private long id;
-    private int totalVoteCount;
-    private List<PollOptionDto> pollOptions;
+    private int totalPollCount;
+    private List<PollOptionDto> pollOptions = new ArrayList<PollOptionDto>();
 
     /**
      * Default constructor.
@@ -47,8 +47,21 @@ public class PollDto {
      */
     public PollDto(long id, int totalVoteCount, List<PollOptionDto> pollOptions) {
         this.id = id;
-        this.totalVoteCount = totalVoteCount;
+        this.totalPollCount = totalVoteCount;
         this.pollOptions = pollOptions;
+    }
+
+    /**
+     * Creates data transfer object, that represents info about the poll.
+     *
+     * @param poll the poll
+     */
+    public PollDto(Poll poll) {
+        this.id = poll.getId();
+        this.totalPollCount = poll.getTotalPollCount();
+        for (PollOption option : poll.getPollOptions()) {
+            this.pollOptions.add(new PollOptionDto(option));
+        }
     }
 
     /**
@@ -71,22 +84,22 @@ public class PollDto {
     }
 
     /**
-     * Get the total count of votes.
+     * Get the total poll count.
      *
-     * @return the total count of votes
+     * @return the total poll count
      */
-    public int getTotalVoteCount() {
-        return totalVoteCount;
+    public int getTotalPollCount() {
+        return totalPollCount;
     }
 
     /**
-     * Set the total count of votes.
+     * Set the total poll count.
      * It is also required for JSON.
      *
-     * @param totalVoteCount the total count of votes
+     * @param totalPollCount the total poll count
      */
-    public void setTotalVoteCount(int totalVoteCount) {
-        this.totalVoteCount = totalVoteCount;
+    public void setTotalPollCount(int totalPollCount) {
+        this.totalPollCount = totalPollCount;
     }
 
     /**
@@ -110,18 +123,17 @@ public class PollDto {
     public void setPollOptions(List<PollOptionDto> pollOptions) {
         this.pollOptions = pollOptions;
     }
-    
+
     /**
-     * Creates data transfer object, that represents info about the poll.
-     * 
-     * @param poll the poll
-     * @return data transfer object, that represents info about the poll
+     * Gets identifiers of poll options from data transfer objects.
+     *
+     * @return identifiers of poll options
      */
-    public static PollDto getDtoFor(Poll poll) {
-        List<PollOptionDto> optionDtos = new ArrayList<PollOptionDto>();
-        for (PollOption option : poll.getPollOptions()) {
-            optionDtos.add(PollOptionDto.getDtoFor(option));
+    public List<Long> getPollOptionIds() {
+        List<Long> pollOptionIds = new ArrayList<Long>();
+        for (PollOptionDto dto : pollOptions) {
+            pollOptionIds.add(dto.getId());
         }
-        return new PollDto(poll.getId(), poll.getTotalVoteCount(), optionDtos);
+        return pollOptionIds;
     }
 }

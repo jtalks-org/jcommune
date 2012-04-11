@@ -460,6 +460,16 @@ public class Topic extends SubscriptionAwareEntity {
     }
 
     /**
+     * Determines a existence the poll in the topic.
+     *
+     * @return <tt>true</tt>  if the poll exists
+     *         <tt>false</tt>  if the poll doesn't exist
+     */
+    public boolean hasPoll() {
+        return getPoll() != null;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @DocumentId

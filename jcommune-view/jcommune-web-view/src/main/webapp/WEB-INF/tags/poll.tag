@@ -18,95 +18,102 @@
 <%@ tag body-content="empty" %>
 <%@ attribute name="pollOptions" required="true" type="java.util.List" %>
 <%@ attribute name="poll" required="true" type="org.jtalks.jcommune.model.entity.Poll" %>
-<%@ attribute name="pollEnabled" required="true" type="java.lang.Boolean" %>
+<%@ attribute name="isVoteButtonEnabled" required="true" type="java.lang.Boolean" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <div id="pollWrap">
-	<!-- Determination of whether the user can vote in the topic. -->
-	<c:set var="votingAvailable" value="true" scope="request" />
-	<sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-		<sec:accesscontrollist domainObject="${poll}" hasPermission="2">
-			<c:set var="votingAvailable" value="false" scope="request"/>
-		</sec:accesscontrollist>
-	</sec:authorize>
-	<sec:authorize access="isAnonymous()">
-		<c:set var="votingAvailable" value="false" scope="request"/>
-	</sec:authorize>
-	<!-- General form. -->
-	<form name="pollForm" action="#">
-		<!-- Poll title -->
-		<h3>
-			<c:choose>
-				<c:when test="${poll.endingDate==null}">
-					<c:out value="${poll.title}"/>
-				</c:when>
-				<c:otherwise>
-					<fmt:message key="label.poll.title.with.ending">
-						<fmt:param>${poll.title}</fmt:param>
-						<fmt:param><jtalks:format value="${poll.endingDate}"/></fmt:param>
-					</fmt:message>
-				</c:otherwise>
-			</c:choose>
-		</h3>
-		<!-- List of poll options -->
-		<ul>
-			<c:forEach items="${pollOptions}" var="option">
-				<li>
-					<!-- RadioButton/CheckBox. Available when poll is active and user not voted. -->
-					<c:if test="${pollEnabled && poll.active && votingAvailable}">
-						<c:choose>
-							<c:when test="${poll.single}">
-								<input name="pollAnswer" id="pollRadioButton${option.id}"
-						 	   		   type="radio" value="${option.id}">
-							</c:when>
-							<c:otherwise>
-								<input name="pollAnswer" id="pollCheckBox${option.id}"
-						 	   		   type="checkbox" value="${option.id}">
-							</c:otherwise>
-						</c:choose>
-					</c:if>
-					<c:out value="${option.name}"/>
-					<!-- Available to anonymous users and voted users. -->
-					<c:choose>
-						<c:when test="${!votingAvailable}">
+    <!-- Determination of whether the user can vote in the topic. -->
+    <c:set var="votingAvailable" value="true" scope="request"/>
+    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+        <sec:accesscontrollist domainObject="${poll}" hasPermission="2">
+            <c:set var="votingAvailable" value="false" scope="request"/>
+        </sec:accesscontrollist>
+    </sec:authorize>
+    <sec:authorize access="isAnonymous()">
+        <c:set var="votingAvailable" value="false" scope="request"/>
+    </sec:authorize>
+    <!-- General form. -->
+    <form name="pollForm" action="#">
+        <!-- Poll title -->
+        <h3>
+            <c:choose>
+                <c:when test="${poll.endingDate==null}">
+                    <c:out value="${poll.title}"/>
+                </c:when>
+                <c:otherwise>
+                    <fmt:message key="label.poll.title.with.ending">
+                        <fmt:param>${poll.title}</fmt:param>
+                        <fmt:param><jtalks:format value="${poll.endingDate}"/></fmt:param>
+                    </fmt:message>
+                </c:otherwise>
+            </c:choose>
+        </h3>
+        <!-- List of poll options -->
+        <ul>
+            <c:forEach items="${pollOptions}" var="option">
+                <li>
+                    <!-- RadioButton/CheckBox. Available when poll is active and user not voted. -->
+                    <c:if test="${poll.active && votingAvailable}">
+                        <c:choose>
+                            <c:when test="${poll.singleAnswer}">
+                                <input name="pollAnswer" id="pollRadioButton${option.id}"
+                                       type="radio" value="${option.id}">
+                            </c:when>
+                            <c:otherwise>
+                                <input name="pollAnswer" id="pollCheckBox${option.id}"
+                                       type="checkbox" value="${option.id}">
+                            </c:otherwise>
+                        </c:choose>
+                    </c:if>
+                    <c:out value="${option.name}"/>
+                    <!-- Available to anonymous users and voted users. -->
+                    <c:choose>
+                        <c:when test="${!votingAvailable}">
 							<span id="pollAnswer${option.id}">
 								<fmt:message key="label.poll.option.vote.info">
-									<fmt:param>${option.voteCount}</fmt:param>
-									<fmt:param>
-										<fmt:formatNumber value="${option.voteCount/poll.totalVoteCount*100}" 
-													      maxFractionDigits="2"/>
-									</fmt:param>
-								</fmt:message>
+                                    <fmt:param>${option.pollCount}</fmt:param>
+                                    <fmt:param>
+                                        <c:choose>
+                                            <c:when test="${poll.totalPollCount > 0}">
+                                                <fmt:formatNumber maxFractionDigits="2"
+                                                                  value="${option.pollCount/poll.totalPollCount*100}"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <fmt:param value="0"/>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </fmt:param>
+                                </fmt:message>
 							</span>
-						</c:when>
-						<c:otherwise>
-							<span id="pollAnswer${option.id}"></span>
-						</c:otherwise>
-					</c:choose>
-				</li>
-				<!-- Available to anonymous users and voted users. -->
-				<c:choose>
-					<c:when test="${!votingAvailable}">
-						<li style="width:${option.voteCount/poll.totalVoteCount*100}%; background-color:#00ff00" 
-				    		class="pollChart pollChart${option.id}"/>
-					</c:when>
-					<c:otherwise>
-						<li style="background-color:#00ff00" class="pollChart pollChart${option.id}"/>
-					</c:otherwise>
-				</c:choose>
-			</c:forEach>
-		</ul>
-		<!-- Poll button. Available when poll is active and user not voted. -->
-		<c:if test="${pollEnabled && poll.active && votingAvailable}">
-			<input type="submit" name="pollSubmit" id="pollSubmit" 
-				   value="<fmt:message key="label.poll.vote"/>">
-		</c:if>
-		<!-- Additional components -->
-		<span id="pollMessage" style="display: none; "><fmt:message key="label.poll.message.error"/></span>
-		<img src="${pageContext.request.contextPath}/resources/images/ajaxLoader.gif"
-			 alt="Ajax Loader" id="pollAjaxLoader" style="display: none; ">
-		<input type="hidden" name="pollId" value = "${poll.id}"/>
-	</form>
+                        </c:when>
+                        <c:otherwise>
+                            <span id="pollAnswer${option.id}"></span>
+                        </c:otherwise>
+                    </c:choose>
+                </li>
+                <!-- Available to anonymous users and voted users. -->
+                <c:choose>
+                    <c:when test="${!votingAvailable}">
+                        <li style="width:${option.pollCount/poll.totalPollCount*100}%"
+                            class="pollChart pollChart${option.id}"/>
+                    </c:when>
+                    <c:otherwise>
+                        <li class="pollChart pollChart${option.id}"/>
+                    </c:otherwise>
+                </c:choose>
+            </c:forEach>
+        </ul>
+        <!-- Poll button. Available when poll is active and user not voted and is button not disabled. -->
+        <c:if test="${isVoteButtonEnabled && poll.active && votingAvailable}">
+            <input type="submit" name="pollSubmit" id="pollSubmit"
+                   value="<fmt:message key="label.poll.vote"/>">
+        </c:if>
+        <!-- Additional components -->
+        <span id="pollMessage" style="display: none; "><fmt:message key="label.poll.message.error"/></span>
+        <img src="${pageContext.request.contextPath}/resources/images/ajaxLoader.gif"
+             alt="Ajax Loader" id="pollAjaxLoader" style="display: none; ">
+        <input type="hidden" name="pollId" value="${poll.id}"/>
+    </form>
 </div>

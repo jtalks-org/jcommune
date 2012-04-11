@@ -14,9 +14,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollOption;
 import org.jtalks.jcommune.service.PollService;
@@ -29,22 +26,23 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
- * 
  * @author Anuar Nurmakanov
- *
  */
 public class PollControllerTest {
     @Mock
     private PollService pollService;
     private PollController pollController;
-    
+
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
         pollController = new PollController(pollService);
     }
-    
+
     @Test
     public void testAddSingleVote() {
         long pollId = 1;
@@ -54,16 +52,16 @@ public class PollControllerTest {
         int voteCount = 10;
         PollOption option = createPollOption("Poll options", pollOptionId, voteCount);
         poll.addPollOptions(option);
-        
-        Mockito.when(pollService.addSingleVote(pollId, pollOptionId)).thenReturn(poll);
-        
+
+        Mockito.when(pollService.votingInPoll(pollId, Arrays.asList(pollOptionId))).thenReturn(poll);
+
         PollDto pollDto = pollController.addSingleVote(pollId, pollOptionId);
         PollOptionDto optionDto = pollDto.getPollOptions().get(0);
-        
+
         Assert.assertEquals(pollDto.getId(), poll.getId(), "The id must be the same.");
         Assert.assertEquals(optionDto.getId(), option.getId(), "The id must be the same");
     }
-    
+
     @Test
     public void testAddMultipleVote() {
         long pollId = 1;
@@ -76,10 +74,10 @@ public class PollControllerTest {
         PollOption firstOption = createPollOption("First option", firstOptionId, voteCount);
         PollOption secondOption = createPollOption("Second option", secondOptionId, voteCount);
         poll.addPollOptions(firstOption, secondOption);
-        PollDto pollDto = PollDto.getDtoFor(poll);
-        
-        Mockito.when(pollService.addMultipleVote(pollId, optionIds)).thenReturn(poll);
-        
+        PollDto pollDto = new PollDto(poll);
+
+        Mockito.when(pollService.votingInPoll(pollId, optionIds)).thenReturn(poll);
+
         PollDto resultPollDto = pollController.addMultipleVote(pollId, pollDto);
         Assert.assertEquals(resultPollDto.getId(), poll.getId(), "The id must be the same.");
         PollOptionDto firstOptionDto = resultPollDto.getPollOptions().get(0);
@@ -88,12 +86,12 @@ public class PollControllerTest {
         PollOptionDto secondOptionDto = resultPollDto.getPollOptions().get(1);
         Assert.assertEquals(secondOptionDto.getId(), secondOptionId,
                 "The id must be the same");
-        
+
     }
-    
+
     private PollOption createPollOption(String name, Long id, int voteCount) {
         PollOption option = new PollOption("New poll option");
-        option.setVoteCount(voteCount);
+        option.setPollCount(voteCount);
         option.setId(id);
         return option;
     }

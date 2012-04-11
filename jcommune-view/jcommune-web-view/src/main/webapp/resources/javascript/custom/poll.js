@@ -13,136 +13,152 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 /**
- * 
+ * The root URL of forum.
  */
 var baseUrl = $root;
 
-$(document).ready(function() {   
+$(document).ready(function () {
 
-	$("#pollAjaxLoader").hide(); //hide the ajax loader
-	$("#pollMessage").hide(); //hide the ajax loader
-	$("#pollSubmit").click(function() {
-		var pollId = $("input:hidden[name=pollId]").val();
-		var pollOptionId = getPollOptionForSingleVote();
-		if (pollOptionId != null) {
-			$("#pollAjaxLoader").show(); //show the ajax loader
-			addSingleVote(pollOptionId, pollId);
-			return false; 
-		} else {
-			var pollDto = getPollDtoForMultipleVote(pollId);
-			if (pollDto.pollOptions != null && pollDto.pollOptions.length != 0) {
-				$("#pollAjaxLoader").show(); //show the ajax loader
-				addMultipleVote(pollDto, pollId);
-				return false;
-			} else {//nothing is selected
-				//show error message
-				$("#pollMessage").fadeTo("slow", 1, function(){
-					setTimeout(function() {
-						$("#pollMessage").fadeOut("slow");
-					}, 3000);																		 
-				});
-				return false;
-			}
-		}
-	});
+    hideAdditionalComponents();
+    //attach the handler
+    $("#pollSubmit").click(function () {
+        var pollId = $("input:hidden[name=pollId]").val();
+        var pollOptionId = getPollOptionForSingleVote();
+        if (pollOptionId != null) {
+            $("#pollAjaxLoader").show(); //show the ajax loader
+            addSingleVote(pollOptionId, pollId);
+            return false;
+        } else {
+            var pollDto = getPollDtoForMultipleVote(pollId);
+            if (pollDto.pollOptions != null && pollDto.pollOptions.length != 0) {
+                $("#pollAjaxLoader").show(); //show the ajax loader
+                addMultipleVote(pollDto, pollId);
+                return false;
+            } else {//nothing is selected
+                //show error message
+                showErrorMessage();
+                return false;
+            }
+        }
+    });
 });
+
+/**
+ * Hides additional components.
+ */
+function hideAdditionalComponents() {
+    $("#pollAjaxLoader").hide(); //hide the ajax loader
+    $("#pollMessage").hide(); //hide the ajax loader
+}
+
+/**
+ * Shows the error message.
+ * The message indicates that you must select an answer.
+ */
+function showErrorMessage() {
+    $("#pollMessage").fadeTo("slow", 1, function () {
+        setTimeout(function () {
+            $("#pollMessage").fadeOut("slow");
+        }, 3000);
+    });
+}
 
 /**
  * Creates the data transfer object that contains list of selected options.
  * This method used in case when poll is "multiple type".
- * 
+ *
  * @param pollId the poll id
  * @returns the data transfer object that contains list of selected options
  */
 function getPollDtoForMultipleVote(pollId) {
-	var pollOptionDtos = [];
-	$('input:checkbox[name=pollAnswer]:checked').each(function() {
-		var optionDto = new Object();
-		optionDto.id = $(this).val();
-		optionDto.voteCount = 0;//it isn't important in this case
-		pollOptionDtos.push(optionDto);
-	 });
-	var pollDto = new Object();
-	pollDto.id = pollId;
-	pollDto.totalVoteCount = 0;//it isn't important in this case
-	pollDto.pollOptions = pollOptionDtos;
-	return pollDto;
+    var pollOptionDtos = [];
+    $('input:checkbox[name=pollAnswer]:checked').each(function () {
+        var optionDto = new Object();
+        optionDto.id = $(this).val();
+        optionDto.pollCount = 0;//it isn't important in this case
+        pollOptionDtos.push(optionDto);
+    });
+    var pollDto = new Object();
+    pollDto.id = pollId;
+    pollDto.totalPollCount = 0;//it isn't important in this case
+    pollDto.pollOptions = pollOptionDtos;
+    return pollDto;
 }
 
 /**
  * Get id of selected option.
  * This method used in case when poll is "single type".
- * 
+ *
  * @returns the id of selected option
  */
 function getPollOptionForSingleVote() {
-	var pollOptionId = $('input:radio[name=pollAnswer]:checked').val();
-	return pollOptionId;
+    var pollOptionId = $('input:radio[name=pollAnswer]:checked').val();
+    return pollOptionId;
 }
 
 /**
  * Performs all operations after voting.
- * 
+ *
  * @param poll the poll
  */
 function applyPollResult(poll) {
-	//disable and hide all check boxes
-	$('input:checkbox[name=pollAnswer]').each(function() {
-		$(this).attr("disabled", "disabled");
-		$(this).hide();
-	});
-	//disable and hide all radio buttons
-	$('input:radio[name=pollAnswer]').each(function(){
-		$(this).attr("disabled", "disabled");
-		$(this).hide();
-	});
-	//animate charts
-	for ( var i = 0; i < poll.pollOptions.length; i++) {
-		var pollOption = poll.pollOptions[i];
-		var pollOptionId = pollOption.id;
-		var pollPercentage = pollOption.voteCount/poll.totalVoteCount * 100;
-		var roundedPollPercentage = (Math.round(pollPercentage*100)/100).toFixed(2);
-		$(".pollChart" + pollOptionId).animate({width:pollPercentage + "%"});
-		$("#pollAnswer" + pollOptionId).text("(" + pollOption.voteCount + " - " + roundedPollPercentage + "%)");
-	}
-	//disable and hide vote button
-	$("#pollAjaxLoader").hide(); //hide the ajax loader again
-	$("#pollSubmit").attr("disabled", "disabled"); //disable the submit button
-	$("#pollSubmit").hide();
+    //disable and hide all check boxes
+    $('input:checkbox[name=pollAnswer]').each(function () {
+        $(this).attr("disabled", "disabled");
+        $(this).hide();
+    });
+    //disable and hide all radio buttons
+    $('input:radio[name=pollAnswer]').each(function () {
+        $(this).attr("disabled", "disabled");
+        $(this).hide();
+    });
+    //animate charts
+    for (var i = 0; i < poll.pollOptions.length; i++) {
+        var pollOption = poll.pollOptions[i];
+        var pollOptionId = pollOption.id;
+        var pollPercentage = pollOption.pollCount / poll.totalPollCount * 100;
+        var roundedPollPercentage = (Math.round(pollPercentage * 100) / 100).toFixed(2);
+        $(".pollChart" + pollOptionId).animate({width:pollPercentage + "%"});
+        $("#pollAnswer" + pollOptionId).text("(" + pollOption.pollCount + " - " + roundedPollPercentage + "%)");
+    }
+    //disable and hide vote button
+    $("#pollAjaxLoader").hide(); //hide the ajax loader again
+    $("#pollSubmit").attr("disabled", "disabled"); //disable the submit button
+    $("#pollSubmit").hide();
 }
 
 /**
  * Send AJAX request to the server for "single type" vote.
- * 
+ *
  * @param pollOptionId the id of selected option
  * @param pollId the poll id
  */
 function addSingleVote(pollOptionId, pollId) {
-   $.ajax({
-       url:baseUrl + '/poll/' + pollId + '/single',
-       type:"POST",
-       data:{"pollOptionId":pollOptionId},
-       success:function (poll) {
-    	   applyPollResult(poll);
-       }
-   });
+    $.ajax({
+        url:baseUrl + '/poll/' + pollId + '/single',
+        type:"POST",
+        data:{"pollOptionId":pollOptionId},
+        success:function (poll) {
+            applyPollResult(poll);
+        }
+    });
 }
 
 /**
  * Send AJAX request to the server for "multiple type" vote.
- * 
+ *
  * @param pollDto the data transfer object, that contains the list
- * 				  of selected options
+ *                   of selected options
  * @param pollId the poll id
  */
 function addMultipleVote(pollDto, pollId) {
-  $.ajax({
-       url:baseUrl + "/poll/" + pollId + '/multiple',
-       type:"POST",
-       contentType:"application/json",
-       data:JSON.stringify(pollDto),
-       success:function (poll) {
-    	   applyPollResult(poll);
-       }
-   });
+    $.ajax({
+        url:baseUrl + "/poll/" + pollId + '/multiple',
+        type:"POST",
+        contentType:"application/json",
+        data:JSON.stringify(pollDto),
+        success:function (poll) {
+            applyPollResult(poll);
+        }
+    });
 }

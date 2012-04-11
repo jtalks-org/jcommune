@@ -14,13 +14,9 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.web.dto.PollDto;
-import org.jtalks.jcommune.web.dto.PollOptionDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Arrays;
 
 /**
  * Serves web requests for operations with poll({@link Poll}).
@@ -59,10 +57,9 @@ public class PollController {
      */
     @RequestMapping(value = "/poll/{pollId}/single", method = RequestMethod.POST)
     @ResponseBody
-    public PollDto addSingleVote(@PathVariable Long pollId,
-                          @RequestParam Long pollOptionId) {
-        Poll poll = pollService.addSingleVote(pollId, pollOptionId);
-        return PollDto.getDtoFor(poll);
+    public PollDto addSingleVote(@PathVariable Long pollId, @RequestParam Long pollOptionId) {
+        Poll poll = pollService.votingInPoll(pollId, Arrays.asList(pollOptionId));
+        return new PollDto(poll);
     }
 
     /**
@@ -76,25 +73,8 @@ public class PollController {
      */
     @RequestMapping(value = "/poll/{pollId}/multiple", method = RequestMethod.POST)
     @ResponseBody
-    public PollDto addMultipleVote(@PathVariable Long pollId,
-                            @RequestBody PollDto pollDto) {
-        List<Long> pollOptionIds = getPollOptionIds(pollDto.getPollOptions());
-        Poll poll = pollService.addMultipleVote(pollId, pollOptionIds);
-        return PollDto.getDtoFor(poll);
-    }
-
-    /**
-     * Gets identifiers of selected options from data transfer objects.
-     *
-     * @param pollOptionDtos list of data transfer objects, that
-     *                       represents an info about selected options.
-     * @return identifiers of selected options
-     */
-    private List<Long> getPollOptionIds(List<PollOptionDto> pollOptionDtos) {
-        List<Long> pollOptionIds = new ArrayList<Long>();
-        for (PollOptionDto dto : pollOptionDtos) {
-            pollOptionIds.add(dto.getId());
-        }
-        return pollOptionIds;
+    public PollDto addMultipleVote(@PathVariable Long pollId, @RequestBody PollDto pollDto) {
+        Poll poll = pollService.votingInPoll(pollId, pollDto.getPollOptionIds());
+        return new PollDto(poll);
     }
 }

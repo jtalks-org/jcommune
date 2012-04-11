@@ -14,8 +14,8 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
-import org.jtalks.jcommune.model.dao.PollOptionDao;
 import org.jtalks.jcommune.model.entity.PollOption;
 
 /**
@@ -25,5 +25,5 @@ import org.jtalks.jcommune.model.entity.PollOption;
  * @author Anuar Nurmakanov
  */
 public class PollOptionHibernateDao extends AbstractHibernateChildRepository<PollOption>
-        implements PollOptionDao {
+        implements ChildRepository<PollOption> {
 }
