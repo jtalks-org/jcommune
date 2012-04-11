@@ -92,7 +92,7 @@ public class UserContact extends Entity {
     public String getDisplayValue() {
     	String replacement = (value == null) ? "" : value; 
     	String result = type.getDisplayPattern().replaceAll(
-    				UserContactType.KWD_CONTENT, replacement);
+    				UserContactType.CONTACT_MASK_PLACEHOLDER, replacement);
     	return result;
     }
 }

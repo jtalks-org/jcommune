@@ -23,7 +23,7 @@ import org.testng.annotations.Test;
 
 public class UserContactTest {
 
-	private final static String DISPLAY_PATTERN = "aaa" + UserContactType.KWD_CONTENT + "bbb";
+	private final static String DISPLAY_PATTERN = "aaa" + UserContactType.CONTACT_MASK_PLACEHOLDER + "bbb";
 	
 	
 	private UserContact userContact;

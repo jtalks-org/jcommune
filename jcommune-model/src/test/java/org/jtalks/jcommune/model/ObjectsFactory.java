@@ -99,7 +99,7 @@ public final class ObjectsFactory {
         type.setTypeName("Some type");
         type.setIcon("/some/icon");
         type.setMask("12345");
-        type.setDisplayPattern("protocol://" + UserContactType.KWD_CONTENT);
+        type.setDisplayPattern("protocol://" + UserContactType.CONTACT_MASK_PLACEHOLDER);
         type.setValidationPattern("\\d+");
         return type;
     }

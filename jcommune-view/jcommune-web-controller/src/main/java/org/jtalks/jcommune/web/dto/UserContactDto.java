@@ -47,6 +47,9 @@ public class UserContactDto {
         typeId = contact.getType().getId();
     }
     
+    /**
+     * Default constructor. Creates objects with all fields set to null
+     */
     public UserContactDto() { 	
     }
 
@@ -108,7 +111,7 @@ public class UserContactDto {
     /**
      * Set id of user contact type
      *
-     * @param id of user contact type
+     * @param typeId of user contact type
      */
     public void setTypeId(long typeId) {
         this.typeId = typeId;

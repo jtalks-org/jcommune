@@ -33,64 +33,64 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class ValidUserContactValidator implements ConstraintValidator<ValidUserContact, Object>{
 
-	private String propertyToValidate;
-	private String pathToTypeId;
-	private String fieldValue;
-	private String pattern;
-	
-	
-	private UserContactsService contactsService;
-	
-	
-	/**
-	 * @param contactsService the contactsService to set
-	 */
-	@Autowired
-	public void setContactsService(UserContactsService contactsService) {
-		this.contactsService = contactsService;
-	}
+    private String propertyToValidate;
+    private String pathToTypeId;
+    private String fieldValue;
+    private String pattern;
 
-	/**
+
+    private UserContactsService contactsService;
+
+
+    /**
+     * @param contactsService the contactsService to set
+     */
+    @Autowired
+    public void setContactsService(UserContactsService contactsService) {
+        this.contactsService = contactsService;
+    }
+
+    /**
      * Initialize validator fields from annotation instance.
      *
      * @param constraintAnnotation {@link ValidUserContact} annotation from class
      * @see ValidUserContact
      */
-	@Override
-	public void initialize(ValidUserContact constraintAnnotation) {
-		this.propertyToValidate = constraintAnnotation.field();
-		this.pathToTypeId = constraintAnnotation.storedTypeId();
-		
-	}
+    @Override
+    public void initialize(ValidUserContact constraintAnnotation) {
+        this.propertyToValidate = constraintAnnotation.field();
+        this.pathToTypeId = constraintAnnotation.storedTypeId();
+        
+    }
 
-	/**
+    /**
      * Validate object with {@link ValidUserContact} annotation.
      *
      * @param value   object with {@link ValidUserContact} annotation
      * @param context validation context
      * @return {@code true} if validation successful or false if fails
      */
-	@Override
-	public boolean isValid(Object value, ConstraintValidatorContext context) {
-		fetchDataForValidation(value);
-		boolean result;
-		if (pattern == null) {
-			result = true;
-		} else if (fieldValue == null) {
-			result = false;
-		} else {
-			result = fieldValue.matches(pattern);
-		}
-		return result;
-	}
-	
-	/**
+    @Override
+    public boolean isValid(Object value, ConstraintValidatorContext context) {
+        fetchDataForValidation(value);
+        boolean result;
+        if (pattern == null) {
+            result = true;
+        } else if (fieldValue == null) {
+            result = false;
+        } else {
+            result = fieldValue.matches(pattern);
+        }
+        return result;
+    }
+
+    /**
      * Retrieving necessary fields from object.
      * Throws {@code IllegalStateException} if field not found.
      *
      * @param value object from which we take values ​​of fields
      */
-	private void fetchDataForValidation(Object value) {
+    private void fetchDataForValidation(Object value) {
         try {
             fieldValue = BeanUtils.getProperty(value, propertyToValidate);
             long typeId = Long.parseLong(BeanUtils.getProperty(value, pathToTypeId));

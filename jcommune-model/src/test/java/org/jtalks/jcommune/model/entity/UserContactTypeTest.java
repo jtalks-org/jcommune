@@ -27,8 +27,8 @@ import static org.testng.Assert.assertEquals;
 public class UserContactTypeTest {
 	//help test values
 	private static final String CONTACT_TEST_VALUE = "10-10-10";
-	private static final String CONTACT_TEST_DISPLAY_PATTERN= "<a href='mailto:" + UserContactType.KWD_CONTENT + "'>" + UserContactType.KWD_CONTENT+"</a>";
-	private static final String CONTACT_TEST_DISPLAY_VALUE = CONTACT_TEST_DISPLAY_PATTERN.replaceAll(UserContactType.KWD_CONTENT, CONTACT_TEST_VALUE);
+	private static final String CONTACT_TEST_DISPLAY_PATTERN= "<a href='mailto:" + UserContactType.CONTACT_MASK_PLACEHOLDER + "'>" + UserContactType.CONTACT_MASK_PLACEHOLDER+"</a>";
+	private static final String CONTACT_TEST_DISPLAY_VALUE = CONTACT_TEST_DISPLAY_PATTERN.replaceAll(UserContactType.CONTACT_MASK_PLACEHOLDER, CONTACT_TEST_VALUE);
 	
 	private UserContactType contactType;
 

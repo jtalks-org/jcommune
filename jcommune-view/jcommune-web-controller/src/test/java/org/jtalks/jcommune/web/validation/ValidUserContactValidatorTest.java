@@ -181,6 +181,7 @@ public class ValidUserContactValidatorTest {
         Assert.assertEquals(result, false, "Validation without errors");
     }
     
+    @Test
     public void testPatternIsNull() {
     	initializeValidator(validator, SimpleTestObject.class);
     	boolean result = validator.isValid(

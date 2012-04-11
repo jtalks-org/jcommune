@@ -63,7 +63,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;;
 @Documented
 public @interface ValidUserContact {
 
-	/**
+    /**
      * Message for display when validation fails.
      */
     String message() default "{org.jtalks.jcommune.web.validation.annotations.MatchesRegExp.message}";
