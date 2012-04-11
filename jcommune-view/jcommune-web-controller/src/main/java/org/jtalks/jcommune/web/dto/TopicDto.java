@@ -70,7 +70,7 @@ public class TopicDto {
         announcement = topic.isAnnouncement();
         pollTitle = topic.getPoll().getTitle();
         pollOptions = topic.getPoll().getPollOptions().toString();
-        single = String.valueOf(topic.getPoll().isSingle());
+        single = String.valueOf(topic.getPoll().isSingleAnswer());
         endingDate = topic.getPoll().getEndingDate().toString();
     }
 

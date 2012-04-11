@@ -13,14 +13,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 /**
- * 
+ * The root URL of forum.
  */
 var baseUrl = $root;
 
 $(document).ready(function() {   
 
-	$("#pollAjaxLoader").hide(); //hide the ajax loader
-	$("#pollMessage").hide(); //hide the ajax loader
+	hideAdditionalComponents();
+	//attach the handler
 	$("#pollSubmit").click(function() {
 		var pollId = $("input:hidden[name=pollId]").val();
 		var pollOptionId = getPollOptionForSingleVote();
@@ -36,16 +36,32 @@ $(document).ready(function() {
 				return false;
 			} else {//nothing is selected
 				//show error message
-				$("#pollMessage").fadeTo("slow", 1, function(){
-					setTimeout(function() {
-						$("#pollMessage").fadeOut("slow");
-					}, 3000);																		 
-				});
+				showErrorMessage();
 				return false;
 			}
 		}
 	});
 });
+
+/**
+ * Hides additional components.
+ */
+function hideAdditionalComponents() {
+	$("#pollAjaxLoader").hide(); //hide the ajax loader
+	$("#pollMessage").hide(); //hide the ajax loader
+}
+
+/**
+ * Shows the error message.
+ * The message indicates that you must select an answer.
+ */
+function showErrorMessage() {
+	$("#pollMessage").fadeTo("slow", 1, function(){
+		setTimeout(function() {
+			$("#pollMessage").fadeOut("slow");
+		}, 3000);																		 
+	});
+}
 
 /**
  * Creates the data transfer object that contains list of selected options.
@@ -59,12 +75,12 @@ function getPollDtoForMultipleVote(pollId) {
 	$('input:checkbox[name=pollAnswer]:checked').each(function() {
 		var optionDto = new Object();
 		optionDto.id = $(this).val();
-		optionDto.voteCount = 0;//it isn't important in this case
+		optionDto.pollCount = 0;//it isn't important in this case
 		pollOptionDtos.push(optionDto);
 	 });
 	var pollDto = new Object();
 	pollDto.id = pollId;
-	pollDto.totalVoteCount = 0;//it isn't important in this case
+	pollDto.totalPollCount = 0;//it isn't important in this case
 	pollDto.pollOptions = pollOptionDtos;
 	return pollDto;
 }
@@ -100,10 +116,10 @@ function applyPollResult(poll) {
 	for ( var i = 0; i < poll.pollOptions.length; i++) {
 		var pollOption = poll.pollOptions[i];
 		var pollOptionId = pollOption.id;
-		var pollPercentage = pollOption.voteCount/poll.totalVoteCount * 100;
+		var pollPercentage = pollOption.pollCount/poll.totalPollCount * 100;
 		var roundedPollPercentage = (Math.round(pollPercentage*100)/100).toFixed(2);
 		$(".pollChart" + pollOptionId).animate({width:pollPercentage + "%"});
-		$("#pollAnswer" + pollOptionId).text("(" + pollOption.voteCount + " - " + roundedPollPercentage + "%)");
+		$("#pollAnswer" + pollOptionId).text("(" + pollOption.pollCount + " - " + roundedPollPercentage + "%)");
 	}
 	//disable and hide vote button
 	$("#pollAjaxLoader").hide(); //hide the ajax loader again

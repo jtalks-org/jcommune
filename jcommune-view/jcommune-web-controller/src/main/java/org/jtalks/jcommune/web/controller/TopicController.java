@@ -14,6 +14,10 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Poll;
@@ -43,10 +47,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.validation.Valid;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Serves topic management web requests
@@ -200,7 +200,7 @@ public class TopicController {
         Topic topic = topicService.get(topicId);
 
         Poll poll = topic.getPoll();
-        List<PollOption> pollOptions = getPollOptions(poll);
+        List<PollOption> pollOptions = topic.hasPoll()? poll.getPollOptions(): null;
 
         Branch branch = topic.getBranch();
         JCUser currentUser = securityService.getCurrentUser();
@@ -225,20 +225,6 @@ public class TopicController {
                 .addObject("lastReadPost", lastReadPostIndex)
                 .addObject("poll", poll)
                 .addObject("pollOptions", pollOptions);
-    }
-
-    /**
-     * Get list of options from Poll.
-     * If the object is null, will return an empty list.
-     *
-     * @param poll poll instance
-     * @return list of options
-     */
-    private List<PollOption> getPollOptions(Poll poll) {
-        if (poll != null) {
-            return poll.getPollOptions();
-        }
-        return Collections.emptyList();
     }
 
     /**

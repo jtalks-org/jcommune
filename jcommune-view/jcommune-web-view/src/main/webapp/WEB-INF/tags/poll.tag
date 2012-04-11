@@ -18,7 +18,7 @@
 <%@ tag body-content="empty" %>
 <%@ attribute name="pollOptions" required="true" type="java.util.List" %>
 <%@ attribute name="poll" required="true" type="org.jtalks.jcommune.model.entity.Poll" %>
-<%@ attribute name="pollEnabled" required="true" type="java.lang.Boolean" %>
+<%@ attribute name="isVoteButtonEnabled" required="true" type="java.lang.Boolean" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -55,9 +55,9 @@
 			<c:forEach items="${pollOptions}" var="option">
 				<li>
 					<!-- RadioButton/CheckBox. Available when poll is active and user not voted. -->
-					<c:if test="${pollEnabled && poll.active && votingAvailable}">
+					<c:if test="${poll.active && votingAvailable}">
 						<c:choose>
-							<c:when test="${poll.single}">
+							<c:when test="${poll.singleAnswer}">
 								<input name="pollAnswer" id="pollRadioButton${option.id}"
 						 	   		   type="radio" value="${option.id}">
 							</c:when>
@@ -73,10 +73,17 @@
 						<c:when test="${!votingAvailable}">
 							<span id="pollAnswer${option.id}">
 								<fmt:message key="label.poll.option.vote.info">
-									<fmt:param>${option.voteCount}</fmt:param>
+									<fmt:param>${option.pollCount}</fmt:param>
 									<fmt:param>
-										<fmt:formatNumber value="${option.voteCount/poll.totalVoteCount*100}" 
-													      maxFractionDigits="2"/>
+										<c:choose>
+											<c:when test="${poll.totalPollCount > 0}">
+												<fmt:formatNumber maxFractionDigits="2"
+											  		value="${option.pollCount/poll.totalPollCount*100}"/>
+											</c:when>	
+											<c:otherwise>
+												<fmt:param value="0"/>
+											</c:otherwise>										
+										</c:choose>
 									</fmt:param>
 								</fmt:message>
 							</span>
@@ -89,17 +96,17 @@
 				<!-- Available to anonymous users and voted users. -->
 				<c:choose>
 					<c:when test="${!votingAvailable}">
-						<li style="width:${option.voteCount/poll.totalVoteCount*100}%; background-color:#00ff00" 
+						<li style="width:${option.pollCount/poll.totalPollCount*100}%" 
 				    		class="pollChart pollChart${option.id}"/>
 					</c:when>
 					<c:otherwise>
-						<li style="background-color:#00ff00" class="pollChart pollChart${option.id}"/>
+						<li class="pollChart pollChart${option.id}"/>
 					</c:otherwise>
 				</c:choose>
 			</c:forEach>
 		</ul>
-		<!-- Poll button. Available when poll is active and user not voted. -->
-		<c:if test="${pollEnabled && poll.active && votingAvailable}">
+		<!-- Poll button. Available when poll is active and user not voted and is button not disabled. -->
+		<c:if test="${isVoteButtonEnabled && poll.active && votingAvailable}">
 			<input type="submit" name="pollSubmit" id="pollSubmit" 
 				   value="<fmt:message key="label.poll.vote"/>">
 		</c:if>

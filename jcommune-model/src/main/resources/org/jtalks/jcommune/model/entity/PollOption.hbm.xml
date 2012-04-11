@@ -26,7 +26,7 @@
     </id>
     <property column="UUID" name="uuid" unique="true" not-null="true"/>
     <property column="NAME" name="name" not-null="true"/>
-    <property column="VOTE_COUNT" name="voteCount"/>
+    <property column="POLL_COUNT" name="pollCount"/>
     <many-to-one name="poll" column="POLL_ID" not-null="false"
                  foreign-key="FK_POLL" class="org.jtalks.jcommune.model.entity.Poll"/>
   </class>

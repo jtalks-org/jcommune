@@ -24,7 +24,7 @@ import org.jtalks.jcommune.model.entity.PollOption;
  */
 public class PollOptionDto {
     private long id;
-    private int voteCount;
+    private int pollCount;
 
     /**
      * Default constructor.
@@ -34,14 +34,13 @@ public class PollOptionDto {
     }
 
     /**
-     * Creates a dto with the passed data.
-     *
-     * @param id id of poll option
-     * @param voteCount the count of the votes
+     * Creates data transfer object, that represents info about the poll option.
+     * 
+     * @param option the poll option
      */
-    public PollOptionDto(long id, int voteCount) {
-        this.id = id;
-        this.voteCount = voteCount;
+    public PollOptionDto(PollOption option) {
+        this.id = option.getId();
+        this.pollCount = option.getPollCount();
     }
 
     /**
@@ -64,31 +63,21 @@ public class PollOptionDto {
     }
 
     /**
-     * Get the count of votes.
+     * Get the poll count.
      *
-     * @return the count of votes
+     * @return the poll count
      */
-    public int getVoteCount() {
-        return voteCount;
+    public int getPollCount() {
+        return pollCount;
     }
 
     /**
-     * Set the count of votes.
+     * Set the poll count.
      * It is also required for JSON.
      *
-     * @param voteCount the count of votes
+     * @param pollCount the poll count
      */
-    public void setVoteCount(int voteCount) {
-        this.voteCount = voteCount;
-    }
-    
-    /**
-     * Creates data transfer object, that represents info about the poll option.
-     * 
-     * @param option the poll option
-     * @return data transfer object, that represents info about the poll option
-     */
-    public static PollOptionDto getDtoFor(PollOption option) {
-        return new PollOptionDto(option.getId(), option.getVoteCount());
+    public void setPollCount(int pollCount) {
+        this.pollCount = pollCount;
     }
 }

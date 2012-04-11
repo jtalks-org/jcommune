@@ -34,15 +34,15 @@ public class PollTest {
     public void testCalculateTotaVotesCount() {
         int firstOptionVotesCount = 10;
         PollOption firstOption = new PollOption("First option");
-        firstOption.setVoteCount(firstOptionVotesCount);
+        firstOption.setPollCount(firstOptionVotesCount);
         int secondOptionVotesCount = 50;
         PollOption secondOption = new PollOption("Second option");
-        secondOption.setVoteCount(secondOptionVotesCount);
+        secondOption.setPollCount(secondOptionVotesCount);
 
         poll.addPollOptions(firstOption);
         poll.addPollOptions(secondOption);
 
-        int totalVotesCount = poll.getTotalVoteCount();
+        int totalVotesCount = poll.getTotalPollCount();
 
         Assert.assertEquals(totalVotesCount, firstOptionVotesCount + secondOptionVotesCount,
                 "The total count of votes calculats wrong.");

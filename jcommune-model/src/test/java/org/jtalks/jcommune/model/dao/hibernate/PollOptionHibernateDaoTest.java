@@ -16,8 +16,8 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.model.ObjectsFactory;
-import org.jtalks.jcommune.model.dao.PollOptionDao;
 import org.jtalks.jcommune.model.entity.PollOption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -38,7 +38,7 @@ public class PollOptionHibernateDaoTest extends AbstractTransactionalTestNGSprin
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
-    private PollOptionDao pollOptionDao;
+    private ChildRepository<PollOption> pollOptionDao;
     private Session session;
 
     @BeforeMethod

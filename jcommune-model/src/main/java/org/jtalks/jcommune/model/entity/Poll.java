@@ -31,7 +31,7 @@ import java.util.List;
  */
 public class Poll extends Entity {
     private String title;
-    private boolean single;
+    private boolean singleAnswer;
     private DateTime endingDate;
     private List<PollOption> pollOptions = new ArrayList<PollOption>();
     private Topic topic;
@@ -47,13 +47,13 @@ public class Poll extends Entity {
 
     /**
      * Creates the Poll instance with required fields.
-     * Poll is "single type" by default.
+     * Poll is "single answer type" by default.
      *
      * @param title the poll title
      */
     public Poll(String title) {
         this.title = title;
-        this.single = true;
+        this.singleAnswer = true;
     }
 
     /**
@@ -75,23 +75,24 @@ public class Poll extends Entity {
     }
 
     /**
-     * Poll may be either "single type" or "multiple type".
+     * Poll may be either "single answer type" or "multiple answer type".
      *
-     * @return <tt>true</tt> if the poll is "single type",
-     *         <tt>false</tt> if the poll is "multiple type"
+     * @return <tt>true</tt> if the poll is "single answer type",
+     *         <tt>false</tt> if the poll is "multiple answer type"
      */
-    public boolean isSingle() {
-        return single;
+    public boolean isSingleAnswer() {
+        return singleAnswer;
     }
 
     /**
-     * Set the poll type. Poll may be either "single type" or "multiple type".
+     * Set the poll type. Poll may be either "single answer type" 
+     * or "multiple answer type".
      *
-     * @param single <tt>true</tt> if the poll is "single type",
-     *               <tt>false</tt> if the poll is "multiple type"
+     * @param singleAnswer <tt>true</tt> if the poll is "single answer type",
+     *               <tt>false</tt> if the poll is "multiple answer type"
      */
-    public void setSingle(boolean single) {
-        this.single = single;
+    public void setSingleAnswer(boolean singleAnswer) {
+        this.singleAnswer = singleAnswer;
     }
 
     /**
@@ -171,16 +172,16 @@ public class Poll extends Entity {
     }
 
     /**
-     * Counts the total number of votes in the poll.
+     * Counts the total poll count in the poll.
      *
-     * @return the total number of votes in the poll
+     * @return the total poll count in the poll
      */
-    public int getTotalVoteCount() {
-        int totalVoteCount = 0;
+    public int getTotalPollCount() {
+        int totalPollCount = 0;
         for (PollOption option : pollOptions) {
-            totalVoteCount += option.getVoteCount();
+            totalPollCount += option.getPollCount();
         }
-        return totalVoteCount;
+        return totalPollCount;
     }
 
     /**

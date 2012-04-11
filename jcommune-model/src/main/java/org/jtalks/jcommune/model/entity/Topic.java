@@ -458,6 +458,16 @@ public class Topic extends SubscriptionAwareEntity {
     public boolean isHasUpdates() {
         return (lastReadPostIndex == null) || (lastReadPostIndex + 1 < posts.size());
     }
+    
+    /**
+     * Determines a existence the poll in the topic.
+     * 
+     * @return <tt>true</tt>  if the poll exists
+     *         <tt>false</tt>  if the poll doesn't exist
+     */
+    public boolean hasPoll() {
+        return getPoll() != null;
+    }
 
     /**
      * {@inheritDoc}

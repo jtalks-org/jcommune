@@ -1087,7 +1087,7 @@ td.button_cell {
 /* Poll */
 
 #pollWrap {
-    width: 100%;
+    width: 80%;
 }
 
 #pollWrap h3 {
@@ -1115,6 +1115,7 @@ td.button_cell {
     margin-left: 25px;
     height: 5px;
     width: 1px;
+    background-color:#00ff00;
     /*Adding rounded corners to the graphs - Optional - START*/
     -moz-border-radius-topright: 4px;
     -moz-border-radius-bottomright: 4px;

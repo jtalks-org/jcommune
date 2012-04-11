@@ -55,7 +55,7 @@ public class PollControllerTest {
         PollOption option = createPollOption("Poll options", pollOptionId, voteCount);
         poll.addPollOptions(option);
         
-        Mockito.when(pollService.addSingleVote(pollId, pollOptionId)).thenReturn(poll);
+        Mockito.when(pollService.votingInPoll(pollId, Arrays.asList(pollOptionId))).thenReturn(poll);
         
         PollDto pollDto = pollController.addSingleVote(pollId, pollOptionId);
         PollOptionDto optionDto = pollDto.getPollOptions().get(0);
@@ -76,9 +76,9 @@ public class PollControllerTest {
         PollOption firstOption = createPollOption("First option", firstOptionId, voteCount);
         PollOption secondOption = createPollOption("Second option", secondOptionId, voteCount);
         poll.addPollOptions(firstOption, secondOption);
-        PollDto pollDto = PollDto.getDtoFor(poll);
+        PollDto pollDto = new PollDto(poll);
         
-        Mockito.when(pollService.addMultipleVote(pollId, optionIds)).thenReturn(poll);
+        Mockito.when(pollService.votingInPoll(pollId, optionIds)).thenReturn(poll);
         
         PollDto resultPollDto = pollController.addMultipleVote(pollId, pollDto);
         Assert.assertEquals(resultPollDto.getId(), poll.getId(), "The id must be the same.");
@@ -93,7 +93,7 @@ public class PollControllerTest {
     
     private PollOption createPollOption(String name, Long id, int voteCount) {
         PollOption option = new PollOption("New poll option");
-        option.setVoteCount(voteCount);
+        option.setPollCount(voteCount);
         option.setId(id);
         return option;
     }
