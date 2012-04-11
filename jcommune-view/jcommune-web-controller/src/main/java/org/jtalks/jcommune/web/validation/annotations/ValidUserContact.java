@@ -22,8 +22,7 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 import org.jtalks.jcommune.model.entity.UserContactType;
-import org.jtalks.jcommune.web.validation.validators.MatchesUserContactsDtoValidator;
-import org.jtalks.jcommune.web.validation.validators.MatchesValidator;
+import org.jtalks.jcommune.web.validation.validators.ValidUserContactValidator;
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;;
@@ -33,7 +32,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;;
  * expression for its type).
  * This constraint for use with JSR-303 validator.
  * <p/>
- * You must annotate your class with {@link MatchesUserContacts} annotation
+ * You must annotate your class with {@link ValidUserContact} annotation
  * You must fill in the parameters <code>field</code> and <code>storedTypeId</code>
  * field names to test. Fields must have getters. <code>field</code> fields 
  * must be of type {@link java.lang.String}, <code>storedTypeId</code> must
@@ -42,7 +41,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;;
  * Example:
  * Validate that <code>field1</code> is valid contact
  * {@code
- * &#064;MatchesDynamicPattern(field = "field1", fieldWithPattern = "typeId")
+ * &#064;ValidUserContact(field = "field1", fieldWithPattern = "typeId")
  * class Test {
  * private String field1;
  * private Integer typeId;
@@ -56,13 +55,13 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;;
  * 
  *
  * @author Vyacheslav Mishcheryakov
- * @see MatchesValidator
+ * @see ValidUserContactValidator
  */
 @Target({TYPE, ANNOTATION_TYPE})
 @Retention(RUNTIME)
-@Constraint(validatedBy=MatchesUserContactsDtoValidator.class)
+@Constraint(validatedBy=ValidUserContactValidator.class)
 @Documented
-public @interface MatchesUserContacts {
+public @interface ValidUserContact {
 
 	/**
      * Message for display when validation fails.

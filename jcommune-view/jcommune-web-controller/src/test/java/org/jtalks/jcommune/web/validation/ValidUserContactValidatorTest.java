@@ -20,8 +20,8 @@ import static org.mockito.Mockito.when;
 import org.jtalks.jcommune.model.entity.UserContactType;
 import org.jtalks.jcommune.service.UserContactsService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.web.validation.annotations.MatchesUserContacts;
-import org.jtalks.jcommune.web.validation.validators.MatchesUserContactsDtoValidator;
+import org.jtalks.jcommune.web.validation.annotations.ValidUserContact;
+import org.jtalks.jcommune.web.validation.validators.ValidUserContactValidator;
 import org.mockito.Mock;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -30,12 +30,12 @@ import org.testng.annotations.Test;
 import javax.validation.ConstraintValidatorContext;
 
 /**
- * Test for {@link MatchesUserContacts} annotation constraint and 
- * {@link MatchesUserContactsDtoValidator} implementation.
+ * Test for {@link ValidUserContact} annotation constraint and 
+ * {@link ValidUserContactValidator} implementation.
  *
  * @author Vyachelsav Mishcheryakov
  */
-public class MatchesUserContactsDtoValidatorTest {
+public class ValidUserContactValidatorTest {
 	
 	/** Valid value for tests */
 	private final static String VALID_VALUE = "value";
@@ -60,12 +60,12 @@ public class MatchesUserContactsDtoValidatorTest {
 	@Mock
 	private ConstraintValidatorContext validatorContext;
 	
-	private MatchesUserContactsDtoValidator validator;
+	private ValidUserContactValidator validator;
 	
     /**
      * Class for testing constraint.
      */
-    @MatchesUserContacts(field = "value", storedTypeId = "typeId", message = "Values don't match")
+    @ValidUserContact(field = "value", storedTypeId = "typeId", message = "Values don't match")
     public class SimpleTestObject {
         String value;
         long typeId;
@@ -88,7 +88,7 @@ public class MatchesUserContactsDtoValidatorTest {
     /**
      * Class for testing constraint with non existing properties.
      */
-    @MatchesUserContacts(field = "aaa", storedTypeId = "bbb")
+    @ValidUserContact(field = "aaa", storedTypeId = "bbb")
     public class TestObjectBadProperties {
     	String value;
         long typeId;
@@ -114,8 +114,8 @@ public class MatchesUserContactsDtoValidatorTest {
      * @param clazz target class for validation
      * @return
      */
-    private void initializeValidator(MatchesUserContactsDtoValidator validator, Class<?> clazz) {
-    	MatchesUserContacts annotation = (MatchesUserContacts)
+    private void initializeValidator(ValidUserContactValidator validator, Class<?> clazz) {
+    	ValidUserContact annotation = (ValidUserContact)
 			clazz.getDeclaredAnnotations()[0];
     	validator.initialize(annotation);
     }
@@ -123,7 +123,7 @@ public class MatchesUserContactsDtoValidatorTest {
     @BeforeMethod
     public void setUp() throws NotFoundException {
         initMocks(this);
-        validator = new MatchesUserContactsDtoValidator();
+        validator = new ValidUserContactValidator();
         
         UserContactType validContactType = new UserContactType();
         validContactType.setId(TYPE_ID_VALID);
@@ -134,7 +134,7 @@ public class MatchesUserContactsDtoValidatorTest {
 		when(contactsService.get(TYPE_ID_VALID)).thenReturn(validContactType);
 		when(contactsService.get(TYPE_ID_NULL_PATTERN)).thenReturn(nullPatternContactType);
 		when(contactsService.get(TYPE_ID_NON_EXISTENT)).thenThrow(new NotFoundException());
-		validator = new MatchesUserContactsDtoValidator();
+		validator = new ValidUserContactValidator();
 		validator.setContactsService(contactsService);
     }
 

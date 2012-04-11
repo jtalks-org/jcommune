@@ -19,7 +19,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <head>
     <title><spring:message code="label.user"/> - ${user.username}</title>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/json2.js"
@@ -110,7 +109,7 @@
                     <div class="contact">
                         <label><img src="${pageContext.request.contextPath}${contact.type.icon}" alt=""><c:out
                                 value="${contact.type.typeName}"/></label>
-                        <span>${fn:replace(contact.type.displayPattern, '%s', contact.value)}</span>
+                        <span>${contact.displayValue}</span>
                         <c:if test="${user.username == auth}">
                             <input type="hidden" value="${contact.id}"/>
                             <a class="button" id="${contact.id}" href="#">

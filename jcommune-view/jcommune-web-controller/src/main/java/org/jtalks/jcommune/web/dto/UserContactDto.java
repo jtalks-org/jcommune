@@ -16,7 +16,7 @@ package org.jtalks.jcommune.web.dto;
 
 
 import org.jtalks.jcommune.model.entity.UserContact;
-import org.jtalks.jcommune.web.validation.annotations.MatchesUserContacts;
+import org.jtalks.jcommune.web.validation.annotations.ValidUserContact;
 
 /**
  * Dto for transferring user contacts to client side.
@@ -24,10 +24,11 @@ import org.jtalks.jcommune.web.validation.annotations.MatchesUserContacts;
  * @author Michael Gamov
  */
 
-@MatchesUserContacts(field="value", storedTypeId="typeId")
+@ValidUserContact(field="value", storedTypeId="typeId")
 public class UserContactDto {
 
     private Long id;
+    
     private Long ownerId;
     
     private String value;

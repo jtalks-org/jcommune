@@ -20,17 +20,18 @@ import javax.validation.ConstraintValidatorContext;
 import org.apache.commons.beanutils.BeanUtils;
 import org.jtalks.jcommune.model.entity.UserContactType;
 import org.jtalks.jcommune.service.UserContactsService;
-import org.jtalks.jcommune.web.validation.annotations.MatchesUserContacts;
+import org.jtalks.jcommune.web.validation.annotations.ValidUserContact;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Validator for {@link MatchesUserContacts}. Checks that one string property 
- * matches regular expression stored in other string property.
+ * Validator for {@link ValidUserContact}. Checks that string property 
+ * matches validation pattern for contact type whose ID is stored in <code>
+ * storedTypeId</code> property. Actually checks that value is valid contact type.
  *
  * @author Vyacheslav Mishcheryakov
- * @see MatchesUserContacts
+ * @see ValidUserContact
  */
-public class MatchesUserContactsDtoValidator implements ConstraintValidator<MatchesUserContacts, Object>{
+public class ValidUserContactValidator implements ConstraintValidator<ValidUserContact, Object>{
 
 	private String propertyToValidate;
 	private String pathToTypeId;
@@ -52,20 +53,20 @@ public class MatchesUserContactsDtoValidator implements ConstraintValidator<Matc
 	/**
      * Initialize validator fields from annotation instance.
      *
-     * @param constraintAnnotation {@link MatchesUserContacts} annotation from class
-     * @see MatchesUserContacts
+     * @param constraintAnnotation {@link ValidUserContact} annotation from class
+     * @see ValidUserContact
      */
 	@Override
-	public void initialize(MatchesUserContacts constraintAnnotation) {
+	public void initialize(ValidUserContact constraintAnnotation) {
 		this.propertyToValidate = constraintAnnotation.field();
 		this.pathToTypeId = constraintAnnotation.storedTypeId();
 		
 	}
 
 	/**
-     * Validate object with {@link MatchesUserContacts} annotation.
+     * Validate object with {@link ValidUserContact} annotation.
      *
-     * @param value   object with {@link MatchesUserContacts} annotation
+     * @param value   object with {@link ValidUserContact} annotation
      * @param context validation context
      * @return {@code true} if validation successful or false if fails
      */
