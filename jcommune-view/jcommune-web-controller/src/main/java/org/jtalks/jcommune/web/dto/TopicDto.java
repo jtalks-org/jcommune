@@ -68,10 +68,12 @@ public class TopicDto {
         topicWeight = topic.getTopicWeight();
         sticked = topic.isSticked();
         announcement = topic.isAnnouncement();
-        pollTitle = topic.getPoll().getTitle();
-        pollOptions = topic.getPoll().getPollOptions().toString();
-        single = String.valueOf(topic.getPoll().isSingle());
-        endingDate = topic.getPoll().getEndingDate().toString();
+        if (topic.getPoll() != null) {
+            pollTitle = topic.getPoll().getTitle();
+            pollOptions = topic.getPoll().getPollOptions().toString();
+            single = String.valueOf(topic.getPoll().isSingle());
+            endingDate = topic.getPoll().getEndingDate().toString();
+        }
     }
 
     /**
