@@ -22,14 +22,18 @@
   <class name="Poll" table="POLLS">
     <cache usage="read-write"/>
     <id column="POLL_ID" name="id" unsaved-value="0">
-      <generator class="native"/>
+      <generator class="foreign">
+        <param name="property">topic</param>
+      </generator>
     </id>
     <property column="UUID" name="uuid" unique="true" not-null="true"/>
     <property column="TITLE" name="title" not-null="true"/>
     <property column="ENDING_DATE" name="endingDate" not-null="false"
               type="org.joda.time.contrib.hibernate.PersistentDateTime"/>
     <property column="SINGLE" name="single" not-null="true"/>
-    <one-to-one name="topic" class="org.jtalks.jcommune.model.entity.Topic" cascade="save-update"/>
+    <one-to-one name="topic"
+                class="org.jtalks.jcommune.model.entity.Topic"
+                constrained="true"/>
 
     <list name="pollOptions" cascade="all-delete-orphan">
       <cache usage="nonstrict-read-write"/>
