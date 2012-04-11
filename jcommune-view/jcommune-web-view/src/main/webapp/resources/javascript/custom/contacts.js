@@ -23,6 +23,20 @@
  */
 var baseUrl = $root;
 
+/**
+ * Namespace for this file.
+ */
+var AddContact = {};
+
+/** Currently selected contact type */
+AddContact.selectedContactType = null;
+
+/** Aall contact types */
+AddContact.contactTypes = null;
+
+/** if entered contact is valid */
+AddContact.isValueValid = true;
+
 function deleteContactHandler() {
     var element = $(this).parent();
     var id = $(this).parent().find("input:hidden").attr("value");
@@ -61,26 +75,83 @@ function getContactHtml(data) {
     var template = '<div class="contact">' +
         '     <label><img src="${icon}" alt="">${typeName}</label>' +
         '     <span>${value}</span>' +
-        '     <input type="hidden" value="${id}"/>' +
+        '     <input type="hidden" value="${contactId}"/>' +
         '     <a class="button" id="${buttonId}" href="#">X</a>' +
         ' </div>';
 
+	var contactTypeInfo = AddContact.getContactType(data.typeId, AddContact.contactTypes);
+    var actualValue = contactTypeInfo.displayPattern.replace(new RegExp('%s', 'gi'), data.value);
+    
     var html = template;
-    html = html.replace('${icon}', baseUrl + data.type.icon);
-    html = html.replace('${typeName}', data.type.typeName);
-    html = html.replace('${id}', data.id);
+    html = html.replace('${icon}', baseUrl + contactTypeInfo.icon);
+    html = html.replace('${typeName}', contactTypeInfo.typeName);
+    html = html.replace('${contactId}', data.id);
     html = html.replace('${buttonId}', data.id);
-    html = html.replace('${value}', data.value);
+    html = html.replace('${value}', actualValue);
 
     return html;
 }
 
-$(document).ready(function () {
+/** 
+ * Find contact type with given id in given array and return it
+ */
+AddContact.getContactType = function(id, contactTypes) {
+	var result = null;
+	
+	if (id !== undefined && contactTypes !== undefined) {
+		$.each(contactTypes, function (i, obj) {
+            if (obj.id == id) {
+            	result = obj;
+            	return;
+            }
+        });
+	}
+	
+	return result;
+}
 
+/**
+ * Reset all variables. Used when new popup is displayed
+ */
+AddContact.resetVariables = function() {
+	AddContact.isValueValid = true;
+	AddContact.contactTypes = null;
+	AddContact.selectedContactType = null;
+}
+
+
+$(document).ready(function () {
+	
+	
+	$('body').on('keyup', '#contact', function() {
+		var value = $(this).val();
+		if (!value.match(new RegExp(AddContact.selectedContactType.validationPattern))) {
+			$('#contact-error-status').text($labelValidationUsercontactNotMatch);
+			AddContact.isValueValid = false;
+		} else {
+			$('#contact-error-status').text('');
+			AddContact.isValueValid = true;
+		}
+	});
+	
+	// when user selects other contact type 
+	$('body').on('change', '#contact_type', function() {
+		var contactId = $(this).val();
+		AddContact.selectedContactType = AddContact.getContactType(contactId, AddContact.contactTypes); 
+		$('#contact').val(AddContact.selectedContactType.mask);
+		$('#contact').keyup();
+	});
+	
     //"Add contact" button handler
     $("#add_contact").click(function () {
+    	
+    	AddContact.resetVariables();
+    	
         $.getJSON(baseUrl + "/contacts/types", function (json) {
 
+        	AddContact.contactTypes = json;
+			AddContact.selectedContactType = json[0];
+        	
             //parse returned list of contact types and generate HTML for pop-up window
             var str = '<b>Add contact:</b><br/><select name="contact_type" id="contact_type">';
 
@@ -88,32 +159,45 @@ $(document).ready(function () {
                 str += '<option value="' + obj.id + '">' + obj.typeName + '</option>';
             });
             str += '</select>';
-            str += '<input type="text" name="contact" id="contact"/>'
+            str += '<input type="text" name="contact" id="contact" value="' + AddContact.selectedContactType.mask + '" />';
+            str += '<label for="contact" id="contact-error-status" class="error"/>';
 
             $.prompt(str, {
                 buttons:{ Ok:true, Cancel:false},
-                callback:function (value, message, form) {
-                    if (value != undefined && value) {
+                submit:function (value, message, form) {
+                	var result = false;
+					
+					if (!value) {
+						// cancel is pressed
+						result = true
+					} else if (AddContact.isValueValid && value != undefined && value) {
 
                         var contact = {
                             value:form.contact,
-                            type:{
-                                id:form.contact_type
-                            }
+                            typeId: form.contact_type
                         };
 
                         $.ajax({
                             url:baseUrl + '/contacts/add',
                             type:"POST",
                             contentType:"application/json",
+							async: false,
                             data:JSON.stringify(contact),
                             success:function (data) {
-                                //populate contact template and append to page
-                                $("#contacts").append(getContactHtml(data));
-                                bindDeleteHandler();
-                            }
+                            		//populate contact template and append to page
+                            		$("#contacts").append(getContactHtml(data));
+                            		bindDeleteHandler();
+                            		
+                            		// allow close popup
+                            		result = true;
+                            },
+							error : function(data) {
+								$('#contact-error-status').text($labelValidationUsercontactNotMatch);
+                        		AddContact.isValueValid = false;
+							}
                         });
                     }
+                    return result;
                 }
             });
         });

@@ -83,4 +83,16 @@ public class UserContact extends Entity {
     public void setValue(String value) {
         this.value = value;
     }
+    
+    /**
+     * Replaced stubs in display pattern for this contact type by actual
+     * contact value
+     * @return actual ready-to-display contact
+     */
+    public String getDisplayValue() {
+    	String replacement = (value == null) ? "" : value; 
+    	String result = type.getDisplayPattern().replaceAll(
+    				UserContactType.CONTACT_MASK_PLACEHOLDER, replacement);
+    	return result;
+    }
 }

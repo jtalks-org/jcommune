@@ -22,8 +22,14 @@ import org.jtalks.common.model.entity.Entity;
  */
 public class UserContactType extends Entity {
 
+    /** Placeholder for content in display pattern */
+    public final static String CONTACT_MASK_PLACEHOLDER = "%s";
+    
     private String typeName;
     private String icon;
+    private String mask;
+    private String displayPattern;
+    private String validationPattern;
 
     /**
      * Only for hibernate usage.
@@ -63,5 +69,57 @@ public class UserContactType extends Entity {
         this.typeName = typeName;
     }
 
+    /**
+     * @return the mask for editing
+     */
+    public String getMask() {
+        return mask;
+    }
 
+    /**
+     * @param mask the mask for editing
+     */
+    public void setMask(String mask) {
+        this.mask = mask;
+    }
+
+    /**
+     * @return the display pattern contact
+     */
+    public String getDisplayPattern() {
+        return displayPattern;
+    }
+
+    /**
+     * @param displayPattern the display pattern for contact
+     */
+    public void setDisplayPattern(String displayPattern) {
+        this.displayPattern = displayPattern;
+    }
+
+    /**
+     * @return the validation regexp of contact type
+     */
+    public String getValidationPattern() {
+        return validationPattern;
+    }
+
+    /**
+     * @param validationPattern validation regexp of contact type
+     */
+    public void setValidationPattern(String validationPattern) {
+        this.validationPattern = validationPattern;
+    }
+
+    /**
+     * Get value ready to display based on <code>displayPattern</code> and 
+     * given contact value
+     * @param value contact value
+     * @return
+     */
+    public String getDisplayValue(String value) {
+        return displayPattern.replaceAll(UserContactType.CONTACT_MASK_PLACEHOLDER, value);
+    }
+    
+    
 }

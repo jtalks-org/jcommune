@@ -16,20 +16,25 @@ package org.jtalks.jcommune.web.dto;
 
 
 import org.jtalks.jcommune.model.entity.UserContact;
-import org.jtalks.jcommune.model.entity.UserContactType;
+import org.jtalks.jcommune.web.validation.annotations.ValidUserContact;
 
 /**
  * Dto for transferring user contacts to client side.
  *
  * @author Michael Gamov
  */
+
+@ValidUserContact(field="value", storedTypeId="typeId")
 public class UserContactDto {
 
     private Long id;
+    
     private Long ownerId;
+    
     private String value;
-    private UserContactType type;
-
+    
+    private long typeId;
+    
     /**
      * Create dto from {@link UserContact)
      *
@@ -39,7 +44,13 @@ public class UserContactDto {
         id = contact.getId();
         ownerId = contact.getOwner().getId();
         value = contact.getValue();
-        type = contact.getType();
+        typeId = contact.getType().getId();
+    }
+    
+    /**
+     * Default constructor. Creates objects with all fields set to null
+     */
+    public UserContactDto() { 	
     }
 
     /**
@@ -91,19 +102,19 @@ public class UserContactDto {
     }
 
     /**
-     * @return user contact type
+     * @return id of user contact type
      */
-    public UserContactType getType() {
-        return type;
+    public long getTypeId() {
+        return typeId;
     }
 
     /**
-     * Set user contact type
+     * Set id of user contact type
      *
-     * @param type user contact type
+     * @param typeId of user contact type
      */
-    public void setType(UserContactType type) {
-        this.type = type;
+    public void setTypeId(long typeId) {
+        this.typeId = typeId;
     }
 
 }

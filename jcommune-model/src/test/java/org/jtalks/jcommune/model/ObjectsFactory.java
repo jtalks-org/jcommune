@@ -98,6 +98,9 @@ public final class ObjectsFactory {
         UserContactType type = new UserContactType();
         type.setTypeName("Some type");
         type.setIcon("/some/icon");
+        type.setMask("12345");
+        type.setDisplayPattern("protocol://" + UserContactType.CONTACT_MASK_PLACEHOLDER);
+        type.setValidationPattern("\\d+");
         return type;
     }
 
