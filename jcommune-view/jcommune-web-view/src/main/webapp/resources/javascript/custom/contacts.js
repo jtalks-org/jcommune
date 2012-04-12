@@ -153,14 +153,27 @@ $(document).ready(function () {
 			AddContact.selectedContactType = json[0];
         	
             //parse returned list of contact types and generate HTML for pop-up window
-            var str = '<b>Add contact:</b><br/><select name="contact_type" id="contact_type">';
+            var str = '<ul><div>Add contact:</div>'
+				+ '<span class="empty_cell"></span>'
+				+ '<br/>';
+			
+			// select
+			str += '<label for="contact_type">' + $labelContactType+ '</label>'
+				+ '<div style="margin-left:9px;">'
+				+ '<select name="contact_type" id="contact_type" style="width:312px">';
 
             $.each(json, function (i, obj) {
                 str += '<option value="' + obj.id + '">' + obj.typeName + '</option>';
             });
-            str += '</select>';
-            str += '<input type="text" name="contact" id="contact" value="' + AddContact.selectedContactType.mask + '" />';
-            str += '<label for="contact" id="contact-error-status" class="error"/>';
+            str += '</select><br/></div>';
+			str += '<br/>';
+			
+			// text input
+			str += '<label for="contact_type">' + $labelContactValue + '</label>';
+            str += '<div><input type="text" name="contact" id="contact" value="' + AddContact.selectedContactType.mask + '" />';
+			str += '<span class="reg_info">' + $labelContactValueInfo + '</span>';
+            str += '<label for="contact" id="contact-error-status" class="error"/></div>';
+			str += '</ul>';
 
             $.prompt(str, {
                 buttons:{ Ok:true, Cancel:false},

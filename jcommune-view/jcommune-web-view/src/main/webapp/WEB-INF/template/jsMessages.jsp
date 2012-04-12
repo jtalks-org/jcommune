@@ -20,7 +20,11 @@
  This page contains localized messages to be used in JS files on a client side
 --%>
 $labelDeleteContactConfirmation = '<spring:message code="label.deleteContactConfirmation"/>';
+
 $labelValidationUsercontactNotMatch = '<spring:message code="validation.usercontact.notmatch"/>';
+$labelContactType = '<spring:message code="label.contact.type"/>';
+$labelContactValue = '<spring:message code="label.contact.value"/>';
+$labelContactValueInfo = '<spring:message code="label.contact.value.info"/>';
 
 $labelRegistrationSuccess = '<spring:message code="label.registration.success"/>';
 $labelUrlHeader = '<spring:message code="label.url.header"/>';
