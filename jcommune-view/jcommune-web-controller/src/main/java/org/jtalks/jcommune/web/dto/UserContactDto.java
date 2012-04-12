@@ -50,7 +50,7 @@ public class UserContactDto {
     /**
      * Default constructor. Creates objects with all fields set to null
      */
-    public UserContactDto() { 	
+    public UserContactDto() {
     }
 
     /**

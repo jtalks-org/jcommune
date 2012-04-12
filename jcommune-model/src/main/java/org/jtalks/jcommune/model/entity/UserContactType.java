@@ -23,7 +23,7 @@ import org.jtalks.common.model.entity.Entity;
 public class UserContactType extends Entity {
 
     /** Placeholder for content in display pattern */
-    public final static String CONTACT_MASK_PLACEHOLDER = "%s";
+    public static final String CONTACT_MASK_PLACEHOLDER = "%s";
     
     private String typeName;
     private String icon;
@@ -115,7 +115,7 @@ public class UserContactType extends Entity {
      * Get value ready to display based on <code>displayPattern</code> and 
      * given contact value
      * @param value contact value
-     * @return
+     * @return value of contact ready to display in HTML page
      */
     public String getDisplayValue(String value) {
         return displayPattern.replaceAll(UserContactType.CONTACT_MASK_PLACEHOLDER, value);
