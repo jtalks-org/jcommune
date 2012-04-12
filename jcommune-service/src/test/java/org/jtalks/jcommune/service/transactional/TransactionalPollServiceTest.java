@@ -35,6 +35,8 @@ import java.util.List;
  * @author Anuar Nurmakanov
  */
 public class TransactionalPollServiceTest {
+    private static final int VOTES_COUNT = 4;
+    private static final Long POLL_ID = 1L;
     private PollService pollService;
     @Mock
     private ChildRepository<PollOption> pollOptionDao;
@@ -58,95 +60,75 @@ public class TransactionalPollServiceTest {
 
     @Test
     public void testAddSingleVote() {
-        long pollId = 1;
-        long pollOptionId = 1;
-        int initialVoteCount = 2;
-        Poll poll = new Poll("Poll");
-        poll.setId(pollId);
-        PollOption option = new PollOption("Option");
-        option.setId(pollOptionId);
-        option.setPollCount(initialVoteCount);
-        poll.addPollOptions(option);
+        List<Long> pollOptionIds = Arrays.asList(1L);
+        Poll poll = createPollWithOptions(POLL_ID, pollOptionIds, VOTES_COUNT, null);
 
-        Mockito.when(pollOptionDao.get(pollOptionId)).thenReturn(option);
-        Mockito.when(pollDao.get(pollId)).thenReturn(poll);
+        Mockito.when(pollDao.get(POLL_ID)).thenReturn(poll);
 
-        Poll resultPoll = pollService.votingInPoll(pollId, Arrays.asList(pollOptionId));
+        Poll resultPoll = pollService.vote(POLL_ID, pollOptionIds);
         PollOption resultPollOption = resultPoll.getPollOptions().get(0);
 
-        Assert.assertEquals(resultPollOption.getPollCount(), initialVoteCount + 1,
+        Assert.assertEquals(resultPollOption.getVotesCount(), VOTES_COUNT + 1,
                 "Count of votes should be increased.");
     }
 
     @Test
     public void testAddSingleVoteInInactivePoll() {
-        long pollId = 1;
-        long pollOptionId = 1;
-        int initialVoteCount = 2;
-        Poll poll = new Poll("Poll");
-        poll.setEndingDate(new DateTime(1999, 1, 1, 1, 1, 1, 1));
-        poll.setId(pollId);
-        PollOption option = new PollOption("Option");
-        option.setId(pollOptionId);
-        option.setPollCount(initialVoteCount);
-        poll.addPollOptions(option);
+        List<Long> pollOptionIds = Arrays.asList(1L);
+        DateTime endingDate = new DateTime(1999, 1, 1, 1, 1, 1, 1);
+        Poll poll = createPollWithOptions(POLL_ID, pollOptionIds, VOTES_COUNT, endingDate);
 
-        Mockito.when(pollOptionDao.get(pollOptionId)).thenReturn(option);
-        Mockito.when(pollDao.get(pollId)).thenReturn(poll);
+        Mockito.when(pollDao.get(POLL_ID)).thenReturn(poll);
 
-        Poll resultPoll = pollService.votingInPoll(pollId, Arrays.asList(pollOptionId));
+        Poll resultPoll = pollService.vote(POLL_ID, pollOptionIds);
         PollOption resultPollOption = resultPoll.getPollOptions().get(0);
 
-        Assert.assertEquals(resultPollOption.getPollCount(), initialVoteCount,
+        Assert.assertEquals(resultPollOption.getVotesCount(), VOTES_COUNT,
                 "Count of votes should be increased.");
     }
 
     @Test
     public void testAddMultipleVotes() {
-        long pollId = 1;
         List<Long> pollOptionIds = Arrays.asList(1L, 5L, 9L);
-        int initialVoteCount = 4;
-        Poll poll = new Poll("Poll");
-        poll.setId(pollId);
-        for (Long id : pollOptionIds) {
-            PollOption option = new PollOption("Option:" + String.valueOf(id));
-            option.setId(id);
-            option.setPollCount(initialVoteCount);
-            poll.addPollOptions(option);
-        }
+        Poll poll = createPollWithOptions(POLL_ID, pollOptionIds, VOTES_COUNT, null);
 
         Mockito.when(pollDao.get(Mockito.anyLong())).thenReturn(poll);
 
-        Poll resultPoll = pollService.votingInPoll(pollId, pollOptionIds);
+        Poll resultPoll = pollService.vote(POLL_ID, pollOptionIds);
 
         for (PollOption option : resultPoll.getPollOptions()) {
-            Assert.assertEquals(option.getPollCount(), initialVoteCount + 1,
+            Assert.assertEquals(option.getVotesCount(), VOTES_COUNT + 1,
                     "Count of votes should be increased.");
         }
     }
 
     @Test
     public void testAddMultipleVotesInInactivePoll() {
-        long pollId = 1;
         List<Long> pollOptionIds = Arrays.asList(1L, 5L, 9L);
-        int initialVoteCount = 4;
+        DateTime endingDate = new DateTime(1999, 1, 1, 1, 1, 1, 1);
+        Poll poll = createPollWithOptions(POLL_ID, pollOptionIds, VOTES_COUNT, endingDate);
+
+        Mockito.when(pollDao.get(Mockito.anyLong())).thenReturn(poll);
+
+        Poll resultPoll = pollService.vote(POLL_ID, pollOptionIds);
+
+        for (PollOption option : resultPoll.getPollOptions()) {
+            Assert.assertEquals(option.getVotesCount(), VOTES_COUNT,
+                    "Count of votes should be increased.");
+        }
+    }
+    
+    private Poll createPollWithOptions(Long pollId, List<Long> pollOptionIds,
+            int initialVoteCount, DateTime endingDate) {
         Poll poll = new Poll("Poll");
-        poll.setEndingDate(new DateTime(1999, 1, 1, 1, 1, 1, 1));
+        poll.setEndingDate(endingDate);
         poll.setId(pollId);
         for (Long id : pollOptionIds) {
             PollOption option = new PollOption("Option:" + String.valueOf(id));
             option.setId(id);
-            option.setPollCount(initialVoteCount);
+            option.setVotesCount(initialVoteCount);
             poll.addPollOptions(option);
         }
-
-        Mockito.when(pollDao.get(Mockito.anyLong())).thenReturn(poll);
-
-        Poll resultPoll = pollService.votingInPoll(pollId, pollOptionIds);
-
-        for (PollOption option : resultPoll.getPollOptions()) {
-            Assert.assertEquals(option.getPollCount(), initialVoteCount,
-                    "Count of votes should be increased.");
-        }
+        return poll;
     }
 }

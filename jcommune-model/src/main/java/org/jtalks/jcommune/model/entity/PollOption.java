@@ -25,7 +25,7 @@ import org.jtalks.common.model.entity.Entity;
  */
 public class PollOption extends Entity {
     private String name;
-    private int pollCount;
+    private int votesCount;
     private Poll poll;
 
     public static final int MIN_OPTION_LENGTH = 3;
@@ -66,21 +66,21 @@ public class PollOption extends Entity {
     }
 
     /**
-     * Get the poll count for this option.
+     * Get the count of votes for this option.
      *
-     * @return the poll count for this option
+     * @return the count of votes for this option
      */
-    public int getPollCount() {
-        return pollCount;
+    public int getVotesCount() {
+        return votesCount;
     }
 
     /**
-     * Set the poll count for this option.
+     * Set the count of votes for this option.
      *
-     * @param pollCount the poll count for this option
+     * @param votesCount the count of votes for this option
      */
-    public void setPollCount(int pollCount) {
-        this.pollCount = pollCount;
+    public void setVotesCount(int votesCount) {
+        this.votesCount = votesCount;
     }
 
     /**
@@ -102,9 +102,9 @@ public class PollOption extends Entity {
     }
 
     /**
-     * Increases a poll count in the option of poll.
+     * Increases the count of votes in the option of poll.
      */
-    public void increasePollCount() {
-        this.pollCount++;
+    public void increaseVotesCount() {
+        this.votesCount++;
     }
 }

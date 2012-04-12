@@ -34,7 +34,7 @@ public interface PollService extends EntityService<Poll> {
      * @param pollOptionIds id of a option of a poll
      * @return changed poll
      */
-    Poll votingInPoll(Long pollId, List<Long> pollOptionIds);
+    Poll vote(Long pollId, List<Long> pollOptionIds);
 
     void createPoll(String pollTitle, String pollOptions, String single, String endingDate, Topic topic);
 }

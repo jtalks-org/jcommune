@@ -12,10 +12,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-/**
- * The root URL of forum.
- */
-var baseUrl = $root;
 
 $(document).ready(function () {
 
@@ -75,12 +71,12 @@ function getPollDtoForMultipleVote(pollId) {
     $('input:checkbox[name=pollAnswer]:checked').each(function () {
         var optionDto = new Object();
         optionDto.id = $(this).val();
-        optionDto.pollCount = 0;//it isn't important in this case
+        optionDto.votesCount = 0;//it isn't important in this case
         pollOptionDtos.push(optionDto);
     });
     var pollDto = new Object();
     pollDto.id = pollId;
-    pollDto.totalPollCount = 0;//it isn't important in this case
+    pollDto.totalVotesCount = 0;//it isn't important in this case
     pollDto.pollOptions = pollOptionDtos;
     return pollDto;
 }
@@ -116,10 +112,12 @@ function applyPollResult(poll) {
     for (var i = 0; i < poll.pollOptions.length; i++) {
         var pollOption = poll.pollOptions[i];
         var pollOptionId = pollOption.id;
-        var pollPercentage = pollOption.pollCount / poll.totalPollCount * 100;
+        var pollPercentage = pollOption.votesCount / poll.totalVotesCount * 100;
         var roundedPollPercentage = (Math.round(pollPercentage * 100) / 100).toFixed(2);
-        $(".pollChart" + pollOptionId).animate({width:pollPercentage + "%"});
-        $("#pollAnswer" + pollOptionId).text("(" + pollOption.pollCount + " - " + roundedPollPercentage + "%)");
+        var parentWidth = $("#pollWrap").width();
+        var width = parentWidth * pollOption.votesCount / poll.totalVotesCount;
+        $(".pollChart" + pollOptionId).animate({width:width});
+        $("#pollAnswer" + pollOptionId).text("(" + pollOption.votesCount + " - " + roundedPollPercentage + "%)");
     }
     //disable and hide vote button
     $("#pollAjaxLoader").hide(); //hide the ajax loader again
@@ -135,7 +133,7 @@ function applyPollResult(poll) {
  */
 function addSingleVote(pollOptionId, pollId) {
     $.ajax({
-        url:baseUrl + '/poll/' + pollId + '/single',
+        url:$root + '/poll/' + pollId + '/single',
         type:"POST",
         data:{"pollOptionId":pollOptionId},
         success:function (poll) {
@@ -153,7 +151,7 @@ function addSingleVote(pollOptionId, pollId) {
  */
 function addMultipleVote(pollDto, pollId) {
     $.ajax({
-        url:baseUrl + "/poll/" + pollId + '/multiple',
+        url:$root + "/poll/" + pollId + '/multiple',
         type:"POST",
         contentType:"application/json",
         data:JSON.stringify(pollDto),

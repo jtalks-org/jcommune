@@ -28,7 +28,7 @@ import java.util.List;
  */
 public class PollDto {
     private long id;
-    private int totalPollCount;
+    private int totalVotesCount;
     private List<PollOptionDto> pollOptions = new ArrayList<PollOptionDto>();
 
     /**
@@ -41,13 +41,13 @@ public class PollDto {
     /**
      * Creates a dto with the passed data.
      *
-     * @param id             id of poll
-     * @param totalVoteCount total vote count
-     * @param pollOptions    the list of poll options
+     * @param id id of poll
+     * @param totalVotesCount the total count of votes
+     * @param pollOptions the list of poll options
      */
-    public PollDto(long id, int totalVoteCount, List<PollOptionDto> pollOptions) {
+    public PollDto(long id, int totalVotesCount, List<PollOptionDto> pollOptions) {
         this.id = id;
-        this.totalPollCount = totalVoteCount;
+        this.totalVotesCount = totalVotesCount;
         this.pollOptions = pollOptions;
     }
 
@@ -58,7 +58,7 @@ public class PollDto {
      */
     public PollDto(Poll poll) {
         this.id = poll.getId();
-        this.totalPollCount = poll.getTotalPollCount();
+        this.totalVotesCount = poll.getTotalVotesCount();
         for (PollOption option : poll.getPollOptions()) {
             this.pollOptions.add(new PollOptionDto(option));
         }
@@ -84,22 +84,22 @@ public class PollDto {
     }
 
     /**
-     * Get the total poll count.
+     * Get the total count of votes.
      *
-     * @return the total poll count
+     * @return the total count of votes
      */
-    public int getTotalPollCount() {
-        return totalPollCount;
+    public int getTotalVotesCount() {
+        return totalVotesCount;
     }
 
     /**
-     * Set the total poll count.
+     * Set the total count of votes.
      * It is also required for JSON.
      *
-     * @param totalPollCount the total poll count
+     * @param totalVotesCount the total count of votes
      */
-    public void setTotalPollCount(int totalPollCount) {
-        this.totalPollCount = totalPollCount;
+    public void setTotalVotesCount(int totalVotesCount) {
+        this.totalVotesCount = totalVotesCount;
     }
 
     /**

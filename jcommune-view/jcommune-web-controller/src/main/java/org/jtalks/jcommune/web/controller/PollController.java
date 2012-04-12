@@ -58,7 +58,7 @@ public class PollController {
     @RequestMapping(value = "/poll/{pollId}/single", method = RequestMethod.POST)
     @ResponseBody
     public PollDto addSingleVote(@PathVariable Long pollId, @RequestParam Long pollOptionId) {
-        Poll poll = pollService.votingInPoll(pollId, Arrays.asList(pollOptionId));
+        Poll poll = pollService.vote(pollId, Arrays.asList(pollOptionId));
         return new PollDto(poll);
     }
 
@@ -74,7 +74,7 @@ public class PollController {
     @RequestMapping(value = "/poll/{pollId}/multiple", method = RequestMethod.POST)
     @ResponseBody
     public PollDto addMultipleVote(@PathVariable Long pollId, @RequestBody PollDto pollDto) {
-        Poll poll = pollService.votingInPoll(pollId, pollDto.getPollOptionIds());
+        Poll poll = pollService.vote(pollId, pollDto.getPollOptionIds());
         return new PollDto(poll);
     }
 }

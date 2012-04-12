@@ -73,12 +73,12 @@
                         <c:when test="${!votingAvailable}">
 							<span id="pollAnswer${option.id}">
 								<fmt:message key="label.poll.option.vote.info">
-                                    <fmt:param>${option.pollCount}</fmt:param>
+                                    <fmt:param>${option.votesCount}</fmt:param>
                                     <fmt:param>
                                         <c:choose>
-                                            <c:when test="${poll.totalPollCount > 0}">
+                                            <c:when test="${poll.totalVotesCount > 0}">
                                                 <fmt:formatNumber maxFractionDigits="2"
-                                                                  value="${option.pollCount/poll.totalPollCount*100}"/>
+                                                                  value="${option.votesCount/poll.totalVotesCount*100}"/>
                                             </c:when>
                                             <c:otherwise>
                                                 <fmt:param value="0"/>
@@ -96,7 +96,7 @@
                 <!-- Available to anonymous users and voted users. -->
                 <c:choose>
                     <c:when test="${!votingAvailable}">
-                        <li style="width:${option.pollCount/poll.totalPollCount*100}%"
+                        <li style="width:${option.votesCount/poll.totalVotesCount*100}%"
                             class="pollChart pollChart${option.id}"/>
                     </c:when>
                     <c:otherwise>

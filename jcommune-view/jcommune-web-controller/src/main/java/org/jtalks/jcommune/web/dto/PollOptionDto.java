@@ -24,7 +24,7 @@ import org.jtalks.jcommune.model.entity.PollOption;
  */
 public class PollOptionDto {
     private long id;
-    private int pollCount;
+    private int votesCount;
 
     /**
      * Default constructor.
@@ -40,7 +40,7 @@ public class PollOptionDto {
      */
     public PollOptionDto(PollOption option) {
         this.id = option.getId();
-        this.pollCount = option.getPollCount();
+        this.votesCount = option.getVotesCount();
     }
 
     /**
@@ -63,21 +63,21 @@ public class PollOptionDto {
     }
 
     /**
-     * Get the poll count.
+     * Get the count of votes.
      *
-     * @return the poll count
+     * @return the count of votes
      */
-    public int getPollCount() {
-        return pollCount;
+    public int getVotesCount() {
+        return votesCount;
     }
 
     /**
-     * Set the poll count.
+     * Set the count of votes.
      * It is also required for JSON.
      *
-     * @param pollCount the poll count
+     * @param votesCount the count of votes
      */
-    public void setPollCount(int pollCount) {
-        this.pollCount = pollCount;
+    public void setVotesCount(int votesCount) {
+        this.votesCount = votesCount;
     }
 }

@@ -67,13 +67,13 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
      */
     @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
     @Override
-    public Poll votingInPoll(Long pollId, List<Long> selectedOptionIds) {
+    public Poll vote(Long pollId, List<Long> selectedOptionIds) {
         Poll poll = getDao().get(pollId);
         prohibitRevote(poll);
         if (poll.isActive()) {
             for (PollOption option : poll.getPollOptions()) {
                 if (selectedOptionIds.contains(option.getId())) {
-                    option.increasePollCount();
+                    option.increaseVotesCount();
                     pollOptionDao.update(option);
                 }
             }

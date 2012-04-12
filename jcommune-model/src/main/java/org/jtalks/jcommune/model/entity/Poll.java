@@ -172,16 +172,16 @@ public class Poll extends Entity {
     }
 
     /**
-     * Counts the total poll count in the poll.
+     * Counts the total count of votes in the poll.
      *
-     * @return the total poll count in the poll
+     * @return the total count of votes in the poll
      */
-    public int getTotalPollCount() {
-        int totalPollCount = 0;
+    public int getTotalVotesCount() {
+        int totalVotesCount = 0;
         for (PollOption option : pollOptions) {
-            totalPollCount += option.getPollCount();
+            totalVotesCount += option.getVotesCount();
         }
-        return totalPollCount;
+        return totalVotesCount;
     }
 
     /**
