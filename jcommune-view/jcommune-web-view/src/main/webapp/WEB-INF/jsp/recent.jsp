@@ -55,11 +55,13 @@
                     <c:forEach var="topic" items="${list}">
                         <li class="forum_row">
                             <div class="forum_info">
+                                <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
                                 <c:if test="${topic.hasUpdates}">
                                     <a style="color: red;"
                                        href="${pageContext.request.contextPath}/posts/${topic.firstUnreadPostId}">
                                         [NEW]</a>
                                 </c:if>
+                                </sec:authorize>
                                 <h4>
                                     <a class="forum_link break_word"
                                        href="${pageContext.request.contextPath}/topics/${topic.id}">
