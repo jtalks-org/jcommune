@@ -69,7 +69,7 @@
                                     </a>
                                 </h4>
                                 <br/>
-                                <span class="truncated"><jtalks:bb2html bbCode="${topic.lastPost.postContent}"/></span>
+                                <span class="truncated break_word"><jtalks:bb2html bbCode="${topic.lastPost.postContent}"/></span>
                             </div>
                             <div class="forum_branches">
                                 <h4>
