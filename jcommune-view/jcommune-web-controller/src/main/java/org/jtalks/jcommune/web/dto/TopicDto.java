@@ -85,12 +85,7 @@ public class TopicDto {
         topicWeight = topic.getTopicWeight();
         sticked = topic.isSticked();
         announcement = topic.isAnnouncement();
-        if (topic.getPoll() != null) {
-            pollTitle = topic.getPoll().getTitle();
-            pollOptions = topic.getPoll().getPollOptions().toString();
-            single = String.valueOf(topic.getPoll().isSingleAnswer());
-            endingDate = topic.getPoll().getEndingDate().toString();
-        }
+        poll = topic.getPoll();
     }
 
     /**
@@ -226,9 +221,8 @@ public class TopicDto {
         this.endingDate = endingDate;
     }
 
-    public Poll createPoll() {
+    public Poll preparePollFromTopicDto() {
         Poll poll = new Poll(pollTitle);
-        //TODO is need to handle broken string here?
         poll.setSingleAnswer(Boolean.parseBoolean(single));
         if (endingDate != null) {
             poll.setEndingDate(PollUtil.parseDate(endingDate, Poll.DATE_FORMAT));
