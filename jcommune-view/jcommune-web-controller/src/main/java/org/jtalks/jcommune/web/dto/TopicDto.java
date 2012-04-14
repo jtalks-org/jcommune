@@ -23,6 +23,7 @@ import org.jtalks.jcommune.web.util.PollUtil;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
 import org.jtalks.jcommune.web.validation.annotations.DateInStringFormat;
 import org.jtalks.jcommune.web.validation.annotations.FutureDateInStringFormat;
+import org.jtalks.jcommune.web.validation.annotations.PollTitlePollOptionsNotBlankIfOneOfThemNotBlank;
 
 import javax.validation.constraints.Size;
 import java.io.BufferedReader;
@@ -37,6 +38,7 @@ import java.util.List;
  * @author Vitaliy Kravchenko
  * @author Max Malakhov
  */
+@PollTitlePollOptionsNotBlankIfOneOfThemNotBlank(pollTitle = "pollTitle", pollOptions = "pollOptions")
 public class TopicDto {
     @NotBlank
     @Size(min = Topic.MIN_NAME_SIZE, max = Topic.MAX_NAME_SIZE)

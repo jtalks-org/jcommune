@@ -36,7 +36,10 @@
                 <spring:message code="label.poll.title"/>
             </div>
             <div class="forum_answer_right">
-                <input type="text" name="${titleNameValue}"/>
+                <form:input path="${titleNameValue}" id="${titleNameValue}" type="text" name="${titleNameValue}"
+                            size="45"
+                            maxlength="255" tabindex="1"
+                            class="post"/>
                 <br>
                 <form:errors path="${titleNameValue}" cssClass="error"/>
             </div>
@@ -46,7 +49,10 @@
                 <spring:message code="label.poll.options.title"/>
             </div>
             <div class="forum_answer_right">
-                <textarea name="${pollOptionsNameValue}" rows="5"></textarea>
+                <form:textarea path="${pollOptionsNameValue}" rows="8"
+                               class="post"/>
+                <br>
+                <form:errors path="${pollOptionsNameValue}" cssClass="error"/>
             </div>
         </li>
         <li class="forum_row">

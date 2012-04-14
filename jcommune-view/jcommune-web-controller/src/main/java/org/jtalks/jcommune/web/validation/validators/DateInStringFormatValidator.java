@@ -41,7 +41,7 @@ public class DateInStringFormatValidator implements ConstraintValidator<DateInSt
 
         DateTime date = PollUtil.parseDate(value, format);
 
-        if (!date.equals(new DateTime(0))) {
+        if (!new DateTime(0).equals(date)) {
             result = true;
         }
 
