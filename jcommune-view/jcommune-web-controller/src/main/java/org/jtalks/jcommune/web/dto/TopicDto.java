@@ -22,6 +22,7 @@ import org.jtalks.jcommune.web.util.PollUtil;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
 import org.jtalks.jcommune.web.validation.annotations.DateInStringFormat;
 import org.jtalks.jcommune.web.validation.annotations.FutureDateInStringFormat;
+import org.jtalks.jcommune.web.validation.annotations.PollOptionLength;
 import org.jtalks.jcommune.web.validation.annotations.PollTitlePollOptionsNotBlankIfOneOfThemNotBlank;
 import org.jtalks.jcommune.web.validation.annotations.VotingOptionsNumber;
 
@@ -55,6 +56,7 @@ public class TopicDto {
     @Size(min = Poll.MIN_TITLE_LENGTH, max = Poll.MAX_TITLE_LENGTH)
     private String pollTitle;
 
+    @PollOptionLength
     private String pollOptions;
 
     private String single;
