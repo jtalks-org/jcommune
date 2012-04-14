@@ -12,28 +12,31 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service;
 
-import org.jtalks.jcommune.model.entity.Poll;
+package org.jtalks.jcommune.web.util;
 
-import java.util.List;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 
 /**
- * Service for working with the poll.
- * Performs all needed operations for voting.
- *
- * @author Anuar Nurmakanov
- * @see org.jtalks.jcommune.model.entity.Poll
+ * @author Alexandre Teterin
+ *         Date: 14.04.12
  */
-public interface PollService extends EntityService<Poll> {
-    /**
-     * Adds one vote for all selected options of poll.
-     *
-     * @param pollId        id of a poll
-     * @param pollOptionIds id of a option of a poll
-     * @return changed poll
-     */
-    Poll vote(Long pollId, List<Long> pollOptionIds);
 
-    void createPoll(Poll poll);
+public class PollUtil {
+
+    public static DateTime parseDate(String date, String format) {
+        DateTime result;
+        try {
+            if (date == null) {
+                result = null;
+            } else {
+                result = DateTimeFormat.forPattern(format).parseDateTime(date);
+            }
+        } catch (IllegalArgumentException e) {
+            result = new DateTime(0);
+        }
+
+        return result;
+    }
 }

@@ -37,6 +37,8 @@
             </div>
             <div class="forum_answer_right">
                 <input type="text" name="${titleNameValue}"/>
+                <br>
+                <form:errors path="${titleNameValue}" cssClass="error"/>
             </div>
         </li>
         <li class=" forum_row">
@@ -71,6 +73,8 @@
             </div>
             <div class="forum_answer_right">
                 <input id="datepicker" type="text" name="${endingDateNameValue}">
+                <br>
+                <form:errors path="${endingDateNameValue}" cssClass="error"/>
             </div>
         </li>
     </ul>

@@ -16,11 +16,20 @@ package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.Poll;
+import org.jtalks.jcommune.model.entity.PollOption;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.web.util.PollUtil;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
+import org.jtalks.jcommune.web.validation.annotations.DateInStringFormat;
+import org.jtalks.jcommune.web.validation.annotations.FutureDateInStringFormat;
 
 import javax.validation.constraints.Size;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * DTO for {@link Topic} objects. Used for validation and binding to form.
@@ -48,7 +57,12 @@ public class TopicDto {
     private String pollTitle;
     private String pollOptions;
     private String single;
+
+    @DateInStringFormat
+    @FutureDateInStringFormat
     private String endingDate;
+
+    private Poll poll;
 
     /**
      * Plain object for topic creation
@@ -207,5 +221,35 @@ public class TopicDto {
 
     public void setEndingDate(String endingDate) {
         this.endingDate = endingDate;
+    }
+
+    public Poll createPoll() {
+        Poll poll = new Poll(pollTitle);
+        //TODO is need to handle broken string here?
+        poll.setSingleAnswer(Boolean.parseBoolean(single));
+        if (endingDate != null) {
+            poll.setEndingDate(PollUtil.parseDate(endingDate, Poll.DATE_FORMAT));
+        }
+        try {
+            poll.addPollOptions(parseOptions(pollOptions));
+        } catch (IOException e) {
+            poll = null;
+        }
+
+        return poll;
+    }
+
+    private List<PollOption> parseOptions(String pollOptions) throws IOException {
+        BufferedReader reader = new BufferedReader(new StringReader(pollOptions));
+        String line;
+        List<PollOption> result = new ArrayList<PollOption>();
+        while ((line = reader.readLine()) != null) {
+
+            if (!line.equals("")) {
+                PollOption option = new PollOption(line);
+                result.add(option);
+            }
+        }
+        return result;
     }
 }
