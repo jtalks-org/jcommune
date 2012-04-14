@@ -117,49 +117,49 @@
                 <a id="format_url" class="button" accesskey="w" name="format_url" onclick="doLink();">
                     <span class="underline">&nbsp;URL&nbsp;</span>
                 </a>
+                <br>
+                <label for="select_size">
+                    <spring:message code="label.answer.font_size"/>
+                </label>
+                <select id="select_size" name="select_size" onchange="doSize();">
+                    <option value="0" selected="selected">
+                        <spring:message code="label.answer.none"/></option>
+                    <option value="10"><spring:message code="label.answer.font_size.small"/></option>
+                    <option value="15"><spring:message code="label.answer.font_size.large"/></option>
+                    <option value="20"><spring:message code="label.answer.font_size.king_size"/></option>
+                </select>
+
+                <label for="select_indent"><spring:message code="label.answer.indent"/></label>
+                <select id="select_indent" name="select_indent" onchange="doIndent();">
+                    <option value="0" selected="selected">
+                        <spring:message code="label.answer.none"/></option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                    <option value="25">25</option>
+                </select>
+
+                <label for="select_code"> <spring:message code="label.answer.font_code"/>
+                </label>
+                <select id="select_code" name="select_code" onchange="doCode();">
+                    <option value="0" selected="selected">
+                        <spring:message code="label.answer.none"/></option>
+                    <option value="cpp">C/C++</option>
+                    <option value="csharp">C#</option>
+                    <option value="java">Java</option>
+                    <option value="php">PHP</option>
+                    <option value="python">Python</option>
+                    <option value="pascal">Pascal</option>
+                    <option value="bash">Bash</option>
+                    <option value="js">JavaScript</option>
+                    <option value="html">HTML</option>
+                    <option value="css">CSS</option>
+                    <option value="sql">SQL</option>
+                    <option value="xml">XML</option>
+                </select>
+                <a href="" onclick="closeTags();return false;"><spring:message code="label.answer.close_tags"/></a>
+
             </div>
-				<span class="genmed">
-					<label for="select_size">
-                        <spring:message code="label.answer.font_size"/>
-                    </label>
-                    <select id="select_size" name="select_size" onchange="doSize();">
-                        <option value="0" selected="selected">
-                            <spring:message code="label.answer.none"/></option>
-                        <option value="10"><spring:message code="label.answer.font_size.small"/></option>
-                        <option value="15"><spring:message code="label.answer.font_size.large"/></option>
-                        <option value="20"><spring:message code="label.answer.font_size.king_size"/></option>
-                    </select>
-
-					<label for="select_indent"><spring:message code="label.answer.indent"/></label>
-                    <select id="select_indent" name="select_indent" onchange="doIndent();">
-                        <option value="0" selected="selected">
-                            <spring:message code="label.answer.none"/></option>
-                        <option value="15">15</option>
-                        <option value="20">20</option>
-                        <option value="25">25</option>
-                    </select>
-
-                    <label for="select_code"> <spring:message code="label.answer.font_code"/>
-                    </label>
-                    <select id="select_code" name="select_code" onchange="doCode();">
-                        <option value="0" selected="selected">
-                            <spring:message code="label.answer.none"/></option>
-                        <option value="cpp">C/C++</option>
-                        <option value="csharp">C#</option>
-                        <option value="java">Java</option>
-                        <option value="php">PHP</option>
-                        <option value="python">Python</option>
-                        <option value="pascal">Pascal</option>
-                        <option value="bash">Bash</option>
-                        <option value="js">JavaScript</option>
-                        <option value="html">HTML</option>
-                        <option value="css">CSS</option>
-                        <option value="sql">SQL</option>
-                        <option value="xml">XML</option>
-                    </select>
-				</span>
-            <a href="" onclick="closeTags();return false;"><spring:message code="label.answer.close_tags"/></a>
-            <br/><br/>
+            <br/>
             <%-- <div id="helpline"><spring:message code="label.answer.tooltip"/></div>--%>
             <div id="editorBBCODEdiv" class="editorBBCODE">
                 <pre id="htmlContent"></pre>

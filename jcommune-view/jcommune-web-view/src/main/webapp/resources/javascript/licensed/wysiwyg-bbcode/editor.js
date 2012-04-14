@@ -82,10 +82,12 @@ function SwitchEditor() {
         textboxelement.style.display = "";
         htmlcontentelement.style.display = "none";
         editorVisible = false;
+        $(".formatting_buttons").show();
     }
     else {
         content = textboxelement.value;
         bbcode2html();
+        $(".formatting_buttons").hide();
     }
 }
 
