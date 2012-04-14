@@ -29,7 +29,7 @@ public class PollTitlePollOptionsNotBlankIfOneOfThemNotBlankValidator implements
     private String pollTitleName;
     private String pollOptionsName;
     private String issue;
-    private String failMessage;
+    private String message;
     private String pollTitleValue;
     private String pollOptionsValue;
 
@@ -38,7 +38,7 @@ public class PollTitlePollOptionsNotBlankIfOneOfThemNotBlankValidator implements
     public void initialize(PollTitlePollOptionsNotBlankIfOneOfThemNotBlank constraintAnnotation) {
         this.pollTitleName = constraintAnnotation.pollTitle();
         this.pollOptionsName = constraintAnnotation.pollOptions();
-        this.failMessage = constraintAnnotation.message();
+        this.message = constraintAnnotation.message();
     }
 
     @Override
@@ -82,7 +82,7 @@ public class PollTitlePollOptionsNotBlankIfOneOfThemNotBlankValidator implements
      */
     private void constraintViolated(ConstraintValidatorContext context) {
         context.disableDefaultConstraintViolation();
-        context.buildConstraintViolationWithTemplate(failMessage)
+        context.buildConstraintViolationWithTemplate(message)
                 .addNode(issue)
                 .addConstraintViolation();
     }

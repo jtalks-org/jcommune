@@ -16,7 +16,6 @@ package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.Poll;
-import org.jtalks.jcommune.model.entity.PollOption;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.web.util.PollUtil;
@@ -24,13 +23,10 @@ import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
 import org.jtalks.jcommune.web.validation.annotations.DateInStringFormat;
 import org.jtalks.jcommune.web.validation.annotations.FutureDateInStringFormat;
 import org.jtalks.jcommune.web.validation.annotations.PollTitlePollOptionsNotBlankIfOneOfThemNotBlank;
+import org.jtalks.jcommune.web.validation.annotations.VotingOptionsNumber;
 
 import javax.validation.constraints.Size;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * DTO for {@link Topic} objects. Used for validation and binding to form.
@@ -39,6 +35,7 @@ import java.util.List;
  * @author Max Malakhov
  */
 @PollTitlePollOptionsNotBlankIfOneOfThemNotBlank(pollTitle = "pollTitle", pollOptions = "pollOptions")
+@VotingOptionsNumber(pollTitle = "pollTitle", pollOptions = "pollOptions")
 public class TopicDto {
     @NotBlank
     @Size(min = Topic.MIN_NAME_SIZE, max = Topic.MAX_NAME_SIZE)
@@ -57,7 +54,9 @@ public class TopicDto {
 
     @Size(min = Poll.MIN_TITLE_LENGTH, max = Poll.MAX_TITLE_LENGTH)
     private String pollTitle;
+
     private String pollOptions;
+
     private String single;
 
     @DateInStringFormat
@@ -233,7 +232,7 @@ public class TopicDto {
             poll.setEndingDate(PollUtil.parseDate(endingDate, Poll.DATE_FORMAT));
         }
         try {
-            poll.addPollOptions(parseOptions(pollOptions));
+            poll.addPollOptions(PollUtil.parseOptions(pollOptions));
         } catch (IOException e) {
             poll = null;
         }
@@ -241,17 +240,5 @@ public class TopicDto {
         return poll;
     }
 
-    private List<PollOption> parseOptions(String pollOptions) throws IOException {
-        BufferedReader reader = new BufferedReader(new StringReader(pollOptions));
-        String line;
-        List<PollOption> result = new ArrayList<PollOption>();
-        while ((line = reader.readLine()) != null) {
 
-            if (!line.equals("")) {
-                PollOption option = new PollOption(line);
-                result.add(option);
-            }
-        }
-        return result;
-    }
 }

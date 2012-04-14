@@ -17,6 +17,13 @@ package org.jtalks.jcommune.web.util;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
+import org.jtalks.jcommune.model.entity.PollOption;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Alexandre Teterin
@@ -37,6 +44,20 @@ public class PollUtil {
             result = new DateTime(0);
         }
 
+        return result;
+    }
+
+    public static List<PollOption> parseOptions(String pollOptions) throws IOException {
+        BufferedReader reader = new BufferedReader(new StringReader(pollOptions));
+        String line;
+        List<PollOption> result = new ArrayList<PollOption>();
+        while ((line = reader.readLine()) != null) {
+
+            if (!line.equals("")) {
+                PollOption option = new PollOption(line);
+                result.add(option);
+            }
+        }
         return result;
     }
 }
