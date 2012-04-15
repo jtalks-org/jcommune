@@ -77,7 +77,7 @@
                                     <fmt:param>
                                         <c:choose>
                                             <c:when test="${poll.totalVotesCount > 0}">
-                                                <fmt:formatNumber maxFractionDigits="2"
+                                                <fmt:formatNumber minFractionDigits="2" maxFractionDigits="2"
                                                                   value="${option.votesCount/poll.totalVotesCount*100}"/>
                                             </c:when>
                                             <c:otherwise>
