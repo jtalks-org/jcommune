@@ -56,7 +56,9 @@
                     </div>
                 </div>
                 <div class="forum_row">
+                  <label class="auto_logon">
                     <input type="checkbox" name="_spring_security_remember_me"><spring:message code="label.auto_logon"/>
+                  </label>
                     <span class="empty_cell"></span>
                 </div>
             </div>

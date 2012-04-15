@@ -1214,7 +1214,10 @@ div.pm_right {
     padding-top: 5px;
     text-align: center;
 }
-
+label.auto_logon {
+    display: inline
+    !important;
+ }
 .error {
     color: #FF0000;
 }
