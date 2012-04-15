@@ -199,7 +199,7 @@ public class TopicController {
         Topic topic = topicService.get(topicId);
 
         Poll poll = topic.getPoll();
-        List<PollOption> pollOptions = topic.hasPoll() ? poll.getPollOptions() : null;
+        List<PollOption> pollOptions = topic.isHasPoll() ? poll.getPollOptions() : null;
 
         Branch branch = topic.getBranch();
         JCUser currentUser = securityService.getCurrentUser();

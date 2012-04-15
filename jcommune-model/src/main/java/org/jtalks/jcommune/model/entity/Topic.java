@@ -465,7 +465,7 @@ public class Topic extends SubscriptionAwareEntity {
      * @return <tt>true</tt>  if the poll exists
      *         <tt>false</tt>  if the poll doesn't exist
      */
-    public boolean hasPoll() {
+    public boolean isHasPoll() {
         return poll != null;
     }
 

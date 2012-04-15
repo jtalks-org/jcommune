@@ -21,6 +21,7 @@ import org.jtalks.jcommune.model.entity.PollOption;
 import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.security.AclBuilder;
+import org.jtalks.jcommune.service.security.TemporaryAuthorityManager;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -46,11 +47,15 @@ public class TransactionalPollServiceTest {
     private SecurityService securityService;
     @Mock
     private AclBuilder aclBuilder;
+    @Mock
+    private TemporaryAuthorityManager temporaryAuthorityManager;
+    
 
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
-        pollService = new TransactionalPollService(pollDao, pollOptionDao, securityService);
+        pollService = new TransactionalPollService(pollDao, pollOptionDao,
+                securityService, temporaryAuthorityManager);
 
         Mockito.when(aclBuilder.write()).thenReturn(aclBuilder);
         Mockito.when(aclBuilder.on(Mockito.any(Poll.class))).thenReturn(aclBuilder);

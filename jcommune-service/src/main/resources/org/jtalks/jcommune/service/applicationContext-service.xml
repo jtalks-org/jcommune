@@ -133,6 +133,7 @@
           <constructor-arg ref="pollDao"/>
           <constructor-arg ref="pollOptionDao"/>
           <constructor-arg ref="securityService"/>
+          <constructor-arg ref="temporaryAuthorityManager"/>
     </bean>
 
     <bean id="securityService"
@@ -154,6 +155,11 @@
 
     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
         <property name="configLocation" value="classpath:/org/jtalks/jcommune/service/ehcache.xml"/>
+    </bean>
+    
+    <!-- TODO The temporary functionality. It will be removed after the introduction of the new security.  -->
+    <bean id="temporaryAuthorityManager" class="org.jtalks.jcommune.service.security.TemporaryAuthorityManager">
+        <constructor-arg ref="securityContextFacade"/>
     </bean>
 
     <!--

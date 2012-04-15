@@ -14,6 +14,13 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.jtalks.common.model.dao.ChildRepository;
@@ -22,15 +29,9 @@ import org.jtalks.jcommune.model.entity.PollOption;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
+import org.jtalks.jcommune.service.security.TemporaryAuthorityManager;
+import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.springframework.security.access.prepost.PreAuthorize;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.jtalks.jcommune.service.security.SecurityConstants.HAS_USER_OR_ADMIN_ROLE;
 
 /**
  * The implementation of the {@link PollService}.
@@ -43,7 +44,8 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
         implements PollService {
     private ChildRepository<PollOption> pollOptionDao;
     private SecurityService securityService;
-
+    private TemporaryAuthorityManager temporaryAuthorityManager;
+    
     /**
      * Create an instance of service for operations with a poll.
      *
@@ -52,20 +54,24 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
      * @param pollOptionDao   data access object, which should be able do
      *                        all CRUD operations with {@link PollOption}.
      * @param securityService the service for security operations
-     *                        all CRUD operations with {@link PollOption}.
+     * @param temporaryAuthorityManager the  manager of temporary authorities, that 
+     *                                  allows to execute an operation with the
+     *                                  needed authority 
      */
     public TransactionalPollService(ChildRepository<Poll> pollDao,
                                     ChildRepository<PollOption> pollOptionDao,
-                                    SecurityService securityService) {
+                                    SecurityService securityService,
+                                    TemporaryAuthorityManager temporaryAuthorityManager) {
         super(pollDao);
         this.pollOptionDao = pollOptionDao;
         this.securityService = securityService;
+        this.temporaryAuthorityManager = temporaryAuthorityManager;
     }
 
     /**
      * {@inheritDoc}
      */
-    @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
+    @PreAuthorize(SecurityConstants.HAS_USER_OR_ADMIN_ROLE)
     @Override
     public Poll vote(Long pollId, List<Long> selectedOptionIds) {
         Poll poll = getDao().get(pollId);
@@ -86,9 +92,18 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
      *
      * @param poll a poll, in which the user will no longer be able to participate
      */
-    private void prohibitRevote(Poll poll) {
+    private void prohibitRevote(final Poll poll) {
         //TODO It should be changed after the transition to the new security.
-        securityService.grantToCurrentUser().write().on(poll);
+        temporaryAuthorityManager.runWithTemporaryAuthority(
+                new TemporaryAuthorityManager.SecurityOperation() {
+            
+                    @Override
+                    public void doOperation() {
+                        securityService.grantToCurrentUser().write().on(poll);
+                    }
+                }, 
+                SecurityConstants.ROLE_ADMIN);
+        
     }
 
     @Override
