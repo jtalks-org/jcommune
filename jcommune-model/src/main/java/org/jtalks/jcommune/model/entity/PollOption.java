@@ -28,7 +28,7 @@ public class PollOption extends Entity {
     private int votesCount;
     private Poll poll;
 
-    public static final int MIN_OPTION_LENGTH = 3;
+    public static final int MIN_OPTION_LENGTH = 1;
     public static final int MAX_OPTION_LENGTH = 50;
 
     /**

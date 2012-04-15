@@ -38,6 +38,9 @@ public class Poll extends Entity {
 
     public static final int MIN_TITLE_LENGTH = 3;
     public static final int MAX_TITLE_LENGTH = 120;
+    public static final int MIN_OPTIONS_NUMBER = 2;
+    public static final int MAX_OPTIONS_NUMBER = 50;
+    public static final String DATE_FORMAT = "dd-MM-yyyy";
 
     /**
      * Used only by Hibernate.

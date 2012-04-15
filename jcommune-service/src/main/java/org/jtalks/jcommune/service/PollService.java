@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.Poll;
-import org.jtalks.jcommune.model.entity.Topic;
 
 import java.util.List;
 
@@ -36,5 +35,5 @@ public interface PollService extends EntityService<Poll> {
      */
     Poll vote(Long pollId, List<Long> pollOptionIds);
 
-    void createPoll(String pollTitle, String pollOptions, String single, String endingDate, Topic topic);
+    void createPoll(Poll poll);
 }

@@ -14,23 +14,15 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollOption;
-import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
-import org.jtalks.jcommune.service.security.TemporaryAuthorityManager;
 import org.jtalks.jcommune.service.security.SecurityConstants;
+import org.jtalks.jcommune.service.security.TemporaryAuthorityManager;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -87,6 +79,14 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
         return poll;
     }
 
+    @Override
+    public void createPoll(Poll poll) {
+        this.getDao().update(poll);
+        for (PollOption option : poll.getPollOptions()) {
+            pollOptionDao.update(option);
+        }
+    }
+
     /**
      * Prohibit the re-vote. In this poll a user will no longer be able to participate.
      *
@@ -103,50 +103,5 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
                     }
                 }, 
                 SecurityConstants.ROLE_ADMIN);
-        
-    }
-
-    @Override
-    public void createPoll(String pollTitle, String pollOptions, String single, String endingDate, Topic topic) {
-        Poll poll = new Poll(pollTitle);
-        //TODO is need to handle broken string here?
-        poll.setSingleAnswer(Boolean.parseBoolean(single));
-        if (endingDate != null) {
-            poll.setEndingDate(parseDate(endingDate));
-        }
-        poll.setTopic(topic);
-        try {
-            poll.addPollOptions(parseOptions(pollOptions));
-        } catch (IOException e) {
-            poll = null;
-        }
-
-        if (poll != null) {
-            this.getDao().update(poll);
-            for (PollOption option : poll.getPollOptions()) {
-                pollOptionDao.update(option);
-            }
-        }
-    }
-
-    private List<PollOption> parseOptions(String pollOptions) throws IOException {
-        BufferedReader reader = new BufferedReader(new StringReader(pollOptions));
-        String line;
-        List<PollOption> result = new ArrayList<PollOption>();
-        while ((line = reader.readLine()) != null) {
-            if (!line.equals("")) {
-                PollOption option = new PollOption(line);
-                result.add(option);
-            }
-        }
-        return result;
-    }
-
-    private DateTime parseDate(String date) {
-        try {
-            return DateTimeFormat.forPattern("dd-MM-yyyy").parseDateTime(date);
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
     }
 }

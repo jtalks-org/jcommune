@@ -14,52 +14,57 @@
  */
 package org.jtalks.jcommune.web.validation.validators;
 
-import org.jtalks.jcommune.service.nontransactional.BBCodeService;
-import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.jtalks.jcommune.model.entity.PollOption;
+import org.jtalks.jcommune.web.util.PollUtil;
+import org.jtalks.jcommune.web.validation.annotations.PollOptionLength;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.io.IOException;
+import java.util.List;
 
 /**
- * Extends default @Size annotation to ignore BB codes in string.
- * As for now, applicable to string values only.
- *
- * @author Evgeniy Naumenko
+ * @author Alexandre Teterin
  */
-public class BbCodeAwareSizeValidator implements ConstraintValidator<BbCodeAwareSize, String> {
-
-    private BBCodeService service;
+public class PollOptionLengthValidator implements ConstraintValidator<PollOptionLength, String> {
 
     private int min;
     private int max;
 
-    /**
-     * @param service service to remove BB-codes out of a string
-     */
-    @Autowired
-    public BbCodeAwareSizeValidator(BBCodeService service) {
-        this.service = service;
-    }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void initialize(BbCodeAwareSize constraintAnnotation) {
+    public void initialize(PollOptionLength constraintAnnotation) {
         this.min = constraintAnnotation.min();
         this.max = constraintAnnotation.max();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null) {
-            return false;
+        //todo may be this should be changed to false
+        boolean result = true;
+
+        List<PollOption> list;
+
+        if (value != null) {
+            try {
+                list = PollUtil.parseOptions(value);
+                for (PollOption option : list) {
+                    if ((option.getName().length() < min) ||
+                            (option.getName().length() > max)) {
+                        result = false;
+                        break;
+                    }
+                }
+            } catch (IOException e) {
+                result = false;
+            }
+
+        } else {
+            result = false;
         }
-        int plainTextLength = service.removeBBCodes(value).trim().length();
-        return (plainTextLength >= min) && (plainTextLength <= max);
+
+        return result;
     }
 }
+

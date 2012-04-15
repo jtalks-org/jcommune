@@ -18,9 +18,16 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.web.util.PollUtil;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
+import org.jtalks.jcommune.web.validation.annotations.DateInStringFormat;
+import org.jtalks.jcommune.web.validation.annotations.FutureDateInStringFormat;
+import org.jtalks.jcommune.web.validation.annotations.PollOptionLength;
+import org.jtalks.jcommune.web.validation.annotations.PollTitlePollOptionsNotBlankIfOneOfThemNotBlank;
+import org.jtalks.jcommune.web.validation.annotations.VotingOptionsNumber;
 
 import javax.validation.constraints.Size;
+import java.io.IOException;
 
 /**
  * DTO for {@link Topic} objects. Used for validation and binding to form.
@@ -28,6 +35,8 @@ import javax.validation.constraints.Size;
  * @author Vitaliy Kravchenko
  * @author Max Malakhov
  */
+@PollTitlePollOptionsNotBlankIfOneOfThemNotBlank(pollTitle = "pollTitle", pollOptions = "pollOptions")
+@VotingOptionsNumber(pollTitle = "pollTitle", pollOptions = "pollOptions")
 public class TopicDto {
     @NotBlank
     @Size(min = Topic.MIN_NAME_SIZE, max = Topic.MAX_NAME_SIZE)
@@ -46,9 +55,17 @@ public class TopicDto {
 
     @Size(min = Poll.MIN_TITLE_LENGTH, max = Poll.MAX_TITLE_LENGTH)
     private String pollTitle;
+
+    @PollOptionLength
     private String pollOptions;
+
     private String single;
+
+    @DateInStringFormat
+    @FutureDateInStringFormat
     private String endingDate;
+
+    private Poll poll;
 
     /**
      * Plain object for topic creation
@@ -68,12 +85,7 @@ public class TopicDto {
         topicWeight = topic.getTopicWeight();
         sticked = topic.isSticked();
         announcement = topic.isAnnouncement();
-        if (topic.getPoll() != null) {
-            pollTitle = topic.getPoll().getTitle();
-            pollOptions = topic.getPoll().getPollOptions().toString();
-            single = String.valueOf(topic.getPoll().isSingleAnswer());
-            endingDate = topic.getPoll().getEndingDate().toString();
-        }
+        poll = topic.getPoll();
     }
 
     /**
@@ -208,4 +220,21 @@ public class TopicDto {
     public void setEndingDate(String endingDate) {
         this.endingDate = endingDate;
     }
+
+    public Poll preparePollFromTopicDto() {
+        Poll poll = new Poll(pollTitle);
+        poll.setSingleAnswer(Boolean.parseBoolean(single));
+        if (endingDate != null) {
+            poll.setEndingDate(PollUtil.parseDate(endingDate, Poll.DATE_FORMAT));
+        }
+        try {
+            poll.addPollOptions(PollUtil.parseOptions(pollOptions));
+        } catch (IOException e) {
+            poll = null;
+        }
+
+        return poll;
+    }
+
+
 }

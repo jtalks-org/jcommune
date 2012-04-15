@@ -154,14 +154,11 @@ public class TopicController {
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branch));
         }
 
+        Poll poll = topicDto.preparePollFromTopicDto();
         Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(), branchId);
-        if ((topicDto.getPollTitle() != null) && (topicDto.getPollOptions() != null)) {
-            pollService.createPoll(
-                    topicDto.getPollTitle(),
-                    topicDto.getPollOptions(),
-                    topicDto.getSingle(),
-                    topicDto.getEndingDate(),
-                    createdTopic);
+        if (poll != null) {
+            poll.setTopic(createdTopic);
+            pollService.createPoll(poll);
         }
         lastReadPostService.markTopicAsRead(createdTopic);
         return new ModelAndView("redirect:/topics/" + createdTopic.getId());
