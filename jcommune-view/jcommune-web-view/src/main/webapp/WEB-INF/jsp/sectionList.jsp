@@ -103,7 +103,7 @@
                                 <span><jtalks:format value="${branch.lastUpdatedTopic.lastPost.creationDate}"/></span>
                                 <br/>
                                 <a href="${pageContext.request.contextPath}/users/${branch.lastUpdatedTopic.lastPost.userCreated.encodedUsername}">
-                                        ${branch.lastUpdatedTopic.lastPost.userCreated.username}</a>
+                                        <c:out value="${branch.lastUpdatedTopic.lastPost.userCreated.username}"/></a>
                                 <a href="${pageContext.request.contextPath}/posts/${branch.lastUpdatedTopic.lastPost.id}">
                                     <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
                                          alt="<spring:message code="label.section.header.lastMessage"/>"/>
