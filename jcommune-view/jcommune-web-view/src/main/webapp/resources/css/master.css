@@ -937,6 +937,10 @@ a.page:hover {
     font-family: Georgia, Arial, sans-serif;
 }
 
+.text_errorpage h2 {
+    font-size: 3em;
+}
+
 .error_errorpage {
     font-size: 0.6em;
 }
