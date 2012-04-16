@@ -114,7 +114,7 @@ function applyPollResult(poll) {
         var pollOptionId = pollOption.id;
         var pollPercentage = pollOption.votesCount / poll.totalVotesCount * 100;
         var roundedPollPercentage = (Math.round(pollPercentage * 100) / 100).toFixed(2);
-        var parentWidth = $("#pollWrap").width();
+        var parentWidth = $(".pollChart" + pollOptionId).parent().width();
         var width = parentWidth * pollOption.votesCount / poll.totalVotesCount;
         $(".pollChart" + pollOptionId).animate({width:width});
         $("#pollAnswer" + pollOptionId).text("(" + pollOption.votesCount + " - " + roundedPollPercentage + "%)");
