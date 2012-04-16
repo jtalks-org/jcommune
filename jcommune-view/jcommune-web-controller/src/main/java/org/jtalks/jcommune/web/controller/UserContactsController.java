@@ -29,6 +29,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 /**
  * This controller handles creation and deletion of user contacts.
  *
@@ -66,10 +68,12 @@ public class UserContactsController {
      * @throws NotFoundException when contact type was not found
      */
     @RequestMapping(value="/contacts/add", method = RequestMethod.POST)
-    @ResponseBody public UserContactDto addContact(@RequestBody UserContact userContact) throws NotFoundException {
-        return new UserContactDto(service.addContact(userContact));
+    @ResponseBody 
+    public UserContactDto addContact(@Valid @RequestBody UserContactDto userContact) throws NotFoundException {
+        UserContact addedContact = service.addContact(userContact.getValue(), userContact.getTypeId());
+        return new UserContactDto(addedContact);
     }
-
+    
     /**
      * Removes contact identified by contactId from user contacts.
      * @param contactId identifier of contact to be removed

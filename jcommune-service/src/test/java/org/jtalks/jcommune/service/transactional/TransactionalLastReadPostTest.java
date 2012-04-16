@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.jcommune.model.dao.PostDao;
+import org.jtalks.jcommune.model.dao.LastReadPostDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.LastReadPost;
@@ -52,14 +52,14 @@ public class TransactionalLastReadPostTest {
     private TransactionalLastReadPostService lastReadPostService;
 
     @Mock
-    private PostDao postDao;
+    private LastReadPostDao lastReadPostDao;
     @Mock
     SecurityService securityService;
 
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-        lastReadPostService = new TransactionalLastReadPostService(securityService, postDao);
+        lastReadPostService = new TransactionalLastReadPostService(securityService, lastReadPostDao);
     }
 
     @Test
@@ -68,7 +68,7 @@ public class TransactionalLastReadPostTest {
         topic.addPost(new Post(user, "content"));
         LastReadPost post = new LastReadPost(user, topic, 0);
         when(securityService.getCurrentUser()).thenReturn(user);
-        when(postDao.getLastReadPost(user, topic)).thenReturn(post);
+        when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
 
         List<Topic> result
                 = lastReadPostService.fillLastReadPostForTopics(Collections.singletonList(topic));
@@ -81,7 +81,7 @@ public class TransactionalLastReadPostTest {
     public void testFillLastReadPostsForTopicsAnonymous() {
         lastReadPostService.fillLastReadPostForTopics(new ArrayList<Topic>());
 
-        verify(postDao, never()).getLastReadPost(Matchers.<JCUser>any(), Matchers.<Topic>any());
+        verify(lastReadPostDao, never()).getLastReadPost(Matchers.<JCUser>any(), Matchers.<Topic>any());
     }
 
     @Test
@@ -101,7 +101,7 @@ public class TransactionalLastReadPostTest {
         Topic topic = this.createTestTopic();
 
         lastReadPostService.markTopicPageAsRead(topic, 1, true);
-        verifyZeroInteractions(postDao);
+        verifyZeroInteractions(lastReadPostDao);
     }
 
     @Test
@@ -111,7 +111,7 @@ public class TransactionalLastReadPostTest {
 
         lastReadPostService.markTopicPageAsRead(topic, 1, false);
 
-        verify(postDao).saveLastReadPost(argThat(
+        verify(lastReadPostDao).update(argThat(
                 new LastReadPostMatcher(topic, topic.getPostCount() - 1)));
     }
 
@@ -123,7 +123,7 @@ public class TransactionalLastReadPostTest {
 
         lastReadPostService.markTopicPageAsRead(topic, 2, true);
 
-        verify(postDao).saveLastReadPost(argThat(
+        verify(lastReadPostDao).update(argThat(
                 new LastReadPostMatcher(topic, 5)));
     }
 
@@ -132,11 +132,11 @@ public class TransactionalLastReadPostTest {
         final Topic topic = this.createTestTopic();
         LastReadPost post = new LastReadPost(user, topic, 0);
         when(securityService.getCurrentUser()).thenReturn(user);
-        when(postDao.getLastReadPost(user, topic)).thenReturn(post);
+        when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
 
         lastReadPostService.markTopicPageAsRead(topic, 1, false);
 
-        verify(postDao).saveLastReadPost(argThat(
+        verify(lastReadPostDao).update(argThat(
                 new LastReadPostMatcher(topic, topic.getPostCount() - 1)));
     }
 
@@ -146,7 +146,7 @@ public class TransactionalLastReadPostTest {
 
         lastReadPostService.markAllTopicsAsRead(branch);
 
-        verifyZeroInteractions(postDao);
+        verifyZeroInteractions(lastReadPostDao);
     }
 
     @Test
@@ -158,7 +158,7 @@ public class TransactionalLastReadPostTest {
 
         lastReadPostService.markAllTopicsAsRead(branch);
 
-        verify(postDao).saveLastReadPost(argThat(
+        verify(lastReadPostDao).update(argThat(
                 new LastReadPostMatcher(topic, topic.getPostCount() - 1)));
     }
 
@@ -169,7 +169,7 @@ public class TransactionalLastReadPostTest {
 
         lastReadPostService.markTopicAsRead(topic);
 
-        verify(postDao).saveLastReadPost(argThat(
+        verify(lastReadPostDao).update(argThat(
                 new LastReadPostMatcher(topic, topic.getPostCount() - 1)));
     }
 
@@ -178,7 +178,7 @@ public class TransactionalLastReadPostTest {
         Topic topic = this.createTestTopic();
 
        lastReadPostService.markTopicAsRead(topic);
-        verifyZeroInteractions(postDao);
+        verifyZeroInteractions(lastReadPostDao);
     }
 
     private Topic createTestTopic() {

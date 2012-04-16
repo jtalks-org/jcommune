@@ -14,10 +14,13 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.jcommune.model.dao.LastReadPostDao;
 import org.jtalks.jcommune.model.dao.PostDao;
+import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.LastReadPost;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
@@ -37,15 +40,15 @@ import static org.jtalks.jcommune.service.security.SecurityConstants.*;
 public class TransactionalLastReadPostService implements LastReadPostService {
 
     private SecurityService securityService;
-    private PostDao postDao;
+    private LastReadPostDao lastReadPostDao;
 
     /**
      * @param securityService to figure out the current user logged in
-     * @param postDao to save/read last read post information from a database
+     * @param lastReadPostDao to save/read last read post information from a database
      */
-    public TransactionalLastReadPostService(SecurityService securityService, PostDao postDao) {
+    public TransactionalLastReadPostService(SecurityService securityService, LastReadPostDao lastReadPostDao) {
         this.securityService = securityService;
-        this.postDao = postDao;
+        this.lastReadPostDao = lastReadPostDao;
     }
 
     /**
@@ -57,7 +60,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
         if (current != null) {
             for (Topic topic : topics) {
                 // todo: find more efficient solution not to perform queries in loop
-                LastReadPost post = postDao.getLastReadPost(current, topic);
+                LastReadPost post = lastReadPostDao.getLastReadPost(current, topic);
                 if (post != null) {
                     topic.setLastReadPostIndex(post.getPostIndex());
                 }
@@ -72,8 +75,8 @@ public class TransactionalLastReadPostService implements LastReadPostService {
     @Override
     public Integer getLastReadPostForTopic(Topic topic) {
         JCUser current = securityService.getCurrentUser();
-        LastReadPost post=  postDao.getLastReadPost(current, topic);
-        return (post == null)? null : post.getPostIndex();
+        LastReadPost post = lastReadPostDao.getLastReadPost(current, topic);
+        return (post == null) ? null : post.getPostIndex();
     }
 
     /**
@@ -142,12 +145,28 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      */
     @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
     private void saveLastReadPost(JCUser user, Topic topic, int postIndex) {
-        LastReadPost post = postDao.getLastReadPost(user, topic);
+        LastReadPost post = lastReadPostDao.getLastReadPost(user, topic);
         if (post == null) {
             post = new LastReadPost(user, topic, postIndex);
         } else {
             post.setPostIndex(Math.max(post.getPostIndex(), postIndex));
         }
-        postDao.saveLastReadPost(post);
+        lastReadPostDao.update(post);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
+    public void updateLastReadPostsWhenPostIsDeleted(Post post) {
+        List<LastReadPost> lastReadPosts = lastReadPostDao.listLastReadPostsForTopic(post.getTopic());
+        for (LastReadPost lastReadPost : lastReadPosts) {
+           int index = lastReadPost.getPostIndex();
+           if (index >= post.getPostIndexInTopic()){
+               lastReadPost.setPostIndex(index-1);
+               lastReadPostDao.update(lastReadPost);
+           }
+        }
     }
 }

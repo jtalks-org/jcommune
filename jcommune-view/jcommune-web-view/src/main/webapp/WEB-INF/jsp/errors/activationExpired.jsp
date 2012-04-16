@@ -1,4 +1,4 @@
-<!-- 
+<%--
 
     Copyright (C) 2011  JTalks.org Team
     This library is free software; you can redistribute it and/or
@@ -13,13 +13,21 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
--->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head></head>
+--%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<head>
+    <title><spring:message code="label.500.title"/></title>
+</head>
 <body>
-These files contain the list of stopwords for a concrete language. A stopword is a language-word
-that has no significance meaning in a keyword based search system (e.g. Google).So we need 
-exclude these words out of our search indexes.
+<div class="wrap main_page">
+    <jsp:include page="../../template/topLine.jsp"/>
+    <div class="all_forums">
+        <div class="text_errorpage">
+            <h2><spring:message code="label.activation.error"/></h2>
+            <p><spring:message code="label.activation.reason"/>
+        </div>
+    </div>
+    <div class="footer_buffer"></div>
+</div>
 </body>
-</html>

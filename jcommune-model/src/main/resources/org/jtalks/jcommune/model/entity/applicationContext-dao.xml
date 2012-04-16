@@ -51,6 +51,8 @@
           parent="abstractHibernateDao"/>
     <bean id="branchSectionDao" class="org.jtalks.jcommune.model.dao.hibernate.SectionHibernateDao"
           parent="abstractHibernateDao"/>
+    <bean id="lastReadPostHibernateDao" class="org.jtalks.jcommune.model.dao.hibernate.LastReadPostHibernateDao"
+          parent="abstractHibernateDao"/>
     <bean id="forumStatisticsDAO" class="org.jtalks.jcommune.model.dao.hibernate.ForumStatisticsHibernateDao">
         <constructor-arg index="0" ref="sessionFactory"/>
     </bean>
@@ -69,7 +71,7 @@
     <bean id="pollOptionDao"
           class="org.jtalks.jcommune.model.dao.hibernate.PollOptionHibernateDao"
           parent="abstractHibernateDao"/>
-  
+
     <!-- Declaration of Hibernate Search DAO beans -->
     <bean id="topicSearchDao" class="org.jtalks.jcommune.model.dao.search.hibernate.TopicHibernateSearchDao">
         <constructor-arg name="sessionFactory" ref="sessionFactory"/>

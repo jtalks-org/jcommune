@@ -15,30 +15,39 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
-import org.jtalks.jcommune.model.dao.PostDao;
+import org.jtalks.jcommune.model.dao.LastReadPostDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.LastReadPost;
-import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 
 import java.util.List;
 
 /**
- * The implementation of PostDao based on Hibernate.
- * The class is responsible for loading {@link Post} objects from database,
- * save, update and delete them.
- *
- * @author Pavel Vervenko
- * @author Kirill Afonin
+ * @author Evgeniy Naumenko
  */
-public class PostHibernateDao extends AbstractHibernateChildRepository<Post> implements PostDao {
+public class LastReadPostHibernateDao extends AbstractHibernateChildRepository<LastReadPost>
+        implements LastReadPostDao {
 
     /**
      * {@inheritDoc}
      */
-    public List<Post> getUserPosts(JCUser author) {
-        return (List<Post>) getSession().createQuery("FROM Post p WHERE p.userCreated = ? ORDER BY creationDate DESC")
-                .setParameter(0, author)
+    @Override
+    public List<LastReadPost> listLastReadPostsForTopic(Topic topic) {
+        return (List<LastReadPost>) getSession().createQuery("FROM LastReadPost p where p.topic=:topic")
+                .setParameter("topic", topic)
                 .list();
+    }
+
+        /**
+     * {@inheritDoc}
+     */
+    @Override
+    public LastReadPost getLastReadPost(JCUser forWho, Topic topic) {
+        return (LastReadPost) getSession().createQuery("FROM LastReadPost p WHERE p.topic = ? and p.user = ?")
+                .setParameter(0, topic)
+                .setParameter(1, forWho)
+                .setCacheable(false)
+                .uniqueResult();
+
     }
 }

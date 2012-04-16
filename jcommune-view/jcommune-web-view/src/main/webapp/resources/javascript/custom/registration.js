@@ -12,47 +12,59 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
- 
+
+/**
+ * This script handles registration popup
+ * todo: split and refine it
+ */
 //handling click on menu link Sign Up 
-$(function() {
+$(function () {
     var firstView;
-    $("#signup").on('click', function(e) {         
-      firstView = true;
-      SignupPopup();
-      //if JS off, then open standart page
-      e.preventDefault();
+    $("#signup").on('click', function (e) {
+        firstView = true;
+        signupPopup();
+        //if JS off, then open standart page
+        e.preventDefault();
     });
-    function SignupPopup(){ 
+    function signupPopup() {
         var query;
         //data for query
-        if(!firstView){query = "username="+ $('#username').val()+"&"+"password="+       
-                      $('#password').val() + "&" + "passwordConfirm="+ 
-                      $('#passwordConfirm').val()+"&" +
-                      "email="+ $('#email').val()}else{
-                      query = "username=&password=&passwordConfirm=&email=&firstView=false"};
+        if (!firstView) {
+            query = "username=" + $('#username').val() + "&" + "password=" +
+                $('#password').val() + "&" + "passwordConfirm=" +
+                $('#passwordConfirm').val() + "&" +
+                "email=" + $('#email').val()
+        } else {
+            query = "username=&password=&passwordConfirm=&email=&firstView=false"
+        }
+        ;
         //POST-query
         $.ajax({
-                 type:"POST",
-                 url:"/jcommune/user/new",
-                 data: query,
-                 dataType: "html",
-                 //handling query answer, create registration form
-                 success: function(data) {
-                            var form_elements = [];
-						    $.each($(data).find("div.forum_row"),function(index,value){
-	      			      	         if(firstView)$(value).find("span.error").remove();
-						             form_elements[index] = $(value).html();
-						     });
-						     var content = '<ul><div>' + $(data).find("span.forum_header_answer").html() + 
-							 '</div><br/><span class="empty_cell"></span>' + form_elements[0] + 
-							 form_elements[1] + form_elements[2] + form_elements[3] + '</ul>';
-						     //Check the query answer and displays prompt 
-						     if($(data).find("span.forum_header_answer").html()!=null){
-							 firstView = false;
-		  		     		 $.prompt(content,
-									  {buttons:{OK:true},  focus:0,
-									  submit: SignupPopup});}else{
-    				         $.prompt('Registration success');}
-        }});         
-    };
+            type:"POST",
+            url:$root + "/user/new",
+            data:query,
+            dataType:"html",
+            //handling query answer, create registration form
+            success:function (data) {
+                var form_elements = [];
+                $.each($(data).find("div.forum_row"), function (index, value) {
+                    if (firstView)$(value).find("span.error").remove();
+                    form_elements[index] = $(value).html();
+                });
+                var content = '<ul><div>' + $(data).find("span.forum_header_answer").html() +
+                    '</div><br/><span class="empty_cell"></span>' + form_elements[0] +
+                    form_elements[1] + form_elements[2] + form_elements[3] + '</ul>';
+                //Check the query answer and displays prompt
+                if ($(data).find("span.forum_header_answer").html() != null) {
+                    firstView = false;
+                    $.prompt(content,
+                        {buttons:{OK:true}, focus:0,
+                            submit:signupPopup});
+                } else {
+                    $.prompt($labelRegistrationSuccess);
+                }
+            }});
+    }
+
+    ;
 });

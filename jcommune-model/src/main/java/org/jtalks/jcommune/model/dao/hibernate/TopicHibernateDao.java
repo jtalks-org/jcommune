@@ -58,4 +58,5 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
                 "ORDER BY modificationDate DESC")
                 .list();
     }
+
 }

@@ -20,6 +20,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
@@ -67,6 +68,8 @@ public class TransactionalPostServiceTest {
     private SecurityService securityService;
     @Mock
     private TopicDao topicDao;
+    @Mock
+    private LastReadPostService lastReadPostService;
 
     private PostService postService;
 
@@ -75,7 +78,8 @@ public class TransactionalPostServiceTest {
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-        postService = new TransactionalPostService(postDao, topicDao, securityService, notificationService);
+        postService = new TransactionalPostService(
+                postDao, topicDao, securityService, notificationService, lastReadPostService);
         user = new JCUser(USERNAME, EMAIL, PASSWORD);
         when(securityService.getCurrentUser()).thenReturn(user);
     }

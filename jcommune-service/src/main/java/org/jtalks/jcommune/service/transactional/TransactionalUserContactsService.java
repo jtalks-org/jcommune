@@ -16,7 +16,6 @@ package org.jtalks.jcommune.service.transactional;
 
 
 import org.jtalks.jcommune.model.dao.UserContactsDao;
-import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
@@ -57,12 +56,12 @@ public class TransactionalUserContactsService
     /**
      * {@inheritDoc}
      */
-    public UserContact addContact(UserContact userContact) throws NotFoundException {
+    public UserContact addContact(String value, long typeId) throws NotFoundException {
         JCUser user = securityService.getCurrentUser();
 
         //explicitly getting UserContactType because we need to populate it with data before returning
-        UserContactType type = get(userContact.getType().getId());
-        UserContact contact = new UserContact(userContact.getValue(), type);
+        UserContactType actualType = get(typeId);
+        UserContact contact = new UserContact(value, actualType);
         user.addContact(contact);
         return contact;
     }

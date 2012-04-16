@@ -85,6 +85,7 @@
         <constructor-arg ref="topicDao"/>
         <constructor-arg ref="securityService"/>
         <constructor-arg ref="notificationService"/>
+        <constructor-arg ref="lastReadPosrService"/>
     </bean>
     
     <bean id="topicSearchService" 
@@ -120,6 +121,14 @@
         <constructor-arg ref="topicBranchDao"/>
         <constructor-arg ref="notificationService"/>
     </bean>
+    
+    <bean id="pollService"
+          class="org.jtalks.jcommune.service.transactional.TransactionalPollService">
+        <constructor-arg ref="pollDao"/>
+        <constructor-arg ref="pollOptionDao"/>
+        <constructor-arg ref="securityService"/>
+        <constructor-arg ref="temporaryAuthorityManager"/>
+    </bean>
 
     <bean id="subscriptionService"
           class="org.jtalks.jcommune.service.transactional.TransactionalSubscriptionService">
@@ -127,15 +136,12 @@
         <constructor-arg ref="topicBranchDao"/>
         <constructor-arg ref="topicDao"/>
     </bean>
-    
-    <bean id="pollService"
-          class="org.jtalks.jcommune.service.transactional.TransactionalPollService">
-          <constructor-arg ref="pollDao"/>
-          <constructor-arg ref="pollOptionDao"/>
-          <constructor-arg ref="securityService"/>
-          <constructor-arg ref="temporaryAuthorityManager"/>
-    </bean>
 
+    <!-- TODO The temporary functionality. It will be removed after the introduction of the new security.  -->
+    <bean id="temporaryAuthorityManager" class="org.jtalks.jcommune.service.security.TemporaryAuthorityManager">
+        <constructor-arg ref="securityContextFacade"/>
+    </bean>
+    
     <bean id="securityService"
           class="org.jtalks.jcommune.service.nontransactional.SecurityService">
         <constructor-arg ref="userDao"/>
@@ -150,16 +156,11 @@
 
     <bean id="lastReadPosrService" class="org.jtalks.jcommune.service.transactional.TransactionalLastReadPostService">
         <constructor-arg ref="securityService"/>
-        <constructor-arg ref="postDao"/>
+        <constructor-arg ref="lastReadPostHibernateDao"/>
     </bean>
 
     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
         <property name="configLocation" value="classpath:/org/jtalks/jcommune/service/ehcache.xml"/>
-    </bean>
-    
-    <!-- TODO The temporary functionality. It will be removed after the introduction of the new security.  -->
-    <bean id="temporaryAuthorityManager" class="org.jtalks.jcommune.service.security.TemporaryAuthorityManager">
-        <constructor-arg ref="securityContextFacade"/>
     </bean>
 
     <!--

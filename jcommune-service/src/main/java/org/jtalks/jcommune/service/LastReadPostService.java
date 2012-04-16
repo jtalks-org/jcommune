@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 
 import java.util.List;
@@ -78,4 +79,13 @@ public interface LastReadPostService {
      * @return last read post index for these topics and current user
      */
     Integer getLastReadPostForTopic(Topic topic);
+
+    /**
+     * Updates last read post number to be correct when post is deleted.
+     * Basically this is for last read posts located after the post we're trying to delete.
+     * Without it last read post index may exceed total post count in the topic.
+     *
+     * @param post post we're trying to delete
+     */
+    void updateLastReadPostsWhenPostIsDeleted(Post post);
 }

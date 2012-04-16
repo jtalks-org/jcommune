@@ -103,7 +103,7 @@
                                 <span><jtalks:format value="${branch.lastUpdatedTopic.lastPost.creationDate}"/></span>
                                 <br/>
                                 <a href="${pageContext.request.contextPath}/users/${branch.lastUpdatedTopic.lastPost.userCreated.encodedUsername}">
-                                        ${branch.lastUpdatedTopic.lastPost.userCreated.username}</a>
+                                        <c:out value="${branch.lastUpdatedTopic.lastPost.userCreated.username}"/></a>
                                 <a href="${pageContext.request.contextPath}/posts/${branch.lastUpdatedTopic.lastPost.id}">
                                     <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
                                          alt="<spring:message code="label.section.header.lastMessage"/>"/>
@@ -125,19 +125,22 @@
         <div class="forum_table">
             <div class="forum_row">
                 <div class="forum_info">
-                    <spring:message code="label.onlineUsersInfo.messagesCount"/> <c:out value="${messagesCount}"/>
+                    <spring:message code="label.onlineUsersInfo.messagesCount"/>
+                    <span id="messages count"><c:out value="${messagesCount}"/></span>
                     <br/>
-                    <spring:message code="label.onlineUsersInfo.registeredUsers.count"/> <c:out
-                        value="${registeredUsersCount}"/>
+                    <spring:message code="label.onlineUsersInfo.registeredUsers.count"/>
+                    <span id="users count"><c:out value="${registeredUsersCount}"/></span>
                 </div>
                 <div class="empty_cell"></div>
             </div>
             <div class="forum_row">
                 <div class="forum_info">
-                    <spring:message code="label.onlineUsersInfo.visitors"/> <c:out value="${visitors}"/>,
-                    <spring:message code="label.onlineUsersInfo.visitors.registered"/> <c:out
-                        value="${visitorsRegistered}"/>,
-                    <spring:message code="label.onlineUsersInfo.visitors.guests"/> <c:out value="${visitorsGuests}"/>
+                    <spring:message code="label.onlineUsersInfo.visitors"/>
+                    <span id="visitors count"><c:out value="${visitors}"/></span>,
+                    <spring:message code="label.onlineUsersInfo.visitors.registered"/>
+                    <span id="registered users count"><c:out value="${visitorsRegistered}"/></span>,
+                    <spring:message code="label.onlineUsersInfo.visitors.guests"/>
+                    <span id="guests count"><c:out value="${visitorsGuests}"/></span>
                     <br/>
                     <c:if test="${!(empty usersRegistered)}">
                         <spring:message code="label.onlineUsersInfo.registeredUsers"/>
@@ -146,7 +149,7 @@
                                 <c:choose>
                                     <c:when test="${user.role=='ROLE_ADMIN'}">
                                         <li><a href="${pageContext.request.contextPath}/users/${user.encodedUsername}"
-                                               class="admin">${user.username}></a>&nbsp;&nbsp;
+                                               class="admin">${user.username}</a>&nbsp;&nbsp;
                                         </li>
                                     </c:when>
                                     <c:otherwise>

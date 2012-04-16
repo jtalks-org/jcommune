@@ -12,33 +12,37 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao.hibernate;
+package org.jtalks.jcommune.model.dao;
 
+import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
-import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.LastReadPost;
-import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 
 import java.util.List;
 
 /**
- * The implementation of PostDao based on Hibernate.
- * The class is responsible for loading {@link Post} objects from database,
- * save, update and delete them.
- *
- * @author Pavel Vervenko
- * @author Kirill Afonin
+ * @author Evgeniy Naumenko
  */
-public class PostHibernateDao extends AbstractHibernateChildRepository<Post> implements PostDao {
+public interface LastReadPostDao extends ChildRepository<LastReadPost> {
 
     /**
-     * {@inheritDoc}
+     * Returns all last read post data saved for the topic given
+     * for all all the users.
+     *
+     * @param topic topic to find last read posts for
+     * @return last read post data for all the users
      */
-    public List<Post> getUserPosts(JCUser author) {
-        return (List<Post>) getSession().createQuery("FROM Post p WHERE p.userCreated = ? ORDER BY creationDate DESC")
-                .setParameter(0, author)
-                .list();
-    }
+    List<LastReadPost> listLastReadPostsForTopic(Topic topic);
+
+    /**
+     * Fetches last read post information for particular user and topic.
+     *
+     * @param forWho user to find last read post for
+     * @param topic  topic we're interesting in
+     * @return last read post for the particular topic or null if user had never opened this topic
+     */
+    LastReadPost getLastReadPost(JCUser forWho, Topic topic);
+
 }

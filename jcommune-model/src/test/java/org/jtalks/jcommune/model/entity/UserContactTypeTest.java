@@ -12,10 +12,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.dto;
+package org.jtalks.jcommune.model.entity;
 
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -23,39 +21,30 @@ import static org.testng.Assert.assertEquals;
 
 /**
  * 
- * @author Anuar_Nurmakanov
+ * @author Vyacheslav Mishcheryakov
  * 
  */
-public class UserContactDtoTest {
+public class UserContactTypeTest {
 	//help test values
 	private static final String CONTACT_TEST_VALUE = "10-10-10";
-	private static final Long USER_ID_TEST_VALUE = Long.valueOf(1);
+	private static final String CONTACT_TEST_DISPLAY_PATTERN= "<a href='mailto:" + UserContactType.CONTACT_MASK_PLACEHOLDER + "'>" + UserContactType.CONTACT_MASK_PLACEHOLDER+"</a>";
+	private static final String CONTACT_TEST_DISPLAY_VALUE = CONTACT_TEST_DISPLAY_PATTERN.replaceAll(UserContactType.CONTACT_MASK_PLACEHOLDER, CONTACT_TEST_VALUE);
+	
 	private UserContactType contactType;
-	private JCUser user;
-	//main test value
-	private UserContact userContact;
+
 	
 	@BeforeMethod
 	public void init() {
 		//prepare help test values
 		contactType = new UserContactType();
-		user = new JCUser("username", "email", "password");
-		user.setId(USER_ID_TEST_VALUE);
-		//init main test value
-		userContact = new UserContact(CONTACT_TEST_VALUE, contactType);
-		userContact.setOwner(user);
+		contactType.setDisplayPattern(CONTACT_TEST_DISPLAY_PATTERN);
 	}
 	
 	@Test
 	public void testCreateFromUserContact() {
-		//create 
-		UserContactDto contactDto = new UserContactDto(userContact);
 		//check content
-		assertEquals(contactDto.getValue(), CONTACT_TEST_VALUE, 
-				"The problem of copying data. Value - value.");
-		assertEquals(contactDto.getOwnerId(), USER_ID_TEST_VALUE,
-				"The problem of copying data. Value - ownerId.");
-		assertEquals(contactDto.getTypeId(), contactType.getId(), 
-				"The problem of copying data. Value - type.");
+		assertEquals(contactType.getDisplayValue(CONTACT_TEST_VALUE), 
+				CONTACT_TEST_DISPLAY_VALUE, 
+				"Wrong getDisplayValue method.");
 	}
 }
