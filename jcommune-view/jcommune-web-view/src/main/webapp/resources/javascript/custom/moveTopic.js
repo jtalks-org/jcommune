@@ -69,6 +69,7 @@ function showMoveTopicModalWindow(htmlTemplate) {
             displayBranches();
             $("#branch_name").change(function () {
                 $("#jqi_state0_buttonMove").removeAttr("disabled");
+                $("#jqi_state0_buttonMove").css({'color':'#262626'})
                 branchId = $(this).val();
             });
         },
@@ -79,6 +80,7 @@ function showMoveTopicModalWindow(htmlTemplate) {
         }
     });
     $("#jqi_state0_buttonMove").attr('disabled', 'disabled');
+     $("#jqi_state0_buttonMove").css({'color':'grey'})
 }
 
 /**
