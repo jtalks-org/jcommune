@@ -96,6 +96,7 @@ public class TopicController {
      * @param sessionRegistry     to obtain list of users currently online
      * @param securityService     to determine the current user logged in
      * @param breadcrumbBuilder   to create Breadcrumbs for pages
+     * @param pollService         to create a poll and vote in a poll
      */
     @Autowired
     public TopicController(TopicService topicService,

@@ -89,7 +89,7 @@ public class TransactionalPollServiceTest {
         PollOption resultPollOption = resultPoll.getPollOptions().get(0);
 
         Assert.assertEquals(resultPollOption.getVotesCount(), VOTES_COUNT,
-                "Count of votes should be increased.");
+                "Count of votes should be the same.");
     }
 
     @Test
@@ -119,7 +119,24 @@ public class TransactionalPollServiceTest {
 
         for (PollOption option : resultPoll.getPollOptions()) {
             Assert.assertEquals(option.getVotesCount(), VOTES_COUNT,
-                    "Count of votes should be increased.");
+                    "Count of votes should be the same.");
+        }
+    }
+    
+    @Test
+    public void testAddIncorrectVotes() {
+        List<Long> pollOptionIds = Arrays.asList(1L, 5L, 9L);
+        List<Long> incorrectPollOptionIds = Arrays.asList(11L, 13L);
+        DateTime endingDate = new DateTime(1999, 1, 1, 1, 1, 1, 1);
+        Poll poll = createPollWithOptions(POLL_ID, pollOptionIds, VOTES_COUNT, endingDate);
+        
+        Mockito.when(pollDao.get(Mockito.anyLong())).thenReturn(poll);
+        
+        Poll resultPoll = pollService.vote(POLL_ID, incorrectPollOptionIds);
+        
+        for (PollOption option : resultPoll.getPollOptions()) {
+            Assert.assertEquals(option.getVotesCount(), VOTES_COUNT,
+                    "Count of votes should be the same.");
         }
     }
     

@@ -39,19 +39,6 @@ public class PollDto {
     }
 
     /**
-     * Creates a dto with the passed data.
-     *
-     * @param id id of poll
-     * @param totalVotesCount the total count of votes
-     * @param pollOptions the list of poll options
-     */
-    public PollDto(long id, int totalVotesCount, List<PollOptionDto> pollOptions) {
-        this.id = id;
-        this.totalVotesCount = totalVotesCount;
-        this.pollOptions = pollOptions;
-    }
-
-    /**
      * Creates data transfer object, that represents info about the poll.
      *
      * @param poll the poll

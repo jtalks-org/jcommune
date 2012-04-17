@@ -61,9 +61,12 @@ public class TemporaryAuthorityManager {
                 realAuthentication.getPrincipal(),
                 realAuthentication.getCredentials(),
                 realAuthorities);
-        securityContext.setAuthentication(tempAuthentication);
-        operation.doOperation();
-        securityContext.setAuthentication(realAuthentication);
+        try {
+            securityContext.setAuthentication(tempAuthentication);
+            operation.doOperation();
+        } finally {
+            securityContext.setAuthentication(realAuthentication);
+        }
     }
     
     /**

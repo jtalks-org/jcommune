@@ -17,6 +17,7 @@ package org.jtalks.jcommune.model.entity;
 import org.joda.time.DateTime;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -49,15 +50,22 @@ public class PollTest {
 
     }
 
-    @Test
-    public void testIsPollActive() {
-        DateTime endingDate = new DateTime(3225, 1, 1, 0, 0, 0, 0);
+    @Test(dataProvider = "parametersIsPollActive")
+    public void testIsPollActive(DateTime endingDate ) {
         poll.setEndingDate(endingDate);
         boolean expected = true;
 
         boolean result = poll.isActive();
 
         Assert.assertEquals(result, expected, "Poll must be active");
+    }
+    
+    @DataProvider(name = "parametersIsPollActive")
+    public Object[][] parametersIsPollActive() {
+        return new Object[][] {
+                {null},
+                {new DateTime(3225, 1, 1, 0, 0, 0, 0)}
+        };
     }
 
     @Test

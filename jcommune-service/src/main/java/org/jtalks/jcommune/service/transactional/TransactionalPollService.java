@@ -67,8 +67,8 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
     @Override
     public Poll vote(Long pollId, List<Long> selectedOptionIds) {
         Poll poll = getDao().get(pollId);
-        prohibitRevote(poll);
         if (poll.isActive()) {
+            prohibitRevote(poll);
             for (PollOption option : poll.getPollOptions()) {
                 if (selectedOptionIds.contains(option.getId())) {
                     option.increaseVotesCount();
