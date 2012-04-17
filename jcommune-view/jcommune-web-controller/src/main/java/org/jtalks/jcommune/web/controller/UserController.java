@@ -128,11 +128,14 @@ public class UserController {
      *
      * @param uuid unique entity identifier
      * @return redirect to the login page
-     * @throws NotFoundException if no user has been found for the link passed
      */
     @RequestMapping(value = "user/activate/{uuid}")
-    public ModelAndView activateAccount(@PathVariable String uuid) throws NotFoundException {
-        userService.activateAccount(uuid);
-        return new ModelAndView("redirect:/login");
+    public String activateAccount(@PathVariable String uuid) {
+        try {
+            userService.activateAccount(uuid);
+            return "redirect:/login";
+        } catch (NotFoundException e) {
+            return "errors/activationExpired";
+        }
     }
 }

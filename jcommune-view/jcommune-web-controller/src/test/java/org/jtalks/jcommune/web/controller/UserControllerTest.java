@@ -128,16 +128,19 @@ public class UserControllerTest {
 
     @Test
     public void testActivateAccount() throws NotFoundException {
-        userController.activateAccount(USER_NAME);
+        String viewName = userController.activateAccount(USER_NAME);
 
         verify(userService, times(1)).activateAccount(USER_NAME);
+        assertEquals("redirect:/login", viewName);
     }
 
-    @Test(expectedExceptions = NotFoundException.class)
+    @Test
     public void testActivateAccountFail() throws NotFoundException {
         doThrow(new NotFoundException()).when(userService).activateAccount(anyString());
 
-        userController.activateAccount(USER_NAME);
+        String viewName = userController.activateAccount(USER_NAME);
+
+        assertEquals("errors/activationExpired", viewName);
     }
 
     private void assertNullFields(RegisterUserDto dto) {

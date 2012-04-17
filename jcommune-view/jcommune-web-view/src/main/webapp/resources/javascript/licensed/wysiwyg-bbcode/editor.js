@@ -82,10 +82,12 @@ function SwitchEditor() {
         textboxelement.style.display = "";
         htmlcontentelement.style.display = "none";
         editorVisible = false;
+        $(".formatting_buttons").show();
     }
     else {
         content = textboxelement.value;
         bbcode2html();
+        $(".formatting_buttons").hide();
     }
 }
 
@@ -342,15 +344,17 @@ function doLink() {
             createFormRow($labelUrl, "", "urlId", $labelUrlRequired) +
             '</ul>';
         $.prompt(content,
-            {buttons:{OK:true}, focus:0,
-                submit:function () {
-                    mylink = document.getElementById("urlAltId").value;
-                    var link = document.getElementById("urlId").value;
-                    if ((link != null) && (link != "")) {
-                        if (mylink == null || mylink == "") {
-                            mylink = link;
+            {buttons:{OK:true, Cancel:false}, focus:0,
+                submit:function (value, message, form) {
+                    if (value != undefined && value) {
+                        mylink = document.getElementById("urlAltId").value;
+                        var link = document.getElementById("urlId").value;
+                        if ((link != null) && (link != "")) {
+                            if (mylink == null || mylink == "") {
+                                mylink = link;
+                            }
+                            AddTag('[url=' + link + ']', '[/url]');
                         }
-                        AddTag('[url=' + link + ']', '[/url]');
                     }
                 }});
     }

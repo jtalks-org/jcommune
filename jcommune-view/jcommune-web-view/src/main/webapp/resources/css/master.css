@@ -937,6 +937,10 @@ a.page:hover {
     font-family: Georgia, Arial, sans-serif;
 }
 
+.text_errorpage h2 {
+    font-size: 3em;
+}
+
 .error_errorpage {
     font-size: 0.6em;
 }
@@ -1214,7 +1218,10 @@ div.pm_right {
     padding-top: 5px;
     text-align: center;
 }
-
+label.auto_logon {
+    display: inline
+    !important;
+ }
 .error {
     color: #FF0000;
 }

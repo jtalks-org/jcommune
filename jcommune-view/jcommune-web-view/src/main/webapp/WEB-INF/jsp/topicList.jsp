@@ -137,7 +137,7 @@
                                 <br/>
                                 <a class="last_message_user"
                                    href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
-                                        ${topic.lastPost.userCreated.username}
+                                        <c:out value="${topic.lastPost.userCreated.username}"/>
                                 </a>
                                 <a href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}">
                                     <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
