@@ -22,6 +22,7 @@ import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.PostDto;
@@ -63,6 +64,8 @@ public class PostControllerTest {
     private BreadcrumbBuilder breadcrumbBuilder;
     @Mock
     private LastReadPostService lastReadPostService;
+    @Mock
+    private SecurityService securityService;
 
     public static final long POST_ID = 1;
     public static final long TOPIC_ID = 1L;
@@ -76,7 +79,8 @@ public class PostControllerTest {
     public void init() throws NotFoundException {
         initMocks(this);
         controller = new PostController(
-                postService, breadcrumbBuilder, topicService, bbCodeService, lastReadPostService);
+                postService, breadcrumbBuilder, topicService, bbCodeService,
+                lastReadPostService, securityService);
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
         topic = new Topic(null, "");
@@ -275,11 +279,15 @@ public class PostControllerTest {
     }
 
     @Test
-    public void testBbCodeToHtml() {
+    public void testPreview() {
         String postText = "[code]123[/code]";
         String html = "<code>123</code>";
         when(bbCodeService.convertBbToHtml(anyString())).thenReturn(html);
-        assertEquals(controller.bbCodeToHtml(postText).getBody(), html);
+        when(securityService.getCurrentUser()).thenReturn(new JCUser("","",""));
+        
+        String result = controller.preview(postText).getBody();
+        
+        assertEquals(result, html);
         verify(bbCodeService).convertBbToHtml(postText);
     }
 
