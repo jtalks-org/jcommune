@@ -30,6 +30,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import static org.mockito.Mockito.anyString;
@@ -40,6 +41,9 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Matchers.any;
+
 
 /**
  * @author Pavel Vervenko
@@ -64,6 +68,10 @@ public class TransactionalPrivateMessageServiceTest {
     private static final long PM_ID = 1L;
     private static final String USERNAME = "username";
     private AclBuilder aclBuilder;
+    
+    private static final String DRAFTS = "drafts";
+    private static final String OUTBOX = "outbox";
+    private static final String INBOX = "inbox";
 
     JCUser user = new JCUser(USERNAME, "email", "password");
 
@@ -289,5 +297,115 @@ public class TransactionalPrivateMessageServiceTest {
     			"The message isn't addressed to the current user, so message shouldn't be marked as read.");
     	verify(pmDao, never()).saveOrUpdate(resultMessage);
     	verify(userDataCache, never()).decrementNewMessageCountFor(USERNAME);
+    }
+    
+    @Test
+    public void testDeleteDrafts() throws NotFoundException {
+        PrivateMessage message = new PrivateMessage( null, null,  null, null);
+        message.setStatus(PrivateMessageStatus.DRAFT);
+        
+        when(securityService.getCurrentUser()).thenReturn(user);
+        when(pmDao.get(1L)).thenReturn(message);
+        when(pmDao.get(2L)).thenReturn(message);
+        when(pmDao.isExist(1L)).thenReturn(true);
+        when(pmDao.isExist(2L)).thenReturn(true);
+        
+        String resultSingle = pmService.delete(Arrays.asList(1L));
+        
+        assertEquals(resultSingle, DRAFTS);
+        verify(pmDao).delete(any(PrivateMessage.class));
+        
+        String resultMultiple = pmService.delete(Arrays.asList(1L, 2L));
+        
+        assertEquals(resultMultiple, DRAFTS);
+        verify(pmDao, times(3)).delete(any(PrivateMessage.class));
+    }
+    
+    @Test
+    public void testDeleteFromInbox() throws NotFoundException {
+        JCUser otherUser = new JCUser(USERNAME, null, null);
+        
+        PrivateMessage message1 = new PrivateMessage(user, otherUser, null, null);
+        message1.setStatus(PrivateMessageStatus.SENT);
+        
+        PrivateMessage message2 = new PrivateMessage(user, otherUser,  null, null);
+        message2.setStatus(PrivateMessageStatus.SENT);
+        
+        PrivateMessage message3 = new PrivateMessage(user, otherUser,  null, null);
+        message3.setStatus(PrivateMessageStatus.DELETED_FROM_OUTBOX);
+        
+        when(securityService.getCurrentUser()).thenReturn(user);
+        when(pmDao.get(1L)).thenReturn(message1);
+        when(pmDao.get(2L)).thenReturn(message2);
+        when(pmDao.get(3L)).thenReturn(message3);
+        when(pmDao.isExist(1L)).thenReturn(true);
+        when(pmDao.isExist(2L)).thenReturn(true);
+        when(pmDao.isExist(3L)).thenReturn(true);
+        
+        String resultSingle = pmService.delete(Arrays.asList(1L));
+        
+        assertEquals(resultSingle, INBOX);
+        assertEquals(message1.getStatus(), PrivateMessageStatus.DELETED_FROM_INBOX);
+        verify(pmDao, never()).delete(any(PrivateMessage.class));
+        
+        String resultMultiple = pmService.delete(Arrays.asList(2L, 3L));
+        
+        assertEquals(resultMultiple, INBOX);
+        assertEquals(message2.getStatus(), PrivateMessageStatus.DELETED_FROM_INBOX);
+        verify(pmDao, times(1)).delete(any(PrivateMessage.class));
+    }
+    
+    @Test
+    public void testDeleteFromOutbox() throws NotFoundException {
+        JCUser otherUser = new JCUser(USERNAME, null, null);
+        
+        PrivateMessage message1 = new PrivateMessage(otherUser, user, null, null);
+        message1.setStatus(PrivateMessageStatus.SENT);
+        
+        PrivateMessage message2 = new PrivateMessage(otherUser, user, null, null);
+        message2.setStatus(PrivateMessageStatus.SENT);
+        
+        PrivateMessage message3 = new PrivateMessage(otherUser, user, null, null);
+        message3.setStatus(PrivateMessageStatus.DELETED_FROM_INBOX);
+        
+        when(securityService.getCurrentUser()).thenReturn(user);
+        when(pmDao.get(1L)).thenReturn(message1);
+        when(pmDao.get(2L)).thenReturn(message2);
+        when(pmDao.get(3L)).thenReturn(message3);
+        when(pmDao.isExist(1L)).thenReturn(true);
+        when(pmDao.isExist(2L)).thenReturn(true);
+        when(pmDao.isExist(3L)).thenReturn(true);
+        
+        String resultSingle = pmService.delete(Arrays.asList(1L));
+        
+        assertEquals(resultSingle, OUTBOX);
+        assertEquals(message1.getStatus(), PrivateMessageStatus.DELETED_FROM_OUTBOX);
+        verify(pmDao, never()).delete(any(PrivateMessage.class));
+        
+        String resultMultiple = pmService.delete(Arrays.asList(2L, 3L));
+        
+        assertEquals(resultMultiple, OUTBOX);
+        assertEquals(message2.getStatus(), PrivateMessageStatus.DELETED_FROM_OUTBOX);
+        verify(pmDao, times(1)).delete(any(PrivateMessage.class));
+    }
+    
+    @Test
+    public void testDeleteNotFound() {
+        PrivateMessage message1 = new PrivateMessage(user, user, null, null);
+        message1.setStatus(PrivateMessageStatus.DRAFT);
+        
+        PrivateMessage message2 = new PrivateMessage(user, user, null, null);
+        message2.setStatus(PrivateMessageStatus.DRAFT);
+        
+        when(securityService.getCurrentUser()).thenReturn(user);
+        when(pmDao.get(1L)).thenReturn(message1);
+        when(pmDao.get(2L)).thenReturn(message2);
+        when(pmDao.isExist(1L)).thenReturn(true);
+        when(pmDao.isExist(2L)).thenReturn(true);
+        
+        String result = null;
+        result = pmService.delete(Arrays.asList(1L, 1234L, 2L));
+        assertEquals(result, DRAFTS);
+        verify(pmDao, times(2)).delete(any(PrivateMessage.class));
     }
 }
