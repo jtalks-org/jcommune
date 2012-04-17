@@ -33,7 +33,25 @@ $(document).ready(function () {
             $.each(messages, function(index, value) {
             	identifiers[index] = value.id;
             });
-            deleteMessages(identifiers);
+			
+			if (identifiers.length > 0) {
+				var deletePath = $(this)[0].href;
+				var deletePmPromt = $labelDeletePmGroupConfirmation.replace('%s', identifiers.length);
+				$.prompt(deletePmPromt,
+					{
+						buttons:{ Ok:true, Cancel:false },
+						persistent:false,
+						submit:function (confirmed) {
+							if (confirmed) {
+								deleteMessages(identifiers);
+								var deleteForm = $('#deleteForm')[0];
+								deleteForm.action = deletePath;
+								deleteForm.submit();
+							}
+						}
+					}
+				);
+			}	
         });
     });
     // get private message identifier

@@ -73,8 +73,7 @@
           </c:choose>
         </table>
         <div class="del">
-          <a id="deleteCheckedPM" class="button delete" href="${pageContext.request.contextPath}/pm"
-            rel="<spring:message code="label.deletePMConfirmation"/>">
+          <a id="deleteCheckedPM" class="button" href="${pageContext.request.contextPath}/pm">
             <spring:message code="label.delete"/>
           </a>
           <form:form id="deleteForm" method="DELETE"/>
