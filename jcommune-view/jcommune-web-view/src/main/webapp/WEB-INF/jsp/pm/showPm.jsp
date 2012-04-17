@@ -35,17 +35,17 @@
             <div class="pm_header">
                 <div class="pm_left">
                     <div>
-                        <span>Date</span>
+                        <span><spring:message code="label.date"/>:</span>
                         <jtalks:format value="${pm.creationDate}"/>
                     </div>
                     <div>
-                        <span><spring:message code="label.sender"/></span>
+                        <span><spring:message code="label.sender"/>:</span>
                         <a href="${pageContext.request.contextPath}/users/${pm.userFrom.encodedUsername}">
                             <c:out value="${pm.userFrom.username}"/>
                         </a>
                     </div>
                     <div>
-                        <span><spring:message code="label.pm.recipient"/></span>
+                        <span><spring:message code="label.pm.recipient"/>:</span>
                         <a href="${pageContext.request.contextPath}/users/${pm.userTo.encodedUsername}">
                             <c:out value="${pm.userTo.username}"/>
                         </a>
