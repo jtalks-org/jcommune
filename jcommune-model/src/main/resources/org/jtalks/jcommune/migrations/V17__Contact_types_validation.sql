@@ -4,9 +4,9 @@ ALTER TABLE CONTACT_TYPE
     ADD VALIDATION_PATTERN VARCHAR(255) NOT NULL DEFAULT '.+';
 
 UPDATE CONTACT_TYPE SET MASK='000111222', VALIDATION_PATTERN='^([0-9]){5,9}$' WHERE TYPE_ID = 1;
-UPDATE CONTACT_TYPE SET MASK='skypename', DISPLAY_PATTERN='<a href="skype://%s">%s</a>', VALIDATION_PATTERN='^[-\\.\\w]{6,30}$' WHERE TYPE_ID = 2;
+UPDATE CONTACT_TYPE SET MASK='skypename', DISPLAY_PATTERN='<a href="skype:%s?chat">%s</a>', VALIDATION_PATTERN='^[-\\.\\w]{6,30}$' WHERE TYPE_ID = 2;
 UPDATE CONTACT_TYPE SET MASK='mail@server.com', DISPLAY_PATTERN='<a href="mailto:%s">%s</a>', VALIDATION_PATTERN='^([a-z0-9_\\.-]+)@([\\da-z\\._-]+)\\.([a-z]{2,6})$' WHERE TYPE_ID = 3;
-UPDATE CONTACT_TYPE SET MASK='+38.0672345678', VALIDATION_PATTERN='^\\+[0-9]{1,3}\\.[0-9]{4,14}(?:x.+)?$' WHERE TYPE_ID = 4;
+UPDATE CONTACT_TYPE SET MASK='+380672345678', VALIDATION_PATTERN='^\\+[0-9]{5,20}$' WHERE TYPE_ID = 4;
 UPDATE CONTACT_TYPE SET MASK='vanya@gmail.com', VALIDATION_PATTERN='^(?:([^@/<>\'\"]+)@)?([^@/<>\'\"]+)(?:/([^<>\'\"]*))?$' WHERE TYPE_ID = 5;
 UPDATE CONTACT_TYPE SET MASK='facebook.name', DISPLAY_PATTERN='<a href="http://facebook.com/%s">%s</a>', VALIDATION_PATTERN='^[A-Za-z\\d.]{5,}$' WHERE TYPE_ID = 6;
 UPDATE CONTACT_TYPE SET MASK='twitter_name', DISPLAY_PATTERN='<a href="http://twitter.com/#!/%s">%s</a>', VALIDATION_PATTERN='^[\\w]+$' WHERE TYPE_ID = 7;
