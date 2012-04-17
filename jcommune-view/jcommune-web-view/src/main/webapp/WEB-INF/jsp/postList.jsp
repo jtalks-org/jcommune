@@ -205,13 +205,7 @@
                         <jtalks:format value="${post.modificationDate}"/>
                     </c:if>
                 </div>
-                <c:if test="${post.userCreated.signature!=null}">
-                    <div class="signature">
-                        -------------------------
-                        <br/>
-                        <span><c:out value="${post.userCreated.signature}"/></span>
-                    </div>
-                </c:if>
+                ${post.userCreated.renderedSignature}
             </div>
         </li>
     </c:forEach>
