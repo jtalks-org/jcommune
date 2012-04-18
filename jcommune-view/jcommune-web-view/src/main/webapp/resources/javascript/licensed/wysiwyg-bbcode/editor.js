@@ -77,17 +77,23 @@ function initEditor(textAreaId, htmlAreaId, baseDivId) {
     editorVisible = false;
 }
 
+/**
+ * Changes visual editor representation when toggling
+ * preview mode.
+ */
 function SwitchEditor() {
-    if (editorVisible) {
+    if (editorVisible) { // exit preview
         textboxelement.style.display = "";
         htmlcontentelement.style.display = "none";
         editorVisible = false;
         $(".formatting_buttons").show();
+        $("#preview")[0].value = $labelPreview;
     }
-    else {
+    else { // enter preview
         content = textboxelement.value;
         bbcode2html();
         $(".formatting_buttons").hide();
+        $("#preview")[0].value = $labelEdit;
     }
 }
 

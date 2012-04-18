@@ -34,4 +34,7 @@ $labelUrlInfo = '<spring:message code="label.url.info"/>';
 $labelUrlRequired = '<spring:message code="label.url.required"/>';
 $labelImgHeader = '<spring:message code="label.img.header"/>';
 
+$labelPreview= '<spring:message code="label.answer.preview"/>';
+$labelEdit= '<spring:message code="label.edit"/>';
+
 
