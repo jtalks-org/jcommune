@@ -245,27 +245,27 @@ public class TransactionalPrivateMessageService
             }
             
             switch (message.getStatus()) {
-            case DRAFT:
-                this.getDao().delete(message);
-                result = "drafts";
-                break;
-            case DELETED_FROM_INBOX:
-                this.getDao().delete(message);
-                result = "outbox";
-                break;
-            case DELETED_FROM_OUTBOX:
-                this.getDao().delete(message);
-                result = "inbox";
-                break;
-            case SENT:
-                if (currentUser.equals(message.getUserFrom())) {
-                    message.setStatus(PrivateMessageStatus.DELETED_FROM_OUTBOX);
+                case DRAFT:
+                    this.getDao().delete(message);
+                    result = "drafts";
+                    break;
+                case DELETED_FROM_INBOX:
+                    this.getDao().delete(message);
                     result = "outbox";
-                } else {
-                    message.setStatus(PrivateMessageStatus.DELETED_FROM_INBOX);
+                    break;
+                case DELETED_FROM_OUTBOX:
+                    this.getDao().delete(message);
                     result = "inbox";
-                }
-                break;
+                    break;
+                case SENT:
+                    if (currentUser.equals(message.getUserFrom())) {
+                        message.setStatus(PrivateMessageStatus.DELETED_FROM_OUTBOX);
+                        result = "outbox";
+                    } else {
+                        message.setStatus(PrivateMessageStatus.DELETED_FROM_INBOX);
+                        result = "inbox";
+                    }
+                    break;
             }
         }
         return result;
