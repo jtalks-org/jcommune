@@ -21,6 +21,8 @@
 --%>
 $labelDeleteContactConfirmation = '<spring:message code="label.deleteContactConfirmation"/>';
 
+$labelDeletePmGroupConfirmation = '<spring:message code="label.deletePMGroupConfirmation"/>';
+
 $labelValidationUsercontactNotMatch = '<spring:message code="validation.usercontact.notmatch"/>';
 $labelContactType = '<spring:message code="label.contact.type"/>';
 $labelContactValue = '<spring:message code="label.contact.value"/>';
