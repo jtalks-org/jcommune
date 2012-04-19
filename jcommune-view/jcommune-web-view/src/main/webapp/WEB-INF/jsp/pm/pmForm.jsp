@@ -23,6 +23,8 @@
     <title><spring:message code="label.new_pm"/></title>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
             type="text/javascript"></script>
+    <script language="javascript"
+            src="${pageContext.request.contextPath}/resources/javascript/custom/privateMessages.js"></script>
 </head>
 <body>
 <div class="wrap pm_page">

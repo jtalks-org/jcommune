@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.jtalks.jcommune.service.security.SecurityConstants.*;
@@ -130,11 +131,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    public List<Topic> getRecentTopics(DateTime date) {
-        if (date == null) {
-            date = new DateTime().minusDays(1);
-        }
-        return this.getDao().getTopicsUpdatedSince(date);
+    public List<Topic> getRecentTopics() {
+        DateTime date24HoursAgo = new DateTime().minusDays(1);
+        return this.getDao().getTopicsUpdatedSince(date24HoursAgo);
     }
 
     /**

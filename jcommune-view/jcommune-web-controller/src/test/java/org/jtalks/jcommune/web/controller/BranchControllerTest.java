@@ -123,16 +123,13 @@ public class BranchControllerTest {
     public void recentTopicsPage() throws NotFoundException {
         int page = 2;
         //set expectations
-        when(topicService.getRecentTopics(now)).thenReturn(new ArrayList<Topic>());
-
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute("lastlogin", now);
+        when(topicService.getRecentTopics()).thenReturn(new ArrayList<Topic>());
 
         //invoke the object under test
-        ModelAndView mav = controller.recentTopicsPage(page, session);
+        ModelAndView mav = controller.recentTopicsPage(page);
 
         //check expectations
-        verify(topicService).getRecentTopics(now);
+        verify(topicService).getRecentTopics();
 
         //check result
         assertViewName(mav, "recent");

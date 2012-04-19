@@ -33,6 +33,7 @@ import org.jtalks.jcommune.service.security.AclBuilder;
 import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -173,30 +174,14 @@ public class TransactionalTopicServiceTest {
 
     @Test
     public void testGetAllTopicsPastLastDay() throws NotFoundException {
-        DateTime now = new DateTime();
         List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
-        when(topicDao.getTopicsUpdatedSince(now)).thenReturn(expectedList);
+        when(topicDao.getTopicsUpdatedSince(Matchers.<DateTime>any())).thenReturn(expectedList);
 
-        List<Topic> topics = topicService.getRecentTopics(now);
+        List<Topic> topics = topicService.getRecentTopics();
 
         assertNotNull(topics);
         assertEquals(topics.size(), 2);
-        verify(topicDao).getTopicsUpdatedSince(now);
-    }
-
-    @Test
-    public void testGetAllTopicsPastLastDayNullLastLoginDate() {
-        List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
-        when(topicDao.getTopicsUpdatedSince(any(DateTime.class))).thenReturn(expectedList);
-
-        List<Topic> topics = topicService.getRecentTopics(null);
-
-        assertNotNull(topics);
-        assertEquals(topics.size(), 2);
-        ArgumentCaptor<DateTime> captor = ArgumentCaptor.forClass(DateTime.class);
-        verify(topicDao).getTopicsUpdatedSince(captor.capture());
-        int yesterday = new DateTime().minusDays(1).getDayOfYear();
-        assertEquals(captor.getValue().getDayOfYear(), yesterday);
+        verify(topicDao).getTopicsUpdatedSince(Matchers.<DateTime>any());
     }
 
     @Test

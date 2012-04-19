@@ -23,7 +23,29 @@ function deleteMessages(identifiers) {
 	deleteForm.appendChild(field);
 }
 
+// enable/disable delete button
+function setDeleteCheckedPmEnabled(isEnabled) {
+	if (isEnabled) {
+		$('#deleteCheckedPM').removeAttr('disabled');
+		$('#deleteCheckedPM').removeClass('disabled');
+	} else {
+		$('#deleteCheckedPM').attr('disabled', 'disabled');
+		$('#deleteCheckedPM').addClass('disabled');
+	}
+}
+
+// setup enable/disable state of delete button based on number of 
+// selected messages
+function setDeleteCheckedPmState() {
+	numberOfSelectedMessages = $('.checker:checked').length;		
+	setDeleteCheckedPmEnabled(numberOfSelectedMessages > 0);
+}
+
+
+
 $(document).ready(function () {
+	setDeleteCheckedPmEnabled(false);
+	
 	// collect checked private messages
     $("#deleteCheckedPM").each(function () {
         $(this).click(function (e) {
@@ -33,7 +55,25 @@ $(document).ready(function () {
             $.each(messages, function(index, value) {
             	identifiers[index] = value.id;
             });
-            deleteMessages(identifiers);
+			
+			if (identifiers.length > 0) {
+				var deletePath = $(this)[0].href;
+				var deletePmPromt = $labelDeletePmGroupConfirmation.replace('%s', identifiers.length);
+				$.prompt(deletePmPromt,
+					{
+						buttons:{ Ok:true, Cancel:false },
+						persistent:false,
+						submit:function (confirmed) {
+							if (confirmed) {
+								deleteMessages(identifiers);
+								var deleteForm = $('#deleteForm')[0];
+								deleteForm.action = deletePath;
+								deleteForm.submit();
+							}
+						}
+					}
+				);
+			}	
         });
     });
     // get private message identifier
@@ -44,5 +84,65 @@ $(document).ready(function () {
            	identifiers[0] = $("#PMId").val();
             deleteMessages(identifiers);
         });
+    });
+	
+	
+	
+	// count number of checked checkboxes
+	$('.checker').on('click', setDeleteCheckedPmState);	
+	$('.check_all').on('click', setDeleteCheckedPmState);
+
+
+    /**
+     * This script enables checking private
+     * messages in table and highlights the checked.
+     */
+    $(document).ready(function () {
+        var c = 0;
+        $('.messages tr.mess:even').css('background', '#d4d9df');
+        $('.messages tr.mess:odd').css('background', '#cdcdcd');
+
+
+        $('.checker').on("click", function () {
+            if ($(this).is(':checked')) {
+                if (++c === $('.checker').length) {
+                    $('.check_all').attr('checked', true);
+                };
+                $(this).closest('.mess').addClass('check');
+            } else {
+                --c;
+                $(this).closest('.mess').removeClass('check');
+                $('.check_all').attr('checked', false);
+            };
+        });
+
+        $('.check_all').on("click", function () {
+            if ($(this).is(':checked')) {
+                $('.checker').attr('checked', true);
+                c = $('.checker').length;
+                $('.counter').text(c + ' выбрано');
+                $('.mess').addClass('check');
+            } else {
+                $('.checker').attr('checked', false);
+                c = 0;
+                $('.mess').removeClass('check');
+            }
+        });
+    });
+
+    /**
+     * Highlights currently opened PM folder
+     */
+    $(document).ready(function () {
+        var url = document.URL.toString();
+        if (url.match(/inbox$/)) {
+            $("#inbox_link").addClass("highlight_tab");
+        } else if (url.match(/outbox$/)) {
+            $("#outbox_link").addClass("highlight_tab");
+        } else if (url.match(/new$/)) {
+            $("#newmsg_link").addClass("highlight_tab");
+        } else if (url.match(/drafts$/)) {
+            $("#draft_link").addClass("highlight_tab");
+        }
     });
 });

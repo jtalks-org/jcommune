@@ -230,30 +230,44 @@ public class TransactionalPrivateMessageService
      * {@inheritDoc}
      */
     @Override
-    public String delete(List<Long> ids) throws NotFoundException {
+    public String delete(List<Long> ids) {
         JCUser currentUser = securityService.getCurrentUser();
+        
+        String result = "inbox";
         for (Long id : ids) {
-            PrivateMessage message = get(id);
+            
+            PrivateMessage message = null;
+            try {
+                message = get(id);
+            } catch (NotFoundException e) {
+                logger.warn("Message #" + id + " not found", e);
+                continue;
+            }
+            
             switch (message.getStatus()) {
-            case DRAFT:
-                this.getDao().delete(message);
-                return "drafts";
-            case DELETED_FROM_INBOX:
-                this.getDao().delete(message);
-                return "outbox";
-            case DELETED_FROM_OUTBOX:
-                this.getDao().delete(message);
-                return "inbox";
-            case SENT:
-                if (currentUser.equals(message.getUserFrom())) {
-                    message.setStatus(PrivateMessageStatus.DELETED_FROM_OUTBOX);
-                    return "outbox";
-                } else {
-                    message.setStatus(PrivateMessageStatus.DELETED_FROM_INBOX);
-                    return "inbox";
-                }
+                case DRAFT:
+                    this.getDao().delete(message);
+                    result = "drafts";
+                    break;
+                case DELETED_FROM_INBOX:
+                    this.getDao().delete(message);
+                    result = "outbox";
+                    break;
+                case DELETED_FROM_OUTBOX:
+                    this.getDao().delete(message);
+                    result = "inbox";
+                    break;
+                case SENT:
+                    if (currentUser.equals(message.getUserFrom())) {
+                        message.setStatus(PrivateMessageStatus.DELETED_FROM_OUTBOX);
+                        result = "outbox";
+                    } else {
+                        message.setStatus(PrivateMessageStatus.DELETED_FROM_INBOX);
+                        result = "inbox";
+                    }
+                    break;
             }
         }
-        return "inbox";
+        return result;
     }
 }
