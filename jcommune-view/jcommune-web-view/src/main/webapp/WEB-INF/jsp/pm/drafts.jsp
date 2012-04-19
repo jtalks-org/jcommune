@@ -15,14 +15,11 @@
 
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <head>
-    <script language="javascript"
-      src="${pageContext.request.contextPath}/resources/javascript/custom/tableStylish.js"></script>
     <script language="javascript"
       src="${pageContext.request.contextPath}/resources/javascript/custom/privateMessages.js"></script>
     <title><spring:message code="label.drafts"/></title>
@@ -84,7 +81,7 @@
           </a>
           <form:form id="deleteForm" method="DELETE"/>
         </div>
-        <a class="button" href="${pageContext.request.contextPath}/pm/${pm.id}/edit">
+        <a class="button" id="editCheckedPM">
             <spring:message code="label.edit"/>
         </a>
     </div>
