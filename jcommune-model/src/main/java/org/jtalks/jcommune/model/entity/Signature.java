@@ -25,7 +25,7 @@ import org.springframework.web.util.HtmlUtils;
 public class Signature {
 
     public static final String RENDERING_TEMPLATE =
-            "<div class=\"signature\">-------------------------<br>%s</div>";
+            "<div class=\"signature\">-------------------------<br><span>%s</span></div>";
 
     private String content;
 
