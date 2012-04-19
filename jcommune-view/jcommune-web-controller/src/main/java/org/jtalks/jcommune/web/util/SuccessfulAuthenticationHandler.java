@@ -56,8 +56,6 @@ public class SuccessfulAuthenticationHandler extends SavedRequestAwareAuthentica
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws ServletException, IOException {
         JCUser user = (JCUser) authentication.getPrincipal();
-        HttpSession session = request.getSession(true);
-        session.setAttribute("lastlogin", user.getLastLogin());
         userService.updateLastLoginTime(user);
         logger.info("JCUser logged in: " + user.getUsername());
         //apply language settings assuming CookieLocaleResolver usage
