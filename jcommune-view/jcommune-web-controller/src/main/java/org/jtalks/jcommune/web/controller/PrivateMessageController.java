@@ -253,10 +253,9 @@ public class PrivateMessageController {
      *
      * @param csIds Comma-separated identifiers of the private messages for deletion
      * @return redirect to folder from what request is come
-     * @throws NotFoundException when message not found
      */
     @RequestMapping(value = "/pm", method = {RequestMethod.DELETE})
-    public String deleteMessages(@RequestParam(PM_IDENTIFIERS) String csIds) throws NotFoundException {
+    public String deleteMessages(@RequestParam(PM_IDENTIFIERS) String csIds) {
         List<Long> ids = new ArrayList<Long>();
         for (String val : csIds.split(",")) {
             ids.add(Long.parseLong(val));
