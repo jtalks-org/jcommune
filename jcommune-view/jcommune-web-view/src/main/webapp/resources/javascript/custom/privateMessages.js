@@ -101,8 +101,9 @@ $(document).ready(function () {
 
     //bind edit message handler
     $("#editCheckedPM").click(function() {
-        editMessage()
-    })
+        editMessage();
+		return false;
+    });
 
     /**
      * This script enables checking private
@@ -133,7 +134,7 @@ $(document).ready(function () {
             if ($(this).is(':checked')) {
                 $('.checker').attr('checked', true);
                 c = $('.checker').length;
-                $('.counter').text(c + ' РІС‹Р±СЂР°РЅРѕ');
+                $('.counter').text(c + ' выбрано');
                 $('.mess').addClass('check');
             } else {
                 $('.checker').attr('checked', false);
