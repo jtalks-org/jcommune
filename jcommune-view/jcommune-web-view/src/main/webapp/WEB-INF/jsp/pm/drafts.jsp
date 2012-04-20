@@ -75,7 +75,7 @@
           </a>
           <form:form id="deleteForm" method="DELETE"/>
         </div>
-        <a class="button" id="editCheckedPM">
+        <a id="editCheckedPM" class="button" href="${pageContext.request.contextPath}/pm">
             <spring:message code="label.edit"/>
         </a>
     </div>

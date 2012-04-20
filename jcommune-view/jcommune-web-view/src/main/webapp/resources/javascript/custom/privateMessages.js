@@ -45,7 +45,7 @@ function toggleButtonEnabled(id, isEnabled) {
 
 // setup enable/disable state of delete and edit button based on number of
 // selected messages
-function setDeleteCheckedPmState() {
+function updateButtonsState() {
     numberOfSelectedMessages = $('.checker:checked').length;
     toggleButtonEnabled('#deleteCheckedPM', numberOfSelectedMessages > 0);
     toggleButtonEnabled('#editCheckedPM', numberOfSelectedMessages == 1);
@@ -54,11 +54,10 @@ function setDeleteCheckedPmState() {
 
 $(document).ready(function () {
     //cleanup
-    $('.checker:checked').each(function(){
-        $(this).checked = false;
-    })
-    toggleButtonEnabled('#deleteCheckedPM', false);
-    toggleButtonEnabled('#editCheckedPM', false);
+   /* $('.checker:checked').each(function(){
+        $(this)[0].checked = false;
+    })*/
+    updateButtonsState();
 
     // collect checked private messages
     $("#deleteCheckedPM").each(function () {
@@ -105,12 +104,6 @@ $(document).ready(function () {
         editMessage()
     })
 
-
-    // count number of checked checkboxes
-    $('.checker').on('click', setDeleteCheckedPmState);
-    $('.check_all').on('click', setDeleteCheckedPmState);
-
-
     /**
      * This script enables checking private
      * messages in table and highlights the checked.
@@ -133,7 +126,7 @@ $(document).ready(function () {
                 $(this).closest('.mess').removeClass('check');
                 $('.check_all').attr('checked', false);
             }
-            ;
+            updateButtonsState();
         });
 
         $('.check_all').on("click", function () {
@@ -147,6 +140,7 @@ $(document).ready(function () {
                 c = 0;
                 $('.mess').removeClass('check');
             }
+            updateButtonsState();
         });
     });
 
