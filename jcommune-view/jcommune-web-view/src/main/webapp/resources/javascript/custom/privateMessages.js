@@ -14,66 +14,80 @@
  */
 
 function deleteMessages(identifiers) {
-	// add identifiers of the checked private messages for deletion
-	var deleteForm = $("#deleteForm")[0];
-	var field = document.createElement("input");
-	field.setAttribute("type", "hidden");
-	field.setAttribute("name", "pmIdentifiers");
-	field.setAttribute("value", identifiers + "");
-	deleteForm.appendChild(field);
+    // add identifiers of the checked private messages for deletion
+    var deleteForm = $("#deleteForm")[0];
+    var field = document.createElement("input");
+    field.setAttribute("type", "hidden");
+    field.setAttribute("name", "pmIdentifiers");
+    field.setAttribute("value", identifiers + "");
+    deleteForm.appendChild(field);
+}
+
+/**
+ * Edits the selected message. This function doesn't care if there is correct number
+ * of messages (1) selected, this check is performed before the function call
+ */
+function editMessage() {
+    id = $('.checker:checked')[0].id;
+    document.location = $root + "/pm/" + id + "/edit";
 }
 
 // enable/disable delete button
-function setDeleteCheckedPmEnabled(isEnabled) {
-	if (isEnabled) {
-		$('#deleteCheckedPM').removeAttr('disabled');
-		$('#deleteCheckedPM').removeClass('disabled');
-	} else {
-		$('#deleteCheckedPM').attr('disabled', 'disabled');
-		$('#deleteCheckedPM').addClass('disabled');
-	}
+function toggleButtonEnabled(id, isEnabled) {
+    if (isEnabled) {
+        $(id).removeAttr('disabled');
+        $(id).removeClass('disabled');
+    } else {
+        $(id).attr('disabled', 'disabled');
+        $(id).addClass('disabled');
+    }
 }
 
-// setup enable/disable state of delete button based on number of 
+// setup enable/disable state of delete and edit button based on number of
 // selected messages
 function setDeleteCheckedPmState() {
-	numberOfSelectedMessages = $('.checker:checked').length;		
-	setDeleteCheckedPmEnabled(numberOfSelectedMessages > 0);
+    numberOfSelectedMessages = $('.checker:checked').length;
+    toggleButtonEnabled('#deleteCheckedPM', numberOfSelectedMessages > 0);
+    toggleButtonEnabled('#editCheckedPM', numberOfSelectedMessages == 1);
 }
-
 
 
 $(document).ready(function () {
-	setDeleteCheckedPmEnabled(false);
-	
-	// collect checked private messages
+    //cleanup
+    $('.checker:checked').each(function(){
+        $(this).checked = false;
+    })
+    toggleButtonEnabled('#deleteCheckedPM', false);
+    toggleButtonEnabled('#editCheckedPM', false);
+
+    // collect checked private messages
     $("#deleteCheckedPM").each(function () {
         $(this).click(function (e) {
             e.preventDefault();
             var messages = $(".check");
             var identifiers = [];
             $.each(messages, function(index, value) {
-            	identifiers[index] = value.id;
+                identifiers[index] = value.id;
             });
-			
-			if (identifiers.length > 0) {
-				var deletePath = $(this)[0].href;
-				var deletePmPromt = $labelDeletePmGroupConfirmation.replace('%s', identifiers.length);
-				$.prompt(deletePmPromt,
-					{
-						buttons:{ Ok:true, Cancel:false },
-						persistent:false,
-						submit:function (confirmed) {
-							if (confirmed) {
-								deleteMessages(identifiers);
-								var deleteForm = $('#deleteForm')[0];
-								deleteForm.action = deletePath;
-								deleteForm.submit();
-							}
-						}
-					}
-				);
-			}	
+
+            if (identifiers.length > 0) {
+                var deletePath = $(this)[0].href;
+                var deletePmPromt = $labelDeletePmGroupConfirmation.replace('%s', identifiers.length);
+                $.prompt(deletePmPromt,
+                    {
+                        buttons:{ Ok:true, Cancel:false },
+                        persistent:false,
+                        submit:function (confirmed) {
+                            if (confirmed) {
+                                deleteMessages(identifiers);
+                                var deleteForm = $('#deleteForm')[0];
+                                deleteForm.action = deletePath;
+                                deleteForm.submit();
+                            }
+                        }
+                    }
+                );
+            }
         });
     });
     // get private message identifier
@@ -81,16 +95,20 @@ $(document).ready(function () {
         $(this).click(function (e) {
             e.preventDefault();
             var identifiers = [];
-           	identifiers[0] = $("#PMId").val();
+            identifiers[0] = $("#PMId").val();
             deleteMessages(identifiers);
         });
     });
-	
-	
-	
-	// count number of checked checkboxes
-	$('.checker').on('click', setDeleteCheckedPmState);	
-	$('.check_all').on('click', setDeleteCheckedPmState);
+
+    //bind edit message handler
+    $("#editCheckedPM").click(function() {
+        editMessage()
+    })
+
+
+    // count number of checked checkboxes
+    $('.checker').on('click', setDeleteCheckedPmState);
+    $('.check_all').on('click', setDeleteCheckedPmState);
 
 
     /**
@@ -107,13 +125,15 @@ $(document).ready(function () {
             if ($(this).is(':checked')) {
                 if (++c === $('.checker').length) {
                     $('.check_all').attr('checked', true);
-                };
+                }
+                ;
                 $(this).closest('.mess').addClass('check');
             } else {
                 --c;
                 $(this).closest('.mess').removeClass('check');
                 $('.check_all').attr('checked', false);
-            };
+            }
+            ;
         });
 
         $('.check_all').on("click", function () {
