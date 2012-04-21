@@ -28,8 +28,11 @@ function deleteMessages(identifiers) {
  * of messages (1) selected, this check is performed before the function call
  */
 function editMessage() {
-    id = $('.checker:checked')[0].id;
-    document.location = $root + "/pm/" + id + "/edit";
+    selectedCheckboxes = $('.checker:checked');
+    if (selectedCheckboxes.size() > 0) {
+        id = selectedCheckboxes[0].id;
+        document.location = $root + "/pm/" + id + "/edit";
+    }
 }
 
 // enable/disable delete button
@@ -54,9 +57,6 @@ function updateButtonsState() {
 
 $(document).ready(function () {
     //cleanup
-   /* $('.checker:checked').each(function(){
-        $(this)[0].checked = false;
-    })*/
     updateButtonsState();
 
     // collect checked private messages
@@ -102,7 +102,7 @@ $(document).ready(function () {
     //bind edit message handler
     $("#editCheckedPM").click(function() {
         editMessage();
-		return false;
+        return false;
     });
 
     /**
@@ -134,7 +134,7 @@ $(document).ready(function () {
             if ($(this).is(':checked')) {
                 $('.checker').attr('checked', true);
                 c = $('.checker').length;
-                $('.counter').text(c + ' выбрано');
+                $('.counter').text(c + ' пїЅпїЅпїЅпїЅпїЅпїЅпїЅ');
                 $('.mess').addClass('check');
             } else {
                 $('.checker').attr('checked', false);
