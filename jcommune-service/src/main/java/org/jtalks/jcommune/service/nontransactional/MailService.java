@@ -50,7 +50,6 @@ public class MailService {
     private String from;
     private VelocityEngine velocityEngine;
     private MessageSource messageSource;
-    private BBCodeService bbCodeService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MailService.class);
 
@@ -76,15 +75,12 @@ public class MailService {
      * @param from          blank message with "from" filed preset
      * @param engine        engine for templating email notifications
      * @param source        for resolving internationalization messages
-     * @param bbCodeService to transform BB-encoded text to HTML
      */
-    public MailService(JavaMailSender sender, String from, VelocityEngine engine, MessageSource source,
-                       BBCodeService bbCodeService) {
+    public MailService(JavaMailSender sender, String from, VelocityEngine engine, MessageSource source) {
         this.mailSender = sender;
         this.from = from;
         this.velocityEngine = engine;
         this.messageSource = source;
-        this.bbCodeService = bbCodeService;
     }
 
     /**
@@ -187,8 +183,6 @@ public class MailService {
             model.put(LINK, url);
             model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
             model.put(RECIPIENT_LOCALE, locale);
-            model.put("title", pm.getTitle());
-            model.put("message", bbCodeService.removeBBCodes(pm.getBody()));
             this.sendEmail(recipient.getEmail(),
                     messageSource.getMessage("receivedPrivateMessageNotification.subject", new Object[]{}, locale),
                     model, "receivedPrivateMessageNotification.vm");

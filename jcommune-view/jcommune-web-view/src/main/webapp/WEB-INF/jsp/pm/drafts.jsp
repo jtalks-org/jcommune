@@ -40,7 +40,6 @@
             <th class="pm_header_info"><spring:message code="label.pm.recipient"/></th>
             <th class="pm_header_title"><spring:message code="label.pm.title"/></th>
             <th class="pm_header_info"><spring:message code="label.sending_date"/></th>
-            <th class="pm_header_info"><spring:message code="label.edit"/></th>
           </tr>
           <c:choose>
             <c:when test="${!(empty pmList)}">
@@ -60,11 +59,6 @@
                   <td>
                     <jtalks:format value="${pm.creationDate}"/>
                   </td>
-                  <td>
-                    <a href="${pageContext.request.contextPath}/pm/${pm.id}/edit">
-                      <spring:message code="label.edit"/>
-                    </a>
-                  </td>
                 </tr>
               </c:forEach>
             </c:when>
@@ -81,7 +75,7 @@
           </a>
           <form:form id="deleteForm" method="DELETE"/>
         </div>
-        <a class="button" id="editCheckedPM">
+        <a id="editCheckedPM" class="button" href="${pageContext.request.contextPath}/pm">
             <spring:message code="label.edit"/>
         </a>
     </div>

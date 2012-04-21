@@ -20,9 +20,6 @@ ${messageSource.getMessage("greeting", $noArgs, $locale)} ${recipient.username}!
 ${messageSource.getMessage("receivedPrivateMessageNotification.content", $noArgs, $locale)}
 ${messageSource.getMessage("receivedPrivateMessageNotification.link", $noArgs, $locale)} ${link}
 
-${title}
-${message}
-
 ${messageSource.getMessage("wish", $noArgs, $locale)}
 
 ${messageSource.getMessage("signature", $noArgs, $locale)}
