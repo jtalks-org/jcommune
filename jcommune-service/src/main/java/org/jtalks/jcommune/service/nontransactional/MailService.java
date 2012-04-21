@@ -220,6 +220,29 @@ public class MailService {
     }
 
     /**
+     * Sends email to topic starter that his or her topic was moved
+     *
+     * @param recipient user to send notification
+     * @param topicId  id of relocated topic
+     */
+    public void sendTopicMovedMail(JCUser recipient, long topicId){
+        String urlSuffix = "/topics/" + topicId;
+        String url = this.getDeploymentRootUrl() + urlSuffix;
+        Locale locale = recipient.getLanguage().getLocale();
+        Map<String, Object> model = new HashMap<String, Object>();
+        model.put(NAME, recipient.getUsername());
+        model.put(LINK, url);
+        model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
+        model.put(RECIPIENT_LOCALE, locale);
+        try {
+            this.sendEmail(recipient.getEmail(), messageSource.getMessage("moveTopic.subject",
+                    new Object[]{}, locale), model, "moveTopic.vm");
+        } catch (MailingFailedException e) {
+            LOGGER.error("Failed to sent activation mail for user: " + recipient.getUsername());
+        }
+    }
+
+    /**
      * Just a convenience method for message sending to encapsulate
      * boilerplate error handling code.
      *

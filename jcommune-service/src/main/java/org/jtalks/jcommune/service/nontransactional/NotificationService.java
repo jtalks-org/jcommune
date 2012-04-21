@@ -28,6 +28,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
  * the whole operation from beeing completed.
  *
  * @author Evgeniy Naumenko
+ * @author Vitaliy Kravchenko
  */
 public class NotificationService {
 
@@ -72,6 +73,25 @@ public class NotificationService {
                 mailService.sendBranchUpdatesOnSubscription(user, branch);
             }
         }
+    }
+
+    /**
+     * Notifies topic starter by email that his or her topic
+     * was moved to another sections and also notifies all branch
+     * subscribers
+     * 
+     * @param topic  topic moved
+     * @param topicId  topic id
+     */
+    public void topicMoved(Topic topic, long topicId){
+         JCUser currentUser = securityService.getCurrentUser();
+         Branch branch = topic.getBranch();
+         for (JCUser user : branch.getSubscribers()){
+             if (!user.equals(currentUser)) {
+                 mailService.sendBranchUpdatesOnSubscription(user, branch);
+             }
+         }
+         mailService.sendTopicMovedMail(currentUser, topicId);
     }
 
 }

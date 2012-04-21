@@ -195,6 +195,27 @@ public class MailServiceTest {
         service.sendReceivedPrivateMessageNotification(user, new PrivateMessage(null, null, null, null));
     }
 
+    @Test
+    public void testSendTopicMovedMail() throws IOException, MessagingException {
+        topic.setId(1);
+
+        service.sendTopicMovedMail(user, topic.getId());
+
+        this.checkMailCredentials();
+        assertTrue(this.getMimeMailBody().contains(USERNAME));
+        assertTrue(this.getMimeMailBody().contains("http://coolsite.com/forum/topics/" + topic.getId()));
+    }
+
+    @Test
+    public void testSendTopicMovedMailFailed(){
+        Exception fail = new MailSendException("");
+        doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
+
+        topic.setId(1);
+
+        service.sendTopicMovedMail(user, topic.getId());
+    }
+
     private String getMimeMailBody() throws IOException, MessagingException {
         return ((MimeMultipart) ((MimeMultipart) ((MimeMultipart) captor.getValue().getContent()).getBodyPart(0).
                 getDataHandler().getContent()).getBodyPart(0).getDataHandler().getContent()).getBodyPart(0).

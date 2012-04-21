@@ -26,6 +26,7 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.security.SecurityConstants;
@@ -214,10 +215,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         targetBranch.addTopic(topic);
         branchDao.update(targetBranch);
 
-        logger.info("Moved topic \"{}\". Topic id: {}", topic.getTitle(), topicId);
+        notificationService.topicMoved(topic, topicId);
 
-        notificationService.topicChanged(topic);
-        notificationService.branchChanged(currentBranch);
+        logger.info("Moved topic \"{}\". Topic id: {}", topic.getTitle(), topicId);
     }
 
     /**
