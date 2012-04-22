@@ -40,7 +40,7 @@ public interface UserContactsDao extends ChildRepository<UserContactType> {
     /**
      * Fetches user contact by id
      *
-     * @param id database idetifier of the contact required
+     * @param id database identifier of the contact required
      * @return UserContact with this id or nill, if this id is unknown
      */
     UserContact getContactById(long id);

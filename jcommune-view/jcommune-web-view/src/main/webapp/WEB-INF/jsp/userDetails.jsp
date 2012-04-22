@@ -109,7 +109,7 @@
                     <div class="contact">
                         <label><img src="${pageContext.request.contextPath}${contact.type.icon}" alt=""><c:out
                                 value="${contact.type.typeName}"/></label>
-                        <span><c:out value="${contact.value}"/></span>
+                        <span>${contact.displayValue}</span>
                         <c:if test="${user.username == auth}">
                             <input type="hidden" value="${contact.id}"/>
                             <a class="button" id="${contact.id}" href="#">

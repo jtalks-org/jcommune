@@ -20,6 +20,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <head>
+    <script language="javascript"
+            src="${pageContext.request.contextPath}/resources/javascript/custom/privateMessages.js"></script>
     <title><spring:message code="label.pm_title"/></title>
 </head>
 <body>
@@ -33,19 +35,19 @@
             <div class="pm_header">
                 <div class="pm_left">
                     <div>
-                        <span>Date</span>
+                        <span><spring:message code="label.date"/>:</span>
                         <jtalks:format value="${pm.creationDate}"/>
                     </div>
                     <div>
-                        <span><spring:message code="label.sender"/></span>
+                        <span><spring:message code="label.sender"/>:</span>
                         <a href="${pageContext.request.contextPath}/users/${pm.userFrom.encodedUsername}">
-                         <c:out value="${pm.userFrom.username}"/>
+                            <c:out value="${pm.userFrom.username}"/>
                         </a>
                     </div>
                     <div>
-                        <span><spring:message code="label.pm.recipient"/></span>
+                        <span><spring:message code="label.pm.recipient"/>:</span>
                         <a href="${pageContext.request.contextPath}/users/${pm.userTo.encodedUsername}">
-                         <c:out value="${pm.userTo.username}"/>
+                            <c:out value="${pm.userTo.username}"/>
                         </a>
                     </div>
                 </div>
@@ -57,18 +59,28 @@
                 <div class="pm_left">
                     <c:if test="${pm.replyAllowed && (pm.userTo eq user)}">
                         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                        <form:form action="${pageContext.request.contextPath}/reply/${pm.id}" method="GET">
-                            <input class="button" type="submit" value="<spring:message code="label.reply"/>"/>
-                        </form:form>
-                        <form:form action="${pageContext.request.contextPath}/quote/${pm.id}" method="GET">
-                            <input class="button" type="submit" value="<spring:message code="label.quote"/>"/>
-                        </form:form>
-                    </sec:authorize>
+                            <form:form action="${pageContext.request.contextPath}/reply/${pm.id}" method="GET">
+                                <input class="button" type="submit" value="<spring:message code="label.reply"/>"/>
+                            </form:form>
+                            <form:form action="${pageContext.request.contextPath}/quote/${pm.id}" method="GET">
+                                <input class="button" type="submit" value="<spring:message code="label.quote"/>"/>
+                            </form:form>
+                        </sec:authorize>
                     </c:if>
+                    <div class="del">
+                        <a id="deleteOnePM" class="button delete" href="${pageContext.request.contextPath}/pm"
+                           rel="<spring:message code="label.deletePMConfirmation"/>">
+                            <spring:message code="label.delete"/>
+                        </a>
+                        <input id="PMId" hidden="true" value="${pm.id}"/>
+                        <form:form id="deleteForm" method="DELETE"/>
+                    </div>
                 </div>
                 <div class="pm_right">
                     <jtalks:bb2html bbCode="${pm.body}"/>
+                    ${pm.userFrom.signature}
                 </div>
+
             </div>
         </div>
     </div>

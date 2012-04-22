@@ -49,7 +49,7 @@ public class TopicTest {
     @Test
     public void addPost() throws InterruptedException {
         DateTime prevDate = topic.getModificationDate();
-        Thread.sleep(25); // milisecond precise is a kind of fiction
+        Thread.sleep(25); // millisecond precise is a kind of fiction
         topic.addPost(new Post());
 
         assertTrue(topic.getModificationDate().isAfter(prevDate));
@@ -58,7 +58,7 @@ public class TopicTest {
     @Test
     public void updatePost() throws InterruptedException {
         DateTime prevDate = topic.getModificationDate();
-        Thread.sleep(25); // milisecond precise is a kind of fiction
+        Thread.sleep(25); // millisecond precise is a kind of fiction
         post1.updateModificationDate();
 
         assertTrue(topic.getModificationDate().isAfter(prevDate));
@@ -89,5 +89,43 @@ public class TopicTest {
         topic.setSticked(true);
 
         assertEquals(topic.getTopicWeight(), 10);
+    }
+
+    @Test
+    public void testHasUpdatesDefault() {
+        assertTrue(topic.isHasUpdates());
+    }
+
+    @Test
+    public void testHasUpdatesWithUpdates() {
+        topic.setLastReadPostIndex(0);
+        assertTrue(topic.isHasUpdates());
+    }
+
+    @Test
+    public void testHasUpdatesWithoutUpdates() {
+        topic.setLastReadPostIndex(1);
+        assertFalse(topic.isHasUpdates());
+    }
+
+    @Test
+    public void testGetFirstUnreadPostId() {
+        topic.setLastReadPostIndex(0);
+
+        long id = topic.getFirstUnreadPostId();
+
+        assertEquals(post2.getId(), id);
+    }
+
+    @Test
+    public void testGetFirstUnreadPostIdWithNoInfoSet() {
+        long id = topic.getFirstUnreadPostId();
+
+        assertEquals(post1.getId(), id);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testSetLastReadPostIndexWrongValue() {
+        topic.setLastReadPostIndex(100500);
     }
 }

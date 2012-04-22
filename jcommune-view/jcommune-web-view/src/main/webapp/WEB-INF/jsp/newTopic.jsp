@@ -31,7 +31,7 @@
 
     <div class="all_forums">
         <form:form action="${pageContext.request.contextPath}/topics/new?branchId=${branchId}"
-                   method="POST" modelAttribute="topicDto" onsubmit="doCheck();return true;">
+                   method="POST" modelAttribute="topicDto">
             <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
 
             <div class="forum_misc_info">

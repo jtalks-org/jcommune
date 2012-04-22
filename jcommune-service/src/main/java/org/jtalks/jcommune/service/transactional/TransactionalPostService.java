@@ -20,6 +20,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
@@ -28,10 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Post service class. This class contains method needed to manipulate with Post persistent entity.
@@ -44,7 +42,8 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
 
     private TopicDao topicDao;
     private SecurityService securityService;
-    private NotificationService notificationServise;
+    private NotificationService notificationService;
+    private LastReadPostService lastReadPostService;
 
     /**
      * Create an instance of Post entity based service
@@ -52,14 +51,16 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * @param dao                 data access object, which should be able do all CRUD operations with post entity.
      * @param topicDao            this dao used for checking branch existance
      * @param securityService     service for authorization
-     * @param notificationServise to send email updates for subscribed users
+     * @param notificationService to send email updates for subscribed users
+     * @param lastReadPostService to modify last read post information when topic structure is changed
      */
     public TransactionalPostService(PostDao dao, TopicDao topicDao, SecurityService securityService,
-                                    NotificationService notificationServise) {
+                                    NotificationService notificationService, LastReadPostService lastReadPostService) {
         super(dao);
         this.topicDao = topicDao;
         this.securityService = securityService;
-        this.notificationServise = notificationServise;
+        this.notificationService = notificationService;
+        this.lastReadPostService = lastReadPostService;
     }
 
     /**
@@ -73,7 +74,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         post.updateModificationDate();
 
         this.getDao().update(post);
-        notificationServise.topicChanged(post.getTopic());
+        notificationService.topicChanged(post.getTopic());
 
         logger.debug("Post id={} updated.", post.getId());
     }
@@ -91,9 +92,11 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         Topic topic = post.getTopic();
         topic.removePost(post);
 
+        // todo: event API?
         topicDao.update(topic);
         securityService.deleteFromAcl(post);
-        notificationServise.topicChanged(topic);
+        notificationService.topicChanged(topic);
+        lastReadPostService.updateLastReadPostsWhenPostIsDeleted(post);
 
         logger.debug("Deleted post id={}", postId);
     }
@@ -123,31 +126,4 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Map<Topic, LastReadPost> getLastReadPostForTopics(List<Topic> topics) {
-        JCUser current = securityService.getCurrentUser();
-        Map<Topic, LastReadPost> posts = new LinkedHashMap<Topic, LastReadPost>(topics.size(), 1);
-        for (Topic topic : topics) {
-            // todo: find more efficient solution not to perform queries in loop
-            if (current != null) {
-                LastReadPost post = this.getDao().getLastReadPost(current, topic);
-                posts.put(topic, post);
-            } else {  // topics are allways unread for anonymous users
-                posts.put(topic, null);
-            }
-        }
-        return posts;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public LastReadPost getLastReadPostForTopic(Topic topic) {
-        JCUser current = securityService.getCurrentUser();
-        return this.getDao().getLastReadPost(current, topic);
-    }
 }

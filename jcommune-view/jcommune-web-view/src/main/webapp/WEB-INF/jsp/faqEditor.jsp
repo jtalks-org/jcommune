@@ -33,7 +33,7 @@
     <div class="all_forums">
 
         <div id="answer">
-            <form:form action="${pageContext.request.contextPath}/pages/${pageId}/edit"
+            <form:form action="${pageContext.request.contextPath}/pages/${samplePageDto.id}/edit"
                        method="POST" modelAttribute="samplePageDto" onsubmit="doCheck();return true;">
 
                 <div class="forum_header_table">
@@ -42,10 +42,8 @@
                         <span class="empty_cell"></span>
                     </div>
                 </div>
-
+                <form:hidden path="id"/>
                 <div class="forum_row">
-                    <form:label path="nameText"><spring:message code="label.password"/></form:label>
-
                     <div>
                         <form:input path="nameText" class="reg_input" type="text"/></br>
                         <form:errors path="nameText" cssClass="error"/>
@@ -56,7 +54,7 @@
                 <jtalks:bbeditor labelForAction="label.post.edit"
                                  postText="${samplePageDto.contentText}"
                                  bodyParameterName="contentText"
-                                 back="${pageContext.request.contextPath}"/>
+                                 back="${pageContext.request.contextPath}/pages/${samplePageDto.id}"/>
             </form:form>
         </div>
     </div>

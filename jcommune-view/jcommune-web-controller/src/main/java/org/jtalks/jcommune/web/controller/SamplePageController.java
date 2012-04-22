@@ -69,6 +69,14 @@ public class SamplePageController {
     }
 
 
+    @RequestMapping(value = "/pages/{pageId}/edit", method = RequestMethod.GET)
+    public ModelAndView showEditPage(@PathVariable(PAGE_ID) Long pageId) throws NotFoundException {
+        SamplePage page = samplePageService.get(pageId);
+
+        return new ModelAndView("faqEditor")
+                .addObject(PAGE_DTO, new SamplePageDto(page));
+    }
+
     @RequestMapping(value = "/pages/{pagetId}/edit", method = RequestMethod.POST)
     public ModelAndView update(@Valid @ModelAttribute SamplePageDto samplePageDto,
                                BindingResult result,
@@ -80,4 +88,5 @@ public class SamplePageController {
         samplePageService.updatePage(samplePageDto.getId(), samplePageDto.getNameText(), samplePageDto.getContentText());
         return new ModelAndView("redirect:/pages/" + pageId);
     }
+
 }

@@ -24,6 +24,7 @@ import java.util.List;
  *
  * @author Pavel Vervenko
  * @author Kirill Afonin
+ * @author Guram Savinov
  */
 public interface PrivateMessageService extends EntityService<PrivateMessage> {
 
@@ -90,4 +91,16 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
      * @throws NotFoundException if the receiver not exists
      */
     PrivateMessage sendDraft(long id, String title, String body, String recipient) throws NotFoundException;
+
+    /**
+     * Delete or change status of messages by id.
+     * For messages with SENT status this method change status to
+     * DELETED_FROM_INBOX or DELETED_FROM_OUTBOX.
+     * Messages with status DELETED_FROM_INBOX, DELETED_FROM_OUTBOX
+     * or DRAFT will be removed.
+     * 
+     * @param ids Identifiers of messages for deletion
+     * @return URL for redirection
+     */
+    String delete(List<Long> ids) throws NotFoundException;
 }

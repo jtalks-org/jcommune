@@ -14,6 +14,9 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Fields;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
 
@@ -27,7 +30,9 @@ import org.jtalks.common.model.entity.Entity;
  *
  * @author Pavel Vervenko
  * @author Kirill Afonin
+ * @author Anuar Nurmakanov
  */
+
 public class Post extends Entity {
 
     private DateTime creationDate;
@@ -38,6 +43,15 @@ public class Post extends Entity {
 
     public static final int MAX_LENGTH = 20000;
     public static final int MIN_LENGTH = 2;
+    
+    /**
+     * Name of the field in the index for Russian.
+     */
+    public static final String POST_CONTENT_FIELD_RU = "postContentRu";
+    /**
+     * Name of the field in the index for default language(English).
+     */
+    public static final String POST_CONTENT_FIELD_DEF = "postContent";
 
     /**
      * For Hibernate use only
@@ -58,6 +72,16 @@ public class Post extends Entity {
         this.postContent = postContent;
     }
 
+    /**
+     * Used to find out the current post index on JSP page.
+     * We can't invoke a method there so use an explicit getter.
+     *
+     * @return index of this post ina  topic, starting from 0
+     */
+    public int getPostIndexInTopic(){
+        return topic.getPosts().indexOf(this);
+    }
+    
     /**
      * @return the postDate
      */
@@ -117,6 +141,12 @@ public class Post extends Entity {
     /**
      * @return the postContent
      */
+    @Fields({
+        @Field(name = POST_CONTENT_FIELD_RU,
+            analyzer = @Analyzer(definition = "russianJtalksAnalyzer")),
+        @Field(name = POST_CONTENT_FIELD_DEF,
+            analyzer = @Analyzer(definition = "defaultJtalksAnalyzer"))
+    })
     public String getPostContent() {
         return postContent;
     }

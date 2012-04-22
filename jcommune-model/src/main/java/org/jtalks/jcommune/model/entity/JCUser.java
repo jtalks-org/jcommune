@@ -32,7 +32,7 @@ import java.util.Set;
  */
 public class JCUser extends User {
 
-    private String signature;
+    private Signature signature = new Signature(null);
     private int postCount;
     private Language language = Language.ENGLISH;
     private int pageSize = DEFAULT_PAGE_SIZE;
@@ -97,14 +97,14 @@ public class JCUser extends User {
      * @return user signature
      */
     public String getSignature() {
-        return signature;
+        return signature.getContent();
     }
 
     /**
-     * @param signature user signature
+     * @param content user signature
      */
-    public void setSignature(String signature) {
-        this.signature = signature;
+    public void setSignature(String content) {
+        this.signature = new Signature(content);
     }
 
     /**
@@ -219,15 +219,11 @@ public class JCUser extends User {
     }
 
     /**
-     * We're overriding base method 'cause it's factualy incorrect:
-     * It replaces spaces with a plus sign, while we need %20.
-     * <p/>
-     * todo: fix it in Common Model component
-     *
-     * @return encoded username, safe for URLs
+     * Renders user signature for html view.
+     * No further html escaping is required.
+     * @return html-rendered user signature
      */
-    @Override
-    public String getEncodedUsername() {
-        return super.getEncodedUsername().replace("+", "%20");
+    public String getRenderedSignature(){
+       return signature.render();
     }
 }

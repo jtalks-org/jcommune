@@ -19,7 +19,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
@@ -81,14 +81,14 @@ public class TopicControllerTest {
     @Mock
     private SessionRegistry registry;
     @Mock
-    private PostService postService;
+    private LastReadPostService lastReadPostService;
 
     private TopicController controller;
 
     @BeforeMethod
     public void initEnvironment() {
         initMocks(this);
-        controller = new TopicController(topicService, branchService, postService,
+        controller = new TopicController(topicService, branchService, lastReadPostService,
                 securityService, breadcrumbBuilder, locationService, registry);
     }
 

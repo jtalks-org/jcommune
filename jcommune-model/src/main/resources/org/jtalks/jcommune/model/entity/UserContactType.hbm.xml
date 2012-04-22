@@ -27,6 +27,9 @@
         <property name="uuid" column="UUID" unique="true" not-null="true"/>
         <property name="typeName" column="TYPE"/>
         <property name="icon" column="ICON"/>
+        <property name="mask" column="MASK" length="50" />
+        <property name="displayPattern" column="DISPLAY_PATTERN" length="255"/>
+        <property name="validationPattern" column="VALIDATION_PATTERN" length="255"/>
 
     </class>
 </hibernate-mapping>

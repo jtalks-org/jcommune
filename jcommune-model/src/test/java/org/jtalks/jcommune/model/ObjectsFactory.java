@@ -73,7 +73,7 @@ public final class ObjectsFactory {
     public static Section getDefaultSection() {
         Section newSection = new Section("section name");
         newSection.setDescription("branch description");
-        newSection.setPosition(1L);
+        newSection.setPosition(1);
         return newSection;
     }
 
@@ -98,6 +98,9 @@ public final class ObjectsFactory {
         UserContactType type = new UserContactType();
         type.setTypeName("Some type");
         type.setIcon("/some/icon");
+        type.setMask("12345");
+        type.setDisplayPattern("protocol://" + UserContactType.CONTACT_MASK_PLACEHOLDER);
+        type.setValidationPattern("\\d+");
         return type;
     }
 

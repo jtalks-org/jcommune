@@ -38,10 +38,12 @@
                     <span class="forum_misc_info"><c:out value="${branch.description}"/></span>
                 </div>
                 <div> <!-- top right -->
-                    <a class="forum_top_right_link"
-                       href="${pageContext.request.contextPath}/branches/${branch.id}/markread">
-                        <spring:message code="label.mark_all_topics"/>
-                    </a>
+                    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                        <a class="forum_top_right_link"
+                           href="${pageContext.request.contextPath}/branches/${branch.id}/markread">
+                            <spring:message code="label.mark_all_topics"/>
+                        </a>
+                    </sec:authorize>
                 </div>
             </div>
             <div class="info_top_lower"> <!-- bottom left -->
@@ -106,6 +108,13 @@
                                             <span class="sticky"><spring:message code="label.marked_as_sticked"/></span>
                                         </c:when>
                                     </c:choose>
+                                    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                                        <c:if test="${topic.hasUpdates}">
+                                            <a style="color: red;"
+                                               href="${pageContext.request.contextPath}/posts/${topic.firstUnreadPostId}">
+                                                [NEW]</a>
+                                        </c:if>
+                                    </sec:authorize>
                                     <a class="forum_link" href="${pageContext.request.contextPath}/topics/${topic.id}">
                                         <span class="forum_message_cell_text"><c:out value="${topic.title}"/></span>
                                     </a>
@@ -128,7 +137,7 @@
                                 <br/>
                                 <a class="last_message_user"
                                    href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
-                                        ${topic.lastPost.userCreated.username}
+                                        <c:out value="${topic.lastPost.userCreated.username}"/>
                                 </a>
                                 <a href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}">
                                     <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"

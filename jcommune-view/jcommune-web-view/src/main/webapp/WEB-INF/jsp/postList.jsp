@@ -39,6 +39,7 @@
 <c:set var="authenticated" value="${false}"/>
 <div class="all_forums">
 <h2 class="heading break_word"><c:out value="${topic.title}"/></h2>
+
 <div class="forum_info_top">
     <div>
         <div> <!-- top left -->
@@ -145,7 +146,7 @@
             </div>
             <div class="forum_message_cell">
                 <div class="post_details">
-                    <a class="button" href="#">&#8657;</a>
+                    <a class="button" name="${post.id}" href="#">&#8657;</a>
                     <a class="button postLink" rel="${post.id}">
                         <spring:message code="label.link"/>
                     </a>
@@ -186,9 +187,11 @@
                             </div>
                         </sec:authorize>
                     </c:if>
-                    <c:if test="${lastReadPost == null || i.index > lastReadPost.postIndex}">
-                        <span style="color: red;"><%--[NEW]--%></span>
-                    </c:if>
+                    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                        <c:if test="${lastReadPost == null || post.postIndexInTopic > lastReadPost}">
+                            <span style="color: red;">[NEW]</span>
+                        </c:if>
+                    </sec:authorize>
                     <span name="${post.id}">
                         <spring:message code="label.added"/>&nbsp;
                         <jtalks:format value="${post.creationDate}"/>
@@ -202,13 +205,7 @@
                         <jtalks:format value="${post.modificationDate}"/>
                     </c:if>
                 </div>
-                <c:if test="${post.userCreated.signature!=null}">
-                    <div class="signature">
-                        -------------------------
-                        <br/>
-                        <span><c:out value="${post.userCreated.signature}"/></span>
-                    </div>
-                </c:if>
+                ${post.userCreated.renderedSignature}
             </div>
         </li>
     </c:forEach>

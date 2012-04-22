@@ -36,7 +36,7 @@ public class ExistenceValidator implements ConstraintValidator<Exists, String> {
     private ValidatorDao<String> dao;
 
     /**
-     * @param dao session factory fro database requests
+     * @param dao session factory for database requests
      */
     @Autowired
     public ExistenceValidator(ValidatorDao<String> dao) {

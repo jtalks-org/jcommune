@@ -14,16 +14,13 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.hibernate.criterion.Property;
-import org.hibernate.transform.Transformers;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.jcommune.model.dao.PostDao;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -43,26 +40,5 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
         return (List<Post>) getSession().createQuery("FROM Post p WHERE p.userCreated = ? ORDER BY creationDate DESC")
                 .setParameter(0, author)
                 .list();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Override
-    public LastReadPost getLastReadPost(JCUser forWho, Topic topic) {
-        return (LastReadPost) getSession().createQuery("FROM LastReadPost p WHERE p.topic = ? and p.user = ?")
-                .setParameter(0, topic)
-                .setParameter(1, forWho)
-                .setCacheable(false)
-                .uniqueResult();
-
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void saveLastReadPost(LastReadPost post) {
-        getSession().saveOrUpdate(post);
     }
 }

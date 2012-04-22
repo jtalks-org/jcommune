@@ -39,10 +39,8 @@ $(document).ready(function () {
  * @return html template for "Move topic" modal window
  */
 function prepareHtmlTemplateForModalWindow(sections) {
-    var sectionsSize = sections.length;
-
     var htmlTemplate = '<b>Move topic</b><br/>' +
-        '<select name="section_name" id="section_name" size="' + sectionsSize + '">' +
+        '<select style="width: 45%" name="section_name" id="section_name" size="10">' +
         '<option value="all">All sections</option>';
 
     $.each(sections, function (i, section) {
@@ -50,7 +48,7 @@ function prepareHtmlTemplateForModalWindow(sections) {
     });
 
     htmlTemplate += '</select>' +
-        '<select style="margin-left:30px;" name="branch_name" id="branch_name" size="' + sectionsSize + '">' +
+        '<select style="margin-left:30px; width: 45%" name="branch_name" id="branch_name" size="10">' +
         '<option value="' + 0 + '"></option>' +
         '</select>';
 
@@ -71,6 +69,7 @@ function showMoveTopicModalWindow(htmlTemplate) {
             displayBranches();
             $("#branch_name").change(function () {
                 $("#jqi_state0_buttonMove").removeAttr("disabled");
+                $("#jqi_state0_buttonMove").css({'color':'#262626'})
                 branchId = $(this).val();
             });
         },
@@ -81,6 +80,7 @@ function showMoveTopicModalWindow(htmlTemplate) {
         }
     });
     $("#jqi_state0_buttonMove").attr('disabled', 'disabled');
+     $("#jqi_state0_buttonMove").css({'color':'grey'})
 }
 
 /**

@@ -52,17 +52,24 @@
         <c:choose>
             <c:when test="${!(empty topics)}">
                 <ul class="forum_table">
-                    <c:forEach var="map" items="${list}">
+                    <c:forEach var="topic" items="${list}">
                         <li class="forum_row">
                             <div class="forum_info">
+                                <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                                <c:if test="${topic.hasUpdates}">
+                                    <a style="color: red;"
+                                       href="${pageContext.request.contextPath}/posts/${topic.firstUnreadPostId}">
+                                        [NEW]</a>
+                                </c:if>
+                                </sec:authorize>
                                 <h4>
                                     <a class="forum_link break_word"
-                                       href="${pageContext.request.contextPath}/topics/${map.id}">
-                                        <c:out value="${map.title}"/>
+                                       href="${pageContext.request.contextPath}/topics/${topic.id}">
+                                        <c:out value="${topic.title}"/>
                                     </a>
                                 </h4>
                                 <br/>
-                                <span class="truncated"><jtalks:bb2html bbCode="${map.lastPost.postContent}"/></span>
+                                <span class="truncated break_word"><jtalks:bb2html bbCode="${topic.lastPost.postContent}"/></span>
                             </div>
                             <div class="forum_branches">
                                 <h4>
@@ -73,23 +80,23 @@
                                 </h4>
                             </div>
                             <div class="forum_answers">
-                                <c:out value="${map.postCount}"/>
+                                <c:out value="${topic.postCount}"/>
                             </div>
                             <div class="forum_author">
-                                <a href="${pageContext.request.contextPath}/users/${map.topicStarter.encodedUsername}"
-                                   title="<spring:message code="label.topic.header.author"/>">${map.topicStarter.username}</a>
+                                <a href="${pageContext.request.contextPath}/users/${topic.topicStarter.encodedUsername}"
+                                   title="<spring:message code="label.topic.header.author"/>">${topic.topicStarter.username}</a>
                             </div>
                             <div class="forum_clicks">
-                                <c:out value="${map.views}"/>
+                                <c:out value="${topic.views}"/>
                             </div>
                             <div class="forum_last_message">
-                                <a href="${pageContext.request.contextPath}/topics/${map.id}">
-                                    <jtalks:format value="${map.lastPost.creationDate}"/></a>
+                                <a href="${pageContext.request.contextPath}/topics/${topic.id}">
+                                    <jtalks:format value="${topic.lastPost.creationDate}"/></a>
                                 <br/>
                                 <a class="last_message_user"
-                                   href="${pageContext.request.contextPath}/users/${map.lastPost.userCreated.encodedUsername}">
-                                    <c:out value="${map.lastPost.userCreated.username}"/></a>
-                                <a href="${pageContext.request.contextPath}/posts/${map.lastPost.id}">
+                                   href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
+                                    <c:out value="${topic.lastPost.userCreated.username}"/></a>
+                                <a href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}">
                                     <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
                                          alt="<spring:message code="label.section.header.lastMessage"/>"/>
                                 </a>

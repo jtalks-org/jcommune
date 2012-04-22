@@ -70,6 +70,9 @@ public class UserContactsHibernateDaoTest extends AbstractTransactionalTestNGSpr
         assertEquals(type.getId(), result.getId());
         assertEquals(type.getIcon(), result.getIcon());
         assertEquals(type.getTypeName(), result.getTypeName());
+        assertEquals(type.getMask(), result.getMask());
+        assertEquals(type.getDisplayPattern(), result.getDisplayPattern());
+        assertEquals(type.getValidationPattern(), result.getValidationPattern());
     }
 
     @Test

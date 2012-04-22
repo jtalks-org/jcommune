@@ -6,7 +6,7 @@
     <groupId>org.jtalks.jcommune</groupId>
     <artifactId>jcommune</artifactId>
     <packaging>pom</packaging>
-    <version>0.13-SNAPSHOT</version>
+    <version>0.14-SNAPSHOT</version>
     <name>${project.artifactId}</name>
     <modules>
         <module>jcommune-model</module>
@@ -37,12 +37,12 @@
             <dependency>
                 <groupId>org.jtalks.common</groupId>
                 <artifactId>jtalks-common-model</artifactId>
-                <version>0.9</version>
+                <version>0.13</version>
             </dependency>
             <dependency>
                 <groupId>org.jtalks.common</groupId>
                 <artifactId>jtalks-common-service</artifactId>
-                <version>0.9</version>
+                <version>0.12</version>
             </dependency>
             <!-- Hibernate -->
             <dependency>
@@ -59,6 +59,12 @@
                 <groupId>javassist</groupId>
                 <artifactId>javassist</artifactId>
                 <version>3.12.1.GA</version>
+            </dependency>
+            <!-- Hibernate Search -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-search</artifactId>
+                <version>3.4.2.Final</version>
             </dependency>
             <!-- Validator -->
             <dependency>
@@ -160,27 +166,27 @@
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-core</artifactId>
-                <version>${springVersion}</version>
+                <version>3.0.5.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-config</artifactId>
-                <version>${springVersion}</version>
+                <version>3.0.5.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-web</artifactId>
-                <version>${springVersion}</version>
+                <version>3.0.5.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-taglibs</artifactId>
-                <version>${springVersion}</version>
+                <version>3.0.5.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-acl</artifactId>
-                <version>${springVersion}</version>
+                <version>3.0.5.RELEASE</version>
             </dependency>
             <!-- AOP -->
             <dependency>
@@ -295,11 +301,7 @@
                 <artifactId>kefir-bb</artifactId>
                 <version>0.6</version>
             </dependency>
-            <dependency>
-                <groupId>org.apache.velocity</groupId>
-                <artifactId>velocity</artifactId>
-                <version>1.7</version>
-            </dependency>
+
             <!--Mail-->
             <dependency>
                 <groupId>javax.activation</groupId>
@@ -310,6 +312,16 @@
                 <groupId>javax.mail</groupId>
                 <artifactId>mail</artifactId>
                 <version>1.4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.velocity</groupId>
+                <artifactId>velocity</artifactId>
+                <version>1.7</version>
+            </dependency>
+            <dependency>
+                <groupId>oro</groupId>
+                <artifactId>oro</artifactId>
+                <version>2.0.8</version>
             </dependency>
             <!-- RSS -->
             <dependency>
@@ -420,6 +432,7 @@
                     <excludes>
                         <exclude>target/**</exclude>
                         <exclude>**/*.properties</exclude>
+                        <exclude>**/*.txt</exclude>
                         <exclude>**/*.sql</exclude>
                         <exclude>**/*.css</exclude>
                         <exclude>**/*.vm</exclude>
@@ -439,9 +452,21 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.2.1</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
-
+    <scm>
+        <connection>scm:git:git@jtalks.org:jcommune</connection>
+        <developerConnection>scm:git:git@jtalks.org:jcommune</developerConnection>
+        <url>scm:git:git@jtalks.org:jcommune</url>
+    </scm>
     <repositories>
         <repository>
             <id>jtalks-nexus</id>
@@ -453,13 +478,10 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
-
         <repository>
             <id>codehaus</id>
             <url>http://repository.codehaus.org</url>
         </repository>
-
-
     </repositories>
     <distributionManagement>
         <repository>
@@ -480,7 +502,7 @@
 
     <properties>
         <hibernateVersion>3.6.6.Final</hibernateVersion>
-        <springVersion>3.0.5.RELEASE</springVersion>
+        <springVersion>3.1.0.RELEASE</springVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <headerBaseDir>${basedir}</headerBaseDir>
         <pathtoHeader>${headerBaseDir}/header.txt</pathtoHeader>

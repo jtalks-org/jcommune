@@ -51,6 +51,8 @@
           parent="abstractHibernateDao"/>
     <bean id="branchSectionDao" class="org.jtalks.jcommune.model.dao.hibernate.SectionHibernateDao"
           parent="abstractHibernateDao"/>
+    <bean id="lastReadPostHibernateDao" class="org.jtalks.jcommune.model.dao.hibernate.LastReadPostHibernateDao"
+          parent="abstractHibernateDao"/>
     <bean id="forumStatisticsDAO" class="org.jtalks.jcommune.model.dao.hibernate.ForumStatisticsHibernateDao">
         <constructor-arg index="0" ref="sessionFactory"/>
     </bean>
@@ -66,6 +68,27 @@
           class="org.jtalks.jcommune.model.dao.hibernate.SamplePageHibernateDao"
           parent="abstractHibernateDao"/>
 
+    <!-- Declaration of Hibernate Search DAO beans -->
+    <bean id="topicSearchDao" class="org.jtalks.jcommune.model.dao.search.hibernate.TopicHibernateSearchDao">
+        <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+        <constructor-arg name="filters">
+            <list>
+                <ref bean="punctuationMarksFilter"/>
+                <ref bean="stopWordsFilter"/>
+            </list>
+        </constructor-arg>
+    </bean>
+    <bean id="punctuationMarksFilter"
+          class="org.jtalks.jcommune.model.dao.search.hibernate.filter.PunctuationMarksFilter"/>
+    <bean id="stopWordsFilter" class="org.jtalks.jcommune.model.dao.search.hibernate.filter.StopWordsFilter">
+        <constructor-arg>
+            <list>
+                <value>org/jtalks/jcommune/lucene/english_stop.txt</value>
+                <value>org/jtalks/jcommune/lucene/russian_stop.txt</value>
+            </list>
+        </constructor-arg>
+        <constructor-arg value="true"/>
+    </bean>
     <!--Injecting sessionFactory bean to class AbstractHibernateChildRepository, this way
 resolves a problem of multiple DAO beans definition -->
     <bean id="abstractHibernateDao" abstract="true">
@@ -116,6 +139,10 @@ resolves a problem of multiple DAO beans definition -->
                     /org/jtalks/jcommune/model/entity/ehcache.xml
                 </prop>
                 <prop key="hibernate.generate_statistics">${hibernate.generate_statistics}</prop>
+                <prop key="hibernate.search.default.directory_provider">
+                    ${hibernate.search.default.directory_provider}
+                </prop>
+                <prop key="hibernate.search.default.indexBase">${hibernate.search.default.indexBase}</prop>
             </props>
         </property>
     </bean>

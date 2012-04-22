@@ -14,10 +14,26 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import org.joda.time.DateTime;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.solr.analysis.LowerCaseFilterFactory;
+import org.apache.solr.analysis.SnowballPorterFilterFactory;
+import org.apache.solr.analysis.StandardFilterFactory;
+import org.apache.solr.analysis.StandardTokenizerFactory;
+import org.apache.solr.analysis.StopFilterFactory;
+import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.AnalyzerDef;
+import org.hibernate.search.annotations.AnalyzerDefs;
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Fields;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.Parameter;
+import org.hibernate.search.annotations.TokenFilterDef;
+import org.hibernate.search.annotations.TokenizerDef;
+import org.joda.time.DateTime;
 
 /**
  * Represents the topic of the forum.
@@ -28,7 +44,79 @@ import java.util.List;
  * @author Pavel Vervenko
  * @author Vitaliy Kravchenko
  * @author Max Malakhov
+ * @author Anuar Nurmakanov
  */
+@AnalyzerDefs({
+    /*
+     * Describes the analyzer for Russian.
+     */
+    @AnalyzerDef(name = "russianJtalksAnalyzer",
+        tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+        filters = {
+            /*
+             * All "terms" of the search text will be converted to lower case.
+             */
+            @TokenFilterDef(factory = LowerCaseFilterFactory.class),
+            /*
+             * Several words in language doesn't have a significant value.
+             * These filters exclude those words from the index.
+             */
+            @TokenFilterDef(factory = StopFilterFactory.class,
+                params = {
+                    @Parameter(name = "words",
+                            value = "org/jtalks/jcommune/lucene/english_stop.txt"),
+                    @Parameter(name = "ignoreCase", value = "true")
+                }),
+            @TokenFilterDef(factory = StopFilterFactory.class,
+                params = {
+                    @Parameter(name = "words", 
+                            value = "org/jtalks/jcommune/lucene/russian_stop.txt"),
+                    @Parameter(name = "ignoreCase", value = "true")
+                }),
+            /*
+             * Provides the search by a root of a word.
+             * If two words have the same root, then they are equal in the terminology of search.
+             */
+            @TokenFilterDef(factory = SnowballPorterFilterFactory.class, 
+                params =  @Parameter(name="language", value="Russian"))
+        }
+    ),
+    /*
+     * Describes the analyzer for default language(English).
+     */
+    @AnalyzerDef(name = "defaultJtalksAnalyzer",
+        tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+        filters = {
+            @TokenFilterDef(factory = StandardFilterFactory.class),
+            /*
+             * All "terms" of the search text will be converted to lower case.
+             */
+            @TokenFilterDef(factory = LowerCaseFilterFactory.class),
+            /*
+             * Several words in language doesn't have a significant value.
+             * These filters exclude those words from the index.
+             */
+            @TokenFilterDef(factory = StopFilterFactory.class,
+                params = {
+                    @Parameter(name = "words", 
+                            value = "org/jtalks/jcommune/lucene/english_stop.txt"),
+                    @Parameter(name = "ignoreCase", value = "true")
+            }),
+            @TokenFilterDef(factory = StopFilterFactory.class,
+                params = {
+                    @Parameter(name = "words", 
+                            value = "org/jtalks/jcommune/lucene/russian_stop.txt"),
+                    @Parameter(name = "ignoreCase", value = "true")
+            }),
+            /*
+             * Provides the search by a root of a word.
+             * If two words have the same root, then they are equal in the terminology of search.
+             */
+            @TokenFilterDef(factory = SnowballPorterFilterFactory.class)
+        }
+    )
+})
+@Indexed
 public class Topic extends SubscriptionAwareEntity {
     private DateTime creationDate;
     private DateTime modificationDate;
@@ -41,8 +129,25 @@ public class Topic extends SubscriptionAwareEntity {
     private Branch branch;
     private int views;
 
+    // transient, makes sense for current user only if set explicitly
+    private Integer lastReadPostIndex;
+
     public static final int MIN_NAME_SIZE = 5;
-    public static final int MAX_NAME_SIZE = 255;
+    public static final int MAX_NAME_SIZE = 120;
+    
+    /**
+     * Name of the field in the index for Russian.
+     */
+    public static final String TOPIC_TITLE_FIELD_RU = "topicTitleRu";
+    /**
+     * Name of the field in the index for default language(English).
+     */
+    public static final String TOPIC_TITLE_FIELD_DEF = "topicTitle";
+    /**
+     * Name of the prefix for collection of posts.
+     */
+    public static final String TOPIC_POSTS_PREFIX = "topicPosts.";
+    
 
     /**
      * Used only by hibernate.
@@ -130,6 +235,12 @@ public class Topic extends SubscriptionAwareEntity {
      *
      * @return the topicName
      */
+    @Fields({
+        @Field(name = TOPIC_TITLE_FIELD_RU,
+            analyzer = @Analyzer(definition = "russianJtalksAnalyzer")),
+        @Field(name = TOPIC_TITLE_FIELD_DEF,
+            analyzer = @Analyzer(definition = "defaultJtalksAnalyzer"))
+    })
     public String getTitle() {
         return title;
     }
@@ -148,6 +259,7 @@ public class Topic extends SubscriptionAwareEntity {
      *
      * @return the list of posts
      */
+    @IndexedEmbedded(prefix = TOPIC_POSTS_PREFIX)
     public List<Post> getPosts() {
         return posts;
     }
@@ -287,5 +399,53 @@ public class Topic extends SubscriptionAwareEntity {
      */
     public void setViews(int views) {
         this.views = views;
+    }
+
+    /**
+     * @param index last read post index in this topic for current user
+     *              (0 means first post is the last read one)
+     */
+    public void setLastReadPostIndex(int index) {
+        if (index >= posts.size()) {
+            throw new IllegalArgumentException("Last read post index is bigger than post count in the topic");
+        }
+        lastReadPostIndex = index;
+    }
+
+    /**
+     * Returns first unread post for current user. If no unread post
+     * information has been set explicitly this method will return
+     * first topic's post id, considering all topic as unread.
+     *
+     * @return returns first unread post id for the current user
+     */
+    public Long getFirstUnreadPostId() {
+        if (lastReadPostIndex == null) {
+            return posts.get(0).getId();
+        } else {
+            return posts.get(lastReadPostIndex + 1).getId();
+        }
+    }
+
+    /**
+     * This method will return true if there are unread posts in that topic
+     * for the current user. This state is NOT persisted and must be
+     * explicitly set by calling  Topic.setLastReadPostIndex().
+     * <p/>
+     * If setter has not been called this method will always return no updates
+     *
+     * @return if current topic has posts still unread by the current user
+     */
+    public boolean isHasUpdates() {
+        return (lastReadPostIndex == null) || (lastReadPostIndex + 1 < posts.size());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @DocumentId
+    @Override
+    public long getId() {
+        return super.getId();
     }
 }

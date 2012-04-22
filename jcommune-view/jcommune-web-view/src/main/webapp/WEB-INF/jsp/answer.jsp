@@ -54,7 +54,7 @@
             </div>
         </div>
         <form:form action="${pageContext.request.contextPath}/posts/new?topicId=${topicId}&page=${page}"
-                   method="POST" modelAttribute="postDto" onsubmit="doCheck();return true;">
+                   method="POST" modelAttribute="postDto">
             <form:hidden path="topicId"/>
             <div class="forum_header_table">
                 <div class="forum_header">

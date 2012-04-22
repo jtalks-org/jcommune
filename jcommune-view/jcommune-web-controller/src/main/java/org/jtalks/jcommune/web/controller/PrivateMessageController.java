@@ -14,6 +14,9 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.service.PrivateMessageService;
@@ -31,6 +34,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -42,11 +46,13 @@ import javax.validation.Valid;
  * @author Max Malakhov
  * @author Kirill Afonin
  * @author Alexandre Teterin
+ * @author Guram Savinov
  */
 @Controller
 public class PrivateMessageController {
 
     public static final String BREADCRUMB_LIST = "breadcrumbList";
+    public static final String PM_IDENTIFIERS = "pmIdentifiers";
     private PrivateMessageService pmService;
     private BBCodeService bbCodeService;
     private SecurityService securityService;
@@ -240,6 +246,23 @@ public class PrivateMessageController {
             result.rejectValue("recipient", "validation.wrong_recipient");
             return PM_FORM;
         }
+    }
+    
+    /**
+     * Delete private messages.
+     *
+     * @param csIds Comma-separated identifiers of the private messages for deletion
+     * @return redirect to folder from what request is come
+     * @throws NotFoundException when message not found
+     */
+    @RequestMapping(value = "/pm", method = {RequestMethod.DELETE})
+    public String deleteMessages(@RequestParam(PM_IDENTIFIERS) String csIds) throws NotFoundException {
+        List<Long> ids = new ArrayList<Long>();
+        for (String val : csIds.split(",")) {
+            ids.add(Long.parseLong(val));
+        }
+        String url = pmService.delete(ids);
+        return "redirect:/" + url;
     }
 
 }

@@ -20,10 +20,13 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
     <class name="LastReadPost" table="LAST_READ_POSTS">
-        <composite-id>
-            <key-many-to-one name="user" column="USER_ID" class="JCUser"/>
-            <key-many-to-one name="topic" column="TOPIC_ID" class="Topic"/>
-        </composite-id>
+        <cache usage="read-write"/>
+        <id name="id" column="ID" unsaved-value="0">
+            <generator class="native"/>
+        </id>
+        <property name="uuid" column="UUID" unique="true" not-null="true"/>
+        <many-to-one name="user" column="USER_ID" class="JCUser"/>
+        <many-to-one name="topic" column="TOPIC_ID" class="Topic"/>
         <property name="postIndex" column="LAST_READ_POST_INDEX" not-null="true"/>
     </class>
 </hibernate-mapping>

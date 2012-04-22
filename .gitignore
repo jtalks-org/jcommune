@@ -7,6 +7,8 @@
 .classpath
 .project
 .metadata
+.mymetadata
+.springBeans
 
 # IntelliJ Idea project files
 .idea
@@ -20,3 +22,6 @@ nbproject
 # Always ignore these directories/files
 target
 logs
+
+/jcommune-view/jcommune-web-controller/test-output
+/jcommune-model/test-output
