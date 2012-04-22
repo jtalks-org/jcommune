@@ -29,7 +29,7 @@ function deleteMessages(identifiers) {
  */
 function editMessage() {
     selectedCheckboxes = $('.checker:checked');
-    if (selectedCheckboxes.size() = 1) {
+    if (selectedCheckboxes.size() == 1) {
         id = selectedCheckboxes[0].id;
         document.location = $root + "/pm/" + id + "/edit";
     }
