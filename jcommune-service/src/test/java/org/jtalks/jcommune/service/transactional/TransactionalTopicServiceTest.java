@@ -27,6 +27,7 @@ import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.security.AclBuilder;
@@ -312,8 +313,7 @@ public class TransactionalTopicServiceTest {
 
         assertEquals(targetBranch.getTopicCount(), 1);
         verify(branchDao).update(targetBranch);
-        verify(notificationService).topicChanged(topic);
-        verify(notificationService).branchChanged(currentBranch);
+        verify(notificationService).topicMoved(topic, TOPIC_ID);
     }
 
     @Test(expectedExceptions = {NotFoundException.class})
