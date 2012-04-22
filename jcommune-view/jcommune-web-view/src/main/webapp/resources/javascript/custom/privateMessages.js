@@ -33,6 +33,7 @@ function editMessage() {
         id = selectedCheckboxes[0].id;
         document.location = $root + "/pm/" + id + "/edit";
     }
+    return false;
 }
 
 // enable/disable delete button
