@@ -69,13 +69,13 @@
         <constructor-arg name="sessionFactory" ref="sessionFactory"/>
         <constructor-arg name="filters">
             <list>
-                <ref bean="punctuationMarksFilter"/>
+                <ref bean="invalidCharactersFilter"/>
                 <ref bean="stopWordsFilter"/>
             </list>
         </constructor-arg>
     </bean>
-    <bean id="punctuationMarksFilter"
-          class="org.jtalks.jcommune.model.dao.search.hibernate.filter.PunctuationMarksFilter"/>
+    <bean id="invalidCharactersFilter"
+          class="org.jtalks.jcommune.model.dao.search.hibernate.filter.InvalidCharactersFilter"/>
     <bean id="stopWordsFilter" class="org.jtalks.jcommune.model.dao.search.hibernate.filter.StopWordsFilter">
         <constructor-arg>
             <list>

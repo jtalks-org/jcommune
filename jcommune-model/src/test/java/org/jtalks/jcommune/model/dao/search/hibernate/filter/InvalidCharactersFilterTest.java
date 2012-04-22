@@ -14,19 +14,33 @@
  */
 package org.jtalks.jcommune.model.dao.search.hibernate.filter;
 
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
 /**
- * Deletes punctual marks in the search text.
  * 
- * @author Anuar Nurmakanov
+ * @author Anuar_Nurmakanov
  *
  */
-public class PunctuationMarksFilter implements SearchRequestFilter {
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String filter(String searchText) {
-        return searchText.replaceAll("\\p{Punct}", " ").trim();
-    }
+public class InvalidCharactersFilterTest {
+	private InvalidCharactersFilter filter = new InvalidCharactersFilter();
+	
+	@Test
+	public void testRemovePunctuationMarks() {
+		String searchText = "φ@#nice-book.!Ω";
+		String expectedResult = "nice book";
+		
+		String filterResult = filter.filter(searchText);
+		
+		Assert.assertEquals(filterResult, expectedResult, "Punctuation marks aren't removed.");
+	}
+	
+	@Test
+	public void testFilterCorrectSearchText() {
+		String searchText = "nice book";
+		
+		String filterResult = filter.filter(searchText);
+		
+		Assert.assertEquals(filterResult, filterResult, "The search text should remain the same.");
+	}
 }
