@@ -33,7 +33,6 @@ function editMessage() {
         id = selectedCheckboxes[0].id;
         document.location = $root + "/pm/" + id + "/edit";
     }
-    return false;
 }
 
 // enable/disable delete button
@@ -101,7 +100,8 @@ $(document).ready(function () {
     });
 
     //bind edit message handler
-    $("#editCheckedPM").click(function() {
+    $("#editCheckedPM").click(function(e) {
+        e.preventDefault();
         editMessage();
         return false;
     });
