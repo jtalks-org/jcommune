@@ -24,12 +24,12 @@ function deleteMessages(identifiers) {
 }
 
 /**
- * Edits the selected message. This function doesn't care if there is correct number
- * of messages (1) selected, this check is performed before the function call
+ * Edits the selected message. This function performs edit action
+ * if and only if exactly
  */
 function editMessage() {
     selectedCheckboxes = $('.checker:checked');
-    if (selectedCheckboxes.size() > 0) {
+    if (selectedCheckboxes.size() = 1) {
         id = selectedCheckboxes[0].id;
         document.location = $root + "/pm/" + id + "/edit";
     }
