@@ -61,8 +61,6 @@ public class MailServiceTest {
     private MailService service;
     @Mock
     private JavaMailSender sender;
-    @Mock
-    private BBCodeService bbCodeService;
 
     private static final String FROM = "lol@wut.zz";
     private static final String TO = "foo@bar.zz";
@@ -84,7 +82,7 @@ public class MailServiceTest {
         velocityEngine.setProperty("runtime.log.logsystem.class", "org.apache.velocity.runtime.log.NullLogSystem");
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:/org/jtalks/jcommune/service/bundle/TemplatesMessages");
-        service = new MailService(sender, FROM, velocityEngine, messageSource, bbCodeService);
+        service = new MailService(sender, FROM, velocityEngine, messageSource);
         MimeMessage message = new MimeMessage((Session) null);
         when(sender.createMimeMessage()).thenReturn(message);
         captor = ArgumentCaptor.forClass(MimeMessage.class);
@@ -136,15 +134,12 @@ public class MailServiceTest {
     public void testSendReceivedPrivateMessageNotification() throws IOException, MessagingException {
         PrivateMessage message = new PrivateMessage(null, null, "title", "body");
         message.setId(1);
-        when(bbCodeService.removeBBCodes("body")).thenReturn("plain body");
 
         service.sendReceivedPrivateMessageNotification(user, message);
 
         this.checkMailCredentials();
         System.out.println(this.getMimeMailBody());
         assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/pm/1"));
-        assertTrue(this.getMimeMailBody().contains("title"));
-        assertTrue(this.getMimeMailBody().contains("plain body"));
     }
 
     @Test
@@ -193,6 +188,27 @@ public class MailServiceTest {
         doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
 
         service.sendReceivedPrivateMessageNotification(user, new PrivateMessage(null, null, null, null));
+    }
+
+    @Test
+    public void testSendTopicMovedMail() throws IOException, MessagingException {
+        topic.setId(1);
+
+        service.sendTopicMovedMail(user, topic.getId());
+
+        this.checkMailCredentials();
+        assertTrue(this.getMimeMailBody().contains(USERNAME));
+        assertTrue(this.getMimeMailBody().contains("http://coolsite.com/forum/topics/" + topic.getId()));
+    }
+
+    @Test
+    public void testSendTopicMovedMailFailed(){
+        Exception fail = new MailSendException("");
+        doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
+
+        topic.setId(1);
+
+        service.sendTopicMovedMail(user, topic.getId());
     }
 
     private String getMimeMailBody() throws IOException, MessagingException {

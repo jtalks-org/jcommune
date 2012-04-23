@@ -22,12 +22,12 @@ import org.testng.annotations.Test;
  * @author Anuar_Nurmakanov
  *
  */
-public class PunctuationMarksFilterTest {
-	private PunctuationMarksFilter filter = new PunctuationMarksFilter();
+public class InvalidCharactersFilterTest {
+	private InvalidCharactersFilter filter = new InvalidCharactersFilter();
 	
 	@Test
 	public void testRemovePunctuationMarks() {
-		String searchText = "@#nice-book.!";
+		String searchText = "φ@#nice-book.!Ω";
 		String expectedResult = "nice book";
 		
 		String filterResult = filter.filter(searchText);

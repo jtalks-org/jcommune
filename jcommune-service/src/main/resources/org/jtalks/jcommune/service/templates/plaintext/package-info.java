@@ -12,21 +12,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao.search.hibernate.filter;
-
 /**
- * Deletes punctual marks in the search text.
- * 
- * @author Anuar Nurmakanov
+ *
+ * Package with html velocity templates, has usage for email client which has no html support
  *
  */
-public class PunctuationMarksFilter implements SearchRequestFilter {
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String filter(String searchText) {
-        return searchText.replaceAll("\\p{Punct}", " ").trim();
-    }
-}
+package org.jtalks.jcommune.service.templates.plaintext;

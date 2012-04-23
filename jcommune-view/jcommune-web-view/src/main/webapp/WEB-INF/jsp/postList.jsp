@@ -69,8 +69,6 @@
                         </a>
                     </c:otherwise>
                 </c:choose>
-                <a class="button top_button" href="${pageContext.request.contextPath}/topics/new?branchId=${branchId}">
-                    <spring:message code="label.topic.new_topic"/></a>
                 <a class="button top_button" href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}">
                     <spring:message code="label.answer"/></a>
                 <c:set var="authenticated" value="${true}"/>
@@ -217,8 +215,6 @@
                 <spring:message code="label.back"/>
             </a>
             <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                <a class="button top_button" href="${pageContext.request.contextPath}/topics/new?branchId=${branchId}">
-                    <spring:message code="label.topic.new_topic"/></a>
                 <a class="button top_button" href="${pageContext.request.contextPath}/posts/new?topicId=${topic.id}">
                     <spring:message code="label.answer"/></a>
                 <c:set var="authenticated" value="${true}"/>
