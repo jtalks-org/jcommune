@@ -85,7 +85,7 @@
         <constructor-arg ref="topicDao"/>
         <constructor-arg ref="securityService"/>
         <constructor-arg ref="notificationService"/>
-        <constructor-arg ref="lastReadPosrService"/>
+        <constructor-arg ref="lastReadPostService"/>
     </bean>
     
     <bean id="topicSearchService" 
@@ -154,7 +154,7 @@
         <constructor-arg ref="forumStatisticsDAO"/>
     </bean>
 
-    <bean id="lastReadPosrService" class="org.jtalks.jcommune.service.transactional.TransactionalLastReadPostService">
+    <bean id="lastReadPostService" class="org.jtalks.jcommune.service.transactional.TransactionalLastReadPostService">
         <constructor-arg ref="securityService"/>
         <constructor-arg ref="lastReadPostHibernateDao"/>
     </bean>

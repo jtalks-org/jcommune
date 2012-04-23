@@ -26,6 +26,7 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.security.SecurityConstants;
@@ -33,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.jtalks.jcommune.service.security.SecurityConstants.*;
@@ -130,11 +132,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    public List<Topic> getRecentTopics(DateTime date) {
-        if (date == null) {
-            date = new DateTime().minusDays(1);
-        }
-        return this.getDao().getTopicsUpdatedSince(date);
+    public List<Topic> getRecentTopics() {
+        DateTime date24HoursAgo = new DateTime().minusDays(1);
+        return this.getDao().getTopicsUpdatedSince(date24HoursAgo);
     }
 
     /**
@@ -215,10 +215,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         targetBranch.addTopic(topic);
         branchDao.update(targetBranch);
 
-        logger.info("Moved topic \"{}\". Topic id: {}", topic.getTitle(), topicId);
+        notificationService.topicMoved(topic, topicId);
 
-        notificationService.topicChanged(topic);
-        notificationService.branchChanged(currentBranch);
+        logger.info("Moved topic \"{}\". Topic id: {}", topic.getTitle(), topicId);
     }
 
     /**

@@ -25,3 +25,4 @@ logs
 
 /jcommune-view/jcommune-web-controller/test-output
 /jcommune-model/test-output
+/jcommune-service/test-output

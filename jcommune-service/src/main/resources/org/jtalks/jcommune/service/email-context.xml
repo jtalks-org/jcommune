@@ -60,7 +60,6 @@
     <constructor-arg name="from" value="jtalks@inbox.ru"/>
     <constructor-arg ref="velocityEngine"/>
     <constructor-arg ref="messageSource"/>
-    <constructor-arg ref="bbCodeService"/>
   </bean>
 
   <bean id="notificationService" class="org.jtalks.jcommune.service.nontransactional.NotificationService">

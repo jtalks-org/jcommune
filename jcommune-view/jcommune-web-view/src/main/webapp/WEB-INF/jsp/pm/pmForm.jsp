@@ -23,6 +23,8 @@
     <title><spring:message code="label.new_pm"/></title>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
             type="text/javascript"></script>
+    <script language="javascript"
+            src="${pageContext.request.contextPath}/resources/javascript/custom/privateMessages.js"></script>
 </head>
 <body>
 <div class="wrap pm_page">
@@ -64,6 +66,17 @@
             <input id="save_pm" type="submit" class="button" name="save_pm" value="<spring:message code="label.save"/>"
                    onclick="document.editForm.action='${pageContext.request.contextPath}/pm/save';return true;"/>
         </form:form>
+        
+        <c:if test="${privateMessageDto.id != 0}">
+            <span class="del">
+                <a id="deleteOnePM" class="button delete" href="${pageContext.request.contextPath}/pm"
+                    rel="<spring:message code="label.deletePMConfirmation"/>">
+                    <spring:message code="label.delete"/>
+                </a>
+                <input id="PMId" hidden="true" value="${privateMessageDto.id}"/>
+                <form:form id="deleteForm" method="DELETE"/>
+            </span>
+        </c:if>
     </div>
     <div class="footer_buffer"></div>
 </div>

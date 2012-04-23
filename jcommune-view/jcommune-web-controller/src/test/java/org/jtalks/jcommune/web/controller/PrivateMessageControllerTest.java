@@ -32,6 +32,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Mockito.any;
@@ -285,7 +286,19 @@ public class PrivateMessageControllerTest {
         assertEquals(bindingResult.getErrorCount(), 1);
         verify(pmService).saveDraft(dto.getId(), dto.getTitle(), dto.getBody(), dto.getRecipient());
     }
-
+    
+    @Test
+    public void testDeletePm() throws NotFoundException 
+    {
+        String pmIds = "1,2";
+        
+        when(pmService.delete(Arrays.asList(1L, 2L))).thenReturn("aaa");
+        
+        String result = controller.deleteMessages(pmIds);
+        
+        assertEquals(result, "redirect:/aaa");
+    }
+    
     private PrivateMessageDto getPrivateMessageDto() {
         PrivateMessageDto dto = new PrivateMessageDto();
         dto.setBody("body");

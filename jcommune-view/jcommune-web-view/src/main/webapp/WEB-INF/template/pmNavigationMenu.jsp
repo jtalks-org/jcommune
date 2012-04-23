@@ -31,6 +31,4 @@
         <span class="empty_cell"></span>
     </div>
 </div>
-<script src="${pageContext.request.contextPath}/resources/javascript/custom/pmNavigationMenuHighlighter.js"
-        type="text/javascript"></script>
 

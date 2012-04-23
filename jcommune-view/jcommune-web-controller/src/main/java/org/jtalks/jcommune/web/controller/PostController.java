@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.apache.commons.lang.StringUtils;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.LastReadPostService;
@@ -22,6 +23,7 @@ import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.PostDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +63,7 @@ public class PostController {
     private BreadcrumbBuilder breadcrumbBuilder;
     private TopicService topicService;
     private BBCodeService bbCodeService;
+    private SecurityService securityService;
 
     /**
      * This method turns the trim binder on. Trim binder
@@ -81,16 +84,18 @@ public class PostController {
      * @param topicService      {@link TopicService} to be injected
      * @param bbCodeService     to create valid quotes
      * @param lastReadPostService not to track user posts as updates for himself
+     * @param securityService to get the current user information
      */
     @Autowired
     public PostController(PostService postService, BreadcrumbBuilder breadcrumbBuilder,
                           TopicService topicService, BBCodeService bbCodeService,
-                          LastReadPostService lastReadPostService) {
+                          LastReadPostService lastReadPostService, SecurityService securityService) {
         this.postService = postService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.topicService = topicService;
         this.bbCodeService = bbCodeService;
         this.lastReadPostService = lastReadPostService;
+        this.securityService = securityService;
     }
 
     /**
@@ -245,7 +250,10 @@ public class PostController {
      * @return HTML content for post
      */
     @RequestMapping(method = RequestMethod.POST, value = "/posts/bbToHtml")
-    public ResponseEntity<String> bbCodeToHtml(@RequestParam(POST_BB_CONTENT) String bbContent) {
-        return new ResponseEntity<String>(bbCodeService.convertBbToHtml(bbContent), HttpStatus.OK);
+    public ResponseEntity<String> preview(@RequestParam(POST_BB_CONTENT) String bbContent) {
+        JCUser user = securityService.getCurrentUser();
+        String post = bbCodeService.convertBbToHtml(bbContent);
+        post += user.getRenderedSignature();
+        return new ResponseEntity<String>(post, HttpStatus.OK);
     }
 }

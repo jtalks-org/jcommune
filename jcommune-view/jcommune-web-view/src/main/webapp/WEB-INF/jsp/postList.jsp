@@ -71,8 +71,6 @@
                         </a>
                     </c:otherwise>
                 </c:choose>
-                <a class="button top_button" href="${pageContext.request.contextPath}/topics/new?branchId=${branchId}">
-                    <spring:message code="label.topic.new_topic"/></a>
                 <a class="button top_button" href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}">
                     <spring:message code="label.answer"/></a>
                 <c:set var="authenticated" value="${true}"/>
@@ -210,13 +208,7 @@
                         <jtalks:format value="${post.modificationDate}"/>
                     </c:if>
                 </div>
-                <c:if test="${post.userCreated.signature!=null}">
-                    <div class="signature">
-                        -------------------------
-                        <br/>
-                        <span><c:out value="${post.userCreated.signature}"/></span>
-                    </div>
-                </c:if>
+                ${post.userCreated.renderedSignature}
             </div>
         </li>
     </c:forEach>
@@ -228,8 +220,6 @@
                 <spring:message code="label.back"/>
             </a>
             <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                <a class="button top_button" href="${pageContext.request.contextPath}/topics/new?branchId=${branchId}">
-                    <spring:message code="label.topic.new_topic"/></a>
                 <a class="button top_button" href="${pageContext.request.contextPath}/posts/new?topicId=${topic.id}">
                     <spring:message code="label.answer"/></a>
                 <c:set var="authenticated" value="${true}"/>

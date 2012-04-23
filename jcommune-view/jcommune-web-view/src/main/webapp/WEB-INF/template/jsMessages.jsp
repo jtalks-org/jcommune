@@ -21,6 +21,8 @@
 --%>
 $labelDeleteContactConfirmation = '<spring:message code="label.deleteContactConfirmation"/>';
 
+$labelDeletePmGroupConfirmation = '<spring:message code="label.deletePMGroupConfirmation"/>';
+
 $labelValidationUsercontactNotMatch = '<spring:message code="validation.usercontact.notmatch"/>';
 $labelContactType = '<spring:message code="label.contact.type"/>';
 $labelContactValue = '<spring:message code="label.contact.value"/>';
@@ -33,5 +35,8 @@ $labelUrl = '<spring:message code="label.url"/>';
 $labelUrlInfo = '<spring:message code="label.url.info"/>';
 $labelUrlRequired = '<spring:message code="label.url.required"/>';
 $labelImgHeader = '<spring:message code="label.img.header"/>';
+
+$labelPreview= '<spring:message code="label.answer.preview"/>';
+$labelEdit= '<spring:message code="label.edit"/>';
 
 

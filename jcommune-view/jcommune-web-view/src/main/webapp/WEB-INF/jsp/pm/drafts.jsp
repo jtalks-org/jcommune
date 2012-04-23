@@ -15,14 +15,11 @@
 
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <head>
-    <script language="javascript"
-      src="${pageContext.request.contextPath}/resources/javascript/custom/tableStylish.js"></script>
     <script language="javascript"
       src="${pageContext.request.contextPath}/resources/javascript/custom/privateMessages.js"></script>
     <title><spring:message code="label.drafts"/></title>
@@ -43,7 +40,6 @@
             <th class="pm_header_info"><spring:message code="label.pm.recipient"/></th>
             <th class="pm_header_title"><spring:message code="label.pm.title"/></th>
             <th class="pm_header_info"><spring:message code="label.sending_date"/></th>
-            <th class="pm_header_info"><spring:message code="label.edit"/></th>
           </tr>
           <c:choose>
             <c:when test="${!(empty pmList)}">
@@ -63,11 +59,6 @@
                   <td>
                     <jtalks:format value="${pm.creationDate}"/>
                   </td>
-                  <td>
-                    <a href="${pageContext.request.contextPath}/pm/${pm.id}/edit">
-                      <spring:message code="label.edit"/>
-                    </a>
-                  </td>
                 </tr>
               </c:forEach>
             </c:when>
@@ -79,13 +70,12 @@
           </c:choose>
         </table>
         <div class="del">
-          <a id="deleteCheckedPM" class="button delete" href="${pageContext.request.contextPath}/pm"
-            rel="<spring:message code="label.deletePMConfirmation"/>">
+          <a id="deleteCheckedPM" class="button" href="${pageContext.request.contextPath}/pm">
             <spring:message code="label.delete"/>
           </a>
           <form:form id="deleteForm" method="DELETE"/>
         </div>
-        <a class="button" href="${pageContext.request.contextPath}/pm/${pm.id}/edit">
+        <a id="editCheckedPM" class="button" href="${pageContext.request.contextPath}/pm">
             <spring:message code="label.edit"/>
         </a>
     </div>

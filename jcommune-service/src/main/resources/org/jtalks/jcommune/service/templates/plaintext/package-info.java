@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) 2011  JTalks.org Team
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -12,16 +12,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
-$(document).ready(function () {
-    var url = document.URL.toString();
-    if (url.match(/inbox$/)) {
-        $("#inbox_link").addClass("highlight_tab");
-    } else if (url.match(/outbox$/)) {
-        $("#outbox_link").addClass("highlight_tab");
-    } else if (url.match(/new$/)) {
-        $("#newmsg_link").addClass("highlight_tab");
-    } else if (url.match(/drafts$/)) {
-        $("#draft_link").addClass("highlight_tab");
-    }
-});
+/**
+ *
+ * Package with html velocity templates, has usage for email client which has no html support
+ *
+ */
+package org.jtalks.jcommune.service.templates.plaintext;

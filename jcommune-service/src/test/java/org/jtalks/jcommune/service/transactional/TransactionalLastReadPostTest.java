@@ -37,9 +37,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 /**
  * @author Evgeniy Naumenko
@@ -177,8 +175,29 @@ public class TransactionalLastReadPostTest {
     public void testMarkTopicAsReadAnonymous() {
         Topic topic = this.createTestTopic();
 
-       lastReadPostService.markTopicAsRead(topic);
+        lastReadPostService.markTopicAsRead(topic);
         verifyZeroInteractions(lastReadPostDao);
+    }
+
+    @Test
+    public void testGetLastReadPostInTopic() {
+        Topic topic = this.createTestTopic();
+        LastReadPost post = new LastReadPost(user, topic, 1);
+        when(securityService.getCurrentUser()).thenReturn(user);
+        when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(post);
+
+        int actual = lastReadPostService.getLastReadPostForTopic(topic);
+
+        assertEquals(actual, post.getPostIndex());
+    }
+
+    @Test
+    public void testGetLastReadPostInTopicNoRecord() {
+        Topic topic = this.createTestTopic();
+        when(securityService.getCurrentUser()).thenReturn(user);
+        when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(null);
+
+        assertNull(lastReadPostService.getLastReadPostForTopic(topic));
     }
 
     private Topic createTestTopic() {

@@ -710,7 +710,7 @@ a.highlight_tab {
 
 a.disabled {
     background-color: #8b8b8b;
-    color: #b8b8b8;
+    color: #b8b8b8 !important;
 }
 
 .options {

@@ -20,4 +20,3 @@ UPDATE CONTACT_TYPE SET MASK='aim@server.com', VALIDATION_PATTERN='^([a-z0-9_\\.
 UPDATE CONTACT_TYPE SET MASK='yim@server.com', VALIDATION_PATTERN='^([a-z0-9_\\.-]+)@([\\da-z\\._-]+)\\.([a-z]{2,6})$' WHERE TYPE_ID = 15;
 UPDATE CONTACT_TYPE SET MASK='msn@server.com', VALIDATION_PATTERN='^([a-z0-9_\\.-]+)@([\\da-z\\._-]+)\\.([a-z]{2,6})$' WHERE TYPE_ID = 16;
 UPDATE CONTACT_TYPE SET MASK='http://site-name.domain.com', DISPLAY_PATTERN='<a href="%s">%s</a>', VALIDATION_PATTERN='^(https?:\\/\\/)([\\da-z\\.-]+)\\.([a-z]{2,6})([\\/\\w \\.-]*)*\\/?$' WHERE TYPE_ID = 17;
-

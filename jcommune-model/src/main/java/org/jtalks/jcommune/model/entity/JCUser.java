@@ -32,7 +32,7 @@ import java.util.Set;
  */
 public class JCUser extends User {
 
-    private String signature;
+    private Signature signature = new Signature(null);
     private int postCount;
     private Language language = Language.ENGLISH;
     private int pageSize = DEFAULT_PAGE_SIZE;
@@ -97,14 +97,14 @@ public class JCUser extends User {
      * @return user signature
      */
     public String getSignature() {
-        return signature;
+        return signature.getContent();
     }
 
     /**
-     * @param signature user signature
+     * @param content user signature
      */
-    public void setSignature(String signature) {
-        this.signature = signature;
+    public void setSignature(String content) {
+        this.signature = new Signature(content);
     }
 
     /**
@@ -216,5 +216,14 @@ public class JCUser extends User {
      */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    /**
+     * Renders user signature for html view.
+     * No further html escaping is required.
+     * @return html-rendered user signature
+     */
+    public String getRenderedSignature(){
+       return signature.render();
     }
 }

@@ -38,6 +38,8 @@ public class NotificationServiceTest {
 
     private NotificationService service;
 
+    private final long TOPIC_ID = 1;
+
     private JCUser user1 = new JCUser("name1", "email1", "password1");
     private JCUser user2 = new JCUser("name2", "email2", "password2");
     private Topic topic;
@@ -110,5 +112,16 @@ public class NotificationServiceTest {
         service.branchChanged(branch);
 
         verifyZeroInteractions(mailService);
+    }
+
+    @Test void testTopicMovedWithBranchSubscribers(){
+        when(securityService.getCurrentUser()).thenReturn(user1);
+        branch.getSubscribers().add(user1);
+        branch.getSubscribers().add(user2);
+        
+        service.topicMoved(topic, TOPIC_ID);
+
+        verify(mailService).sendTopicMovedMail(user1, TOPIC_ID);
+        verify(mailService).sendBranchUpdatesOnSubscription(user2, branch);
     }
 }

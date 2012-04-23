@@ -14,33 +14,20 @@
  */
 package org.jtalks.jcommune.model.dao.search.hibernate.filter;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 /**
+ * Deletes all invalid characters in the search text.
+ * Valid characters are letters and numbers.
  * 
- * @author Anuar_Nurmakanov
+ * @author Anuar Nurmakanov
  *
  */
-public class PunctuationMarksFilterTest {
-	private PunctuationMarksFilter filter = new PunctuationMarksFilter();
-	
-	@Test
-	public void testRemovePunctuationMarks() {
-		String searchText = "@#nice-book.!";
-		String expectedResult = "nice book";
-		
-		String filterResult = filter.filter(searchText);
-		
-		Assert.assertEquals(filterResult, expectedResult, "Punctuation marks aren't removed.");
-	}
-	
-	@Test
-	public void testFilterCorrectSearchText() {
-		String searchText = "nice book";
-		
-		String filterResult = filter.filter(searchText);
-		
-		Assert.assertEquals(filterResult, filterResult, "The search text should remain the same.");
-	}
+public class InvalidCharactersFilter implements SearchRequestFilter {
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String filter(String searchText) {
+        return searchText.replaceAll("[^А-Яа-яёЁA-Za-z0-9]", " ").trim();
+    }
 }

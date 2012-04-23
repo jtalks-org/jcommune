@@ -69,6 +69,7 @@ function showMoveTopicModalWindow(htmlTemplate) {
             displayBranches();
             $("#branch_name").change(function () {
                 $("#jqi_state0_buttonMove").removeAttr("disabled");
+                $("#jqi_state0_buttonMove").css({'color':'#262626'})
                 branchId = $(this).val();
             });
         },
@@ -78,7 +79,7 @@ function showMoveTopicModalWindow(htmlTemplate) {
             }
         }
     });
-    $("#jqi_state0_buttonMove").attr('disabled', 'disabled');
+    disableMoveButton();
 }
 
 /**
@@ -127,6 +128,7 @@ function displayAllBranches() {
  * @param branches list of branches to present
  */
 function rebuildBranchesList(branches) {
+    disableMoveButton();
     $("#branch_name").children().remove();
     $("#branch_name").append(getBranchItemHtml(branches));
 }
@@ -160,5 +162,14 @@ function moveTopic(topicId, targetBranchId) {
             document.location = baseUrl + '/topics/' + topicId;
         }
     });
+}
+
+
+/**
+ * Disables Move button in "Move topic" modal window
+ */
+function disableMoveButton(){
+   $("#jqi_state0_buttonMove").attr('disabled', 'disabled');
+   $("#jqi_state0_buttonMove").css({'color':'grey'}); 
 }
 
