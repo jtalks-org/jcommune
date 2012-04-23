@@ -15,21 +15,24 @@
 
 function deleteMessages(identifiers) {
     // add identifiers of the checked private messages for deletion
-    var deleteForm = $("#deleteForm")[0];
+	$('[name=pmIdentifiers]').remove();
+	
     var field = document.createElement("input");
     field.setAttribute("type", "hidden");
     field.setAttribute("name", "pmIdentifiers");
     field.setAttribute("value", identifiers + "");
+	
+	var deleteForm = $("#deleteForm")[0];
     deleteForm.appendChild(field);
 }
 
 /**
- * Edits the selected message. This function doesn't care if there is correct number
- * of messages (1) selected, this check is performed before the function call
+ * Edits the selected message. This function performs edit action
+ * if and only if exactly
  */
 function editMessage() {
     selectedCheckboxes = $('.checker:checked');
-    if (selectedCheckboxes.size() > 0) {
+    if (selectedCheckboxes.size() == 1) {
         id = selectedCheckboxes[0].id;
         document.location = $root + "/pm/" + id + "/edit";
     }
@@ -100,7 +103,8 @@ $(document).ready(function () {
     });
 
     //bind edit message handler
-    $("#editCheckedPM").click(function() {
+    $("#editCheckedPM").click(function(e) {
+        e.preventDefault();
         editMessage();
         return false;
     });
