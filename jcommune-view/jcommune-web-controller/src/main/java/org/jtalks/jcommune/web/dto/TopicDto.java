@@ -21,10 +21,9 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.web.util.PollUtil;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
 import org.jtalks.jcommune.web.validation.annotations.DateInStringFormat;
-import org.jtalks.jcommune.web.validation.annotations.FutureDateInStringFormat;
 import org.jtalks.jcommune.web.validation.annotations.PollOptionLength;
 import org.jtalks.jcommune.web.validation.annotations.PollTitlePollOptionsNotBlankIfOneOfThemNotBlank;
-import org.jtalks.jcommune.web.validation.annotations.VotingOptionsNumber;
+import org.jtalks.jcommune.web.validation.annotations.Voting;
 
 import javax.validation.constraints.Size;
 import java.io.IOException;
@@ -36,7 +35,7 @@ import java.io.IOException;
  * @author Max Malakhov
  */
 @PollTitlePollOptionsNotBlankIfOneOfThemNotBlank(pollTitle = "pollTitle", pollOptions = "pollOptions")
-@VotingOptionsNumber(pollTitle = "pollTitle", pollOptions = "pollOptions")
+@Voting(pollTitle = "pollTitle", pollOptions = "pollOptions", endingDate = "endingDate")
 public class TopicDto {
     @NotBlank
     @Size(min = Topic.MIN_NAME_SIZE, max = Topic.MAX_NAME_SIZE)
@@ -62,7 +61,6 @@ public class TopicDto {
     private String single;
 
     @DateInStringFormat
-    @FutureDateInStringFormat
     private String endingDate;
 
     private Poll poll;

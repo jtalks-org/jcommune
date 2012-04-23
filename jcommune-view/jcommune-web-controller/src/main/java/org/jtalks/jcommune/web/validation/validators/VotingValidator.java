@@ -15,9 +15,11 @@
 package org.jtalks.jcommune.web.validation.validators;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.joda.time.DateTime;
+import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollOption;
 import org.jtalks.jcommune.web.util.PollUtil;
-import org.jtalks.jcommune.web.validation.annotations.VotingOptionsNumber;
+import org.jtalks.jcommune.web.validation.annotations.Voting;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -31,31 +33,45 @@ import java.util.List;
  */
 
 
-public class VotingOptionsNumberValidator implements ConstraintValidator<VotingOptionsNumber, Object> {
-    private int min;
-    private int max;
+public class VotingValidator implements ConstraintValidator<Voting, Object> {
+    private int minOptionsNumber;
+    private int maxOptionsNumber;
     private String pollTitleName;
     private String pollTitleValue;
     private String pollOptionsName;
     private String pollOptionsValue;
-
+    private String endingDateName;
+    private String endingDateValue;
     private String message;
 
+    private final String OPTIONS_NUMBER_MESSAGE = "{VotingOptionsNumber.message}";
+    private final String FUTURE_DATE_MESSAGE = "{javax.validation.constraints.Future.message}";
+
+
     @Override
-    public void initialize(VotingOptionsNumber constraintAnnotation) {
-        this.min = constraintAnnotation.min();
-        this.max = constraintAnnotation.max();
-        this.message = constraintAnnotation.message();
+    public void initialize(Voting constraintAnnotation) {
+        this.minOptionsNumber = constraintAnnotation.minOptionsNumber();
+        this.maxOptionsNumber = constraintAnnotation.maxOptionsNumber();
         this.pollTitleName = constraintAnnotation.pollTitle();
         this.pollOptionsName = constraintAnnotation.pollOptions();
+        this.endingDateName = constraintAnnotation.endingDate();
+        this.message = constraintAnnotation.message();
     }
 
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
+        getValidatedFields(value);
+
+        return isVotingOptionsNumberValid(context)
+                & isDateInStringFormatInFuture(context);
+    }
+
+    //TODO need to check implementation
+    private boolean isVotingOptionsNumberValid(ConstraintValidatorContext context) {
         boolean result = false;
         List<PollOption> list;
 
-        getValidatedFields(value);
+        //TODO 16 Apr jk1 says: just count line breaks in string instead of all that code
 
         if (pollTitleValue == null) {
             result = true;
@@ -67,14 +83,32 @@ public class VotingOptionsNumberValidator implements ConstraintValidator<VotingO
                     list = new ArrayList<PollOption>(0);
                 }
 
-                if ((list.size() >= min) || (list.size() <= max)) {
+                if ((list.size() >= minOptionsNumber) || (list.size() <= maxOptionsNumber)) {
                     result = true;
                 }
             }
         }
 
         if (!result) {
-            constraintViolated(context);
+            constraintViolated(context, OPTIONS_NUMBER_MESSAGE, pollOptionsName);
+        }
+
+        return result;
+    }
+
+    private boolean isDateInStringFormatInFuture(ConstraintValidatorContext context) {
+        boolean result;
+
+
+        if (endingDateValue == null) {//null values are valid
+            result = true;
+        } else {
+            DateTime date = PollUtil.parseDate(endingDateValue, Poll.DATE_FORMAT);
+            result = date.isAfter(new DateTime());
+        }
+
+        if (!result) {
+            constraintViolated(context, FUTURE_DATE_MESSAGE, endingDateName);
         }
 
         return result;
@@ -84,6 +118,7 @@ public class VotingOptionsNumberValidator implements ConstraintValidator<VotingO
         try {
             pollTitleValue = BeanUtils.getProperty(value, pollTitleName);
             pollOptionsValue = BeanUtils.getProperty(value, pollOptionsName);
+            endingDateValue = BeanUtils.getProperty(value, endingDateName);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -91,10 +126,10 @@ public class VotingOptionsNumberValidator implements ConstraintValidator<VotingO
     }
 
 
-    private void constraintViolated(ConstraintValidatorContext context) {
+    private void constraintViolated(ConstraintValidatorContext context, String message, String fieldName) {
         context.disableDefaultConstraintViolation();
         context.buildConstraintViolationWithTemplate(message)
-                .addNode(pollOptionsName)
+                .addNode(fieldName)
                 .addConstraintViolation();
     }
 }
