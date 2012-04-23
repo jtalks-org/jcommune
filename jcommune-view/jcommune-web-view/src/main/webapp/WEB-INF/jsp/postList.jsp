@@ -171,7 +171,7 @@
                            rel="<spring:message code="${confirm_message}"/>">
                             <spring:message code="label.delete"/>
                         </a>
-                        <a class="button" href="${edit_url}"><spring:message code="label.edit"/></a>
+                        <a class="button" id="edit_button" rel="${branchId}" href="${edit_url}"><spring:message code="label.edit"/></a>
                     </sec:accesscontrollist>
                     <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
                         <a class="button quote" href="javascript:quote(${post.id});">
