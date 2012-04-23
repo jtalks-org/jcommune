@@ -18,6 +18,8 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.JCUser;
 
+import java.util.Set;
+
 /**
  * Send email notifications to the users subscribed.
  * If the update author is subscribed he won't get the notification message.
@@ -85,13 +87,16 @@ public class NotificationService {
      */
     public void topicMoved(Topic topic, long topicId){
          JCUser currentUser = securityService.getCurrentUser();
-         Branch branch = topic.getBranch();
-         for (JCUser user : branch.getSubscribers()){
-             if (!user.equals(currentUser)) {
-                 mailService.sendBranchUpdatesOnSubscription(user, branch);
+         JCUser topicStarter = topic.getTopicStarter();        
+         Set<JCUser> subscribers = topic.getBranch().getSubscribers();
+         for (JCUser subscriber : subscribers){
+             if (!subscriber.equals(currentUser)) {
+                mailService.sendTopicMovedMail(subscriber, topicId);
              }
          }
-         mailService.sendTopicMovedMail(currentUser, topicId);
+         if (!subscribers.contains(topicStarter)){
+             mailService.sendTopicMovedMail(topicStarter,topicId);
+         }
     }
 
 }
