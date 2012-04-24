@@ -17,13 +17,12 @@ function deleteMessages(identifiers) {
     // add identifiers of the checked private messages for deletion
 	$('[name=pmIdentifiers]').remove();
 	
-    var field = document.createElement("input");
-    field.setAttribute("type", "hidden");
-    field.setAttribute("name", "pmIdentifiers");
-    field.setAttribute("value", identifiers + "");
-	
-	var deleteForm = $("#deleteForm")[0];
-    deleteForm.appendChild(field);
+	var deleteForm = $("#deleteForm");
+	var field = "<input type='hidden' name='pmIdentifiers' value='%value%'>";
+	for (i = 0; i < identifiers.length; i++) {
+		var actualField = field.replace('%value%', identifiers[i]);
+		deleteForm.append(actualField);
+	}
 }
 
 /**

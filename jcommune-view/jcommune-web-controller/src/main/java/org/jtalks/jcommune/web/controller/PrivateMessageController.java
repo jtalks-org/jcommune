@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.jtalks.jcommune.model.entity.PrivateMessage;
@@ -255,11 +254,7 @@ public class PrivateMessageController {
      * @return redirect to folder from what request is come
      */
     @RequestMapping(value = "/pm", method = {RequestMethod.DELETE})
-    public String deleteMessages(@RequestParam(PM_IDENTIFIERS) String csIds) {
-        List<Long> ids = new ArrayList<Long>();
-        for (String val : csIds.split(",")) {
-            ids.add(Long.parseLong(val));
-        }
+    public String deleteMessages(@RequestParam(PM_IDENTIFIERS) List<Long> ids) {
         String url = pmService.delete(ids);
         return "redirect:/" + url;
     }
