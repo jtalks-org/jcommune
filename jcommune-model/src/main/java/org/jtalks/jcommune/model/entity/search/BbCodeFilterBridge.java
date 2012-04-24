@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.entity.search;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.bridge.StringBridge;
@@ -39,19 +40,6 @@ public class BbCodeFilterBridge implements StringBridge {
             String value = (String) object;
             return value.replaceAll(BB_CODE_REGEXP_TEMPLATE, " ");
         }
-        return transformToString(object);
-    }
-
-    /**
-     * Converts data to string. This method needed for non string values.
-     * 
-     * @param object  a non string value
-     * @return a string representation of a non string value
-     */
-    private String transformToString(Object object) {
-        if (object != null) {
-            return String.valueOf(object);
-        }
-        return StringUtils.EMPTY;
+        return ObjectUtils.toString(object);
     }
 }

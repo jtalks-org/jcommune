@@ -93,9 +93,7 @@ public class StopWordsFilter implements SearchRequestFilter {
         if (ignoreCase) {
             searchText = searchText.toLowerCase();
         }
-        return new ArrayList<String>(
-                Arrays.asList(searchText.split(SPACE_STRING))
-        );
+        return Arrays.asList(searchText.split(SPACE_STRING));
     }
     
     /**
