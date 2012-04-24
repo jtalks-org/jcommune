@@ -24,7 +24,7 @@ import java.util.Set;
  * Send email notifications to the users subscribed.
  * If the update author is subscribed he won't get the notification message.
  * This service also assumes, that topic update as a enclosing branch update as well.
- *
+ * <p/>
  * Errors occured while sending emails are suppressed (logged only) as updates
  * notifications are themselves a kind of a side effect, so they should not prevent
  * the whole operation from beeing completed.
@@ -39,7 +39,7 @@ public class NotificationService {
 
     /**
      * @param securityService to determine the update author
-     * @param mailService to perform actual email notifications.
+     * @param mailService     to perform actual email notifications.
      */
     public NotificationService(SecurityService securityService, MailService mailService) {
         this.securityService = securityService;
@@ -54,10 +54,10 @@ public class NotificationService {
      */
     public void topicChanged(Topic topic) {
         JCUser current = securityService.getCurrentUser();
-        for (JCUser user : topic.getSubscribers()) {
-            if (!user.equals(current)) {
-                mailService.sendTopicUpdatesOnSubscription(user, topic);
-            }
+        Set<JCUser> subscribers = topic.getSubscribers();
+        subscribers.remove(current);
+        for (JCUser user : subscribers) {
+            mailService.sendTopicUpdatesOnSubscription(user, topic);
         }
     }
 
@@ -70,10 +70,10 @@ public class NotificationService {
      */
     public void branchChanged(Branch branch) {
         JCUser current = securityService.getCurrentUser();
-        for (JCUser user : branch.getSubscribers()) {
-            if (!user.equals(current)) {
-                mailService.sendBranchUpdatesOnSubscription(user, branch);
-            }
+        Set<JCUser> subscribers = branch.getSubscribers();
+        subscribers.remove(current);
+        for (JCUser user : subscribers) {
+            mailService.sendBranchUpdatesOnSubscription(user, branch);
         }
     }
 
@@ -81,22 +81,20 @@ public class NotificationService {
      * Notifies topic starter by email that his or her topic
      * was moved to another sections and also notifies all branch
      * subscribers
-     * 
-     * @param topic  topic moved
-     * @param topicId  topic id
+     *
+     * @param topic   topic moved
+     * @param topicId topic id
      */
-    public void topicMoved(Topic topic, long topicId){
-         JCUser currentUser = securityService.getCurrentUser();
-         JCUser topicStarter = topic.getTopicStarter();        
-         Set<JCUser> subscribers = topic.getBranch().getSubscribers();
-         for (JCUser subscriber : subscribers){
-             if (!subscriber.equals(currentUser)) {
-                mailService.sendTopicMovedMail(subscriber, topicId);
-             }
-         }
-         if (!subscribers.contains(topicStarter)){
-             mailService.sendTopicMovedMail(topicStarter,topicId);
-         }
+    public void topicMoved(Topic topic, long topicId) {
+        JCUser currentUser = securityService.getCurrentUser();
+        JCUser topicStarter = topic.getTopicStarter();
+        Set<JCUser> subscribers = topic.getBranch().getSubscribers();
+        //temp transient collection modification to ease the iteration
+        subscribers.add(topicStarter);
+        subscribers.remove(currentUser);
+        for (JCUser subscriber : subscribers) {
+            mailService.sendTopicMovedMail(subscriber, topicId);
+        }
     }
 
 }

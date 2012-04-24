@@ -136,7 +136,6 @@ public class NotificationServiceTest {
 
         service.topicMoved(topic, TOPIC_ID);
         
-        verify(mailService).sendTopicMovedMail(user1, TOPIC_ID);
         verify(mailService).sendTopicMovedMail(user2, TOPIC_ID);
         verify(mailService).sendTopicMovedMail(user3, TOPIC_ID);
     }

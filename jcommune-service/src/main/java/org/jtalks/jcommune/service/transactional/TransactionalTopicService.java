@@ -210,7 +210,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @PreAuthorize(HAS_ADMIN_ROLE)
     public void moveTopic(Long topicId, Long branchId) throws NotFoundException {
         Topic topic = get(topicId);
-        Branch currentBranch = topic.getBranch();
         Branch targetBranch = branchService.get(branchId);
         targetBranch.addTopic(topic);
         branchDao.update(targetBranch);
