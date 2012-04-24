@@ -53,7 +53,7 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
 	@Autowired
 	private TopicHibernateSearchDao topicSearchDao;
 	@Mock
-	private SearchRequestFilter punctuationMarksFilter;
+	private SearchRequestFilter invalidCharactersFilter;
 	@Mock
 	private SearchRequestFilter stopWordsFilter;
 	
@@ -65,12 +65,12 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
         ObjectsFactory.setSession(session);
         
         MockitoAnnotations.initMocks(this);
-        List<SearchRequestFilter> filters = Arrays.asList(punctuationMarksFilter, stopWordsFilter);
+        List<SearchRequestFilter> filters = Arrays.asList(invalidCharactersFilter, stopWordsFilter);
         topicSearchDao.setFilters(filters);
 	}
 	
 	private void configureMocks(String searchText, String result) {
-		Mockito.when(punctuationMarksFilter.filter(searchText)).thenReturn(result);
+		Mockito.when(invalidCharactersFilter.filter(searchText)).thenReturn(result);
 		Mockito.when(stopWordsFilter.filter(searchText)).thenReturn(result);
 	}
 	
@@ -222,5 +222,45 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
 				{"Полеты", "полет"},
 				{"барабан", "барабаны"}
 		};
+	}
+	
+	@Test(dataProvider = "parameterSearchByBbCodes")
+	public void testSearchByBbCodes(String content, String bbCode) {
+	    Topic expectedTopic = ObjectsFactory.getDefaultTopic();
+        expectedTopic.getLastPost().setPostContent(content);
+        
+        saveAndFlushIndexes(Arrays.asList(expectedTopic));
+        configureMocks(bbCode, bbCode);
+        
+        List<Topic> searchResults = topicSearchDao.searchByTitleAndContent(bbCode);
+        Assert.assertTrue(searchResults.size() == 0, "Search result must be empty.");
+	}
+	
+	@DataProvider(name = "parameterSearchByBbCodes")
+	public Object[][] parameterSearchByBbCodes() {
+	    return new Object[][] {
+                {"[code=java]spring[/code]", "code"},
+                {"[b]gwt[/b]", "b"}
+        };
+	}
+	
+	@Test(dataProvider = "parameterSearchByBbCodesContent")
+	public void testSearchByBbCodesContent(String content, String bbCodeContent) {
+	    Topic expectedTopic = ObjectsFactory.getDefaultTopic();
+        expectedTopic.getLastPost().setPostContent(content);
+        
+        saveAndFlushIndexes(Arrays.asList(expectedTopic));
+        configureMocks(bbCodeContent, bbCodeContent);
+        
+        List<Topic> searchResults = topicSearchDao.searchByTitleAndContent(bbCodeContent);
+        Assert.assertTrue(searchResults.size() != 0, "Search result must not be empty.");
+	}
+	
+	@DataProvider(name = "parameterSearchByBbCodesContent")
+	public Object[][] parameterSearchByBbCodesContent() {
+	    return new Object[][] {
+                {"[code=java]code[/code]", "code"},
+                {"[b]b[/b]", "b"}
+        };
 	}
 }
