@@ -20,7 +20,7 @@ import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Fields;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
-import org.jtalks.jcommune.model.entity.search.BbCodeFilterBridge;
+import org.jtalks.jcommune.model.search.BbCodeFilterBridge;
 
 /**
  * Represents the simple version of post of the forum
