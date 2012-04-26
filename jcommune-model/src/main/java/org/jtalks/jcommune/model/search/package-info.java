@@ -12,8 +12,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 /**
- * Package for filters that filter the search request. 
+ * Provides additional classes for working with Hibernate Search.
+ * Contains additional annotations, implementing their own analyser,
+ * filters, and bridges.
  */
-package org.jtalks.jcommune.model.dao.search.hibernate.filter;
+package org.jtalks.jcommune.model.search;

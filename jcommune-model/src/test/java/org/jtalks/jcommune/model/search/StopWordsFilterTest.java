@@ -12,10 +12,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao.search.hibernate.filter;
+package org.jtalks.jcommune.model.search;
 
 import java.util.Arrays;
 
+import org.jtalks.jcommune.model.search.StopWordsFilter;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
