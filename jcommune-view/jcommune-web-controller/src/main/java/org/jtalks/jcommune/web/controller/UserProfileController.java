@@ -99,6 +99,27 @@ public class UserProfileController {
     }
 
     /**
+     * Show page with user info.
+     * SpEL pattern in a var name indicates we want to consume all the symbols in a var,
+     * even dots, which Spring MVC uses as file extension delimiters by default.
+     *
+     * @param username the decoded encodedUsername from the JSP view.
+     * @return user details view with {@link JCUser} object.
+     * @throws NotFoundException if user with given id not found.
+     */
+    @RequestMapping(value = "/users/{encodedUsername:.+}", method = RequestMethod.GET)
+    public ModelAndView showProfilePage(@PathVariable("encodedUsername") String username) throws NotFoundException {
+        //The {encodedUsername} from the JSP view automatically converted to username.
+        // That's why the getByUsername() method is used instead of getByEncodedUsername().
+        JCUser user = userService.getByUsername(username);
+        return new ModelAndView("userDetails")
+                .addObject("user", user)
+                        // bind separately to get localized value
+                .addObject("language", user.getLanguage())
+                .addObject("pageSize", Pagination.getPageSizeFor(user));
+    }
+
+    /**
      * This method is a shortcut for user profile access. It may be usefull when we haven't got
      * the specific id, but simply want to access current user's profile.
      * <p/>
@@ -109,8 +130,8 @@ public class UserProfileController {
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public ModelAndView showProfilePage() throws NotFoundException {
         JCUser user = securityService.getCurrentUser();
-        ModelAndView userProfileModelAndView = getModelAndViewUserProfile(user);
-        return userProfileModelAndView;
+        ModelAndView profileModelAndView = showProfilePage(user.getUsername());
+        return profileModelAndView;
     }
 
     /**
@@ -180,23 +201,5 @@ public class UserProfileController {
                 .addObject("pag", pag)
                 .addObject("posts", posts)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
-    }
-
-     /**
-     * Show page with user info.
-     * SpEL pattern in a var name indicates we want to consume all the symbols in a var,
-     * even dots, which Spring MVC uses as file extension delimiters by default.
-     *
-     * @param username the decoded encodedUsername from the JSP view.
-     * @return user details view with {@link JCUser} object.
-     * @throws NotFoundException if user with given id not found.
-     */
-     
-    private ModelAndView getModelAndViewUserProfile(JCUser user) throws NotFoundException {
-        return new ModelAndView("userDetails")
-                .addObject("user", user)
-                        // bind separately to get localized value
-                .addObject("language", user.getLanguage())
-                .addObject("pageSize", Pagination.getPageSizeFor(user));
     }
 }
