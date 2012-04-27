@@ -118,7 +118,6 @@ public class UserProfileControllerTest {
     public void testShowShortcut() throws NotFoundException {
         JCUser user = new JCUser(USER_NAME, EMAIL, PASSWORD);
         when(securityService.getCurrentUser()).thenReturn(user);
-        when(userService.getByUsername(USER_NAME)).thenReturn(user);
 
         ModelAndView mav = profileController.showProfilePage();
 
