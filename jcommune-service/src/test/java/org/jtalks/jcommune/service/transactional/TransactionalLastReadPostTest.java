@@ -28,6 +28,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -198,6 +199,36 @@ public class TransactionalLastReadPostTest {
         when(lastReadPostDao.getLastReadPost(user, topic)).thenReturn(null);
 
         assertNull(lastReadPostService.getLastReadPostForTopic(topic));
+    }
+    
+    @Test
+    public void testUpdateLastReadPostsWhenPostIsDeletedIndexChanged() {
+        Topic topic = this.createTestTopic();
+        int postIndex = 1;  
+        LastReadPost lastReadPost = new LastReadPost(user, topic, postIndex);
+        List<LastReadPost> lastReadPosts = Arrays.asList(lastReadPost);
+        
+        when(lastReadPostDao.listLastReadPostsForTopic(topic)).thenReturn(lastReadPosts);
+        
+        lastReadPostService.updateLastReadPostsWhenPostIsDeleted(topic.getFirstPost());
+        
+        verify(lastReadPostDao).update(lastReadPost);
+        assertEquals(lastReadPost.getPostIndex(), postIndex - 1, "The index should be reduced.");
+    }
+    
+    @Test
+    public void testUpdateLastReadPostsWhenPostIsDeletedIndexNotChanged() {
+        Topic topic = this.createTestTopic();
+        int postIndex = 0;  
+        LastReadPost lastReadPost = new LastReadPost(user, topic, postIndex);
+        List<LastReadPost> lastReadPosts = Arrays.asList(lastReadPost);
+        
+        when(lastReadPostDao.listLastReadPostsForTopic(topic)).thenReturn(lastReadPosts);
+        
+        lastReadPostService.updateLastReadPostsWhenPostIsDeleted(topic.getLastPost());
+        
+        verify(lastReadPostDao, never()).update(lastReadPost);
+        assertEquals(lastReadPost.getPostIndex(), postIndex, "The index shouldn't be reduced.");
     }
 
     private Topic createTestTopic() {

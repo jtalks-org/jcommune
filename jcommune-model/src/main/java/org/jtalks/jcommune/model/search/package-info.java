@@ -15,6 +15,6 @@
 /**
  * Provides additional classes for working with Hibernate Search.
  * Contains additional annotations, implementing their own analyser,
- * filters, and bridges.
+ * filters and bridges.
  */
 package org.jtalks.jcommune.model.search;
