@@ -101,28 +101,21 @@ public class UserProfileControllerTest {
         JCUser user = new JCUser("username", "email", "password");
         user.setLanguage(LANGUAGE);
         //set expectations
-        when(userService.getByUsername(USER_NAME)).thenReturn(user);
+        when(securityService.getCurrentUser()).thenReturn(user);
 
         //invoke the object under test
-        ModelAndView mav = profileController.showProfilePage(USER_NAME);
+        ModelAndView mav = profileController.showProfilePage();
 
         //check expectations
-        verify(userService).getByUsername(USER_NAME);
+        verify(securityService).getCurrentUser();
 
         //check result
         assertViewName(mav, "userDetails");
         assertModelAttributeAvailable(mav, "user");
+        assertModelAttributeAvailable(mav, "language");
+        assertModelAttributeAvailable(mav, "pageSize");
     }
-
-    @Test
-    public void testShowShortcut() {
-       when(securityService.getCurrentUser()).thenReturn(new JCUser(USER_NAME, EMAIL, PASSWORD));
-
-        String result = profileController.showProfilePage();
-
-        assertEquals(result, "redirect:/users/" + USER_NAME);
-    }
-
+        
     @Test
     public void testEditProfilePage() throws NotFoundException, IOException {
         JCUser user = getUser();
