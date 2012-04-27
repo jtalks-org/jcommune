@@ -124,7 +124,7 @@ public class UserProfileController {
      * @return user details view with {@link JCUser} object.
      */
     @RequestMapping(value = "/user", method = RequestMethod.GET)
-    public ModelAndView showProfilePage() throws NotFoundException {
+    public ModelAndView showProfilePage() {
         JCUser user = securityService.getCurrentUser();
         return getUserProfileModelAndView(user);
     }
