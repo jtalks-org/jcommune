@@ -250,7 +250,7 @@ public class PrivateMessageController {
     /**
      * Delete private messages.
      *
-     * @param csIds Comma-separated identifiers of the private messages for deletion
+     * @param ids Comma-separated identifiers of the private messages for deletion
      * @return redirect to folder from what request is come
      */
     @RequestMapping(value = "/pm", method = {RequestMethod.DELETE})
