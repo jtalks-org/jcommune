@@ -16,7 +16,7 @@ package org.jtalks.jcommune.web.validation.validators;
 
 
 import org.joda.time.DateTime;
-import org.jtalks.jcommune.web.util.PollUtil;
+import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.validation.annotations.DateInStringFormat;
 
 import javax.validation.ConstraintValidator;
@@ -39,7 +39,7 @@ public class DateInStringFormatValidator implements ConstraintValidator<DateInSt
     public boolean isValid(String value, ConstraintValidatorContext context) {
         boolean result = false;
 
-        DateTime date = PollUtil.parseDate(value, format);
+        DateTime date = TopicDto.parseDate(value, format);
 
         if (!new DateTime(0).equals(date)) {
             result = true;

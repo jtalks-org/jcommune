@@ -155,7 +155,7 @@ public class TopicController {
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branch));
         }
 
-        Topic createdTopic = null;
+        Topic createdTopic;
         createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(), branchId);
 
         if ((topicDto.getPollTitle() != null) && (topicDto.getPollOptions() != null)) {

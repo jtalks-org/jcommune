@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.web.validation.annotations;
 
 import org.jtalks.jcommune.model.entity.Poll;
-import org.jtalks.jcommune.web.validation.validators.VotingValidator;
+import org.jtalks.jcommune.web.validation.validators.PollValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -35,8 +35,8 @@ import static java.lang.annotation.ElementType.TYPE;
 @Target({TYPE, ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Constraint(validatedBy = VotingValidator.class)
-public @interface Voting {
+@Constraint(validatedBy = PollValidator.class)
+public @interface ValidPoll {
 
     String message() default "{defaultPoll.message}";
 

@@ -14,19 +14,22 @@
  */
 package org.jtalks.jcommune.web.dto;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.NotBlank;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.jtalks.jcommune.model.entity.Poll;
+import org.jtalks.jcommune.model.entity.PollOption;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.web.util.PollUtil;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
 import org.jtalks.jcommune.web.validation.annotations.DateInStringFormat;
 import org.jtalks.jcommune.web.validation.annotations.PollOptionLength;
-import org.jtalks.jcommune.web.validation.annotations.PollTitlePollOptionsNotBlankIfOneOfThemNotBlank;
-import org.jtalks.jcommune.web.validation.annotations.Voting;
+import org.jtalks.jcommune.web.validation.annotations.ValidPoll;
 
 import javax.validation.constraints.Size;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * DTO for {@link Topic} objects. Used for validation and binding to form.
@@ -34,8 +37,7 @@ import java.io.IOException;
  * @author Vitaliy Kravchenko
  * @author Max Malakhov
  */
-@PollTitlePollOptionsNotBlankIfOneOfThemNotBlank(pollTitle = "pollTitle", pollOptions = "pollOptions")
-@Voting(pollTitle = "pollTitle", pollOptions = "pollOptions", endingDate = "endingDate")
+@ValidPoll(pollTitle = "pollTitle", pollOptions = "pollOptions", endingDate = "endingDate")
 public class TopicDto {
     @NotBlank
     @Size(min = Topic.MIN_NAME_SIZE, max = Topic.MAX_NAME_SIZE)
@@ -223,15 +225,48 @@ public class TopicDto {
         Poll poll = new Poll(pollTitle);
         poll.setSingleAnswer(Boolean.parseBoolean(single));
         if (endingDate != null) {
-            poll.setEndingDate(PollUtil.parseDate(endingDate, Poll.DATE_FORMAT));
+            poll.setEndingDate(parseDate(endingDate, Poll.DATE_FORMAT));
         }
-        try {
-            poll.addPollOptions(PollUtil.parseOptions(pollOptions));
-        } catch (IOException e) {
-            poll = null;
-        }
+        poll.addPollOptions(parseOptions(pollOptions));
 
         return poll;
+    }
+
+    public static DateTime parseDate(String date, String format) {
+        DateTime result;
+        try {
+            if (date == null) {
+                result = null;
+            } else {
+                result = DateTimeFormat.forPattern(format).parseDateTime(date);
+            }
+        } catch (IllegalArgumentException e) {
+            result = new DateTime(0);
+        }
+
+        return result;
+    }
+
+
+    /**
+     * Prepare poll items list from string. Removes empty lines from.
+     *
+     * @param pollOptions user input
+     * @return processed poll items list
+     */
+    public static List<PollOption> parseOptions(String pollOptions) {
+        List<PollOption> result = new ArrayList<PollOption>();
+        String[] items = StringUtils.split(pollOptions, "\n");
+        for (String item : items) {
+            //If user entered empty lines these lines are ignoring from validation.
+            // Only meaningful lines are processed and user get processed output
+            if (StringUtils.isNotBlank(item)) {
+                PollOption option = new PollOption(item);
+                result.add(option);
+            }
+        }
+
+        return result;
     }
 
 

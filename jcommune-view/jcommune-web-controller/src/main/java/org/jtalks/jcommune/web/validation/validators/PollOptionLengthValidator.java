@@ -16,12 +16,11 @@ package org.jtalks.jcommune.web.validation.validators;
 
 
 import org.jtalks.jcommune.model.entity.PollOption;
-import org.jtalks.jcommune.web.util.PollUtil;
+import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.validation.annotations.PollOptionLength;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -47,19 +46,15 @@ public class PollOptionLengthValidator implements ConstraintValidator<PollOption
         List<PollOption> list;
 
         if (value != null) {
-            try {
-                list = PollUtil.parseOptions(value);
-                for (PollOption option : list) {
-                    if ((option.getName().length() < min) ||
-                            (option.getName().length() > max)) {
-                        result = false;
-                        break;
-                    }
+            list = TopicDto.parseOptions(value);
+            for (PollOption option : list) {
+                if ((option.getName().length() < min) ||
+                        (option.getName().length() > max)) {
+                    result = false;
+                    break;
                 }
-            } catch (IOException e) {
-                result = false;
-            }
 
+            }
         } else {
             result = false;
         }

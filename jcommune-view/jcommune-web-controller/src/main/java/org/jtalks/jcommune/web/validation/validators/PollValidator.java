@@ -15,16 +15,15 @@
 package org.jtalks.jcommune.web.validation.validators;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollOption;
-import org.jtalks.jcommune.web.util.PollUtil;
-import org.jtalks.jcommune.web.validation.annotations.Voting;
+import org.jtalks.jcommune.web.dto.TopicDto;
+import org.jtalks.jcommune.web.validation.annotations.ValidPoll;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,7 +32,7 @@ import java.util.List;
  */
 
 
-public class VotingValidator implements ConstraintValidator<Voting, Object> {
+public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
     private int minOptionsNumber;
     private int maxOptionsNumber;
     private String pollTitleName;
@@ -46,10 +45,12 @@ public class VotingValidator implements ConstraintValidator<Voting, Object> {
 
     private final String OPTIONS_NUMBER_MESSAGE = "{VotingOptionsNumber.message}";
     private final String FUTURE_DATE_MESSAGE = "{javax.validation.constraints.Future.message}";
+    private final String TITLE_OR_ITEMS_NOT_BLANK_IF_ONE_OF_THEM_NOT_BLANK_MESSAGE =
+            "{PollTitlePollOptionsNotBlankIfOneOfThemNotBlank.message}";
 
 
     @Override
-    public void initialize(Voting constraintAnnotation) {
+    public void initialize(ValidPoll constraintAnnotation) {
         this.minOptionsNumber = constraintAnnotation.minOptionsNumber();
         this.maxOptionsNumber = constraintAnnotation.maxOptionsNumber();
         this.pollTitleName = constraintAnnotation.pollTitle();
@@ -63,26 +64,44 @@ public class VotingValidator implements ConstraintValidator<Voting, Object> {
         getValidatedFields(value);
 
         return isVotingOptionsNumberValid(context)
-                & isDateInStringFormatInFuture(context);
+                & isDateInStringFormatInFuture(context)
+                & isTitleOrItemsNotBlankIfOneOfThemNotBlank(context);
+    }
+
+    private boolean isTitleOrItemsNotBlankIfOneOfThemNotBlank(ConstraintValidatorContext context) {
+        boolean result = true;
+        //title is not blank & items are blank
+        if (StringUtils.isNotBlank(pollTitleValue) && !StringUtils.isNotBlank(pollOptionsValue)) {
+            result = false;
+            constraintViolated(context, TITLE_OR_ITEMS_NOT_BLANK_IF_ONE_OF_THEM_NOT_BLANK_MESSAGE,
+                    pollOptionsName);
+        }
+
+        //title is blank & items are not blank
+        if (!StringUtils.isNotBlank(pollTitleValue) && StringUtils.isNotBlank(pollOptionsValue)) {
+            result = false;
+            constraintViolated(context, TITLE_OR_ITEMS_NOT_BLANK_IF_ONE_OF_THEM_NOT_BLANK_MESSAGE,
+                    pollTitleName);
+        }
+
+
+        return result;
+
     }
 
     //TODO need to check implementation
+    //Item should be more than one (should not be possible to create Poll with just one item,
+    // error message appears on trying to save it)
     private boolean isVotingOptionsNumberValid(ConstraintValidatorContext context) {
         boolean result = false;
         List<PollOption> list;
 
-        //TODO 16 Apr jk1 says: just count line breaks in string instead of all that code
-
-        if (pollTitleValue == null) {
+        if (!StringUtils.isNotBlank(pollTitleValue)) {
+            //Poll title is empty so poll will not be created and it not need to check poll items number
             result = true;
         } else {
-            if (pollOptionsValue != null) {
-                try {
-                    list = PollUtil.parseOptions(pollOptionsValue);
-                } catch (IOException e) {
-                    list = new ArrayList<PollOption>(0);
-                }
-
+            if (StringUtils.isNotBlank(pollOptionsValue)) {
+                list = TopicDto.parseOptions(pollOptionsValue);
                 if ((list.size() >= minOptionsNumber) || (list.size() <= maxOptionsNumber)) {
                     result = true;
                 }
@@ -103,7 +122,7 @@ public class VotingValidator implements ConstraintValidator<Voting, Object> {
         if (endingDateValue == null) {//null values are valid
             result = true;
         } else {
-            DateTime date = PollUtil.parseDate(endingDateValue, Poll.DATE_FORMAT);
+            DateTime date = TopicDto.parseDate(endingDateValue, Poll.DATE_FORMAT);
             result = date.isAfter(new DateTime());
         }
 
@@ -132,4 +151,5 @@ public class VotingValidator implements ConstraintValidator<Voting, Object> {
                 .addNode(fieldName)
                 .addConstraintViolation();
     }
+
 }
