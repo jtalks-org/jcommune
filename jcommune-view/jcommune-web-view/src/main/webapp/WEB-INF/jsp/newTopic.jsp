@@ -73,7 +73,7 @@
             </ul>
 
             <jtalks:newPoll titleNameValue="pollTitle"
-                            pollOptionsNameValue="pollOptions"
+                            pollOptionsNameValue="pollItems"
                             singleNameValue="single"
                             singleValue="${singlePollType}"
                             multipleValue="${multiplePollType}"

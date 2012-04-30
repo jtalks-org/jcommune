@@ -19,12 +19,10 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.jtalks.jcommune.model.entity.Poll;
-import org.jtalks.jcommune.model.entity.PollOption;
+import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
-import org.jtalks.jcommune.web.validation.annotations.DateInStringFormat;
-import org.jtalks.jcommune.web.validation.annotations.PollOptionLength;
 import org.jtalks.jcommune.web.validation.annotations.ValidPoll;
 
 import javax.validation.constraints.Size;
@@ -37,8 +35,11 @@ import java.util.List;
  * @author Vitaliy Kravchenko
  * @author Max Malakhov
  */
-@ValidPoll(pollTitle = "pollTitle", pollOptions = "pollOptions", endingDate = "endingDate")
+@ValidPoll(pollTitle = "pollTitle", pollItems = "pollItems", endingDate = "endingDate")
 public class TopicDto {
+    public final static String LINE_SEPARATOR = System.getProperty("line.separator");
+
+
     @NotBlank
     @Size(min = Topic.MIN_NAME_SIZE, max = Topic.MAX_NAME_SIZE)
     private String topicName;
@@ -57,12 +58,10 @@ public class TopicDto {
     @Size(min = Poll.MIN_TITLE_LENGTH, max = Poll.MAX_TITLE_LENGTH)
     private String pollTitle;
 
-    @PollOptionLength
     private String pollOptions;
 
     private String single;
 
-    @DateInStringFormat
     private String endingDate;
 
     private Poll poll;
@@ -227,7 +226,7 @@ public class TopicDto {
         if (endingDate != null) {
             poll.setEndingDate(parseDate(endingDate, Poll.DATE_FORMAT));
         }
-        poll.addPollOptions(parseOptions(pollOptions));
+        poll.addPollOptions(parseItems(pollOptions));
 
         return poll;
     }
@@ -251,18 +250,18 @@ public class TopicDto {
     /**
      * Prepare poll items list from string. Removes empty lines from.
      *
-     * @param pollOptions user input
+     * @param pollItems user input
      * @return processed poll items list
      */
-    public static List<PollOption> parseOptions(String pollOptions) {
-        List<PollOption> result = new ArrayList<PollOption>();
-        String[] items = StringUtils.split(pollOptions, "\n");
+    public static List<PollItem> parseItems(String pollItems) {
+        List<PollItem> result = new ArrayList<PollItem>();
+        String[] items = StringUtils.split(pollItems, LINE_SEPARATOR);
         for (String item : items) {
             //If user entered empty lines these lines are ignoring from validation.
             // Only meaningful lines are processed and user get processed output
             if (StringUtils.isNotBlank(item)) {
-                PollOption option = new PollOption(item);
-                result.add(option);
+                PollItem pollItem = new PollItem(item);
+                result.add(pollItem);
             }
         }
 

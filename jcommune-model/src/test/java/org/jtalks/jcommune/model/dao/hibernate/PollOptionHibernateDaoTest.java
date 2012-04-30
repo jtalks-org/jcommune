@@ -18,7 +18,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.model.ObjectsFactory;
-import org.jtalks.jcommune.model.entity.PollOption;
+import org.jtalks.jcommune.model.entity.PollItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -38,7 +38,7 @@ public class PollOptionHibernateDaoTest extends AbstractTransactionalTestNGSprin
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
-    private ChildRepository<PollOption> pollOptionDao;
+    private ChildRepository<PollItem> pollOptionDao;
     private Session session;
 
     @BeforeMethod
@@ -51,10 +51,10 @@ public class PollOptionHibernateDaoTest extends AbstractTransactionalTestNGSprin
 
     @Test
     public void testGet() {
-        PollOption expectedOption = ObjectsFactory.createDefaultVotingOption();
+        PollItem expectedOption = ObjectsFactory.createDefaultVotingOption();
         session.save(expectedOption);
 
-        PollOption resultOption = pollOptionDao.get(expectedOption.getId());
+        PollItem resultOption = pollOptionDao.get(expectedOption.getId());
 
         Assert.assertNotNull(resultOption);
         Assert.assertEquals(resultOption.getId(), expectedOption.getId());
@@ -62,7 +62,7 @@ public class PollOptionHibernateDaoTest extends AbstractTransactionalTestNGSprin
 
     @Test
     public void testGetInvalidId() {
-        PollOption option = pollOptionDao.get(-11111L);
+        PollItem option = pollOptionDao.get(-11111L);
 
         Assert.assertNull(option);
     }
@@ -70,14 +70,14 @@ public class PollOptionHibernateDaoTest extends AbstractTransactionalTestNGSprin
     @Test
     public void testUpdate() {
         String newName = "Changed name";
-        PollOption option = ObjectsFactory.createDefaultVotingOption();
+        PollItem option = ObjectsFactory.createDefaultVotingOption();
         session.save(option);
 
         option.setName(newName);
         pollOptionDao.update(option);
         session.evict(option);
 
-        PollOption changedOption = (PollOption) session.get(PollOption.class, option.getId());
+        PollItem changedOption = (PollItem) session.get(PollItem.class, option.getId());
 
         Assert.assertNotNull(changedOption);
         Assert.assertEquals(newName, changedOption.getName());

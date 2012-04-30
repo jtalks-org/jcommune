@@ -34,10 +34,10 @@ public class PollTest {
     @Test
     public void testCalculateTotaVotesCount() {
         int firstOptionVotesCount = 10;
-        PollOption firstOption = new PollOption("First option");
+        PollItem firstOption = new PollItem("First option");
         firstOption.setVotesCount(firstOptionVotesCount);
         int secondOptionVotesCount = 50;
-        PollOption secondOption = new PollOption("Second option");
+        PollItem secondOption = new PollItem("Second option");
         secondOption.setVotesCount(secondOptionVotesCount);
 
         poll.addPollOptions(firstOption);
@@ -51,7 +51,7 @@ public class PollTest {
     }
 
     @Test(dataProvider = "parametersIsPollActive")
-    public void testIsPollActive(DateTime endingDate ) {
+    public void testIsPollActive(DateTime endingDate) {
         poll.setEndingDate(endingDate);
         boolean expected = true;
 
@@ -59,10 +59,10 @@ public class PollTest {
 
         Assert.assertEquals(result, expected, "Poll must be active");
     }
-    
+
     @DataProvider(name = "parametersIsPollActive")
     public Object[][] parametersIsPollActive() {
-        return new Object[][] {
+        return new Object[][]{
                 {null},
                 {new DateTime(3225, 1, 1, 0, 0, 0, 0)}
         };

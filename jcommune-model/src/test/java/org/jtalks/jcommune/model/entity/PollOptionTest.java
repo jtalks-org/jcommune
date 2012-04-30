@@ -24,12 +24,12 @@ public class PollOptionTest {
     @Test
     public void testIncreaseVoteCount() {
         int initialVotesCount = 10;
-        PollOption option = new PollOption("Option");
+        PollItem option = new PollItem("Option");
         option.setVotesCount(initialVotesCount);
-        
+
         option.increaseVotesCount();
-        
-        Assert.assertEquals(option.getVotesCount(), initialVotesCount + 1, 
+
+        Assert.assertEquals(option.getVotesCount(), initialVotesCount + 1,
                 "Count of votes hasn't been increased.");
     }
 }

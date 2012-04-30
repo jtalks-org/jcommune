@@ -18,7 +18,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Poll;
-import org.jtalks.jcommune.model.entity.PollOption;
+import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.validation.annotations.ValidPoll;
 
@@ -33,28 +33,36 @@ import java.util.List;
 
 
 public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
-    private int minOptionsNumber;
-    private int maxOptionsNumber;
+    private int minItemsNumber;
+    private int maxItemsNumber;
+    private int minItemsLength;
+    private int maxItemsLength;
     private String pollTitleName;
     private String pollTitleValue;
-    private String pollOptionsName;
-    private String pollOptionsValue;
+    private String pollItemsName;
+    private String pollItemsValue;
     private String endingDateName;
     private String endingDateValue;
     private String message;
+    private List<PollItem> items;
 
-    private final String OPTIONS_NUMBER_MESSAGE = "{VotingOptionsNumber.message}";
+    private final String ITEMS_NUMBER_MESSAGE = "{VotingOptionsNumber.message}";
     private final String FUTURE_DATE_MESSAGE = "{javax.validation.constraints.Future.message}";
-    private final String TITLE_OR_ITEMS_NOT_BLANK_IF_ONE_OF_THEM_NOT_BLANK_MESSAGE =
-            "{PollTitlePollOptionsNotBlankIfOneOfThemNotBlank.message}";
+    private final String TITLE_NOT_BLANK_IF_ITEMS_NOT_BLANK_MESSAGE = "{PollTitleNotBlankIfPollItemsNotBlank.message}";
+    private final String ITEMS_NOT_BLANK_IF_TITLE_NOT_BLANK_MESSAGE = "{PollItemsNotBlankIfPollTitleNotBlank.message}";
+    private final String DATE_NOT_BLANK_IF_TITLE_OR_ITEMS_NOT_BLANK_MESSAGE =
+            "{DateNotBlankIfPollTitleOrItemsNotBlank.message}";
+    private final String ITEM_LENGTH_MESSAGE = "{VotingItemLength.message}";
 
 
     @Override
     public void initialize(ValidPoll constraintAnnotation) {
-        this.minOptionsNumber = constraintAnnotation.minOptionsNumber();
-        this.maxOptionsNumber = constraintAnnotation.maxOptionsNumber();
+        this.minItemsNumber = constraintAnnotation.minItemsNumber();
+        this.maxItemsNumber = constraintAnnotation.maxItemsNumber();
+        this.minItemsLength = constraintAnnotation.minItemsLength();
+        this.maxItemsLength = constraintAnnotation.maxItemsLength();
         this.pollTitleName = constraintAnnotation.pollTitle();
-        this.pollOptionsName = constraintAnnotation.pollOptions();
+        this.pollItemsName = constraintAnnotation.pollItems();
         this.endingDateName = constraintAnnotation.endingDate();
         this.message = constraintAnnotation.message();
     }
@@ -65,25 +73,52 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
 
         return isVotingOptionsNumberValid(context)
                 & isDateInStringFormatInFuture(context)
-                & isTitleOrItemsNotBlankIfOneOfThemNotBlank(context);
+                & isTitleOrItemsOrDateNotBlankIfOneOfThemNotBlank(context)
+                & isItemLengthValid(context);
     }
 
-    private boolean isTitleOrItemsNotBlankIfOneOfThemNotBlank(ConstraintValidatorContext context) {
+    private boolean isItemLengthValid(ConstraintValidatorContext context) {
+        boolean result = true;
+
+        //empty poll items field is valid
+        if (!StringUtils.isNotBlank(pollItemsValue)) {
+            return result;
+        }
+
+        for (PollItem item : items) {
+            if ((item.getName().length() < minItemsLength) || (item.getName().length() > maxItemsLength)) {
+                result = false;
+                constraintViolated(context, ITEM_LENGTH_MESSAGE, pollItemsName);
+            }
+        }
+
+
+        return result;
+    }
+
+    private boolean isTitleOrItemsOrDateNotBlankIfOneOfThemNotBlank(ConstraintValidatorContext context) {
         boolean result = true;
         //title is not blank & items are blank
-        if (StringUtils.isNotBlank(pollTitleValue) && !StringUtils.isNotBlank(pollOptionsValue)) {
+        if (StringUtils.isNotBlank(pollTitleValue) && !StringUtils.isNotBlank(pollItemsValue)) {
             result = false;
-            constraintViolated(context, TITLE_OR_ITEMS_NOT_BLANK_IF_ONE_OF_THEM_NOT_BLANK_MESSAGE,
-                    pollOptionsName);
+            constraintViolated(context, ITEMS_NOT_BLANK_IF_TITLE_NOT_BLANK_MESSAGE,
+                    pollItemsName);
         }
 
         //title is blank & items are not blank
-        if (!StringUtils.isNotBlank(pollTitleValue) && StringUtils.isNotBlank(pollOptionsValue)) {
+        if (!StringUtils.isNotBlank(pollTitleValue) && StringUtils.isNotBlank(pollItemsValue)) {
             result = false;
-            constraintViolated(context, TITLE_OR_ITEMS_NOT_BLANK_IF_ONE_OF_THEM_NOT_BLANK_MESSAGE,
+            constraintViolated(context, TITLE_NOT_BLANK_IF_ITEMS_NOT_BLANK_MESSAGE,
                     pollTitleName);
         }
 
+        //if title is not blank or items are not blank then date could not be blank
+        if ((StringUtils.isNotBlank(pollTitleValue) || StringUtils.isNotBlank(pollItemsValue))
+                && (!StringUtils.isNotBlank(endingDateValue))) {
+            result = false;
+            constraintViolated(context, DATE_NOT_BLANK_IF_TITLE_OR_ITEMS_NOT_BLANK_MESSAGE,
+                    pollTitleName);
+        }
 
         return result;
 
@@ -94,22 +129,20 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
     // error message appears on trying to save it)
     private boolean isVotingOptionsNumberValid(ConstraintValidatorContext context) {
         boolean result = false;
-        List<PollOption> list;
 
         if (!StringUtils.isNotBlank(pollTitleValue)) {
             //Poll title is empty so poll will not be created and it not need to check poll items number
             result = true;
         } else {
-            if (StringUtils.isNotBlank(pollOptionsValue)) {
-                list = TopicDto.parseOptions(pollOptionsValue);
-                if ((list.size() >= minOptionsNumber) || (list.size() <= maxOptionsNumber)) {
+            if (StringUtils.isNotBlank(pollItemsValue)) {
+                if ((items.size() >= minItemsNumber) || (items.size() <= maxItemsNumber)) {
                     result = true;
                 }
             }
         }
 
         if (!result) {
-            constraintViolated(context, OPTIONS_NUMBER_MESSAGE, pollOptionsName);
+            constraintViolated(context, ITEMS_NUMBER_MESSAGE, pollItemsName);
         }
 
         return result;
@@ -124,6 +157,7 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
         } else {
             DateTime date = TopicDto.parseDate(endingDateValue, Poll.DATE_FORMAT);
             result = date.isAfter(new DateTime());
+            System.out.println();
         }
 
         if (!result) {
@@ -136,8 +170,9 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
     private void getValidatedFields(Object value) {
         try {
             pollTitleValue = BeanUtils.getProperty(value, pollTitleName);
-            pollOptionsValue = BeanUtils.getProperty(value, pollOptionsName);
+            pollItemsValue = BeanUtils.getProperty(value, pollItemsName);
             endingDateValue = BeanUtils.getProperty(value, endingDateName);
+            items = TopicDto.parseItems(pollItemsValue);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }

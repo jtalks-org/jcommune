@@ -14,16 +14,16 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import java.util.List;
-
 import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.model.entity.Poll;
-import org.jtalks.jcommune.model.entity.PollOption;
+import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.jtalks.jcommune.service.security.TemporaryAuthorityManager;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.List;
 
 /**
  * The implementation of the {@link PollService}.
@@ -34,24 +34,24 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 public class TransactionalPollService extends AbstractTransactionalEntityService<Poll, ChildRepository<Poll>>
         implements PollService {
-    private ChildRepository<PollOption> pollOptionDao;
+    private ChildRepository<PollItem> pollOptionDao;
     private SecurityService securityService;
     private TemporaryAuthorityManager temporaryAuthorityManager;
-    
+
     /**
      * Create an instance of service for operations with a poll.
      *
-     * @param pollDao         data access object, which should be able do
-     *                        all CRUD operations with {@link Poll}.
-     * @param pollOptionDao   data access object, which should be able do
-     *                        all CRUD operations with {@link PollOption}.
-     * @param securityService the service for security operations
-     * @param temporaryAuthorityManager the  manager of temporary authorities, that 
+     * @param pollDao                   data access object, which should be able do
+     *                                  all CRUD operations with {@link Poll}.
+     * @param pollOptionDao             data access object, which should be able do
+     *                                  all CRUD operations with {@link org.jtalks.jcommune.model.entity.PollItem}.
+     * @param securityService           the service for security operations
+     * @param temporaryAuthorityManager the  manager of temporary authorities, that
      *                                  allows to execute an operation with the
-     *                                  needed authority 
+     *                                  needed authority
      */
     public TransactionalPollService(ChildRepository<Poll> pollDao,
-                                    ChildRepository<PollOption> pollOptionDao,
+                                    ChildRepository<PollItem> pollOptionDao,
                                     SecurityService securityService,
                                     TemporaryAuthorityManager temporaryAuthorityManager) {
         super(pollDao);
@@ -69,7 +69,7 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
         Poll poll = getDao().get(pollId);
         if (poll.isActive()) {
             prohibitRevote(poll);
-            for (PollOption option : poll.getPollOptions()) {
+            for (PollItem option : poll.getPollItems()) {
                 if (selectedOptionIds.contains(option.getId())) {
                     option.increaseVotesCount();
                     pollOptionDao.update(option);
@@ -82,7 +82,7 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
     @Override
     public void createPoll(Poll poll) {
         this.getDao().update(poll);
-        for (PollOption option : poll.getPollOptions()) {
+        for (PollItem option : poll.getPollItems()) {
             pollOptionDao.update(option);
         }
     }
@@ -96,12 +96,12 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
         //TODO It should be changed after the transition to the new security.
         temporaryAuthorityManager.runWithTemporaryAuthority(
                 new TemporaryAuthorityManager.SecurityOperation() {
-            
+
                     @Override
                     public void doOperation() {
                         securityService.grantToCurrentUser().write().on(poll);
                     }
-                }, 
+                },
                 SecurityConstants.ROLE_ADMIN);
     }
 }

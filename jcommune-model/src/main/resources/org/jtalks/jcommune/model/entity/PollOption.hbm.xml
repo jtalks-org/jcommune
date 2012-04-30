@@ -19,7 +19,7 @@
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
-  <class name="PollOption" table="POLL_OPTIONS">
+  <class name="org.jtalks.jcommune.model.entity.PollItem" table="POLL_OPTIONS">
     <cache usage="read-write"/>
     <id column="PO_ID" name="id" unsaved-value="0">
       <generator class="native"/>

@@ -35,11 +35,11 @@
                 class="org.jtalks.jcommune.model.entity.Topic"
                 constrained="true"/>
 
-    <list name="pollOptions" cascade="all-delete-orphan">
+    <list name="pollItems" cascade="all-delete-orphan">
       <cache usage="nonstrict-read-write"/>
       <key column="POLL_ID" foreign-key="FK_POLL"/>
       <index column="LIST_INDEX"/>
-      <one-to-many class="PollOption"/>
+      <one-to-many class="org.jtalks.jcommune.model.entity.PollItem"/>
     </list>
   </class>
 </hibernate-mapping>

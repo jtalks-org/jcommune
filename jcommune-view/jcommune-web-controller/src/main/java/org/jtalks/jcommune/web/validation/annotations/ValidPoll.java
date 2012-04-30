@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.validation.annotations;
 
 import org.jtalks.jcommune.model.entity.Poll;
+import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.web.validation.validators.PollValidator;
 
 import javax.validation.Constraint;
@@ -44,13 +45,17 @@ public @interface ValidPoll {
 
     Class<? extends Payload>[] payload() default {};
 
-    int minOptionsNumber() default Poll.MIN_OPTIONS_NUMBER;
+    int minItemsNumber() default Poll.MIN_ITEMS_NUMBER;
 
-    int maxOptionsNumber() default Poll.MAX_OPTIONS_NUMBER;
+    int maxItemsNumber() default Poll.MAX_ITEMS_NUMBER;
+
+    int minItemsLength() default PollItem.MIN_ITEM_LENGTH;
+
+    int maxItemsLength() default PollItem.MAX_ITEM_LENGTH;
 
     String pollTitle();
 
-    String pollOptions();
+    String pollItems();
 
     String endingDate();
 

@@ -17,7 +17,7 @@ package org.jtalks.jcommune.service.transactional;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.model.entity.Poll;
-import org.jtalks.jcommune.model.entity.PollOption;
+import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.security.AclBuilder;
@@ -40,7 +40,7 @@ public class TransactionalPollServiceTest {
     private static final Long POLL_ID = 1L;
     private PollService pollService;
     @Mock
-    private ChildRepository<PollOption> pollOptionDao;
+    private ChildRepository<PollItem> pollOptionDao;
     @Mock
     private ChildRepository<Poll> pollDao;
     @Mock
@@ -49,7 +49,7 @@ public class TransactionalPollServiceTest {
     private AclBuilder aclBuilder;
     @Mock
     private TemporaryAuthorityManager temporaryAuthorityManager;
-    
+
 
     @BeforeMethod
     public void init() {
@@ -71,7 +71,7 @@ public class TransactionalPollServiceTest {
         Mockito.when(pollDao.get(POLL_ID)).thenReturn(poll);
 
         Poll resultPoll = pollService.vote(POLL_ID, pollOptionIds);
-        PollOption resultPollOption = resultPoll.getPollOptions().get(0);
+        PollItem resultPollOption = resultPoll.getPollItems().get(0);
 
         Assert.assertEquals(resultPollOption.getVotesCount(), VOTES_COUNT + 1,
                 "Count of votes should be increased.");
@@ -86,7 +86,7 @@ public class TransactionalPollServiceTest {
         Mockito.when(pollDao.get(POLL_ID)).thenReturn(poll);
 
         Poll resultPoll = pollService.vote(POLL_ID, pollOptionIds);
-        PollOption resultPollOption = resultPoll.getPollOptions().get(0);
+        PollItem resultPollOption = resultPoll.getPollItems().get(0);
 
         Assert.assertEquals(resultPollOption.getVotesCount(), VOTES_COUNT,
                 "Count of votes should be the same.");
@@ -101,7 +101,7 @@ public class TransactionalPollServiceTest {
 
         Poll resultPoll = pollService.vote(POLL_ID, pollOptionIds);
 
-        for (PollOption option : resultPoll.getPollOptions()) {
+        for (PollItem option : resultPoll.getPollItems()) {
             Assert.assertEquals(option.getVotesCount(), VOTES_COUNT + 1,
                     "Count of votes should be increased.");
         }
@@ -117,36 +117,36 @@ public class TransactionalPollServiceTest {
 
         Poll resultPoll = pollService.vote(POLL_ID, pollOptionIds);
 
-        for (PollOption option : resultPoll.getPollOptions()) {
+        for (PollItem option : resultPoll.getPollItems()) {
             Assert.assertEquals(option.getVotesCount(), VOTES_COUNT,
                     "Count of votes should be the same.");
         }
     }
-    
+
     @Test
     public void testAddIncorrectVotes() {
         List<Long> pollOptionIds = Arrays.asList(1L, 5L, 9L);
         List<Long> incorrectPollOptionIds = Arrays.asList(11L, 13L);
         DateTime endingDate = new DateTime(1999, 1, 1, 1, 1, 1, 1);
         Poll poll = createPollWithOptions(POLL_ID, pollOptionIds, VOTES_COUNT, endingDate);
-        
+
         Mockito.when(pollDao.get(Mockito.anyLong())).thenReturn(poll);
-        
+
         Poll resultPoll = pollService.vote(POLL_ID, incorrectPollOptionIds);
-        
-        for (PollOption option : resultPoll.getPollOptions()) {
+
+        for (PollItem option : resultPoll.getPollItems()) {
             Assert.assertEquals(option.getVotesCount(), VOTES_COUNT,
                     "Count of votes should be the same.");
         }
     }
-    
+
     private Poll createPollWithOptions(Long pollId, List<Long> pollOptionIds,
-            int initialVoteCount, DateTime endingDate) {
+                                       int initialVoteCount, DateTime endingDate) {
         Poll poll = new Poll("Poll");
         poll.setEndingDate(endingDate);
         poll.setId(pollId);
         for (Long id : pollOptionIds) {
-            PollOption option = new PollOption("Option:" + String.valueOf(id));
+            PollItem option = new PollItem("Option:" + String.valueOf(id));
             option.setId(id);
             option.setVotesCount(initialVoteCount);
             poll.addPollOptions(option);

@@ -17,7 +17,7 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Poll;
-import org.jtalks.jcommune.model.entity.PollOption;
+import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
@@ -202,7 +202,7 @@ public class TopicController {
         Topic topic = topicService.get(topicId);
 
         Poll poll = topic.getPoll();
-        List<PollOption> pollOptions = topic.isHasPoll() ? poll.getPollOptions() : null;
+        List<PollItem> pollOptions = topic.isHasPoll() ? poll.getPollItems() : null;
 
         Branch branch = topic.getBranch();
         JCUser currentUser = securityService.getCurrentUser();

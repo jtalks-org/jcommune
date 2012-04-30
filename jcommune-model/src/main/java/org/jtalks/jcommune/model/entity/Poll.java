@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Represents the poll of the topic. Contains the list of related {@link PollOption}.
+ * Represents the poll of the topic. Contains the list of related {@link PollItem}.
  * Poll may be either "single type" or "multiple type" also topic may have an end date.
  * Poll is tied to the life cycle of the topic({@link Topic}).
  *
@@ -33,13 +33,13 @@ public class Poll extends Entity {
     private String title;
     private boolean singleAnswer;
     private DateTime endingDate;
-    private List<PollOption> pollOptions = new ArrayList<PollOption>();
+    private List<PollItem> pollItems = new ArrayList<PollItem>();
     private Topic topic;
 
     public static final int MIN_TITLE_LENGTH = 3;
     public static final int MAX_TITLE_LENGTH = 120;
-    public static final int MIN_OPTIONS_NUMBER = 2;
-    public static final int MAX_OPTIONS_NUMBER = 50;
+    public static final int MIN_ITEMS_NUMBER = 2;
+    public static final int MAX_ITEMS_NUMBER = 50;
     public static final String DATE_FORMAT = "dd-MM-yyyy";
 
     /**
@@ -121,17 +121,17 @@ public class Poll extends Entity {
      *
      * @return the list of poll options
      */
-    public List<PollOption> getPollOptions() {
-        return pollOptions;
+    public List<PollItem> getPollItems() {
+        return pollItems;
     }
 
     /**
      * Set the list of poll options.
      *
-     * @param pollOptions the list of poll options
+     * @param pollItems the list of poll options
      */
-    protected void setPollOptions(List<PollOption> pollOptions) {
-        this.pollOptions = pollOptions;
+    protected void setPollItems(List<PollItem> pollItems) {
+        this.pollItems = pollItems;
     }
 
     /**
@@ -158,7 +158,7 @@ public class Poll extends Entity {
      *
      * @param options the poll option
      */
-    public void addPollOptions(PollOption... options) {
+    public void addPollOptions(PollItem... options) {
         addPollOptions(Arrays.asList(options));
     }
 
@@ -167,10 +167,10 @@ public class Poll extends Entity {
      *
      * @param options the list of poll options to this poll
      */
-    public void addPollOptions(List<PollOption> options) {
-        for (PollOption option : options) {
+    public void addPollOptions(List<PollItem> options) {
+        for (PollItem option : options) {
             option.setPoll(this);
-            this.pollOptions.add(option);
+            this.pollItems.add(option);
         }
     }
 
@@ -181,7 +181,7 @@ public class Poll extends Entity {
      */
     public int getTotalVotesCount() {
         int totalVotesCount = 0;
-        for (PollOption option : pollOptions) {
+        for (PollItem option : pollItems) {
             totalVotesCount += option.getVotesCount();
         }
         return totalVotesCount;

@@ -16,7 +16,7 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.jtalks.jcommune.model.entity.Poll;
-import org.jtalks.jcommune.model.entity.PollOption;
+import org.jtalks.jcommune.model.entity.PollItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,7 @@ public class PollDto {
     public PollDto(Poll poll) {
         this.id = poll.getId();
         this.totalVotesCount = poll.getTotalVotesCount();
-        for (PollOption option : poll.getPollOptions()) {
+        for (PollItem option : poll.getPollItems()) {
             this.pollOptions.add(new PollOptionDto(option));
         }
     }

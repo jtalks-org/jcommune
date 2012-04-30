@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Poll;
-import org.jtalks.jcommune.model.entity.PollOption;
+import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.web.dto.PollDto;
 import org.jtalks.jcommune.web.dto.PollOptionDto;
@@ -69,7 +69,7 @@ public class PollControllerTest {
         Mockito.when(pollService.vote(POLL_ID, optionIds)).thenReturn(poll);
 
         PollDto resultPollDto = pollController.addMultipleVote(POLL_ID, pollDto);
-        
+
         Assert.assertEquals(resultPollDto.getId(), poll.getId(), "The id must be the same.");
         PollOptionDto firstOptionDto = resultPollDto.getPollOptions().get(0);
         Assert.assertEquals(firstOptionDto.getId(), firstOptionId,
@@ -84,15 +84,15 @@ public class PollControllerTest {
         Poll poll = new Poll("New poll");
         poll.setId(pollId);
         int voteCount = 10;
-        for(Long optionId: pollOptionIds) {
-            PollOption option = createPollOption("First option", optionId, voteCount);
+        for (Long optionId : pollOptionIds) {
+            PollItem option = createPollOption("First option", optionId, voteCount);
             poll.addPollOptions(option);
         }
         return poll;
     }
-    
-    private PollOption createPollOption(String name, Long id, int voteCount) {
-        PollOption option = new PollOption("New poll option");
+
+    private PollItem createPollOption(String name, Long id, int voteCount) {
+        PollItem option = new PollItem("New poll option");
         option.setVotesCount(voteCount);
         option.setId(id);
         return option;

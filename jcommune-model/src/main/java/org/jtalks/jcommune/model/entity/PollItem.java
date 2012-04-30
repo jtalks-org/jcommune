@@ -23,18 +23,18 @@ import org.jtalks.common.model.entity.Entity;
  *
  * @author Anuar Nurmakanov
  */
-public class PollOption extends Entity {
+public class PollItem extends Entity {
     private String name;
     private int votesCount;
     private Poll poll;
 
-    public static final int MIN_OPTION_LENGTH = 1;
-    public static final int MAX_OPTION_LENGTH = 50;
+    public static final int MIN_ITEM_LENGTH = 1;
+    public static final int MAX_ITEM_LENGTH = 50;
 
     /**
      * Used only by Hibernate.
      */
-    protected PollOption() {
+    protected PollItem() {
     }
 
 
@@ -43,7 +43,7 @@ public class PollOption extends Entity {
      *
      * @param name the name of the poll option
      */
-    public PollOption(String name) {
+    public PollItem(String name) {
         this.name = name;
     }
 

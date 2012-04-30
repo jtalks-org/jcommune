@@ -16,7 +16,7 @@
 --%>
 <%@ tag language="java" pageEncoding="UTF-8" %>
 <%@ tag body-content="empty" %>
-<%@ attribute name="pollOptions" required="true" type="java.util.List" %>
+<%@ attribute name="pollItems" required="true" type="java.util.List" %>
 <%@ attribute name="poll" required="true" type="org.jtalks.jcommune.model.entity.Poll" %>
 <%@ attribute name="isVoteButtonEnabled" required="true" type="java.lang.Boolean" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>

@@ -53,7 +53,7 @@
             </div>
         </div>
         <div class="forum_message_cell">
-            <jtalks:poll isVoteButtonEnabled="true" pollOptions="${pollOptions}" poll="${poll}"/>
+            <jtalks:poll isVoteButtonEnabled="true" pollItems="${pollOptions}" poll="${poll}"/>
         </div>
     </div>
 </c:if>
