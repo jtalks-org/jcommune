@@ -75,8 +75,8 @@
             <jtalks:newPoll titleNameValue="pollTitle"
                             pollOptionsNameValue="pollItems"
                             singleNameValue="single"
-                            singleValue="${singlePollType}"
-                            multipleValue="${multiplePollType}"
+                            singleValue="true"
+                            multipleValue="false"
                             endingDateNameValue="endingDate"/>
 
             <jtalks:bbeditor labelForAction="label.addtopic"

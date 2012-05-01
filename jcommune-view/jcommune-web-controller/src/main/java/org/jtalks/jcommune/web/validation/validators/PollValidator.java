@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.validation.validators;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.web.dto.TopicDto;
@@ -51,8 +52,6 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
     private final String FUTURE_DATE_MESSAGE = "{javax.validation.constraints.Future.message}";
     private final String TITLE_NOT_BLANK_IF_ITEMS_NOT_BLANK_MESSAGE = "{PollTitleNotBlankIfPollItemsNotBlank.message}";
     private final String ITEMS_NOT_BLANK_IF_TITLE_NOT_BLANK_MESSAGE = "{PollItemsNotBlankIfPollTitleNotBlank.message}";
-    public static final String DATE_NOT_BLANK_IF_TITLE_OR_ITEMS_NOT_BLANK_MESSAGE =
-            "{DateNotBlankIfPollTitleOrItemsNotBlank.message}";
     private final String ITEM_LENGTH_MESSAGE = "{VotingItemLength.message}";
 
 
@@ -113,14 +112,6 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
                     pollTitleName);
         }
 
-        //if title is not blank or items are not blank then date could not be blank
-        if ((StringUtils.isNotBlank(pollTitleValue) || StringUtils.isNotBlank(pollItemsValue))
-                && (!StringUtils.isNotBlank(endingDateValue))) {
-            result = false;
-            constraintViolated(context, DATE_NOT_BLANK_IF_TITLE_OR_ITEMS_NOT_BLANK_MESSAGE,
-                    pollTitleName);
-        }
-
         return result;
 
     }
@@ -156,7 +147,7 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
         if (endingDateValue == null) {//null values are valid
             result = true;
         } else {
-            DateTime date = TopicDto.parseDate(endingDateValue, Poll.DATE_FORMAT);
+            DateTime date = DateTimeFormat.forPattern(Poll.DATE_FORMAT).parseDateTime(endingDateValue);
             result = date.isAfter(new DateTime());
             System.out.println();
         }

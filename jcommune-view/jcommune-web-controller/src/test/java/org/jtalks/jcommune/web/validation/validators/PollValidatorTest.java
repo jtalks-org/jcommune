@@ -27,8 +27,12 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
+
+import static org.testng.AssertJUnit.assertTrue;
 
 /**
  * @author Alexandre Teterin
@@ -93,23 +97,15 @@ public class PollValidatorTest {
                 null, true));
         Assert.assertEquals(constraintViolations.size(), 2);
         Iterator iterator = constraintViolations.iterator();
-        String firstMessageTemplate = ((ConstraintViolationImpl) iterator.next()).getMessageTemplate();
-        String secondMessageTemplate = ((ConstraintViolationImpl) iterator.next()).getMessageTemplate();
+        List<String> messageTemplates = new ArrayList<String>(2);
+        while (iterator.hasNext()) {
+            messageTemplates.add(((ConstraintViolationImpl) iterator.next()).getMessageTemplate());
+        }
         //if items blank but title not blank we will see
         //VotingOptionsNumber and  PollItemsNotBlankIfPollTitleNotBlank violations
-        Assert.assertEquals(firstMessageTemplate, "{VotingOptionsNumber.message}");
-        Assert.assertEquals(secondMessageTemplate, "{PollItemsNotBlankIfPollTitleNotBlank.message}");
+        assertTrue(messageTemplates.contains("{VotingOptionsNumber.message}"));
+        assertTrue(messageTemplates.contains("{PollItemsNotBlankIfPollTitleNotBlank.message}"));
 
-    }
-
-    @Test
-    public void testItemsAndTitleNotBlankDateBlank() {
-        TestObject testObject = new TestObject("title", "item1" + TopicDto.LINE_SEPARATOR + "item2", true);
-        testObject.setEndingDate(null);
-        Set<ConstraintViolation<TestObject>> constraintViolations = validator.validate(testObject);
-        Assert.assertEquals(constraintViolations.size(), 1);
-        Assert.assertEquals(constraintViolations.iterator().next().getMessageTemplate(),
-                "{DateNotBlankIfPollTitleOrItemsNotBlank.message}");
     }
 
     @ValidPoll(pollTitle = "pollTitle", pollItems = "pollItems", endingDate = "endingDate")

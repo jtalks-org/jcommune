@@ -16,7 +16,6 @@ package org.jtalks.jcommune.web.dto;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.NotBlank;
-import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollItem;
@@ -224,28 +223,12 @@ public class TopicDto {
         Poll poll = new Poll(pollTitle);
         poll.setSingleAnswer(Boolean.parseBoolean(single));
         if (endingDate != null) {
-            poll.setEndingDate(parseDate(endingDate, Poll.DATE_FORMAT));
+            poll.setEndingDate(DateTimeFormat.forPattern(Poll.DATE_FORMAT).parseDateTime(endingDate));
         }
         poll.addPollOptions(parseItems(pollItems));
 
         return poll;
     }
-
-    public static DateTime parseDate(String date, String format) {
-        DateTime result;
-        try {
-            if (date == null) {
-                result = null;
-            } else {
-                result = DateTimeFormat.forPattern(format).parseDateTime(date);
-            }
-        } catch (IllegalArgumentException e) {
-            result = new DateTime(0);
-        }
-
-        return result;
-    }
-
 
     /**
      * Prepare poll items list from string. Removes empty lines from.
@@ -269,8 +252,7 @@ public class TopicDto {
     }
 
     public boolean hasPoll() {
-        return StringUtils.isNotBlank(pollTitle) && StringUtils.isNotBlank(pollItems)
-                && StringUtils.isNotBlank(endingDate);
+        return StringUtils.isNotBlank(pollTitle) && StringUtils.isNotBlank(pollItems);
     }
 
 

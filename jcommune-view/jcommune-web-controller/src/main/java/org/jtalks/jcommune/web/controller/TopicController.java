@@ -130,9 +130,7 @@ public class TopicController {
         return new ModelAndView("newTopic")
                 .addObject("topicDto", new TopicDto())
                 .addObject("branchId", branchId)
-                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch))
-                .addObject("multiplePollType", Boolean.FALSE)
-                .addObject("singlePollType", Boolean.TRUE);
+                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
     }
 
     /**
@@ -160,10 +158,8 @@ public class TopicController {
 
         if (topicDto.hasPoll()) {
             Poll poll = topicDto.preparePollFromTopicDto();
-            if (poll != null) {
-                poll.setTopic(createdTopic);
-                pollService.createPoll(poll);
-            }
+            poll.setTopic(createdTopic);
+            pollService.createPoll(poll);
         }
 
         lastReadPostService.markTopicAsRead(createdTopic);
