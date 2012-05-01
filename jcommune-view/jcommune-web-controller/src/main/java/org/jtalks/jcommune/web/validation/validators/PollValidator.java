@@ -24,6 +24,7 @@ import org.jtalks.jcommune.web.validation.annotations.ValidPoll;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,7 +51,7 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
     private final String FUTURE_DATE_MESSAGE = "{javax.validation.constraints.Future.message}";
     private final String TITLE_NOT_BLANK_IF_ITEMS_NOT_BLANK_MESSAGE = "{PollTitleNotBlankIfPollItemsNotBlank.message}";
     private final String ITEMS_NOT_BLANK_IF_TITLE_NOT_BLANK_MESSAGE = "{PollItemsNotBlankIfPollTitleNotBlank.message}";
-    private final String DATE_NOT_BLANK_IF_TITLE_OR_ITEMS_NOT_BLANK_MESSAGE =
+    public static final String DATE_NOT_BLANK_IF_TITLE_OR_ITEMS_NOT_BLANK_MESSAGE =
             "{DateNotBlankIfPollTitleOrItemsNotBlank.message}";
     private final String ITEM_LENGTH_MESSAGE = "{VotingItemLength.message}";
 
@@ -172,7 +173,11 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
             pollTitleValue = BeanUtils.getProperty(value, pollTitleName);
             pollItemsValue = BeanUtils.getProperty(value, pollItemsName);
             endingDateValue = BeanUtils.getProperty(value, endingDateName);
-            items = TopicDto.parseItems(pollItemsValue);
+            if (StringUtils.isNotBlank(pollItemsValue)) {
+                items = TopicDto.parseItems(pollItemsValue);
+            } else {
+                items = new ArrayList<PollItem>(0);
+            }
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }

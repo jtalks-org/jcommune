@@ -58,7 +58,7 @@ public class TopicDto {
     @Size(min = Poll.MIN_TITLE_LENGTH, max = Poll.MAX_TITLE_LENGTH)
     private String pollTitle;
 
-    private String pollOptions;
+    private String pollItems;
 
     private String single;
 
@@ -191,8 +191,8 @@ public class TopicDto {
         return pollTitle;
     }
 
-    public String getPollOptions() {
-        return pollOptions;
+    public String getPollItems() {
+        return pollItems;
     }
 
     public String getSingle() {
@@ -207,8 +207,8 @@ public class TopicDto {
         this.pollTitle = pollTitle;
     }
 
-    public void setPollOptions(String pollOptions) {
-        this.pollOptions = pollOptions;
+    public void setPollItems(String pollItems) {
+        this.pollItems = pollItems;
     }
 
     public void setSingle(String single) {
@@ -226,7 +226,7 @@ public class TopicDto {
         if (endingDate != null) {
             poll.setEndingDate(parseDate(endingDate, Poll.DATE_FORMAT));
         }
-        poll.addPollOptions(parseItems(pollOptions));
+        poll.addPollOptions(parseItems(pollItems));
 
         return poll;
     }
@@ -266,6 +266,11 @@ public class TopicDto {
         }
 
         return result;
+    }
+
+    public boolean hasPoll() {
+        return StringUtils.isNotBlank(pollTitle) && StringUtils.isNotBlank(pollItems)
+                && StringUtils.isNotBlank(endingDate);
     }
 
 

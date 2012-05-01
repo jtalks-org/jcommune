@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.validation.validators;
 
+import org.hibernate.validator.engine.ConstraintViolationImpl;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.web.dto.TopicDto;
@@ -26,6 +27,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -49,11 +51,66 @@ public class PollValidatorTest {
 
         Set<ConstraintViolation<TestObject>> constraintViolations = validator.validate(new TestObject("title",
                 "item1" + TopicDto.LINE_SEPARATOR + "item2", true));
-        Assert.assertEquals(constraintViolations.size(), 0, "Validation errors");
+        Assert.assertEquals(constraintViolations.size(), 0);
 
 
     }
 
+    @Test
+    public void testNotFutureDateCase() {
+        Set<ConstraintViolation<TestObject>> constraintViolations = validator.validate(new TestObject("title",
+                "item1" + TopicDto.LINE_SEPARATOR + "item2", false));
+        Assert.assertEquals(constraintViolations.size(), 1);
+        Assert.assertEquals(constraintViolations.iterator().next().getMessageTemplate(),
+                "{javax.validation.constraints.Future.message}");
+
+    }
+
+    @Test
+    public void testItemLengthNotValid() {
+        Set<ConstraintViolation<TestObject>> constraintViolations = validator.validate(new TestObject("title",
+                "item1" + TopicDto.LINE_SEPARATOR +
+                        "012345678901234567890123456789012345678901234567890123456789", true));
+        Assert.assertEquals(constraintViolations.size(), 1);
+        Assert.assertEquals(constraintViolations.iterator().next().getMessageTemplate(), "{VotingItemLength.message}");
+
+    }
+
+    @Test
+    public void testTitleBlankItemsDateNotBlank() {
+        Set<ConstraintViolation<TestObject>> constraintViolations = validator.validate(new TestObject(null,
+                "item1" + TopicDto.LINE_SEPARATOR +
+                        "item2", true));
+        Assert.assertEquals(constraintViolations.size(), 1);
+        Assert.assertEquals(constraintViolations.iterator().next().getMessageTemplate(),
+                "{PollTitleNotBlankIfPollItemsNotBlank.message}");
+
+    }
+
+    @Test
+    public void testItemsBlankTitleDateNotBlank() {
+        Set<ConstraintViolation<TestObject>> constraintViolations = validator.validate(new TestObject("title",
+                null, true));
+        Assert.assertEquals(constraintViolations.size(), 2);
+        Iterator iterator = constraintViolations.iterator();
+        String firstMessageTemplate = ((ConstraintViolationImpl) iterator.next()).getMessageTemplate();
+        String secondMessageTemplate = ((ConstraintViolationImpl) iterator.next()).getMessageTemplate();
+        //if items blank but title not blank we will see
+        //VotingOptionsNumber and  PollItemsNotBlankIfPollTitleNotBlank violations
+        Assert.assertEquals(firstMessageTemplate, "{VotingOptionsNumber.message}");
+        Assert.assertEquals(secondMessageTemplate, "{PollItemsNotBlankIfPollTitleNotBlank.message}");
+
+    }
+
+    @Test
+    public void testItemsAndTitleNotBlankDateBlank() {
+        TestObject testObject = new TestObject("title", "item1" + TopicDto.LINE_SEPARATOR + "item2", true);
+        testObject.setEndingDate(null);
+        Set<ConstraintViolation<TestObject>> constraintViolations = validator.validate(testObject);
+        Assert.assertEquals(constraintViolations.size(), 1);
+        Assert.assertEquals(constraintViolations.iterator().next().getMessageTemplate(),
+                "{DateNotBlankIfPollTitleOrItemsNotBlank.message}");
+    }
 
     @ValidPoll(pollTitle = "pollTitle", pollItems = "pollItems", endingDate = "endingDate")
     public class TestObject {
