@@ -17,6 +17,7 @@ package org.jtalks.jcommune.model;
 import org.hibernate.Session;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.model.entity.Post;
@@ -135,7 +136,7 @@ public final class ObjectsFactory {
         session.save(topic);
         return posts;
     }
-    
+
     public static LastReadPost getDefaultLastReadPost() {
         Topic topic = getDefaultTopic();
         JCUser user = topic.getTopicStarter();
