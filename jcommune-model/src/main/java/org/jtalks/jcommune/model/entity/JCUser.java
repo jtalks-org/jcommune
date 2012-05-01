@@ -221,9 +221,10 @@ public class JCUser extends User {
     /**
      * Renders user signature for html view.
      * No further html escaping is required.
+     *
      * @return html-rendered user signature
      */
-    public String getRenderedSignature(){
-       return signature.render();
+    public String getRenderedSignature() {
+        return signature.render();
     }
 }

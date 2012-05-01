@@ -115,12 +115,14 @@ public class UserProfileControllerTest {
     }
 
     @Test
-    public void testShowShortcut() {
-       when(securityService.getCurrentUser()).thenReturn(new JCUser(USER_NAME, EMAIL, PASSWORD));
+    public void testShowShortcut() throws NotFoundException {
+        JCUser user = new JCUser(USER_NAME, EMAIL, PASSWORD);
+        when(securityService.getCurrentUser()).thenReturn(user);
 
-        String result = profileController.showProfilePage();
+        ModelAndView mav = profileController.showProfilePage();
 
-        assertEquals(result, "redirect:/users/" + USER_NAME);
+        assertViewName(mav, "userDetails");
+        assertModelAttributeAvailable(mav, "user");
     }
 
     @Test

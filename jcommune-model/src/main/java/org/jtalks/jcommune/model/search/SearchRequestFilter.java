@@ -12,30 +12,21 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao;
-
-import org.jtalks.common.model.dao.ChildRepository;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Post;
-
-import java.util.List;
+package org.jtalks.jcommune.model.search;
 
 /**
- * Interface allows to make basic CRUD operations with the
- * {@link Post} objects.
- * At the current moment it doesn't provides any additional methods over the basic {@link ChildRepository} interface
- * but some specific methods will be added soon.
+ * Describes a filter for fixing dirty search requests.
+ * 
+ * @author Anuar Nurmakanov
  *
- * @author Pavel Vervenko
- * @author Kirill Afonin
- * @see org.jtalks.jcommune.model.dao.hibernate.PostHibernateDao
  */
-public interface PostDao extends ChildRepository<Post> {
-
+public interface SearchRequestFilter {
+    
     /**
-     * @param author user to select posts for
-     * @return post list of user
+     * Filter the  search text.
+     * 
+     * @param searchText search text
+     * @return correct search text
      */
-    List<Post> getUserPosts(JCUser author);
-
+    String filter(String searchText);
 }

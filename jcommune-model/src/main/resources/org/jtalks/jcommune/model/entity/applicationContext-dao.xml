@@ -83,8 +83,8 @@
         </constructor-arg>
     </bean>
     <bean id="invalidCharactersFilter"
-          class="org.jtalks.jcommune.model.dao.search.hibernate.filter.InvalidCharactersFilter"/>
-    <bean id="stopWordsFilter" class="org.jtalks.jcommune.model.dao.search.hibernate.filter.StopWordsFilter">
+          class="org.jtalks.jcommune.model.search.InvalidCharactersFilter"/>
+    <bean id="stopWordsFilter" class="org.jtalks.jcommune.model.search.StopWordsFilter">
         <constructor-arg>
             <list>
                 <value>org/jtalks/jcommune/lucene/english_stop.txt</value>

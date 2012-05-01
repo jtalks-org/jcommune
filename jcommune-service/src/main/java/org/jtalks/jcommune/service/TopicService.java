@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.service;
 
-import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;

@@ -12,8 +12,22 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+package org.jtalks.jcommune.model.search;
 
 /**
- * Package for filters that filter the search request. 
+ * Deletes all invalid characters in the search text.
+ * Valid characters are letters and numbers.
+ * 
+ * @author Anuar Nurmakanov
+ *
  */
-package org.jtalks.jcommune.model.dao.search.hibernate.filter;
+public class InvalidCharactersFilter implements SearchRequestFilter {
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String filter(String searchText) {
+        return searchText.replaceAll("[^А-Яа-яёЁA-Za-z0-9]", " ").trim();
+    }
+}

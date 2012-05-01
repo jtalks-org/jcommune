@@ -135,6 +135,12 @@ public final class ObjectsFactory {
         session.save(topic);
         return posts;
     }
+    
+    public static LastReadPost getDefaultLastReadPost() {
+        Topic topic = getDefaultTopic();
+        JCUser user = topic.getTopicStarter();
+        return new LastReadPost(user, topic, 0);
+    }
 
     public static Poll createDefaultVoting() {
         Topic topic = getDefaultTopic();

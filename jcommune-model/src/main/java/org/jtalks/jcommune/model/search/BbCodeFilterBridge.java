@@ -12,22 +12,33 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao.search.hibernate.filter;
+package org.jtalks.jcommune.model.search;
+
+import org.apache.commons.lang.ObjectUtils;
+import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.bridge.StringBridge;
 
 /**
- * Deletes all invalid characters in the search text.
- * Valid characters are letters and numbers.
+ * Eliminates all the bbcodes before indexing the data.
+ * To enable the filter you need to declare the bridge annotation
+ * {@link FieldBridge} above property/field.
  * 
  * @author Anuar Nurmakanov
- *
+ * @see StringBridge
+ * @see FieldBridge
  */
-public class InvalidCharactersFilter implements SearchRequestFilter {
+public class BbCodeFilterBridge implements StringBridge {
+    private static final String BB_CODE_REGEXP_TEMPLATE = "\\[.*?\\]";
     
     /**
      * {@inheritDoc}
      */
     @Override
-    public String filter(String searchText) {
-        return searchText.replaceAll("[^А-Яа-яёЁA-Za-z0-9]", " ").trim();
+    public String objectToString(Object object) {
+        if (object instanceof String) {
+            String value = (String) object;
+            return value.replaceAll(BB_CODE_REGEXP_TEMPLATE, " ");
+        }
+        return ObjectUtils.toString(object);
     }
 }

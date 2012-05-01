@@ -128,4 +128,16 @@ public class TopicTest {
     public void testSetLastReadPostIndexWrongValue() {
         topic.setLastReadPostIndex(100500);
     }
+    
+    @Test
+    public void testRemovePost() {
+        DateTime lastModification = new DateTime(1900, 11, 11, 11, 11, 11, 11);
+        topic.setModificationDate(lastModification);
+        
+        topic.removePost(post1);
+        
+        assertFalse(topic.getPosts().contains(post1), "The post isn't removed from the topic");
+        assertTrue(topic.getModificationDate().isAfter(lastModification),
+                "Last modification date has not changed.");
+    }
 }

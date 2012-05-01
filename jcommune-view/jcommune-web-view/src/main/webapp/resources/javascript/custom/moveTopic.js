@@ -26,7 +26,8 @@ $(document).ready(function () {
     $("#move_topic").click(function () {
         $.getJSON(baseUrl + "/sections/json", function (sections) {
             var htmlTemplate = prepareHtmlTemplateForModalWindow(sections);
-            displayAllBranches();
+            var eliminatedBranchId = $("#edit_button").attr("rel");
+            displayAllBranches(eliminatedBranchId);
             showMoveTopicModalWindow(htmlTemplate);
         });
     });
@@ -62,11 +63,12 @@ function prepareHtmlTemplateForModalWindow(sections) {
  */
 function showMoveTopicModalWindow(htmlTemplate) {
     var branchId;
+    var eliminatedBranchId = $("#edit_button").attr("rel");
     var topicId = $(".topicId").attr('id');
     $.prompt(htmlTemplate, {
         buttons:{ Move:true, Cancel:false},
         loaded:function () {
-            displayBranches();
+            displayBranches(eliminatedBranchId);
             $("#branch_name").change(function () {
                 $("#jqi_state0_buttonMove").removeAttr("disabled");
                 $("#jqi_state0_buttonMove").css({'color':'#262626'})
@@ -86,13 +88,13 @@ function showMoveTopicModalWindow(htmlTemplate) {
  * Displays branches accordingly option chosen in section select element.
  * It may be "All sections" or particular section.
  */
-function displayBranches() {
+function displayBranches(eliminatedBranchId) {
     $("#section_name").change(function () {
         var sectionId = $(this).val();
         if (sectionId == "all") {
-            displayAllBranches();
+            displayAllBranches(eliminatedBranchId);
         } else {
-            displayBranchesFromSection(sectionId);
+            displayBranchesFromSection(sectionId, eliminatedBranchId);
         }
     });
     $("#section_name").val("all");
@@ -101,11 +103,11 @@ function displayBranches() {
 /**
  *Displays all branches from section with given sectionId.
  */
-function displayBranchesFromSection(sectionId) {
+function displayBranchesFromSection(sectionId, eliminatedBranchId) {
     $.ajax({
         url:baseUrl + '/branches/json/' + sectionId,
         success:function (branches) {
-            rebuildBranchesList(branches);
+            rebuildBranchesList(branches, eliminatedBranchId);
         }
     });
 }
@@ -113,11 +115,11 @@ function displayBranchesFromSection(sectionId) {
 /**
  * Displays all existing branches.
  */
-function displayAllBranches() {
+function displayAllBranches(eliminatedBranchId) {
     $.ajax({
         url:baseUrl + '/branches/json',
         success:function (branches) {
-            rebuildBranchesList(branches);
+            rebuildBranchesList(branches, eliminatedBranchId);
         }
     });
 }
@@ -127,10 +129,10 @@ function displayAllBranches() {
  *
  * @param branches list of branches to present
  */
-function rebuildBranchesList(branches) {
+function rebuildBranchesList(branches, eliminatedBranchId) {
     disableMoveButton();
     $("#branch_name").children().remove();
-    $("#branch_name").append(getBranchItemHtml(branches));
+    $("#branch_name").append(getBranchItemHtml(branches, eliminatedBranchId));
 }
 
 /**
@@ -139,10 +141,12 @@ function rebuildBranchesList(branches) {
  * @param branches list of branches to present
  * @return html template of options in select
  */
-function getBranchItemHtml(branches) {
+function getBranchItemHtml(branches, eliminatedBranchId) {
     var template = '';
     $.each(branches, function (i, branch) {
-        template += '<option value="' + branch.id + '">' + branch.name + '</option>';
+        if (eliminatedBranchId != branch.id){
+            template += '<option value="' + branch.id + '">' + branch.name + '</option>';
+        }
     });
     return template;
 }

@@ -290,7 +290,7 @@ public class PrivateMessageControllerTest {
     @Test
     public void testDeletePm() throws NotFoundException 
     {
-        String pmIds = "1,2";
+        List<Long> pmIds = Arrays.asList(1L, 2L);
         
         when(pmService.delete(Arrays.asList(1L, 2L))).thenReturn("aaa");
         

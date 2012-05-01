@@ -16,25 +16,20 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.BranchDao;
-import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
-import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import java.util.Date;
 import java.util.List;
 
 import static org.jtalks.jcommune.service.security.SecurityConstants.*;
@@ -210,7 +205,6 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @PreAuthorize(HAS_ADMIN_ROLE)
     public void moveTopic(Long topicId, Long branchId) throws NotFoundException {
         Topic topic = get(topicId);
-        Branch currentBranch = topic.getBranch();
         Branch targetBranch = branchService.get(branchId);
         targetBranch.addTopic(topic);
         branchDao.update(targetBranch);

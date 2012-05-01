@@ -12,30 +12,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao;
-
-import org.jtalks.common.model.dao.ChildRepository;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Post;
-
-import java.util.List;
-
 /**
- * Interface allows to make basic CRUD operations with the
- * {@link Post} objects.
- * At the current moment it doesn't provides any additional methods over the basic {@link ChildRepository} interface
- * but some specific methods will be added soon.
- *
- * @author Pavel Vervenko
- * @author Kirill Afonin
- * @see org.jtalks.jcommune.model.dao.hibernate.PostHibernateDao
+ * Provides additional classes for working with Hibernate Search.
+ * Contains additional annotations, implementing their own analyser,
+ * filters and bridges.
  */
-public interface PostDao extends ChildRepository<Post> {
-
-    /**
-     * @param author user to select posts for
-     * @return post list of user
-     */
-    List<Post> getUserPosts(JCUser author);
-
-}
+package org.jtalks.jcommune.model.search;

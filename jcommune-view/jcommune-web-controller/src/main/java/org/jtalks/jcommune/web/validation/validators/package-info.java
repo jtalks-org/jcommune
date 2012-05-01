@@ -12,21 +12,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.dao.search.hibernate.filter;
-
 /**
- * Describes a filter for fixing dirty search requests.
- * 
- * @author Anuar Nurmakanov
- *
+ * Package for JSR-303(validation API) custom validators.
  */
-public interface SearchRequestFilter {
-    
-    /**
-     * Filter the  search text.
-     * 
-     * @param searchText search text
-     * @return correct search text
-     */
-    String filter(String searchText);
-}
+package org.jtalks.jcommune.web.validation.validators;

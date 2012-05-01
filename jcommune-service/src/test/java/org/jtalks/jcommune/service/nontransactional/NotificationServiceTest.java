@@ -42,6 +42,7 @@ public class NotificationServiceTest {
 
     private JCUser user1 = new JCUser("name1", "email1", "password1");
     private JCUser user2 = new JCUser("name2", "email2", "password2");
+    private JCUser user3 = new JCUser("name3", "email3", "password3");
     private Topic topic;
     private Branch branch;
 
@@ -114,14 +115,28 @@ public class NotificationServiceTest {
         verifyZeroInteractions(mailService);
     }
 
-    @Test void testTopicMovedWithBranchSubscribers(){
+    @Test
+    public void testTopicMovedWithBranchSubscribers(){
         when(securityService.getCurrentUser()).thenReturn(user1);
         branch.getSubscribers().add(user1);
         branch.getSubscribers().add(user2);
+        branch.getSubscribers().add(user3);
         
         service.topicMoved(topic, TOPIC_ID);
 
-        verify(mailService).sendTopicMovedMail(user1, TOPIC_ID);
-        verify(mailService).sendBranchUpdatesOnSubscription(user2, branch);
+        verify(mailService).sendTopicMovedMail(user2, TOPIC_ID);
+        verify(mailService).sendTopicMovedMail(user3, TOPIC_ID);
+    }
+
+    @Test
+    public void testTopicMovedTopicStarterIsNotASubscriber(){
+        when(securityService.getCurrentUser()).thenReturn(user1);
+        branch.getSubscribers().add(user2);
+        branch.getSubscribers().add(user3);
+
+        service.topicMoved(topic, TOPIC_ID);
+        
+        verify(mailService).sendTopicMovedMail(user2, TOPIC_ID);
+        verify(mailService).sendTopicMovedMail(user3, TOPIC_ID);
     }
 }
