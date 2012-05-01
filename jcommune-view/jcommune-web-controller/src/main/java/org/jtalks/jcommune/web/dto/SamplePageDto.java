@@ -30,6 +30,9 @@ public class SamplePageDto {
     
     private long id;
 
+    public SamplePageDto() {
+    }
+
     public SamplePageDto(SamplePage samplePage) {
         this.setId(samplePage.getId());
         this.setNameText(samplePage.getName());
