@@ -55,7 +55,7 @@
         </sec:authorize>
         <sec:authorize access="hasRole('ROLE_ANONYMOUS')">
             <li>
-                <a href="${pageContext.request.contextPath}/login">
+                <a id="signin" href="${pageContext.request.contextPath}/login">
                     <fmt:message key="label.signin"/>
                 </a>
             </li>

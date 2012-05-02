@@ -54,6 +54,8 @@
             src="${pageContext.request.contextPath}/resources/javascript/custom/URLBuilder.js"></script>
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/registration.js"></script>
+    <script src='${pageContext.request.contextPath}/resources/javascript/custom/signin.js'
+            type='text/javascript'></script>
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/global.js"></script>
     <script src='${pageContext.request.contextPath}/resources/javascript/licensed/xregexp-min.js'
