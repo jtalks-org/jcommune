@@ -31,18 +31,8 @@ $(function () {
             dataType:"html",
             //handling query answer, create registration form
             success:function (data) {
-                var form_elements = [];
-                $.each($(data).find("div.forum_row"), function (index, value) {
-                    $(value).find("span.error").remove();
-                    form_elements[index] = $(value).html();
-                });
-                var content = '<ul><div>' + $(data).find("span.forum_header_answer").html() +
-                              '</div><br/><span class="empty_cell"></span>' + form_elements[0] +
-                              form_elements[1] + form_elements[2] + '</ul>'+
-                              '<div class="form_controls">' +
-                              '<a href ="/jcommune/password/restore">' +
-                              $(data).find('a[href$="/jcommune/password/restore"]').html() + "</a>" +
-                              '</div>'  ;
+                var form_elements = formatFormElements(data);
+                var content = formatHTMLContent(data, form_elements);
                 //Check the query answer and displays prompt
                 if ($(data).find("span.forum_header_answer").html() != null) {
                     $.prompt(content,
@@ -80,18 +70,8 @@ function sendLoginPost() {
         dataType:"html",
         //handling query answer, create registration form
         success:function (data) {
-            var form_elements = [];
-            $.each($(data).find("div.forum_row"), function (index, value) {
-                $(value).find("span.error").prepend('<br>');
-                form_elements[index] = $(value).html();
-            });
-            var content = '<ul><div>' + $(data).find("span.forum_header_answer").html() +
-                          '</div><br/><span class="empty_cell"></span>' + form_elements[0] +
-                          form_elements[1] + form_elements[2] + '</ul>' +
-                          '<div class="form_controls">' +
-                          '<a href ="/jcommune/password/restore">' +
-                          $(data).find('a[href$="/jcommune/password/restore"]').html() + "</a>" +
-                          '</div>'  ;
+             var form_elements = formatFormElements(data);
+             var content = formatHTMLContent(data, form_elements);
             //Check the query answer and displays prompt
             if ($(data).find("span.forum_header_answer").html() != null) {
                 $.prompt(content,
@@ -101,6 +81,37 @@ function sendLoginPost() {
                 history.go(0);
             }
         }});
+}
+
+/**
+ * Formats form elements such as text fields with login and password
+ * for login popup page
+ * @param data html page
+ * @return form_elements array of form elements
+ */
+function formatFormElements(data){
+     var form_elements = [];
+            $.each($(data).find("div.forum_row"), function (index, value) {
+                $(value).find("span.error").prepend('<br>');
+                form_elements[index] = $(value).html();
+            });
+    return form_elements;
+}
 
 
+/**
+ * Formats html content from given data, for representing login page
+ * @param data html data
+ * @param form_elements form elements
+ * @return content formatted html content
+ */
+function formatHTMLContent(data,form_elements){
+     var content = '<ul><div>' + $(data).find("span.forum_header_answer").html() +
+                          '</div><br/><span class="empty_cell"></span>' + form_elements[0] +
+                          form_elements[1] + form_elements[2] + '</ul>' +
+                          '<div class="form_controls">' +
+                          '<a href ="/jcommune/password/restore">' +
+                          $(data).find('a[href$="/jcommune/password/restore"]').html() + "</a>" +
+                          '</div>'  ;
+    return content;
 }
