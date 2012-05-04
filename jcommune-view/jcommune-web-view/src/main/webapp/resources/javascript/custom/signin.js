@@ -54,13 +54,9 @@ $(function () {
  * get error message, providing user with opportunity to change login or password
  */
 function sendLoginPost() {
-    var query;
+    var query = "j_username=" + $('#j_username').val() + "&" + "j_password=" + $('#j_password').val();
     if ($('input[name=_spring_security_remember_me]').is(':checked')) {
-        query = "j_username=" + $('#j_username').val() + "&" + "j_password=" +
-            $('#j_password').val() + "&" + "_spring_security_remember_me=on";
-    }  else {
-         query = "j_username=" + $('#j_username').val() + "&" + "j_password=" +
-            $('#j_password').val();
+        query =  query + "&_spring_security_remember_me=on";
     }
 
     $.ajax({
