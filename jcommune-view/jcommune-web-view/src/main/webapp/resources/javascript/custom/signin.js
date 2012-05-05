@@ -113,8 +113,8 @@ function formatHTMLContent(data,form_elements){
                           '</div><br/><span class="empty_cell"></span>' + form_elements[0] +
                           form_elements[1] + form_elements[2] + '</ul>' +
                           '<div class="form_controls">' +
-                          '<a href ="/jcommune/password/restore">' +
-                          $(data).find('a[href$="/jcommune/password/restore"]').html() + "</a>" +
+                          '<a href ="' + $(data).find('.form_controls a').attr("href") + '">' +
+                          $(data).find('.form_controls a').html() + "</a>" +
                           '</div>'  ;
     return content;
 }
