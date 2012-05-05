@@ -130,7 +130,7 @@ public class PostController {
                                  @PathVariable(POST_ID) Long postId) throws NotFoundException {
         Post post = postService.get(postId);
 
-        return new ModelAndView("editForm")
+        return new ModelAndView("editPost")
                 .addObject(POST_DTO, PostDto.getDtoFor(post))
                 .addObject(TOPIC_ID, topicId)
                 .addObject(POST_ID, postId)
@@ -155,7 +155,7 @@ public class PostController {
                                @RequestParam(TOPIC_ID) Long topicId,
                                @PathVariable(POST_ID) Long postId) throws NotFoundException {
         if (result.hasErrors()) {
-            return new ModelAndView("editForm")
+            return new ModelAndView("editPost")
                     .addObject(TOPIC_ID, topicId)
                     .addObject(POST_ID, postId);
         }

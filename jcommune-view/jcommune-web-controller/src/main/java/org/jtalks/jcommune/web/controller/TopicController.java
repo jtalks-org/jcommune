@@ -217,7 +217,7 @@ public class TopicController {
                                       @PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         Topic topic = topicService.get(topicId);
 
-        return new ModelAndView("topicForm")
+        return new ModelAndView("editTopic")
                 .addObject("topicDto", new TopicDto(topic))
                 .addObject(BRANCH_ID, branchId)
                 .addObject(TOPIC_ID, topicId)
@@ -240,7 +240,7 @@ public class TopicController {
                                   @RequestParam(BRANCH_ID) Long branchId,
                                   @PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         if (result.hasErrors()) {
-            return new ModelAndView("topicForm")
+            return new ModelAndView("editTopic")
                     .addObject(BRANCH_ID, branchId)
                     .addObject(TOPIC_ID, topicId);
         }

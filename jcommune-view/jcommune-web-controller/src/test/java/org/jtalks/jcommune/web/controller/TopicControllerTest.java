@@ -239,7 +239,7 @@ public class TopicControllerTest {
         verify(breadcrumbBuilder).getForumBreadcrumb(topic);
 
         //check result
-        assertViewName(mav, "topicForm");
+        assertViewName(mav, "editTopic");
         TopicDto dto = assertAndReturnModelAttributeOfType(mav, "topicDto", TopicDto.class);
         assertEquals(dto.getId(), TOPIC_ID);
 
@@ -276,7 +276,7 @@ public class TopicControllerTest {
 
         ModelAndView mav = controller.editTopic(dto, resultWithErrors, BRANCH_ID, TOPIC_ID);
 
-        assertViewName(mav, "topicForm");
+        assertViewName(mav, "editTopic");
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         long topicId = assertAndReturnModelAttributeOfType(mav, "topicId", Long.class);
         assertEquals(branchId, BRANCH_ID);

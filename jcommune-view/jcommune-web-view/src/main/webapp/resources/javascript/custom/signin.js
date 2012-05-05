@@ -57,17 +57,12 @@ $(function () {
  * get error message, providing user with opportunity to change login or password
  */
 function sendLoginPost() {
-    var query;
     remember_me = $('input[name=_spring_security_remember_me]').is(':checked');
     username = $('#j_username').val();
+    var query = "j_username=" + username + "&" + "j_password=" + $('#j_password').val();
     if (remember_me) {
-        query = "j_username=" + username + "&" + "j_password=" +
-            $('#j_password').val() + "&" + "_spring_security_remember_me=on";
-    }  else {
-         query = "j_username=" + username + "&" + "j_password=" +
-            $('#j_password').val();
+        query =  query + "&_spring_security_remember_me=on";
     }
-
     $.ajax({
         type:"POST",
         url:$root + "/j_spring_security_check",

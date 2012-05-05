@@ -46,7 +46,7 @@
                         <span class="empty_cell"></span>
                     </div>
                 </div>
-                <jtalks:bbeditor labelForAction="label.post.edit"
+                <jtalks:bbeditor labelForAction="label.save"
                                  postText="${postDto.bodyText}"
                                  bodyParameterName="bodyText"
                                  back="${pageContext.request.contextPath}/topics/${topicId}"/>
