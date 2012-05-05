@@ -17,6 +17,9 @@
  * Handles login request and displays form with user and password field
  */
 
+var username;
+var remember_me;
+
 $(function () {
     $("#signin").on('click', function (e) {
         signinPopup();
@@ -55,11 +58,13 @@ $(function () {
  */
 function sendLoginPost() {
     var query;
-    if ($('input[name=_spring_security_remember_me]').is(':checked')) {
-        query = "j_username=" + $('#j_username').val() + "&" + "j_password=" +
+    remember_me = $('input[name=_spring_security_remember_me]').is(':checked');
+    username = $('#j_username').val();
+    if (remember_me) {
+        query = "j_username=" + username + "&" + "j_password=" +
             $('#j_password').val() + "&" + "_spring_security_remember_me=on";
     }  else {
-         query = "j_username=" + $('#j_username').val() + "&" + "j_password=" +
+         query = "j_username=" + username + "&" + "j_password=" +
             $('#j_password').val();
     }
 
@@ -77,6 +82,9 @@ function sendLoginPost() {
                 $.prompt(content,
                 {buttons:{OK:true}, focus:0,
                     submit:sendLoginPost});
+                 $('#j_username').val(username);
+                 $('input[name=_spring_security_remember_me]').attr('checked', remember_me);
+
             } else {
                 history.go(0);
             }
