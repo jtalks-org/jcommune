@@ -34,7 +34,7 @@
     <c:out value="${samplePageDto.contentText}"/>
 
     <br/>
-    <a href="${pageContext.request.contextPath}/pages/${samplePageDto.id}">Edit</a>
+    <a href="${pageContext.request.contextPath}/pages/${samplePageDto.id}/edit">Edit</a>
     </div>
     <div class="footer_buffer"></div>
 </div>

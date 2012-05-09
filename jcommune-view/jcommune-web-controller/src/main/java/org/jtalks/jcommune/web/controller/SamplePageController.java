@@ -77,7 +77,7 @@ public class SamplePageController {
                 .addObject(PAGE_DTO, new SamplePageDto(page));
     }
 
-    @RequestMapping(value = "/pages/{pagetId}/edit", method = RequestMethod.POST)
+    @RequestMapping(value = "/pages/{pageId}/edit", method = RequestMethod.POST)
     public ModelAndView update(@Valid @ModelAttribute SamplePageDto samplePageDto,
                                BindingResult result,
                                @PathVariable(PAGE_ID) Long pageId) throws NotFoundException {
