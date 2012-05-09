@@ -64,8 +64,8 @@
           class="org.jtalks.jcommune.model.dao.hibernate.UserContactsHibernateDao"
           parent="abstractHibernateDao"/>
     
-    <bean id="samplePageDao"
-          class="org.jtalks.jcommune.model.dao.hibernate.SamplePageHibernateDao"
+    <bean id="simplePageDao"
+          class="org.jtalks.jcommune.model.dao.hibernate.SimplePageHibernateDao"
           parent="abstractHibernateDao"/>
 
     <!-- Declaration of Hibernate Search DAO beans -->
@@ -116,7 +116,7 @@ resolves a problem of multiple DAO beans definition -->
                 <value>/org/jtalks/jcommune/model/entity/UserContact.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/UserContactType.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/LastReadPost.hbm.xml</value>
-                <value>/org/jtalks/jcommune/model/entity/SamplePage.hbm.xml</value>
+                <value>/org/jtalks/jcommune/model/entity/SimplePage.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">

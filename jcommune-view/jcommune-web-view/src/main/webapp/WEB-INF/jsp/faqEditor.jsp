@@ -33,8 +33,8 @@
     <div class="all_forums">
 
         <div id="answer">
-            <form:form action="${pageContext.request.contextPath}/pages/${samplePageDto.id}/edit"
-                       method="POST" modelAttribute="samplePageDto" onsubmit="doCheck();return true;">
+            <form:form action="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit"
+                       method="POST" modelAttribute="simplePageDto" onsubmit="doCheck();return true;">
 
                 <div class="forum_header_table">
                     <div class="forum_header">
@@ -43,6 +43,7 @@
                     </div>
                 </div>
                 <form:hidden path="id"/>
+                <form:hidden path="pathName"/>
                 <div class="forum_row">
                     <div>
                         <form:input path="nameText" class="reg_input" type="text"/></br>
@@ -52,9 +53,9 @@
                 </div>
 
                 <jtalks:bbeditor labelForAction="label.post.edit"
-                                 postText="${samplePageDto.contentText}"
+                                 postText="${simplePageDto.contentText}"
                                  bodyParameterName="contentText"
-                                 back="${pageContext.request.contextPath}/pages/${samplePageDto.id}"/>
+                                 back="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}"/>
             </form:form>
         </div>
     </div>

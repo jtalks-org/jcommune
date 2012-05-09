@@ -15,28 +15,31 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
-import org.jtalks.jcommune.model.entity.SamplePage;
+import org.jtalks.jcommune.model.entity.SimplePage;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
 
-public class SamplePageDto {
+public class SimplePageDto {
 
     @NotBlank
-    @BbCodeAwareSize(min = SamplePage.MIN_NAME_LENGTH, max = SamplePage.MAX_NAME_LENGTH)
+    @BbCodeAwareSize(min = SimplePage.MIN_NAME_LENGTH, max = SimplePage.MAX_NAME_LENGTH)
     private String nameText;
 
     @NotBlank
-    @BbCodeAwareSize(min = SamplePage.MIN_CONTENT_LENGTH, max = SamplePage.MAX_CONTENT_LENGTH)
+    @BbCodeAwareSize(min = SimplePage.MIN_CONTENT_LENGTH, max = SimplePage.MAX_CONTENT_LENGTH)
     private String contentText;
     
     private long id;
 
-    public SamplePageDto() {
+    private String pathName;
+
+    public SimplePageDto() {
     }
 
-    public SamplePageDto(SamplePage samplePage) {
-        this.setId(samplePage.getId());
-        this.setNameText(samplePage.getName());
-        this.setContentText(samplePage.getContent());
+    public SimplePageDto(SimplePage simplePage) {
+        this.setId(simplePage.getId());
+        this.setNameText(simplePage.getName());
+        this.setContentText(simplePage.getContent());
+        this.setPathName(simplePage.getPathName());
     }
 
     public String getNameText() {
@@ -62,5 +65,14 @@ public class SamplePageDto {
     public void setId(long id) {
         this.id = id;
     }
+
+    public String getPathName() {
+        return pathName;
+    }
+
+    public void setPathName(String pathName) {
+        this.pathName = pathName;
+    }
+
 }
 

@@ -21,10 +21,10 @@ import static org.testng.Assert.assertEquals;
 
 public class SimplePageTest {
 
-    private SamplePage page;
+    private SimplePage page;
     @BeforeMethod
     public void setUp() throws Exception {
-        page = new SamplePage("Test Name", "Test Content");
+        page = new SimplePage("Test Name", "Test Content", "test_page");
 
     }
 

@@ -21,8 +21,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <head>
     <title>
-        <c:out value="${samplePageDto.id}"/>
-        <c:out value="${samplePageDto.nameText}"/></title>
+        <c:out value="${simplePageDto.id}"/>
+        <c:out value="${simplePageDto.nameText}"/></title>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
             type="text/javascript"></script>
 </head>
@@ -31,10 +31,17 @@
     <jsp:include page="../template/topLine.jsp"/>
     <jsp:include page="../template/logo.jsp"/>
 
-    <c:out value="${samplePageDto.contentText}"/>
+        <div class="all_forums">
+                <ul class="forum_table" id="stylized">
+                    <li class="forum_row">
+                        ${simplePageDto.contentText}
+                    </li>
+                </ul>
+        </div>
+
 
     <br/>
-    <a href="${pageContext.request.contextPath}/pages/${samplePageDto.id}/edit">Edit</a>
+    <a href="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit">Edit</a>
     </div>
     <div class="footer_buffer"></div>
 </div>

@@ -19,13 +19,14 @@
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
-    <class name="SamplePage" table="SAMPLE_PAGE">
+    <class name="org.jtalks.jcommune.model.entity.SimplePage" table="SIMPLE_PAGE">
         <cache usage="read-write"/>
         <id name="id" column="PAGE_ID" unsaved-value="0">
             <generator class="native"/>
         </id>
         <property name="uuid" column="UUID" unique="true" not-null="true"/>
         <property name="name" column="NAME" type="text"  not-null="true"/>
+        <property name="pathName" column="PATH_NAME" type="text"  not-null="true"/>
         <property name="content" column="POST_CONTENT" type="text"  not-null="true"/>
     </class>
 

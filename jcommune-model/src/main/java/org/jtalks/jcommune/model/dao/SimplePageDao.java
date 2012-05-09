@@ -15,20 +15,30 @@
 package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.common.model.dao.ChildRepository;
-import org.jtalks.jcommune.model.entity.SamplePage;
-
-import java.util.Collection;
-import java.util.List;
+import org.jtalks.jcommune.model.entity.SimplePage;
+import org.springframework.security.acls.model.NotFoundException;
 
 /**
  * Interface allows to make basic CRUD operations with the
- * {@link SamplePage} objects.
+ * {@link org.jtalks.jcommune.model.entity.SimplePage} objects.
  * At the current moment it doesn't provides any additional methods over the basic {@link ChildRepository} interface
  * but some specific methods will be added soon.
  *
  * @author Scherbakov Roman
+ * @author Alexander Gavrikov
  */
-public interface SamplePageDao extends ChildRepository<SamplePage> {
+public interface SimplePageDao extends ChildRepository<SimplePage> {
 
+    /**
+     * add a new Simple Page
+     * @param simplePage
+     */
+    public void createPage(SimplePage simplePage);
 
+    /**
+     * get SimplePage by name
+     * @param name name
+     * @return simplePage with current name
+     */
+    public SimplePage getPageByPathName(String name) throws NotFoundException;
 }

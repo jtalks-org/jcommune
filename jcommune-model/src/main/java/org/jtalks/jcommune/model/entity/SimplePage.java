@@ -24,7 +24,7 @@ import org.jtalks.common.model.entity.Entity;
  * @author Scherbakov Roman
  */
 
-public class SamplePage extends Entity {
+public class SimplePage extends Entity {
 
     public static final int MIN_NAME_LENGTH = 5;
     public static final int MAX_NAME_LENGTH = 50;
@@ -33,14 +33,16 @@ public class SamplePage extends Entity {
 
     private String name;
     private String content;
+    private String pathName;
 
-    public SamplePage() {
+    public SimplePage() {
     }
     
-    public SamplePage(String name, String content) {
+    public SimplePage(String name, String content, String pathName) {
         
         this.name = name;
         this.content = content;
+        this.pathName = pathName;
     }
     
     public String getName() {
@@ -61,5 +63,13 @@ public class SamplePage extends Entity {
     public void setContent(String content) {
 
         this.content = content;
+    }
+
+    public String getPathName() {
+        return pathName;
+    }
+
+    public void setPathName(String pathName) {
+        this.pathName = pathName;
     }
 }

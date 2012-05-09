@@ -15,18 +15,7 @@
 package org.jtalks.jcommune.service.transactional;
 
 
-import org.jtalks.jcommune.model.dao.SamplePageDao;
-import org.jtalks.jcommune.service.SamplePageService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.mockito.*;
-import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
-import org.jtalks.jcommune.model.entity.SamplePage;
-
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class TransactionalSimplePageServiceTest {
   /*
@@ -35,19 +24,19 @@ public class TransactionalSimplePageServiceTest {
     private static final String CONTENT = "content";
 
     @Mock
-    private SamplePageDao dao;
+    private SimplePageDao dao;
 
-    private SamplePageService samplePageService;
+    private SimplePageService samplePageService;
 
     @BeforeMethod
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        samplePageService = new TransactionalSapmlePageService(dao);
+        samplePageService = new TransactionalSimplePageService(dao);
     }
 
     @Test
     void testUpdate() throws NotFoundException{
-        SamplePage samplePage = new SamplePage(NAME, CONTENT);
+        SimplePage samplePage = new SimplePage(NAME, CONTENT);
         String updatedName = "new name";
         String updatedContent = "new content";
         when(dao.isExist(ID)).thenReturn(true);

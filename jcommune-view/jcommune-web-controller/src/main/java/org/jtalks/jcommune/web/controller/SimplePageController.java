@@ -14,12 +14,11 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.SamplePage;
-import org.jtalks.jcommune.service.SamplePageService;
+import org.jtalks.jcommune.model.entity.SimplePage;
+import org.jtalks.jcommune.service.SimplePageService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
-import org.jtalks.jcommune.web.dto.PostDto;
-import org.jtalks.jcommune.web.dto.SamplePageDto;
+import org.jtalks.jcommune.web.dto.SimplePageDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -39,12 +38,13 @@ import javax.validation.Valid;
  */
 
 @Controller
-public class SamplePageController {
+public class SimplePageController {
 
-    public static final String PAGE_DTO = "samplePageDto";
+    public static final String PAGE_DTO = "simplePageDto";
     public static final String PAGE_ID = "pageId";
+    public static final String PAGE_PATH_NAME = "pagePathName";
 
-    private SamplePageService samplePageService;
+    private SimplePageService simplePageService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private BBCodeService bbCodeService;
 
@@ -54,39 +54,42 @@ public class SamplePageController {
     }
 
     @Autowired
-    public SamplePageController(SamplePageService samplePageService) {
-        this.samplePageService = samplePageService;
+    public SimplePageController(SimplePageService simplePageService, BBCodeService bbCodeService) {
+        this.simplePageService = simplePageService;
+        this.bbCodeService = bbCodeService;
 
     }
 
 
-    @RequestMapping(value = "/pages/{pageId}", method = RequestMethod.GET)
-    public ModelAndView showPage(@PathVariable(PAGE_ID) Long pageId) throws NotFoundException {
-        SamplePage page = samplePageService.get(pageId);
+    @RequestMapping(value = "/pages/{pagePathName}", method = RequestMethod.GET)
+    public ModelAndView showPage(@PathVariable(PAGE_PATH_NAME) String pagePathName) throws NotFoundException {
+        SimplePage page = simplePageService.getPageByPathName(pagePathName);
 
+        SimplePageDto pageDto = new SimplePageDto(page);
+        pageDto.setContentText(bbCodeService.convertBbToHtml(page.getContent()));
         return new ModelAndView("page")
-                .addObject(PAGE_DTO, new SamplePageDto(page));
+                .addObject(PAGE_DTO, pageDto);
     }
 
 
-    @RequestMapping(value = "/pages/{pageId}/edit", method = RequestMethod.GET)
-    public ModelAndView showEditPage(@PathVariable(PAGE_ID) Long pageId) throws NotFoundException {
-        SamplePage page = samplePageService.get(pageId);
+    @RequestMapping(value = "/pages/{pagePathName}/edit", method = RequestMethod.GET)
+    public ModelAndView showEditPage(@PathVariable(PAGE_PATH_NAME) String pagePathName) throws NotFoundException {
+        SimplePage page = simplePageService.getPageByPathName(pagePathName);
 
         return new ModelAndView("faqEditor")
-                .addObject(PAGE_DTO, new SamplePageDto(page));
+                .addObject(PAGE_DTO, new SimplePageDto(page));
     }
 
-    @RequestMapping(value = "/pages/{pageId}/edit", method = RequestMethod.POST)
-    public ModelAndView update(@Valid @ModelAttribute SamplePageDto samplePageDto,
+    @RequestMapping(value = "/pages/{pagePathName}/edit", method = RequestMethod.POST)
+    public ModelAndView update(@Valid @ModelAttribute SimplePageDto simplePageDto,
                                BindingResult result,
-                               @PathVariable(PAGE_ID) Long pageId) throws NotFoundException {
+                               @PathVariable(PAGE_PATH_NAME) String pagePathName) throws NotFoundException {
         if (result.hasErrors()) {
             return new ModelAndView("faqEdit")
-                    .addObject(PAGE_ID, pageId);
+                    .addObject(PAGE_ID, pagePathName);
         }
-        samplePageService.updatePage(samplePageDto.getId(), samplePageDto.getNameText(), samplePageDto.getContentText());
-        return new ModelAndView("redirect:/pages/" + pageId);
+        simplePageService.updatePage(simplePageDto.getId(), simplePageDto.getNameText(), simplePageDto.getContentText());
+        return new ModelAndView("redirect:/pages/" + pagePathName);
     }
 
 }

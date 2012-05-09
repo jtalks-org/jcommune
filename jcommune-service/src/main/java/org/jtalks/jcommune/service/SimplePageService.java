@@ -14,16 +14,17 @@
  */
 package org.jtalks.jcommune.service;
 
-import org.jtalks.jcommune.model.entity.SamplePage;
+import org.jtalks.jcommune.model.entity.SimplePage;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
 /**
- * This interface should have methods which give us more abilities in manipulating Post persistent entity.
+ * This interface should have methods which give us more abilities in working Simple page persistent entity.
  *
  * @author Scherbakov Roman
+ * @author Alexander Gavrikov
  */
 
-public interface SamplePageService extends EntityService<SamplePage> {
+public interface SimplePageService extends EntityService<SimplePage> {
 
     /**
      * Update page with given content.
@@ -33,5 +34,15 @@ public interface SamplePageService extends EntityService<SamplePage> {
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when page not found
      */
-    void updatePage(long pageId, String pageName, String pageContent) throws NotFoundException;
+    public void updatePage(long pageId, String pageName, String pageContent) throws NotFoundException;
+
+    public SimplePage createPage(SimplePage simplePage);
+
+    /**
+     * get SimplePage by name
+     * @param pathName path name
+     * @return simplePage with current path name
+     */
+    public SimplePage getPageByPathName(String pathName) throws NotFoundException;
 }
+

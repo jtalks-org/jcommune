@@ -14,21 +14,33 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.hibernate.criterion.Property;
-import org.hibernate.transform.Transformers;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
-import org.jtalks.jcommune.model.dao.SamplePageDao;
-import org.jtalks.jcommune.model.entity.SamplePage;
+import org.jtalks.jcommune.model.dao.SimplePageDao;
+import org.jtalks.jcommune.model.entity.SimplePage;
+import org.springframework.security.acls.model.NotFoundException;
 
 
 /**
- * The implementation of {@link SamplePageDao} based on Hibernate.
- * The class is responsible for loading {@link SamplePage} objects from database,
+ * The implementation of {@link org.jtalks.jcommune.model.dao.SimplePageDao} based on Hibernate.
+ * The class is responsible for loading {@link org.jtalks.jcommune.model.entity.SimplePage} objects from database,
  * save, update and delete them.
  *
  * @author Scherbakov Roman
- * @author
+ * @author Alexander Gavrikov
  */
-public class SamplePageHibernateDao extends AbstractHibernateChildRepository<SamplePage> implements SamplePageDao {
+public class SimplePageHibernateDao extends AbstractHibernateChildRepository<SimplePage> implements SimplePageDao {
+
+    public void createPage(SimplePage simplePage) {
+        getSession().saveOrUpdate(simplePage);
+    }
+
+
+    public SimplePage getPageByPathName(String name) throws NotFoundException {
+        SimplePage simplePage = (SimplePage) getSession().createQuery("from SimplePage s where s.pathName = ?")
+                .setCacheable(true)
+                .setString(0, name)
+                .uniqueResult();
+        return simplePage;
+    }
 
 }
