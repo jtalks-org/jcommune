@@ -596,12 +596,9 @@ function setCCbldSty2(objID, prop, val) {
 }
 
 function putOBJxColor2(Samp, pigMent, textBoxId) {
-    if (pigMent != 'x') {
-        setCCbldID2(pigMent, textBoxId);
-        setCCbldSty2(Samp, 'bc', pigMent);
-    }
-    setCCbldSty2('colorpicker201', 'vs', 'hidden');
-    setCCbldSty2('colorpicker201', 'ds', 'none');
+        //document.getElementById("o5582n66").value='#' + pigMent;
+        javascript:document.getElementById("o5582n66a").style.backgroundColor='#' + pigMent;  
+       // title='#' + pigMent;
 }
 
 function showColorGrid2(Sam, textBoxId) {
@@ -609,31 +606,55 @@ function showColorGrid2(Sam, textBoxId) {
         var objX = new Array('00', '33', '66', '99', 'CC', 'FF');
         var c = 0;
         var xl = '"' + Sam + '","x", "' + textBoxId + '"';
-        var mid = '';
-        mid += '<table bgcolor="#FFFFFF" border="0" cellpadding="0" cellspacing="0" style="border:solid 0px #F0F0F0;padding:2px;"><tr>';
-        mid += "<td colspan='9' align='left' style='margin:0;padding:2px;height:12px;' ><input class='o5582n66' type='text' size='12' id='o5582n66' value='#FFFFFF'><input class='o5582n66a' type='text' size='2' style='width:14px;' id='o5582n66a' onclick='javascript:alert(\"click on selected swatch below...\");' value='' style='border:solid 1px #666;'></td><td colspan='9' align='right'><a class='o5582n66' href='javascript:onclick=putOBJxColor2(" + xl + ")'><span class='a01p3'>" + clos1 + "</span></a></td></tr><tr>";
+        var context = '';
+        context += '<table border="0" cellpadding="0" cellspacing="0" style="border:solid 0px #F0F0F0;padding:2px;table-layout:fixed;width:350px;"><tr>';
+        context += "<td colspan='20' style='margin:0;padding:2px;height:15px;padding-bottom: 30px;'>" +
+               '<label>' + $labelSelectedColor +  '</label>' +
+               "<div id='o5582n66a' style='margin-left:35px;display: inline-block;height:25px;width:25px;border:solid 2px #666;background-color: rgb(0, 0, 0);'></div></td><tr><br>";
         var br = 1;
         for (o = 0; o < 6; o++) {
-            mid += '</tr><tr>';
+            context += '</tr><tr>';
             for (y = 0; y < 6; y++) {
                 if (y == 3) {
-                    mid += '</tr><tr>';
+                    context += '</tr><tr>';
                 }
                 for (x = 0; x < 6; x++) {
                     var grid = '';
                     grid = objX[o] + objX[y] + objX[x];
                     var b = "'" + Sam + "','" + grid + "', '" + textBoxId + "'";
-                    mid += '<td class="o5582brd" style="background-color:#' + grid + '"><a class="o5582n66"  href="javascript:onclick=putOBJxColor2(' + b + ');" onmouseover=javascript:document.getElementById("o5582n66").value="#' + grid + '";javascript:document.getElementById("o5582n66a").style.backgroundColor="#' + grid + '";  title="#' + grid + '"><div style="width:12px;height:14px;"></div></a></td>';
+                    context += '<td class="o5582brd" style="background-color:#' + grid + '"><a class="o5582n66"  href="javascript:onclick=putOBJxColor2(' + b + ');"><div style="width:12px;height:14px;"></div></a></td>';
                     c++;
                 }
             }
         }
-        mid += "</tr></table>";
-        //var ttop=getTop2();
-        //setCCbldSty2('colorpicker201','tp',ttop);
-        //document.getElementById('colorpicker201').style.left=getLeft2();
-        document.getElementById('colorpicker201').innerHTML = mid;
-        setCCbldSty2('colorpicker201', 'vs', 'visible');
-        setCCbldSty2('colorpicker201', 'ds', 'inline');
+        context += "</tr></table>";
+
+         $.prompt(context,
+                {buttons:{OK:true, Cancel:false}, focus:0,
+                submit:function (value) {
+                    if (value){                  
+                        var rgb_color = document.getElementById("o5582n66a").style.backgroundColor;
+                        var hex_color = getHexRGBColor(rgb_color);
+                        //var grid = $('#o5582n66a').css("background-color");
+                            AddTag('[color=' + hex_color + ']', '[/color]');
+                        }
+                      }
+                    });
+        $('div.jqi').css('width', '350px');
+    }
+
+    function getHexRGBColor(color)
+    {
+        color = color.replace(/\s/g, "");
+        var aRGB = color.match(/^rgb\((\d{1,3}[%]?),(\d{1,3}[%]?),(\d{1,3}[%]?)\)$/i);
+
+        if (aRGB)
+        {
+            color = '';
+            for (var i = 1; i <= 3; i++) color += Math.round((aRGB[i][aRGB[i].length - 1] == "%" ? 2.55 : 1) * parseInt(aRGB[i])).toString(16).replace(/^(.)$/, '0$1');
+        }
+        else color = color.replace(/^#?([\da-f])([\da-f])([\da-f])$/i, '$1$1$2$2$3$3');
+
+        return color.toUpperCase();
     }
 }

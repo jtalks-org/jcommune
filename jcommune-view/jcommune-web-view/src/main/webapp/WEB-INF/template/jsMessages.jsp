@@ -39,4 +39,5 @@ $labelImgHeader = '<spring:message code="label.img.header"/>';
 $labelPreview= '<spring:message code="label.answer.preview"/>';
 $labelEdit= '<spring:message code="label.edit"/>';
 
+$labelSelectedColor = '<spring:message code="label.selected.color"/>';
 
