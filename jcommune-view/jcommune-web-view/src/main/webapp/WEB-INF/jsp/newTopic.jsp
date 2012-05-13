@@ -21,11 +21,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <head>
     <title><spring:message code="h.new_topic"/></title>
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-ui.min.js"
+            type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/datepicker.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-ui.min.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/poll.js"
             type="text/javascript"></script>
     <%--todo need to set proper localization
         <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-ui-i18n.min.js"
@@ -72,20 +74,24 @@
                 </li>
             </ul>
 
+            <jtalks:bbeditor labelForAction="label.addtopic"
+                             postText="${topicDto.bodyText}"
+                             bodyParameterName="bodyText"
+                             back="${pageContext.request.contextPath}/branches/${branchId}"/>
+
             <jtalks:newPoll titleNameValue="pollTitle"
                             pollOptionsNameValue="pollItems"
                             singleNameValue="single"
                             singleValue="true"
                             multipleValue="false"
                             endingDateNameValue="endingDate"/>
-
-            <jtalks:bbeditor labelForAction="label.addtopic"
-                             postText="${topicDto.bodyText}"
-                             bodyParameterName="bodyText"
-                             back="${pageContext.request.contextPath}/branches/${branchId}"/>
-
         </form:form>
     </div>
+
+    <div class="forum_message_cell_text" id="previewPoll">
+
+    </div>
+
     <div class="footer_buffer"></div>
 </div>
 </body>

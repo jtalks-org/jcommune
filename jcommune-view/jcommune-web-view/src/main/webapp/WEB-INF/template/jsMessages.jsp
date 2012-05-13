@@ -39,4 +39,7 @@ $labelImgHeader = '<spring:message code="label.img.header"/>';
 $labelPreview= '<spring:message code="label.answer.preview"/>';
 $labelEdit= '<spring:message code="label.edit"/>';
 
+$labelPollTitleWithEnding = '<spring:message code="label.poll.title.with.ending"/>';
+$labelPollVote = '<spring:message code="label.poll.vote"/>';
+
 

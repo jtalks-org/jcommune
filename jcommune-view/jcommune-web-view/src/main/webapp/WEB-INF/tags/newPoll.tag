@@ -69,7 +69,7 @@
                 <spring:message code="label.poll.multiple.title"/>
             </div>
             <div class="forum_answer_right">
-                <input type="radio" name="${singleNameValue}"
+                <input id="multipleBtn" type="radio" name="${singleNameValue}"
                        value="${multipleValue}"/>
             </div>
         </li>
