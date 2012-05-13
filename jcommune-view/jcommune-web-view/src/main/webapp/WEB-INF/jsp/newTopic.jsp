@@ -27,7 +27,7 @@
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/datepicker.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/poll.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/newPoll.js"
             type="text/javascript"></script>
     <%--todo need to set proper localization
         <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-ui-i18n.min.js"
@@ -86,10 +86,6 @@
                             multipleValue="false"
                             endingDateNameValue="endingDate"/>
         </form:form>
-    </div>
-
-    <div class="forum_message_cell_text" id="previewPoll">
-
     </div>
 
     <div class="footer_buffer"></div>

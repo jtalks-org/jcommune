@@ -82,6 +82,7 @@ function initEditor(textAreaId, htmlAreaId, baseDivId) {
  * preview mode.
  */
 function SwitchEditor() {
+    SwitchPoll();
     if (editorVisible) { // exit preview
         textboxelement.style.display = "";
         htmlcontentelement.style.display = "none";
@@ -90,7 +91,6 @@ function SwitchEditor() {
         $("#preview")[0].value = $labelPreview;
     }
     else { // enter preview
-        pollPreview(pollTitle.value, pollItems.value, datepicker.value);
         content = textboxelement.value;
         bbcode2html();
         $(".formatting_buttons").hide();
@@ -640,81 +640,4 @@ function showColorGrid2(Sam, textBoxId) {
 }
 
 
-function pollPreview(pollTitleValue, pollItemsValue, endingDateValue, isMultiple) {
-    var title = prepareTitle(pollTitleValue, endingDateValue);
-    var items = prepareItems(pollItemsValue);
-    document.getElementById('previewPoll').innerHTML = title + items;
-}
-
-function prepareTitle(title, date) {
-
-    var result;
-    if (date == "") {
-        result = "<h3>" + title + "</h3><br>";
-    } else {
-        result = $labelPollTitleWithEnding.replace("{0}", title);
-        result = result.replace("{1}", date);
-        result = "<h3>" + result + "</h3><br>";
-    }
-
-    return result;
-}
-
-/**
- *
- * @param items
- * @return {*}
- */
-function prepareItems(items) {
-    var result;
-    //"normalize" line endings
-    result = items.replace(/(?:\r\n|\r)+/g, "\n");
-    result = trim(result);
-    result = result.split("\n");
-    return stringItemsArrayToHtmlItems(result);
-}
-
-/**
- * Remove multiple, leading or trailing spaces
- *
- * @param s
- * @return {*}
- */
-function trim(s) {
-    s = s.replace(/(^\s*)|(\s*$)/gi, "");
-    s = s.replace(/[ ]{2,}/gi, " ");
-    s = s.replace(/\n /, "\n");
-    s = s.replace(/\s\s*$/gm, "");
-    return s;
-}
-
-function stringItemsArrayToHtmlItems(items) {
-
-    var result = "";
-
-    if (items.length == 1 && items[0] == "") {
-        return result;
-    }
-
-    var radioInputBegin = "<input type='radio' name='radioGroup' value='";
-    var checkboxInputBegin = "<input type='checkbox' name='radioGroup' value='";
-    var inputEnd = "'/>";
-    var br = "<br>";
-    var isMultiple = document.getElementById('multipleBtn').checked;
-    if (isMultiple) {
-        for (var i = 0; i < items.length; i++) {
-            items[i] = checkboxInputBegin + items[i] + inputEnd + items[i] + br;
-            result += items[i];
-        }
-    } else {
-        for (var i = 0; i < items.length; i++) {
-            items[i] = radioInputBegin + items[i] + inputEnd + items[i] + br;
-            result += items[i];
-        }
-    }
-
-    result += "<input type='submit' value='" + $labelPollVote + "'/>";
-
-    return result;
-}
 

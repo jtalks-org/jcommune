@@ -30,7 +30,7 @@
         <span class="forum_header_answer"><spring:message code="label.poll.header"/></span>
         <span class="empty_cell"></span>
     </div>
-    <ul class="forum_table">
+    <ul class="forum_table" id="editPoll">
         <li class="forum_row">
             <div class="forum_answer_left">
                 <spring:message code="label.poll.title"/>
@@ -84,4 +84,10 @@
             </div>
         </li>
     </ul>
+
+    <div class="forum_row" id="previewPoll">
+
+    </div>
+
+
 </div>
