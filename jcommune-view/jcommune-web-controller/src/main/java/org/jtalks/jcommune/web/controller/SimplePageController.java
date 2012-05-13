@@ -18,6 +18,7 @@ import org.jtalks.jcommune.model.entity.SimplePage;
 import org.jtalks.jcommune.service.SimplePageService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
+import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.SimplePageDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ import javax.validation.Valid;
 
 
 /**
- * Controller for sapmle pages
+ * Controller for simple pages
  *
  * @author Scherbakov Roman
  */
@@ -47,6 +48,7 @@ public class SimplePageController {
     private SimplePageService simplePageService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private BBCodeService bbCodeService;
+    private SecurityService securityService; //new code
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -54,10 +56,10 @@ public class SimplePageController {
     }
 
     @Autowired
-    public SimplePageController(SimplePageService simplePageService, BBCodeService bbCodeService) {
+    public SimplePageController(SimplePageService simplePageService, BBCodeService bbCodeService, SecurityService securityService) {
         this.simplePageService = simplePageService;
         this.bbCodeService = bbCodeService;
-
+        this.securityService = securityService; //new code
     }
 
 
@@ -67,8 +69,12 @@ public class SimplePageController {
 
         SimplePageDto pageDto = new SimplePageDto(page);
         pageDto.setContentText(bbCodeService.convertBbToHtml(page.getContent()));
-        return new ModelAndView("page")
-                .addObject(PAGE_DTO, pageDto);
+        return new ModelAndView("page").addObject(PAGE_DTO, pageDto); //old code
+        /*JCUser jcUser = securityService.getCurrentUser(); //new code
+        if (jcUser == null) { //new code
+            return new ModelAndView("login");
+        }
+        return new ModelAndView("page").addObject(PAGE_DTO, pageDto).addObject("user", securityService.getCurrentUser()); */
     }
 
 
