@@ -16,7 +16,6 @@ package org.jtalks.jcommune.model;
 
 import org.hibernate.Session;
 import org.jtalks.jcommune.model.entity.*;
-import org.jtalks.jcommune.model.entity.JCUser;
 
 import java.util.ArrayList;
 import java.util.HashSet;

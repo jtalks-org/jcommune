@@ -16,8 +16,8 @@
 
 -->
 <config>
-    <TCP bind_addr="192.168.8.61" bind_port="7800" />
-    <TCPPING timeout="3000" initial_hosts="192.168.8.61[7800]" port_range="10" num_initial_members="3"/>
+    <TCP bind_addr="localhost" bind_port="7800" />
+    <TCPPING timeout="3000" initial_hosts="localhost[7800],localhost[7900]" port_range="10" num_initial_members="3"/>
     <VERIFY_SUSPECT timeout="1500"/>
     <pbcast.NAKACK use_mcast_xmit="false" gc_lag="100" retransmit_timeout="300,600,1200,2400,4800"
                    discard_delivered_msgs="true"/>

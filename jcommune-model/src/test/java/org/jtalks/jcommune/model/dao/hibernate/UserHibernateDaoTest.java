@@ -208,6 +208,6 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
 
     private int getCount() {
-        return ((Number) session.createQuery("select count(*) from JCUser").uniqueResult()).intValue();
+        return ((Number) session.createQuery("select count(*) from org.jtalks.jcommune.model.entity.JCUser").uniqueResult()).intValue();
     }
 }

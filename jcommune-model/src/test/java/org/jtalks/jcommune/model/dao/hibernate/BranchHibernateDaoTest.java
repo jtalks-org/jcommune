@@ -61,7 +61,6 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     @Test
     public void testSave() {
         Branch branch = ObjectsFactory.getDefaultBranch();
-
         dao.update(branch);
 
         assertNotSame(branch.getId(), 0, "Id not created");

@@ -18,10 +18,18 @@
          xsi:noNamespaceSchemaLocation="http://ehcache.sf.net/ehcache.xsd">
 
     <diskStore path="java.io.tmpdir"/>
-    <!--
-<cacheManagerPeerProviderFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheManagerPeerProviderFactory"
-    properties="file=jgroups-udp.xml"/>-->
-
+    
+    <cacheManagerPeerProviderFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheManagerPeerProviderFactory"
+        properties="connect=UDP(mcast_addr=localhost;mcast_port=45567;):PING:
+                    MERGE2:FD_SOCK:VERIFY_SUSPECT:pbcast.NAKACK:UNICAST:pbcast.STABLE:
+                    FRAG:pbcast.GMS"
+        propertySeparator="::"/>
+    
+    <!-- enable ehcache monitoring -->
+    <cacheManagerPeerListenerFactory
+        class="org.terracotta.ehcachedx.monitor.probe.ProbePeerListenerFactory"
+        properties="monitorAddress=localhost, monitorPort=9889, memoryMeasurement=false" />
+    
 <!--    <cacheManagerPeerProviderFactory
             class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
             properties="peerDiscovery=automatic, multicastGroupAddress=230.0.0.1,
@@ -34,10 +42,6 @@
                   overflowToDisk="false"
                   diskPersistent="false"
                   memoryStoreEvictionPolicy="LRU">
-        <!--  <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
-                                 properties="replicateAsynchronously=true, replicatePuts=true,
-        replicateUpdates=true, replicateUpdatesViaCopy=false,
-        replicateRemovals=true"/>-->
 <!--        <cacheEventListenerFactory class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"
                                    properties="replicateAsynchronously=true,
                  replicatePuts=true,
@@ -50,10 +54,34 @@
            maxElementsInMemory="50"
            eternal="false"
            timeToLiveSeconds="120"
-           overflowToDisk="false"/>
+           overflowToDisk="false">
+    </cache>
 
     <cache name="org.hibernate.cache.UpdateTimestampsCache"
            maxElementsInMemory="5000"
            eternal="true"
-           overflowToDisk="false"/>
+           overflowToDisk="false">
+    </cache>
+    
+    <cache name="org.jtalks.jcommune.model.entity.JCUser"
+           maxElementsInMemory="5000"
+           eternal="true"
+           overflowToDisk="false"
+           statistics="true">
+        <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+            properties="replicateAsynchronously=true, replicatePuts=false,
+                        replicateUpdates=true, replicateUpdatesViaCopy=false,
+                        replicateRemovals=true"/>
+    </cache>
+    
+    <cache name="org.jtalks.EHCOMMON"
+           maxElementsInMemory="5000"
+           eternal="true"
+           overflowToDisk="false"
+           statistics="true">
+        <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+            properties="replicateAsynchronously=true, replicatePuts=false,
+                        replicateUpdates=true, replicateUpdatesViaCopy=false,
+                        replicateRemovals=true"/>
+    </cache>
 </ehcache>
