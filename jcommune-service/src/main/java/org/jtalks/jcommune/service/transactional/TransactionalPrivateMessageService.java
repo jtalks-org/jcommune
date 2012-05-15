@@ -270,4 +270,27 @@ public class TransactionalPrivateMessageService
         }
         return result;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean hasCurrentUserAccessToPM(long pmId) throws NotFoundException {
+       JCUser currentUser = securityService.getCurrentUser();
+       PrivateMessage message = get(pmId);
+       PrivateMessageStatus messageStatus = message.getStatus();
+
+       if (currentUser.equals(message.getUserFrom()) &&
+               (messageStatus.equals(PrivateMessageStatus.DELETED_FROM_OUTBOX))){
+           return false;
+       }
+
+       if (currentUser.equals(message.getUserTo()) &&
+               (messageStatus.equals(PrivateMessageStatus.DELETED_FROM_INBOX))){
+           return false;
+       }
+
+       return true; 
+    }
+
 }

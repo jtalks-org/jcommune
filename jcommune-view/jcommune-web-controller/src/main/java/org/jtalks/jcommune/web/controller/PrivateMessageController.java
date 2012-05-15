@@ -206,10 +206,15 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/pm/{pmId}", method = RequestMethod.GET)
     public ModelAndView showPmPage(@PathVariable(PM_ID) Long id) throws NotFoundException {
-        PrivateMessage pm = pmService.get(id);
-        return new ModelAndView("pm/showPm")
+       if (!pmService.hasCurrentUserAccessToPM(id)){
+           throw new NotFoundException("Private message cannot be find");
+       }
+        else {
+           PrivateMessage pm = pmService.get(id);
+           return new ModelAndView("pm/showPm")
                 .addObject("pm", pm)
                 .addObject("user", securityService.getCurrentUser());
+       }
     }
 
     /**

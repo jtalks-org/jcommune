@@ -29,6 +29,14 @@ import java.util.List;
 public interface PrivateMessageService extends EntityService<PrivateMessage> {
 
     /**
+     * Determines if current user has right to see private message
+     *
+     * @param pmId private message Id
+     * @return  true if current user has access to pm, otherwise false
+     */
+    boolean hasCurrentUserAccessToPM(long pmId) throws NotFoundException;
+
+    /**
      * Get all inbox messages for the current user.
      *
      * @return the list of messages

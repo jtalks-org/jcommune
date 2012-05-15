@@ -408,4 +408,62 @@ public class TransactionalPrivateMessageServiceTest {
         assertEquals(result, DRAFTS);
         verify(pmDao, times(2)).delete(any(PrivateMessage.class));
     }
+
+    @Test
+    public void testIfCurrentUserHasNoAccesToDeletedOutboxPm() throws NotFoundException {
+        PrivateMessage message1 = new PrivateMessage(user, user, null, null);
+        message1.setStatus(PrivateMessageStatus.DELETED_FROM_OUTBOX);
+
+        when(securityService.getCurrentUser()).thenReturn(user);
+        when(pmDao.get(PM_ID)).thenReturn(message1);
+        when(pmDao.isExist(PM_ID)).thenReturn(true);
+        when(securityService.getCurrentUser()).thenReturn(user);
+
+        boolean expectedPermision =  pmService.hasCurrentUserAccessToPM(PM_ID);
+
+        assertFalse(expectedPermision);
+        verify(pmDao).get(PM_ID);
+    }
+
+    @Test
+    public void testIfCurrentUserHasNoAccessToDeletedInboxPm() throws NotFoundException {
+        PrivateMessage message1 = new PrivateMessage(user, user, null, null);
+        message1.setStatus(PrivateMessageStatus.DELETED_FROM_INBOX);
+
+        when(securityService.getCurrentUser()).thenReturn(user);
+        when(pmDao.get(PM_ID)).thenReturn(message1);
+        when(pmDao.isExist(PM_ID)).thenReturn(true);
+        when(securityService.getCurrentUser()).thenReturn(user);
+
+        boolean expectedPermision =  pmService.hasCurrentUserAccessToPM(PM_ID);
+
+        assertFalse(expectedPermision);
+        verify(pmDao).get(PM_ID);
+    }
+
+    @Test
+    public void testIfCurrentUserHasAccessToAllPmExceptDeleted() throws NotFoundException {
+        PrivateMessage message1 = new PrivateMessage(user, user, null, null);
+        message1.setStatus(PrivateMessageStatus.DRAFT);
+
+        PrivateMessage message2 = new PrivateMessage(user, user, null, null);
+        message2.setStatus(PrivateMessageStatus.SENT);
+
+        when(securityService.getCurrentUser()).thenReturn(user);
+        when(pmDao.get(1L)).thenReturn(message1);
+        when(pmDao.isExist(1L)).thenReturn(true);
+        when(pmDao.get(2L)).thenReturn(message1);
+        when(pmDao.isExist(2L)).thenReturn(true);
+        when(securityService.getCurrentUser()).thenReturn(user);
+
+        boolean expectedPermisionForDraftPm =  pmService.hasCurrentUserAccessToPM(1L);
+        boolean expectedPermisionForSentPm =  pmService.hasCurrentUserAccessToPM(2L);
+
+        assertTrue(expectedPermisionForDraftPm);
+        assertTrue(expectedPermisionForSentPm);
+
+        verify(pmDao).get(1L);
+        verify(pmDao).get(2L);
+    }
+
 }
