@@ -51,7 +51,7 @@ public class NotificationServiceTest {
         initMocks(this);
         service = new NotificationService(securityService, mailService);
         topic = new Topic(user1, "title");
-        branch = new Branch("name");
+        branch = new Branch("name", "description");
         branch.addTopic(topic);
     }
 

@@ -46,9 +46,10 @@ public class BreadcrumbBuilderTest {
         section = new Section("Section Name");
         section.setId(ID);
 
-        branch = new Branch("Branch Name");
+        branch = new Branch("Branch Name", "Branch description");
         branch.setId(ID);
-        section.addBranch(branch);
+        section.addOrUpdateBranch(branch);
+        branch.setSection(section);
 
         topic = new Topic(user, "Topic Name");
         topic.setId(ID);

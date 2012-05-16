@@ -20,7 +20,6 @@ import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -28,11 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.testng.Assert.*;
-import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
  * @author Kirill Afonin
@@ -56,85 +51,6 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         branch = ObjectsFactory.getDefaultBranch();
     }
 
-    /*===== Common methods =====*/
-
-    @Test
-    public void testSave() {
-        Branch branch = ObjectsFactory.getDefaultBranch();
-        dao.update(branch);
-
-        assertNotSame(branch.getId(), 0, "Id not created");
-
-        session.evict(branch);
-        Branch result = (Branch) session.get(Branch.class, branch.getId());
-
-        assertReflectionEquals(branch, result);
-    }
-
-
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void testSaveBranchWithNameNotNullViolation() {
-        Branch branch = ObjectsFactory.getDefaultBranch();
-        session.save(branch);
-        branch.setName(null);
-
-        dao.update(branch);
-    }
-
-    @Test
-    public void testGet() {
-        Branch branch = ObjectsFactory.getDefaultBranch();
-        session.save(branch);
-
-        Branch result = dao.get(branch.getId());
-
-        assertNotNull(result);
-        assertEquals(result.getId(), branch.getId());
-    }
-
-    @Test
-    public void testGetInvalidId() {
-        Branch result = dao.get(-567890L);
-
-        assertNull(result);
-    }
-
-    @Test
-    public void testUpdate() {
-        String newName = "new name";
-        Branch branch = ObjectsFactory.getDefaultBranch();
-        session.save(branch);
-        branch.setName(newName);
-
-        dao.update(branch);
-        session.evict(branch);
-        Branch result = (Branch) session.get(Branch.class, branch.getId());
-
-        assertEquals(result.getName(), newName);
-    }
-
-    @Test(expectedExceptions = Exception.class)
-    public void testUpdateNotNullViolation() {
-        Branch branch = ObjectsFactory.getDefaultBranch();
-        session.save(branch);
-        branch.setName(null);
-
-        dao.update(branch);
-    }
-
-    @Test
-    public void testIsExist() {
-        Branch branch = ObjectsFactory.getDefaultBranch();
-        session.save(branch);
-
-        assertTrue(dao.isExist(branch.getId()));
-    }
-
-    @Test
-    public void testIsNotExist() {
-        assertFalse(dao.isExist(99999L));
-    }
-
     @Test
     public void testDeleteTopicFromBranchCascade() {
         Branch branch = ObjectsFactory.getDefaultBranch();
@@ -150,43 +66,12 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         dao.update(branch);
         session.flush();
 
-        assertEquals(getCount("select count(*) from Branch"), 1);
+        assertEquals(getCount("select count(*) from org.jtalks.jcommune.model.entity.Branch"), 1);
         assertEquals(getCount("select count(*) from Topic"), 0);
         assertEquals(getCount("select count(*) from Post"), 0);
     }
 
     private int getCount(String hql) {
         return ((Number) session.createQuery(hql).uniqueResult()).intValue();
-    }
-
-    private List<Branch> createAndSaveBranchList(int size) {
-        List<Branch> branches = new ArrayList<Branch>();
-        Section section = ObjectsFactory.getDefaultSection();
-        for (int i = 0; i < size; i++) {
-            Branch newBranch = new Branch("Branch #" + i);
-            section.addBranch(newBranch);
-            branches.add(newBranch);
-        }
-        session.save(section);
-        return branches;
-    }
-
-    @Test
-    public void testGetBranchesInSection() {
-        List<Branch> persistedBranches = createAndSaveBranchList(5);
-        long sectionId = persistedBranches.get(0).getSection().getId();
-
-        List<Branch> branches = dao.getBranchesInSection(sectionId);
-
-        assertEquals(sectionId, branches.get(0).getSection().getId(), "Incorrect section");
-    }
-
-    @Test
-    public void testGetAllBranches() {
-        List<Branch> persistedBranches = createAndSaveBranchList(5);
-
-        List<Branch> branches = dao.getAllBranches();
-
-        assertEquals(persistedBranches.size(), branches.size());
     }
 }

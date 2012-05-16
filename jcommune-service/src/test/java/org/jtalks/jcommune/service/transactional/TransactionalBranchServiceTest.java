@@ -41,6 +41,8 @@ import static org.testng.Assert.assertEquals;
 public class TransactionalBranchServiceTest {
     private long BRANCH_ID = 1L;
     final String BRANCH_NAME = "branch name";
+    final String BRANCH_DESCRIPTION = "branch description";
+    
 
     private BranchDao branchDao;
     private SectionDao sectionDao;
@@ -55,7 +57,7 @@ public class TransactionalBranchServiceTest {
 
     @Test
     public void testGet() throws NotFoundException {
-        Branch expectedBranch = new Branch(BRANCH_NAME);
+        Branch expectedBranch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
         when(branchDao.isExist(BRANCH_ID)).thenReturn(true);
         when(branchDao.get(BRANCH_ID)).thenReturn(expectedBranch);
 
@@ -74,7 +76,7 @@ public class TransactionalBranchServiceTest {
 
     @Test
     public void testGetBranchesInSection() throws NotFoundException {
-        List<Branch> list = Collections.singletonList(new Branch(BRANCH_NAME));
+        List<Branch> list = Collections.singletonList(new Branch(BRANCH_NAME, BRANCH_DESCRIPTION));
         when(sectionDao.isExist(Matchers.<Long>any())).thenReturn(true);
         when(branchDao.getBranchesInSection(anyLong())).thenReturn(list);
         
@@ -90,7 +92,7 @@ public class TransactionalBranchServiceTest {
 
     @Test
     public void testGetAllBranches(){
-        List<Branch> list = Collections.singletonList(new Branch(BRANCH_NAME));
+        List<Branch> list = Collections.singletonList(new Branch(BRANCH_NAME, BRANCH_DESCRIPTION));
 
         when(branchDao.getAllBranches()).thenReturn(list);
 

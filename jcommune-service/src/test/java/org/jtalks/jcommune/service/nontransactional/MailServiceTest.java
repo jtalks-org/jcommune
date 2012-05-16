@@ -69,7 +69,7 @@ public class MailServiceTest {
 
     private JCUser user = new JCUser(USERNAME, TO, PASSWORD);
     private Topic topic = new Topic(user, "title");
-    private Branch branch = new Branch("title");
+    private Branch branch = new Branch("title", "description");
     private ArgumentCaptor<MimeMessage> captor;
 
     @BeforeMethod

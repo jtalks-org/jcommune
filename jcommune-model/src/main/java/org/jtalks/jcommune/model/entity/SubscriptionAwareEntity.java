@@ -14,9 +14,6 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import org.jtalks.common.model.entity.Entity;
-
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -24,9 +21,7 @@ import java.util.Set;
  * All the entities with subscription allowed should extend this class instead
  * of implementing subscription handling on their own.
  */
-public abstract class SubscriptionAwareEntity extends Entity {
-
-    private Set<JCUser> subscribers = new HashSet<JCUser>();
+public interface SubscriptionAwareEntity {
 
     /**
      * Returns users subscribed to get email notifications
@@ -34,9 +29,7 @@ public abstract class SubscriptionAwareEntity extends Entity {
      *
      * @return users to send notifications on update to
      */
-    public Set<JCUser> getSubscribers() {
-        return subscribers;
-    }
+    public Set<JCUser> getSubscribers();
 
     /**
      * Sets subscribers list for this branch.
@@ -44,7 +37,5 @@ public abstract class SubscriptionAwareEntity extends Entity {
      *
      * @param subscribers users to send notifications on update to
      */
-    protected void setSubscribers(Set<JCUser> subscribers) {
-        this.subscribers = subscribers;
-    }
+    public void setSubscribers(Set<JCUser> subscribers);
 }

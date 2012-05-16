@@ -52,7 +52,7 @@ public class TransactionalSubscriptionServiceTest {
     public void setUp() {
         initMocks(this);
         service = new TransactionalSubscriptionService(securityService, branchDao, topicDao);
-        branch = new Branch("name");
+        branch = new Branch("name", "description");
         topic = new Topic(user, "title");
     }
 

@@ -46,6 +46,7 @@ import static org.testng.Assert.*;
 public class TransactionalLastReadPostTest {
 
     private String BRANCH_NAME = "branch name";
+    private String BRANCH_DESCRIPTION = "branch description";
     private JCUser user = new JCUser("username", "email@mail.com", "password");
 
     private TransactionalLastReadPostService lastReadPostService;
@@ -141,7 +142,7 @@ public class TransactionalLastReadPostTest {
 
     @Test
     public void testMarkAllTopicReadAnonymous() {
-        Branch branch = new Branch(BRANCH_NAME);
+        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
 
         lastReadPostService.markAllTopicsAsRead(branch);
 
@@ -150,7 +151,7 @@ public class TransactionalLastReadPostTest {
 
     @Test
     public void testMarkAllTopicRead() {
-        Branch branch = new Branch(BRANCH_NAME);
+        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
         Topic topic = this.createTestTopic();
         branch.addTopic(topic);
         when(securityService.getCurrentUser()).thenReturn(user);

@@ -19,7 +19,7 @@
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="org.jtalks.common.model.entity.User" table="USERS" >
+    <class name="org.jtalks.common.model.entity.User" table="USERS">
         <cache usage="nonstrict-read-write" region="org.jtalks.EHCOMMON"/>
         <id column="ID" name="id" unsaved-value="0">
             <generator class="native"/>

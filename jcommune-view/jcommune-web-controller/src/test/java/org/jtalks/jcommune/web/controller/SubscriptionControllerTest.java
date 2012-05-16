@@ -53,7 +53,7 @@ public class SubscriptionControllerTest {
     private SubscriptionController controller;
 
     private Topic topic = new Topic(null, "title");
-    private Branch branch = new Branch("name");
+    private Branch branch = new Branch("name", "description");
 
     private String message = "message";
     private Locale locale = Locale.ENGLISH;

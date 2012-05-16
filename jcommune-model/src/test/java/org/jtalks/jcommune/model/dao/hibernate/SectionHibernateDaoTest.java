@@ -32,6 +32,8 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
+import javax.validation.ConstraintViolationException;
+
 import static org.testng.Assert.*;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
@@ -71,7 +73,7 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
         assertReflectionEquals(section, result);
     }
 
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    @Test(expectedExceptions = ConstraintViolationException.class)
     public void testSaveSectionWithNameNotNullViolation() {
         Section section = ObjectsFactory.getDefaultSection();
         session.save(section);
@@ -178,12 +180,12 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
         Branch branch = ObjectsFactory.getDefaultBranch();
         Topic topic = ObjectsFactory.getDefaultTopic();
         branch.addTopic(topic);
-        section.addBranch(branch);
+        section.addOrUpdateBranch(branch);
         session.save(section);
 
         List<Section> sectionList = dao.getAll();
 
-        assertEquals(sectionList.get(0).getBranches().get(0).getTopicCount(), 1);
+        assertEquals(((Branch)sectionList.get(0).getBranches().get(0)).getTopicCount(), 1);
     }
 
     @Test
@@ -191,16 +193,16 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
         Section section = ObjectsFactory.getDefaultSection();
         Branch branch = ObjectsFactory.getDefaultBranch();
         Topic topic = ObjectsFactory.getDefaultTopic();
-        section.addBranch(branch);
+        section.addOrUpdateBranch(branch);
         session.save(section);
 
         Section sectionTwo = dao.get(1L);
-        Branch branchTwo = section.getBranches().get(0);
+        Branch branchTwo = (Branch) section.getBranches().get(0);
 
         assertEquals(branchTwo.getTopicCount(), 0);
     }
 
     private int getSectionCount() {
-        return ((Number) session.createQuery("select count(*) from Section").uniqueResult()).intValue();
+        return ((Number) session.createQuery("select count(*) from org.jtalks.jcommune.model.entity.Section").uniqueResult()).intValue();
     }
 }
