@@ -15,7 +15,9 @@
 package org.jtalks.jcommune.model.entity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.solr.analysis.LowerCaseFilterFactory;
 import org.apache.solr.analysis.SnowballPorterFilterFactory;
@@ -34,6 +36,7 @@ import org.hibernate.search.annotations.Parameter;
 import org.hibernate.search.annotations.TokenFilterDef;
 import org.hibernate.search.annotations.TokenizerDef;
 import org.joda.time.DateTime;
+import org.jtalks.common.model.entity.Entity;
 
 /**
  * Represents the topic of the forum.
@@ -117,7 +120,7 @@ import org.joda.time.DateTime;
     )
 })
 @Indexed
-public class Topic extends SubscriptionAwareEntity {
+public class Topic extends Entity implements SubscriptionAwareEntity {
     private DateTime creationDate;
     private DateTime modificationDate;
     private JCUser topicStarter;
@@ -128,6 +131,7 @@ public class Topic extends SubscriptionAwareEntity {
     private List<Post> posts = new ArrayList<Post>();
     private Branch branch;
     private int views;
+    private Set<JCUser> subscribers = new HashSet<JCUser>();    
 
     // transient, makes sense for current user only if set explicitly
     private Integer lastReadPostIndex;
@@ -447,5 +451,19 @@ public class Topic extends SubscriptionAwareEntity {
     @Override
     public long getId() {
         return super.getId();
+    }
+    
+    /**
+     *  {@inheritDoc}
+     */
+    public Set<JCUser> getSubscribers() {
+        return subscribers;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSubscribers(Set<JCUser> subscribers) {
+        this.subscribers = subscribers;
     }
 }

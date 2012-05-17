@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import org.hibernate.criterion.Order;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateParentRepository;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.entity.Section;
@@ -34,8 +35,17 @@ public class SectionHibernateDao extends AbstractHibernateParentRepository<Secti
     @Override
     @SuppressWarnings("unchecked")
     public List<Section> getAll() {
-        List<Section> sectionList = getSession().createQuery("from Section s order by s.position asc")
+        List<Section> sectionList = getSession()
+                .createCriteria(Section.class)
+                .addOrder(Order.asc("position"))
                 .setCacheable(true).list();
         return sectionList;
+    }
+    
+    // TODO: Quick fix until common method will be fixed
+    @Override
+    public boolean delete(Long id) {
+        String deleteQuery = "delete " + getType().getCanonicalName() + " e where e.id= :id";
+        return getSession().createQuery(deleteQuery).setCacheable(true).setLong("id", id).executeUpdate() != 0;
     }
 }

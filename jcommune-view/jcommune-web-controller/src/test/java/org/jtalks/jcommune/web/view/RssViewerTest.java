@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.view;
 
 import com.sun.syndication.feed.rss.Channel;
 import com.sun.syndication.feed.rss.Item;
+
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;

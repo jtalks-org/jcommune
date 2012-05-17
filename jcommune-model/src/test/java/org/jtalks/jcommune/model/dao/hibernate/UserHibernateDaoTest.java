@@ -194,7 +194,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
     @Test
     public void testFetchNonActivatedAccounts() {
-        JCUser activated = new JCUser("login", "email", "password");
+        JCUser activated = new JCUser("login", "email@mail.com", "password");
         activated.setEnabled(true);
         JCUser nonActivated = ObjectsFactory.getDefaultUser();
         session.save(activated);
@@ -208,6 +208,6 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
 
     private int getCount() {
-        return ((Number) session.createQuery("select count(*) from JCUser").uniqueResult()).intValue();
+        return ((Number) session.createQuery("select count(*) from org.jtalks.jcommune.model.entity.JCUser").uniqueResult()).intValue();
     }
 }

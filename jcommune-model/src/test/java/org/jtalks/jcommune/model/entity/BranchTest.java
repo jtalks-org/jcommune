@@ -35,7 +35,7 @@ public class BranchTest {
 
     @BeforeMethod
     public void setUp() {
-        branch = new Branch("test branch");
+        branch = new Branch("test branch", "test branch");
         List<Topic> topics = new ArrayList<Topic>();
         first = new Topic(null, null);
         second = new Topic(null, null);

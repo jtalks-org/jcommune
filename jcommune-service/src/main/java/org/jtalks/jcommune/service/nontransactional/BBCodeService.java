@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.model.entity.JCUser;
+
 import ru.perm.kefir.bbcode.BBProcessorFactory;
 import ru.perm.kefir.bbcode.TextProcessor;
 

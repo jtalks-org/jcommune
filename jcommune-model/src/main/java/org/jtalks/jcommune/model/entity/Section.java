@@ -14,116 +14,32 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import org.jtalks.common.model.entity.Entity;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Forum section that joins branches related by section theme.
  *
  * @author Max Malakhov
  */
-public class Section extends Entity {
+public class Section extends org.jtalks.common.model.entity.Section {
 
-    private String name;
-    private String description;
-    private Integer position;
-    private List<Branch> branches = new ArrayList<Branch>();
 
     /**
-     * Creates the Section instance. All fields values are null.
+     * {@inheritDoc}
      */
     protected Section() {
     }
-
+    
     /**
-     * Creates the Section instance with required fields.
-     *
-     * @param name section name
+     * {@inheritDoc} 
      */
     public Section(String name) {
-        this.name = name;
+        super(name);
     }
-
-
+    
     /**
-     * Set section name which briefly describes the topics contained in it.
-     *
-     * @return section name
+     * {@inheritDoc}
      */
-    public String getName() {
-        return name;
+    public Section(String name, String description) {
+        super(name, description);
     }
-
-    /**
-     * Get section name.
-     *
-     * @param name section name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Get section description.
-     *
-     * @return section description
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Set section description which contains additional information about the section.
-     *
-     * @param description section description
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * Get section position, the lower the value the greater the upward.
-     *
-     * @param position section position
-     */
-    public void setPosition(Integer position) {
-        this.position = position;
-    }
-
-    /**
-     * Get section position, the lower the value the greater the upward.
-     *
-     * @return section position
-     */
-    public Integer getPosition() {
-        return position;
-    }
-
-    /**
-     * Get the list of the branches.
-     * 
-     * @return list of branches
-     */
-    public List<Branch> getBranches() {
-        return branches;
-    }
-
-    /**
-     * @param branches list of branches
-     */
-    protected void setBranches(List<Branch> branches) {
-        this.branches = branches;
-    }
-
-    /**
-     * Add branch to section.
-     *
-     * @param branch branch
-     */
-    public void addBranch(Branch branch) {
-        branch.setSection(this);
-        this.branches.add(branch);
-    }
+    
 }

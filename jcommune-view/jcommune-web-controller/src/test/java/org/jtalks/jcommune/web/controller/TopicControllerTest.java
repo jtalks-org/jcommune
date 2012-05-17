@@ -94,7 +94,7 @@ public class TopicControllerTest {
 
     @BeforeMethod
     public void prepareTestData() {
-        branch = new Branch("");
+        branch = new Branch("", "description");
         branch.setId(BRANCH_ID);
         user = new JCUser("username", "email@mail.com", "password");
     }

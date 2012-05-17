@@ -92,7 +92,7 @@ public class BranchControllerTest {
         long branchId = 1L;
         int page = 2;
         boolean pagingEnabled = true;
-        Branch branch = new Branch("name");
+        Branch branch = new Branch("name", "description");
         branch.setId(branchId);
         //set expectations
         when(branchService.get(branchId)).thenReturn(branch);
@@ -170,7 +170,7 @@ public class BranchControllerTest {
         long branchId = 1L;
         int page = 2;
         boolean pagingEnabled = true;
-        Branch branch = new Branch("name");
+        Branch branch = new Branch("name", "description");
         branch.setId(branchId);
         //set expectations
         when(branchService.get(branchId)).thenReturn(branch);
@@ -189,7 +189,7 @@ public class BranchControllerTest {
         long sectionId = 1L;
         long branchId = 1L;
         List<Branch> branches = new ArrayList<Branch>();
-        Branch branch = new Branch("name");
+        Branch branch = new Branch("name", "description");
         branch.setId(branchId);
         branches.add(branch);
         when(branchService.getBranchesInSection(sectionId)).thenReturn(branches);
@@ -205,7 +205,7 @@ public class BranchControllerTest {
     public void testGetAllBranches() throws NotFoundException {
         long branchId = 1L;
         List<Branch> branches = new ArrayList<Branch>();
-        Branch branch = new Branch("name");
+        Branch branch = new Branch("name", "description");
         branch.setId(branchId);
         branches.add(branch);
         when(branchService.getAllBranches()).thenReturn(branches);
