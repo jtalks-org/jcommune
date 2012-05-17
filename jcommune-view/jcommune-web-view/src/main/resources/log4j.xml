@@ -60,10 +60,6 @@
         <appender-ref ref="BULK"/>
     </logger>
 
-    <logger name="net.sf.ehcache.distribution">
-        <level value="DEBUG"/>
-    </logger>
-
     <root>
         <priority value="INFO"/>
         <appender-ref ref="BULK"/>

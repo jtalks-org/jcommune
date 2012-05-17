@@ -32,9 +32,11 @@ public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch>
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     @Override
     public List<Branch> getAllBranches() {
-        List<Branch> branches = getSession().createQuery("from Branch b")
+        List<Branch> branches = getSession()
+                .createCriteria(Branch.class)
                 .setCacheable(true)
                 .list();
         return branches;
@@ -43,9 +45,11 @@ public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch>
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     @Override
     public List<Branch> getBranchesInSection(Long sectionId) {
-        List<Branch> branches = getSession().createQuery("from Branch b where b.section = ?")
+        List<Branch> branches = getSession()
+                .createQuery("from org.jtalks.jcommune.model.entity.Branch b where b.section = ?")
                 .setCacheable(true)
                 .setLong(0, sectionId)
                 .list();

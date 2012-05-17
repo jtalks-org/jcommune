@@ -42,6 +42,7 @@ public class SectionHibernateDao extends AbstractHibernateParentRepository<Secti
         return sectionList;
     }
     
+    // TODO: Quick fix until common method will be fixed
     @Override
     public boolean delete(Long id) {
         String deleteQuery = "delete " + getType().getCanonicalName() + " e where e.id= :id";

@@ -27,7 +27,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.validation.ConstraintViolationException;
+
 import static org.testng.Assert.*;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
  * @author Kirill Afonin
@@ -49,6 +55,85 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         session = sessionFactory.getCurrentSession();
         ObjectsFactory.setSession(session);
         branch = ObjectsFactory.getDefaultBranch();
+    }
+
+    /*===== Common methods =====*/
+
+    @Test
+    public void testSave() {
+        Branch branch = ObjectsFactory.getDefaultBranch();
+        dao.update(branch);
+
+        assertNotSame(branch.getId(), 0, "Id not created");
+
+        session.evict(branch);
+        Branch result = (Branch) session.get(Branch.class, branch.getId());
+
+        assertReflectionEquals(branch, result);
+    }
+
+
+    @Test(expectedExceptions = ConstraintViolationException.class)
+    public void testSaveBranchWithNameNotNullViolation() {
+        Branch branch = ObjectsFactory.getDefaultBranch();
+        session.save(branch);
+        branch.setName(null);
+
+        dao.update(branch);
+    }
+
+    @Test
+    public void testGet() {
+        Branch branch = ObjectsFactory.getDefaultBranch();
+        session.save(branch);
+
+        Branch result = dao.get(branch.getId());
+
+        assertNotNull(result);
+        assertEquals(result.getId(), branch.getId());
+    }
+
+    @Test
+    public void testGetInvalidId() {
+        Branch result = dao.get(-567890L);
+
+        assertNull(result);
+    }
+
+    @Test
+    public void testUpdate() {
+        String newName = "new name";
+        Branch branch = ObjectsFactory.getDefaultBranch();
+        session.save(branch);
+        branch.setName(newName);
+
+        dao.update(branch);
+        session.evict(branch);
+        Branch result = (Branch) session.get(Branch.class, branch.getId());
+
+        assertEquals(result.getName(), newName);
+    }
+
+    @Test(expectedExceptions = Exception.class)
+    public void testUpdateNotNullViolation() {
+        Branch branch = ObjectsFactory.getDefaultBranch();
+        session.save(branch);
+        branch.setName(null);
+
+        dao.update(branch);
+    }
+
+    @Test
+    public void testIsExist() {
+        Branch branch = ObjectsFactory.getDefaultBranch();
+        session.save(branch);
+
+        assertTrue(dao.isExist(branch.getId()));
+    }
+
+    @Test
+    public void testIsNotExist() {
+        assertFalse(dao.isExist(99999L));
     }
 
     @Test
@@ -73,5 +158,37 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
 
     private int getCount(String hql) {
         return ((Number) session.createQuery(hql).uniqueResult()).intValue();
+    }
+
+    private List<Branch> createAndSaveBranchList(int size) {
+        List<Branch> branches = new ArrayList<Branch>();
+        Section section = ObjectsFactory.getDefaultSection();
+        for (int i = 0; i < size; i++) {
+            Branch newBranch = new Branch("Branch #" + i, "Branch #" + i);
+            section.addOrUpdateBranch(newBranch);
+            newBranch.setSection(section);
+            branches.add(newBranch);
+        }
+        session.save(section);
+        return branches;
+    }
+
+    @Test
+    public void testGetBranchesInSection() {
+        List<Branch> persistedBranches = createAndSaveBranchList(5);
+        long sectionId = persistedBranches.get(0).getSection().getId();
+
+        List<Branch> branches = dao.getBranchesInSection(sectionId);
+
+        assertEquals(sectionId, branches.get(0).getSection().getId(), "Incorrect section");
+    }
+
+    @Test
+    public void testGetAllBranches() {
+        List<Branch> persistedBranches = createAndSaveBranchList(5);
+
+        List<Branch> branches = dao.getAllBranches();
+
+        assertEquals(persistedBranches.size(), branches.size());
     }
 }

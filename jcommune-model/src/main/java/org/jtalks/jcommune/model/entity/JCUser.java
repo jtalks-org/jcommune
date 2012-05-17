@@ -16,6 +16,7 @@ package org.jtalks.jcommune.model.entity;
 
 import org.apache.commons.collections.set.UnmodifiableSet;
 import org.joda.time.DateTime;
+import org.jtalks.common.model.entity.User;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -29,7 +30,7 @@ import java.util.Set;
  * @author Alexandre Teterin
  * @author Andrey Kluev
  */
-public class JCUser extends org.jtalks.common.model.entity.User {
+public class JCUser extends User {
 
     private Signature signature = new Signature(null);
     private int postCount;
@@ -55,7 +56,7 @@ public class JCUser extends org.jtalks.common.model.entity.User {
     /**
      * Only for hibernate usage.
      */
-    public JCUser() {
+    protected JCUser() {
     }
 
     /**

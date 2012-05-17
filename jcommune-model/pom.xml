@@ -100,10 +100,10 @@
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache-jgroupsreplication</artifactId>
         </dependency>
-        <dependency>
+        <!-- dependency>
             <groupId>org.terracotta</groupId>
             <artifactId>ehcache-probe</artifactId>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>com.googlecode.flyway</groupId>
             <artifactId>flyway-core</artifactId>
