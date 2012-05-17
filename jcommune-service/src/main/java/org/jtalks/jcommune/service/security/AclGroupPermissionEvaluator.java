@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service.security;
 
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.acl.AclUtil;
+import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.ObjectIdentity;
@@ -40,6 +41,7 @@ import java.util.List;
 public class AclGroupPermissionEvaluator implements PermissionEvaluator {
     private final org.jtalks.common.security.acl.AclManager aclManager;
     private final AclUtil aclUtil;
+    private PrivateMessageDao privateMessageDao;
 
     public AclGroupPermissionEvaluator(@Nonnull org.jtalks.common.security.acl.AclManager aclManager,
                                        @Nonnull AclUtil aclUtil) {
@@ -61,6 +63,11 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
      */
     @Override
     public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
+        /*List<GroupAce> groupAces=
+                aclManager.getGroupPermissionsOn(privateMessageDao.get((Long) targetId));
+        for(GroupAce groupAce:groupAces){
+            groupAce.
+        }*/
         ObjectIdentity objectIdentity = aclUtil.createIdentity(targetId, targetType);
         Permission jtalksPermission = getPermission(permission);
         List<AccessControlEntry> aces = aclUtil.getAclFor(objectIdentity).getEntries();
@@ -101,4 +108,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
         }
     }
 
+    public void setPrivateMessageDao(PrivateMessageDao privateMessageDao) {
+        this.privateMessageDao = privateMessageDao;
+    }
 }

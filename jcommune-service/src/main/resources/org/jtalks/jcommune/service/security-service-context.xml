@@ -50,6 +50,7 @@
         <!-- Link to actual ACL Service -->
         <constructor-arg name="aclManager" ref="aclGroupManager"/>
         <constructor-arg name="aclUtil" ref="aclUtils"/>
+        <property name="privateMessageDao" ref="privateMessageDao"/>
     </bean>
     <bean id="aclUtils" class="org.jtalks.common.security.acl.AclUtil">
         <constructor-arg name="mutableAclService" ref="aclService"/>
