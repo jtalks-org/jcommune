@@ -37,7 +37,7 @@
     <!-- Set role hierarchy to use -->
     <property name="roleHierarchy" ref="roleHierarchy"/>
     <!-- Enable SpEL hasPermission expression evaluation -->
-    <property name="permissionEvaluator" ref="aclPermissionEvaluator"/>
+    <property name="permissionEvaluator" ref="aclGroupPermissionEvaluator"/>
   </bean>
 
   <!-- Evaluates hasPermission expression -->
@@ -45,6 +45,18 @@
     <!-- Link to actual ACL Service -->
     <constructor-arg ref="aclService"/>
   </bean>
+
+    <bean id="aclGroupPermissionEvaluator" class="org.jtalks.jcommune.service.security.AclGroupPermissionEvaluator">
+        <!-- Link to actual ACL Service -->
+        <constructor-arg name="aclManager" ref="aclGroupManager"/>
+        <constructor-arg name="aclUtil" ref="aclUtils"/>
+    </bean>
+    <bean id="aclUtils" class="org.jtalks.common.security.acl.AclUtil">
+        <constructor-arg name="mutableAclService" ref="aclService"/>
+    </bean>
+    <bean id="aclGroupManager" class="org.jtalks.common.security.acl.AclManager">
+        <constructor-arg name="mutableAclService" ref="aclService"/>
+    </bean>
 
   <!-- Retrieves, modifies and strores access control lists -->
   <bean id="aclService" class="org.springframework.security.acls.jdbc.JdbcMutableAclService">
