@@ -27,7 +27,7 @@
     </sec:authorize>
     <ul class="top_menu">
         <li class="no_border">
-            <a href="${pageContext.request.contextPath}">
+            <a href="${pageContext.request.contextPath}/">
                 <fmt:message key="label.forum"/>
             </a>
         </li>
