@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.model;
 
 import org.hibernate.Session;
+import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.entity.*;
 
 import java.util.ArrayList;

@@ -33,7 +33,7 @@
     <property name="name" column="NAME" not-null="true"/>
     <property name="description" column="DESCRIPTION"/>
     
-    <many-to-one name="section" column="SECTION_ID" class="Section"
+    <many-to-one name="section" column="SECTION_ID" class="org.jtalks.common.model.entity.Section"
                  not-null="false"/>
 
     <subclass name="org.jtalks.jcommune.model.entity.Branch"

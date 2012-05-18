@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.dto;
 
+import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.testng.annotations.BeforeMethod;

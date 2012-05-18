@@ -100,6 +100,9 @@
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache-jgroupsreplication</artifactId>
         </dependency>
+        <!--  
+            Used for cache monitoring. Has conflicts with used version of slf4j. 
+        -->
         <!-- dependency>
             <groupId>org.terracotta</groupId>
             <artifactId>ehcache-probe</artifactId>

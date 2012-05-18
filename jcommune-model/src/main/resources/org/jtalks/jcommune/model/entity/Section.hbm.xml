@@ -25,10 +25,6 @@
       <generator class="native"/>
     </id>
     
-     <discriminator>
-        <formula>'SECTION'</formula>
-    </discriminator>
-    
     <property column="UUID" name="uuid" unique="true" not-null="true"/>
     <property name="name" column="NAME" not-null="true"/>
     <property name="description" column="DESCRIPTION"/>
@@ -41,9 +37,4 @@
       <one-to-many class="Branch"/>
     </list>
   </class>
-  
-  <subclass name="org.jtalks.jcommune.model.entity.Section"
-            extends="org.jtalks.common.model.entity.Section" 
-            discriminator-value="SECTION">
-  </subclass>
 </hibernate-mapping>

@@ -19,10 +19,9 @@ import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.Section;
+import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -203,6 +202,6 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
     }
 
     private int getSectionCount() {
-        return ((Number) session.createQuery("select count(*) from org.jtalks.jcommune.model.entity.Section").uniqueResult()).intValue();
+        return ((Number) session.createQuery("select count(*) from org.jtalks.common.model.entity.Section").uniqueResult()).intValue();
     }
 }

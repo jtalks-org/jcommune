@@ -16,7 +16,7 @@ package org.jtalks.jcommune.service;
 
 import java.util.List;
 
-import org.jtalks.jcommune.model.entity.Section;
+import org.jtalks.common.model.entity.Section;
 
 /**
  * The interface to manipulate with sections
