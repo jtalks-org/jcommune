@@ -25,6 +25,8 @@
             type="text/javascript"></script>
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/privateMessages.js"></script>
+    <script language="javascript"
+                src="${pageContext.request.contextPath}/resources/javascript/custom/leaveConfirm.js"></script>
 </head>
 <body>
 <div class="wrap pm_page">
@@ -53,7 +55,7 @@
                         <spring:message code="label.pm.title"/>
                     </div>
                     <div class="forum_answer_right">
-                        <form:input path="title" size="45" maxlength="60" tabindex="1" class="post"/>
+                        <form:input path="title" size="45" maxlength="60" tabindex="1" class="post confirm-unsaved"/>
                         <br/>
                         <span class="error"><form:errors path="title"/></span>
                     </div>

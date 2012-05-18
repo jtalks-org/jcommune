@@ -163,7 +163,7 @@
             <%-- <div id="helpline"><spring:message code="label.answer.tooltip"/></div>--%>
             <div id="editorBBCODEdiv" class="editorBBCODE">
                 <pre id="htmlContent"></pre>
-                <textarea id="tbMsg" name="${bodyParameterName}"><c:out value="${postText}"/></textarea>
+                <textarea id="tbMsg" name="${bodyParameterName}" class="confirm-unsaved"><c:out value="${postText}"/></textarea>
             </div>
             <br>
             <form:errors path="${bodyParameterName}" cssClass="error"/>

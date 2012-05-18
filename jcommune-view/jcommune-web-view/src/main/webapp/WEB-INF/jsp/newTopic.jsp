@@ -23,6 +23,8 @@
     <title><spring:message code="h.new_topic"/></title>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
             type="text/javascript"></script>
+    <script language="javascript"
+                    src="${pageContext.request.contextPath}/resources/javascript/custom/leaveConfirm.js"></script>
 </head>
 <body>
 <div class="wrap answer_page">
@@ -52,7 +54,7 @@
                     <div class="forum_answer_right">
                         <form:input path="topicName" id="subject" type="text" name="subject" size="45"
                                     maxlength="255" tabindex="1"
-                                    class="post"/>
+                                    class="post confirm-unsaved"/>
                         <br>
                         <form:errors path="topicName" id="subject" type="text" name="subject" size="45"
                                      maxlength="255" tabindex="1"
