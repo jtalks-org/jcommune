@@ -28,7 +28,7 @@
             <spring:message code="label.500.detail"/>
             <br/>
             <spring:message code="label.500.refresh"/>&nbsp;
-            <a href="${pageContext.request.contextPath}"><spring:message code="label.back2main"/></a>
+            <a href="${pageContext.request.contextPath}/"><spring:message code="label.back2main"/></a>
         </div>
     </div>
     <div class="footer_buffer"></div>
