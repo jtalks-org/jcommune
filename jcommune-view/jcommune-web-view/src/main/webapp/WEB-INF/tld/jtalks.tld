@@ -153,4 +153,14 @@
         <path>/WEB-INF/tags/breadcrumb.tag</path>
     </tag-file>
 
+    <tag-file>
+        <name>poll</name>
+        <path>/WEB-INF/tags/poll.tag</path>
+    </tag-file>
+
+    <tag-file>
+        <name>newPoll</name>
+        <path>/WEB-INF/tags/newPoll.tag</path>
+    </tag-file>
+
 </taglib>

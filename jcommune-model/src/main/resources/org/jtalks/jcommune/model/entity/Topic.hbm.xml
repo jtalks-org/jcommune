@@ -47,9 +47,12 @@
         <many-to-one name="branch" column="BRANCH_ID" class="Branch"
                      not-null="false"/>
 
+        <one-to-one name="poll" class="org.jtalks.jcommune.model.entity.Poll"/>
+
         <set name="subscribers" table="TOPIC_SUBSCRIPTIONS" cascade="all">
             <key column="TOPIC_ID"/>
             <many-to-many column="USER_ID" class="org.jtalks.jcommune.model.entity.JCUser"/>
         </set>
+
     </class>
 </hibernate-mapping>

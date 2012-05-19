@@ -90,6 +90,16 @@
             <c:when test="${!(empty topics)}">
                 <ul class="forum_table">
                     <c:forEach var="topic" items="${list}">
+                        <!--Determining the possibility of voting in this topic.
+                        This is possible if the poll is attached and the user hasn't voted. -->
+                        <c:set var="votingPossible" value="false" scope="request"/>
+                        <c:if test="${topic.hasPoll}">
+                            <c:set var="votingPossible" value="true" scope="request"/>
+                            <sec:accesscontrollist domainObject="${topic.poll}" hasPermission="2">
+                                <c:set var="votingPossible" value="false" scope="request"/>
+                            </sec:accesscontrollist>
+                        </c:if>
+                        <!-- Topic row -->
                         <li class="forum_row">
                             <div class="forum_icon">
                                 <img class="icon"
@@ -114,6 +124,11 @@
                                                href="${pageContext.request.contextPath}/posts/${topic.firstUnreadPostId}">
                                                 [NEW]</a>
                                         </c:if>
+                                        <c:if test="${votingPossible}">
+                                            <a style="color: red;"
+                                               href="${pageContext.request.contextPath}/topics/${topic.id}">
+                                                [POLL]</a>
+                                        </c:if>
                                     </sec:authorize>
                                     <a class="forum_link" href="${pageContext.request.contextPath}/topics/${topic.id}">
                                         <span class="forum_message_cell_text"><c:out value="${topic.title}"/></span>
@@ -137,7 +152,7 @@
                                 <br/>
                                 <a class="last_message_user"
                                    href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
-                                        <c:out value="${topic.lastPost.userCreated.username}"/>
+                                    <c:out value="${topic.lastPost.userCreated.username}"/>
                                 </a>
                                 <a href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}">
                                     <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"

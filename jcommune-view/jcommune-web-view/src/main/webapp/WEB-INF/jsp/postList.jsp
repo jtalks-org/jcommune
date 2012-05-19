@@ -31,6 +31,8 @@
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/moveTopic.js"
             type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/poll.js"
+            type="text/javascript"></script>
 </head>
 <body>
 <div class="wrap topic_page">
@@ -113,6 +115,9 @@
     </div>
 </div>
 <ul class="forum_table">
+    <!-- Include poll row. -->
+    <jsp:include page="../template/pollRow.jsp"/>
+    <!-- List of posts. -->
     <c:forEach var="post" items="${list}" varStatus="i">
         <li class="forum_row">
             <div class="forum_userinfo">
@@ -171,7 +176,8 @@
                            rel="<spring:message code="${confirm_message}"/>">
                             <spring:message code="label.delete"/>
                         </a>
-                        <a class="button" id="edit_button" rel="${branchId}" href="${edit_url}"><spring:message code="label.edit"/></a>
+                        <a class="button" id="edit_button" rel="${branchId}" href="${edit_url}"><spring:message
+                                code="label.edit"/></a>
                     </sec:accesscontrollist>
                     <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
                         <a class="button quote" href="javascript:quote(${post.id});">
@@ -203,7 +209,7 @@
                         <jtalks:format value="${post.modificationDate}"/>
                     </c:if>
                 </div>
-                ${post.userCreated.renderedSignature}
+                    ${post.userCreated.renderedSignature}
             </div>
         </li>
     </c:forEach>
