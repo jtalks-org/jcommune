@@ -21,28 +21,35 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <head>
     <title>
-        <c:out value="${simplePageDto.id}"/>
-        <c:out value="${simplePageDto.nameText}"/></title>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
-            type="text/javascript"></script>
+        <c:out value="${simplePageDto.nameText}"/>
+    </title>
+    <!--<script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
+            type="text/javascript"></script>-->
 </head>
 <body>
 <div class="wrap answer_page">
     <jsp:include page="../template/topLine.jsp"/>
     <jsp:include page="../template/logo.jsp"/>
 
-        <div class="all_forums">
-                <ul class="forum_table" id="stylized">
-                    <li class="forum_row">
-                        ${simplePageDto.contentText}
-                    </li>
-                </ul>
+    <div class="all_forums">
+        <ul class="forum_table" id="stylized">
+            <li class="forum_row">
+                <div id="editorBBCODEdiv" class="editorBBCODE">
+                    <textarea id="tbMsg" name="${bodyParameterName}"><c:out
+                            value="${simplePageDto.contentText}"/></textarea>
+                </div>
+            </li>
+        </ul>
+        <div>
+            <a class="button" href="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit">
+                <spring:message code="label.edit"/>
+            </a>
         </div>
-
-
-    <br/>
-    <a href="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit">Edit</a>
     </div>
-    <div class="footer_buffer"></div>
+</div>
+
+<div class="footer_buffer">
+
+</div>
 </div>
 </body>

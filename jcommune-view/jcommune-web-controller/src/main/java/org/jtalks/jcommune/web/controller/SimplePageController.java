@@ -59,7 +59,7 @@ public class SimplePageController {
     public SimplePageController(SimplePageService simplePageService, BBCodeService bbCodeService, SecurityService securityService) {
         this.simplePageService = simplePageService;
         this.bbCodeService = bbCodeService;
-        this.securityService = securityService; //new code
+        this.securityService = securityService;
     }
 
 
@@ -69,12 +69,7 @@ public class SimplePageController {
 
         SimplePageDto pageDto = new SimplePageDto(page);
         pageDto.setContentText(bbCodeService.convertBbToHtml(page.getContent()));
-        return new ModelAndView("page").addObject(PAGE_DTO, pageDto); //old code
-        /*JCUser jcUser = securityService.getCurrentUser(); //new code
-        if (jcUser == null) { //new code
-            return new ModelAndView("login");
-        }
-        return new ModelAndView("page").addObject(PAGE_DTO, pageDto).addObject("user", securityService.getCurrentUser()); */
+        return new ModelAndView("simplePage").addObject(PAGE_DTO, pageDto);
     }
 
 

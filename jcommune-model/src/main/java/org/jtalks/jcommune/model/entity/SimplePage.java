@@ -30,6 +30,8 @@ public class SimplePage extends Entity {
     public static final int MAX_NAME_LENGTH = 50;
     public static final int MIN_CONTENT_LENGTH = 5;
     public static final int MAX_CONTENT_LENGTH = 20000;
+    public static final int MIN_PATH_NAME_LENGTH = 5;
+    public static final int MAX_PATH_NAME_LENGTH = 50;
 
     private String name;
     private String content;

@@ -61,7 +61,7 @@
     </div>
 
     <div class="footer_buffer"></div>
-    </div>
+</div>
 </div>
 </body>
 </html>

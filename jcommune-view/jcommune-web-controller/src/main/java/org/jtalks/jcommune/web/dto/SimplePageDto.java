@@ -30,6 +30,8 @@ public class SimplePageDto {
     
     private long id;
 
+    @NotBlank
+    @BbCodeAwareSize(min = SimplePage.MIN_PATH_NAME_LENGTH, max = SimplePage.MAX_PATH_NAME_LENGTH)
     private String pathName;
 
     public SimplePageDto() {

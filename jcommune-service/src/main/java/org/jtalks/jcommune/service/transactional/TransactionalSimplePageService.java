@@ -22,13 +22,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * SapmlePage service class. This class contains method needed to manipulate with SapmlePage persistent entity.
+ * SimplePage service class. This class contains method needed to manipulate with simple page persistent entity.
  *
  * @author Scherbakov Roman
+ * @author Alexander Gavrikov
  */
+
 public class TransactionalSimplePageService extends AbstractTransactionalEntityService<SimplePage, SimplePageDao> implements SimplePageService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
+
+     /**
+     *  Create an instance of Simple Page entity based service
+     *
+     *  @param simplePageDao - simplePageDao to create/get simple page from a database
+     */
 
     public TransactionalSimplePageService(SimplePageDao simplePageDao) {
         super(simplePageDao);
@@ -36,29 +44,33 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
 
     /**
      * update pageName and pageContent by current SimplePage
-     * @param pageId page_id
-     * @param pageName name
-     * @param pageContent post_content
+     *
+     * @param pageId ID of simple page
+     * @param pageName name of simple page
+     * @param pageContent content of simple page
      */
 
     public void updatePage(long pageId, String pageName, String pageContent) throws NotFoundException {
 
-        SimplePage simplePage = null;
-        try{
-            simplePage = get(pageId);
-        }catch (NotFoundException e){
-            e.printStackTrace();
+        SimplePage simplePage = get(pageId);
+        if (simplePage == null) {
+            String message = "Simple page with id = " + pageId + " not found.";
+            logger.info(message);
+            throw new NotFoundException(message);
         }
-        assert simplePage != null;
+        simplePage.setPathName(pageName);
         simplePage.setContent(pageContent);
-        simplePage.setName(pageName);
+
         this.getDao().update(simplePage);
+
+        logger.info("Simple page with id = " + simplePage.getId() + " update.");
     }
 
     /**
-     * get SimplePage by name
-     * @param pathName path name
-     * @return SimplePage with current name
+     * get simple page by path name
+     *
+     * @param pathName - path name of simple page
+     * @return SimplePage simple page with current name
      */
 
     public SimplePage getPageByPathName(String pathName) throws NotFoundException {
@@ -73,7 +85,9 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
 
 
     /**
-     * create SimplePage
+     * create new SimplePage, put it in database
+     *
+     * @param simplePage simple page which will be created
      */
 
     public SimplePage createPage(SimplePage simplePage) {

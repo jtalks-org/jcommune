@@ -30,15 +30,17 @@ import org.springframework.security.acls.model.NotFoundException;
 public interface SimplePageDao extends ChildRepository<SimplePage> {
 
     /**
-     * add a new Simple Page
-     * @param simplePage
+     * Create a new simple page, put it in database
+     *
+     * @param simplePage simple page which will be created
      */
     public void createPage(SimplePage simplePage);
 
     /**
-     * get SimplePage by name
-     * @param name name
-     * @return simplePage with current name
+     * Get a simple page with the specified path name
+     *
+     * @param name name of existing simple page
+     * @return SimplePage simple page with the specified path name
      */
     public SimplePage getPageByPathName(String name) throws NotFoundException;
 }

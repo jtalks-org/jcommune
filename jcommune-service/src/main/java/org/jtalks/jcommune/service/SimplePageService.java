@@ -40,6 +40,7 @@ public interface SimplePageService extends EntityService<SimplePage> {
 
     /**
      * get SimplePage by name
+     *
      * @param pathName path name
      * @return simplePage with current path name
      */
