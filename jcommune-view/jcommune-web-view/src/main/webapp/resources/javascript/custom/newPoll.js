@@ -19,12 +19,23 @@ $(document).ready(function () {
     init("editPoll", "previewPoll", "multipleBtn")
 });
 
+/**
+ * Initialize values.
+ *
+ * @param pollEditFormId poll edit form id.
+ * @param pollPreviewFormId poll preview form id.
+ * @param multipleBtnId button id for multiple items selection poll.
+ */
 function init(pollEditFormId, pollPreviewFormId, multipleBtnId) {
     editFormElement = document.getElementById(pollEditFormId);
     previewFormElement = document.getElementById(pollPreviewFormId);
     multipleButtonElement = document.getElementById(multipleBtnId);
 }
 
+/**
+ * Switch between poll edit and poll preview modes.
+ *
+ */
 function SwitchPoll() {
     pollEditFormVisible = !pollEditFormVisible;
     if (pollEditFormVisible) { // exit preview
@@ -39,12 +50,25 @@ function SwitchPoll() {
 }
 
 
+/**
+ * Perform necessary operation to prepare poll preview.
+ *
+ * @param pollTitleValue poll title value.
+ * @param pollItemsValue poll items.
+ * @param endingDateValue poll ending date.
+ */
 function pollPreview(pollTitleValue, pollItemsValue, endingDateValue) {
     var title = prepareTitle(pollTitleValue, endingDateValue);
     var items = prepareItems(pollItemsValue);
     previewFormElement.innerHTML = title + items;
 }
 
+/**
+ * Prepare resulting poll title value.
+ * @param title raw poll title value.
+ * @param date poll ending date.
+ * @return resulting poll title value.
+ */
 function prepareTitle(title, date) {
 
     var result;
@@ -60,9 +84,10 @@ function prepareTitle(title, date) {
 }
 
 /**
+ * Prepare poll items.
  *
- * @param items
- * @return {*}
+ * @param items raw poll items.
+ * @return processed poll items without leading spaces and empty strings.
  */
 function prepareItems(items) {
     var result;
@@ -74,10 +99,10 @@ function prepareItems(items) {
 }
 
 /**
- * Remove multiple, leading or trailing spaces
+ * Remove multiple, leading or trailing spaces.
  *
- * @param s
- * @return {*}
+ * @param s string to remove multiple, leading or trailing spaces
+ * @return processed string.
  */
 function trim(s) {
     s = s.replace(/(^\s*)|(\s*$)/gi, "");
@@ -87,6 +112,12 @@ function trim(s) {
     return s;
 }
 
+/**
+ * Prepare poll items string array to HTML view.
+ *
+ * @param items poll items string array.
+ * @return {String} poll items string ready to HTML view.
+ */
 function stringItemsArrayToHtmlItems(items) {
 
     var result = "";
@@ -99,7 +130,7 @@ function stringItemsArrayToHtmlItems(items) {
     var checkboxInputBegin = "<input type='checkbox' name='radioGroup' value='";
     var inputEnd = "'/>";
     var br = "<br>";
-    var isMultiple = document.getElementById('multipleBtn').checked;
+    var isMultiple = multipleButtonElement.checked;
     if (isMultiple) {
         for (var i = 0; i < items.length; i++) {
             items[i] = checkboxInputBegin + items[i] + inputEnd + items[i] + br;

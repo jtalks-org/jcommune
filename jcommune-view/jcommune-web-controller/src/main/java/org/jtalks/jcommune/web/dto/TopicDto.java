@@ -223,7 +223,7 @@ public class TopicDto {
         Poll poll = new Poll(pollTitle);
         poll.setSingleAnswer(Boolean.parseBoolean(single));
         if (endingDate != null) {
-            poll.setEndingDate(DateTimeFormat.forPattern(Poll.DATE_FORMAT).parseDateTime(endingDate));
+            poll.setEndingDate(DateTimeFormat.forPattern(PollDto.DATE_FORMAT).parseDateTime(endingDate));
         }
         poll.addPollOptions(parseItems(pollItems));
 

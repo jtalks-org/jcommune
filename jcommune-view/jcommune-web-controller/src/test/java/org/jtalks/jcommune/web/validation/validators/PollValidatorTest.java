@@ -16,7 +16,7 @@ package org.jtalks.jcommune.web.validation.validators;
 
 import org.hibernate.validator.engine.ConstraintViolationImpl;
 import org.joda.time.DateTime;
-import org.jtalks.jcommune.model.entity.Poll;
+import org.jtalks.jcommune.web.dto.PollDto;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.validation.annotations.ValidPoll;
 import org.testng.Assert;
@@ -119,9 +119,9 @@ public class PollValidatorTest {
             DateTime future = new DateTime().plusDays(1);
 
             if (isFuture) {
-                endingDate = future.toLocalDate().toString(Poll.DATE_FORMAT);
+                endingDate = future.toLocalDate().toString(PollDto.DATE_FORMAT);
             } else {
-                endingDate = now.toLocalDate().toString(Poll.DATE_FORMAT);
+                endingDate = now.toLocalDate().toString(PollDto.DATE_FORMAT);
             }
 
             this.pollTitle = pollTitle;

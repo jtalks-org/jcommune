@@ -27,6 +27,7 @@ import java.util.List;
  * @author Anuar Nurmakanov
  */
 public class PollDto {
+    public static final String DATE_FORMAT = "dd-MM-yyyy";
     private long id;
     private int totalVotesCount;
     private List<PollOptionDto> pollOptions = new ArrayList<PollOptionDto>();

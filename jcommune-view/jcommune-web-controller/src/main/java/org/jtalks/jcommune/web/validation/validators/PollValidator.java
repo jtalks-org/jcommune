@@ -18,8 +18,8 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
-import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollItem;
+import org.jtalks.jcommune.web.dto.PollDto;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.validation.annotations.ValidPoll;
 
@@ -29,6 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Validator for object with {@link ValidPoll} annotation. Validation rules description
+ * please see on the next link {@link http://jira.jtalks.org/secure/attachment/12047/AC_Polling.txt}
+ *
  * @author Alexandre Teterin
  *         Date: 14.04.12
  */
@@ -54,7 +57,11 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
     private final String ITEMS_NOT_BLANK_IF_TITLE_NOT_BLANK_MESSAGE = "{PollItemsNotBlankIfPollTitleNotBlank.message}";
     private final String ITEM_LENGTH_MESSAGE = "{VotingItemLength.message}";
 
-
+    /**
+     * Initialize validators fields from annotated class instance.
+     *
+     * @param constraintAnnotation {@link ValidPoll} class annotation.
+     */
     @Override
     public void initialize(ValidPoll constraintAnnotation) {
         this.minItemsNumber = constraintAnnotation.minItemsNumber();
@@ -67,16 +74,29 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
         this.message = constraintAnnotation.message();
     }
 
+    /**
+     * Validate object with {@link ValidPoll} annotation.
+     *
+     * @param value object with object with {@link ValidPoll} annotation.
+     * @param context validation context.
+     * @return {@code true} if validation successful, otherwise return false.
+     */
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
         getValidatedFields(value);
 
         return isVotingOptionsNumberValid(context)
                 & isDateInStringFormatInFuture(context)
-                & isTitleOrItemsOrDateNotBlankIfOneOfThemNotBlank(context)
+                & isTitleOrItemsNotBlankIfOneOfThemNotBlank(context)
                 & isItemLengthValid(context);
     }
 
+    /**
+     * Validate poll item length.
+     *
+     * @param context validation context.
+     * @return {@code true} if validation successful, otherwise return false.
+     */
     private boolean isItemLengthValid(ConstraintValidatorContext context) {
         boolean result = true;
 
@@ -96,7 +116,13 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
         return result;
     }
 
-    private boolean isTitleOrItemsOrDateNotBlankIfOneOfThemNotBlank(ConstraintValidatorContext context) {
+    /**
+     * Validate 'poll title or poll items not blank if one of them not blank' condition.
+     *
+     * @param context validation context.
+     * @return {@code true} if validation successful, otherwise return false.
+     */
+    private boolean isTitleOrItemsNotBlankIfOneOfThemNotBlank(ConstraintValidatorContext context) {
         boolean result = true;
         //title is not blank & items are blank
         if (StringUtils.isNotBlank(pollTitleValue) && !StringUtils.isNotBlank(pollItemsValue)) {
@@ -116,9 +142,15 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
 
     }
 
-    //TODO need to check implementation
-    //Item should be more than one (should not be possible to create Poll with just one item,
-    // error message appears on trying to save it)
+    /**
+     * Validate the following condition.
+     *
+     *Item should be more than one (should not be possible to create Poll with just one item,
+     * error message appears on trying to save it).
+     *
+     * @param context validation context.
+     * @return {@code true} if validation successful, otherwise return false.
+     */
     private boolean isVotingOptionsNumberValid(ConstraintValidatorContext context) {
         boolean result = false;
 
@@ -140,6 +172,13 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
         return result;
     }
 
+    /**
+     * Validate the 'poll ending date in future' condition.
+     *
+     *
+     * @param context validation context.
+     * @return {@code true} if validation successful, otherwise return false.
+     */
     private boolean isDateInStringFormatInFuture(ConstraintValidatorContext context) {
         boolean result;
 
@@ -147,7 +186,7 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
         if (endingDateValue == null) {//null values are valid
             result = true;
         } else {
-            DateTime date = DateTimeFormat.forPattern(Poll.DATE_FORMAT).parseDateTime(endingDateValue);
+            DateTime date = DateTimeFormat.forPattern(PollDto.DATE_FORMAT).parseDateTime(endingDateValue);
             result = date.isAfter(new DateTime());
             System.out.println();
         }
@@ -159,6 +198,11 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
         return result;
     }
 
+    /**
+     * Initialize validated fields values.
+     *
+     * @param value object to validated.
+     */
     private void getValidatedFields(Object value) {
         try {
             pollTitleValue = BeanUtils.getProperty(value, pollTitleName);
@@ -176,6 +220,13 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
     }
 
 
+    /**
+     * Place violated constraint to context.
+     *
+     * @param context context to place violated constraint.
+     * @param message violated constraint detail message.
+     * @param fieldName violated constraint validated object field.
+     */
     private void constraintViolated(ConstraintValidatorContext context, String message, String fieldName) {
         context.disableDefaultConstraintViolation();
         context.buildConstraintViolationWithTemplate(message)
