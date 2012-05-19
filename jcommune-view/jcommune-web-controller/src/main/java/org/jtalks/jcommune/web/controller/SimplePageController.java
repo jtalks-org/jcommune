@@ -36,6 +36,7 @@ import javax.validation.Valid;
  * Controller for simple pages
  *
  * @author Scherbakov Roman
+ * @author Alexander Gavrikov
  */
 
 @Controller
@@ -46,9 +47,7 @@ public class SimplePageController {
     public static final String PAGE_PATH_NAME = "pagePathName";
 
     private SimplePageService simplePageService;
-    private BreadcrumbBuilder breadcrumbBuilder;
     private BBCodeService bbCodeService;
-    private SecurityService securityService; //new code
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -56,10 +55,9 @@ public class SimplePageController {
     }
 
     @Autowired
-    public SimplePageController(SimplePageService simplePageService, BBCodeService bbCodeService, SecurityService securityService) {
+    public SimplePageController(SimplePageService simplePageService, BBCodeService bbCodeService) {
         this.simplePageService = simplePageService;
         this.bbCodeService = bbCodeService;
-        this.securityService = securityService;
     }
 
 

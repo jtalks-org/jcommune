@@ -21,6 +21,7 @@ import org.jtalks.common.model.entity.Entity;
  * It's used for display and edit static information. <br/>
  * Includes not null fields: name, content.
  *
+ * @author Alexander Gavrikov
  * @author Scherbakov Roman
  */
 

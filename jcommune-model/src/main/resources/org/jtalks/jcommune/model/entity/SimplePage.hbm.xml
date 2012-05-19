@@ -30,4 +30,8 @@
         <property name="content" column="POST_CONTENT" type="text"  not-null="true"/>
     </class>
 
+    <query name="getPageByPathName">
+        <![CDATA[FROM SimplePage s where s.pathName = :pathName]]>
+    </query>
+
 </hibernate-mapping>
