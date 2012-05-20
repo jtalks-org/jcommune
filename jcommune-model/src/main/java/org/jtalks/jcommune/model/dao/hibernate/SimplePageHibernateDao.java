@@ -35,12 +35,13 @@ public class SimplePageHibernateDao extends AbstractHibernateChildRepository<Sim
     }
 
 
-    public SimplePage getPageByPathName(String name) throws NotFoundException {
-        SimplePage simplePage = (SimplePage) getSession().createQuery("from SimplePage s where s.pathName = ?")
+    public SimplePage getPageByPathName(String pathName) throws NotFoundException {
+        SimplePage simplePage = (SimplePage) getSession().getNamedQuery("getPageByPathName")
                 .setCacheable(true)
-                .setString(0, name)
+                .setString("pathName", pathName)
                 .uniqueResult();
         return simplePage;
+
     }
 
 }
