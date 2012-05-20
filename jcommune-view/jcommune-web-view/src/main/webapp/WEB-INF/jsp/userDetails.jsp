@@ -53,12 +53,10 @@
                     <label><spring:message code="label.lastname"/></label>
                     <span class="break_word"><c:out value="${user.lastName}"/></span>
                 </li>
-                <c:if test="${user.signature != null}">
-                    <li class="forum_row">
-                        <label><spring:message code="label.signature"/></label>
-                        <span class="signature"><c:out value="${user.signature}"/></span>
-                    </li>
-                </c:if>
+                <li class="forum_row">
+                    <label><spring:message code="label.signature"/></label>
+                    <span class="signature"><c:out value="${user.signature}"/></span>
+                </li>
                 <c:choose>
                     <%--Do not show my email to other users--%>
                     <c:when test="${user.username == auth}">

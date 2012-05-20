@@ -16,24 +16,25 @@
 
 -->
 <!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="org.jtalks.jcommune.model.entity">
-  <class name="Section" table="SECTIONS">
-    <cache usage="nonstrict-read-write"/>
-    <id column="SECTION_ID" name="id" unsaved-value="0">
-      <generator class="native"/>
-    </id>
-    <property column="UUID" name="uuid" unique="true" not-null="true"/>
-    <property name="name" column="NAME" not-null="true"/>
-    <property name="description" column="DESCRIPTION"/>
-    <property name="position" column="POSITION"/>
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.jtalks.jcommune.model.entity" auto-import="false">
+    <class name="org.jtalks.common.model.entity.Section" table="SECTIONS">
+        <cache usage="nonstrict-read-write" region="org.jtalks.EHCOMMON"/>
+        <id column="SECTION_ID" name="id" unsaved-value="0">
+            <generator class="native"/>
+        </id>
 
-    <list name="branches" cascade="all-delete-orphan">
-      <cache usage="nonstrict-read-write"/>
-      <key column="SECTION_ID" foreign-key="FK_SECTION"/>
-      <index column="POSITION"/>
-      <one-to-many class="Branch"/>
-    </list>
-  </class>
+        <property column="UUID" name="uuid" unique="true" not-null="true"/>
+        <property name="name" column="NAME" not-null="true"/>
+        <property name="description" column="DESCRIPTION"/>
+        <property name="position" column="POSITION"/>
+
+        <list name="branches" cascade="all-delete-orphan">
+            <cache usage="nonstrict-read-write"/>
+            <key column="SECTION_ID" foreign-key="FK_SECTION"/>
+            <index column="POSITION"/>
+            <one-to-many class="Branch"/>
+        </list>
+    </class>
 </hibernate-mapping>

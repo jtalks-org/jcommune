@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2011  JTalks.org Team
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -12,30 +12,24 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.entity;
-
-import java.util.Set;
 
 /**
- * Encapsulates subscription management details.
- * All the entities with subscription allowed should extend this class instead
- * of implementing subscription handling on their own.
+ * Provides confirmation dialog when user tries to leave a page with unsaved form.
+ * Just mark important input fields with "confirm-unsaved" class.
+ *
+ * Opera doesn't support "beforeunload" event, thus code below does nothing in Opera.
  */
-public interface SubscriptionAwareEntity {
+$(document).ready(function () {
 
-    /**
-     * Returns users subscribed to get email notifications
-     * about this entity's updates
-     *
-     * @return users to send notifications on update to
-     */
-    public Set<JCUser> getSubscribers();
+    var data_changed = false;
+    var message = $labelLeavePageConfirmation;
+    var mark_class = '.confirm-unsaved';
 
-    /**
-     * Sets subscribers list for this branch.
-     * For Hibernate use only.
-     *
-     * @param subscribers users to send notifications on update to
-     */
-    public void setSubscribers(Set<JCUser> subscribers);
-}
+    $(window).bind('beforeunload', function () {
+        if (data_changed) return message;
+    });
+
+    $("input" + mark_class + ", textarea" + mark_class).live('change keypress', function (event) {
+        data_changed = true;
+    });
+});

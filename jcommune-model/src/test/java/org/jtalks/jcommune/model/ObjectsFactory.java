@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.model;
 
 import org.hibernate.Session;
+import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.LastReadPost;
@@ -22,7 +23,6 @@ import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
-import org.jtalks.jcommune.model.entity.Section;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
@@ -73,8 +73,7 @@ public final class ObjectsFactory {
     }
 
     public static Branch getDefaultBranch() {
-        Branch newBranch = new Branch("branch name");
-        newBranch.setDescription("branch description");
+        Branch newBranch = new Branch("branch name", "branch description");
         return newBranch;
     }
 
@@ -91,8 +90,8 @@ public final class ObjectsFactory {
      * @return ready to save instance
      */
     public static PrivateMessage getDefaultPrivateMessage() {
-        JCUser userTo = persist(getUser("UserTo", "mail2"));
-        JCUser userFrom = persist(getUser("UserFrom", "mail1"));
+        JCUser userTo = persist(getUser("UserTo", "mail2@mail.com"));
+        JCUser userFrom = persist(getUser("UserFrom", "mail1@mail.com"));
         return new PrivateMessage(userTo, userFrom,
                 "Message title", "Private message body");
     }

@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import org.hibernate.criterion.Restrictions;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateParentRepository;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -36,8 +37,9 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser> 
     @Override
     public JCUser getByUsername(String username) {
         JCUser user = (JCUser) getSession()
-                .createQuery("from JCUser u where u.username = ?")
-                .setCacheable(true).setString(0, username)
+                .createCriteria(JCUser.class)
+                .add(Restrictions.eq("username", username))
+                .setCacheable(true)
                 .uniqueResult();
         return user;
     }
@@ -47,9 +49,10 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser> 
      */
     @Override
     public JCUser getByEmail(String email) {
-        return (JCUser) getSession().createQuery("from JCUser u where u.email = ?")
+        return (JCUser) getSession()
+                .createCriteria(JCUser.class)
+                .add(Restrictions.eq("email", email))
                 .setCacheable(true)
-                .setString(0, email)
                 .uniqueResult();
     }
 
@@ -58,7 +61,9 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser> 
      */
     @Override
     public Collection<JCUser> getNonActivatedUsers() {
-        return getSession().createQuery("from JCUser u where u.enabled = false")
+        return getSession()
+                .createCriteria(JCUser.class)
+                .add(Restrictions.eq("enabled", false))
                 .setCacheable(false)
                 .list();
     }
@@ -68,9 +73,10 @@ public class UserHibernateDao extends AbstractHibernateParentRepository<JCUser> 
      */
     @Override
     public JCUser getByUuid(String uuid) {
-        return (JCUser) getSession().createQuery("from JCUser u where u.uuid = ?")
+        return (JCUser) getSession()
+                .createCriteria(JCUser.class)
+                .add(Restrictions.eq("uuid", uuid))
                 .setCacheable(true)
-                .setString(0, uuid)
                 .uniqueResult();
     }
 }

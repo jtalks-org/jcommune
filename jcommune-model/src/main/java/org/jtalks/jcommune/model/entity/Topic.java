@@ -31,9 +31,12 @@ import org.hibernate.search.annotations.Parameter;
 import org.hibernate.search.annotations.TokenFilterDef;
 import org.hibernate.search.annotations.TokenizerDef;
 import org.joda.time.DateTime;
+import org.jtalks.common.model.entity.Entity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Represents the topic of the forum.
@@ -117,7 +120,7 @@ import java.util.List;
         )
 })
 @Indexed
-public class Topic extends SubscriptionAwareEntity {
+public class Topic extends Entity implements SubscriptionAwareEntity {
     private DateTime creationDate;
     private DateTime modificationDate;
     private JCUser topicStarter;
@@ -129,6 +132,7 @@ public class Topic extends SubscriptionAwareEntity {
     private Branch branch;
     private int views;
     private Poll poll;
+    private Set<JCUser> subscribers = new HashSet<JCUser>();
 
     // transient, makes sense for current user only if set explicitly
     private Integer lastReadPostIndex;
@@ -476,5 +480,19 @@ public class Topic extends SubscriptionAwareEntity {
     @Override
     public long getId() {
         return super.getId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Set<JCUser> getSubscribers() {
+        return subscribers;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSubscribers(Set<JCUser> subscribers) {
+        this.subscribers = subscribers;
     }
 }

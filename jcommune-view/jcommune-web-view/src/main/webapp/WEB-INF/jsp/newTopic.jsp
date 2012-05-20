@@ -29,6 +29,9 @@
             type="text/javascript"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/newPoll.js"
             type="text/javascript"></script>
+    <script language="javascript"
+            src="${pageContext.request.contextPath}/resources/javascript/custom/leaveConfirm.js"></script>
+
     <%--todo need to set proper localization
         <script src="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/jquery-ui-i18n.min.js"
                 type="text/javascript"></script>
@@ -65,7 +68,7 @@
                     <div class="forum_answer_right">
                         <form:input path="topicName" id="subject" type="text" name="subject" size="45"
                                     maxlength="255" tabindex="1"
-                                    class="post"/>
+                                    class="post confirm-unsaved"/>
                         <br>
                         <form:errors path="topicName" id="subject" type="text" name="subject" size="45"
                                      maxlength="255" tabindex="1"

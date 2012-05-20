@@ -220,6 +220,7 @@ public class PrivateMessageControllerTest {
 
         //set expectations
         when(pmService.get(PM_ID)).thenReturn(pm);
+        when(pmService.hasCurrentUserAccessToPM(PM_ID)).thenReturn(true);
 
         //invoke the object under test
         ModelAndView mav = controller.showPmPage(PM_ID);
@@ -231,6 +232,21 @@ public class PrivateMessageControllerTest {
         assertViewName(mav, "pm/showPm");
         PrivateMessage actualPm = assertAndReturnModelAttributeOfType(mav, "pm", PrivateMessage.class);
         assertEquals(actualPm, pm);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void cannotBeShowedPm() throws NotFoundException {
+        PrivateMessage pm = getPrivateMessage();
+
+        //set expectations
+        when(pmService.get(PM_ID)).thenReturn(pm);
+        when(pmService.hasCurrentUserAccessToPM(PM_ID)).thenReturn(false);
+
+        //invoke the object under test
+        controller.showPmPage(PM_ID);
+
+        //check expectations
+        verify(pmService).get(PM_ID);
     }
 
     @Test
@@ -286,19 +302,18 @@ public class PrivateMessageControllerTest {
         assertEquals(bindingResult.getErrorCount(), 1);
         verify(pmService).saveDraft(dto.getId(), dto.getTitle(), dto.getBody(), dto.getRecipient());
     }
-    
+
     @Test
-    public void testDeletePm() throws NotFoundException 
-    {
+    public void testDeletePm() throws NotFoundException {
         List<Long> pmIds = Arrays.asList(1L, 2L);
-        
+
         when(pmService.delete(Arrays.asList(1L, 2L))).thenReturn("aaa");
-        
+
         String result = controller.deleteMessages(pmIds);
-        
+
         assertEquals(result, "redirect:/aaa");
     }
-    
+
     private PrivateMessageDto getPrivateMessageDto() {
         PrivateMessageDto dto = new PrivateMessageDto();
         dto.setBody("body");

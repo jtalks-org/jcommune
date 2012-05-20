@@ -25,7 +25,6 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.springframework.context.MessageSource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
@@ -69,7 +68,7 @@ public class MailServiceTest {
 
     private JCUser user = new JCUser(USERNAME, TO, PASSWORD);
     private Topic topic = new Topic(user, "title");
-    private Branch branch = new Branch("title");
+    private Branch branch = new Branch("title", "description");
     private ArgumentCaptor<MimeMessage> captor;
 
     @BeforeMethod
@@ -202,7 +201,7 @@ public class MailServiceTest {
     }
 
     @Test
-    public void testSendTopicMovedMailFailed(){
+    public void testSendTopicMovedMailFailed() {
         Exception fail = new MailSendException("");
         doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
 

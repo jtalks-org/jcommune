@@ -60,7 +60,6 @@
         <appender-ref ref="BULK"/>
     </logger>
 
-
     <root>
         <priority value="INFO"/>
         <appender-ref ref="BULK"/>

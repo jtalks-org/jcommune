@@ -42,7 +42,8 @@
             <one-to-many class="Post"/>
         </list>
 
-        <many-to-one name="topicStarter" column="TOPIC_STARTER" class="JCUser" lazy="false"
+        <many-to-one name="topicStarter" column="TOPIC_STARTER" class="org.jtalks.jcommune.model.entity.JCUser"
+                     lazy="false"
                      not-null="true" foreign-key="FK_TOPIC_STARTER"/>
         <many-to-one name="branch" column="BRANCH_ID" class="Branch"
                      not-null="false"/>
