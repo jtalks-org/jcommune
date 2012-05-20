@@ -43,15 +43,18 @@
                     </div>
                 </div>
                 <form:hidden path="id"/>
-                <form:hidden path="pathName"/>
-                <div class="forum_row">
-                    <div>
-                        <form:input path="nameText" class="reg_input" type="text"/></br>
-                        <form:errors path="nameText" cssClass="error"/>
-                    </div>
-                    <span class="reg_info"><spring:message code="label.tip.password"/></span>
-                </div>
 
+                <div class="all_forums">
+                    <ul class="forum_table" id="stylized">
+                        <li class="forum_row">
+                            <div>
+                                <form:input path="nameText" class="reg_input" type="text"/></br>
+                                <form:errors path="nameText" cssClass="error"/>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <form:hidden path="pathName"/>
                 <jtalks:bbeditor labelForAction="label.post.edit"
                                  postText="${simplePageDto.contentText}"
                                  bodyParameterName="contentText"

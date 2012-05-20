@@ -23,21 +23,19 @@
     <title>
         <c:out value="${simplePageDto.nameText}"/>
     </title>
-    <!--<script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
-            type="text/javascript"></script>-->
+
 </head>
 <body>
 <div class="wrap answer_page">
     <jsp:include page="../template/topLine.jsp"/>
     <jsp:include page="../template/logo.jsp"/>
 
+    <h1>${simplePageDto.nameText}</h1>
     <div class="all_forums">
         <ul class="forum_table" id="stylized">
+
             <li class="forum_row">
-                <div id="editorBBCODEdiv" class="editorBBCODE">
-                    <textarea id="tbMsg" name="${bodyParameterName}"><c:out
-                            value="${simplePageDto.contentText}"/></textarea>
-                </div>
+                <jtalks:bb2html bbCode="${simplePageDto.contentText}"/>
             </li>
         </ul>
         <div>
