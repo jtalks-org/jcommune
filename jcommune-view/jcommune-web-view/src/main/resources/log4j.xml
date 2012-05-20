@@ -46,7 +46,7 @@
     </logger>
 
     <logger name="org.springframework" additivity="false">
-        <level value="INFO"/>
+        <level value="WARN"/>
         <appender-ref ref="BULK"/>
     </logger>
 
