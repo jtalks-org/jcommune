@@ -45,13 +45,13 @@
         <appender-ref ref="APPLICATION"/>
     </logger>
 
-    <logger name="org.springframework" additivity="true">
-        <level value="DEBUG"/>
+    <logger name="org.springframework" additivity="false">
+        <level value="WARN"/>
         <appender-ref ref="BULK"/>
     </logger>
 
-    <logger name="org.hibernate" additivity="true">
-        <level value="DEBUG"/>
+    <logger name="org.hibernate" additivity="false">
+        <level value="WARN"/>
         <appender-ref ref="BULK"/>
     </logger>
 
