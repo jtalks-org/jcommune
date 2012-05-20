@@ -47,45 +47,76 @@ public class SimplePageController {
     public static final String PAGE_PATH_NAME = "pagePathName";
 
     private SimplePageService simplePageService;
-    private BBCodeService bbCodeService;
 
+    /**
+     * This method turns the trim binder on. Trim binder
+     * removes leading and trailing spaces from the submitted fields.
+     * So, it ensures, that all validations will be applied to
+     * trimmed field values only.
+     *
+     * @param binder Binder object to be injected
+     */
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
+    /**
+     * @param simplePageService the object which provides actions on {@link SimplePage} entity
+     */
     @Autowired
-    public SimplePageController(SimplePageService simplePageService, BBCodeService bbCodeService) {
+    public SimplePageController(SimplePageService simplePageService) {
         this.simplePageService = simplePageService;
-        this.bbCodeService = bbCodeService;
     }
 
-
+    /**
+     * Show a page information by its path name.
+     *
+     * @param pagePathName page path name from address
+     * @return {@code ModelAndView} object with 'simplePage' view with data from {@link SimplePageDto}
+     * @throws NotFoundException when page was not found
+     */
     @RequestMapping(value = "/pages/{pagePathName}", method = RequestMethod.GET)
     public ModelAndView showPage(@PathVariable(PAGE_PATH_NAME) String pagePathName) throws NotFoundException {
         SimplePage page = simplePageService.getPageByPathName(pagePathName);
 
         SimplePageDto pageDto = new SimplePageDto(page);
-        pageDto.setContentText(bbCodeService.convertBbToHtml(page.getContent()));
-        return new ModelAndView("simplePage").addObject(PAGE_DTO, pageDto);
+        return new ModelAndView("simplePage")
+                .addObject(PAGE_DTO, pageDto);
     }
 
 
+    /**
+     * Show a edit form of page with given path name
+     * @param pagePathName page path name
+     * @return {@code ModelAndView} object with 'simplePageEditor' view filled with data from {@link SimplePageDto}
+     * @throws NotFoundException when page was not found
+     */
     @RequestMapping(value = "/pages/{pagePathName}/edit", method = RequestMethod.GET)
     public ModelAndView showEditPage(@PathVariable(PAGE_PATH_NAME) String pagePathName) throws NotFoundException {
         SimplePage page = simplePageService.getPageByPathName(pagePathName);
 
-        return new ModelAndView("faqEditor")
+        return new ModelAndView("simplePageEditor")
                 .addObject(PAGE_DTO, new SimplePageDto(page));
     }
 
+    /**
+     * Update page
+     *
+     * @param simplePageDto Dto with entered data
+     * @param result Validation result
+     * @param pagePathName page path name
+     * @return {@code ModelAndView} object with redirect to edited page if saved successfully
+     *                              or show form with error message
+     * @throws NotFoundException when page was not found
+     */
     @RequestMapping(value = "/pages/{pagePathName}/edit", method = RequestMethod.POST)
     public ModelAndView update(@Valid @ModelAttribute SimplePageDto simplePageDto,
                                BindingResult result,
                                @PathVariable(PAGE_PATH_NAME) String pagePathName) throws NotFoundException {
         if (result.hasErrors()) {
-            return new ModelAndView("faqEdit")
-                    .addObject(PAGE_ID, pagePathName);
+            return new ModelAndView("simplePageEditor")
+                    .addObject(PAGE_PATH_NAME, pagePathName);
         }
         simplePageService.updatePage(simplePageDto.getId(), simplePageDto.getNameText(), simplePageDto.getContentText());
         return new ModelAndView("redirect:/pages/" + pagePathName);
