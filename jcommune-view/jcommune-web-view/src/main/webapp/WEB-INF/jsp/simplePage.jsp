@@ -19,6 +19,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <head>
     <title>
         <c:out value="${simplePageDto.nameText}"/>
@@ -31,6 +32,7 @@
     <jsp:include page="../template/logo.jsp"/>
 
     <h1>${simplePageDto.nameText}</h1>
+
     <div class="all_forums">
         <ul class="forum_table" id="stylized">
 
@@ -38,11 +40,13 @@
                 <jtalks:bb2html bbCode="${simplePageDto.contentText}"/>
             </li>
         </ul>
-        <div>
-            <a class="button" href="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit">
-                <spring:message code="label.edit"/>
-            </a>
-        </div>
+        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+            <div>
+                <a class="button" href="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit">
+                    <spring:message code="label.edit"/>
+                </a>
+            </div>
+        </sec:authorize>
     </div>
 </div>
 
