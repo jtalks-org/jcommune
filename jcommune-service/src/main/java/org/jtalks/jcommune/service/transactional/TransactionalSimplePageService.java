@@ -58,7 +58,7 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
             logger.info(message);
             throw new NotFoundException(message);
         }
-        simplePage.setPathName(pageName);
+        simplePage.setName(pageName);
         simplePage.setContent(pageContent);
 
         this.getDao().update(simplePage);
