@@ -22,7 +22,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <html>
 <head>
-    <title>Редактирование</title>
+    <title>label.edit</title>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
             type="text/javascript"></script>
 </head>
@@ -38,7 +38,7 @@
 
                 <div class="forum_header_table">
                     <div class="forum_header">
-                        <span class="forum_header_answer"><spring:message code="label.post.edit"/></span>
+                        <span class="forum_header_answer"><spring:message code="label.edit"/></span>
                         <span class="empty_cell"></span>
                     </div>
                 </div>
@@ -55,7 +55,7 @@
                     </ul>
                 </div>
                 <form:hidden path="pathName"/>
-                <jtalks:bbeditor labelForAction="label.post.edit"
+                <jtalks:bbeditor labelForAction="label.save"
                                  postText="${simplePageDto.contentText}"
                                  bodyParameterName="contentText"
                                  back="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}"/>
