@@ -25,7 +25,6 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.springframework.context.MessageSource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
@@ -202,7 +201,7 @@ public class MailServiceTest {
     }
 
     @Test
-    public void testSendTopicMovedMailFailed(){
+    public void testSendTopicMovedMailFailed() {
         Exception fail = new MailSendException("");
         doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
 

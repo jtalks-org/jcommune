@@ -15,7 +15,17 @@
 package org.jtalks.jcommune.model;
 
 import org.hibernate.Session;
-import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.common.model.entity.Section;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.LastReadPost;
+import org.jtalks.jcommune.model.entity.Poll;
+import org.jtalks.jcommune.model.entity.PollItem;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.UserContact;
+import org.jtalks.jcommune.model.entity.UserContactType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,11 +135,27 @@ public final class ObjectsFactory {
         session.save(topic);
         return posts;
     }
-    
+
     public static LastReadPost getDefaultLastReadPost() {
         Topic topic = getDefaultTopic();
         JCUser user = topic.getTopicStarter();
         return new LastReadPost(user, topic, 0);
     }
 
+    public static Poll createDefaultVoting() {
+        Topic topic = getDefaultTopic();
+        Poll voting = new Poll("New voting");
+        topic.setPoll(voting);
+        voting.setTopic(topic);
+        persist(topic);
+        return voting;
+    }
+
+    public static PollItem createDefaultVotingOption() {
+        Poll voting = createDefaultVoting();
+        persist(voting);
+        PollItem option = new PollItem("First voting option");
+        voting.addPollOptions(option);
+        return option;
+    }
 }

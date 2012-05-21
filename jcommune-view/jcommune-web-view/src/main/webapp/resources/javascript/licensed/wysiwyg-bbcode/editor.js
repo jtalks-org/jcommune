@@ -82,6 +82,7 @@ function initEditor(textAreaId, htmlAreaId, baseDivId) {
  * preview mode.
  */
 function SwitchEditor() {
+    SwitchPoll();
     if (editorVisible) { // exit preview
         textboxelement.style.display = "";
         htmlcontentelement.style.display = "none";
@@ -596,9 +597,9 @@ function setCCbldSty2(objID, prop, val) {
 }
 
 function putOBJxColor2(Samp, pigMent, textBoxId) {
-        //document.getElementById("o5582n66").value='#' + pigMent;
-        javascript:document.getElementById("o5582n66a").style.backgroundColor='#' + pigMent;  
-       // title='#' + pigMent;
+    //document.getElementById("o5582n66").value='#' + pigMent;
+    javascript:document.getElementById("o5582n66a").style.backgroundColor = '#' + pigMent;
+    // title='#' + pigMent;
 }
 
 function showColorGrid2(Sam, textBoxId) {
@@ -609,8 +610,8 @@ function showColorGrid2(Sam, textBoxId) {
         var context = '';
         context += '<table border="0" cellpadding="0" cellspacing="0" style="border:solid 0px #F0F0F0;padding:2px;table-layout:fixed;width:350px;"><tr>';
         context += "<td colspan='20' style='margin:0;padding:2px;height:15px;padding-bottom: 30px;'>" +
-               '<label>' + $labelSelectedColor +  '</label>' +
-               "<div id='o5582n66a' style='margin-left:35px;display: inline-block;height:25px;width:25px;border:solid 2px #666;background-color: rgb(0, 0, 0);'></div></td><tr><br>";
+            '<label>' + $labelSelectedColor + '</label>' +
+            "<div id='o5582n66a' style='margin-left:35px;display: inline-block;height:25px;width:25px;border:solid 2px #666;background-color: rgb(0, 0, 0);'></div></td><tr><br>";
         var br = 1;
         for (o = 0; o < 6; o++) {
             context += '</tr><tr>';
@@ -629,27 +630,25 @@ function showColorGrid2(Sam, textBoxId) {
         }
         context += "</tr></table>";
 
-         $.prompt(context,
-                {buttons:{OK:true, Cancel:false}, focus:0,
+        $.prompt(context,
+            {buttons:{OK:true, Cancel:false}, focus:0,
                 submit:function (value) {
-                    if (value){                  
+                    if (value) {
                         var rgb_color = document.getElementById("o5582n66a").style.backgroundColor;
                         var hex_color = getHexRGBColor(rgb_color);
                         //var grid = $('#o5582n66a').css("background-color");
-                            AddTag('[color=' + hex_color + ']', '[/color]');
-                        }
-                      }
-                    });
+                        AddTag('[color=' + hex_color + ']', '[/color]');
+                    }
+                }
+            });
         $('div.jqi').css('width', '350px');
     }
 
-    function getHexRGBColor(color)
-    {
+    function getHexRGBColor(color) {
         color = color.replace(/\s/g, "");
         var aRGB = color.match(/^rgb\((\d{1,3}[%]?),(\d{1,3}[%]?),(\d{1,3}[%]?)\)$/i);
 
-        if (aRGB)
-        {
+        if (aRGB) {
             color = '';
             for (var i = 1; i <= 3; i++) color += Math.round((aRGB[i][aRGB[i].length - 1] == "%" ? 2.55 : 1) * parseInt(aRGB[i])).toString(16).replace(/^(.)$/, '0$1');
         }
@@ -658,3 +657,6 @@ function showColorGrid2(Sam, textBoxId) {
         return color.toUpperCase();
     }
 }
+
+
+

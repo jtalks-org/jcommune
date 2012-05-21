@@ -24,7 +24,7 @@
         <id column="ID" name="id" unsaved-value="0">
             <generator class="native"/>
         </id>
-        
+
         <property column="UUID" name="uuid" unique="true" not-null="true"/>
         <property column="FIRST_NAME" name="firstName"/>
         <property column="LAST_NAME" name="lastName"/>
@@ -38,7 +38,7 @@
         <property name="avatar" lazy="true">
             <column name="AVATAR" sql-type="blob"/>
         </property>
-        
+
         <joined-subclass name="org.jtalks.jcommune.model.entity.JCUser" table="JC_USER_DETAILS">
             <key column="USER_ID"/>
             <property column="SIGNATURE" name="signature" type="text"/>
@@ -55,7 +55,7 @@
                       type="org.joda.time.contrib.hibernate.PersistentDateTime" not-null="false"/>
             <property column="POST_COUNT" name="postCount"/>
             <property column="ENABLED" name="enabled"/>
-            
+
             <set name="contacts" cascade="all-delete-orphan" inverse="true">
                 <key column="USER_ID" foreign-key="FK_USER"/>
                 <one-to-many class="org.jtalks.jcommune.model.entity.UserContact"/>

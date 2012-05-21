@@ -20,7 +20,6 @@ import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -30,10 +29,11 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 
 /**
  * @author Kirill Afonin

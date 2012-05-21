@@ -61,7 +61,7 @@ public class TransactionalSubscriptionServiceTest {
         when(securityService.getCurrentUser()).thenReturn(user);
 
         service.toggleTopicSubscription(topic);
-        
+
         assertTrue(topic.getSubscribers().contains(user));
         verify(topicDao).update(topic);
     }

@@ -86,7 +86,7 @@ public class TransactionalTopicServiceTest {
         aclBuilder = mockAclBuilder();
         initMocks(this);
         topicService = new TransactionalTopicService(topicDao, securityService,
-                branchService, branchDao,  notificationService);
+                branchService, branchDao, notificationService);
         user = new JCUser(USERNAME, "email@mail.com", "password");
     }
 

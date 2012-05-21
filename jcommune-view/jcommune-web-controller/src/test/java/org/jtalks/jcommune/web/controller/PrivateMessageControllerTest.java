@@ -302,19 +302,18 @@ public class PrivateMessageControllerTest {
         assertEquals(bindingResult.getErrorCount(), 1);
         verify(pmService).saveDraft(dto.getId(), dto.getTitle(), dto.getBody(), dto.getRecipient());
     }
-    
+
     @Test
-    public void testDeletePm() throws NotFoundException 
-    {
+    public void testDeletePm() throws NotFoundException {
         List<Long> pmIds = Arrays.asList(1L, 2L);
-        
+
         when(pmService.delete(Arrays.asList(1L, 2L))).thenReturn("aaa");
-        
+
         String result = controller.deleteMessages(pmIds);
-        
+
         assertEquals(result, "redirect:/aaa");
     }
-    
+
     private PrivateMessageDto getPrivateMessageDto() {
         PrivateMessageDto dto = new PrivateMessageDto();
         dto.setBody("body");

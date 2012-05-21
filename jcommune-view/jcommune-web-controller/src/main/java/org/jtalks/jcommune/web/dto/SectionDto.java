@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.web.dto;
 
-import org.jtalks.jcommune.model.entity.Section;
+import org.jtalks.common.model.entity.Section;
 
 /**
  * Dto for transferring sections to client side.

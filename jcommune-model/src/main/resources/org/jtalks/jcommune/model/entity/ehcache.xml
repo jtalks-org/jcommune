@@ -18,18 +18,18 @@
          xsi:noNamespaceSchemaLocation="http://ehcache.sf.net/ehcache.xsd">
 
     <diskStore path="java.io.tmpdir"/>
-    
+
     <cacheManagerPeerProviderFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheManagerPeerProviderFactory"
-        properties="connect=UDP(mcast_addr=235.0.0.1;mcast_port=45567;):PING:
+                                     properties="connect=UDP(mcast_addr=235.0.0.1;mcast_port=45567;):PING:
                     MERGE2:FD_SOCK:VERIFY_SUSPECT:pbcast.NAKACK:UNICAST:pbcast.STABLE:
                     FRAG:pbcast.GMS"
-        propertySeparator="::"/>
-    
+                                     propertySeparator="::"/>
+
     <!-- enable ehcache monitoring -->
     <!-- cacheManagerPeerListenerFactory
         class="org.terracotta.ehcachedx.monitor.probe.ProbePeerListenerFactory"
         properties="monitorAddress=localhost, monitorPort=9889, memoryMeasurement=false" /-->
-    
+
     <defaultCache maxElementsInMemory="1000"
                   eternal="false"
                   timeToIdleSeconds="120"
@@ -51,14 +51,14 @@
            eternal="true"
            overflowToDisk="false">
     </cache>
-    
+
     <cache name="org.jtalks.EHCOMMON"
            maxElementsInMemory="5000"
            eternal="true"
            overflowToDisk="false"
            statistics="true">
         <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
-            properties="replicateAsynchronously=true, replicatePuts=false,
+                                   properties="replicateAsynchronously=true, replicatePuts=false,
                         replicateUpdates=true, replicateUpdatesViaCopy=false,
                         replicateRemovals=true"/>
     </cache>

@@ -23,6 +23,8 @@ $labelDeleteContactConfirmation = '<spring:message code="label.deleteContactConf
 
 $labelDeletePmGroupConfirmation = '<spring:message code="label.deletePMGroupConfirmation"/>';
 
+$labelLeavePageConfirmation = '<spring:message code="label.leavePageConfirmation"/>';
+
 $labelValidationUsercontactNotMatch = '<spring:message code="validation.usercontact.notmatch"/>';
 $labelContactType = '<spring:message code="label.contact.type"/>';
 $labelContactValue = '<spring:message code="label.contact.value"/>';
@@ -39,5 +41,8 @@ $labelImgHeader = '<spring:message code="label.img.header"/>';
 $labelPreview= '<spring:message code="label.answer.preview"/>';
 $labelEdit= '<spring:message code="label.edit"/>';
 
-$labelSelectedColor = '<spring:message code="label.selected.color"/>';
+$labelPollTitleWithEnding = '<spring:message code="label.poll.title.with.ending"/>';
+$labelPollVote = '<spring:message code="label.poll.vote"/>';
 
+
+$labelSelectedColor = '<spring:message code="label.selected.color"/>';

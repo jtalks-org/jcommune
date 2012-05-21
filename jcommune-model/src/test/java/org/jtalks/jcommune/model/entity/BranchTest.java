@@ -79,13 +79,13 @@ public class BranchTest {
     }
 
     @Test
-    public void testLastUpdatedTopicWithoutTopics()  {
+    public void testLastUpdatedTopicWithoutTopics() {
         branch.setTopics(new ArrayList<Topic>());
         assertEquals(branch.getLastUpdatedTopic(), null);
     }
 
     @Test
-    public void testPostCount(){
+    public void testPostCount() {
         first.addPost(new Post());
         second.addPost(new Post());
         third.addPost(new Post());
@@ -93,7 +93,7 @@ public class BranchTest {
     }
 
     @Test
-    public void testPostCountWithoutTopics(){
+    public void testPostCountWithoutTopics() {
         branch.setTopics(new ArrayList<Topic>());
         assertEquals(branch.getPostCount(), 0);
     }

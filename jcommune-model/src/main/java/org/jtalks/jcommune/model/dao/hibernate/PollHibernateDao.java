@@ -12,34 +12,21 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.entity;
+package org.jtalks.jcommune.model.dao.hibernate;
+
+import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
+import org.jtalks.jcommune.model.entity.Poll;
 
 /**
- * Forum section that joins branches related by section theme.
+ * The implementation of the {@link PollDao} based on Hibernate. The class is responsible for loading
+ * {@link Poll} objects from database and update them. This implementation doesn't contain any
+ * additional methods, because methods of {@link ChildRepository} cover all needed functionality.
  *
- * @author Max Malakhov
+ * @author Anuar Nurmakanov
+ * @see ChildRepository
+ * @see Poll
  */
-public class Section extends org.jtalks.common.model.entity.Section {
-
-
-    /**
-     * {@inheritDoc}
-     */
-    protected Section() {
-    }
-    
-    /**
-     * {@inheritDoc} 
-     */
-    public Section(String name) {
-        super(name);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public Section(String name, String description) {
-        super(name, description);
-    }
-    
+public class PollHibernateDao extends AbstractHibernateChildRepository<Poll>
+        implements ChildRepository<Poll> {
 }

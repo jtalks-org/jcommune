@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.model.entity.JCUser;
-
 import ru.perm.kefir.bbcode.BBProcessorFactory;
 import ru.perm.kefir.bbcode.TextProcessor;
 
@@ -68,7 +67,7 @@ public class BBCodeService {
      * @param source text to cleanup
      * @return plain text without BB tags
      */
-    public String removeBBCodes(String source){
-        return source.replaceAll("\\[.*?\\]","");
+    public String removeBBCodes(String source) {
+        return source.replaceAll("\\[.*?\\]", "");
     }
 }

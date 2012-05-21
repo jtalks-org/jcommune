@@ -16,9 +16,13 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.BranchDao;
-import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -27,12 +31,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.ConstraintViolationException;
-
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNotSame;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**

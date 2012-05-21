@@ -42,7 +42,7 @@ public class TransactionalBranchServiceTest {
     private long BRANCH_ID = 1L;
     final String BRANCH_NAME = "branch name";
     final String BRANCH_DESCRIPTION = "branch description";
-    
+
 
     private BranchDao branchDao;
     private SectionDao sectionDao;
@@ -79,7 +79,7 @@ public class TransactionalBranchServiceTest {
         List<Branch> list = Collections.singletonList(new Branch(BRANCH_NAME, BRANCH_DESCRIPTION));
         when(sectionDao.isExist(Matchers.<Long>any())).thenReturn(true);
         when(branchDao.getBranchesInSection(anyLong())).thenReturn(list);
-        
+
         List<Branch> result = branchService.getBranchesInSection(BRANCH_ID);
         assertEquals(list, result);
     }
@@ -91,7 +91,7 @@ public class TransactionalBranchServiceTest {
     }
 
     @Test
-    public void testGetAllBranches(){
+    public void testGetAllBranches() {
         List<Branch> list = Collections.singletonList(new Branch(BRANCH_NAME, BRANCH_DESCRIPTION));
 
         when(branchDao.getAllBranches()).thenReturn(list);

@@ -16,10 +16,13 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Poll;
+import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.LastReadPostService;
+import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
@@ -70,6 +73,7 @@ public class TopicController {
     private BreadcrumbBuilder breadcrumbBuilder;
     private LocationService locationService;
     private SessionRegistry sessionRegistry;
+    private PollService pollService;
 
     /**
      * This method turns the trim binder on. Trim binder
@@ -85,13 +89,14 @@ public class TopicController {
     }
 
     /**
-     * @param topicService      the object which provides actions on {@link Topic} entity
-     * @param branchService     the object which provides actions on  {@link Branch} entity
-     * @param lastReadPostService        to perform post-related actions
-     * @param locationService   to track user location on forum (what page he is viewing now)
-     * @param sessionRegistry   to obtain list of users currently online
-     * @param securityService   to determine the current user logged in
-     * @param breadcrumbBuilder to create Breadcrumbs for pages
+     * @param topicService        the object which provides actions on {@link Topic} entity
+     * @param branchService       the object which provides actions on  {@link Branch} entity
+     * @param lastReadPostService to perform post-related actions
+     * @param locationService     to track user location on forum (what page he is viewing now)
+     * @param sessionRegistry     to obtain list of users currently online
+     * @param securityService     to determine the current user logged in
+     * @param breadcrumbBuilder   to create Breadcrumbs for pages
+     * @param pollService         to create a poll and vote in a poll
      */
     @Autowired
     public TopicController(TopicService topicService,
@@ -100,7 +105,8 @@ public class TopicController {
                            SecurityService securityService,
                            BreadcrumbBuilder breadcrumbBuilder,
                            LocationService locationService,
-                           SessionRegistry sessionRegistry) {
+                           SessionRegistry sessionRegistry,
+                           PollService pollService) {
         this.topicService = topicService;
         this.branchService = branchService;
         this.lastReadPostService = lastReadPostService;
@@ -108,6 +114,7 @@ public class TopicController {
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.locationService = locationService;
         this.sessionRegistry = sessionRegistry;
+        this.pollService = pollService;
     }
 
     /**
@@ -146,7 +153,15 @@ public class TopicController {
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branch));
         }
 
-        Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(), branchId);
+        Topic createdTopic;
+        createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(), branchId);
+
+        if (topicDto.hasPoll()) {
+            Poll poll = topicDto.preparePollFromTopicDto();
+            poll.setTopic(createdTopic);
+            pollService.createPoll(poll);
+        }
+
         lastReadPostService.markTopicAsRead(createdTopic);
         return new ModelAndView("redirect:/topics/" + createdTopic.getId());
     }
@@ -181,6 +196,10 @@ public class TopicController {
                                               required = false) Boolean pagingEnabled) throws NotFoundException {
 
         Topic topic = topicService.get(topicId);
+
+        Poll poll = topic.getPoll();
+        List<PollItem> pollOptions = topic.isHasPoll() ? poll.getPollItems() : null;
+
         Branch branch = topic.getBranch();
         JCUser currentUser = securityService.getCurrentUser();
         List<Post> posts = topic.getPosts();
@@ -201,7 +220,9 @@ public class TopicController {
                 .addObject(TOPIC_ID, topicId)
                 .addObject("subscribed", topic.getSubscribers().contains(currentUser))
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic))
-                .addObject("lastReadPost", lastReadPostIndex);
+                .addObject("lastReadPost", lastReadPostIndex)
+                .addObject("poll", poll)
+                .addObject("pollOptions", pollOptions);
     }
 
     /**

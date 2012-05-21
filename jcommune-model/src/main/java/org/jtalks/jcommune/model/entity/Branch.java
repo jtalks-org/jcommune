@@ -26,8 +26,8 @@ import java.util.Set;
  * @author Kirill Afonin
  * @author Max Malakhov
  */
-public class Branch extends org.jtalks.common.model.entity.Branch 
-                    implements SubscriptionAwareEntity {
+public class Branch extends org.jtalks.common.model.entity.Branch
+        implements SubscriptionAwareEntity {
 
     private List<Topic> topics = new ArrayList<Topic>();
     private Set<JCUser> subscribers = new HashSet<JCUser>();
@@ -35,7 +35,8 @@ public class Branch extends org.jtalks.common.model.entity.Branch
     /**
      * For Hibernate use only
      */
-    protected Branch() {}
+    protected Branch() {
+    }
 
     /**
      * Creates the Branch instance with required fields.
@@ -168,9 +169,9 @@ public class Branch extends org.jtalks.common.model.entity.Branch
         }
         return postCount;
     }
-    
+
     /**
-     *  {@inheritDoc}
+     * {@inheritDoc}
      */
     public Set<JCUser> getSubscribers() {
         return subscribers;

@@ -64,6 +64,14 @@
           class="org.jtalks.jcommune.model.dao.hibernate.UserContactsHibernateDao"
           parent="abstractHibernateDao"/>
 
+    <bean id="pollDao"
+          class="org.jtalks.jcommune.model.dao.hibernate.PollHibernateDao"
+          parent="abstractHibernateDao"/>
+
+    <bean id="pollOptionDao"
+          class="org.jtalks.jcommune.model.dao.hibernate.PollOptionHibernateDao"
+          parent="abstractHibernateDao"/>
+
     <!-- Declaration of Hibernate Search DAO beans -->
     <bean id="topicSearchDao" class="org.jtalks.jcommune.model.dao.search.hibernate.TopicHibernateSearchDao">
         <constructor-arg name="sessionFactory" ref="sessionFactory"/>
@@ -86,7 +94,7 @@
         <constructor-arg value="true"/>
     </bean>
     <!--Injecting sessionFactory bean to class AbstractHibernateChildRepository, this way
-resolves a problem of multiple DAO beans definition -->
+  resolves a problem of multiple DAO beans definition -->
     <bean id="abstractHibernateDao" abstract="true">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
@@ -112,6 +120,8 @@ resolves a problem of multiple DAO beans definition -->
                 <value>/org/jtalks/jcommune/model/entity/UserContact.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/UserContactType.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/LastReadPost.hbm.xml</value>
+                <value>/org/jtalks/jcommune/model/entity/Poll.hbm.xml</value>
+                <value>/org/jtalks/jcommune/model/entity/PollOption.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">

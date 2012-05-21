@@ -25,6 +25,8 @@
     <title><spring:message code="h.edit_topic"/></title>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
             type="text/javascript"></script>
+    <script language="javascript"
+            src="${pageContext.request.contextPath}/resources/javascript/custom/leaveConfirm.js"></script>
 </head>
 <body>
 <div class="wrap answer_page">
@@ -57,7 +59,7 @@
                     <div class="forum_answer_right">
                         <form:input path="topicName" id="subject" type="text" name="subject" size="45"
                                     maxlength="255" tabindex="1"
-                                    class="post"/>
+                                    class="post confirm-unsaved"/>
                         <br>
                         <form:errors path="topicName" id="subject" type="text" name="subject" size="45"
                                      maxlength="255" tabindex="1"
@@ -71,18 +73,18 @@
                             <spring:message code="label.topic.options"/>
                         </div>
                         <div class="forum_answer_right" style="text-align: left;">
-                                <form:checkbox path="sticked" value="true"/>
+                                <form:checkbox path="sticked" value="true" class="confirm-unsaved"/>
                                 <spring:message code="label.sticked"/>
                                 <form:errors path="sticked"/>
                             <br/>
 
-                                <form:input path="topicWeight" size="1"/>
+                                <form:input path="topicWeight" size="1" class="confirm-unsaved"/>
                             <form:label path="topicWeight">
                                 <spring:message code="label.weight"/>
                             </form:label>
                                 <form:errors path="topicWeight"/>
                             <br/>
-                                <form:checkbox path="announcement" value="true"/>
+                                <form:checkbox path="announcement" value="true" class="confirm-unsaved"/>
                                 <spring:message code="label.announcement"/>
                                 <form:errors path="announcement"/>
 

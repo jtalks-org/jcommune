@@ -14,9 +14,9 @@
  */
 package org.jtalks.jcommune.web.util;
 
+import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.BreadcrumbLocation;

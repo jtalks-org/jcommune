@@ -38,7 +38,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Evgeniy Naumenko
@@ -201,33 +204,33 @@ public class TransactionalLastReadPostTest {
 
         assertNull(lastReadPostService.getLastReadPostForTopic(topic));
     }
-    
+
     @Test
     public void testUpdateLastReadPostsWhenPostIsDeletedIndexChanged() {
         Topic topic = this.createTestTopic();
-        int postIndex = 1;  
+        int postIndex = 1;
         LastReadPost lastReadPost = new LastReadPost(user, topic, postIndex);
         List<LastReadPost> lastReadPosts = Arrays.asList(lastReadPost);
-        
+
         when(lastReadPostDao.listLastReadPostsForTopic(topic)).thenReturn(lastReadPosts);
-        
+
         lastReadPostService.updateLastReadPostsWhenPostIsDeleted(topic.getFirstPost());
-        
+
         verify(lastReadPostDao).update(lastReadPost);
         assertEquals(lastReadPost.getPostIndex(), postIndex - 1, "The index should be reduced.");
     }
-    
+
     @Test
     public void testUpdateLastReadPostsWhenPostIsDeletedIndexNotChanged() {
         Topic topic = this.createTestTopic();
-        int postIndex = 0;  
+        int postIndex = 0;
         LastReadPost lastReadPost = new LastReadPost(user, topic, postIndex);
         List<LastReadPost> lastReadPosts = Arrays.asList(lastReadPost);
-        
+
         when(lastReadPostDao.listLastReadPostsForTopic(topic)).thenReturn(lastReadPosts);
-        
+
         lastReadPostService.updateLastReadPostsWhenPostIsDeleted(topic.getLastPost());
-        
+
         verify(lastReadPostDao, never()).update(lastReadPost);
         assertEquals(lastReadPost.getPostIndex(), postIndex, "The index shouldn't be reduced.");
     }

@@ -20,7 +20,6 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.LastReadPostService;
-import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
@@ -31,7 +30,6 @@ import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.mockito.Mock;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -41,7 +39,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -81,7 +78,7 @@ public class BranchControllerTest {
     public void init() {
         initMocks(this);
         controller = new BranchController(branchService, topicService, lastReadPostService,
-               securityService, breadcrumbBuilder, locationServiceImpl);
+                securityService, breadcrumbBuilder, locationServiceImpl);
     }
 
     @Test
@@ -216,11 +213,11 @@ public class BranchControllerTest {
         assertEquals(branchDtoArray[0].getId(), branch.getId());
         assertEquals(branchDtoArray[0].getName(), branch.getName());
     }
-    
-    @Test 
+
+    @Test
     public void testMarkAllTopicsAsRead() throws NotFoundException {
-    	Long id = Long.valueOf(1);
-    	String result = controller.markAllTopicsAsRead(id);
-    	assertEquals(result, "redirect:/branches/" + String.valueOf(id));
+        Long id = Long.valueOf(1);
+        String result = controller.markAllTopicsAsRead(id);
+        assertEquals(result, "redirect:/branches/" + String.valueOf(id));
     }
 }
