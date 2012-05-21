@@ -14,13 +14,13 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.Pagination;
@@ -29,12 +29,7 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
@@ -125,7 +120,7 @@ public class UserProfileController {
      */
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public ModelAndView showProfilePage() {
-        JCUser user = securityService.getCurrentUser();
+        JCUser user = (JCUser) securityService.getCurrentUser();
         return getUserProfileModelAndView(user);
     }
 
@@ -137,7 +132,7 @@ public class UserProfileController {
      */
     @RequestMapping(value = "/users/edit", method = RequestMethod.GET)
     public ModelAndView editProfilePage() throws NotFoundException {
-        JCUser user = securityService.getCurrentUser();
+        JCUser user = (JCUser) securityService.getCurrentUser();
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
         byte[] avatar = user.getAvatar();
         editedUser.setAvatar(imageUtils.prepareHtmlImgSrc(avatar));

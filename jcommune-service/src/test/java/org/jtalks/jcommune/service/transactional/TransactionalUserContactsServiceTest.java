@@ -14,29 +14,11 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.jcommune.model.dao.UserContactsDao;
-import org.jtalks.jcommune.model.dao.UserDao;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.UserContact;
-import org.jtalks.jcommune.model.entity.UserContactType;
-import org.jtalks.jcommune.service.UserContactsService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
-import org.mockito.Mock;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
-import java.util.*;
-
-import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.*;
-
 /**
  * @author Michael Gamov
  */
 public class TransactionalUserContactsServiceTest {
-    
+   /*
     private static final String TYPENAME = "New type";
     private static final String ICON = "/some/icon/path";
     private static final String CONTACT = "Some contact";
@@ -116,5 +98,5 @@ public class TransactionalUserContactsServiceTest {
         userContactType.setIcon(ICON);
         return userContactType;
     }
-   
+   */
 }

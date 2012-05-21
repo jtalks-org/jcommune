@@ -15,6 +15,8 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
+import org.jtalks.common.model.permissions.GeneralPermission;
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -25,7 +27,6 @@ import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -79,7 +80,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @Override
     @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
     public Post replyToTopic(long topicId, String answerBody) throws NotFoundException {
-        JCUser currentUser = securityService.getCurrentUser();
+        JCUser currentUser = (JCUser) securityService.getCurrentUser();
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
         Topic topic = get(topicId);
@@ -87,7 +88,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         topic.addPost(answer);
         this.getDao().update(topic);
 
-        securityService.grantToCurrentUser().role(ROLE_ADMIN).admin().on(answer);
+        securityService.createAclBuilder().grant(GeneralPermission.ADMIN).
+                to(securityService.getCurrentUser()).on(answer).flush();
         notificationService.topicChanged(topic);
         logger.debug("New post in topic. Topic id={}, Post id={}, Post author={}",
                 new Object[]{topicId, answer.getId(), currentUser.getUsername()});
@@ -101,7 +103,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @Override
     @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
     public Topic createTopic(String topicName, String bodyText, long branchId) throws NotFoundException {
-        JCUser currentUser = securityService.getCurrentUser();
+        JCUser currentUser = (JCUser) securityService.getCurrentUser();
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
         Branch branch = branchService.get(branchId);
@@ -111,8 +113,13 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         branch.addTopic(topic);
         branchDao.update(branch);
 
-        securityService.grantToCurrentUser().role(ROLE_ADMIN).admin().on(topic)
-                .user(currentUser.getUsername()).role(ROLE_ADMIN).admin().on(first);
+        securityService.createAclBuilder().grant(GeneralPermission.WRITE)
+                .to(securityService.getCurrentUser())
+                .on(topic).flush();
+        securityService.createAclBuilder().grant(GeneralPermission.WRITE)
+                .to(securityService.getCurrentUser())
+                .on(first).flush();
+
         notificationService.branchChanged(branch);
 
         logger.debug("Created new topic id={}, branch id={}, author={}",

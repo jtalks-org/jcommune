@@ -15,13 +15,13 @@
 package org.jtalks.jcommune.service.transactional;
 
 
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.UserContactsDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
 import org.jtalks.jcommune.service.UserContactsService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 
 import java.util.List;
 
@@ -57,7 +57,7 @@ public class TransactionalUserContactsService
      * {@inheritDoc}
      */
     public UserContact addContact(String value, long typeId) throws NotFoundException {
-        JCUser user = securityService.getCurrentUser();
+        JCUser user = (JCUser) securityService.getCurrentUser();
 
         //explicitly getting UserContactType because we need to populate it with data before returning
         UserContactType actualType = get(typeId);
@@ -70,7 +70,7 @@ public class TransactionalUserContactsService
     * {@inheritDoc}
     */
     public void removeContact(long userContactId) {
-        JCUser user = securityService.getCurrentUser();
+        JCUser user = (JCUser) securityService.getCurrentUser();
         UserContact contact = this.getDao().getContactById(userContactId);
         user.removeContact(contact);
     }

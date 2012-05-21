@@ -14,24 +14,19 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;

@@ -14,9 +14,8 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import javax.validation.Valid;
-
 import org.apache.commons.lang.StringUtils;
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -25,7 +24,6 @@ import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.PostDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,13 +33,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.validation.Valid;
 
 
 /**
@@ -256,7 +251,7 @@ public class PostController {
      */
     @RequestMapping(method = RequestMethod.POST, value = "/posts/bbToHtml")
     public ResponseEntity<String> preview(@RequestParam(POST_BB_CONTENT) String bbContent) {
-        JCUser user = securityService.getCurrentUser();
+        JCUser user = (JCUser) securityService.getCurrentUser();
         String post = bbCodeService.convertBbToHtml(bbContent);
         post += user.getRenderedSignature();
         return new ResponseEntity<String>(post, HttpStatus.OK);

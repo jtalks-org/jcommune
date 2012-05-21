@@ -14,19 +14,14 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Poll;
-import org.jtalks.jcommune.model.entity.PollItem;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.common.security.SecurityService;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.Pagination;
@@ -36,12 +31,7 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -201,7 +191,7 @@ public class TopicController {
         List<PollItem> pollOptions = topic.isHasPoll() ? poll.getPollItems() : null;
 
         Branch branch = topic.getBranch();
-        JCUser currentUser = securityService.getCurrentUser();
+        JCUser currentUser = (JCUser) securityService.getCurrentUser();
         List<Post> posts = topic.getPosts();
         Pagination pag = new Pagination(page, currentUser, posts.size(), pagingEnabled);
         Integer lastReadPostIndex = lastReadPostService.getLastReadPostForTopic(topic);

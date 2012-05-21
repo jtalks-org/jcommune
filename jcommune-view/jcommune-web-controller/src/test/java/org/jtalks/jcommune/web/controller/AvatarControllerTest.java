@@ -25,7 +25,6 @@ import org.jtalks.jcommune.service.exceptions.ImageSizeException;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.context.MessageSource;

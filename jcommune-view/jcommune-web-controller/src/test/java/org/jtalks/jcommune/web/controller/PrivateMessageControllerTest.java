@@ -14,13 +14,13 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -35,12 +35,7 @@ import org.testng.annotations.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
 import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;

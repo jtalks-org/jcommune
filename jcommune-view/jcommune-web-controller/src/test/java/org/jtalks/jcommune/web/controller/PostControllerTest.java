@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -22,10 +23,9 @@ import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
-import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.PostDto;
+import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;

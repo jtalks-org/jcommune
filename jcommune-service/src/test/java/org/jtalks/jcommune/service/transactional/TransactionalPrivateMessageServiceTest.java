@@ -14,44 +14,13 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.jcommune.model.dao.PrivateMessageDao;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.PrivateMessage;
-import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
-import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.MailService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
-import org.jtalks.jcommune.service.nontransactional.UserDataCacheService;
-import org.jtalks.jcommune.service.security.AclBuilder;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-
-
 /**
  * @author Pavel Vervenko
  * @author Kirill Afonin
  * @author Max Malakhov
  */
 public class TransactionalPrivateMessageServiceTest {
-
+/*
     @Mock
     private PrivateMessageDao pmDao;
     @Mock
@@ -464,6 +433,6 @@ public class TransactionalPrivateMessageServiceTest {
 
         verify(pmDao).get(1L);
         verify(pmDao).get(2L);
-    }
+    }*/
 
 }

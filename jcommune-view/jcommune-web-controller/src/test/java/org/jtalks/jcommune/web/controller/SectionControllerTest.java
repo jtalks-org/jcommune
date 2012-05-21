@@ -15,10 +15,10 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.common.model.entity.Section;
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.SectionDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
@@ -31,12 +31,8 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
 
 /**

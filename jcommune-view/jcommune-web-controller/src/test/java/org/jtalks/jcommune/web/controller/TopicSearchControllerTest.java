@@ -14,14 +14,10 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicFullSearchService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -30,6 +26,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 /**
  * 
  * @author Anuar Nurmakanov

@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.model.permissions.GeneralPermission;
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
@@ -22,7 +24,6 @@ import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.MailService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.nontransactional.UserDataCacheService;
 import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.slf4j.Logger;
@@ -74,7 +75,7 @@ public class TransactionalPrivateMessageService
      */
     @Override
     public List<PrivateMessage> getInboxForCurrentUser() {
-        JCUser currentUser = securityService.getCurrentUser();
+        JCUser currentUser = (JCUser) securityService.getCurrentUser();
         return this.getDao().getAllForUser(currentUser);
     }
 
@@ -83,7 +84,7 @@ public class TransactionalPrivateMessageService
      */
     @Override
     public List<PrivateMessage> getOutboxForCurrentUser() {
-        JCUser currentUser = securityService.getCurrentUser();
+        JCUser currentUser = (JCUser) securityService.getCurrentUser();
         return this.getDao().getAllFromUser(currentUser);
     }
 
@@ -95,7 +96,7 @@ public class TransactionalPrivateMessageService
     @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
     public PrivateMessage sendMessage(String title, String body, String recipientUsername) throws NotFoundException {
         JCUser recipient = userService.getByUsername(recipientUsername);
-        JCUser userFrom = securityService.getCurrentUser();
+        JCUser userFrom = (JCUser) securityService.getCurrentUser();
         PrivateMessage pm = new PrivateMessage(recipient, userFrom, title, body);
         pm.setRead(false);
         pm.setStatus(PrivateMessageStatus.SENT);
@@ -103,7 +104,7 @@ public class TransactionalPrivateMessageService
 
         userDataCache.incrementNewMessageCountFor(recipientUsername);
 
-        securityService.grantToCurrentUser().user(recipientUsername).read().on(pm);
+        securityService.createAclBuilder().grant(GeneralPermission.READ).to(recipient).on(pm).flush();
 
         long pmId = pm.getId();
         mailService.sendReceivedPrivateMessageNotification(recipient, pm);
@@ -118,7 +119,7 @@ public class TransactionalPrivateMessageService
      */
     @Override
     public List<PrivateMessage> getDraftsFromCurrentUser() {
-        JCUser currentUser = securityService.getCurrentUser();
+        JCUser currentUser = (JCUser) securityService.getCurrentUser();
         return this.getDao().getDraftsFromUser(currentUser);
     }
 
@@ -133,13 +134,14 @@ public class TransactionalPrivateMessageService
         if (recipientUsername != null) {
             recipient = userService.getByUsername(recipientUsername);
         }
-        JCUser userFrom = securityService.getCurrentUser();
+        JCUser userFrom = (JCUser) securityService.getCurrentUser();
         PrivateMessage pm = new PrivateMessage(recipient, userFrom, title, body);
         pm.setId(id);
         pm.setStatus(PrivateMessageStatus.DRAFT);
         this.getDao().saveOrUpdate(pm);
 
-        securityService.grantToCurrentUser().admin().on(pm);
+        securityService.createAclBuilder().grant(GeneralPermission.ADMIN).to(securityService.getCurrentUser()).
+                on(pm).flush();
 
         logger.debug("Updated private message draft. Message id={}", pm.getId());
 
@@ -174,7 +176,7 @@ public class TransactionalPrivateMessageService
     public PrivateMessage sendDraft(long id, String title, String body,
                                     String recipientUsername) throws NotFoundException {
         JCUser recipient = userService.getByUsername(recipientUsername);
-        JCUser userFrom = securityService.getCurrentUser();
+        JCUser userFrom = (JCUser) securityService.getCurrentUser();
         PrivateMessage pm = new PrivateMessage(recipient, userFrom, title, body);
         pm.setId(id);
         pm.setRead(false);
@@ -184,7 +186,7 @@ public class TransactionalPrivateMessageService
         userDataCache.incrementNewMessageCountFor(recipientUsername);
 
         securityService.deleteFromAcl(pm);
-        securityService.grantToCurrentUser().user(recipientUsername).read().on(pm);
+        securityService.createAclBuilder().grant(GeneralPermission.READ).to(recipient).on(pm).flush();
 
         long pmId = pm.getId();
         mailService.sendReceivedPrivateMessageNotification(recipient, pm);
@@ -232,7 +234,7 @@ public class TransactionalPrivateMessageService
      */
     @Override
     public String delete(List<Long> ids) {
-        JCUser currentUser = securityService.getCurrentUser();
+        JCUser currentUser = (JCUser) securityService.getCurrentUser();
 
         String result = "inbox";
         for (Long id : ids) {
@@ -277,7 +279,7 @@ public class TransactionalPrivateMessageService
      */
     @Override
     public boolean hasCurrentUserAccessToPM(long pmId) throws NotFoundException {
-        JCUser currentUser = securityService.getCurrentUser();
+        JCUser currentUser = (JCUser) securityService.getCurrentUser();
         PrivateMessage message = get(pmId);
         PrivateMessageStatus messageStatus = message.getStatus();
 

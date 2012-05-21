@@ -15,11 +15,11 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.common.model.entity.Section;
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.SectionDto;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.jtalks.jcommune.web.util.Pagination;
@@ -96,7 +96,7 @@ public class SectionController {
         */
         session.getId();
         return new ModelAndView("sectionList")
-                .addObject("pageSize", Pagination.getPageSizeFor(securityService.getCurrentUser()))
+                .addObject("pageSize", Pagination.getPageSizeFor((JCUser) securityService.getCurrentUser()))
                 .addObject("sectionList", sectionService.getAll())
                 .addObject("messagesCount", forumStaticsProvider.getPostsOnForumCount())
                 .addObject("registeredUsersCount", forumStaticsProvider.getUsersCount())
@@ -132,7 +132,7 @@ public class SectionController {
     @RequestMapping(value = "/sections/{sectionId}", method = RequestMethod.GET)
     public ModelAndView branchList(@PathVariable("sectionId") long sectionId) throws NotFoundException {
         Section section = sectionService.get(sectionId);
-        JCUser currentUser = securityService.getCurrentUser();
+        JCUser currentUser = (JCUser) securityService.getCurrentUser();
 
         return new ModelAndView("branchList")
                 .addObject("viewList", locationService.getUsersViewing(section))

@@ -14,27 +14,11 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.jcommune.model.dao.BranchDao;
-import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
-import org.mockito.Mock;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-
 /**
  * @author Evgeniy Naumenko
  */
 public class TransactionalSubscriptionServiceTest {
-
+/*
     @Mock
     private SecurityService securityService;
     @Mock
@@ -94,5 +78,5 @@ public class TransactionalSubscriptionServiceTest {
         service.toggleBranchSubscription(branch);
 
         assertFalse(branch.getSubscribers().contains(user));
-    }
+    }*/
 }

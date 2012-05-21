@@ -17,6 +17,7 @@ package org.jtalks.jcommune.service.transactional;
 import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
@@ -26,7 +27,6 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.MailService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -109,7 +109,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     @Override
     public JCUser editUserProfile(UserInfoContainer info) {
 
-        JCUser currentUser = securityService.getCurrentUser();
+        JCUser currentUser = (JCUser) securityService.getCurrentUser();
         byte[] decodedAvatar = base64Wrapper.decodeB64Bytes(info.getB64EncodedAvatar());
 
         if (info.getNewPassword() != null) {

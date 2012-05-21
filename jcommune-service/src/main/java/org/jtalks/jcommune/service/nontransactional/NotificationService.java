@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -53,7 +54,7 @@ public class NotificationService {
      * @param topic topic changed
      */
     public void topicChanged(Topic topic) {
-        JCUser current = securityService.getCurrentUser();
+        JCUser current = (JCUser) securityService.getCurrentUser();
         Set<JCUser> subscribers = topic.getSubscribers();
         subscribers.remove(current);
         for (JCUser user : subscribers) {
@@ -69,7 +70,7 @@ public class NotificationService {
      * @param branch branch changed
      */
     public void branchChanged(Branch branch) {
-        JCUser current = securityService.getCurrentUser();
+        JCUser current = (JCUser) securityService.getCurrentUser();
         Set<JCUser> subscribers = branch.getSubscribers();
         subscribers.remove(current);
         for (JCUser user : subscribers) {
@@ -86,7 +87,7 @@ public class NotificationService {
      * @param topicId topic id
      */
     public void topicMoved(Topic topic, long topicId) {
-        JCUser currentUser = securityService.getCurrentUser();
+        JCUser currentUser = (JCUser) securityService.getCurrentUser();
         JCUser topicStarter = topic.getTopicStarter();
         Set<JCUser> subscribers = topic.getBranch().getSubscribers();
         //temp transient collection modification to ease the iteration

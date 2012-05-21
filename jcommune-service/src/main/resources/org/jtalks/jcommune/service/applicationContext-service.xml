@@ -143,9 +143,8 @@
     </bean>
 
     <bean id="securityService"
-          class="org.jtalks.jcommune.service.nontransactional.SecurityService">
+          class="org.jtalks.common.security.SecurityService">
         <constructor-arg ref="userDao"/>
-        <constructor-arg ref="securityContextFacade"/>
         <constructor-arg ref="aclManager"/>
     </bean>
 
