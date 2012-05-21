@@ -144,9 +144,11 @@
 
     <bean id="securityService"
           class="org.jtalks.common.security.SecurityService">
-        <constructor-arg ref="userDao"/>
+        <constructor-arg name="userDao" ref="userDao"/>
         <constructor-arg ref="aclManager"/>
     </bean>
+    <bean id="userDao"
+          class="org.jtalks.jcommune.model.dao.hibernate.UserHibernateDao"/>
 
     <bean id="forumStatisticsService"
           class="org.jtalks.jcommune.service.nontransactional.ForumStatisticsService">
