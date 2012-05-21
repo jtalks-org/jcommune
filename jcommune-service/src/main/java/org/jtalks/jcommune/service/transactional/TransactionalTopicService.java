@@ -33,8 +33,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
-import static org.jtalks.jcommune.service.security.SecurityConstants.*;
-
 /**
  * Topic service class. This class contains method needed to manipulate with Topic persistent entity.
  *
@@ -78,7 +76,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
+    @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', 'GeneralPermission.WRITE')")
     public Post replyToTopic(long topicId, String answerBody) throws NotFoundException {
         JCUser currentUser = (JCUser) securityService.getCurrentUser();
 
@@ -88,7 +86,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         topic.addPost(answer);
         this.getDao().update(topic);
 
-        securityService.createAclBuilder().grant(GeneralPermission.ADMIN).
+        securityService.createAclBuilder().grant(GeneralPermission.WRITE).
                 to(securityService.getCurrentUser()).on(answer).flush();
         notificationService.topicChanged(topic);
         logger.debug("New post in topic. Topic id={}, Post id={}, Post author={}",
@@ -101,7 +99,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
+    @PreAuthorize("hasPermission(#branchId, 'org.jtalks.jcommune.model.entity.Branch', " +
+            "'BranchPermission.CREATE_TOPICS')")
     public Topic createTopic(String topicName, String bodyText, long branchId) throws NotFoundException {
         JCUser currentUser = (JCUser) securityService.getCurrentUser();
 
@@ -152,7 +151,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', admin)")
+    @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', 'GeneralPermission.WRITE')")
     public void updateTopic(long topicId, String topicName, String bodyText)
             throws NotFoundException {
         updateTopic(topicId, topicName, bodyText, 0, false, false);
@@ -162,7 +161,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', admin)")
+    @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', 'GeneralPermission.WRITE')")
     public void updateTopic(long topicId, String topicName, String bodyText, int topicWeight,
                             boolean sticked, boolean announcement) throws NotFoundException {
         Topic topic = get(topicId);
@@ -184,8 +183,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', admin) or " +
-            "hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', delete)")
+    @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', 'GeneralPermission.WRITE') or " +
+            "hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', 'GeneralPermission.WRITE')")
     public Branch deleteTopic(long topicId) throws NotFoundException {
         Topic topic = get(topicId);
 
@@ -209,7 +208,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize(HAS_ADMIN_ROLE)
+    @PreAuthorize("hasPermission(#branchId, 'org.jtalks.jcommune.model.entity.Branch', 'BranchPermission.MOVE_TOPICS')")
     public void moveTopic(Long topicId, Long branchId) throws NotFoundException {
         Topic topic = get(topicId);
         Branch targetBranch = branchService.get(branchId);
