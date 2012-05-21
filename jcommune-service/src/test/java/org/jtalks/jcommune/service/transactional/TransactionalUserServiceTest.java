@@ -22,6 +22,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
  * @author Evgeniy Naumenko
  * @author Anuar Nurmakanov
  */
+
 public class TransactionalUserServiceTest {
   /*  private static final String USERNAME = "username";
     private static final String FIRST_NAME = "first name";
