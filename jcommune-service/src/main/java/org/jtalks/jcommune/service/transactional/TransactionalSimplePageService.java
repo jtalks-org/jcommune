@@ -20,6 +20,9 @@ import org.jtalks.jcommune.service.SimplePageService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
+
+import static org.jtalks.jcommune.service.security.SecurityConstants.HAS_USER_OR_ADMIN_ROLE;
 
 /**
  * SimplePage service class. This class contains method needed to manipulate with simple page persistent entity.
@@ -32,7 +35,7 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-     /**
+    /**
      *  Create an instance of Simple Page entity based service
      *
      *  @param simplePageDao - simplePageDao to create/get simple page from a database
@@ -43,13 +46,10 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
     }
 
     /**
-     * update pageName and pageContent by current SimplePage
-     *
-     * @param pageId ID of simple page
-     * @param pageName name of simple page
-     * @param pageContent content of simple page
+     * {@inheritDoc}
      */
-
+    @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
+    @Override
     public void updatePage(long pageId, String pageName, String pageContent) throws NotFoundException {
 
         SimplePage simplePage = get(pageId);
@@ -58,7 +58,7 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
             logger.info(message);
             throw new NotFoundException(message);
         }
-        simplePage.setPathName(pageName);
+        simplePage.setName(pageName);
         simplePage.setContent(pageContent);
 
         this.getDao().update(simplePage);
@@ -67,12 +67,9 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
     }
 
     /**
-     * get simple page by path name
-     *
-     * @param pathName - path name of simple page
-     * @return SimplePage simple page with current name
+     * {@inheritDoc}
      */
-
+    @Override
     public SimplePage getPageByPathName(String pathName) throws NotFoundException {
         SimplePage simplePage = this.getDao().getPageByPathName(pathName);
         if (simplePage == null) {
@@ -85,11 +82,10 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
 
 
     /**
-     * create new SimplePage, put it in database
-     *
-     * @param simplePage simple page which will be created
+     * {@inheritDoc}
      */
-
+    @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
+    @Override
     public SimplePage createPage(SimplePage simplePage) {
         this.getDao().update(simplePage);
         logger.info("SimplePage registered: {}", simplePage.getName());

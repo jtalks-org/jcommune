@@ -19,10 +19,12 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <head>
     <title>
         <c:out value="${simplePageDto.nameText}"/>
     </title>
+
 </head>
 <body>
 <div class="wrap answer_page">
@@ -30,16 +32,38 @@
     <jsp:include page="../template/logo.jsp"/>
 
     <div class="all_forums">
+        <div class="forum_info_top">
+            <div>
+                <div> <!-- top left -->
+
+                </div>
+                <div> <!-- top right -->
+
+                </div>
+            </div>
+            <div class="info_top_lower">
+                <div> <!-- bottom left -->
+                    <h2 class="heading"><c:out value="${simplePageDto.nameText}"/></h2>
+                </div>
+                <div> <!-- bottom right -->
+
+                </div>
+            </div>
+        </div>
+
         <ul class="forum_table" id="stylized">
+
             <li class="forum_row">
                 <jtalks:bb2html bbCode="${simplePageDto.contentText}"/>
             </li>
         </ul>
-        <div>
-            <a class="button" href="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit">
-                <spring:message code="label.edit"/>
-            </a>
-        </div>
+        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+            <div>
+                <a class="button" href="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit">
+                    <spring:message code="label.edit"/>
+                </a>
+            </div>
+        </sec:authorize>
     </div>
 </div>
 

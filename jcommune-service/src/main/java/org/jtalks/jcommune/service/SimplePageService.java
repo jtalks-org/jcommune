@@ -27,15 +27,19 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 public interface SimplePageService extends EntityService<SimplePage> {
 
     /**
-     * Update page with given content.
+     * update pageName and pageContent by current SimplePage
      *
-     * @param pageId      page id
-     * @param pageContent page content
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when page not found
+     * @param pageId ID of simple page
+     * @param pageName name of simple page
+     * @param pageContent content of simple page
      */
     public void updatePage(long pageId, String pageName, String pageContent) throws NotFoundException;
 
+    /**
+     * create new SimplePage, put it in database
+     *
+     * @param simplePage simple page which will be created
+     */
     public SimplePage createPage(SimplePage simplePage);
 
     /**
