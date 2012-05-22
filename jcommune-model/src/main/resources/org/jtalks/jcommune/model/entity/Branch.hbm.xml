@@ -24,7 +24,10 @@
         <id column="BRANCH_ID" name="id" unsaved-value="0">
             <generator class="native"/>
         </id>
-
+        
+        <!-- 
+            Used to make dummy hibernate hierarchy used in distributed cache.
+         -->
         <discriminator>
             <formula>'BRANCH'</formula>
         </discriminator>
