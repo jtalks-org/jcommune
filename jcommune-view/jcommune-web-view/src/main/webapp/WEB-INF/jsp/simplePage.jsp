@@ -31,9 +31,26 @@
     <jsp:include page="../template/topLine.jsp"/>
     <jsp:include page="../template/logo.jsp"/>
 
-    <h1>${simplePageDto.nameText}</h1>
-
     <div class="all_forums">
+        <div class="forum_info_top">
+            <div>
+                <div> <!-- top left -->
+
+                </div>
+                <div> <!-- top right -->
+
+                </div>
+            </div>
+            <div class="info_top_lower">
+                <div> <!-- bottom left -->
+                    <h2 class="heading"><c:out value="${simplePageDto.nameText}"/></h2>
+                </div>
+                <div> <!-- bottom right -->
+
+                </div>
+            </div>
+        </div>
+
         <ul class="forum_table" id="stylized">
 
             <li class="forum_row">
