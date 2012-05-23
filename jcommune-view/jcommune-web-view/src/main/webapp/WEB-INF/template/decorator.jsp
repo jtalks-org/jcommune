@@ -60,6 +60,8 @@
             src="${pageContext.request.contextPath}/resources/javascript/custom/global.js"></script>
     <script src='${pageContext.request.contextPath}/resources/javascript/licensed/xregexp-min.js'
             type='text/javascript'></script>
+    <script src='${pageContext.request.contextPath}/resources/javascript/custom/bootstrap.min.js'
+            type='text/javascript'></script>
     <decorator:head/>
     <title><decorator:title/></title>
 </head>

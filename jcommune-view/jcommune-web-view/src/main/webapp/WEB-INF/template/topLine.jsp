@@ -18,81 +18,81 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
-<div class="top_line">
-    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-        <fmt:message key="label.welcomeMessage"/>
-        <a class="currentusername" href="${pageContext.request.contextPath}/user">
-            <sec:authentication property="principal.username"/>
-        </a>!
-    </sec:authorize>
-    <ul class="top_menu">
-        <li class="no_border">
-            <a href="${pageContext.request.contextPath}/">
-                <fmt:message key="label.forum"/>
-            </a>
-        </li>
-        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-            <li>
-                <a href="${pageContext.request.contextPath}/user">
-                    <fmt:message key="label.profile"/>
+
+<div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="${pageContext.request.contextPath}/">JTalks - JCommune</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li class="active"><a href="${pageContext.request.contextPath}/">Home</a></li>
+              <li><a href="${pageContext.request.contextPath}/"><fmt:message key="label.forum"/></a></li>
+              <li><a href="#contact">Blog</a></li>
+            </ul>
+            <form action='<c:url value="/search/"/>' method="GET" name="form" id="form" class="navbar-search pull-left dropdown">
+                <input id="searchText" name="searchText" type="text" class="search-query dropdown-toggle" 
+                        placeholder='<fmt:message key="label.search"/>'
+                        value='<c:out value="${searchText}"/>'/>
+            </form>
+            <ul class="nav pull-right">
+             <!-- Not logged in block -->
+             <sec:authorize access="hasRole('ROLE_ANONYMOUS')">
+             <li><a id="signup" href="${pageContext.request.contextPath}/user/new"><fmt:message key="label.signup"/></a></li>
+              <li class="divider-vertical"></li>
+              <li>
+                <a id="signin" href="${pageContext.request.contextPath}/login"><fmt:message key="label.signin"/> <strong class="caret"></strong></a>
+              </li>
+              </sec:authorize>
+              <!-- END OF Not logged in block -->
+
+              <!-- Logged in block -->
+              <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+              <li><a href="${pageContext.request.contextPath}/user"> <fmt:message key="label.profile"/></a></li>
+              <li><a href="${pageContext.request.contextPath}/inbox"><fmt:message key="label.pm"/> <c:if test="${newPmCount != null}">(<span id="new-pm-count" title="You have ${newPmCount} new messages"><i class="icon-envelope icon-white" style="vertical-align:middle;"></i>${newPmCount}<span>)</c:if></a></li>
+              <li><a href="#"><fmt:message key="label.newbies"/></a><li class="divider-vertical"></li>
+              <li><div><a class='btn btn-inverse btn-small' href="${pageContext.request.contextPath}/logout"><fmt:message key="label.logout"/></a></div></li>
+              </sec:authorize>
+              <!-- END OF Logged in block -->
+
+              <!-- Language chooser -->
+              <li class="dropdown">
+                <a href="#" id="lang-selector-toggle" class="dropdown-toggle" data-toggle="dropdown" title="Click to change language" style="padding:0px; margin: 6px 2px 0px 15px;" 
+                    onclick="window.location = getLanguageLink('en')">
+                  <img src="${pageContext.request.contextPath}/resources/images/flags/gb.png" />
+                  <b class="caret"></b>
                 </a>
-            </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/inbox">
-                    <fmt:message key="label.pm"/><c:if test="${newPmCount != null}">(${newPmCount})</c:if>
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <fmt:message key="label.newbies"/>
-                </a>
-            </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/logout">
-                    <fmt:message key="label.logout"/>
-                </a>
-            </li>
-        </sec:authorize>
-        <sec:authorize access="hasRole('ROLE_ANONYMOUS')">
-            <li>
-                <a id="signin" href="${pageContext.request.contextPath}/login">
-                    <fmt:message key="label.signin"/>
-                </a>
-            </li>
-            <li>
-                <a id="signup" href="${pageContext.request.contextPath}/user/new">
-                    <fmt:message key="label.signup"/>
-                </a>
-            </li>
-        </sec:authorize>
-        <li class="no_border">
-            <div class="lighter">
-                <form class="searchform" action='<c:url value="/search/"/>' method="GET" name="form" id="form">
-					<span><input type="text" name="searchText" class="search rounded"
-                                 placeholder="<fmt:message key="label.search"/>"
-                                 value="<c:out value="${searchText}"/>"></span>
-                </form>
-            </div>
-        </li>
-        <li class="flag no_border">
-            <a href="#" onclick="window.location = getLanguageLink('en')">
-                <img src="${pageContext.request.contextPath}/resources/images/flags/great britain.png" alt=""/>
-            </a>
-        </li>
-        <li class="flag">
-            <a href="#" onclick="window.location = getLanguageLink('ru')">
-                <img src="${pageContext.request.contextPath}/resources/images/flags/russia.png" alt=""/>
-            </a>
-        </li>
-        <li class="flag">
-            <a href="#" onclick="window.location = getLanguageLink('uk')">
-                <img src="${pageContext.request.contextPath}/resources/images/flags/ukraine.png" alt=""/>
-            </a>
-        </li>
-        <li class="flag">
-            <a href="#" onclick="window.location = getLanguageLink('es')">
-                <img src="${pageContext.request.contextPath}/resources/images/flags/spain.png" alt=""/>
-            </a>
-        </li>
-    </ul>
-</div>
+                <ul class="dropdown-menu lang-menu">
+                  <li><a href="#" onclick="window.location = getLanguageLink('ru')"><img src="${pageContext.request.contextPath}/resources/images/flags/ru.png" /> Russian</a></li>
+                  <li><a href="#" onclick="window.location = getLanguageLink('uk')"><img src="${pageContext.request.contextPath}/resources/images/flags/ua.png" /> Ukrainian</a></li>
+                  <li><a href="#" onclick="window.location = getLanguageLink('es')"><img src="${pageContext.request.contextPath}/resources/images/flags/es.png" /> Spanish</a></li>
+                </ul>
+              </li>
+              <!-- END OF Language chooser -->
+
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <script type="text/javascript">
+      jQuery(document).ready(function(){
+        // Setup drop down menu
+        jQuery('.dropdown-toggle').dropdown();
+       
+        // Fix input element click problem
+        jQuery('.dropdown input, .dropdown label').click(function(e) {
+          e.stopPropagation();
+        });
+
+        // Tooltips on status images
+        jQuery('#new-pm-count').tooltip({delay: 300, placement: 'bottom'});
+        jQuery('#lang-selector-toggle').tooltip({delay: 250, placement: 'bottom'});
+      });
+    </script>
