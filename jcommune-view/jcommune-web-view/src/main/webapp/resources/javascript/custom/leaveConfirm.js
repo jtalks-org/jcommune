@@ -17,13 +17,16 @@
  * Provides confirmation dialog when user tries to leave a page with unsaved form.
  * Just mark important input fields with "confirm-unsaved" class.
  *
+ * Hyperlinks/buttons which bypass confirmation declared in allowed_transitions variable.
+ *
  * Opera doesn't support "beforeunload" event, thus code below does nothing in Opera.
  */
 $(document).ready(function () {
 
     var data_changed = false;
     var message = $labelLeavePageConfirmation;
-    var mark_class = '.confirm-unsaved';
+    var mark_class = ".confirm-unsaved";
+    var allowed_transitions = "input[type=submit]";
 
     $(window).bind('beforeunload', function () {
         if (data_changed) return message;
@@ -31,5 +34,9 @@ $(document).ready(function () {
 
     $("input" + mark_class + ", textarea" + mark_class).live('change keypress', function (event) {
         data_changed = true;
+    });
+
+    $(allowed_transitions).live('click', function(event) {
+        $(window).off('beforeunload');
     });
 });
