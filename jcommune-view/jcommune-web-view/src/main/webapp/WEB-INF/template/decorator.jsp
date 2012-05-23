@@ -68,13 +68,12 @@
 <body>
 <jsp:include page="../template/bbEditorScripts.jsp"/>
 <decorator:body/>
-<div class="footer">
-    <div class="copyright">
-        <br/>
-        <span class="version">Powered by JCommune ${project.version}</span>
-        <br/>
-        &copy; 2012 www.jtalks.org
-    </div>
+<div class="container">
+    <footer>
+        Powered by JCommune ${project.version}<br />
+        &copy; 2012 <a href="www.jtalks.org">jtalks.org</a><br />
+        Design with <a href="http://twitter.github.com/bootstrap">Twitter Bootstrap</a>
+    </footer>
 </div>
 </body>
 <script>SyntaxHighlighter.all()</script>
