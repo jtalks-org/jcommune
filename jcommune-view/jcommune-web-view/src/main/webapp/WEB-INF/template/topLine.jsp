@@ -62,11 +62,12 @@
 
               <!-- Language chooser -->
               <li class="dropdown">
-                <a href="#" id="lang-selector-toggle" class="dropdown-toggle" data-toggle="dropdown" title="Click to change language" style="padding:0px; margin: 6px 2px 0px 15px;" 
-                    onclick="window.location = getLanguageLink('en')">
+                <div id="lang-selector-toggle" class="dropdown-toggle" data-toggle="dropdown" style="padding:0px; margin: 6px 2px 0px 15px;" title="Click to change language">
+                <a href="#"  onclick="window.location = getLanguageLink('en')">
                   <img src="${pageContext.request.contextPath}/resources/images/flags/gb.png" />
-                  <b class="caret"></b>
                 </a>
+                <b class="caret"></b>
+                </div>
                 <ul class="dropdown-menu lang-menu">
                   <li><a href="#" onclick="window.location = getLanguageLink('ru')"><img src="${pageContext.request.contextPath}/resources/images/flags/ru.png" /> Russian</a></li>
                   <li><a href="#" onclick="window.location = getLanguageLink('uk')"><img src="${pageContext.request.contextPath}/resources/images/flags/ua.png" /> Ukrainian</a></li>
