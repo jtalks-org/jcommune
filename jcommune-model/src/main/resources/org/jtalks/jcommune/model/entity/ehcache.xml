@@ -26,9 +26,9 @@
                                      propertySeparator="::"/>
 
     <!-- enable ehcache monitoring -->
-    <cacheManagerPeerListenerFactory
-        class="org.terracotta.ehcachedx.monitor.probe.ProbePeerListenerFactory"
-        properties="monitorAddress=localhost, monitorPort=9889, memoryMeasurement=false" />
+<!--     <cacheManagerPeerListenerFactory -->
+<!--         class="org.terracotta.ehcachedx.monitor.probe.ProbePeerListenerFactory" -->
+<!--         properties="monitorAddress=localhost, monitorPort=9889, memoryMeasurement=false" /> -->
 
     <defaultCache maxElementsInMemory="1000"
                   eternal="false"
