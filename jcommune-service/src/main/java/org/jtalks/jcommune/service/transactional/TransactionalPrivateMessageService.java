@@ -131,7 +131,7 @@ public class TransactionalPrivateMessageService
     public PrivateMessage saveDraft(long id, String title, String body, String recipientUsername)
             throws NotFoundException {
         JCUser recipient = null;
-        if (recipientUsername != null) {
+        if (recipientUsername != null){
             recipient = userService.getByUsername(recipientUsername);
         }
         JCUser userFrom = (JCUser) securityService.getCurrentUser();
@@ -140,7 +140,7 @@ public class TransactionalPrivateMessageService
         pm.setStatus(PrivateMessageStatus.DRAFT);
         this.getDao().saveOrUpdate(pm);
 
-        securityService.createAclBuilder().grant(GeneralPermission.ADMIN).to(securityService.getCurrentUser()).
+        securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(securityService.getCurrentUser()).
                 on(pm).flush();
 
         logger.debug("Updated private message draft. Message id={}", pm.getId());
@@ -205,6 +205,10 @@ public class TransactionalPrivateMessageService
             "hasPermission(#id, 'org.jtalks.jcommune.model.entity.PrivateMessage', read)")
     public PrivateMessage get(Long id) throws NotFoundException {
         PrivateMessage pm = super.get(id);
+        if (!hasCurrentUserAccessToPM(pm)) {
+            throw new NotFoundException(String.format("current user has no right to read pm %s with id %d",
+                    securityService.getCurrentUser(), id));
+        }
         if (this.ifMessageShouldBeMarkedAsRead(pm)) {
             pm.setRead(true);
             this.getDao().saveOrUpdate(pm);
@@ -219,11 +223,10 @@ public class TransactionalPrivateMessageService
      * <p>1. Current user is the recepient
      * <p>2. Message is not read already
      * <p>3. Message is not a draft
-     *
      * @param pm private messag to be tested
      * @return if message should be marked as read
      */
-    private boolean ifMessageShouldBeMarkedAsRead(PrivateMessage pm) {
+    private boolean ifMessageShouldBeMarkedAsRead(PrivateMessage pm){
         return securityService.getCurrentUser().equals(pm.getUserTo())
                 && !pm.isRead()
                 && !pm.getStatus().equals(PrivateMessageStatus.DRAFT);
@@ -238,7 +241,7 @@ public class TransactionalPrivateMessageService
 
         String result = "inbox";
         for (Long id : ids) {
-
+            
             PrivateMessage message = null;
             try {
                 message = get(id);
@@ -246,7 +249,7 @@ public class TransactionalPrivateMessageService
                 logger.warn("Message #" + id + " not found", e);
                 continue;
             }
-
+            
             switch (message.getStatus()) {
                 case DRAFT:
                     this.getDao().delete(message);
@@ -274,26 +277,21 @@ public class TransactionalPrivateMessageService
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean hasCurrentUserAccessToPM(long pmId) throws NotFoundException {
-        JCUser currentUser = (JCUser) securityService.getCurrentUser();
-        PrivateMessage message = get(pmId);
-        PrivateMessageStatus messageStatus = message.getStatus();
+    private boolean hasCurrentUserAccessToPM(PrivateMessage privateMessage) throws NotFoundException {
+       JCUser currentUser = (JCUser) securityService.getCurrentUser();
+       PrivateMessageStatus messageStatus = privateMessage.getStatus();
 
-        if (currentUser.equals(message.getUserFrom()) &&
-                (messageStatus.equals(PrivateMessageStatus.DELETED_FROM_OUTBOX))) {
-            return false;
-        }
+       if (currentUser.equals(privateMessage.getUserFrom()) &&
+               (messageStatus.equals(PrivateMessageStatus.DELETED_FROM_OUTBOX))){
+           return false;
+       }
 
-        if (currentUser.equals(message.getUserTo()) &&
-                (messageStatus.equals(PrivateMessageStatus.DELETED_FROM_INBOX))) {
-            return false;
-        }
+       if (currentUser.equals(privateMessage.getUserTo()) &&
+               (messageStatus.equals(PrivateMessageStatus.DELETED_FROM_INBOX))){
+           return false;
+       }
 
-        return true;
+       return true; 
     }
 
 }

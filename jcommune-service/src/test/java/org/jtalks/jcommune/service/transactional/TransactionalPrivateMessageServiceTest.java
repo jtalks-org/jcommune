@@ -20,8 +20,8 @@ package org.jtalks.jcommune.service.transactional;
  * @author Max Malakhov
  */
 public class TransactionalPrivateMessageServiceTest {
-/*
-    @Mock
+
+    /*@Mock
     private PrivateMessageDao pmDao;
     @Mock
     private SecurityService securityService;
@@ -219,6 +219,37 @@ public class TransactionalPrivateMessageServiceTest {
 
         PrivateMessage pm = pmService.get(PM_ID);
     }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void testGetNotFoundIfUserHasNoAccessToDeletedPmFromOutBox() throws NotFoundException {
+        PrivateMessage message = new PrivateMessage(user, user, null, null);
+        message.setStatus(PrivateMessageStatus.DELETED_FROM_OUTBOX);
+
+        when(securityService.getCurrentUser()).thenReturn(user);
+        when(pmDao.get(PM_ID)).thenReturn(message);
+        when(pmDao.isExist(PM_ID)).thenReturn(true);
+        when(securityService.getCurrentUser()).thenReturn(user);
+
+        PrivateMessage resultedPm =  pmService.get(PM_ID);
+
+        verify(pmDao).get(PM_ID);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void testGetNotFoundIfUserHasNoAccessToDeletePmFromInbox() throws NotFoundException {
+        PrivateMessage message = new PrivateMessage(user, user, null, null);
+        message.setStatus(PrivateMessageStatus.DELETED_FROM_INBOX);
+
+        when(securityService.getCurrentUser()).thenReturn(user);
+        when(pmDao.get(PM_ID)).thenReturn(message);
+        when(pmDao.isExist(PM_ID)).thenReturn(true);
+        when(securityService.getCurrentUser()).thenReturn(user);
+
+        PrivateMessage resultedPm =  pmService.get(PM_ID);
+
+        verify(pmDao).get(PM_ID);
+    }
+
 
     @Test
     public void testGetReadAlreadyRead() throws NotFoundException {
@@ -433,6 +464,6 @@ public class TransactionalPrivateMessageServiceTest {
 
         verify(pmDao).get(1L);
         verify(pmDao).get(2L);
-    }*/
-
+    }
+*/
 }

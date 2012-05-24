@@ -26,9 +26,9 @@
                                      propertySeparator="::"/>
 
     <!-- enable ehcache monitoring -->
-    <!-- cacheManagerPeerListenerFactory
-        class="org.terracotta.ehcachedx.monitor.probe.ProbePeerListenerFactory"
-        properties="monitorAddress=localhost, monitorPort=9889, memoryMeasurement=false" /-->
+<!--     <cacheManagerPeerListenerFactory -->
+<!--         class="org.terracotta.ehcachedx.monitor.probe.ProbePeerListenerFactory" -->
+<!--         properties="monitorAddress=localhost, monitorPort=9889, memoryMeasurement=false" /> -->
 
     <defaultCache maxElementsInMemory="1000"
                   eternal="false"
@@ -53,6 +53,17 @@
     </cache>
 
     <cache name="org.jtalks.EHCOMMON"
+           maxElementsInMemory="5000"
+           eternal="true"
+           overflowToDisk="false"
+           statistics="true">
+        <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+                                   properties="replicateAsynchronously=true, replicatePuts=false,
+                        replicateUpdates=true, replicateUpdatesViaCopy=false,
+                        replicateRemovals=true"/>
+    </cache>
+    
+    <cache name="org.jtalks.common.model.entity.Section.branches"
            maxElementsInMemory="5000"
            eternal="true"
            overflowToDisk="false"
