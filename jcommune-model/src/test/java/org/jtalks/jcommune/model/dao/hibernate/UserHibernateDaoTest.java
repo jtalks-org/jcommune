@@ -19,7 +19,6 @@ import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -29,11 +28,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNotSame;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
@@ -194,7 +196,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
     @Test
     public void testFetchNonActivatedAccounts() {
-        JCUser activated = new JCUser("login", "email", "password");
+        JCUser activated = new JCUser("login", "email@mail.com", "password");
         activated.setEnabled(true);
         JCUser nonActivated = ObjectsFactory.getDefaultUser();
         session.save(activated);
@@ -208,6 +210,6 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
 
     private int getCount() {
-        return ((Number) session.createQuery("select count(*) from JCUser").uniqueResult()).intValue();
+        return ((Number) session.createQuery("select count(*) from org.jtalks.jcommune.model.entity.JCUser").uniqueResult()).intValue();
     }
 }

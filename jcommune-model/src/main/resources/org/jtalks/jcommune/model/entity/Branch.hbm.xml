@@ -16,32 +16,45 @@
 
 -->
 <!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="org.jtalks.jcommune.model.entity">
-  <class name="Branch" table="BRANCHES">
-    <cache usage="nonstrict-read-write"/>
-    <id column="BRANCH_ID" name="id" unsaved-value="0">
-      <generator class="native"/>
-    </id>
-    <property column="UUID" name="uuid" unique="true" not-null="true"/>
-    <property name="name" column="NAME" not-null="true"/>
-    <property name="description" column="DESCRIPTION"/>
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.jtalks.jcommune.model.entity" auto-import="false">
+    <class name="org.jtalks.common.model.entity.Branch" table="BRANCHES">
+        <cache usage="nonstrict-read-write" region="org.jtalks.EHCOMMON"/>
+        <id column="BRANCH_ID" name="id" unsaved-value="0">
+            <generator class="native"/>
+        </id>
+        
+        <!-- 
+            Used to make dummy hibernate hierarchy used in distributed cache.
+         -->
+        <discriminator>
+            <formula>'BRANCH'</formula>
+        </discriminator>
 
-    <bag name="topics" cascade="all-delete-orphan" order-by="sticked DESC, topicWeight DESC, modificationDate DESC">
-      <!--No caching here, see JC-378-->
-      <key column="BRANCH_ID" foreign-key="FK_BRANCH"/>
-      <one-to-many class="Topic"/>
-    </bag>
+        <property column="UUID" name="uuid" unique="true" not-null="true"/>
+        <property name="name" column="NAME" not-null="true"/>
+        <property name="description" column="DESCRIPTION"/>
 
-    <many-to-one name="section" column="SECTION_ID" class="Section"
-                 not-null="false"/>
+        <many-to-one name="section" column="SECTION_ID" class="org.jtalks.common.model.entity.Section"
+                     not-null="false"/>
 
-    <set name="subscribers" table="BRANCH_SUBSCRIPTIONS" cascade="all">
-      <cache usage="nonstrict-read-write"/>
-      <key column="BRANCH_ID"/>
-      <many-to-many column="USER_ID" class="org.jtalks.jcommune.model.entity.JCUser"/>
-    </set>
+        <subclass name="org.jtalks.jcommune.model.entity.Branch"
+                  extends="org.jtalks.common.model.entity.Branch"
+                  discriminator-value="BRANCH">
+            <bag name="topics" cascade="all-delete-orphan"
+                 order-by="sticked DESC, topicWeight DESC, modificationDate DESC">
+                <!--No caching here, see JC-378-->
+                <key column="BRANCH_ID" foreign-key="FK_BRANCH"/>
+                <one-to-many class="Topic"/>
+            </bag>
 
-  </class>
+            <set name="subscribers" table="BRANCH_SUBSCRIPTIONS" cascade="all">
+                <cache usage="nonstrict-read-write"/>
+                <key column="BRANCH_ID"/>
+                <many-to-many column="USER_ID" class="org.jtalks.jcommune.model.entity.JCUser"/>
+            </set>
+        </subclass>
+
+    </class>
 </hibernate-mapping>

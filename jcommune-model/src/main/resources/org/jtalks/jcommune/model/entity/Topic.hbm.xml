@@ -42,14 +42,18 @@
             <one-to-many class="Post"/>
         </list>
 
-        <many-to-one name="topicStarter" column="TOPIC_STARTER" class="JCUser" lazy="false"
+        <many-to-one name="topicStarter" column="TOPIC_STARTER" class="org.jtalks.jcommune.model.entity.JCUser"
+                     lazy="false"
                      not-null="true" foreign-key="FK_TOPIC_STARTER"/>
         <many-to-one name="branch" column="BRANCH_ID" class="Branch"
                      not-null="false"/>
+
+        <one-to-one name="poll" class="org.jtalks.jcommune.model.entity.Poll"/>
 
         <set name="subscribers" table="TOPIC_SUBSCRIPTIONS" cascade="all">
             <key column="TOPIC_ID"/>
             <many-to-many column="USER_ID" class="org.jtalks.jcommune.model.entity.JCUser"/>
         </set>
+
     </class>
 </hibernate-mapping>

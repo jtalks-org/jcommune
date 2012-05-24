@@ -16,11 +16,14 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.BranchDao;
-import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -28,10 +31,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNotSame;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
@@ -61,7 +70,6 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     @Test
     public void testSave() {
         Branch branch = ObjectsFactory.getDefaultBranch();
-
         dao.update(branch);
 
         assertNotSame(branch.getId(), 0, "Id not created");
@@ -73,7 +81,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     }
 
 
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    @Test(expectedExceptions = ConstraintViolationException.class)
     public void testSaveBranchWithNameNotNullViolation() {
         Branch branch = ObjectsFactory.getDefaultBranch();
         session.save(branch);
@@ -151,7 +159,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         dao.update(branch);
         session.flush();
 
-        assertEquals(getCount("select count(*) from Branch"), 1);
+        assertEquals(getCount("select count(*) from org.jtalks.jcommune.model.entity.Branch"), 1);
         assertEquals(getCount("select count(*) from Topic"), 0);
         assertEquals(getCount("select count(*) from Post"), 0);
     }
@@ -164,8 +172,9 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         List<Branch> branches = new ArrayList<Branch>();
         Section section = ObjectsFactory.getDefaultSection();
         for (int i = 0; i < size; i++) {
-            Branch newBranch = new Branch("Branch #" + i);
-            section.addBranch(newBranch);
+            Branch newBranch = new Branch("Branch #" + i, "Branch #" + i);
+            section.addOrUpdateBranch(newBranch);
+            newBranch.setSection(section);
             branches.add(newBranch);
         }
         session.save(section);

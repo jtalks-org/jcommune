@@ -14,7 +14,11 @@
  */
 package org.jtalks.jcommune.web.dto;
 
-import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.common.model.entity.Section;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -46,9 +50,10 @@ public class BreadcrumbBuilderTest {
         section = new Section("Section Name");
         section.setId(ID);
 
-        branch = new Branch("Branch Name");
+        branch = new Branch("Branch Name", "Branch description");
         branch.setId(ID);
-        section.addBranch(branch);
+        section.addOrUpdateBranch(branch);
+        branch.setSection(section);
 
         topic = new Topic(user, "Topic Name");
         topic.setId(ID);

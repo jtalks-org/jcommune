@@ -16,55 +16,55 @@
 
 -->
 <!DOCTYPE hibernate-mapping PUBLIC
-  "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-  "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
 
-  <class name="PrivateMessage" table="PRIVATE_MESSAGE">
-    <cache usage="nonstrict-read-write"/>
-    <id column="PM_ID" name="id" unsaved-value="0">
-      <generator class="native"/>
-    </id>
-    <property column="UUID" name="uuid" unique="true" not-null="true"/>
-    <many-to-one name="userFrom" class="JCUser" column="USER_FROM"
-                 foreign-key="FK_USER_FROM" not-null="true"/>
-    <many-to-one name="userTo" class="JCUser" column="USER_TO"
-                 foreign-key="FK_USER_TO"/>
-    <property name="creationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
-              column="CREATION_DATE" not-null="true"/>
-    <property name="title" column="TITLE"/>
-    <property name="body" type="text" column="BODY"/>
-    <property name="read" column="READ_FLAG"/>
-    <property name="status" column="STATUS">
-      <type name="org.hibernate.type.EnumType">
-          <param name="enumClass">org.jtalks.jcommune.model.entity.PrivateMessageStatus</param>
-          <!-- varchar -->
-          <param name="type">12</param>
-      </type>
-  </property>
-  </class>
-  <query name="getAllFromUser">
-    <![CDATA[FROM PrivateMessage as pm 
+    <class name="PrivateMessage" table="PRIVATE_MESSAGE">
+        <cache usage="nonstrict-read-write"/>
+        <id column="PM_ID" name="id" unsaved-value="0">
+            <generator class="native"/>
+        </id>
+        <property column="UUID" name="uuid" unique="true" not-null="true"/>
+        <many-to-one name="userFrom" class="org.jtalks.jcommune.model.entity.JCUser" column="USER_FROM"
+                     foreign-key="FK_USER_FROM" not-null="true"/>
+        <many-to-one name="userTo" class="org.jtalks.jcommune.model.entity.JCUser" column="USER_TO"
+                     foreign-key="FK_USER_TO"/>
+        <property name="creationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
+                  column="CREATION_DATE" not-null="true"/>
+        <property name="title" column="TITLE"/>
+        <property name="body" type="text" column="BODY"/>
+        <property name="read" column="READ_FLAG"/>
+        <property name="status" column="STATUS">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.jtalks.jcommune.model.entity.PrivateMessageStatus</param>
+                <!-- varchar -->
+                <param name="type">12</param>
+            </type>
+        </property>
+    </class>
+    <query name="getAllFromUser">
+        <![CDATA[FROM PrivateMessage as pm
              WHERE pm.userFrom = :user
              and pm.status not in (:statuses)
              ORDER BY pm.creationDate DESC]]>
-  </query>
-  <query name="getAllToUser">
-    <![CDATA[FROM PrivateMessage as pm 
+    </query>
+    <query name="getAllToUser">
+        <![CDATA[FROM PrivateMessage as pm
              WHERE pm.userTo = :user
              and pm.status not in (:statuses)
              ORDER BY pm.creationDate DESC]]>
-  </query>
-  <query name="getDraftsFromUser">
-    <![CDATA[FROM PrivateMessage as pm
+    </query>
+    <query name="getDraftsFromUser">
+        <![CDATA[FROM PrivateMessage as pm
              WHERE pm.userFrom = :user
              and pm.status = :status
              ORDER BY pm.creationDate DESC]]>
-  </query>
-  <query name="getNewMessagesCountFor">
-    <![CDATA[SELECT count(*) FROM PrivateMessage as pm
+    </query>
+    <query name="getNewMessagesCountFor">
+        <![CDATA[SELECT count(*) FROM PrivateMessage as pm
              WHERE pm.userTo.username = :username
              and pm.status = :status
              and pm.read = :read]]>
-  </query>
+    </query>
 </hibernate-mapping>

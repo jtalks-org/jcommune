@@ -23,7 +23,10 @@ import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 /**
@@ -51,7 +54,7 @@ public class NotificationServiceTest {
         initMocks(this);
         service = new NotificationService(securityService, mailService);
         topic = new Topic(user1, "title");
-        branch = new Branch("name");
+        branch = new Branch("name", "description");
         branch.addTopic(topic);
     }
 
@@ -116,12 +119,12 @@ public class NotificationServiceTest {
     }
 
     @Test
-    public void testTopicMovedWithBranchSubscribers(){
+    public void testTopicMovedWithBranchSubscribers() {
         when(securityService.getCurrentUser()).thenReturn(user1);
         branch.getSubscribers().add(user1);
         branch.getSubscribers().add(user2);
         branch.getSubscribers().add(user3);
-        
+
         service.topicMoved(topic, TOPIC_ID);
 
         verify(mailService).sendTopicMovedMail(user2, TOPIC_ID);
@@ -129,13 +132,13 @@ public class NotificationServiceTest {
     }
 
     @Test
-    public void testTopicMovedTopicStarterIsNotASubscriber(){
+    public void testTopicMovedTopicStarterIsNotASubscriber() {
         when(securityService.getCurrentUser()).thenReturn(user1);
         branch.getSubscribers().add(user2);
         branch.getSubscribers().add(user3);
 
         service.topicMoved(topic, TOPIC_ID);
-        
+
         verify(mailService).sendTopicMovedMail(user2, TOPIC_ID);
         verify(mailService).sendTopicMovedMail(user3, TOPIC_ID);
     }

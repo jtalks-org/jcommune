@@ -38,7 +38,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Evgeniy Naumenko
@@ -46,6 +49,7 @@ import static org.testng.Assert.*;
 public class TransactionalLastReadPostTest {
 
     private String BRANCH_NAME = "branch name";
+    private String BRANCH_DESCRIPTION = "branch description";
     private JCUser user = new JCUser("username", "email@mail.com", "password");
 
     private TransactionalLastReadPostService lastReadPostService;
@@ -141,7 +145,7 @@ public class TransactionalLastReadPostTest {
 
     @Test
     public void testMarkAllTopicReadAnonymous() {
-        Branch branch = new Branch(BRANCH_NAME);
+        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
 
         lastReadPostService.markAllTopicsAsRead(branch);
 
@@ -150,7 +154,7 @@ public class TransactionalLastReadPostTest {
 
     @Test
     public void testMarkAllTopicRead() {
-        Branch branch = new Branch(BRANCH_NAME);
+        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
         Topic topic = this.createTestTopic();
         branch.addTopic(topic);
         when(securityService.getCurrentUser()).thenReturn(user);
@@ -200,33 +204,33 @@ public class TransactionalLastReadPostTest {
 
         assertNull(lastReadPostService.getLastReadPostForTopic(topic));
     }
-    
+
     @Test
     public void testUpdateLastReadPostsWhenPostIsDeletedIndexChanged() {
         Topic topic = this.createTestTopic();
-        int postIndex = 1;  
+        int postIndex = 1;
         LastReadPost lastReadPost = new LastReadPost(user, topic, postIndex);
         List<LastReadPost> lastReadPosts = Arrays.asList(lastReadPost);
-        
+
         when(lastReadPostDao.listLastReadPostsForTopic(topic)).thenReturn(lastReadPosts);
-        
+
         lastReadPostService.updateLastReadPostsWhenPostIsDeleted(topic.getFirstPost());
-        
+
         verify(lastReadPostDao).update(lastReadPost);
         assertEquals(lastReadPost.getPostIndex(), postIndex - 1, "The index should be reduced.");
     }
-    
+
     @Test
     public void testUpdateLastReadPostsWhenPostIsDeletedIndexNotChanged() {
         Topic topic = this.createTestTopic();
-        int postIndex = 0;  
+        int postIndex = 0;
         LastReadPost lastReadPost = new LastReadPost(user, topic, postIndex);
         List<LastReadPost> lastReadPosts = Arrays.asList(lastReadPost);
-        
+
         when(lastReadPostDao.listLastReadPostsForTopic(topic)).thenReturn(lastReadPosts);
-        
+
         lastReadPostService.updateLastReadPostsWhenPostIsDeleted(topic.getLastPost());
-        
+
         verify(lastReadPostDao, never()).update(lastReadPost);
         assertEquals(lastReadPost.getPostIndex(), postIndex, "The index shouldn't be reduced.");
     }

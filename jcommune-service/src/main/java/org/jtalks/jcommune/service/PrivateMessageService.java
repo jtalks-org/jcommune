@@ -98,7 +98,7 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
      * DELETED_FROM_INBOX or DELETED_FROM_OUTBOX.
      * Messages with status DELETED_FROM_INBOX, DELETED_FROM_OUTBOX
      * or DRAFT will be removed.
-     * 
+     *
      * @param ids Identifiers of messages for deletion
      * @return URL for redirection
      */

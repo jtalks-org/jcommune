@@ -15,7 +15,9 @@
 package org.jtalks.jcommune.model.entity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Forum branch that contains topics related to branch theme.
@@ -24,25 +26,25 @@ import java.util.List;
  * @author Kirill Afonin
  * @author Max Malakhov
  */
-public class Branch extends SubscriptionAwareEntity {
+public class Branch extends org.jtalks.common.model.entity.Branch
+        implements SubscriptionAwareEntity {
 
-    private String name;
-    private String description;
     private List<Topic> topics = new ArrayList<Topic>();
-    private Section section;
+    private Set<JCUser> subscribers = new HashSet<JCUser>();
 
     /**
      * For Hibernate use only
      */
-    protected Branch() {}
+    protected Branch() {
+    }
 
     /**
      * Creates the Branch instance with required fields.
      *
      * @param name branch name
      */
-    public Branch(String name) {
-        this.name = name;
+    public Branch(String name, String description) {
+        super(name, description);
     }
 
     /**
@@ -115,43 +117,6 @@ public class Branch extends SubscriptionAwareEntity {
         return topics.get(lastTopicIndex);
     }
 
-
-    /**
-     * Set branch name which briefly describes the topics contained in it.
-     *
-     * @return branch name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Get branch name.
-     *
-     * @param name branch name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Get branch description.
-     *
-     * @return branch description
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Set branch description which contains additional information about the branch.
-     *
-     * @param description branch description
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     /**
      * @return list of topics
      */
@@ -193,24 +158,6 @@ public class Branch extends SubscriptionAwareEntity {
     }
 
     /**
-     * Get section of branch
-     *
-     * @return section of the branch
-     */
-    public Section getSection() {
-        return section;
-    }
-
-    /**
-     * Set section for branch
-     *
-     * @param section for the branch
-     */
-    protected void setSection(Section section) {
-        this.section = section;
-    }
-
-    /**
      * Returns a sum of all topic's post count for that branch
      *
      * @return sum of post count for all the topics in this branch
@@ -221,6 +168,20 @@ public class Branch extends SubscriptionAwareEntity {
             postCount += topic.getPostCount();
         }
         return postCount;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Set<JCUser> getSubscribers() {
+        return subscribers;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSubscribers(Set<JCUser> subscribers) {
+        this.subscribers = subscribers;
     }
 
 }

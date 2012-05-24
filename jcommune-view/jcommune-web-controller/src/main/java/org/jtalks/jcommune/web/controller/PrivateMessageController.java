@@ -14,8 +14,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import java.util.List;
-
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.service.PrivateMessageService;
@@ -37,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * MVC controller for Private Messaging. Handles request for inbox, outbox and new private messages.
@@ -75,8 +74,8 @@ public class PrivateMessageController {
     }
 
     /**
-     * @param pmService     for PrivateMessage-related operation
-     * @param bbCodeService for qutes creation
+     * @param pmService       for PrivateMessage-related operation
+     * @param bbCodeService   for qutes creation
      * @param securityService to get current user
      */
     @Autowired
@@ -232,7 +231,7 @@ public class PrivateMessageController {
     /**
      * Save private message as draft. As draft message is not requred to be valid
      *
-     * @param pmDto Dto populated in form
+     * @param pmDto  Dto populated in form
      * @param result validation result
      * @return redirect to "drafts" folder if saved successfully or show form with error message
      */
@@ -246,7 +245,7 @@ public class PrivateMessageController {
             return PM_FORM;
         }
     }
-    
+
     /**
      * Delete private messages.
      *

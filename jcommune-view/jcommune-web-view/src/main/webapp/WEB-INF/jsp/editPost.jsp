@@ -23,6 +23,8 @@
     <title><spring:message code="label.answer_to"/>: <c:out value="${topicTitle}"/></title>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/wysiwyg-bbcode/editor.js"
             type="text/javascript"></script>
+    <script language="javascript"
+            src="${pageContext.request.contextPath}/resources/javascript/custom/leaveConfirm.js"></script>
 </head>
 <body>
 <div class="wrap answer_page">

@@ -15,6 +15,6 @@
 
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<h1><a href="${pageContext.request.contextPath}">
+<h1><a href="${pageContext.request.contextPath}/">
     <img src="${pageContext.request.contextPath}/resources/images/jtalks.png"/>
 </a></h1>
