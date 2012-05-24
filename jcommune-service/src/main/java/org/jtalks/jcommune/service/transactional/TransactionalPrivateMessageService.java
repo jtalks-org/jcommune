@@ -203,6 +203,10 @@ public class TransactionalPrivateMessageService
             "hasPermission(#id, 'org.jtalks.jcommune.model.entity.PrivateMessage', read)")
     public PrivateMessage get(Long id) throws NotFoundException {
         PrivateMessage pm = super.get(id);
+        if (!hasCurrentUserAccessToPM(pm)) {
+            throw new NotFoundException(String.format("current user has no right to read pm %s with id %d",
+                    securityService.getCurrentUser(), id));
+        }
         if (this.ifMessageShouldBeMarkedAsRead(pm)) {
             pm.setRead(true);
             this.getDao().saveOrUpdate(pm);
@@ -271,21 +275,16 @@ public class TransactionalPrivateMessageService
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean hasCurrentUserAccessToPM(long pmId) throws NotFoundException {
+    private boolean hasCurrentUserAccessToPM(PrivateMessage privateMessage) throws NotFoundException {
        JCUser currentUser = securityService.getCurrentUser();
-       PrivateMessage message = get(pmId);
-       PrivateMessageStatus messageStatus = message.getStatus();
+       PrivateMessageStatus messageStatus = privateMessage.getStatus();
 
-       if (currentUser.equals(message.getUserFrom()) &&
+       if (currentUser.equals(privateMessage.getUserFrom()) &&
                (messageStatus.equals(PrivateMessageStatus.DELETED_FROM_OUTBOX))){
            return false;
        }
 
-       if (currentUser.equals(message.getUserTo()) &&
+       if (currentUser.equals(privateMessage.getUserTo()) &&
                (messageStatus.equals(PrivateMessageStatus.DELETED_FROM_INBOX))){
            return false;
        }
