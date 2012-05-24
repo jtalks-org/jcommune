@@ -46,6 +46,7 @@
         <!-- Link to actual ACL Service -->
         <constructor-arg name="aclManager" ref="aclGroupManager"/>
         <constructor-arg name="aclUtil" ref="aclUtils"/>
+        <constructor-arg name="groupDao" ref="groupDao"/>
     </bean>
     <bean id="aclUtils" class="org.jtalks.common.security.acl.AclUtil">
         <constructor-arg name="mutableAclService" ref="aclService"/>
@@ -73,6 +74,7 @@
         <constructor-arg>
             <bean class="org.springframework.security.acls.domain.ConsoleAuditLogger"/>
         </constructor-arg>
+        <property name="sidFactory" ref="jtalksSidFactory"/>
         <property name="permissionFactory">
             <!-- ACL permission factory -->
             <bean class="org.jtalks.common.security.acl.JtalksPermissionFactory" init-method="init"/>

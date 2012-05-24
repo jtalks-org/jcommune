@@ -78,7 +78,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
         if (isRestricted(aces, jtalksPermission)) {
             return false;
         } else if (isAllowed(aces, jtalksPermission)) {
-            return result;
+            return true;
         }
         return result;
     }
