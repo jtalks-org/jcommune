@@ -144,7 +144,7 @@ public class PaginatorTest {
         paginator.setPagination(pagination);
 
         assertEquals(paginator.createPagingLink(5, "1"),
-                "<span class='page'>1</span><a class='page' href='1?page=2'>2</a>");
+                "<li class='active'><a href='#'>1</a></li><li><a href='1?page=2'>2</a></li>");
     }
 
     @Test
@@ -161,7 +161,7 @@ public class PaginatorTest {
         paginator.setPagination(pagination);
 
         assertEquals(paginator.createPagingLink(5, "1"),
-                "<a class='page' href='1?page=1'>1</a><span class='page'>2</span><a class='page' href='1?page=3'>3</a>");
+                "<li><a href='1?page=1'>1</a></li><li class='active'><a href='#'>2</a></li><li><a href='1?page=3'>3</a></li>");
     }
     
     @Test

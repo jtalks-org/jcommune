@@ -84,20 +84,24 @@
         </sec:authorize>
         
 
-        <jtalks:pagination uri="${branch.id}" pagination="${pagination}" list="${topics}"/>
         <div class="span10">
           <div class="pagination pull-right" style="margin: 0px; ">
             <ul>
-              <li><a href="#">Prev</a></li>
-              <li class="active">
-                <a href="#">1</a>
-              </li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">Next</a></li>
-              <li><a href="#">Last</a></li>
-              <li><a href="#">All</a></li>
+                 <jtalks:pagination uri="${branch.id}" pagination="${pagination}" list="${topics}"/>
+                 
+                 <li>
+                    <c:if test="${pagination.maxPages>1}">
+                        <c:if test="${pagination.pagingEnabled == true}">
+                            <a class="button"
+                               href="?pagingEnabled=false"><spring:message code="label.showAll"/></a>
+                        </c:if>
+                    </c:if>
+                    <c:if test="${pagination.pagingEnabled == false}">
+                        <a class="button"
+                           href="?pagingEnabled=true"><spring:message code="label.showPages"/>
+                        </a>
+                    </c:if>
+                </li>
             </ul>
           </div>
         </div>
@@ -211,30 +215,11 @@
         </sec:authorize>
 
       <div class="span10">
-        <div class="pagination pull-right" style="margin: 0px; ">
-          <ul>
-            <li><a href="#">Prev</a></li>
-            <li class="active">
-              <a href="#">1</a>
-            </li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">Next</a></li>
-            <li><a href="#">Last</a></li>
-            <li><a href="#">All</a></li>
-          </ul>
-        </div>
-      </div>
-
-    </div>
-    <!-- END OF Bottom pagination -->
-    
-            
-        <div class="forum_info_bottom">
-            <div>
-                <div>
-                    
+          <div class="pagination pull-right" style="margin: 0px; ">
+            <ul>
+                 <jtalks:pagination uri="${branch.id}" pagination="${pagination}" list="${topics}"/>
+                 
+                 <li>
                     <c:if test="${pagination.maxPages>1}">
                         <c:if test="${pagination.pagingEnabled == true}">
                             <a class="button"
@@ -246,15 +231,14 @@
                            href="?pagingEnabled=true"><spring:message code="label.showPages"/>
                         </a>
                     </c:if>
-                    <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-                </div>
-                <div>
-                    <span class="nav_bottom">
-                        <jtalks:pagination uri="${branch.id}" pagination="${pagination}" list="${topics}"/>
-                    </span>
-                </div>
-            </div>
+                </li>
+            </ul>
+          </div>
         </div>
+
+    </div>
+    <!-- END OF Bottom pagination -->
+    
         
     <!-- Users -->
       <div id="users-stats" class="well" style="min-height: 10px; padding: 5px;">

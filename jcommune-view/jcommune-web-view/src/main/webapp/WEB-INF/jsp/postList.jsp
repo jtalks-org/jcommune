@@ -131,71 +131,52 @@
           -->
         </div>
 
+        <!-- Pagination -->
         <div class="span9">
           <div class="pagination pull-right" style="margin: 0px; ">
             <ul>
-              <li><a href="#">Prev</a></li>
-              <li class="active">
-                <a href="#">1</a>
-              </li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">Next</a></li>
-              <li><a href="#">Last</a></li>
-              <li><a href="#">All</a></li>
+                 <jtalks:pagination uri="${topicId}" pagination="${pag}" list="${posts}"/>
+                 
+                    <c:if test="${pag.maxPages>1}">
+                        <c:if test="${pag.pagingEnabled == true}">
+                            <li>
+                            <a href="?pagingEnabled=false">
+                                <spring:message code="label.showAll"/>
+                            </a>
+                            </li>
+                        </c:if>
+                    </c:if>
+                    <c:if test="${pag.pagingEnabled == false}">
+                        <li>
+                        <a href="?pagingEnabled=true">
+                            <spring:message code="label.showPages"/>
+                        </a>
+                        </li>
+                    </c:if>
+                
+                <c:if test="${previousTopic != null}">
+                <li>
+                    <a href="${pageContext.request.contextPath}/topics/${previousTopic.id}"
+                        title="<spring:message code='label.topic.previous'/>">
+                        <spring:message code='label.topic.previous'/>
+                    </a>
+                </li>
+                </c:if>
+                <c:if test="${nextTopic != null}">
+                    <li>
+                    <a href="${pageContext.request.contextPath}/topics/${nextTopic.id}"
+                        title="<spring:message code='label.topic.next'/>">
+                        <spring:message code='label.topic.next'/>
+                    </a>
+                    </li>
+                </c:if>
             </ul>
           </div>
         </div>
+        <!-- END OF Pagination -->
         
       </div>
       <!-- END OF Upper pagination -->
-
-<div class="forum_info_top">
-    <div>
-        <div> <!-- top left -->
-
-        </div>
-        <div> <!-- top right -->
-
-        </div>
-    </div>
-    <div class="info_top_lower">
-        <div> <!-- bottom left -->
-            
-            <c:if test="${pag.maxPages>1}">
-                <c:if test="${pag.pagingEnabled==true}">
-                    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                        <a class="button" href="?pagingEnabled=false"><spring:message code="label.showAll"/></a>
-                    </sec:authorize>
-                </c:if>
-            </c:if>
-            <c:if test="${pag.pagingEnabled == false}">
-                <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                    <a class="button" href="?pagingEnabled=true"><spring:message code="label.showPages"/></a>
-                </sec:authorize>
-            </c:if>
-            
-        </div>
-        <div class="info_top_lower_right"> <!-- bottom right -->
-            <c:if test="${previousTopic != null}">
-                <a class="button but_arrow arrow_left"
-                   href="${pageContext.request.contextPath}/topics/${previousTopic.id}"
-                   title="<spring:message code='label.topic.previous'/>">
-                </a>
-            </c:if>
-            <c:if test="${nextTopic != null}">
-                <a class="button but_arrow"
-                   href="${pageContext.request.contextPath}/topics/${nextTopic.id}"
-                   title="<spring:message code='label.topic.next'/>">
-                </a>
-            </c:if>
-                <span class="nav_top">
-                    <jtalks:pagination uri="${topicId}" pagination="${pag}" list="${posts}"/>
-                </span>
-        </div>
-    </div>
-</div>
 
     <!-- Include poll row. -->
     <jsp:include page="../template/pollRow.jsp"/>
@@ -340,6 +321,33 @@
           <a href="#" class="btn btn-danger" title="Remove this topic">Delete</a>
           -->
         </div>
+        
+        <!-- Pagination -->
+        <div class="span9">
+          <div class="pagination pull-right" style="margin: 0px; ">
+            <ul>
+                 <jtalks:pagination uri="${topicId}" pagination="${pag}" list="${posts}"/>
+                 
+                    <c:if test="${pag.maxPages>1}">
+                        <c:if test="${pag.pagingEnabled == true}">
+                            <li>
+                            <a href="?pagingEnabled=false">
+                                <spring:message code="label.showAll"/>
+                            </a>
+                            </li>
+                        </c:if>
+                    </c:if>
+                    <c:if test="${pag.pagingEnabled == false}">
+                        <li>
+                        <a href="?pagingEnabled=true">
+                            <spring:message code="label.showPages"/>
+                        </a>
+                        </li>
+                    </c:if>
+            </ul>
+          </div>
+        </div>
+        <!-- END OF Pagination -->
 </div>
 
       <!-- Users -->
