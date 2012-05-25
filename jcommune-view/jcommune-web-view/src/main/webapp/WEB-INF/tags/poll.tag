@@ -45,7 +45,7 @@
                 <c:otherwise>
                     <fmt:message key="label.poll.title.with.ending">
                         <fmt:param>${poll.title}</fmt:param>
-                        <fmt:param><jtalks:format value="${poll.endingDate}"/></fmt:param>
+                        <fmt:param><jtalks:format pattern="dd MMM yyyy" value="${poll.endingDate}"/></fmt:param>
                     </fmt:message>
                 </c:otherwise>
             </c:choose>
