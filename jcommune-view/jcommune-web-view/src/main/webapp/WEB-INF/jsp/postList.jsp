@@ -261,15 +261,14 @@
             <tr style="vertical-align: top;">
               <td class="userinfo">
                 <div>
-                  <i class="icon-online" title="User online"></i>
+                  <c:set var="online" value='<i class="icon-online" title="User online"></i>'/>
+                  <c:set var="offline" value='<i class="icon-offline" title="User offline"></i>'/>
+                  <jtalks:ifContains collection="${usersOnline}" object="${post.userCreated}"
+                                       successMessage="${online}" failMessage="${offline}"/>
                   <a style="font-size: 14pt;" 
                     href="${pageContext.request.contextPath}/users/${post.userCreated.encodedUsername}">
-                    <c:out value="${post.userCreated.username}"/>
-                    <spring:message var="online" code="label.topic.online_users"/>
-                    <spring:message var="offline" code="label.topic.offline_users"/>
-                    <jtalks:ifContains collection="${usersOnline}" object="${post.userCreated}"
-                                       successMessage="${online}" failMessage="${offline}"/>
-                    </a>
+                    <c:out value="${post.userCreated.username}"/>                   
+                  </a>
                 </div>
                 <div>asshole</div>
               
