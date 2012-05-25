@@ -13,8 +13,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 /**
- *
- * Package for jsr-303 validation constraints and implementations.
- *
+ * This package is intended for migration support controllers.
+ * Their main goal is to provide redirects and forwards from the old URLs.
  */
 package org.jtalks.jcommune.web.controller.migration;
