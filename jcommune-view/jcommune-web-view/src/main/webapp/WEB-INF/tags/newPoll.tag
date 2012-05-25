@@ -78,7 +78,7 @@
                 <spring:message code="label.poll.date"/>
             </div>
             <div class="forum_answer_right">
-                <input id="datepicker" type="text" name="${endingDateNameValue}">
+                <form:input path="${endingDateNameValue}" id="datepicker" type="text" readonly="true"/>
                 <br>
                 <form:errors path="${endingDateNameValue}" cssClass="error"/>
             </div>
