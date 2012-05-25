@@ -51,12 +51,12 @@
             </c:choose>
         </h3>
         <!-- List of poll options -->
-        <ul>
+        <c:if test="${poll.active && votingAvailable}">
+            
             <c:forEach items="${pollOptions}" var="option">
-                <li>
-                    <!-- RadioButton/CheckBox. Available when poll is active and user not voted. -->
-                    <c:if test="${poll.active && votingAvailable}">
-                        <c:choose>
+                <div class="control-group">
+                    <%-- RadioButton/CheckBox. Available when poll is active and user not voted. --%>
+                         <c:choose>
                             <c:when test="${poll.singleAnswer}">
                                 <input name="pollAnswer" id="pollRadioButton${option.id}"
                                        type="radio" value="${option.id}">
@@ -66,52 +66,42 @@
                                        type="checkbox" value="${option.id}">
                             </c:otherwise>
                         </c:choose>
-                    </c:if>
+                    
                     <c:out value="${option.name}"/>
-                    <!-- Available to anonymous users and voted users. -->
-                    <c:choose>
-                        <c:when test="${!votingAvailable}">
-							<span id="pollAnswer${option.id}">
-								<fmt:message key="label.poll.option.vote.info">
-                                    <fmt:param>${option.votesCount}</fmt:param>
-                                    <fmt:param>
-                                        <c:choose>
-                                            <c:when test="${poll.totalVotesCount > 0}">
-                                                <fmt:formatNumber minFractionDigits="2" maxFractionDigits="2"
-                                                                  value="${option.votesCount/poll.totalVotesCount*100}"/>
+                            <span id="pollAnswer${option.id}"></span>
+                </div>
+            </c:forEach>
+            
+            <!-- Poll button. Available when poll is active and user not voted and is button not disabled. -->
+            <c:if test="${isVoteButtonEnabled}">
+                <input type="submit" name="pollSubmit" id="pollSubmit"
+                        class="btn btn-primary"
+                        value="<fmt:message key="label.poll.vote"/>">
+            </c:if>
+        </c:if>
+        
+        <!-- Available to anonymous users and voted users. -->
+        <c:if test="${!poll.active || !votingAvailable}">
+            <c:forEach items="${pollOptions}" var="option">                   
+                    <c:out value="${option.name}"/>
+                            <span id="pollAnswer${option.id}">
+                                <div class="progress" style="margin-bottom: 3px;">
+                                <c:choose>
+                                            <c:when test="${poll.totalVotesCount > 0 && option.votesCount > 0}">
+                                                <div class="bar" style="width: ${option.votesCount / poll.totalVotesCount * 100}%;">${option.votesCount}</div>
                                             </c:when>
                                             <c:otherwise>
-                                                <fmt:param value="0"/>
+                                                <div class="bar" style="width: 0;"></div>
                                             </c:otherwise>
-                                        </c:choose>
-                                    </fmt:param>
-                                </fmt:message>
-							</span>
-                        </c:when>
-                        <c:otherwise>
-                            <span id="pollAnswer${option.id}"></span>
-                        </c:otherwise>
-                    </c:choose>
-                </li>
-                <!-- Available to anonymous users and voted users. -->
-                <c:choose>
-                    <c:when test="${!votingAvailable}">
-                        <li style="width:${option.votesCount/poll.totalVotesCount*100}%"
-                            class="pollChart pollChart${option.id}"/>
-                    </c:when>
-                    <c:otherwise>
-                        <li class="pollChart pollChart${option.id}"/>
-                    </c:otherwise>
-                </c:choose>
+                                        </c:choose>                                 
+                                </div>
+                            </span>
             </c:forEach>
-        </ul>
-        <!-- Poll button. Available when poll is active and user not voted and is button not disabled. -->
-        <c:if test="${isVoteButtonEnabled && poll.active && votingAvailable}">
-            <input type="submit" name="pollSubmit" id="pollSubmit"
-                   value="<fmt:message key="label.poll.vote"/>">
         </c:if>
+        
+        
         <!-- Additional components -->
-        <span id="pollMessage" style="display: none; "><fmt:message key="label.poll.message.error"/></span>
+        <span id="pollMessage" style="display: none; " class="label label-important"><fmt:message key="label.poll.message.error"/></span>
         <img src="${pageContext.request.contextPath}/resources/images/ajaxLoader.gif"
              alt="Ajax Loader" id="pollAjaxLoader" style="display: none; ">
         <input type="hidden" name="pollId" value="${poll.id}"/>

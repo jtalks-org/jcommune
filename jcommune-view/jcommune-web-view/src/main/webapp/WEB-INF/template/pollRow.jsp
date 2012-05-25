@@ -15,44 +15,17 @@
 
 --%>
 <%--
-	Represents a row in a table of the forum, that contains a poll.
-	The left side of a row contains information about the author of the poll.
-	The right side of a row contains the poll of topic.
+    Represents a row in a table of the forum, that contains a poll.
+    The left side of a row contains information about the author of the poll.
+    The right side of a row contains the poll of topic.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <c:if test="${poll != null}">
-    <div class="forum_row">
-        <div class="forum_userinfo">
-            <a class="username"
-               href="${pageContext.request.contextPath}/users/${topic.topicStarter.encodedUsername}">
-                <c:out value="${topic.topicStarter.username}"/>
-            </a>
-
-            <div class="status">
-                <spring:message var="online" code="label.topic.online_users"/>
-                <spring:message var="offline" code="label.topic.offline_users"/>
-                <jtalks:ifContains collection="${usersOnline}" object="${topic.topicStarter}"
-                                   successMessage="${online}" failMessage="${offline}"/>
-            </div>
-            <img src="${pageContext.request.contextPath}/${topic.topicStarter.encodedUsername}/avatar"
-                 class="avatar"/>
-            <br/>
-
-            <div class="user_misc_info">
-                <span class="status"><spring:message code="label.topic.registered"/></span>
-                <jtalks:format pattern="dd.MM.yy" value="${topic.topicStarter.registrationDate}"/><br/>
-                <span class="status"><spring:message code="label.topic.message_count"/></span>
-                <c:out value="${topic.topicStarter.postCount}"/><br/>
-                <c:if test="${topic.topicStarter.location != null}">
-                    <span class="status"><spring:message code="label.topic.from_whence"/></span>
-                    <span class="break_word"><c:out value="${topic.topicStarter.location}"/></span>
-                </c:if>
-            </div>
-        </div>
-        <div class="forum_message_cell">
+    <div class="row well" style="padding: 5px; margin: 5px 0;">
+        <div class="span4" style="float: none; margin: 0 auto;">
             <jtalks:poll isVoteButtonEnabled="true" pollItems="${pollOptions}" poll="${poll}"/>
         </div>
     </div>
