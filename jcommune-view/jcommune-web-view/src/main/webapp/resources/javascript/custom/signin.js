@@ -37,7 +37,7 @@ $(function () {
                 var form_elements = formatFormElements(data);
                 var content = formatHTMLContent(data, form_elements);
                 //Check the query answer and displays prompt
-                if ($(data).find("span.forum_header_answer").html() != null) {
+                if ($(data).find("legend").html() != null) {
                     $.prompt(content,
                     {buttons:{OK:true}, focus:0,
                         submit:sendLoginPost});
@@ -80,7 +80,7 @@ function sendLoginPost() {
              var form_elements = formatFormElements(data);
              var content = formatHTMLContent(data, form_elements);
             //Check the query answer and displays prompt
-            if ($(data).find("span.forum_header_answer").html() != null) {
+            if ($(data).find("legend").html() != null) {
                 $.prompt(content,
                 {buttons:{OK:true}, focus:0,
                     submit:sendLoginPost});
@@ -101,7 +101,7 @@ function sendLoginPost() {
  */
 function formatFormElements(data){
      var form_elements = [];
-            $.each($(data).find("div.forum_row"), function (index, value) {
+            $.each($(data).find("div.control-group"), function (index, value) {
                 $(value).find("span.error").prepend('<br>');
                 form_elements[index] = $(value).html();
             });
@@ -116,12 +116,12 @@ function formatFormElements(data){
  * @return content formatted html content
  */
 function formatHTMLContent(data,form_elements){
-     var content = '<ul><div>' + $(data).find("span.forum_header_answer").html() +
+     var content = '<ul><div>' + $(data).find("legend").html() +
                           '</div><br/><span class="empty_cell"></span>' + form_elements[0] +
                           form_elements[1] + form_elements[2] + '</ul>' +
                           '<div class="form_controls">' +
-                          '<a href ="' + $(data).find('.form_controls a').attr("href") + '">' +
-                          $(data).find('.form_controls a').html() + "</a>" +
+                          '<a href ="' + $(data).find('.form-actions a').attr("href") + '">' +
+                          $(data).find('.form-actions a').html() + "</a>" +
                           '</div>'  ;
     return content;
 }
