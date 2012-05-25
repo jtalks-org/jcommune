@@ -99,7 +99,7 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
         boolean result = true;
 
         //empty poll items field is valid
-        if (!StringUtils.isNotBlank(pollItemsValue)) {
+        if (StringUtils.isBlank(pollItemsValue)) {
             return result;
         }
 
@@ -123,10 +123,9 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
     private boolean isTitleOrItemsNotBlankIfOneOfThemNotBlank(ConstraintValidatorContext context) {
         boolean result = true;
         //title is not blank & items are blank
-        if (StringUtils.isNotBlank(pollTitleValue) && !StringUtils.isNotBlank(pollItemsValue)) {
+        if (StringUtils.isNotBlank(pollTitleValue) && StringUtils.isBlank(pollItemsValue)) {
             result = false;
-            constraintViolated(context, ITEMS_NOT_BLANK_IF_TITLE_NOT_BLANK_MESSAGE,
-                    pollItemsName);
+            constraintViolated(context, ITEMS_NOT_BLANK_IF_TITLE_NOT_BLANK_MESSAGE,  pollItemsName);
         }
 
         //title is blank & items are not blank
@@ -150,8 +149,8 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
      * @return {@code true} if validation successful, otherwise return false.
      */
     private boolean isVotingOptionsNumberValid(ConstraintValidatorContext context) {
-        if (!StringUtils.isNotBlank(pollTitleValue)) {
-            //Poll title is empty so poll will not be created and it not need to check poll items number
+        if (StringUtils.isBlank(pollItemsValue) && StringUtils.isBlank(pollTitleValue)) {
+            //Poll options are empty so poll will not be created and it not need to check poll items number
             return true;
         } else if (StringUtils.isNotBlank(pollItemsValue)) {
             if ((items.size() >= minItemsNumber) && (items.size() <= maxItemsNumber)) {
@@ -170,8 +169,6 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
      */
     private boolean isDateInStringFormatInFuture(ConstraintValidatorContext context) {
         boolean result;
-
-
         if (endingDateValue == null) {//null values are valid
             result = true;
         } else {
@@ -179,11 +176,9 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
             result = date.isAfter(new DateTime());
             System.out.println();
         }
-
         if (!result) {
             constraintViolated(context, FUTURE_DATE_MESSAGE, endingDateName);
         }
-
         return result;
     }
 
