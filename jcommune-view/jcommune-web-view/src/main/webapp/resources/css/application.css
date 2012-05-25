@@ -58,71 +58,71 @@ ul.lang-menu li img {
 }
 
 .icon-palette {
-  background-image: url("../img/palette-icon.png");
+  background-image: url("../images/palette-icon.png");
   background-position: center;
 }
 
 .icon-strike {
-  background-image: url("../img/strike-icon.png");
+  background-image: url("../images/strike-icon.png");
   background-position: center;
   padding-top: 2px;
 }
 
 .icon-underline {
-  background-image: url("../img/underline-icon.png");
+  background-image: url("../images/underline-icon.png");
   background-position: center;
   padding-top: 2px;
 }
 
 .icon-add-row {
-  background-image: url("../img/insert-row-icon.png");
+  background-image: url("../images/insert-row-icon.png");
   background-position: center;
 }
 
 .icon-link {
-  background-image: url("../img/link-icon.png");
+  background-image: url("../images/link-icon.png");
   background-position: center;
 }
 
 .icon-code {
-  background-image: url("../img/code-icon.png");
+  background-image: url("../images/code-icon.png");
   background-position: center;
   padding-top: 1px;
 }
 
 .icon-icq {
-  background-image: url("../img/icq.png");
+  background-image: url("../images/icq.png");
   background-position: center;
   height: 16px;
   width: 16px;
 }
 
 .icon-skype {
-  background-image: url("../img/skype.png");
+  background-image: url("../images/skype.png");
   background-position: center;
   height: 16px;
   width: 16px;
 }
 
 .icon-mail {
-  background-image: url("../img/mail.png");
+  background-image: url("../images/mail.png");
   background-position: center;
   height: 16px;
   width: 16px;
 }
 
 .icon-quote {
-  background-image: url("../img/quote-icon.png");
+  background-image: url("../images/quote-icon.png");
   background-position: center;
 }
 .icon-online {
-  background-image: url("../img/online-icon.png");
+  background-image: url("../images/online-icon.png");
   background-position: center;
   vertical-align: baseline;
   margin-right: 2px;
 }
 .icon-offline {
-  background-image: url("../img/offline-icon.png");
+  background-image: url("../images/offline-icon.png");
   background-position: center;
   vertical-align: baseline;
   margin-right: 2px;
