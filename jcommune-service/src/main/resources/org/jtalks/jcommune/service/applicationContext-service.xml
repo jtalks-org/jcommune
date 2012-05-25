@@ -102,6 +102,7 @@
     <bean id="branchSectionService"
           class="org.jtalks.jcommune.service.transactional.TransactionalSectionService">
         <constructor-arg ref="branchSectionDao"/>
+        <constructor-arg ref="topicBranchDao"/>
     </bean>
 
     <bean id="pmService"

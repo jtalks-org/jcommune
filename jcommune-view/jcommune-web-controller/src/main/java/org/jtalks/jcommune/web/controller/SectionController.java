@@ -95,9 +95,11 @@ public class SectionController {
         If a request from the user is not the first one getId() call will have no effect.
         */
         session.getId();
+        List<Section> sections = sectionService.getAll();
+        sectionService.fetchBranchesAndFillCountInfo(sections);
         return new ModelAndView("sectionList")
                 .addObject("pageSize", Pagination.getPageSizeFor(securityService.getCurrentUser()))
-                .addObject("sectionList", sectionService.getAll())
+                .addObject("sectionList", sections)
                 .addObject("messagesCount", forumStaticsProvider.getPostsOnForumCount())
                 .addObject("registeredUsersCount", forumStaticsProvider.getUsersCount())
                 .addObject("visitors", forumStaticsProvider.getOnlineUsersCount())

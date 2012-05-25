@@ -22,6 +22,7 @@ import java.util.List;
  * The interface to manipulate with sections
  *
  * @author Max Malakhov
+ * @author Anuar Nurmakanov
  */
 
 public interface SectionService extends EntityService<Section> {
@@ -31,4 +32,12 @@ public interface SectionService extends EntityService<Section> {
      * @return - list of the sections.
      */
     List<Section> getAll();
+    
+    /**
+     * For each section pulls the list of branches and fills an 
+     * information about count of topics, count of posts for each branch.
+     * 
+     * @param sections the list of sections
+     */
+    void fetchBranchesAndFillCountInfo(List<Section> sections);
 }

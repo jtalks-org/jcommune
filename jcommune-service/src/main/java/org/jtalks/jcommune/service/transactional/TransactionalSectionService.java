@@ -14,28 +14,34 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import java.util.List;
+
+import org.jtalks.common.model.entity.Branch;
 import org.jtalks.common.model.entity.Section;
+import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.service.SectionService;
-
-import java.util.List;
 
 /**
  * The implementation of SectionService
  *
  * @author Max Malakhov
+ * @author Anuar Nurmakanov
  */
 
 public class TransactionalSectionService extends AbstractTransactionalEntityService<Section, SectionDao>
         implements SectionService {
-
+    private BranchDao branchDao;
+    
     /**
      * Create an instance of entity based service
      *
      * @param dao data access object, which should be able do all CRUD operations.
+     * @param branchDao data access object for branches
      */
-    public TransactionalSectionService(SectionDao dao) {
+    public TransactionalSectionService(SectionDao dao, BranchDao branchDao) {
         super(dao);
+        this.branchDao = branchDao;
     }
 
     /**
@@ -44,5 +50,34 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
     @Override
     public List<Section> getAll() {
         return this.getDao().getAll();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void fetchBranchesAndFillCountInfo(List<Section> sections) {
+        for (Section section : sections) {
+            List<Branch> branches = section.getBranches();
+            if(branches != null) {
+                fillCountInformation(branches);
+            }
+        }
+    }
+    
+    /**
+     * Fills an information about count of topics, count of posts for each branch.
+     * 
+     * @param branches the list of branches
+     */
+    private void fillCountInformation(List<Branch> branches) {
+        for(Branch branch: branches) {
+            org.jtalks.jcommune.model.entity.Branch jcommuneBranch = 
+                    (org.jtalks.jcommune.model.entity.Branch) branch;
+            int postsCount = branchDao.getCountPostsInBranch(jcommuneBranch);
+            jcommuneBranch.setPostsCount(postsCount);
+            int topicsCount = branchDao.getCountTopicsInBranch(jcommuneBranch);
+            jcommuneBranch.setTopicsCount(topicsCount);
+        }
     }
 }

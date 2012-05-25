@@ -14,20 +14,22 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.common.model.entity.Section;
-import org.jtalks.jcommune.model.dao.SectionDao;
-import org.jtalks.jcommune.service.SectionService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jtalks.common.model.entity.Section;
+import org.jtalks.jcommune.model.dao.BranchDao;
+import org.jtalks.jcommune.model.dao.SectionDao;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.service.SectionService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 /**
  * This test class is intended to test all topic-related forum branch facilities
@@ -39,12 +41,14 @@ public class TransactionalSectionServiceTest {
     final String SECTION_NAME = "section name";
 
     private SectionDao sectionDao;
+    private BranchDao branchDao;
     private SectionService sectionService;
 
     @BeforeMethod
     public void setUp() throws Exception {
         sectionDao = mock(SectionDao.class);
-        sectionService = new TransactionalSectionService(sectionDao);
+        branchDao = mock(BranchDao.class);
+        sectionService = new TransactionalSectionService(sectionDao, branchDao);
     }
 
     @Test
@@ -77,5 +81,26 @@ public class TransactionalSectionServiceTest {
 
         assertEquals(actualSectionList, expectedSectionList);
         verify(sectionDao).getAll();
+    }
+    
+    @Test
+    public void testFetchBranchesAndFillCountInfo() {
+        int expectedPostsCount = 10;
+        int expectedTopicsCount = 20;
+        List<Section> sectionList = new ArrayList<Section>();
+        Section section = new Section(SECTION_NAME);
+        Branch branch = new Branch("BRANCH", "BRANCH_BRANCH");
+        section.addOrUpdateBranch(branch);
+        sectionList.add(section);
+        
+        when(branchDao.getCountPostsInBranch(branch)).thenReturn(expectedPostsCount);
+        when(branchDao.getCountTopicsInBranch(branch)).thenReturn(expectedTopicsCount);
+        
+        sectionService.fetchBranchesAndFillCountInfo(sectionList);
+        
+        assertEquals(branch.getTopicCount(), expectedTopicsCount,
+                "Incorrect count of topics");
+        assertEquals(branch.getPostCount(), expectedPostsCount,
+                "Incorrect count of posts");
     }
 }
