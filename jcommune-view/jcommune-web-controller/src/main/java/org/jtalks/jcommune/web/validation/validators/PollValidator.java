@@ -150,21 +150,16 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
      * @return {@code true} if validation successful, otherwise return false.
      */
     private boolean isVotingOptionsNumberValid(ConstraintValidatorContext context) {
-        boolean result = false;
-
         if (!StringUtils.isNotBlank(pollTitleValue)) {
             //Poll title is empty so poll will not be created and it not need to check poll items number
-            result = true;
+            return true;
         } else if (StringUtils.isNotBlank(pollItemsValue)) {
-            if ((items.size() >= minItemsNumber) || (items.size() <= maxItemsNumber)) {
-                result = true;
+            if ((items.size() >= minItemsNumber) && (items.size() <= maxItemsNumber)) {
+                return true;
             }
         }
-        if (!result) {
-            constraintViolated(context, ITEMS_NUMBER_MESSAGE, pollItemsName);
-        }
-
-        return result;
+        constraintViolated(context, ITEMS_NUMBER_MESSAGE, pollItemsName);
+        return false;
     }
 
     /**
