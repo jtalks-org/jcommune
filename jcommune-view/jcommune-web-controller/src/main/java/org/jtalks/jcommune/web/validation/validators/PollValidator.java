@@ -48,7 +48,6 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
     private String pollItemsValue;
     private String endingDateName;
     private String endingDateValue;
-    private String message;
     private List<PollItem> items;
 
     private final String ITEMS_NUMBER_MESSAGE = "{VotingOptionsNumber.message}";
@@ -71,7 +70,6 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
         this.pollTitleName = constraintAnnotation.pollTitle();
         this.pollItemsName = constraintAnnotation.pollItems();
         this.endingDateName = constraintAnnotation.endingDate();
-        this.message = constraintAnnotation.message();
     }
 
     /**
@@ -157,14 +155,11 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
         if (!StringUtils.isNotBlank(pollTitleValue)) {
             //Poll title is empty so poll will not be created and it not need to check poll items number
             result = true;
-        } else {
-            if (StringUtils.isNotBlank(pollItemsValue)) {
-                if ((items.size() >= minItemsNumber) || (items.size() <= maxItemsNumber)) {
-                    result = true;
-                }
+        } else if (StringUtils.isNotBlank(pollItemsValue)) {
+            if ((items.size() >= minItemsNumber) || (items.size() <= maxItemsNumber)) {
+                result = true;
             }
         }
-
         if (!result) {
             constraintViolated(context, ITEMS_NUMBER_MESSAGE, pollItemsName);
         }
