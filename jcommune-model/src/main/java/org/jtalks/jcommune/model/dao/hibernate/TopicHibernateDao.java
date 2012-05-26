@@ -71,7 +71,9 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
         String modificationDateProperty = "modificationDate";
         DetachedCriteria topicMaxModificationDateCriteria = 
                 DetachedCriteria.forClass(Topic.class)
-                .setProjection(Projections.max(modificationDateProperty));
+                .setProjection(Projections.max(modificationDateProperty))
+                .add(Restrictions.eq("branch", branch));
+                
         //possible that the two topics will be modified at the same time
         @SuppressWarnings("unchecked")
         List<Topic> topics = (List<Topic>) session

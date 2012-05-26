@@ -133,7 +133,6 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         Post expectedLastPost = topic.getPosts().get(size - 1);
         
         Post actualLastPost = dao.getLastPostInTopic(topic);
-        Topic persistedTopic = (Topic) session.get(Topic.class, topic.getId());
         
         assertNotNull(actualLastPost, "Last post in the topic is not found.");
         assertEquals(actualLastPost.getId(), expectedLastPost.getId(),

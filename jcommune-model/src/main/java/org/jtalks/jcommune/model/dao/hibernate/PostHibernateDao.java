@@ -54,10 +54,15 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
         String creationDateProperty = "creationDate";
         DetachedCriteria postMaxCreationDateCriteria = 
                 DetachedCriteria.forClass(Post.class)
-                .setProjection(Projections.max(creationDateProperty));
-        return (Post) getSession().createCriteria(Post.class)
+                .setProjection(Projections.max(creationDateProperty))
+                .add(Restrictions.eq("topic", topic));
+        //Uses the list because it's possible that two posts will have the same creation date
+        @SuppressWarnings("unchecked")
+        List<Post> posts = (List<Post>) getSession().createCriteria(Post.class)
                 .add(Restrictions.eq("topic", topic))
                 .add(Property.forName(creationDateProperty).eq(postMaxCreationDateCriteria))
-                .uniqueResult();
+                .list();
+        //if the result contains more than one message, then we return the first
+        return posts.isEmpty()? null: posts.get(0);
     }
 }
