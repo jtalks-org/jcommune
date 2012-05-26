@@ -14,11 +14,11 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import java.util.List;
+
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.entity.Branch;
-
-import java.util.List;
 
 /**
  * Hibernate DAO implementation for operations with a {@link Branch}.
@@ -26,6 +26,7 @@ import java.util.List;
  * @author Vitaliy Kravchenko
  * @author Max Malakhov
  * @author Eugeny Batov
+ * @author Anuar Nurmakanov
  */
 public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch> implements BranchDao {
 

@@ -14,11 +14,12 @@
  */
 package org.jtalks.jcommune.model.dao;
 
+import java.util.List;
+
 import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
-
-import java.util.List;
 
 /**
  * DAO for the {@link Topic} objects.
@@ -28,6 +29,7 @@ import java.util.List;
  * @author Kirill Afonin
  * @author Vitaliy Kravchenko
  * @author Eugeny Batov
+ * @author Anuar Nurmakanov
  * @see org.jtalks.jcommune.model.dao.hibernate.TopicHibernateDao
  */
 public interface TopicDao extends ChildRepository<Topic> {
@@ -48,4 +50,12 @@ public interface TopicDao extends ChildRepository<Topic> {
      * @return list of topics
      */
     List<Topic> getUnansweredTopics();
+    
+    /**
+     * Find the last updated topic in the branch.
+     * 
+     * @param branch the branch, in which we try to find
+     * @return the last updated topic in the branch
+     */
+    Topic getLastUpdatedTopicInBranch(Branch branch);
 }

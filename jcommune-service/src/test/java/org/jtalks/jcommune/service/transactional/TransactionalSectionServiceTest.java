@@ -24,7 +24,9 @@ import java.util.List;
 
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.dao.BranchDao;
+import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
+import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -42,13 +44,21 @@ public class TransactionalSectionServiceTest {
 
     private SectionDao sectionDao;
     private BranchDao branchDao;
+    private TopicDao topicDao;
+    private PostDao postDao;
     private SectionService sectionService;
 
     @BeforeMethod
     public void setUp() throws Exception {
         sectionDao = mock(SectionDao.class);
         branchDao = mock(BranchDao.class);
-        sectionService = new TransactionalSectionService(sectionDao, branchDao);
+        topicDao = mock(TopicDao.class);
+        postDao = mock(PostDao.class);
+        sectionService = new TransactionalSectionService(
+                sectionDao,
+                branchDao,
+                topicDao,
+                postDao);
     }
 
     @Test
@@ -96,7 +106,7 @@ public class TransactionalSectionServiceTest {
         when(branchDao.getCountPostsInBranch(branch)).thenReturn(expectedPostsCount);
         when(branchDao.getCountTopicsInBranch(branch)).thenReturn(expectedTopicsCount);
         
-        sectionService.fetchBranchesAndFillCountInfo(sectionList);
+        sectionService.fetchBranchesAndFillStatistic(sectionList);
         
         assertEquals(branch.getTopicCount(), expectedTopicsCount,
                 "Incorrect count of topics");

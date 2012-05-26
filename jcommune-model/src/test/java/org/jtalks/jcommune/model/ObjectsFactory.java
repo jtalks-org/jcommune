@@ -131,6 +131,7 @@ public final class ObjectsFactory {
             Post newPost = new Post(author, "content " + i);
             topic.addPost(newPost);
             posts.add(newPost);
+            session.save(newPost);
         }
         session.save(topic);
         return posts;

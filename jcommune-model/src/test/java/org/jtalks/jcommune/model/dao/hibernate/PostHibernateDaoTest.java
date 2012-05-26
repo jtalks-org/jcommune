@@ -20,6 +20,7 @@ import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -122,5 +123,20 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         List<Post> posts = dao.getUserPosts(user);
 
         assertEquals(posts, new ArrayList<Post>());
+    }
+    
+    @Test
+    public void testGetLastPostInTopic() {
+        int size = 4;
+        List<Post> posts = ObjectsFactory.createAndSavePostList(size);
+        Topic topic = posts.get(0).getTopic();
+        Post expectedLastPost = topic.getPosts().get(size - 1);
+        
+        Post actualLastPost = dao.getLastPostInTopic(topic);
+        Topic persistedTopic = (Topic) session.get(Topic.class, topic.getId());
+        
+        assertNotNull(actualLastPost, "Last post in the topic is not found.");
+        assertEquals(actualLastPost.getId(), expectedLastPost.getId(),
+                "The last post in the topic is the wrong.");
     }
 }

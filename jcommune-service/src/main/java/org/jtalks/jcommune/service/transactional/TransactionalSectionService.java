@@ -19,7 +19,11 @@ import java.util.List;
 import org.jtalks.common.model.entity.Branch;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.dao.BranchDao;
+import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
+import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.SectionService;
 
 /**
@@ -32,6 +36,8 @@ import org.jtalks.jcommune.service.SectionService;
 public class TransactionalSectionService extends AbstractTransactionalEntityService<Section, SectionDao>
         implements SectionService {
     private BranchDao branchDao;
+    private TopicDao topicDao;
+    private PostDao postDao;
     
     /**
      * Create an instance of entity based service
@@ -39,9 +45,15 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
      * @param dao data access object, which should be able do all CRUD operations.
      * @param branchDao data access object for branches
      */
-    public TransactionalSectionService(SectionDao dao, BranchDao branchDao) {
+    public TransactionalSectionService(
+            SectionDao dao,
+            BranchDao branchDao,
+            TopicDao topicDao,
+            PostDao postDao) {
         super(dao);
         this.branchDao = branchDao;
+        this.topicDao = topicDao;
+        this.postDao = postDao;
     }
 
     /**
@@ -56,7 +68,7 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
      * {@inheritDoc}
      */
     @Override
-    public void fetchBranchesAndFillCountInfo(List<Section> sections) {
+    public void fetchBranchesAndFillStatistic(List<Section> sections) {
         for (Section section : sections) {
             List<Branch> branches = section.getBranches();
             if(branches != null) {
@@ -78,6 +90,12 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
             jcommuneBranch.setPostsCount(postsCount);
             int topicsCount = branchDao.getCountTopicsInBranch(jcommuneBranch);
             jcommuneBranch.setTopicsCount(topicsCount);
+            
+            Topic lastUpdatedTopic = topicDao.getLastUpdatedTopicInBranch(jcommuneBranch);
+            if (lastUpdatedTopic != null) {
+                Post lastPost = postDao.getLastPostInTopic(lastUpdatedTopic);
+                jcommuneBranch.setLastPostInLastUpdatedTopic(lastPost);
+            }
         }
     }
 }

@@ -14,10 +14,10 @@
  */
 package org.jtalks.jcommune.model.dao;
 
+import java.util.List;
+
 import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.model.entity.Branch;
-
-import java.util.List;
 
 /**
  * DAO for the {@link Branch} objects.

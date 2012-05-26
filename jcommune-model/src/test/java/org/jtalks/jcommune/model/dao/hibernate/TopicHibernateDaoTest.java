@@ -150,4 +150,23 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         session.save(secondTopic);
         session.save(thirdTopic);
     }
+    
+    
+    @Test
+    public void testGetLastUpdatedTopicInBranch() {
+        Topic firstTopic = ObjectsFactory.getDefaultTopic();
+        Branch branch = firstTopic.getBranch();
+        Topic secondTopic = new Topic(firstTopic.getTopicStarter(), "Second topic");
+        firstTopic.updateModificationDate();
+        branch.addTopic(secondTopic);
+        Topic expectedLastUpdatedTopic = firstTopic;
+        
+        session.save(branch);
+        
+        Topic actualLastUpdatedTopic = dao.getLastUpdatedTopicInBranch(branch);
+        
+        assertNotNull(actualLastUpdatedTopic, "Last updated topic is not found");
+        assertEquals(actualLastUpdatedTopic.getId(), expectedLastUpdatedTopic.getId(),
+                "Found incorrect last updated topic");
+    }
 }

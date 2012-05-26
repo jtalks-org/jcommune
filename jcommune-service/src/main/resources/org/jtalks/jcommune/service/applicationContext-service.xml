@@ -103,6 +103,8 @@
           class="org.jtalks.jcommune.service.transactional.TransactionalSectionService">
         <constructor-arg ref="branchSectionDao"/>
         <constructor-arg ref="topicBranchDao"/>
+        <constructor-arg ref="topicDao"/>
+        <constructor-arg ref="postDao"/>
     </bean>
 
     <bean id="pmService"

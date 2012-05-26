@@ -100,11 +100,11 @@
                         </div>
                         <div class="forum_last_message">
                             <c:if test="${branch.topicCount>0}">
-                                <span><jtalks:format value="${branch.lastUpdatedTopic.lastPost.creationDate}"/></span>
+                                <span><jtalks:format value="${branch.lastPostInLastUpdatedTopic.creationDate}"/></span>
                                 <br/>
-                                <a href="${pageContext.request.contextPath}/users/${branch.lastUpdatedTopic.lastPost.userCreated.encodedUsername}">
-                                        <c:out value="${branch.lastUpdatedTopic.lastPost.userCreated.username}"/></a>
-                                <a href="${pageContext.request.contextPath}/posts/${branch.lastUpdatedTopic.lastPost.id}">
+                                <a href="${pageContext.request.contextPath}/users/${branch.lastPostInLastUpdatedTopic.userCreated.encodedUsername}">
+                                        <c:out value="${branch.lastPostInLastUpdatedTopic.userCreated.username}"/></a>
+                                <a href="${pageContext.request.contextPath}/posts/${branch.lastPostInLastUpdatedTopic.id}">
                                     <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
                                          alt="<spring:message code="label.section.header.lastMessage"/>"/>
                                 </a>
@@ -164,7 +164,7 @@
                 </div>
                 <div class="empty_cell"></div>
             </div>
-        </div>
+        </div> 
     </div>
     <div class="footer_buffer"></div>
 </div>

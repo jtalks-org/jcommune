@@ -96,7 +96,7 @@ public class SectionController {
         */
         session.getId();
         List<Section> sections = sectionService.getAll();
-        sectionService.fetchBranchesAndFillCountInfo(sections);
+        sectionService.fetchBranchesAndFillStatistic(sections);
         return new ModelAndView("sectionList")
                 .addObject("pageSize", Pagination.getPageSizeFor(securityService.getCurrentUser()))
                 .addObject("sectionList", sections)

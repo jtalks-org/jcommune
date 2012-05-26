@@ -39,5 +39,5 @@ public interface SectionService extends EntityService<Section> {
      * 
      * @param sections the list of sections
      */
-    void fetchBranchesAndFillCountInfo(List<Section> sections);
+    void fetchBranchesAndFillStatistic(List<Section> sections);
 }

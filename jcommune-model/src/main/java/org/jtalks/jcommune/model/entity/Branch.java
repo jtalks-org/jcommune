@@ -34,6 +34,7 @@ public class Branch extends org.jtalks.common.model.entity.Branch
 
     private Integer topicsCount;
     private Integer postsCount;
+    private Post lastPostInLastUpdatedTopic;
     
     /**
      * For Hibernate use only
@@ -209,5 +210,25 @@ public class Branch extends org.jtalks.common.model.entity.Branch
      */
     public void setPostsCount(Integer postsCount) {
         this.postsCount = postsCount;
+    }
+    
+    /**
+     * Returns the last post of the last updated topic.
+     * Note, that field is transient, so we must define
+     * it by ourselves.
+     * 
+     * @return the last post of the last updated topic
+     */
+    public Post getLastPostInLastUpdatedTopic() {
+        return lastPostInLastUpdatedTopic;
+    }
+
+    /**
+     * Sets the last post of the last updated topic.
+     * 
+     * @param lastPostInLastUpdatedTopic the last post of the last updated topic
+     */
+    public void setLastPostInLastUpdatedTopic(Post lastPostInLastUpdatedTopic) {
+        this.lastPostInLastUpdatedTopic = lastPostInLastUpdatedTopic;
     }
 }
