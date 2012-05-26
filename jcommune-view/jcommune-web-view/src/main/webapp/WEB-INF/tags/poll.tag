@@ -57,13 +57,13 @@
                     <!-- RadioButton/CheckBox. Available when poll is active and user not voted. -->
                     <c:if test="${poll.active && votingAvailable}">
                         <c:choose>
-                            <c:when test="${poll.singleAnswer}">
-                                <input name="pollAnswer" id="pollRadioButton${option.id}"
-                                       type="radio" value="${option.id}">
-                            </c:when>
-                            <c:otherwise>
+                            <c:when test="${poll.multipleAnswer}">
                                 <input name="pollAnswer" id="pollCheckBox${option.id}"
                                        type="checkbox" value="${option.id}">
+                            </c:when>
+                            <c:otherwise>
+                                <input name="pollAnswer" id="pollRadioButton${option.id}"
+                                       type="radio" value="${option.id}">
                             </c:otherwise>
                         </c:choose>
                     </c:if>

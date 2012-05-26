@@ -20,8 +20,7 @@
 <%@ tag body-content="empty" %>
 <%@ attribute name="titleNameValue" required="true" rtexprvalue="true" type="java.lang.String" %>
 <%@ attribute name="pollOptionsNameValue" required="true" rtexprvalue="true" type="java.lang.String" %>
-<%@ attribute name="singleNameValue" required="true" rtexprvalue="true" type="java.lang.String" %>
-<%@ attribute name="singleValue" required="true" rtexprvalue="true" type="java.lang.String" %>
+<%@ attribute name="multipleName" required="true" rtexprvalue="true" type="java.lang.String" %>
 <%@ attribute name="multipleValue" required="true" rtexprvalue="true" type="java.lang.String" %>
 <%@ attribute name="endingDateNameValue" required="true" rtexprvalue="true" type="java.lang.String" %>
 
@@ -57,22 +56,13 @@
         </li>
         <li class="forum_row">
             <div class="forum_answer_left">
-                <spring:message code="label.poll.single.title"/>
-            </div>
-            <div class="forum_answer_right">
-                <input type="radio" name="${singleNameValue}" checked="checked"
-                       value="${singleValue}"/>
-            </div>
-        </li>
-        <li class="forum_row">
-            <div class="forum_answer_left">
                 <spring:message code="label.poll.multiple.title"/>
             </div>
             <div class="forum_answer_right">
-                <input id="multipleBtn" type="radio" name="${singleNameValue}"
-                       value="${multipleValue}"/>
+                <form:checkbox path="${multipleName}"  value="${multipleValue}"/>
             </div>
         </li>
+
         <li class="forum_row">
             <div class="forum_answer_left">
                 <spring:message code="label.poll.date"/>

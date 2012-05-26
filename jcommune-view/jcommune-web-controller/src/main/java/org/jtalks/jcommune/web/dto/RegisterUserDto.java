@@ -15,6 +15,8 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.jtalks.common.model.entity.User;
+import org.jtalks.common.validation.annotations.Email;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.web.validation.annotations.Matches;
 import org.jtalks.jcommune.web.validation.annotations.Unique;
@@ -33,7 +35,7 @@ import javax.validation.constraints.Size;
 public class RegisterUserDto {
 
     @NotBlank(message = "{validation.username.notblank}")
-    @Size(min = JCUser.MIN_NAME_SIZE, max = JCUser.MAX_NAME_SIZE, message = "{validation.username.length}")
+    @Size(min = User.USERNAME_MIN_LENGTH, max = User.USERNAME_MAX_LENGTH, message = "{validation.username.length}")
     @Unique(entity = JCUser.class, field = "username", message = "{validation.duplicateuser}")
     private String username;
 
@@ -44,9 +46,8 @@ public class RegisterUserDto {
             message = "{validation.email.wrong.format}")
     @Unique(entity = JCUser.class, field = "email", message = "{validation.duplicateemail}")
     private String email;
-
     @NotBlank(message = "{validation.password.notblank}")
-    @Size(min = JCUser.MIN_PASS_SIZE, max = JCUser.MAX_PASS_SIZE)
+    @Size(min = User.PASSWORD_MIN_LENGTH, max = User.PASSWORD_MAX_LENGTH)
     private String password;
 
     @NotBlank(message = "{validation.password.confirm.notblank}")

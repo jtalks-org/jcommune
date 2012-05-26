@@ -17,6 +17,8 @@ package org.jtalks.jcommune.web.dto;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
+import org.jtalks.common.model.entity.User;
+import org.jtalks.common.validation.annotations.Email;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
@@ -49,7 +51,7 @@ public class EditUserProfileDto {
     @Size(max = JCUser.MAX_LAST_NAME_SIZE, message = "{validation.signature.length}")
     private String signature;
     private String currentUserPassword;
-    @Length(min = JCUser.MIN_PASS_SIZE, max = JCUser.MAX_PASS_SIZE)
+    @Size(min = User.PASSWORD_MIN_LENGTH, max = User.PASSWORD_MAX_LENGTH)
     private String newUserPassword;
     private String newUserPasswordConfirm;
     private Language language;
