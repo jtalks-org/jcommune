@@ -58,16 +58,14 @@
 
             <div class="span9">
                 <div style="margin: 0 0 5px 0;">
-                    <%--
-                                        <div class="del">
-                                            <a class="btn btn-danger" id="deleteCheckedPM"
-                                               href="${pageContext.request.contextPath}/pm">
-                                                <i class="icon-trash icon-white"></i>
-                                                <spring:message code="label.delete"/>
-                                            </a>
-                                            <form:form id="deleteForm" method="DELETE"/>
-                                        </div>
-                    --%>
+                    <div class="del">
+                        <a class="btn btn-danger" id="deleteCheckedPM"
+                           href="${pageContext.request.contextPath}/pm">
+                            <i class="icon-trash icon-white"></i>
+                            <spring:message code="label.delete"/>
+                        </a>
+                        <form:form id="deleteForm" method="DELETE"/>
+                    </div>
                 </div>
 
                 <table class="table table-bordered table-condensed">
@@ -137,61 +135,5 @@
 
 
     <div class="all_forums">
-        <%--
-                <h2><a class="heading" href="#"><spring:message code="label.inbox"/></a></h2>
-                <jsp:include page="../../template/pmNavigationMenu.jsp"/>
-
-                <table class="messages">
-                    <tr class="head">
-                        <th class="pm_header_check"><input type="checkbox" class="check_all"/></th>
-                        <th class="pm_header_info"><spring:message code="label.sender"/></th>
-                        <th class="pm_header_title"><spring:message code="label.pm.title"/></th>
-                        <th class="pm_header_info"><spring:message code="label.sending_date"/></th>
-                    </tr>
-                    <c:choose>
-                        <c:when test="${!(empty pmList)}">
-                            <c:forEach var="pm" items="${pmList}">
-                                <c:choose>
-                                    <c:when test="${pm.read}">
-                                        <tr id="${pm.id}" class="mess read">
-                                    </c:when>
-                                    <c:otherwise>
-                                        <tr id="${pm.id}" class="mess">
-                                    </c:otherwise>
-                                </c:choose>
-                                <td><input type="checkbox" id="${pm.id}" class="checker"/></td>
-                                <td>
-                                    <a href="${pageContext.request.contextPath}/users/${pm.userFrom.encodedUsername}">
-                                        <c:out value="${pm.userFrom.username}"/>
-                                    </a>
-                                </td>
-                                <td class="title">
-                                    <a href="${pageContext.request.contextPath}/pm/${pm.id}">
-                                        <c:out value="${pm.title}"/></a>
-                                </td>
-                                <td>
-                                    <jtalks:format value="${pm.creationDate}"/>
-                                </td>
-                                </tr>
-                            </c:forEach>
-                        </c:when>
-                        <c:otherwise>
-                            <tr class="forum_row">
-                                <td colspan="4"><spring:message code="label.inbox.empty"/></td>
-                            </tr>
-                        </c:otherwise>
-                    </c:choose>
-                </table>
-        --%>
-
-        <div class="del">
-            <a id="deleteCheckedPM" class="button" href="${pageContext.request.contextPath}/pm">
-                <spring:message code="label.delete"/>
-            </a>
-            <form:form id="deleteForm" method="DELETE"/>
-        </div>
-
     </div>
-    <div class="footer_buffer"></div>
-</div>
 </body>
