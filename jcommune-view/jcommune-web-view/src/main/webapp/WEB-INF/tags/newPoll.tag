@@ -59,7 +59,7 @@
                 <spring:message code="label.poll.multiple.title"/>
             </div>
             <div class="forum_answer_right">
-                <form:checkbox path="${multipleName}"  value="${multipleValue}"/>
+                <form:checkbox path="${multipleName}" id="multipleChecker"  value="${multipleValue}"/>
             </div>
         </li>
 

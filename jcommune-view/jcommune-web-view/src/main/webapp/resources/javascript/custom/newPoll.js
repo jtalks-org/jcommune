@@ -16,21 +16,10 @@ var pollEditFormVisible = true;
 var editFormElement, previewFormElement, multipleButtonElement;
 
 $(document).ready(function () {
-    init("editPoll", "previewPoll", "multipleBtn")
+    editFormElement = document.getElementById("editPoll");
+    previewFormElement = document.getElementById("previewPoll");
+    multipleButtonElement = document.getElementById("multipleChecker");
 });
-
-/**
- * Initialize values.
- *
- * @param pollEditFormId poll edit form id.
- * @param pollPreviewFormId poll preview form id.
- * @param multipleBtnId button id for multiple items selection poll.
- */
-function init(pollEditFormId, pollPreviewFormId, multipleBtnId) {
-    editFormElement = document.getElementById(pollEditFormId);
-    previewFormElement = document.getElementById(pollPreviewFormId);
-    multipleButtonElement = document.getElementById(multipleBtnId);
-}
 
 /**
  * Switch between poll edit and poll preview modes.
