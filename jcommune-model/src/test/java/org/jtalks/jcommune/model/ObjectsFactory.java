@@ -129,4 +129,7 @@ public final class ObjectsFactory {
         return posts;
     }
 
+    public static SimplePage getDefaultSimplePage() {
+        return new SimplePage("name", "content", "pathName");
+    }
 }

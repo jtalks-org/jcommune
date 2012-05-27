@@ -43,4 +43,5 @@ public interface SimplePageDao extends ChildRepository<SimplePage> {
      * @return SimplePage   simple page with the specified by path name
      */
     public SimplePage getPageByPathName(String pathName) throws NotFoundException;
+
 }
