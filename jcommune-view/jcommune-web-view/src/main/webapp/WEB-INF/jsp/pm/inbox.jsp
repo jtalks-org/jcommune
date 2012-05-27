@@ -70,16 +70,16 @@
 
                 <table class="table table-bordered table-condensed">
                     <thead>
-                    <th style="width: 10px; min-width: 10px; max-width: 10px">
+                    <th class="pm_header_check">
                         <input type="checkbox" class="check_all"/></th>
 
-                    <th style="width:150px; max-width:150px"><i class="icon-user"></i>
+                    <th class="pm_header_info"><i class="icon-user"></i>
                         <spring:message code="label.sender"/></th>
 
                     <th><i class="icon-font"></i> <spring:message code="label.pm.title"/></th>
 
-                    <th style="width: 150px"><i class="icon-calendar"></i> <spring:message code="label.sending_date"/>
-                    </th>
+                    <th class="pm_sending_date"><i class="icon-calendar"></i>
+                        <spring:message code="label.sending_date"/></th>
                     </thead>
 
                     <tbody>
@@ -89,10 +89,10 @@
                             <c:forEach var="pm" items="${pmList}">
                                 <c:choose>
                                     <c:when test="${pm.read}">
-                                        <tr id="${pm.id}" >
+                                        <tr id="${pm.id}" class="mess read" >
                                     </c:when>
                                     <c:otherwise>
-                                        <tr id="${pm.id}" class="unread">
+                                        <tr id="${pm.id}" class="mess">
                                     </c:otherwise>
                                 </c:choose>
                                 <td><input type="checkbox" id="${pm.id}" class="checker"/></td>
