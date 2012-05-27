@@ -14,11 +14,12 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.lucene.util.CollectionUtil;
 import org.jtalks.common.model.entity.Branch;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -157,6 +158,7 @@ public class SectionController {
     @RequestMapping(value = "/sections/{sectionId}", method = RequestMethod.GET)
     public ModelAndView branchList(@PathVariable("sectionId") long sectionId) throws NotFoundException {
         Section section = sectionService.get(sectionId);
+        prepareSectionsForView(Arrays.asList(section));
         JCUser currentUser = securityService.getCurrentUser();
 
         return new ModelAndView("branchList")
