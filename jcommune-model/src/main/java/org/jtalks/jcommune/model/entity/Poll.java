@@ -31,7 +31,7 @@ import java.util.List;
  */
 public class Poll extends Entity {
     private String title;
-    private boolean singleAnswer;
+    private boolean multipleAnswer;
     private DateTime endingDate;
     private List<PollItem> pollItems = new ArrayList<PollItem>();
     private Topic topic;
@@ -55,7 +55,6 @@ public class Poll extends Entity {
      */
     public Poll(String title) {
         this.title = title;
-        this.singleAnswer = true;
     }
 
     /**
@@ -79,22 +78,22 @@ public class Poll extends Entity {
     /**
      * Poll may be either "single answer type" or "multiple answer type".
      *
-     * @return <tt>true</tt> if the poll is "single answer type",
-     *         <tt>false</tt> if the poll is "multiple answer type"
+     * @return <tt>false</tt> if the poll is "single answer type",
+     *         <tt>true</tt> if the poll is "multiple answer type"
      */
-    public boolean isSingleAnswer() {
-        return singleAnswer;
+    public boolean isMultipleAnswer() {
+        return multipleAnswer;
     }
 
     /**
      * Set the poll type. Poll may be either "single answer type"
      * or "multiple answer type".
      *
-     * @param singleAnswer <tt>true</tt> if the poll is "single answer type",
-     *                     <tt>false</tt> if the poll is "multiple answer type"
+     * @param multipleAnswer <tt>false</tt> if the poll is "single answer type",
+     *                     <tt>true</tt> if the poll is "multiple answer type"
      */
-    public void setSingleAnswer(boolean singleAnswer) {
-        this.singleAnswer = singleAnswer;
+    public void setMultipleAnswer(boolean multipleAnswer) {
+        this.multipleAnswer = multipleAnswer;
     }
 
     /**

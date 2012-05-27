@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.dto;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.NotBlank;
 import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.model.entity.Post;
@@ -59,7 +60,7 @@ public class TopicDto {
 
     private String pollItems;
 
-    private String single;
+    private boolean multiple;
 
     private String endingDate;
 
@@ -194,10 +195,6 @@ public class TopicDto {
         return pollItems;
     }
 
-    public String getSingle() {
-        return single;
-    }
-
     public String getEndingDate() {
         return endingDate;
     }
@@ -210,10 +207,13 @@ public class TopicDto {
         this.pollItems = pollItems;
     }
 
-    public void setSingle(String single) {
-        this.single = single;
+    public boolean isMultiple() {
+        return multiple;
     }
 
+    public void setMultiple(boolean multiple) {
+        this.multiple = multiple;
+    }
 
     public void setEndingDate(String endingDate) {
         this.endingDate = endingDate;
@@ -221,9 +221,10 @@ public class TopicDto {
 
     public Poll preparePollFromTopicDto() {
         Poll poll = new Poll(pollTitle);
-        poll.setSingleAnswer(Boolean.parseBoolean(single));
+        poll.setMultipleAnswer(multiple);
         if (endingDate != null) {
-            poll.setEndingDate(DateTimeFormat.forPattern(PollDto.DATE_FORMAT).parseDateTime(endingDate));
+            DateTimeFormatter format = DateTimeFormat.forPattern(PollDto.DATE_FORMAT);
+            poll.setEndingDate(format.parseDateTime(endingDate));
         }
         poll.addPollOptions(parseItems(pollItems));
 

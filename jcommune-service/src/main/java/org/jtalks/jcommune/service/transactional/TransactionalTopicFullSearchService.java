@@ -48,7 +48,9 @@ public class TransactionalTopicFullSearchService implements TopicFullSearchServi
     @Override
     public List<Topic> searchByTitleAndContent(String phrase) {
         if (!StringUtils.isEmpty(phrase)) {
-            return topicSearchDao.searchByTitleAndContent(phrase);
+            // hibernate search refuses to process long string throwing error
+            String normalizedPhrase = StringUtils.left(phrase, 50);
+            return topicSearchDao.searchByTitleAndContent(normalizedPhrase);
         } else {
             return Collections.emptyList();
         }
