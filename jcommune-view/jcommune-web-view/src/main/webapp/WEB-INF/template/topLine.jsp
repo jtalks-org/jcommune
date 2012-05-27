@@ -69,7 +69,7 @@
             <div class="lighter">
                 <form class="searchform" action='<c:url value="/search"/>' method="GET" name="form" id="form">
 					<span><input type="text" name="searchText" class="search rounded"
-                                 placeholder="<fmt:message key="label.search"/>"
+                                 placeholder="<fmt:message key="label.search"/>" maxlength="50"
                                  value="<c:out value="${searchText}"/>"></span>
                 </form>
             </div>
