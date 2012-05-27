@@ -36,9 +36,9 @@
         <div class="row">
             <div class="span2">
                 <a href="${pageContext.request.contextPath}/pm/new" class="btn btn-primary btn-small"
-                   style="margin: 0 0 5px 0;"><spring:message code="label.new_pm"/></a>
+                   class="pm_label_new_pm"><spring:message code="label.new_pm"/></a>
 
-                <div class="well" style="padding: 8px 0;">
+                <div class="well" class="pm_folders">
                     <ul class="nav nav-list">
                         <li class="nav-header"><spring:message code="label.pm.folders"/></li>
                         <li class="active"><a id="inbox_link" href="${pageContext.request.contextPath}/inbox">
@@ -57,7 +57,7 @@
             <!-- /span2 -->
 
             <div class="span9">
-                <div style="margin: 0 0 5px 0;">
+                <div class="pm_delete_btn_block">
                     <div class="del">
                         <a class="btn btn-danger" id="deleteCheckedPM"
                            href="${pageContext.request.contextPath}/pm">

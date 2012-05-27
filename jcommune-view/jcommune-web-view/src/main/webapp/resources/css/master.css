@@ -1169,6 +1169,18 @@ td.button_cell {
     width: 150px;
 }
 
+.pm_delete_btn_block {
+    margin: 0 0 5px 0;
+}
+
+.pm_label_new_pm {
+    margin: 0 0 5px 0;
+}
+
+.pm_folders {
+    padding: 8px 0;
+}
+
 .messages th {
     font-weight: bold;
     text-align: center;
