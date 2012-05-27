@@ -34,6 +34,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
+import org.testng.AssertJUnit;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -120,7 +121,46 @@ public class SimplePageHibernateDaoTest extends AbstractTransactionalTestNGSprin
         assertFalse(dao.isExist(-567890L));
     }
 
-    /* SimplePageHibernateDao methods */
+    /* SimplePageHibernateDao specific methods */
 
+    @Test
+    public void testCreatePage() {
+        SimplePage simplePage = ObjectsFactory.getDefaultSimplePage();
+        session.save(simplePage);
+
+        dao.createPage(simplePage);
+        session.evict(simplePage);
+        SimplePage result = (SimplePage) session.get(SimplePage.class, simplePage.getId());
+
+        assertNotNull(result);
+        assertEquals(simplePage.getId(), result.getId());
+        assertEquals(simplePage.getName(), result.getName());
+        assertEquals(simplePage.getContent(), result.getContent());
+        assertEquals(simplePage.getPathName(), result.getPathName());
+    }
+
+    @Test
+    public void testGetPageByPathName() {
+        SimplePage simplePage = ObjectsFactory.getDefaultSimplePage();
+        session.save(simplePage);
+
+        SimplePage result = dao.getPageByPathName(simplePage.getPathName());
+
+        assertNotNull(result);
+        assertEquals(simplePage.getId(), result.getId());
+        assertEquals(simplePage.getName(), result.getName());
+        assertEquals(simplePage.getContent(), result.getContent());
+        assertEquals(simplePage.getPathName(), result.getPathName());
+    }
+
+     @Test
+    public void testGetPageByPathNameNotExist() {
+        SimplePage simplePage = ObjectsFactory.getDefaultSimplePage();
+        session.save(simplePage);
+
+        SimplePage result = dao.getPageByPathName("not Exist Path Name");
+
+        assertNull(result);
+    }
 }
 
