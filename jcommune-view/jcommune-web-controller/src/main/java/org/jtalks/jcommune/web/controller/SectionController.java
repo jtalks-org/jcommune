@@ -14,8 +14,15 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
+import org.apache.lucene.util.CollectionUtil;
+import org.jtalks.common.model.entity.Branch;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
@@ -30,9 +37,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  * Displays to user page contains section list with related branch lists
@@ -55,6 +59,7 @@ public class SectionController {
     private SectionService sectionService;
     private ForumStatisticsProvider forumStaticsProvider;
     private LocationService locationService;
+    private BranchService branchService;
 
     /**
      * Constructor creates MVC controller with specified SectionService
@@ -64,16 +69,20 @@ public class SectionController {
      * @param locationService      autowired object from Spring Context
      * @param forumStaticsProvider autowired object from Spring Context which provides methods for getting
      *                             forum statistic information
+     * @param branchService        autowired object, that represents service for the working with
+     *                             branches
      */
     @Autowired
     public SectionController(SecurityService securityService,
                              SectionService sectionService,
                              ForumStatisticsProvider forumStaticsProvider,
-                             LocationService locationService) {
+                             LocationService locationService,
+                             BranchService branchService) {
         this.securityService = securityService;
         this.sectionService = sectionService;
         this.forumStaticsProvider = forumStaticsProvider;
         this.locationService = locationService;
+        this.branchService = branchService;
     }
 
 
@@ -96,7 +105,7 @@ public class SectionController {
         */
         session.getId();
         List<Section> sections = sectionService.getAll();
-        sectionService.fetchBranchesAndFillStatistic(sections);
+        prepareSectionsForView(sections);
         return new ModelAndView("sectionList")
                 .addObject("pageSize", Pagination.getPageSizeFor(securityService.getCurrentUser()))
                 .addObject("sectionList", sections)
@@ -106,6 +115,20 @@ public class SectionController {
                 .addObject("usersRegistered", forumStaticsProvider.getOnlineRegisteredUsers())
                 .addObject("visitorsRegistered", forumStaticsProvider.getOnlineRegisteredUsersCount())
                 .addObject("visitorsGuests", forumStaticsProvider.getOnlineAnonymousUsersCount());
+    }
+    
+    /**
+     * Prepares sections for the main forum page.
+     * Fills the necessary information for the branches of each section.
+     * 
+     * @param sections the list of sections
+     */
+    private void prepareSectionsForView(List<Section> sections) {
+        for(Section section: sections) {
+            List<Branch> branches = section.getBranches();
+            branchService.fillStatisticInfo(branches);
+            branchService.fillLastPostInLastUpdatedTopic(branches);
+        }
     }
 
     /**

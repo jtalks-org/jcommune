@@ -169,4 +169,12 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         assertEquals(actualLastUpdatedTopic.getId(), expectedLastUpdatedTopic.getId(),
                 "Found incorrect last updated topic");
     }
+    
+    @Test
+    public void testGetLastUpdatedTopicInEmptyBranch() {
+        Branch branch = ObjectsFactory.getDefaultBranch();
+        session.save(branch);
+        
+        assertNull(dao.getLastUpdatedTopicInBranch(branch), "The branch is empty, so the topic should not be found");
+    }
 }

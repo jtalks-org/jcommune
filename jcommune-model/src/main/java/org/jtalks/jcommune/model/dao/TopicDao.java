@@ -18,7 +18,7 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.ChildRepository;
-import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.common.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 
 /**

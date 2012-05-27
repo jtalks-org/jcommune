@@ -24,8 +24,8 @@ import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
+import org.jtalks.common.model.entity.Branch;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 
 /**
@@ -73,7 +73,6 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
                 DetachedCriteria.forClass(Topic.class)
                 .setProjection(Projections.max(modificationDateProperty))
                 .add(Restrictions.eq("branch", branch));
-                
         //possible that the two topics will be modified at the same time
         @SuppressWarnings("unchecked")
         List<Topic> topics = (List<Topic>) session

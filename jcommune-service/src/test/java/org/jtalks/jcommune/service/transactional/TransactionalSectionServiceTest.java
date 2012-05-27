@@ -23,11 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jtalks.common.model.entity.Section;
-import org.jtalks.jcommune.model.dao.BranchDao;
-import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
-import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.testng.annotations.BeforeMethod;
@@ -43,22 +39,12 @@ public class TransactionalSectionServiceTest {
     final String SECTION_NAME = "section name";
 
     private SectionDao sectionDao;
-    private BranchDao branchDao;
-    private TopicDao topicDao;
-    private PostDao postDao;
     private SectionService sectionService;
 
     @BeforeMethod
     public void setUp() throws Exception {
         sectionDao = mock(SectionDao.class);
-        branchDao = mock(BranchDao.class);
-        topicDao = mock(TopicDao.class);
-        postDao = mock(PostDao.class);
-        sectionService = new TransactionalSectionService(
-                sectionDao,
-                branchDao,
-                topicDao,
-                postDao);
+        sectionService = new TransactionalSectionService(sectionDao);
     }
 
     @Test
@@ -91,26 +77,5 @@ public class TransactionalSectionServiceTest {
 
         assertEquals(actualSectionList, expectedSectionList);
         verify(sectionDao).getAll();
-    }
-    
-    @Test
-    public void testFetchBranchesAndFillCountInfo() {
-        int expectedPostsCount = 10;
-        int expectedTopicsCount = 20;
-        List<Section> sectionList = new ArrayList<Section>();
-        Section section = new Section(SECTION_NAME);
-        Branch branch = new Branch("BRANCH", "BRANCH_BRANCH");
-        section.addOrUpdateBranch(branch);
-        sectionList.add(section);
-        
-        when(branchDao.getCountPostsInBranch(branch)).thenReturn(expectedPostsCount);
-        when(branchDao.getCountTopicsInBranch(branch)).thenReturn(expectedTopicsCount);
-        
-        sectionService.fetchBranchesAndFillStatistic(sectionList);
-        
-        assertEquals(branch.getTopicCount(), expectedTopicsCount,
-                "Incorrect count of topics");
-        assertEquals(branch.getPostCount(), expectedPostsCount,
-                "Incorrect count of posts");
     }
 }
