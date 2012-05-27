@@ -17,9 +17,9 @@ package org.jtalks.jcommune.model.entity;
 import org.jtalks.common.model.entity.Entity;
 
 /**
- * Any sapmle page entity. <br/>
+ * Any sipmle page entity. <br/>
  * It's used for display and edit static information. <br/>
- * Includes not null fields: name, content.
+ * Includes not null fields: name, content and pathName.
  *
  * @author Alexander Gavrikov
  * @author Scherbakov Roman

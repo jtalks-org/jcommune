@@ -27,26 +27,26 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 public interface SimplePageService extends EntityService<SimplePage> {
 
     /**
-     * update pageName and pageContent by current SimplePage
+     * change name or/and content of current SimplePage
      *
-     * @param pageId ID of simple page
-     * @param pageName name of simple page
-     * @param pageContent content of simple page
+     * @param pageId        identifier of simple page
+     * @param pageName      name of simple page
+     * @param pageContent   content of simple page
      */
     public void updatePage(long pageId, String pageName, String pageContent) throws NotFoundException;
 
     /**
      * create new SimplePage, put it in database
      *
-     * @param simplePage simple page which will be created
+     * @param simplePage    simple page which will be created
      */
     public SimplePage createPage(SimplePage simplePage);
 
     /**
-     * get SimplePage by name
+     * get SimplePage object which associated of pathName in browser
      *
-     * @param pathName path name
-     * @return simplePage with current path name
+     * @param pathName          address in browser which associated with current simple page
+     * @return simplePage       with current associated which current browser
      */
     public SimplePage getPageByPathName(String pathName) throws NotFoundException;
 }

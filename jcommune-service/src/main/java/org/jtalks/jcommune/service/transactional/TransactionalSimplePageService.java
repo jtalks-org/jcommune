@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import static org.jtalks.jcommune.service.security.SecurityConstants.HAS_ADMIN_ROLE;
 import static org.jtalks.jcommune.service.security.SecurityConstants.HAS_USER_OR_ADMIN_ROLE;
 
 /**
@@ -38,7 +39,7 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
     /**
      *  Create an instance of Simple Page entity based service
      *
-     *  @param simplePageDao - simplePageDao to create/get simple page from a database
+     *  @param simplePageDao - data access object which should be create or get simplePage object from database
      */
 
     public TransactionalSimplePageService(SimplePageDao simplePageDao) {
@@ -48,9 +49,9 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
     /**
      * {@inheritDoc}
      */
-    @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
+    @PreAuthorize(HAS_ADMIN_ROLE)
     @Override
-    public void updatePage(long pageId, String pageName, String pageContent) throws NotFoundException {
+    public void updatePage(long pageId, String pageName, String content) throws NotFoundException {
 
         SimplePage simplePage = get(pageId);
         if (simplePage == null) {
@@ -59,7 +60,7 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
             throw new NotFoundException(message);
         }
         simplePage.setName(pageName);
-        simplePage.setContent(pageContent);
+        simplePage.setContent(content);
 
         this.getDao().update(simplePage);
 
@@ -84,7 +85,7 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
     /**
      * {@inheritDoc}
      */
-    @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
+    @PreAuthorize(HAS_ADMIN_ROLE)
     @Override
     public SimplePage createPage(SimplePage simplePage) {
         this.getDao().update(simplePage);
