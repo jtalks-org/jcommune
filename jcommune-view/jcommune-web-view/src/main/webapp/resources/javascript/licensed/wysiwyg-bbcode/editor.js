@@ -82,7 +82,6 @@ function initEditor(textAreaId, htmlAreaId, baseDivId) {
  * preview mode.
  */
 function SwitchEditor() {
-    SwitchPoll();
     if (editorVisible) { // exit preview
         textboxelement.style.display = "";
         htmlcontentelement.style.display = "none";

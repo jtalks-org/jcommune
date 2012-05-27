@@ -20,7 +20,7 @@
 <log4j:configuration debug="false" xmlns:log4j="http://jakarta.apache.org/log4j/">
     <!-- Appenders -->
     <appender name="BULK" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="logs/jcommune-bulk.log"/>
+        <param name="File" value="${catalina.home}/logs/jcommune-bulk.log"/>
         <param name="Append" value="true"/>
         <param name="DatePattern" value=".yyyy-MM-dd"/>
         <param name="Encoding" value="UTF-8"/>
@@ -30,7 +30,7 @@
     </appender>
 
     <appender name="APPLICATION" class="org.apache.log4j.RollingFileAppender">
-        <param name="File" value="logs/jcommune-application.log"/>
+        <param name="File" value="${catalina.home}/logs/jcommune-application.log"/>
         <param name="MaxFileSize" value="100MB"/>
         <param name="MaxBackupIndex" value="10"/>
         <param name="Encoding" value="UTF-8"/>
