@@ -112,28 +112,19 @@
                             </c:forEach>
                         </c:when>
                         <c:otherwise>
-                            <tr class="forum_row">
+                            <tr>
                                 <td colspan="4"><spring:message code="label.inbox.empty"/></td>
                             </tr>
                         </c:otherwise>
                     </c:choose>
-
-
                     </tbody>
-
                 </table>
-
             </div>
             <!-- /span9 -->
-
-
         </div>
         <!-- /row -->
-
     </div>
     <!-- /container -->
+    <!-- todo fix unread message don't marked with bold font-->
 
-
-    <div class="all_forums">
-    </div>
 </body>
