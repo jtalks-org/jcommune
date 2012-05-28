@@ -25,67 +25,54 @@
 <%@ attribute name="multipleValue" required="true" rtexprvalue="true" type="java.lang.String" %>
 <%@ attribute name="endingDateNameValue" required="true" rtexprvalue="true" type="java.lang.String" %>
 
-<div class="forum_header_table">
-    <div class="forum_header">
-        <span class="forum_header_answer"><spring:message code="label.poll.header"/></span>
-        <span class="empty_cell"></span>
-    </div>
-    <ul class="forum_table" id="editPoll">
-        <li class="forum_row">
-            <div class="forum_answer_left">
-                <spring:message code="label.poll.title"/>
-            </div>
-            <div class="forum_answer_right">
-                <form:input path="${titleNameValue}" id="${titleNameValue}" type="text" name="${titleNameValue}"
+<div class='well' id="editPoll">
+        <legend><spring:message code="label.poll.header"/></legend>
+        
+        <div class='control-group'>
+        <label class='control-label'>
+            <spring:message code="label.poll.title"/>
+        </label>
+        <form:input path="${titleNameValue}" id="${titleNameValue}" type="text" name="${titleNameValue}"
                             size="45"
                             maxlength="255" tabindex="1"
                             class="post"/>
                 <br>
                 <form:errors path="${titleNameValue}" cssClass="error"/>
-            </div>
-        </li>
-        <li class=" forum_row">
-            <div class="forum_answer_left">
+        </div>
+        
+        <div class='control-group'>
+            <label class='control-label'>
                 <spring:message code="label.poll.options.title"/>
-            </div>
-            <div class="forum_answer_right">
-                <form:textarea path="${pollOptionsNameValue}" rows="8"
-                               class="post"/>
-                <br>
-                <form:errors path="${pollOptionsNameValue}" cssClass="error"/>
-            </div>
-        </li>
-        <li class="forum_row">
-            <div class="forum_answer_left">
-                <spring:message code="label.poll.single.title"/>
-            </div>
-            <div class="forum_answer_right">
+            </label>
+            
+            <form:textarea path="${pollOptionsNameValue}" rows="8"
+                        class="post"/>
+            <br>
+            <form:errors path="${pollOptionsNameValue}" cssClass="error"/>
+        </div>
+        
+        <div class='control-group'>            
                 <input type="radio" name="${singleNameValue}" checked="checked"
                        value="${singleValue}"/>
-            </div>
-        </li>
-        <li class="forum_row">
-            <div class="forum_answer_left">
-                <spring:message code="label.poll.multiple.title"/>
-            </div>
-            <div class="forum_answer_right">
+                <spring:message code="label.poll.single.title"/>
+                <br/>
+            
                 <input id="multipleBtn" type="radio" name="${singleNameValue}"
                        value="${multipleValue}"/>
-            </div>
-        </li>
-        <li class="forum_row">
-            <div class="forum_answer_left">
+                <spring:message code="label.poll.multiple.title"/>
+        </div>
+        
+        <div class='control-group'>
+            <label class='control-label'>
                 <spring:message code="label.poll.date"/>
-            </div>
-            <div class="forum_answer_right">
+            </label>
+            
                 <input id="datepicker" type="text" name="${endingDateNameValue}">
                 <br>
                 <form:errors path="${endingDateNameValue}" cssClass="error"/>
-            </div>
-        </li>
-    </ul>
+        </div>
 
-    <div class="forum_row" id="previewPoll">
+    <div id="previewPoll">
 
     </div>
 
