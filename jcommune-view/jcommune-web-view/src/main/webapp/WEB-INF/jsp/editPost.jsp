@@ -29,32 +29,42 @@
 <body>
 <div class="wrap answer_page">
     <jsp:include page="../template/topLine.jsp"/>
-    <jsp:include page="../template/logo.jsp"/>
 
-    <div class="all_forums">
+    <div class="container">
         <h2><a class="heading" href="${pageContext.request.contextPath}/topics/${topicId}">
             <c:out value="${topicTitle}"/>
         </a></h2>
 
-        <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
         <div id="answer">
             <form:form action="${pageContext.request.contextPath}/posts/${postId}/edit?topicId=${topicId}"
-                       method="POST" modelAttribute="postDto">
+                       method="POST" modelAttribute="postDto" class='well'>
                 <form:hidden path="topicId"/>
                 <form:hidden path="id"/>
-                <div class="forum_header_table">
-                    <div class="forum_header">
-                        <span class="forum_header_answer"><spring:message code="label.post.edit"/></span>
-                        <span class="empty_cell"></span>
-                    </div>
-                </div>
+                
                 <jtalks:bbeditor labelForAction="label.save"
                                  postText="${postDto.bodyText}"
                                  bodyParameterName="bodyText"
                                  back="${pageContext.request.contextPath}/topics/${topicId}"/>
             </form:form>
+            
+            <a href="${back}" style="font-weight: bold"><i class="icon-arrow-left"></i> <spring:message code="label.back"/></a>
         </div>
     </div>
-    <div class="footer_buffer"></div>
 </div>
+<script type="text/javascript">
+      jQuery(document).ready(function(){
+        // Setup drop down menu
+        jQuery('.dropdown-toggle').dropdown();
+       
+        // Fix input element click problem
+        jQuery('.dropdown input, .dropdown label').click(function(e) {
+          e.stopPropagation();
+        });
+
+        // Tooltips on status images
+        jQuery('.btn-toolbar a').tooltip();
+
+        // jQuery('#color-picker').colourPicker();
+      });
+    </script>
 </body>

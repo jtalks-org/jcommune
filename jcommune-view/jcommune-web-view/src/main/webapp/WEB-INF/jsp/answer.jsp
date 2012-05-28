@@ -29,50 +29,38 @@
 </head>
 <body>
 <div class="wrap answer_page">
-    <jsp:include page="../template/logo.jsp"/>
-    <jsp:include page="../template/topLine.jsp"/>
+   <jsp:include page="../template/topLine.jsp"/>
 
-    <div class="all_forums">
-        <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
-
-        <div class="forum_misc_info">
-            <spring:message code="label.answer.title_label"/>
-        </div>
-        <div class="forum_info_top">
-            <div>
-                <div>
-
-                </div>
-                <div>
-
-                </div>
-            </div>
-            <div class="info_top_lower">
-                <div>
-                    <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-                </div>
-                <div class="info_top_lower_right">
-
-                </div>
-            </div>
-        </div>
+    <div class="container">
+        <h2><a class="heading" href="${pageContext.request.contextPath}/topics/${topic.id}"><c:out value="${topic.title}"/></a></h2>
+               
         <form:form action="${pageContext.request.contextPath}/posts/new?topicId=${topicId}&page=${page}"
-                   method="POST" modelAttribute="postDto">
+                   method="POST" modelAttribute="postDto" class='well'>
             <form:hidden path="topicId"/>
-            <div class="forum_header_table">
-                <div class="forum_header">
-                    <span class="forum_header_answer"><spring:message code="label.answer"/></span>
-                    <span class="empty_cell"></span>
-                </div>
-            </div>
+            
             <jtalks:bbeditor labelForAction="label.answer"
                              postText="${postDto.bodyText}"
                              bodyParameterName="bodyText"
                              back="${pageContext.request.contextPath}/topics/${topicId}"/>
         </form:form>
 
-    </div>
-    <div class="footer_buffer">
+        <a href="${back}" style="font-weight: bold"><i class="icon-arrow-left"></i> <spring:message code="label.back"/></a>
     </div>
 </div>
+<script type="text/javascript">
+      jQuery(document).ready(function(){
+        // Setup drop down menu
+        jQuery('.dropdown-toggle').dropdown();
+       
+        // Fix input element click problem
+        jQuery('.dropdown input, .dropdown label').click(function(e) {
+          e.stopPropagation();
+        });
+
+        // Tooltips on status images
+        jQuery('.btn-toolbar a').tooltip();
+
+        // jQuery('#color-picker').colourPicker();
+      });
+    </script>
 </body>
