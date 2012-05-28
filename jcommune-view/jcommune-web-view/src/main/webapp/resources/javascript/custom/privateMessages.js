@@ -15,14 +15,14 @@
 
 function deleteMessages(identifiers) {
     // add identifiers of the checked private messages for deletion
-	$('[name=pmIdentifiers]').remove();
-	
-	var deleteForm = $("#deleteForm");
-	var field = "<input type='hidden' name='pmIdentifiers' value='%value%'>";
-	for (i = 0; i < identifiers.length; i++) {
-		var actualField = field.replace('%value%', identifiers[i]);
-		deleteForm.append(actualField);
-	}
+    $('[name=pmIdentifiers]').remove();
+
+    var deleteForm = $("#deleteForm");
+    var field = "<input type='hidden' name='pmIdentifiers' value='%value%'>";
+    for (i = 0; i < identifiers.length; i++) {
+        var actualField = field.replace('%value%', identifiers[i]);
+        deleteForm.append(actualField);
+    }
 }
 
 /**
@@ -67,7 +67,7 @@ $(document).ready(function () {
             e.preventDefault();
             var messages = $(".check");
             var identifiers = [];
-            $.each(messages, function(index, value) {
+            $.each(messages, function (index, value) {
                 identifiers[index] = value.id;
             });
 
@@ -102,7 +102,7 @@ $(document).ready(function () {
     });
 
     //bind edit message handler
-    $("#editCheckedPM").click(function(e) {
+    $("#editCheckedPM").click(function (e) {
         e.preventDefault();
         editMessage();
         return false;
@@ -151,6 +151,7 @@ $(document).ready(function () {
     /**
      * Highlights currently opened PM folder
      */
+//    todo refactor according new design
     $(document).ready(function () {
         var url = document.URL.toString();
         if (url.match(/inbox$/)) {
