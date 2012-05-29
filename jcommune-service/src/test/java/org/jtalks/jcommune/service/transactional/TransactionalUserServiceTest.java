@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
+import org.jtalks.common.service.exceptions.WrongPasswordException;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
@@ -37,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.eq;
@@ -178,19 +180,6 @@ public class TransactionalUserServiceTest {
         assertEquals(user.getLastName(), LAST_NAME, "last name was not changed");
         assertEquals(user.getPassword(), NEW_PASSWORD, "new password was not accepted");
     }
-
-/*    @Test(expectedExceptions = WrongPasswordException.class)
-    public void testEditUserProfileCurrentPasswordNull() throws Exception {
-        JCUser user = getUser(USERNAME);
-        when(securityService.getCurrentUser()).thenReturn(user);
-
-        userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                null, NEW_PASSWORD, SIGNATURE, null, LANGUAGE, PAGE_SIZE, LOCATION));
-
-        verify(securityService).getCurrentUser();
-        verify(userDao, never()).getByEmail(anyString());
-        verify(userDao, never()).saveOrUpdate(any(JCUser.class));
-    }*/
 
     @Test
     public void testGet() throws NotFoundException {

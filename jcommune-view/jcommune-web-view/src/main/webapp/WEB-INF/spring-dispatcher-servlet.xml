@@ -59,7 +59,11 @@
         <property name="defaultErrorView" value="/errors/500"/>
     </bean>
 
-    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver"/>
+    <!--Cookie-based locale resolver, chosen as we can't guarantee sessioin existence for any request-->
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+        <!--Russian locale is set by default if nothing has been chosen by user-->
+        <property name="defaultLocale" value="ru"/>
+    </bean>
 
     <bean id="handlerMapping" class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
 
@@ -70,7 +74,7 @@
             <mvc:mapping path="/resources/**"/>
             <bean class="org.jtalks.jcommune.web.interceptors.ChainBreakingInterceptor"/>
         </mvc:interceptor>
-        <!--Figures out locale and language from user's cookies-->
+        <!--Figures out locale and language from url parameter-->
         <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
             <property name="paramName" value="lang"/>
         </bean>
