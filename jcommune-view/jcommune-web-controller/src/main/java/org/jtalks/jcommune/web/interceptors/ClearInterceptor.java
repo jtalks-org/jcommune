@@ -55,23 +55,13 @@ public class ClearInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) {
-        /**
-         * This condition is necessary because interceptors are designed to be called before a controller.
-         * As avatars are requested from the separate controller avatar request will actually clear
-         * location set on page. So, won't be able to see his name in a page visitors list.
-         *
-         * That is why we're skipping avatar requests when determining user location on forum.
-         */
-        if (!request.getRequestURI().endsWith("/avatar")) {
+        try {
+            locationService.clearUserLocation();
+        } catch (Exception e) {
             // failure here should not cause all the web processing chain to be broken
             // todo: find a better solution
-            try {
-                locationService.clearUserLocation();
-            } catch (Exception e) {
-                LOGGER.error("Failed to clear current user's location",e);
-            }
+            LOGGER.error("Failed to clear current user's location", e);
         }
-
         return true;
     }
 }
