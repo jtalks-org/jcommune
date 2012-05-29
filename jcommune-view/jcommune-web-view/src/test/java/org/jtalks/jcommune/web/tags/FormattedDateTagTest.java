@@ -24,7 +24,6 @@ import java.util.Locale;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 
 import org.joda.time.DateTime;
@@ -49,7 +48,7 @@ public class FormattedDateTagTest {
     private Cookie[] cookies;
     private DateTime localDate = new DateTime(2011, 10, 30, 20, 15, 10, 5);
     private DateTime utcDate = new DateTime(localDate.getZone().convertLocalToUTC(localDate.getMillis(), true));
-    private DateTimeFormatter formatter = DateTimeFormat.forPattern(FormattedDate.DATE_FORMAT_PATTERN);
+    private DateTimeFormatter formatter = DateTimeFormat.forPattern(FormattedDate.DEFAULT_DATE_FORMAT_PATTERN);
     private Locale locale = Locale.ENGLISH;
 
     private FormattedDate tag;

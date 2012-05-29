@@ -38,17 +38,12 @@
     <form name="pollForm" action="#">
         <!-- Poll title -->
         <h3>
-            <c:choose>
-                <c:when test="${poll.endingDate==null}">
-                    <c:out value="${poll.title}"/>
-                </c:when>
-                <c:otherwise>
-                    <fmt:message key="label.poll.title.with.ending">
-                        <fmt:param>${poll.title}</fmt:param>
-                        <fmt:param><jtalks:format value="${poll.endingDate}"/></fmt:param>
-                    </fmt:message>
-                </c:otherwise>
-            </c:choose>
+            <c:out value="${poll.title}"/>
+            <c:if test="${poll.endingDate!=null}">
+                <fmt:message key="label.poll.title.with.ending">
+                    <fmt:param><jtalks:format pattern="dd MMM yyyy" value="${poll.endingDate}"/></fmt:param>
+                </fmt:message>
+            </c:if>
         </h3>
         <!-- List of poll options -->
         <c:if test="${poll.active && votingAvailable}">
@@ -57,13 +52,13 @@
                 <div class="control-group">
                     <%-- RadioButton/CheckBox. Available when poll is active and user not voted. --%>
                          <c:choose>
-                            <c:when test="${poll.singleAnswer}">
-                                <input name="pollAnswer" id="pollRadioButton${option.id}"
-                                       type="radio" value="${option.id}">
-                            </c:when>
-                            <c:otherwise>
+                            <c:when test="${poll.multipleAnswer}">
                                 <input name="pollAnswer" id="pollCheckBox${option.id}"
                                        type="checkbox" value="${option.id}">
+                            </c:when>
+                            <c:otherwise>
+                                <input name="pollAnswer" id="pollRadioButton${option.id}"
+                                       type="radio" value="${option.id}">
                             </c:otherwise>
                         </c:choose>
                     

@@ -20,8 +20,7 @@
 <%@ tag body-content="empty" %>
 <%@ attribute name="titleNameValue" required="true" rtexprvalue="true" type="java.lang.String" %>
 <%@ attribute name="pollOptionsNameValue" required="true" rtexprvalue="true" type="java.lang.String" %>
-<%@ attribute name="singleNameValue" required="true" rtexprvalue="true" type="java.lang.String" %>
-<%@ attribute name="singleValue" required="true" rtexprvalue="true" type="java.lang.String" %>
+<%@ attribute name="multipleName" required="true" rtexprvalue="true" type="java.lang.String" %>
 <%@ attribute name="multipleValue" required="true" rtexprvalue="true" type="java.lang.String" %>
 <%@ attribute name="endingDateNameValue" required="true" rtexprvalue="true" type="java.lang.String" %>
 
@@ -51,14 +50,8 @@
             <form:errors path="${pollOptionsNameValue}" cssClass="error"/>
         </div>
         
-        <div class='control-group'>            
-                <input type="radio" name="${singleNameValue}" checked="checked"
-                       value="${singleValue}"/>
-                <spring:message code="label.poll.single.title"/>
-                <br/>
-            
-                <input id="multipleBtn" type="radio" name="${singleNameValue}"
-                       value="${multipleValue}"/>
+        <div class='control-group'>                       
+                <form:checkbox path="${multipleName}" id="multipleChecker"  value="${multipleValue}"/>
                 <spring:message code="label.poll.multiple.title"/>
         </div>
         
@@ -67,7 +60,7 @@
                 <spring:message code="label.poll.date"/>
             </label>
             
-                <input id="datepicker" type="text" name="${endingDateNameValue}">
+                <form:input path="${endingDateNameValue}" id="datepicker" type="text" readonly="true"/>
                 <br>
                 <form:errors path="${endingDateNameValue}" cssClass="error"/>
         </div>

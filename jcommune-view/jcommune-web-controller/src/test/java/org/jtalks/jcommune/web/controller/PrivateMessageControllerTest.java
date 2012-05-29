@@ -220,7 +220,6 @@ public class PrivateMessageControllerTest {
 
         //set expectations
         when(pmService.get(PM_ID)).thenReturn(pm);
-        when(pmService.hasCurrentUserAccessToPM(PM_ID)).thenReturn(true);
 
         //invoke the object under test
         ModelAndView mav = controller.showPmPage(PM_ID);
@@ -239,9 +238,7 @@ public class PrivateMessageControllerTest {
         PrivateMessage pm = getPrivateMessage();
 
         //set expectations
-        when(pmService.get(PM_ID)).thenReturn(pm);
-        when(pmService.hasCurrentUserAccessToPM(PM_ID)).thenReturn(false);
-
+        when(pmService.get(PM_ID)).thenThrow(new NotFoundException());
         //invoke the object under test
         controller.showPmPage(PM_ID);
 

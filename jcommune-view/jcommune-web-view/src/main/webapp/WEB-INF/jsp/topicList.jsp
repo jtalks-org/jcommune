@@ -124,15 +124,6 @@
                 </thead>
                 <tbody>
                     <c:forEach var="topic" items="${list}">
-                        <!--Determining the possibility of voting in this topic.
-                        This is possible if the poll is attached and the user hasn't voted. -->
-                        <c:set var="votingPossible" value="false" scope="request"/>
-                        <c:if test="${topic.hasPoll}">
-                            <c:set var="votingPossible" value="true" scope="request"/>
-                            <sec:accesscontrollist domainObject="${topic.poll}" hasPermission="2">
-                                <c:set var="votingPossible" value="false" scope="request"/>
-                            </sec:accesscontrollist>
-                        </c:if>
                         <!-- Topic row -->
                         <tr>
                             <td class="status-col">
@@ -153,8 +144,8 @@
                                             <a style="color: red;"
                                                href="${pageContext.request.contextPath}/posts/${topic.firstUnreadPostId}">
                                                 [NEW]</a>
-                                    </c:if>
-                                    <c:if test="${votingPossible}">
+                                        </c:if>
+                                        <c:if test="${topic.hasPoll}">
                                             <a style="color: red;"
                                                href="${pageContext.request.contextPath}/topics/${topic.id}">
                                                 [POLL]</a>

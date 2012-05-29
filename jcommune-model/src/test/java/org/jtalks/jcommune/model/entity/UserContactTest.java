@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.model.entity;
 
 import org.jtalks.jcommune.model.ObjectsFactory;
-import org.springframework.test.annotation.ExpectedException;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
