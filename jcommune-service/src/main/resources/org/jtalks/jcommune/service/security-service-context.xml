@@ -23,7 +23,9 @@
 
   <!-- Spring Security authentication manager -->
   <security:authentication-manager alias="authenticationManager">
-    <security:authentication-provider user-service-ref="securityService"/>
+    <security:authentication-provider user-service-ref="securityService">
+        <security:password-encoder hash="md5"/>
+    </security:authentication-provider>
   </security:authentication-manager>
 
   <!-- Enable security annotations using specified expression handler -->
