@@ -14,6 +14,22 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.matches;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.jtalks.jcommune.model.dao.UserDao;
@@ -30,24 +46,9 @@ import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.matches;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
 
 /**
  * @author Kirill Afonin
@@ -82,12 +83,23 @@ public class TransactionalUserServiceTest {
     private AvatarService avatarService;
     @Mock
     private Base64Wrapper base64Wrapper;
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
+        //TODO how check password encryption?
+        when(passwordEncoder.encodePassword(PASSWORD, null))
+            .thenReturn(PASSWORD);
+        
         userService = new TransactionalUserService(
-                userDao, securityService, mailService, base64Wrapper, avatarService);
+                userDao,
+                securityService,
+                mailService,
+                base64Wrapper,
+                avatarService,
+                passwordEncoder);
     }
 
     @Test
@@ -131,6 +143,8 @@ public class TransactionalUserServiceTest {
         JCUser user = getUser(USERNAME);
         when(securityService.getCurrentUser()).thenReturn(user);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
+        when(passwordEncoder.encodePassword(NEW_PASSWORD, null))
+            .thenReturn(NEW_PASSWORD);
 
         String newAvatar = new String(new byte[12]);
 
@@ -147,6 +161,9 @@ public class TransactionalUserServiceTest {
     public void testEditUserProfileNewPasswordNull() {
     	JCUser user = getUser(USERNAME);
     	when(securityService.getCurrentUser()).thenReturn(user);
+    	when(passwordEncoder.encodePassword(null, null))
+            .thenReturn(null);
+    	
     	String newAvatar = new String(new byte[12]);
     	String newPassword = null;
     	UserInfoContainer userInfo = new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
