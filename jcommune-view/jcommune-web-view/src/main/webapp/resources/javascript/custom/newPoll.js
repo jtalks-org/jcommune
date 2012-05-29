@@ -19,6 +19,9 @@ $(document).ready(function () {
     editFormElement = document.getElementById("editPoll");
     previewFormElement = document.getElementById("previewPoll");
     multipleButtonElement = document.getElementById("multipleChecker");
+    $("#preview").click(function(){
+         SwitchPoll();
+    })
 });
 
 /**
@@ -32,7 +35,7 @@ function SwitchPoll() {
         previewFormElement.style.display = "none";
     }
     else { // enter preview
-        pollPreview(pollTitle.value, pollItems.value, datepicker.value);
+        pollPreview($("#pollTitle")[0].value, $("#pollItems")[0].value, $("#datepicker")[0].value);
         previewFormElement.style.display = "";
         editFormElement.style.display = "none";
     }

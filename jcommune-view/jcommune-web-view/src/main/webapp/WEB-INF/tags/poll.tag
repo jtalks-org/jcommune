@@ -38,17 +38,12 @@
     <form name="pollForm" action="#">
         <!-- Poll title -->
         <h3>
-            <c:choose>
-                <c:when test="${poll.endingDate==null}">
-                    <c:out value="${poll.title}"/>
-                </c:when>
-                <c:otherwise>
-                    <fmt:message key="label.poll.title.with.ending">
-                        <fmt:param>${poll.title}</fmt:param>
-                        <fmt:param><jtalks:format pattern="dd MMM yyyy" value="${poll.endingDate}"/></fmt:param>
-                    </fmt:message>
-                </c:otherwise>
-            </c:choose>
+            <c:out value="${poll.title}"/>
+            <c:if test="${poll.endingDate!=null}">
+                <fmt:message key="label.poll.title.with.ending">
+                    <fmt:param><jtalks:format pattern="dd MMM yyyy" value="${poll.endingDate}"/></fmt:param>
+                </fmt:message>
+            </c:if>
         </h3>
         <!-- List of poll options -->
         <ul>
