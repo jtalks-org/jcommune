@@ -31,66 +31,52 @@
 <body>
 <div class="wrap answer_page">
     <jsp:include page="../template/topLine.jsp"/>
-    <jsp:include page="../template/logo.jsp"/>
 
-    <div class="all_forums">
+    
+    <div class="container">
+        
+        <h2><c:out value="${topicDto.topicName}"/></h2>
+        
+        <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
+        
         <form:form name="editForm"
                    action="${pageContext.request.contextPath}/topics/${topicId}/edit?branchId=${branchId}"
-                   method="POST" modelAttribute="topicDto">
+                   method="POST" modelAttribute="topicDto" class='well'>
             <form:hidden path="id"/>
 
-            <div class="forum_misc_info">
-                <h2 class="heading"><c:out value="${topicDto.topicName}"/></h2>
-            </div>
-
-            <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-
-            <div class="forum_header_table">
-                <div class="forum_header">
-                    <span class="forum_header_answer"><spring:message code="h.edit_topic"/></span>
-                    <span class="empty_cell"></span>
-                </div>
-            </div>
-            <ul class="forum_table">
-                <li class="forum_row">
-                    <div class="forum_answer_left">
-                        <spring:message code="label.topic.title"/>
-                    </div>
-                    <div class="forum_answer_right">
+            
+                    <div class='control-group'>
+                        <label for='subject' class='control-label'><spring:message code="label.topic.title"/></label>
                         <form:input path="topicName" id="subject" type="text" name="subject" size="45"
                                     maxlength="255" tabindex="1"
-                                    class="post confirm-unsaved"/>
-                        <br>
+                                    class="post confirm-unsaved" placeholder='Topic title'/>
+                        <br/>
                         <form:errors path="topicName" id="subject" type="text" name="subject" size="45"
                                      maxlength="255" tabindex="1"
                                      class="post" cssClass="error"/>
                     </div>
-                </li>
+                    
                 <sec:authorize access="hasRole('ROLE_ADMIN')">
-
-                    <li class="forum_row">
-                        <div class="forum_answer_left">
-                            <spring:message code="label.topic.options"/>
-                        </div>
-                        <div class="forum_answer_right" style="text-align: left;">
-                                <form:checkbox path="sticked" value="true" class="confirm-unsaved"/>
-                                <spring:message code="label.sticked"/>
+                    <div class='control-group'>
+                                <form:checkbox path="sticked" value="true" class="confirm-unsaved" style="float: left; margin-right: 10px;"/>
+                                <label for='sticked' class='string optional'><spring:message code="label.sticked"/></label>
                                 <form:errors path="sticked"/>
-                            <br/>
-
-                                <form:input path="topicWeight" size="1" class="confirm-unsaved"/>
-                            <form:label path="topicWeight">
+                    </div>
+                    <div class='control-group'>
+                            <form:label path="topicWeight" class='control-label'>
                                 <spring:message code="label.weight"/>
                             </form:label>
+                            <form:input path="topicWeight" size="1" class="confirm-unsaved"/>
+                    
                                 <form:errors path="topicWeight"/>
-                            <br/>
-                                <form:checkbox path="announcement" value="true" class="confirm-unsaved"/>
-                                <spring:message code="label.announcement"/>
+                    </div>
+                    <div class='control-group'>
+                                <form:checkbox path="announcement" value="true" class="confirm-unsaved" style="float: left; margin-right: 10px;"/>
+                                <label for='announcement' class='string optional'><spring:message code="label.announcement"/></label>
                                 <form:errors path="announcement"/>
-
-                    </li>
+                    </div>
                 </sec:authorize>
-            </ul>
+           
             <jtalks:bbeditor labelForAction="label.save"
                              postText="${topicDto.bodyText}"
                              bodyParameterName="bodyText"
@@ -99,6 +85,5 @@
         </form:form>
     </div>
 </div>
-<div class="footer_buffer"></div>
 </body>
 </html>
