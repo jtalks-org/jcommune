@@ -60,7 +60,6 @@ public class TransactionalUserServiceTest {
     private static final String USERNAME = "username";
     private static final String FIRST_NAME = "first name";
     private static final String LAST_NAME = "last name";
-    private static final String NEW_EMAIL = "new_username@mail.com";
     private static final String EMAIL = "username@mail.com";
     private static final String PASSWORD = "password";
     private static final String SIGNATURE = "signature";
@@ -159,17 +158,17 @@ public class TransactionalUserServiceTest {
 
     @Test
     public void testEditUserProfileNewPasswordNull() {
-    	JCUser user = getUser(USERNAME);
-    	when(securityService.getCurrentUser()).thenReturn(user);
-    	when(passwordEncoder.encodePassword(null, null))
+        JCUser user = getUser(USERNAME);
+        when(securityService.getCurrentUser()).thenReturn(user);
+        when(passwordEncoder.encodePassword(null, null))
             .thenReturn(null);
-    	
-    	String newAvatar = new String(new byte[12]);
-    	String newPassword = null;
-    	UserInfoContainer userInfo = new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
+        
+        String newAvatar = new String(new byte[12]);
+        String newPassword = null;
+        UserInfoContainer userInfo = new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
                 PASSWORD, newPassword, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, LOCATION);
-    	JCUser editedUser = userService.editUserProfile(userInfo);
-    	assertEquals(editedUser.getPassword(), user.getPassword());
+        JCUser editedUser = userService.editUserProfile(userInfo);
+        assertEquals(editedUser.getPassword(), user.getPassword());
     }
 
     @Test
@@ -195,19 +194,6 @@ public class TransactionalUserServiceTest {
         assertEquals(user.getLastName(), LAST_NAME, "last name was not changed");
         assertEquals(user.getPassword(), NEW_PASSWORD, "new password was not accepted");
     }
-
-/*    @Test(expectedExceptions = WrongPasswordException.class)
-    public void testEditUserProfileCurrentPasswordNull() throws Exception {
-        JCUser user = getUser(USERNAME);
-        when(securityService.getCurrentUser()).thenReturn(user);
-
-        userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                null, NEW_PASSWORD, SIGNATURE, null, LANGUAGE, PAGE_SIZE, LOCATION));
-
-        verify(securityService).getCurrentUser();
-        verify(userDao, never()).getByEmail(anyString());
-        verify(userDao, never()).saveOrUpdate(any(JCUser.class));
-    }*/
 
     @Test
     public void testGet() throws NotFoundException {

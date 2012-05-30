@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 import static org.testng.Assert.assertTrue;
 
 /**
@@ -37,41 +37,20 @@ public class ClearInterceptorTest {
     private HttpRequestHandler handler;
     private HttpServletRequest request;
     private HttpServletResponse response;
-    private LocationService locationServiceImpl;
-    private boolean result;
+    private LocationService service;
 
     @BeforeMethod
     public void setUp() throws Exception {
         handler = mock(HttpRequestHandler.class);
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
-        locationServiceImpl = mock(LocationService.class);
-        interceptor = new ClearInterceptor(locationServiceImpl);
+        service = mock(LocationService.class);
+        interceptor = new ClearInterceptor(service);
     }
 
     @Test
-    public void testPreHandler() {
-
-        result = interceptor.preHandle(request, response, handler);
-
-        assertTrue(result);
-    }
-
-    @Test
-    public void testAvatar() {
-
-        result = interceptor.preHandle(request, response, handler);
-
-        assertTrue(result);
-    }
-
-    @Test
-    public void testNotAvatar() {
-        request = mock(HttpServletRequest.class);
-        when(request.getRequestURI()).thenReturn("/12345/avatar");
-
-        result = interceptor.preHandle(request, response, handler);
-
-        assertTrue(result);
+    public void testUserLocationWasCleared() {
+        assertTrue(interceptor.preHandle(request, response, handler));
+        verify(service).clearUserLocation();
     }
 }
