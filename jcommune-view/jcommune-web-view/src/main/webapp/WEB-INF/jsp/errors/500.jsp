@@ -20,9 +20,8 @@
     <title><spring:message code="label.500.title"/></title>
 </head>
 <body>
-<div class="wrap main_page">
     <jsp:include page="../../template/topLine.jsp"/>
-    <div class="all_forums">
+    <div class="container">
         <div class="text_errorpage">
             <h1><span class="error_errorpage"><spring:message code="label.error"/></span> 500</h1>
             <spring:message code="label.500.detail"/>
@@ -31,6 +30,4 @@
             <a href="${pageContext.request.contextPath}/"><spring:message code="label.back2main"/></a>
         </div>
     </div>
-    <div class="footer_buffer"></div>
-</div>
 </body>

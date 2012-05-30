@@ -63,7 +63,11 @@
                         </c:choose>
                     
                     <c:out value="${option.name}"/>
-                            <span id="pollAnswer${option.id}"></span>
+                    <span id="pollAnswer${option.id}" style="display:none">
+                        <div class="progress" style="margin-bottom: 3px;">
+                            <div class="bar chart" style="width: 0;"></div>
+                        </div>
+                    </span>
                 </div>
             </c:forEach>
             
@@ -81,7 +85,7 @@
                     <c:out value="${option.name}"/>
                             <span id="pollAnswer${option.id}">
                                 <div class="progress" style="margin-bottom: 3px;">
-                                <c:choose>
+                                        <c:choose>
                                             <c:when test="${poll.totalVotesCount > 0 && option.votesCount > 0}">
                                                 <div class="bar" style="width: ${option.votesCount / poll.totalVotesCount * 100}%;">${option.votesCount}</div>
                                             </c:when>
