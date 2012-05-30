@@ -25,146 +25,104 @@
     <title><spring:message code="label.outbox"/></title>
 </head>
 <body>
-<div class="wrap pm_page">
-    <jsp:include page="../../template/topLine.jsp"/>
-    <jsp:include page="../../template/logo.jsp"/>
 
-    <div class="container">
-        <h2><spring:message code="label.pm_title"/></h2>
-        <hr/>
-        <div class="row">
-            <div class="span2">
-                <div class="well" class="pm_folders">
-                    <ul class="nav nav-list">
-                        <li class="nav-header"><spring:message code="label.pm.folders"/></li>
-                        <li><a id="inbox_link" href="${pageContext.request.contextPath}/inbox">
-                            <i class="icon-white icon-inbox"></i>
-                            <spring:message code="label.inbox"/></a></li>
-                        <li class="active"><a id="outbox_link" href="${pageContext.request.contextPath}/outbox">
-                            <i class="icon-envelope"></i>
-                            <spring:message code="label.outbox"/></a></li>
-                        <li><a id="draft_link" href="${pageContext.request.contextPath}/drafts">
-                            <i class="icon-pencil"></i>
-                            <spring:message code="label.drafts"/></a></li>
-                    </ul>
-                </div>
-                <!-- /well -->
+<jsp:include page="../../template/topLine.jsp"/>
+
+<div class="container">
+    <h2><spring:message code="label.pm_title"/></h2>
+    <hr/>
+    <div class="row">
+        <div class="span2">
+            <a href="${pageContext.request.contextPath}/pm/new" class="btn btn-primary btn-small pm_label_new_pm">
+                <spring:message code="label.new_pm"/></a>
+
+            <div class="well pm_folders">
+                <ul class="nav nav-list">
+                    <li class="nav-header"><spring:message code="label.pm.folders"/></li>
+                    <li><a id="inbox_link" href="${pageContext.request.contextPath}/inbox">
+                        <i class="icon-white icon-inbox"></i>
+                        <spring:message code="label.inbox"/></a></li>
+                    <li class="active"><a id="outbox_link" href="${pageContext.request.contextPath}/outbox">
+                        <i class="icon-envelope"></i>
+                        <spring:message code="label.outbox"/></a></li>
+                    <li><a id="draft_link" href="${pageContext.request.contextPath}/drafts">
+                        <i class="icon-pencil"></i>
+                        <spring:message code="label.drafts"/></a></li>
+                </ul>
             </div>
-            <%-- /span2--%>
-
-            <div class="span9">
-                <div class="pm_delete_btn_block">
-                    <div class="del">
-                        <a class="btn btn-danger" id="deleteCheckedPM"
-                           href="${pageContext.request.contextPath}/pm">
-                            <i class="icon-trash icon-white"></i>
-                            <spring:message code="label.delete"/>
-                        </a>
-                        <form:form id="deleteForm" method="DELETE"/>
-                    </div>
-                </div>
-
-                <table class="table table-bordered table-condensed">
-                    <thead>
-                    <th class="pm_header_check">
-                        <input type="checkbox" class="check_all"/></th>
-
-                    <th class="pm_header_info"><i class="icon-user"></i>
-                        <spring:message code="label.sender"/></th>
-
-                    <th><i class="icon-font"></i> <spring:message code="label.pm.title"/></th>
-
-                    <th class="pm_sending_date"><i class="icon-calendar"></i>
-                        <spring:message code="label.sending_date"/></th>
-                    </thead>
-
-                    <tbody>
-                    <c:choose>
-                        <c:when test="${!(empty pmList)}">
-                            <c:forEach var="pm" items="${pmList}">
-                                <tr id="${pm.id}" class="mess read">
-                                    <td><input type="checkbox" id="${pm.id}" class="checker"/></td>
-                                    <td>
-                                        <a href="${pageContext.request.contextPath}/users/${pm.userTo.encodedUsername}">
-                                            <c:out value="${pm.userTo.username}"/>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="${pageContext.request.contextPath}/pm/${pm.id}">
-                                            <c:out value="${pm.title}"/>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <jtalks:format value="${pm.creationDate}"/>
-                                    </td>
-                                </tr>
-                            </c:forEach>
-                        </c:when>
-                        <c:otherwise>
-                            <tr>
-                                <td colspan="4"><spring:message code="label.outbox.empty"/></td>
-                            </tr>
-                        </c:otherwise>
-                    </c:choose>
-                    </tbody>
-                </table>
-            </div>
-            <!-- /span9 -->
+            <!-- /well -->
         </div>
-        <%-- /row--%>
-    </div>
-    <%--/container--%>
-    <%--
+        <%-- /span2--%>
 
-        <div class="all_forums">
+        <div class="span9">
+            <div class="pm_delete_btn_block">
+                <div class="del">
+                    <a class="btn btn-danger" id="deleteCheckedPM"
+                       href="${pageContext.request.contextPath}/pm">
+                        <i class="icon-trash icon-white"></i>
+                        <spring:message code="label.delete"/>
+                    </a>
+                    <form:form id="deleteForm" method="DELETE"/>
+                </div>
+            </div>
 
-            <h2><a class="heading" href="#"><spring:message code="label.outbox"/></a></h2>
-            <jsp:include page="../../template/pmNavigationMenu.jsp"/>
+            <table class="table table-bordered table-condensed">
+                <thead>
+                <th class="pm_header_check">
+                    <input type="checkbox" class="check_all"/></th>
 
-            <table class="messages">
-                <tr class="head">
-                    <th class="pm_header_check"><input type="checkbox" class="check_all"/></th>
-                    <th class="pm_header_info"><spring:message code="label.pm.recipient"/></th>
-                    <th class="pm_header_title"><spring:message code="label.pm.title"/></th>
-                    <th class="pm_header_info"><spring:message code="label.sending_date"/></th>
-                </tr>
+                <th class="pm_header_info"><i class="icon-user"></i>
+                    <spring:message code="label.pm.recipient"/></th>
+
+                <th><i class="icon-font"></i> <spring:message code="label.pm.title"/></th>
+
+                <th class="pm_sending_date"><i class="icon-calendar"></i>
+                    <spring:message code="label.sending_date"/></th>
+                </thead>
+
+                <tbody>
                 <c:choose>
                     <c:when test="${!(empty pmList)}">
                         <c:forEach var="pm" items="${pmList}">
-                            <tr id="${pm.id}" class="mess read">
-                                <td><input type="checkbox" id="${pm.id}" class="checker"/></td>
-                                <td>
-                                    <a href="${pageContext.request.contextPath}/users/${pm.userTo.encodedUsername}">
-                                        <c:out value="${pm.userTo.username}"/>
-                                    </a>
-                                </td>
-                                <td class="title">
-                                    <a href="${pageContext.request.contextPath}/pm/${pm.id}">
-                                        <c:out value="${pm.title}"/>
-                                    </a>
-                                </td>
-                                <td>
-                                    <jtalks:format value="${pm.creationDate}"/>
-                                </td>
+                            <c:choose>
+                                <c:when test="${pm.read}">
+                                    <tr id="${pm.id}" class="mess" >
+                                </c:when>
+                                <c:otherwise>
+                                    <tr id="${pm.id}" class="mess pm_unread">
+                                </c:otherwise>
+                            </c:choose>
+                            <td><input type="checkbox" id="${pm.id}" class="checker"/></td>
+                            <td class="pm_user_to_from">
+                                <a href="${pageContext.request.contextPath}/users/${pm.userTo.encodedUsername}">
+                                    <c:out value="${pm.userTo.username}"/>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="${pageContext.request.contextPath}/pm/${pm.id}">
+                                    <c:out value="${pm.title}"/>
+                                </a>
+                            </td>
+                            <td>
+                                <jtalks:format value="${pm.creationDate}"/>
+                            </td>
                             </tr>
                         </c:forEach>
                     </c:when>
                     <c:otherwise>
-                        <tr class="forum_row">
+                        <tr>
                             <td colspan="4"><spring:message code="label.outbox.empty"/></td>
                         </tr>
                     </c:otherwise>
                 </c:choose>
+                </tbody>
             </table>
-            <div class="del">
-                <a id="deleteCheckedPM" class="button" href="${pageContext.request.contextPath}/pm">
-                    <spring:message code="label.delete"/>
-                </a>
-                <form:form id="deleteForm" method="DELETE"/>
-            </div>
         </div>
-
-    --%>
-    <div class="footer_buffer"></div>
+        <!-- /span9 -->
+    </div>
+    <%-- /row--%>
 </div>
+<%--/container--%>
+<div class="footer_buffer"></div>
+
 </body>
