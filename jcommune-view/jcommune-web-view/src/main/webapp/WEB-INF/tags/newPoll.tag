@@ -24,7 +24,8 @@
 <%@ attribute name="multipleValue" required="true" rtexprvalue="true" type="java.lang.String" %>
 <%@ attribute name="endingDateNameValue" required="true" rtexprvalue="true" type="java.lang.String" %>
 
-<div class='well' id="editPoll">
+<div class='well' >
+    <div id="editPoll">
         <legend><spring:message code="label.poll.header"/></legend>
         
         <div class='control-group'>
@@ -64,7 +65,7 @@
                 <br>
                 <form:errors path="${endingDateNameValue}" cssClass="error"/>
         </div>
-
+    </div>
     <div id="previewPoll">
 
     </div>
