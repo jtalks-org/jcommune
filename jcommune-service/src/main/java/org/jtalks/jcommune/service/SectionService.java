@@ -30,4 +30,14 @@ public interface SectionService extends EntityService<Section> {
      * @return - list of the sections.
      */
     List<Section> getAll();
+    
+    /**
+     * Prepares sections for the main forum page.Fills the necessary information
+     * for the branches of each section.
+     * Calling this method avoids the use of counters, which reduce the response
+     * time of the main page.
+     * 
+     * @param sections the list of sections
+     */
+    void prepareSectionsForView(List<Section> sections);
 }

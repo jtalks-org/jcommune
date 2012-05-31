@@ -66,7 +66,7 @@ public class TransactionalUserServiceTest {
     private static final String PASSWORD_MD5_HASH = "5f4dcc3b5aa765d61d8327deb882cf99";
     private static final String SIGNATURE = "signature";
     private static final String NEW_PASSWORD = "newPassword";
-  //if you change the NEW_PASSWORD, regenerate md5 hash
+    //if you change the NEW_PASSWORD, regenerate md5 hash
     private static final String NEW_PASSWORD_MD5_HASH = "14a88b9d2f52c55b5fbcf9c5d9c11875";
     private static final Language LANGUAGE = Language.ENGLISH;
     private static final int PAGE_SIZE = 50;

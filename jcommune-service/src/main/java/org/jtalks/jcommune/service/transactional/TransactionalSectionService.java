@@ -16,8 +16,10 @@ package org.jtalks.jcommune.service.transactional;
 
 import java.util.List;
 
+import org.jtalks.common.model.entity.Branch;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.dao.SectionDao;
+import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
 
 /**
@@ -27,15 +29,18 @@ import org.jtalks.jcommune.service.SectionService;
  */
 public class TransactionalSectionService extends AbstractTransactionalEntityService<Section, SectionDao>
         implements SectionService {
-
+    private BranchService branchService;
     
     /**
      * Create an instance of entity based service
      *
      * @param dao data access object, which should be able do all CRUD operations.
+     * @param branchService autowired object, that represents service for the working with
+     *                      branches
      */
-    public TransactionalSectionService(SectionDao dao) {
+    public TransactionalSectionService(SectionDao dao, BranchService branchService) {
         super(dao);
+        this.branchService = branchService;
     }
 
     /**
@@ -45,4 +50,15 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
     public List<Section> getAll() {
         return this.getDao().getAll();
     } 
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void prepareSectionsForView(List<Section> sections) {
+        for(Section section: sections) {
+            List<Branch> branches = section.getBranches();
+            branchService.fillStatisticInfo(branches);
+            branchService.fillLastPostInLastUpdatedTopic(branches);
+        }
+    }
 }
