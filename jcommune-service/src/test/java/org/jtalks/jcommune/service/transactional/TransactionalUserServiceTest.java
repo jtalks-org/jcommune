@@ -62,8 +62,12 @@ public class TransactionalUserServiceTest {
     private static final String LAST_NAME = "last name";
     private static final String EMAIL = "username@mail.com";
     private static final String PASSWORD = "password";
+    //if you change the PASSWORD, regenerate md5 hash
+    private static final String PASSWORD_MD5_HASH = "5f4dcc3b5aa765d61d8327deb882cf99";
     private static final String SIGNATURE = "signature";
     private static final String NEW_PASSWORD = "newPassword";
+  //if you change the NEW_PASSWORD, regenerate md5 hash
+    private static final String NEW_PASSWORD_MD5_HASH = "14a88b9d2f52c55b5fbcf9c5d9c11875";
     private static final Language LANGUAGE = Language.ENGLISH;
     private static final int PAGE_SIZE = 50;
     private static final String LOCATION = "location";
@@ -88,10 +92,8 @@ public class TransactionalUserServiceTest {
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-        //TODO how check password encryption?
         when(passwordEncoder.encodePassword(PASSWORD, null))
-            .thenReturn(PASSWORD);
-        
+            .thenReturn(PASSWORD_MD5_HASH);
         userService = new TransactionalUserService(
                 userDao,
                 securityService,
@@ -130,7 +132,7 @@ public class TransactionalUserServiceTest {
 
         assertEquals(registeredUser.getUsername(), USERNAME);
         assertEquals(registeredUser.getEmail(), EMAIL);
-        assertEquals(registeredUser.getPassword(), PASSWORD);
+        assertEquals(registeredUser.getPassword(), PASSWORD_MD5_HASH);
         assertTrue(new Interval(registeredUser.getRegistrationDate(), now)
                 .toDuration().getMillis() <= MAX_REGISTRATION_TIMEOUT);
         verify(userDao).saveOrUpdate(user);
@@ -143,7 +145,7 @@ public class TransactionalUserServiceTest {
         when(securityService.getCurrentUser()).thenReturn(user);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
         when(passwordEncoder.encodePassword(NEW_PASSWORD, null))
-            .thenReturn(NEW_PASSWORD);
+            .thenReturn(NEW_PASSWORD_MD5_HASH);
 
         String newAvatar = new String(new byte[12]);
 
@@ -192,7 +194,7 @@ public class TransactionalUserServiceTest {
         assertEquals(user.getSignature(), SIGNATURE, "Signature was not changed");
         assertEquals(user.getFirstName(), FIRST_NAME, "first name was not changed");
         assertEquals(user.getLastName(), LAST_NAME, "last name was not changed");
-        assertEquals(user.getPassword(), NEW_PASSWORD, "new password was not accepted");
+        assertEquals(user.getPassword(), NEW_PASSWORD_MD5_HASH, "new password was not accepted");
     }
 
     @Test
