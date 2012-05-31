@@ -67,17 +67,16 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
                                  String targetType, Object permission) {
         boolean result = false;
         ObjectIdentity objectIdentity = aclUtil.createIdentity(targetId, targetType);
-
-        for (GroupAce groupAce : aclManager.getGroupPermissionsOn(objectIdentity)) {
-            result = groupAce.isGranting() && groupAce.getGroup(groupDao).getUsers().
-                    contains(authentication.getPrincipal());
-        }
-
         Permission jtalksPermission = getPermission(permission);
+
         List<AccessControlEntry> aces = aclUtil.getAclFor(objectIdentity).getEntries();
-        if (isRestricted(aces, jtalksPermission)) {
+        List<GroupAce> controlEntries = aclManager.getGroupPermissionsOn(objectIdentity);
+
+        if (isRestricted(aces, jtalksPermission) ||
+                isRestrictedForGroup(controlEntries, authentication)) {
             return false;
-        } else if (isAllowed(aces, jtalksPermission)) {
+        } else if (isAllowed(aces, jtalksPermission) ||
+                isAllowedForGroup(controlEntries, authentication)) {
             return true;
         }
         return result;
@@ -95,6 +94,26 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
     private boolean isRestricted(List<AccessControlEntry> controlEntries, Permission permission) {
         for (AccessControlEntry ace : controlEntries) {
             if (permission.equals(ace.getPermission()) && !ace.isGranting()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isAllowedForGroup(List<GroupAce> controlEntries, Authentication authentication) {
+        for (GroupAce ace : controlEntries) {
+            if (ace.isGranting() && ace.getGroup(groupDao).getUsers().
+                    contains(authentication.getPrincipal())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isRestrictedForGroup(List<GroupAce> controlEntries, Authentication authentication) {
+        for (GroupAce ace : controlEntries) {
+            if (!ace.isGranting() && ace.getGroup(groupDao).getUsers().
+                    contains(authentication.getPrincipal())) {
                 return true;
             }
         }
