@@ -51,14 +51,16 @@
             
         <form:form action="${pageContext.request.contextPath}/topics/new?branchId=${branchId}"
                    method="POST" modelAttribute="topicDto" class="well">
-            
-            <form:input path="topicName" id="subject" type="text" name="subject" size="45"
+            <div class='control-group'>
+                <div class='controls'>
+                <form:input path="topicName" id="subject" type="text" name="subject" size="45"
                                     maxlength="255" tabindex="1"
                                     class="span11" placeholder='Topic title'/>
-            <form:errors path="topicName" id="subject" type="text" name="subject" size="45"
+                <form:errors path="topicName" id="subject" type="text" name="subject" size="45"
                                      maxlength="255" tabindex="1"
-                                     class="post" cssClass="error"/>
-            
+                                     class="post" cssClass="help-inline"/>
+                </div>
+            </div>
 
             <jtalks:bbeditor labelForAction="label.addtopic"
                              postText="${topicDto.bodyText}"

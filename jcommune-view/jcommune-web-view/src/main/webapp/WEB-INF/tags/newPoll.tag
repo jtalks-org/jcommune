@@ -29,15 +29,15 @@
         <legend><spring:message code="label.poll.header"/></legend>
         
         <div class='control-group'>
-        <label class='control-label'>
-            <spring:message code="label.poll.title"/>
-        </label>
-        <form:input path="${titleNameValue}" id="${titleNameValue}" type="text" name="${titleNameValue}"
-                            size="45"
-                            maxlength="255" tabindex="1"
-                            class="post"/>
-                <br>
-                <form:errors path="${titleNameValue}" cssClass="error"/>
+            <label class='control-label'>
+                <spring:message code="label.poll.title"/>
+            </label>
+            <form:input path="${titleNameValue}" id="${titleNameValue}" type="text" name="${titleNameValue}"
+                        size="45"
+                        maxlength="255" tabindex="1"
+                        class="post"/>
+            <br>
+            <form:errors path="${titleNameValue}" cssClass="help-inline"/>
         </div>
         
         <div class='control-group'>
@@ -46,14 +46,14 @@
             </label>
             
             <form:textarea path="${pollOptionsNameValue}" rows="8"
-                        class="post"/>
+                       class="post"/>
             <br>
-            <form:errors path="${pollOptionsNameValue}" cssClass="error"/>
+            <form:errors path="${pollOptionsNameValue}" cssClass="help-inline"/>
         </div>
         
         <div class='control-group'>                       
-                <form:checkbox path="${multipleName}" id="multipleChecker"  value="${multipleValue}"/>
-                <spring:message code="label.poll.multiple.title"/>
+            <form:checkbox path="${multipleName}" id="multipleChecker"  value="${multipleValue}"/>
+            <spring:message code="label.poll.multiple.title"/>
         </div>
         
         <div class='control-group'>
@@ -61,9 +61,9 @@
                 <spring:message code="label.poll.date"/>
             </label>
             
-                <form:input path="${endingDateNameValue}" id="datepicker" type="text" readonly="true"/>
-                <br>
-                <form:errors path="${endingDateNameValue}" cssClass="error"/>
+            <form:input path="${endingDateNameValue}" id="datepicker" type="text" readonly="true"/>
+            <br>
+            <form:errors path="${endingDateNameValue}" cssClass="help-inline"/>
         </div>
     </div>
     <div id="previewPoll">

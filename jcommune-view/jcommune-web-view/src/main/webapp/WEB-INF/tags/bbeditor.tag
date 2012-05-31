@@ -127,7 +127,8 @@
 
             </div>
          </div>   
-            
+     
+    <div class='control-group'>
             <%-- <div id="helpline"><spring:message code="label.answer.tooltip"/></div>--%>
             <span id="editorBBCODEdiv">
                 <pre id="htmlContent"></pre>
@@ -135,8 +136,8 @@
                         value="${postText}" /></textarea>
             </span>
             <br>
-            <form:errors path="${bodyParameterName}" cssClass="error"/>
-
+            <form:errors path="${bodyParameterName}" cssClass="help-inline"/>
+    </div>
         
 
       <div class="control-group">     
