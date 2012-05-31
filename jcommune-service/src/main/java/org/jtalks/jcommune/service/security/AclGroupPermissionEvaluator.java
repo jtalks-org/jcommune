@@ -57,6 +57,9 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
      */
     @Override
     public boolean hasPermission(Authentication authentication, Object groupId, Object permission) {
+        if(authentication.getPrincipal() instanceof String){
+            return false;
+        }
         Group group = groupDao.get(Long.parseLong((String) groupId));
         return group.getUsers().contains(authentication.getPrincipal());
     }

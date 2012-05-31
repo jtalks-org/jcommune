@@ -25,7 +25,6 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.UserDataCacheService;
-import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -93,7 +92,7 @@ public class TransactionalPrivateMessageService
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
+    @PreAuthorize("hasPermission('11', null)")
     public PrivateMessage sendMessage(String title, String body, String recipientUsername) throws NotFoundException {
         JCUser recipient = userService.getByUsername(recipientUsername);
         JCUser userFrom = (JCUser) securityService.getCurrentUser();
@@ -127,7 +126,7 @@ public class TransactionalPrivateMessageService
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasAnyRole('" + SecurityConstants.ROLE_USER + "','" + SecurityConstants.ROLE_ADMIN + "')")
+    @PreAuthorize("hasPermission('11', null)")
     public PrivateMessage saveDraft(long id, String title, String body, String recipientUsername)
             throws NotFoundException {
         JCUser recipient = null;

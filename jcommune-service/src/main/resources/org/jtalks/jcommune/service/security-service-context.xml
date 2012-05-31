@@ -123,4 +123,7 @@
     <bean id="aclManager" class="org.jtalks.common.security.acl.AclManager">
         <constructor-arg ref="aclService"/>
     </bean>
+
+    <!-- Password encoding -->
+    <bean id="md5PasswordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
 </beans>

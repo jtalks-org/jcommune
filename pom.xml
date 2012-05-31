@@ -37,12 +37,12 @@
             <dependency>
                 <groupId>org.jtalks.common</groupId>
                 <artifactId>jtalks-common-model</artifactId>
-                <version>0.16</version>
+                <version>0.17-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.jtalks.common</groupId>
                 <artifactId>jtalks-common-service</artifactId>
-                <version>0.12</version>
+                <version>0.17-SNAPSHOT</version>
             </dependency>
             <!-- Hibernate -->
             <dependency>
