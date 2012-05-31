@@ -1,14 +1,14 @@
 body {
-  padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+    padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
 }
 
 .table td {
-  vertical-align: middle;
+    vertical-align: middle;
 }
 
 .status-img {
-  height: 32px; 
-  width: 32px
+    height: 32px;
+    width: 32px
 }
 
 .dropdown > a.lang-toggle {
@@ -21,170 +21,172 @@ ul.lang-menu li img {
 }
 
 #branch-header {
-  line-height: 3.2em;
-  overflow: hidden;
+    line-height: 3.2em;
+    overflow: hidden;
 }
 
 #branch-header h2 {
-  float: left;
+    float: left;
 }
 
 #branch-header #right-block {
-  float: right; 
-  overflow: hidden;
+    float: right;
+    overflow: hidden;
 }
 
 #branch-header #right-block a {
-  font-weight: bold;
-  padding-left: 2px;
-  color: rgb(85, 85, 85);
+    font-weight: bold;
+    padding-left: 2px;
+    color: rgb(85, 85, 85);
 }
 
 #mark-all-viewed {
-  font-weight: bold; 
-  padding-right: 20px
+    font-weight: bold;
+    padding-right: 20px
 }
 
 #underlist-block {
-  overflow: auto; 
-  width: 100%;
+    overflow: auto;
+    width: 100%;
 }
 
 .container footer {
-  display: block; 
-  margin-top: 45px; 
-  padding: 35px 0px 36px; 
-  border-top: 1px solid rgb(229,229,229);
+    display: block;
+    margin-top: 45px;
+    padding: 35px 0px 36px;
+    border-top: 1px solid rgb(229, 229, 229);
 }
 
 .icon-palette {
-  background-image: url("../images/palette-icon.png");
-  background-position: center;
+    background-image: url("../images/palette-icon.png");
+    background-position: center;
 }
 
 .icon-strike {
-  background-image: url("../images/strike-icon.png");
-  background-position: center;
-  padding-top: 2px;
+    background-image: url("../images/strike-icon.png");
+    background-position: center;
+    padding-top: 2px;
 }
 
 .icon-underline {
-  background-image: url("../images/underline-icon.png");
-  background-position: center;
-  padding-top: 2px;
+    background-image: url("../images/underline-icon.png");
+    background-position: center;
+    padding-top: 2px;
 }
 
 .icon-add-row {
-  background-image: url("../images/insert-row-icon.png");
-  background-position: center;
+    background-image: url("../images/insert-row-icon.png");
+    background-position: center;
 }
 
 .icon-link {
-  background-image: url("../images/link-icon.png");
-  background-position: center;
+    background-image: url("../images/link-icon.png");
+    background-position: center;
 }
 
 .icon-code {
-  background-image: url("../images/code-icon.png");
-  background-position: center;
-  padding-top: 1px;
+    background-image: url("../images/code-icon.png");
+    background-position: center;
+    padding-top: 1px;
 }
 
 .icon-icq {
-  background-image: url("../images/icq.png");
-  background-position: center;
-  height: 16px;
-  width: 16px;
+    background-image: url("../images/icq.png");
+    background-position: center;
+    height: 16px;
+    width: 16px;
 }
 
 .icon-skype {
-  background-image: url("../images/skype.png");
-  background-position: center;
-  height: 16px;
-  width: 16px;
+    background-image: url("../images/skype.png");
+    background-position: center;
+    height: 16px;
+    width: 16px;
 }
 
 .icon-mail {
-  background-image: url("../images/mail.png");
-  background-position: center;
-  height: 16px;
-  width: 16px;
+    background-image: url("../images/mail.png");
+    background-position: center;
+    height: 16px;
+    width: 16px;
 }
 
 .icon-quote {
-  background-image: url("../images/quote-icon.png");
-  background-position: center;
+    background-image: url("../images/quote-icon.png");
+    background-position: center;
 }
+
 .icon-online {
-  background-image: url("../images/online-icon.png");
-  background-position: center;
-  vertical-align: baseline;
-  margin-right: 2px;
+    background-image: url("../images/online-icon.png");
+    background-position: center;
+    vertical-align: baseline;
+    margin-right: 2px;
 }
+
 .icon-offline {
-  background-image: url("../images/offline-icon.png");
-  background-position: center;
-  vertical-align: baseline;
-  margin-right: 2px;
+    background-image: url("../images/offline-icon.png");
+    background-position: center;
+    vertical-align: baseline;
+    margin-right: 2px;
 }
 
 #topics-table td {
-  padding-top: 2px;
-  padding-bottom: 3px;
+    padding-top: 2px;
+    padding-bottom: 3px;
 }
 
 #topics-table .status-col {
-  padding: 0px;
-  width: 32px;
-  max-width: 32px;
-  min-width: 32px;
+    padding: 0px;
+    width: 32px;
+    max-width: 32px;
+    min-width: 32px;
 }
 
 #topics-table .author-col a {
-  font-size: 11px;
+    font-size: 11px;
 }
 
 #topics-table .posted-in-col a {
-  font-size: 11px;
+    font-size: 11px;
 }
 
 #topics-table .posts-views {
-  font-size: 11px;
-  width: 90px;
-  max-width: 100px;
+    font-size: 11px;
+    width: 90px;
+    max-width: 100px;
 }
 
 #topics-table .created-by {
-  font-style: italic; 
-  font-size: 12px;
-  white-space:nowrap;
+    font-style: italic;
+    font-size: 12px;
+    white-space: nowrap;
 }
 
 #topics-table .latest-by {
-  font-size: 10px;
-  width: 160px;
-  min-width: 160px;
-  max-width: 160px;
+    font-size: 10px;
+    width: 160px;
+    min-width: 160px;
+    max-width: 160px;
 }
 
 #topics-table .latest-by p {
-  margin: 0; 
-  white-space:nowrap;
-  font-size: 10px;
+    margin: 0;
+    white-space: nowrap;
+    font-size: 10px;
 }
 
 #topics-table .latest-by .date {
-  color: rgb(51,51,51);
+    color: rgb(51, 51, 51);
 }
 
 #topics-table .branch-title {
-  font-weight: bold;
-  line-height: 24px;
-  font-size: 16px;
+    font-weight: bold;
+    line-height: 24px;
+    font-size: 16px;
 }
 
 #topics-table .title-col {
-  min-width: 200px;
+    min-width: 200px;
 }
 
 .wraptocenter {
@@ -216,48 +218,102 @@ ul.lang-menu li img {
 }
 
 @media (max-width: 479px) {
-  #topics-table .posts-views {
-    display: none;
-  }
-  #topics-table .latest-by {
-    display: none;
-  }
+    #topics-table .posts-views {
+        display: none;
+    }
+
+    #topics-table .latest-by {
+        display: none;
+    }
 }
 
 @media (max-width: 480px) {
-  .posts-views {
-    display: none;
-  }
+    .posts-views {
+        display: none;
+    }
 }
 
 @media (max-width: 979px) {
-  #topics-table .author-col {
-    display: none;
-  }
-  #topics-table .posted-in-col {
-    display: none;
-  }
+    #topics-table .author-col {
+        display: none;
+    }
 
-  .created-by {
-    font-style: italic; 
-    font-size: 12px;
-    display: inline;
-    white-space:nowrap;
-  }
+    #topics-table .posted-in-col {
+        display: none;
+    }
+
+    .created-by {
+        font-style: italic;
+        font-size: 12px;
+        display: inline;
+        white-space: nowrap;
+    }
 }
 
 @media (min-width: 980px) {
-  #topics-table .author-col {
-    display: table-cell;
-  }
-  #topics-table .posted-in-col {
-    display: table-cell;
-  }
+    #topics-table .author-col {
+        display: table-cell;
+    }
 
-  .created-by {
-    display: none;
-  }
-  #topics-table .posts-views {
-    display: table-cell;
-  }
+    #topics-table .posted-in-col {
+        display: table-cell;
+    }
+
+    .created-by {
+        display: none;
+    }
+
+    #topics-table .posts-views {
+        display: table-cell;
+    }
+}
+
+.pm_folders {
+    padding: 8px 0;
+}
+
+.pm_delete_btn_block {
+    margin: 0 0 5px 0;
+}
+
+.pm_header_check {
+    width: 10px;
+    min-width: 10px;
+    max-width: 10px;
+}
+
+.pm_header_info {
+    width: 150px;
+    max-width: 150px;
+}
+
+.pm_sending_date {
+    width: 150px;
+}
+
+.pm_label_new_pm {
+    margin: 0 0 5px 0;
+}
+
+.pm_unread {
+    background-color: #9bc0de;
+    background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(0.25, rgba(255, 255, 255, 0.15)), color-stop(0.25, transparent), color-stop(0.5, transparent), color-stop(0.5, rgba(255, 255, 255, 0.15)), color-stop(0.75, rgba(255, 255, 255, 0.15)), color-stop(0.75, transparent), to(transparent));
+    background-image: -webkit-linear-gradient(-45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    background-image: -moz-linear-gradient(-45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    background-image: -ms-linear-gradient(-45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    background-image: -o-linear-gradient(-45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    background-image: linear-gradient(-45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+
+}
+
+.pm_unread a {
+    color: #0066cc;
+}
+
+.pm_unread:hover {
+
+}
+
+.pm_user_to_from {
+    word-break: break-all
 }

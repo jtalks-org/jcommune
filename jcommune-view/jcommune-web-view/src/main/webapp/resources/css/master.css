@@ -1154,33 +1154,6 @@ td.button_cell {
     width: 45%;
 }
 
-.pm_header_info {
-    width: 150px;
-    max-width: 150px;
-}
-
-.pm_header_check {
-    width: 10px;
-    min-width: 10px;
-    max-width: 10px;
-}
-
-.pm_sending_date {
-    width: 150px;
-}
-
-.pm_delete_btn_block {
-    margin: 0 0 5px 0;
-}
-
-.pm_label_new_pm {
-    margin: 0 0 5px 0;
-}
-
-.pm_folders {
-    padding: 8px 0;
-}
-
 .messages th {
     font-weight: bold;
     text-align: center;
