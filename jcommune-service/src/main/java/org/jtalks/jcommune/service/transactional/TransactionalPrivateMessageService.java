@@ -172,7 +172,7 @@ public class TransactionalPrivateMessageService
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#id, 'org.jtalks.jcommune.model.entity.PrivateMessage', admin)")
+    @PreAuthorize("hasPermission(#id, 'org.jtalks.jcommune.model.entity.PrivateMessage', 'GeneralPermission.WRITE')")
     public PrivateMessage sendDraft(long id, String title, String body,
                                     String recipientUsername) throws NotFoundException {
         JCUser recipient = userService.getByUsername(recipientUsername);
@@ -201,8 +201,7 @@ public class TransactionalPrivateMessageService
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#id, 'org.jtalks.jcommune.model.entity.PrivateMessage', admin) or " +
-            "hasPermission(#id, 'org.jtalks.jcommune.model.entity.PrivateMessage', read)")
+    @PreAuthorize("hasPermission(#id, 'org.jtalks.jcommune.model.entity.PrivateMessage', 'GeneralPermission.READ')")
     public PrivateMessage get(Long id) throws NotFoundException {
         PrivateMessage pm = super.get(id);
         if (!hasCurrentUserAccessToPM(pm)) {

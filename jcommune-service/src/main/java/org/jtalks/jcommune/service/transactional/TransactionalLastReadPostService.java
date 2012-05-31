@@ -16,13 +16,14 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.LastReadPostDao;
-import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.LastReadPost;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.LastReadPostService;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
-
-import static org.jtalks.jcommune.service.security.SecurityConstants.HAS_USER_OR_ADMIN_ROLE;
 
 /**
  * Performs last read posts management to track topic updates
@@ -99,7 +100,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
+    //todo @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
     public void markAllTopicsAsRead(Branch branch) {
         JCUser user = (JCUser) securityService.getCurrentUser();
         for (Topic topic : branch.getTopics()) {
@@ -118,7 +119,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      * @param pagingEnabled if paging is enabled on page. If so, last post index in topic is returned
      * @return new last post index, counting from 0
      */
-    @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
+    //todo @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
     private int calculatePostIndex(JCUser user, Topic topic, int pageNum, boolean pagingEnabled) {
         if (pagingEnabled) {  // last post on the page given
             int maxPostIndex = user.getPageSize() * pageNum - 1;
@@ -136,7 +137,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      * @param topic     topic to store info for
      * @param postIndex actual post index, starting from 0
      */
-    @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
+    //todo @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
     private void saveLastReadPost(JCUser user, Topic topic, int postIndex) {
         LastReadPost post = lastReadPostDao.getLastReadPost(user, topic);
         if (post == null) {
@@ -151,7 +152,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
+    //todo @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
     public void updateLastReadPostsWhenPostIsDeleted(Post post) {
         List<LastReadPost> lastReadPosts = lastReadPostDao.listLastReadPostsForTopic(post.getTopic());
         for (LastReadPost lastReadPost : lastReadPosts) {

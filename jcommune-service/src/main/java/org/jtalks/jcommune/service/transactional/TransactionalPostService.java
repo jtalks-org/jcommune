@@ -66,7 +66,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#postId, 'org.jtalks.jcommune.model.entity.Post', admin)")
+    @PreAuthorize("hasPermission(#postId, 'org.jtalks.jcommune.model.entity.Post', 'GeneralPermission.WRITE')")
     public void updatePost(long postId, String postContent) throws NotFoundException {
         Post post = get(postId);
         post.setPostContent(postContent);
@@ -82,8 +82,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#postId, 'org.jtalks.jcommune.model.entity.Post', admin) or " +
-            "hasPermission(#postId, 'org.jtalks.jcommune.model.entity.Post', delete)")
+    @PreAuthorize("hasPermission(#postId, 'org.jtalks.jcommune.model.entity.Post', 'GeneralPermission.WRITE')")
     public void deletePost(long postId) throws NotFoundException {
         Post post = get(postId);
         JCUser user = post.getUserCreated();

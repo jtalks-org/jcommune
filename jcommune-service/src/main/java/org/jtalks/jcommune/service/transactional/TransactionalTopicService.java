@@ -183,8 +183,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', 'GeneralPermission.WRITE') or " +
-            "hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', 'GeneralPermission.WRITE')")
+    @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', 'GeneralPermission.WRITE')")
     public Branch deleteTopic(long topicId) throws NotFoundException {
         Topic topic = get(topicId);
 
