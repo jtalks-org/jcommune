@@ -37,12 +37,13 @@ import javax.validation.constraints.Size;
 @Matches(field = "newUserPassword", verifyField = "newUserPasswordConfirm", message = "{password_not_matches}")
 @ChangedPassword
 public class EditUserProfileDto {
-
     @NotBlank(message = "{validation.email.notblank}")
+
     @Pattern(regexp = "^[a-zA-Z0-9_'+*/^&=?~{}\\-](\\.?[a-zA-Z0-9_'+*/^&=?~{}\\-])" +
             "*\\@((\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}(\\:\\d{1,3})?)|(((([a-zA-Z0-9][a-zA-Z0-9\\-]" +
             "+[a-zA-Z0-9])|([a-zA-Z0-9]{1,2}))[\\.]{1})+([a-zA-Z]{2,6})))$",
             message = "{validation.email.wrong.format}")
+
     @ChangedEmail
     private String email;
     private String firstName;
