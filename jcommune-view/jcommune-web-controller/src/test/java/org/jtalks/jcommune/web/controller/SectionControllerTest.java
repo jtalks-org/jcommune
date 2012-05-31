@@ -14,6 +14,19 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.testng.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.service.SectionService;
@@ -31,8 +44,12 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.ModelAndViewAssert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -69,8 +86,8 @@ public class SectionControllerTest {
 
         //check expectations
         verifyAndAssertAllSections(mav);
-    }
-
+    }   
+    
     private void verifyAndAssertAllSections(ModelAndView mav) {
         verify(sectionService).getAll();
 

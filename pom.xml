@@ -37,7 +37,7 @@
             <dependency>
                 <groupId>org.jtalks.common</groupId>
                 <artifactId>jtalks-common-model</artifactId>
-                <version>0.16-SNAPSHOT</version>
+                <version>0.16</version>
             </dependency>
             <dependency>
                 <groupId>org.jtalks.common</groupId>

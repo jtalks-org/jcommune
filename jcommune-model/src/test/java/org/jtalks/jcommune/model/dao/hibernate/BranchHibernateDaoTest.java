@@ -199,4 +199,37 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
 
         assertEquals(persistedBranches.size(), branches.size());
     }
+    
+    @Test
+    public void testGetCountTopicsInBranch() {
+        //this topic is persisted
+        Topic topic = ObjectsFactory.getDefaultTopic();
+        JCUser user = topic.getTopicStarter();
+        Branch branch = topic.getBranch();
+        branch.addTopic(new Topic(user, "Second topic"));
+        session.save(branch);
+        int expectedCount = branch.getTopics().size();
+        
+        int actualCount = dao.getCountTopicsInBranch(branch);
+        
+        assertEquals(actualCount, expectedCount, "Count of topics in the branch is wrong");
+    }
+    
+    @Test
+    public void testGetCountPostsInBranch() {
+        //topic with one post
+        Topic topic = ObjectsFactory.getDefaultTopic();
+        Branch branch = topic.getBranch();
+        //add two posts
+        topic.addPost(new Post(topic.getTopicStarter(), "Second post"));
+        topic.addPost(new Post(topic.getTopicStarter(), "Third post"));
+        //
+        session.save(branch);
+        int expectedCount = topic.getPosts().size();
+        
+        int actualCount = dao.getCountPostsInBranch(branch);
+        
+        assertEquals(actualCount, expectedCount, "Count of posts in the branch is wrong");
+        
+    }
 }
