@@ -18,13 +18,12 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.common.model.entity.User;
-import org.jtalks.common.validation.annotations.Email;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.web.validation.annotations.ChangedEmail;
-import org.jtalks.jcommune.web.validation.annotations.Matches;
 import org.jtalks.jcommune.web.validation.annotations.ChangedPassword;
+import org.jtalks.jcommune.web.validation.annotations.Matches;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
