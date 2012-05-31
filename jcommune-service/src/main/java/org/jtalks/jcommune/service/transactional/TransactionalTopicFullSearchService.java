@@ -14,13 +14,13 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.dao.search.TopicSearchDao;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicFullSearchService;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * The implementation of TopicFullSearchService, that provides possibility
@@ -48,7 +48,9 @@ public class TransactionalTopicFullSearchService implements TopicFullSearchServi
     @Override
     public List<Topic> searchByTitleAndContent(String phrase) {
         if (!StringUtils.isEmpty(phrase)) {
-            return topicSearchDao.searchByTitleAndContent(phrase);
+            // hibernate search refuses to process long string throwing error
+            String normalizedPhrase = StringUtils.left(phrase, 50);
+            return topicSearchDao.searchByTitleAndContent(normalizedPhrase);
         } else {
             return Collections.emptyList();
         }

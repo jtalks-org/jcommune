@@ -14,11 +14,32 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.joda.time.DateTime;
+import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.entity.User;
+import org.jtalks.common.security.SecurityService;
+import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
+import org.jtalks.jcommune.model.entity.Poll;
+import org.jtalks.jcommune.model.entity.PollItem;
+import org.jtalks.jcommune.service.PollService;
+import org.jtalks.jcommune.service.security.TemporaryAuthorityManager;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
+
 /**
  * @author Anuar Nurmakanov
  */
 public class TransactionalPollServiceTest {
-    /*private static final int VOTES_COUNT = 4;
+    private static final int VOTES_COUNT = 4;
     private static final Long POLL_ID = 1L;
     private PollService pollService;
     @Mock
@@ -38,11 +59,9 @@ public class TransactionalPollServiceTest {
         MockitoAnnotations.initMocks(this);
         pollService = new TransactionalPollService(pollDao, pollOptionDao,
                 securityService, temporaryAuthorityManager);
-
-        Mockito.when(aclBuilder.write()).thenReturn(aclBuilder);
+        aclBuilder = mockAclBuilder();
         Mockito.when(aclBuilder.on(Mockito.any(Poll.class))).thenReturn(aclBuilder);
         Mockito.when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
-
     }
 
     @Test
@@ -134,5 +153,5 @@ public class TransactionalPollServiceTest {
             poll.addPollOptions(option);
         }
         return poll;
-    }*/
+    }
 }

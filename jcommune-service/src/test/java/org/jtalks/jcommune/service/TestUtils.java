@@ -15,11 +15,12 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.common.model.entity.Entity;
-import org.jtalks.jcommune.service.security.AclBuilder;
-import org.mockito.Matchers;
+import org.jtalks.common.model.entity.User;
+import org.jtalks.common.model.permissions.GeneralPermission;
+import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
+import org.mockito.Mockito;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * @author Kirill Afonin
@@ -31,16 +32,11 @@ public final class TestUtils {
      *
      * @return {@code AclBuilder} mock
      */
-    public static AclBuilder mockAclBuilder() {
-        AclBuilder newBuilder = mock(AclBuilder.class);
-        when(newBuilder.read()).thenReturn(newBuilder);
-        when(newBuilder.admin()).thenReturn(newBuilder);
-        when(newBuilder.delete()).thenReturn(newBuilder);
-        when(newBuilder.create()).thenReturn(newBuilder);
-        when(newBuilder.write()).thenReturn(newBuilder);
-        when(newBuilder.user(Matchers.anyString())).thenReturn(newBuilder);
-        when(newBuilder.role(Matchers.anyString())).thenReturn(newBuilder);
-        when(newBuilder.on(Matchers.<Entity>anyObject())).thenReturn(newBuilder);
+    public static CompoundAclBuilder<User> mockAclBuilder() {
+        CompoundAclBuilder<User> newBuilder = mock(CompoundAclBuilder.class);
+        Mockito.when(newBuilder.grant(Mockito.any(GeneralPermission.class))).thenReturn(newBuilder);
+        Mockito.when(newBuilder.to(Mockito.any(User.class))).thenReturn(newBuilder);
+        Mockito.when(newBuilder.on(Mockito.any(Entity.class))).thenReturn(newBuilder);
         return newBuilder;
     }
 }

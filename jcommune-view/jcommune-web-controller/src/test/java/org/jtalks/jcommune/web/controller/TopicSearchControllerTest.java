@@ -76,7 +76,8 @@ public class TopicSearchControllerTest {
 		Assert.assertEquals(Integer.valueOf(1), pagination.getPage(), "The page number should be the first.");
 		Mockito.verify(topicFullSearchService).searchByTitleAndContent(DEFAULT_SEARCH_TEXT);
 	}
-	
+
+    @Test
 	public void testContinueSearch() {
 		List<Topic> resultTopics = Collections.emptyList();
 		JCUser user = new JCUser("username", "email", "password");

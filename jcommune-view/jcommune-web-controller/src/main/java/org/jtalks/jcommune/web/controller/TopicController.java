@@ -131,6 +131,7 @@ public class TopicController {
      * @param branchId branch, where topic will be created
      * @return {@code ModelAndView} object which will be redirect to forum.html
      * @throws NotFoundException when branch not found
+     * todo: move logic to service
      */
     @RequestMapping(value = "/topics/new", method = RequestMethod.POST)
     public ModelAndView createTopic(@Valid @ModelAttribute TopicDto topicDto,

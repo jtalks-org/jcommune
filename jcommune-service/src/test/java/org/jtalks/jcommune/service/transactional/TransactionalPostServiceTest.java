@@ -14,6 +14,30 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.security.SecurityService;
+import org.jtalks.jcommune.model.dao.PostDao;
+import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.LastReadPostService;
+import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.NotificationService;
+import org.mockito.Mock;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.AssertJUnit.assertEquals;
+
 /**
  * This test cover {@code TransactionalPostService} logic validation.
  * Logic validation cover update/get/error cases by this class.
@@ -23,7 +47,7 @@ package org.jtalks.jcommune.service.transactional;
  * @author Kirill Afonin
  */
 public class TransactionalPostServiceTest {
-/*
+
     private final long POST_ID = 9L;
     private static final String USERNAME = "username";
     private static final String EMAIL = "username@mail.com";
@@ -209,5 +233,5 @@ public class TransactionalPostServiceTest {
         topic.addPost(new Post(null, null));
 
         assertEquals(postService.calculatePageForPost(post), 1);
-    }*/
+    }
 }
