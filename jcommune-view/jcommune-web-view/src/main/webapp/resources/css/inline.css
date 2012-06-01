@@ -1,0 +1,68 @@
+
+/** Here are placed styles that were inline (the highest priority) */
+@CHARSET "UTF-8";
+
+.back-btn {
+    font-weight: bold;
+}
+
+#topics-table .forum-posts-view-header {
+    width: 30px;
+}
+
+#topics-table .forum-latest-by-header {
+    font-size: 11px;
+}
+
+.forum-user-stats-container {
+    min-height: 10px; 
+    padding: 5px;
+}
+
+.inline-block {
+     display: inline-block;
+}
+
+input.form-check-radio-box[type="checkbox"], 
+input.form-check-radio-box[type="radio"] 
+{
+    float: left; 
+    margin-right: 10px;
+}
+
+.form-login-related {
+    max-width: 480px;
+}
+
+.forum-post-pagination-container {
+     line-height: 36px; 
+     margin-bottom:10px;
+}
+
+.forum-post-pagination {
+    margin: 0px;
+}
+
+.post-btn-toolbar {
+    display:inline-block; 
+    margin:0px; 
+    line-height: 9px;
+}
+
+.post-content-tr {
+    vertical-align: top;
+}
+
+.post-userinfo-username {
+    font-size: 14pt;
+}
+
+.post-userinfo-avatal {
+    width:105px; 
+    height: 105px;
+    margin-top:3px;
+}
+
+.table .post-content-td {
+    vertical-align: top;
+}

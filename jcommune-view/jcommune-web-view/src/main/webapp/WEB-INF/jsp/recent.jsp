@@ -25,7 +25,6 @@
     <title><spring:message code="label.recent"/></title>
 </head>
 <body>
-<div class="wrap branch_page">
     <jsp:include page="../template/topLine.jsp"/>
 
     <div class="container">
@@ -139,7 +138,6 @@
         </div>
         </div>
     </div>
-</div>
 
 <script type="text/javascript">
       jQuery(document).ready(function(){

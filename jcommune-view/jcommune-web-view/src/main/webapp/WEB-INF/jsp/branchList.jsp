@@ -24,27 +24,26 @@
     <title><spring:message code="label.section.jtalks_forum"/></title>
 </head>
 <body>
-<div class="wrap section_page">
     <jsp:include page="../template/topLine.jsp"/>
 
     <div class="container">
         <!-- Section header -->
         <div id="branch-header">
             <h2><c:out value="${section.name}"/></h2>
-            <span style="display: inline-block; "></span>
+            <span class="inline-block"></span>
         </div>
         <!-- END OF Branch header -->
         
         <!-- Branches table -->
-    <table id="topics-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+        <table id="topics-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
         <c:choose>
             <c:when test="${!(empty section.branches)}">
                 <thead>
                     <tr>
-                        <th class="status-col" style=""></th>
-                        <th style=""><spring:message code="label.section.header.branches"/></th>
-                        <th class="posts-views" style="width: 30px">Topics/Posts</th>
-                        <th class="latest-by" style="font-size: 11px"><spring:message code="label.branch.header.lastMessage"/></th>
+                        <th class="status-col"></th>
+                        <th><spring:message code="label.section.header.branches"/></th>
+                        <th class="posts-views forum-posts-view-header">Topics/Posts</th>
+                        <th class="latest-by forum-latest-by-header"><spring:message code="label.branch.header.lastMessage"/></th>
                     </tr>
                 </thead>
                 
@@ -62,11 +61,11 @@
                                 </a>
                                 <br />
                                 
-                                    <c:out value="${branch.description}"/>
-                                    <a href="#"><spring:message code="label.section.faq"/></a>
-                                    <br/>
-                                    <strong><spring:message code="label.section.moderators"/></strong>
-                                    <a class="label label-success" href="#">Vurn</a>                                    
+                                <c:out value="${branch.description}"/>
+                                <a href="#"><spring:message code="label.section.faq"/></a>
+                                <br/>
+                                <strong><spring:message code="label.section.moderators"/></strong>
+                                <a class="label label-success" href="#">Vurn</a>                                    
                             </td>
                             <td class="posts-views">
                                 <spring:message code="label.section.header.topics"/>: <c:out value="${branch.topicCount}"/><br />
@@ -74,15 +73,15 @@
                             </td>
                             <td class="latest-by">
                                 <c:if test="${branch.topicCount>0}">
-                                <i class="icon-calendar"></i>
-                                <a class="date" href="${pageContext.request.contextPath}/posts/${branch.lastUpdatedTopic.lastPost.id}"><jtalks:format 
-                                        value="${branch.lastUpdatedTopic.lastPost.creationDate}"/>
-                                </a>
-                                <p>by 
-                                    <a href="${pageContext.request.contextPath}/users/${branch.lastUpdatedTopic.lastPost.userCreated.encodedUsername}"><c:out 
-                                        value="${branch.lastUpdatedTopic.lastPost.userCreated.username}"/>
-                                    </a>
-                                </p>
+	                                <i class="icon-calendar"></i>
+	                                <a class="date" href="${pageContext.request.contextPath}/posts/${branch.lastUpdatedTopic.lastPost.id}"><jtalks:format 
+	                                        value="${branch.lastUpdatedTopic.lastPost.creationDate}"/>
+	                                </a>
+	                                <p>by 
+	                                    <a href="${pageContext.request.contextPath}/users/${branch.lastUpdatedTopic.lastPost.userCreated.encodedUsername}"><c:out 
+	                                        value="${branch.lastUpdatedTopic.lastPost.userCreated.username}"/>
+	                                    </a>
+	                                </p>
                                 </c:if>
                             </td>
                         </tr>
@@ -90,17 +89,17 @@
                 </tbody>
             </c:when>
             <c:otherwise>
-             <tbody><tr><td>
+                <tbody><tr><td>
                     <spring:message code="label.branch.empty"/>
                 </td></tr></tbody>
             </c:otherwise>
         </c:choose>
-    </table>
+        </table>
         
         <!-- Users -->
-        <div id="users-stats" class="well" style="min-height: 10px; padding: 5px;">
+        <div id="users-stats" class="well forum-user-stats-container">
             <c:if test="${!(empty viewList)}">
-                <strong> <spring:message code="label.section.now_browsing"/></strong> 
+                <strong><spring:message code="label.section.now_browsing"/></strong> 
             </c:if>
             <c:forEach var="innerUser" items="${viewList}">
                 <c:choose>
@@ -120,15 +119,5 @@
         </div>
         <!-- END OF Users -->
     </div>
-</div>
-
-<script type="text/javascript">
-      jQuery(document).ready(function(){
-
-        // Tooltips on status images
-        jQuery('img.status-img').tooltip();
-        jQuery('#users-stats a').tooltip({delay: 400});
-      });
-</script>
 </body>
 

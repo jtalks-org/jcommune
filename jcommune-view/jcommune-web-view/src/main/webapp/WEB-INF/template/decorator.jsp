@@ -71,6 +71,10 @@
     <link href='http://fonts.googleapis.com/css?family=Carter+One' rel='stylesheet' type='text/css'>
     <script src='${pageContext.request.contextPath}/resources/javascript/custom/errorUtils.js'
             type='text/javascript'></script>
+    <script src='${pageContext.request.contextPath}/resources/javascript/custom/dropdown.js'
+            type='text/javascript'></script>
+    <script src='${pageContext.request.contextPath}/resources/javascript/custom/forumEffects.js'
+            type='text/javascript'></script>           
     <decorator:head/>
     <title><decorator:title/></title>
 </head>

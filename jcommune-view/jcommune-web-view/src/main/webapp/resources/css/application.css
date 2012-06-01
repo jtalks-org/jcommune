@@ -317,3 +317,35 @@ ul.lang-menu li img {
 .pm_user_to_from {
     word-break: break-all
 }
+
+
+.post {
+  width: 100%; 
+  text-align: left; 
+  padding: 0px;
+  margin: 0px;
+}
+.post table td {
+  padding: 6px;
+}
+.post table .top-buttons, .post table .post-date {
+  padding: 3px;
+  line-height: 13px;
+}
+.post table .top-buttons {
+  text-align: right; 
+  border-left: 0px;
+}
+.post table .userinfo {
+  width: 175px; 
+  vertical-align: top;
+}
+.post table .userinfo div {
+  font: 11px verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+}
+
+@media (max-width: 480px) {
+  .upper-pagination {
+    display: none;
+  }
+}

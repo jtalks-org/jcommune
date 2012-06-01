@@ -25,9 +25,10 @@
             type="text/javascript"></script>
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/leaveConfirm.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/bbeditorEffects.js"
+            type="text/javascript"></script>
 </head>
 <body>
-<div class="wrap answer_page">
     <jsp:include page="../template/topLine.jsp"/>
 
     <div class="container">
@@ -47,24 +48,10 @@
                                  back="${pageContext.request.contextPath}/topics/${topicId}"/>
             </form:form>
             
-            <a href="${back}" style="font-weight: bold"><i class="icon-arrow-left"></i> <spring:message code="label.back"/></a>
+            <a href="${back}" class="back-btn">
+                <i class="icon-arrow-left"></i>
+                <spring:message code="label.back"/>
+            </a>
         </div>
     </div>
-</div>
-<script type="text/javascript">
-      jQuery(document).ready(function(){
-        // Setup drop down menu
-        jQuery('.dropdown-toggle').dropdown();
-       
-        // Fix input element click problem
-        jQuery('.dropdown input, .dropdown label').click(function(e) {
-          e.stopPropagation();
-        });
-
-        // Tooltips on status images
-        jQuery('.btn-toolbar a').tooltip();
-
-        // jQuery('#color-picker').colourPicker();
-      });
-    </script>
 </body>

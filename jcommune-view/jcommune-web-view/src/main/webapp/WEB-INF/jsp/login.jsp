@@ -23,40 +23,37 @@
     <title><spring:message code="label.signin"/></title>
 </head>
 <body>
-<div class="wrap login_page">
     <jsp:include page="../template/topLine.jsp"/>
 
-    <!-- Container -->
+<!-- Container -->
+<div class="container form-login-related">
     <form action='<c:url value="/j_spring_security_check"/>' method="POST" name="form" id="form" class="form-vertical">
-        <div class="container" style="max-width: 480px">
+        <fieldset>
             <legend><spring:message code="label.signin"/></legend>
             
             <div class="control-group">
-                    <label for="j_username" class="control-label"><spring:message code="label.username"/> </label>
+                <label for="j_username" class="control-label"><spring:message code="label.username"/> </label>
 
-                    <div class="controls">
-                        <input class="reg_input" type="text" name="j_username" id="j_username">
-                    </div>
-            </div>
-            
-            <c:if test="${not empty param.login_error}">
-                <c:set var='errorClass' value='error'/>
-            </c:if>
-            <div class="control-group ${errorClass}">
-                    <label for="j_password" class="control-label"><spring:message code="label.password"/> </label>
-
-                    <div class="controls">
-                        <input type="password" name="j_password" id="j_password">
-                        <c:if test="${not empty param.login_error}">
-                            <span class="help-inline">
-                                <spring:message code="label.login_error"/>
-                            </span>
-                        </c:if>
-                    </div>
+                <div class="controls">
+                    <input class="reg_input" type="text" name="j_username" id="j_username">
+                </div>
             </div>
             
             <div class="control-group">
-                <input type="checkbox" name="_spring_security_remember_me" style="float: left; margin-right: 10px;">
+                <label for="j_password" class="control-label"><spring:message code="label.password"/> </label>
+
+                <div class="controls">
+                    <input type="password" name="j_password" id="j_password">
+                    <c:if test="${not empty param.login_error}">
+                        <span class="help-inline">
+                            <spring:message code="label.login_error"/>
+                        </span>
+                    </c:if>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <input type="checkbox" name="_spring_security_remember_me" class="form-check-radio-box">
                 <label class="string optional"><spring:message code="label.auto_logon"/></label>
             </div>
             
@@ -65,9 +62,8 @@
                 <a href='<c:url value="/password/restore"/>'><spring:message
                         code="label.restorePassword.prompt"/></a>
             </div>
-        </div>
+        </fieldset>
     </form>
 </div>
-
 </body>
 </html>
