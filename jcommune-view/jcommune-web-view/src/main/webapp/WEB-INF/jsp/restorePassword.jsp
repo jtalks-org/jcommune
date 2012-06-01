@@ -24,33 +24,33 @@
 </head>
     <jsp:include page="../template/topLine.jsp"/>
     
-    <div class="container" style="max-width: 480px">
+    <div class="container form-login-related">
         <form:form id="form" name="form" modelAttribute="dto"
                    action='${pageContext.request.contextPath}/password/restore' method="POST"
                    class="form-vertical">
         
-        <fieldset>
-            <legend><spring:message code="label.restorePassword.header"/></legend>
-        
-            <p><spring:message code="label.restorePassword.text"/></p>
-
-            <div class='control-group'>
-                <label class="control-label">
-                        <spring:message code="label.email"/>
-                </label>
-                <div class='controls'>
-                    <form:input path="email" type="text" size="20"/>
-                    <form:errors path="email" cssClass="help-inline"/>
-                    <c:if test="${not empty message}">
-                        <br/>
-                        <spring:message code="${message}"/>
-                    </c:if>
-                </div>
-            </div>
-            
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary"><spring:message code="label.send"/></button>
-            </div>
-        </fieldset>
+	        <fieldset>
+	            <legend><spring:message code="label.restorePassword.header"/></legend>
+	        
+	            <p><spring:message code="label.restorePassword.text"/></p>
+	
+	            <div class='control-group'>
+	                <label class="control-label">
+	                        <spring:message code="label.email"/>
+	                </label>
+	                <div class='controls'>
+	                    <form:input path="email" type="text" size="20"/>
+	                    <form:errors path="email" cssClass="help-inline"/>
+	                    <c:if test="${not empty message}">
+	                        <br/>
+	                        <spring:message code="${message}"/>
+	                    </c:if>
+	                </div>
+	            </div>
+	            
+	            <div class="form-actions">
+	                <button type="submit" class="btn btn-primary"><spring:message code="label.send"/></button>
+	            </div>
+	        </fieldset>
         </form:form>
     </div>

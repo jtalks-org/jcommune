@@ -19,6 +19,12 @@
     padding: 5px;
 }
 
+.forum-sections-userstats-container {
+    min-height: 10px; 
+    padding: 5px; 
+    margin: 0px;
+}
+
 .inline-block {
      display: inline-block;
 }
@@ -34,12 +40,12 @@ input.form-check-radio-box[type="radio"]
     max-width: 480px;
 }
 
-.forum-post-pagination-container {
+.forum-pagination-container {
      line-height: 36px; 
      margin-bottom:10px;
 }
 
-.forum-post-pagination {
+.forum-pagination {
     margin: 0px;
 }
 
@@ -65,4 +71,12 @@ input.form-check-radio-box[type="radio"]
 
 .table .post-content-td {
     vertical-align: top;
+}
+
+.forum-sections-header {
+	margin:0;
+}
+
+.logo-text {
+	font-family: 'Carter One', cursive;
 }

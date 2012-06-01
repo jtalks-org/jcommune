@@ -27,51 +27,50 @@
             type="text/javascript"></script>
 </head>
 <body>
-<div class="wrap branch_page">
     <jsp:include page="../template/topLine.jsp"/>
-    <div class="container">
-        
-        <!-- Branch header -->
-        <div id="branch-header">
-            <h2><c:out value="${branch.name}"/></h2>
-            <div id="right-block">
-                <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                <span id="mark-all-viewed">
-                    <i class="icon-check"></i>
-                    <a href="${pageContext.request.contextPath}/branches/${branch.id}/markread">
-                        <spring:message code="label.mark_all_topics"/>
-                    </a>
-                </span>
-                
-                <span id="subscribe">
-                    <i class="icon-star"></i>
-                    <c:choose>
-                        <c:when test="${subscribed}">
-                            <a id="subscription" class="button top_button"
-                                href="${pageContext.request.contextPath}/branches/${branch.id}/unsubscribe"
-                                title="<spring:message code="label.unsubscribe"/>">
-                                <spring:message code="label.unsubscribe"/>
-                            </a>
-                        </c:when>
-                        <c:otherwise>
-                            <a id="subscription" class="button top_button"
-                                href="${pageContext.request.contextPath}/branches/${branch.id}/subscribe"
-                                title='<spring:message code="label.subscribe"/>'>
-                                <spring:message code="label.subscribe"/>
-                            </a>
-                        </c:otherwise>
-                    </c:choose>
-                </span>
-                </sec:authorize>
-            </div>
-            <span style="display: inline-block; "></span>
+    
+<div class="container">
+    <!-- Branch header -->
+    <div id="branch-header">
+        <h2><c:out value="${branch.name}"/></h2>
+        <div id="right-block">
+            <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+             <span id="mark-all-viewed">
+                 <i class="icon-check"></i>
+                 <a href="${pageContext.request.contextPath}/branches/${branch.id}/markread">
+                     <spring:message code="label.mark_all_topics"/>
+                 </a>
+             </span>
+             
+             <span id="subscribe">
+                 <i class="icon-star"></i>
+                 <c:choose>
+                     <c:when test="${subscribed}">
+                         <a id="subscription" class="button top_button"
+                             href="${pageContext.request.contextPath}/branches/${branch.id}/unsubscribe"
+                             title="<spring:message code="label.unsubscribe"/>">
+                             <spring:message code="label.unsubscribe"/>
+                         </a>
+                     </c:when>
+                     <c:otherwise>
+                         <a id="subscription" class="button top_button"
+                             href="${pageContext.request.contextPath}/branches/${branch.id}/subscribe"
+                             title='<spring:message code="label.subscribe"/>'>
+                             <spring:message code="label.subscribe"/>
+                         </a>
+                     </c:otherwise>
+                 </c:choose>
+             </span>
+            </sec:authorize>
         </div>
-        <!-- END OF Branch header -->
+        <span style="display: inline-block; "></span>
+    </div>
+    <!-- END OF Branch header -->
         
-        <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
+    <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
         
-        <!-- Upper pagination -->
-      <div class="row-fluid upper-pagination" style="line-height: 36px; margin-bottom:10px;">
+    <!-- Upper pagination -->
+    <div class="row-fluid upper-pagination" style="line-height: 36px; margin-bottom:10px;">
 
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
             <div class="span2">
@@ -259,17 +258,5 @@
       </div>
       <!-- END OF Users -->
       
-    </div>
 </div>
-
-<script type="text/javascript">
-      jQuery(document).ready(function(){
-
-        // Tooltips on status images
-        jQuery('img.status-img').tooltip();
-        jQuery('#subscribe a').tooltip({placement: 'bottom'});
-        jQuery('#users-stats a').tooltip({delay: 400});
-        jQuery('#new-topic-btn').tooltip({delay: 700, placement: 'bottom'});      
-      });
-</script>
 </body>

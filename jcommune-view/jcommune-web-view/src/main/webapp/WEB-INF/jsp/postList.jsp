@@ -75,7 +75,7 @@
       <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
       
       <!-- Upper pagination -->
-      <div class="row-fluid upper-pagination forum-post-pagination-container">
+      <div class="row-fluid upper-pagination forum-pagination-container">
         <div class="span3">
             <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
                 <a id="new-topic-btn" class="btn btn-primary" 
@@ -95,7 +95,7 @@
 
         <!-- Pagination -->
         <div class="span9">
-            <div class="pagination pull-right forum-post-pagination" >
+            <div class="pagination pull-right forum-pagination" >
                 <ul>
                     <jtalks:pagination uri="${topicId}" pagination="${pag}" list="${posts}"/>
                  
@@ -275,7 +275,7 @@
     </c:forEach>
 </div>
 
-<div class="row-fluid forum-post-pagination-container">
+<div class="row-fluid forum-pagination-container">
     <div class="span3">
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
             <a id="new-topic-btn" class="btn btn-primary" 
@@ -295,7 +295,7 @@
         
         <!-- Pagination -->
         <div class="span9">
-            <div class="pagination pull-right forum-post-pagination">
+            <div class="pagination pull-right forum-pagination">
                 <ul>
                     <jtalks:pagination uri="${topicId}" pagination="${pag}" list="${posts}"/>
                  

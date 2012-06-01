@@ -25,41 +25,44 @@
     <title><spring:message code="label.section.jtalks_forum"/></title>
 </head>
 <body>
-<div class="wrap main_page">
-    <jsp:include page="../template/topLine.jsp"/>
-    <div class="container">     
-        
-        <div class="row" style="margin:0">
-        <a href="${pageContext.request.contextPath}/"><h1 class="pull-left" style="font-family: 'Carter One', cursive;"><spring:message code="label.section.jtalks_forum"/></h1></a>
-        <div class="pull-right">
-          <span style="display:inline-block; vertical-align:middle; text-align: right;"> 
-            <a href="${pageContext.request.contextPath}/topics/recent" title="" style="font-weight: bold;  padding-left: 2px; color: rgb(85, 85, 85);">
-                <spring:message code="label.recent"/>
-            </a>
-            <br />
-            <a href="${pageContext.request.contextPath}/topics/unanswered" title="" style="font-weight: bold;  padding-left: 2px; color: rgb(85, 85, 85);">
-                <spring:message code="label.messagesWithoutAnswers"/>
-            </a>
-          </span>
-          <a href="${pageContext.request.contextPath}/topics/recent.rss" title="Feed subscription">
-            <img src="${pageContext.request.contextPath}/resources/images/rss-icon.png" alt="" style="vertical-align:middle">
-          </a>
-        </div>
-      </div>
-      <hr style="margin: 0px;"/>
-      
-      <!-- Topics table -->
-        <c:forEach var="section" items="${sectionList}">
-            <div class="forum_header_table">
-                <h3>
-                <a href="${pageContext.request.contextPath}/sections/${section.id}">
-                    <c:out value="${section.name}"/>
-                </a>
-                </h3>
-            </div>
 
-            <table id="topics-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
-                <tbody>
+<jsp:include page="../template/topLine.jsp"/>
+
+<div class="container">     
+        
+    <div class="row forum-sections-header">
+        <h1 class="pull-left logo-text">
+            <a href="${pageContext.request.contextPath}/">
+                <spring:message code="label.section.jtalks_forum"/>
+            </a>
+        </h1>
+        <div class="pull-right">
+            <span class="forum-sections-header-actions" style="display:inline-block; vertical-align:middle; text-align: right;"> 
+                <a href="${pageContext.request.contextPath}/topics/recent" title="" style="font-weight: bold;  padding-left: 2px; color: rgb(85, 85, 85);">
+                    <spring:message code="label.recent"/>
+                </a>
+                <br />
+                <a href="${pageContext.request.contextPath}/topics/unanswered" title="" style="font-weight: bold;  padding-left: 2px; color: rgb(85, 85, 85);">
+                    <spring:message code="label.messagesWithoutAnswers"/>
+                </a>
+            </span>
+            <a href="${pageContext.request.contextPath}/topics/recent.rss" title="Feed subscription">
+                <img src="${pageContext.request.contextPath}/resources/images/rss-icon.png" alt="" style="vertical-align:middle">
+            </a>
+        </div>
+    </div>
+    <hr style="margin: 0px;"/>
+      
+    <!-- Topics table -->
+    <c:forEach var="section" items="${sectionList}">
+        <h3>
+            <a href="${pageContext.request.contextPath}/sections/${section.id}">
+                <c:out value="${section.name}"/>
+            </a>
+        </h3>
+
+        <table id="topics-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+            <tbody>
                 <c:forEach var="branch" items="${section.branches}" varStatus="i">
                     <tr>
                         <td class="status-col">
@@ -82,6 +85,7 @@
                         <td class="posts-views">
                             <spring:message code="label.section.header.topics"/>: <c:out value="${branch.topicCount}"/><br />
                             <spring:message code="label.section.header.messages"/>: <c:out value="${branch.postCount}"/></td>
+                            
                         <td class="latest-by">
                             <c:if test="${branch.topicCount>0}">
                                 <i class="icon-calendar"></i>
@@ -98,9 +102,9 @@
                         </td>
                     </tr>
                 </c:forEach>
-                </tbody>
-            </table>    
-        </c:forEach>        
+            </tbody>
+        </table>    
+    </c:forEach>        
     <!-- END OF Topics table -->
     
     <div class="well" style="min-height: 10px; padding: 5px; margin: 0px; margin-bottom: 5px;">
@@ -110,7 +114,7 @@
     </div>
     
     <!-- Users -->
-    <div id="users-stats" class="well" style="min-height: 10px; padding: 5px; margin: 0px;">
+    <div id="users-stats" class="well forum-sections-userstats-container">
         <strong><spring:message code="label.onlineUsersInfo.visitors"/> </strong><c:out value="${visitors}"/>, 
         <spring:message code="label.onlineUsersInfo.visitors.registered"/> <c:out value="${visitorsRegistered}"/>, 
         <spring:message code="label.onlineUsersInfo.visitors.guests"/> <c:out value="${visitorsGuests}"/> 
