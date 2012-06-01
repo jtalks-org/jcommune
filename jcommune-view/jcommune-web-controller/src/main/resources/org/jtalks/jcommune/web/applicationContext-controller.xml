@@ -33,5 +33,21 @@
 
     <bean id="sessionStatisticListener" class="org.jtalks.jcommune.web.listeners.HttpSessionStatisticListenerImpl"/>
 
+    <bean id="captchaProducer"
+        class="com.google.code.kaptcha.impl.DefaultKaptcha">
+        <property name="config">
+                <bean class="com.google.code.kaptcha.util.Config">
+                        <constructor-arg type="java.util.Properties">
+                                <props>
+                                        <prop key="kaptcha.image.width">100</prop>
+                                        <prop key="kaptcha.image.height">50</prop>
+                                        <prop key="kaptcha.textproducer.char.string">0123456789</prop>
+                                        <prop key="kaptcha.textproducer.char.length">4</prop>
+                                </props>
+                        </constructor-arg>
+                </bean>
+        </property>
+     </bean>
+
 </beans>
 

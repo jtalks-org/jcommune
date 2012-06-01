@@ -381,6 +381,12 @@
                 <artifactId>trim-filter</artifactId>
                 <version>1.0</version>
             </dependency>
+            <!-- Captcha -->
+             <dependency>
+                <groupId>com.google.code</groupId>
+                <artifactId>kaptcha</artifactId>
+                <version>2.3.2</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

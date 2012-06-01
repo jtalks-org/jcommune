@@ -33,9 +33,10 @@ $(function () {
             query = "username=" + $('#username').val() + "&" + "password=" +
                 $('#password').val() + "&" + "passwordConfirm=" +
                 $('#passwordConfirm').val() + "&" +
-                "email=" + $('#email').val()
+                "email=" + $('#email').val() + "&" +
+                "captcha=" + $('#captcha').val();
         } else {
-            query = "username=&password=&passwordConfirm=&email=&firstView=false"
+            query = "username=&password=&passwordConfirm=&email=&captcha&firstView=false";
         }
         ;
         //POST-query
@@ -53,18 +54,28 @@ $(function () {
                 });
                 var content = '<ul><div>' + $(data).find("span.forum_header_answer").html() +
                     '</div><br/><span class="empty_cell"></span>' + form_elements[0] +
-                    form_elements[1] + form_elements[2] + form_elements[3] + '</ul>';
+                    form_elements[1] + form_elements[2] + form_elements[3] + form_elements[4] +
+                    '</ul>';
                 //Check the query answer and displays prompt
                 if ($(data).find("span.forum_header_answer").html() != null) {
                     firstView = false;
                     $.prompt(content,
                         {buttons:{OK:true}, focus:0,
                             submit:signupPopup});
+                    refreshCaptchaOnClick();
+
                 } else {
                     $.prompt($labelRegistrationSuccess);
                 }
             }});
     }
-
-    ;
 });
+
+
+
+function refreshCaptchaOnClick(){
+    $("#captcha_refresh").on('click', function (e){
+        $("#captcha_img").removeAttr("src").attr("src", $root + "/captcha-image");
+        $("#captcha_img").attr("src", $root + "/captcha-image");
+    });
+};

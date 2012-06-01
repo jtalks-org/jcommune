@@ -1324,3 +1324,25 @@ a.forum_top_right_link:hover,
     font-size: 3em;
     padding-left: 70px;
 }
+
+.captcha {
+    margin-top: 8px;
+    margin-left: 6px;
+}
+
+.captcha_input {
+    -moz-border-radius: 7px 7px 7px 7px;
+    -moz-box-shadow: 3px 4px 4px gray;
+    border: 1px solid gray;
+    font-size: 15px;
+    margin-left: 120px;
+    padding: 6px;
+    width: 60px !important;
+    vertical-align: bottom;
+
+}
+
+
+#captcha_refresh{
+    CURSOR: pointer;
+}
