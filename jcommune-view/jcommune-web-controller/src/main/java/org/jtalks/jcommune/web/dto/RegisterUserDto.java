@@ -18,6 +18,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.validation.annotations.Email;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.web.validation.annotations.Captcha;
 import org.jtalks.jcommune.web.validation.annotations.Matches;
 import org.jtalks.jcommune.web.validation.annotations.Unique;
 
@@ -52,6 +53,10 @@ public class RegisterUserDto {
 
     @NotBlank(message = "{validation.password.confirm.notblank}")
     private String passwordConfirm;
+
+    @NotBlank(message = "{validation.captcha.notblank}")
+    @Captcha(message = "{validation.captcha.wrong}")
+    private String captcha;
 
     /**
      * @return username
@@ -123,6 +128,14 @@ public class RegisterUserDto {
      */
     public void setPasswordConfirm(String passwordConfirm) {
         this.passwordConfirm = passwordConfirm;
+    }
+
+    public String getCaptcha() {
+        return captcha;
+    }
+
+    public void setCaptcha(String captcha) {
+        this.captcha = captcha;
     }
 
     /**
