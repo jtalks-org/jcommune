@@ -31,23 +31,23 @@
 <div class="container">     
         
     <div class="row forum-sections-header">
-        <h1 class="pull-left logo-text">
-            <a href="${pageContext.request.contextPath}/">
+        <a href="${pageContext.request.contextPath}/">
+            <h1 class="pull-left logo-text">
                 <spring:message code="label.section.jtalks_forum"/>
-            </a>
-        </h1>
+            </h1>
+        </a>
         <div class="pull-right">
-            <span class="forum-sections-header-actions" style="display:inline-block; vertical-align:middle; text-align: right;"> 
-                <a href="${pageContext.request.contextPath}/topics/recent" title="" style="font-weight: bold;  padding-left: 2px; color: rgb(85, 85, 85);">
+            <span class="forum-sections-header-actions"> 
+                <a href="${pageContext.request.contextPath}/topics/recent" title="" class="forum-sections-recent-unanswered">
                     <spring:message code="label.recent"/>
                 </a>
                 <br />
-                <a href="${pageContext.request.contextPath}/topics/unanswered" title="" style="font-weight: bold;  padding-left: 2px; color: rgb(85, 85, 85);">
+                <a href="${pageContext.request.contextPath}/topics/unanswered" title="" class="forum-sections-recent-unanswered">
                     <spring:message code="label.messagesWithoutAnswers"/>
                 </a>
             </span>
             <a href="${pageContext.request.contextPath}/topics/recent.rss" title="Feed subscription">
-                <img src="${pageContext.request.contextPath}/resources/images/rss-icon.png" alt="" style="vertical-align:middle">
+                <img src="${pageContext.request.contextPath}/resources/images/rss-icon.png" alt="" class="rss-icon">
             </a>
         </div>
     </div>
@@ -75,9 +75,9 @@
                                 <c:out value="${branch.name}"/>
                             </a>           
                             <br />
-                            <span style="font-style: italic; font-size: 12px; white-space:nowrap;"><c:out value="${branch.description}"/></span>
+                            <span class="forum-sections-branch-description-container"><c:out value="${branch.description}"/></span>
                             <br />
-                            <div style="font-size: 11px">
+                            <div class="forum-sections-moderators-container">
                                 <span><spring:message code="label.section.moderators"/></span> 
                                 <a href="#">Vurn</a>
                             </div> 
@@ -107,7 +107,7 @@
     </c:forEach>        
     <!-- END OF Topics table -->
     
-    <div class="well" style="min-height: 10px; padding: 5px; margin: 0px; margin-bottom: 5px;">
+    <div class="well forum-sections-stats-container">
         <strong><spring:message code="label.onlineUsersInfo.messagesCount"/> </strong><c:out value="${messagesCount}"/>
         <br />
         <strong><spring:message code="label.onlineUsersInfo.registeredUsers.count"/> </strong><c:out value="${registeredUsersCount}"/>

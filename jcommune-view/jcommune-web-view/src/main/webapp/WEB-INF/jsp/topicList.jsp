@@ -70,11 +70,11 @@
     <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
         
     <!-- Upper pagination -->
-    <div class="row-fluid upper-pagination" style="line-height: 36px; margin-bottom:10px;">
+    <div class="row-fluid upper-pagination forum-pagination-container">
 
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
             <div class="span2">
-                <a id='new-topic-btn' class="btn btn-primary" style="" 
+                <a id='new-topic-btn' class="btn btn-primary" 
                     href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}" 
                     title="<spring:message code="label.addtopic"/>">
                     <spring:message code="label.addtopic"/>
@@ -84,7 +84,7 @@
         
 
         <div class="span10">
-          <div class="pagination pull-right" style="margin: 0px; ">
+          <div class="pagination pull-right forum-pagination">
             <ul>
                  <jtalks:pagination uri="${branch.id}" pagination="${pagination}" list="${topics}"/>
                  
@@ -114,11 +114,11 @@
             <c:when test="${!(empty topics)}">
                 <thead>
                     <tr>
-                        <th class="status-col" style=""></th>
-                        <th style=""><spring:message code="label.branch.header.topics"/></th>
+                        <th class="status-col"></th>
+                        <th><spring:message code="label.branch.header.topics"/></th>
                         <th class="author-col"><spring:message code="label.branch.header.author"/></th>
-                        <th class="posts-views" style="width: 30px">Posts/Views</th>
-                        <th class="latest-by" style="font-size: 11px"><spring:message code="label.branch.header.lastMessage"/></th>
+                        <th class="posts-views forum-posts-view-header">Posts/Views</th>
+                        <th class="latest-by forum-latest-by-header"><spring:message code="label.branch.header.lastMessage"/></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -189,14 +189,15 @@
                 </td></tr></tbody>
             </c:otherwise>
         </c:choose>
-        </table>
-        <!-- END OF Topics table -->
+    </table>
+    <!-- END OF Topics table -->
+    
     <!-- Bottom pagination -->
-    <div class="row-fluid upper-pagination" style="line-height: 36px; margin-bottom:10px;">
+    <div class="row-fluid upper-pagination forum-pagination-container">
 
-      <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
             <div class="span2">
-                <a id='new-topic-btn' class="btn btn-primary" style="" 
+                <a id='new-topic-btn' class="btn btn-primary"
                     href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}" 
                     title="<spring:message code="label.addtopic"/>">
                     <spring:message code="label.addtopic"/>
@@ -204,26 +205,26 @@
             </div>
         </sec:authorize>
 
-      <div class="span10">
-          <div class="pagination pull-right" style="margin: 0px; ">
-            <ul>
-                 <jtalks:pagination uri="${branch.id}" pagination="${pagination}" list="${topics}"/>
+        <div class="span10">
+            <div class="pagination pull-right forum-pagination">
+                <ul>
+                    <jtalks:pagination uri="${branch.id}" pagination="${pagination}" list="${topics}"/>
                  
-                 <li>
-                    <c:if test="${pagination.maxPages>1}">
-                        <c:if test="${pagination.pagingEnabled == true}">
-                            <a class="button"
-                               href="?pagingEnabled=false"><spring:message code="label.showAll"/></a>
+                    <li>
+                        <c:if test="${pagination.maxPages>1}">
+                            <c:if test="${pagination.pagingEnabled == true}">
+                                <a class="button"
+                                    href="?pagingEnabled=false"><spring:message code="label.showAll"/></a>
+                            </c:if>
                         </c:if>
-                    </c:if>
-                    <c:if test="${pagination.pagingEnabled == false}">
-                        <a class="button"
-                           href="?pagingEnabled=true"><spring:message code="label.showPages"/>
-                        </a>
-                    </c:if>
-                </li>
-            </ul>
-          </div>
+                        <c:if test="${pagination.pagingEnabled == false}">
+                            <a class="button"
+                                    href="?pagingEnabled=true"><spring:message code="label.showPages"/>
+                            </a>
+                        </c:if>
+                    </li>
+                </ul>
+            </div>
         </div>
 
     </div>
@@ -231,7 +232,7 @@
     
         
     <!-- Users -->
-      <div id="users-stats" class="well" style="min-height: 10px; padding: 5px;">
+    <div id="users-stats" class="well forum-user-stats-container">
         <strong><spring:message code="label.topic.moderators"/></strong> 
         <a href="#" title="Click to view profile">andreyko</a> 
         <a href="#" class="label label-success" title="Click to view profile">Староверъ</a>
@@ -255,8 +256,8 @@
                 <c:out value="${innerUser.username}"/>
             </a>
         </c:forEach>
-      </div>
-      <!-- END OF Users -->
+    </div>
+    <!-- END OF Users -->
       
 </div>
 </body>

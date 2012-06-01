@@ -80,3 +80,36 @@ input.form-check-radio-box[type="radio"]
 .logo-text {
 	font-family: 'Carter One', cursive;
 }
+
+.forum-sections-header-actions {
+	display:inline-block; 
+	vertical-align:middle; 
+	text-align: right;
+}
+
+.forum-sections-recent-unanswered {
+	font-weight: bold;  
+	padding-left: 2px; 
+	color: rgb(85, 85, 85)
+}
+
+.rss-icon {
+	vertical-align:middle;
+}
+
+.forum-sections-branch-description-container {
+	font-style: italic; 
+	font-size: 12px; 
+	white-space:nowrap;
+}
+
+.forum-sections-moderators-container {
+	style="font-size: 11px
+}
+
+.forum-sections-stats-container {
+	min-height: 10px; 
+	padding: 5px; 
+	margin: 0px; 
+	margin-bottom: 5px;
+}
