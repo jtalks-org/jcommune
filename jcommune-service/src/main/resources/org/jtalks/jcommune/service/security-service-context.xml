@@ -23,7 +23,9 @@
 
   <!-- Spring Security authentication manager -->
   <security:authentication-manager alias="authenticationManager">
-    <security:authentication-provider user-service-ref="securityService"/>
+    <security:authentication-provider user-service-ref="securityService">
+        <security:password-encoder hash="md5"/>
+    </security:authentication-provider>
   </security:authentication-manager>
 
   <!-- Enable security annotations using specified expression handler -->
@@ -114,4 +116,7 @@
   <bean id="aclManager" class="org.jtalks.jcommune.service.security.AclManagerImpl">
     <constructor-arg ref="aclService"/>
   </bean>
+  
+  <!-- Password encoding -->
+  <bean id="md5PasswordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
 </beans>

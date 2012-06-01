@@ -14,23 +14,30 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.jcommune.model.dao.BranchDao;
-import org.jtalks.jcommune.model.dao.SectionDao;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
-import org.mockito.Matchers;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
-import java.util.Collections;
-import java.util.List;
-
-import static org.mockito.Mockito.anyLong;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import org.jtalks.jcommune.model.dao.BranchDao;
+import org.jtalks.jcommune.model.dao.PostDao;
+import org.jtalks.jcommune.model.dao.SectionDao;
+import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.mockito.Matchers;
+import org.mockito.Mockito;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 /**
  * This test class is intended to test all topic-related forum branch facilities
@@ -46,13 +53,21 @@ public class TransactionalBranchServiceTest {
 
     private BranchDao branchDao;
     private SectionDao sectionDao;
+    private TopicDao topicDao;
+    private PostDao postDao;
     private BranchService branchService;
 
     @BeforeMethod
     public void setUp() throws Exception {
         branchDao = mock(BranchDao.class);
         sectionDao = mock(SectionDao.class);
-        branchService = new TransactionalBranchService(branchDao, sectionDao);
+        topicDao = mock(TopicDao.class);
+        postDao = mock(PostDao.class);
+        branchService = new TransactionalBranchService(
+                branchDao,
+                sectionDao,
+                topicDao,
+                postDao);
     }
 
     @Test
@@ -98,5 +113,57 @@ public class TransactionalBranchServiceTest {
 
         List<Branch> result = branchService.getAllBranches();
         assertEquals(list, result);
+    }
+    
+    @Test
+    public void testFillStatisticInfo() {
+        int expectedPostsCount = 10;
+        int expectedTopicsCount = 20;
+        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        org.jtalks.common.model.entity.Branch commonBranch = branch;
+        
+        when(branchDao.getCountPostsInBranch(branch)).thenReturn(expectedPostsCount);
+        when(branchDao.getCountTopicsInBranch(branch)).thenReturn(expectedTopicsCount);
+        
+        branchService.fillStatisticInfo(Arrays.asList(commonBranch));
+        
+        assertEquals(branch.getTopicCount(), expectedTopicsCount,
+                "Incorrect count of topics");
+        assertEquals(branch.getPostCount(), expectedPostsCount,
+                "Incorrect count of posts");
+    }
+    
+    @Test
+    public void testFillLastPostInLastUpdatedTopic() {
+        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        org.jtalks.common.model.entity.Branch commonBranch = branch;
+        Topic dummyTopic = new Topic(null, null);
+        Post expectedPost = new Post(null, null);
+        
+        when(topicDao.getLastUpdatedTopicInBranch(branch)).thenReturn(dummyTopic);
+        when(postDao.getLastPostInTopic(dummyTopic)).thenReturn(expectedPost);
+        
+        branchService.fillLastPostInLastUpdatedTopic(Arrays.asList(commonBranch));
+        Post actualPost = branch.getLastPostInLastUpdatedTopic();
+        
+        assertEquals(actualPost, expectedPost, "The last post in last updated topic is incorrect");
+        verify(topicDao).getLastUpdatedTopicInBranch(commonBranch);
+        verify(postDao).getLastPostInTopic(dummyTopic);
+    }
+    
+    @Test
+    public void testFillLastPostInLastUpdatedTopicInEmptyBranch() {
+        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        org.jtalks.common.model.entity.Branch commonBranch = branch;
+        Topic nullTopic = null;
+        
+        when(topicDao.getLastUpdatedTopicInBranch(branch)).thenReturn(nullTopic);
+        
+        branchService.fillLastPostInLastUpdatedTopic(Arrays.asList(commonBranch));
+        Post lastPostInLastUpdatedTopic = branch.getLastPostInLastUpdatedTopic();
+        
+        assertNull(lastPostInLastUpdatedTopic, "There should be null, because the branch is empty");
+        verify(topicDao).getLastUpdatedTopicInBranch(commonBranch);
+        verify(postDao, Mockito.never()).getLastPostInTopic(nullTopic);
     }
 }

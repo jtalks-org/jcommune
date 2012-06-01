@@ -12,32 +12,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service;
-
-import org.jtalks.common.model.entity.Section;
-
-import java.util.List;
-
 /**
- * The interface to manipulate with sections
- *
- * @author Max Malakhov
+ * This package is intended for migration support controllers.
+ * Their main goal is to provide redirects and forwards from the old URLs.
  */
-public interface SectionService extends EntityService<Section> {
-    /**
-     * Get list of all sections.
-     *
-     * @return - list of the sections.
-     */
-    List<Section> getAll();
-    
-    /**
-     * Prepares sections for the main forum page.Fills the necessary information
-     * for the branches of each section.
-     * Calling this method avoids the use of counters, which reduce the response
-     * time of the main page.
-     * 
-     * @param sections the list of sections
-     */
-    void prepareSectionsForView(List<Section> sections);
-}
+package org.jtalks.jcommune.web.controller.migration;

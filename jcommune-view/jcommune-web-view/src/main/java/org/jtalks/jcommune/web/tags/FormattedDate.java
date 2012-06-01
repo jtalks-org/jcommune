@@ -55,11 +55,17 @@ public class FormattedDate extends FormatTag {
      * Example: 01 Jan 2011 05:13
      * Localized month names are to be inserted by magic
      */
-    public static final String DATE_FORMAT_PATTERN = "dd MMM yyyy HH:mm";
+    public static final String DEFAULT_DATE_FORMAT_PATTERN = "dd MMM yyyy HH:mm";
 
     private long offset = DEFAULT_OFFSET;
 
     public static final int DEFAULT_OFFSET = 0;
+
+    public FormattedDate() {
+        super();
+        // override parent default
+        pattern = DEFAULT_DATE_FORMAT_PATTERN;
+    }
 
     /**
      * {@inheritDoc}
@@ -128,7 +134,6 @@ public class FormattedDate extends FormatTag {
             HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
             LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
             this.setLocale(localeResolver.resolveLocale(request));
-            this.setPattern(DATE_FORMAT_PATTERN);
         } catch (JspTagException e) {
             throw new IllegalStateException("Error while rendering the date", e);
         }

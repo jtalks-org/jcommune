@@ -28,7 +28,7 @@ public class PollItem extends Entity {
     private int votesCount;
     private Poll poll;
 
-    public static final int MIN_ITEM_LENGTH = 1;
+    public static final int MIN_ITEM_LENGTH = 3;
     public static final int MAX_ITEM_LENGTH = 50;
 
     /**

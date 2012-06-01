@@ -14,6 +14,11 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import java.util.Arrays;
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.SectionService;
@@ -30,9 +35,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  * Displays to user page contains section list with related branch lists
@@ -95,9 +97,11 @@ public class SectionController {
         If a request from the user is not the first one getId() call will have no effect.
         */
         session.getId();
+        List<Section> sections = sectionService.getAll();
+        sectionService.prepareSectionsForView(sections);
         return new ModelAndView("sectionList")
                 .addObject("pageSize", Pagination.getPageSizeFor(securityService.getCurrentUser()))
-                .addObject("sectionList", sectionService.getAll())
+                .addObject("sectionList", sections)
                 .addObject("messagesCount", forumStaticsProvider.getPostsOnForumCount())
                 .addObject("registeredUsersCount", forumStaticsProvider.getUsersCount())
                 .addObject("visitors", forumStaticsProvider.getOnlineUsersCount())
@@ -132,6 +136,7 @@ public class SectionController {
     @RequestMapping(value = "/sections/{sectionId}", method = RequestMethod.GET)
     public ModelAndView branchList(@PathVariable("sectionId") long sectionId) throws NotFoundException {
         Section section = sectionService.get(sectionId);
+        sectionService.prepareSectionsForView(Arrays.asList(section));
         JCUser currentUser = securityService.getCurrentUser();
 
         return new ModelAndView("branchList")

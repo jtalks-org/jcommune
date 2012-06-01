@@ -84,9 +84,8 @@
 
             <jtalks:newPoll titleNameValue="pollTitle"
                             pollOptionsNameValue="pollItems"
-                            singleNameValue="single"
-                            singleValue="true"
-                            multipleValue="false"
+                            multipleName="multiple"
+                            multipleValue="${topicDto.multiple}"
                             endingDateNameValue="endingDate"/>
         </form:form>
     </div>

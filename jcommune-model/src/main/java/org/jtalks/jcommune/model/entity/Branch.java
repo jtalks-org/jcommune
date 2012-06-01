@@ -32,6 +32,10 @@ public class Branch extends org.jtalks.common.model.entity.Branch
     private List<Topic> topics = new ArrayList<Topic>();
     private Set<JCUser> subscribers = new HashSet<JCUser>();
 
+    private Integer topicsCount;
+    private Integer postsCount;
+    private Post lastPostInLastUpdatedTopic;
+    
     /**
      * For Hibernate use only
      */
@@ -154,7 +158,10 @@ public class Branch extends org.jtalks.common.model.entity.Branch
      * @return count topics in branch
      */
     public int getTopicCount() {
-        return topics.size();
+        if (topicsCount == null) {
+            return topics.size();
+        }
+        return topicsCount;
     }
 
     /**
@@ -163,11 +170,14 @@ public class Branch extends org.jtalks.common.model.entity.Branch
      * @return sum of post count for all the topics in this branch
      */
     public int getPostCount() {
-        int postCount = 0;
-        for (Topic topic : topics) {
-            postCount += topic.getPostCount();
+        if (postsCount == null) {
+            int count = 0;
+            for (Topic topic : topics) {
+                count += topic.getPostCount();
+            }
+            return count;
         }
-        return postCount;
+        return postsCount;
     }
 
     /**
@@ -183,5 +193,42 @@ public class Branch extends org.jtalks.common.model.entity.Branch
     public void setSubscribers(Set<JCUser> subscribers) {
         this.subscribers = subscribers;
     }
+    
+    /**
+     * Set count of topics in this branch.
+     * 
+     * @param topicsCount count of posts in this branch
+     */
+    public void setTopicsCount(Integer topicsCount) {
+        this.topicsCount = topicsCount;
+    }
 
+    /**
+     * Set count of posts in this branch.
+     * 
+     * @param postsCount count of posts in this branch
+     */
+    public void setPostsCount(Integer postsCount) {
+        this.postsCount = postsCount;
+    }
+    
+    /**
+     * Returns the last post of the last updated topic.
+     * Note, that field is transient, so we must define
+     * it by ourselves.
+     * 
+     * @return the last post of the last updated topic
+     */
+    public Post getLastPostInLastUpdatedTopic() {
+        return lastPostInLastUpdatedTopic;
+    }
+
+    /**
+     * Sets the last post of the last updated topic.
+     * 
+     * @param lastPostInLastUpdatedTopic the last post of the last updated topic
+     */
+    public void setLastPostInLastUpdatedTopic(Post lastPostInLastUpdatedTopic) {
+        this.lastPostInLastUpdatedTopic = lastPostInLastUpdatedTopic;
+    }
 }
