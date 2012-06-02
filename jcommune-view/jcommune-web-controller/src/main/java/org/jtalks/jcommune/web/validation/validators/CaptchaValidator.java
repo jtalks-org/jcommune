@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.validation.validators;
 
 import com.google.code.kaptcha.Constants;
+import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.web.validation.annotations.Captcha;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -46,6 +47,6 @@ public class CaptchaValidator implements ConstraintValidator<Captcha, String> {
         RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
         HttpServletRequest httpServletRequest = ((ServletRequestAttributes) attributes).getRequest();
         String sessionCaptchaId = (String) httpServletRequest.getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY);
-        return value.equals(sessionCaptchaId);
+        return StringUtils.equals(sessionCaptchaId, value);
     }
 }

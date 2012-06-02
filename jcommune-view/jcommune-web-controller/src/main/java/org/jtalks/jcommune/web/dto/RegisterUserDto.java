@@ -35,26 +35,22 @@ import javax.validation.constraints.Size;
 @Matches(field = "password", verifyField = "passwordConfirm", message = "{password_not_matches}")
 public class RegisterUserDto {
 
-    @NotBlank(message = "{validation.username.notblank}")
     @Size(min = User.USERNAME_MIN_LENGTH, max = User.USERNAME_MAX_LENGTH, message = "{validation.username.length}")
     @Unique(entity = JCUser.class, field = "username", message = "{validation.duplicateuser}")
     private String username;
 
-    @NotBlank(message = "{validation.email.notblank}")
     @Pattern(regexp = "^[a-zA-Z0-9_'+*/^&=?~{}\\-](\\.?[a-zA-Z0-9_'+*/^&=?~{}\\-])" +
             "*\\@((\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}(\\:\\d{1,3})?)|(((([a-zA-Z0-9][a-zA-Z0-9\\-]" +
             "+[a-zA-Z0-9])|([a-zA-Z0-9]{1,2}))[\\.]{1})+([a-zA-Z]{2,6})))$",
             message = "{validation.email.wrong.format}")
     @Unique(entity = JCUser.class, field = "email", message = "{validation.duplicateemail}")
     private String email;
-    @NotBlank(message = "{validation.password.notblank}")
+
     @Size(min = User.PASSWORD_MIN_LENGTH, max = User.PASSWORD_MAX_LENGTH)
     private String password;
 
-    @NotBlank(message = "{validation.password.confirm.notblank}")
     private String passwordConfirm;
 
-    @NotBlank(message = "{validation.captcha.notblank}")
     @Captcha(message = "{validation.captcha.wrong}")
     private String captcha;
 
