@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -32,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -131,6 +133,11 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         List<Post> posts = ObjectsFactory.createAndSavePostList(size);
         Topic topic = posts.get(0).getTopic();
         Post expectedLastPost = topic.getPosts().get(size - 1);
+        ReflectionTestUtils.setField(
+                expectedLastPost,
+                "creationDate",
+                new DateTime(2100, 12, 25, 0, 0, 0, 0));
+        session.save(expectedLastPost);
         
         Post actualLastPost = dao.getLastPostInTopic(topic);
         

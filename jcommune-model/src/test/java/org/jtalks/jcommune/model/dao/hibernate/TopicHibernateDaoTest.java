@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -157,9 +158,12 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         Topic firstTopic = ObjectsFactory.getDefaultTopic();
         Branch branch = firstTopic.getBranch();
         Topic secondTopic = new Topic(firstTopic.getTopicStarter(), "Second topic");
-        firstTopic.updateModificationDate();
         branch.addTopic(secondTopic);
         Topic expectedLastUpdatedTopic = firstTopic;
+        ReflectionTestUtils.setField(
+                expectedLastUpdatedTopic,
+                "modificationDate",
+                new DateTime(2100, 12, 25, 0, 0, 0, 0));
         
         session.save(branch);
         
