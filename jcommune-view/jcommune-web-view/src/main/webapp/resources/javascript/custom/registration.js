@@ -31,11 +31,11 @@ $(function () {
         //data for query
         if (!firstView) {
             query = "username=" + $('#username').val() + "&" + "password=" +
-                $('#password').val() + "&" + "passwordConfirm=" +
-                $('#passwordConfirm').val() + "&" +
-                "email=" + $('#email').val().replace("+", "%2B");
-                "captcha=" + $('#captcha').val();
-                 //without this replacement "+" is decoded as " " on server side. Spaces are illegal for email
+                $('#password').val() + "&passwordConfirm=" +
+                $('#passwordConfirm').val() +
+                "&email=" + $('#email').val().replace("+", "%2B") +
+                //without this replacement "+" is decoded as " " on server side. Spaces are illegal for email
+                "&captcha=" + $('#captcha').val();
         } else {
             query = "username=&password=&passwordConfirm=&email=&captcha&firstView=false";
         }
@@ -73,10 +73,10 @@ $(function () {
 });
 
 
-
-function refreshCaptchaOnClick(){
-    $("#captcha_refresh").on('click', function (e){
+function refreshCaptchaOnClick() {
+    $("#captcha_refresh").on('click', function (e) {
         $("#captcha_img").removeAttr("src").attr("src", $root + "/captcha-image");
         $("#captcha_img").attr("src", $root + "/captcha-image");
     });
-};
+}
+;
