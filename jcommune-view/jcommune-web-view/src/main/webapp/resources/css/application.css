@@ -270,9 +270,10 @@ ul.lang-menu li img {
 
 .pm_folders {
     padding: 8px 0;
+    margin-top: 14px;
 }
 
-.pm_delete_btn_block {
+.pm_buttons {
     margin: 0 0 5px 0;
 }
 
@@ -289,10 +290,6 @@ ul.lang-menu li img {
 
 .pm_sending_date {
     width: 150px;
-}
-
-.pm_label_new_pm {
-    margin: 0 0 5px 0;
 }
 
 .pm_unread {
@@ -318,34 +315,38 @@ ul.lang-menu li img {
     word-break: break-all
 }
 
-
 .post {
-  width: 100%; 
-  text-align: left; 
-  padding: 0px;
-  margin: 0px;
+    width: 100%;
+    text-align: left;
+    padding: 0px;
+    margin: 0px;
 }
+
 .post table td {
-  padding: 6px;
+    padding: 6px;
 }
+
 .post table .top-buttons, .post table .post-date {
-  padding: 3px;
-  line-height: 13px;
+    padding: 3px;
+    line-height: 13px;
 }
+
 .post table .top-buttons {
-  text-align: right; 
-  border-left: 0px;
+    text-align: right;
+    border-left: 0px;
 }
+
 .post table .userinfo {
-  width: 175px; 
-  vertical-align: top;
+    width: 175px;
+    vertical-align: top;
 }
+
 .post table .userinfo div {
-  font: 11px verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+    font: 11px verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
 }
 
 @media (max-width: 480px) {
-  .upper-pagination {
-    display: none;
-  }
+    .upper-pagination {
+        display: none;
+    }
 }

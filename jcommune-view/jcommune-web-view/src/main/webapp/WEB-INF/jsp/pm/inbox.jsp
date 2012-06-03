@@ -34,37 +34,20 @@
     <hr/>
     <div class="row">
         <div class="span2">
-            <a href="${pageContext.request.contextPath}/pm/new" class="btn btn-primary btn-small pm_label_new_pm">
+            <a href="${pageContext.request.contextPath}/pm/new" class="btn btn-primary btn-small pm_buttons">
                 <spring:message code="label.new_pm"/></a>
-
-            <div class="well pm_folders">
-                <ul class="nav nav-list">
-                    <li class="nav-header"><spring:message code="label.pm.folders"/></li>
-                    <li class="active"><a id="inbox_link" href="${pageContext.request.contextPath}/inbox">
-                        <i class="icon-white icon-inbox"></i>
-                        <spring:message code="label.inbox"/></a></li>
-                    <li><a id="outbox_link" href="${pageContext.request.contextPath}/outbox">
-                        <i class="icon-envelope"></i>
-                        <spring:message code="label.outbox"/></a></li>
-                    <li><a id="draft_link" href="${pageContext.request.contextPath}/drafts">
-                        <i class="icon-pencil"></i>
-                        <spring:message code="label.drafts"/></a></li>
-                </ul>
-            </div>
-            <!-- /well -->
+            <jsp:include page="../../template/pmFolders.jsp"/>
         </div>
         <!-- /span2 -->
 
         <div class="span9">
-            <div class="pm_delete_btn_block">
-                <div class="del">
-                    <a class="btn btn-danger" id="deleteCheckedPM"
-                       href="${pageContext.request.contextPath}/pm">
-                        <i class="icon-trash icon-white"></i>
-                        <spring:message code="label.delete"/>
-                    </a>
-                    <form:form id="deleteForm" method="DELETE"/>
-                </div>
+            <div class="pm_buttons del">
+                <a class="btn btn-danger" id="deleteCheckedPM"
+                   href="${pageContext.request.contextPath}/pm">
+                    <i class="icon-trash icon-white"></i>
+                    <spring:message code="label.delete"/>
+                </a>
+                <form:form id="deleteForm" method="DELETE"/>
             </div>
 
             <table class="table table-bordered table-condensed">
@@ -125,4 +108,5 @@
 </div>
 <!-- /container -->
 
+<div class="footer_buffer"></div>
 </body>

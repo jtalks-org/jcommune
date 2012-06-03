@@ -155,13 +155,13 @@ $(document).ready(function () {
     $(document).ready(function () {
         var url = document.URL.toString();
         if (url.match(/inbox$/)) {
-            $("#inbox_link").addClass("highlight_tab");
+            $("#inbox_link").addClass("active");
         } else if (url.match(/outbox$/)) {
-            $("#outbox_link").addClass("highlight_tab");
+            $("#outbox_link").addClass("active");
         } else if (url.match(/new$/)) {
-            $("#newmsg_link").addClass("highlight_tab");
+            $("#newmsg_link").addClass("active");
         } else if (url.match(/drafts$/)) {
-            $("#draft_link").addClass("highlight_tab");
+            $("#draft_link").addClass("active");
         }
     });
 });
