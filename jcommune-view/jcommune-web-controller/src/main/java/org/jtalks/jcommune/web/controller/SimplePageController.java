@@ -42,8 +42,8 @@ import javax.validation.Valid;
 @Controller
 public class SimplePageController {
 
-    public static final String PAGE_DTO = "simplePageDto";
-    public static final String PAGE_PATH_NAME = "pagePathName";
+    private static final String PAGE_DTO = "simplePageDto";
+    private static final String PAGE_PATH_NAME = "pagePathName";
 
     private SimplePageService simplePageService;
 
@@ -96,8 +96,10 @@ public class SimplePageController {
     public ModelAndView showEditPage(@PathVariable(PAGE_PATH_NAME) String pagePathName) throws NotFoundException {
         SimplePage page = simplePageService.getPageByPathName(pagePathName);
 
+        SimplePageDto pageDto = new SimplePageDto(page);
+
         return new ModelAndView("simplePageEditor")
-                .addObject(PAGE_DTO, new SimplePageDto(page));
+                .addObject(PAGE_DTO, pageDto);
     }
 
     /**

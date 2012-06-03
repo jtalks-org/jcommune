@@ -18,8 +18,8 @@ package org.jtalks.jcommune.service.transactional;
 import static org.mockito.Mockito.verify;
 
 public class TransactionalSimplePageServiceTest {
-  /*
-    private static final long ID = 2L;
+
+  /*private static final long ID = 2L;
     private static final String NAME = "name";
     private static final String CONTENT = "content";
 

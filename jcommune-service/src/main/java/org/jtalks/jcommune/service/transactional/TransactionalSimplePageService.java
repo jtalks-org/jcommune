@@ -51,7 +51,7 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
      */
     @PreAuthorize(HAS_ADMIN_ROLE)
     @Override
-    public void updatePage(long pageId, String pageName, String content) throws NotFoundException {
+    public void updatePage(long pageId, String name, String content) throws NotFoundException {
 
         SimplePage simplePage = get(pageId);
         if (simplePage == null) {
@@ -59,7 +59,7 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
             logger.info(message);
             throw new NotFoundException(message);
         }
-        simplePage.setName(pageName);
+        simplePage.setName(name);
         simplePage.setContent(content);
 
         this.getDao().update(simplePage);

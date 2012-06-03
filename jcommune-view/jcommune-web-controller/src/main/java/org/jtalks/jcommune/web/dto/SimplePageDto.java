@@ -20,53 +20,53 @@ import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
 
 public class SimplePageDto {
 
-    @NotBlank
-    @BbCodeAwareSize(min = SimplePage.MIN_NAME_LENGTH, max = SimplePage.MAX_NAME_LENGTH)
-    private String nameText;
+        @NotBlank
+        @BbCodeAwareSize(min = SimplePage.MIN_NAME_LENGTH, max = SimplePage.MAX_NAME_LENGTH)
+        private String nameText;
 
-    @NotBlank
-    @BbCodeAwareSize(min = SimplePage.MIN_CONTENT_LENGTH, max = SimplePage.MAX_CONTENT_LENGTH)
-    private String contentText;
-    
-    private long id;
+        @NotBlank
+        @BbCodeAwareSize(min = SimplePage.MIN_CONTENT_LENGTH, max = SimplePage.MAX_CONTENT_LENGTH)
+        private String contentText;
 
-    @NotBlank
-    @BbCodeAwareSize(min = SimplePage.MIN_PATH_NAME_LENGTH, max = SimplePage.MAX_PATH_NAME_LENGTH)
-    private String pathName;
+        private long id;
 
-    public SimplePageDto() {
-    }
+        @NotBlank
+        @BbCodeAwareSize(min = SimplePage.MIN_PATH_NAME_LENGTH, max = SimplePage.MAX_PATH_NAME_LENGTH)
+        private String pathName;
 
-    public SimplePageDto(SimplePage simplePage) {
-        this.setId(simplePage.getId());
-        this.setNameText(simplePage.getName());
-        this.setContentText(simplePage.getContent());
-        this.setPathName(simplePage.getPathName());
-    }
+        public SimplePageDto() {
+        }
 
-    public String getNameText() {
-        return nameText;
-    }
+        public SimplePageDto(SimplePage simplePage) {
+            this.setId(simplePage.getId());
+            this.setNameText(simplePage.getName());
+            this.setContentText(simplePage.getContent());
+            this.setPathName(simplePage.getPathName());
+        }
 
-    public void setNameText(String nameText) {
-        this.nameText = nameText;
-    }
+        public String getNameText() {
+            return nameText;
+        }
 
-    public String getContentText() {
-        return contentText;
-    }
+        public void setNameText(String nameText) {
+            this.nameText = nameText;
+        }
 
-    public void setContentText(String contentText) {
-        this.contentText = contentText;
-    }
+        public String getContentText() {
+            return contentText;
+        }
 
-    public long getId() {
-        return id;
-    }
+        public void setContentText(String contentText) {
+            this.contentText = contentText;
+        }
 
-    public void setId(long id) {
-        this.id = id;
-    }
+        public long getId() {
+            return id;
+        }
+
+        public void setId(long id) {
+            this.id = id;
+        }
 
     public String getPathName() {
         return pathName;

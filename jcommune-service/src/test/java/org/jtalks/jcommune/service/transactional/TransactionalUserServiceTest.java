@@ -56,6 +56,7 @@ import static org.testng.Assert.assertTrue;
  * @author Anuar Nurmakanov
  */
 public class TransactionalUserServiceTest {
+
     private static final String USERNAME = "username";
     private static final String FIRST_NAME = "first name";
     private static final String LAST_NAME = "last name";

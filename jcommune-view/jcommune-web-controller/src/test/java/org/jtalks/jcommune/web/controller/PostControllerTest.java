@@ -162,6 +162,7 @@ public class PostControllerTest {
         ModelAndView mav = controller.update(dto, resultWithErrors, TOPIC_ID, POST_ID);
 
         this.assertEditPostFormMavIsCorrect(mav);
+        //assertViewName(mav, "editForm");
 
         verify(postService, never()).updatePost(anyLong(), anyString());
     }
