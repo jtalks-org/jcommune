@@ -151,10 +151,9 @@ $(document).ready(function () {
     /**
      * Highlights currently opened PM folder
      */
-//    todo refactor according new design
     $(document).ready(function () {
         var url = document.URL.toString();
-        if (url.match(/inbox$/)) {
+        if (url.match(/inbox$/) || (url.match(/pm\/[0-9]*/))) {
             $("#inbox_link").addClass("active");
         } else if (url.match(/outbox$/)) {
             $("#outbox_link").addClass("active");
