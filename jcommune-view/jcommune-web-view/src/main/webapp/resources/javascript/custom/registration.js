@@ -61,8 +61,7 @@ $(function () {
                 if ($(data).find("span.forum_header_answer").html() != null) {
                     firstView = false;
                     $.prompt(content,
-                        {buttons:{OK:true}, focus:0,
-                            submit:signupPopup});
+                        {buttons:{OK:true}, focus:0, submit:signupPopup});
                     refreshCaptchaOnClick();
 
                 } else {
@@ -75,8 +74,8 @@ $(function () {
 
 function refreshCaptchaOnClick() {
     $("#captcha_refresh").on('click', function (e) {
-        $("#captcha_img").removeAttr("src").attr("src", $root + "/captcha-image");
-        $("#captcha_img").attr("src", $root + "/captcha-image");
+        $("#captcha_img").removeAttr("src").attr("src", $root + "/captcha/image");
+        $("#captcha_img").attr("src", $root + "/captcha/image");
     });
 }
 ;
