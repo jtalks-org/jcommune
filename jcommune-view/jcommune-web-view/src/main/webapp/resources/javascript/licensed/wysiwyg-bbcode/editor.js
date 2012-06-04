@@ -135,7 +135,9 @@ function bbcode2html() {
             textboxelement.style.display = "none";
 
             editorVisible = true;
-            SyntaxHighlighter.highlight();
+            
+			//Code highlight
+			prettyPrint();
             $("a[rel^='prettyPhoto']").prettyPhoto({social_tools:false});
         }
     });

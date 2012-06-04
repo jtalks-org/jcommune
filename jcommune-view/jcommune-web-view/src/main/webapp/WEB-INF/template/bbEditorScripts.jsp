@@ -17,35 +17,36 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <html>
 <head>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/src/shCore.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushSql.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushBash.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushCpp.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushCSharp.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushCss.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushJava.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushJScript.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushPhp.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushPython.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushXml.js"
-            type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushDelphi.js"
-            type="text/javascript"></script>
-    <link rel="stylesheet" type="text/css" media="screen, projection"
-          href="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/styles/shCore.css"/>
-    <link href="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/styles/shCoreEclipse.css"
-          rel="stylesheet" type="text/css"/>
-    <link href="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/styles/shThemeEclipse.css"
-          rel="stylesheet" type="text/css"/>
+<%--     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/src/shCore.js" --%>
+<!--             type="text/javascript"></script> -->
+<%--     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushSql.js" --%>
+<!--             type="text/javascript"></script> -->
+<%--     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushBash.js" --%>
+<!--             type="text/javascript"></script> -->
+<%--     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushCpp.js" --%>
+<!--             type="text/javascript"></script> -->
+<%--     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushCSharp.js" --%>
+<!--             type="text/javascript"></script> -->
+<%--     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushCss.js" --%>
+<!--             type="text/javascript"></script> -->
+<%--     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushJava.js" --%>
+<!--             type="text/javascript"></script> -->
+<%--     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushJScript.js" --%>
+<!--             type="text/javascript"></script> -->
+<%--     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushPhp.js" --%>
+<!--             type="text/javascript"></script> -->
+<%--     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushPython.js" --%>
+<!--             type="text/javascript"></script> -->
+<%--     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushXml.js" --%>
+<!--             type="text/javascript"></script> -->
+<%--     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/scripts/shBrushDelphi.js" --%>
+<!--             type="text/javascript"></script> -->
+<!--     <link rel="stylesheet" type="text/css" media="screen, projection" -->
+<%--           href="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/styles/shCore.css"/> --%>
+<%--     <link href="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/styles/shCoreEclipse.css" --%>
+<!--           rel="stylesheet" type="text/css"/> -->
+<%--     <link href="${pageContext.request.contextPath}/resources/javascript/licensed/syntaxhighlighter_3.0.83/styles/shThemeEclipse.css" --%>
+<!--           rel="stylesheet" type="text/css"/> -->
+
 </head>
 </html>

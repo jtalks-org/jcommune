@@ -297,7 +297,7 @@
     <!-- Code block -->
     <code name="code">
         <pattern>[code=<var name="lang"/>]<var name="code" scope="escapeXml"/>[/code]</pattern>
-        <template>&lt;pre class=&quot;brush: <var name="lang"/>&quot;&gt;<var name="code"/>&lt;/pre&gt;</template>
+        <template>&lt;pre class=&quot;prettyprint linenums <var name="lang"/>&quot;&gt;<var name="code"/>&lt;/pre&gt;</template>
     </code>
 
     <!-- Offtopic block -->

@@ -74,7 +74,9 @@
     <script src='${pageContext.request.contextPath}/resources/javascript/custom/dropdown.js'
             type='text/javascript'></script>
     <script src='${pageContext.request.contextPath}/resources/javascript/custom/forumEffects.js'
-            type='text/javascript'></script>           
+            type='text/javascript'></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/prettify/prettify.js" 
+           type='text/javascript'></script>           
     <decorator:head/>
     <title><decorator:title/></title>
 </head>
@@ -89,5 +91,10 @@
     </footer>
 </div>
 </body>
-<script>SyntaxHighlighter.all()</script>
+<script type="text/javascript">
+jQuery(document).ready(function() {
+    //Code highlight
+    prettyPrint();
+});
+</script>
 </html>
