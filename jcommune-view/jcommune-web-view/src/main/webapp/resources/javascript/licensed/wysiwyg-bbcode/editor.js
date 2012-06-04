@@ -277,17 +277,11 @@ function doClick(command) {
     }
 }
 
-function doSize() {
+function doSize(selectedElement) {
     if (!editorVisible) {
-        var listSizes = document.getElementById("select_size");
-        var selectedIndex = listSizes.selectedIndex;
-        if (selectedIndex >= 0) {
-            var size = listSizes.options[selectedIndex].value;
-            if (size > 0)
-                AddTag('[size=' + size + ']', '[/size]');
-        }
+		var size = $(selectedElement).attr('value');
+        AddTag('[size=' + size + ']', '[/size]');
     }
-    resetSizeSelector();
 }
 
 function doCode() {
@@ -301,11 +295,6 @@ function doCode() {
         }
     }
     resetCodeSelector();
-}
-
-function resetSizeSelector() {
-    var listSizes = document.getElementById("select_size");
-    listSizes.options[0].selected = 'selected';
 }
 
 function resetIndentSelector() {
@@ -661,3 +650,8 @@ function showColorGrid2(Sam, textBoxId) {
 
 
 
+$(document).ready(function() {
+	$('#select_size a').click(function() {
+		doSize(this);
+	});
+});

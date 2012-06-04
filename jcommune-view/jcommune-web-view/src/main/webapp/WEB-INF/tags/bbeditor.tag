@@ -77,10 +77,10 @@
             <i class="icon-text-height"></i>
             <span class="caret"></span>
         </a>
-        <ul class="dropdown-menu" id="select_size" name="select_size" onchange="doSize();">
-            <li><a href="#"><spring:message code="label.answer.font_size.small"/></a></li>
-            <li><a href="#"><spring:message code="label.answer.font_size.large"/></a></li>
-            <li><a href="#"><spring:message code="label.answer.font_size.king_size"/></a></li>
+        <ul class="dropdown-menu" id='select_size'>
+            <li><a href="#" value='10'><spring:message code="label.answer.font_size.small"/></a></li>
+            <li><a href="#" value='15'><spring:message code="label.answer.font_size.large"/></a></li>
+            <li><a href="#" value='20'><spring:message code="label.answer.font_size.king_size"/></a></li>
         </ul>
     </div>
     <div class='btn-group'>
