@@ -259,7 +259,7 @@
                     </div>
                     <hr/>
                     <div align="left">
-                        ${post.userCreated.renderedSignature}
+                        ${post.userCreated.signature}
                     </div>
                 </td>
             </tr>

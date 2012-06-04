@@ -102,11 +102,11 @@ public class BBCodeServiceTest {
                 {"[code=sql]println(\"Hi!\");[/code]", "<pre class=\"brush: sql\">println(&quot;Hi!&quot;);</pre>"},
                 //qoutes
                 {"[quote]Some text[/quote]",
-                        "<div class=\"quote\"><div class=\"quote_title\">Quote:" +
-                                "</div><blockquote>Some text</blockquote></div>"},
+                        "<div class=\"quote bb_quote_container\"><span class=\"bb_quote_title\">Quote:" +
+                                "</span><div class='bb_quote_content'>Some text</div></div>"},
                 {"[quote=\"user\"]Some text[/quote]",
-                        "<div class=\"quote\"><div class=\"quote_title\">user:" +
-                                "</div><blockquote>Some text</blockquote></div>"},
+                        "<div class=\"quote bb_quote_container\"><span class=\"bb_quote_title\">user:" +
+                                "</span><div class='bb_quote_content'>Some text</div></div>"},
                 //offtopic
                 {"[offtop]Some text[/offtop]", "<div class=\"offtop\"><p>Some text</p></div>"}
         };

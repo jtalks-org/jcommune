@@ -286,12 +286,12 @@
     <!-- Quote block -->
     <code name="quote">
         <pattern>[quote]<var inherit="true"/>[/quote]</pattern>
-        <template><![CDATA[<div class="quote"><div class="quote_title">Quote:</div><blockquote>]]><var/><![CDATA[</blockquote></div>]]></template>
+        <template><![CDATA[<div class="quote bb_quote_container"><span class="bb_quote_title">Quote:</span><div class='bb_quote_content'>]]><var/><![CDATA[</div></div>]]></template>
     </code>
 
     <code name="quote_named">
         <pattern>[quote="<var name="author" inherit="true"/>"]<var name="content" inherit="true"/>[/quote]</pattern>
-        <template><![CDATA[<div class="quote"><div class="quote_title">]]><var name="author"/><![CDATA[:</div><blockquote>]]><var name="content"/><![CDATA[</blockquote></div>]]></template>
+        <template><![CDATA[<div class="quote bb_quote_container"><span class="bb_quote_title">]]><var name="author"/><![CDATA[:</span><div class='bb_quote_content'>]]><var name="content"/><![CDATA[</div></div>]]></template>
     </code>
 
     <!-- Code block -->
