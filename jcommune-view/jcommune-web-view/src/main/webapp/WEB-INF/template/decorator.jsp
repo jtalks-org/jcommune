@@ -81,7 +81,6 @@
     <title><decorator:title/></title>
 </head>
 <body>
-<jsp:include page="../template/bbEditorScripts.jsp"/>
 <decorator:body/>
 <div class="container">
     <footer>

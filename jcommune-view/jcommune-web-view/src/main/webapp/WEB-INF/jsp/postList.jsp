@@ -251,8 +251,8 @@
                 <td class='post-content-td'>
                     <div>
                         <jtalks:bb2html bbCode="${post.postContent}"/>
-                        <br/><br/><br/>
                         <c:if test="${post.modificationDate!=null}">
+                            <br/><br/><br/>
                             <spring:message code="label.modify"/>
                             <jtalks:format value="${post.modificationDate}"/>
                         </c:if>
