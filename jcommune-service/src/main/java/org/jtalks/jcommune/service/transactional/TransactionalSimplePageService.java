@@ -17,11 +17,15 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.jcommune.model.dao.SimplePageDao;
 import org.jtalks.jcommune.model.entity.SimplePage;
 import org.jtalks.jcommune.service.SimplePageService;
+import org.jtalks.jcommune.service.dto.SimplePageInfoContainer;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import javax.persistence.EntityExistsException;
+
+import static org.jtalks.jcommune.service.security.SecurityConstants.HAS_ADMIN_ROLE;
 import static org.jtalks.jcommune.service.security.SecurityConstants.HAS_USER_OR_ADMIN_ROLE;
 
 /**
@@ -38,7 +42,7 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
     /**
      *  Create an instance of Simple Page entity based service
      *
-     *  @param simplePageDao - simplePageDao to create/get simple page from a database
+     *  @param simplePageDao - data access object which should be create or get simplePage object from database
      */
 
     public TransactionalSimplePageService(SimplePageDao simplePageDao) {
@@ -48,18 +52,19 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
     /**
      * {@inheritDoc}
      */
-    @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
+    @PreAuthorize(HAS_ADMIN_ROLE)
     @Override
-    public void updatePage(long pageId, String pageName, String pageContent) throws NotFoundException {
-
-        SimplePage simplePage = get(pageId);
+    public void updatePage(SimplePageInfoContainer simplePageInfoContainer) throws NotFoundException {
+        
+        SimplePage simplePage = get(simplePageInfoContainer.getId());
         if (simplePage == null) {
-            String message = "Simple page with id = " + pageId + " not found.";
+            String message = "Simple page with id = " + simplePage.getId() + " not found.";
             logger.info(message);
             throw new NotFoundException(message);
         }
-        simplePage.setName(pageName);
-        simplePage.setContent(pageContent);
+
+        simplePage.setName(simplePageInfoContainer.getName());
+        simplePage.setContent(simplePageInfoContainer.getContent());
 
         this.getDao().update(simplePage);
 
@@ -84,9 +89,16 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
     /**
      * {@inheritDoc}
      */
-    @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
+    @PreAuthorize(HAS_ADMIN_ROLE)
     @Override
-    public SimplePage createPage(SimplePage simplePage) {
+    public SimplePage createPage(SimplePage simplePage) throws EntityExistsException {
+
+        if(getDao().isExist(simplePage.getPathName())) {
+            String msg = "SimplePage with pathName = " + simplePage.getPathName() + " already exists.";
+            logger.info(msg);
+            throw new EntityExistsException(msg);
+        }
+
         this.getDao().update(simplePage);
         logger.info("SimplePage registered: {}", simplePage.getName());
         return simplePage;

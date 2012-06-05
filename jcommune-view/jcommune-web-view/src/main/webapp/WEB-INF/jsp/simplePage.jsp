@@ -33,20 +33,9 @@
 
     <div class="all_forums">
         <div class="forum_info_top">
-            <div>
-                <div> <!-- top left -->
-
-                </div>
-                <div> <!-- top right -->
-
-                </div>
-            </div>
             <div class="info_top_lower">
-                <div> <!-- bottom left -->
+                <div>
                     <h2 class="heading"><c:out value="${simplePageDto.nameText}"/></h2>
-                </div>
-                <div> <!-- bottom right -->
-
                 </div>
             </div>
         </div>
@@ -57,7 +46,7 @@
                 <jtalks:bb2html bbCode="${simplePageDto.contentText}"/>
             </li>
         </ul>
-        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+        <sec:authorize access="hasRole('ROLE_ADMIN')">
             <div>
                 <a class="button" href="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit">
                     <spring:message code="label.edit"/>

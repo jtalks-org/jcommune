@@ -16,6 +16,7 @@ package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.SimplePage;
+import org.jtalks.jcommune.service.dto.SimplePageInfoContainer;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
 
 import javax.validation.constraints.Size;
@@ -122,6 +123,15 @@ public class SimplePageDto {
      */
     public void setPathName(String pathName) {
         this.pathName = pathName;
+    }
+
+    /**
+     * Transform SimplePage Dto to container object
+     *
+     * @return converted container object
+     */
+    public SimplePageInfoContainer getSimplePageInfoContainer() {
+        return new SimplePageInfoContainer(this.getId(), this.getNameText(), this.getContentText());
     }
 
 }

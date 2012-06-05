@@ -48,7 +48,7 @@
         <security:intercept-url pattern="/outbox" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
         <security:intercept-url pattern="/answer" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
 
-        <security:intercept-url pattern="/pages/*/edit" access="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')"/>
+        <security:intercept-url pattern="/pages/*/edit" access="hasAnyRole('ROLE_ADMIN')"/>
 
         <security:intercept-url pattern="/topics/*/subscribe" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
         <security:intercept-url pattern="/topics/*/unsubscribe" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>

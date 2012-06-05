@@ -17,9 +17,13 @@ package org.jtalks.jcommune.model.entity;
 import org.jtalks.common.model.entity.Entity;
 
 /**
- * Any sapmle page entity. <br/>
+ * Any simple page entity. <br/>
  * It's used for display and edit static information. <br/>
- * Includes not null fields: name, content.
+ *
+ * Includes not null fields:
+ *  name - name or title of page,
+ *  content - formatted text of page,
+ *  pathName - specific name of page which identifies it in browser address.
  *
  * @author Alexander Gavrikov
  * @author Scherbakov Roman
@@ -36,6 +40,7 @@ public class SimplePage extends Entity {
 
     private String name;
     private String content;
+
     private String pathName;
 
     public SimplePage() {

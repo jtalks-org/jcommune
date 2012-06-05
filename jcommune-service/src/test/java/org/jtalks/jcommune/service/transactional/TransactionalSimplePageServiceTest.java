@@ -15,39 +15,121 @@
 package org.jtalks.jcommune.service.transactional;
 
 
+import org.jtalks.jcommune.model.dao.SimplePageDao;
+import org.jtalks.jcommune.service.SimplePageService;
+import org.jtalks.jcommune.model.entity.SimplePage;
+import org.jtalks.jcommune.service.dto.SimplePageInfoContainer;
+import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.mockito.Mock;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import javax.persistence.EntityExistsException;
+
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
+
+import static org.mockito.Mockito.verify;
+import static org.testng.Assert.assertNotNull;
 
 public class TransactionalSimplePageServiceTest {
-  /*
-    private static final long ID = 2L;
+
+  private static final long ID = 2L;
     private static final String NAME = "name";
     private static final String CONTENT = "content";
+    private  static  final  String PATH_NAME = "path_name";
 
     @Mock
     private SimplePageDao dao;
 
-    private SimplePageService samplePageService;
+    private SimplePageService simplePageService;
 
     @BeforeMethod
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        samplePageService = new TransactionalSimplePageService(dao);
+        initMocks(this);
+        simplePageService = new TransactionalSimplePageService(dao);
     }
 
     @Test
-    void testUpdate() throws NotFoundException{
-        SimplePage samplePage = new SimplePage(NAME, CONTENT);
+    void testUpdate() throws NotFoundException {
+        SimplePage simplePage = new SimplePage(NAME, CONTENT, PATH_NAME);
+        simplePage.setId(ID);
+
+
         String updatedName = "new name";
         String updatedContent = "new content";
-        when(dao.isExist(ID)).thenReturn(true);
-        when(dao.get(ID)).thenReturn(samplePage);
-        
-        samplePageService.updatePage(ID, updatedName, updatedContent);
-        Assert.assertEquals(samplePage.getName(), updatedName);
-        Assert.assertEquals(samplePage.getContent(), updatedContent);
 
-        verify(dao.get(ID));
-        verify(dao.isExist(ID));
+        SimplePageInfoContainer simplePageInfoContainer = new SimplePageInfoContainer(ID, updatedName, updatedContent);
+
+        when(dao.isExist(simplePage.getId())).thenReturn(true);
+        when(dao.get(simplePage.getId())).thenReturn(simplePage);
+
+        simplePageService.updatePage(simplePageInfoContainer);
+        assertEquals(simplePage.getName(), updatedName);
+        assertEquals(simplePage.getContent(), updatedContent);
+
+        verify(dao).get(ID);
+        verify(dao).isExist(ID);
     }
-   */
+
+    @Test
+    void  testGetPageByPathName() throws NotFoundException {
+        SimplePage samplePage = new SimplePage(NAME, CONTENT, PATH_NAME);
+        when(dao.getPageByPathName(PATH_NAME)).thenReturn(samplePage);
+
+        SimplePage actualSimplePage = simplePageService.getPageByPathName(PATH_NAME);
+
+        assertNotNull(actualSimplePage);
+
+        verify(dao).getPageByPathName(PATH_NAME);
+    }
+    
+    @Test
+    void testCreatePage() throws EntityExistsException {
+        SimplePage simplePage = new SimplePage(NAME, CONTENT, PATH_NAME);
+
+        when(dao.isExist(PATH_NAME)).thenReturn(false);
+
+        SimplePage actualSimpePage = simplePageService.createPage(simplePage);
+
+        assertEquals(actualSimpePage.getName(), NAME);
+        assertEquals(actualSimpePage.getContent(), CONTENT);
+        assertEquals(actualSimpePage.getPathName(), PATH_NAME);
+
+        verify(dao).isExist(PATH_NAME);
+        verify(dao).update(simplePage);
+    }
+
+    @Test(expectedExceptions = {NotFoundException.class})
+    void  testUpdateFailPageNotFound() throws NotFoundException {
+
+        String updatedName = "new name";
+        String updatedContent = "new content";
+
+        SimplePageInfoContainer simplePageInfoContainer = new SimplePageInfoContainer(ID, updatedName, updatedContent);
+
+        when(dao.isExist(ID)).thenReturn(false);
+        when(dao.get(ID)).thenReturn(null);
+
+        simplePageService.updatePage(simplePageInfoContainer);
+    }
+
+    @Test(expectedExceptions = {NotFoundException.class})
+    void testGetPageByPathNameFailPageNotFound() throws NotFoundException{
+
+        when(dao.getPageByPathName(PATH_NAME)).thenReturn(null);
+
+        SimplePage actualSimplePage = simplePageService.getPageByPathName(PATH_NAME);
+    }
+
+    @Test(expectedExceptions = {EntityExistsException.class})
+    void testCreatePageFailPageAlreadyExists() throws EntityExistsException {
+
+        SimplePage simplePage = new SimplePage(NAME, CONTENT, PATH_NAME);
+        when(dao.isExist(PATH_NAME)).thenReturn(true);
+        SimplePage actualSimpePage = simplePageService.createPage(simplePage);
+    }
+   
 }

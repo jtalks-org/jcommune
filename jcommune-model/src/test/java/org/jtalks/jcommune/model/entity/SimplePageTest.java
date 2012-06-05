@@ -18,24 +18,38 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotSame;
 
 public class SimplePageTest {
 
-    private SimplePage page;
-    @BeforeMethod
-    public void setUp() throws Exception {
-        page = new SimplePage("Test Name", "Test Content", "test_page");
+    private static final String NAME = "name";
+    private static final String CONTENT = "content";
+    private static final String PATH_NAME = "pathName";
 
-    }
+    private SimplePage simplePage;
 
     @Test
     public void testGetName() throws Exception {
-        assertEquals(page.getName(), "Test Name");
+        simplePage = new SimplePage(NAME, CONTENT, PATH_NAME);
+        assertEquals(simplePage.getName(), "name");
     }
 
     @Test
     public void testGetContent() throws Exception {
-        assertEquals(page.getContent(), "Test Content");
+        simplePage = new SimplePage(NAME, CONTENT, PATH_NAME);
+        assertEquals(simplePage.getContent(), "content");
+    }
+
+    @Test
+    public void testGetPathName() throws Exception {
+        simplePage = new SimplePage(NAME, CONTENT, PATH_NAME);
+        assertEquals(simplePage.getPathName(), "pathName");
+    }
+
+    @Test
+    public void testNotEmptyName() throws Exception {
+        simplePage = new SimplePage(NAME, CONTENT, PATH_NAME);
+        assertNotSame(simplePage.getName(), "");
     }
 
 }

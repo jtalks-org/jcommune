@@ -30,18 +30,28 @@ import org.springframework.security.acls.model.NotFoundException;
  */
 public class SimplePageHibernateDao extends AbstractHibernateChildRepository<SimplePage> implements SimplePageDao {
 
+    /**
+     * {@inheritDoc}
+     */
     public void createPage(SimplePage simplePage) {
         getSession().saveOrUpdate(simplePage);
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     public SimplePage getPageByPathName(String pathName) throws NotFoundException {
-        SimplePage simplePage = (SimplePage) getSession().getNamedQuery("getPageByPathName")
-                .setCacheable(true)
-                .setString("pathName", pathName)
-                .uniqueResult();
-        return simplePage;
+        return (SimplePage) (getSession().getNamedQuery("getPageByPathName").
+                setCacheable(true).setString("pathName", pathName).
+                uniqueResult());
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isExist(String pagePathName) {
+        return getPageByPathName(pagePathName) != null;
     }
 
 }

@@ -15,7 +15,10 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.SimplePage;
+import org.jtalks.jcommune.service.dto.SimplePageInfoContainer;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+
+import javax.persistence.EntityExistsException;
 
 /**
  * This interface should have methods which give us more abilities in working Simple page persistent entity.
@@ -27,26 +30,33 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 public interface SimplePageService extends EntityService<SimplePage> {
 
     /**
-     * update pageName and pageContent by current SimplePage
+     * Change name or/and content of current {@link SimplePage}
+     * If entity {@link SimplePage} with given ID wasn't found it throws NotFoundExeption
      *
-     * @param pageId ID of simple page
-     * @param pageName name of simple page
-     * @param pageContent content of simple page
+     * @param simplePage Entity of simple page {@link SimplePage}
+     *
+     * @throws NotFoundException if entity {@link SimplePage} with given ID wasn't found
      */
-    public void updatePage(long pageId, String pageName, String pageContent) throws NotFoundException;
+    public void updatePage(SimplePageInfoContainer simplePageInfoContainer) throws NotFoundException;
 
     /**
-     * create new SimplePage, put it in database
+     * Create new {@link SimplePage} and save it
+     * Path name is unique field and there should not exist a page with the same path name
+     * @param simplePage    simple page which will be created
      *
-     * @param simplePage simple page which will be created
+     * @return created {@link SimplePage}
+     *
+     * @throws EntityExistsException if {@link SimplePage} with path name of new page already exists
      */
-    public SimplePage createPage(SimplePage simplePage);
+    public SimplePage createPage(SimplePage simplePage) throws EntityExistsException;
 
     /**
-     * get SimplePage by name
+     * Get {@link SimplePage} entity which associated of pathName in browser
      *
-     * @param pathName path name
-     * @return simplePage with current path name
+     * @param pathName          address in browser which associated with current simple page
+     * @return simplePage       with current associated which current browser
+     *
+     * @throws NotFoundException if entity {@link SimplePage} with given path name wasn't found
      */
     public SimplePage getPageByPathName(String pathName) throws NotFoundException;
 }

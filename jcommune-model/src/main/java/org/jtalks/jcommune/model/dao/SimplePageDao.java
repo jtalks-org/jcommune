@@ -30,17 +30,25 @@ import org.springframework.security.acls.model.NotFoundException;
 public interface SimplePageDao extends ChildRepository<SimplePage> {
 
     /**
-     * Create a new simple page, put it in database
+     * Create a new simple page and then put it into database
      *
-     * @param simplePage simple page which will be created
+     * @param simplePage simple page object which will be created
      */
     public void createPage(SimplePage simplePage);
 
     /**
-     * Get a simple page with the specified path name
+     * Get a simple page associated with current path name in browser
      *
-     * @param name name of existing simple page
-     * @return SimplePage simple page with the specified path name
+     * @param pathName      address in browser which associated with current simple page
+     * @return SimplePage   simple page with the specified by path name
      */
-    public SimplePage getPageByPathName(String name) throws NotFoundException;
+    public SimplePage getPageByPathName(String pathName) throws NotFoundException;
+
+    /**
+     * Check does {@link SimplePage} with current path name exist
+     * @param pagePathName path name of {@link SimplePage}
+     * @return true if page exists or false if there's no
+     */
+    public boolean isExist(String pagePathName);
+
 }
