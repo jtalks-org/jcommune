@@ -14,6 +14,22 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.matches;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.jtalks.jcommune.model.dao.UserDao;
@@ -30,24 +46,9 @@ import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.matches;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
 
 /**
  * @author Kirill Afonin
@@ -59,11 +60,14 @@ public class TransactionalUserServiceTest {
     private static final String USERNAME = "username";
     private static final String FIRST_NAME = "first name";
     private static final String LAST_NAME = "last name";
-    private static final String NEW_EMAIL = "new_username@mail.com";
     private static final String EMAIL = "username@mail.com";
     private static final String PASSWORD = "password";
+    //if you change the PASSWORD, regenerate md5 hash
+    private static final String PASSWORD_MD5_HASH = "5f4dcc3b5aa765d61d8327deb882cf99";
     private static final String SIGNATURE = "signature";
     private static final String NEW_PASSWORD = "newPassword";
+    //if you change the NEW_PASSWORD, regenerate md5 hash
+    private static final String NEW_PASSWORD_MD5_HASH = "14a88b9d2f52c55b5fbcf9c5d9c11875";
     private static final Language LANGUAGE = Language.ENGLISH;
     private static final int PAGE_SIZE = 50;
     private static final String LOCATION = "location";
@@ -82,12 +86,21 @@ public class TransactionalUserServiceTest {
     private AvatarService avatarService;
     @Mock
     private Base64Wrapper base64Wrapper;
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
+        when(passwordEncoder.encodePassword(PASSWORD, null))
+            .thenReturn(PASSWORD_MD5_HASH);
         userService = new TransactionalUserService(
-                userDao, securityService, mailService, base64Wrapper, avatarService);
+                userDao,
+                securityService,
+                mailService,
+                base64Wrapper,
+                avatarService,
+                passwordEncoder);
     }
 
     @Test
@@ -119,7 +132,7 @@ public class TransactionalUserServiceTest {
 
         assertEquals(registeredUser.getUsername(), USERNAME);
         assertEquals(registeredUser.getEmail(), EMAIL);
-        assertEquals(registeredUser.getPassword(), PASSWORD);
+        assertEquals(registeredUser.getPassword(), PASSWORD_MD5_HASH);
         assertTrue(new Interval(registeredUser.getRegistrationDate(), now)
                 .toDuration().getMillis() <= MAX_REGISTRATION_TIMEOUT);
         verify(userDao).saveOrUpdate(user);
@@ -131,6 +144,8 @@ public class TransactionalUserServiceTest {
         JCUser user = getUser(USERNAME);
         when(securityService.getCurrentUser()).thenReturn(user);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
+        when(passwordEncoder.encodePassword(NEW_PASSWORD, null))
+            .thenReturn(NEW_PASSWORD_MD5_HASH);
 
         String newAvatar = new String(new byte[12]);
 
@@ -145,14 +160,17 @@ public class TransactionalUserServiceTest {
 
     @Test
     public void testEditUserProfileNewPasswordNull() {
-    	JCUser user = getUser(USERNAME);
-    	when(securityService.getCurrentUser()).thenReturn(user);
-    	String newAvatar = new String(new byte[12]);
-    	String newPassword = null;
-    	UserInfoContainer userInfo = new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
+        JCUser user = getUser(USERNAME);
+        when(securityService.getCurrentUser()).thenReturn(user);
+        when(passwordEncoder.encodePassword(null, null))
+            .thenReturn(null);
+        
+        String newAvatar = new String(new byte[12]);
+        String newPassword = null;
+        UserInfoContainer userInfo = new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
                 PASSWORD, newPassword, SIGNATURE, newAvatar, LANGUAGE, PAGE_SIZE, LOCATION);
-    	JCUser editedUser = userService.editUserProfile(userInfo);
-    	assertEquals(editedUser.getPassword(), user.getPassword());
+        JCUser editedUser = userService.editUserProfile(userInfo);
+        assertEquals(editedUser.getPassword(), user.getPassword());
     }
 
     @Test
@@ -176,21 +194,8 @@ public class TransactionalUserServiceTest {
         assertEquals(user.getSignature(), SIGNATURE, "Signature was not changed");
         assertEquals(user.getFirstName(), FIRST_NAME, "first name was not changed");
         assertEquals(user.getLastName(), LAST_NAME, "last name was not changed");
-        assertEquals(user.getPassword(), NEW_PASSWORD, "new password was not accepted");
+        assertEquals(user.getPassword(), NEW_PASSWORD_MD5_HASH, "new password was not accepted");
     }
-
-/*    @Test(expectedExceptions = WrongPasswordException.class)
-    public void testEditUserProfileCurrentPasswordNull() throws Exception {
-        JCUser user = getUser(USERNAME);
-        when(securityService.getCurrentUser()).thenReturn(user);
-
-        userService.editUserProfile(new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
-                null, NEW_PASSWORD, SIGNATURE, null, LANGUAGE, PAGE_SIZE, LOCATION));
-
-        verify(securityService).getCurrentUser();
-        verify(userDao, never()).getByEmail(anyString());
-        verify(userDao, never()).saveOrUpdate(any(JCUser.class));
-    }*/
 
     @Test
     public void testGet() throws NotFoundException {

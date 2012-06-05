@@ -22,6 +22,8 @@
 <html>
 <head>
     <title><spring:message code="label.signup"/></title>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/captcha.js"
+            type="text/javascript"></script>
 </head>
 
 <body>
@@ -72,6 +74,17 @@
                         <form:errors path="passwordConfirm" cssClass="error"/>
                     </div>
                     <span class="reg_info"><spring:message code="label.tip.confirmation"/></span>
+                </div>
+                <div class="forum_row">
+                    <form:label path="captcha"><spring:message code="label.captcha"/></form:label>
+
+                    <div>
+                        <img id="captcha_img"  src='${pageContext.request.contextPath}/captcha/image' class="captcha"/>
+                        <img id="captcha_refresh" src='${pageContext.request.contextPath}/resources/images/captcha-refresh.gif'/>
+                        <form:input path="captcha" class="captcha_input" type="text"/></br>
+                        <form:errors path="captcha" cssClass="error"/>
+                    </div>
+                    <span class="reg_info"><spring:message code="label.tip.captcha"/></span>
                 </div>
             </div>
             <div class="form_controls">

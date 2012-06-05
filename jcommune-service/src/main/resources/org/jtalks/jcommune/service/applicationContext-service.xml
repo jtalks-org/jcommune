@@ -71,6 +71,7 @@
         <constructor-arg ref="mailService"/>
         <constructor-arg ref="base64Wrapper"/>
         <constructor-arg ref="avatarService"/>
+        <constructor-arg ref="md5PasswordEncoder"/>
     </bean>
 
     <bean id="userContactsService"
@@ -97,11 +98,14 @@
           class="org.jtalks.jcommune.service.transactional.TransactionalBranchService">
         <constructor-arg ref="topicBranchDao"/>
         <constructor-arg ref="branchSectionDao"/>
+        <constructor-arg ref="topicDao"/>
+        <constructor-arg ref="postDao"/>
     </bean>
 
     <bean id="branchSectionService"
           class="org.jtalks.jcommune.service.transactional.TransactionalSectionService">
         <constructor-arg ref="branchSectionDao"/>
+        <constructor-arg ref="topicBranchService"/>
     </bean>
 
     <bean id="pmService"

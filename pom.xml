@@ -37,7 +37,7 @@
             <dependency>
                 <groupId>org.jtalks.common</groupId>
                 <artifactId>jtalks-common-model</artifactId>
-                <version>0.15</version>
+                <version>0.16</version>
             </dependency>
             <dependency>
                 <groupId>org.jtalks.common</groupId>
@@ -380,6 +380,12 @@
                 <groupId>com.cj.trim</groupId>
                 <artifactId>trim-filter</artifactId>
                 <version>1.0</version>
+            </dependency>
+            <!-- Captcha -->
+             <dependency>
+                <groupId>com.google.code</groupId>
+                <artifactId>kaptcha</artifactId>
+                <version>2.3.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

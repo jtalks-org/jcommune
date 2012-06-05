@@ -55,6 +55,13 @@
                 <many-to-many column="USER_ID" class="org.jtalks.jcommune.model.entity.JCUser"/>
             </set>
         </subclass>
-
     </class>
+    
+    <query name="getCountTopicsInBranch">
+        <![CDATA[SELECT COUNT(topic) FROM Topic topic WHERE topic.branch = :branch]]>
+    </query>
+    
+    <query name="getCountPostsInBranch">
+        <![CDATA[SELECT COUNT(post) FROM Post post WHERE post.topic.branch = :branch]]>
+    </query>
 </hibernate-mapping>

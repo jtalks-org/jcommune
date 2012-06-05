@@ -12,32 +12,35 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service;
+package org.jtalks.jcommune.web.validation.annotations;
 
-import org.jtalks.common.model.entity.Section;
+import org.jtalks.jcommune.web.validation.validators.CaptchaValidator;
 
-import java.util.List;
+import javax.validation.Constraint;
+import javax.validation.Payload;
+import java.lang.annotation.*;
 
 /**
- * The interface to manipulate with sections
- *
- * @author Max Malakhov
+ * Validates if captcha is valid. Applicable for String fields only.
+ * If captcha is not valid user will get appropriate message
  */
-public interface SectionService extends EntityService<Section> {
+@Target({ElementType.FIELD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Constraint(validatedBy = CaptchaValidator.class)
+public @interface Captcha {
     /**
-     * Get list of all sections.
-     *
-     * @return - list of the sections.
+     * Resource bundle code for error message
      */
-    List<Section> getAll();
-    
+    String message() default "{validation.captcha.wrong}";
+
     /**
-     * Prepares sections for the main forum page.Fills the necessary information
-     * for the branches of each section.
-     * Calling this method avoids the use of counters, which reduce the response
-     * time of the main page.
-     * 
-     * @param sections the list of sections
+     * Groups settings for this validation constraint
      */
-    void prepareSectionsForView(List<Section> sections);
+    Class<?>[] groups() default {};
+
+    /**
+     * Payload, not used here
+     */
+    Class<? extends Payload>[] payload() default {};
 }

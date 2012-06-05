@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2011  JTalks.org Team
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -12,32 +12,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service;
 
-import org.jtalks.common.model.entity.Section;
-
-import java.util.List;
-
-/**
- * The interface to manipulate with sections
- *
- * @author Max Malakhov
- */
-public interface SectionService extends EntityService<Section> {
-    /**
-     * Get list of all sections.
-     *
-     * @return - list of the sections.
-     */
-    List<Section> getAll();
-    
-    /**
-     * Prepares sections for the main forum page.Fills the necessary information
-     * for the branches of each section.
-     * Calling this method avoids the use of counters, which reduce the response
-     * time of the main page.
-     * 
-     * @param sections the list of sections
-     */
-    void prepareSectionsForView(List<Section> sections);
-}
+$(function() {
+    //this function on registration.js
+    refreshCaptchaOnClick();
+});

@@ -74,12 +74,12 @@
                             <td class="latest-by">
                                 <c:if test="${branch.topicCount>0}">
 	                                <i class="icon-calendar"></i>
-	                                <a class="date" href="${pageContext.request.contextPath}/posts/${branch.lastUpdatedTopic.lastPost.id}"><jtalks:format 
-	                                        value="${branch.lastUpdatedTopic.lastPost.creationDate}"/>
+	                                <a class="date" href="${pageContext.request.contextPath}/posts/${branch.lastPostInLastUpdatedTopic.id}"><jtalks:format 
+	                                        value="${branch.lastPostInLastUpdatedTopic.creationDate}"/>
 	                                </a>
 	                                <p>by 
-	                                    <a href="${pageContext.request.contextPath}/users/${branch.lastUpdatedTopic.lastPost.userCreated.encodedUsername}"><c:out 
-	                                        value="${branch.lastUpdatedTopic.lastPost.userCreated.username}"/>
+	                                    <a href="${pageContext.request.contextPath}/users/${branch.lastPostInLastUpdatedTopic.userCreated.encodedUsername}"><c:out 
+	                                        value="${branch.lastPostInLastUpdatedTopic.userCreated.username}"/>
 	                                    </a>
 	                                </p>
                                 </c:if>
