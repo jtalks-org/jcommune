@@ -18,10 +18,12 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.SimplePage;
 import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
 
+import javax.validation.constraints.Size;
+
 public class SimplePageDto {
 
     @NotBlank
-    @BbCodeAwareSize(min = SimplePage.MIN_NAME_LENGTH, max = SimplePage.MAX_NAME_LENGTH)
+    @Size(min = SimplePage.MIN_NAME_LENGTH, max = SimplePage.MAX_NAME_LENGTH)
     private String nameText;
 
     @NotBlank
@@ -31,12 +33,18 @@ public class SimplePageDto {
     private long id;
 
     @NotBlank
-    @BbCodeAwareSize(min = SimplePage.MIN_PATH_NAME_LENGTH, max = SimplePage.MAX_PATH_NAME_LENGTH)
+    @Size(min = SimplePage.MIN_PATH_NAME_LENGTH, max = SimplePage.MAX_PATH_NAME_LENGTH)
     private String pathName;
 
     public SimplePageDto() {
     }
 
+    /**
+     * Create dto for simple page
+     *
+     * @param simplePage simple page for conversion
+     * @return dto for simple page
+     */
     public SimplePageDto(SimplePage simplePage) {
         this.setId(simplePage.getId());
         this.setNameText(simplePage.getName());
@@ -44,34 +52,74 @@ public class SimplePageDto {
         this.setPathName(simplePage.getPathName());
     }
 
+    /**
+     * Get page name
+     *
+     * @return page name
+     */
     public String getNameText() {
         return nameText;
     }
 
+    /**
+     * Set page name
+     *
+     * @param nameText page name
+     */
     public void setNameText(String nameText) {
         this.nameText = nameText;
     }
 
+    /**
+     * Get page content
+     *
+     * @return page content
+     */
     public String getContentText() {
         return contentText;
     }
 
+    /**
+     * Set page content
+     *
+     * @param contentText page content
+     */
     public void setContentText(String contentText) {
         this.contentText = contentText;
     }
 
+    /**
+     * Get page id
+     *
+     * @return page id
+     */
     public long getId() {
         return id;
     }
 
+    /**
+     * Set page id
+     *
+     * @param id page id
+     */
     public void setId(long id) {
         this.id = id;
     }
 
+    /**
+     * Get page path name
+     *
+     * @return page path name
+     */
     public String getPathName() {
         return pathName;
     }
 
+    /**
+     * Set page path name
+     *
+     * @param pathName page path name
+     */
     public void setPathName(String pathName) {
         this.pathName = pathName;
     }
