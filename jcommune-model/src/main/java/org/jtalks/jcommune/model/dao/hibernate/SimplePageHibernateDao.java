@@ -46,6 +46,7 @@ public class SimplePageHibernateDao extends AbstractHibernateChildRepository<Sim
                 uniqueResult());
     }
 
+
     /**
      * {@inheritDoc}
      */
