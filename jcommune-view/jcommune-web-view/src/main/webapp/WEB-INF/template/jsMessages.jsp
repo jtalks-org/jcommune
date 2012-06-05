@@ -46,3 +46,5 @@ $labelPollVote = '<spring:message code="label.poll.vote"/>';
 
 
 $labelSelectedColor = '<spring:message code="label.selected.color"/>';
+
+$localeCode = '<spring:message code="locale.code"/>'; 
