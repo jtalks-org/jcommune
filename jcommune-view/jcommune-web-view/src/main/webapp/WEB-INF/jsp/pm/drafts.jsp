@@ -42,14 +42,17 @@
 
         <div class="span9">
             <div class="pm_buttons">
-                <div class="del">
+                <span class="del">
                     <a class="btn btn-danger" id="deleteCheckedPM"
                        href="${pageContext.request.contextPath}/pm">
                         <i class="icon-trash icon-white"></i>
                         <spring:message code="label.delete"/>
                     </a>
+                    <a class="btn btn-success" id="editCheckedPM">
+                        <spring:message code="label.edit"/>
+                    </a>
                     <form:form id="deleteForm" method="DELETE"/>
-                </div>
+                </span>
             </div>
 
             <table class="table table-bordered table-condensed">

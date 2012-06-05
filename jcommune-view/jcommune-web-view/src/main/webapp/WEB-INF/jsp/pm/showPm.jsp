@@ -69,12 +69,12 @@
             </div>
             <!-- pm_buttons -->
 
-            <div class="well" style="width: 100%; padding: 10px;">
-                <div class="row" style="margin: 0px;">
-                    <div class="pull-left thumbnail" style="width: 50px; margin-right: 6px">
+            <div class="well pm_message_view">
+                <div class="row pm_message_detail">
+                    <div class="pull-left thumbnail pm_message_avatar">
                         <img src="${pageContext.request.contextPath}/${pm.userFrom.encodedUsername}/avatar" alt=""/>
                     </div>
-                    <div style="margin-top:10px;">
+                    <div class="pm_message_userTo_link">
                         <a href="${pageContext.request.contextPath}/users/${pm.userTo.encodedUsername}">
                             <i class="icon-user"></i><c:out value="${pm.userFrom.username}"/>
                         </a>
@@ -84,7 +84,7 @@
                 </div>
                 <div class="pm-text-box">
                     <jtalks:bb2html bbCode="${pm.body}"/>
-                    ${pm.userFrom.signature}
+                    <c:out value="${pm.userFrom.signature}"/>
                 </div>
             </div>
 

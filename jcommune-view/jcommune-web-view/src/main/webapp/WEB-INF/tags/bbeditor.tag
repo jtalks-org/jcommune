@@ -26,24 +26,24 @@
 
 <div class="btn-toolbar">
     <div class="btn-group">
-        <a id="format_b" class="btn" accesskey="b" name="format_b" onclick="doClick('bold');" 
-            title="<spring:message code='label.answer.bold'/>" >
+        <a id="format_b" class="btn" accesskey="b" name="format_b" onclick="doClick('bold');"
+           title="<spring:message code='label.answer.bold'/>">
             <i class="icon-bold"></i>
         </a>
-        <a id="format_i" class="btn" accesskey="i" name="format_i" onclick="doClick('italic');" 
-            title="<spring:message code='label.answer.italic'/>">
+        <a id="format_i" class="btn" accesskey="i" name="format_i" onclick="doClick('italic');"
+           title="<spring:message code='label.answer.italic'/>">
             <i class="icon-italic"></i>
         </a>
-        <a id="format_u" class="btn" accesskey="u" name="format_u" onclick="doClick('underline');" 
-            title="<spring:message code='label.answer.Underline'/>">
+        <a id="format_u" class="btn" accesskey="u" name="format_u" onclick="doClick('underline');"
+           title="<spring:message code='label.answer.underline'/>">
             <i class="icon-underline"></i>
         </a>
-        <a id="format_s" class="btn" accesskey="s" name="format_s" onclick="doClick('line-through');" 
-            title="<spring:message code='label.answer.striked'/>">
+        <a id="format_s" class="btn" accesskey="s" name="format_s" onclick="doClick('line-through');"
+           title="<spring:message code='label.answer.striked'/>">
             <i class="icon-strike"></i>
         </a>
         <a id="format_highlight" class="btn" accesskey="h" name="format_highlight"
-           onclick="doClick('highlight');" 
+           onclick="doClick('highlight');"
            title='<spring:message code='label.answer.highlight'/>'>
             &nbsp;Highlight&nbsp;
         </a>
@@ -58,32 +58,32 @@
             <i class="icon-align-center"></i>
         </a>
         <a id="format_right" class="btn" accesskey="right" name="format_right"
-           onclick="doClick('right');" 
+           onclick="doClick('right');"
            title="<spring:message code='label.answer.align_right'/>">
             <i class="icon-align-right"></i>
         </a>
     </div>
     <div class='btn-group'>
         <a id="format_list" class="btn" accesskey="l" name="format_list"
-           onclick="doClick('InsertUnorderedList');" 
+           onclick="doClick('InsertUnorderedList');"
            title="<spring:message code='label.answer.list'/>">
             <i class="icon-list"></i>
         </a>
         <a id="format_listeq" class="btn" accesskey="o" name="format_listeq"
-           onclick="doClick('listElement');" 
+           onclick="doClick('listElement');"
            title="<spring:message code='label.answer.list_item'/>">
             <i class="icon-add-row"></i>
         </a>
     </div>
     <div class='btn-group'>
-        <a id="select_color" class="btn" name="select_color" onclick="showColorGrid2('none')" 
-            title="<spring:message code='label.answer.font_color'/>">
+        <a id="select_color" class="btn" name="select_color" onclick="showColorGrid2('none')"
+           title="<spring:message code='label.answer.font_color'/>">
             <i class="icon-palette"></i>
         </a>
         <span id="colorpicker201" class="colorpicker201"></span>
 
-        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" 
-            title="<spring:message code="label.answer.font_size"/>">
+        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"
+           title="<spring:message code="label.answer.font_size"/>">
             <i class="icon-text-height"></i>
             <span class="caret"></span>
         </a>
@@ -94,17 +94,17 @@
         </ul>
     </div>
     <div class='btn-group'>
-        <a id="format_img" class="btn" accesskey="p" name="format_img" onclick="doImage();" 
-            title="<spring:message code='label.answer.insert_picture'/>">
+        <a id="format_img" class="btn" accesskey="p" name="format_img" onclick="doImage();"
+           title="<spring:message code='label.answer.insert_picture'/>">
             <i class="icon-picture"></i>
         </a>
-        <a id="format_url" class="btn" accesskey="w" name="format_url" onclick="doLink();" 
-            title="<spring:message code='label.answer.insert_link'/>">
+        <a id="format_url" class="btn" accesskey="w" name="format_url" onclick="doLink();"
+           title="<spring:message code='label.answer.insert_link'/>">
             <i class="icon-link"></i>
         </a>
 
-        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" 
-            title="<spring:message code="label.answer.font_code"/>">
+        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"
+           title="<spring:message code="label.answer.font_code"/>">
             <spring:message code="label.answer.font_code"/>
             <span class="caret"></span>
         </a>
@@ -120,17 +120,17 @@
             <li><a href="#" value="html">HTML</a></li>
             <li><a href="#" value="css">CSS</a></li>
             <li><a href="#" value="sql">SQL</a></li>
-            <li><a href="#" value="xml">XML</a></li >
+            <li><a href="#" value="xml">XML</a></li>
         </ul>
 
-        <a id="format_quote" class="btn" accesskey="q" name="format_quote" onclick="doQuote();" 
-            title="<spring:message code='label.answer.quote'/>">
+        <a id="format_quote" class="btn" accesskey="q" name="format_quote" onclick="doQuote();"
+           title="<spring:message code='label.answer.quote'/>">
             <i class="icon-quote"></i>
         </a>
     </div>
     <div class='btn-group'>
-        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" 
-            title="<spring:message code="label.answer.indent"/>">
+        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"
+           title="<spring:message code="label.answer.indent"/>">
             <spring:message code="label.answer.indent"/>
             <span class="caret"></span>
         </a>

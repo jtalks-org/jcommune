@@ -315,6 +315,24 @@ ul.lang-menu li img {
     word-break: break-all
 }
 
+.pm_message_view {
+    width: 100%;
+    padding: 10px;
+}
+
+.pm_message_detail {
+    margin: 0px;
+}
+
+.pm_message_avatar {
+    width: 50px;
+    margin-right: 6px;
+}
+
+.pm_message_userTo_link {
+    margin-top: 10px;
+}
+
 .post {
     width: 100%;
     text-align: left;
