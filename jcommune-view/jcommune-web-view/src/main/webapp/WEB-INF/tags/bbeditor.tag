@@ -26,54 +26,64 @@
 
 <div class="btn-toolbar">
     <div class="btn-group">
-        <a id="format_b" class="btn" accesskey="b" name="format_b" onclick="doClick('bold');" title="Bold">
+        <a id="format_b" class="btn" accesskey="b" name="format_b" onclick="doClick('bold');" 
+            title="<spring:message code='label.answer.bold'/>" >
             <i class="icon-bold"></i>
         </a>
-        <a id="format_i" class="btn" accesskey="i" name="format_i" onclick="doClick('italic');" title="Italic">
+        <a id="format_i" class="btn" accesskey="i" name="format_i" onclick="doClick('italic');" 
+            title="<spring:message code='label.answer.italic'/>">
             <i class="icon-italic"></i>
         </a>
-        <a id="format_u" class="btn" accesskey="u" name="format_u" onclick="doClick('underline');" title="Underline">
+        <a id="format_u" class="btn" accesskey="u" name="format_u" onclick="doClick('underline');" 
+            title="<spring:message code='label.answer.Underline'/>">
             <i class="icon-underline"></i>
         </a>
-        <a id="format_s" class="btn" accesskey="s" name="format_s" onclick="doClick('line-through');" title="Strike">
+        <a id="format_s" class="btn" accesskey="s" name="format_s" onclick="doClick('line-through');" 
+            title="<spring:message code='label.answer.striked'/>">
             <i class="icon-strike"></i>
         </a>
         <a id="format_highlight" class="btn" accesskey="h" name="format_highlight"
-           onclick="doClick('highlight');" title='Highlight'>
+           onclick="doClick('highlight');" 
+           title='<spring:message code='label.answer.highlight'/>'>
             &nbsp;Highlight&nbsp;
         </a>
     </div>
     <div class='btn-group'>
         <a id="format_left" class="btn" accesskey="left" name="format_left" onclick="doClick('left');"
-           title="Align left">
+           title="<spring:message code='label.answer.align_left'/>">
             <i class="icon-align-left"></i>
         </a>
         <a id="format_center" class="btn" accesskey="c" name="format_center" onclick="doClick('center');"
-           title="Align center">
+           title="<spring:message code='label.answer.align_center'/>">
             <i class="icon-align-center"></i>
         </a>
         <a id="format_right" class="btn" accesskey="right" name="format_right"
-           value=" Right " onclick="doClick('right');" title="Align right">
+           onclick="doClick('right');" 
+           title="<spring:message code='label.answer.align_right'/>">
             <i class="icon-align-right"></i>
         </a>
     </div>
     <div class='btn-group'>
         <a id="format_list" class="btn" accesskey="l" name="format_list"
-           onclick="doClick('InsertUnorderedList');" title="List">
+           onclick="doClick('InsertUnorderedList');" 
+           title="<spring:message code='label.answer.list'/>">
             <i class="icon-list"></i>
         </a>
         <a id="format_listeq" class="btn" accesskey="o" name="format_listeq"
-           onclick="doClick('listElement');" title="Add list item">
+           onclick="doClick('listElement');" 
+           title="<spring:message code='label.answer.list_item'/>">
             <i class="icon-add-row"></i>
         </a>
     </div>
     <div class='btn-group'>
-        <a id="select_color" class="btn" name="select_color" onclick="showColorGrid2('none')" title="Text color">
+        <a id="select_color" class="btn" name="select_color" onclick="showColorGrid2('none')" 
+            title="<spring:message code='label.answer.font_color'/>">
             <i class="icon-palette"></i>
         </a>
         <span id="colorpicker201" class="colorpicker201"></span>
 
-        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" title="Text size">
+        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" 
+            title="<spring:message code="label.answer.font_size"/>">
             <i class="icon-text-height"></i>
             <span class="caret"></span>
         </a>
@@ -84,45 +94,51 @@
         </ul>
     </div>
     <div class='btn-group'>
-        <a id="format_img" class="btn" accesskey="p" name="format_img" onclick="doImage();" title="Insert picture">
+        <a id="format_img" class="btn" accesskey="p" name="format_img" onclick="doImage();" 
+            title="<spring:message code='label.answer.insert_picture'/>">
             <i class="icon-picture"></i>
         </a>
-        <a id="format_url" class="btn" accesskey="w" name="format_url" onclick="doLink();" title="Insert link">
+        <a id="format_url" class="btn" accesskey="w" name="format_url" onclick="doLink();" 
+            title="<spring:message code='label.answer.insert_link'/>">
             <i class="icon-link"></i>
         </a>
 
-        <label for="select_code"> <spring:message code="label.answer.font_code"/>
-        </label>
-        <select id="select_code" name="select_code" onchange="doCode();">
-            <option value="0" selected="selected">
-                <spring:message code="label.answer.none"/></option>
-            <option value="cpp">C/C++</option>
-            <option value="csharp">C#</option>
-            <option value="java">Java</option>
-            <option value="php">PHP</option>
-            <option value="python">Python</option>
-            <option value="pascal">Pascal</option>
-            <option value="bash">Bash</option>
-            <option value="js">JavaScript</option>
-            <option value="html">HTML</option>
-            <option value="css">CSS</option>
-            <option value="sql">SQL</option>
-            <option value="xml">XML</option>
-        </select>
+        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" 
+            title="<spring:message code="label.answer.font_code"/>">
+            <spring:message code="label.answer.font_code"/>
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu" id='select_code'>
+            <li><a href="#" value="cpp">C/C++</a></li>
+            <li><a href="#" value="csharp">C#</a></li>
+            <li><a href="#" value="java">Java</a></li>
+            <li><a href="#" value="php">PHP</a></li>
+            <li><a href="#" value="python">Python</a></li>
+            <li><a href="#" value="pascal">Pascal</a></li>
+            <li><a href="#" value="bash">Bash</a></li>
+            <li><a href="#" value="js">JavaScript</a></li>
+            <li><a href="#" value="html">HTML</a></li>
+            <li><a href="#" value="css">CSS</a></li>
+            <li><a href="#" value="sql">SQL</a></li>
+            <li><a href="#" value="xml">XML</a></li >
+        </ul>
 
-        <a id="format_quote" class="btn" accesskey="q" name="format_quote" onclick="doQuote();" title="Quote">
+        <a id="format_quote" class="btn" accesskey="q" name="format_quote" onclick="doQuote();" 
+            title="<spring:message code='label.answer.quote'/>">
             <i class="icon-quote"></i>
         </a>
     </div>
     <div class='btn-group'>
-        <label for="select_indent"><spring:message code="label.answer.indent"/></label>
-        <select id="select_indent" name="select_indent" onchange="doIndent();">
-            <option value="0" selected="selected">
-                <spring:message code="label.answer.none"/></option>
-            <option value="15">15</option>
-            <option value="20">20</option>
-            <option value="25">25</option>
-        </select>
+        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" 
+            title="<spring:message code="label.answer.indent"/>">
+            <spring:message code="label.answer.indent"/>
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu" id='select_indent'>
+            <li><a href="#" value="15">15</a></li>
+            <li><a href="#" value="20">20</a></li>
+            <li><a href="#" value="25">25</a></li>
+        </ul>
     </div>
     <div class='btn-group'>
         <a href="" class='btn' onclick="closeTags();return false;"

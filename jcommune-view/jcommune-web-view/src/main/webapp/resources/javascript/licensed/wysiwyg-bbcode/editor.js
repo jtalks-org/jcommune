@@ -284,40 +284,18 @@ function doSize(selectedElement) {
     }
 }
 
-function doCode() {
+function doCode(selectedElement) {
     if (!editorVisible) {
-        var listCodes = document.getElementById("select_code");
-        var selectedIndex = listCodes.selectedIndex;
-        if (selectedIndex >= 0) {
-            var code = listCodes.options[selectedIndex].value;
-            if (code != '0')
-                AddTag('[code=' + code + ']', '[/code]');
-        }
+		var code = $(selectedElement).attr('value');
+        AddTag('[code=' + code + ']', '[/code]');
     }
-    resetCodeSelector();
 }
 
-function resetIndentSelector() {
-    var listIndents = document.getElementById("select_indent");
-    listIndents.options[0].selected = 'selected';
-}
-
-function resetCodeSelector() {
-    var listIndents = document.getElementById("select_code");
-    listIndents.options[0].selected = 'selected';
-}
-
-function doIndent() {
+function doIndent(selectedElement) {
     if (!editorVisible) {
-        var listIndents = document.getElementById("select_indent");
-        var selectedIndex = listIndents.selectedIndex;
-        if (selectedIndex >= 0) {
-            var indent = listIndents.options[selectedIndex].value;
-            if (indent > 0)
-                AddTag('[indent=' + indent + ']', '[/indent]');
-        }
+        var indent = $(selectedElement).attr('value');
+        AddTag('[indent=' + indent + ']', '[/indent]');
     }
-    resetIndentSelector();
 }
 
 var mylink = '';
@@ -653,5 +631,13 @@ function showColorGrid2(Sam, textBoxId) {
 $(document).ready(function() {
 	$('#select_size a').click(function() {
 		doSize(this);
+	});
+	
+	$('#select_code a').click(function() {
+		doCode(this);
+	});
+	
+	$('#select_indent a').click(function() {
+		doIndent(this);
 	});
 });
