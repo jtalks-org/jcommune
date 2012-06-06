@@ -202,6 +202,7 @@
                                  <i class="icon-quote"></i><spring:message code="label.quotation"/>
                              </a>
                          </sec:authorize>
+                         <a class="btn btn-mini" href="#" name="${post.id}">&#8657</a>
                      </div>
                     </div>
                 </td>

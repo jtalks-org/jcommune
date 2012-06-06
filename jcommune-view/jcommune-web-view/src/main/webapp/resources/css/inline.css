@@ -74,63 +74,71 @@ input.form-check-radio-box[type="radio"]
 }
 
 .forum-sections-header {
-	margin:0;
+    margin:0;
 }
 
 .logo-text {
-	font-family: 'Carter One', cursive;
+    font-family: 'Carter One', cursive;
 }
 
 .forum-sections-header-actions {
-	display:inline-block; 
-	vertical-align:middle; 
-	text-align: right;
+    display:inline-block; 
+    vertical-align:middle; 
+    text-align: right;
 }
 
 .forum-sections-recent-unanswered {
-	font-weight: bold;  
-	padding-left: 2px; 
-	color: rgb(85, 85, 85)
+    font-weight: bold;  
+    padding-left: 2px; 
+    color: rgb(85, 85, 85)
 }
 
 .rss-icon {
-	vertical-align:middle;
+    vertical-align:middle;
 }
 
 .forum-sections-branch-description-container {
-	font-style: italic; 
-	font-size: 12px; 
-	white-space:nowrap;
+    font-style: italic; 
+    font-size: 12px; 
+    white-space:nowrap;
 }
 
 .forum-sections-moderators-container {
-	style="font-size: 11px
+    style="font-size: 11px
 }
 
 .forum-sections-stats-container {
-	min-height: 10px; 
-	padding: 5px; 
-	margin: 0px; 
-	margin-bottom: 5px;
+    min-height: 10px; 
+    padding: 5px; 
+    margin: 0px; 
+    margin-bottom: 5px;
 }
 
 /** BBeditor styles */
 .bb_quote_title {
-	font-size: 11px; 
-	font-style:italic;
+    font-size: 11px; 
+    font-style:italic;
 }
 
 .bb_quote_container {
-	margin: 5px 10px 5px 5px; 
+    margin: 5px 10px 5px 5px; 
 }
 
 .bb_quote_content {
-	background-color: rgb(242,243,239); 
-	border: 1px solid rgb(205,206,198); 
-	padding: 0 4px 0 4px;
+    background-color: rgb(242,243,239); 
+    border: 1px solid rgb(205,206,198); 
+    padding: 0 4px 0 4px;
 }
 
 .language-selector-container {
-	padding:0px; 
-	margin: 6px 2px 0px 15px;
+    padding:0px; 
+    margin: 6px 2px 0px 15px;
+}
+
+.user-posts-date-title {
+    float:left;
+}
+
+.user-posts-buttons {
+    text-align: right;
 }
