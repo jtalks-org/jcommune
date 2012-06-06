@@ -72,12 +72,17 @@ function bindDeleteHandler() {
  */
 function getContactHtml(data) {
     //HTML template for single contact. Should be in sync with corresponding JSP.
-    var template = '<div class="contact">' +
-        '     <label><img src="${icon}" alt="">${typeName}</label>' +
-        '     <span>${value}</span>' +
-        '     <input type="hidden" value="${contactId}"/>' +
-        '     <a class="button" id="${buttonId}" href="#">X</a>' +
-        ' </div>';
+	var template = 
+		'	<li class="contact">'
+		+ '		<input type="hidden" value="${contactId}"/>'
+        + '		<a href="#" id="${buttonId}" class="btn btn-mini btn-danger button" title="' + $labelContactsTipsDelete + '">'
+        + '			<i class="icon-remove icon-white"></i>'
+        + '     </a>'
+        + '		<span class="contact" title="${typeName}">'
+        + '     	<img src="${icon}">'
+        + '         ${value}'
+        + '     </span>'
+        + '</li>';
 
 	var contactTypeInfo = AddContact.getContactType(data.typeId, AddContact.contactTypes);
     var actualValue = contactTypeInfo.displayPattern.replace(new RegExp('%s', 'gi'), data.value);

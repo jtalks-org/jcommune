@@ -141,7 +141,10 @@ public class UserProfileController {
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
         byte[] avatar = user.getAvatar();
         editedUser.setAvatar(imageUtils.prepareHtmlImgSrc(avatar));
-        return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUser);
+        
+        ModelAndView mav = new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUser);
+        mav.addObject("contacts", user.getUserContacts());
+        return mav;
     }
 
     /**

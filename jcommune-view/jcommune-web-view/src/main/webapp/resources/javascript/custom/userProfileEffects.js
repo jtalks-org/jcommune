@@ -13,12 +13,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/**
- *  Effects for tables/lists and forms in forum
- */
 jQuery(document).ready(function(){
-        // Tooltips on status images
-        jQuery('img.status-img').tooltip();
-        jQuery("a").tooltip();
-        jQuery('.btn').tooltip({placement: 'bottom'});
+    jQuery('.contact').tooltip({placement: 'right'});
 });

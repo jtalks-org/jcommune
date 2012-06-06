@@ -1,0 +1,67 @@
+@CHARSET "UTF-8";
+
+.control-label {
+  font-weight: bold;
+}
+
+input[readonly] {
+  cursor: text;
+}
+
+.userprofile { 
+  display: block; 
+  width: auto; 
+  background-color: #f9f9f9; 
+  border: 1px solid #ccc; 
+  -moz-border-radius: 5px; 
+  -webkit-border-radius: 5px; 
+  border-radius: 5px; 
+  padding: 12px; 
+}
+
+.contacts {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contacts li {
+  margin: 0;
+  padding: 0;
+  padding-top: 5px;
+}
+
+.contacts li i {
+  padding-right: 4px;
+}
+
+.contacts span.contact {
+  margin-left: 3px;
+}
+
+.contacts li i {
+  padding-right: 4px;
+}
+
+.contacts .btn-mini {
+  padding: 0px;
+  width:14px;
+}
+
+.wraptocenter {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  width: 105px;
+  height: 105px;
+}
+
+.wraptocenter * {
+    vertical-align: middle;
+}
+
+.wraptocenter span {
+    display: inline-block;
+    height: 100%;
+    width: 1px;
+}
