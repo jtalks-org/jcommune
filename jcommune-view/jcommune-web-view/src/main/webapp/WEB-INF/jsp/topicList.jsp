@@ -72,15 +72,17 @@
     <!-- Upper pagination -->
     <div class="row-fluid upper-pagination forum-pagination-container">
 
-        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-            <div class="span2">
+        <div class="span2">
+            <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
                 <a id='new-topic-btn' class="btn btn-primary" 
                     href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}" 
                     title="<spring:message code="label.addtopic"/>">
                     <spring:message code="label.addtopic"/>
                 </a>
-            </div>
-        </sec:authorize>
+            </sec:authorize>
+            &nbsp; <%-- For proper pagination layout without buttons--%>
+       </div>
+        
         
 
         <div class="span10">
@@ -195,15 +197,17 @@
     <!-- Bottom pagination -->
     <div class="row-fluid upper-pagination forum-pagination-container">
 
-        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-            <div class="span2">
+        <div class="span2">
+            <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
                 <a id='new-topic-btn' class="btn btn-primary"
                     href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}" 
                     title="<spring:message code="label.addtopic"/>">
                     <spring:message code="label.addtopic"/>
                 </a>
-            </div>
-        </sec:authorize>
+            </sec:authorize>
+            &nbsp; <%-- For proper pagination layout without buttons--%>
+        </div>
+       
 
         <div class="span10">
             <div class="pagination pull-right forum-pagination">

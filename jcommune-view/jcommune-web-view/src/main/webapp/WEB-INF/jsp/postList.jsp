@@ -91,6 +91,7 @@
                 </a>
                 </span>
             </sec:authorize>
+            &nbsp; <%-- For proper pagination layout without buttons--%>
         </div>
 
         <!-- Pagination -->
@@ -292,6 +293,7 @@
                     </a>
                 </span>
             </sec:authorize>
+            &nbsp; <%-- For proper pagination layout without buttons--%>
         </div>
         
         <!-- Pagination -->
