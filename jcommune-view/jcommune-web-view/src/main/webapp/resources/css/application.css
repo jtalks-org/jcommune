@@ -135,6 +135,10 @@ ul.lang-menu li img {
     padding-bottom: 3px;
 }
 
+#topics-table th {
+	vertical-align: middle;
+}
+
 #topics-table .status-col {
     padding: 0px;
     width: 32px;

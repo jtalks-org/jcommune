@@ -48,7 +48,7 @@
                 <label for='subject' class='control-label'><spring:message code="label.topic.title"/></label>
                 <form:input path="topicName" id="subject" type="text" name="subject" size="45"
                             maxlength="255" tabindex="1"
-                            class="post confirm-unsaved" placeholder='Topic title'/>
+                            class="post confirm-unsaved" placeholder='<spring:message code="label.topic.topic_title"/>'/>
                 <br/>
                 
                 <form:errors path="topicName" id="subject" type="text" name="subject" size="45"

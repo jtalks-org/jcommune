@@ -54,9 +54,10 @@
                    method="POST" modelAttribute="topicDto" class="well">
             <div class='control-group'>
                 <div class='controls'>
+                <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
                 <form:input path="topicName" id="subject" type="text" name="subject" size="45"
                                     maxlength="255" tabindex="1"
-                                    class="span11" placeholder='Topic title'/>
+                                    class="span11" placeholder="${topicTitlePlaceholder}"/>
                 <form:errors path="topicName" id="subject" type="text" name="subject" size="45"
                                      maxlength="255" tabindex="1"
                                      class="post" cssClass="help-inline"/>

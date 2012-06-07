@@ -124,7 +124,7 @@
                                     </label>
                                     <div class="controls">
                                         <input type="text" class="input-xlarge uneditable-input" 
-                                            readonly="readonly" value="<c:out value='${language.languageNameLabel}'/>"  
+                                            readonly="readonly" value="<spring:message code='${language.languageNameLabel}'/>"  
                                             autocomplete="off" />
                                     </div>
                                 </div>

@@ -32,7 +32,7 @@
             
             <div class="nav-collapse">
                 <ul class="nav">
-                    <li class="active"><a href="${pageContext.request.contextPath}/">Home</a></li>
+                    <li class="active"><a href="${pageContext.request.contextPath}/"><fmt:message key="label.home"/></a></li>
                     <li><a href="${pageContext.request.contextPath}/"><fmt:message key="label.forum"/></a></li>
                     <li><a href="#contact">Blog</a></li>
                 </ul>

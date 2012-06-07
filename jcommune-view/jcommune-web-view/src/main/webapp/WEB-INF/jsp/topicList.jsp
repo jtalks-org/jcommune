@@ -119,7 +119,7 @@
                         <th class="status-col"></th>
                         <th><spring:message code="label.branch.header.topics"/></th>
                         <th class="author-col"><spring:message code="label.branch.header.author"/></th>
-                        <th class="posts-views forum-posts-view-header">Posts/Views</th>
+                        <th class="posts-views forum-posts-view-header"><spring:message code="label.branch.header.posts_views"/></th>
                         <th class="latest-by forum-latest-by-header"><spring:message code="label.branch.header.lastMessage"/></th>
                     </tr>
                 </thead>

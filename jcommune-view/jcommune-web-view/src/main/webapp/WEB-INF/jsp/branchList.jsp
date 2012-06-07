@@ -42,7 +42,7 @@
                     <tr>
                         <th class="status-col"></th>
                         <th><spring:message code="label.section.header.branches"/></th>
-                        <th class="posts-views forum-posts-view-header">Topics/Posts</th>
+                        <th class="posts-views forum-posts-view-header"><spring:message code="label.branch.header.topics_posts"/></th>
                         <th class="latest-by forum-latest-by-header"><spring:message code="label.branch.header.lastMessage"/></th>
                     </tr>
                 </thead>
