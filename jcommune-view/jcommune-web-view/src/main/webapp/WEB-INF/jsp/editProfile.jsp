@@ -40,7 +40,7 @@
     <jsp:include page="../template/topLine.jsp"/>
 
     <div class="container">
-        <div id="editUserDetails" class="userprofile" style="max-width: 480px; margin: 0 auto; position: relative;">
+        <div id="editUserDetails" class="userprofile user-profile-container">
             <form:form id="editProfileForm" name="editProfileForm"
                        action="${pageContext.request.contextPath}/users/edit"
                        modelAttribute="editedUser" method="POST" enctype="multipart/form-data"
@@ -48,7 +48,7 @@
 
                 <form:hidden id="avatar" path="avatar"/>
                 
-                <div style="line-height:100px;" >
+                <div class='user-profile-header'>
                     <span class="pull-left thumbnail">
                         <div class="wraptocenter">
                             <span></span>
@@ -56,11 +56,11 @@
                             <img id="avatarPreview" src="data:image/jpeg;base64,${editedUser.avatar}" alt="" />
                         </div>
                     </span>
-                    <h2 class="pull-right" style="vertical-align: middle; line-height:100px;"><c:out value="${auth}"/></h2>
+                    <h2 class="pull-right user-profile-username"><c:out value="${auth}"/></h2>
                 </div>
                 <div class="clearfix"></div>
-                <div style="padding-top: 4px;">
-                    <div style="width: 110px; display:inline-block;text-align: center">
+                <div class="user-profile-top-buttons">
+                    <div class="user-profile-buttons-send">
                         <a id="upload" href="#" class="btn btn-mini" title="<spring:message code='label.avatar.load'/>">
                             <i class="icon-picture"></i>
                             <spring:message code="label.avatar.load"/>
@@ -72,7 +72,7 @@
                 </div>
                     
                 <div class="clearfix"></div>
-                <hr style="margin: 6px 0 6px 0;"/>
+                <hr class='user-profile-hr'/>
                
                 <div>
                     <form class="form-horizontal">
@@ -176,8 +176,8 @@
                             </div>
                         </div>
                         
-                        <hr style="margin: 6px 0 6px 0;"/>
-                        <div style="padding-left: 160px;">
+                        <hr class='user-profile-hr'/>
+                        <div class='user-profile-buttons-form-actions'>
                             <button id="saveChanges" class="btn btn-primary" type="submit" 
                                 title="<spring:message code='label.save_changes'/>">
                                 <spring:message code="label.save_changes"/>
@@ -193,7 +193,7 @@
            <div class="clearfix"></div>
         </div>
         
-        <div class="userprofile" style="max-width: 480px; margin: 5px auto; position: relative;">
+        <div class="userprofile user-profile-contacts-container">
             <h4><spring:message code="label.contacts"/></h4>
             <ul id='contacts' class="contacts">
                 <c:forEach var="contact" items="${contacts}">
@@ -213,7 +213,7 @@
                 </c:forEach>
             </ul>
             
-            <a id="add_contact" href="#" class="btn btn-mini btn-primary" style="margin-top: 10px" 
+            <a id="add_contact" href="#" class="btn btn-mini btn-primary user-profile-buttons-addcontact" 
                 title="<spring:message code='label.contacts.addMore'/>">
                 <spring:message code="label.contacts.addMore"/>
             </a>

@@ -34,8 +34,8 @@
     <jsp:include page="../template/topLine.jsp"/>
 
     <div class="container">
-        <div id="userdetails" class="userprofile" style="max-width: 480px; margin: 0 auto; position: relative;">
-            <div style="line-height:100px; " >
+        <div id="userdetails" class="userprofile user-profile-container">
+            <div class="user-profile-header" >
                 <span class="pull-left thumbnail">
                     <div class="wraptocenter">
                         <span></span>
@@ -44,15 +44,15 @@
                         </c:if>
                     </div>
                 </span>
-                <h2 class="pull-right" style="vertical-align: middle; line-height:100px;">
+                <h2 class="pull-right user-profile-username">
                     <c:out value="${user.username}"/>
                 </h2>
             </div>
             
             <div class="clearfix"></div>
-                <div style="padding-top: 4px;">         
+                <div class="user-profile-top-buttons">         
                     <c:if test="${user.username != auth}">
-                        <div style="width: 100px; display:inline-block;text-align: center">
+                        <div class="user-profile-buttons-send">
                             <a class="btn btn-mini btn-info" 
                                 href="${pageContext.request.contextPath}/pm/new/${user.encodedUsername}" >
                                 <spring:message code="label.pm.send"/>
@@ -60,14 +60,14 @@
                         </div>
                     </c:if>
                     
-                    <a class="btn btn-mini pull-right" style="margin-left: 5px;"
+                    <a class="btn btn-mini pull-right user-profile-buttons-posts"
                         href="${pageContext.request.contextPath}/users/${user.encodedUsername}/postList">
                         <spring:message code="label.postList"/>
                     </a>           
             </div>
             
             <div class="clearfix"></div>
-            <hr style="margin: 6px 0 6px 0;"/>
+            <hr class="user-profile-hr"/>
             
             <div>
                 <form class="form-horizontal">
@@ -174,7 +174,7 @@
                         </div>
                         
                         <div class="control-group">
-                            <label for="" class="control-label" style="margin-top: -3px">   
+                            <label for="" class="control-label user-profile-labels-postcount">   
                                 <spring:message code="label.postcount"/>
                             </label>
                             <div class="controls">
@@ -183,7 +183,7 @@
                         </div>
                         
                         <c:if test="${!empty user.userContacts}"> 
-                            <hr style="margin: 6px 0 6px 0;"/>
+                            <hr class="user-profile-hr"/>
                         
                             <h4><spring:message code="label.contacts.header"/></h4>
                             <ul id="contacts" class="contacts">
@@ -199,7 +199,7 @@
                         </c:if>
                         
                         <c:if test="${user.username == auth}">
-                            <div style="padding-left: 160px;">
+                            <div class="user-profile-buttons-form-actions">
                                 <a class="btn btn-primary" type="submit" 
                                     title="<spring:message code='label.edit_profile'/>"
                                     href="${pageContext.request.contextPath}/users/edit">
