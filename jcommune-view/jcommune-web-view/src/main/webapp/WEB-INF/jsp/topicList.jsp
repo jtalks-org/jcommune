@@ -38,7 +38,7 @@
                     <span class="forum_misc_info"><c:out value="${branch.description}"/></span>
                 </div>
                 <div> <!-- top right -->
-                    <sec:authorize access="hasAnyRole('11')">
+                    <sec:authorize access="hasAnyRole('ROLE_ADMIN,ROLE_USER')">
                         <a class="forum_top_right_link"
                            href="${pageContext.request.contextPath}/branches/${branch.id}/markread">
                             <spring:message code="label.mark_all_topics"/>
@@ -48,7 +48,7 @@
             </div>
             <div class="info_top_lower"> <!-- bottom left -->
                 <div>
-                    <sec:authorize access="hasAnyRole('11')">
+                    <sec:authorize access="hasAnyRole('ROLE_ADMIN,ROLE_USER')">
                         <a class="button top_button"
                            href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}">
                             <spring:message code="label.addtopic"/>
@@ -109,7 +109,7 @@
                                             <span class="sticky"><spring:message code="label.marked_as_sticked"/></span>
                                         </c:when>
                                     </c:choose>
-                                    <sec:authorize access="hasAnyRole('11')">
+                                    <sec:authorize access="hasAnyRole('ROLE_ADMIN,ROLE_USER')">
                                         <c:if test="${topic.hasUpdates}">
                                             <a style="color: red;"
                                                href="${pageContext.request.contextPath}/posts/${topic.firstUnreadPostId}">
@@ -169,7 +169,7 @@
         <div class="forum_info_bottom">
             <div>
                 <div>
-                    <sec:authorize access="hasAnyRole('11')">
+                    <sec:authorize access="hasAnyRole('ROLE_ADMIN,ROLE_USER')">
                         <a class="button"
                            href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"><spring:message
                                 code="label.addtopic"/>

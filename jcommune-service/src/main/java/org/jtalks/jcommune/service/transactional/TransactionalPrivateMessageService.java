@@ -92,7 +92,7 @@ public class TransactionalPrivateMessageService
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission('11', null)")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     public PrivateMessage sendMessage(String title, String body, String recipientUsername) throws NotFoundException {
         JCUser recipient = userService.getByUsername(recipientUsername);
         JCUser userFrom = (JCUser) securityService.getCurrentUser();
@@ -126,7 +126,7 @@ public class TransactionalPrivateMessageService
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission('11', null)")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     public PrivateMessage saveDraft(long id, String title, String body, String recipientUsername)
             throws NotFoundException {
         JCUser recipient = null;

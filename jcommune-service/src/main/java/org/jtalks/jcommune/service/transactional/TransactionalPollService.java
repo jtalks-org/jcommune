@@ -64,7 +64,7 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
     /**
      * {@inheritDoc}
      */
-    @PreAuthorize("hasPermission('11', null)")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
     @Override
     public Poll vote(Long pollId, List<Long> selectedOptionIds) {
         Poll poll = getDao().get(pollId);

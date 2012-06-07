@@ -19,7 +19,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <div class="top_line">
-    <sec:authorize access="hasAnyRole('11')">
+    <sec:authorize access="hasAnyRole('ROLE_ADMIN,ROLE_USER')">
         <fmt:message key="label.welcomeMessage"/>
         <a class="currentusername" href="${pageContext.request.contextPath}/user">
             <sec:authentication property="principal.username"/>
@@ -31,7 +31,7 @@
                 <fmt:message key="label.forum"/>
             </a>
         </li>
-        <sec:authorize access="hasAnyRole('11')">
+        <sec:authorize access="hasAnyRole('ROLE_ADMIN,ROLE_USER')">
             <li>
                 <a href="${pageContext.request.contextPath}/user">
                     <fmt:message key="label.profile"/>

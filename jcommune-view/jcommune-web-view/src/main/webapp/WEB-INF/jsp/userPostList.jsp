@@ -40,7 +40,7 @@
             </div>
             <div class="info_top_lower">
                 <div> <!-- bottom left -->
-                    <sec:authorize access="hasAnyRole('11')">
+                    <sec:authorize access="hasAnyRole('ROLE_ADMIN,ROLE_USER')">
                         <c:set var="authenticated" value="${true}"/>
                     </sec:authorize>
                     <c:if test="${authenticated==true}">

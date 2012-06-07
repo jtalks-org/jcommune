@@ -29,10 +29,16 @@ public class PermissionExpressionRoot extends SecurityExpressionRoot {
         this.permissionEvaluator = permissionEvaluator;
     }
 
-    public final boolean hasAnyRole(String groupId) {
-        if (groupId.equals("ROLE_ANONYMOUS")){
-            return super.hasAnyRole(groupId);
+    public final boolean hasAnyRole(String roles) {
+        String[] rolesList = roles.split(",");
+        for (String role : rolesList) {
+            AdministrationGroup administrationGroup = AdministrationGroup.getAdministrationGroupByName(role);
+            if (administrationGroup == AdministrationGroup.ANONYMOUS) {
+                return super.hasAnyRole(rolesList);
+            } else if (permissionEvaluator.hasPermission(authentication, roles, null)) {
+                return true;
+            }
         }
-        return permissionEvaluator.hasPermission(authentication, groupId, null);
+        return false;
     }
 }
