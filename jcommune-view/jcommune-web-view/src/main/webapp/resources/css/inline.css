@@ -168,6 +168,12 @@ input.form-check-radio-box[type="radio"]
 	text-align: center;
 }
 
+.user-profile-buttons-avatar {
+    width: 150px; 
+    display:inline-block;
+    text-align: left;
+}
+
 .user-profile-buttons-posts {
 	margin-left: 5px;
 }

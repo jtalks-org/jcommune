@@ -60,7 +60,7 @@
                 </div>
                 <div class="clearfix"></div>
                 <div class="user-profile-top-buttons">
-                    <div class="user-profile-buttons-send">
+                    <div class="user-profile-buttons-avatar">
                         <a id="upload" href="#" class="btn btn-mini" title="<spring:message code='label.avatar.load'/>">
                             <i class="icon-picture"></i>
                             <spring:message code="label.avatar.load"/>
