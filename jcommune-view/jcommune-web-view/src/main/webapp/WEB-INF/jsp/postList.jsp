@@ -56,7 +56,7 @@
             <a class="button top_button" href="${pageContext.request.contextPath}/branches/${branchId}">
                 <spring:message code="label.back"/>
             </a>
-            <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+            <sec:authorize access="hasAnyRole('11')">
                 <c:choose>
                     <c:when test="${subscribed}">
                         <a id="subscription" class="button top_button"
@@ -77,13 +77,13 @@
             </sec:authorize>
             <c:if test="${pag.maxPages>1}">
                 <c:if test="${pag.pagingEnabled==true}">
-                    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                    <sec:authorize access="hasAnyRole('11')">
                         <a class="button" href="?pagingEnabled=false"><spring:message code="label.showAll"/></a>
                     </sec:authorize>
                 </c:if>
             </c:if>
             <c:if test="${pag.pagingEnabled == false}">
-                <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                <sec:authorize access="hasAnyRole('11')">
                     <a class="button" href="?pagingEnabled=true"><spring:message code="label.showPages"/></a>
                 </sec:authorize>
             </c:if>
@@ -179,19 +179,19 @@
                         <a class="button" id="edit_button" rel="${branchId}" href="${edit_url}"><spring:message
                                 code="label.edit"/></a>
                     </sec:accesscontrollist>
-                    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                    <sec:authorize access="hasAnyRole('11')">
                         <a class="button quote" href="javascript:quote(${post.id});">
                             <spring:message code="label.quotation"/>
                         </a>
                     </sec:authorize>
                     <c:if test="${i.index == 0}">
-                        <sec:authorize access="hasAnyRole('ROLE_ADMIN')">
+                        <sec:authorize access="hasAnyRole('13')">
                             <div class="topicId" id="${topic.id}">
                                 <a class="button" id="move_topic" href="#"><spring:message code="label.topic.move"/></a>
                             </div>
                         </sec:authorize>
                     </c:if>
-                    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                    <sec:authorize access="hasAnyRole('11')">
                         <c:if test="${lastReadPost == null || post.postIndexInTopic > lastReadPost}">
                             <span style="color: red;">[NEW]</span>
                         </c:if>
@@ -220,20 +220,20 @@
             <a class="button" href="${pageContext.request.contextPath}/branches/${branchId}">
                 <spring:message code="label.back"/>
             </a>
-            <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+            <sec:authorize access="hasAnyRole('11')">
                 <a class="button top_button" href="${pageContext.request.contextPath}/posts/new?topicId=${topic.id}">
                     <spring:message code="label.answer"/></a>
                 <c:set var="authenticated" value="${true}"/>
             </sec:authorize>
             <c:if test="${pag.maxPages>1}">
                 <c:if test="${pag.pagingEnabled==true}">
-                    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                    <sec:authorize access="hasAnyRole('11')">
                         <a class="button" href="?pagingEnabled=false"><spring:message code="label.showAll"/></a>
                     </sec:authorize>
                 </c:if>
             </c:if>
             <c:if test="${pag.pagingEnabled == false}">
-                <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                <sec:authorize access="hasAnyRole('11')">
                     <a class="button" href="?pagingEnabled=true"><spring:message code="label.showPages"/></a>
                 </sec:authorize>
             </c:if>

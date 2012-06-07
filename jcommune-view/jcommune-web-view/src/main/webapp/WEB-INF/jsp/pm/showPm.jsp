@@ -58,7 +58,7 @@
             <div class="pm_body">
                 <div class="pm_left">
                     <c:if test="${pm.replyAllowed && (pm.userTo eq user)}">
-                        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                        <sec:authorize access="hasAnyRole('11')">
                             <form:form action="${pageContext.request.contextPath}/reply/${pm.id}" method="GET">
                                 <input class="button" type="submit" value="<spring:message code="label.reply"/>"/>
                             </form:form>
