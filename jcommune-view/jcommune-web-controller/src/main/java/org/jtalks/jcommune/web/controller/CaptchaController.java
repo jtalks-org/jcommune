@@ -34,7 +34,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 /**
- * Serves http request for getting captcha image
+ * Serves captcha-realted  http requests
+ *
  * @author  Vitaliy Kravchenko
  */
 @Controller
@@ -58,24 +59,17 @@ public class CaptchaController {
      * @param response  http response
      * @param out       servlet output stream
      * @param session   http session
-     * @return          null
      * @throws IOException when image cannot be written to output stream
      */
-    @RequestMapping(value = "/captcha-image")
-    public ModelAndView handleRequest(HttpServletResponse response,
+    @RequestMapping(value = "/captcha/image")
+    public void handleRequest(HttpServletResponse response,
             ServletOutputStream out,HttpSession session) throws IOException {
-        response.setHeader("Pragma", "no-cache");
+
         response.setContentType("image/jpeg");
-
         String capText = captchaProducer.createText();
-
         session.setAttribute(Constants.KAPTCHA_SESSION_KEY, capText);
-
         BufferedImage bi = captchaProducer.createImage(capText);
-
         ImageIO.write(bi, "jpg", out);
-
         out.flush();
-        return null;
     }
 }

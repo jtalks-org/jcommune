@@ -79,7 +79,7 @@
                     <form:label path="captcha"><spring:message code="label.captcha"/></form:label>
 
                     <div>
-                        <img id="captcha_img"  src='${pageContext.request.contextPath}/captcha-image' class="captcha"/>
+                        <img id="captcha_img"  src='${pageContext.request.contextPath}/captcha/image' class="captcha"/>
                         <img id="captcha_refresh" src='${pageContext.request.contextPath}/resources/images/captcha-refresh.gif'/>
                         <form:input path="captcha" class="captcha_input" type="text"/></br>
                         <form:errors path="captcha" cssClass="error"/>
