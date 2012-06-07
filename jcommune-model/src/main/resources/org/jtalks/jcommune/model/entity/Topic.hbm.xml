@@ -48,7 +48,7 @@
         <many-to-one name="branch" column="BRANCH_ID" class="Branch"
                      not-null="false"/>
 
-        <one-to-one name="poll" class="org.jtalks.jcommune.model.entity.Poll"/>
+        <one-to-one name="poll" class="org.jtalks.jcommune.model.entity.Poll" cascade="delete"/>
 
         <set name="subscribers" table="TOPIC_SUBSCRIPTIONS" cascade="all">
             <key column="TOPIC_ID"/>
