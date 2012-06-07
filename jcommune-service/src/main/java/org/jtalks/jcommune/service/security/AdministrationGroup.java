@@ -16,15 +16,15 @@ package org.jtalks.jcommune.service.security;
 
 
 public enum AdministrationGroup {
-    ADMIN("ROLE_ADMIN", 13),
-    USER("ROLE_USER", 11),
-    BANNED_USER("ROLE_BANNED_USER", 12),
-    ANONYMOUS("ROLE_ANONYMOUS", 0);
+    ADMIN("ROLE_ADMIN", 13L),
+    USER("ROLE_USER", 11L),
+    BANNED_USER("ROLE_BANNED_USER", 12L),
+    ANONYMOUS("ROLE_ANONYMOUS", 0L);
 
     private String name;
-    private int id;
+    private Long id;
 
-    private AdministrationGroup(String name, int id) {
+    private AdministrationGroup(String name, Long id) {
         this.name = name;
         this.id = id;
     }
@@ -33,7 +33,7 @@ public enum AdministrationGroup {
         return name;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 

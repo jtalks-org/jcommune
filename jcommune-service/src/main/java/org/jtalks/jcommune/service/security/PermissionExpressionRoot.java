@@ -35,7 +35,7 @@ public class PermissionExpressionRoot extends SecurityExpressionRoot {
             AdministrationGroup administrationGroup = AdministrationGroup.getAdministrationGroupByName(role);
             if (administrationGroup == AdministrationGroup.ANONYMOUS) {
                 return super.hasAnyRole(rolesList);
-            } else if (permissionEvaluator.hasPermission(authentication, roles, null)) {
+            } else if (permissionEvaluator.hasPermission(authentication, administrationGroup.getId(), null)) {
                 return true;
             }
         }

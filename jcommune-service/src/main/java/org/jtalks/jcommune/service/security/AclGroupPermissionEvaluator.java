@@ -60,7 +60,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
         if(authentication.getPrincipal() instanceof String){
             return false;
         }
-        Group group = groupDao.get(Long.parseLong((String) groupId));
+        Group group = groupDao.get((Long) groupId);
         return group.getUsers().contains(authentication.getPrincipal());
     }
 
