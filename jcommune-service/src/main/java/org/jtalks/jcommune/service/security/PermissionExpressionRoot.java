@@ -30,6 +30,9 @@ public class PermissionExpressionRoot extends SecurityExpressionRoot {
     }
 
     public final boolean hasAnyRole(String groupId) {
+        if (groupId.equals("ROLE_ANONYMOUS")){
+            return super.hasAnyRole(groupId);
+        }
         return permissionEvaluator.hasPermission(authentication, groupId, null);
     }
 }
