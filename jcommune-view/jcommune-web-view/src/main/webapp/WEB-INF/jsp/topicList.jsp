@@ -128,11 +128,32 @@
                         <!-- Topic row -->
                         <tr>
                             <td class="status-col">
-                                <img class="status-img" 
-                                    src="${pageContext.request.contextPath}/resources/images/closed.png" 
-                                    title="<spring:message code="label.section.close_forum"/>" /></td>
+                            
+                                <c:set var="hasNewPosts" value="false"/>
+                                <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                                    <c:if test="${topic.hasUpdates}">
+                                        <c:set var="hasNewPosts" value="true"/>
+                                    </c:if>
+                                </sec:authorize>
+                                
+                                <c:choose>
+                                    <c:when test="${hasNewPosts}">
+                                        <a href="${pageContext.request.contextPath}/posts/${topic.firstUnreadPostId}">
+                                            <img class="status-img" 
+                                                src="${pageContext.request.contextPath}/resources/images/new_badge.png" 
+                                                title="<spring:message code="label.topic.new_posts"/>" />
+                                        </a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img class="status-img" 
+                                            src="${pageContext.request.contextPath}/resources/images/old_badge.png" 
+                                            title="<spring:message code="label.topic.no_new_posts"/>" />
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
                             <td>
-                                <c:choose>  <%--Some topic types should have a special prefix when displayed--%>
+                                <c:choose>  
+                                    <%--Some topic types should have a special prefix when displayed--%>
                                     <c:when test="${topic.announcement=='true'}">
                                         <span class="sticky"><spring:message code="label.marked_as_announcement"/> </span>
                                     </c:when>
@@ -141,12 +162,7 @@
                                     </c:when>
                                 </c:choose>
                                 <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                                    <c:if test="${topic.hasUpdates}">
-                                            <a style="color: red;"
-                                               href="${pageContext.request.contextPath}/posts/${topic.firstUnreadPostId}">
-                                                [NEW]</a>
-                                        </c:if>
-                                        <c:if test="${topic.hasPoll}">
+                                    <c:if test="${topic.hasPoll}">
                                             <a style="color: red;"
                                                href="${pageContext.request.contextPath}/topics/${topic.id}">
                                                 [POLL]</a>

@@ -60,10 +60,29 @@
 		        <tbody>
                     <c:forEach var="item" items="${list}">
                         <tr>
-                            <td class="status-col"><img class="status-img" 
-                                    src="${pageContext.request.contextPath}/resources/images/closed.png" 
-                                    title="<spring:message code="label.section.close_forum"/>" /></td>
-                            
+                            <td class="status-col">
+                                <c:set var="hasNewPosts" value="false"/>
+                                <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                                    <c:if test="${topic.hasUpdates}">
+                                        <c:set var="hasNewPosts" value="true"/>
+                                    </c:if>
+                                </sec:authorize>
+                                
+                                <c:choose>
+                                    <c:when test="${hasNewPosts}">
+                                        <a href="${pageContext.request.contextPath}/posts/${topic.firstUnreadPostId}">
+                                            <img class="status-img" 
+                                                src="${pageContext.request.contextPath}/resources/images/new_badge.png" 
+                                                title="<spring:message code="label.topic.new_posts"/>" />
+                                        </a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img class="status-img" 
+                                            src="${pageContext.request.contextPath}/resources/images/old_badge.png" 
+                                            title="<spring:message code="label.topic.no_new_posts"/>" />
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
                             <td>
                             <c:choose>
                                 <c:when test="${item.announcement=='true'}">
@@ -83,17 +102,9 @@
                                     </a>
                                 </c:when>
                                 <c:otherwise>
-                                    <div class="forum_info">
-                                        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                                        <c:if test="${item.hasUpdates}">
-                                            <a style="color: red;"
-                                               href="${pageContext.request.contextPath}/posts/${item.firstUnreadPostId}">
-                                                [NEW]</a>
-                                        </c:if>
-                                    </sec:authorize>
-                                        <a href="${pageContext.request.contextPath}/topics/${item.id}">
-                                            <c:out value="${item.title}"/>
-                                        </a>                                        
+                                    <a href="${pageContext.request.contextPath}/topics/${item.id}">
+                                        <c:out value="${item.title}"/>
+                                    </a>                                        
                                 </c:otherwise>
                             </c:choose>
                             </td>

@@ -61,17 +61,30 @@
 			    <tbody>
                 <c:forEach var="topic" items="${list}">
                     <tr>
-                        <td class="status-col"><img class="status-img" 
-                                src="${pageContext.request.contextPath}/resources/images/closed.png" 
-                                title="<spring:message code="label.section.close_forum"/>" /></td>
-                        
-                        <td>
+                        <td class="status-col"><c:set var="hasNewPosts" value="false"/>
                             <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
                                 <c:if test="${topic.hasUpdates}">
-                                    <a style="color: red;"
-                                           href="${pageContext.request.contextPath}/posts/${topic.firstUnreadPostId}">
-                                            [NEW]</a>
+                                    <c:set var="hasNewPosts" value="true"/>
                                 </c:if>
+                            </sec:authorize>
+                            
+                            <c:choose>
+                                <c:when test="${hasNewPosts}">
+                                    <a href="${pageContext.request.contextPath}/posts/${topic.firstUnreadPostId}">
+                                        <img class="status-img" 
+                                            src="${pageContext.request.contextPath}/resources/images/new_badge.png" 
+                                            title="<spring:message code="label.topic.new_posts"/>" />
+                                    </a>
+                                </c:when>
+                                <c:otherwise>
+                                    <img class="status-img" 
+                                        src="${pageContext.request.contextPath}/resources/images/old_badge.png" 
+                                        title="<spring:message code="label.topic.no_new_posts"/>" />
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
+                        <td>
+                            <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
                                 <c:if test="${votingPossible}">
                                     <a style="color: red;"
                                            href="${pageContext.request.contextPath}/topics/${topic.id}">
