@@ -88,9 +88,11 @@
             <span class="caret"></span>
         </a>
         <ul class="dropdown-menu" id='select_size'>
-            <li><a href="#" value='10'><spring:message code="label.answer.font_size.small"/></a></li>
-            <li><a href="#" value='15'><spring:message code="label.answer.font_size.large"/></a></li>
-            <li><a href="#" value='20'><spring:message code="label.answer.font_size.king_size"/></a></li>
+        	<li><a href="#" value='7'><spring:message code="label.answer.font_size.tiny"/></a></li>
+            <li><a href="#" value='9'><spring:message code="label.answer.font_size.small"/></a></li>
+            <li><a href="#" value='12'><spring:message code="label.answer.font_size.normal"/></a></li>
+            <li><a href="#" value='18'><spring:message code="label.answer.font_size.large"/></a></li>
+            <li><a href="#" value='24'><spring:message code="label.answer.font_size.huge"/></a></li>
         </ul>
     </div>
     <div class='btn-group'>
