@@ -71,6 +71,10 @@
     <bean id="pollOptionDao"
           class="org.jtalks.jcommune.model.dao.hibernate.PollOptionHibernateDao"
           parent="abstractHibernateDao"/>
+          
+    <bean id="propertyDao"
+          class="org.jtalks.jcommune.model.dao.hibernate.PropertyHibernateDao"
+          parent="abstractHibernateDao"/>
 
     <!-- Declaration of Hibernate Search DAO beans -->
     <bean id="topicSearchDao" class="org.jtalks.jcommune.model.dao.search.hibernate.TopicHibernateSearchDao">
@@ -122,6 +126,7 @@
                 <value>/org/jtalks/jcommune/model/entity/LastReadPost.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/Poll.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/PollOption.hbm.xml</value>
+                <value>/org/jtalks/jcommune/model/entity/Property.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">

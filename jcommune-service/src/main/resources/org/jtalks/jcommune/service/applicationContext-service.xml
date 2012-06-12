@@ -45,7 +45,7 @@
     <task:executor id="executor" pool-size="1"/>
 
     <task:scheduler id="scheduler" pool-size="1"/>
-
+       
     <!--Declaration services bean -->
 
     <bean id="avatarService" class="org.jtalks.jcommune.service.nontransactional.AvatarService">
