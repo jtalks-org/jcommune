@@ -261,7 +261,7 @@
                     </div>
                     <hr/>
                     <div align="left">
-                        ${post.userCreated.signature}
+                        <c:out value='${post.userCreated.signature}'/>
                     </div>
                 </td>
             </tr>
