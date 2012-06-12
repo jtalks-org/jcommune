@@ -74,9 +74,10 @@ $(function () {
 
 function refreshCaptchaOnClick() {
     $("#captcha_refresh").on('click', function (e) {
-        var kostylForFirefox = $.now();
-        $("#captcha_img").removeAttr("src").attr("src", $root + "/captcha/image" + "?kostylForFirefox=" + kostylForFirefox);
-        $("#captcha_img").attr("src", $root + "/captcha/image" + "?kostylForFirefox=" + kostylForFirefox);
+        var url = $root + "/captcha/image?param=" + $.now();
+        //this parameter forces browser to reload image every time
+        $("#captcha_img").removeAttr("src").attr("src", url);
+        $("#captcha_img").attr("src", url);
     });
 }
 ;
