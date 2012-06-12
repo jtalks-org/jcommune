@@ -74,8 +74,9 @@ $(function () {
 
 function refreshCaptchaOnClick() {
     $("#captcha_refresh").on('click', function (e) {
-        $("#captcha_img").removeAttr("src").attr("src", $root + "/captcha/image");
-        $("#captcha_img").attr("src", $root + "/captcha/image");
+        var kostylForFirefox = $.now();
+        $("#captcha_img").removeAttr("src").attr("src", $root + "/captcha/image" + "?kostylForFirefox=" + kostylForFirefox);
+        $("#captcha_img").attr("src", $root + "/captcha/image" + "?kostylForFirefox=" + kostylForFirefox);
     });
 }
 ;
