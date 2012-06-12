@@ -259,9 +259,8 @@
                             <jtalks:format value="${post.modificationDate}"/>
                         </c:if>
                     </div>
-                    <hr/>
                     <div align="left">
-                        <c:out value='${post.userCreated.signature}'/>
+                        ${post.userCreated.renderedSignature}
                     </div>
                 </td>
             </tr>
