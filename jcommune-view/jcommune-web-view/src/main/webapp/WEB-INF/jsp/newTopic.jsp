@@ -77,7 +77,7 @@
                             endingDateNameValue="endingDate"/>
         </form:form>
         
-        <a href="${back}" class='back-btn'>
+        <a href="${pageContext.request.contextPath}/branches/${branchId}" class='back-btn'>
             <i class="icon-arrow-left"></i>
             <spring:message code="label.back"/>
         </a>
