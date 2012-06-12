@@ -243,11 +243,14 @@
                             <spring:message code="label.topic.message_count"/>
                             <c:out value="${post.userCreated.postCount}"/>
                         </div>
-                        <div>
-                            <a href="#" title="Private message">
-                                <img src="${pageContext.request.contextPath}/resources/images/message-icon.png"/>
-                            </a>
-                        </div>
+                        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                            <div>
+                                <a href="${pageContext.request.contextPath}/pm/new/${post.userCreated.encodedUsername}" 
+                                    title='<spring:message code="label.pm.send"/>'>
+                                    <img src="${pageContext.request.contextPath}/resources/images/message-icon.png"/>
+                                </a>
+                            </div>
+                        </sec:authorize>
                     </div>
                 </td>
                 <td class='post-content-td'>
