@@ -86,8 +86,8 @@
 	                            </a>
 	                        </td>
 	                        <td class="posts-views">
-	                            <spring:message code="label.section.header.messages"/>: <c:out value="${topic.postCount}"/><br />
-	                            <spring:message code="label.branch.header.views"/>: <c:out value="${topic.views}"/></td>
+	                            <spring:message code="label.section.header.messages"/>: <span class='test-posts-count'><c:out value="${topic.postCount}"/></span><br />
+	                            <spring:message code="label.branch.header.views"/>: <span class='test-views'><c:out value="${topic.views}"/></span></td>
 	                            
 	                        <td class="latest-by">
 	                            <i class="icon-calendar"></i>

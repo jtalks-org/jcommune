@@ -83,8 +83,8 @@
                             </div> 
                         </td>
                         <td class="posts-views">
-                            <spring:message code="label.section.header.topics"/>: <c:out value="${branch.topicCount}"/><br />
-                            <spring:message code="label.section.header.messages"/>: <c:out value="${branch.postCount}"/></td>
+                            <spring:message code="label.section.header.topics"/>: <span class='test-topics-count'><c:out value="${branch.topicCount}"/></span><br />
+                            <spring:message code="label.section.header.messages"/>: <span class='test-posts-count'><c:out value="${branch.postCount}"/></span></td>
                             
                         <td class="latest-by">
                             <c:if test="${branch.topicCount>0}">
