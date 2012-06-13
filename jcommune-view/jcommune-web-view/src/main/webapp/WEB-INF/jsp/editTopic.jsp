@@ -56,7 +56,7 @@
                             class="post" cssClass="error"/>
             </div>
                     
-                <sec:authorize access="hasRole('ROLE_ADMIN')">
+                <sec:authorize access="hasAnyRole('ROLE_ADMIN')">
                     <div class='control-group'>
                         <form:checkbox path="sticked" value="true" class="confirm-unsaved form-check-radio-box"/>
                         <label for='sticked' class='string optional'>
