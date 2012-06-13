@@ -162,8 +162,6 @@
 
 
 <div class="control-group">
-    <spring:message code="label.answer.options"/>
-    <br/>
     <input id="notify" type="checkbox" name="notify" checked="checked" style="margin-right: 10px;"/><spring:message
         code="label.answer.notify_message"/>
 </div>
