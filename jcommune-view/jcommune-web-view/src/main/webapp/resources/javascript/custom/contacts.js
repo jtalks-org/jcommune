@@ -143,7 +143,7 @@ $(document).ready(function () {
 	$('body').on('change', '#contact_type', function() {
 		var contactId = $(this).val();
 		AddContact.selectedContactType = AddContact.getContactType(contactId, AddContact.contactTypes); 
-		$('#contact').val(AddContact.selectedContactType.mask);
+		$('#contact').attr('placeholder', AddContact.selectedContactType.mask);
 		$('#contact').keyup();
 	});
 	
@@ -175,9 +175,9 @@ $(document).ready(function () {
 			
 			// text input
 			str += '<label for="contact_type">' + $labelContactValue + '</label>';
-            str += '<div><input type="text" name="contact" id="contact" value="' + AddContact.selectedContactType.mask + '" />';
+            str += '<div><input type="text" name="contact" id="contact" placeholder="' + AddContact.selectedContactType.mask + '" />';
 			str += '<span class="reg_info">' + $labelContactValueInfo + '</span>';
-            str += '<label for="contact" id="contact-error-status" class="error"/></div>';
+            str += '<span for="contact" id="contact-error-status" class="help-inline"/></div>';
 			str += '</ul>';
 
             $.prompt(str, {
