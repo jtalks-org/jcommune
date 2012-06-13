@@ -154,10 +154,16 @@ ul.lang-menu li img {
     font-size: 11px;
 }
 
+#topics-table .topics-posts {
+    font-size: 11px;
+    width: 90px;
+    max-width: 90px;
+}
+
 #topics-table .posts-views {
     font-size: 11px;
     width: 90px;
-    max-width: 100px;
+    max-width: 90px;
 }
 
 #topics-table .created-by {

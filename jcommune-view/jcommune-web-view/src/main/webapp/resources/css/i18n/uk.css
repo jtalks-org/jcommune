@@ -2,3 +2,15 @@
 Contains specific styles for Ukrainian locale, used mostly to handle
 different labels length in different languages.
 */
+
+#topics-table .topics-posts {
+    font-size: 11px;
+    width: 110px;
+    max-width: 110px;
+}
+
+#topics-table .posts-views {
+    font-size: 11px;
+    width: 110px;
+    max-width: 110px;
+}
