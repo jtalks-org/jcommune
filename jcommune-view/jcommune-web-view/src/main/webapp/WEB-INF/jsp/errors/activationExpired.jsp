@@ -20,14 +20,11 @@
     <title><spring:message code="label.500.title"/></title>
 </head>
 <body>
-<div class="wrap main_page">
     <jsp:include page="../../template/topLine.jsp"/>
-    <div class="all_forums">
+    <div class="container">
         <div class="text_errorpage">
             <h2><spring:message code="label.activation.error"/></h2>
             <p><spring:message code="label.activation.reason"/>
         </div>
     </div>
-    <div class="footer_buffer"></div>
-</div>
 </body>

@@ -23,55 +23,47 @@
     <title><spring:message code="label.signin"/></title>
 </head>
 <body>
-<div class="wrap login_page">
     <jsp:include page="../template/topLine.jsp"/>
-    <jsp:include page="../template/logo.jsp"/>
 
-    <form action='<c:url value="/j_spring_security_check"/>' method="POST" name="form" id="form">
-        <div class="all_forums">
-            <div class="forum_header_table">
-                <div class="forum_header">
-                    <span class="forum_header_answer"><spring:message code="label.signin"/></span>
-                    <span class="empty_cell"></span>
+<!-- Container -->
+<div class="container form-login-related">
+    <form action='<c:url value="/j_spring_security_check"/>' method="POST" name="form" id="form" class="form-vertical">
+        <fieldset>
+            <legend><spring:message code="label.signin"/></legend>
+            
+            <div class="control-group">
+                <label for="j_username" class="control-label"><spring:message code="label.username"/> </label>
+
+                <div class="controls">
+                    <input class="reg_input" type="text" name="j_username" id="j_username">
                 </div>
             </div>
-            <div class="forum_table" id="stylized">
-                <div class="forum_row">
-                    <label for="j_username"><spring:message code="label.username"/> </label>
+            
+            <div class="control-group">
+                <label for="j_password" class="control-label"><spring:message code="label.password"/> </label>
 
-                    <div>
-                        <input class="reg_input" type="text" name="j_username" id="j_username">
-                    </div>
-                </div>
-                <div class="forum_row">
-                    <label for="j_password"><spring:message code="label.password"/> </label>
-
-                    <div>
-                        <input class="reg_input" type="password" name="j_password" id="j_password">
-                        <c:if test="${not empty param.login_error}">
-                            <span class="error">
-                                <spring:message code="label.login_error"/>
-                            </span>
-                        </c:if>
-                    </div>
-                </div>
-                <div class="forum_row">
-                  <label class="auto_logon">
-                    <input type="checkbox" name="_spring_security_remember_me"><spring:message code="label.auto_logon"/>
-                  </label>
-                    <span class="empty_cell"></span>
+                <div class="controls">
+                    <input type="password" name="j_password" id="j_password">
+                    <c:if test="${not empty param.login_error}">
+                        <span class="help-inline">
+                            <spring:message code="label.login_error"/>
+                        </span>
+                    </c:if>
                 </div>
             </div>
-
-            <div class="form_controls">
-                <input type="submit" class="button" value="<spring:message code="label.signin"/>"></input><br/>
+            
+            <div class="control-group">
+                <input type="checkbox" name="_spring_security_remember_me" class="form-check-radio-box">
+                <label class="string optional"><spring:message code="label.auto_logon"/></label>
+            </div>
+            
+            <div class="form-actions">
+                <input type="submit" class="btn btn-primary" value="<spring:message code="label.signin"/>"></input><br/>
                 <a href='<c:url value="/password/restore"/>'><spring:message
                         code="label.restorePassword.prompt"/></a>
             </div>
-        </div>
+        </fieldset>
     </form>
-    <div class="footer_buffer"></div>
 </div>
-
 </body>
 </html>

@@ -34,6 +34,12 @@
     <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0"/>
     <meta http-equiv="Expires" content="-1"/>
     <meta charset="UTF-8">
+    
+    <!-- support of HTML5 elements for IE6-8 -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    
     <link rel="stylesheet" type="text/css" media="screen, projection"
           href="${pageContext.request.contextPath}/resources/css/screen.css"/>
     <link rel="stylesheet" type="text/css" media="screen, projection"
@@ -60,20 +66,36 @@
             src="${pageContext.request.contextPath}/resources/javascript/custom/global.js"></script>
     <script src='${pageContext.request.contextPath}/resources/javascript/licensed/xregexp-min.js'
             type='text/javascript'></script>
+    <script src='${pageContext.request.contextPath}/resources/javascript/licensed/bootstrap.min.js'
+            type='text/javascript'></script>
+    <link href='http://fonts.googleapis.com/css?family=Carter+One' rel='stylesheet' type='text/css'>
+    <script src='${pageContext.request.contextPath}/resources/javascript/custom/errorUtils.js'
+            type='text/javascript'></script>
+    <script src='${pageContext.request.contextPath}/resources/javascript/custom/dropdown.js'
+            type='text/javascript'></script>
+    <script src='${pageContext.request.contextPath}/resources/javascript/custom/forumEffects.js'
+            type='text/javascript'></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/licensed/prettify/prettify.js" 
+           type='text/javascript'></script>          
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/topline.js"
+            type="text/javascript"></script> 
     <decorator:head/>
     <title><decorator:title/></title>
 </head>
 <body>
-<jsp:include page="../template/bbEditorScripts.jsp"/>
 <decorator:body/>
-<div class="footer">
-    <div class="copyright">
-        <br/>
-        <span class="version">Powered by JCommune ${project.version}</span>
-        <br/>
-        &copy; 2012 www.jtalks.org
-    </div>
+<div class="container">
+    <footer>
+        Powered by JCommune ${project.version}<br />
+        &copy; 2012 <a href="www.jtalks.org">jtalks.org</a><br />
+        Design with <a href="http://twitter.github.com/bootstrap">Twitter Bootstrap</a>
+    </footer>
 </div>
 </body>
-<script>SyntaxHighlighter.all()</script>
+<script type="text/javascript">
+jQuery(document).ready(function() {
+    //Code highlight
+    prettyPrint();
+});
+</script>
 </html>

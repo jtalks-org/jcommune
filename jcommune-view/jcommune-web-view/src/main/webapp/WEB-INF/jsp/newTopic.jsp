@@ -39,57 +39,47 @@
     <link rel="stylesheet"
           href="${pageContext.request.contextPath}/resources/javascript/licensed/jquery/styles/jquery-ui.css"
           type="text/css" media="all"/>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/bbeditorEffects.js"
+            type="text/javascript"></script>
 </head>
 <body>
-<div class="wrap answer_page">
     <jsp:include page="../template/topLine.jsp"/>
-    <jsp:include page="../template/logo.jsp"/>
 
-    <div class="all_forums">
+    <div class="container">
+        <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
+
+        <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
+            
         <form:form action="${pageContext.request.contextPath}/topics/new?branchId=${branchId}"
-                   method="POST" modelAttribute="topicDto">
-            <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
-
-            <div class="forum_misc_info">
-                <h2><spring:message code="h.new_topic"/></h2>
-            </div>
-            <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-            <div class="forum_header_table">
-                <div class="forum_header">
-                    <span class="forum_header_answer"><spring:message code="h.new_topic"/></span>
-                    <span class="empty_cell"></span>
+                   method="POST" modelAttribute="topicDto" class="well">
+            <div class='control-group'>
+                <div class='controls'>
+                <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
+                <form:input path="topicName" id="subject" type="text" name="subject" size="45"
+                                    maxlength="255" tabindex="1"
+                                    class="span11" placeholder="${topicTitlePlaceholder}"/>
+                <form:errors path="topicName" id="subject" type="text" name="subject" size="45"
+                                     maxlength="255" tabindex="1"
+                                     class="post" cssClass="help-inline"/>
                 </div>
             </div>
-            <ul class="forum_table">
-                <li class="forum_row">
-                    <div class="forum_answer_left">
-                        <spring:message code="label.topic.title"/>
-                    </div>
-                    <div class="forum_answer_right">
-                        <form:input path="topicName" id="subject" type="text" name="subject" size="45"
-                                    maxlength="255" tabindex="1"
-                                    class="post confirm-unsaved"/>
-                        <br>
-                        <form:errors path="topicName" id="subject" type="text" name="subject" size="45"
-                                     maxlength="255" tabindex="1"
-                                     class="post" cssClass="error"/>
-                    </div>
-                </li>
-            </ul>
 
             <jtalks:bbeditor labelForAction="label.addtopic"
                              postText="${topicDto.bodyText}"
                              bodyParameterName="bodyText"
                              back="${pageContext.request.contextPath}/branches/${branchId}"/>
-
+            <br/>
+            <br/>
             <jtalks:newPoll titleNameValue="pollTitle"
                             pollOptionsNameValue="pollItems"
                             multipleName="multiple"
                             multipleValue="${topicDto.multiple}"
                             endingDateNameValue="endingDate"/>
         </form:form>
+        
+        <a href="${pageContext.request.contextPath}/branches/${branchId}" class='back-btn'>
+            <i class="icon-arrow-left"></i>
+            <spring:message code="label.back"/>
+        </a>
     </div>
-
-    <div class="footer_buffer"></div>
-</div>
 </body>

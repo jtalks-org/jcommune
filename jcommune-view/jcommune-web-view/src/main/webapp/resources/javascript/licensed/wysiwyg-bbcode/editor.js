@@ -86,13 +86,13 @@ function SwitchEditor() {
         textboxelement.style.display = "";
         htmlcontentelement.style.display = "none";
         editorVisible = false;
-        $(".formatting_buttons").show();
+        $(".btn-toolbar").show();
         $("#preview")[0].value = $labelPreview;
     }
     else { // enter preview
         content = textboxelement.value;
         bbcode2html();
-        $(".formatting_buttons").hide();
+        $(".btn-toolbar").hide();
         $("#preview")[0].value = $labelEdit;
     }
 }
@@ -135,7 +135,9 @@ function bbcode2html() {
             textboxelement.style.display = "none";
 
             editorVisible = true;
-            SyntaxHighlighter.highlight();
+            
+			//Code highlight
+			prettyPrint();
             $("a[rel^='prettyPhoto']").prettyPhoto({social_tools:false});
         }
     });
@@ -275,58 +277,25 @@ function doClick(command) {
     }
 }
 
-function doSize() {
+function doSize(selectedElement) {
     if (!editorVisible) {
-        var listSizes = document.getElementById("select_size");
-        var selectedIndex = listSizes.selectedIndex;
-        if (selectedIndex >= 0) {
-            var size = listSizes.options[selectedIndex].value;
-            if (size > 0)
-                AddTag('[size=' + size + ']', '[/size]');
-        }
+		var size = $(selectedElement).attr('value');
+        AddTag('[size=' + size + ']', '[/size]');
     }
-    resetSizeSelector();
 }
 
-function doCode() {
+function doCode(selectedElement) {
     if (!editorVisible) {
-        var listCodes = document.getElementById("select_code");
-        var selectedIndex = listCodes.selectedIndex;
-        if (selectedIndex >= 0) {
-            var code = listCodes.options[selectedIndex].value;
-            if (code != '0')
-                AddTag('[code=' + code + ']', '[/code]');
-        }
+		var code = $(selectedElement).attr('value');
+        AddTag('[code=' + code + ']', '[/code]');
     }
-    resetCodeSelector();
 }
 
-function resetSizeSelector() {
-    var listSizes = document.getElementById("select_size");
-    listSizes.options[0].selected = 'selected';
-}
-
-function resetIndentSelector() {
-    var listIndents = document.getElementById("select_indent");
-    listIndents.options[0].selected = 'selected';
-}
-
-function resetCodeSelector() {
-    var listIndents = document.getElementById("select_code");
-    listIndents.options[0].selected = 'selected';
-}
-
-function doIndent() {
+function doIndent(selectedElement) {
     if (!editorVisible) {
-        var listIndents = document.getElementById("select_indent");
-        var selectedIndex = listIndents.selectedIndex;
-        if (selectedIndex >= 0) {
-            var indent = listIndents.options[selectedIndex].value;
-            if (indent > 0)
-                AddTag('[indent=' + indent + ']', '[/indent]');
-        }
+        var indent = $(selectedElement).attr('value');
+        AddTag('[indent=' + indent + ']', '[/indent]');
     }
-    resetIndentSelector();
 }
 
 var mylink = '';
@@ -659,3 +628,16 @@ function showColorGrid2(Sam, textBoxId) {
 
 
 
+$(document).ready(function() {
+	$('#select_size a').click(function() {
+		doSize(this);
+	});
+	
+	$('#select_code a').click(function() {
+		doCode(this);
+	});
+	
+	$('#select_indent a').click(function() {
+		doIndent(this);
+	});
+});

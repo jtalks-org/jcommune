@@ -29,57 +29,63 @@
             src="${pageContext.request.contextPath}/resources/javascript/custom/leaveConfirm.js"></script>
 </head>
 <body>
-<div class="wrap pm_page">
-    <jsp:include page="../../template/topLine.jsp"/>
-    <jsp:include page="../../template/logo.jsp"/>
 
-    <div class="all_forums">
-        <h2><a class="heading" href="#"><spring:message code="label.new_pm"/></a></h2>
-        <jsp:include page="../../template/pmNavigationMenu.jsp"/>
-        <form:form action="${pageContext.request.contextPath}/pm"
-                   method="POST" modelAttribute="privateMessageDto" name="editForm">
-            <form:hidden path="id"/>
-            <ul class="forum_table">
-                <li class="forum_row">
-                    <div class="forum_answer_left">
-                        <spring:message code="label.pm.recipient"/>
-                    </div>
-                    <div class="forum_answer_right">
-                        <form:input path="recipient" size="45" maxlength="60" tabindex="1" class="post"/>
-                        <br/>
-                        <span class="error"><form:errors path="recipient"/></span>
-                    </div>
-                </li>
-                <li class="forum_row">
-                    <div class="forum_answer_left">
-                        <spring:message code="label.pm.title"/>
-                    </div>
-                    <div class="forum_answer_right">
-                        <form:input path="title" size="45" maxlength="60" tabindex="1" class="post confirm-unsaved"/>
-                        <br/>
-                        <span class="error"><form:errors path="title"/></span>
-                    </div>
-                </li>
-            </ul>
-            <jtalks:bbeditor labelForAction="label.send"
-                             postText="${privateMessageDto.body}"
-                             bodyParameterName="body"
-                             back="${pageContext.request.contextPath}/inbox"/>
-            <input id="save_pm" type="submit" class="button" name="save_pm" value="<spring:message code="label.save"/>"
-                   onclick="document.editForm.action='${pageContext.request.contextPath}/pm/save';return true;"/>
-        </form:form>
+<jsp:include page="../../template/topLine.jsp"/>
 
-        <c:if test="${privateMessageDto.id != 0}">
-            <span class="del">
-                <a id="deleteOnePM" class="button delete" href="${pageContext.request.contextPath}/pm"
-                   rel="<spring:message code="label.deletePMConfirmation"/>">
-                    <spring:message code="label.delete"/>
-                </a>
-                <input id="PMId" hidden="true" value="${privateMessageDto.id}"/>
-                <form:form id="deleteForm" method="DELETE"/>
-            </span>
-        </c:if>
+<div class="container">
+    <h2><spring:message code="label.pm_title"/></h2>
+    <hr/>
+    <div class="row">
+        <div class="span2">
+            <a href="${pageContext.request.contextPath}/pm/new" class="btn btn-primary btn-small pm_buttons">
+                <spring:message code="label.new_pm"/></a>
+            <jsp:include page="../../template/pmFolders.jsp"/>
+        </div>
+        <!-- span2 -->
+
+        <div class="span9">
+            <form:form action="${pageContext.request.contextPath}/pm"
+                       method="POST" modelAttribute="privateMessageDto" name="editForm"
+                       class="well">
+                <form:hidden path="id"/>
+
+            <div class='control-group'>
+                <div class='controls'>
+	                <spring:message code="label.pm.recipient" var="placeholderRecipient"/>
+	                <form:input class="span3" path="recipient"
+	                            placeholder="${placeholderRecipient}"/>
+	                <br/>
+	                <form:errors path="recipient" cssClass="help-inline"/>
+                </div>
+            </div>
+
+            <div class='control-group'>
+                <div class='controls'>
+	                <spring:message code="label.pm.title" var="placeholderTitle"/>
+	                <form:input class="span8 confirm-unsaved" path="title"
+	                            placeholder="${placeholderTitle}"/>
+	                <br/>
+	                <form:errors path="title" cssClass="help-inline"/>
+                </div>
+            </div>
+                <jtalks:bbeditor labelForAction="label.send"
+                                 postText="${privateMessageDto.body}"
+                                 bodyParameterName="body"
+                                 back="${pageContext.request.contextPath}/inbox"/>
+
+                <input id="save_pm" type="submit" class="btn" name="save_pm" value="<spring:message code="label.save"/>"
+                       onclick="document.editForm.action='${pageContext.request.contextPath}/pm/save';return true;"/>
+
+            </form:form><!-- form -->
+
+        </div>
+        <!-- span9 -->
     </div>
-    <div class="footer_buffer"></div>
+    <!-- row -->
+
+
 </div>
+<!-- container -->
+
+<div class="footer_buffer"></div>
 </body>

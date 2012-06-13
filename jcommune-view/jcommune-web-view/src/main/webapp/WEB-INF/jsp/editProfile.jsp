@@ -28,149 +28,197 @@
             src="${pageContext.request.contextPath}/resources/javascript/licensed/fileuploader.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/custom/avatarUpload.js"
             type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/contacts.js"
+            type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/userProfileEffects.js"
+            type="text/javascript"></script>
+            
+    <link rel="stylesheet" type="text/css" media="screen, projection"
+          href="${pageContext.request.contextPath}/resources/css/profile.css"/>
 </head>
 <body>
-<div class="wrap userdetails_page">
     <jsp:include page="../template/topLine.jsp"/>
-    <jsp:include page="../template/logo.jsp"/>
 
-    <div class="all_forums">
-        <div id="editUserDetails">
+    <div class="container">
+        <div id="editUserDetails" class="userprofile user-profile-container">
             <form:form id="editProfileForm" name="editProfileForm"
                        action="${pageContext.request.contextPath}/users/edit"
-                       modelAttribute="editedUser" method="POST" enctype="multipart/form-data">
+                       modelAttribute="editedUser" method="POST" enctype="multipart/form-data"
+                       class="form-horizontal">
 
                 <form:hidden id="avatar" path="avatar"/>
-                <div class="forum_header_table">
-                    <div class="forum_header">
-                        <span class="forum_header_generic"><spring:message code="label.profile"/></span>
-                        <span class="empty_cell"></span>
-                    </div>
+                
+                <div class='user-profile-header'>
+                    <span class="pull-left thumbnail">
+                        <div class="wraptocenter">
+                            <span></span>
+                            <%--String prefix "data:image/jpeg;base64," needed for correct image rendering--%>
+                            <img id="avatarPreview" src="data:image/jpeg;base64,${editedUser.avatar}" alt="" />
+                        </div>
+                    </span>
+                    <h2 class="pull-right user-profile-username"><c:out value="${auth}"/></h2>
                 </div>
-                <ul class="forum_table">
-                    <li class="forum_row">
-                        <label><spring:message code="label.username"/></label>
-                        <span><c:out value="${auth}"/></span>
-                    </li>
-                    <li class="forum_row">
-                        <label><spring:message code="label.email"/></label>
-                        <span>
-                            <form:input path="email" value="${editedUser.email}"/>
-                            <br/>
-                            <form:errors path="email" cssClass="error"/>
-                        </span>
-                    </li>
-                    <li class="forum_row">
-                        <label><spring:message code="label.firstname"/></label>
-                        <span>
-                            <form:input path="firstName" value="${editedUser.firstName}"/>
-                            <br/>
-                            <form:errors path="firstName" cssClass="error"/>
-                        </span>
-                    </li>
-                    <li class="forum_row">
-                        <label><spring:message code="label.lastname"/></label>
-                        <span>
-                            <form:input path="lastName" value="${editedUser.lastName}"/>
-                            <br/>
-                            <form:errors path="lastName" cssClass="error"/>
-                        </span>
-                    </li>
-                    <li class="forum_row">
-                        <label><spring:message code="label.currentPassword"/></label>
-                        <span>
-                            <form:input path="currentUserPassword" type="password"/>
-                            <br/>
-                            <form:errors path="currentUserPassword" cssClass="error"/>
-                        </span>
-                    </li>
-                    <li class="forum_row">
-                        <label><spring:message code="label.newPassword"/></label>
-                        <span>
-                            <form:input path="newUserPassword" type="password"/>
-                            <br/>
-                            <form:errors path="newUserPassword" cssClass="error"/>
-                        </span>
-                    </li>
-                    <li class="forum_row">
-                        <label><spring:message code="label.newPasswordConfirmation"/></label>
-                        <span>
-                            <form:input path="newUserPasswordConfirm" type="password"/>
-                            <br/>
-                            <form:errors path="newUserPasswordConfirm" cssClass="error"/>
-                        </span>
-                    </li>
-                    <li class="forum_row">
-                        <label><spring:message code="label.signature"/></label>
-                        <span>
-                            <form:input path="signature" value="${editedUser.signature}"/>
-                            <br/>
-                            <form:errors path="signature" cssClass="error"/>
-                        </span>
-                    </li>
-                    <li class="forum_row">
-                        <label><spring:message code="label.language"/></label>
-                        <span>
-                            <form:select path="language" value="${editedUser.language}">
-                                <c:forEach items="${editedUser.languagesAvailable}" var="language">
-                                    <form:option value="${language}">
-                                        <spring:message code="${language.languageNameLabel}"/>
-                                    </form:option>
-                                </c:forEach>
-                            </form:select>
-                            <br/>
-                            <form:errors path="language" cssClass="error"/>
-                        </span>
-                    </li>
-                    <li class="forum_row">
-                        <label><spring:message code="label.pageSize"/></label>
-                        <span>
-                            <form:select path="pageSize" value="${editedUser.pageSize}"
-                                         items="${editedUser.pageSizesAvailable}"/>
-                            <br/>
-                            <form:errors path="pageSize" cssClass="error"/>
-                        </span>
-                    </li>
-                    <li class="forum_row">
-                        <label><spring:message code="label.location"/></label>
-                        <span>
-                            <form:input path="location" value="${editedUser.location}"/>
-                            <br/>
-                            <form:errors path="location" cssClass="error"/>
-                        </span>
-                    </li>
-                     <li class="forum_row">
-                       <label><spring:message code="label.avatar"/></label>
-                       <span class="avatar">
-                           <table>
-                               <tr>
-                                   <td rowspan="2">
-                                       <%--String prefix "data:image/jpeg;base64," needed for correct image rendering--%>
-                            <img id="avatarPreview" src="data:image/jpeg;base64,${editedUser.avatar}" alt=""/>
-                                   </td>
-                                   <td class="button_cell">
-                                       <a id="upload" class="button"><spring:message code="label.avatar.load"/></a>
-                                   </td>
-                               </tr>
-                               <tr>
-                                   <td class="button_cell">
-                                       <a id="removeAvatar" class="button"><spring:message code="label.avatar.remove"/></a>
-                                   </td>
-                               </tr>
-                           </table>
-                       </span>
-                   </li>
-               </ul>
-               <div class="form_controls">
-                   <input id="saveChanges" type="submit" class="button"
-                           value="<spring:message code="label.save_changes"/>"/>
-                   <a class="button" href="${pageContext.request.contextPath}/user">
-                       <spring:message code="label.back"/>
-                   </a>
+                <div class="clearfix"></div>
+                <div class="user-profile-top-buttons">
+                    <div class="user-profile-buttons-avatar">
+                        <a id="upload" href="#" class="btn btn-mini" title="<spring:message code='label.avatar.load'/>">
+                            <i class="icon-picture"></i>
+                            <spring:message code="label.avatar.load"/>
+                        </a>
+                        <a id="removeAvatar" href="#" class="btn btn-mini btn-danger" title="<spring:message code="label.avatar.remove"/>">
+                            <i class="icon-remove icon-white"></i>
+                        </a>
+                    </div>         
+                </div>
+                    
+                <div class="clearfix"></div>
+                <hr class='user-profile-hr'/>
+               
+                <div>
+                    <form class="form-horizontal">
+                        <fieldset>
+                        
+                        <div class="control-group">
+                            <label for="" class="control-label"><spring:message code="label.email"/></label>
+                            <div class="controls">
+                                <form:input class="input-xlarge" path="email" value="${editedUser.email}"/>
+                                <br/>
+                                <form:errors path="email" cssClass="help-inline"/>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="" class="control-label"><spring:message code="label.firstname"/></label>
+                            <div class="controls">
+                                <form:input class="input-xlarge" path="firstName" value="${editedUser.firstName}"/>
+                                <br/>
+                                <form:errors path="firstName" cssClass="help-inline"/>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="" class="control-label"><spring:message code="label.lastname"/></label>
+                            <div class="controls">
+                                <form:input class="input-xlarge" path="lastName" value="${editedUser.lastName}"/>
+                                <br/>
+                                <form:errors path="lastName" cssClass="help-inline"/>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="" class="control-label"><spring:message code="label.currentPassword"/></label>
+                            <div class="controls">
+                                <form:input class="input-xlarge" type="password" path="currentUserPassword"/>
+                                <br/>
+                                <form:errors path="currentUserPassword" cssClass="help-inline"/>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="" class="control-label"><spring:message code="label.newPassword"/></label>
+                            <div class="controls">
+                                <form:input class="input-xlarge" type="password" path="newUserPassword"/>
+                                <br/>
+                                <form:errors path="newUserPassword" cssClass="help-inline"/>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="" class="control-label"><spring:message code="label.newPasswordConfirmation"/></label>
+                            <div class="controls">
+                                <form:input class="input-xlarge" type="password" path="newUserPasswordConfirm"/>
+                                <br/>
+                                <form:errors path="newUserPasswordConfirm" cssClass="help-inline"/>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="" class="control-label"><spring:message code="label.signature"/></label>
+                            <div class="controls">
+                                <form:input class="input-xlarge" path="signature" value="${editedUser.signature}"/>
+                                <br/>
+                                <form:errors path="signature" cssClass="help-inline"/>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="" class="control-label"><spring:message code="label.language"/></label>
+                            <div class="controls">
+                                <form:select path="language" value="${editedUser.language}" class="input-medium">
+                                    <c:forEach items="${editedUser.languagesAvailable}" var="language">
+                                        <form:option value="${language}">
+                                            <spring:message code="${language.languageNameLabel}"/>
+                                        </form:option>
+                                    </c:forEach>
+                                </form:select>
+                                <br/>
+                                <form:errors path="language" cssClass="help-inline"/>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="" class="control-label"><spring:message code="label.pageSize"/></label>
+                            <div class="controls">
+                                <form:select path="pageSize" value="${editedUser.pageSize}"
+                                         items="${editedUser.pageSizesAvailable}"
+                                         class="input-mini"/>
+                                <br/>
+                                <form:errors path="pageSize" cssClass="help-inline"/>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="" class="control-label"><spring:message code="label.location"/></label>
+                            <div class="controls">
+                                <form:input path="location" class="input-xlarge" value="${editedUser.location}"/>
+                                <br/>
+                                <form:errors path="location" cssClass="help-inline"/>
+                            </div>
+                        </div>
+                        
+                        <hr class='user-profile-hr'/>
+                        <div class='user-profile-buttons-form-actions'>
+                            <button id="saveChanges" class="btn btn-primary" type="submit" 
+                                title="<spring:message code='label.save_changes'/>">
+                                <spring:message code="label.save_changes"/>
+                            </button>
+                            <a href="${pageContext.request.contextPath}/user" class="btn" 
+                                title="<spring:message code='label.cancel'/>">
+                                <spring:message code="label.cancel"/>
+                            </a>
+                        </div>
+                    </fieldset>
                </div>
            </form:form>
-       </div>
+           <div class="clearfix"></div>
+        </div>
+        
+        <div class="userprofile user-profile-contacts-container">
+            <h4><spring:message code="label.contacts"/></h4>
+            <ul id='contacts' class="contacts">
+                <c:forEach var="contact" items="${contacts}">
+                    <%-- Class 'contact' used in js for binding --%>
+                    <li class="contact">
+                        <input type="hidden" value="${contact.id}"/>
+                        <%-- Class 'button' used in js for binding --%>
+                        <a href="#" id="${contact.id}" class="btn btn-mini btn-danger button" title="<spring:message code='label.contacts.tips.delete'/>">
+                            <i class="icon-remove icon-white"></i>
+                        </a>
+                        
+                        <span class="contact" title="<c:out value='${contact.type.typeName}'/>">
+                            <img src="${pageContext.request.contextPath}${contact.type.icon}">
+                                ${contact.displayValue}
+                        </span>
+                    </li>
+                </c:forEach>
+            </ul>
+            
+            <a id="add_contact" href="#" class="btn btn-mini btn-primary user-profile-buttons-addcontact" 
+                title="<spring:message code='label.contacts.addMore'/>">
+                <spring:message code="label.contacts.addMore"/>
+            </a>
+            
+            <div class="clearfix"></div>
+        </div>
    </div>
-    <div class="footer_buffer"></div>
-</div>
 </body>

@@ -24,96 +24,100 @@
     <title><spring:message code="label.section.jtalks_forum"/></title>
 </head>
 <body>
-<div class="wrap section_page">
     <jsp:include page="../template/topLine.jsp"/>
-    <jsp:include page="../template/logo.jsp"/>
 
-    <div class="all_forums">
-        <div class="forum_info_top">
-            <div>
-                <div> <!-- top left -->
-
-                </div>
-                <div> <!-- top right -->
-
-                </div>
-            </div>
-            <div class="info_top_lower">
-                <div> <!-- bottom left -->
-                    <h2 class="heading"><c:out value="${section.name}"/></h2>
-
-                    <span class="forum_misc_info">
-                        <c:out value="${section.description}"/>
-                    </span>
-                </div>
-                <div> <!-- bottom right -->
-
-                </div>
-            </div>
+    <div class="container">
+        <!-- Section header -->
+        <div id="branch-header">
+            <h2><c:out value="${section.name}"/></h2>
+            <span class="inline-block"></span>
         </div>
-        <div class="forum_header_table">
-            <div class="forum_header">
-                <h3 class="forum_header_link"><spring:message code="label.section.header.branches"/></h3>
-                <span class="forum_header_themes"><spring:message code="label.section.header.topics"/></span>
-                <span class="forum_header_messages"><spring:message code="label.section.header.messages"/></span>
-                    <span class="forum_header_last_message"><spring:message
-                            code="label.section.header.lastMessage"/></span>
-            </div>
-        </div>
-        <ul class="forum_table">
-            <c:forEach var="branch" items="${section.branches}" varStatus="i">
-                <li class="forum_row">
-                    <div class="forum_icon">
-                        <img class="icon" src="${pageContext.request.contextPath}/resources/images/closed_cup.png"
-                             alt=""
-                             title="<spring:message code="label.section.close_forum"/>"/>
-                    </div>
-                    <div class="forum_info">
-                        <h4>
-                            <a class="forum_link" href="${pageContext.request.contextPath}/branches/${branch.id}">
-                                <c:out value="${branch.name}"/>
-                            </a>
-                        </h4>
-
-                        <p>
-                            <c:out value="${branch.description}"/>
-                            <a href="#"><spring:message code="label.section.faq"/></a>
-                            <br/>
-                            <spring:message code="label.section.moderators"/> <a class="moderator" href="#">Vurn</a>
-                        </p>
-                    </div>
-                    <div class="forum_themes">
-                        <c:out value="${branch.topicCount}"/>
-                    </div>
-                    <div class="forum_messages">
-                        <c:out value="${branch.postCount}"/>
-                    </div>
-                    <div class="forum_last_message">
-                        <c:if test="${branch.topicCount>0}">
-                            <span><jtalks:format value="${branch.lastPostInLastUpdatedTopic.creationDate}"/></span>
-                            <br/>
-                            <a href="${pageContext.request.contextPath}/users/${branch.lastPostInLastUpdatedTopic.userCreated.encodedUsername}">
-                                <c:out value="${branch.lastPostInLastUpdatedTopic.userCreated.username}"/>
-                            </a>
-                            <a href="${pageContext.request.contextPath}/posts/${branch.lastPostInLastUpdatedTopic.id}">
-                                <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"/>
-                            </a>
-                        </c:if>
-                    </div>
-                </li>
+        <!-- END OF Branch header -->
+        
+        <!-- Branches table -->
+        <table id="topics-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+        <c:choose>
+            <c:when test="${!(empty section.branches)}">
+                <thead>
+                    <tr>
+                        <th class="status-col"></th>
+                        <th><spring:message code="label.section.header.branches"/></th>
+                        <th class="topics-posts forum-posts-view-header"><spring:message code="label.branch.header.topics_posts"/></th>
+                        <th class="latest-by forum-latest-by-header"><spring:message code="label.branch.header.lastMessage"/></th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    <c:forEach var="branch" items="${section.branches}" varStatus="i">
+                        <tr>
+                            <td class="status-col">
+                                <img class="status-img" 
+                                    src="${pageContext.request.contextPath}/resources/images/closed.png" 
+                                    title="<spring:message code="label.section.close_forum"/>" />
+                            </td>
+                            <td>
+                                <a href="${pageContext.request.contextPath}/branches/${branch.id}">
+                                    <c:out value="${branch.name}"/>
+                                </a>
+                                <br />
+                                
+                                <c:out value="${branch.description}"/>
+                                <a href="#"><spring:message code="label.section.faq"/></a>
+                                <br/>
+                                <strong><spring:message code="label.section.moderators"/></strong>
+                                <a class="label label-success" href="#">Vurn</a>                                    
+                            </td>
+                            <td class="topics-posts">
+                                <spring:message code="label.section.header.topics"/>: <span class='test-topics-count'><c:out value="${branch.topicCount}"/></span><br />
+                                <spring:message code="label.section.header.messages"/>: <span class='test-posts-count'><c:out value="${branch.postCount}"/></span>
+                            </td>
+                            <td class="latest-by">
+                                <c:if test="${branch.topicCount>0}">
+	                                <i class="icon-calendar"></i>
+	                                <a class="date" href="${pageContext.request.contextPath}/posts/${branch.lastPostInLastUpdatedTopic.id}"><jtalks:format 
+	                                        value="${branch.lastPostInLastUpdatedTopic.creationDate}"/>
+	                                </a>
+	                                <p>by 
+	                                    <a href="${pageContext.request.contextPath}/users/${branch.lastPostInLastUpdatedTopic.userCreated.encodedUsername}"><c:out 
+	                                        value="${branch.lastPostInLastUpdatedTopic.userCreated.username}"/>
+	                                    </a>
+	                                </p>
+                                </c:if>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </tbody>
+            </c:when>
+            <c:otherwise>
+                <tbody><tr><td>
+                    <spring:message code="label.branch.empty"/>
+                </td></tr></tbody>
+            </c:otherwise>
+        </c:choose>
+        </table>
+        
+        <!-- Users -->
+        <div id="users-stats" class="well forum-user-stats-container">
+            <c:if test="${!(empty viewList)}">
+                <strong><spring:message code="label.section.now_browsing"/></strong> 
+            </c:if>
+            <c:forEach var="innerUser" items="${viewList}">
+                <c:choose>
+                    <c:when test="${innerUser.role=='ROLE_ADMIN'}">
+                        <c:set var='labelClass' value='label label-important'/>
+                    </c:when>
+                    <c:otherwise>
+                        <c:set var='labelClass' value=''/>
+                    </c:otherwise>
+                </c:choose>
+                <a href="${pageContext.request.contextPath}/users/${innerUser.encodedUsername}" 
+                    title="Click to view profile"
+                    class='${labelClass}'>
+                    <c:out value="${innerUser.username}"/>
+                </a>
             </c:forEach>
-        </ul>
-        <br />
-        <c:if test="${!(empty viewList)}">
-            <spring:message code="label.section.now_browsing"/>
-        </c:if>
-        <c:forEach var="innerUser" items="${viewList}">
-            <a href="${pageContext.request.contextPath}/users/${innerUser.encodedUsername}">
-                <c:out value="${innerUser.username}"/>
-            </a>
-        </c:forEach>
+        </div>
+        <!-- END OF Users -->
     </div>
-    <div class="footer_buffer"></div>
-</div>
 </body>
 

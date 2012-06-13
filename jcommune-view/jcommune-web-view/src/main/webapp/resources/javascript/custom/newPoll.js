@@ -63,14 +63,12 @@ function pollPreview(pollTitleValue, pollItemsValue, endingDateValue) {
  */
 function prepareTitle(title, date) {
 
-    var result;
-    if (date == "") {
-        result = "<h3>" + title + "</h3><br>";
-    } else {
-        result = $labelPollTitleWithEnding.replace("{0}", title);
-        result = result.replace("{1}", date);
-        result = "<h3>" + result + "</h3><br>";
+    var result = "<h3>" + title + " ";
+    if (date != "") {
+		result += $labelPollTitleWithEnding.replace("{0}", date);
     }
+	
+	result += "</h3><br>";
 
     return result;
 }
@@ -118,24 +116,26 @@ function stringItemsArrayToHtmlItems(items) {
         return result;
     }
 
+	var controlWrapperLeading = "<div class='control-group'>";
+	var controlWrapperTrailing = "</div>";
     var radioInputBegin = "<input type='radio' name='radioGroup' value='";
     var checkboxInputBegin = "<input type='checkbox' name='radioGroup' value='";
-    var inputEnd = "'/>";
+    var inputEnd = "'/> ";
     var br = "<br>";
     var isMultiple = multipleButtonElement.checked;
     if (isMultiple) {
         for (var i = 0; i < items.length; i++) {
             items[i] = checkboxInputBegin + items[i] + inputEnd + items[i] + br;
-            result += items[i];
+            result += controlWrapperLeading + items[i] + controlWrapperTrailing;
         }
     } else {
         for (var i = 0; i < items.length; i++) {
             items[i] = radioInputBegin + items[i] + inputEnd + items[i] + br;
-            result += items[i];
+            result += controlWrapperLeading + items[i] + controlWrapperTrailing;
         }
     }
 
-    result += "<input type='button' value='" + $labelPollVote + "'/>";
+    result += "<input type='button' class='btn btn-primary' value='" + $labelPollVote + "'/>";
 
     return result;
 }

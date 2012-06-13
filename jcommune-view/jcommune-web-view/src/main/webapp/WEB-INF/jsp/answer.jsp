@@ -26,53 +26,28 @@
             type="text/javascript"></script>
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/leaveConfirm.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/bbeditorEffects.js"
+            type="text/javascript"></script>
 </head>
 <body>
-<div class="wrap answer_page">
-    <jsp:include page="../template/logo.jsp"/>
-    <jsp:include page="../template/topLine.jsp"/>
+   <jsp:include page="../template/topLine.jsp"/>
 
-    <div class="all_forums">
-        <h2><a class="heading" href="#"><c:out value="${topic.title}"/></a></h2>
-
-        <div class="forum_misc_info">
-            <spring:message code="label.answer.title_label"/>
-        </div>
-        <div class="forum_info_top">
-            <div>
-                <div>
-
-                </div>
-                <div>
-
-                </div>
-            </div>
-            <div class="info_top_lower">
-                <div>
-                    <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-                </div>
-                <div class="info_top_lower_right">
-
-                </div>
-            </div>
-        </div>
+    <div class="container">
+        <h2><a class="heading" href="${pageContext.request.contextPath}/topics/${topic.id}"><c:out value="${topic.title}"/></a></h2>
+               
         <form:form action="${pageContext.request.contextPath}/posts/new?topicId=${topicId}&page=${page}"
-                   method="POST" modelAttribute="postDto">
+                   method="POST" modelAttribute="postDto" class='well'>
             <form:hidden path="topicId"/>
-            <div class="forum_header_table">
-                <div class="forum_header">
-                    <span class="forum_header_answer"><spring:message code="label.answer"/></span>
-                    <span class="empty_cell"></span>
-                </div>
-            </div>
+            
             <jtalks:bbeditor labelForAction="label.answer"
                              postText="${postDto.bodyText}"
                              bodyParameterName="bodyText"
                              back="${pageContext.request.contextPath}/topics/${topicId}"/>
         </form:form>
 
+        <a href="${pageContext.request.contextPath}/topics/${topicId}" class="back-btn">
+            <i class="icon-arrow-left"></i>
+            <spring:message code="label.back"/>
+        </a>
     </div>
-    <div class="footer_buffer">
-    </div>
-</div>
 </body>

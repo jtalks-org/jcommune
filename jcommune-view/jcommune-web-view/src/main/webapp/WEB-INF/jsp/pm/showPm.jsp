@@ -19,71 +19,82 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/tags/form" %>
 <head>
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/privateMessages.js"></script>
     <title><spring:message code="label.pm_title"/></title>
 </head>
 <body>
-<div class="wrap pm_page">
-    <jsp:include page="../../template/topLine.jsp"/>
-    <jsp:include page="../../template/logo.jsp"/>
 
-    <div class="all_forums">
-        <jsp:include page="../../template/pmNavigationMenu.jsp"/>
-        <div class="pm_read">
-            <div class="pm_header">
-                <div class="pm_left">
-                    <div>
-                        <span><spring:message code="label.date"/>:</span>
-                        <jtalks:format value="${pm.creationDate}"/>
-                    </div>
-                    <div>
-                        <span><spring:message code="label.sender"/>:</span>
-                        <a href="${pageContext.request.contextPath}/users/${pm.userFrom.encodedUsername}">
-                            <c:out value="${pm.userFrom.username}"/>
-                        </a>
-                    </div>
-                    <div>
-                        <span><spring:message code="label.pm.recipient"/>:</span>
-                        <a href="${pageContext.request.contextPath}/users/${pm.userTo.encodedUsername}">
-                            <c:out value="${pm.userTo.username}"/>
-                        </a>
-                    </div>
-                </div>
-                <div class="pm_right">
-                    <c:out value="${pm.title}"/>
-                </div>
-            </div>
-            <div class="pm_body">
-                <div class="pm_left">
-                    <c:if test="${pm.replyAllowed && (pm.userTo eq user)}">
-                        <sec:authorize access="hasAnyRole('ROLE_ADMIN,ROLE_USER')">
-                            <form:form action="${pageContext.request.contextPath}/reply/${pm.id}" method="GET">
-                                <input class="button" type="submit" value="<spring:message code="label.reply"/>"/>
-                            </form:form>
-                            <form:form action="${pageContext.request.contextPath}/quote/${pm.id}" method="GET">
-                                <input class="button" type="submit" value="<spring:message code="label.quote"/>"/>
-                            </form:form>
-                        </sec:authorize>
-                    </c:if>
-                    <div class="del">
-                        <a id="deleteOnePM" class="button delete" href="${pageContext.request.contextPath}/pm"
-                           rel="<spring:message code="label.deletePMConfirmation"/>">
-                            <spring:message code="label.delete"/>
-                        </a>
-                        <input id="PMId" hidden="true" value="${pm.id}"/>
-                        <form:form id="deleteForm" method="DELETE"/>
-                    </div>
-                </div>
-                <div class="pm_right">
-                    <jtalks:bb2html bbCode="${pm.body}"/>
-                    ${pm.userFrom.signature}
-                </div>
+<jsp:include page="../../template/topLine.jsp"/>
 
-            </div>
+<div class="container">
+    <h2><spring:message code="label.pm_title"/></h2>
+    <hr/>
+    <div class="row">
+        <div class="span2">
+            <a href="${pageContext.request.contextPath}/pm/new" class="btn btn-primary btn-small pm_buttons">
+                <spring:message code="label.new_pm"/></a>
+            <jsp:include page="../../template/pmFolders.jsp"/>
         </div>
+        <!-- /span2 -->
+        <div class="span9">
+            <div class="pm_buttons">
+                <c:if test="${pm.replyAllowed && (pm.userTo eq user)}">
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/reply/${pm.id}">
+                        <i class="icon-share-alt icon-white"></i>
+                        <spring:message code="label.reply"/>
+                    </a>
+
+                    <a class="btn" href="${pageContext.request.contextPath}/quote/${pm.id}">
+                        <i class="icon-quote"></i>
+                        <spring:message code="label.quote"/>
+                    </a>
+                </c:if>
+                <span class="del">
+                    <a id="deleteOnePM"
+                       class="btn btn-danger delete"
+                       href="${pageContext.request.contextPath}/pm"
+                       rel="<spring:message code="label.deletePMConfirmation"/>">
+
+                        <i class="icon-trash icon-white"></i>
+                        <spring:message code="label.delete"/>
+                    </a>
+                    <input id="PMId" type="hidden" value="${pm.id}"/>
+                    <form:form id="deleteForm" method="DELETE"/>
+                </span>
+                <!-- del -->
+
+            </div>
+            <!-- pm_buttons -->
+
+            <div class="well pm_message_view">
+                <div class="row pm_message_detail">
+                    <div class="pull-left thumbnail pm_message_avatar">
+                        <img src="${pageContext.request.contextPath}/${pm.userFrom.encodedUsername}/avatar" alt=""/>
+                    </div>
+                    <div class="pm_message_userTo_link">
+                        <a href="${pageContext.request.contextPath}/users/${pm.userTo.encodedUsername}">
+                            <i class="icon-user"></i><c:out value="${pm.userFrom.username}"/>
+                        </a>
+                        <br/>
+                        <span><i class="icon-calendar"></i><jtalks:format value="${pm.creationDate}"/></span>
+                    </div>
+                </div>
+                <div class="pm-text-box">
+                    <jtalks:bb2html bbCode="${pm.body}"/>
+                    ${pm.userFrom.renderedSignature}
+                </div>
+            </div>
+
+        </div>
+
     </div>
-    <div class="footer_buffer"></div>
+    <!-- /row -->
+
 </div>
+<!-- /container -->
+
+<div class="footer_buffer"></div>
 </body>

@@ -18,6 +18,7 @@ import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.service.PrivateMessageService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
@@ -44,11 +45,11 @@ import java.util.List;
 @Controller
 public class PrivateMessageController {
 
-    public static final String BREADCRUMB_LIST = "breadcrumbList";
     public static final String PM_IDENTIFIERS = "pmIdentifiers";
     private PrivateMessageService pmService;
     private BBCodeService bbCodeService;
     private SecurityService securityService;
+    private UserService userService;
 
     //constants are moved here when occurs 4 or more times, as project PMD rule states
     private static final String PM_FORM = "pm/pmForm";
@@ -75,10 +76,11 @@ public class PrivateMessageController {
      */
     @Autowired
     public PrivateMessageController(PrivateMessageService pmService, BBCodeService bbCodeService,
-                                    SecurityService securityService) {
+                                    SecurityService securityService, UserService userService) {
         this.pmService = pmService;
         this.bbCodeService = bbCodeService;
         this.securityService = securityService;
+        this.userService = userService;
     }
 
     /**
@@ -124,17 +126,16 @@ public class PrivateMessageController {
     /**
      * Render the page with a form for creation new Private Message for particular user.
      * This method performs no validation on username given simply passing it to the view as is.
-     * <p/>
-     * SpEL pattern in a var name indicates we want to consume all the symbols in a var,
-     * even dots, which Spring MVC uses as file extension delimiters by default.
      *
-     * @param username user to send new private message to
+     * @param id user database identifier
      * @return {@code ModelAndView} with the form
+     * @throws NotFoundException if no user has been found for given id
      */
-    @RequestMapping(value = "/pm/new/{username:.+}", method = RequestMethod.GET)
-    public ModelAndView newPmPageForUser(@PathVariable String username) {
+    @RequestMapping(value = "/pm/new/{id}", method = RequestMethod.GET)
+    public ModelAndView newPmPageForUser(@PathVariable Long id) throws NotFoundException {
         PrivateMessageDto dto = new PrivateMessageDto();
-        dto.setRecipient(username);
+        String name = userService.get(id).getUsername();
+        dto.setRecipient(name);
         return new ModelAndView(PM_FORM).addObject(DTO, dto);
     }
 

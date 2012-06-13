@@ -35,7 +35,6 @@ import static org.testng.Assert.assertEquals;
  */
 public class UserDataInterceptorTest {
     private final String USER_NAME = "username";
-    private final String ENCODED_USER_NAME = "username";
     private final String FIRST_NAME = "first name";
     private final String LAST_NAME = "last name";
     private final String EMAIL = "mail@mail.com";
@@ -66,9 +65,7 @@ public class UserDataInterceptorTest {
         interceptor.postHandle(request, response, null, new ModelAndView("view"));
 
         assertEquals(request.getAttribute("newPmCount"), USER_NEW_PM_COUNT);
-        assertEquals(request.getAttribute("encodedUsername"), ENCODED_USER_NAME);
         verify(service).currentUserNewPmCount();
-        verify(securityService).getCurrentUser();
     }
 
     @Test
@@ -79,9 +76,7 @@ public class UserDataInterceptorTest {
         interceptor.postHandle(request, response, null, new ModelAndView("view"));
 
         assertEquals(request.getAttribute("newPmCount"), 0);
-        assertEquals(request.getAttribute("encodedUsername"), null);
         verify(service).currentUserNewPmCount();
-        verify(securityService).getCurrentUser();
     }
     
     @Test
@@ -104,7 +99,6 @@ public class UserDataInterceptorTest {
     
     private void verifyNotApplied() {
     	assertEquals(request.getAttribute("newPmCount"), null);
-        assertEquals(request.getAttribute("encodedUsername"), null);
     	verify(service, never()).currentUserNewPmCount();
         verify(securityService, never()).getCurrentUser();
     }

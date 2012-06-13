@@ -25,36 +25,33 @@
             type="text/javascript"></script>
     <script language="javascript"
             src="${pageContext.request.contextPath}/resources/javascript/custom/leaveConfirm.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/bbeditorEffects.js"
+            type="text/javascript"></script>
 </head>
 <body>
-<div class="wrap answer_page">
     <jsp:include page="../template/topLine.jsp"/>
-    <jsp:include page="../template/logo.jsp"/>
 
-    <div class="all_forums">
+    <div class="container">
         <h2><a class="heading" href="${pageContext.request.contextPath}/topics/${topicId}">
             <c:out value="${topicTitle}"/>
         </a></h2>
 
-        <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
         <div id="answer">
             <form:form action="${pageContext.request.contextPath}/posts/${postId}/edit?topicId=${topicId}"
-                       method="POST" modelAttribute="postDto">
+                       method="POST" modelAttribute="postDto" class='well'>
                 <form:hidden path="topicId"/>
                 <form:hidden path="id"/>
-                <div class="forum_header_table">
-                    <div class="forum_header">
-                        <span class="forum_header_answer"><spring:message code="label.post.edit"/></span>
-                        <span class="empty_cell"></span>
-                    </div>
-                </div>
+                
                 <jtalks:bbeditor labelForAction="label.save"
                                  postText="${postDto.bodyText}"
                                  bodyParameterName="bodyText"
                                  back="${pageContext.request.contextPath}/topics/${topicId}"/>
             </form:form>
+            
+            <a href="${pageContext.request.contextPath}/topics/${topicId}" class="back-btn">
+                <i class="icon-arrow-left"></i>
+                <spring:message code="label.back"/>
+            </a>
         </div>
     </div>
-    <div class="footer_buffer"></div>
-</div>
 </body>

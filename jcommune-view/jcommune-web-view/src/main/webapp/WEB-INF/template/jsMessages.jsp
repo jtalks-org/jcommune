@@ -29,6 +29,7 @@ $labelValidationUsercontactNotMatch = '<spring:message code="validation.usercont
 $labelContactType = '<spring:message code="label.contact.type"/>';
 $labelContactValue = '<spring:message code="label.contact.value"/>';
 $labelContactValueInfo = '<spring:message code="label.contact.value.info"/>';
+$labelContactsTipsDelete = '<spring:message code="label.contacts.tips.delete"/>';
 
 $labelRegistrationSuccess = '<spring:message code="label.registration.success"/>';
 $labelUrlHeader = '<spring:message code="label.url.header"/>';
@@ -46,3 +47,5 @@ $labelPollVote = '<spring:message code="label.poll.vote"/>';
 
 
 $labelSelectedColor = '<spring:message code="label.selected.color"/>';
+
+$localeCode = '<spring:message code="locale.code"/>'; 

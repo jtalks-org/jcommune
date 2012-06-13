@@ -1,0 +1,266 @@
+
+/** Here are placed styles that were inline (the highest priority) */
+@CHARSET "UTF-8";
+
+.back-btn {
+    font-weight: bold;
+}
+
+#topics-table .forum-posts-view-header {
+    width: 30px;
+}
+
+#topics-table .forum-latest-by-header {
+    font-size: 11px;
+}
+
+.forum-user-stats-container {
+    min-height: 10px; 
+    padding: 5px;
+}
+
+.forum-sections-userstats-container {
+    min-height: 10px; 
+    padding: 5px; 
+    margin: 0px;
+}
+
+.inline-block {
+     display: inline-block;
+}
+
+input.form-check-radio-box[type="checkbox"], 
+input.form-check-radio-box[type="radio"] 
+{
+    float: left; 
+    margin-right: 10px;
+}
+
+.form-login-related {
+    max-width: 480px;
+}
+
+.forum-pagination-container {
+     line-height: 36px; 
+     margin-bottom:10px;
+}
+
+.forum-pagination {
+    margin: 0px;
+}
+
+.post-btn-toolbar {
+    display:inline-block; 
+    margin:0px; 
+    line-height: 9px;
+}
+
+.post-content-tr {
+    vertical-align: top;
+}
+
+.post-userinfo-username {
+    font-size: 14pt;
+}
+
+.post-userinfo-avatal {
+    width:105px; 
+    height: 105px;
+    margin-top:3px;
+}
+
+.table .post-content-td {
+    vertical-align: top;
+}
+
+.forum-sections-header {
+    margin:0;
+}
+
+.logo-text {
+    font-family: 'Carter One', cursive;
+}
+
+.forum-sections-header-actions {
+    display:inline-block; 
+    vertical-align:middle; 
+    text-align: right;
+}
+
+.forum-sections-recent-unanswered {
+    font-weight: bold;  
+    padding-left: 2px; 
+    color: rgb(85, 85, 85)
+}
+
+.rss-icon {
+    vertical-align:middle;
+}
+
+.forum-sections-branch-description-container {
+    font-style: italic; 
+    font-size: 12px; 
+}
+
+.forum-sections-moderators-container {
+    style="font-size: 11px
+}
+
+.forum-sections-stats-container {
+    min-height: 10px; 
+    padding: 5px; 
+    margin: 0px; 
+    margin-bottom: 5px;
+}
+
+/** BBeditor styles */
+.bb_quote_title {
+    font-size: 11px; 
+    font-style:italic;
+}
+
+.bb_quote_container {
+    margin: 5px 10px 5px 5px; 
+}
+
+.bb_quote_content {
+    background-color: rgb(242,243,239); 
+    border: 1px solid rgb(205,206,198); 
+    padding: 0 4px 0 4px;
+}
+
+.language-selector-container {
+    padding:0px; 
+    margin: 6px 2px 0px 15px;
+}
+
+.user-posts-date-title {
+    float:left;
+}
+
+.user-posts-buttons {
+    text-align: right;
+}
+
+.user-profile-container {
+	max-width: 480px; 
+	margin: 0 auto; 
+	position: relative;
+}
+
+.user-profile-header {
+	line-height:100px;
+}
+
+.user-profile-username {
+	vertical-align: middle; 
+	line-height:100px;
+}
+
+.user-profile-top-buttons {
+	padding-top: 4px;
+}
+
+.user-profile-buttons-send {
+	width: 100px; 
+	display:inline-block;
+	text-align: center;
+}
+
+.user-profile-buttons-avatar {
+    width: 150px; 
+    display:inline-block;
+    text-align: left;
+}
+
+.user-profile-buttons-posts {
+	margin-left: 5px;
+}
+
+.user-profile-hr {
+	margin: 6px 0 6px 0;
+}
+
+.user-profile-labels-postcount {
+	margin-top: -3px;
+}
+
+.user-profile-buttons-form-actions {
+	padding-left: 160px;
+}
+
+.user-profile-contacts-container {
+	max-width: 480px; 
+	margin: 5px auto; 
+	position: relative;
+}
+
+.user-profile-buttons-addcontact {
+	margin-top: 10px;
+}
+
+/** PM inline styles **/
+.pm_folders {
+    padding: 8px 0;
+    margin-top: 14px;
+}
+
+.pm_buttons {
+    margin: 0 0 5px 0;
+}
+
+.pm_header_check {
+    width: 10px;
+    min-width: 10px;
+    max-width: 10px;
+}
+
+.pm_header_info {
+    width: 150px;
+    max-width: 150px;
+}
+
+.pm_sending_date {
+    width: 150px;
+}
+
+.pm_unread {
+    background-color: #9bc0de;
+    background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(0.25, rgba(255, 255, 255, 0.15)), color-stop(0.25, transparent), color-stop(0.5, transparent), color-stop(0.5, rgba(255, 255, 255, 0.15)), color-stop(0.75, rgba(255, 255, 255, 0.15)), color-stop(0.75, transparent), to(transparent));
+    background-image: -webkit-linear-gradient(-45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    background-image: -moz-linear-gradient(-45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    background-image: -ms-linear-gradient(-45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    background-image: -o-linear-gradient(-45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    background-image: linear-gradient(-45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+
+}
+
+.pm_unread a {
+    color: #0066cc;
+}
+
+.pm_unread:hover {
+
+}
+
+.pm_user_to_from {
+    word-break: break-all
+}
+
+.pm_message_view {
+    width: 100%;
+    padding: 10px;
+}
+
+.pm_message_detail {
+    margin: 0px;
+}
+
+.pm_message_avatar {
+    width: 50px;
+    margin-right: 6px;
+}
+
+.pm_message_userTo_link {
+    margin-top: 10px;
+}

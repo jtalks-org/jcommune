@@ -108,16 +108,18 @@ function applyPollResult(poll) {
         $(this).attr("disabled", "disabled");
         $(this).hide();
     });
-    //animate charts
+    
+    //build charts
     for (var i = 0; i < poll.pollOptions.length; i++) {
         var pollOption = poll.pollOptions[i];
         var pollOptionId = pollOption.id;
         var pollPercentage = pollOption.votesCount / poll.totalVotesCount * 100;
         var roundedPollPercentage = (Math.round(pollPercentage * 100) / 100).toFixed(2);
-        var parentWidth = $(".pollChart" + pollOptionId).parent().width();
-        var width = parentWidth * pollOption.votesCount / poll.totalVotesCount;
-        $(".pollChart" + pollOptionId).animate({width:width});
-        $("#pollAnswer" + pollOptionId).text("(" + pollOption.votesCount + " - " + roundedPollPercentage + "%)");
+        $("#pollAnswer" + pollOptionId + " .chart" ).css("width", roundedPollPercentage + "%");
+		if (pollOption.votesCount > 0) {
+			$("#pollAnswer" + pollOptionId + " .chart" ).text(pollOption.votesCount);
+		}
+		$("#pollAnswer" + pollOptionId).show();
     }
     //disable and hide vote button
     $("#pollAjaxLoader").hide(); //hide the ajax loader again

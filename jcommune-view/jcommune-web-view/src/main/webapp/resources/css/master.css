@@ -1149,16 +1149,9 @@ td.button_cell {
     width: 100%;
 }
 
+/* todo remove after twitter design applying */
 .pm_header_title {
     width: 45%;
-}
-
-.pm_header_info {
-    width: 25%;
-}
-
-.pm_header_check {
-    width: 5%;
 }
 
 .messages th {
