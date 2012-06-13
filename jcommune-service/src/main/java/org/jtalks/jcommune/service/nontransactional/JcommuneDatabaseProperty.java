@@ -57,16 +57,6 @@ public enum JcommuneDatabaseProperty implements JcommuneProperty {
         }
         return defaultValue;
     }
-    
-    
-    /**
-     * Gets a name of the property.
-     * 
-     * @return a name of the property
-     */
-    String getName() {
-        return name;
-    }
 
     /**
      * Gets default value.

@@ -41,7 +41,8 @@ public class NotificationService {
 
     /**
      * @param securityService to determine the update author
-     * @param mailService     to perform actual email notifications.
+     * @param mailService     to perform actual email notifications
+     * @param notificationsEnabledProperty lets us know whether we can send notifications
      */
     public NotificationService(
             SecurityService securityService,
