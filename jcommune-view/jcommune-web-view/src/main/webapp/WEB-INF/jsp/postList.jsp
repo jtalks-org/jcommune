@@ -194,7 +194,8 @@
                      </sec:accesscontrollist>
              
                      <div class="btn-group">
-                         <a class="btn btn-mini postLink" title="Link to this post" rel="${post.id}">
+                         <a class="btn btn-mini postLink" title="Link to this post" rel="${post.id}"
+                            href="${pageContext.request.contextPath}/posts/${post.id}">
                              <i class="icon-link"></i>
                          </a>
                          <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
