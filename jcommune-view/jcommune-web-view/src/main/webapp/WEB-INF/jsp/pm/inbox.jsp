@@ -79,7 +79,7 @@
                             </c:choose>
                             <td><input type="checkbox" id="${pm.id}" class="checker"/></td>
                             <td class="pm_user_to_from">
-                                <a href="${pageContext.request.contextPath}/users/${pm.userFrom.encodedUsername}">
+                                <a href="${pageContext.request.contextPath}/users/${pm.userFrom.id}">
                                     <c:out value="${pm.userFrom.username}"/>
                                 </a>
                             </td>

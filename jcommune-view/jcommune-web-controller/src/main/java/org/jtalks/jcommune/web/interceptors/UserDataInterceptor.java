@@ -64,9 +64,6 @@ public class UserDataInterceptor extends HandlerInterceptorAdapter {
             //todo: revise the common information we actually need here
             int newPmCount = service.currentUserNewPmCount();
             request.setAttribute("newPmCount", newPmCount);
-            JCUser user = securityService.getCurrentUser();
-
-            request.setAttribute("encodedUsername", (user != null) ? user.getEncodedUsername() : null);
         }
     }
 }

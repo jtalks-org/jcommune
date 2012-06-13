@@ -288,12 +288,12 @@ public class AvatarControllerTest {
     public void testRenderAvatar(byte[] avatar, Map<String, String> expectedData) throws Exception {
         JCUser user = getUser();
         user.setAvatar(avatar);
-        when(userService.getByUsername(Matchers.<String>any())).thenReturn(user);
+        when(userService.get(anyLong())).thenReturn(user);
         HttpServletResponse response = mock(HttpServletResponse.class);
         ServletOutputStream servletOutputStream = mock(ServletOutputStream.class);
         when(response.getOutputStream()).thenReturn(servletOutputStream);
 
-        avatarController.renderAvatar(response, "");
+        avatarController.renderAvatar(response, 0L);
 
         verify(response).setContentType("image/jpeg");
         verify(response).setContentLength(avatar.length);

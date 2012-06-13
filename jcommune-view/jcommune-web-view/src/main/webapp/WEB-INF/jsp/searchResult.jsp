@@ -69,15 +69,15 @@
 	                           </a>
 	                           <br/>
 	                           <sub class="created-by">by 
-	                               <a href='${pageContext.request.contextPath}/users/${topic.topicStarter.encodedUsername}"'><c:out
-	                                   value="${topic.topicStarter.username}"/>
+	                               <a href='${pageContext.request.contextPath}/users/${topic.topicStarter.id}"'>
+                                       <c:out value="${topic.topicStarter.username}"/>
 	                               </a>
 	                           </sub>  
 	                        </td>
 	                        <td class="author-col">
-	                           <a href='${pageContext.request.contextPath}/users/${topic.topicStarter.encodedUsername}"' 
+	                           <a href='${pageContext.request.contextPath}/users/${topic.topicStarter.id}"'
 	                                title="<spring:message code="label.topic.header.author"/>">
-	                                ${topic.topicStarter.username}
+                                   <c:out value="${topic.topicStarter.username}"/>
 	                           </a>
 	                        </td>
 	                        <td class="posted-in-col">
@@ -95,7 +95,7 @@
 	                                <jtalks:format value="${topic.lastPost.creationDate}"/>
 	                            </a>
 	                            <p>by 
-	                                <a href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
+	                                <a href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.id}">
 	                                    <c:out value="${topic.lastPost.userCreated.username}"/>
 	                                </a>
 	                            </p>

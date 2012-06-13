@@ -173,27 +173,30 @@
                                 </a>
                                 <br />
                                 <sub class="created-by">by 
-                                    <a href='${pageContext.request.contextPath}/users/${topic.topicStarter.encodedUsername}"'><c:out
-                                        value="${topic.topicStarter.username}"/>
+                                    <a href='${pageContext.request.contextPath}/users/${topic.topicStarter.id}"'>
+                                        <c:out value="${topic.topicStarter.username}"/>
                                     </a>
                                 </sub>            
                             </td>
                             <td class="author-col">
-                                <a href='${pageContext.request.contextPath}/users/${topic.topicStarter.encodedUsername}"'><c:out
-                                        value="${topic.topicStarter.username}"/>
+                                <a href='${pageContext.request.contextPath}/users/${topic.topicStarter.id}'>
+                                    <c:out value="${topic.topicStarter.username}"/>
                                 </a>
                             </td>
                             <td class="posts-views">
-                                <spring:message code="label.section.header.messages"/>: <span class='test-posts-count'><c:out value="${topic.postCount}"/></span><br />
-                                <spring:message code="label.branch.header.views"/>: <span class='test-views'><c:out value="${topic.views}"/></span></td>
+                                <spring:message code="label.section.header.messages"/>:
+                                <span class='test-posts-count'><c:out value="${topic.postCount}"/></span><br />
+                                <spring:message code="label.branch.header.views"/>:
+                                <span class='test-views'><c:out value="${topic.views}"/></span>
+                            </td>
                             <td class="latest-by">
                                 <i class="icon-calendar"></i>
-                                <a class="date" href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}"><jtalks:format 
-                                    value="${topic.lastPost.creationDate}"/>
+                                <a class="date" href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}">
+                                    <jtalks:format value="${topic.lastPost.creationDate}"/>
                                 </a>
                                 <p>by 
-                                    <a href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}"><c:out 
-                                        value="${topic.lastPost.userCreated.username}"/>
+                                    <a href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.id}">
+                                        <c:out value="${topic.lastPost.userCreated.username}"/>
                                     </a>
                                 </p>
                             </td>
@@ -233,13 +236,14 @@
                     <li>
                         <c:if test="${pagination.maxPages>1}">
                             <c:if test="${pagination.pagingEnabled == true}">
-                                <a class="button"
-                                    href="?pagingEnabled=false"><spring:message code="label.showAll"/></a>
+                                <a class="button" href="?pagingEnabled=false">
+                                    <spring:message code="label.showAll"/>
+                                </a>
                             </c:if>
                         </c:if>
                         <c:if test="${pagination.pagingEnabled == false}">
-                            <a class="button"
-                                    href="?pagingEnabled=true"><spring:message code="label.showPages"/>
+                            <a class="button" href="?pagingEnabled=true">
+                                <spring:message code="label.showPages"/>
                             </a>
                         </c:if>
                     </li>
@@ -270,7 +274,7 @@
                         <c:set var='labelClass' value=''/>
                 </c:otherwise>
             </c:choose>
-            <a href="${pageContext.request.contextPath}/users/${innerUser.encodedUsername}" 
+            <a href="${pageContext.request.contextPath}/users/${innerUser.id}"
                 title="Click to view profile"
                 class='${labelClass}'>
                 <c:out value="${innerUser.username}"/>

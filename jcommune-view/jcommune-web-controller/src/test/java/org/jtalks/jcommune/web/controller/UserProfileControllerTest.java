@@ -101,13 +101,10 @@ public class UserProfileControllerTest {
         JCUser user = new JCUser("username", "email", "password");
         user.setLanguage(LANGUAGE);
         //set expectations
-        when(userService.getByUsername(USER_NAME)).thenReturn(user);
+        when(userService.get(user.getId())).thenReturn(user);
 
         //invoke the object under test
-        ModelAndView mav = profileController.showProfilePage(USER_NAME);
-
-        //check expectations
-        verify(userService).getByUsername(USER_NAME);
+        ModelAndView mav = profileController.showProfilePage(user.getId());
 
         //check result
         assertViewName(mav, "userDetails");
@@ -158,7 +155,7 @@ public class UserProfileControllerTest {
 
         ModelAndView mav = profileController.editProfile(userDto, bindingResult, response);
 
-        String expectedUrl = "redirect:/users/" + user.getEncodedUsername();
+        String expectedUrl = "redirect:/users/" + user.getId();
         assertViewName(mav, expectedUrl);
         assertEquals(response.getCookies()[0].getValue(), Language.ENGLISH.getLanguageCode());
         assertEquals(response.getCookies()[0].getName(), CookieLocaleResolver.DEFAULT_COOKIE_NAME);
@@ -209,10 +206,10 @@ public class UserProfileControllerTest {
 
 
         //invoke the object under test
-        ModelAndView mav = profileController.showUserPostList("username", 1, true);
+        ModelAndView mav = profileController.showUserPostList(user.getId(), 1, true);
 
         //check expectations
-        verify(userService).getByUsername("username");
+        verify(userService).get(user.getId());
         verify(breadcrumbBuilder).getForumBreadcrumb();
 
         //check result
