@@ -194,7 +194,8 @@
                      </sec:accesscontrollist>
              
                      <div class="btn-group">
-                         <a class="btn btn-mini postLink" title="Link to this post" rel="${post.id}">
+                         <a class="btn btn-mini postLink" title="Link to this post" rel="${post.id}"
+                            href="${pageContext.request.contextPath}/posts/${post.id}">
                              <i class="icon-link"></i>
                          </a>
                          <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
@@ -243,11 +244,16 @@
                             <spring:message code="label.topic.message_count"/>
                             <c:out value="${post.userCreated.postCount}"/>
                         </div>
-                        <div>
-                            <a href="#" title="Private message">
-                                <img src="${pageContext.request.contextPath}/resources/images/message-icon.png"/>
-                            </a>
-                        </div>
+                        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                            <c:if test='${encodedUsername != post.userCreated.encodedUsername}'>
+                                <div>
+                                    <a href="${pageContext.request.contextPath}/pm/new/${post.userCreated.encodedUsername}" 
+                                        title='<spring:message code="label.pm.send"/>'>
+                                        <img src="${pageContext.request.contextPath}/resources/images/message-icon.png"/>
+                                    </a>
+                                </div>
+                            </c:if>
+                        </sec:authorize>
                     </div>
                 </td>
                 <td class='post-content-td'>
@@ -259,9 +265,8 @@
                             <jtalks:format value="${post.modificationDate}"/>
                         </c:if>
                     </div>
-                    <hr/>
                     <div align="left">
-                        ${post.userCreated.signature}
+                        ${post.userCreated.renderedSignature}
                     </div>
                 </td>
             </tr>

@@ -2,3 +2,15 @@
 Contains specific styles for Russian locale, used mostly to handle
 different labels length in different languages.
 */
+
+#topics-table .topics-posts {
+    font-size: 11px;
+    width: 100px;
+    max-width: 100px;
+}
+
+#topics-table .posts-views {
+    font-size: 11px;
+    width: 100px;
+    max-width: 100px;
+}

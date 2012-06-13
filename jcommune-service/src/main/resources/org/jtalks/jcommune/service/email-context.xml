@@ -19,7 +19,8 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
   <!-- JCommune properties -->
-  <bean id="sendingNotificationsProperty" class="org.jtalks.jcommune.service.JcommuneProperty" factory-method="valueOf">
+  <bean id="sendingNotificationsProperty" class="org.jtalks.jcommune.service.nontransactional.JcommuneDatabaseProperty"
+        factory-method="valueOf">
     <constructor-arg type="java.lang.String" value="SENDING_NOTIFICATIONS_ENABLED"/>
     <property name="propertyDao" ref="propertyDao"/>
   </bean>

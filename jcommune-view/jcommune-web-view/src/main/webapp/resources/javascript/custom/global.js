@@ -46,5 +46,10 @@ $(document).ready(function () {
             );
         })
     })
+    
+    /** Handler to prevent multiposting. */
+    $('input[type=submit]').click(function() {
+    	$(this).attr('disabled', 'disabled');
+    });
 });
 

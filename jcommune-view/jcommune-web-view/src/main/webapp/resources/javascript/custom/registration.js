@@ -74,8 +74,10 @@ $(function () {
 
 function refreshCaptchaOnClick() {
     $("#captcha_refresh").on('click', function (e) {
-        $("#captcha_img").removeAttr("src").attr("src", $root + "/captcha/image");
-        $("#captcha_img").attr("src", $root + "/captcha/image");
+        var url = $root + "/captcha/image?param=" + $.now();
+        //this parameter forces browser to reload image every time
+        $("#captcha_img").removeAttr("src").attr("src", url);
+        $("#captcha_img").attr("src", url);
     });
 }
 ;
