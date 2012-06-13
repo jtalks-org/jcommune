@@ -14,19 +14,17 @@
  */
 package org.jtalks.jcommune.service;
 
-import org.jtalks.jcommune.model.dao.PropertyDao;
 
 /**
+ * Represents a property that is global for application.
  * 
  * @author Anuar Nurmakanov
- *
  */
 public interface JcommuneProperty {
     /**
-     * Gets the value of the property. If {@link PropertyDao} is null or the value was not
-     * found in the database, it will return default value.
+     * Gets the value of the property.
      * 
-     * @return value of property if property was found in database, otherwise default value 
+     * @return value of property if property was found, otherwise default value 
      */
     String getValue();
 }

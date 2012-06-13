@@ -20,7 +20,6 @@ import static org.testng.Assert.assertNotNull;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
 import org.jtalks.common.model.entity.Property;
-import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.PropertyDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -50,7 +49,6 @@ public class PropertyHibernateDaoTest  extends AbstractTransactionalTestNGSpring
     @BeforeMethod
     public void setUp() {
         session = sessionFactory.getCurrentSession();
-        ObjectsFactory.setSession(session);
     }
     
     /*===== Common methods =====*/

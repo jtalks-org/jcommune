@@ -20,11 +20,11 @@ import org.jtalks.jcommune.service.JcommuneProperty;
 
 
 /**
+ * Provides access to the JCommune property, which is stored in the database.
  * 
  * @author Anuar_Nurmakanov
- *
  */
-public enum JcommunePropertyEnum implements JcommuneProperty {
+public enum JcommuneDatabaseProperty implements JcommuneProperty {
     /**
      * The property to check the enabling of email notifications to subscribers of topics or branches.
      */
@@ -40,7 +40,7 @@ public enum JcommunePropertyEnum implements JcommuneProperty {
      * @param name a name of a property
      * @param defaultValue default value
      */
-    private JcommunePropertyEnum(String name, String defaultValue) {
+    private JcommuneDatabaseProperty(String name, String defaultValue) {
         this.name = name;
         this.defaultValue = defaultValue;
     }
@@ -55,6 +55,25 @@ public enum JcommunePropertyEnum implements JcommuneProperty {
                 return property.getValue();
             }
         }
+        return defaultValue;
+    }
+    
+    
+    /**
+     * Gets a name of the property.
+     * 
+     * @return a name of the property
+     */
+    String getName() {
+        return name;
+    }
+
+    /**
+     * Gets default value.
+     * 
+     * @return default value
+     */
+    String getDefaultValue() {
         return defaultValue;
     }
 
