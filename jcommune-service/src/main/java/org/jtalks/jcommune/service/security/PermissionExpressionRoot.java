@@ -18,6 +18,8 @@ import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.core.Authentication;
 
+import javax.transaction.NotSupportedException;
+
 public class PermissionExpressionRoot extends SecurityExpressionRoot {
     private PermissionEvaluator permissionEvaluator;
 
@@ -40,5 +42,16 @@ public class PermissionExpressionRoot extends SecurityExpressionRoot {
             }
         }
         return false;
+    }
+
+    public final boolean hasAnyRole(String targetId, String targetType, String permission) {
+        return permissionEvaluator.hasPermission(authentication, targetId, targetType, permission);
+    }
+
+    @Deprecated
+    public final boolean hasAnyRole(String arg, String... args) throws NotSupportedException {
+        throw new NotSupportedException("This method is not supported. " +
+                "Please use hasAnyRole(String targetId, String targetType, String permission) " +
+                "or hasAnyRole(String roles)");
     }
 }
