@@ -51,7 +51,7 @@
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
             
         <form:form action="${pageContext.request.contextPath}/topics/new?branchId=${branchId}"
-                   method="POST" modelAttribute="topicDto" class="well">
+                   method="POST" modelAttribute="topicDto" class="well anti-multipost">
             <div class='control-group'>
                 <div class='controls'>
                 <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>

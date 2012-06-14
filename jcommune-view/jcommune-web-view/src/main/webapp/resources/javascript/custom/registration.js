@@ -30,12 +30,11 @@ $(function () {
         var query;
         //data for query
         if (!firstView) {
-            query = "username=" + $('#username').val() + "&" + "password=" +
-                $('#password').val() + "&passwordConfirm=" +
-                $('#passwordConfirm').val() +
-                "&email=" + $('#email').val().replace("+", "%2B") +
-                //without this replacement "+" is decoded as " " on server side. Spaces are illegal for email
-                "&captcha=" + $('#captcha').val();
+            query = "username=" + encodeURIComponent($('#username').val()) +
+                "&password=" + encodeURIComponent($('#password').val()) +
+                "&passwordConfirm=" + encodeURIComponent($('#passwordConfirm').val()) +
+                "&email=" + encodeURIComponent($('#email').val()) +
+                "&captcha=" + encodeURIComponent($('#captcha').val());
         } else {
             query = "username=&password=&passwordConfirm=&email=&captcha&firstView=false";
         }

@@ -94,7 +94,7 @@
                                 </a>
                                 <p>
                                     by 
-                                    <a href="${pageContext.request.contextPath}/users/${branch.lastPostInLastUpdatedTopic.userCreated.encodedUsername}">
+                                    <a href="${pageContext.request.contextPath}/users/${branch.lastPostInLastUpdatedTopic.userCreated.id}">
                                         <c:out value="${branch.lastPostInLastUpdatedTopic.userCreated.username}"/>
                                     </a>
                                 </p>
@@ -124,12 +124,12 @@
             <c:forEach items="${usersRegistered}" var="user">
                 <c:choose>
                     <c:when test="${user.role=='ROLE_ADMIN'}">
-                        <a href="${pageContext.request.contextPath}/users/${user.encodedUsername}"
+                        <a href="${pageContext.request.contextPath}/users/${user.id}"
                                 title="Click to view profile"
-                                class="label label-important">${user.username}</a>
+                                class="label label-important"><c:out value="${user.username}"/></a>
                     </c:when>
                     <c:otherwise>
-                        <a href="${pageContext.request.contextPath}/users/${user.encodedUsername}"
+                        <a href="${pageContext.request.contextPath}/users/${user.id}"
                                 title="Click to view profile">
                                 <c:out value="${user.username}"/></a>
                     </c:otherwise>

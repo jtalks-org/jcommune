@@ -128,15 +128,14 @@ public class AvatarController {
      * Write user avatar in response for rendering it on html pages.
      *
      * @param response servlet response
-     * @param username {@link JCUser#getUsername()}
+     * @param id user database identifier
      * @throws NotFoundException if user with given encodedUsername not found
      * @throws IOException throws if an output exception occurred
      */
-    @RequestMapping(value = "/{username}/avatar", method = RequestMethod.GET)
-    public void renderAvatar(HttpServletResponse response,
-                             @PathVariable("username") String username) throws NotFoundException,
-            IOException {
-        JCUser user = userService.getByUsername(username);
+    @RequestMapping(value = "/users/{id}/avatar", method = RequestMethod.GET)
+    public void renderAvatar(HttpServletResponse response, @PathVariable Long id)
+        throws NotFoundException, IOException {
+        JCUser user = userService.get(id);
         byte[] avatar = user.getAvatar();
         response.setContentType("image/jpeg");
         response.setContentLength(avatar.length);

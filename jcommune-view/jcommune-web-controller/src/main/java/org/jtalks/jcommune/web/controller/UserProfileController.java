@@ -99,19 +99,15 @@ public class UserProfileController {
     }
 
     /**
-     * Show page with user info.
-     * SpEL pattern in a var name indicates we want to consume all the symbols in a var,
-     * even dots, which Spring MVC uses as file extension delimiters by default.
+     * Show user profile page with user info.
      *
-     * @param username the decoded encodedUsername from the JSP view.
+     * @param id user identifier
      * @return user details view with {@link JCUser} object.
      * @throws NotFoundException if user with given id not found.
      */
-    @RequestMapping(value = "/users/{encodedUsername:.+}", method = RequestMethod.GET)
-    public ModelAndView showProfilePage(@PathVariable("encodedUsername") String username) throws NotFoundException {
-        //The {encodedUsername} from the JSP view automatically converted to username.
-        // That's why the getByUsername() method is used instead of getByEncodedUsername().
-        JCUser user = userService.getByUsername(username);
+    @RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
+    public ModelAndView showProfilePage(@PathVariable Long id) throws NotFoundException {
+        JCUser user = userService.get(id);
         return getUserProfileModelAndView(user);
     }
 
@@ -170,7 +166,7 @@ public class UserProfileController {
         cookie.setPath("/");
         response.addCookie(cookie);
         //redirect to the view profile page
-        return new ModelAndView("redirect:/users/" + user.getEncodedUsername());
+        return new ModelAndView("redirect:/users/" + user.getId());
     }
 
     /**
@@ -180,18 +176,18 @@ public class UserProfileController {
      *
      * @param page            number current page
      * @param pagingEnabled   flag on/OffScreenImage paging
-     * @param encodedUsername encodedUsername
+     * @param id database user identifier
      * @return post list of user
      * @throws NotFoundException if user with given id not found.
      */
-    @RequestMapping(value = "/users/{encodedUsername:.+}/postList", method = RequestMethod.GET)
-    public ModelAndView showUserPostList(@PathVariable("encodedUsername") String encodedUsername,
+    @RequestMapping(value = "/users/{id}/postList", method = RequestMethod.GET)
+    public ModelAndView showUserPostList(@PathVariable Long id,
                                          @RequestParam(value = "page", defaultValue = "1",
                                                  required = false) Integer page,
                                          @RequestParam(value = "pagingEnabled", defaultValue = "true", required = false
                                          ) Boolean pagingEnabled
     ) throws NotFoundException {
-        JCUser user = userService.getByUsername(encodedUsername);
+        JCUser user = userService.get(id);
         List<Post> posts = postService.getPostsOfUser(user);
         Pagination pag = new Pagination(page, user, posts.size(), pagingEnabled);
         return new ModelAndView("userPostList")
@@ -211,7 +207,7 @@ public class UserProfileController {
     private ModelAndView getUserProfileModelAndView(JCUser user){
         return new ModelAndView("userDetails")
                 .addObject("user", user)
-                        // bind separately to get localized value
+                // bind separately to get localized value
                 .addObject("language", user.getLanguage())
                 .addObject("pageSize", Pagination.getPageSizeFor(user)); 
     }

@@ -89,30 +89,27 @@
                                     <span class='sticky'>
                                         <spring:message code="label.marked_as_announcement"/>
                                     </span>
-                                    <a href="${pageContext.request.contextPath}/topics/${item.id}">
-                                        <c:out value="${item.title}"/>
-                                    </a>
                                 </c:when>
                                 <c:when test="${item.sticked=='true'}">
                                     <span class='sticky'>
                                         <spring:message code="label.marked_as_sticked"/> 
                                     </span>
-                                    <a href="${pageContext.request.contextPath}/topics/${item.id}">
-                                        <c:out value="${item.title}"/>
-                                    </a>
                                 </c:when>
-                                <c:otherwise>
-                                    <a href="${pageContext.request.contextPath}/topics/${item.id}">
-                                        <c:out value="${item.title}"/>
-                                    </a>                                        
-                                </c:otherwise>
                             </c:choose>
+                            <c:if test="${item.hasPoll}">
+                                <a style="color: red;"
+                                       href="${pageContext.request.contextPath}/topics/${item.id}">
+                                        [POLL]</a>
+                            </c:if>
+                            <a href="${pageContext.request.contextPath}/topics/${item.id}">
+                                <c:out value="${item.title}"/>
+                            </a>
                             </td>
                             
                             <td class="author-col">
-                                <a href='${pageContext.request.contextPath}/users/${item.topicStarter.encodedUsername}"' 
+                                <a href='${pageContext.request.contextPath}/users/${item.topicStarter.id}'
                                     title="<spring:message code="label.topic.header.author"/>">
-                                    ${item.topicStarter.username}
+                                    <c:out value="${item.topicStarter.username}"/>
                                 </a>
                             </td>
                             <td class="posted-in-col">
@@ -122,8 +119,10 @@
                             </td>
                             
                             <td class="posts-views">
-                                <spring:message code="label.section.header.messages"/>: <span class='test-posts-count'><c:out value="${item.postCount}"/></span><br />
-                                <spring:message code="label.branch.header.views"/>: <span class='test-views'><c:out value="${item.views}"/></span>
+                                <spring:message code="label.section.header.messages"/>: <span class='test-posts-count'>
+                                <c:out value="${item.postCount}"/></span><br />
+                                <spring:message code="label.branch.header.views"/>: <span class='test-views'>
+                                <c:out value="${item.views}"/></span>
                             </td>
                             <td class="latest-by">
                                 <i class="icon-calendar"></i>
@@ -131,7 +130,7 @@
                                     <jtalks:format value="${item.lastPost.creationDate}"/>
                                 </a>
                                 <p>by 
-                                    <a href="${pageContext.request.contextPath}/users/${item.lastPost.userCreated.encodedUsername}">
+                                    <a href="${pageContext.request.contextPath}/users/${item.lastPost.userCreated.id}">
                                         <c:out value="${item.lastPost.userCreated.username}"/>
                                     </a>
                                 </p>

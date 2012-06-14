@@ -18,6 +18,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.service.PrivateMessageService;
+import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
@@ -62,11 +63,13 @@ public class PrivateMessageControllerTest {
     private BBCodeService bbCodeService;
     @Mock
     private SecurityService securityService;
-
+    @Mock
+    private UserService userService;
+    
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
-        controller = new PrivateMessageController(pmService, bbCodeService, securityService);
+        controller = new PrivateMessageController(pmService, bbCodeService, securityService, userService);
     }
 
     @Test
@@ -126,15 +129,23 @@ public class PrivateMessageControllerTest {
     }
 
     @Test
-    public void newPmPageWithUserSet() {
+    public void newPmPageWithUserSet() throws NotFoundException {
         //invoke the object under test
-        String username = "username";
-        ModelAndView mav = controller.newPmPageForUser(username);
+        String name = "name";
+        when(userService.get(PM_ID)).thenReturn(new JCUser(name, null, null));
+        ModelAndView mav = controller.newPmPageForUser(PM_ID);
 
         //check result
         assertViewName(mav, "pm/pmForm");
         PrivateMessageDto dto = assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
-        assertEquals(dto.getRecipient(), username);
+        assertEquals(dto.getRecipient(), name);
+    }
+    
+    @Test(expectedExceptions = NotFoundException.class)
+    public void newPmPageWithWrongUserSet() throws NotFoundException {
+        doThrow(new NotFoundException()).when(userService).get(PM_ID);
+
+        controller.newPmPageForUser(PM_ID);
     }
 
     @Test
