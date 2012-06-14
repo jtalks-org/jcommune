@@ -27,6 +27,9 @@ $(function () {
         e.preventDefault();
     });
     function signupPopup() {
+        var url = $root + "/captcha/image?param=" + $.now();
+        //this parameter forces browser to reload image every time
+        $("#captcha_img").removeAttr("src").attr("src", url).attr("src", url);
         var query;
         //data for query
         if (!firstView) {
@@ -38,7 +41,7 @@ $(function () {
         } else {
             query = "username=&password=&passwordConfirm=&email=&captcha&firstView=false";
         }
-        ;
+
         //POST-query
         $.ajax({
             type:"POST",
@@ -62,6 +65,7 @@ $(function () {
                     $.prompt(content,
                         {buttons:{OK:true}, focus:0, submit:signupPopup});
                     refreshCaptchaOnClick();
+                    document.getElementById("captcha").setAttribute("value", "");
 
                 } else {
                     $.prompt($labelRegistrationSuccess);
@@ -75,8 +79,6 @@ function refreshCaptchaOnClick() {
     $("#captcha_refresh").on('click', function (e) {
         var url = $root + "/captcha/image?param=" + $.now();
         //this parameter forces browser to reload image every time
-        $("#captcha_img").removeAttr("src").attr("src", url);
-        $("#captcha_img").attr("src", url);
+        $("#captcha_img").removeAttr("src").attr("src", url).attr("src", url);
     });
 }
-;
