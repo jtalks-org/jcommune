@@ -38,11 +38,12 @@ public interface TopicService extends EntityService<Topic> {
      *
      * @param topicId    target topic primary id.
      * @param answerBody the text of the answer
+     * @param branchId  target branch primary id.
      * @return created {@link Post}
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic not found
      */
-    Post replyToTopic(long topicId, String answerBody) throws NotFoundException;
+    Post replyToTopic(long topicId, String answerBody, long branchId) throws NotFoundException;
 
     /**
      * Add new topic with given title and body.
@@ -98,10 +99,11 @@ public interface TopicService extends EntityService<Topic> {
      * Delete topic by id.
      *
      * @param topicId topic id
+     * @param branchId branch Id
      * @return branch from which topic deleted
      * @throws NotFoundException when topic not found
      */
-    Branch deleteTopic(long topicId) throws NotFoundException;
+    Branch deleteTopic(long topicId, long branchId) throws NotFoundException;
 
     /**
      * Moves topic to another branch.

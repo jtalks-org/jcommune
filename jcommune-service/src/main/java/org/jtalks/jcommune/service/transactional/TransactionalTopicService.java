@@ -76,8 +76,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', 'GeneralPermission.WRITE')")
-    public Post replyToTopic(long topicId, String answerBody) throws NotFoundException {
+    @PreAuthorize("hasPermission(#branchId, 'org.jtalks.jcommune.model.entity.Branch', 'BranchPermission.CREATE_POSTS')")
+    public Post replyToTopic(long topicId, String answerBody, long branchId) throws NotFoundException {
         JCUser currentUser = (JCUser) securityService.getCurrentUser();
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
@@ -183,8 +183,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', 'GeneralPermission.WRITE')")
-    public Branch deleteTopic(long topicId) throws NotFoundException {
+    @PreAuthorize("hasPermission(#branchId, 'org.jtalks.jcommune.model.entity.Branch', 'BranchPermission.DELETE_TOPICS')")
+    public Branch deleteTopic(long topicId, long branchId) throws NotFoundException {
         Topic topic = get(topicId);
 
         for (Post post : topic.getPosts()) {

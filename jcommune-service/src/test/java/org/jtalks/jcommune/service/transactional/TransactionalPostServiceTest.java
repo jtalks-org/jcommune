@@ -49,6 +49,7 @@ import static org.testng.AssertJUnit.assertEquals;
 public class TransactionalPostServiceTest {
 
     private final long POST_ID = 9L;
+    private static final Long BRANCH_ID = 1L;
     private static final String USERNAME = "username";
     private static final String EMAIL = "username@mail.com";
     private static final String PASSWORD = "password";
@@ -131,7 +132,7 @@ public class TransactionalPostServiceTest {
         when(postDao.isExist(POST_ID)).thenReturn(true);
         when(postDao.get(POST_ID)).thenReturn(postForDelete);
 
-        postService.deletePost(POST_ID);
+        postService.deletePost(POST_ID, BRANCH_ID);
 
         assertEquals(user.getPostCount(), 1);
         verify(postDao).get(POST_ID);
@@ -144,7 +145,7 @@ public class TransactionalPostServiceTest {
     public void testDeleteNonExistentPost() throws NotFoundException {
         when(postDao.isExist(POST_ID)).thenReturn(false);
 
-        postService.deletePost(POST_ID);
+        postService.deletePost(POST_ID, BRANCH_ID);
     }
 
     @Test

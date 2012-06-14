@@ -68,13 +68,14 @@ public class TransactionalPrivateMessageServiceTest {
 
     private static final long PM_ID = 1L;
     private static final String USERNAME = "username";
+    private static final JCUser JC_USER = new JCUser(USERNAME, "123@123.ru", "123");
     private CompoundAclBuilder<User> aclBuilder;
 
     private static final String DRAFTS = "drafts";
     private static final String OUTBOX = "outbox";
     private static final String INBOX = "inbox";
 
-    JCUser user = new JCUser(USERNAME, "email", "password");
+    private JCUser user = new JCUser(USERNAME, "email", "password");
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -111,7 +112,7 @@ public class TransactionalPrivateMessageServiceTest {
     public void testSendMessage() throws NotFoundException {
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
-        PrivateMessage pm = pmService.sendMessage("body", "title", USERNAME);
+        PrivateMessage pm = pmService.sendMessage("body", "title", JC_USER, (JCUser) securityService.getCurrentUser());
 
         assertFalse(pm.isRead());
         assertEquals(pm.getStatus(), PrivateMessageStatus.SENT);
@@ -129,7 +130,7 @@ public class TransactionalPrivateMessageServiceTest {
     public void testSendMessageToWrongUser() throws NotFoundException {
         when(userService.getByUsername(USERNAME)).thenThrow(new NotFoundException());
 
-        PrivateMessage pm = pmService.sendMessage("body", "title", USERNAME);
+        PrivateMessage pm = pmService.sendMessage("body", "title", JC_USER, (JCUser) securityService.getCurrentUser());
 
         verify(pmDao, never()).saveOrUpdate(pm);
         verify(userService).getByUsername(USERNAME);
@@ -150,7 +151,8 @@ public class TransactionalPrivateMessageServiceTest {
     public void testSaveDraft() throws NotFoundException {
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
-        PrivateMessage pm = pmService.saveDraft(PM_ID, "body", "title", USERNAME);
+        PrivateMessage pm = pmService.saveDraft(PM_ID, "body", "title",
+                JC_USER, (JCUser) securityService.getCurrentUser());
 
         assertEquals(pm.getId(), PM_ID);
         verify(pmDao).saveOrUpdate(pm);
@@ -163,7 +165,8 @@ public class TransactionalPrivateMessageServiceTest {
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
         String recipientUsername = null;
-        pmService.saveDraft(PM_ID, "body", "title", recipientUsername);
+        pmService.saveDraft(PM_ID, "body", "title", new JCUser(recipientUsername, "123@mail.ru", "123"),
+                (JCUser) securityService.getCurrentUser());
 
         verify(userService, Mockito.never()).getByUsername(Mockito.any(String.class));
         // other verifications are covered in main test
@@ -211,7 +214,7 @@ public class TransactionalPrivateMessageServiceTest {
     public void testSendDraft() throws NotFoundException {
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
-        PrivateMessage pm = pmService.sendDraft(1L, "body", "title", USERNAME);
+        PrivateMessage pm = pmService.sendDraft(1L, "body", "title", JC_USER, (JCUser) securityService.getCurrentUser());
 
         assertFalse(pm.isRead());
         assertEquals(pm.getStatus(), PrivateMessageStatus.SENT);

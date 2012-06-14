@@ -16,7 +16,9 @@ package org.jtalks.jcommune.service.security;
 
 import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
+import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.GeneralPermission;
+import org.jtalks.common.model.permissions.ProfilePermission;
 import org.jtalks.common.security.acl.AclUtil;
 import org.jtalks.common.security.acl.GroupAce;
 import org.springframework.security.access.PermissionEvaluator;
@@ -57,7 +59,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
      */
     @Override
     public boolean hasPermission(Authentication authentication, Object groupId, Object permission) {
-        if(authentication.getPrincipal() instanceof String){
+        if (authentication.getPrincipal() instanceof String) {
             return false;
         }
         Group group = groupDao.get((Long) groupId);
@@ -127,9 +129,19 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
 
     private Permission getPermission(Object permission) {
         String permissionName = (String) permission;
+
         if ((permissionName).startsWith(GeneralPermission.class.getSimpleName())) {
             String particularPermission = permissionName.replace(GeneralPermission.class.getSimpleName() + ".", "");
             return GeneralPermission.valueOf(particularPermission);
+
+        } else if ((permissionName).startsWith(BranchPermission.class.getSimpleName())) {
+            String particularPermission = permissionName.replace(BranchPermission.class.getSimpleName() + ".", "");
+            return BranchPermission.valueOf(particularPermission);
+
+        } else if ((permissionName).startsWith(ProfilePermission.class.getSimpleName())) {
+            String particularPermission = permissionName.replace(ProfilePermission.class.getSimpleName() + ".", "");
+            return ProfilePermission.valueOf(particularPermission);
+
         } else {
             throw new IllegalArgumentException("No other permissions that GeneralPermission are supported now. " +
                     "Was specified: " + permission);

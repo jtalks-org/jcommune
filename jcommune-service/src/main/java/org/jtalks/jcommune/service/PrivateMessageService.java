@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service;
 
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
@@ -47,11 +48,12 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
      *
      * @param title     the title of the message
      * @param body      the body of the message
-     * @param recipient username of receiver
+     * @param recipient user of receiver
+     * @param userFrom  user of sender
      * @return sent message
      * @throws NotFoundException if the receiver not exists
      */
-    PrivateMessage sendMessage(String title, String body, String recipient) throws NotFoundException;
+    PrivateMessage sendMessage(String title, String body, JCUser recipient, JCUser userFrom) throws NotFoundException;
 
     /**
      * Get current user's drafts
@@ -66,11 +68,12 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
      * @param id        message id
      * @param title     the title of the message
      * @param body      the body of the message
-     * @param recipient username of receiver
+     * @param recipient user of receiver
+     * @param userFrom  user of sender
      * @return saved message
      * @throws NotFoundException if the receiver not exists
      */
-    PrivateMessage saveDraft(long id, String title, String body, String recipient) throws NotFoundException;
+    PrivateMessage saveDraft(long id, String title, String body, JCUser recipient, JCUser userFrom) throws NotFoundException;
 
     /**
      * Get count of new messages for current user.
@@ -86,11 +89,12 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
      * @param id        message id
      * @param title     the title of the message
      * @param body      the body of the message
-     * @param recipient username of receiver
+     * @param recipient user of receiver
+     * @param userFrom  user of sender
      * @return saved message
      * @throws NotFoundException if the receiver not exists
      */
-    PrivateMessage sendDraft(long id, String title, String body, String recipient) throws NotFoundException;
+    PrivateMessage sendDraft(long id, String title, String body, JCUser recipient, JCUser userFrom) throws NotFoundException;
 
     /**
      * Delete or change status of messages by id.

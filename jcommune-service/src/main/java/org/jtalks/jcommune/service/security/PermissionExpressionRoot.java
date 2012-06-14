@@ -48,6 +48,10 @@ public class PermissionExpressionRoot extends SecurityExpressionRoot {
         return permissionEvaluator.hasPermission(authentication, targetId, targetType, permission);
     }
 
+    public final boolean hasAnyRole(long targetId, String targetType, String permission) {
+        return permissionEvaluator.hasPermission(authentication, targetId, targetType, permission);
+    }
+
     @Deprecated
     public final boolean hasAnyRole(String arg, String... args) throws NotSupportedException {
         throw new NotSupportedException("This method is not supported. " +

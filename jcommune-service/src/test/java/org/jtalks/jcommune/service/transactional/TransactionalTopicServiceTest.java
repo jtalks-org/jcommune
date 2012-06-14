@@ -42,8 +42,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 /**
  * This test cover {@code TransactionalTopicService} logic validation.
@@ -122,7 +122,7 @@ public class TransactionalTopicServiceTest {
         when(topicDao.get(TOPIC_ID)).thenReturn(answeredTopic);
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
-        Post createdPost = topicService.replyToTopic(TOPIC_ID, ANSWER_BODY);
+        Post createdPost = topicService.replyToTopic(TOPIC_ID, ANSWER_BODY, BRANCH_ID);
 
         assertEquals(createdPost.getPostContent(), ANSWER_BODY);
         assertEquals(createdPost.getUserCreated(), user);
@@ -193,7 +193,7 @@ public class TransactionalTopicServiceTest {
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(topic);
 
-        Branch branchFromWhichTopicDeleted = topicService.deleteTopic(TOPIC_ID);
+        Branch branchFromWhichTopicDeleted = topicService.deleteTopic(TOPIC_ID, BRANCH_ID);
 
         assertEquals(branchFromWhichTopicDeleted, branch);
         assertEquals(branch.getTopicCount(), 0);
@@ -207,7 +207,7 @@ public class TransactionalTopicServiceTest {
     public void testDeleteNonExistentTopic() throws NotFoundException {
         when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
-        topicService.deleteTopic(TOPIC_ID);
+        topicService.deleteTopic(TOPIC_ID, BRANCH_ID);
     }
 
     @Test

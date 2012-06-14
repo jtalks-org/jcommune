@@ -101,7 +101,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
+    @PreAuthorize("hasAnyRole(#branch.id, 'org.jtalks.jcommune.model.entity.Branch', 'BranchPermission.VIEW_TOPICS')")
     public void markAllTopicsAsRead(Branch branch) {
         JCUser user = (JCUser) securityService.getCurrentUser();
         for (Topic topic : branch.getTopics()) {
@@ -120,7 +120,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      * @param pagingEnabled if paging is enabled on page. If so, last post index in topic is returned
      * @return new last post index, counting from 0
      */
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
+    @PreAuthorize("hasAnyRole(#topic.branch.id, 'org.jtalks.jcommune.model.entity.Branch', 'BranchPermission.VIEW_TOPICS')")
     private int calculatePostIndex(JCUser user, Topic topic, int pageNum, boolean pagingEnabled) {
         if (pagingEnabled) {  // last post on the page given
             int maxPostIndex = user.getPageSize() * pageNum - 1;
@@ -138,7 +138,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      * @param topic     topic to store info for
      * @param postIndex actual post index, starting from 0
      */
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
+    @PreAuthorize("hasAnyRole(#topic.branch.id, 'org.jtalks.jcommune.model.entity.Branch', 'BranchPermission.VIEW_TOPICS')")
     private void saveLastReadPost(JCUser user, Topic topic, int postIndex) {
         LastReadPost post = lastReadPostDao.getLastReadPost(user, topic);
         if (post == null) {
@@ -153,7 +153,7 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN,ROLE_USER')")
+    @PreAuthorize("hasAnyRole(#topic.branch.id, 'org.jtalks.jcommune.model.entity.Branch', 'BranchPermission.VIEW_TOPICS')")
     public void updateLastReadPostsWhenPostIsDeleted(Post post) {
         List<LastReadPost> lastReadPosts = lastReadPostDao.listLastReadPostsForTopic(post.getTopic());
         for (LastReadPost lastReadPost : lastReadPosts) {
