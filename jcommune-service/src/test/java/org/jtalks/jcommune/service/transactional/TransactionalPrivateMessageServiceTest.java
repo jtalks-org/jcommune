@@ -27,7 +27,6 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.UserDataCacheService;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -37,14 +36,9 @@ import java.util.Arrays;
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 /**
  * @author Pavel Vervenko
@@ -124,16 +118,6 @@ public class TransactionalPrivateMessageServiceTest {
         verify(aclBuilder).on(pm);
     }
 
-    @Test(expectedExceptions = NotFoundException.class)
-    public void testSendMessageToWrongUser() throws NotFoundException {
-        when(userService.getByUsername(USERNAME)).thenThrow(new NotFoundException());
-
-        PrivateMessage pm = pmService.sendMessage("body", "title", JC_USER, (JCUser) securityService.getCurrentUser());
-
-        verify(pmDao, never()).saveOrUpdate(pm);
-        verify(userService).getByUsername(USERNAME);
-    }
-
     @Test
     public void testGetDraftsFromCurrentUser() {
         when(pmDao.getDraftsFromUser(user)).thenReturn(new ArrayList<PrivateMessage>());
@@ -159,15 +143,16 @@ public class TransactionalPrivateMessageServiceTest {
     }
 
     @Test
-    public void testSaveDraftRecipientUsernameNull() throws NotFoundException {
+    public void testSaveDraftRecipientUserNull() throws NotFoundException {
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
-        String recipientUsername = null;
-        pmService.saveDraft(PM_ID, "body", "title", new JCUser(recipientUsername, "123@mail.ru", "123"),
+        PrivateMessage pm = pmService.saveDraft(PM_ID, "body", "title", null,
                 (JCUser) securityService.getCurrentUser());
 
-        verify(userService, Mockito.never()).getByUsername(Mockito.any(String.class));
-        // other verifications are covered in main test
+        assertEquals(pm.getId(), PM_ID);
+        verify(pmDao).saveOrUpdate(pm);
+        verify(aclBuilder).grant(GeneralPermission.WRITE);
+        verify(aclBuilder).on(pm);
     }
 
     @Test

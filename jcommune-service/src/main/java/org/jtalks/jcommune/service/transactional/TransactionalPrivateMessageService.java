@@ -93,7 +93,7 @@ public class TransactionalPrivateMessageService
      */
     @Override
     @PreAuthorize("hasPermission(#userFrom.id, 'org.jtalks.jcommune.model.entity.JCUser', 'ProfilePermission.SEND_PRIVATE_MESSAGES')")
-    public PrivateMessage sendMessage(String title, String body, JCUser recipient, JCUser userFrom) throws NotFoundException {
+    public PrivateMessage sendMessage(String title, String body, JCUser recipient, JCUser userFrom) {
 
         PrivateMessage pm = new PrivateMessage(recipient, userFrom, title, body);
         pm.setRead(false);
@@ -126,11 +126,7 @@ public class TransactionalPrivateMessageService
      */
     @Override
     @PreAuthorize("hasPermission(#userFrom.id, 'org.jtalks.jcommune.model.entity.JCUser', 'ProfilePermission.SEND_PRIVATE_MESSAGES')")
-    public PrivateMessage saveDraft(long id, String title, String body, JCUser recipient, JCUser userFrom)
-            throws NotFoundException {
-        if (recipient != null) {
-            recipient = userService.getByUsername(recipient.getUsername());
-        }
+    public PrivateMessage saveDraft(long id, String title, String body, JCUser recipient, JCUser userFrom) {
         PrivateMessage pm = new PrivateMessage(recipient, userFrom, title, body);
         pm.setId(id);
         pm.setStatus(PrivateMessageStatus.DRAFT);

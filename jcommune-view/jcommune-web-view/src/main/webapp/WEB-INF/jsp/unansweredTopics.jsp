@@ -89,24 +89,21 @@
                                     <span class='sticky'>
                                         <spring:message code="label.marked_as_announcement"/>
                                     </span>
-                                    <a href="${pageContext.request.contextPath}/topics/${item.id}">
-                                        <c:out value="${item.title}"/>
-                                    </a>
                                 </c:when>
                                 <c:when test="${item.sticked=='true'}">
                                     <span class='sticky'>
                                         <spring:message code="label.marked_as_sticked"/> 
                                     </span>
-                                    <a href="${pageContext.request.contextPath}/topics/${item.id}">
-                                        <c:out value="${item.title}"/>
-                                    </a>
                                 </c:when>
-                                <c:otherwise>
-                                    <a href="${pageContext.request.contextPath}/topics/${item.id}">
-                                        <c:out value="${item.title}"/>
-                                    </a>                                        
-                                </c:otherwise>
                             </c:choose>
+                            <c:if test="${item.hasPoll}">
+                                <a style="color: red;"
+                                       href="${pageContext.request.contextPath}/topics/${item.id}">
+                                        [POLL]</a>
+                            </c:if>
+                            <a href="${pageContext.request.contextPath}/topics/${item.id}">
+                                <c:out value="${item.title}"/>
+                            </a>
                             </td>
                             
                             <td class="author-col">

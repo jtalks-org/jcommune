@@ -41,7 +41,7 @@
         
         <form:form name="editForm"
                    action="${pageContext.request.contextPath}/topics/${topicId}/edit?branchId=${branchId}"
-                   method="POST" modelAttribute="topicDto" class='well'>
+                   method="POST" modelAttribute="topicDto" class='well anti-multipost'>
             <form:hidden path="id"/>
             
             <div class='control-group'>
