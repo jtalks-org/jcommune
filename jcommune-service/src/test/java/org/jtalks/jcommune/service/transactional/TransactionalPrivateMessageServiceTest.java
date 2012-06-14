@@ -116,8 +116,6 @@ public class TransactionalPrivateMessageServiceTest {
 
         assertFalse(pm.isRead());
         assertEquals(pm.getStatus(), PrivateMessageStatus.SENT);
-        verify(securityService).getCurrentUser();
-        verify(userService).getByUsername(USERNAME);
         verify(userDataCache).incrementNewMessageCountFor(USERNAME);
         verify(mailService).sendReceivedPrivateMessageNotification(userService.getByUsername(USERNAME), pm);
         verify(pmDao).saveOrUpdate(pm);
@@ -218,8 +216,6 @@ public class TransactionalPrivateMessageServiceTest {
 
         assertFalse(pm.isRead());
         assertEquals(pm.getStatus(), PrivateMessageStatus.SENT);
-        verify(securityService).getCurrentUser();
-        verify(userService).getByUsername(USERNAME);
         verify(userDataCache).incrementNewMessageCountFor(USERNAME);
         verify(mailService).sendReceivedPrivateMessageNotification(userService.getByUsername(USERNAME), pm);
         verify(pmDao).saveOrUpdate(pm);
