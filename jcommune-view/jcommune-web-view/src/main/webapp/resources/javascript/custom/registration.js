@@ -27,9 +27,6 @@ $(function () {
         e.preventDefault();
     });
     function signupPopup() {
-        var url = $root + "/captcha/image?param=" + $.now();
-        //this parameter forces browser to reload image every time
-        $("#captcha_img").removeAttr("src").attr("src", url).attr("src", url);
         var query;
         //data for query
         if (!firstView) {
@@ -64,6 +61,9 @@ $(function () {
                     firstView = false;
                     $.prompt(content,
                         {buttons:{OK:true}, focus:0, submit:signupPopup});
+                    var url = $root + "/captcha/image?param=" + $.now();
+                    //this parameter forces browser to reload image every time
+                    $("#captcha_img").removeAttr("src").attr("src", url).attr("src", url);
                     refreshCaptchaOnClick();
                     document.getElementById("captcha").setAttribute("value", "");
 
