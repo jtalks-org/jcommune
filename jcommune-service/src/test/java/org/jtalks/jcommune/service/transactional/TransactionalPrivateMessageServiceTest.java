@@ -120,7 +120,7 @@ public class TransactionalPrivateMessageServiceTest {
         verify(mailService).sendReceivedPrivateMessageNotification(JC_USER, pm);
         verify(pmDao).saveOrUpdate(pm);
         verify(aclBuilder).grant(GeneralPermission.READ);
-        verify(aclBuilder).to(userService.getByUsername(USERNAME));
+        verify(aclBuilder).to(JC_USER);
         verify(aclBuilder).on(pm);
     }
 
@@ -220,7 +220,7 @@ public class TransactionalPrivateMessageServiceTest {
         verify(mailService).sendReceivedPrivateMessageNotification(JC_USER, pm);
         verify(pmDao).saveOrUpdate(pm);
         verify(securityService).deleteFromAcl(pm);
-        verify(aclBuilder).to(userService.getByUsername(USERNAME));
+        verify(aclBuilder).to(JC_USER);
         verify(aclBuilder).grant(GeneralPermission.READ);
         verify(aclBuilder).on(pm);
     }
