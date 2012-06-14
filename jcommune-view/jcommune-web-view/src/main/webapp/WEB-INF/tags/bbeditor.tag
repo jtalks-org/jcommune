@@ -19,6 +19,7 @@
 <%@ attribute name="postText" required="false" rtexprvalue="true" type="java.lang.String" %>
 <%@ attribute name="bodyParameterName" required="true" rtexprvalue="true" type="java.lang.String" %>
 <%@ attribute name="labelForAction" required="true" rtexprvalue="true" type="java.lang.String" %>
+<%@ attribute name="notifyOnAnswers" required="false" rtexprvalue="true" type="java.lang.String" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -164,7 +165,7 @@
 <div class="control-group">
     <spring:message code="label.answer.options"/>
     <br/>
-    <input id="notify" type="checkbox" name="notify" checked="checked" style="margin-right: 10px;"/><spring:message
+    <form:checkbox id="notify" path="notifyOnAnswers" name="notify" checked="checked" style="margin-right: 10px;"/><spring:message
         code="label.answer.notify_message"/>
     <br/>
     <input id="nosmiles" type="checkbox" name="nosmiles" checked="checked" style="margin-right: 10px;"/><spring:message

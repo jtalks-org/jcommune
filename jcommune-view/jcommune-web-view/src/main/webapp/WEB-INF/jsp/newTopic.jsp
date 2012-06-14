@@ -67,7 +67,8 @@
             <jtalks:bbeditor labelForAction="label.addtopic"
                              postText="${topicDto.bodyText}"
                              bodyParameterName="bodyText"
-                             back="${pageContext.request.contextPath}/branches/${branchId}"/>
+                             back="${pageContext.request.contextPath}/branches/${branchId}"
+                             notifyOnAnswers="${topicDto.notifyOnAnswers}"/>
             <br/>
             <br/>
             <jtalks:newPoll titleNameValue="pollTitle"
