@@ -217,7 +217,7 @@ public class TransactionalPrivateMessageServiceTest {
         assertFalse(pm.isRead());
         assertEquals(pm.getStatus(), PrivateMessageStatus.SENT);
         verify(userDataCache).incrementNewMessageCountFor(USERNAME);
-        verify(mailService).sendReceivedPrivateMessageNotification(userService.getByUsername(USERNAME), pm);
+        verify(mailService).sendReceivedPrivateMessageNotification(JC_USER, pm);
         verify(pmDao).saveOrUpdate(pm);
         verify(securityService).deleteFromAcl(pm);
         verify(aclBuilder).to(userService.getByUsername(USERNAME));
