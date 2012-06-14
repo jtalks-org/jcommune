@@ -262,7 +262,7 @@ public class TransactionalTopicServiceTest {
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(topic);
 
-        topicService.updateTopic(TOPIC_ID, newTitle, newBody, newWeight, newSticked, newAnnouncement);
+        topicService.updateTopic(TOPIC_ID, newTitle, newBody, newWeight, newSticked, newAnnouncement, false);
 
         assertEquals(topic.getTitle(), newTitle);
         assertEquals(post.getPostContent(), newBody);
@@ -314,7 +314,7 @@ public class TransactionalTopicServiceTest {
         boolean newAnnouncement = false;
         when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
-        topicService.updateTopic(TOPIC_ID, newTitle, newBody, newWeight, newSticked, newAnnouncement);
+        topicService.updateTopic(TOPIC_ID, newTitle, newBody, newWeight, newSticked, newAnnouncement, false);
     }
 
     @Test

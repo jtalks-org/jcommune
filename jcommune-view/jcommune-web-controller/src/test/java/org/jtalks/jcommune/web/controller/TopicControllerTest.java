@@ -274,7 +274,8 @@ public class TopicControllerTest {
         ModelAndView mav = controller.editTopic(dto, bindingResult, BRANCH_ID, TOPIC_ID);
 
         //check expectations
-        verify(topicService).updateTopic(TOPIC_ID, TOPIC_THEME, TOPIC_CONTENT, TOPIC_WEIGHT, STICKED, ANNOUNCEMENT);
+        verify(topicService).updateTopic(TOPIC_ID, TOPIC_THEME, TOPIC_CONTENT, TOPIC_WEIGHT, STICKED, ANNOUNCEMENT,
+                false);
 
         //check result
         assertViewName(mav, "redirect:/topics/" + TOPIC_ID);
@@ -295,7 +296,8 @@ public class TopicControllerTest {
         assertEquals(branchId, BRANCH_ID);
         assertEquals(topicId, TOPIC_ID);
 
-        verify(topicService, never()).updateTopic(anyLong(), anyString(), anyString(), anyInt(), anyBoolean(), anyBoolean());
+        verify(topicService, never()).updateTopic(anyLong(), anyString(), anyString(), anyInt(), anyBoolean(),
+                anyBoolean(), anyBoolean());
     }
 
     @Test

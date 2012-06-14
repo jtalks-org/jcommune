@@ -268,7 +268,8 @@ public class TopicController {
         }
 
         topicService.updateTopic(topicDto.getId(), topicDto.getTopicName(), topicDto.getBodyText(),
-                topicDto.getTopicWeight(), topicDto.isSticked(), topicDto.isAnnouncement());
+                topicDto.getTopicWeight(), topicDto.isSticked(), topicDto.isAnnouncement(),
+                topicDto.isNotifyOnAnswers());
 
         return new ModelAndView("redirect:/topics/" + topicId);
     }

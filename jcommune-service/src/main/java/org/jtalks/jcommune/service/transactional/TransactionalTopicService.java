@@ -107,7 +107,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      */
     @Override
     @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
-    public Topic createTopic(String topicName, String bodyText, long branchId, boolean isNotifyOnAnswers)
+    public Topic createTopic(String topicName, String bodyText, long branchId, boolean notifyOnAnswers)
             throws NotFoundException {
         JCUser currentUser = securityService.getCurrentUser();
 
@@ -123,25 +123,13 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
                 .user(currentUser.getUsername()).role(ROLE_ADMIN).admin().on(first);
         notificationService.branchChanged(branch);
 
-        subscribeOnTopicIfNotificationsEnabled(isNotifyOnAnswers, topic);
+        subscribeOnTopicIfNotificationsEnabled(notifyOnAnswers, topic, currentUser);
 
         logger.debug("Created new topic id={}, branch id={}, author={}",
                 new Object[]{topic.getId(), branchId, currentUser.getUsername()});
         logger.info("Created new topic: \"{}\". Author: {}", topicName, currentUser.getUsername());
 
         return topic;
-    }
-
-    /**
-     * Subscribes topic starter on created topic if notifications enabled("Notify me about the answer" checkbox).
-     *
-     * @param isNotifyOnAnswers flag that indicates notifications state(enabled or disabled)
-     * @param topic             topic to subscription
-     */
-    private void subscribeOnTopicIfNotificationsEnabled(boolean isNotifyOnAnswers, Topic topic) {
-        if (isNotifyOnAnswers) {
-            subscriptionService.toggleTopicSubscription(topic);
-        }
     }
 
 
@@ -170,7 +158,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', admin)")
     public void updateTopic(long topicId, String topicName, String bodyText)
             throws NotFoundException {
-        updateTopic(topicId, topicName, bodyText, 0, false, false);
+        updateTopic(topicId, topicName, bodyText, 0, false, false, false);
     }
 
     /**
@@ -179,7 +167,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @Override
     @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', admin)")
     public void updateTopic(long topicId, String topicName, String bodyText, int topicWeight,
-                            boolean sticked, boolean announcement) throws NotFoundException {
+                            boolean sticked, boolean announcement, boolean notifyOnAnswers) throws NotFoundException {
         Topic topic = get(topicId);
         topic.setTitle(topicName);
         topic.setTopicWeight(topicWeight);
@@ -191,9 +179,26 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         topic.updateModificationDate();
         this.getDao().update(topic);
         notificationService.topicChanged(topic);
+        JCUser currentUser = securityService.getCurrentUser();
+        subscribeOnTopicIfNotificationsEnabled(notifyOnAnswers, topic, currentUser);
 
         logger.debug("Topic id={} updated", topic.getId());
     }
+
+    /**
+     * Subscribes topic starter on created topic if notifications enabled("Notify me about the answer" checkbox).
+     *
+     * @param notifyOnAnswers flag that indicates notifications state(enabled or disabled)
+     * @param topic           topic to subscription
+     * @param currentUser     current user
+     */
+    private void subscribeOnTopicIfNotificationsEnabled(boolean notifyOnAnswers, Topic topic, JCUser currentUser) {
+        boolean subscribed = topic.getSubscribers().contains(currentUser);
+        if (notifyOnAnswers && !subscribed || !notifyOnAnswers && subscribed) {
+            subscriptionService.toggleTopicSubscription(topic);
+        }
+    }
+
 
     /**
      * {@inheritDoc}
