@@ -84,13 +84,12 @@
                             </c:choose>
                         </td>
                         <td>
-                            <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                                <c:if test="${votingPossible}">
-                                    <a style="color: red;"
-                                           href="${pageContext.request.contextPath}/topics/${topic.id}">
-                                            [POLL]</a>
-                                </c:if>
-                            </sec:authorize>
+                            <c:if test="${topic.hasPoll}">
+                                <a style="color: red;"
+                                       href="${pageContext.request.contextPath}/topics/${topic.id}">
+                                        [POLL]</a>
+                            </c:if>
+                            
                             <a href="${pageContext.request.contextPath}/topics/${topic.id}">
                                 <c:out value="${topic.title}"/>
                             </a>
