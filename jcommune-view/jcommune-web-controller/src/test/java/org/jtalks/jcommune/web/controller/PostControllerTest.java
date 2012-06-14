@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.common.security.SecurityService;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -37,6 +38,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
@@ -84,7 +86,11 @@ public class PostControllerTest {
                 lastReadPostService, securityService);
         when(topicService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
-        topic = new Topic(null, "");
+        topic = mock(Topic.class);
+        Branch branch=new Branch("","");
+        branch.setId(BRANCH_ID);
+        when(topic.getBranch()).thenReturn(branch);
+        when(topic.getId()).thenReturn(TOPIC_ID);
     }
 
     @Test
@@ -96,8 +102,12 @@ public class PostControllerTest {
 
     @Test
     public void testDeletePost() throws NotFoundException {
-        Post post = new Post(null, null);
-        topic.setId(TOPIC_ID);
+        Post post = mock(Post.class);
+        when(post.getTopic()).thenReturn(topic);
+
+        List<Post> posts=new ArrayList<Post>();
+        posts.add(post);
+        when(topic.getPosts()).thenReturn(posts);
         topic.addPost(post);
         when(postService.get(Matchers.<Long>any())).thenReturn(post);
         //invoke the object under test
@@ -232,7 +242,7 @@ public class PostControllerTest {
         Post post = new Post(null, null);
         topic.addPost(post);
         topic.setId(TOPIC_ID);
-        when(topicService.replyToTopic(anyLong(), Matchers.<String>any(), BRANCH_ID)).thenReturn(post);
+        when(topicService.replyToTopic(anyLong(), Matchers.<String>any(), eq(BRANCH_ID))).thenReturn(post);
         when(postService.calculatePageForPost(post)).thenReturn(1);
         when(postService.get(Matchers.<Long>any())).thenReturn(post);
         //invoke the object under test
@@ -253,7 +263,7 @@ public class PostControllerTest {
         ModelAndView mav = controller.create(getDto(), resultWithErrors);
 
         //check expectations
-        verify(topicService, never()).replyToTopic(anyLong(), anyString(), BRANCH_ID);
+        verify(topicService, never()).replyToTopic(anyLong(), anyString(), eq(BRANCH_ID));
 
         //check result
         assertViewName(mav, "answer");

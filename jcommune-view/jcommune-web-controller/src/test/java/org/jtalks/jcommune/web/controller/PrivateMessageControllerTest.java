@@ -153,7 +153,10 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void sendMessage() throws NotFoundException {
+        when(userService.getByUsername(USERNAME)).thenReturn(JC_USER);
+        when(securityService.getCurrentUser()).thenReturn(JC_USER);
         PrivateMessageDto dto = getPrivateMessageDto();
+        dto.setRecipient(USERNAME);
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
 
         String view = controller.sendMessage(dto, bindingResult);
@@ -164,7 +167,10 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void sendDraftMessage() throws NotFoundException {
+        when(userService.getByUsername(USERNAME)).thenReturn(JC_USER);
+        when(securityService.getCurrentUser()).thenReturn(JC_USER);
         PrivateMessageDto dto = getPrivateMessageDto();
+        dto.setRecipient(USERNAME);
         dto.setId(4);
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
 
@@ -291,7 +297,10 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void saveDraft() throws NotFoundException {
+        when(userService.getByUsername(USERNAME)).thenReturn(JC_USER);
+        when(securityService.getCurrentUser()).thenReturn(JC_USER);
         PrivateMessageDto dto = getPrivateMessageDto();
+        dto.setRecipient(USERNAME);
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
 
         String view = controller.saveDraft(dto, bindingResult);
