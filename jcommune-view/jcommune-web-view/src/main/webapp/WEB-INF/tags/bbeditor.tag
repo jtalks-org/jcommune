@@ -163,13 +163,8 @@
 
 
 <div class="control-group">
-    <spring:message code="label.answer.options"/>
-    <br/>
     <form:checkbox id="notify" path="notifyOnAnswers" name="notify" checked="checked" style="margin-right: 10px;"/><spring:message
         code="label.answer.notify_message"/>
-    <br/>
-    <input id="nosmiles" type="checkbox" name="nosmiles" checked="checked" style="margin-right: 10px;"/><spring:message
-        code="label.answer.no_smiles"/>
 </div>
 
 

@@ -30,12 +30,11 @@ $(function () {
         var query;
         //data for query
         if (!firstView) {
-            query = "username=" + $('#username').val() + "&" + "password=" +
-                $('#password').val() + "&passwordConfirm=" +
-                $('#passwordConfirm').val() +
-                "&email=" + $('#email').val().replace("+", "%2B") +
-                //without this replacement "+" is decoded as " " on server side. Spaces are illegal for email
-                "&captcha=" + $('#captcha').val();
+            query = "username=" + encodeURIComponent($('#username').val()) +
+                "&password=" + encodeURIComponent($('#password').val()) +
+                "&passwordConfirm=" + encodeURIComponent($('#passwordConfirm').val()) +
+                "&email=" + encodeURIComponent($('#email').val()) +
+                "&captcha=" + encodeURIComponent($('#captcha').val());
         } else {
             query = "username=&password=&passwordConfirm=&email=&captcha&firstView=false";
         }
@@ -74,9 +73,10 @@ $(function () {
 
 function refreshCaptchaOnClick() {
     $("#captcha_refresh").on('click', function (e) {
-        var kostylForFirefox = $.now();
-        $("#captcha_img").removeAttr("src").attr("src", $root + "/captcha/image" + "?kostylForFirefox=" + kostylForFirefox);
-        $("#captcha_img").attr("src", $root + "/captcha/image" + "?kostylForFirefox=" + kostylForFirefox);
+        var url = $root + "/captcha/image?param=" + $.now();
+        //this parameter forces browser to reload image every time
+        $("#captcha_img").removeAttr("src").attr("src", url);
+        $("#captcha_img").attr("src", url);
     });
 }
 ;

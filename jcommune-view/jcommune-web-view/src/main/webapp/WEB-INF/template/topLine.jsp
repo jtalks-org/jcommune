@@ -73,7 +73,7 @@
                             <c:if test="${newPmCount != null}">
                                 (<span id="new-pm-count" title="You have ${newPmCount} new messages">
                                     <i class="icon-envelope icon-white" style="vertical-align:middle;"></i>
-                                    ${newPmCount}
+                                    <span class='test-pm-count'>${newPmCount}</span>
                                  </span>)
                             </c:if>
                         </a>

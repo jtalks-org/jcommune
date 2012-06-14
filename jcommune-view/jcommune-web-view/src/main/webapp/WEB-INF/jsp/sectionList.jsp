@@ -82,9 +82,9 @@
                                 <a href="#">Vurn</a>
                             </div> 
                         </td>
-                        <td class="posts-views">
-                            <spring:message code="label.section.header.topics"/>: <c:out value="${branch.topicCount}"/><br />
-                            <spring:message code="label.section.header.messages"/>: <c:out value="${branch.postCount}"/></td>
+                        <td class="topics-posts">
+                            <spring:message code="label.section.header.topics"/>: <span class='test-topics-count'><c:out value="${branch.topicCount}"/></span><br />
+                            <spring:message code="label.section.header.messages"/>: <span class='test-posts-count'><c:out value="${branch.postCount}"/></span></td>
                             
                         <td class="latest-by">
                             <c:if test="${branch.topicCount>0}">
@@ -94,7 +94,7 @@
                                 </a>
                                 <p>
                                     by 
-                                    <a href="${pageContext.request.contextPath}/users/${branch.lastPostInLastUpdatedTopic.userCreated.encodedUsername}">
+                                    <a href="${pageContext.request.contextPath}/users/${branch.lastPostInLastUpdatedTopic.userCreated.id}">
                                         <c:out value="${branch.lastPostInLastUpdatedTopic.userCreated.username}"/>
                                     </a>
                                 </p>
@@ -108,28 +108,28 @@
     <!-- END OF Topics table -->
     
     <div class="well forum-sections-stats-container">
-        <strong><spring:message code="label.onlineUsersInfo.messagesCount"/> </strong><c:out value="${messagesCount}"/>
+        <strong><spring:message code="label.onlineUsersInfo.messagesCount"/> </strong><span class="test-messages"><c:out value="${messagesCount}"/></span>
         <br />
-        <strong><spring:message code="label.onlineUsersInfo.registeredUsers.count"/> </strong><c:out value="${registeredUsersCount}"/>
+        <strong><spring:message code="label.onlineUsersInfo.registeredUsers.count"/> </strong><span class="test-registered-users"><c:out value="${registeredUsersCount}"/></span>
     </div>
     
     <!-- Users -->
     <div id="users-stats" class="well forum-sections-userstats-container">
-        <strong><spring:message code="label.onlineUsersInfo.visitors"/> </strong><c:out value="${visitors}"/>, 
-        <spring:message code="label.onlineUsersInfo.visitors.registered"/> <c:out value="${visitorsRegistered}"/>, 
-        <spring:message code="label.onlineUsersInfo.visitors.guests"/> <c:out value="${visitorsGuests}"/> 
+        <strong><spring:message code="label.onlineUsersInfo.visitors"/> </strong><span class='test-visitors-total'><c:out value="${visitors}"/></span>, 
+        <spring:message code="label.onlineUsersInfo.visitors.registered"/> <span class='test-visitors-registered'><c:out value="${visitorsRegistered}"/></span>, 
+        <spring:message code="label.onlineUsersInfo.visitors.guests"/> <span class='test-visitors-guests'><c:out value="${visitorsGuests}"/></span> 
         <br />
         <c:if test="${!(empty usersRegistered)}">
             <strong><spring:message code="label.onlineUsersInfo.registeredUsers"/></strong>
             <c:forEach items="${usersRegistered}" var="user">
                 <c:choose>
                     <c:when test="${user.role=='ROLE_ADMIN'}">
-                        <a href="${pageContext.request.contextPath}/users/${user.encodedUsername}"
+                        <a href="${pageContext.request.contextPath}/users/${user.id}"
                                 title="Click to view profile"
-                                class="label label-important">${user.username}</a>
+                                class="label label-important"><c:out value="${user.username}"/></a>
                     </c:when>
                     <c:otherwise>
-                        <a href="${pageContext.request.contextPath}/users/${user.encodedUsername}"
+                        <a href="${pageContext.request.contextPath}/users/${user.id}"
                                 title="Click to view profile">
                                 <c:out value="${user.username}"/></a>
                     </c:otherwise>

@@ -36,7 +36,7 @@
         <h2><a class="heading" href="${pageContext.request.contextPath}/topics/${topic.id}"><c:out value="${topic.title}"/></a></h2>
                
         <form:form action="${pageContext.request.contextPath}/posts/new?topicId=${topicId}&page=${page}"
-                   method="POST" modelAttribute="postDto" class='well'>
+                   method="POST" modelAttribute="postDto" class='well anti-multipost'>
             <form:hidden path="topicId"/>
             
             <jtalks:bbeditor labelForAction="label.answer"

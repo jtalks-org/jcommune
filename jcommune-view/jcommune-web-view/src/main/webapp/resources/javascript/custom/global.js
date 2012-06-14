@@ -46,5 +46,14 @@ $(document).ready(function () {
             );
         })
     })
+    
+    /** Handler to prevent multiposting. */
+    $('form.anti-multipost').submit(function() {
+		if ($(this).attr('submitted')) 
+		{
+			return false;
+		}
+		$(this).attr('submitted','true');    	
+    });
 });
 

@@ -256,7 +256,9 @@ public class PostController {
      */
     @RequestMapping(method = RequestMethod.POST, value = "/posts/bbToHtml")
     public ResponseEntity<String> preview(@RequestParam(POST_BB_CONTENT) String bbContent) {
+        JCUser user = securityService.getCurrentUser();
         String post = bbCodeService.convertBbToHtml(bbContent);
+        post += user.getRenderedSignature();
         return new ResponseEntity<String>(post, HttpStatus.OK);
     }
 }

@@ -38,7 +38,7 @@
 
         <div id="answer">
             <form:form action="${pageContext.request.contextPath}/posts/${postId}/edit?topicId=${topicId}"
-                       method="POST" modelAttribute="postDto" class='well'>
+                       method="POST" modelAttribute="postDto" class='well anti-multipost'>
                 <form:hidden path="topicId"/>
                 <form:hidden path="id"/>
                 

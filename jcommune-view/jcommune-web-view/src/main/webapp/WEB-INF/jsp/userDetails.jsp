@@ -38,14 +38,11 @@
             <div class="user-profile-header" >
                 <span class="pull-left thumbnail">
                     <div class="wraptocenter">
-                        <span></span>
-                        <c:if test="${user.avatar != null}">
-                            <img src="${pageContext.request.contextPath}/${user.encodedUsername}/avatar" alt="" />
-                        </c:if>
+                        <img src="${pageContext.request.contextPath}/users/${user.id}/avatar" alt="" />
                     </div>
                 </span>
                 <h2 class="pull-right user-profile-username">
-                    <c:out value="${user.username}"/>
+                    <span class='test-username'><c:out value="${user.username}"/></span>
                 </h2>
             </div>
             
@@ -54,14 +51,14 @@
                     <c:if test="${user.username != auth}">
                         <div class="user-profile-buttons-send">
                             <a class="btn btn-mini btn-info" 
-                                href="${pageContext.request.contextPath}/pm/new/${user.encodedUsername}" >
+                                href="${pageContext.request.contextPath}/pm/new/${user.id}" >
                                 <spring:message code="label.pm.send"/>
                             </a>
                         </div>
                     </c:if>
                     
                     <a class="btn btn-mini pull-right user-profile-buttons-posts"
-                        href="${pageContext.request.contextPath}/users/${user.encodedUsername}/postList">
+                        href="${pageContext.request.contextPath}/users/${user.id}/postList">
                         <spring:message code="label.postList"/>
                     </a>           
             </div>
@@ -77,7 +74,7 @@
                                 <spring:message code="label.firstname"/>
                             </label>
                             <div class="controls">
-                                <input type="text" class="input-xlarge uneditable-input" 
+                                <input type="text" class="input-xlarge uneditable-input test-firstname" 
                                         readonly="readonly" value="<c:out value='${user.firstName}'/>"  
                                         autocomplete="off" />
                             </div>
@@ -88,7 +85,7 @@
                                 <spring:message code="label.lastname"/>
                             </label>
                             <div class="controls">
-                                <input type="text" class="input-xlarge uneditable-input" 
+                                <input type="text" class="input-xlarge uneditable-input test-lastname" 
                                         readonly="readonly" value="<c:out value='${user.lastName}'/>"  
                                         autocomplete="off" />
                             </div>
@@ -99,7 +96,7 @@
                                 <spring:message code="label.signature"/>
                             </label>
                             <div class="controls">
-                                <input type="text" class="input-xlarge uneditable-input" 
+                                <input type="text" class="input-xlarge uneditable-input test-signature" 
                                         readonly="readonly" value="<c:out value='${user.signature}'/>"  
                                         autocomplete="off" />
                             </div>
@@ -113,7 +110,7 @@
                                         <spring:message code="label.email"/>
                                     </label>
                                     <div class="controls">
-                                        <input type="text" class="input-xlarge uneditable-input" 
+                                        <input type="text" class="input-xlarge uneditable-input test-mail" 
                                             readonly="readonly" value="<c:out value='${user.email}'/>"  
                                             autocomplete="off" />
                                     </div>
@@ -123,7 +120,7 @@
                                         <spring:message code="label.language"/>
                                     </label>
                                     <div class="controls">
-                                        <input type="text" class="input-xlarge uneditable-input" 
+                                        <input type="text" class="input-xlarge uneditable-input test-language" 
                                             readonly="readonly" value="<spring:message code='${language.languageNameLabel}'/>"  
                                             autocomplete="off" />
                                     </div>
@@ -133,7 +130,7 @@
                                         <spring:message code="label.pageSize"/>
                                     </label>
                                     <div class="controls">
-                                        <input type="text" class="input-xlarge uneditable-input" 
+                                        <input type="text" class="input-xlarge uneditable-input test-pagesize" 
                                             readonly="readonly" value="<c:out value='${pageSize}'/>"  
                                             autocomplete="off" />
                                     </div>
@@ -145,7 +142,7 @@
                                 <spring:message code="label.location"/>
                             </label>
                             <div class="controls">
-                                <input type="text" class="input-xlarge uneditable-input" 
+                                <input type="text" class="input-xlarge uneditable-input test-location " 
                                     readonly="readonly" value="<c:out value='${user.location}'/>"  
                                     autocomplete="off" />
                             </div>
@@ -156,7 +153,7 @@
                                 <spring:message code="label.registrationDate"/>
                             </label>
                             <div class="controls">
-                                <input type="text" class="input-xlarge uneditable-input" 
+                                <input type="text" class="input-xlarge uneditable-input test-registrationdate" 
                                     readonly="readonly" value="<jtalks:format value='${user.registrationDate}'/>"  
                                     autocomplete="off" />
                             </div>
@@ -167,7 +164,7 @@
                                 <spring:message code="label.lastlogin"/>
                             </label>
                             <div class="controls">
-                                <input type="text" class="input-xlarge uneditable-input" 
+                                <input type="text" class="input-xlarge uneditable-input test-lastlogin" 
                                     readonly="readonly" value="<jtalks:format value='${user.lastLogin}'/>"  
                                     autocomplete="off" />
                             </div>
@@ -178,7 +175,7 @@
                                 <spring:message code="label.postcount"/>
                             </label>
                             <div class="controls">
-                                <span class="label label-info"><c:out value="${user.postCount}"/></span>
+                                <span class="label label-info test-posts-count"><c:out value="${user.postCount}"/></span>
                             </div>
                         </div>
                         

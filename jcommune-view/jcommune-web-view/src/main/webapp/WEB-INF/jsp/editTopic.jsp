@@ -41,7 +41,7 @@
         
         <form:form name="editForm"
                    action="${pageContext.request.contextPath}/topics/${topicId}/edit?branchId=${branchId}"
-                   method="POST" modelAttribute="topicDto" class='well'>
+                   method="POST" modelAttribute="topicDto" class='well anti-multipost'>
             <form:hidden path="id"/>
             
             <div class='control-group'>
@@ -88,7 +88,7 @@
 
         </form:form>
         
-        <a href="${pageContext.request.contextPath}/branches/${branchId}" class='back-btn'>
+        <a href="${pageContext.request.contextPath}/topics/${topicId}" class='back-btn'>
             <i class="icon-arrow-left"></i>
             <spring:message code="label.back"/>
         </a>

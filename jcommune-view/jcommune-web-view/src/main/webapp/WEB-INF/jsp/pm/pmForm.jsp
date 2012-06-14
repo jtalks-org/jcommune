@@ -49,18 +49,25 @@
                        class="well">
                 <form:hidden path="id"/>
 
-                <spring:message code="label.pm.recipient" var="placeholderRecipient"/>
-                <form:input class="span3" path="recipient"
-                            placeholder="${placeholderRecipient}"/>
-                <br/>
-                <span class="error"><form:errors path="recipient"/></span>
+            <div class='control-group'>
+                <div class='controls'>
+	                <spring:message code="label.pm.recipient" var="placeholderRecipient"/>
+	                <form:input class="span3" path="recipient"
+	                            placeholder="${placeholderRecipient}"/>
+	                <br/>
+	                <form:errors path="recipient" cssClass="help-inline"/>
+                </div>
+            </div>
 
-                <spring:message code="label.pm.title" var="placeholderTitle"/>
-                <form:input class="span8 confirm-unsaved" path="title"
-                            placeholder="${placeholderTitle}"/>
-                <br/>
-                <span class="error"><form:errors path="title"/></span>
-
+            <div class='control-group'>
+                <div class='controls'>
+	                <spring:message code="label.pm.title" var="placeholderTitle"/>
+	                <form:input class="span8 confirm-unsaved" path="title"
+	                            placeholder="${placeholderTitle}"/>
+	                <br/>
+	                <form:errors path="title" cssClass="help-inline"/>
+                </div>
+            </div>
                 <jtalks:bbeditor labelForAction="label.send"
                                  postText="${privateMessageDto.body}"
                                  bodyParameterName="body"
