@@ -71,7 +71,7 @@
         <constructor-arg ref="mailService"/>
         <constructor-arg ref="base64Wrapper"/>
         <constructor-arg ref="avatarService"/>
-        <constructor-arg ref="md5PasswordEncoder"/>
+        <constructor-arg ref="encryptionService"/>
     </bean>
 
     <bean id="userContactsService"
