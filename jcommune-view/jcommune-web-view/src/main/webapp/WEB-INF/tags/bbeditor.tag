@@ -161,13 +161,6 @@
     <form:errors path="${bodyParameterName}" cssClass="help-inline"/>
 </div>
 
-
-<div class="control-group">
-    <form:checkbox id="notify" path="notifyOnAnswers" name="notify" checked="checked" style="margin-right: 10px;"/><spring:message
-        code="label.answer.notify_message"/>
-</div>
-
-
 <input id="post" type="submit" class="btn btn-primary" accesskey="s" tabindex="6" name="post"
        value="<spring:message code="${labelForAction}"/>"/>
 
