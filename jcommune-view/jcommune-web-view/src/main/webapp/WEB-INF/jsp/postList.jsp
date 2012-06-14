@@ -86,7 +86,7 @@
             </sec:authorize>
             <sec:authorize access="hasAnyRole('ROLE_ADMIN')">
                 <span class="topicId" id="${topic.id}">
-                <a id="move_topic" href="#" class="btn" title="Move this topic">
+                <a name="move_topic" href="#" class="btn" title="Move this topic">
                     <spring:message code="label.topic.move"/>
                 </a>
                 </span>
@@ -293,7 +293,7 @@
             </sec:authorize>
             <sec:authorize access="hasAnyRole('ROLE_ADMIN')">
                 <span class="topicId" id="${topic.id}">
-                    <a id="move_topic" href="#" class="btn" title="Move this topic">
+                    <a name="move_topic" href="#" class="btn" title="Move this topic">
                         <spring:message code="label.topic.move"/>
                     </a>
                 </span>
