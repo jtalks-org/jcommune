@@ -32,6 +32,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Mockito.any;
@@ -232,6 +233,19 @@ public class PrivateMessageControllerTest {
         assertEquals(actualPm, pm);
     }
 
+    @Test(expectedExceptions = NotFoundException.class)
+    public void cannotBeShowedPm() throws NotFoundException {
+        PrivateMessage pm = getPrivateMessage();
+
+        //set expectations
+        when(pmService.get(PM_ID)).thenThrow(new NotFoundException());
+        //invoke the object under test
+        controller.showPmPage(PM_ID);
+
+        //check expectations
+        verify(pmService).get(PM_ID);
+    }
+
     @Test
     public void editDraftPage() throws NotFoundException {
         PrivateMessage pm = getPrivateMessage();
@@ -284,6 +298,17 @@ public class PrivateMessageControllerTest {
         assertEquals(view, "pm/pmForm");
         assertEquals(bindingResult.getErrorCount(), 1);
         verify(pmService).saveDraft(dto.getId(), dto.getTitle(), dto.getBody(), dto.getRecipient());
+    }
+
+    @Test
+    public void testDeletePm() throws NotFoundException {
+        List<Long> pmIds = Arrays.asList(1L, 2L);
+
+        when(pmService.delete(Arrays.asList(1L, 2L))).thenReturn("aaa");
+
+        String result = controller.deleteMessages(pmIds);
+
+        assertEquals(result, "redirect:/aaa");
     }
 
     private PrivateMessageDto getPrivateMessageDto() {

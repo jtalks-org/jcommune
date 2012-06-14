@@ -27,7 +27,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.SimplePageDao;
-import org.jtalks.jcommune.model.entity.Section;
 import org.jtalks.jcommune.model.entity.SimplePage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;

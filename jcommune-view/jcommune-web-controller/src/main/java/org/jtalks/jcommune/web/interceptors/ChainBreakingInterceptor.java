@@ -24,7 +24,7 @@ import java.io.IOException;
 
 /**
  * This interceptor simply breaks interceptor chain and forwards request to
- * the handler directly. We need it, for exampple, when processing static
+ * the handler directly. We need it, for example, when processing static
  * resources. In this case we don't need all these complicated actions
  * like database access or localization, which are performed by
  * the other interceptors in a chain.

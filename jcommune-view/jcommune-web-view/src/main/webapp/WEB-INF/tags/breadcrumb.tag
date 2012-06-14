@@ -19,23 +19,26 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
-<ul class="breadcrumbs">
-    <c:forEach var="breadcrumb" items="${breadcrumbList}">
+<ul class="breadcrumb">
+    <c:forEach var="breadcrumb" items="${breadcrumbList}" varStatus="loop">
         <li>
             <c:choose>
                 <%--create root breadcrumb--%>
                 <c:when test="${breadcrumb.value == 'Forum'}">
-                    <a class="bc_first"
-                       href="${pageContext.request.contextPath}/${breadcrumb.breadcrumbLocation.name}">
-                        <fmt:message key="label.forum"/></a>
+                    <a href="${pageContext.request.contextPath}/${breadcrumb.breadcrumbLocation.name}">
+                        <fmt:message key="label.forum"/>
+                    </a> 
                 </c:when>
                 <%--create section, topic, branch, post breadcrumb (items with id)--%>
                 <c:otherwise>
-                    <a class="forums_list"
-                       href="${pageContext.request.contextPath}/${breadcrumb.breadcrumbLocation.name}/${breadcrumb.id}">
-                        <c:out value="${breadcrumb.value}"/></a>
+                    <a href="${pageContext.request.contextPath}/${breadcrumb.breadcrumbLocation.name}/${breadcrumb.id}">
+                        <c:out value="${breadcrumb.value}"/>
+                    </a>
                 </c:otherwise>
             </c:choose>
+            <c:if test='${!loop.last}'>
+                <span class="divider">/</span>
+            </c:if>
         </li>
     </c:forEach>
 </ul>

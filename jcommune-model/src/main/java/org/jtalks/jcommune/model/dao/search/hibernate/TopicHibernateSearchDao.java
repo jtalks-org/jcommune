@@ -24,9 +24,9 @@ import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.jtalks.jcommune.model.dao.search.TopicSearchDao;
-import org.jtalks.jcommune.model.dao.search.hibernate.filter.SearchRequestFilter;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.search.SearchRequestFilter;
 /**
  * Hibernate Search DAO implementation for operations with a {@link Topic}.
  * 

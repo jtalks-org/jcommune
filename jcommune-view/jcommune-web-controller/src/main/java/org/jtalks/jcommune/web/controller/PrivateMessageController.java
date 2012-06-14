@@ -26,11 +26,15 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,7 +51,6 @@ public class PrivateMessageController {
 
     public static final String BREADCRUMB_LIST = "breadcrumbList";
     public static final String PM_IDENTIFIERS = "pmIdentifiers";
-
     private PrivateMessageService pmService;
     private BBCodeService bbCodeService;
     private SecurityService securityService;
@@ -71,8 +74,8 @@ public class PrivateMessageController {
     }
 
     /**
-     * @param pmService     for PrivateMessage-related operation
-     * @param bbCodeService for qutes creation
+     * @param pmService       for PrivateMessage-related operation
+     * @param bbCodeService   for qutes creation
      * @param securityService to get current user
      */
     @Autowired
@@ -202,8 +205,8 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/pm/{pmId}", method = RequestMethod.GET)
     public ModelAndView showPmPage(@PathVariable(PM_ID) Long id) throws NotFoundException {
-        PrivateMessage pm = pmService.get(id);
-        return new ModelAndView("pm/showPm")
+           PrivateMessage pm = pmService.get(id);
+           return new ModelAndView("pm/showPm")
                 .addObject("pm", pm)
                 .addObject("user", securityService.getCurrentUser());
     }
@@ -228,7 +231,7 @@ public class PrivateMessageController {
     /**
      * Save private message as draft. As draft message is not requred to be valid
      *
-     * @param pmDto Dto populated in form
+     * @param pmDto  Dto populated in form
      * @param result validation result
      * @return redirect to "drafts" folder if saved successfully or show form with error message
      */
@@ -242,20 +245,15 @@ public class PrivateMessageController {
             return PM_FORM;
         }
     }
-    
+
     /**
      * Delete private messages.
      *
-     * @param csIds Comma-separated identifiers of the private messages for deletion
+     * @param ids Comma-separated identifiers of the private messages for deletion
      * @return redirect to folder from what request is come
-     * @throws NotFoundException when message not found
      */
     @RequestMapping(value = "/pm", method = {RequestMethod.DELETE})
-    public String deleteMessages(@RequestParam(PM_IDENTIFIERS) String csIds) throws NotFoundException {
-        List<Long> ids = new ArrayList<Long>();
-        for (String val : csIds.split(",")) {
-            ids.add(Long.parseLong(val));
-        }
+    public String deleteMessages(@RequestParam(PM_IDENTIFIERS) List<Long> ids) {
         String url = pmService.delete(ids);
         return "redirect:/" + url;
     }

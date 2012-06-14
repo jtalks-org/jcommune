@@ -20,12 +20,16 @@ import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.jtalks.common.model.entity.Branch;
+import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.dao.SectionDao;
-import org.jtalks.jcommune.model.entity.Section;
+import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -39,12 +43,14 @@ public class TransactionalSectionServiceTest {
     final String SECTION_NAME = "section name";
 
     private SectionDao sectionDao;
+    private BranchService branchService;
     private SectionService sectionService;
 
     @BeforeMethod
     public void setUp() throws Exception {
         sectionDao = mock(SectionDao.class);
-        sectionService = new TransactionalSectionService(sectionDao);
+        branchService = mock(BranchService.class);
+        sectionService = new TransactionalSectionService(sectionDao, branchService);
     }
 
     @Test
@@ -77,5 +83,18 @@ public class TransactionalSectionServiceTest {
 
         assertEquals(actualSectionList, expectedSectionList);
         verify(sectionDao).getAll();
+    }
+    
+    @Test
+    public void testPrepareSectionsForView() {
+        List<Section> sections = Arrays.asList(new Section(SECTION_NAME), new Section(SECTION_NAME));
+        int sectionSize = sections.size();
+        
+        sectionService.prepareSectionsForView(sections);
+        
+        verify(branchService, Mockito.times(sectionSize))
+            .fillLastPostInLastUpdatedTopic(Mockito.anyListOf(Branch.class));
+        verify(branchService, Mockito.times(sectionSize))
+            .fillStatisticInfo(Mockito.anyListOf(Branch.class));
     }
 }

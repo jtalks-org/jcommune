@@ -27,148 +27,70 @@
             type="text/javascript"></script>
 </head>
 <body>
-<div class="wrap branch_page">
-    <jsp:include page="../template/logo.jsp"/>
     <jsp:include page="../template/topLine.jsp"/>
-    <div class="all_forums">
-        <div class="forum_info_top">
-            <div>
-                <div> <!-- top left -->
-                    <h2 class="heading"><c:out value="${branch.name}"/></h2><br/>
-                    <span class="forum_misc_info"><c:out value="${branch.description}"/></span>
-                </div>
-                <div> <!-- top right -->
-                    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                        <a class="forum_top_right_link"
-                           href="${pageContext.request.contextPath}/branches/${branch.id}/markread">
-                            <spring:message code="label.mark_all_topics"/>
-                        </a>
-                    </sec:authorize>
-                </div>
-            </div>
-            <div class="info_top_lower"> <!-- bottom left -->
-                <div>
-                    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                        <a class="button top_button"
-                           href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}">
-                            <spring:message code="label.addtopic"/>
-                        </a>
-                        <c:choose>
-                            <c:when test="${subscribed}">
-                                <a id="subscription" class="button top_button"
-                                   href="${pageContext.request.contextPath}/branches/${branch.id}/unsubscribe">
-                                    <spring:message code="label.unsubscribe"/>
-                                </a>
-                            </c:when>
-                            <c:otherwise>
-                                <a id="subscription" class="button top_button"
-                                   href="${pageContext.request.contextPath}/branches/${branch.id}/subscribe">
-                                    <spring:message code="label.subscribe"/>
-                                </a>
-                            </c:otherwise>
-                        </c:choose>
-                    </sec:authorize>
-                    <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-                </div>
-                <div> <!-- bottom right -->
-                    <span class="nav_top">
-                        <jtalks:pagination uri="${branch.id}" pagination="${pagination}" list="${topics}"/>
-                    </span>
-                </div>
-            </div>
+    
+<div class="container">
+    <!-- Branch header -->
+    <div id="branch-header">
+        <h2><c:out value="${branch.name}"/></h2>
+        <div id="right-block">
+            <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+             <span id="mark-all-viewed">
+                 <i class="icon-check"></i>
+                 <a href="${pageContext.request.contextPath}/branches/${branch.id}/markread">
+                     <spring:message code="label.mark_all_topics"/>
+                 </a>
+             </span>
+             
+             <span id="subscribe">
+                 <i class="icon-star"></i>
+                 <c:choose>
+                     <c:when test="${subscribed}">
+                         <a id="subscription" class="button top_button"
+                             href="${pageContext.request.contextPath}/branches/${branch.id}/unsubscribe"
+                             title="<spring:message code="label.unsubscribe"/>">
+                             <spring:message code="label.unsubscribe"/>
+                         </a>
+                     </c:when>
+                     <c:otherwise>
+                         <a id="subscription" class="button top_button"
+                             href="${pageContext.request.contextPath}/branches/${branch.id}/subscribe"
+                             title='<spring:message code="label.subscribe"/>'>
+                             <spring:message code="label.subscribe"/>
+                         </a>
+                     </c:otherwise>
+                 </c:choose>
+             </span>
+            </sec:authorize>
         </div>
-        <div class="forum_header_table">
-            <div class="forum_header">
-                <span class="forum_header_topics"><spring:message code="label.branch.header.topics"/></span>
-                <span class="forum_header_answers"><spring:message code="label.section.header.messages"/></span>
-                <span class="forum_header_author"><spring:message code="label.branch.header.author"/></span>
-                <span class="forum_header_clicks"><spring:message code="label.branch.header.views"/></span>
-                <span class="forum_header_last_message"><spring:message code="label.branch.header.lastMessage"/></span>
-            </div>
-        </div>
-        <c:choose>
-            <c:when test="${!(empty topics)}">
-                <ul class="forum_table">
-                    <c:forEach var="topic" items="${list}">
-                        <li class="forum_row">
-                            <div class="forum_icon">
-                                <img class="icon"
-                                     src="${pageContext.request.contextPath}/resources/images/closed_cup.png"
-                                     alt=""
-                                     title="<spring:message code="label.section.close_forum"/>"/>
-                            </div>
-                            <div class="forum_info">
-                                <h4>
-                                    <c:choose>  <%--Some topic types should have a special prefix when displayed--%>
-                                        <c:when test="${topic.announcement=='true'}">
-                                            <span class="sticky"><spring:message
-                                                    code="label.marked_as_announcement"/> </span>
-                                        </c:when>
-                                        <c:when test="${topic.sticked=='true'}">
-                                            <span class="sticky"><spring:message code="label.marked_as_sticked"/></span>
-                                        </c:when>
-                                    </c:choose>
-                                    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                                        <c:if test="${topic.hasUpdates}">
-                                            <a style="color: red;"
-                                               href="${pageContext.request.contextPath}/posts/${topic.firstUnreadPostId}">
-                                                [NEW]</a>
-                                        </c:if>
-                                    </sec:authorize>
-                                    <a class="forum_link" href="${pageContext.request.contextPath}/topics/${topic.id}">
-                                        <span class="forum_message_cell_text"><c:out value="${topic.title}"/></span>
-                                    </a>
-                                </h4>
-                            </div>
-                            <div class="forum_answers">
-                                <c:out value="${topic.postCount}"/>
-                            </div>
-                            <div class="forum_author">
-                                <a href="${pageContext.request.contextPath}/users/${topic.topicStarter.encodedUsername}"
-                                   title="<spring:message code="label.topic.header.author"/>"><c:out
-                                        value="${topic.topicStarter.username}"/></a>
-                            </div>
-                            <div class="forum_clicks">
-                                <c:out value="${topic.views}"/>
-                            </div>
-                            <div class="forum_last_message">
-                                <a href="${pageContext.request.contextPath}/topics/${topic.id}">
-                                    <jtalks:format value="${topic.lastPost.creationDate}"/></a>
-                                <br/>
-                                <a class="last_message_user"
-                                   href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}">
-                                        <c:out value="${topic.lastPost.userCreated.username}"/>
-                                </a>
-                                <a href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}">
-                                    <img src="${pageContext.request.contextPath}/resources/images/icon_latest_reply.gif"
-                                         alt="<spring:message code="label.section.header.lastMessage"/>"/>
-                                </a>
-                            </div>
-                        </li>
-                    </c:forEach>
-                </ul>
-            </c:when>
-            <c:otherwise>
-                <ul class="forum_table">
-                    <li class="forum_row empty_container">
-                        <div>
-                            <span class="empty">
-                                <spring:message code="label.branch.empty"/>
-                            </span>
-                        </div>
-                    </li>
-                </ul>
-            </c:otherwise>
-        </c:choose>
-        <div class="forum_info_bottom">
-            <div>
-                <div>
-                    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                        <a class="button"
-                           href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"><spring:message
-                                code="label.addtopic"/>
-                        </a>
-                    </sec:authorize>
+        <span style="display: inline-block; "></span>
+    </div>
+    <!-- END OF Branch header -->
+        
+    <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
+        
+    <!-- Upper pagination -->
+    <div class="row-fluid upper-pagination forum-pagination-container">
+
+        <div class="span2">
+            <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                <a id='new-topic-btn' class="btn btn-primary" 
+                    href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}" 
+                    title="<spring:message code="label.addtopic"/>">
+                    <spring:message code="label.addtopic"/>
+                </a>
+            </sec:authorize>
+            &nbsp; <%-- For proper pagination layout without buttons--%>
+       </div>
+        
+        
+
+        <div class="span10">
+          <div class="pagination pull-right forum-pagination">
+            <ul>
+                 <jtalks:pagination uri="${branch.id}" pagination="${pagination}" list="${topics}"/>
+                 
+                 <li>
                     <c:if test="${pagination.maxPages>1}">
                         <c:if test="${pagination.pagingEnabled == true}">
                             <a class="button"
@@ -180,35 +102,182 @@
                            href="?pagingEnabled=true"><spring:message code="label.showPages"/>
                         </a>
                     </c:if>
-                    <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
-                </div>
-                <div>
-                    <span class="nav_bottom">
-                        <jtalks:pagination uri="${branch.id}" pagination="${pagination}" list="${topics}"/>
-                    </span>
-                </div>
+                </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+      <!-- END OF Upper pagination -->
+     
+    <!-- Topics table -->
+    <table id="topics-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+        <c:choose>
+            <c:when test="${!(empty topics)}">
+                <thead>
+                    <tr>
+                        <th class="status-col"></th>
+                        <th><spring:message code="label.branch.header.topics"/></th>
+                        <th class="author-col"><spring:message code="label.branch.header.author"/></th>
+                        <th class="posts-views forum-posts-view-header"><spring:message code="label.branch.header.posts_views"/></th>
+                        <th class="latest-by forum-latest-by-header"><spring:message code="label.branch.header.lastMessage"/></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <c:forEach var="topic" items="${list}">
+                        <!-- Topic row -->
+                        <tr>
+                            <td class="status-col">
+                            
+                                <c:set var="hasNewPosts" value="false"/>
+                                <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                                    <c:if test="${topic.hasUpdates}">
+                                        <c:set var="hasNewPosts" value="true"/>
+                                    </c:if>
+                                </sec:authorize>
+                                
+                                <c:choose>
+                                    <c:when test="${hasNewPosts}">
+                                        <a href="${pageContext.request.contextPath}/posts/${topic.firstUnreadPostId}">
+                                            <img class="status-img" 
+                                                src="${pageContext.request.contextPath}/resources/images/new_badge.png" 
+                                                title="<spring:message code="label.topic.new_posts"/>" />
+                                        </a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img class="status-img" 
+                                            src="${pageContext.request.contextPath}/resources/images/old_badge.png" 
+                                            title="<spring:message code="label.topic.no_new_posts"/>" />
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
+                            <td>
+                                <c:choose>  
+                                    <%--Some topic types should have a special prefix when displayed--%>
+                                    <c:when test="${topic.announcement=='true'}">
+                                        <span class="sticky"><spring:message code="label.marked_as_announcement"/> </span>
+                                    </c:when>
+                                    <c:when test="${topic.sticked=='true'}">
+                                        <span class="sticky"><spring:message code="label.marked_as_sticked"/></span>
+                                    </c:when>
+                                </c:choose>
+                                <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                                    <c:if test="${topic.hasPoll}">
+                                            <a style="color: red;"
+                                               href="${pageContext.request.contextPath}/topics/${topic.id}">
+                                                [POLL]</a>
+                                    </c:if>
+                                </sec:authorize>
+                                <a href="${pageContext.request.contextPath}/topics/${topic.id}">
+                                    <c:out value="${topic.title}"/>
+                                </a>
+                                <br />
+                                <sub class="created-by">by 
+                                    <a href='${pageContext.request.contextPath}/users/${topic.topicStarter.encodedUsername}"'><c:out
+                                        value="${topic.topicStarter.username}"/>
+                                    </a>
+                                </sub>            
+                            </td>
+                            <td class="author-col">
+                                <a href='${pageContext.request.contextPath}/users/${topic.topicStarter.encodedUsername}"'><c:out
+                                        value="${topic.topicStarter.username}"/>
+                                </a>
+                            </td>
+                            <td class="posts-views">
+                                <spring:message code="label.section.header.messages"/>: <c:out value="${topic.postCount}"/><br />
+                                <spring:message code="label.branch.header.views"/>: <c:out value="${topic.views}"/></td>
+                            <td class="latest-by">
+                                <i class="icon-calendar"></i>
+                                <a class="date" href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}"><jtalks:format 
+                                    value="${topic.lastPost.creationDate}"/>
+                                </a>
+                                <p>by 
+                                    <a href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.encodedUsername}"><c:out 
+                                        value="${topic.lastPost.userCreated.username}"/>
+                                    </a>
+                                </p>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </tbody>
+            </c:when>
+            <c:otherwise>
+                <tbody><tr><td>
+                    <spring:message code="label.branch.empty"/>
+                </td></tr></tbody>
+            </c:otherwise>
+        </c:choose>
+    </table>
+    <!-- END OF Topics table -->
+    
+    <!-- Bottom pagination -->
+    <div class="row-fluid upper-pagination forum-pagination-container">
+
+        <div class="span2">
+            <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                <a id='new-topic-btn' class="btn btn-primary"
+                    href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}" 
+                    title="<spring:message code="label.addtopic"/>">
+                    <spring:message code="label.addtopic"/>
+                </a>
+            </sec:authorize>
+            &nbsp; <%-- For proper pagination layout without buttons--%>
+        </div>
+       
+
+        <div class="span10">
+            <div class="pagination pull-right forum-pagination">
+                <ul>
+                    <jtalks:pagination uri="${branch.id}" pagination="${pagination}" list="${topics}"/>
+                 
+                    <li>
+                        <c:if test="${pagination.maxPages>1}">
+                            <c:if test="${pagination.pagingEnabled == true}">
+                                <a class="button"
+                                    href="?pagingEnabled=false"><spring:message code="label.showAll"/></a>
+                            </c:if>
+                        </c:if>
+                        <c:if test="${pagination.pagingEnabled == false}">
+                            <a class="button"
+                                    href="?pagingEnabled=true"><spring:message code="label.showPages"/>
+                            </a>
+                        </c:if>
+                    </li>
+                </ul>
             </div>
         </div>
-        <div class="forum_misc_info">
-            <br/>
-            <spring:message code="label.topic.moderators"/>
-            <ul class="users_list">
-                <li><a href="#">andreyko</a>,</li>
-                <li><a href="#">Староверъ</a>,</li>
-                <li><a href="#">Вася</a>.</li>
-            </ul>
-            <br/>
-            <c:if test="${!(empty viewList)}">
-                <spring:message code="label.branch.now_browsing"/>
-            </c:if>
-            <c:forEach var="innerUser" items="${viewList}">
-                <a href="${pageContext.request.contextPath}/users/${innerUser.encodedUsername}">
-                    <c:out value="${innerUser.username}"/>
-                </a>
-                &nbsp;&nbsp;
-            </c:forEach>
-        </div>
+
     </div>
-    <div class="footer_buffer"></div>
+    <!-- END OF Bottom pagination -->
+    
+        
+    <!-- Users -->
+    <div id="users-stats" class="well forum-user-stats-container">
+        <strong><spring:message code="label.topic.moderators"/></strong> 
+        <a href="#" title="Click to view profile">andreyko</a> 
+        <a href="#" class="label label-success" title="Click to view profile">Староверъ</a>
+        <a href="#" class="label label-important" title="Click to view profile">admin</a>
+        <br />
+        <c:if test="${!(empty viewList)}">
+        <strong><spring:message code="label.branch.now_browsing"/></strong> 
+        </c:if>
+        <c:forEach var="innerUser" items="${viewList}">
+            <c:choose>
+                <c:when test="${innerUser.role=='ROLE_ADMIN'}">
+                        <c:set var='labelClass' value='label label-important'/>
+                    </c:when>
+                    <c:otherwise>
+                        <c:set var='labelClass' value=''/>
+                </c:otherwise>
+            </c:choose>
+            <a href="${pageContext.request.contextPath}/users/${innerUser.encodedUsername}" 
+                title="Click to view profile"
+                class='${labelClass}'>
+                <c:out value="${innerUser.username}"/>
+            </a>
+        </c:forEach>
+    </div>
+    <!-- END OF Users -->
+      
 </div>
 </body>

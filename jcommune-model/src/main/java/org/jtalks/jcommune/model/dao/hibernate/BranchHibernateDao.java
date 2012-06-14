@@ -14,11 +14,11 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import java.util.List;
+
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.entity.Branch;
-
-import java.util.List;
 
 /**
  * Hibernate DAO implementation for operations with a {@link Branch}.
@@ -26,15 +26,18 @@ import java.util.List;
  * @author Vitaliy Kravchenko
  * @author Max Malakhov
  * @author Eugeny Batov
+ * @author Anuar Nurmakanov
  */
 public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch> implements BranchDao {
 
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     @Override
     public List<Branch> getAllBranches() {
-        List<Branch> branches = getSession().createQuery("from Branch b")
+        List<Branch> branches = getSession()
+                .createCriteria(Branch.class)
                 .setCacheable(true)
                 .list();
         return branches;
@@ -43,13 +46,38 @@ public class BranchHibernateDao extends AbstractHibernateChildRepository<Branch>
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     @Override
     public List<Branch> getBranchesInSection(Long sectionId) {
-        List<Branch> branches = getSession().createQuery("from Branch b where b.section = ?")
+        List<Branch> branches = getSession()
+                .createQuery("from org.jtalks.jcommune.model.entity.Branch b where b.section = ?")
                 .setCacheable(true)
                 .setLong(0, sectionId)
                 .list();
         return branches;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getCountTopicsInBranch(Branch branch) {
+        Number count = (Number) getSession()
+                .getNamedQuery("getCountTopicsInBranch")
+                .setParameter("branch", branch)
+                .uniqueResult();
+        return count.intValue();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getCountPostsInBranch(Branch branch) {
+        Number count = (Number) getSession()
+                .getNamedQuery("getCountPostsInBranch")
+                .setParameter("branch", branch)
+                .uniqueResult();
+        return count.intValue();
+    }
 }

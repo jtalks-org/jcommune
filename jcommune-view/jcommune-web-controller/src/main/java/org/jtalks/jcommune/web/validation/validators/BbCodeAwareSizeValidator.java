@@ -35,7 +35,7 @@ public class BbCodeAwareSizeValidator implements ConstraintValidator<BbCodeAware
     private int max;
 
     /**
-     * @param service dervice to remove BB-codes out of a string
+     * @param service service to remove BB-codes out of a string
      */
     @Autowired
     public BbCodeAwareSizeValidator(BBCodeService service) {

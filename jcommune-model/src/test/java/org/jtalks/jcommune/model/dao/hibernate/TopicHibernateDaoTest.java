@@ -19,14 +19,12 @@ import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -34,7 +32,9 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 
 /**
  * @author Kirill Afonin
@@ -147,5 +147,47 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         session.save(firstTopic);
         session.save(secondTopic);
         session.save(thirdTopic);
+    }
+
+
+    @Test
+    public void testGetLastUpdatedTopicInBranch() {
+        Topic firstTopic = ObjectsFactory.getDefaultTopic();
+        Branch branch = firstTopic.getBranch();
+        Topic secondTopic = new Topic(firstTopic.getTopicStarter(), "Second topic");
+        branch.addTopic(secondTopic);
+        Topic expectedLastUpdatedTopic = firstTopic;
+        ReflectionTestUtils.setField(
+                expectedLastUpdatedTopic,
+                "modificationDate",
+                new DateTime(2100, 12, 25, 0, 0, 0, 0));
+
+        session.save(branch);
+
+        Topic actualLastUpdatedTopic = dao.getLastUpdatedTopicInBranch(branch);
+
+        assertNotNull(actualLastUpdatedTopic, "Last updated topic is not found");
+        assertEquals(actualLastUpdatedTopic.getId(), expectedLastUpdatedTopic.getId(),
+                "Found incorrect last updated topic");
+    }
+
+    @Test
+    public void testGetLastUpdatedTopicInEmptyBranch() {
+        Branch branch = ObjectsFactory.getDefaultBranch();
+        session.save(branch);
+
+        assertNull(dao.getLastUpdatedTopicInBranch(branch), "The branch is empty, so the topic should not be found");
+    }
+
+    @Test
+    public void testDeleteWithPoll() {
+        Poll poll = ObjectsFactory.createDefaultVoting();
+        Topic topic = poll.getTopic();
+        Branch branch = topic.getBranch();
+        branch.deleteTopic(topic);
+
+        session.save(branch);
+        session.flush();
+        assertNull(dao.get(topic.getId()));
     }
 }

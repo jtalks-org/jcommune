@@ -15,7 +15,10 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.jtalks.common.model.entity.User;
+import org.jtalks.common.validation.annotations.Email;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.web.validation.annotations.Captcha;
 import org.jtalks.jcommune.web.validation.annotations.Matches;
 import org.jtalks.jcommune.web.validation.annotations.Unique;
 
@@ -32,12 +35,10 @@ import javax.validation.constraints.Size;
 @Matches(field = "password", verifyField = "passwordConfirm", message = "{password_not_matches}")
 public class RegisterUserDto {
 
-    @NotBlank(message = "{validation.username.notblank}")
-    @Size(min = JCUser.MIN_NAME_SIZE, max = JCUser.MAX_NAME_SIZE, message = "{validation.username.length}")
+    @Size(min = User.USERNAME_MIN_LENGTH, max = User.USERNAME_MAX_LENGTH, message = "{validation.username.length}")
     @Unique(entity = JCUser.class, field = "username", message = "{validation.duplicateuser}")
     private String username;
 
-    @NotBlank(message = "{validation.email.notblank}")
     @Pattern(regexp = "^[a-zA-Z0-9_'+*/^&=?~{}\\-](\\.?[a-zA-Z0-9_'+*/^&=?~{}\\-])" +
             "*\\@((\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}(\\:\\d{1,3})?)|(((([a-zA-Z0-9][a-zA-Z0-9\\-]" +
             "+[a-zA-Z0-9])|([a-zA-Z0-9]{1,2}))[\\.]{1})+([a-zA-Z]{2,6})))$",
@@ -45,12 +46,13 @@ public class RegisterUserDto {
     @Unique(entity = JCUser.class, field = "email", message = "{validation.duplicateemail}")
     private String email;
 
-    @NotBlank(message = "{validation.password.notblank}")
-    @Size(min = JCUser.MIN_PASS_SIZE, max = JCUser.MAX_PASS_SIZE)
+    @Size(min = User.PASSWORD_MIN_LENGTH, max = User.PASSWORD_MAX_LENGTH)
     private String password;
 
-    @NotBlank(message = "{validation.password.confirm.notblank}")
     private String passwordConfirm;
+
+    @Captcha(message = "{validation.captcha.wrong}")
+    private String captcha;
 
     /**
      * @return username
@@ -122,6 +124,14 @@ public class RegisterUserDto {
      */
     public void setPasswordConfirm(String passwordConfirm) {
         this.passwordConfirm = passwordConfirm;
+    }
+
+    public String getCaptcha() {
+        return captcha;
+    }
+
+    public void setCaptcha(String captcha) {
+        this.captcha = captcha;
     }
 
     /**

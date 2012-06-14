@@ -40,11 +40,7 @@ public class JCUser extends User {
     private DateTime registrationDate;
     private boolean enabled;
 
-    public static final int MIN_NAME_SIZE = 2;
-    public static final int MAX_NAME_SIZE = 25;
     public static final int MAX_LAST_NAME_SIZE = 255;
-    public static final int MIN_PASS_SIZE = 4;
-    public static final int MAX_PASS_SIZE = 20;
     public static final int MAX_LOCATION_SIZE = 30;
 
     public static final int DEFAULT_PAGE_SIZE = 50;
@@ -221,9 +217,10 @@ public class JCUser extends User {
     /**
      * Renders user signature for html view.
      * No further html escaping is required.
+     *
      * @return html-rendered user signature
      */
-    public String getRenderedSignature(){
-       return signature.render();
+    public String getRenderedSignature() {
+        return signature.render();
     }
 }

@@ -67,7 +67,7 @@ public class BBCodeService {
      * @param source text to cleanup
      * @return plain text without BB tags
      */
-    public String removeBBCodes(String source){
-        return source.replaceAll("\\[.*?\\]","");
+    public String removeBBCodes(String source) {
+        return source.replaceAll("\\[.*?\\]", "");
     }
 }

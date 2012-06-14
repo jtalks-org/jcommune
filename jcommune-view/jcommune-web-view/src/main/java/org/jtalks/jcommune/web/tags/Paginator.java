@@ -32,10 +32,10 @@ import java.util.List;
 public class Paginator extends BodyTagSupport {
     private String uri;
     private int numberLink = DEFAULT_LINK_COUNT;
-    private List list;
+    private List<?> list;
     private transient Pagination pagination;
-    private static final String LINK_PATTERN = "<a class='page' href='%s?page=%d'>%d</a>";
-    private static final String CURRENT_LINK_PATTERN = "<span class='page'>%d</span>";
+    private static final String LINK_PATTERN = "<li><a href='%s?page=%d'>%d</a></li>";
+    private static final String CURRENT_LINK_PATTERN = "<li class='active'><a href='#'>%d</a></li>";
 
     public static final int DEFAULT_LINK_COUNT = 7;
 
@@ -51,14 +51,14 @@ public class Paginator extends BodyTagSupport {
     /**
      * @param list list of elements
      */
-    public void setList(List list) {
+    public void setList(List<?> list) {
         this.list = list;
     }
 
     /**
      * @return list
      */
-    public List getList() {
+    public List<?> getList() {
         return this.list;
     }
 

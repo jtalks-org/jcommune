@@ -14,14 +14,90 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.jtalks.jcommune.model.ObjectsFactory;
+import org.jtalks.jcommune.model.dao.LastReadPostDao;
+import org.jtalks.jcommune.model.entity.LastReadPost;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
+import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 /**
  * @author Evgeniy Naumenko
+ * @author Anuar Nurmakanov
  */
-public class LastReadPostHibernateDaoTest {
+@ContextConfiguration(locations = { "classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml" })
+@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
+@Transactional
+public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
+    @Autowired
+    private LastReadPostDao dao;
+    @Autowired
+    private SessionFactory sessionFactory;
+    private Session session;
+    
     @BeforeMethod
-    public void setUp() throws Exception {
-
+    public void setUp() {
+        session = sessionFactory.getCurrentSession();
+        ObjectsFactory.setSession(session);
+    }
+    
+    /*===== Common methods =====*/
+    @Test
+    public void testGet() {
+        LastReadPost expected = ObjectsFactory.getDefaultLastReadPost();
+        session.save(expected);
+        
+        LastReadPost actual = dao.get(expected.getId());
+        
+        Assert.assertNotNull(actual, "Get returns null.");
+        Assert.assertEquals(actual.getId(), expected.getId(),
+                "Get return incorrect object");
+    }
+    
+    @Test
+    public void testUpdate() {
+        LastReadPost post = ObjectsFactory.getDefaultLastReadPost();
+        session.save(post);
+        int newPostIndex = post.getPostIndex() + 1;
+        post.setPostIndex(newPostIndex);
+        
+        dao.update(post);
+        LastReadPost updatedPost = (LastReadPost) session.get(LastReadPost.class, post.getId());
+        
+        Assert.assertEquals(updatedPost.getPostIndex(), newPostIndex,
+                "Update doesn't work, because field value didn't change.");
+    }
+    
+    /*===== Specific methods =====*/
+    @Test
+    public void testListLastReadPostsForTopic() {
+        LastReadPost post = ObjectsFactory.getDefaultLastReadPost();
+        session.save(post);
+        
+        List<LastReadPost> lastReadPosts = dao.listLastReadPostsForTopic(post.getTopic());
+        
+        Assert.assertTrue(lastReadPosts.size() == 1, "Result list has incorrect size");
+        Assert.assertEquals(lastReadPosts.get(0).getId(), post.getId(), 
+                "Results contains invalid data.");
+    }
+    
+    @Test
+    public void testGetLastReadPost() {
+        LastReadPost expected = ObjectsFactory.getDefaultLastReadPost();
+        session.save(expected);
+        
+        LastReadPost actual = dao.getLastReadPost(expected.getUser(), expected.getTopic());
+        
+        Assert.assertEquals(actual.getId(), expected.getId(), 
+                "Found incorrect last read post.");
     }
 }

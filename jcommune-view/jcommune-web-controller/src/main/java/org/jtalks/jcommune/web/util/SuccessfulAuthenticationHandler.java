@@ -24,7 +24,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
@@ -56,8 +55,6 @@ public class SuccessfulAuthenticationHandler extends SavedRequestAwareAuthentica
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws ServletException, IOException {
         JCUser user = (JCUser) authentication.getPrincipal();
-        HttpSession session = request.getSession(true);
-        session.setAttribute("lastlogin", user.getLastLogin());
         userService.updateLastLoginTime(user);
         logger.info("JCUser logged in: " + user.getUsername());
         //apply language settings assuming CookieLocaleResolver usage

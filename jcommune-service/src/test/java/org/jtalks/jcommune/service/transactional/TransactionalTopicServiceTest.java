@@ -16,23 +16,19 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.BranchDao;
-import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.security.AclBuilder;
 import org.jtalks.jcommune.service.security.SecurityConstants;
-import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatcher;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -41,11 +37,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
@@ -68,6 +61,7 @@ public class TransactionalTopicServiceTest {
     final long POST_ID = 333L;
     final String TOPIC_TITLE = "topic title";
     final String BRANCH_NAME = "branch name";
+    final String BRANCH_DESCRIPTION = "branch description";
     private static final String USERNAME = "username";
     private JCUser user;
     final String ANSWER_BODY = "Test Answer Body";
@@ -92,7 +86,7 @@ public class TransactionalTopicServiceTest {
         aclBuilder = mockAclBuilder();
         initMocks(this);
         topicService = new TransactionalTopicService(topicDao, securityService,
-                branchService, branchDao,  notificationService);
+                branchService, branchDao, notificationService);
         user = new JCUser(USERNAME, "email@mail.com", "password");
     }
 
@@ -144,7 +138,7 @@ public class TransactionalTopicServiceTest {
 
     @Test
     public void testCreateTopic() throws NotFoundException {
-        Branch branch = new Branch(BRANCH_NAME);
+        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
         when(securityService.getCurrentUser()).thenReturn(user);
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
         when(securityService.grantToCurrentUser()).thenReturn(aclBuilder);
@@ -173,30 +167,14 @@ public class TransactionalTopicServiceTest {
 
     @Test
     public void testGetAllTopicsPastLastDay() throws NotFoundException {
-        DateTime now = new DateTime();
         List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
-        when(topicDao.getTopicsUpdatedSince(now)).thenReturn(expectedList);
+        when(topicDao.getTopicsUpdatedSince(Matchers.<DateTime>any())).thenReturn(expectedList);
 
-        List<Topic> topics = topicService.getRecentTopics(now);
+        List<Topic> topics = topicService.getRecentTopics();
 
         assertNotNull(topics);
         assertEquals(topics.size(), 2);
-        verify(topicDao).getTopicsUpdatedSince(now);
-    }
-
-    @Test
-    public void testGetAllTopicsPastLastDayNullLastLoginDate() {
-        List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
-        when(topicDao.getTopicsUpdatedSince(any(DateTime.class))).thenReturn(expectedList);
-
-        List<Topic> topics = topicService.getRecentTopics(null);
-
-        assertNotNull(topics);
-        assertEquals(topics.size(), 2);
-        ArgumentCaptor<DateTime> captor = ArgumentCaptor.forClass(DateTime.class);
-        verify(topicDao).getTopicsUpdatedSince(captor.capture());
-        int yesterday = new DateTime().minusDays(1).getDayOfYear();
-        assertEquals(captor.getValue().getDayOfYear(), yesterday);
+        verify(topicDao).getTopicsUpdatedSince(Matchers.<DateTime>any());
     }
 
     @Test
@@ -216,7 +194,7 @@ public class TransactionalTopicServiceTest {
         Post firstPost = new Post(user, ANSWER_BODY);
         topic.addPost(firstPost);
         user.setPostCount(1);
-        Branch branch = new Branch(BRANCH_NAME);
+        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
         branch.addTopic(topic);
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(topic);
@@ -315,9 +293,9 @@ public class TransactionalTopicServiceTest {
         Topic topic = new Topic(user, "title");
         Post firstPost = new Post(user, ANSWER_BODY);
         topic.addPost(firstPost);
-        Branch currentBranch = new Branch(BRANCH_NAME);
+        Branch currentBranch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
         currentBranch.addTopic(topic);
-        Branch targetBranch = new Branch("target branch");
+        Branch targetBranch = new Branch("target branch", "target branch description");
 
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(topic);
@@ -327,8 +305,7 @@ public class TransactionalTopicServiceTest {
 
         assertEquals(targetBranch.getTopicCount(), 1);
         verify(branchDao).update(targetBranch);
-        verify(notificationService).topicChanged(topic);
-        verify(notificationService).branchChanged(currentBranch);
+        verify(notificationService).topicMoved(topic, TOPIC_ID);
     }
 
     @Test(expectedExceptions = {NotFoundException.class})

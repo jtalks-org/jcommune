@@ -77,17 +77,23 @@ function initEditor(textAreaId, htmlAreaId, baseDivId) {
     editorVisible = false;
 }
 
+/**
+ * Changes visual editor representation when toggling
+ * preview mode.
+ */
 function SwitchEditor() {
-    if (editorVisible) {
+    if (editorVisible) { // exit preview
         textboxelement.style.display = "";
         htmlcontentelement.style.display = "none";
         editorVisible = false;
         $(".formatting_buttons").show();
+        $("#preview")[0].value = $labelPreview;
     }
-    else {
+    else { // enter preview
         content = textboxelement.value;
         bbcode2html();
         $(".formatting_buttons").hide();
+        $("#preview")[0].value = $labelEdit;
     }
 }
 
@@ -129,7 +135,9 @@ function bbcode2html() {
             textboxelement.style.display = "none";
 
             editorVisible = true;
-            SyntaxHighlighter.highlight();
+            
+			//Code highlight
+			prettyPrint();
             $("a[rel^='prettyPhoto']").prettyPhoto({social_tools:false});
         }
     });
@@ -269,58 +277,25 @@ function doClick(command) {
     }
 }
 
-function doSize() {
+function doSize(selectedElement) {
     if (!editorVisible) {
-        var listSizes = document.getElementById("select_size");
-        var selectedIndex = listSizes.selectedIndex;
-        if (selectedIndex >= 0) {
-            var size = listSizes.options[selectedIndex].value;
-            if (size > 0)
-                AddTag('[size=' + size + ']', '[/size]');
-        }
+		var size = $(selectedElement).attr('value');
+        AddTag('[size=' + size + ']', '[/size]');
     }
-    resetSizeSelector();
 }
 
-function doCode() {
+function doCode(selectedElement) {
     if (!editorVisible) {
-        var listCodes = document.getElementById("select_code");
-        var selectedIndex = listCodes.selectedIndex;
-        if (selectedIndex >= 0) {
-            var code = listCodes.options[selectedIndex].value;
-            if (code != '0')
-                AddTag('[code=' + code + ']', '[/code]');
-        }
+		var code = $(selectedElement).attr('value');
+        AddTag('[code=' + code + ']', '[/code]');
     }
-    resetCodeSelector();
 }
 
-function resetSizeSelector() {
-    var listSizes = document.getElementById("select_size");
-    listSizes.options[0].selected = 'selected';
-}
-
-function resetIndentSelector() {
-    var listIndents = document.getElementById("select_indent");
-    listIndents.options[0].selected = 'selected';
-}
-
-function resetCodeSelector() {
-    var listIndents = document.getElementById("select_code");
-    listIndents.options[0].selected = 'selected';
-}
-
-function doIndent() {
+function doIndent(selectedElement) {
     if (!editorVisible) {
-        var listIndents = document.getElementById("select_indent");
-        var selectedIndex = listIndents.selectedIndex;
-        if (selectedIndex >= 0) {
-            var indent = listIndents.options[selectedIndex].value;
-            if (indent > 0)
-                AddTag('[indent=' + indent + ']', '[/indent]');
-        }
+        var indent = $(selectedElement).attr('value');
+        AddTag('[indent=' + indent + ']', '[/indent]');
     }
-    resetIndentSelector();
 }
 
 var mylink = '';
@@ -590,12 +565,9 @@ function setCCbldSty2(objID, prop, val) {
 }
 
 function putOBJxColor2(Samp, pigMent, textBoxId) {
-    if (pigMent != 'x') {
-        setCCbldID2(pigMent, textBoxId);
-        setCCbldSty2(Samp, 'bc', pigMent);
-    }
-    setCCbldSty2('colorpicker201', 'vs', 'hidden');
-    setCCbldSty2('colorpicker201', 'ds', 'none');
+    //document.getElementById("o5582n66").value='#' + pigMent;
+    javascript:document.getElementById("o5582n66a").style.backgroundColor = '#' + pigMent;
+    // title='#' + pigMent;
 }
 
 function showColorGrid2(Sam, textBoxId) {
@@ -603,31 +575,69 @@ function showColorGrid2(Sam, textBoxId) {
         var objX = new Array('00', '33', '66', '99', 'CC', 'FF');
         var c = 0;
         var xl = '"' + Sam + '","x", "' + textBoxId + '"';
-        var mid = '';
-        mid += '<table bgcolor="#FFFFFF" border="0" cellpadding="0" cellspacing="0" style="border:solid 0px #F0F0F0;padding:2px;"><tr>';
-        mid += "<td colspan='9' align='left' style='margin:0;padding:2px;height:12px;' ><input class='o5582n66' type='text' size='12' id='o5582n66' value='#FFFFFF'><input class='o5582n66a' type='text' size='2' style='width:14px;' id='o5582n66a' onclick='javascript:alert(\"click on selected swatch below...\");' value='' style='border:solid 1px #666;'></td><td colspan='9' align='right'><a class='o5582n66' href='javascript:onclick=putOBJxColor2(" + xl + ")'><span class='a01p3'>" + clos1 + "</span></a></td></tr><tr>";
+        var context = '';
+        context += '<table border="0" cellpadding="0" cellspacing="0" style="border:solid 0px #F0F0F0;padding:2px;table-layout:fixed;width:350px;"><tr>';
+        context += "<td colspan='20' style='margin:0;padding:2px;height:15px;padding-bottom: 30px;'>" +
+            '<label>' + $labelSelectedColor + '</label>' +
+            "<div id='o5582n66a' style='margin-left:35px;display: inline-block;height:25px;width:25px;border:solid 2px #666;background-color: rgb(0, 0, 0);'></div></td><tr><br>";
         var br = 1;
         for (o = 0; o < 6; o++) {
-            mid += '</tr><tr>';
+            context += '</tr><tr>';
             for (y = 0; y < 6; y++) {
                 if (y == 3) {
-                    mid += '</tr><tr>';
+                    context += '</tr><tr>';
                 }
                 for (x = 0; x < 6; x++) {
                     var grid = '';
                     grid = objX[o] + objX[y] + objX[x];
                     var b = "'" + Sam + "','" + grid + "', '" + textBoxId + "'";
-                    mid += '<td class="o5582brd" style="background-color:#' + grid + '"><a class="o5582n66"  href="javascript:onclick=putOBJxColor2(' + b + ');" onmouseover=javascript:document.getElementById("o5582n66").value="#' + grid + '";javascript:document.getElementById("o5582n66a").style.backgroundColor="#' + grid + '";  title="#' + grid + '"><div style="width:12px;height:14px;"></div></a></td>';
+                    context += '<td class="o5582brd" style="background-color:#' + grid + '"><a class="o5582n66"  href="javascript:onclick=putOBJxColor2(' + b + ');"><div style="width:12px;height:14px;"></div></a></td>';
                     c++;
                 }
             }
         }
-        mid += "</tr></table>";
-        //var ttop=getTop2();
-        //setCCbldSty2('colorpicker201','tp',ttop);
-        //document.getElementById('colorpicker201').style.left=getLeft2();
-        document.getElementById('colorpicker201').innerHTML = mid;
-        setCCbldSty2('colorpicker201', 'vs', 'visible');
-        setCCbldSty2('colorpicker201', 'ds', 'inline');
+        context += "</tr></table>";
+
+        $.prompt(context,
+            {buttons:{OK:true, Cancel:false}, focus:0,
+                submit:function (value) {
+                    if (value) {
+                        var rgb_color = document.getElementById("o5582n66a").style.backgroundColor;
+                        var hex_color = getHexRGBColor(rgb_color);
+                        //var grid = $('#o5582n66a').css("background-color");
+                        AddTag('[color=' + hex_color + ']', '[/color]');
+                    }
+                }
+            });
+        $('div.jqi').css('width', '350px');
+    }
+
+    function getHexRGBColor(color) {
+        color = color.replace(/\s/g, "");
+        var aRGB = color.match(/^rgb\((\d{1,3}[%]?),(\d{1,3}[%]?),(\d{1,3}[%]?)\)$/i);
+
+        if (aRGB) {
+            color = '';
+            for (var i = 1; i <= 3; i++) color += Math.round((aRGB[i][aRGB[i].length - 1] == "%" ? 2.55 : 1) * parseInt(aRGB[i])).toString(16).replace(/^(.)$/, '0$1');
+        }
+        else color = color.replace(/^#?([\da-f])([\da-f])([\da-f])$/i, '$1$1$2$2$3$3');
+
+        return color.toUpperCase();
     }
 }
+
+
+
+$(document).ready(function() {
+	$('#select_size a').click(function() {
+		doSize(this);
+	});
+	
+	$('#select_code a').click(function() {
+		doCode(this);
+	});
+	
+	$('#select_indent a').click(function() {
+		doIndent(this);
+	});
+});

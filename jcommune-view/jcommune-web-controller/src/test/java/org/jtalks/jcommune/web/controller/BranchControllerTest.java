@@ -20,7 +20,6 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.LastReadPostService;
-import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
@@ -31,7 +30,6 @@ import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.mockito.Mock;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -41,7 +39,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -81,7 +78,7 @@ public class BranchControllerTest {
     public void init() {
         initMocks(this);
         controller = new BranchController(branchService, topicService, lastReadPostService,
-               securityService, breadcrumbBuilder, locationServiceImpl);
+                securityService, breadcrumbBuilder, locationServiceImpl);
     }
 
     @Test
@@ -92,7 +89,7 @@ public class BranchControllerTest {
         long branchId = 1L;
         int page = 2;
         boolean pagingEnabled = true;
-        Branch branch = new Branch("name");
+        Branch branch = new Branch("name", "description");
         branch.setId(branchId);
         //set expectations
         when(branchService.get(branchId)).thenReturn(branch);
@@ -123,16 +120,13 @@ public class BranchControllerTest {
     public void recentTopicsPage() throws NotFoundException {
         int page = 2;
         //set expectations
-        when(topicService.getRecentTopics(now)).thenReturn(new ArrayList<Topic>());
-
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute("lastlogin", now);
+        when(topicService.getRecentTopics()).thenReturn(new ArrayList<Topic>());
 
         //invoke the object under test
-        ModelAndView mav = controller.recentTopicsPage(page, session);
+        ModelAndView mav = controller.recentTopicsPage(page);
 
         //check expectations
-        verify(topicService).getRecentTopics(now);
+        verify(topicService).getRecentTopics();
 
         //check result
         assertViewName(mav, "recent");
@@ -173,7 +167,7 @@ public class BranchControllerTest {
         long branchId = 1L;
         int page = 2;
         boolean pagingEnabled = true;
-        Branch branch = new Branch("name");
+        Branch branch = new Branch("name", "description");
         branch.setId(branchId);
         //set expectations
         when(branchService.get(branchId)).thenReturn(branch);
@@ -192,7 +186,7 @@ public class BranchControllerTest {
         long sectionId = 1L;
         long branchId = 1L;
         List<Branch> branches = new ArrayList<Branch>();
-        Branch branch = new Branch("name");
+        Branch branch = new Branch("name", "description");
         branch.setId(branchId);
         branches.add(branch);
         when(branchService.getBranchesInSection(sectionId)).thenReturn(branches);
@@ -208,7 +202,7 @@ public class BranchControllerTest {
     public void testGetAllBranches() throws NotFoundException {
         long branchId = 1L;
         List<Branch> branches = new ArrayList<Branch>();
-        Branch branch = new Branch("name");
+        Branch branch = new Branch("name", "description");
         branch.setId(branchId);
         branches.add(branch);
         when(branchService.getAllBranches()).thenReturn(branches);
@@ -219,11 +213,11 @@ public class BranchControllerTest {
         assertEquals(branchDtoArray[0].getId(), branch.getId());
         assertEquals(branchDtoArray[0].getName(), branch.getName());
     }
-    
-    @Test 
+
+    @Test
     public void testMarkAllTopicsAsRead() throws NotFoundException {
-    	Long id = Long.valueOf(1);
-    	String result = controller.markAllTopicsAsRead(id);
-    	assertEquals(result, "redirect:/branches/" + String.valueOf(id));
+        Long id = Long.valueOf(1);
+        String result = controller.markAllTopicsAsRead(id);
+        assertEquals(result, "redirect:/branches/" + String.valueOf(id));
     }
 }

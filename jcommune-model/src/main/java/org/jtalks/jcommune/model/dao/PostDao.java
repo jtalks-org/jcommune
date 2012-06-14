@@ -16,7 +16,6 @@ package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 
@@ -30,6 +29,7 @@ import java.util.List;
  *
  * @author Pavel Vervenko
  * @author Kirill Afonin
+ * @author Anuar Nurmakanov
  * @see org.jtalks.jcommune.model.dao.hibernate.PostHibernateDao
  */
 public interface PostDao extends ChildRepository<Post> {
@@ -40,4 +40,11 @@ public interface PostDao extends ChildRepository<Post> {
      */
     List<Post> getUserPosts(JCUser author);
 
+    /**
+     * Find the latest post in the forum topic.
+     * 
+     * @param topic the topic, in which we try to find
+     * @return the latest post in the forum topic
+     */
+    Post getLastPostInTopic(Topic topic);
 }

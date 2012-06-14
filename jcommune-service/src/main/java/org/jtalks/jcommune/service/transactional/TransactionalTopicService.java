@@ -16,11 +16,9 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.BranchDao;
-import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
@@ -28,7 +26,6 @@ import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
-import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -130,11 +127,9 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    public List<Topic> getRecentTopics(DateTime date) {
-        if (date == null) {
-            date = new DateTime().minusDays(1);
-        }
-        return this.getDao().getTopicsUpdatedSince(date);
+    public List<Topic> getRecentTopics() {
+        DateTime date24HoursAgo = new DateTime().minusDays(1);
+        return this.getDao().getTopicsUpdatedSince(date24HoursAgo);
     }
 
     /**
@@ -210,15 +205,13 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     @PreAuthorize(HAS_ADMIN_ROLE)
     public void moveTopic(Long topicId, Long branchId) throws NotFoundException {
         Topic topic = get(topicId);
-        Branch currentBranch = topic.getBranch();
         Branch targetBranch = branchService.get(branchId);
         targetBranch.addTopic(topic);
         branchDao.update(targetBranch);
 
-        logger.info("Moved topic \"{}\". Topic id: {}", topic.getTitle(), topicId);
+        notificationService.topicMoved(topic, topicId);
 
-        notificationService.topicChanged(topic);
-        notificationService.branchChanged(currentBranch);
+        logger.info("Moved topic \"{}\". Topic id: {}", topic.getTitle(), topicId);
     }
 
     /**

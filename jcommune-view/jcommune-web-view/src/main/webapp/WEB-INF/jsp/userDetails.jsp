@@ -23,127 +23,194 @@
     <title><spring:message code="label.user"/> - ${user.username}</title>
     <script src="${pageContext.request.contextPath}/resources/javascript/licensed/json2.js"
             type="text/javascript"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/custom/contacts.js"
+    <script src="${pageContext.request.contextPath}/resources/javascript/custom/userProfileEffects.js"
             type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" media="screen, projection"
+          href="${pageContext.request.contextPath}/resources/css/profile.css"/>
+    
 </head>
 <body>
-<div class="wrap userdetails_page">
     <sec:authentication property="principal.username" var="auth" scope="request"/>
     <jsp:include page="../template/topLine.jsp"/>
-    <jsp:include page="../template/logo.jsp"/>
 
-    <div class="all_forums">
-        <div id="userdetails">
-            <div class="forum_header_table">
-                <div class="forum_header">
-                    <span class="forum_header_generic"><spring:message code="label.profile"/></span>
-                    <span class="empty_cell"></span>
-                </div>
-            </div>
-            <ul class="forum_table" id="stylized">
-                <li class="forum_row">
-                    <label><spring:message code="label.username"/></label>
-                    <span class="break_word"><c:out value="${user.username}"/></span>
-                </li>
-                <li class="forum_row">
-                    <label><spring:message code="label.firstname"/></label>
-                    <span class="break_word"><c:out value="${user.firstName}"/></span>
-                </li>
-                <li class="forum_row">
-                    <label><spring:message code="label.lastname"/></label>
-                    <span class="break_word"><c:out value="${user.lastName}"/></span>
-                </li>
-                <c:if test="${user.signature != null}">
-                    <li class="forum_row">
-                        <label><spring:message code="label.signature"/></label>
-                        <span class="signature"><c:out value="${user.signature}"/></span>
-                    </li>
-                </c:if>
-                <c:choose>
-                    <%--Do not show my email to other users--%>
-                    <c:when test="${user.username == auth}">
-                        <li class="forum_row">
-                            <label><spring:message code="label.email"/></label>
-                            <span class="break_word"><c:out value="${user.email}"/></span>
-                        </li>
-                        <li class="forum_row">
-                            <label><spring:message code="label.language"/></label>
-                            <span><spring:message code="${language.languageNameLabel}"/></span>
-                        </li>
-                        <li class="forum_row">
-                            <label><spring:message code="label.pageSize"/></label>
-                            <span><c:out value="${pageSize}"/></span>
-                        </li>
-                    </c:when>
-                </c:choose>
-                <li class="forum_row">
-                    <label><spring:message code="label.location"/></label>
-                    <span class="break_word"><c:out value="${user.location}"/></span>
-                </li>
-                <li class="forum_row">
-                    <label><spring:message code="label.lastlogin"/></label>
-                    <span><jtalks:format value="${user.lastLogin}"/></span>
-                </li>
-                <li class="forum_row">
-                    <label><spring:message code="label.registrationDate"/></label>
-                    <span><jtalks:format value="${user.registrationDate}"/></span>
-                </li>
-                <c:if test="${user.avatar != null}">
-                    <li class="forum_row">
-                        <label><spring:message code="label.avatar"/></label>
-                            <span class="avatar">
-                                <img src="${pageContext.request.contextPath}/${user.encodedUsername}/avatar" alt=""/>
-                            </span>
-                    </li>
-                </c:if>
-                <li class="forum_row">
-                    <label><spring:message code="label.postcount"/></label>
-                    <span><c:out value="${user.postCount}"/></span>
-                </li>
-            </ul>
-
-            <label><spring:message code="label.contacts.header"/></label>
-
-            <div id="contacts">
-                <c:forEach var="contact" items="${user.userContacts}">
-                    <div class="contact">
-                        <label><img src="${pageContext.request.contextPath}${contact.type.icon}" alt=""><c:out
-                                value="${contact.type.typeName}"/></label>
-                        <span>${contact.displayValue}</span>
-                        <c:if test="${user.username == auth}">
-                            <input type="hidden" value="${contact.id}"/>
-                            <a class="button" id="${contact.id}" href="#">
-                                <spring:message code="label.contacts.delete"/>
-                            </a>
+    <div class="container">
+        <div id="userdetails" class="userprofile user-profile-container">
+            <div class="user-profile-header" >
+                <span class="pull-left thumbnail">
+                    <div class="wraptocenter">
+                        <span></span>
+                        <c:if test="${user.avatar != null}">
+                            <img src="${pageContext.request.contextPath}/${user.encodedUsername}/avatar" alt="" />
                         </c:if>
                     </div>
-                </c:forEach>
+                </span>
+                <h2 class="pull-right user-profile-username">
+                    <c:out value="${user.username}"/>
+                </h2>
             </div>
-            <c:if test="${user.username == auth}">
-                <a class="button" id="add_contact" href="#">
-                    <spring:message code="label.contacts.addMore"/>
-                </a>
-            </c:if>
-
-            <div class="form_controls">
-                <c:if test="${user.username == auth}">
-                    <a class="button" href="${pageContext.request.contextPath}/users/edit">
-                        <spring:message code="label.edit_profile"/>
-                    </a>
-                </c:if>
-                <a class="button"
-                   href="${pageContext.request.contextPath}/users/${user.encodedUsername}/postList">
-                    <spring:message code="label.postList"/>
-                </a>
-                <c:if test="${user.username != auth}">
-                    <a class="button"
-                       href="${pageContext.request.contextPath}/pm/new/${user.encodedUsername}">
-                        <spring:message code="label.pm.send"/>
-                    </a>
-                </c:if>
+            
+            <div class="clearfix"></div>
+                <div class="user-profile-top-buttons">         
+                    <c:if test="${user.username != auth}">
+                        <div class="user-profile-buttons-send">
+                            <a class="btn btn-mini btn-info" 
+                                href="${pageContext.request.contextPath}/pm/new/${user.encodedUsername}" >
+                                <spring:message code="label.pm.send"/>
+                            </a>
+                        </div>
+                    </c:if>
+                    
+                    <a class="btn btn-mini pull-right user-profile-buttons-posts"
+                        href="${pageContext.request.contextPath}/users/${user.encodedUsername}/postList">
+                        <spring:message code="label.postList"/>
+                    </a>           
             </div>
+            
+            <div class="clearfix"></div>
+            <hr class="user-profile-hr"/>
+            
+            <div>
+                <form class="form-horizontal">
+                    <fieldset>
+                        <div class="control-group">
+                            <label for="" class="control-label">
+                                <spring:message code="label.firstname"/>
+                            </label>
+                            <div class="controls">
+                                <input type="text" class="input-xlarge uneditable-input" 
+                                        readonly="readonly" value="<c:out value='${user.firstName}'/>"  
+                                        autocomplete="off" />
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="" class="control-label">
+                                <spring:message code="label.lastname"/>
+                            </label>
+                            <div class="controls">
+                                <input type="text" class="input-xlarge uneditable-input" 
+                                        readonly="readonly" value="<c:out value='${user.lastName}'/>"  
+                                        autocomplete="off" />
+                            </div>
+                        </div>
+                
+                        <div class="control-group">
+                            <label for="" class="control-label">
+                                <spring:message code="label.signature"/>
+                            </label>
+                            <div class="controls">
+                                <input type="text" class="input-xlarge uneditable-input" 
+                                        readonly="readonly" value="<c:out value='${user.signature}'/>"  
+                                        autocomplete="off" />
+                            </div>
+                        </div>
+                        
+                        <c:choose>
+                            <%--Do not show my email to other users--%>
+                            <c:when test="${user.username == auth}">
+                                <div class="control-group">
+                                    <label for="" class="control-label">
+                                        <spring:message code="label.email"/>
+                                    </label>
+                                    <div class="controls">
+                                        <input type="text" class="input-xlarge uneditable-input" 
+                                            readonly="readonly" value="<c:out value='${user.email}'/>"  
+                                            autocomplete="off" />
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label for="" class="control-label">
+                                        <spring:message code="label.language"/>
+                                    </label>
+                                    <div class="controls">
+                                        <input type="text" class="input-xlarge uneditable-input" 
+                                            readonly="readonly" value="<spring:message code='${language.languageNameLabel}'/>"  
+                                            autocomplete="off" />
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label for="" class="control-label">
+                                        <spring:message code="label.pageSize"/>
+                                    </label>
+                                    <div class="controls">
+                                        <input type="text" class="input-xlarge uneditable-input" 
+                                            readonly="readonly" value="<c:out value='${pageSize}'/>"  
+                                            autocomplete="off" />
+                                    </div>
+                                </div>
+                            </c:when>
+                        </c:choose>
+                        <div class="control-group">
+                            <label for="" class="control-label">
+                                <spring:message code="label.location"/>
+                            </label>
+                            <div class="controls">
+                                <input type="text" class="input-xlarge uneditable-input" 
+                                    readonly="readonly" value="<c:out value='${user.location}'/>"  
+                                    autocomplete="off" />
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="" class="control-label">
+                                <spring:message code="label.registrationDate"/>
+                            </label>
+                            <div class="controls">
+                                <input type="text" class="input-xlarge uneditable-input" 
+                                    readonly="readonly" value="<jtalks:format value='${user.registrationDate}'/>"  
+                                    autocomplete="off" />
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="" class="control-label">
+                                <spring:message code="label.lastlogin"/>
+                            </label>
+                            <div class="controls">
+                                <input type="text" class="input-xlarge uneditable-input" 
+                                    readonly="readonly" value="<jtalks:format value='${user.lastLogin}'/>"  
+                                    autocomplete="off" />
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="" class="control-label user-profile-labels-postcount">   
+                                <spring:message code="label.postcount"/>
+                            </label>
+                            <div class="controls">
+                                <span class="label label-info"><c:out value="${user.postCount}"/></span>
+                            </div>
+                        </div>
+                        
+                        <c:if test="${!empty user.userContacts}"> 
+                            <hr class="user-profile-hr"/>
+                        
+                            <h4><spring:message code="label.contacts.header"/></h4>
+                            <ul id="contacts" class="contacts">
+                                <c:forEach var="contact" items="${user.userContacts}">
+                                    <li>
+                                        <span class="contact" title="<c:out value='${contact.type.typeName}'/>">
+                                            <img src="${pageContext.request.contextPath}${contact.type.icon}" title="<c:out value="${contact.type.typeName}"/>">
+                                            ${contact.displayValue}
+                                        </span>
+                                    </li>
+                                </c:forEach>                        
+                            </ul>
+                        </c:if>
+                        
+                        <c:if test="${user.username == auth}">
+                            <div class="user-profile-buttons-form-actions">
+                                <a class="btn btn-primary" type="submit" 
+                                    title="<spring:message code='label.edit_profile'/>"
+                                    href="${pageContext.request.contextPath}/users/edit">
+                                    <spring:message code="label.edit_profile"/>
+                                </a>
+                            </div>
+                        </c:if>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="clearfix"></div>
         </div>
     </div>
-    <div class="footer_buffer"></div>
-</div>
 </body>

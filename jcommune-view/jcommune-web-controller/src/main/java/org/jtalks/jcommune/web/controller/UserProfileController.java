@@ -112,11 +112,7 @@ public class UserProfileController {
         //The {encodedUsername} from the JSP view automatically converted to username.
         // That's why the getByUsername() method is used instead of getByEncodedUsername().
         JCUser user = userService.getByUsername(username);
-        return new ModelAndView("userDetails")
-                .addObject("user", user)
-                        // bind separately to get localized value
-                .addObject("language", user.getLanguage())
-                .addObject("pageSize", Pagination.getPageSizeFor(user));
+        return getUserProfileModelAndView(user);
     }
 
     /**
@@ -128,9 +124,9 @@ public class UserProfileController {
      * @return user details view with {@link JCUser} object.
      */
     @RequestMapping(value = "/user", method = RequestMethod.GET)
-    public String showProfilePage() {
+    public ModelAndView showProfilePage() {
         JCUser user = securityService.getCurrentUser();
-        return "redirect:/users/" + user.getEncodedUsername();
+        return getUserProfileModelAndView(user);
     }
 
     /**
@@ -145,7 +141,10 @@ public class UserProfileController {
         EditUserProfileDto editedUser = new EditUserProfileDto(user);
         byte[] avatar = user.getAvatar();
         editedUser.setAvatar(imageUtils.prepareHtmlImgSrc(avatar));
-        return new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUser);
+        
+        ModelAndView mav = new ModelAndView(EDIT_PROFILE, EDITED_USER, editedUser);
+        mav.addObject("contacts", user.getUserContacts());
+        return mav;
     }
 
     /**
@@ -200,5 +199,20 @@ public class UserProfileController {
                 .addObject("pag", pag)
                 .addObject("posts", posts)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
+    }
+
+
+    /**
+     * Formats model and view for representing user's details
+     *
+     * @param user  user
+     * @return user's details
+     */
+    private ModelAndView getUserProfileModelAndView(JCUser user){
+        return new ModelAndView("userDetails")
+                .addObject("user", user)
+                        // bind separately to get localized value
+                .addObject("language", user.getLanguage())
+                .addObject("pageSize", Pagination.getPageSizeFor(user)); 
     }
 }

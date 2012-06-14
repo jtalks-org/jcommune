@@ -71,6 +71,7 @@
         <constructor-arg ref="mailService"/>
         <constructor-arg ref="base64Wrapper"/>
         <constructor-arg ref="avatarService"/>
+        <constructor-arg ref="md5PasswordEncoder"/>
     </bean>
 
     <bean id="userContactsService"
@@ -85,23 +86,26 @@
         <constructor-arg ref="topicDao"/>
         <constructor-arg ref="securityService"/>
         <constructor-arg ref="notificationService"/>
-        <constructor-arg ref="lastReadPosrService"/>
+        <constructor-arg ref="lastReadPostService"/>
     </bean>
-    
-    <bean id="topicSearchService" 
+
+    <bean id="topicSearchService"
           class="org.jtalks.jcommune.service.transactional.TransactionalTopicFullSearchService">
         <constructor-arg ref="topicSearchDao"/>
     </bean>
-    
+
     <bean id="topicBranchService"
           class="org.jtalks.jcommune.service.transactional.TransactionalBranchService">
         <constructor-arg ref="topicBranchDao"/>
         <constructor-arg ref="branchSectionDao"/>
+        <constructor-arg ref="topicDao"/>
+        <constructor-arg ref="postDao"/>
     </bean>
 
     <bean id="branchSectionService"
           class="org.jtalks.jcommune.service.transactional.TransactionalSectionService">
         <constructor-arg ref="branchSectionDao"/>
+        <constructor-arg ref="topicBranchService"/>
     </bean>
 
     <bean id="pmService"
@@ -122,11 +126,24 @@
         <constructor-arg ref="notificationService"/>
     </bean>
 
+    <bean id="pollService"
+          class="org.jtalks.jcommune.service.transactional.TransactionalPollService">
+        <constructor-arg ref="pollDao"/>
+        <constructor-arg ref="pollOptionDao"/>
+        <constructor-arg ref="securityService"/>
+        <constructor-arg ref="temporaryAuthorityManager"/>
+    </bean>
+
     <bean id="subscriptionService"
           class="org.jtalks.jcommune.service.transactional.TransactionalSubscriptionService">
         <constructor-arg ref="securityService"/>
         <constructor-arg ref="topicBranchDao"/>
         <constructor-arg ref="topicDao"/>
+    </bean>
+
+    <!-- TODO The temporary functionality. It will be removed after the introduction of the new security.  -->
+    <bean id="temporaryAuthorityManager" class="org.jtalks.jcommune.service.security.TemporaryAuthorityManager">
+        <constructor-arg ref="securityContextFacade"/>
     </bean>
 
     <bean id="securityService"
@@ -141,7 +158,7 @@
         <constructor-arg ref="forumStatisticsDAO"/>
     </bean>
 
-    <bean id="lastReadPosrService" class="org.jtalks.jcommune.service.transactional.TransactionalLastReadPostService">
+    <bean id="lastReadPostService" class="org.jtalks.jcommune.service.transactional.TransactionalLastReadPostService">
         <constructor-arg ref="securityService"/>
         <constructor-arg ref="lastReadPostHibernateDao"/>
     </bean>

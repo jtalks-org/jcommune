@@ -15,7 +15,9 @@
 package org.jtalks.jcommune.model.entity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Forum branch that contains topics related to branch theme.
@@ -24,25 +26,29 @@ import java.util.List;
  * @author Kirill Afonin
  * @author Max Malakhov
  */
-public class Branch extends SubscriptionAwareEntity {
+public class Branch extends org.jtalks.common.model.entity.Branch
+        implements SubscriptionAwareEntity {
 
-    private String name;
-    private String description;
     private List<Topic> topics = new ArrayList<Topic>();
-    private Section section;
+    private Set<JCUser> subscribers = new HashSet<JCUser>();
 
+    private Integer topicsCount;
+    private Integer postsCount;
+    private Post lastPostInLastUpdatedTopic;
+    
     /**
      * For Hibernate use only
      */
-    protected Branch() {}
+    protected Branch() {
+    }
 
     /**
      * Creates the Branch instance with required fields.
      *
      * @param name branch name
      */
-    public Branch(String name) {
-        this.name = name;
+    public Branch(String name, String description) {
+        super(name, description);
     }
 
     /**
@@ -115,43 +121,6 @@ public class Branch extends SubscriptionAwareEntity {
         return topics.get(lastTopicIndex);
     }
 
-
-    /**
-     * Set branch name which briefly describes the topics contained in it.
-     *
-     * @return branch name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Get branch name.
-     *
-     * @param name branch name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Get branch description.
-     *
-     * @return branch description
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Set branch description which contains additional information about the branch.
-     *
-     * @param description branch description
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     /**
      * @return list of topics
      */
@@ -189,25 +158,10 @@ public class Branch extends SubscriptionAwareEntity {
      * @return count topics in branch
      */
     public int getTopicCount() {
-        return topics.size();
-    }
-
-    /**
-     * Get section of branch
-     *
-     * @return section of the branch
-     */
-    public Section getSection() {
-        return section;
-    }
-
-    /**
-     * Set section for branch
-     *
-     * @param section for the branch
-     */
-    protected void setSection(Section section) {
-        this.section = section;
+        if (topicsCount == null) {
+            return topics.size();
+        }
+        return topicsCount;
     }
 
     /**
@@ -216,11 +170,65 @@ public class Branch extends SubscriptionAwareEntity {
      * @return sum of post count for all the topics in this branch
      */
     public int getPostCount() {
-        int postCount = 0;
-        for (Topic topic : topics) {
-            postCount += topic.getPostCount();
+        if (postsCount == null) {
+            int count = 0;
+            for (Topic topic : topics) {
+                count += topic.getPostCount();
+            }
+            return count;
         }
-        return postCount;
+        return postsCount;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public Set<JCUser> getSubscribers() {
+        return subscribers;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSubscribers(Set<JCUser> subscribers) {
+        this.subscribers = subscribers;
+    }
+    
+    /**
+     * Set count of topics in this branch.
+     * 
+     * @param topicsCount count of posts in this branch
+     */
+    public void setTopicsCount(Integer topicsCount) {
+        this.topicsCount = topicsCount;
+    }
+
+    /**
+     * Set count of posts in this branch.
+     * 
+     * @param postsCount count of posts in this branch
+     */
+    public void setPostsCount(Integer postsCount) {
+        this.postsCount = postsCount;
+    }
+    
+    /**
+     * Returns the last post of the last updated topic.
+     * Note, that field is transient, so we must define
+     * it by ourselves.
+     * 
+     * @return the last post of the last updated topic
+     */
+    public Post getLastPostInLastUpdatedTopic() {
+        return lastPostInLastUpdatedTopic;
+    }
+
+    /**
+     * Sets the last post of the last updated topic.
+     * 
+     * @param lastPostInLastUpdatedTopic the last post of the last updated topic
+     */
+    public void setLastPostInLastUpdatedTopic(Post lastPostInLastUpdatedTopic) {
+        this.lastPostInLastUpdatedTopic = lastPostInLastUpdatedTopic;
+    }
 }

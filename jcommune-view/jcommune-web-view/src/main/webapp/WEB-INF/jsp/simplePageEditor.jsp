@@ -60,6 +60,10 @@
                                  bodyParameterName="contentText"
                                  back="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}"/>
             </form:form>
+            <a href="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}" class="back-btn">
+                <i class="icon-arrow-left"></i>
+                <spring:message code="label.back"/>
+            </a>
         </div>
     </div>
 

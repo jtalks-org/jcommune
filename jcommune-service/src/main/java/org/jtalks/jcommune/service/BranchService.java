@@ -14,10 +14,10 @@
  */
 package org.jtalks.jcommune.service;
 
+import java.util.List;
+
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-
-import java.util.List;
 
 /**
  * The interface to manipulate with branches
@@ -46,4 +46,21 @@ public interface BranchService extends EntityService<Branch> {
      *          when section not found
      */
     List<Branch> getBranchesInSection(long sectionId) throws NotFoundException;
+    
+    /**
+     * Fills the statistical information for each branch from the list:
+     * 1)count of topics in the branch
+     * 2)count of posts in the branch
+     *  
+     * @param branches list of branches
+     */
+    void fillStatisticInfo(List<org.jtalks.common.model.entity.Branch> branches);
+    
+    /**
+     * Find the latest post in the latest updated topic and saves in
+     * a transient field in the branch for all branches in the list.
+     * 
+     * @param branches list of branches
+     */
+    void fillLastPostInLastUpdatedTopic(List<org.jtalks.common.model.entity.Branch> branches);
 }

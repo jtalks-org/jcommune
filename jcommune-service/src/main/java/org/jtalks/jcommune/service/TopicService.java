@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.service;
 
-import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -59,12 +58,9 @@ public interface TopicService extends EntityService<Topic> {
     Topic createTopic(String topicName, String bodyText, long branchId) throws NotFoundException;
 
     /**
-     * Get topic updated since the date passed.
-     *
-     * @param date to return the topic updated after
-     * @return list of {@code Topic} objects with modificationDate > date (parameter)
+     * @return list of {@code Topic}  objectsupdated since last 24 hours.
      */
-    List<Topic> getRecentTopics(DateTime date);
+    List<Topic> getRecentTopics();
 
     /**
      * Get unanswered topics(topics which has only 1 post added during topic creation).

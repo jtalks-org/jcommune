@@ -21,10 +21,15 @@
 --%>
 $labelDeleteContactConfirmation = '<spring:message code="label.deleteContactConfirmation"/>';
 
+$labelDeletePmGroupConfirmation = '<spring:message code="label.deletePMGroupConfirmation"/>';
+
+$labelLeavePageConfirmation = '<spring:message code="label.leavePageConfirmation"/>';
+
 $labelValidationUsercontactNotMatch = '<spring:message code="validation.usercontact.notmatch"/>';
 $labelContactType = '<spring:message code="label.contact.type"/>';
 $labelContactValue = '<spring:message code="label.contact.value"/>';
 $labelContactValueInfo = '<spring:message code="label.contact.value.info"/>';
+$labelContactsTipsDelete = '<spring:message code="label.contacts.tips.delete"/>';
 
 $labelRegistrationSuccess = '<spring:message code="label.registration.success"/>';
 $labelUrlHeader = '<spring:message code="label.url.header"/>';
@@ -34,4 +39,13 @@ $labelUrlInfo = '<spring:message code="label.url.info"/>';
 $labelUrlRequired = '<spring:message code="label.url.required"/>';
 $labelImgHeader = '<spring:message code="label.img.header"/>';
 
+$labelPreview= '<spring:message code="label.answer.preview"/>';
+$labelEdit= '<spring:message code="label.edit"/>';
 
+$labelPollTitleWithEnding = '<spring:message code="label.poll.title.with.ending"/>';
+$labelPollVote = '<spring:message code="label.poll.vote"/>';
+
+
+$labelSelectedColor = '<spring:message code="label.selected.color"/>';
+
+$localeCode = '<spring:message code="locale.code"/>'; 

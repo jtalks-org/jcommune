@@ -15,8 +15,6 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.jcommune.model.dao.LastReadPostDao;
-import org.jtalks.jcommune.model.dao.PostDao;
-import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.LastReadPost;
@@ -24,7 +22,6 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
-import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
@@ -106,12 +103,12 @@ public class TransactionalLastReadPostService implements LastReadPostService {
      * {@inheritDoc}
      */
     @Override
+    @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
     public void markAllTopicsAsRead(Branch branch) {
         JCUser user = securityService.getCurrentUser();
-        if (user != null) {
-            for (Topic topic : branch.getTopics()) {
-                this.saveLastReadPost(user, topic, topic.getPostCount() - 1);
-            }
+        for (Topic topic : branch.getTopics()) {
+            this.saveLastReadPost(user, topic, topic.getPostCount() - 1);
+
         }
     }
 
@@ -162,11 +159,11 @@ public class TransactionalLastReadPostService implements LastReadPostService {
     public void updateLastReadPostsWhenPostIsDeleted(Post post) {
         List<LastReadPost> lastReadPosts = lastReadPostDao.listLastReadPostsForTopic(post.getTopic());
         for (LastReadPost lastReadPost : lastReadPosts) {
-           int index = lastReadPost.getPostIndex();
-           if (index >= post.getPostIndexInTopic()){
-               lastReadPost.setPostIndex(index-1);
-               lastReadPostDao.update(lastReadPost);
-           }
+            int index = lastReadPost.getPostIndex();
+            if (index >= post.getPostIndexInTopic()) {
+                lastReadPost.setPostIndex(index - 1);
+                lastReadPostDao.update(lastReadPost);
+            }
         }
     }
 }

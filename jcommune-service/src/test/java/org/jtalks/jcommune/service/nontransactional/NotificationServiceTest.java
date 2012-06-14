@@ -23,7 +23,10 @@ import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 /**
@@ -38,8 +41,11 @@ public class NotificationServiceTest {
 
     private NotificationService service;
 
+    private final long TOPIC_ID = 1;
+
     private JCUser user1 = new JCUser("name1", "email1", "password1");
     private JCUser user2 = new JCUser("name2", "email2", "password2");
+    private JCUser user3 = new JCUser("name3", "email3", "password3");
     private Topic topic;
     private Branch branch;
 
@@ -48,7 +54,7 @@ public class NotificationServiceTest {
         initMocks(this);
         service = new NotificationService(securityService, mailService);
         topic = new Topic(user1, "title");
-        branch = new Branch("name");
+        branch = new Branch("name", "description");
         branch.addTopic(topic);
     }
 
@@ -110,5 +116,30 @@ public class NotificationServiceTest {
         service.branchChanged(branch);
 
         verifyZeroInteractions(mailService);
+    }
+
+    @Test
+    public void testTopicMovedWithBranchSubscribers() {
+        when(securityService.getCurrentUser()).thenReturn(user1);
+        branch.getSubscribers().add(user1);
+        branch.getSubscribers().add(user2);
+        branch.getSubscribers().add(user3);
+
+        service.topicMoved(topic, TOPIC_ID);
+
+        verify(mailService).sendTopicMovedMail(user2, TOPIC_ID);
+        verify(mailService).sendTopicMovedMail(user3, TOPIC_ID);
+    }
+
+    @Test
+    public void testTopicMovedTopicStarterIsNotASubscriber() {
+        when(securityService.getCurrentUser()).thenReturn(user1);
+        branch.getSubscribers().add(user2);
+        branch.getSubscribers().add(user3);
+
+        service.topicMoved(topic, TOPIC_ID);
+
+        verify(mailService).sendTopicMovedMail(user2, TOPIC_ID);
+        verify(mailService).sendTopicMovedMail(user3, TOPIC_ID);
     }
 }

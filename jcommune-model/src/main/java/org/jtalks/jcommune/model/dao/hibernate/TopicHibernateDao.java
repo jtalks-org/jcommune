@@ -15,16 +15,18 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 
+import java.util.List;
+
+import org.hibernate.classic.Session;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
+import org.hibernate.criterion.Restrictions;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
+import org.jtalks.common.model.entity.Branch;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Topic;
-
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Hibernate DAO implementation from the {@link Topic}.
@@ -59,4 +61,25 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
                 .list();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Topic getLastUpdatedTopicInBranch(Branch branch) {
+        Session session = getSession();
+        //find the last topic in the branch
+        String modificationDateProperty = "modificationDate";
+        DetachedCriteria topicMaxModificationDateCriteria = 
+                DetachedCriteria.forClass(Topic.class)
+                .setProjection(Projections.max(modificationDateProperty))
+                .add(Restrictions.eq("branch", branch));
+        //possible that the two topics will be modified at the same time
+        @SuppressWarnings("unchecked")
+        List<Topic> topics = (List<Topic>) session
+                .createCriteria(Topic.class)
+                .add(Restrictions.eq("branch", branch))
+                .add(Property.forName(modificationDateProperty).eq(topicMaxModificationDateCriteria))
+                .list();
+        return topics.isEmpty() ? null : topics.get(0);
+    }
 }

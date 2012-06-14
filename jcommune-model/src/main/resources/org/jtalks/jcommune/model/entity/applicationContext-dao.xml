@@ -68,19 +68,27 @@
           class="org.jtalks.jcommune.model.dao.hibernate.SimplePageHibernateDao"
           parent="abstractHibernateDao"/>
 
+    <bean id="pollDao"
+          class="org.jtalks.jcommune.model.dao.hibernate.PollHibernateDao"
+          parent="abstractHibernateDao"/>
+
+    <bean id="pollOptionDao"
+          class="org.jtalks.jcommune.model.dao.hibernate.PollOptionHibernateDao"
+          parent="abstractHibernateDao"/>
+
     <!-- Declaration of Hibernate Search DAO beans -->
     <bean id="topicSearchDao" class="org.jtalks.jcommune.model.dao.search.hibernate.TopicHibernateSearchDao">
         <constructor-arg name="sessionFactory" ref="sessionFactory"/>
         <constructor-arg name="filters">
             <list>
-                <ref bean="punctuationMarksFilter"/>
+                <ref bean="invalidCharactersFilter"/>
                 <ref bean="stopWordsFilter"/>
             </list>
         </constructor-arg>
     </bean>
-    <bean id="punctuationMarksFilter"
-          class="org.jtalks.jcommune.model.dao.search.hibernate.filter.PunctuationMarksFilter"/>
-    <bean id="stopWordsFilter" class="org.jtalks.jcommune.model.dao.search.hibernate.filter.StopWordsFilter">
+    <bean id="invalidCharactersFilter"
+          class="org.jtalks.jcommune.model.search.InvalidCharactersFilter"/>
+    <bean id="stopWordsFilter" class="org.jtalks.jcommune.model.search.StopWordsFilter">
         <constructor-arg>
             <list>
                 <value>org/jtalks/jcommune/lucene/english_stop.txt</value>
@@ -90,7 +98,7 @@
         <constructor-arg value="true"/>
     </bean>
     <!--Injecting sessionFactory bean to class AbstractHibernateChildRepository, this way
-resolves a problem of multiple DAO beans definition -->
+  resolves a problem of multiple DAO beans definition -->
     <bean id="abstractHibernateDao" abstract="true">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
@@ -116,6 +124,8 @@ resolves a problem of multiple DAO beans definition -->
                 <value>/org/jtalks/jcommune/model/entity/UserContact.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/UserContactType.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/LastReadPost.hbm.xml</value>
+                <value>/org/jtalks/jcommune/model/entity/Poll.hbm.xml</value>
+                <value>/org/jtalks/jcommune/model/entity/PollOption.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/SimplePage.hbm.xml</value>
             </list>
         </property>

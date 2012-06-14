@@ -15,7 +15,6 @@
 
 package org.jtalks.jcommune.web.controller;
 
-import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -37,7 +36,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -121,21 +119,16 @@ public class BranchController {
     }
 
     /**
-     * Displays to user a list of topic updated since last login.
-     * For anonymous user this method will display topics
-     * updated during last 24 hours.
+     * Displays topics updated during last 24 hours.
      *
      * @param page    page
-     * @param session http session to figure out last login
      * @return {@code ModelAndView} with topics list and vars for pagination
      */
     @RequestMapping("/topics/recent")
-    public ModelAndView recentTopicsPage(@RequestParam(value = PAGE, defaultValue = "1", required = false) Integer page,
-                                         HttpSession session) {
-
-        DateTime lastLogin = (DateTime) session.getAttribute("lastlogin");
+    public ModelAndView recentTopicsPage(
+            @RequestParam(value = PAGE, defaultValue = "1", required = false) Integer page) {
         JCUser currentUser = securityService.getCurrentUser();
-        List<Topic> topics = topicService.getRecentTopics(lastLogin);
+        List<Topic> topics = topicService.getRecentTopics();
         topics = lastReadPostService.fillLastReadPostForTopics(topics);
         Pagination pagination = new Pagination(page, currentUser, topics.size(), true);
 

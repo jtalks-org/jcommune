@@ -16,9 +16,11 @@ package org.jtalks.jcommune.model.entity;
 
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Fields;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
+import org.jtalks.jcommune.model.search.BbCodeFilterBridge;
 
 /**
  * Represents the simple version of post of the forum
@@ -147,6 +149,7 @@ public class Post extends Entity {
         @Field(name = POST_CONTENT_FIELD_DEF,
             analyzer = @Analyzer(definition = "defaultJtalksAnalyzer"))
     })
+    @FieldBridge(impl = BbCodeFilterBridge.class)
     public String getPostContent() {
         return postContent;
     }

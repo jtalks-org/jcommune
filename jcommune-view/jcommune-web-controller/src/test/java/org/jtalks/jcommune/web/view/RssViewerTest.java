@@ -59,7 +59,7 @@ public class RssViewerTest {
         List<Topic> topics = new ArrayList<Topic>();
         JCUser user = new JCUser("username", "email", "password");
         user.setSignature("Signature");
-        Post post = new Post(user,"sagjalighjh eghjwhjslhjsdfhdfhljdfh");
+        Post post = new Post(user, "sagjalighjh eghjwhjslhjsdfhdfhljdfh");
         topic = new Topic(user, "");
         topic.addPost(post);
         topic.setId(1L);
