@@ -33,7 +33,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -79,12 +84,12 @@ public class PostController {
     }
 
     /**
-     * @param postService       {@link PostService} instance to be injected
-     * @param breadcrumbBuilder the object which provides actions on {@link BreadcrumbBuilder} entity
-     * @param topicService      {@link TopicService} to be injected
-     * @param bbCodeService     to create valid quotes
+     * @param postService         {@link PostService} instance to be injected
+     * @param breadcrumbBuilder   the object which provides actions on {@link BreadcrumbBuilder} entity
+     * @param topicService        {@link TopicService} to be injected
+     * @param bbCodeService       to create valid quotes
      * @param lastReadPostService not to track user posts as updates for himself
-     * @param securityService to get the current user information
+     * @param securityService     to get the current user information
      */
     @Autowired
     public PostController(PostService postService, BreadcrumbBuilder breadcrumbBuilder,
@@ -108,7 +113,7 @@ public class PostController {
     @RequestMapping(method = RequestMethod.DELETE, value = "/posts/{postId}")
     public String delete(@PathVariable(POST_ID) Long postId) throws NotFoundException {
         Post post = postService.get(postId);
-        postService.deletePost(postId);
+        postService.deletePost(postId, post.getTopic().getBranch().getId());
         return "redirect:/topics/" + post.getTopic().getId();
     }
 
@@ -216,8 +221,9 @@ public class PostController {
             mav.addObject(POST_DTO, postDto);
             return mav;
         }
-        Post newbie = topicService.replyToTopic(postDto.getTopicId(), postDto.getBodyText());
-        lastReadPostService.markTopicAsRead(newbie.getTopic());
+        Topic topic = topicService.get(postDto.getTopicId());
+        Post newbie = topicService.replyToTopic(postDto.getTopicId(), postDto.getBodyText(), topic.getBranch().getId());
+        lastReadPostService.markTopicAsRead(topic);
         return new ModelAndView(this.redirectToPageWithPost(newbie.getId()));
     }
 

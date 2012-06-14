@@ -15,7 +15,12 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.common.security.SecurityService;
-import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Poll;
+import org.jtalks.jcommune.model.entity.PollItem;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PollService;
@@ -31,7 +36,12 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -131,7 +141,7 @@ public class TopicController {
      * @param branchId branch, where topic will be created
      * @return {@code ModelAndView} object which will be redirect to forum.html
      * @throws NotFoundException when branch not found
-     * todo: move logic to service
+     *                           todo: move logic to service
      */
     @RequestMapping(value = "/topics/new", method = RequestMethod.POST)
     public ModelAndView createTopic(@Valid @ModelAttribute TopicDto topicDto,
@@ -167,7 +177,7 @@ public class TopicController {
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.DELETE)
     public ModelAndView deleteTopic(@PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         Topic topic = topicService.get(topicId);
-        topicService.deleteTopic(topicId);
+        topicService.deleteTopic(topicId, topic.getBranch().getId());
         return new ModelAndView("redirect:/branches/" + topic.getBranch().getId());
     }
 

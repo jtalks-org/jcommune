@@ -94,8 +94,7 @@ public class TransactionalPrivateMessageService
     @Override
     @PreAuthorize("hasPermission(#userFrom.id, 'org.jtalks.jcommune.model.entity.JCUser', 'ProfilePermission.SEND_PRIVATE_MESSAGES')")
     public PrivateMessage sendMessage(String title, String body, JCUser recipient, JCUser userFrom) throws NotFoundException {
-        // JCUser recipient = userService.getByUsername(recipientUsername);     todo
-        //  JCUser userFrom = (JCUser) securityService.getCurrentUser();
+
         PrivateMessage pm = new PrivateMessage(recipient, userFrom, title, body);
         pm.setRead(false);
         pm.setStatus(PrivateMessageStatus.SENT);

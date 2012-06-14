@@ -69,6 +69,7 @@ public class PostControllerTest {
 
     public static final long POST_ID = 1;
     public static final long TOPIC_ID = 1L;
+    private static final Long BRANCH_ID = 1L;
     public static final long PAGE = 1L;
     private final String POST_CONTENT = "postContent";
     private Topic topic;
@@ -103,7 +104,7 @@ public class PostControllerTest {
         String view = controller.delete(POST_ID);
 
         //check expectations
-        verify(postService).deletePost(POST_ID);
+        verify(postService).deletePost(POST_ID, BRANCH_ID);
 
         //check result
         assertEquals(view, "redirect:/topics/" + TOPIC_ID);
@@ -111,7 +112,7 @@ public class PostControllerTest {
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testDeleteUnexistingPost() throws NotFoundException {
-        doThrow(new NotFoundException()).when(postService).deletePost(POST_ID);
+        doThrow(new NotFoundException()).when(postService).deletePost(POST_ID, BRANCH_ID);
         controller.delete(POST_ID);
     }
 
@@ -231,14 +232,14 @@ public class PostControllerTest {
         Post post = new Post(null, null);
         topic.addPost(post);
         topic.setId(TOPIC_ID);
-        when(topicService.replyToTopic(anyLong(), Matchers.<String>any())).thenReturn(post);
+        when(topicService.replyToTopic(anyLong(), Matchers.<String>any(), BRANCH_ID)).thenReturn(post);
         when(postService.calculatePageForPost(post)).thenReturn(1);
         when(postService.get(Matchers.<Long>any())).thenReturn(post);
         //invoke the object under test
         ModelAndView mav = controller.create(getDto(), resultWithoutErrors);
 
         //check expectations
-        verify(topicService).replyToTopic(TOPIC_ID, POST_CONTENT);
+        verify(topicService).replyToTopic(TOPIC_ID, POST_CONTENT, BRANCH_ID);
 
         //check result
         assertViewName(mav, "redirect:/topics/" + TOPIC_ID + "?page=1#0");
@@ -252,7 +253,7 @@ public class PostControllerTest {
         ModelAndView mav = controller.create(getDto(), resultWithErrors);
 
         //check expectations
-        verify(topicService, never()).replyToTopic(anyLong(), anyString());
+        verify(topicService, never()).replyToTopic(anyLong(), anyString(), BRANCH_ID);
 
         //check result
         assertViewName(mav, "answer");
