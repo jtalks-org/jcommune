@@ -245,7 +245,8 @@
                             <c:out value="${post.userCreated.postCount}"/>
                         </div>
                         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                            <c:if test='${encodedUsername != post.userCreated.encodedUsername}'>
+                            <sec:authentication property="principal.id" var="userId"/>
+                            <c:if test='${userId != post.userCreated.id}'>
                                 <div>
                                     <a href="${pageContext.request.contextPath}/pm/new/${post.userCreated.id}" 
                                         title='<spring:message code="label.pm.send"/>'>
