@@ -41,12 +41,12 @@ import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
+import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -87,12 +87,12 @@ public class TransactionalUserServiceTest {
     @Mock
     private Base64Wrapper base64Wrapper;
     @Mock
-    private PasswordEncoder passwordEncoder;
+    private EncryptionService encryptionService;
 
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
-        when(passwordEncoder.encodePassword(PASSWORD, null))
+        when(encryptionService.encryptPassword(PASSWORD))
             .thenReturn(PASSWORD_MD5_HASH);
         userService = new TransactionalUserService(
                 userDao,
@@ -100,7 +100,7 @@ public class TransactionalUserServiceTest {
                 mailService,
                 base64Wrapper,
                 avatarService,
-                passwordEncoder);
+                encryptionService);
     }
 
     @Test
@@ -144,7 +144,7 @@ public class TransactionalUserServiceTest {
         JCUser user = getUser(USERNAME);
         when(securityService.getCurrentUser()).thenReturn(user);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
-        when(passwordEncoder.encodePassword(NEW_PASSWORD, null))
+        when(encryptionService.encryptPassword(NEW_PASSWORD))
             .thenReturn(NEW_PASSWORD_MD5_HASH);
 
         String newAvatar = new String(new byte[12]);
@@ -162,8 +162,7 @@ public class TransactionalUserServiceTest {
     public void testEditUserProfileNewPasswordNull() {
         JCUser user = getUser(USERNAME);
         when(securityService.getCurrentUser()).thenReturn(user);
-        when(passwordEncoder.encodePassword(null, null))
-            .thenReturn(null);
+        when(encryptionService.encryptPassword(null)).thenReturn(null);
         
         String newAvatar = new String(new byte[12]);
         String newPassword = null;

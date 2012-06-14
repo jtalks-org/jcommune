@@ -177,13 +177,13 @@ public class TopicControllerTest {
         BindingResult result = mock(BindingResult.class);
 
         //set expectations
-        when(topicService.createTopic(TOPIC_THEME, TOPIC_CONTENT, BRANCH_ID)).thenReturn(topic);
+        when(topicService.createTopic(TOPIC_THEME, TOPIC_CONTENT, BRANCH_ID, false)).thenReturn(topic);
 
         //invoke the object under test
         ModelAndView mav = controller.createTopic(dto, result, BRANCH_ID);
 
         //check expectations
-        verify(topicService).createTopic(TOPIC_THEME, TOPIC_CONTENT, BRANCH_ID);
+        verify(topicService).createTopic(TOPIC_THEME, TOPIC_CONTENT, BRANCH_ID, false);
 
         //check result
         assertViewName(mav, "redirect:/topics/1");

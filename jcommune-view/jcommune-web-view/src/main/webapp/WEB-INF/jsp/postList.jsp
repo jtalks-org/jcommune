@@ -86,7 +86,7 @@
             </sec:authorize>
             <sec:authorize access="hasAnyRole('ROLE_ADMIN')">
                 <span class="topicId" id="${topic.id}">
-                <a id="move_topic" href="#" class="btn" title="Move this topic">
+                <a name="move_topic" href="#" class="btn" title="Move this topic">
                     <spring:message code="label.topic.move"/>
                 </a>
                 </span>
@@ -245,7 +245,8 @@
                             <c:out value="${post.userCreated.postCount}"/>
                         </div>
                         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
-                            <c:if test='${encodedUsername != post.userCreated.encodedUsername}'>
+                            <sec:authentication property="principal.id" var="userId"/>
+                            <c:if test='${userId != post.userCreated.id}'>
                                 <div>
                                     <a href="${pageContext.request.contextPath}/pm/new/${post.userCreated.id}" 
                                         title='<spring:message code="label.pm.send"/>'>
@@ -293,7 +294,7 @@
             </sec:authorize>
             <sec:authorize access="hasAnyRole('ROLE_ADMIN')">
                 <span class="topicId" id="${topic.id}">
-                    <a id="move_topic" href="#" class="btn" title="Move this topic">
+                    <a name="move_topic" href="#" class="btn" title="Move this topic">
                         <spring:message code="label.topic.move"/>
                     </a>
                 </span>

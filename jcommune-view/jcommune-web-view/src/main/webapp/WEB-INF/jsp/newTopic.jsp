@@ -51,7 +51,7 @@
         <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
             
         <form:form action="${pageContext.request.contextPath}/topics/new?branchId=${branchId}"
-                   method="POST" modelAttribute="topicDto" class="well">
+                   method="POST" modelAttribute="topicDto" class="well anti-multipost">
             <div class='control-group'>
                 <div class='controls'>
                 <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
@@ -67,7 +67,14 @@
             <jtalks:bbeditor labelForAction="label.addtopic"
                              postText="${topicDto.bodyText}"
                              bodyParameterName="bodyText"
-                             back="${pageContext.request.contextPath}/branches/${branchId}"/>
+                             back="${pageContext.request.contextPath}/branches/${branchId}"
+                             notifyOnAnswers="${topicDto.notifyOnAnswers}"/>
+            <div class="control-group">
+                <br/>
+                <form:checkbox id="notify" path="notifyOnAnswers" name="notify" checked="checked"
+                               style="margin-right: 10px;"/><spring:message
+                    code="label.answer.notify_message"/>
+            </div>
             <br/>
             <br/>
             <jtalks:newPoll titleNameValue="pollTitle"
