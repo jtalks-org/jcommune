@@ -69,15 +69,6 @@ public enum JcommuneProperty {
     }
 
     /**
-     * Gets default value.
-     * 
-     * @return default value
-     */
-    String getDefaultValue() {
-        return defaultValue;
-    }
-
-    /**
      * Set an instance of {@link PropertyDao} to search properties by name.
      * 
      * @param propertyDao an instance of {@link PropertyDao}

@@ -56,10 +56,11 @@ public class JcommunePropertyTest {
         Property property = null;
         Mockito.when(propertyDao.getByName(Mockito.anyString())).thenReturn(property);
         jcommuneProperty.setPropertyDao(propertyDao);
+        String expectedValue = Boolean.TRUE.toString();
+        jcommuneProperty.setDefaultValue(expectedValue);
         
         String actual = jcommuneProperty.getValue();
         
-        Assert.assertEquals(actual, jcommuneProperty.getDefaultValue(),
-                "Returned an invalid property value.");
+        Assert.assertEquals(actual, expectedValue, "Returned an invalid property value.");
     }
 }
