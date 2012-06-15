@@ -67,6 +67,8 @@ $(function () {
                     refreshCaptchaOnClick();
                     document.getElementById("captcha").setAttribute("value", "");
 
+                } else if ($(data).find("span.error_errorpage").html() != null){
+                	$.prompt($labelRegistrationFailture);
                 } else {
                     $.prompt($labelRegistrationSuccess);
                 }
