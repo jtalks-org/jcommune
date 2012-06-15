@@ -46,7 +46,7 @@
         <div class="span9">
             <form:form action="${pageContext.request.contextPath}/pm"
                        method="POST" modelAttribute="privateMessageDto" name="editForm"
-                       class="well">
+                       class="well anti-multipost">
                 <form:hidden path="id"/>
 
             <div class='control-group'>
