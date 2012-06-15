@@ -73,8 +73,7 @@ public class NotificationServiceTest {
 
     @Test
     public void testTopicChanged() throws MailingFailedException {
-        Property enabledProperty = new Property(PROPERTY_NAME, TRUE_STRING);
-        when(propertyDao.getByName(PROPERTY_NAME)).thenReturn(enabledProperty);
+        prepareEnabledProperty();
         topic.getSubscribers().add(user1);
         topic.getSubscribers().add(user2);
 
@@ -86,8 +85,7 @@ public class NotificationServiceTest {
     
     @Test
     public void testTopicChanedWithDisabledNotifcations() {
-        Property disabledProperty = new Property(PROPERTY_NAME, FALSE_STRING);
-        when(propertyDao.getByName(PROPERTY_NAME)).thenReturn(disabledProperty);
+        prepareDisabledProperty();
         topic.getSubscribers().add(user1);
 
         service.topicChanged(topic);
@@ -97,8 +95,7 @@ public class NotificationServiceTest {
 
     @Test
     public void testBranchChanged() throws MailingFailedException {
-        Property enabledProperty = new Property(PROPERTY_NAME, TRUE_STRING);
-        when(propertyDao.getByName(PROPERTY_NAME)).thenReturn(enabledProperty);
+        prepareEnabledProperty();
         branch.getSubscribers().add(user1);
         branch.getSubscribers().add(user2);
 
@@ -110,8 +107,7 @@ public class NotificationServiceTest {
     
     @Test
     public void testBranchChangedWithDisabledNotifications() {
-        Property disabledProperty = new Property(PROPERTY_NAME, FALSE_STRING);
-        when(propertyDao.getByName(PROPERTY_NAME)).thenReturn(disabledProperty);
+        prepareDisabledProperty();
         branch.getSubscribers().add(user1);
 
         service.branchChanged(branch);
@@ -121,8 +117,7 @@ public class NotificationServiceTest {
 
     @Test
     public void testTopicChangedSelfSubscribed() throws MailingFailedException {
-        Property enabledProperty = new Property(PROPERTY_NAME, TRUE_STRING);
-        when(propertyDao.getByName(PROPERTY_NAME)).thenReturn(enabledProperty);
+        prepareEnabledProperty();
         when(securityService.getCurrentUser()).thenReturn(user1);
         topic.getSubscribers().add(user1);
         topic.getSubscribers().add(user2);
@@ -135,8 +130,7 @@ public class NotificationServiceTest {
 
     @Test
     public void testBranchChangedSelfSubscribed() throws MailingFailedException {
-        Property enabledProperty = new Property(PROPERTY_NAME, TRUE_STRING);
-        when(propertyDao.getByName(PROPERTY_NAME)).thenReturn(enabledProperty);
+        prepareEnabledProperty();
         when(securityService.getCurrentUser()).thenReturn(user1);
         branch.getSubscribers().add(user1);
         branch.getSubscribers().add(user2);
@@ -149,8 +143,7 @@ public class NotificationServiceTest {
 
     @Test
     public void testTopicChangedNoSubscribers() {
-        Property enabledProperty = new Property(PROPERTY_NAME, TRUE_STRING);
-        when(propertyDao.getByName(PROPERTY_NAME)).thenReturn(enabledProperty);
+        prepareEnabledProperty();
         service.topicChanged(topic);
 
         verifyZeroInteractions(mailService);
@@ -158,8 +151,7 @@ public class NotificationServiceTest {
 
     @Test
     public void testBranchChangedNoSubscribers() {
-        Property enabledProperty = new Property(PROPERTY_NAME, TRUE_STRING);
-        when(propertyDao.getByName(PROPERTY_NAME)).thenReturn(enabledProperty);
+        prepareEnabledProperty();
         service.branchChanged(branch);
 
         verifyZeroInteractions(mailService);
@@ -167,8 +159,7 @@ public class NotificationServiceTest {
 
     @Test
     public void testTopicMovedWithBranchSubscribers() {
-        Property enabledProperty = new Property(PROPERTY_NAME, TRUE_STRING);
-        when(propertyDao.getByName(PROPERTY_NAME)).thenReturn(enabledProperty);
+        prepareEnabledProperty();
         when(securityService.getCurrentUser()).thenReturn(user1);
         branch.getSubscribers().add(user1);
         branch.getSubscribers().add(user2);
@@ -182,8 +173,7 @@ public class NotificationServiceTest {
 
     @Test
     public void testTopicMovedTopicStarterIsNotASubscriber() {
-        Property enabledProperty = new Property(PROPERTY_NAME, TRUE_STRING);
-        when(propertyDao.getByName(PROPERTY_NAME)).thenReturn(enabledProperty);
+        prepareEnabledProperty();
         when(securityService.getCurrentUser()).thenReturn(user1);
         branch.getSubscribers().add(user2);
         branch.getSubscribers().add(user3);
@@ -196,13 +186,22 @@ public class NotificationServiceTest {
     
     @Test
     public void testTopicMovedWithDisabledNotifications() {
-        Property disabledProperty = new Property(PROPERTY_NAME, FALSE_STRING);
-        when(propertyDao.getByName(PROPERTY_NAME)).thenReturn(disabledProperty);
+        prepareDisabledProperty();
         when(securityService.getCurrentUser()).thenReturn(user1);
         branch.getSubscribers().add(user2);
 
         service.topicMoved(topic, TOPIC_ID);
 
         verify(mailService, Mockito.never()).sendTopicMovedMail(user2, TOPIC_ID);
+    }
+    
+    private void prepareDisabledProperty() {
+        Property disabledProperty = new Property(PROPERTY_NAME, FALSE_STRING);
+        when(propertyDao.getByName(PROPERTY_NAME)).thenReturn(disabledProperty);
+    }
+    
+    private void prepareEnabledProperty() {
+        Property enabledProperty = new Property(PROPERTY_NAME, TRUE_STRING);
+        when(propertyDao.getByName(PROPERTY_NAME)).thenReturn(enabledProperty);
     }
 }
