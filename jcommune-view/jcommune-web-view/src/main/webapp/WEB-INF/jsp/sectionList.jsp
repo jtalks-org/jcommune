@@ -46,7 +46,7 @@
                     <spring:message code="label.messagesWithoutAnswers"/>
                 </a>
             </span>
-            <a href="${pageContext.request.contextPath}/topics/recent.rss" title="Feed subscription">
+            <a href="${pageContext.request.contextPath}/topics/recent.rss" title="<spring:message code='label.tips.feed_subsription'/>">
                 <img src="${pageContext.request.contextPath}/resources/images/rss-icon.png" alt="" class="rss-icon">
             </a>
         </div>
@@ -92,8 +92,7 @@
                                 <a class="date" href="${pageContext.request.contextPath}/posts/${branch.lastPostInLastUpdatedTopic.id}">
                                     <jtalks:format value="${branch.lastPostInLastUpdatedTopic.creationDate}"/>
                                 </a>
-                                <p>
-                                    by 
+                                <p><spring:message code="label.topic.last_post_by"/>                                     
                                     <a href="${pageContext.request.contextPath}/users/${branch.lastPostInLastUpdatedTopic.userCreated.id}">
                                         <c:out value="${branch.lastPostInLastUpdatedTopic.userCreated.username}"/>
                                     </a>
@@ -125,12 +124,12 @@
                 <c:choose>
                     <c:when test="${user.role=='ROLE_ADMIN'}">
                         <a href="${pageContext.request.contextPath}/users/${user.id}"
-                                title="Click to view profile"
+                                title="<spring:message code='label.tips.view_profile'/>"
                                 class="label label-important"><c:out value="${user.username}"/></a>
                     </c:when>
                     <c:otherwise>
                         <a href="${pageContext.request.contextPath}/users/${user.id}"
-                                title="Click to view profile">
+                                title="<spring:message code='label.tips.view_profile'/>">
                                 <c:out value="${user.username}"/></a>
                     </c:otherwise>
                  </c:choose>

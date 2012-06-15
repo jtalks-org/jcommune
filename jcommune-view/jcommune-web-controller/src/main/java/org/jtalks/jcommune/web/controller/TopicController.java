@@ -141,7 +141,7 @@ public class TopicController {
      * @param branchId branch, where topic will be created
      * @return {@code ModelAndView} object which will be redirect to forum.html
      * @throws NotFoundException when branch not found
-     * todo: move logic to service
+     *                           todo: move logic to service
      */
     @RequestMapping(value = "/topics/new", method = RequestMethod.POST)
     public ModelAndView createTopic(@Valid @ModelAttribute TopicDto topicDto,
@@ -154,8 +154,8 @@ public class TopicController {
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branch));
         }
 
-        Topic createdTopic;
-        createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(), branchId);
+        Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(), branchId,
+                topicDto.isNotifyOnAnswers());
 
         if (topicDto.hasPoll()) {
             Poll poll = topicDto.preparePollFromTopicDto();
@@ -268,7 +268,8 @@ public class TopicController {
         }
 
         topicService.updateTopic(topicDto.getId(), topicDto.getTopicName(), topicDto.getBodyText(),
-                topicDto.getTopicWeight(), topicDto.isSticked(), topicDto.isAnnouncement());
+                topicDto.getTopicWeight(), topicDto.isSticked(), topicDto.isAnnouncement(),
+                topicDto.isNotifyOnAnswers());
 
         return new ModelAndView("redirect:/topics/" + topicId);
     }

@@ -19,6 +19,7 @@
 <%@ attribute name="postText" required="false" rtexprvalue="true" type="java.lang.String" %>
 <%@ attribute name="bodyParameterName" required="true" rtexprvalue="true" type="java.lang.String" %>
 <%@ attribute name="labelForAction" required="true" rtexprvalue="true" type="java.lang.String" %>
+<%@ attribute name="notifyOnAnswers" required="false" rtexprvalue="true" type="java.lang.String" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -161,13 +162,6 @@
     <br>
     <form:errors path="${bodyParameterName}" cssClass="help-inline"/>
 </div>
-
-
-<div class="control-group">
-    <input id="notify" type="checkbox" name="notify" checked="checked" style="margin-right: 10px;"/><spring:message
-        code="label.answer.notify_message"/>
-</div>
-
 
 <input id="post" type="submit" class="btn btn-primary" accesskey="s" tabindex="6" name="post"
        value="<spring:message code="${labelForAction}"/>"/>

@@ -77,7 +77,7 @@
 	                                <a class="date" href="${pageContext.request.contextPath}/posts/${branch.lastPostInLastUpdatedTopic.id}">
                                         <jtalks:format value="${branch.lastPostInLastUpdatedTopic.creationDate}"/>
 	                                </a>
-	                                <p>by 
+	                                <p><spring:message code="label.topic.last_post_by"/> 
 	                                    <a href="${pageContext.request.contextPath}/users/${branch.lastPostInLastUpdatedTopic.userCreated.id}">
                                             <c:out value="${branch.lastPostInLastUpdatedTopic.userCreated.username}"/>
 	                                    </a>
@@ -111,7 +111,7 @@
                     </c:otherwise>
                 </c:choose>
                 <a href="${pageContext.request.contextPath}/users/${innerUser.encodedUsername}" 
-                    title="Click to view profile"
+                    title="<spring:message code='label.tips.view_profile'/>"
                     class='${labelClass}'>
                     <c:out value="${innerUser.username}"/>
                 </a>
