@@ -123,7 +123,7 @@
                             <a class="date" href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}">
                                 <jtalks:format value="${topic.lastPost.creationDate}"/>
                             </a>
-                            <p>by 
+                            <p><spring:message code="label.topic.last_post_by"/> 
                                 <a href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.id}">
                                     <c:out value="${topic.lastPost.userCreated.username}"/>
                                 </a>
