@@ -12,10 +12,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service.nontransactional;
+package org.jtalks.jcommune.model.entity;
 
 import org.jtalks.common.model.entity.Property;
 import org.jtalks.jcommune.model.dao.PropertyDao;
+import org.jtalks.jcommune.model.entity.JcommuneProperty;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -28,11 +29,10 @@ import org.testng.annotations.Test;
  * @author Anuar Nurmakanov
  *
  */
-public class JcommuneDatabasePropertyTest {
+public class JcommunePropertyTest {
     @Mock
     private PropertyDao propertyDao;
-    private JcommuneDatabaseProperty jcommuneDatabaseProperty = 
-            JcommuneDatabaseProperty.SENDING_NOTIFICATIONS_ENABLED;
+    private JcommuneProperty jcommuneProperty = JcommuneProperty.SENDING_NOTIFICATIONS_ENABLED;
     
     @BeforeTest
     public void init() {
@@ -44,9 +44,9 @@ public class JcommuneDatabasePropertyTest {
         String expected = "value";
         Property property = new Property("name", expected);
         Mockito.when(propertyDao.getByName(Mockito.anyString())).thenReturn(property);
-        jcommuneDatabaseProperty.setPropertyDao(propertyDao);
+        jcommuneProperty.setPropertyDao(propertyDao);
         
-        String actual = jcommuneDatabaseProperty.getValue();
+        String actual = jcommuneProperty.getValue();
         
         Assert.assertEquals(actual, expected, "Returned an invalid property value.");
     }
@@ -55,21 +55,11 @@ public class JcommuneDatabasePropertyTest {
     public void testGetValueWithNotFoundedProperty() {
         Property property = null;
         Mockito.when(propertyDao.getByName(Mockito.anyString())).thenReturn(property);
-        jcommuneDatabaseProperty.setPropertyDao(propertyDao);
+        jcommuneProperty.setPropertyDao(propertyDao);
         
-        String actual = jcommuneDatabaseProperty.getValue();
+        String actual = jcommuneProperty.getValue();
         
-        Assert.assertEquals(actual, jcommuneDatabaseProperty.getDefaultValue(),
-                "Returned an invalid property value.");
-    }
-    
-    @Test
-    public void testGetValueWithNullPropertyDao() {
-        jcommuneDatabaseProperty.setPropertyDao(null);
-        
-        String actual = jcommuneDatabaseProperty.getValue();
-        
-        Assert.assertEquals(actual, jcommuneDatabaseProperty.getDefaultValue(),
+        Assert.assertEquals(actual, jcommuneProperty.getDefaultValue(),
                 "Returned an invalid property value.");
     }
 }

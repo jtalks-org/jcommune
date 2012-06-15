@@ -12,11 +12,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service.nontransactional;
+package org.jtalks.jcommune.model.entity;
 
 import org.jtalks.common.model.entity.Property;
 import org.jtalks.jcommune.model.dao.PropertyDao;
-import org.jtalks.jcommune.service.JcommuneProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -24,38 +25,47 @@ import org.jtalks.jcommune.service.JcommuneProperty;
  * 
  * @author Anuar_Nurmakanov
  */
-public enum JcommuneDatabaseProperty implements JcommuneProperty {
+public enum JcommuneProperty {
     /**
      * The property to check the enabling of email notifications to subscribers of topics or branches.
      */
-    SENDING_NOTIFICATIONS_ENABLED("jcommune.sending_notifications_enabled", Boolean.TRUE.toString());
+    SENDING_NOTIFICATIONS_ENABLED;
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(JcommuneProperty.class);
     //fields
     private String name;
     private String defaultValue;
     private PropertyDao propertyDao;
-    
-    /**
-     * Constructor with required fields.
-     * 
-     * @param name a name of a property
-     * @param defaultValue default value
-     */
-    private JcommuneDatabaseProperty(String name, String defaultValue) {
-        this.name = name;
-        this.defaultValue = defaultValue;
-    }
 
     /**
      * {@inheritDoc}
      */
     public String getValue() {
-        if (propertyDao != null) {
-            Property property = propertyDao.getByName(name);
-            if (property != null) {
-                return property.getValue();
-            }
+        Property property = propertyDao.getByName(name);
+        if (property != null) {
+            return property.getValue();
+        } else {
+            LOGGER.warn(name + " property was not found.");
+            return defaultValue;
         }
-        return defaultValue;
+    }
+    
+    /**
+     * Sets the name of the property.
+     * 
+     * @param name the name of the property
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Sets default value for this property.
+     * 
+     * @param defaultValue default value
+     */
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
     }
 
     /**

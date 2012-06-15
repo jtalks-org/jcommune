@@ -18,14 +18,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-  <!-- JCommune properties -->
-  <bean id="sendingNotificationsProperty" class="org.jtalks.jcommune.service.nontransactional.JcommuneDatabaseProperty"
-        factory-method="valueOf">
-    <constructor-arg type="java.lang.String" value="SENDING_NOTIFICATIONS_ENABLED"/>
-    <property name="propertyDao" ref="propertyDao"/>
-  </bean>
 
-  <!--  -->
   <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
     <!--todo:  make it configurable -->
     <property name="host" value="smtp.mail.ru"/>
