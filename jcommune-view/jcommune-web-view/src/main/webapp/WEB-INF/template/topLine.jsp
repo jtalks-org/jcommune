@@ -31,12 +31,6 @@
             <a class="brand" href="${pageContext.request.contextPath}/">JTalks - JCommune</a>
             
             <div class="nav-collapse">
-                <ul class="nav">
-                    <li class="active"><a href="${pageContext.request.contextPath}/"><fmt:message key="label.home"/></a></li>
-                    <li><a href="${pageContext.request.contextPath}/"><fmt:message key="label.forum"/></a></li>
-                    <li><a href="#contact">Blog</a></li>
-                </ul>
-                
                 <form action='<c:url value="/search/"/>' method="GET" name="form" id="form" class="navbar-search pull-left dropdown">
                     <input id="searchText" name="searchText" type="text" class="search-query dropdown-toggle" 
                         placeholder='<fmt:message key="label.search"/>' maxlength="50"
