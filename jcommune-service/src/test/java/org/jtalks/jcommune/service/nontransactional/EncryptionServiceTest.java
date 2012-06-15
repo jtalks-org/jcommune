@@ -14,14 +14,12 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
-import org.apache.commons.lang.StringUtils;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -48,19 +46,5 @@ public class EncryptionServiceTest {
     public void testEncryptPassword() {
         String encryptedPassword = encryptionService.encryptPassword(PASSWORD);
         Assert.assertEquals(encryptedPassword, PASSWORD_MD5_HASH, "Returned an incorrect hash value");
-    }
-    
-    @Test(dataProvider = "changeEmptyPasswordParameters")
-    public void testEncryptEmptyPassword(String emptyPassword) {
-        String encryptedPassword = encryptionService.encryptPassword(emptyPassword);
-        Assert.assertNull(encryptedPassword, "The passed value is empty, so there must return null.");
-    }
-    
-    @DataProvider(name = "changeEmptyPasswordParameters")
-    public Object[][] changeEmptyPasswordParameters() {
-        return new Object[][] {
-                {null},
-                {StringUtils.EMPTY}
-        };
-    }
+    }    
 }

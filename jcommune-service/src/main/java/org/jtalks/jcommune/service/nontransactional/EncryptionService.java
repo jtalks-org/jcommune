@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 
 /**
@@ -37,20 +36,14 @@ public class EncryptionService {
 
     /**
      * Gets a hash of the password with the use of encryption mechanism.
-     * If the logic of encryption will become more complicated, we will
-     * have to move all this in a separate service. This mechanism is
-     * the same  that used in the old forum.
+     * This mechanism is the same  that used in the old forum.
      * 
      * @param password password that the user entered 
-     * @return encrypted password if password not empty or null, otherwise null
+     * @return encrypted password
      */
     public String encryptPassword(String password) {
-        if (!StringUtils.isEmpty(password)) {
-            return passwordEncoder.encodePassword(
-                password,
-                null); //We do not use salt because it is not used phpbb
-        } else {
-            return null;
-        }
+        return passwordEncoder.encodePassword(
+            password,
+            null); //We do not use salt because it is not used phpbb
     }
 }
