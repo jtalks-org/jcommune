@@ -256,9 +256,9 @@
     <!-- Users -->
     <div id="users-stats" class="well forum-user-stats-container">
         <strong><spring:message code="label.topic.moderators"/></strong> 
-        <a href="#" title="Click to view profile">andreyko</a> 
-        <a href="#" class="label label-success" title="Click to view profile">Староверъ</a>
-        <a href="#" class="label label-important" title="Click to view profile">admin</a>
+        <a href="#" title="<spring:message code='label.tips.view_profile'/>">andreyko</a> 
+        <a href="#" class="label label-success" title="<spring:message code='label.tips.view_profile'/>">Староверъ</a>
+        <a href="#" class="label label-important" title="<spring:message code='label.tips.view_profile'/>">admin</a>
         <br />
         <c:if test="${!(empty viewList)}">
         <strong><spring:message code="label.branch.now_browsing"/></strong> 
@@ -273,7 +273,7 @@
                 </c:otherwise>
             </c:choose>
             <a href="${pageContext.request.contextPath}/users/${innerUser.id}"
-                title="Click to view profile"
+                title="<spring:message code='label.tips.view_profile'/>"
                 class='${labelClass}'>
                 <c:out value="${innerUser.username}"/>
             </a>

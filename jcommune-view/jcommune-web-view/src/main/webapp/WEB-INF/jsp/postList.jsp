@@ -80,13 +80,13 @@
             <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
                 <a id="new-topic-btn" class="btn btn-primary" 
                     href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}" 
-                    title="Create new post in this topic">
+                    title="<spring:message code='label.tips.create_new_post'/>">
                     <spring:message code="label.answer"/>
                 </a>
             </sec:authorize>
             <sec:authorize access="hasAnyRole('ROLE_ADMIN')">
                 <span class="topicId" id="${topic.id}">
-                <a name="move_topic" href="#" class="btn" title="Move this topic">
+                <a name="move_topic" href="#" class="btn" title="<spring:message code='label.tips.move_topic'/>">
                     <spring:message code="label.topic.move"/>
                 </a>
                 </span>
@@ -180,13 +180,13 @@
                          
                          <div class="btn-group">
                              <a id="edit_button" href="${edit_url}" rel="${branchId}" 
-                                 class="btn btn-mini" title="Edit this post">
+                                 class="btn btn-mini" title="<spring:message code='label.tips.edit_post'/>">
                                  <i class="icon-edit"></i>
                                  <spring:message code="label.edit"/>
                              </a>
                              <a href="${delete_url}" class="btn btn-mini btn-danger delete" 
-                                 title="Remove this post" 
-                                 rel="<spring:message code="${confirm_message}"/>">
+                                 title="<spring:message code='label.tips.remove_post'/>" 
+                                 rel="<spring:message code='${confirm_message}'/>">
                                  <i class="icon-remove icon-white"></i>
                                  <spring:message code="label.delete"/>
                              </a>
@@ -194,13 +194,13 @@
                      </sec:accesscontrollist>
              
                      <div class="btn-group">
-                         <a class="btn btn-mini postLink" title="Link to this post" rel="${post.id}"
+                         <a class="btn btn-mini postLink" title="<spring:message code='label.tips.link_to_post'/>" rel="${post.id}"
                             href="${pageContext.request.contextPath}/posts/${post.id}">
                              <i class="icon-link"></i>
                          </a>
                          <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
                              <a class="btn btn-mini" href='javascript:quote(${post.id});' 
-                                 title="Quote this post">
+                                 title="<spring:message code='label.tips.quote_post'/>">
                                  <i class="icon-quote"></i><spring:message code="label.quotation"/>
                              </a>
                          </sec:authorize>
@@ -212,12 +212,15 @@
             <tr class="post-content-tr">
                 <td class="userinfo">
                     <div>
-                        <c:set var="online" value='<i class="icon-online" title="User online"></i>'/>
-                        <c:set var="offline" value='<i class="icon-offline" title="User offline"></i>'/>
+                        <spring:message var="onlineTip" code="label.tips.user_online"/>
+                        <spring:message var="offlineTip" code="label.tips.user_offline"/>
+                        <c:set var="online" value='<i class="icon-online" title="${onlineTip}"></i>'/>
+                        <c:set var="offline" value='<i class="icon-offline" title="${offlineTip}"></i>'/>
                         <jtalks:ifContains collection="${usersOnline}" object="${post.userCreated}"
                                        successMessage="${online}" failMessage="${offline}"/>
                         <a class='post-userinfo-username' 
-                                href="${pageContext.request.contextPath}/users/${post.userCreated.id}">
+                                href="${pageContext.request.contextPath}/users/${post.userCreated.id}"
+                                title="<spring:message code='label.tips.view_profile'/>">
                             <c:out value="${post.userCreated.username}"/>                   
                         </a>
                     </div>
@@ -288,13 +291,13 @@
         <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
             <a id="new-topic-btn" class="btn btn-primary" 
                     href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}" 
-                    title="Create new post in this topic">
+                    title="<spring:message code='label.tips.create_new_post'/>">
                     <spring:message code="label.answer"/>
             </a>
             </sec:authorize>
             <sec:authorize access="hasAnyRole('ROLE_ADMIN')">
                 <span class="topicId" id="${topic.id}">
-                    <a name="move_topic" href="#" class="btn" title="Move this topic">
+                    <a name="move_topic" href="#" class="btn" title="<spring:message code='label.tips.move_topic'/>">
                         <spring:message code="label.topic.move"/>
                     </a>
                 </span>
@@ -333,9 +336,9 @@
     <!-- Users -->
     <div id="users-stats" class="well forum-user-stats-container">
         <strong><spring:message code="label.topic.moderators"/></strong> 
-        <a href="#" title="Click to view profile">andreyko</a> 
-        <a href="#" class="label label-success" title="Click to view profile">Староверъ</a>
-        <a href="#" class="label label-important" title="Click to view profile">admin</a>
+        <a href="#" title="<spring:message code='label.tips.view_profile'/>">andreyko</a> 
+        <a href="#" class="label label-success" title="<spring:message code='label.tips.view_profile'/>">Староверъ</a>
+        <a href="#" class="label label-important" title="<spring:message code='label.tips.view_profile'/>">admin</a>
         <br />
         <c:if test="${!(empty viewList)}">
             <strong><spring:message code="label.branch.now_browsing"/></strong> 
@@ -350,7 +353,7 @@
                 </c:otherwise>
             </c:choose>
             <a href="${pageContext.request.contextPath}/users/${innerUser.id}"
-                title="Click to view profile"
+                title="<spring:message code='label.tips.view_profile'/>"
                 class='${labelClass}'>
                 <c:out value="${innerUser.username}"/>
             </a>

@@ -65,10 +65,16 @@
                         <a href="${pageContext.request.contextPath}/inbox">
                             <fmt:message key="label.pm"/> 
                             <c:if test="${newPmCount != null}">
-                                (<span id="new-pm-count" title="You have ${newPmCount} new messages">
+                                <span id="new-pm-count" title="
+                                    <fmt:message key='label.tips.pm_count'>
+                                        <fmt:param>${newPmCount}</fmt:param>
+                                    </fmt:message>
+                                    ">
+                                    (
                                     <i class="icon-envelope icon-white" style="vertical-align:middle;"></i>
                                     <span class='test-pm-count'>${newPmCount}</span>
-                                 </span>)
+                                    )
+                                </span>
                             </c:if>
                         </a>
                     </li>

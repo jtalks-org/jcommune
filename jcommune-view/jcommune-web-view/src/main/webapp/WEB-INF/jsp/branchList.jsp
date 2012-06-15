@@ -111,7 +111,7 @@
                     </c:otherwise>
                 </c:choose>
                 <a href="${pageContext.request.contextPath}/users/${innerUser.encodedUsername}" 
-                    title="Click to view profile"
+                    title="<spring:message code='label.tips.view_profile'/>"
                     class='${labelClass}'>
                     <c:out value="${innerUser.username}"/>
                 </a>
