@@ -27,19 +27,21 @@ $(function () {
         e.preventDefault();
     });
     function signupPopup() {
+        var url = $root + "/captcha/image?param=" + $.now();
+        //this parameter forces browser to reload image every time
+        $("#captcha_img").removeAttr("src").attr("src", url).attr("src", url);
         var query;
         //data for query
         if (!firstView) {
-            query = "username=" + $('#username').val() + "&" + "password=" +
-                $('#password').val() + "&passwordConfirm=" +
-                $('#passwordConfirm').val() +
-                "&email=" + $('#email').val().replace("+", "%2B") +
-                //without this replacement "+" is decoded as " " on server side. Spaces are illegal for email
-                "&captcha=" + $('#captcha').val();
+            query = "username=" + encodeURIComponent($('#username').val()) +
+                "&password=" + encodeURIComponent($('#password').val()) +
+                "&passwordConfirm=" + encodeURIComponent($('#passwordConfirm').val()) +
+                "&email=" + encodeURIComponent($('#email').val()) +
+                "&captcha=" + encodeURIComponent($('#captcha').val());
         } else {
             query = "username=&password=&passwordConfirm=&email=&captcha&firstView=false";
         }
-        ;
+
         //POST-query
         $.ajax({
             type:"POST",
@@ -63,6 +65,7 @@ $(function () {
                     $.prompt(content,
                         {buttons:{OK:true}, focus:0, submit:signupPopup});
                     refreshCaptchaOnClick();
+                    document.getElementById("captcha").setAttribute("value", "");
 
                 } else {
                     $.prompt($labelRegistrationSuccess);
@@ -74,8 +77,8 @@ $(function () {
 
 function refreshCaptchaOnClick() {
     $("#captcha_refresh").on('click', function (e) {
-        $("#captcha_img").removeAttr("src").attr("src", $root + "/captcha/image");
-        $("#captcha_img").attr("src", $root + "/captcha/image");
+        var url = $root + "/captcha/image?param=" + $.now();
+        //this parameter forces browser to reload image every time
+        $("#captcha_img").removeAttr("src").attr("src", url).attr("src", url);
     });
 }
-;

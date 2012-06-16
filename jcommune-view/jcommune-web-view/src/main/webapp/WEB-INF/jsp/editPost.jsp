@@ -38,7 +38,7 @@
 
         <div id="answer">
             <form:form action="${pageContext.request.contextPath}/posts/${postId}/edit?topicId=${topicId}"
-                       method="POST" modelAttribute="postDto" class='well'>
+                       method="POST" modelAttribute="postDto" class='well anti-multipost'>
                 <form:hidden path="topicId"/>
                 <form:hidden path="id"/>
                 
@@ -48,7 +48,7 @@
                                  back="${pageContext.request.contextPath}/topics/${topicId}"/>
             </form:form>
             
-            <a href="${back}" class="back-btn">
+            <a href="${pageContext.request.contextPath}/topics/${topicId}" class="back-btn">
                 <i class="icon-arrow-left"></i>
                 <spring:message code="label.back"/>
             </a>

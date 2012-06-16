@@ -73,13 +73,13 @@
                             <c:if test="${newPmCount != null}">
                                 (<span id="new-pm-count" title="You have ${newPmCount} new messages">
                                     <i class="icon-envelope icon-white" style="vertical-align:middle;"></i>
-                                    ${newPmCount}
+                                    <span class='test-pm-count'>${newPmCount}</span>
                                  </span>)
                             </c:if>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="${pageContext.request.contextPath}/pages/faq">
                             <fmt:message key="label.newbies"/>
                         </a>
                     <li class="divider-vertical"></li>

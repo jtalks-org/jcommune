@@ -118,5 +118,8 @@
   </bean>
   
   <!-- Password encoding -->
+  <bean id="encryptionService" class="org.jtalks.jcommune.service.nontransactional.EncryptionService">
+    <constructor-arg ref="md5PasswordEncoder"/>
+  </bean>
   <bean id="md5PasswordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
 </beans>

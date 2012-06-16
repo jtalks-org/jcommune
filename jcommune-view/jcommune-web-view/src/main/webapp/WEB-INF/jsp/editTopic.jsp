@@ -41,7 +41,7 @@
         
         <form:form name="editForm"
                    action="${pageContext.request.contextPath}/topics/${topicId}/edit?branchId=${branchId}"
-                   method="POST" modelAttribute="topicDto" class='well'>
+                   method="POST" modelAttribute="topicDto" class='well anti-multipost'>
             <form:hidden path="id"/>
             
             <div class='control-group'>
@@ -85,8 +85,19 @@
                              postText="${topicDto.bodyText}"
                              bodyParameterName="bodyText"
                              back="${pageContext.request.contextPath}/topics/${topicId}"/>
+            <div class="control-group">
+                <br/>
+                <form:checkbox id="notify" path="notifyOnAnswers" name="notify" checked="checked"
+                               style="margin-right: 10px;"/><spring:message
+                    code="label.answer.notify_message"/>
+            </div>
 
         </form:form>
+        
+        <a href="${pageContext.request.contextPath}/topics/${topicId}" class='back-btn'>
+            <i class="icon-arrow-left"></i>
+            <spring:message code="label.back"/>
+        </a>
     </div>
 </body>
 </html>

@@ -27,44 +27,35 @@
             type="text/javascript"></script>
 </head>
 <body>
-<div class="wrap login_page">
+<div class="container">
     <jsp:include page="../template/topLine.jsp"/>
     <jsp:include page="../template/logo.jsp"/>
-    <div class="all_forums">
 
-        <div id="answer">
-            <form:form action="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit"
-                       method="POST" modelAttribute="simplePageDto" onsubmit="doCheck();return true;">
+    <div id="answer">
+        <form:form action="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit"
+                   method="POST" modelAttribute="simplePageDto" onsubmit="doCheck();return true;">
 
-                <div class="forum_header_table">
-                    <div class="forum_header">
-                        <span class="forum_header_answer"><spring:message code="label.edit"/></span>
-                        <span class="empty_cell"></span>
-                    </div>
-                </div>
-                <form:hidden path="id"/>
+            <h2>
+                <spring:message code="label.edit"/>
+            </h2>
+            <form:hidden path="id"/>
 
-                <div class="all_forums">
-                    <ul class="forum_table" id="stylized">
-                        <li class="forum_row">
-                            <div>
-                                <form:input path="nameText" class="reg_input" type="text"/></br>
-                                <form:errors path="nameText" cssClass="error"/>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <form:hidden path="pathName"/>
-                <jtalks:bbeditor labelForAction="label.save"
-                                 postText="${simplePageDto.contentText}"
-                                 bodyParameterName="contentText"
-                                 back="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}"/>
-            </form:form>
-            <a href="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}" class="back-btn">
-                <i class="icon-arrow-left"></i>
-                <spring:message code="label.back"/>
-            </a>
-        </div>
+
+            <div>
+                <form:input path="nameText" class="reg_input" type="text"/></br>
+                <form:errors path="nameText" cssClass="error"/>
+            </div>
+
+            <form:hidden path="pathName"/>
+            <jtalks:bbeditor labelForAction="label.save"
+                             postText="${simplePageDto.contentText}"
+                             bodyParameterName="contentText"
+                             back="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}"/>
+        </form:form>
+        <a href="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}" class="back-btn">
+            <i class="icon-arrow-left"></i>
+            <spring:message code="label.back"/>
+        </a>
     </div>
 
     <div class="footer_buffer"></div>

@@ -66,6 +66,8 @@ public class TopicDto {
 
     private Poll poll;
 
+    private boolean notifyOnAnswers;
+
     /**
      * Plain object for topic creation
      */
@@ -217,6 +219,22 @@ public class TopicDto {
 
     public void setEndingDate(String endingDate) {
         this.endingDate = endingDate;
+    }
+
+    /**
+     * @return flag that indicates notification state(enabled or disabled)
+     */
+    public boolean isNotifyOnAnswers() {
+        return notifyOnAnswers;
+    }
+
+    /**
+     * Set flag that indicates notification state(enabled or disabled).
+     *
+     * @param notifyOnAnswers flag of notifications state
+     */
+    public void setNotifyOnAnswers(boolean notifyOnAnswers) {
+        this.notifyOnAnswers = notifyOnAnswers;
     }
 
     public Poll preparePollFromTopicDto() {

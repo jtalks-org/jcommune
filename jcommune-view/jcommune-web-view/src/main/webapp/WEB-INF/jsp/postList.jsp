@@ -86,7 +86,7 @@
             </sec:authorize>
             <sec:authorize access="hasAnyRole('ROLE_ADMIN')">
                 <span class="topicId" id="${topic.id}">
-                <a id="move_topic" href="#" class="btn" title="Move this topic">
+                <a name="move_topic" href="#" class="btn" title="Move this topic">
                     <spring:message code="label.topic.move"/>
                 </a>
                 </span>
@@ -194,7 +194,8 @@
                      </sec:accesscontrollist>
              
                      <div class="btn-group">
-                         <a class="btn btn-mini postLink" title="Link to this post" rel="${post.id}">
+                         <a class="btn btn-mini postLink" title="Link to this post" rel="${post.id}"
+                            href="${pageContext.request.contextPath}/posts/${post.id}">
                              <i class="icon-link"></i>
                          </a>
                          <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
@@ -216,14 +217,14 @@
                         <jtalks:ifContains collection="${usersOnline}" object="${post.userCreated}"
                                        successMessage="${online}" failMessage="${offline}"/>
                         <a class='post-userinfo-username' 
-                                href="${pageContext.request.contextPath}/users/${post.userCreated.encodedUsername}">
+                                href="${pageContext.request.contextPath}/users/${post.userCreated.id}">
                             <c:out value="${post.userCreated.username}"/>                   
                         </a>
                     </div>
               
                     <span class="thumbnail post-userinfo-avatal">
                         <div class="wraptocenter"><span></span>
-                            <img src="${pageContext.request.contextPath}/${post.userCreated.encodedUsername}/avatar" alt="" />
+                            <img src="${pageContext.request.contextPath}/users/${post.userCreated.id}/avatar" alt="" />
                         </div>
                     </span>
 
@@ -243,11 +244,17 @@
                             <spring:message code="label.topic.message_count"/>
                             <c:out value="${post.userCreated.postCount}"/>
                         </div>
-                        <div>
-                            <a href="#" title="Private message">
-                                <img src="${pageContext.request.contextPath}/resources/images/message-icon.png"/>
-                            </a>
-                        </div>
+                        <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                            <sec:authentication property="principal.id" var="userId"/>
+                            <c:if test='${userId != post.userCreated.id}'>
+                                <div>
+                                    <a href="${pageContext.request.contextPath}/pm/new/${post.userCreated.id}" 
+                                        title='<spring:message code="label.pm.send"/>'>
+                                        <img src="${pageContext.request.contextPath}/resources/images/message-icon.png"/>
+                                    </a>
+                                </div>
+                            </c:if>
+                        </sec:authorize>
                     </div>
                 </td>
                 <td class='post-content-td'>
@@ -259,9 +266,8 @@
                             <jtalks:format value="${post.modificationDate}"/>
                         </c:if>
                     </div>
-                    <hr/>
                     <div align="left">
-                        ${post.userCreated.signature}
+                        ${post.userCreated.renderedSignature}
                     </div>
                 </td>
             </tr>
@@ -288,7 +294,7 @@
             </sec:authorize>
             <sec:authorize access="hasAnyRole('ROLE_ADMIN')">
                 <span class="topicId" id="${topic.id}">
-                    <a id="move_topic" href="#" class="btn" title="Move this topic">
+                    <a name="move_topic" href="#" class="btn" title="Move this topic">
                         <spring:message code="label.topic.move"/>
                     </a>
                 </span>
@@ -343,7 +349,7 @@
                         <c:set var='labelClass' value=''/>
                 </c:otherwise>
             </c:choose>
-            <a href="${pageContext.request.contextPath}/users/${innerUser.encodedUsername}" 
+            <a href="${pageContext.request.contextPath}/users/${innerUser.id}"
                 title="Click to view profile"
                 class='${labelClass}'>
                 <c:out value="${innerUser.username}"/>

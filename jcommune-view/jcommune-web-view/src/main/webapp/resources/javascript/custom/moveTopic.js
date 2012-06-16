@@ -23,7 +23,7 @@ var baseUrl = $root;
  * "Move topic" button handler.
  */
 $(document).ready(function () {
-    $("#move_topic").click(function () {
+    $("[name=move_topic]").click(function () {
         $.getJSON(baseUrl + "/sections/json", function (sections) {
             var htmlTemplate = prepareHtmlTemplateForModalWindow(sections);
             var eliminatedBranchId = $("#edit_button").attr("rel");

@@ -135,7 +135,7 @@ function stringItemsArrayToHtmlItems(items) {
         }
     }
 
-    result += "<input type='submit' class='btn btn-primary' value='" + $labelPollVote + "'/>";
+    result += "<input type='button' class='btn btn-primary' value='" + $labelPollVote + "'/>";
 
     return result;
 }

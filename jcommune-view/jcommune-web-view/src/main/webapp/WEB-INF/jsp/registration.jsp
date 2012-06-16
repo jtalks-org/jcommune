@@ -32,7 +32,7 @@
     <jsp:include page="../template/logo.jsp"/>
     <div class="all_forums">
         <form:form id="form" name="form" action='${pageContext.request.contextPath}/user/new'
-                     modelAttribute="newUser" method="POST">
+                   modelAttribute="newUser" method="POST">
             <div class="forum_header_table">
                 <div class="forum_header">
                     <span class="forum_header_answer"><spring:message code="label.fillmessage"/></span>
@@ -44,7 +44,7 @@
                 <div class="forum_row">
                     <form:label path="username"> <spring:message code="label.username"/></form:label>
                     <div>
-                        <form:input path="username" class="reg_input" type="text"/></br>
+                            <form:input path="username" class="reg_input" type="text"/></br>
                         <form:errors path="username" cssClass="error"/>
                     </div>
                     <span class="reg_info"><spring:message code="label.tip.username"/></span>
@@ -52,7 +52,7 @@
                 <div class="forum_row">
                     <form:label path="email"><spring:message code="label.email"/></form:label>
                     <div>
-                        <form:input path="email" class="reg_input" type="text"/></br>
+                            <form:input path="email" class="reg_input" type="text"/></br>
                         <form:errors path="email" cssClass="error"/>
                     </div>
                     <span class="reg_info"><spring:message code="label.tip.email"/></span>
@@ -61,7 +61,7 @@
                     <form:label path="password"><spring:message code="label.password"/></form:label>
 
                     <div>
-                        <form:input path="password" class="reg_input" type="password"/></br>
+                            <form:input path="password" class="reg_input" type="password"/></br>
                         <form:errors path="password" cssClass="error"/>
                     </div>
                     <span class="reg_info"><spring:message code="label.tip.password"/></span>
@@ -70,7 +70,7 @@
                     <form:label path="passwordConfirm"><spring:message code="label.confirmation"/></form:label>
 
                     <div>
-                        <form:input path="passwordConfirm" class="reg_input" type="password"/></br>
+                            <form:input path="passwordConfirm" class="reg_input" type="password"/></br>
                         <form:errors path="passwordConfirm" cssClass="error"/>
                     </div>
                     <span class="reg_info"><spring:message code="label.tip.confirmation"/></span>
@@ -79,9 +79,10 @@
                     <form:label path="captcha"><spring:message code="label.captcha"/></form:label>
 
                     <div>
-                        <img id="captcha_img"  src='${pageContext.request.contextPath}/captcha/image' class="captcha"/>
-                        <img id="captcha_refresh" src='${pageContext.request.contextPath}/resources/images/captcha-refresh.gif'/>
-                        <form:input path="captcha" class="captcha_input" type="text"/></br>
+                        <img id="captcha_img" src='${pageContext.request.contextPath}/captcha/image' class="captcha"/>
+                        <img id="captcha_refresh"
+                             src='${pageContext.request.contextPath}/resources/images/captcha-refresh.gif'/>
+                            <form:input path="captcha" class="captcha_input" type="text" id="captcha"/></br>
                         <form:errors path="captcha" cssClass="error"/>
                     </div>
                     <span class="reg_info"><spring:message code="label.tip.captcha"/></span>

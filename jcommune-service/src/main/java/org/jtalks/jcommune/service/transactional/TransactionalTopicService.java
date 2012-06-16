@@ -22,6 +22,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
@@ -32,7 +33,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
-import static org.jtalks.jcommune.service.security.SecurityConstants.*;
+import static org.jtalks.jcommune.service.security.SecurityConstants.HAS_ADMIN_ROLE;
+import static org.jtalks.jcommune.service.security.SecurityConstants.HAS_USER_OR_ADMIN_ROLE;
+import static org.jtalks.jcommune.service.security.SecurityConstants.ROLE_ADMIN;
 
 /**
  * Topic service class. This class contains method needed to manipulate with Topic persistent entity.
@@ -53,6 +56,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     private BranchService branchService;
     private BranchDao branchDao;
     private NotificationService notificationService;
+    private SubscriptionService subscriptionService;
 
     /**
      * Create an instance of User entity based service
@@ -62,15 +66,18 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * @param branchService       {@link org.jtalks.jcommune.service.BranchService} instance to be injected
      * @param branchDao           used for checking branch existence
      * @param notificationService to send email nofications on topic updates to subscribed users
+     * @param subscriptionService for subscribing user on topic if notification enabled
      */
     public TransactionalTopicService(TopicDao dao, SecurityService securityService,
                                      BranchService branchService, BranchDao branchDao,
-                                     NotificationService notificationService) {
+                                     NotificationService notificationService,
+                                     SubscriptionService subscriptionService) {
         super(dao);
         this.securityService = securityService;
         this.branchService = branchService;
         this.branchDao = branchDao;
         this.notificationService = notificationService;
+        this.subscriptionService = subscriptionService;
     }
 
     /**
@@ -100,7 +107,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      */
     @Override
     @PreAuthorize(HAS_USER_OR_ADMIN_ROLE)
-    public Topic createTopic(String topicName, String bodyText, long branchId) throws NotFoundException {
+    public Topic createTopic(String topicName, String bodyText, long branchId, boolean isNotifyOnAnswers)
+            throws NotFoundException {
         JCUser currentUser = securityService.getCurrentUser();
 
         currentUser.setPostCount(currentUser.getPostCount() + 1);
@@ -115,11 +123,25 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
                 .user(currentUser.getUsername()).role(ROLE_ADMIN).admin().on(first);
         notificationService.branchChanged(branch);
 
+        subscribeOnTopicIfNotificationsEnabled(isNotifyOnAnswers, topic);
+
         logger.debug("Created new topic id={}, branch id={}, author={}",
                 new Object[]{topic.getId(), branchId, currentUser.getUsername()});
         logger.info("Created new topic: \"{}\". Author: {}", topicName, currentUser.getUsername());
 
         return topic;
+    }
+
+    /**
+     * Subscribes topic starter on created topic if notifications enabled("Notify me about the answer" checkbox).
+     *
+     * @param isNotifyOnAnswers flag that indicates notifications state(enabled or disabled)
+     * @param topic             topic to subscription
+     */
+    private void subscribeOnTopicIfNotificationsEnabled(boolean isNotifyOnAnswers, Topic topic) {
+        if (isNotifyOnAnswers) {
+            subscriptionService.toggleTopicSubscription(topic);
+        }
     }
 
 

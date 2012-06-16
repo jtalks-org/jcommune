@@ -27,33 +27,37 @@
 
 </head>
 <body>
-<div class="wrap answer_page">
+<div class="container">
     <jsp:include page="../template/topLine.jsp"/>
     <jsp:include page="../template/logo.jsp"/>
 
-    <div class="all_forums">
-        <div class="forum_info_top">
-            <div class="info_top_lower">
-                <div>
-                    <h2 class="heading"><c:out value="${simplePageDto.nameText}"/></h2>
-                </div>
-            </div>
-        </div>
-
-        <ul class="forum_table" id="stylized">
-
-            <li class="forum_row">
-                <jtalks:bb2html bbCode="${simplePageDto.contentText}"/>
-            </li>
-        </ul>
-        <sec:authorize access="hasRole('ROLE_ADMIN')">
-            <div>
-                <a class="button" href="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit">
-                    <spring:message code="label.edit"/>
-                </a>
-            </div>
-        </sec:authorize>
+    <div id="branch-header">
+        <h3>
+            <c:out value="${simplePageDto.nameText}"/>
+        </h3>
     </div>
+
+    <div>
+        <div class="post">
+            <table class="table table-striped table-bordered table-condensed">
+                <tr class="post-content-tr">
+                    <td class='post-content-td'>
+                        <div>
+                            <jtalks:bb2html bbCode="${simplePageDto.contentText}"/>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <sec:authorize access="hasRole('ROLE_ADMIN')">
+        <div>
+            <a class="button" href="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit">
+                <spring:message code="label.edit"/>
+            </a>
+        </div>
+    </sec:authorize>
 </div>
 
 <div class="footer_buffer">
