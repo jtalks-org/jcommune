@@ -56,4 +56,13 @@
         </set>
 
     </class>
+    
+    <query name="getCountTopicsInBranch">
+        <![CDATA[SELECT COUNT(topic) FROM Topic topic WHERE topic.branch = :branch]]>
+    </query>
+    
+    <query name="getTopicsInBranch">
+        <![CDATA[SELECT topic FROM Topic topic WHERE topic.branch = :branch 
+                 ORDER BY sticked DESC, topicWeight DESC, modificationDate DESC]]>
+    </query>
 </hibernate-mapping>

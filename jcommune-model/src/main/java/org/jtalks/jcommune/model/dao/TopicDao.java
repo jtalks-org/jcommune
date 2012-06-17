@@ -19,7 +19,9 @@ import java.util.List;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.common.model.entity.Branch;
+import org.jtalks.jcommune.model.dto.JcommunePage;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.springframework.data.domain.Pageable;
 
 /**
  * DAO for the {@link Topic} objects.
@@ -58,4 +60,19 @@ public interface TopicDao extends ChildRepository<Topic> {
      * @return the last updated topic in the branch
      */
     Topic getLastUpdatedTopicInBranch(Branch branch);
+    
+    /**
+     * 
+     * @param pageable
+     * @return
+     */
+    JcommunePage<Topic> getTopics(Branch branch, Pageable pageable);
+    
+    /**
+     * Get count of topics in the branch.
+     * 
+     * @param branch the branch
+     * @return count of topics in the branch
+     */
+    int getCountTopicsInBranch(Branch branch);
 }

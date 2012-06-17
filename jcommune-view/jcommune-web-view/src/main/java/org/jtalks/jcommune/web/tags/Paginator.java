@@ -15,13 +15,14 @@
 
 package org.jtalks.jcommune.web.tags;
 
-import org.jtalks.jcommune.web.util.Pagination;
+import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyTagSupport;
-import java.io.IOException;
-import java.util.List;
+
+import org.jtalks.jcommune.model.dto.JcommunePage;
 
 /**
  * Class for custom tag jtalks:pagination
@@ -30,17 +31,16 @@ import java.util.List;
  * @author Andrey Kluev
  */
 public class Paginator extends BodyTagSupport {
+    private static final long serialVersionUID = 1L;
+    private static final String LINK_PATTERN = "<li><a href='%s?page=%d'>%d</a></li>";
+    private static final String CURRENT_LINK_PATTERN = "<li class='active'><a href='#'>%d</a></li>";
+    public static final int DEFAULT_LINK_COUNT = 7;
+    
     private String uri;
     private int numberLink = DEFAULT_LINK_COUNT;
     private List<?> list;
-    private transient Pagination pagination;
-    private static final String LINK_PATTERN = "<li><a href='%s?page=%d'>%d</a></li>";
-    private static final String CURRENT_LINK_PATTERN = "<li class='active'><a href='#'>%d</a></li>";
-
-    public static final int DEFAULT_LINK_COUNT = 7;
-
-    private static final long serialVersionUID = 1L;
-
+    private JcommunePage<?> page;
+    
     /**
      * @param uri uri
      */
@@ -67,18 +67,7 @@ public class Paginator extends BodyTagSupport {
      */
     @Override
     public int doStartTag() {
-
-        if (!pagination.isPagingEnabled()) {
-            pagination.setPageSize(list.size());
-        }
-
-        if (!list.isEmpty()) {
-            if (pagination.isLastPage() && !pagination.isRounded()) {
-                pageContext.setAttribute("list", pagination.notIntegerNumberOfPages(list));
-            } else {
-                pageContext.setAttribute("list", pagination.integerNumberOfPages(list));
-            }
-        }
+        pageContext.setAttribute("list", page.getContent());
         return EVAL_BODY_INCLUDE;
     }
 
@@ -102,31 +91,32 @@ public class Paginator extends BodyTagSupport {
      * @return completed links
      */
     public String createPagingLink(int numberLink,  String uri) {
-        int page = pagination.getPage();
+        int page = this.page.getNumber();
         StringBuffer buffer = new StringBuffer();
-        if (pagination.isPagingEnabled()) {
+        if (this.page.isPagingEnabled()) {
             for (int i = numberLink; i > 0; i--) {
                 if (page > i) {
                     buffer.append(String.format(LINK_PATTERN, uri, page - i, page - i));
                 }
             }
-            if (pagination.getMaxPages() > 1) {
+            if (this.page.getTotalPages() > 1) {
                 buffer.append(String.format(CURRENT_LINK_PATTERN, page));
             }
             for (int i = 0; i < numberLink; i++) {
-                if (page + i < pagination.getMaxPages()) {
+                if (page + i < this.page.getTotalPages()) {
                     buffer.append(String.format(LINK_PATTERN, uri, page + i + 1, page + i + 1));
                 }
             }
         }
         return buffer.toString();
     }
-
+    
     /**
-     * @param pagination called by JSP engine
+     * 
+     * @param page
      */
-    public void setPagination(Pagination pagination) {
-        this.pagination = pagination;
+    public void setPage(JcommunePage<?> page) {
+        this.page = page;
     }
 
     /**

@@ -147,6 +147,9 @@
         <constructor-arg ref="securityContextFacade"/>
     </bean>
 
+    <bean id="paginationService" class="org.jtalks.jcommune.service.nontransactional.PaginationService">
+        <constructor-arg ref="securityService"/>
+    </bean>
     <bean id="securityService"
           class="org.jtalks.jcommune.service.nontransactional.SecurityService">
         <constructor-arg ref="userDao"/>

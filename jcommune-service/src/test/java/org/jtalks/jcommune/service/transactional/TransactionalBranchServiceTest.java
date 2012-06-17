@@ -123,7 +123,7 @@ public class TransactionalBranchServiceTest {
         org.jtalks.common.model.entity.Branch commonBranch = branch;
         
         when(branchDao.getCountPostsInBranch(branch)).thenReturn(expectedPostsCount);
-        when(branchDao.getCountTopicsInBranch(branch)).thenReturn(expectedTopicsCount);
+        when(topicDao.getCountTopicsInBranch(branch)).thenReturn(expectedTopicsCount);
         
         branchService.fillStatisticInfo(Arrays.asList(commonBranch));
         

@@ -88,7 +88,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
             Branch jcommuneBranch = (Branch) commonBranch;
             int postsCount = getDao().getCountPostsInBranch(jcommuneBranch);
             jcommuneBranch.setPostsCount(postsCount);
-            int topicsCount = getDao().getCountTopicsInBranch(jcommuneBranch);
+            int topicsCount = topicDao.getCountTopicsInBranch(jcommuneBranch);
             jcommuneBranch.setTopicsCount(topicsCount);
         }
     }

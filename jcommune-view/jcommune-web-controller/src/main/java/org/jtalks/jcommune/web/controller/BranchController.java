@@ -15,6 +15,9 @@
 
 package org.jtalks.jcommune.web.controller;
 
+import java.util.List;
+
+import org.jtalks.jcommune.model.dto.JcommunePage;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -23,20 +26,21 @@ import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
+import org.jtalks.jcommune.service.nontransactional.PaginationService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.List;
 
 /**
  * @author Vitaliy kravchenko
@@ -57,6 +61,7 @@ public class BranchController {
     private SecurityService securityService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private LocationService locationService;
+    private PaginationService paginationService;
 
     /**
      * Constructor creates MVC controller with specified BranchService
@@ -68,6 +73,7 @@ public class BranchController {
      * @param locationService   autowired object from Spring Context
      * @param breadcrumbBuilder the object which provides actions on
      *                          {@link BreadcrumbBuilder} entity
+     * @param paginationService auxiliary services for pagination
      */
     @Autowired
     public BranchController(BranchService branchService,
@@ -75,13 +81,15 @@ public class BranchController {
                             LastReadPostService lastReadPostService,
                             SecurityService securityService,
                             BreadcrumbBuilder breadcrumbBuilder,
-                            LocationService locationService) {
+                            LocationService locationService,
+                            PaginationService paginationService) {
         this.branchService = branchService;
         this.topicService = topicService;
         this.lastReadPostService = lastReadPostService;
         this.securityService = securityService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.locationService = locationService;
+        this.paginationService = paginationService;
     }
 
     /**
@@ -102,18 +110,18 @@ public class BranchController {
     ) throws NotFoundException {
 
         Branch branch = branchService.get(branchId);
-        List<Topic> topics = lastReadPostService.fillLastReadPostForTopics(branch.getTopics());
+        Pageable pageRequest = new PageRequest(page, paginationService.getPageSizeForCurrentUser());
+        JcommunePage<Topic> topicsPage = topicService.getTopics(branch, pageRequest);
+        List<Topic> topics = lastReadPostService.fillLastReadPostForTopics(topicsPage.getContent());
 
         JCUser currentUser = securityService.getCurrentUser();
-
-        Pagination pag = new Pagination(page, currentUser, topics.size(), pagingEnabled);
         List<Breadcrumb> breadcrumbs = breadcrumbBuilder.getForumBreadcrumb(branch);
 
         return new ModelAndView("topicList")
                 .addObject("viewList", locationService.getUsersViewing(branch))
                 .addObject("branch", branch)
                 .addObject("topics", topics)
-                .addObject("pagination", pag)
+                .addObject("topicsPage", topicsPage)
                 .addObject("breadcrumbList", breadcrumbs)
                 .addObject("subscribed", branch.getSubscribers().contains(currentUser));
     }

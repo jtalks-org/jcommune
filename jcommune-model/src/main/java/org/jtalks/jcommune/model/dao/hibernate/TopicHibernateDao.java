@@ -26,7 +26,10 @@ import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.common.model.entity.Branch;
 import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.dto.JcommunePage;
+import org.jtalks.jcommune.model.dto.JcommunePageImpl;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.springframework.data.domain.Pageable;
 
 /**
  * Hibernate DAO implementation from the {@link Topic}.
@@ -35,6 +38,7 @@ import org.jtalks.jcommune.model.entity.Topic;
  * @author Kirill Afonin
  * @author Vitaliy Kravchenko
  * @author Eugeny Batov
+ * @author Anuar Nurmakanov
  */
 public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> implements TopicDao {
 
@@ -81,5 +85,35 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
                 .add(Property.forName(modificationDateProperty).eq(topicMaxModificationDateCriteria))
                 .list();
         return topics.isEmpty() ? null : topics.get(0);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JcommunePage<Topic> getTopics(Branch branch, Pageable pageable) {
+        int totalCount = getCountTopicsInBranch(branch);
+        int firstResult = (pageable.getPageNumber() - 1) * pageable.getPageSize();
+        @SuppressWarnings("unchecked")
+        List<Topic> topics = (List<Topic>) getSession()
+                .getNamedQuery("getTopicsInBranch")
+                .setParameter("branch", branch)
+                .setFirstResult(firstResult)
+                .setMaxResults(pageable.getPageSize())
+                .list();
+        return new JcommunePageImpl<Topic>(topics, pageable, totalCount);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getCountTopicsInBranch(Branch branch) {
+        Number count = (Number) getSession()
+                .getNamedQuery("getCountTopicsInBranch")
+                .setParameter("branch", branch)
+                .uniqueResult();
+        return count.intValue();
     }
 }

@@ -42,10 +42,10 @@
             <type>java.lang.Integer</type>
         </attribute>
         <attribute>
-            <name>pagination</name>
+            <name>page</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
-            <type>org.jtalks.jcommune.web.util.Pagination</type>
+            <type>org.jtalks.jcommune.model.dto.JcommunePage</type>
         </attribute>
         <attribute>
             <name>list</name>

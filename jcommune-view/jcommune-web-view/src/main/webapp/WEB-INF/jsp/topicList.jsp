@@ -88,16 +88,16 @@
         <div class="span10">
           <div class="pagination pull-right forum-pagination">
             <ul>
-                 <jtalks:pagination uri="${branch.id}" pagination="${pagination}" list="${topics}"/>
+                 <jtalks:pagination uri="${branch.id}" page="${topicsPage}" list="${topics}"/>
                  
                  <li>
-                    <c:if test="${pagination.maxPages>1}">
-                        <c:if test="${pagination.pagingEnabled == true}">
+                    <c:if test="${topicsPage.totalPages>1}">
+                        <c:if test="${topicsPage.pagingEnabled == true}">
                             <a class="button"
                                href="?pagingEnabled=false"><spring:message code="label.showAll"/></a>
                         </c:if>
                     </c:if>
-                    <c:if test="${pagination.pagingEnabled == false}">
+                    <c:if test="${topicsPage.pagingEnabled == false}">
                         <a class="button"
                            href="?pagingEnabled=true"><spring:message code="label.showPages"/>
                         </a>
@@ -229,17 +229,17 @@
         <div class="span10">
             <div class="pagination pull-right forum-pagination">
                 <ul>
-                    <jtalks:pagination uri="${branch.id}" pagination="${pagination}" list="${topics}"/>
+                    <jtalks:pagination uri="${branch.id}" page="${topicsPage}" list="${topics}"/>
                  
                     <li>
-                        <c:if test="${pagination.maxPages>1}">
-                            <c:if test="${pagination.pagingEnabled == true}">
+                        <c:if test="${topicsPage.totalPages>1}">
+                            <c:if test="${topicsPage.pagingEnabled == true}">
                                 <a class="button" href="?pagingEnabled=false">
                                     <spring:message code="label.showAll"/>
                                 </a>
                             </c:if>
                         </c:if>
-                        <c:if test="${pagination.pagingEnabled == false}">
+                        <c:if test="${topicsPage.pagingEnabled == false}">
                             <a class="button" href="?pagingEnabled=true">
                                 <spring:message code="label.showPages"/>
                             </a>

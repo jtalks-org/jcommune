@@ -14,10 +14,12 @@
  */
 package org.jtalks.jcommune.service;
 
+import org.jtalks.jcommune.model.dto.JcommunePage;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -114,4 +116,12 @@ public interface TopicService extends EntityService<Topic> {
      * @throws NotFoundException when topic or branch with given id not found
      */
     void moveTopic(Long topicId, Long branchId) throws NotFoundException;
+    
+    /**
+     * 
+     * @param branch
+     * @param pageable
+     * @return
+     */
+    JcommunePage<Topic> getTopics(Branch branch, Pageable pageable);
 }

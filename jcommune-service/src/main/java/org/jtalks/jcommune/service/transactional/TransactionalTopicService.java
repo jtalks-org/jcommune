@@ -17,6 +17,7 @@ package org.jtalks.jcommune.service.transactional;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.dto.JcommunePage;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
@@ -29,6 +30,7 @@ import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
@@ -250,5 +252,13 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
         topic.setViews(topic.getViews() + 1);
         this.getDao().update(topic);
         return topic;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JcommunePage<Topic> getTopics(Branch branch, Pageable pageable) {
+        return getDao().getTopics(branch, pageable);
     }
 }

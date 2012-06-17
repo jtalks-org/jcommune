@@ -39,7 +39,7 @@
         <div class="span9">
             <div class="pagination pull-right forum-pagination">
                 <ul>
-                    <jtalks:pagination uri="${topicId}" pagination="${pag}" numberLink="3" list="${posts}"/>
+                    <jtalks:pagination uri="${topicId}" page="${pag}" numberLink="3" list="${posts}"/>
                  
                     <c:if test="${pag.maxPages>1}">
                         <c:if test="${pag.pagingEnabled == true}">
@@ -139,7 +139,7 @@
         <div class="span12">
             <div class="pagination pull-right forum-pagination">
                 <ul>
-                    <jtalks:pagination uri="${topicId}" pagination="${pag}" numberLink="3" list="${posts}"/>
+                    <jtalks:pagination uri="${topicId}" page="${pag}" numberLink="3" list="${posts}"/>
                  
                     <c:if test="${pag.maxPages>1}">
                         <c:if test="${pag.pagingEnabled == true}">

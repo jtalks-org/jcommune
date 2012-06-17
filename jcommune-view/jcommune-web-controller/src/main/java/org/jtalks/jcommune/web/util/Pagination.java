@@ -24,6 +24,7 @@ import java.util.List;
  * @author Kirill Afonin
  * @author Andrey Kluev
  */
+@Deprecated
 public class Pagination {
     private int page;
     private int pageSize = JCUser.DEFAULT_PAGE_SIZE;

@@ -56,7 +56,7 @@ public class PaginatorTest {
         list = Arrays.asList(1, 2, 3, 4, 5, 6);
     }
 
-    @Test
+    /* @Test
     public void testElementsOfPage() throws JspException {
         JCUser user = new JCUser("", "", "");
         user.setPageSize(5);
@@ -170,5 +170,5 @@ public class PaginatorTest {
         paginator.setPagination(pagination);
         String pagingLink = paginator.createPagingLink(5, "1"); 
         assertEquals(pagingLink, "");
-    }
+    }*/
 }

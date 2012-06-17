@@ -13,7 +13,7 @@
         This module contains domain model of the project, and also - persistence layer.
     </description>
 
-    <dependencies>
+    <dependencies>      
         <dependency>
             <groupId>org.jtalks.common</groupId>
             <artifactId>jtalks-common-model</artifactId>
