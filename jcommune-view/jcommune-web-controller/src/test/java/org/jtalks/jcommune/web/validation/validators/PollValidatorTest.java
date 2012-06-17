@@ -93,8 +93,8 @@ public class PollValidatorTest {
 
     @Test
     public void testItemsBlankTitleDateNotBlank() {
-        Set<ConstraintViolation<TestObject>> constraintViolations = validator.validate(new TestObject("title",
-                null, true));
+        Set<ConstraintViolation<TestObject>> constraintViolations =
+                validator.validate(new TestObject("title","", true));
         Assert.assertEquals(constraintViolations.size(), 2);
         Iterator iterator = constraintViolations.iterator();
         List<String> messageTemplates = new ArrayList<String>(2);

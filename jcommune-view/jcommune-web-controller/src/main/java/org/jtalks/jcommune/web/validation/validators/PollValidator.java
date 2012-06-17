@@ -15,13 +15,19 @@
 package org.jtalks.jcommune.web.validation.validators;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.NumberUtils;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.IntRange;
+import org.apache.commons.lang.math.Range;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.web.dto.PollDto;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.validation.annotations.ValidPoll;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -33,7 +39,6 @@ import java.util.List;
  * please see on the next link {@link http://jira.jtalks.org/secure/attachment/12047/AC_Polling.txt}
  *
  * @author Alexandre Teterin
- *         Date: 14.04.12
  */
 
 
@@ -50,11 +55,13 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
     private String endingDateValue;
     private List<PollItem> items;
 
-    private final String ITEMS_NUMBER_MESSAGE = "{VotingOptionsNumber.message}";
-    private final String FUTURE_DATE_MESSAGE = "{javax.validation.constraints.Future.message}";
-    private final String TITLE_NOT_BLANK_IF_ITEMS_NOT_BLANK_MESSAGE = "{PollTitleNotBlankIfPollItemsNotBlank.message}";
-    private final String ITEMS_NOT_BLANK_IF_TITLE_NOT_BLANK_MESSAGE = "{PollItemsNotBlankIfPollTitleNotBlank.message}";
-    private final String ITEM_LENGTH_MESSAGE = "{VotingItemLength.message}";
+    private static final String ITEMS_NUMBER_MESSAGE = "{VotingOptionsNumber.message}";
+    private static final String FUTURE_DATE_MESSAGE = "{javax.validation.constraints.Future.message}";
+    private static final String TITLE_NOT_BLANK_IF_ITEMS_NOT_BLANK_MESSAGE =
+            "{PollTitleNotBlankIfPollItemsNotBlank.message}";
+    private static final String ITEMS_NOT_BLANK_IF_TITLE_NOT_BLANK_MESSAGE =
+            "{PollItemsNotBlankIfPollTitleNotBlank.message}";
+    private static final String ITEM_LENGTH_MESSAGE = "{VotingItemLength.message}";
 
     /**
      * Initialize validators fields from annotated class instance.
@@ -81,36 +88,33 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
      */
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
-        getValidatedFields(value);
-
-        return isVotingOptionsNumberValid(context)
-                & isDateInStringFormatInFuture(context)
-                & isTitleOrItemsNotBlankIfOneOfThemNotBlank(context)
-                & isItemLengthValid(context);
+        this.getValidatedFields(value);
+        boolean optionsNumberIsValid = isVotingOptionsNumberValid(context);
+        boolean dateIsValid = isDateInStringFormatInFuture(context);
+        boolean fieldsNotBlank = isTitleOrItemsNotBlankIfOneOfThemNotBlank(context);
+        boolean optionLengthValid = isItemLengthValid(context);
+        return optionsNumberIsValid && dateIsValid && fieldsNotBlank && optionLengthValid;
     }
 
     /**
-     * Validate poll item length.
+     * Validate poll item length to be in a certain range.
      *
      * @param context validation context.
      * @return {@code true} if validation successful, otherwise return false.
      */
     private boolean isItemLengthValid(ConstraintValidatorContext context) {
         boolean result = true;
-
         //empty poll items field is valid
         if (StringUtils.isBlank(pollItemsValue)) {
             return result;
         }
-
+        Range range = new IntRange(minItemsLength, maxItemsLength);
         for (PollItem item : items) {
-            if ((item.getName().length() < minItemsLength) || (item.getName().length() > maxItemsLength)) {
+            if (!range.containsInteger(item.getName().length())) {
                 result = false;
                 constraintViolated(context, ITEM_LENGTH_MESSAGE, pollItemsName);
             }
         }
-
-
         return result;
     }
 
@@ -125,14 +129,13 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
         //title is not blank & items are blank
         if (StringUtils.isNotBlank(pollTitleValue) && StringUtils.isBlank(pollItemsValue)) {
             result = false;
-            constraintViolated(context, ITEMS_NOT_BLANK_IF_TITLE_NOT_BLANK_MESSAGE,  pollItemsName);
+            constraintViolated(context, ITEMS_NOT_BLANK_IF_TITLE_NOT_BLANK_MESSAGE, pollItemsName);
         }
 
         //title is blank & items are not blank
         if (!StringUtils.isNotBlank(pollTitleValue) && StringUtils.isNotBlank(pollItemsValue)) {
             result = false;
-            constraintViolated(context, TITLE_NOT_BLANK_IF_ITEMS_NOT_BLANK_MESSAGE,
-                    pollTitleName);
+            this.constraintViolated(context, TITLE_NOT_BLANK_IF_ITEMS_NOT_BLANK_MESSAGE, pollTitleName);
         }
 
         return result;
@@ -153,11 +156,12 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
             //Poll options are empty so poll will not be created and it not need to check poll items number
             return true;
         } else if (StringUtils.isNotBlank(pollItemsValue)) {
-            if ((items.size() >= minItemsNumber) && (items.size() <= maxItemsNumber)) {
+            Range range = new IntRange(minItemsNumber, maxItemsNumber);
+            if (range.containsInteger(items.size())) {
                 return true;
             }
         }
-        constraintViolated(context, ITEMS_NUMBER_MESSAGE, pollItemsName);
+        this.constraintViolated(context, ITEMS_NUMBER_MESSAGE, pollItemsName);
         return false;
     }
 
@@ -169,15 +173,14 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
      */
     private boolean isDateInStringFormatInFuture(ConstraintValidatorContext context) {
         boolean result;
-        if (endingDateValue == null) {//null values are valid
+        if (StringUtils.isBlank(endingDateValue)) {//null values are valid
             result = true;
         } else {
             DateTime date = DateTimeFormat.forPattern(PollDto.DATE_FORMAT).parseDateTime(endingDateValue);
             result = date.isAfter(new DateTime());
-            System.out.println();
         }
         if (!result) {
-            constraintViolated(context, FUTURE_DATE_MESSAGE, endingDateName);
+            this.constraintViolated(context, FUTURE_DATE_MESSAGE, endingDateName);
         }
         return result;
     }
@@ -188,19 +191,16 @@ public class PollValidator implements ConstraintValidator<ValidPoll, Object> {
      * @param value object to validated.
      */
     private void getValidatedFields(Object value) {
-        try {
-            pollTitleValue = BeanUtils.getProperty(value, pollTitleName);
-            pollItemsValue = BeanUtils.getProperty(value, pollItemsName);
-            endingDateValue = BeanUtils.getProperty(value, endingDateName);
-            if (StringUtils.isNotBlank(pollItemsValue)) {
-                items = TopicDto.parseItems(pollItemsValue);
-            } else {
-                items = new ArrayList<PollItem>(0);
-            }
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
+        BeanWrapper wrapper = new BeanWrapperImpl(value);
+        pollTitleValue = ObjectUtils.defaultIfNull(wrapper.getPropertyValue(pollTitleName),"").toString();
+        pollItemsValue = ObjectUtils.defaultIfNull(wrapper.getPropertyValue(pollItemsName),"").toString();
+        endingDateValue = ObjectUtils.defaultIfNull(wrapper.getPropertyValue(endingDateName),"").toString();
 
+        if (StringUtils.isNotBlank(pollItemsValue)) {
+            items = TopicDto.parseItems(pollItemsValue);
+        } else {
+            items = new ArrayList<PollItem>(0);
+        }
     }
 
 
