@@ -65,6 +65,7 @@
   <bean id="notificationService" class="org.jtalks.jcommune.service.nontransactional.NotificationService">
     <constructor-arg ref="securityService"/>
     <constructor-arg ref="mailService"/>
+    <constructor-arg ref="sendingNotificationsProperty"/>
   </bean>
 
 </beans>

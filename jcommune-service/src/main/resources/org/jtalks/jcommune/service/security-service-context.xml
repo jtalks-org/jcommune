@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Copyright (C) 2011  JTalks.org Team
@@ -21,12 +21,12 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
               http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
 
-  <!-- Spring Security authentication manager -->
-  <security:authentication-manager alias="authenticationManager">
-    <security:authentication-provider user-service-ref="securityService">
-        <security:password-encoder hash="md5"/>
-    </security:authentication-provider>
-  </security:authentication-manager>
+    <!-- Spring Security authentication manager -->
+    <security:authentication-manager alias="authenticationManager">
+        <security:authentication-provider user-service-ref="securityService">
+            <security:password-encoder hash="md5"/>
+        </security:authentication-provider>
+    </security:authentication-manager>
 
     <!-- Enable security annotations using specified expression handler -->
     <security:global-method-security pre-post-annotations="enabled">
@@ -125,5 +125,8 @@
     </bean>
 
     <!-- Password encoding -->
+    <bean id="encryptionService" class="org.jtalks.jcommune.service.nontransactional.EncryptionService">
+        <constructor-arg ref="md5PasswordEncoder"/>
+    </bean>
     <bean id="md5PasswordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
 </beans>

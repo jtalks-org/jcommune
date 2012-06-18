@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.validation.validators;
 
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -38,6 +39,8 @@ public class ChangedPasswordValidatorTest {
 	@Mock
 	private SecurityService securityService;
 	@Mock
+	private EncryptionService encryptionService;
+	@Mock
 	private ConstraintValidatorContext validatorContext;
 	@Mock
 	private ConstraintViolationBuilder violationBuilder;
@@ -53,7 +56,7 @@ public class ChangedPasswordValidatorTest {
 		MockitoAnnotations.initMocks(this);
 		Mockito.when(securityService.getCurrentUser()).thenReturn(
 				new JCUser("username", "email", userCurrentPassword));
-		validator = new ChangedPasswordValidator(securityService);
+		validator = new ChangedPasswordValidator(securityService, encryptionService);
 		//
 		editUserProfileDto.setCurrentUserPassword(userCurrentPassword);
 		editUserProfileDto.setNewUserPassword(userNewPassword);
@@ -68,13 +71,19 @@ public class ChangedPasswordValidatorTest {
 	
 	@Test
 	public void testChangeUserPasswordCorrect() {
+	    String currentUserPassword = editUserProfileDto.getCurrentUserPassword();
+	    Mockito.when(encryptionService.encryptPassword(currentUserPassword)).
+	        thenReturn(currentUserPassword);
 		boolean isValid = validator.isValid(editUserProfileDto, validatorContext);
 		Assert.assertEquals(isValid, true, "The old password is correct, but the check fails.");
 	}
 	
 	@Test
 	public void testChangeUserPasswordIncorrect() {
-		editUserProfileDto.setCurrentUserPassword("other_password");
+	    String incorrectCurrentPassword = "other_password";
+		editUserProfileDto.setCurrentUserPassword(incorrectCurrentPassword);
+		Mockito.when(encryptionService.encryptPassword(incorrectCurrentPassword)).
+            thenReturn(incorrectCurrentPassword);
 		Mockito.when(validatorContext.buildConstraintViolationWithTemplate(null)).
 				thenReturn(violationBuilder);
 		Mockito.when(violationBuilder.addNode(Mockito.anyString())).

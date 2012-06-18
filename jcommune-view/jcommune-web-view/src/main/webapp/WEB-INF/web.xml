@@ -25,6 +25,7 @@
         <param-name>contextConfigLocation</param-name>
         <param-value>
             classpath:org/jtalks/jcommune/model/entity/applicationContext-dao.xml
+            classpath:org/jtalks/jcommune/model/entity/applicationContext-properties.xml
             classpath:org/jtalks/jcommune/service/applicationContext-service.xml
             classpath:org/jtalks/jcommune/service/email-context.xml
             classpath:org/jtalks/jcommune/service/security-service-context.xml

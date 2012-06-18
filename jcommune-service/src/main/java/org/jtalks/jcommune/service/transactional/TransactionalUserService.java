@@ -27,11 +27,11 @@ import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
+import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.authentication.encoding.PasswordEncoder;
 
 /**
  * User service class. This class contains method needed to manipulate with User persistent entity.
@@ -52,8 +52,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     private Base64Wrapper base64Wrapper;
     private AvatarService avatarService;
     //Important, use for every password creation.
-    private PasswordEncoder passwordEncoder;
-
+    private EncryptionService encryptionService; 
+    
     /**
      * Create an instance of User entity based service
      *
@@ -62,20 +62,20 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * @param mailService     to send e-mails
      * @param base64Wrapper   for avatar image-related operations
      * @param avatarService   some more avatar operations)
-     * @param passwordEncoder for password encryption
+     * @param passwordEncoder 
      */
-    public TransactionalUserService(UserDao dao,
-                                    SecurityService securityService,
-                                    MailService mailService,
-                                    Base64Wrapper base64Wrapper,
-                                    AvatarService avatarService,
-                                    PasswordEncoder passwordEncoder) {
+    public TransactionalUserService(UserDao dao, 
+            SecurityService securityService,
+            MailService mailService,
+            Base64Wrapper base64Wrapper,
+            AvatarService avatarService,
+            EncryptionService encryptionService) {
         super(dao);
         this.securityService = securityService;
         this.mailService = mailService;
         this.base64Wrapper = base64Wrapper;
         this.avatarService = avatarService;
-        this.passwordEncoder = passwordEncoder;
+        this.encryptionService = encryptionService;
     }
 
     /**
@@ -99,7 +99,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     @Override
     public JCUser registerUser(JCUser user) {
         //encrypt password
-        String encodedPassword = encryptPassword(user.getPassword());
+        String encodedPassword = encryptionService.encryptPassword(user.getPassword());
         user.setPassword(encodedPassword);
         //
         user.setRegistrationDate(new DateTime());
@@ -109,22 +109,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         logger.info("JCUser registered: {}", user.getUsername());
         return user;
     }
-
-    /**
-     * Gets a hash of the password with the use of encryption mechanism.
-     * If the logic of encryption will become more complicated, we will
-     * have to move all this in a separate service. This mechanism is
-     * the same  that used in the old forum.
-     *
-     * @param password password that the user entered
-     * @return encrypted password
-     */
-    private String encryptPassword(String password) {
-        return passwordEncoder.encodePassword(
-                password,//value that the user entered 
-                null); //We do not use salt because it is not used phpbb
-    }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -143,9 +128,9 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         JCUser currentUser = (JCUser) securityService.getCurrentUser();
         byte[] decodedAvatar = base64Wrapper.decodeB64Bytes(info.getB64EncodedAvatar());
 
-        String newPassword = info.getNewPassword();
+        String newPassword = info.getNewPassword(); 
         if (newPassword != null) {
-            String encryptedPassword = encryptPassword(newPassword);
+            String encryptedPassword = encryptionService.encryptPassword(newPassword);
             currentUser.setPassword(encryptedPassword);
         }
         currentUser.setEmail(info.getEmail());
@@ -173,7 +158,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         String randomPassword = RandomStringUtils.randomAlphanumeric(6);
         // first - mail attempt, then - database changes
         mailService.sendPasswordRecoveryMail(user, randomPassword);
-        String encryptedRandomPassword = encryptPassword(randomPassword);
+        String encryptedRandomPassword = encryptionService.encryptPassword(randomPassword);
         user.setPassword(encryptedRandomPassword);
         this.getDao().update(user);
 

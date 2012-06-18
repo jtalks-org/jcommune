@@ -130,6 +130,11 @@ ul.lang-menu li img {
     margin-right: 2px;
 }
 
+#topics-table {
+	table-layout: fixed;
+    word-wrap: break-word;
+}
+
 #topics-table td {
     padding-top: 2px;
     padding-bottom: 3px;

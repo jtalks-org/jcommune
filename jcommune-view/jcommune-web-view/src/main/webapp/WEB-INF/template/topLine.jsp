@@ -31,12 +31,6 @@
             <a class="brand" href="${pageContext.request.contextPath}/">JTalks - JCommune</a>
             
             <div class="nav-collapse">
-                <ul class="nav">
-                    <li class="active"><a href="${pageContext.request.contextPath}/"><fmt:message key="label.home"/></a></li>
-                    <li><a href="${pageContext.request.contextPath}/"><fmt:message key="label.forum"/></a></li>
-                    <li><a href="#contact">Blog</a></li>
-                </ul>
-                
                 <form action='<c:url value="/search/"/>' method="GET" name="form" id="form" class="navbar-search pull-left dropdown">
                     <input id="searchText" name="searchText" type="text" class="search-query dropdown-toggle" 
                         placeholder='<fmt:message key="label.search"/>' maxlength="50"
@@ -71,10 +65,16 @@
                         <a href="${pageContext.request.contextPath}/inbox">
                             <fmt:message key="label.pm"/> 
                             <c:if test="${newPmCount != null}">
-                                (<span id="new-pm-count" title="You have ${newPmCount} new messages">
+                                <span id="new-pm-count" title="
+                                    <fmt:message key='label.tips.pm_count'>
+                                        <fmt:param>${newPmCount}</fmt:param>
+                                    </fmt:message>
+                                    ">
+                                    (
                                     <i class="icon-envelope icon-white" style="vertical-align:middle;"></i>
                                     <span class='test-pm-count'>${newPmCount}</span>
-                                 </span>)
+                                    )
+                                </span>
                             </c:if>
                         </a>
                     </li>

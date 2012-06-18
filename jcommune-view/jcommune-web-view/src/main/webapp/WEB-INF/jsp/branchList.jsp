@@ -74,12 +74,12 @@
                             <td class="latest-by">
                                 <c:if test="${branch.topicCount>0}">
 	                                <i class="icon-calendar"></i>
-	                                <a class="date" href="${pageContext.request.contextPath}/posts/${branch.lastPostInLastUpdatedTopic.id}"><jtalks:format 
-	                                        value="${branch.lastPostInLastUpdatedTopic.creationDate}"/>
+	                                <a class="date" href="${pageContext.request.contextPath}/posts/${branch.lastPostInLastUpdatedTopic.id}">
+                                        <jtalks:format value="${branch.lastPostInLastUpdatedTopic.creationDate}"/>
 	                                </a>
 	                                <p>by 
-	                                    <a href="${pageContext.request.contextPath}/users/${branch.lastPostInLastUpdatedTopic.userCreated.encodedUsername}"><c:out 
-	                                        value="${branch.lastPostInLastUpdatedTopic.userCreated.username}"/>
+	                                    <a href="${pageContext.request.contextPath}/users/${branch.lastPostInLastUpdatedTopic.userCreated.id}">
+                                            <c:out value="${branch.lastPostInLastUpdatedTopic.userCreated.username}"/>
 	                                    </a>
 	                                </p>
                                 </c:if>
@@ -111,7 +111,7 @@
                     </c:otherwise>
                 </c:choose>
                 <a href="${pageContext.request.contextPath}/users/${innerUser.encodedUsername}" 
-                    title="Click to view profile"
+                    title="<spring:message code='label.tips.view_profile'/>"
                     class='${labelClass}'>
                     <c:out value="${innerUser.username}"/>
                 </a>

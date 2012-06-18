@@ -154,8 +154,8 @@ public class TopicController {
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branch));
         }
 
-        Topic createdTopic;
-        createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(), branchId);
+        Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(), branchId,
+                topicDto.isNotifyOnAnswers());
 
         if (topicDto.hasPoll()) {
             Poll poll = topicDto.preparePollFromTopicDto();
@@ -268,7 +268,8 @@ public class TopicController {
         }
 
         topicService.updateTopic(topicDto.getId(), topicDto.getTopicName(), topicDto.getBodyText(),
-                topicDto.getTopicWeight(), topicDto.isSticked(), topicDto.isAnnouncement());
+                topicDto.getTopicWeight(), topicDto.isSticked(), topicDto.isAnnouncement(),
+                topicDto.isNotifyOnAnswers());
 
         return new ModelAndView("redirect:/topics/" + topicId);
     }

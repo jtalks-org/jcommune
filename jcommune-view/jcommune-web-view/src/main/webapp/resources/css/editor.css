@@ -92,16 +92,24 @@ div.richeditor iframe {
     background-color: silver;
 }
 
-.textSize10 {
-    font-size: 14pt;
+.textSize7 {
+    font-size: xx-small;
 }
 
-.textSize15 {
-    font-size: 22pt;
+.textSize9 {
+    font-size: x-small;
 }
 
-.textSize20 {
-    font-size: 33pt;
+.textSize12 {
+    font-size: inherit;
+}
+
+.textSize18 {
+    font-size: large;
+}
+
+.textSize24 {
+    font-size: x-large;
 }
 
 .marginLeft15 {

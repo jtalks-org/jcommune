@@ -32,6 +32,7 @@ $labelContactValueInfo = '<spring:message code="label.contact.value.info"/>';
 $labelContactsTipsDelete = '<spring:message code="label.contacts.tips.delete"/>';
 
 $labelRegistrationSuccess = '<spring:message code="label.registration.success"/>';
+$labelRegistrationFailture = '<spring:message code="label.registration.failture"/>';
 $labelUrlHeader = '<spring:message code="label.url.header"/>';
 $labelUrlText = '<spring:message code="label.url.text"/>';
 $labelUrl = '<spring:message code="label.url"/>';

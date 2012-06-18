@@ -19,6 +19,7 @@
 <%@ attribute name="postText" required="false" rtexprvalue="true" type="java.lang.String" %>
 <%@ attribute name="bodyParameterName" required="true" rtexprvalue="true" type="java.lang.String" %>
 <%@ attribute name="labelForAction" required="true" rtexprvalue="true" type="java.lang.String" %>
+<%@ attribute name="notifyOnAnswers" required="false" rtexprvalue="true" type="java.lang.String" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -88,9 +89,11 @@
             <span class="caret"></span>
         </a>
         <ul class="dropdown-menu" id='select_size'>
-            <li><a href="#" value='10'><spring:message code="label.answer.font_size.small"/></a></li>
-            <li><a href="#" value='15'><spring:message code="label.answer.font_size.large"/></a></li>
-            <li><a href="#" value='20'><spring:message code="label.answer.font_size.king_size"/></a></li>
+        	<li><a href="#" value='7'><spring:message code="label.answer.font_size.tiny"/></a></li>
+            <li><a href="#" value='9'><spring:message code="label.answer.font_size.small"/></a></li>
+            <li><a href="#" value='12'><spring:message code="label.answer.font_size.normal"/></a></li>
+            <li><a href="#" value='18'><spring:message code="label.answer.font_size.large"/></a></li>
+            <li><a href="#" value='24'><spring:message code="label.answer.font_size.huge"/></a></li>
         </ul>
     </div>
     <div class='btn-group'>
@@ -159,13 +162,6 @@
     <br>
     <form:errors path="${bodyParameterName}" cssClass="help-inline"/>
 </div>
-
-
-<div class="control-group">
-    <input id="notify" type="checkbox" name="notify" checked="checked" style="margin-right: 10px;"/><spring:message
-        code="label.answer.notify_message"/>
-</div>
-
 
 <input id="post" type="submit" class="btn btn-primary" accesskey="s" tabindex="6" name="post"
        value="<spring:message code="${labelForAction}"/>"/>

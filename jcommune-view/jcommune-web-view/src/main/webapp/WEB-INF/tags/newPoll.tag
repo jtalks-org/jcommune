@@ -29,24 +29,16 @@
         <legend><spring:message code="label.poll.header"/></legend>
         
         <div class='control-group'>
-            <label class='control-label'>
-                <spring:message code="label.poll.title"/>
-            </label>
+            <spring:message code='label.poll.title' var='pollTitlePlaceholder'/>
             <form:input path="${titleNameValue}" id="${titleNameValue}" type="text" name="${titleNameValue}"
-                        size="45"
-                        maxlength="255" tabindex="1"
-                        class="post"/>
+                        size="45" maxlength="255" tabindex="1" placeholder="${pollTitlePlaceholder}" class="post"/>
             <br>
             <form:errors path="${titleNameValue}" cssClass="help-inline"/>
         </div>
         
         <div class='control-group'>
-            <label class='control-label'>
-                <spring:message code="label.poll.options.title"/>
-            </label>
-            
-            <form:textarea path="${pollOptionsNameValue}" rows="8"
-                       class="post"/>
+            <spring:message code='label.poll.options.title' var='optionsPlaceholder'/>
+            <form:textarea path="${pollOptionsNameValue}" rows="8" class="post" placeholder="${optionsPlaceholder}"/>
             <br>
             <form:errors path="${pollOptionsNameValue}" cssClass="help-inline"/>
         </div>

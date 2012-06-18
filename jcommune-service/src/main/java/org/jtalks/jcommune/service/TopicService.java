@@ -49,14 +49,16 @@ public interface TopicService extends EntityService<Topic> {
      * Add new topic with given title and body.
      * Author is current user.
      *
-     * @param topicName name of topic
-     * @param bodyText  body of topic
-     * @param branchId  branch containing topic
+     * @param topicName         name of topic
+     * @param bodyText          body of topic
+     * @param branchId          branch containing topic
+     * @param notifyOnAnswers flag that indicates notifications state(enabled or disabled)
      * @return created topic
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
      */
-    Topic createTopic(String topicName, String bodyText, long branchId) throws NotFoundException;
+    Topic createTopic(String topicName, String bodyText, long branchId, boolean notifyOnAnswers)
+            throws NotFoundException;
 
     /**
      * @return list of {@code Topic}  objectsupdated since last 24 hours.
@@ -84,16 +86,17 @@ public interface TopicService extends EntityService<Topic> {
     /**
      * Update current topic with given title and body.
      *
-     * @param topicId      topic id
-     * @param topicName    name of topic
-     * @param bodyText     body of topic
-     * @param topicWeight  priority for sticked topic
-     * @param sticked      flag for sticking a topic
-     * @param announcement flag, which set topic as announcement
+     * @param topicId           topic id
+     * @param topicName         name of topic
+     * @param bodyText          body of topic
+     * @param topicWeight       priority for sticked topic
+     * @param sticked           flag for sticking a topic
+     * @param announcement      flag, which set topic as announcement
+     * @param notifyOnAnswers flag that indicates notifications state(enabled or disabled)
      * @throws NotFoundException when topic not found
      */
     void updateTopic(long topicId, String topicName, String bodyText, int topicWeight,
-                     boolean sticked, boolean announcement) throws NotFoundException;
+                     boolean sticked, boolean announcement, boolean notifyOnAnswers) throws NotFoundException;
 
     /**
      * Delete topic by id.

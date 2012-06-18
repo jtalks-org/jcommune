@@ -45,7 +45,7 @@
     <task:executor id="executor" pool-size="1"/>
 
     <task:scheduler id="scheduler" pool-size="1"/>
-
+       
     <!--Declaration services bean -->
 
     <bean id="avatarService" class="org.jtalks.jcommune.service.nontransactional.AvatarService">
@@ -71,7 +71,7 @@
         <constructor-arg ref="mailService"/>
         <constructor-arg ref="base64Wrapper"/>
         <constructor-arg ref="avatarService"/>
-        <constructor-arg ref="md5PasswordEncoder"/>
+        <constructor-arg ref="encryptionService"/>
     </bean>
 
     <bean id="userContactsService"
@@ -124,6 +124,7 @@
         <constructor-arg ref="topicBranchService"/>
         <constructor-arg ref="topicBranchDao"/>
         <constructor-arg ref="notificationService"/>
+        <constructor-arg ref="subscriptionService"/>
     </bean>
 
     <bean id="pollService"

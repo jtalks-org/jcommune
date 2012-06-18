@@ -26,6 +26,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
@@ -38,7 +39,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -79,6 +79,8 @@ public class TransactionalTopicServiceTest {
     private BranchDao branchDao;
     @Mock
     private NotificationService notificationService;
+    @Mock
+    private SubscriptionService subscriptionService;
 
     private CompoundAclBuilder<User> aclBuilder;
 
@@ -87,7 +89,7 @@ public class TransactionalTopicServiceTest {
         initMocks(this);
         aclBuilder = mockAclBuilder();
         topicService = new TransactionalTopicService(topicDao, securityService,
-                branchService, branchDao, notificationService);
+                branchService, branchDao, notificationService, subscriptionService);
         user = new JCUser(USERNAME, "email@mail.com", "password");
     }
 
@@ -135,29 +137,54 @@ public class TransactionalTopicServiceTest {
     }
 
     @Test
-    public void testCreateTopic() throws NotFoundException {
+    public void testCreateTopicWithSubscription() throws NotFoundException {
         Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        createTopicStubs(branch);
+
+        Topic createdTopic = topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, BRANCH_ID, true);
+        Post createdPost = createdTopic.getFirstPost();
+
+        createTopicAssertions(branch, createdTopic, createdPost);
+        createTopicVerifications(branch, createdTopic, createdPost);
+        verify(subscriptionService).toggleTopicSubscription(createdTopic);
+    }
+
+    @Test
+    public void testCreateTopicWithoutSubscription() throws NotFoundException {
+        Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        createTopicStubs(branch);
+
+        Topic createdTopic = topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, BRANCH_ID, false);
+        Post createdPost = createdTopic.getFirstPost();
+
+        createTopicAssertions(branch, createdTopic, createdPost);
+        createTopicVerifications(branch, createdTopic, createdPost);
+    }
+
+    private void createTopicStubs(Branch branch) throws NotFoundException {
         when(securityService.getCurrentUser()).thenReturn(user);
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
+    }
 
-        Topic createdTopic = topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, BRANCH_ID);
-
-        Post createdPost = createdTopic.getFirstPost();
+    private void createTopicAssertions(Branch branch, Topic createdTopic, Post createdPost) {
         assertEquals(createdTopic.getTitle(), TOPIC_TITLE);
         assertEquals(createdTopic.getTopicStarter(), user);
         assertEquals(createdTopic.getBranch(), branch);
         assertEquals(createdPost.getUserCreated(), user);
         assertEquals(createdPost.getPostContent(), ANSWER_BODY);
         assertEquals(user.getPostCount(), 1);
+    }
 
+    private void createTopicVerifications(Branch branch, Topic createdTopic, Post createdPost)
+            throws NotFoundException {
+        verify(securityService).getCurrentUser();
         verify(branchDao).update(branch);
-        verify(aclBuilder, times(2)).grant(GeneralPermission.WRITE);
-        verify(aclBuilder, times(2)).to(user);
-        verify(aclBuilder).on(createdTopic);
-        verify(aclBuilder).on(createdPost);
+        verify(branchService).get(BRANCH_ID);
+        verify(securityService).deleteFromAcl(Topic.class, TOPIC_ID);
         verify(notificationService).branchChanged(branch);
     }
+
 
     @Test
     public void testGetAllTopicsPastLastDay() throws NotFoundException {
@@ -227,7 +254,7 @@ public class TransactionalTopicServiceTest {
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(topic);
 
-        topicService.updateTopic(TOPIC_ID, newTitle, newBody, newWeight, newSticked, newAnnouncement);
+        topicService.updateTopic(TOPIC_ID, newTitle, newBody, newWeight, newSticked, newAnnouncement, false);
 
         assertEquals(topic.getTitle(), newTitle);
         assertEquals(post.getPostContent(), newBody);
@@ -279,7 +306,7 @@ public class TransactionalTopicServiceTest {
         boolean newAnnouncement = false;
         when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
-        topicService.updateTopic(TOPIC_ID, newTitle, newBody, newWeight, newSticked, newAnnouncement);
+        topicService.updateTopic(TOPIC_ID, newTitle, newBody, newWeight, newSticked, newAnnouncement, false);
     }
 
     @Test
