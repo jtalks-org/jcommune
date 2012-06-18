@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.migrations;
 
-import com.googlecode.flyway.core.migration.java.JavaMigration;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -32,10 +31,10 @@ import java.util.*;
 /**
  *
  */
-public class V24__Add_permissions_to_user_group implements JavaMigration {
+public class V25__Add_permissions_to_user_groups /*implements JavaMigration*/ {
     private Map<String, Long> aclClassesMap;
 
-    @Override
+    //@Override
     public void migrate(JdbcTemplate jdbcTemplate) throws Exception {
         List<Class> aclClasses = new ArrayList<Class>();
         aclClasses.add(Branch.class);
