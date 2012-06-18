@@ -61,8 +61,8 @@
     </bean>
 
     <bean id="locationService" class="org.jtalks.jcommune.service.nontransactional.LocationService">
-        <constructor-arg ref="sessionRegistry"/>
-        <constructor-arg ref="securityService"/>
+        <constructor-arg name="sessionRegistry" ref="sessionRegistry"/>
+        <constructor-arg name="securityService" ref="securityService"/>
     </bean>
 
     <bean id="userService" class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
