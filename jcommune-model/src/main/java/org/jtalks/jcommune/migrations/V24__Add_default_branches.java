@@ -28,18 +28,22 @@ public class V24__Add_default_branches implements JavaMigration {
      */
     @Override
     public void migrate(JdbcTemplate jdbcTemplate) throws Exception {
-        jdbcTemplate.execute("insert into SECTIONS (SECTION_ID, UUID, NAME, POSITION, DESCRIPTION) " +
-                "values(1,'1','Sample section', 1, 'Some description here')" );
-        jdbcTemplate.execute("insert into SECTIONS (SECTION_ID, UUID, NAME, POSITION, DESCRIPTION) " +
-                "values(2,'2','Another section', 2, 'Whatever else')");
-        jdbcTemplate.execute("insert into BRANCHES (UUID, NAME, DESCRIPTION, POSITION, SECTION_ID) " +
-                "values('3', 'A cool branch', 'More information', 0, 1)");
-        jdbcTemplate.execute("insert into BRANCHES (UUID, NAME, DESCRIPTION, POSITION, SECTION_ID) " +
-                "values('4', 'The second branch', 'More information', 1, 1)" );
-        jdbcTemplate.execute("insert into BRANCHES (UUID, NAME, DESCRIPTION, POSITION, SECTION_ID) " +
-                "values('5', 'One more branch', 'More information', 0, 2)");
-        jdbcTemplate.execute("insert into BRANCHES (UUID, NAME, DESCRIPTION, POSITION, SECTION_ID) " +
-                "values('6', 'The last, but not least', 'More information', 1, 2)");
+        Long branchCount = jdbcTemplate.queryForLong("select count(branch_id) from branches");
+
+        if (branchCount == 0) {
+            jdbcTemplate.execute("insert into SECTIONS (SECTION_ID, UUID, NAME, POSITION, DESCRIPTION) " +
+                    "values(1,'1','Sample section', 1, 'Some description here')");
+            jdbcTemplate.execute("insert into SECTIONS (SECTION_ID, UUID, NAME, POSITION, DESCRIPTION) " +
+                    "values(2,'2','Another section', 2, 'Whatever else')");
+            jdbcTemplate.execute("insert into BRANCHES (UUID, NAME, DESCRIPTION, POSITION, SECTION_ID) " +
+                    "values('3', 'A cool branch', 'More information', 0, 1)");
+            jdbcTemplate.execute("insert into BRANCHES (UUID, NAME, DESCRIPTION, POSITION, SECTION_ID) " +
+                    "values('4', 'The second branch', 'More information', 1, 1)");
+            jdbcTemplate.execute("insert into BRANCHES (UUID, NAME, DESCRIPTION, POSITION, SECTION_ID) " +
+                    "values('5', 'One more branch', 'More information', 0, 2)");
+            jdbcTemplate.execute("insert into BRANCHES (UUID, NAME, DESCRIPTION, POSITION, SECTION_ID) " +
+                    "values('6', 'The last, but not least', 'More information', 1, 2)");
+        }
     }
 
 }
