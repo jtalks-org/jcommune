@@ -192,7 +192,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         user.setEnabled(true);
         this.getDao().saveOrUpdate(user);
         securityService.createAclBuilder().grant(ProfilePermission.EDIT_PROFILE).to(user).on(user).flush();
-        securityService.createAclBuilder().grant(ProfilePermission.EDIT_PROFILE).to(user).on(user).flush();
     }
 
     /**
