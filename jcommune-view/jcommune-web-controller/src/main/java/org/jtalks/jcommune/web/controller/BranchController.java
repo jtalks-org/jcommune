@@ -17,7 +17,6 @@ package org.jtalks.jcommune.web.controller;
 
 import java.util.List;
 
-import org.jtalks.jcommune.model.dto.JcommunePage;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -33,6 +32,7 @@ import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
@@ -111,8 +111,8 @@ public class BranchController {
 
         Branch branch = branchService.get(branchId);
         Pageable pageRequest = new PageRequest(page, paginationService.getPageSizeForCurrentUser());
-        JcommunePage<Topic> topicsPage = topicService.getTopics(branch, pageRequest);
-        List<Topic> topics = lastReadPostService.fillLastReadPostForTopics(topicsPage.getContent());
+        Page<Topic> topicsPage = topicService.getTopics(branch, pageRequest, pagingEnabled);
+        lastReadPostService.fillLastReadPostForTopics(topicsPage.getContent());
 
         JCUser currentUser = securityService.getCurrentUser();
         List<Breadcrumb> breadcrumbs = breadcrumbBuilder.getForumBreadcrumb(branch);
@@ -120,7 +120,7 @@ public class BranchController {
         return new ModelAndView("topicList")
                 .addObject("viewList", locationService.getUsersViewing(branch))
                 .addObject("branch", branch)
-                .addObject("topics", topics)
+                .addObject("pagingEnabled", pagingEnabled)
                 .addObject("topicsPage", topicsPage)
                 .addObject("breadcrumbList", breadcrumbs)
                 .addObject("subscribed", branch.getSubscribers().contains(currentUser));

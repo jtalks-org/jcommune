@@ -17,6 +17,7 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.classic.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
@@ -26,9 +27,9 @@ import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.common.model.entity.Branch;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.dto.JcommunePage;
-import org.jtalks.jcommune.model.dto.JcommunePageImpl;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 /**
@@ -92,17 +93,18 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      * {@inheritDoc}
      */
     @Override
-    public JcommunePage<Topic> getTopics(Branch branch, Pageable pageable) {
+    public Page<Topic> getTopics(Branch branch, Pageable pageable, boolean pagingEnabled) {
         int totalCount = getCountTopicsInBranch(branch);
-        int firstResult = (pageable.getPageNumber() - 1) * pageable.getPageSize();
+        Query query = getSession().getNamedQuery("getTopicsInBranch")
+                .setParameter("branch", branch);
+        if (pagingEnabled) {
+            int firstResult = (pageable.getPageNumber() - 1) * pageable.getPageSize();
+            query = query.setFirstResult(firstResult)
+                    .setMaxResults(pageable.getPageSize());
+        }
         @SuppressWarnings("unchecked")
-        List<Topic> topics = (List<Topic>) getSession()
-                .getNamedQuery("getTopicsInBranch")
-                .setParameter("branch", branch)
-                .setFirstResult(firstResult)
-                .setMaxResults(pageable.getPageSize())
-                .list();
-        return new JcommunePageImpl<Topic>(topics, pageable, totalCount);
+        List<Topic> topics = (List<Topic>) query.list();
+        return new PageImpl<Topic>(topics, pageable, totalCount);
     }
     
     /**

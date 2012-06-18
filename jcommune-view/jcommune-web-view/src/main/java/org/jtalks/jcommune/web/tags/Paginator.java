@@ -16,13 +16,12 @@
 package org.jtalks.jcommune.web.tags;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
-import org.jtalks.jcommune.model.dto.JcommunePage;
+import org.springframework.data.domain.Page;
 
 /**
  * Class for custom tag jtalks:pagination
@@ -38,28 +37,14 @@ public class Paginator extends BodyTagSupport {
     
     private String uri;
     private int numberLink = DEFAULT_LINK_COUNT;
-    private List<?> list;
-    private JcommunePage<?> page;
+    private Page<?> page;
+    private boolean pagingEnabled;
     
     /**
      * @param uri uri
      */
     public void setUri(String uri) {
         this.uri = uri;
-    }
-
-    /**
-     * @param list list of elements
-     */
-    public void setList(List<?> list) {
-        this.list = list;
-    }
-
-    /**
-     * @return list
-     */
-    public List<?> getList() {
-        return this.list;
     }
 
     /**
@@ -93,7 +78,7 @@ public class Paginator extends BodyTagSupport {
     public String createPagingLink(int numberLink,  String uri) {
         int page = this.page.getNumber();
         StringBuffer buffer = new StringBuffer();
-        if (this.page.isPagingEnabled()) {
+        if (pagingEnabled) {
             for (int i = numberLink; i > 0; i--) {
                 if (page > i) {
                     buffer.append(String.format(LINK_PATTERN, uri, page - i, page - i));
@@ -115,8 +100,16 @@ public class Paginator extends BodyTagSupport {
      * 
      * @param page
      */
-    public void setPage(JcommunePage<?> page) {
+    public void setPage(Page<?> page) {
         this.page = page;
+    }
+    
+    /**
+     * 
+     * @param pagingEnabled
+     */
+    public void setPagingEnabled(boolean pagingEnabled) {
+        this.pagingEnabled = pagingEnabled;
     }
 
     /**

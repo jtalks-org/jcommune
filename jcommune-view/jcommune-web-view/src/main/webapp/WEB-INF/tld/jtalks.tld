@@ -45,13 +45,13 @@
             <name>page</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
-            <type>org.jtalks.jcommune.model.dto.JcommunePage</type>
+            <type>org.springframework.data.domain.Page</type>
         </attribute>
         <attribute>
-            <name>list</name>
+            <name>pagingEnabled</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
-            <type>java.util.List</type>
+            <type>java.lang.Boolean</type>
         </attribute>
     </tag>
 

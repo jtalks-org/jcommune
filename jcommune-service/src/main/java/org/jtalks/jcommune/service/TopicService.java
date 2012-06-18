@@ -14,11 +14,11 @@
  */
 package org.jtalks.jcommune.service;
 
-import org.jtalks.jcommune.model.dto.JcommunePage;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -121,7 +121,8 @@ public interface TopicService extends EntityService<Topic> {
      * 
      * @param branch
      * @param pageable
+     * @param pagingEnabled
      * @return
      */
-    JcommunePage<Topic> getTopics(Branch branch, Pageable pageable);
+    Page<Topic> getTopics(Branch branch, Pageable pageable, boolean pagingEnabled);
 }
