@@ -103,6 +103,7 @@ public class TransactionalPrivateMessageService
         userDataCache.incrementNewMessageCountFor(recipient.getUsername());
 
         securityService.createAclBuilder().grant(GeneralPermission.READ).to(recipient).on(pm).flush();
+        securityService.createAclBuilder().grant(GeneralPermission.READ).to(userFrom).on(pm).flush();
 
         long pmId = pm.getId();
         mailService.sendReceivedPrivateMessageNotification(recipient, pm);
@@ -177,6 +178,7 @@ public class TransactionalPrivateMessageService
 
         securityService.deleteFromAcl(pm);
         securityService.createAclBuilder().grant(GeneralPermission.READ).to(recipient).on(pm).flush();
+        securityService.createAclBuilder().grant(GeneralPermission.READ).to(userFrom).on(pm).flush();
 
         long pmId = pm.getId();
         mailService.sendReceivedPrivateMessageNotification(recipient, pm);

@@ -36,9 +36,14 @@ import java.util.Arrays;
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Pavel Vervenko
@@ -113,9 +118,7 @@ public class TransactionalPrivateMessageServiceTest {
         verify(userDataCache).incrementNewMessageCountFor(USERNAME);
         verify(mailService).sendReceivedPrivateMessageNotification(JC_USER, pm);
         verify(pmDao).saveOrUpdate(pm);
-        verify(aclBuilder).grant(GeneralPermission.READ);
-        verify(aclBuilder).to(JC_USER);
-        verify(aclBuilder).on(pm);
+        verify(aclBuilder,times(2)).grant(GeneralPermission.READ);
     }
 
     @Test
@@ -205,9 +208,7 @@ public class TransactionalPrivateMessageServiceTest {
         verify(mailService).sendReceivedPrivateMessageNotification(JC_USER, pm);
         verify(pmDao).saveOrUpdate(pm);
         verify(securityService).deleteFromAcl(pm);
-        verify(aclBuilder).to(JC_USER);
-        verify(aclBuilder).grant(GeneralPermission.READ);
-        verify(aclBuilder).on(pm);
+        verify(aclBuilder, times(2)).grant(GeneralPermission.READ);
     }
 
     @Test

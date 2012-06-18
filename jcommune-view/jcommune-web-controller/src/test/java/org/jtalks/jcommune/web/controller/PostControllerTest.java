@@ -42,9 +42,17 @@ import java.util.List;
 
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.springframework.test.web.ModelAndViewAssert.*;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -75,22 +83,43 @@ public class PostControllerTest {
     public static final long PAGE = 1L;
     private final String POST_CONTENT = "postContent";
     private Topic topic;
+    private Post post;
+    private JCUser user = new JCUser("username", "email@mail.com", "password");
 
     private PostController controller;
 
     @BeforeMethod
     public void init() throws NotFoundException {
         initMocks(this);
+
+        Branch branch = new Branch("branch", "branch");
+        branch.setId(BRANCH_ID);
+
+
+        topic = mock(Topic.class);
+        when(topic.getBranch()).thenReturn(branch);
+        when(topic.getId()).thenReturn(TOPIC_ID);
+        when(topic.getTitle()).thenReturn("title");
+        when(topic.getTopicStarter()).thenReturn(user);
+
+        post = mock(Post.class);
+        when(post.getId()).thenReturn(POST_ID);
+        when(post.getUserCreated()).thenReturn(user);
+        when(post.getPostContent()).thenReturn(POST_CONTENT);
+        when(post.getTopic()).thenReturn(topic);
+        List<Post> posts = new ArrayList<Post>();
+        posts.add(post);
+        when(topic.getPosts()).thenReturn(posts);
+
+        when(postService.get(POST_ID)).thenReturn(post);
+
+        when(topicService.get(TOPIC_ID)).thenReturn(topic);
+
+        when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
+
         controller = new PostController(
                 postService, breadcrumbBuilder, topicService, bbCodeService,
                 lastReadPostService, securityService);
-        when(topicService.get(TOPIC_ID)).thenReturn(topic);
-        when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
-        topic = mock(Topic.class);
-        Branch branch=new Branch("","");
-        branch.setId(BRANCH_ID);
-        when(topic.getBranch()).thenReturn(branch);
-        when(topic.getId()).thenReturn(TOPIC_ID);
     }
 
     @Test
@@ -102,14 +131,6 @@ public class PostControllerTest {
 
     @Test
     public void testDeletePost() throws NotFoundException {
-        Post post = mock(Post.class);
-        when(post.getTopic()).thenReturn(topic);
-
-        List<Post> posts=new ArrayList<Post>();
-        posts.add(post);
-        when(topic.getPosts()).thenReturn(posts);
-        topic.addPost(post);
-        when(postService.get(Matchers.<Long>any())).thenReturn(post);
         //invoke the object under test
         String view = controller.delete(POST_ID);
 
@@ -122,29 +143,14 @@ public class PostControllerTest {
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testDeleteUnexistingPost() throws NotFoundException {
-        doThrow(new NotFoundException()).when(postService).deletePost(POST_ID, BRANCH_ID);
+        doThrow(new NotFoundException()).when(postService).deletePost(anyLong(), anyLong());
         controller.delete(POST_ID);
     }
 
     @Test
     public void editPost() throws NotFoundException {
-        JCUser user = new JCUser("username", "email@mail.com", "password");
-        Topic topic = new Topic(user, "title");
-        topic.setId(TOPIC_ID);
-        Post post = new Post(user, "content");
-        post.setId(POST_ID);
-        topic.addPost(post);
-
-        //set expectations
-        when(postService.get(POST_ID)).thenReturn(post);
-        when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
-
         //invoke the object under test
         ModelAndView actualMav = controller.editPage(TOPIC_ID, POST_ID);
-
-        //check expectations
-        verify(postService).get(POST_ID);
-
         //check result
         this.assertEditPostFormMavIsCorrect(actualMav);
 
@@ -198,11 +204,7 @@ public class PostControllerTest {
 
     @Test
     public void testQuotedAnswer() throws NotFoundException {
-        JCUser user = new JCUser("user", null, null);
-        Post post = new Post(user, POST_CONTENT);
         String expected = "[quote=\"user\"]" + POST_CONTENT + "[/quote]";
-        topic.addPost(post);
-        when(postService.get(anyLong())).thenReturn(post);
         when(bbCodeService.quote(POST_CONTENT, user)).thenReturn(expected);
 
         ModelAndView mav = controller.addPostWithQuote(post.getId(), null);
@@ -215,10 +217,7 @@ public class PostControllerTest {
     @Test
     public void testPartialQuotedAnswer() throws NotFoundException {
         String selection = "selected content";
-        JCUser user = new JCUser("user", null, null);
         String expected = "[quote=\"user\"]" + selection + "[/quote]";
-        Post post = new Post(user, POST_CONTENT);
-        topic.addPost(post);
         when(postService.get(anyLong())).thenReturn(post);
         when(bbCodeService.quote(selection, user)).thenReturn(expected);
 
@@ -239,12 +238,8 @@ public class PostControllerTest {
     public void testSubmitAnswerValidationPass() throws NotFoundException {
         BeanPropertyBindingResult resultWithoutErrors = mock(BeanPropertyBindingResult.class);
         when(resultWithoutErrors.hasErrors()).thenReturn(false);
-        Post post = new Post(null, null);
-        topic.addPost(post);
-        topic.setId(TOPIC_ID);
         when(topicService.replyToTopic(anyLong(), Matchers.<String>any(), eq(BRANCH_ID))).thenReturn(post);
         when(postService.calculatePageForPost(post)).thenReturn(1);
-        when(postService.get(Matchers.<Long>any())).thenReturn(post);
         //invoke the object under test
         ModelAndView mav = controller.create(getDto(), resultWithoutErrors);
 
@@ -252,7 +247,7 @@ public class PostControllerTest {
         verify(topicService).replyToTopic(TOPIC_ID, POST_CONTENT, BRANCH_ID);
 
         //check result
-        assertViewName(mav, "redirect:/topics/" + TOPIC_ID + "?page=1#0");
+        assertViewName(mav, "redirect:/topics/" + TOPIC_ID + "?page=1#" + POST_ID);
     }
 
     @Test
@@ -271,11 +266,7 @@ public class PostControllerTest {
 
     @Test
     public void testRedirectToPageWithPost() throws NotFoundException {
-        Post post = new Post(null, null);
-        topic.addPost(post);
-        topic.setId(TOPIC_ID);
         when(postService.calculatePageForPost(post)).thenReturn(5);
-        when(postService.get(POST_ID)).thenReturn(post);
 
         String result = controller.redirectToPageWithPost(POST_ID);
 
@@ -294,10 +285,10 @@ public class PostControllerTest {
         String postText = "[code]123[/code]";
         String html = "<code>123</code>";
         when(bbCodeService.convertBbToHtml(anyString())).thenReturn(html);
-        when(securityService.getCurrentUser()).thenReturn(new JCUser("","",""));
-        
+        when(securityService.getCurrentUser()).thenReturn(user);
+
         String result = controller.preview(postText).getBody();
-        
+
         assertEquals(result, html);
         verify(bbCodeService).convertBbToHtml(postText);
     }

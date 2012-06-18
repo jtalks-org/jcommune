@@ -100,7 +100,7 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
                     @Override
                     public void doOperation() {
                         securityService.createAclBuilder().
-                                grant(GeneralPermission.WRITE).to(securityService.getCurrentUser()).on(poll).flush();
+                                restrict(GeneralPermission.WRITE).to(securityService.getCurrentUser()).on(poll).flush();
                     }
                 },
                 SecurityConstants.ROLE_ADMIN);

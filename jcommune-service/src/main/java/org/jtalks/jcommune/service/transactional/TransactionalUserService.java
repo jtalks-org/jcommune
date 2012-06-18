@@ -17,6 +17,7 @@ package org.jtalks.jcommune.service.transactional;
 import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
+import org.jtalks.common.model.permissions.ProfilePermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -28,7 +29,7 @@ import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory; 
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 
@@ -36,7 +37,7 @@ import org.springframework.security.authentication.encoding.PasswordEncoder;
  * User service class. This class contains method needed to manipulate with User persistent entity.
  * Note that this class also encrypts passwords during account creation, password changing, generating
  * a random password.
- * 
+ *
  * @author Osadchuck Eugeny
  * @author Kirill Afonin
  * @author Alexandre Teterin
@@ -52,7 +53,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     private AvatarService avatarService;
     //Important, use for every password creation.
     private PasswordEncoder passwordEncoder;
-    
+
     /**
      * Create an instance of User entity based service
      *
@@ -63,12 +64,12 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * @param avatarService   some more avatar operations)
      * @param passwordEncoder for password encryption
      */
-    public TransactionalUserService(UserDao dao, 
-            SecurityService securityService,
-            MailService mailService,
-            Base64Wrapper base64Wrapper,
-            AvatarService avatarService,
-            PasswordEncoder passwordEncoder) {
+    public TransactionalUserService(UserDao dao,
+                                    SecurityService securityService,
+                                    MailService mailService,
+                                    Base64Wrapper base64Wrapper,
+                                    AvatarService avatarService,
+                                    PasswordEncoder passwordEncoder) {
         super(dao);
         this.securityService = securityService;
         this.mailService = mailService;
@@ -108,14 +109,14 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         logger.info("JCUser registered: {}", user.getUsername());
         return user;
     }
-    
+
     /**
      * Gets a hash of the password with the use of encryption mechanism.
      * If the logic of encryption will become more complicated, we will
      * have to move all this in a separate service. This mechanism is
      * the same  that used in the old forum.
-     * 
-     * @param password password that the user entered 
+     *
+     * @param password password that the user entered
      * @return encrypted password
      */
     private String encryptPassword(String password) {
@@ -142,7 +143,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         JCUser currentUser = (JCUser) securityService.getCurrentUser();
         byte[] decodedAvatar = base64Wrapper.decodeB64Bytes(info.getB64EncodedAvatar());
 
-        String newPassword = info.getNewPassword(); 
+        String newPassword = info.getNewPassword();
         if (newPassword != null) {
             String encryptedPassword = encryptPassword(newPassword);
             currentUser.setPassword(encryptedPassword);
@@ -190,6 +191,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         }
         user.setEnabled(true);
         this.getDao().saveOrUpdate(user);
+        securityService.createAclBuilder().grant(ProfilePermission.EDIT_PROFILE).to(user).on(user).flush();
+        securityService.createAclBuilder().grant(ProfilePermission.EDIT_PROFILE).to(user).on(user).flush();
     }
 
     /**
