@@ -22,6 +22,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -49,6 +50,27 @@ public class JcommunePropertyTest {
         String actual = jcommuneProperty.getValue();
         
         Assert.assertEquals(actual, expected, "Returned an invalid property value.");
+    }
+    
+    @Test(dataProvider = "checkBooleanValueParameter")
+    public void testBooleanValue(String value, Boolean expectedBoolean) {
+        Property property = null;
+        Mockito.when(propertyDao.getByName(Mockito.anyString())).thenReturn(property);
+        jcommuneProperty.setPropertyDao(propertyDao);
+        jcommuneProperty.setDefaultValue(value);
+        
+        Boolean actualBoolean = jcommuneProperty.booleanValue();
+        Assert.assertEquals(actualBoolean, expectedBoolean, "Returned an invalid property value.");
+    }
+    
+    @DataProvider(name = "checkBooleanValueParameter")
+    public Object[][] checkBooleanValueParameter() {
+        return new Object[][] {
+                {Boolean.FALSE.toString(), Boolean.FALSE},
+                {Boolean.TRUE.toString(), Boolean.TRUE},
+                {"abrakadabra", Boolean.FALSE},
+                {String.valueOf(5), Boolean.FALSE}
+        };
     }
     
     @Test
