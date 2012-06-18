@@ -46,11 +46,11 @@ public class V25__Add_permissions_to_user_groups implements JavaMigration {
             if (id == null) {
                 Long maxId;
                 try {
-                    maxId = jdbcTemplate.queryForLong("select max(id) from acl_classes", name);
+                    maxId = jdbcTemplate.queryForLong("select max(id) from acl_class", name);
                 } catch (DataAccessException e) {
                     maxId = 0L;
                 }
-                jdbcTemplate.execute("insert into acl_classes(id,class) values(" + (maxId + 1) + ", " + name + ")");
+                jdbcTemplate.execute("insert into acl_class(id,class) values(" + (maxId + 1) + ", " + name + ")");
                 id = getAclClassId(jdbcTemplate, name);
             }
             aclClassesMap.put(name, id);
