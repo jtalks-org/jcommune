@@ -44,13 +44,13 @@ public class V25__Add_permissions_to_user_groups implements JavaMigration {
             String name = oClass.getCanonicalName();
             Long id = getAclClassId(jdbcTemplate, name);
             if (id == null) {
-                Long maxId;
+                Long aclClassId;
                 try {
-                    maxId = jdbcTemplate.queryForLong("select max(id) from acl_class") + 1;
+                    aclClassId = jdbcTemplate.queryForLong("select max(id) from acl_class") + 1;
                 } catch (DataAccessException e) {
-                    maxId = 0L;
+                    aclClassId = 0L;
                 }
-                jdbcTemplate.execute("insert into acl_class(id,class) values(" + maxId + ", '" + name + "')");
+                jdbcTemplate.execute("insert into acl_class(id,class) values(" + aclClassId + ", '" + name + "')");
                 id = getAclClassId(jdbcTemplate, name);
             }
             aclClassesMap.put(name, id);
@@ -99,24 +99,27 @@ public class V25__Add_permissions_to_user_groups implements JavaMigration {
 
         Long aclObjectIdentityId;
         try {
-            aclObjectIdentityId = jdbcTemplate.queryForLong("select max(id) from acl_object_identity") + 1;
+            aclObjectIdentityId = jdbcTemplate.queryForLong("select id from acl_object_identity where object_id_identity=" + branchId);
         } catch (DataAccessException e) {
-            aclObjectIdentityId = 0L;
+            try {
+                aclObjectIdentityId = jdbcTemplate.queryForLong("select max(id) from acl_object_identity") + 1;
+            } catch (DataAccessException e1) {
+                aclObjectIdentityId = 0L;
+            }
+            jdbcTemplate.execute("insert into acl_object_identity(id, object_id_class, " +
+                    "object_id_identity, owner_sid, entries_inheriting) " +
+                    "values(" + aclObjectIdentityId + ", "
+                    + acClassId + ", "
+                    + branchId + ",  "
+                    + userGroupSidId
+                    + ", 1)");
         }
 
-        jdbcTemplate.execute("insert into acl_object_identity(id, object_id_class, " +
-                "object_id_identity, owner_sid, entries_inheriting) " +
-                "values(" + aclObjectIdentityId + ", "
-                + acClassId + ", "
-                + branchId + ",  "
-                + userGroupSidId
-                + ", 1)");
-
-        Long maxIdAclEntry;
+        Long aclEntryId;
         try {
-            maxIdAclEntry = jdbcTemplate.queryForLong("select max(id) from acl_entry") + 1;
+            aclEntryId = jdbcTemplate.queryForLong("select max(id) from acl_entry") + 1;
         } catch (DataAccessException e) {
-            maxIdAclEntry = 0L;
+            aclEntryId = 0L;
         }
 
         //create permissions:
@@ -130,7 +133,7 @@ public class V25__Add_permissions_to_user_groups implements JavaMigration {
         for (JtalksPermission permission : permissions) {
             String insertPermission = "insert into acl_entry(id, acl_object_identity, " +
                     "ace_order, sid, mask, granting, audit_success, audit_failure) " +
-                    "values(" + maxIdAclEntry + ", "
+                    "values(" + aclEntryId + ", "
                     + aclObjectIdentityId + ", "
                     + aceOrder + ", "
                     + userGroupSidId + ", "
@@ -139,7 +142,7 @@ public class V25__Add_permissions_to_user_groups implements JavaMigration {
 
             jdbcTemplate.execute(insertPermission);
             aceOrder++;
-            maxIdAclEntry++;
+            aclEntryId++;
         }
     }
 
@@ -156,13 +159,13 @@ public class V25__Add_permissions_to_user_groups implements JavaMigration {
     private Long createUserGroupSidId(JdbcTemplate jdbcTemplate, String sid) {
         Long userGroupSidId = getUserGroupSidId(jdbcTemplate, sid);
         if (userGroupSidId == null) {
-            Long maxId;
+            Long aclSidId;
             try {
-                maxId = jdbcTemplate.queryForLong("select max(id) from acl_sid") + 1;
+                aclSidId = jdbcTemplate.queryForLong("select max(id) from acl_sid") + 1;
             } catch (DataAccessException e) {
-                maxId = 0L;
+                aclSidId = 0L;
             }
-            jdbcTemplate.execute("insert into acl_sid(id,principal,sid) values(" + maxId + ", 0, '" + sid + "')");
+            jdbcTemplate.execute("insert into acl_sid(id,principal,sid) values(" + aclSidId + ", 0, '" + sid + "')");
             userGroupSidId = getUserGroupSidId(jdbcTemplate, sid);
         }
         return userGroupSidId;
