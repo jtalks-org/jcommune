@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.eq;
@@ -99,6 +100,8 @@ public class TransactionalUserServiceTest {
         initMocks(this);
         when(encryptionService.encryptPassword(PASSWORD))
             .thenReturn(PASSWORD_MD5_HASH);
+        aclBuilder = mockAclBuilder();
+        when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
         userService = new TransactionalUserService(
                 userDao,
                 securityService,
@@ -106,7 +109,6 @@ public class TransactionalUserServiceTest {
                 base64Wrapper,
                 avatarService,
                 encryptionService);
-        when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
     }
 
     @Test
@@ -267,7 +269,6 @@ public class TransactionalUserServiceTest {
         userService.activateAccount(user.getUuid());
 
         assertTrue(user.isEnabled());
-        verify(userDao).getByUuid(user.getUuid());
         verify(aclBuilder).grant(ProfilePermission.EDIT_PROFILE);
     }
 
