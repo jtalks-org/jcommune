@@ -41,9 +41,20 @@ import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.springframework.test.web.ModelAndViewAssert.*;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -166,13 +177,13 @@ public class TopicControllerTest {
         BindingResult result = mock(BindingResult.class);
 
         //set expectations
-        when(topicService.createTopic(TOPIC_THEME, TOPIC_CONTENT, BRANCH_ID, false)).thenReturn(topic);
+        when(topicService.createTopic(TOPIC_THEME, TOPIC_CONTENT, BRANCH_ID)).thenReturn(topic);
 
         //invoke the object under test
         ModelAndView mav = controller.createTopic(dto, result, BRANCH_ID);
 
         //check expectations
-        verify(topicService).createTopic(TOPIC_THEME, TOPIC_CONTENT, BRANCH_ID, false);
+        verify(topicService).createTopic(TOPIC_THEME, TOPIC_CONTENT, BRANCH_ID);
 
         //check result
         assertViewName(mav, "redirect:/topics/1");
@@ -263,8 +274,7 @@ public class TopicControllerTest {
         ModelAndView mav = controller.editTopic(dto, bindingResult, BRANCH_ID, TOPIC_ID);
 
         //check expectations
-        verify(topicService).updateTopic(TOPIC_ID, TOPIC_THEME, TOPIC_CONTENT, TOPIC_WEIGHT, STICKED, ANNOUNCEMENT,
-                false);
+        verify(topicService).updateTopic(TOPIC_ID, TOPIC_THEME, TOPIC_CONTENT, TOPIC_WEIGHT, STICKED, ANNOUNCEMENT);
 
         //check result
         assertViewName(mav, "redirect:/topics/" + TOPIC_ID);
@@ -285,8 +295,8 @@ public class TopicControllerTest {
         assertEquals(branchId, BRANCH_ID);
         assertEquals(topicId, TOPIC_ID);
 
-        verify(topicService, never()).updateTopic(anyLong(), anyString(), anyString(), anyInt(), anyBoolean(),
-                anyBoolean(), anyBoolean());
+        verify(topicService, never()).updateTopic(anyLong(), anyString(), anyString(),
+                anyInt(), anyBoolean(), anyBoolean());
     }
 
     @Test
