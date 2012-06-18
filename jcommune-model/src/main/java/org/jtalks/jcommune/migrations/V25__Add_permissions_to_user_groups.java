@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.migrations;
 
+import com.googlecode.flyway.core.migration.java.JavaMigration;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -22,19 +23,16 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 
 /**
  *
  */
-public class V25__Add_permissions_to_user_groups /*implements JavaMigration*/ {
-    private Map<String, Long> aclClassesMap;
+public class V25__Add_permissions_to_user_groups implements JavaMigration {
+    private Map<String, Long> aclClassesMap = new HashMap<String, Long>();
 
-    //@Override
+    @Override
     public void migrate(JdbcTemplate jdbcTemplate) throws Exception {
         List<Class> aclClasses = new ArrayList<Class>();
         aclClasses.add(Branch.class);
@@ -42,39 +40,23 @@ public class V25__Add_permissions_to_user_groups /*implements JavaMigration*/ {
         aclClasses.add(Post.class);
         aclClasses.add(JCUser.class);
 
-        aclClassesMap = new HashMap<String, Long>();
-
         for (Class oClass : aclClasses) {
             String name = oClass.getCanonicalName();
             Long id = getAclClassId(jdbcTemplate, name);
             if (id == null) {
-                Long maxId = jdbcTemplate.query("select max(id) from acl_classes",
-                        new Object[]{name}, new ResultSetExtractor<Long>() {
-                    @Override
-                    public Long extractData(ResultSet rs) throws SQLException, DataAccessException {
-                        if (rs.next()) {
-                            return rs.getLong(1);
-                        }
-                        return null;
-                    }
-                });
-                jdbcTemplate.update("insert into acl_classes(id,class) values(?, ?)", maxId + 1, name);
+                Long maxId;
+                try {
+                    maxId = jdbcTemplate.queryForLong("select max(id) from acl_classes", name);
+                } catch (DataAccessException e) {
+                    maxId = 0L;
+                }
+                jdbcTemplate.execute("insert into acl_classes(id,class) values(" + (maxId + 1) + ", " + name + ")");
                 id = getAclClassId(jdbcTemplate, name);
             }
             aclClassesMap.put(name, id);
         }
 
-
-        List<Long> branchIdList = jdbcTemplate.query("select branch_id from branches", new ResultSetExtractor<List<Long>>() {
-            @Override
-            public List<Long> extractData(ResultSet rs) throws SQLException, DataAccessException {
-                List<Long> branchIdList = new ArrayList<Long>();
-                while (rs.next()) {
-                    branchIdList.add(rs.getLong(1));
-                }
-                return branchIdList;
-            }
-        });
+        List<Long> branchIdList = jdbcTemplate.queryForList("select branch_id from branches", Long.class);
 
         for (Long id : branchIdList) {
             //User group
@@ -114,83 +96,78 @@ public class V25__Add_permissions_to_user_groups /*implements JavaMigration*/ {
                                         int grant) {
 
         Long acClassId = aclClassesMap.get(Branch.class.getCanonicalName());
-        Long maxId = jdbcTemplate.query("select max(id) from acl_object_identity", new ResultSetExtractor<Long>() {
-            @Override
-            public Long extractData(ResultSet rs) throws SQLException, DataAccessException {
-                if (rs.next()) {
-                    return rs.getLong(1);
-                }
-                return null;
-            }
-        });
-        jdbcTemplate.update("insert into acl_object_identity(id, object_id_class, " +
-                "object_id_identity, parent_object, owner_id, entries_inheriting) " +
-                "values(?, ?, ?, ?, ?, ?)", maxId + 1, acClassId, branchId, null, userGroupSidId, 1);
 
-        Long maxIdAclEntry = jdbcTemplate.query("select max(id) from acl_entry", new ResultSetExtractor<Long>() {
-            @Override
-            public Long extractData(ResultSet rs) throws SQLException, DataAccessException {
-                if (rs.next()) {
-                    return rs.getLong(1);
-                }
-                return null;
-            }
-        });
+        Long maxId;
+        try {
+            maxId = jdbcTemplate.queryForLong("select max(id) from acl_object_identity");
+        } catch (DataAccessException e) {
+            maxId = 0L;
+        }
+
+        jdbcTemplate.execute("insert into acl_object_identity(id, object_id_class, " +
+                "object_id_identity, owner_id, entries_inheriting) " +
+                "values(" + (maxId + 1) + ", "
+                + acClassId + ", "
+                + branchId + ",  "
+                + userGroupSidId
+                + ", 1)");
+
+        Long maxIdAclEntry;
+        try {
+            maxIdAclEntry = jdbcTemplate.queryForLong("select max(id) from acl_entry");
+        } catch (DataAccessException e) {
+            maxIdAclEntry = 0L;
+        }
 
         //create permissions:
         int aceOrder = 0;
-        String insertPermission = "insert into acl_entry(id, acl_object_identity, " +
-                "ace_order, sid, mask, granting, audit_success, audit_failure) " +
-                "values(?, ?, ?, ?, ?, ?, ?, ?)";
         for (JtalksPermission permission : permissions) {
-            jdbcTemplate.update(insertPermission, maxIdAclEntry + 1, maxId + 1, aceOrder,
-                    userGroupSidId, permission.getMask(), grant, 0, 0);
+            String insertPermission = "insert into acl_entry(id, acl_object_identity, " +
+                    "ace_order, sid, mask, granting, audit_success, audit_failure) " +
+                    "values(" + (maxIdAclEntry + 1) + ", "
+                    + (maxId + 1) + ", "
+                    + aceOrder + ", "
+                    + userGroupSidId + ", "
+                    + permission.getMask() + ", "
+                    + grant + ", 0, 0)";
+
+            jdbcTemplate.execute(insertPermission);
             aceOrder++;
         }
     }
 
     private Long getAclClassId(JdbcTemplate jdbcTemplate, String name) {
-        return jdbcTemplate.query("select id from acl_classes where class = ?",
-                new Object[]{name}, new ResultSetExtractor<Long>() {
-            @Override
-            public Long extractData(ResultSet rs) throws SQLException, DataAccessException {
-                if (rs.next()) {
-                    return rs.getLong(1);
-                }
-                return null;
-            }
-        });
+        Long id;
+        try {
+            id = jdbcTemplate.queryForLong("select id from acl_class where class = ?", name);
+        } catch (DataAccessException e) {
+            id = null;
+        }
+        return id;
     }
 
     private Long createUserGroupSidId(JdbcTemplate jdbcTemplate, String sid) {
         Long userGroupSidId = getUserGroupSidId(jdbcTemplate, sid);
         if (userGroupSidId == null) {
-            Long maxId = jdbcTemplate.query("select max(id) from acl_sid", new ResultSetExtractor<Long>() {
-                @Override
-                public Long extractData(ResultSet rs) throws SQLException, DataAccessException {
-                    if (rs.next()) {
-                        return rs.getLong(1);
-                    }
-                    return null;
-                }
-            });
-            jdbcTemplate.update("insert into acl_sid(id,principal,sid) values(?, ?, ?)", maxId + 1, 0, sid);
+            Long maxId;
+            try {
+                maxId = jdbcTemplate.queryForLong("select max(id) from acl_sid");
+            } catch (DataAccessException e) {
+                maxId = 0L;
+            }
+            jdbcTemplate.execute("insert into acl_sid(id,principal,sid) values(" + (maxId + 1) + ", 0, " + sid + ")");
             userGroupSidId = getUserGroupSidId(jdbcTemplate, sid);
         }
         return userGroupSidId;
     }
 
     private Long getUserGroupSidId(JdbcTemplate jdbcTemplate, String sid) {
-
-        return jdbcTemplate.query("select id from acl_sid where sid = ?",
-                new Object[]{sid}, new ResultSetExtractor<Long>() {
-            @Override
-            public Long extractData(ResultSet rs) throws SQLException, DataAccessException {
-                if (rs.next()) {
-                    return rs.getLong(1);
-                }
-                return null;
-            }
-        });
+        Long id;
+        try {
+            id = jdbcTemplate.queryForLong("select id from acl_sid where sid = ?", sid);
+        } catch (DataAccessException e) {
+            id = null;
+        }
+        return id;
     }
 }
