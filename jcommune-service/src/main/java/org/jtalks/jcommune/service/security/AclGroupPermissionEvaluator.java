@@ -21,10 +21,12 @@ import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.model.permissions.ProfilePermission;
 import org.jtalks.common.security.acl.AclUtil;
 import org.jtalks.common.security.acl.GroupAce;
+import org.jtalks.common.security.acl.sids.JtalksSidFactory;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.Permission;
+import org.springframework.security.acls.model.Sid;
 import org.springframework.security.core.Authentication;
 
 import javax.annotation.Nonnull;
@@ -46,12 +48,15 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
     private final org.jtalks.common.security.acl.AclManager aclManager;
     private final AclUtil aclUtil;
     private final GroupDao groupDao;
+    private final JtalksSidFactory sidFactory;
 
     public AclGroupPermissionEvaluator(@Nonnull org.jtalks.common.security.acl.AclManager aclManager,
-                                       @Nonnull AclUtil aclUtil, @Nonnull GroupDao groupDao) {
+                                       @Nonnull AclUtil aclUtil, @Nonnull GroupDao groupDao,
+                                       @Nonnull JtalksSidFactory sidFactory) {
         this.aclManager = aclManager;
         this.aclUtil = aclUtil;
         this.groupDao = groupDao;
+        this.sidFactory = sidFactory;
     }
 
     /**
@@ -75,32 +80,36 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
         boolean result = false;
         ObjectIdentity objectIdentity = aclUtil.createIdentity(targetId, targetType);
         Permission jtalksPermission = getPermission(permission);
+        Sid sid = sidFactory.createPrincipal(authentication);
 
         List<AccessControlEntry> aces = aclUtil.getAclFor(objectIdentity).getEntries();
         List<GroupAce> controlEntries = aclManager.getGroupPermissionsOn(objectIdentity);
 
-        if (isRestricted(aces, jtalksPermission) ||
+        if (isRestricted(sid, aces, jtalksPermission) ||
                 isRestrictedForGroup(controlEntries, authentication)) {
             return false;
-        } else if (isAllowed(aces, jtalksPermission) ||
+        } else if (isAllowed(sid, aces, jtalksPermission) ||
                 isAllowedForGroup(controlEntries, authentication)) {
             return true;
         }
         return result;
     }
 
-    private boolean isAllowed(List<AccessControlEntry> controlEntries, Permission permission) {
+    private boolean isAllowed(Sid sid, List<AccessControlEntry> controlEntries, Permission permission) {
         for (AccessControlEntry ace : controlEntries) {
-            if (permission.equals(ace.getPermission()) && ace.isGranting()) {
+            if (sid.getSidId().equals(ace.getSid().getSidId()) &&
+                    permission.equals(ace.getPermission()) && ace.isGranting()) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean isRestricted(List<AccessControlEntry> controlEntries, Permission permission) {
+    private boolean isRestricted(Sid sid, List<AccessControlEntry> controlEntries, Permission permission) {
         for (AccessControlEntry ace : controlEntries) {
-            if (permission.equals(ace.getPermission()) && !ace.isGranting()) {
+            if (sid.getSidId().equals(ace.getSid().getSidId()) &&
+                    permission.equals(ace.getPermission()) &&
+                    !ace.isGranting()) {
                 return true;
             }
         }
