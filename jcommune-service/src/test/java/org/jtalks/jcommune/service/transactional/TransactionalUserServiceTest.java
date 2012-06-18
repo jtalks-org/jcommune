@@ -23,7 +23,6 @@ import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
-import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
@@ -35,8 +34,6 @@ import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -44,7 +41,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.eq;
@@ -95,6 +91,8 @@ public class TransactionalUserServiceTest {
     private Base64Wrapper base64Wrapper;
     @Mock
     private EncryptionService encryptionService;
+    @Mock
+    private CompoundAclBuilder<User> aclBuilder;
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -108,6 +106,7 @@ public class TransactionalUserServiceTest {
                 base64Wrapper,
                 avatarService,
                 encryptionService);
+        when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
     }
 
     @Test
