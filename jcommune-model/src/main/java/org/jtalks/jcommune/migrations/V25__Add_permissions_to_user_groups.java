@@ -50,7 +50,7 @@ public class V25__Add_permissions_to_user_groups implements JavaMigration {
                 } catch (DataAccessException e) {
                     maxId = 0L;
                 }
-                jdbcTemplate.execute("insert into acl_class(id,class) values(" + (maxId + 1) + ", " + name + ")");
+                jdbcTemplate.execute("insert into acl_class(id,class) values(" + (maxId + 1) + ", '" + name + "')");
                 id = getAclClassId(jdbcTemplate, name);
             }
             aclClassesMap.put(name, id);
@@ -155,7 +155,7 @@ public class V25__Add_permissions_to_user_groups implements JavaMigration {
             } catch (DataAccessException e) {
                 maxId = 0L;
             }
-            jdbcTemplate.execute("insert into acl_sid(id,principal,sid) values(" + (maxId + 1) + ", 0, " + sid + ")");
+            jdbcTemplate.execute("insert into acl_sid(id,principal,sid) values(" + (maxId + 1) + ", 0, '" + sid + "')");
             userGroupSidId = getUserGroupSidId(jdbcTemplate, sid);
         }
         return userGroupSidId;
