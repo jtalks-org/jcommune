@@ -36,6 +36,8 @@ import org.testng.annotations.Test;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.eq;
@@ -194,7 +196,8 @@ public class PrivateMessageControllerTest {
     @Test(expectedExceptions = NotFoundException.class)
     public void sendMessageWithWrongUser() throws NotFoundException {
         PrivateMessageDto dto = getPrivateMessageDto();
-        doThrow(new NotFoundException()).when(pmService).sendMessage(dto.getTitle(), dto.getBody(), JC_USER, JC_USER);
+        doThrow(new NotFoundException()).when(pmService).
+                sendMessage(anyString(), anyString(), any(JCUser.class), any(JCUser.class));
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
 
         controller.sendMessage(dto, bindingResult);
@@ -313,14 +316,14 @@ public class PrivateMessageControllerTest {
     public void saveDraftWithWrongUser() throws NotFoundException {
         PrivateMessageDto dto = getPrivateMessageDto();
         doThrow(new NotFoundException()).when(pmService)
-                .saveDraft(dto.getId(), dto.getTitle(), dto.getBody(), JC_USER, JC_USER);
+                .saveDraft(anyLong(), anyString(), anyString(), any(JCUser.class), any(JCUser.class));
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
 
         String view = controller.saveDraft(dto, bindingResult);
 
         assertEquals(view, "pm/pmForm");
         assertEquals(bindingResult.getErrorCount(), 1);
-        verify(pmService).saveDraft(dto.getId(), dto.getTitle(), dto.getBody(), JC_USER, JC_USER);
+        verify(pmService).saveDraft(anyLong(), anyString(), anyString(), any(JCUser.class), any(JCUser.class));
     }
 
     @Test
@@ -338,7 +341,7 @@ public class PrivateMessageControllerTest {
         PrivateMessageDto dto = new PrivateMessageDto();
         dto.setBody("body");
         dto.setTitle("title");
-        dto.setRecipient("Recipient");
+        dto.setRecipient(USERNAME);
         return dto;
     }
 
