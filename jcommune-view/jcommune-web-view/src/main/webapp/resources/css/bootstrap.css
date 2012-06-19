@@ -788,8 +788,8 @@ textarea[readonly] {
   color: #b94a48;
 }
 .control-group.error input, .control-group.error select, .control-group.error textarea {
-  color: #b94a48;
-  border-color: #b94a48;
+  color: #b94a48 !important;
+  border-color: #b94a48 !important;
 }
 .control-group.error input:focus, .control-group.error select:focus, .control-group.error textarea:focus {
   border-color: #953b39;
