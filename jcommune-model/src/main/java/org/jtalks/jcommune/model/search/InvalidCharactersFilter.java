@@ -28,6 +28,6 @@ public class InvalidCharactersFilter implements SearchRequestFilter {
      */
     @Override
     public String filter(String searchText) {
-        return searchText.replaceAll("[^А-Яа-яёЁA-Za-z0-9]", " ").trim();
+        return searchText.replaceAll("[^А-Яа-яёЁA-Za-z0-9ЇїЄєҐґÑñÁáÉéÍíÓóÚú]", " ").trim();
     }
 }
