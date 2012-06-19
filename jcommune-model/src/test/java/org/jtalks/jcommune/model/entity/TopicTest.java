@@ -18,7 +18,13 @@ import org.joda.time.DateTime;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.*;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotSame;
+import static org.testng.Assert.assertTrue;
 
 public class TopicTest {
     private Topic topic;
@@ -128,16 +134,27 @@ public class TopicTest {
     public void testSetLastReadPostIndexWrongValue() {
         topic.setLastReadPostIndex(100500);
     }
-    
+
     @Test
     public void testRemovePost() {
         DateTime lastModification = new DateTime(1900, 11, 11, 11, 11, 11, 11);
         topic.setModificationDate(lastModification);
-        
+
         topic.removePost(post1);
-        
+
         assertFalse(topic.getPosts().contains(post1), "The post isn't removed from the topic");
         assertTrue(topic.getModificationDate().isAfter(lastModification),
                 "Last modification date has not changed.");
+    }
+
+    @Test
+    public void testUserSubscribed() {
+        JCUser subscribedUser = new JCUser();
+        JCUser notSubscribedUser = new JCUser();
+        Set<JCUser> subscribers = new HashSet<JCUser>();
+        subscribers.add(subscribedUser);
+        topic.setSubscribers(subscribers);
+        assertTrue(topic.userSubscribed(subscribedUser));
+        assertFalse(topic.userSubscribed(notSubscribedUser));
     }
 }
