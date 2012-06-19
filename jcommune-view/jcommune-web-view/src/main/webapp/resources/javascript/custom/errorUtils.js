@@ -13,9 +13,32 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+var ErrorUtils = {};
+
+/** Add necessary classes to highlight errors for current design */
+ErrorUtils.addErrorStyles = function() {
+	$('.help-inline').closest('div.control-group').addClass('error');
+}
+
+/** Add required classes to highlight errors in specified input for current design 
+ * @param inputSelector - selector of input with errors
+ */
+ErrorUtils.addErrorStyles = function(inputSelector) {
+	$(inputSelector).closest('div.control-group').addClass('error');
+}
+
+/** Remove error classes for specified input for current design 
+ * @param inputSelector - selector of input to disable error highlighting
+ */
+ErrorUtils.removeErrorStyles = function(inputSelector) {
+	$(inputSelector).closest('div.control-group').removeClass('error');
+} 
+
+
 /**
  * Make our design compatible with form:errors tag.
  */
 $(document).ready(function() {
-	$('.help-inline').closest('div.control-group').addClass('error');
+	ErrorUtils.addErrorStyles();
 });
+
