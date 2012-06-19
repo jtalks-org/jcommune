@@ -102,7 +102,7 @@ function sendLoginPost() {
 function formatFormElements(data){
      var form_elements = [];
             $.each($(data).find("div.control-group").wrap('<p>').parent(), function (index, value) {
-				$(value).find('span.help-inline').closest('div.control-group').addClass('error');
+				ErrorUtils.addErrorStyles($(value).find('span.help-inline'));
                 form_elements[index] = $(value).html();
             });
     return form_elements;

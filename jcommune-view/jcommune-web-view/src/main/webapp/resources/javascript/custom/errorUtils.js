@@ -21,17 +21,27 @@ ErrorUtils.addErrorStyles = function() {
 }
 
 /** Add required classes to highlight errors in specified input for current design 
- * @param inputSelector - selector of input with errors
+ * @param inputOrSelector - either selector of input with errors or input itself 
+ * 		(e.g. $('#inputId'))
  */
-ErrorUtils.addErrorStyles = function(inputSelector) {
-	$(inputSelector).closest('div.control-group').addClass('error');
+ErrorUtils.addErrorStyles = function(inputOrSelector) {
+	var input = inputOrSelector;
+	if (typeof(inputOrSelector) == "string") {
+		input = $(inputOrSelector);
+	}
+	$(input).closest('div.control-group').addClass('error');
 }
 
 /** Remove error classes for specified input for current design 
- * @param inputSelector - selector of input to disable error highlighting
+ * @param inputOrSelector - either selector of input to disable error highlighting
+ * 		or input itself (e.g. $('#inputId'))
  */
-ErrorUtils.removeErrorStyles = function(inputSelector) {
-	$(inputSelector).closest('div.control-group').removeClass('error');
+ErrorUtils.removeErrorStyles = function(inputOrSelector) {
+	var input = inputOrSelector;
+	if (typeof(inputOrSelector) == "string") {
+		input = $(inputOrSelector);
+	}
+	$(input).closest('div.control-group').removeClass('error');
 } 
 
 
