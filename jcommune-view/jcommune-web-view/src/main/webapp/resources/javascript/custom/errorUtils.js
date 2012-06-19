@@ -15,8 +15,8 @@
 
 var ErrorUtils = {};
 
-/** Add necessary classes to highlight errors for current design */
-ErrorUtils.addErrorStyles = function() {
+/** Add necessary classes to page elements to highlight errors for current design */
+ErrorUtils.fixErrorHighlighting = function() {
 	$('.help-inline').closest('div.control-group').addClass('error');
 }
 
@@ -29,7 +29,7 @@ ErrorUtils.addErrorStyles = function(inputOrSelector) {
 	if (typeof(inputOrSelector) == "string") {
 		input = $(inputOrSelector);
 	}
-	$(input).closest('div.control-group').addClass('error');
+	input.closest('div.control-group').addClass('error');
 }
 
 /** Remove error classes for specified input for current design 
@@ -41,7 +41,7 @@ ErrorUtils.removeErrorStyles = function(inputOrSelector) {
 	if (typeof(inputOrSelector) == "string") {
 		input = $(inputOrSelector);
 	}
-	$(input).closest('div.control-group').removeClass('error');
+	input.closest('div.control-group').removeClass('error');
 } 
 
 
@@ -49,6 +49,6 @@ ErrorUtils.removeErrorStyles = function(inputOrSelector) {
  * Make our design compatible with form:errors tag.
  */
 $(document).ready(function() {
-	ErrorUtils.addErrorStyles();
+	ErrorUtils.fixErrorHighlighting();
 });
 
