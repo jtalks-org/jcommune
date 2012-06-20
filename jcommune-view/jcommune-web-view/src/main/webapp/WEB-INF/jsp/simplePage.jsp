@@ -51,7 +51,7 @@
         </div>
     </div>
 
-    <sec:authorize access="hasRole('ROLE_ADMIN')">
+    <sec:authorize access="hasPermission(#${simplePageInfoContainer.id}, 'org.jtalks.jcommune.model.entity.SimplePage', 'GeneralPermission.ADMIN')">
         <div>
             <a class="button" href="${pageContext.request.contextPath}/pages/${simplePageDto.pathName}/edit">
                 <spring:message code="label.edit"/>

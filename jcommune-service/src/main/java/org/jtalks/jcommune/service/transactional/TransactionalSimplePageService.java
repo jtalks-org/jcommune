@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.jcommune.model.dao.SimplePageDao;
 import org.jtalks.jcommune.model.entity.SimplePage;
 import org.jtalks.jcommune.service.SimplePageService;
@@ -24,9 +25,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.persistence.EntityExistsException;
-
-import static org.jtalks.jcommune.service.security.SecurityConstants.HAS_ADMIN_ROLE;
-import static org.jtalks.jcommune.service.security.SecurityConstants.HAS_USER_OR_ADMIN_ROLE;
 
 /**
  * SimplePage service class. This class contains method needed to manipulate with simple page persistent entity.
@@ -52,10 +50,10 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
     /**
      * {@inheritDoc}
      */
-    @PreAuthorize(HAS_ADMIN_ROLE)
+    @PreAuthorize("hasPermission(#simplePageInfoContainer.id, 'org.jtalks.jcommune.model.entity.SimplePage', 'GeneralPermission.ADMIN')")
     @Override
     public void updatePage(SimplePageInfoContainer simplePageInfoContainer) throws NotFoundException {
-        
+
         SimplePage simplePage = get(simplePageInfoContainer.getId());
         if (simplePage == null) {
             String message = "Simple page with id = " + simplePage.getId() + " not found.";
@@ -89,7 +87,7 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
     /**
      * {@inheritDoc}
      */
-    @PreAuthorize(HAS_ADMIN_ROLE)
+    @PreAuthorize("hasPermission(#simplePage.id, 'org.jtalks.jcommune.model.entity.SimplePage', 'GeneralPermission.ADMIN')")
     @Override
     public SimplePage createPage(SimplePage simplePage) throws EntityExistsException {
 
