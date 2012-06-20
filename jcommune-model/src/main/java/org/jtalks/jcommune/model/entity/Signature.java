@@ -24,9 +24,12 @@ import org.springframework.web.util.HtmlUtils;
  */
 public class Signature {
 
-    public static final String RENDERING_TEMPLATE = "<hr/><span class='signature'>%s</span>";
-
+    public static final String RENDERING_TEMPLATE =
+            "<div class=\"signature\">-------------------------<br><span>%s</span></div>";
     private String content;
+    private static final String HYPERLINK_REGEX = "([^\\s]*)(https?|ftp|file)(://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|])";
+    private static final String HYPERLINK_TEMPLATE = "<a href=\"" + "$2$3" + "\">" + "$1$2$3" + "</a>";
+
 
     /**
      * Creates new immutable instance.
@@ -52,6 +55,7 @@ public class Signature {
      * Renders user signature to be displayed as
      * html content. This method also performs html escaping
      * so no injection/XSS attack is possible.
+     * Hyperlinks are searched using regular expressions and replaces with html tags according to hyperlink template
      *
      * @return rendered user signature
      */
@@ -60,7 +64,9 @@ public class Signature {
             return "";
         } else {
             String escaped = HtmlUtils.htmlEscape(content);
-            return String.format(RENDERING_TEMPLATE, escaped);
+            content = escaped.replaceAll(HYPERLINK_REGEX, HYPERLINK_TEMPLATE);
+
         }
+        return String.format(RENDERING_TEMPLATE, content);
     }
 }
