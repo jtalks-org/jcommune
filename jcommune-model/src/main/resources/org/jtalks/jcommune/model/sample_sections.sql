@@ -1,9 +1,9 @@
 INSERT INTO SECTIONS (SECTION_ID, UUID, NAME, POSITION, DESCRIPTION) VALUES (1,'1','Sample section', 1, 'Some description here');
 INSERT INTO SECTIONS (SECTION_ID, UUID, NAME, POSITION, DESCRIPTION) VALUES (2,'2','Another section', 2, 'Whatever else');
-INSERT INTO BRANCHES (UUID, NAME, DESCRIPTION, POSITION, SECTION_ID) VALUES('3', 'A cool branch', 'More information', 0, 1);
-INSERT INTO BRANCHES (UUID, NAME, DESCRIPTION, POSITION, SECTION_ID) VALUES('4', 'The second branch', 'More information', 1, 1);
-INSERT INTO BRANCHES (UUID, NAME, DESCRIPTION, POSITION, SECTION_ID) VALUES('5', 'One more branch', 'More information', 0, 2);
-INSERT INTO BRANCHES (UUID, NAME, DESCRIPTION, POSITION, SECTION_ID) VALUES('6', 'The last, but not least', 'More information', 1, 2);
+INSERT INTO BRANCHES (BRANCH_ID, UUID, NAME, DESCRIPTION, POSITION, SECTION_ID) VALUES(1, '3', 'A cool branch', 'More information', 0, 1);
+INSERT INTO BRANCHES (BRANCH_ID, UUID, NAME, DESCRIPTION, POSITION, SECTION_ID) VALUES(2, '4', 'The second branch', 'More information', 1, 1);
+INSERT INTO BRANCHES (BRANCH_ID, UUID, NAME, DESCRIPTION, POSITION, SECTION_ID) VALUES(3, '5', 'One more branch', 'More information', 0, 2);
+INSERT INTO BRANCHES (BRANCH_ID, UUID, NAME, DESCRIPTION, POSITION, SECTION_ID) VALUES(4, '6', 'The last, but not least', 'More information', 1, 2);
 
 INSERT INTO `acl_class` VALUES (1,'org.jtalks.jcommune.model.entity.Branch');
 

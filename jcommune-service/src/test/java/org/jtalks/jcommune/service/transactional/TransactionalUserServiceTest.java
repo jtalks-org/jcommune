@@ -42,17 +42,9 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.matches;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 /**
  * @author Kirill Afonin
@@ -144,6 +136,7 @@ public class TransactionalUserServiceTest {
         assertTrue(new Interval(registeredUser.getRegistrationDate(), now)
                 .toDuration().getMillis() <= MAX_REGISTRATION_TIMEOUT);
         verify(userDao).saveOrUpdate(user);
+        verify(aclBuilder).grant(ProfilePermission.EDIT_PROFILE);
     }
 
 
@@ -269,7 +262,6 @@ public class TransactionalUserServiceTest {
         userService.activateAccount(user.getUuid());
 
         assertTrue(user.isEnabled());
-        verify(aclBuilder).grant(ProfilePermission.EDIT_PROFILE);
     }
 
     @Test(expectedExceptions = NotFoundException.class)

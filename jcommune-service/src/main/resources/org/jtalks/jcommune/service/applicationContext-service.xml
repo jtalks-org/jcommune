@@ -124,6 +124,7 @@
         <constructor-arg ref="topicBranchService"/>
         <constructor-arg ref="topicBranchDao"/>
         <constructor-arg ref="notificationService"/>
+        <constructor-arg ref="subscriptionService"/>
     </bean>
 
     <bean id="pollService"

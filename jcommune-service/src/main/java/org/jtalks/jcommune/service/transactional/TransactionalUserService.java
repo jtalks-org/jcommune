@@ -107,6 +107,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         this.getDao().saveOrUpdate(user);
         mailService.sendAccountActivationMail(user);
         logger.info("JCUser registered: {}", user.getUsername());
+        securityService.createAclBuilder().grant(ProfilePermission.EDIT_PROFILE).to(user).on(user).flush();
         return user;
     }
     
@@ -176,7 +177,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         }
         user.setEnabled(true);
         this.getDao().saveOrUpdate(user);
-        securityService.createAclBuilder().grant(ProfilePermission.EDIT_PROFILE).to(user).on(user).flush();
     }
 
     /**
