@@ -238,9 +238,14 @@ public class TopicController {
     public ModelAndView editTopicPage(@RequestParam(BRANCH_ID) Long branchId,
                                       @PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         Topic topic = topicService.get(topicId);
+        TopicDto topicDto = new TopicDto(topic);
+        JCUser currentUser = securityService.getCurrentUser();
+        if (topic.userSubscribed(currentUser)) {
+            topicDto.setNotifyOnAnswers(true);
+        }
 
         return new ModelAndView("editTopic")
-                .addObject("topicDto", new TopicDto(topic))
+                .addObject("topicDto", topicDto)
                 .addObject(BRANCH_ID, branchId)
                 .addObject(TOPIC_ID, topicId)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));

@@ -38,7 +38,13 @@ public enum JcommuneProperty {
     private PropertyDao propertyDao;
 
     /**
-     * {@inheritDoc}
+     * Returns a string value of the property. Property values
+     * ​​are stored as strings, so this method is main for retrieving
+     * a value of property.
+     * It is also worth noting that if the property has not been found,
+     * it will return a default value.
+     * 
+     * @return a string value of the property
      */
     public String getValue() {
         Property property = propertyDao.getByName(name);
@@ -48,6 +54,16 @@ public enum JcommuneProperty {
             LOGGER.warn(name + " property was not found.");
             return defaultValue;
         }
+    }
+    
+    /**
+     * Converts a value of the property to boolean and returns it.
+     * Keep in mind, if the property isn't boolean, the result will false.
+     * 
+     * @return a boolean value of the property
+     */
+    public boolean booleanValue() {
+       return Boolean.valueOf(getValue()); 
     }
     
     /**
