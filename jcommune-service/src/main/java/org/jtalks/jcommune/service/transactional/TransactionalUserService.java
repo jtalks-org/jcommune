@@ -17,6 +17,8 @@ package org.jtalks.jcommune.service.transactional;
 import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
+import org.jtalks.common.model.dao.GroupDao;
+import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.ProfilePermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.UserDao;
@@ -29,6 +31,7 @@ import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
+import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -46,31 +49,34 @@ import org.springframework.scheduling.annotation.Scheduled;
 public class TransactionalUserService extends AbstractTransactionalEntityService<JCUser, UserDao>
         implements UserService {
 
+    private GroupDao groupDao;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private SecurityService securityService;
     private MailService mailService;
     private Base64Wrapper base64Wrapper;
     private AvatarService avatarService;
     //Important, use for every password creation.
-    private EncryptionService encryptionService; 
-    
+    private EncryptionService encryptionService;
+
     /**
      * Create an instance of User entity based service
      *
      * @param dao             for operations with data storage
+     * @param groupDao        for user group operations with data storage
      * @param securityService for security
      * @param mailService     to send e-mails
      * @param base64Wrapper   for avatar image-related operations
      * @param avatarService   some more avatar operations)
-     * @param passwordEncoder 
+     * @param passwordEncoder
      */
-    public TransactionalUserService(UserDao dao, 
-            SecurityService securityService,
-            MailService mailService,
-            Base64Wrapper base64Wrapper,
-            AvatarService avatarService,
-            EncryptionService encryptionService) {
+    public TransactionalUserService(UserDao dao, GroupDao groupDao,
+                                    SecurityService securityService,
+                                    MailService mailService,
+                                    Base64Wrapper base64Wrapper,
+                                    AvatarService avatarService,
+                                    EncryptionService encryptionService) {
         super(dao);
+        this.groupDao = groupDao;
         this.securityService = securityService;
         this.mailService = mailService;
         this.base64Wrapper = base64Wrapper;
@@ -108,9 +114,12 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         mailService.sendAccountActivationMail(user);
         logger.info("JCUser registered: {}", user.getUsername());
         securityService.createAclBuilder().grant(ProfilePermission.EDIT_PROFILE).to(user).on(user).flush();
+        Group group = groupDao.get(AdministrationGroup.USER.getId());
+        group.getUsers().add(user);
+        groupDao.update(group);
         return user;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -129,7 +138,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         JCUser currentUser = (JCUser) securityService.getCurrentUser();
         byte[] decodedAvatar = base64Wrapper.decodeB64Bytes(info.getB64EncodedAvatar());
 
-        String newPassword = info.getNewPassword(); 
+        String newPassword = info.getNewPassword();
         if (newPassword != null) {
             String encryptedPassword = encryptionService.encryptPassword(newPassword);
             currentUser.setPassword(encryptedPassword);

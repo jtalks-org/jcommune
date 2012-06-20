@@ -16,6 +16,8 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
+import org.jtalks.common.model.dao.GroupDao;
+import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.model.permissions.ProfilePermission;
 import org.jtalks.common.security.SecurityService;
@@ -75,6 +77,8 @@ public class TransactionalUserServiceTest {
     @Mock
     private UserDao userDao;
     @Mock
+    private GroupDao groupDao;
+    @Mock
     private SecurityService securityService;
     @Mock
     private MailService mailService;
@@ -91,11 +95,12 @@ public class TransactionalUserServiceTest {
     public void setUp() throws Exception {
         initMocks(this);
         when(encryptionService.encryptPassword(PASSWORD))
-            .thenReturn(PASSWORD_MD5_HASH);
+                .thenReturn(PASSWORD_MD5_HASH);
         aclBuilder = mockAclBuilder();
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
         userService = new TransactionalUserService(
                 userDao,
+                groupDao,
                 securityService,
                 mailService,
                 base64Wrapper,
@@ -126,6 +131,8 @@ public class TransactionalUserServiceTest {
     public void testRegisterUser() throws Exception {
         JCUser user = getUser(USERNAME);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
+        Group group = new Group();
+        when(groupDao.get(anyLong())).thenReturn(group);
 
         JCUser registeredUser = userService.registerUser(user);
         DateTime now = new DateTime();
@@ -136,6 +143,7 @@ public class TransactionalUserServiceTest {
         assertTrue(new Interval(registeredUser.getRegistrationDate(), now)
                 .toDuration().getMillis() <= MAX_REGISTRATION_TIMEOUT);
         verify(userDao).saveOrUpdate(user);
+        verify(groupDao).update(group);
         verify(aclBuilder).grant(ProfilePermission.EDIT_PROFILE);
     }
 
@@ -146,7 +154,7 @@ public class TransactionalUserServiceTest {
         when(securityService.getCurrentUser()).thenReturn(user);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
         when(encryptionService.encryptPassword(NEW_PASSWORD))
-            .thenReturn(NEW_PASSWORD_MD5_HASH);
+                .thenReturn(NEW_PASSWORD_MD5_HASH);
 
         String newAvatar = new String(new byte[12]);
 
@@ -164,7 +172,7 @@ public class TransactionalUserServiceTest {
         JCUser user = getUser(USERNAME);
         when(securityService.getCurrentUser()).thenReturn(user);
         when(encryptionService.encryptPassword(null)).thenReturn(null);
-        
+
         String newAvatar = new String(new byte[12]);
         String newPassword = null;
         UserInfoContainer userInfo = new UserInfoContainer(FIRST_NAME, LAST_NAME, EMAIL,
