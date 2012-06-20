@@ -14,17 +14,20 @@
  */
 package org.jtalks.jcommune.service;
 
+import java.util.List;
+
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 /**
  * This interface should have methods which give us more abilities in manipulating Post persistent entity.
  *
  * @author Osadchuck Eugeny
  * @author Kirill Afonin
+ * @author Anuar Nurmakanov
  */
 public interface PostService extends EntityService<Post> {
 
@@ -64,5 +67,14 @@ public interface PostService extends EntityService<Post> {
      * @return number of the page where the post will actually be
      */
     int calculatePageForPost(Post post);
+    
+    /**
+     * 
+     * @param topic
+     * @param page
+     * @param pagingEnabled
+     * @return
+     */
+    Page<Post> getPosts(Topic topic, int page, boolean pagingEnabled);
 
 }

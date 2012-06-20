@@ -16,6 +16,8 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.dto.JcommunePageRequest;
+import org.jtalks.jcommune.model.dto.JcommunePageable;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -23,9 +25,11 @@ import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
+import org.jtalks.jcommune.service.nontransactional.PaginationService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
@@ -34,6 +38,7 @@ import java.util.List;
  * Post service class. This class contains method needed to manipulate with Post persistent entity.
  *
  * @author Osadchuck Eugeny
+ * @author Anuar Nurmakanov
  */
 public class TransactionalPostService extends AbstractTransactionalEntityService<Post, PostDao> implements PostService {
 
@@ -43,6 +48,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     private SecurityService securityService;
     private NotificationService notificationService;
     private LastReadPostService lastReadPostService;
+    private PaginationService paginationService;
 
     /**
      * Create an instance of Post entity based service
@@ -53,13 +59,19 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * @param notificationService to send email updates for subscribed users
      * @param lastReadPostService to modify last read post information when topic structure is changed
      */
-    public TransactionalPostService(PostDao dao, TopicDao topicDao, SecurityService securityService,
-                                    NotificationService notificationService, LastReadPostService lastReadPostService) {
+    public TransactionalPostService(
+            PostDao dao,
+            TopicDao topicDao,
+            SecurityService securityService,
+            NotificationService notificationService,
+            LastReadPostService lastReadPostService,
+            PaginationService paginationService) {
         super(dao);
         this.topicDao = topicDao;
         this.securityService = securityService;
         this.notificationService = notificationService;
         this.lastReadPostService = lastReadPostService;
+        this.paginationService = paginationService;
     }
 
     /**
@@ -125,4 +137,13 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<Post> getPosts(Topic topic, int page, boolean pagingEnabled) {
+        JcommunePageable pageRequest = new JcommunePageRequest(
+                page, paginationService.getPageSizeForCurrentUser());
+        return getDao().getPosts(topic, pageRequest, pagingEnabled);
+    }
 }

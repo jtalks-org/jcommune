@@ -15,9 +15,11 @@
 package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.jcommune.model.dto.JcommunePageable;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -47,4 +49,13 @@ public interface PostDao extends ChildRepository<Post> {
      * @return the latest post in the forum topic
      */
     Post getLastPostInTopic(Topic topic);
+    
+    /**
+     * 
+     * @param topic
+     * @param pageRequest
+     * @param pagingEnabled
+     * @return
+     */
+    Page<Post> getPosts(Topic topic, JcommunePageable pageRequest, boolean pagingEnabled);
 }

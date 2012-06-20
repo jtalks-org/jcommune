@@ -45,5 +45,13 @@
     <query name="getCountPostOfUser">
         <![CDATA[SELECT count(*) FROM Post WHERE userCreated = :userCreated]]>
     </query>
+    
+    <query name="getCountPostsInTopic">
+        <![CDATA[SELECT count(*) FROM Post WHERE topic = :topic]]>
+    </query>
+    
+    <query name="getPostsInTopic">
+        <![CDATA[FROM Post WHERE topic = :topic]]>
+    </query>
 
 </hibernate-mapping>

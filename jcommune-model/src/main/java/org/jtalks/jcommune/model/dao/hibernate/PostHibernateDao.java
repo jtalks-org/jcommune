@@ -16,15 +16,19 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.jcommune.model.dao.PostDao;
+import org.jtalks.jcommune.model.dto.JcommunePageable;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 /**
  * The implementation of PostDao based on Hibernate.
@@ -64,5 +68,27 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
                 .list();
         //if the result contains more than one message, then we return the first
         return posts.isEmpty()? null: posts.get(0);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<Post> getPosts(Topic topic, JcommunePageable pageRequest, boolean pagingEnabled) {
+        Number totalCount = (Number) getSession()
+                .getNamedQuery("getCountPostsInTopic")
+                .setParameter("topic", topic)
+                .uniqueResult();
+        Query query = getSession()
+                .getNamedQuery("getPostsInTopic")
+                .setParameter("topic", topic);
+        if (pagingEnabled) {
+            query.setFirstResult(pageRequest.getNumberOfFirstItem());
+            query.setMaxResults(pageRequest.getPageSize());
+        }
+        //TODO LIST_INDEX?
+        @SuppressWarnings("unchecked")
+        List<Post> posts = (List<Post> ) query.list();
+        return new PageImpl<Post>(posts, pageRequest, totalCount.intValue());
     }
 }
