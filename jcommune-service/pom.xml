@@ -97,6 +97,11 @@
             <groupId>kefir-bb</groupId>
             <artifactId>kefir-bb</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.jtalks.common</groupId>
+            <artifactId>jtalks-common-security</artifactId>
+            <version>0.17</version>
+        </dependency>
     </dependencies>
 
     <properties>

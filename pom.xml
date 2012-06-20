@@ -41,7 +41,7 @@
             <dependency>
                 <groupId>org.jtalks.common</groupId>
                 <artifactId>jtalks-common-service</artifactId>
-                <version>0.12</version>
+                <version>0.17</version>
             </dependency>
             <!-- Hibernate -->
             <dependency>
@@ -185,7 +185,7 @@
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-acl</artifactId>
-                <version>3.0.5.RELEASE</version>
+                <version>3.1.1.JAVATALKS-PATCH.RELEASE</version>
             </dependency>
             <!-- AOP -->
             <dependency>
