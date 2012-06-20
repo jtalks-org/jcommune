@@ -33,6 +33,7 @@ import org.jtalks.jcommune.service.nontransactional.AvatarService;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
+import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -132,7 +133,7 @@ public class TransactionalUserServiceTest {
         JCUser user = getUser(USERNAME);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
         Group group = new Group();
-        when(groupDao.get(anyLong())).thenReturn(group);
+        when(groupDao.get(AdministrationGroup.USER.getId())).thenReturn(group);
 
         JCUser registeredUser = userService.registerUser(user);
         DateTime now = new DateTime();
