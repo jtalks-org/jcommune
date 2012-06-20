@@ -201,7 +201,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * @param currentUser     current user
      */
     private void subscribeOnTopicIfNotificationsEnabled(boolean notifyOnAnswers, Topic topic, JCUser currentUser) {
-        boolean subscribed = topic.getSubscribers().contains(currentUser);
+        boolean subscribed = topic.userSubscribed(currentUser);
         if (notifyOnAnswers && !subscribed || !notifyOnAnswers && subscribed) {
             subscriptionService.toggleTopicSubscription(topic);
         }

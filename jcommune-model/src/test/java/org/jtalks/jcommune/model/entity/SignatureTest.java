@@ -27,6 +27,8 @@ public class SignatureTest {
     private static final String CONTENT = "content";
     private static final String HTML_CONTENT = "<content/>";
     private static final String HTML_CONTENT_ESCAPED = "&lt;content/&gt;";
+    private static final String HYPERLINK_CONTENT = "http://localhost";
+    private static final String HYPERLINK_CONTENT_REPLACED = "<a href=\"http://localhost\">http://localhost</a>";
 
     private Signature signature;
 
@@ -51,6 +53,16 @@ public class SignatureTest {
     public void testRenderHtml() {
         signature = new Signature(HTML_CONTENT);
         String expected = String.format(RENDERING_TEMPLATE, HTML_CONTENT_ESCAPED);
+
+        String result = signature.render();
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testRenderHyperlink() {
+        signature = new Signature(HYPERLINK_CONTENT);
+        String expected = String.format(RENDERING_TEMPLATE, HYPERLINK_CONTENT_REPLACED);
 
         String result = signature.render();
 

@@ -40,17 +40,10 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyBoolean;
-import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
 import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
@@ -233,23 +226,56 @@ public class TopicControllerTest {
     }
 
     @Test
-    public void editTopicPage() throws NotFoundException {
+    public void editTopicPageNotSubscribedUser() throws NotFoundException {
         Topic topic = new Topic(user, "title");
         topic.setId(TOPIC_ID);
         Post post = new Post(user, "content");
         topic.addPost(post);
 
-        //set expectations
-        when(topicService.get(TOPIC_ID)).thenReturn(topic);
-        when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
+        editTopicStubs(topic);
 
         //invoke the object under test
         ModelAndView mav = controller.editTopicPage(BRANCH_ID, TOPIC_ID);
 
+        editTopicVerification(topic);
+
+        editTopicAssertions(mav);
+    }
+
+    @Test
+    public void editTopicPageSubscribedUser() throws NotFoundException {
+        Topic topic = new Topic(user, "title");
+        topic.setId(TOPIC_ID);
+        Set<JCUser> subscribers = new HashSet<JCUser>();
+        subscribers.add(user);
+        topic.setSubscribers(subscribers);
+        Post post = new Post(user, "content");
+        topic.addPost(post);
+
+        editTopicStubs(topic);
+
+        //invoke the object under test
+        ModelAndView mav = controller.editTopicPage(BRANCH_ID, TOPIC_ID);
+
+        editTopicVerification(topic);
+
+        editTopicAssertions(mav);
+    }
+
+    private void editTopicStubs(Topic topic) throws NotFoundException {
+        //set expectations
+        when(topicService.get(TOPIC_ID)).thenReturn(topic);
+        when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
+        when(securityService.getCurrentUser()).thenReturn(user);
+    }
+
+    private void editTopicVerification(Topic topic) throws NotFoundException {
         //check expectations
         verify(topicService).get(TOPIC_ID);
         verify(breadcrumbBuilder).getForumBreadcrumb(topic);
+    }
 
+    private void editTopicAssertions(ModelAndView mav) {
         //check result
         assertViewName(mav, "editTopic");
 

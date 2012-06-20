@@ -132,9 +132,11 @@ $(document).ready(function () {
 		var value = $(this).val();
 		if (!value.match(new RegExp(AddContact.selectedContactType.validationPattern))) {
 			$('#contact-error-status').text($labelValidationUsercontactNotMatch);
+			ErrorUtils.addErrorStyles('#contact');
 			AddContact.isValueValid = false;
 		} else {
 			$('#contact-error-status').text('');
+			ErrorUtils.removeErrorStyles('#contact');
 			AddContact.isValueValid = true;
 		}
 	});
@@ -174,10 +176,14 @@ $(document).ready(function () {
 			str += '<br/>';
 			
 			// text input
-			str += '<label for="contact_type">' + $labelContactValue + '</label>';
-            str += '<div><input type="text" name="contact" id="contact" placeholder="' + AddContact.selectedContactType.mask + '" />';
-			str += '<span class="reg_info">' + $labelContactValueInfo + '</span>';
-            str += '<span for="contact" id="contact-error-status" class="help-inline"/></div>';
+			str += '<div class="control-group">'
+			str += '	<label for="contact_type" class="control-label">' + $labelContactValue + '</label>';
+            str += '	<div class="controls">';
+            str += '		<input type="text" name="contact" id="contact" placeholder="' + AddContact.selectedContactType.mask + '" />';
+			str += '		<span class="reg_info">' + $labelContactValueInfo + '</span>';
+            str += '		<span for="contact" id="contact-error-status" class="help-inline"/>';
+            str += '	</div>';
+            str += '</div>'
 			str += '</ul>';
 
             $.prompt(str, {
@@ -211,6 +217,7 @@ $(document).ready(function () {
                             },
 							error : function(data) {
 								$('#contact-error-status').text($labelValidationUsercontactNotMatch);
+								ErrorUtils.addErrorStyles('#contact');
                         		AddContact.isValueValid = false;
 							}
                         });

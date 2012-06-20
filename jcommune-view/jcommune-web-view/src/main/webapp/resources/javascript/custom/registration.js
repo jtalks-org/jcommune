@@ -48,16 +48,19 @@ $(function () {
             //handling query answer, create registration form
             success:function (data) {
                 var form_elements = [];
-                $.each($(data).find("div.forum_row"), function (index, value) {
-                    if (firstView)$(value).find("span.error").remove();
+                $.each($(data).find("div.control-group").wrap('<p>').parent(), function (index, value) {
+                    if (firstView) {
+						$(value).find("span.help-inline").remove();
+					}
+					ErrorUtils.addErrorStyles($(value).find('span.help-inline'));
                     form_elements[index] = $(value).html();
                 });
-                var content = '<ul><div>' + $(data).find("span.forum_header_answer").html() +
+                var content = '<ul><div>' + $(data).find("legend").html() +
                     '</div><br/><span class="empty_cell"></span>' + form_elements[0] +
                     form_elements[1] + form_elements[2] + form_elements[3] + form_elements[4] +
                     '</ul>';
                 //Check the query answer and displays prompt
-                if ($(data).find("span.forum_header_answer").html() != null) {
+                if ($(data).find("legend").html() != null) {
                     firstView = false;
                     $.prompt(content,
                         {buttons:{OK:true}, focus:0, submit:signupPopup});

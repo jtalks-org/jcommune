@@ -87,9 +87,18 @@
                              back="${pageContext.request.contextPath}/topics/${topicId}"/>
             <div class="control-group">
                 <br/>
-                <form:checkbox id="notify" path="notifyOnAnswers" name="notify" checked="checked"
-                               style="margin-right: 10px;"/><spring:message
-                    code="label.answer.notify_message"/>
+                <c:choose>
+                    <c:when test="${topicDto.notifyOnAnswers}">
+                        <form:checkbox id="notify" path="notifyOnAnswers" name="notify" checked="checked"
+                                       style="margin-right: 10px;"/><spring:message
+                            code="label.answer.notify_message"/>
+                    </c:when>
+                    <c:otherwise>
+                        <form:checkbox id="notify" path="notifyOnAnswers" name="notify"
+                                       style="margin-right: 10px;"/><spring:message
+                            code="label.answer.notify_message"/>
+                    </c:otherwise>
+                </c:choose>
             </div>
 
         </form:form>
