@@ -24,8 +24,7 @@ import org.springframework.web.util.HtmlUtils;
  */
 public class Signature {
 
-    public static final String RENDERING_TEMPLATE =
-            "<div class=\"signature\">-------------------------<br><span>%s</span></div>";
+    public static final String RENDERING_TEMPLATE = "<hr/><span class='signature'>%s</span>";
     private String content;
     private static final String HYPERLINK_REGEX = "([^\\s]*)(https?|ftp|file)(://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|])";
     private static final String HYPERLINK_TEMPLATE = "<a href=\"" + "$2$3" + "\">" + "$1$2$3" + "</a>";
