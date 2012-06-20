@@ -62,7 +62,7 @@
                         <tr>
                             <td class="status-col">
                                 <c:set var="hasNewPosts" value="false"/>
-                                <sec:authorize access="hasAnyRole('ROLE_ADMIN,ROLE_USER')">
+                                <sec:authorize access="hasAnyRole('ROLE_USER,ROLE_ADMIN')">
                                     <c:if test="${topic.hasUpdates}">
                                         <c:set var="hasNewPosts" value="true"/>
                                     </c:if>

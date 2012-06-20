@@ -45,7 +45,7 @@
           <c:out value="${topic.title}"/>
         </h3>
         <div id="right-block">
-        <sec:authorize access="hasAnyRole('ROLE_ADMIN,ROLE_USER')">
+        <sec:authorize access="hasAnyRole('ROLE_USER,ROLE_ADMIN')">
             <span id="subscribe">
                 <i class="icon-star"></i>
                 <c:choose>
@@ -77,7 +77,7 @@
       <!-- Upper pagination -->
       <div class="row-fluid upper-pagination forum-pagination-container">
         <div class="span3">
-            <sec:authorize access="hasAnyRole('ROLE_ADMIN,ROLE_USER')">
+            <sec:authorize access="hasAnyRole('ROLE_USER,ROLE_ADMIN')">
                 <a id="new-topic-btn" class="btn btn-primary" 
                     href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}" 
                     title="<spring:message code='label.tips.create_new_post'/>">
@@ -198,7 +198,7 @@
                             href="${pageContext.request.contextPath}/posts/${post.id}">
                              <i class="icon-link"></i>
                          </a>
-                         <sec:authorize access="hasAnyRole('ROLE_ADMIN,ROLE_USER')">
+                         <sec:authorize access="hasAnyRole('ROLE_USER,ROLE_ADMIN')">
                              <a class="btn btn-mini" href='javascript:quote(${post.id});' 
                                  title="<spring:message code='label.tips.quote_post'/>">
                                  <i class="icon-quote"></i><spring:message code="label.quotation"/>
@@ -247,7 +247,7 @@
                             <spring:message code="label.topic.message_count"/>
                             <c:out value="${post.userCreated.postCount}"/>
                         </div>
-                        <sec:authorize access="hasAnyRole('ROLE_ADMIN,ROLE_USER')">
+                        <sec:authorize access="hasAnyRole('ROLE_USER,ROLE_ADMIN')">
                             <sec:authentication property="principal.id" var="userId"/>
                             <c:if test='${userId != post.userCreated.id}'>
                                 <div>
@@ -288,7 +288,7 @@
 
 <div class="row-fluid forum-pagination-container">
     <div class="span3">
-        <sec:authorize access="hasAnyRole('ROLE_ADMIN,ROLE_USER')">
+        <sec:authorize access="hasAnyRole('ROLE_USER,ROLE_ADMIN')">
             <a id="new-topic-btn" class="btn btn-primary" 
                     href="${pageContext.request.contextPath}/posts/new?topicId=${topicId}" 
                     title="<spring:message code='label.tips.create_new_post'/>">

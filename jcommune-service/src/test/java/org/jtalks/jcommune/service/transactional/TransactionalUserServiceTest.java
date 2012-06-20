@@ -146,6 +146,7 @@ public class TransactionalUserServiceTest {
         verify(userDao).saveOrUpdate(user);
         verify(groupDao).update(group);
         verify(aclBuilder).grant(ProfilePermission.EDIT_PROFILE);
+        verify(aclBuilder).grant(ProfilePermission.SEND_PRIVATE_MESSAGES);
     }
 
 

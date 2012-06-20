@@ -38,10 +38,7 @@
             <div class="user-profile-header" >
                 <span class="pull-left thumbnail">
                     <div class="wraptocenter">
-                        <span></span>
-                        <c:if test="${user.avatar != null}">
-                            <img src="${pageContext.request.contextPath}/${user.encodedUsername}/avatar" alt="" />
-                        </c:if>
+                        <img src="${pageContext.request.contextPath}/users/${user.id}/avatar" alt="" />
                     </div>
                 </span>
                 <h2 class="pull-right user-profile-username">
@@ -54,14 +51,14 @@
                     <c:if test="${user.username != auth}">
                         <div class="user-profile-buttons-send">
                             <a class="btn btn-mini btn-info" 
-                                href="${pageContext.request.contextPath}/pm/new/${user.encodedUsername}" >
+                                href="${pageContext.request.contextPath}/pm/new/${user.id}" >
                                 <spring:message code="label.pm.send"/>
                             </a>
                         </div>
                     </c:if>
                     
                     <a class="btn btn-mini pull-right user-profile-buttons-posts"
-                        href="${pageContext.request.contextPath}/users/${user.encodedUsername}/postList">
+                        href="${pageContext.request.contextPath}/users/${user.id}/postList">
                         <spring:message code="label.postList"/>
                     </a>           
             </div>

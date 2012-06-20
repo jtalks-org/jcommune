@@ -25,7 +25,7 @@
 </head>
 <body>
 <c:set var="authenticated" value="${false}"/>
-<sec:authorize access="hasAnyRole('ROLE_ADMIN,ROLE_USER')">
+<sec:authorize access="hasAnyRole('ROLE_USER,ROLE_ADMIN')">
     <c:set var="authenticated" value="${true}"/>
 </sec:authorize>
 
@@ -33,7 +33,7 @@
 <div class="container">
     <div class="row-fluid upper-pagination forum-pagination-container">
         <div class="span3">
-            <h3><spring:message code="label.postListOfUser"/> ${user.username}</h3>
+            <h3><spring:message code="label.postListOfUser"/><c:out value="${user.username}"/></h3>
         </div>
        
         <div class="span9">
@@ -105,7 +105,7 @@
                             </div>
                             <hr/>
                             <div>                                    
-                                <jtalks:bb2html bbCode="${post.postContent}"/></span>
+                                <jtalks:bb2html bbCode="${post.postContent}"/>
                                 <br/><br/><br/>
                             </div>
                             <c:if test="${post.modificationDate!=null}">
@@ -164,7 +164,7 @@
     <!-- END OF Pagination -->
     
     <c:if test="${authenticated==true}">
-        <a href="${pageContext.request.contextPath}/users/${user.encodedUsername}" class="back-btn">
+        <a href="${pageContext.request.contextPath}/users/${user.id}" class="back-btn">
             <i class="icon-arrow-left"></i>
             <spring:message code="label.back"/>
         </a>
