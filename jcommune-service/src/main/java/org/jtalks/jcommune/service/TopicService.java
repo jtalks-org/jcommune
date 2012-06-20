@@ -38,7 +38,7 @@ public interface TopicService extends EntityService<Topic> {
      *
      * @param topicId    target topic primary id.
      * @param answerBody the text of the answer
-     * @param branchId  target branch primary id.
+     * @param branchId   target branch primary id.
      * @return created {@link Post}
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when topic not found
@@ -49,14 +49,15 @@ public interface TopicService extends EntityService<Topic> {
      * Add new topic with given title and body.
      * Author is current user.
      *
-     * @param topicName name of topic
-     * @param bodyText  body of topic
-     * @param branchId  branch containing topic
+     * @param topicName       name of topic
+     * @param bodyText        body of topic
+     * @param branchId        branch containing topic
+     * @param notifyOnAnswers user notification on answers flag
      * @return created topic
      * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
      *          when branch not found
      */
-    Topic createTopic(String topicName, String bodyText, long branchId) throws NotFoundException;
+    Topic createTopic(String topicName, String bodyText, long branchId, boolean notifyOnAnswers) throws NotFoundException;
 
     /**
      * @return list of {@code Topic}  objectsupdated since last 24 hours.
@@ -90,15 +91,16 @@ public interface TopicService extends EntityService<Topic> {
      * @param topicWeight  priority for sticked topic
      * @param sticked      flag for sticking a topic
      * @param announcement flag, which set topic as announcement
+     * @param notifyOnAnswers user notification on answers flag
      * @throws NotFoundException when topic not found
      */
     void updateTopic(long topicId, String topicName, String bodyText, int topicWeight,
-                     boolean sticked, boolean announcement) throws NotFoundException;
+                     boolean sticked, boolean announcement, boolean notifyOnAnswers) throws NotFoundException;
 
     /**
      * Delete topic by id.
      *
-     * @param topicId topic id
+     * @param topicId  topic id
      * @param branchId branch Id
      * @return branch from which topic deleted
      * @throws NotFoundException when topic not found

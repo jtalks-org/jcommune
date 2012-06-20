@@ -65,8 +65,8 @@ $(function () {
  */
 function sendLoginPost() {
     remember_me = $('input[name=_spring_security_remember_me]').is(':checked');
-    username = $('#j_username').val();
-    var query = "j_username=" + username + "&" + "j_password=" + $('#j_password').val();
+    username = encodeURIComponent($('#j_username').val());
+    var query = "j_username=" + username + "&" + "j_password=" + encodeURIComponent($('#j_password').val());
     if (remember_me) {
         query =  query + "&_spring_security_remember_me=on";
     }
@@ -101,8 +101,8 @@ function sendLoginPost() {
  */
 function formatFormElements(data){
      var form_elements = [];
-            $.each($(data).find("div.control-group"), function (index, value) {
-                $(value).find("span.error").prepend('<br>');
+            $.each($(data).find("div.control-group").wrap('<p>').parent(), function (index, value) {
+				ErrorUtils.addErrorStyles($(value).find('span.help-inline'));
                 form_elements[index] = $(value).html();
             });
     return form_elements;

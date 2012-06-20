@@ -27,75 +27,67 @@
 </head>
 
 <body>
-<div class="wrap registration_page">
     <jsp:include page="../template/topLine.jsp"/>
-    <jsp:include page="../template/logo.jsp"/>
-    <div class="all_forums">
-        <form:form id="form" name="form" action='${pageContext.request.contextPath}/user/new'
-                   modelAttribute="newUser" method="POST">
-            <div class="forum_header_table">
-                <div class="forum_header">
-                    <span class="forum_header_answer"><spring:message code="label.fillmessage"/></span>
-                    <span class="empty_cell"></span>
-                </div>
-            </div>
-            <div class="forum_table" id="stylized">
-
-                <div class="forum_row">
-                    <form:label path="username"> <spring:message code="label.username"/></form:label>
-                    <div>
+ 
+<div class="container form-login-related">
+    <form:form id="form" name="form" action='${pageContext.request.contextPath}/user/new'
+            modelAttribute="newUser" method="POST" class='form-vertical'>
+        <fieldset>
+            <legend><spring:message code="label.fillmessage"/></legend>
+          
+            <div class="control-group">
+                    <form:label path="username" class='control-label'> <spring:message code="label.username"/></form:label>
+                    <div class="controls">
                             <form:input path="username" class="reg_input" type="text"/></br>
-                        <form:errors path="username" cssClass="error"/>
+                        <form:errors path="username" cssClass="help-inline"/>
                     </div>
                     <span class="reg_info"><spring:message code="label.tip.username"/></span>
-                </div>
-                <div class="forum_row">
-                    <form:label path="email"><spring:message code="label.email"/></form:label>
-                    <div>
+            </div>
+            <div class="control-group">
+                    <form:label path="email" class='control-label'><spring:message code="label.email"/></form:label>
+                    <div class="controls">
                             <form:input path="email" class="reg_input" type="text"/></br>
-                        <form:errors path="email" cssClass="error"/>
+                        <form:errors path="email" cssClass="help-inline"/>
                     </div>
                     <span class="reg_info"><spring:message code="label.tip.email"/></span>
-                </div>
-                <div class="forum_row">
-                    <form:label path="password"><spring:message code="label.password"/></form:label>
+            </div>
+            <div class="control-group">
+                    <form:label path="password" class='control-label'><spring:message code="label.password"/></form:label>
 
-                    <div>
+                    <div class="controls">
                             <form:input path="password" class="reg_input" type="password"/></br>
-                        <form:errors path="password" cssClass="error"/>
+                        <form:errors path="password" cssClass="help-inline"/>
                     </div>
                     <span class="reg_info"><spring:message code="label.tip.password"/></span>
-                </div>
-                <div class="forum_row">
-                    <form:label path="passwordConfirm"><spring:message code="label.confirmation"/></form:label>
+            </div>
+            <div class="control-group">
+                    <form:label path="passwordConfirm" class='control-label'><spring:message code="label.confirmation"/></form:label>
 
-                    <div>
+                    <div class="controls">
                             <form:input path="passwordConfirm" class="reg_input" type="password"/></br>
-                        <form:errors path="passwordConfirm" cssClass="error"/>
+                        <form:errors path="passwordConfirm" cssClass="help-inline"/>
                     </div>
                     <span class="reg_info"><spring:message code="label.tip.confirmation"/></span>
-                </div>
-                <div class="forum_row">
-                    <form:label path="captcha"><spring:message code="label.captcha"/></form:label>
+            </div>
+            <div class="control-group">
+                    <form:label path="captcha" class='control-label'><spring:message code="label.captcha"/></form:label>
 
-                    <div>
+                    <div class="controls">
                         <img id="captcha_img" src='${pageContext.request.contextPath}/captcha/image' class="captcha"/>
                         <img id="captcha_refresh"
                              src='${pageContext.request.contextPath}/resources/images/captcha-refresh.gif'/>
-                            <form:input path="captcha" class="captcha_input" type="text" id="captcha"/></br>
-                        <form:errors path="captcha" cssClass="error"/>
+                            <form:input path="captcha" class="captcha_input" type="text" id="captcha"/><br/>
+                        <form:errors path="captcha" cssClass="help-inline"/>
                     </div>
                     <span class="reg_info"><spring:message code="label.tip.captcha"/></span>
-                </div>
             </div>
-            <div class="form_controls">
-                <button type="submit" class="button">
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
                     <spring:message code="label.signup"/>
                 </button>
             </div>
-        </form:form>
-    </div>
-    <div class="footer_buffer"></div>
+        </fieldset>
+    </form:form>
 </div>
 </body>
 </html>

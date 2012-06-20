@@ -36,7 +36,9 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import static org.mockito.Mockito.times;
@@ -67,6 +69,11 @@ public class TransactionalTopicServiceTest {
     private static final String USERNAME = "username";
     private JCUser user;
     final String ANSWER_BODY = "Test Answer Body";
+    private final String NEW_TOPIC_TITLE = "new title";
+    private final String NEW_POST_CONTENT = "new body";
+    private final int NEW_WEIGHT = 0;
+    private final boolean NEW_STICKED = false;
+    private final boolean NEW_ANNOUNCEMENT = false;
 
     private TopicService topicService;
 
@@ -90,7 +97,7 @@ public class TransactionalTopicServiceTest {
         initMocks(this);
         aclBuilder = mockAclBuilder();
         topicService = new TransactionalTopicService(topicDao, securityService,
-                branchService, branchDao, notificationService);
+                branchService, branchDao, notificationService,subscriptionService);
         user = new JCUser(USERNAME, "email@mail.com", "password");
     }
 
@@ -142,7 +149,7 @@ public class TransactionalTopicServiceTest {
         Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
         createTopicStubs(branch);
 
-        Topic createdTopic = topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, BRANCH_ID);
+        Topic createdTopic = topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, BRANCH_ID,false);
         Post createdPost = createdTopic.getFirstPost();
 
         createTopicAssertions(branch, createdTopic, createdPost);
@@ -154,7 +161,7 @@ public class TransactionalTopicServiceTest {
         Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
         createTopicStubs(branch);
 
-        Topic createdTopic = topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, BRANCH_ID);
+        Topic createdTopic = topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, BRANCH_ID,false);
         Post createdPost = createdTopic.getFirstPost();
 
         createTopicAssertions(branch, createdTopic, createdPost);
@@ -236,34 +243,95 @@ public class TransactionalTopicServiceTest {
     }
 
     @Test
-    void testUpdateTopic() throws NotFoundException {
-        String newTitle = "new title";
-        String newBody = "new body";
-        int newWeight = 0;
-        boolean newSticked = false;
-        boolean newAnnouncement = false;
+    void testUpdateTopicWithSubscribe() throws NotFoundException {
+        Topic topic = createTopic();
+        Post post = createPost();
+        topic.addPost(post);
+
+        updateTopicStubs(topic);
+
+        topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_WEIGHT, NEW_STICKED,
+                NEW_ANNOUNCEMENT,false);
+
+
+        updateTopicVerifications(topic);
+        verify(subscriptionService).toggleTopicSubscription(topic);
+    }
+
+    @Test
+    void testUpdateTopicWithRepeatedSubscribe() throws NotFoundException {
+        Topic topic = createTopic();
+        Post post = createPost();
+        topic.addPost(post);
+        subscribeUserOnTopic(user, topic);
+        updateTopicStubs(topic);
+
+        topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_WEIGHT, NEW_STICKED,
+                NEW_ANNOUNCEMENT,false);
+
+        updateTopicVerifications(topic);
+    }
+
+    @Test
+    void testUpdateTopicWithUnsubscribe() throws NotFoundException {
+        Topic topic = createTopic();
+        Post post = createPost();
+        topic.addPost(post);
+        subscribeUserOnTopic(user, topic);
+        updateTopicStubs(topic);
+
+        topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_WEIGHT, NEW_STICKED,
+                NEW_ANNOUNCEMENT,false);
+
+        updateTopicVerifications(topic);
+        verify(subscriptionService).toggleTopicSubscription(topic);
+    }
+
+    @Test
+    void testUpdateTopicWithRepeatedUnsubscribe() throws NotFoundException {
+        Topic topic = createTopic();
+        Post post = createPost();
+        topic.addPost(post);
+
+        updateTopicStubs(topic);
+
+        topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_WEIGHT, NEW_STICKED,
+                NEW_ANNOUNCEMENT,false);
+
+        updateTopicVerifications(topic);
+    }
+
+    private Topic createTopic() {
         Topic topic = new Topic(user, "title");
         topic.setId(TOPIC_ID);
         topic.setTitle("title");
+        return topic;
+    }
+
+    private Post createPost() {
         Post post = new Post(user, "content");
         post.setId(POST_ID);
-        topic.addPost(post);
+        return post;
+    }
 
+    private void subscribeUserOnTopic(JCUser user, Topic topic) {
+        Set<JCUser> subscribers = new HashSet<JCUser>();
+        subscribers.add(user);
+        topic.setSubscribers(subscribers);
+    }
+
+    private void updateTopicStubs(Topic topic) {
+        when(securityService.getCurrentUser()).thenReturn(user);
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(topic);
-
-        topicService.updateTopic(TOPIC_ID, newTitle, newBody, newWeight, newSticked, newAnnouncement);
-
-        assertEquals(topic.getTitle(), newTitle);
-        assertEquals(post.getPostContent(), newBody);
-        assertEquals(topic.getTopicWeight(), newWeight);
-        assertEquals(topic.isSticked(), newSticked);
-        assertEquals(topic.isAnnouncement(), newAnnouncement);
-
+    }
+                
+    private void updateTopicVerifications(Topic topic) {
         verify(topicDao).isExist(TOPIC_ID);
         verify(topicDao).get(TOPIC_ID);
         verify(notificationService).topicChanged(topic);
     }
+
 
     @Test
     void testUpdateTopicSimple() throws NotFoundException {
@@ -304,7 +372,7 @@ public class TransactionalTopicServiceTest {
         boolean newAnnouncement = false;
         when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
-        topicService.updateTopic(TOPIC_ID, newTitle, newBody, newWeight, newSticked, newAnnouncement);
+        topicService.updateTopic(TOPIC_ID, newTitle, newBody, newWeight, newSticked, newAnnouncement,false);
     }
 
     @Test

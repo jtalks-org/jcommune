@@ -154,7 +154,8 @@ public class TopicController {
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branch));
         }
 
-        Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(), branchId);
+        Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(),
+                branchId,topicDto.isNotifyOnAnswers());
 
         if (topicDto.hasPoll()) {
             Poll poll = topicDto.preparePollFromTopicDto();
@@ -237,9 +238,14 @@ public class TopicController {
     public ModelAndView editTopicPage(@RequestParam(BRANCH_ID) Long branchId,
                                       @PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         Topic topic = topicService.get(topicId);
+        TopicDto topicDto = new TopicDto(topic);
+        JCUser currentUser = (JCUser) securityService.getCurrentUser();
+        if (topic.userSubscribed(currentUser)) {
+            topicDto.setNotifyOnAnswers(true);
+        }
 
         return new ModelAndView("editTopic")
-                .addObject("topicDto", new TopicDto(topic))
+                .addObject("topicDto", topicDto)
                 .addObject(BRANCH_ID, branchId)
                 .addObject(TOPIC_ID, topicId)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
@@ -267,7 +273,7 @@ public class TopicController {
         }
 
         topicService.updateTopic(topicDto.getId(), topicDto.getTopicName(), topicDto.getBodyText(),
-                topicDto.getTopicWeight(), topicDto.isSticked(), topicDto.isAnnouncement());
+                topicDto.getTopicWeight(), topicDto.isSticked(), topicDto.isAnnouncement(),topicDto.isNotifyOnAnswers());
 
         return new ModelAndView("redirect:/topics/" + topicId);
     }

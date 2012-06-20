@@ -52,6 +52,7 @@ public class TopicDto {
 
     private boolean sticked;
     private boolean announcement;
+    private boolean notifyOnAnswers;
 
     private long id;
 
@@ -66,7 +67,6 @@ public class TopicDto {
 
     private Poll poll;
 
-    private boolean notifyOnAnswers;
 
     /**
      * Plain object for topic creation

@@ -61,7 +61,7 @@ public class NotificationService {
      * @param topic topic changed
      */
     public void topicChanged(Topic topic) {
-        if (isEmailNotificationEnabled()) {
+        if (notificationsEnabledProperty.booleanValue()) {
             JCUser current = (JCUser) securityService.getCurrentUser();
             Set<JCUser> subscribers = topic.getSubscribers();
             subscribers.remove(current);
@@ -79,7 +79,7 @@ public class NotificationService {
      * @param branch branch changed
      */
     public void branchChanged(Branch branch) {
-        if (isEmailNotificationEnabled()) {
+        if (notificationsEnabledProperty.booleanValue()) {
             JCUser current = (JCUser) securityService.getCurrentUser();
             Set<JCUser> subscribers = branch.getSubscribers();
             subscribers.remove(current);
@@ -98,7 +98,7 @@ public class NotificationService {
      * @param topicId topic id
      */
     public void topicMoved(Topic topic, long topicId) {
-        if (isEmailNotificationEnabled()) {
+        if (notificationsEnabledProperty.booleanValue()) {
             JCUser currentUser = (JCUser) securityService.getCurrentUser();
             JCUser topicStarter = topic.getTopicStarter();
             Set<JCUser> subscribers = topic.getBranch().getSubscribers();
@@ -109,16 +109,6 @@ public class NotificationService {
                 mailService.sendTopicMovedMail(subscriber, topicId);
             }
         }
-    }
-    
-    /**
-     * Checks the disabling of notification to subscribers.
-     * 
-     * @return true if the email notifications are enabled, otherwise false
-     */
-    private boolean isEmailNotificationEnabled() {
-        String value = notificationsEnabledProperty.getValue();
-        return Boolean.valueOf(value);
     }
 }
 
