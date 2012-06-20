@@ -97,7 +97,7 @@ public class TransactionalTopicServiceTest {
         initMocks(this);
         aclBuilder = mockAclBuilder();
         topicService = new TransactionalTopicService(topicDao, securityService,
-                branchService, branchDao, notificationService,subscriptionService);
+                branchService, branchDao, notificationService, subscriptionService);
         user = new JCUser(USERNAME, "email@mail.com", "password");
     }
 
@@ -149,7 +149,7 @@ public class TransactionalTopicServiceTest {
         Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
         createTopicStubs(branch);
 
-        Topic createdTopic = topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, BRANCH_ID,false);
+        Topic createdTopic = topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, BRANCH_ID, false);
         Post createdPost = createdTopic.getFirstPost();
 
         createTopicAssertions(branch, createdTopic, createdPost);
@@ -161,7 +161,7 @@ public class TransactionalTopicServiceTest {
         Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
         createTopicStubs(branch);
 
-        Topic createdTopic = topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, BRANCH_ID,false);
+        Topic createdTopic = topicService.createTopic(TOPIC_TITLE, ANSWER_BODY, BRANCH_ID, false);
         Post createdPost = createdTopic.getFirstPost();
 
         createTopicAssertions(branch, createdTopic, createdPost);
@@ -186,7 +186,7 @@ public class TransactionalTopicServiceTest {
     private void createTopicVerifications(Branch branch, Topic createdTopic, Post createdPost)
             throws NotFoundException {
         verify(branchDao).update(branch);
-        verify(aclBuilder,times(2)).grant(GeneralPermission.WRITE);
+        verify(aclBuilder, times(2)).grant(GeneralPermission.WRITE);
         verify(notificationService).branchChanged(branch);
     }
 
@@ -251,7 +251,7 @@ public class TransactionalTopicServiceTest {
         updateTopicStubs(topic);
 
         topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_WEIGHT, NEW_STICKED,
-                NEW_ANNOUNCEMENT,false);
+                NEW_ANNOUNCEMENT, true);
 
 
         updateTopicVerifications(topic);
@@ -267,7 +267,7 @@ public class TransactionalTopicServiceTest {
         updateTopicStubs(topic);
 
         topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_WEIGHT, NEW_STICKED,
-                NEW_ANNOUNCEMENT,false);
+                NEW_ANNOUNCEMENT, false);
 
         updateTopicVerifications(topic);
     }
@@ -281,7 +281,7 @@ public class TransactionalTopicServiceTest {
         updateTopicStubs(topic);
 
         topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_WEIGHT, NEW_STICKED,
-                NEW_ANNOUNCEMENT,false);
+                NEW_ANNOUNCEMENT, false);
 
         updateTopicVerifications(topic);
         verify(subscriptionService).toggleTopicSubscription(topic);
@@ -296,7 +296,7 @@ public class TransactionalTopicServiceTest {
         updateTopicStubs(topic);
 
         topicService.updateTopic(TOPIC_ID, NEW_TOPIC_TITLE, NEW_POST_CONTENT, NEW_WEIGHT, NEW_STICKED,
-                NEW_ANNOUNCEMENT,false);
+                NEW_ANNOUNCEMENT, false);
 
         updateTopicVerifications(topic);
     }
@@ -325,7 +325,7 @@ public class TransactionalTopicServiceTest {
         when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
         when(topicDao.get(TOPIC_ID)).thenReturn(topic);
     }
-                
+
     private void updateTopicVerifications(Topic topic) {
         verify(topicDao).isExist(TOPIC_ID);
         verify(topicDao).get(TOPIC_ID);
@@ -372,7 +372,7 @@ public class TransactionalTopicServiceTest {
         boolean newAnnouncement = false;
         when(topicDao.isExist(TOPIC_ID)).thenReturn(false);
 
-        topicService.updateTopic(TOPIC_ID, newTitle, newBody, newWeight, newSticked, newAnnouncement,false);
+        topicService.updateTopic(TOPIC_ID, newTitle, newBody, newWeight, newSticked, newAnnouncement, false);
     }
 
     @Test

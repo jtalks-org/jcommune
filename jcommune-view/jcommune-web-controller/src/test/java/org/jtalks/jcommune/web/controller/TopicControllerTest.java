@@ -170,13 +170,13 @@ public class TopicControllerTest {
         BindingResult result = mock(BindingResult.class);
 
         //set expectations
-        when(topicService.createTopic(TOPIC_THEME, TOPIC_CONTENT, BRANCH_ID)).thenReturn(topic);
+        when(topicService.createTopic(TOPIC_THEME, TOPIC_CONTENT, BRANCH_ID, false)).thenReturn(topic);
 
         //invoke the object under test
         ModelAndView mav = controller.createTopic(dto, result, BRANCH_ID);
 
         //check expectations
-        verify(topicService).createTopic(TOPIC_THEME, TOPIC_CONTENT, BRANCH_ID);
+        verify(topicService).createTopic(TOPIC_THEME, TOPIC_CONTENT, BRANCH_ID, false);
 
         //check result
         assertViewName(mav, "redirect:/topics/1");
@@ -300,7 +300,7 @@ public class TopicControllerTest {
         ModelAndView mav = controller.editTopic(dto, bindingResult, BRANCH_ID, TOPIC_ID);
 
         //check expectations
-        verify(topicService).updateTopic(TOPIC_ID, TOPIC_THEME, TOPIC_CONTENT, TOPIC_WEIGHT, STICKED, ANNOUNCEMENT);
+        verify(topicService).updateTopic(TOPIC_ID, TOPIC_THEME, TOPIC_CONTENT, TOPIC_WEIGHT, STICKED, ANNOUNCEMENT, false);
 
         //check result
         assertViewName(mav, "redirect:/topics/" + TOPIC_ID);
@@ -322,7 +322,7 @@ public class TopicControllerTest {
         assertEquals(topicId, TOPIC_ID);
 
         verify(topicService, never()).updateTopic(anyLong(), anyString(), anyString(),
-                anyInt(), anyBoolean(), anyBoolean());
+                anyInt(), anyBoolean(), anyBoolean(), anyBoolean());
     }
 
     @Test
