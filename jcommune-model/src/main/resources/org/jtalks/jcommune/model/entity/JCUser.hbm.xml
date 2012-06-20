@@ -60,6 +60,14 @@
                 <key column="USER_ID" foreign-key="FK_USER"/>
                 <one-to-many class="org.jtalks.jcommune.model.entity.UserContact"/>
             </set>
+
+            <bag name="groups" table="GROUP_USER_REF" inverse="true" lazy="true" fetch="select">
+                <cache usage="nonstrict-read-write"/>
+                <key column="USER_ID" not-null="true"/>
+                <many-to-many class="org.jtalks.common.model.entity.Group">
+                    <column name="GROUP_ID" not-null="true"/>
+                </many-to-many>
+            </bag>
         </joined-subclass>
     </class>
 

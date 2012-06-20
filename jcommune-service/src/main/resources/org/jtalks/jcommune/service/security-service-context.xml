@@ -125,6 +125,10 @@
         <constructor-arg ref="aclService"/>
     </bean>
 
+    <bean name="sidRetrievalStrategyImpl" class="org.jtalks.jcommune.service.security.SidRetrievalStrategyImpl">
+        <constructor-arg ref="jtalksSidFactory"/>
+    </bean>
+
     <!-- Password encoding -->
     <bean id="encryptionService" class="org.jtalks.jcommune.service.nontransactional.EncryptionService">
         <constructor-arg ref="md5PasswordEncoder"/>
