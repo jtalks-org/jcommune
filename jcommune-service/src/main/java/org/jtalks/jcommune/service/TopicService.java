@@ -19,9 +19,6 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 /**
  * This interface should have methods which give us more abilities in manipulating Topic persistent entity.
@@ -62,16 +59,18 @@ public interface TopicService extends EntityService<Topic> {
             throws NotFoundException;
 
     /**
+     * @param page TODO
      * @return list of {@code Topic}  objectsupdated since last 24 hours.
      */
-    List<Topic> getRecentTopics();
+    Page<Topic> getRecentTopics(int page);
 
     /**
      * Get unanswered topics(topics which has only 1 post added during topic creation).
+     * @param page TODO
      *
      * @return list of {@code Topic} objects without answers
      */
-    List<Topic> getUnansweredTopics();
+    Page<Topic> getUnansweredTopics(int page);
 
     /**
      * Update current topic with given title and body.
@@ -120,9 +119,9 @@ public interface TopicService extends EntityService<Topic> {
     /**
      * 
      * @param branch
-     * @param pageable
+     * @param page
      * @param pagingEnabled
      * @return
      */
-    Page<Topic> getTopics(Branch branch, Pageable pageable, boolean pagingEnabled);
+    Page<Topic> getTopics(Branch branch, int page, boolean pagingEnabled);
 }

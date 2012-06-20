@@ -14,14 +14,12 @@
  */
 package org.jtalks.jcommune.model.dao;
 
-import java.util.List;
-
 import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.common.model.entity.Branch;
+import org.jtalks.jcommune.model.dto.JcommunePageable;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 /**
  * DAO for the {@link Topic} objects.
@@ -41,9 +39,8 @@ public interface TopicDao extends ChildRepository<Topic> {
      * Get all topics past last 24 hour.
      *
      * @param lastLogin user's last login date and time
-     * @return list of topics
      */
-    List<Topic> getTopicsUpdatedSince(DateTime lastLogin);
+    Page<Topic> getTopicsUpdatedSince(DateTime lastLogin, JcommunePageable pageRequest);
 
 
     /**
@@ -51,7 +48,7 @@ public interface TopicDao extends ChildRepository<Topic> {
      *
      * @return list of topics
      */
-    List<Topic> getUnansweredTopics();
+    Page<Topic> getUnansweredTopics(JcommunePageable pageRequest);
     
     /**
      * Find the last updated topic in the branch.
@@ -67,7 +64,7 @@ public interface TopicDao extends ChildRepository<Topic> {
      * @param pagingEnabled
      * @return
      */
-    Page<Topic> getTopics(Branch branch, Pageable pageable,  boolean pagingEnabled);
+    Page<Topic> getTopics(Branch branch, JcommunePageable pageRequest,  boolean pagingEnabled);
     
     /**
      * Get count of topics in the branch.

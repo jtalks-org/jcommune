@@ -27,10 +27,10 @@ import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.hibernate.AbstractHibernateChildRepository;
 import org.jtalks.common.model.entity.Branch;
 import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.dto.JcommunePageable;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 
 /**
  * Hibernate DAO implementation from the {@link Topic}.
@@ -48,11 +48,19 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      * {@inheritDoc}
      */
     @Override
-    public List<Topic> getTopicsUpdatedSince(DateTime timeStamp) {
-        return (List<Topic>) getSession().createQuery("FROM Topic WHERE modificationDate > :maxModDate " +
-                "ORDER BY modificationDate DESC")
+    public Page<Topic> getTopicsUpdatedSince(DateTime timeStamp, JcommunePageable pageRequest) {
+        Number totalCount = (Number)getSession()
+                .getNamedQuery("getCountResentTopics")
                 .setParameter("maxModDate", timeStamp)
+                .uniqueResult();
+        @SuppressWarnings("unchecked")
+        List<Topic> recentTopics = (List<Topic>) getSession()
+                .getNamedQuery("getResentTopics")
+                .setParameter("maxModDate", timeStamp)
+                .setFirstResult(pageRequest.getNumberOfFirstItem())
+                .setMaxResults(pageRequest.getPageSize())
                 .list();
+        return new PageImpl<Topic>(recentTopics, pageRequest, totalCount.intValue());
     }
 
 
@@ -60,10 +68,17 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      * {@inheritDoc}
      */
     @Override
-    public List<Topic> getUnansweredTopics() {
-        return (List<Topic>) getSession().createQuery("FROM Topic t WHERE t.posts.size=1 " +
-                "ORDER BY modificationDate DESC")
+    public Page<Topic> getUnansweredTopics(JcommunePageable pageRequest) {
+        Number totalCount = (Number) getSession()
+                .getNamedQuery("getCountUnansweredTopics")
+                .uniqueResult();
+        @SuppressWarnings("unchecked")
+        List<Topic> unansweredTopics = (List<Topic>) getSession()
+                .getNamedQuery("getUnansweredTopics")
+                .setFirstResult(pageRequest.getNumberOfFirstItem())
+                .setMaxResults(pageRequest.getPageSize())
                 .list();
+        return new PageImpl<Topic>(unansweredTopics, pageRequest, totalCount.intValue());
     }
 
     /**
@@ -93,18 +108,17 @@ public class TopicHibernateDao extends AbstractHibernateChildRepository<Topic> i
      * {@inheritDoc}
      */
     @Override
-    public Page<Topic> getTopics(Branch branch, Pageable pageable, boolean pagingEnabled) {
+    public Page<Topic> getTopics(Branch branch, JcommunePageable pageRequest, boolean pagingEnabled) {
         int totalCount = getCountTopicsInBranch(branch);
         Query query = getSession().getNamedQuery("getTopicsInBranch")
                 .setParameter("branch", branch);
         if (pagingEnabled) {
-            int firstResult = (pageable.getPageNumber() - 1) * pageable.getPageSize();
-            query = query.setFirstResult(firstResult)
-                    .setMaxResults(pageable.getPageSize());
+            query = query.setFirstResult(pageRequest.getNumberOfFirstItem())
+                    .setMaxResults(pageRequest.getPageSize());
         }
         @SuppressWarnings("unchecked")
         List<Topic> topics = (List<Topic>) query.list();
-        return new PageImpl<Topic>(topics, pageable, totalCount);
+        return new PageImpl<Topic>(topics, pageRequest, totalCount);
     }
     
     /**

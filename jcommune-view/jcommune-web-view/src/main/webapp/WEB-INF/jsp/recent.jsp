@@ -36,7 +36,7 @@
             <div class="span9">
                 <div class="pagination pull-right forum-pagination">
                     <ul>
-                        <jtalks:pagination uri="${branch.id}" page="${pagination}" pagingEnabled="${pagingEnabled}"/>
+                        <jtalks:pagination uri="${branch.id}" page="${topicsPage}" pagingEnabled="${pagingEnabled}"/>
                     </ul>
                 </div>
             </div>
@@ -46,7 +46,7 @@
     <!-- Topics table -->
     <table id="topics-table" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">     
         <c:choose>
-            <c:when test="${!(empty topics)}">
+            <c:when test="${!(empty list)}">
                 
                 <thead>
 			        <tr>
@@ -149,7 +149,7 @@
         <div class="span12">
             <div class="pagination pull-right forum-pagination">
                 <ul>
-                    <jtalks:pagination uri="" page="${pagination}" pagingEnabled="${pagingEnabled}" />
+                    <jtalks:pagination uri="" page="${topicsPage}" pagingEnabled="${pagingEnabled}" />
                 </ul>
             </div>
         </div>

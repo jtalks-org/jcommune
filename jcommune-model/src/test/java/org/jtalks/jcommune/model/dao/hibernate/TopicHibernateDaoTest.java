@@ -14,13 +14,27 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.model.dto.JcommunePageRequest;
+import org.jtalks.jcommune.model.dto.JcommunePageable;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Poll;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -28,13 +42,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
 
 /**
  * @author Kirill Afonin
@@ -118,20 +125,46 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
     @Test
     public void testGetTopicsUpdatedSince() {
-        createAndSaveTopicList(5);
+        int size = 5;
+        createAndSaveTopicList(size);
+        JcommunePageable pageRequest = new JcommunePageRequest(1, size);
         DateTime lastLogin = new DateTime().minusDays(1);
 
-        List<Topic> result = dao.getTopicsUpdatedSince(lastLogin);
+        Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest);
 
-        assertEquals(result.size(), 5);
+        assertEquals(page.getContent().size(), size);
     }
+    
+    @Test
+    public void testGetUpdateTopicsUpdatedSinceWithPaging() {
+        int listSize = 10;
+        int pageSize = 5;
+        int lastPage = listSize / pageSize;
+        createAndSaveTopicList(listSize);
+        JcommunePageable pageRequest = new JcommunePageRequest(lastPage, pageSize);
+        DateTime lastLogin = new DateTime().minusDays(1);
 
+        Page<Topic> page = dao.getTopicsUpdatedSince(lastLogin, pageRequest);
+
+        assertEquals(page.getContent().size(), pageSize);
+        assertEquals(page.getSize(), pageSize);
+        assertEquals(page.getTotalElements(), listSize);
+    }
 
     @Test
     public void testGetUnansweredTopics() {
         createAndSaveTopicsWithUnansweredTopics();
-        List<Topic> result = dao.getUnansweredTopics();
-        assertEquals(result.size(), 2);
+        JcommunePageable pageRequest = new JcommunePageRequest(1, 2);
+        Page<Topic> result = dao.getUnansweredTopics(pageRequest);
+        assertEquals(result.getContent().size(), 2);
+    }
+    
+    @Test
+    public void testGetUnansweredTopicsWithPaging() {
+        createAndSaveTopicsWithUnansweredTopics();
+        JcommunePageable pageRequest = new JcommunePageRequest(2, 1);
+        Page<Topic> result = dao.getUnansweredTopics(pageRequest);
+        assertEquals(result.getContent().size(), 1);
     }
 
     private void createAndSaveTopicsWithUnansweredTopics() {

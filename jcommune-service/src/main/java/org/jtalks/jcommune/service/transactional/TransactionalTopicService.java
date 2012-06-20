@@ -14,9 +14,15 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import static org.jtalks.jcommune.service.security.SecurityConstants.HAS_ADMIN_ROLE;
+import static org.jtalks.jcommune.service.security.SecurityConstants.HAS_USER_OR_ADMIN_ROLE;
+import static org.jtalks.jcommune.service.security.SecurityConstants.ROLE_ADMIN;
+
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.dto.JcommunePageRequest;
+import org.jtalks.jcommune.model.dto.JcommunePageable;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
@@ -26,18 +32,12 @@ import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
+import org.jtalks.jcommune.service.nontransactional.PaginationService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
-
-import java.util.List;
-
-import static org.jtalks.jcommune.service.security.SecurityConstants.HAS_ADMIN_ROLE;
-import static org.jtalks.jcommune.service.security.SecurityConstants.HAS_USER_OR_ADMIN_ROLE;
-import static org.jtalks.jcommune.service.security.SecurityConstants.ROLE_ADMIN;
 
 /**
  * Topic service class. This class contains method needed to manipulate with Topic persistent entity.
@@ -59,6 +59,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
     private BranchDao branchDao;
     private NotificationService notificationService;
     private SubscriptionService subscriptionService;
+    private PaginationService paginationService;
 
     /**
      * Create an instance of User entity based service
@@ -69,17 +70,20 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * @param branchDao           used for checking branch existence
      * @param notificationService to send email nofications on topic updates to subscribed users
      * @param subscriptionService for subscribing user on topic if notification enabled
+     * @param paginationService auxiliary services for pagination
      */
     public TransactionalTopicService(TopicDao dao, SecurityService securityService,
                                      BranchService branchService, BranchDao branchDao,
                                      NotificationService notificationService,
-                                     SubscriptionService subscriptionService) {
+                                     SubscriptionService subscriptionService,
+                                     PaginationService paginationService) {
         super(dao);
         this.securityService = securityService;
         this.branchService = branchService;
         this.branchDao = branchDao;
         this.notificationService = notificationService;
         this.subscriptionService = subscriptionService;
+        this.paginationService = paginationService;
     }
 
     /**
@@ -139,17 +143,19 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    public List<Topic> getRecentTopics() {
+    public Page<Topic> getRecentTopics(int page) {
+        JcommunePageable pageRequest = new JcommunePageRequest(page, paginationService.getPageSizeForCurrentUser());
         DateTime date24HoursAgo = new DateTime().minusDays(1);
-        return this.getDao().getTopicsUpdatedSince(date24HoursAgo);
+        return this.getDao().getTopicsUpdatedSince(date24HoursAgo, pageRequest);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<Topic> getUnansweredTopics() {
-        return this.getDao().getUnansweredTopics();
+    public Page<Topic> getUnansweredTopics(int page) {
+        JcommunePageable pageRequest = new JcommunePageRequest(page, paginationService.getPageSizeForCurrentUser());
+        return this.getDao().getUnansweredTopics(pageRequest);
     }
 
 
@@ -258,7 +264,8 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    public Page<Topic> getTopics(Branch branch, Pageable pageable, boolean pagingEnabled) {
-        return getDao().getTopics(branch, pageable, pagingEnabled);
+    public Page<Topic> getTopics(Branch branch, int page, boolean pagingEnabled) {
+        JcommunePageable pageRequest = new JcommunePageRequest(page, paginationService.getPageSizeForCurrentUser());
+        return getDao().getTopics(branch, pageRequest, pagingEnabled);
     }
 }
