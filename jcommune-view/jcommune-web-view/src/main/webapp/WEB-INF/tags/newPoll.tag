@@ -24,10 +24,10 @@
 <%@ attribute name="multipleValue" required="true" rtexprvalue="true" type="java.lang.String" %>
 <%@ attribute name="endingDateNameValue" required="true" rtexprvalue="true" type="java.lang.String" %>
 
-<div class='well' >
+<div class='well'>
     <div id="editPoll">
         <legend><spring:message code="label.poll.header"/></legend>
-        
+
         <div class='control-group'>
             <spring:message code='label.poll.title' var='pollTitlePlaceholder'/>
             <form:input path="${titleNameValue}" id="${titleNameValue}" type="text" name="${titleNameValue}"
@@ -35,24 +35,24 @@
             <br>
             <form:errors path="${titleNameValue}" cssClass="help-inline"/>
         </div>
-        
+
         <div class='control-group'>
             <spring:message code='label.poll.options.title' var='optionsPlaceholder'/>
             <form:textarea path="${pollOptionsNameValue}" rows="8" class="post" placeholder="${optionsPlaceholder}"/>
             <br>
             <form:errors path="${pollOptionsNameValue}" cssClass="help-inline"/>
         </div>
-        
-        <div class='control-group'>                       
-            <form:checkbox path="${multipleName}" id="multipleChecker"  value="${multipleValue}"/>
+
+        <div class='control-group'>
+            <form:checkbox path="${multipleName}" id="multipleChecker" value="${multipleValue}"/>
             <spring:message code="label.poll.multiple.title"/>
         </div>
-        
+
         <div class='control-group'>
             <label class='control-label'>
                 <spring:message code="label.poll.date"/>
             </label>
-            
+
             <form:input path="${endingDateNameValue}" id="datepicker" type="text" readonly="true"/>
             <br>
             <form:errors path="${endingDateNameValue}" cssClass="help-inline"/>

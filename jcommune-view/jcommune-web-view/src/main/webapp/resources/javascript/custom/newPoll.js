@@ -19,9 +19,13 @@ $(document).ready(function () {
     editFormElement = document.getElementById("editPoll");
     previewFormElement = document.getElementById("previewPoll");
     multipleButtonElement = document.getElementById("multipleChecker");
-    $("#preview").click(function(){
-         SwitchPoll();
+    $("#preview").click(function () {
+        SwitchPoll();
     })
+
+    document.getElementById('datepicker').onclick = function () {
+        this.value = "";
+    }
 });
 
 /**
@@ -65,10 +69,10 @@ function prepareTitle(title, date) {
 
     var result = "<h3>" + title + " ";
     if (date != "") {
-		result += $labelPollTitleWithEnding.replace("{0}", date);
+        result += $labelPollTitleWithEnding.replace("{0}", date);
     }
-	
-	result += "</h3><br>";
+
+    result += "</h3><br>";
 
     return result;
 }
@@ -116,8 +120,8 @@ function stringItemsArrayToHtmlItems(items) {
         return result;
     }
 
-	var controlWrapperLeading = "<div class='control-group'>";
-	var controlWrapperTrailing = "</div>";
+    var controlWrapperLeading = "<div class='control-group'>";
+    var controlWrapperTrailing = "</div>";
     var radioInputBegin = "<input type='radio' name='radioGroup' value='";
     var checkboxInputBegin = "<input type='checkbox' name='radioGroup' value='";
     var inputEnd = "'/> ";
@@ -139,4 +143,3 @@ function stringItemsArrayToHtmlItems(items) {
 
     return result;
 }
-
