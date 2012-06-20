@@ -53,6 +53,7 @@
         <property name="exceptionMappings">
             <props>
                 <prop key="org.jtalks.jcommune.service.exceptions.NotFoundException">/errors/404</prop>
+                <prop key="org.springframework.security.access.AccessDeniedException">/errors/accessDenied</prop>
             </props>
         </property>
         <property name="warnLogCategory" value="org.jtalks.jcommune"/>
