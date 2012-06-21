@@ -41,7 +41,7 @@
             <dependency>
                 <groupId>org.jtalks.common</groupId>
                 <artifactId>jtalks-common-service</artifactId>
-                <version>0.17-SNAPSHOT</version>
+                <version>0.18</version>
             </dependency>
             <!-- Hibernate -->
             <dependency>
