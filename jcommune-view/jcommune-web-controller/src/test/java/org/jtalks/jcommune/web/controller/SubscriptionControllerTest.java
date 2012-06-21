@@ -75,6 +75,7 @@ public class SubscriptionControllerTest {
         Map<String, String> map = controller.subscribeToTopic(id, locale);
 
         assertEquals(map.get("caption"), message);
+        assertEquals(map.get("tooltip"), message);
         assertEquals(map.get("urlSuffix"), "/topics/1/unsubscribe");
     }
 
@@ -85,6 +86,7 @@ public class SubscriptionControllerTest {
         Map<String, String> map = controller.unsubscribeFromTopic(id, locale);
 
         assertEquals(map.get("caption"), message);
+        assertEquals(map.get("tooltip"), message);
         assertEquals(map.get("urlSuffix"), "/topics/1/subscribe");
     }
 
@@ -95,6 +97,7 @@ public class SubscriptionControllerTest {
         Map<String, String> map = controller.subscribeToBranch(id, locale);
 
         assertEquals(map.get("caption"), message);
+        assertEquals(map.get("tooltip"), message);
         assertEquals(map.get("urlSuffix"), "/branches/1/unsubscribe");
     }
 
@@ -105,6 +108,7 @@ public class SubscriptionControllerTest {
         Map<String, String> map = controller.unsubscribeFromBranch(id, locale);
 
         assertEquals(map.get("caption"), message);
+        assertEquals(map.get("tooltip"), message);
         assertEquals(map.get("urlSuffix"), "/branches/1/subscribe");
     }
 
