@@ -117,7 +117,7 @@ function applyPollResult(poll) {
         var roundedPollPercentage = (Math.round(pollPercentage * 100) / 100).toFixed(2);
         $("#pollAnswer" + pollOptionId + " .chart" ).css("width", roundedPollPercentage + "%");
 		if (pollOption.votesCount > 0) {
-			$("#pollAnswer" + pollOptionId + " .chart" ).text(pollOption.votesCount);
+			$("#pollAnswer" + pollOptionId + " .chart" ).text(pollOption.votesCount + " - " + roundedPollPercentage + "%");
 		}
 		$("#pollAnswer" + pollOptionId).show();
     }
