@@ -193,14 +193,29 @@
                                         <spring:message code="label.edit"/>
                                     </a>
                                 </sec:accesscontrollist>
-                                <sec:accesscontrollist hasPermission="7,13" domainObject="${topic.branch}">
-                                    <a href="${delete_url}" class="btn btn-mini btn-danger delete"
-                                       title="<spring:message code='label.tips.remove_post'/>"
-                                       rel="<spring:message code='${confirm_message}'/>">
-                                        <i class="icon-remove icon-white"></i>
-                                        <spring:message code="label.delete"/>
-                                    </a>
-                                </sec:accesscontrollist>
+                                <sec:authorize access="isAuthenticated()">
+                                    <sec:authentication property="principal.id" var="userId"/>
+                                    <c:if test='${userId == post.userCreated.id}'>
+                                        <sec:accesscontrollist hasPermission="7" domainObject="${topic.branch}">
+                                            <a href="${delete_url}" class="btn btn-mini btn-danger delete"
+                                               title="<spring:message code='label.tips.remove_post'/>"
+                                               rel="<spring:message code='${confirm_message}'/>">
+                                                <i class="icon-remove icon-white"></i>
+                                                <spring:message code="label.delete"/>
+                                            </a>
+                                        </sec:accesscontrollist>
+                                    </c:if>
+                                    <c:if test='${userId != post.userCreated.id}'>
+                                        <sec:accesscontrollist hasPermission="13" domainObject="${topic.branch}">
+                                            <a href="${delete_url}" class="btn btn-mini btn-danger delete"
+                                               title="<spring:message code='label.tips.remove_post'/>"
+                                               rel="<spring:message code='${confirm_message}'/>">
+                                                <i class="icon-remove icon-white"></i>
+                                                <spring:message code="label.delete"/>
+                                            </a>
+                                        </sec:accesscontrollist>
+                                    </c:if>
+                                </sec:authorize>
                             </div>
 
 

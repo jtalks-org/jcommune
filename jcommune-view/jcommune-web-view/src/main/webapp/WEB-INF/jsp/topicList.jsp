@@ -232,7 +232,6 @@
         &nbsp; <%-- For proper pagination layout without buttons--%>
     </div>
 
-
     <div class="span10">
         <div class="pagination pull-right forum-pagination">
             <ul>
