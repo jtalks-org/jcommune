@@ -35,7 +35,7 @@
     <h2><c:out value="${branch.name}"/></h2>
 
     <div id="right-block">
-        <sec:accesscontrollist hasPermission="6" domainObject="${branch}">
+        <sec:authorize access="isAuthenticated()">
              <span id="mark-all-viewed">
                  <i class="icon-check"></i>
                  <a href="${pageContext.request.contextPath}/branches/${branch.id}/markread">
@@ -62,7 +62,7 @@
                      </c:otherwise>
                  </c:choose>
              </span>
-        </sec:accesscontrollist>
+        </sec:authorize>
     </div>
     <span style="display: inline-block; "></span>
 </div>
@@ -74,13 +74,13 @@
 <div class="row-fluid upper-pagination forum-pagination-container">
 
     <div class="span2">
-        <sec:authorize access="hasAnyRole('ROLE_USER,ROLE_ADMIN')">
+        <sec:accesscontrollist hasPermission="3" domainObject="${branch}">
             <a id='new-topic-btn' class="btn btn-primary"
                href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
                title="<spring:message code="label.addtopic"/>">
                 <spring:message code="label.addtopic"/>
             </a>
-        </sec:authorize>
+        </sec:accesscontrollist>
         &nbsp; <%-- For proper pagination layout without buttons--%>
     </div>
 
@@ -132,7 +132,7 @@
                     <td class="status-col">
 
                         <c:set var="hasNewPosts" value="false"/>
-                        <sec:authorize access="hasAnyRole('ROLE_USER,ROLE_ADMIN')">
+                        <sec:authorize access="isAuthenticated()">
                             <c:if test="${topic.hasUpdates}">
                                 <c:set var="hasNewPosts" value="true"/>
                             </c:if>
@@ -222,13 +222,13 @@
 <div class="row-fluid upper-pagination forum-pagination-container">
 
     <div class="span2">
-        <sec:authorize access="hasAnyRole('ROLE_USER,ROLE_ADMIN')">
+        <sec:accesscontrollist hasPermission="3" domainObject="${branch}">
             <a id='new-topic-btn' class="btn btn-primary"
                href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
                title="<spring:message code="label.addtopic"/>">
                 <spring:message code="label.addtopic"/>
             </a>
-        </sec:authorize>
+        </sec:accesscontrollist>
         &nbsp; <%-- For proper pagination layout without buttons--%>
     </div>
 
