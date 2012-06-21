@@ -168,8 +168,9 @@
                                                value="${pageContext.request.contextPath}/topics/${topic.id}"/>
                                         <c:set var="edit_url"
                                                value="${pageContext.request.contextPath}/topics/${topic.id}/edit?branchId=${branchId}"/>
-                                        <c:set var="confirm_message" value="label.deleteTopicConfirmation"/>
+
                                     </sec:accesscontrollist>
+                                    <c:set var="confirm_message" value="label.deleteTopicConfirmation"/>
                                 </c:when>
                                 <c:otherwise>
                                     <sec:accesscontrollist hasPermission="7,13" domainObject="${topic.branch}">
@@ -178,8 +179,9 @@
                                                value="${pageContext.request.contextPath}/posts/${post.id}"/>
                                         <c:set var="edit_url"
                                                value="${pageContext.request.contextPath}/posts/${post.id}/edit?topicId=${topic.id}"/>
-                                        <c:set var="confirm_message" value="label.deletePostConfirmation"/>
+
                                     </sec:accesscontrollist>
+                                    <c:set var="confirm_message" value="label.deletePostConfirmation"/>
                                 </c:otherwise>
                             </c:choose>
 
@@ -258,7 +260,7 @@
                                 <spring:message code="label.topic.message_count"/>
                                 <c:out value="${post.userCreated.postCount}"/>
                             </div>
-                            <sec:accesscontrollist hasPermission="14" domainObject="${principal}">
+                            <sec:authorize access="isAuthenticated()">
                                 <sec:authentication property="principal.id" var="userId"/>
                                 <c:if test='${userId != post.userCreated.id}'>
                                     <div>
@@ -268,7 +270,7 @@
                                         </a>
                                     </div>
                                 </c:if>
-                            </sec:accesscontrollist>
+                            </sec:authorize>
                         </div>
                     </td>
                     <td class='post-content-td'>
