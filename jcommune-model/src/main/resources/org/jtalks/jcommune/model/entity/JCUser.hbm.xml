@@ -56,7 +56,7 @@
             <property column="POST_COUNT" name="postCount"/>
             <property column="ENABLED" name="enabled"/>
 
-            <set name="contacts" cascade="all-delete-orphan" inverse="true">
+            <set name="contacts" cascade="all-delete-orphan" inverse="true" lazy="false">
                 <key column="USER_ID" foreign-key="FK_USER"/>
                 <one-to-many class="org.jtalks.jcommune.model.entity.UserContact"/>
             </set>
