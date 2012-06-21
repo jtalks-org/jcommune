@@ -3493,3 +3493,21 @@ a.thumbnail:hover {
 .invisible {
   visibility: hidden;
 }
+
+.box-label {
+    display: inline-block;
+    margin-bottom: 0;
+    background-color: #F5F5F5;
+    border: 1px solid #DDDDDD;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.024) inset;
+    float: none;
+    margin-left: 0;
+    border-radius: 3px 3px 3px 3px;
+    color: #555555;
+    font-size: 13px;
+    min-height: 18px;
+    line-height: 18px;
+    padding: 4px;
+    -moz-transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;
+    word-wrap: break-word;
+}
