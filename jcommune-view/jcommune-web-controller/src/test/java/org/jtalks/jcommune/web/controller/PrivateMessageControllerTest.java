@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
@@ -21,7 +22,6 @@ import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -36,6 +36,8 @@ import org.testng.annotations.Test;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.eq;
@@ -65,7 +67,10 @@ public class PrivateMessageControllerTest {
     private SecurityService securityService;
     @Mock
     private UserService userService;
-    
+
+    private static final String USERNAME = "username";
+    private static final JCUser JC_USER = new JCUser(USERNAME, "123@123.ru", "123");
+
     @BeforeMethod
     public void init() {
         MockitoAnnotations.initMocks(this);
@@ -140,7 +145,7 @@ public class PrivateMessageControllerTest {
         PrivateMessageDto dto = assertAndReturnModelAttributeOfType(mav, "privateMessageDto", PrivateMessageDto.class);
         assertEquals(dto.getRecipient(), name);
     }
-    
+
     @Test(expectedExceptions = NotFoundException.class)
     public void newPmPageWithWrongUserSet() throws NotFoundException {
         doThrow(new NotFoundException()).when(userService).get(PM_ID);
@@ -150,25 +155,31 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void sendMessage() throws NotFoundException {
+        when(userService.getByUsername(USERNAME)).thenReturn(JC_USER);
+        when(securityService.getCurrentUser()).thenReturn(JC_USER);
         PrivateMessageDto dto = getPrivateMessageDto();
+        dto.setRecipient(USERNAME);
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
 
         String view = controller.sendMessage(dto, bindingResult);
 
         assertEquals(view, "redirect:/outbox");
-        verify(pmService).sendMessage(dto.getTitle(), dto.getBody(), dto.getRecipient());
+        verify(pmService).sendMessage(dto.getTitle(), dto.getBody(), JC_USER, JC_USER);
     }
 
     @Test
     public void sendDraftMessage() throws NotFoundException {
+        when(userService.getByUsername(USERNAME)).thenReturn(JC_USER);
+        when(securityService.getCurrentUser()).thenReturn(JC_USER);
         PrivateMessageDto dto = getPrivateMessageDto();
+        dto.setRecipient(USERNAME);
         dto.setId(4);
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
 
         String view = controller.sendMessage(dto, bindingResult);
 
         assertEquals(view, "redirect:/outbox");
-        verify(pmService).sendDraft(dto.getId(), dto.getTitle(), dto.getBody(), dto.getRecipient());
+        verify(pmService).sendDraft(dto.getId(), dto.getTitle(), dto.getBody(), JC_USER, JC_USER);
     }
 
     @Test
@@ -185,7 +196,8 @@ public class PrivateMessageControllerTest {
     @Test(expectedExceptions = NotFoundException.class)
     public void sendMessageWithWrongUser() throws NotFoundException {
         PrivateMessageDto dto = getPrivateMessageDto();
-        doThrow(new NotFoundException()).when(pmService).sendMessage(dto.getTitle(), dto.getBody(), dto.getRecipient());
+        doThrow(new NotFoundException()).when(pmService).
+                sendMessage(anyString(), anyString(), any(JCUser.class), any(JCUser.class));
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
 
         controller.sendMessage(dto, bindingResult);
@@ -288,27 +300,30 @@ public class PrivateMessageControllerTest {
 
     @Test
     public void saveDraft() throws NotFoundException {
+        when(userService.getByUsername(USERNAME)).thenReturn(JC_USER);
+        when(securityService.getCurrentUser()).thenReturn(JC_USER);
         PrivateMessageDto dto = getPrivateMessageDto();
+        dto.setRecipient(USERNAME);
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
 
         String view = controller.saveDraft(dto, bindingResult);
 
         assertEquals(view, "redirect:/drafts");
-        verify(pmService).saveDraft(dto.getId(), dto.getTitle(), dto.getBody(), dto.getRecipient());
+        verify(pmService).saveDraft(dto.getId(), dto.getTitle(), dto.getBody(), JC_USER, JC_USER);
     }
 
     @Test
     public void saveDraftWithWrongUser() throws NotFoundException {
         PrivateMessageDto dto = getPrivateMessageDto();
         doThrow(new NotFoundException()).when(pmService)
-                .saveDraft(dto.getId(), dto.getTitle(), dto.getBody(), dto.getRecipient());
+                .saveDraft(anyLong(), anyString(), anyString(), any(JCUser.class), any(JCUser.class));
         BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
 
         String view = controller.saveDraft(dto, bindingResult);
 
         assertEquals(view, "pm/pmForm");
         assertEquals(bindingResult.getErrorCount(), 1);
-        verify(pmService).saveDraft(dto.getId(), dto.getTitle(), dto.getBody(), dto.getRecipient());
+        verify(pmService).saveDraft(anyLong(), anyString(), anyString(), any(JCUser.class), any(JCUser.class));
     }
 
     @Test
@@ -326,7 +341,7 @@ public class PrivateMessageControllerTest {
         PrivateMessageDto dto = new PrivateMessageDto();
         dto.setBody("body");
         dto.setTitle("title");
-        dto.setRecipient("Recipient");
+        dto.setRecipient(USERNAME);
         return dto;
     }
 

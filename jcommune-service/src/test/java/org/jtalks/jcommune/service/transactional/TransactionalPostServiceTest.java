@@ -14,18 +14,16 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -33,17 +31,12 @@ import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-
+import static org.testng.AssertJUnit.assertEquals;
 
 /**
  * This test cover {@code TransactionalPostService} logic validation.
@@ -56,6 +49,7 @@ import static org.testng.Assert.assertTrue;
 public class TransactionalPostServiceTest {
 
     private final long POST_ID = 9L;
+    private static final Long BRANCH_ID = 1L;
     private static final String USERNAME = "username";
     private static final String EMAIL = "username@mail.com";
     private static final String PASSWORD = "password";
@@ -138,7 +132,7 @@ public class TransactionalPostServiceTest {
         when(postDao.isExist(POST_ID)).thenReturn(true);
         when(postDao.get(POST_ID)).thenReturn(postForDelete);
 
-        postService.deletePost(POST_ID);
+        postService.deletePost(POST_ID, BRANCH_ID);
 
         assertEquals(user.getPostCount(), 1);
         verify(postDao).get(POST_ID);
@@ -151,7 +145,7 @@ public class TransactionalPostServiceTest {
     public void testDeleteNonExistentPost() throws NotFoundException {
         when(postDao.isExist(POST_ID)).thenReturn(false);
 
-        postService.deletePost(POST_ID);
+        postService.deletePost(POST_ID, BRANCH_ID);
     }
 
     @Test

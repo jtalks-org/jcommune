@@ -15,10 +15,11 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.model.dao.ChildRepository;
+import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.service.PollService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.jtalks.jcommune.service.security.TemporaryAuthorityManager;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -63,9 +64,9 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
     /**
      * {@inheritDoc}
      */
-    @PreAuthorize(SecurityConstants.HAS_USER_OR_ADMIN_ROLE)
+    @PreAuthorize("hasPermission(#branchId, 'org.jtalks.jcommune.model.entity.Branch', 'BranchPermission.CREATE_POSTS')")
     @Override
-    public Poll vote(Long pollId, List<Long> selectedOptionIds) {
+    public Poll vote(Long pollId, List<Long> selectedOptionIds, long branchId) {
         Poll poll = getDao().get(pollId);
         if (poll.isActive()) {
             prohibitRevote(poll);
@@ -96,10 +97,10 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
         //TODO It should be changed after the transition to the new security.
         temporaryAuthorityManager.runWithTemporaryAuthority(
                 new TemporaryAuthorityManager.SecurityOperation() {
-
                     @Override
                     public void doOperation() {
-                        securityService.grantToCurrentUser().write().on(poll);
+                        securityService.createAclBuilder().
+                                restrict(GeneralPermission.WRITE).to(securityService.getCurrentUser()).on(poll).flush();
                     }
                 },
                 SecurityConstants.ROLE_ADMIN);

@@ -14,12 +14,12 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.service.SubscriptionService;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -55,7 +55,7 @@ public class TransactionalSubscriptionService implements SubscriptionService {
      */
     @Override
     public void toggleTopicSubscription(Topic topic) {
-        JCUser current = securityService.getCurrentUser();
+        JCUser current = (JCUser) securityService.getCurrentUser();
         if (topic.getSubscribers().contains(current)) {
             topic.getSubscribers().remove(current);
         } else {
@@ -69,7 +69,7 @@ public class TransactionalSubscriptionService implements SubscriptionService {
      */
     @Override
     public void toggleBranchSubscription(Branch branch) {
-        JCUser current = securityService.getCurrentUser();
+        JCUser current = (JCUser) securityService.getCurrentUser();
         if (branch.getSubscribers().contains(current)) {
             branch.getSubscribers().remove(current);
         } else {

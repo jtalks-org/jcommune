@@ -14,13 +14,14 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.common.security.SecurityService;
+import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -190,9 +191,11 @@ public class PrivateMessageController {
             return PM_FORM;
         }
         if (pmDto.getId() > 0) {
-            pmService.sendDraft(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
+            pmService.sendDraft(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(),
+                    userService.getByUsername(pmDto.getRecipient()), (JCUser) securityService.getCurrentUser());
         } else {
-            pmService.sendMessage(pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
+            pmService.sendMessage(pmDto.getTitle(), pmDto.getBody(),
+                    userService.getByUsername(pmDto.getRecipient()), (JCUser) securityService.getCurrentUser());
         }
         return "redirect:/outbox";
     }
@@ -206,8 +209,8 @@ public class PrivateMessageController {
      */
     @RequestMapping(value = "/pm/{pmId}", method = RequestMethod.GET)
     public ModelAndView showPmPage(@PathVariable(PM_ID) Long id) throws NotFoundException {
-           PrivateMessage pm = pmService.get(id);
-           return new ModelAndView("pm/showPm")
+        PrivateMessage pm = pmService.get(id);
+        return new ModelAndView("pm/showPm")
                 .addObject("pm", pm)
                 .addObject("user", securityService.getCurrentUser());
     }
@@ -239,7 +242,8 @@ public class PrivateMessageController {
     @RequestMapping(value = "/pm/save", method = {RequestMethod.POST, RequestMethod.GET})
     public String saveDraft(@ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
         try {
-            pmService.saveDraft(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(), pmDto.getRecipient());
+            pmService.saveDraft(pmDto.getId(), pmDto.getTitle(), pmDto.getBody(),
+                    userService.getByUsername(pmDto.getRecipient()), (JCUser) securityService.getCurrentUser());
             return "redirect:/drafts";
         } catch (NotFoundException e) {
             result.rejectValue("recipient", "validation.wrong_recipient");

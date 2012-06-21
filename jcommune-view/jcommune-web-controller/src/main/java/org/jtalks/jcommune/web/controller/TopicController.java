@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Poll;
@@ -26,7 +27,6 @@ import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.util.Pagination;
@@ -154,8 +154,8 @@ public class TopicController {
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branch));
         }
 
-        Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(), branchId,
-                topicDto.isNotifyOnAnswers());
+        Topic createdTopic = topicService.createTopic(topicDto.getTopicName(), topicDto.getBodyText(),
+                branchId,topicDto.isNotifyOnAnswers());
 
         if (topicDto.hasPoll()) {
             Poll poll = topicDto.preparePollFromTopicDto();
@@ -177,7 +177,7 @@ public class TopicController {
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.DELETE)
     public ModelAndView deleteTopic(@PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         Topic topic = topicService.get(topicId);
-        topicService.deleteTopic(topicId);
+        topicService.deleteTopic(topicId, topic.getBranch().getId());
         return new ModelAndView("redirect:/branches/" + topic.getBranch().getId());
     }
 
@@ -202,7 +202,7 @@ public class TopicController {
         List<PollItem> pollOptions = topic.isHasPoll() ? poll.getPollItems() : null;
 
         Branch branch = topic.getBranch();
-        JCUser currentUser = securityService.getCurrentUser();
+        JCUser currentUser = (JCUser) securityService.getCurrentUser();
         List<Post> posts = topic.getPosts();
         Pagination pag = new Pagination(page, currentUser, posts.size(), pagingEnabled);
         Integer lastReadPostIndex = lastReadPostService.getLastReadPostForTopic(topic);
@@ -239,7 +239,7 @@ public class TopicController {
                                       @PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         Topic topic = topicService.get(topicId);
         TopicDto topicDto = new TopicDto(topic);
-        JCUser currentUser = securityService.getCurrentUser();
+        JCUser currentUser = (JCUser) securityService.getCurrentUser();
         if (topic.userSubscribed(currentUser)) {
             topicDto.setNotifyOnAnswers(true);
         }
@@ -273,8 +273,7 @@ public class TopicController {
         }
 
         topicService.updateTopic(topicDto.getId(), topicDto.getTopicName(), topicDto.getBodyText(),
-                topicDto.getTopicWeight(), topicDto.isSticked(), topicDto.isAnnouncement(),
-                topicDto.isNotifyOnAnswers());
+                topicDto.getTopicWeight(), topicDto.isSticked(), topicDto.isAnnouncement(),topicDto.isNotifyOnAnswers());
 
         return new ModelAndView("redirect:/topics/" + topicId);
     }

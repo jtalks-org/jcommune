@@ -14,13 +14,13 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.dao.search.TopicSearchDao;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicFullSearchService;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * The implementation of TopicFullSearchService, that provides possibility

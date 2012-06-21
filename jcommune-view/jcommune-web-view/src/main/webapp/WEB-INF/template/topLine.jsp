@@ -55,7 +55,7 @@
                 <!-- END OF Not logged in block -->
 
                 <!-- Logged in block -->
-                <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                <sec:authorize access="hasAnyRole('ROLE_ADMIN,ROLE_USER')">
                     <li>
                         <a href="${pageContext.request.contextPath}/user">
                             <fmt:message key="label.profile"/>

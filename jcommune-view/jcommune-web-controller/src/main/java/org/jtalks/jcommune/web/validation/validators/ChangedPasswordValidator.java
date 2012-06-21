@@ -14,8 +14,8 @@
  */
 package org.jtalks.jcommune.web.validation.validators;
 
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.validation.annotations.ChangedPassword;
 import org.springframework.beans.factory.annotation.Autowired;

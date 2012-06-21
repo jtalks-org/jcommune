@@ -34,6 +34,7 @@ import java.util.List;
  */
 public class PollControllerTest {
     private static final Long POLL_ID = 1L;
+    private static final Long BRANCH_ID = 1L;
     @Mock
     private PollService pollService;
     private PollController pollController;
@@ -49,9 +50,9 @@ public class PollControllerTest {
         long pollOptionId = 1;
         Poll poll = createPoll(POLL_ID, Arrays.asList(pollOptionId));
 
-        Mockito.when(pollService.vote(POLL_ID, Arrays.asList(pollOptionId))).thenReturn(poll);
+        Mockito.when(pollService.vote(POLL_ID, Arrays.asList(pollOptionId), BRANCH_ID)).thenReturn(poll);
 
-        PollDto pollDto = pollController.addSingleVote(POLL_ID, pollOptionId);
+        PollDto pollDto = pollController.addSingleVote(POLL_ID, pollOptionId, BRANCH_ID);
         PollOptionDto optionDto = pollDto.getPollOptions().get(0);
 
         Assert.assertEquals(pollDto.getId(), poll.getId(), "The id must be the same.");
@@ -66,9 +67,9 @@ public class PollControllerTest {
         Poll poll = createPoll(POLL_ID, optionIds);
         PollDto pollDto = new PollDto(poll);
 
-        Mockito.when(pollService.vote(POLL_ID, optionIds)).thenReturn(poll);
+        Mockito.when(pollService.vote(POLL_ID, optionIds, BRANCH_ID)).thenReturn(poll);
 
-        PollDto resultPollDto = pollController.addMultipleVote(POLL_ID, pollDto);
+        PollDto resultPollDto = pollController.addMultipleVote(POLL_ID, BRANCH_ID, pollDto);
 
         Assert.assertEquals(resultPollDto.getId(), poll.getId(), "The id must be the same.");
         PollOptionDto firstOptionDto = resultPollDto.getPollOptions().get(0);

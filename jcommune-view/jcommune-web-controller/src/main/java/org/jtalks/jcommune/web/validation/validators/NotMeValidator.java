@@ -14,8 +14,8 @@
  */
 package org.jtalks.jcommune.web.validation.validators;
 
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.validation.annotations.NotMe;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -54,7 +54,7 @@ public class NotMeValidator implements ConstraintValidator<NotMe, String> {
      */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        JCUser user = service.getCurrentUser();
+        JCUser user = (JCUser) service.getCurrentUser();
         return (user == null) || !user.getUsername().equals(value);
     }
 }

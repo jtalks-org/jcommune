@@ -25,7 +25,7 @@
 </head>
 <body>
 <c:set var="authenticated" value="${false}"/>
-<sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+<sec:authorize access="hasAnyRole('ROLE_USER,ROLE_ADMIN')">
     <c:set var="authenticated" value="${true}"/>
 </sec:authorize>
 

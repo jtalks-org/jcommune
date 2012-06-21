@@ -14,29 +14,35 @@
  */
 package org.jtalks.jcommune.service.security;
 
-/**
- * Contains constants specific to security.
- *
- * @author Kirill Afonin
- */
-public final class SecurityConstants {
-    /**
-     * Username of anonymous user (not logged in user).
-     * If you want to change it you should change it here and in security-context.xml
-     */
-    public static final String ANONYMOUS_USERNAME = "anonymousUser";
-    /**
-     * Role name of administrators.
-     */
-    public static final String ROLE_ADMIN = "ROLE_ADMIN";
-    /**
-     * Role name of user. Every registered user have this role by default.
-     */
-    public static final String ROLE_USER = "ROLE_USER";
 
-    /**
-     * You can't create instance of this class.
-     */
-    private SecurityConstants() {
+public enum AdministrationGroup {
+    ADMIN("ROLE_ADMIN", 13L),
+    USER("ROLE_USER", 11L),
+    BANNED_USER("ROLE_BANNED_USER", 12L),
+    ANONYMOUS("ROLE_ANONYMOUS", 0L);
+
+    private String name;
+    private Long id;
+
+    private AdministrationGroup(String name, Long id) {
+        this.name = name;
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public static AdministrationGroup getAdministrationGroupByName(String name) {
+        for (AdministrationGroup administrationGroup : values()) {
+            if (administrationGroup.getName().equals(name)) {
+                return administrationGroup;
+            }
+        }
+        throw new IllegalArgumentException("AdministrationGroup with name=" + name + " is not exist.");
     }
 }

@@ -12,29 +12,21 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service;
+package org.jtalks.jcommune.service.security;
 
-import org.jtalks.jcommune.model.entity.Poll;
-
-import java.util.List;
+import org.testng.annotations.Test;
 
 /**
- * Service for working with the poll.
- * Performs all needed operations for voting.
- *
- * @author Anuar Nurmakanov
- * @see org.jtalks.jcommune.model.entity.Poll
+ * @author stanislav bashkirtsev
  */
-public interface PollService extends EntityService<Poll> {
-    /**
-     * Adds one vote for all selected options of poll.
-     *
-     * @param pollId        id of a poll
-     * @param pollOptionIds id of a option of a poll
-     * @param branchId      id of a branch
-     * @return changed poll
-     */
-    Poll vote(Long pollId, List<Long> pollOptionIds, long branchId);
+public class AclGroupPermissionEvaluatorTest {
+    @Test
+    public void testHasPermissionWithTargetDomainObject() throws Exception {
 
-    void createPoll(Poll poll);
+    }
+
+    @Test
+    public void testHasPermission() throws Exception {
+
+    }
 }

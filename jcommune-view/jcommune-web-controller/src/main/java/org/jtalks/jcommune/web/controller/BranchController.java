@@ -15,6 +15,7 @@
 
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -23,7 +24,6 @@ import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
@@ -104,7 +104,7 @@ public class BranchController {
         Branch branch = branchService.get(branchId);
         List<Topic> topics = lastReadPostService.fillLastReadPostForTopics(branch.getTopics());
 
-        JCUser currentUser = securityService.getCurrentUser();
+        JCUser currentUser = (JCUser) securityService.getCurrentUser();
 
         Pagination pag = new Pagination(page, currentUser, topics.size(), pagingEnabled);
         List<Breadcrumb> breadcrumbs = breadcrumbBuilder.getForumBreadcrumb(branch);
@@ -127,7 +127,7 @@ public class BranchController {
     @RequestMapping("/topics/recent")
     public ModelAndView recentTopicsPage(
             @RequestParam(value = PAGE, defaultValue = "1", required = false) Integer page) {
-        JCUser currentUser = securityService.getCurrentUser();
+        JCUser currentUser = (JCUser) securityService.getCurrentUser();
         List<Topic> topics = topicService.getRecentTopics();
         topics = lastReadPostService.fillLastReadPostForTopics(topics);
         Pagination pagination = new Pagination(page, currentUser, topics.size(), true);
@@ -146,7 +146,7 @@ public class BranchController {
     @RequestMapping("/topics/unanswered")
     public ModelAndView unansweredTopicsPage(@RequestParam(value = PAGE, defaultValue = "1", required = false)
                                              Integer page) {
-        JCUser currentUser = securityService.getCurrentUser();
+        JCUser currentUser = (JCUser) securityService.getCurrentUser();
         List<Topic> topics = topicService.getUnansweredTopics();
         topics = lastReadPostService.fillLastReadPostForTopics(topics);
         Pagination pagination = new Pagination(page, currentUser, topics.size(), true);

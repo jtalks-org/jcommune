@@ -16,6 +16,7 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.common.model.entity.Entity;
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Component;
@@ -57,7 +58,7 @@ public class LocationService {
      */
     public List<JCUser> getUsersViewing(Entity entity) {
         List<JCUser> viewList = new ArrayList<JCUser>();
-        JCUser currentUser = securityService.getCurrentUser();
+        JCUser currentUser = (JCUser) securityService.getCurrentUser();
         /**
          * This condition does not allow Anonymous add to the map of active users.
          */

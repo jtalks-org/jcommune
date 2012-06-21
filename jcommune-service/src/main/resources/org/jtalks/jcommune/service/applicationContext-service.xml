@@ -61,12 +61,13 @@
     </bean>
 
     <bean id="locationService" class="org.jtalks.jcommune.service.nontransactional.LocationService">
-        <constructor-arg ref="sessionRegistry"/>
-        <constructor-arg ref="securityService"/>
+        <constructor-arg name="sessionRegistry" ref="sessionRegistry"/>
+        <constructor-arg name="securityService" ref="securityService"/>
     </bean>
 
     <bean id="userService" class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
         <constructor-arg ref="userDao"/>
+        <constructor-arg ref="groupDao"/>
         <constructor-arg ref="securityService"/>
         <constructor-arg ref="mailService"/>
         <constructor-arg ref="base64Wrapper"/>
@@ -148,9 +149,8 @@
     </bean>
 
     <bean id="securityService"
-          class="org.jtalks.jcommune.service.nontransactional.SecurityService">
-        <constructor-arg ref="userDao"/>
-        <constructor-arg ref="securityContextFacade"/>
+          class="org.jtalks.common.security.SecurityService">
+        <constructor-arg name="userDao" ref="userDao"/>
         <constructor-arg ref="aclManager"/>
     </bean>
 

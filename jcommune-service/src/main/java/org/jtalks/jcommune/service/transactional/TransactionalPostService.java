@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -23,7 +24,6 @@ import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -66,7 +66,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#postId, 'org.jtalks.jcommune.model.entity.Post', admin)")
+    @PreAuthorize("hasPermission(#postId, 'org.jtalks.jcommune.model.entity.Post', 'GeneralPermission.WRITE')")
     public void updatePost(long postId, String postContent) throws NotFoundException {
         Post post = get(postId);
         post.setPostContent(postContent);
@@ -82,9 +82,9 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#postId, 'org.jtalks.jcommune.model.entity.Post', admin) or " +
-            "hasPermission(#postId, 'org.jtalks.jcommune.model.entity.Post', delete)")
-    public void deletePost(long postId) throws NotFoundException {
+    @PreAuthorize("hasPermission(#branchId, 'org.jtalks.jcommune.model.entity.Branch', 'BranchPermission.DELETE_OWN_POSTS') or " +
+            "hasPermission(#branchId, 'org.jtalks.jcommune.model.entity.Branch', 'BranchPermission.DELETE_OTHERS_POSTS')")
+    public void deletePost(long postId, long branchId) throws NotFoundException {
         Post post = get(postId);
         JCUser user = post.getUserCreated();
         user.setPostCount(user.getPostCount() - 1);
@@ -114,7 +114,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     @Override
     public int calculatePageForPost(Post post) {
         Topic topic = post.getTopic();
-        JCUser user = securityService.getCurrentUser();
+        JCUser user = (JCUser) securityService.getCurrentUser();
         int index = topic.getPosts().indexOf(post) + 1;
         int pageSize = (user == null) ? JCUser.DEFAULT_PAGE_SIZE : user.getPageSize();
         int pageNum = index / pageSize;

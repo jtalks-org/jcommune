@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
@@ -24,7 +25,6 @@ import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.TopicService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
-import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
@@ -120,7 +120,7 @@ public class TopicControllerTest {
         ModelAndView actualMav = controller.deleteTopic(TOPIC_ID);
 
         assertViewName(actualMav, "redirect:/branches/" + BRANCH_ID);
-        verify(topicService).deleteTopic(TOPIC_ID);
+        verify(topicService).deleteTopic(TOPIC_ID, BRANCH_ID);
     }
 
     @Test
@@ -300,8 +300,7 @@ public class TopicControllerTest {
         ModelAndView mav = controller.editTopic(dto, bindingResult, BRANCH_ID, TOPIC_ID);
 
         //check expectations
-        verify(topicService).updateTopic(TOPIC_ID, TOPIC_THEME, TOPIC_CONTENT, TOPIC_WEIGHT, STICKED, ANNOUNCEMENT,
-                false);
+        verify(topicService).updateTopic(TOPIC_ID, TOPIC_THEME, TOPIC_CONTENT, TOPIC_WEIGHT, STICKED, ANNOUNCEMENT, false);
 
         //check result
         assertViewName(mav, "redirect:/topics/" + TOPIC_ID);
@@ -322,8 +321,8 @@ public class TopicControllerTest {
         assertEquals(branchId, BRANCH_ID);
         assertEquals(topicId, TOPIC_ID);
 
-        verify(topicService, never()).updateTopic(anyLong(), anyString(), anyString(), anyInt(), anyBoolean(),
-                anyBoolean(), anyBoolean());
+        verify(topicService, never()).updateTopic(anyLong(), anyString(), anyString(),
+                anyInt(), anyBoolean(), anyBoolean(), anyBoolean());
     }
 
     @Test
