@@ -67,11 +67,10 @@
             <jtalks:bbeditor labelForAction="label.addtopic"
                              postText="${topicDto.bodyText}"
                              bodyParameterName="bodyText"
-                             back="${pageContext.request.contextPath}/branches/${branchId}"
-                             notifyOnAnswers="${topicDto.notifyOnAnswers}"/>
+                             back="${pageContext.request.contextPath}/branches/${branchId}"/>
             <div class="control-group">
                 <br/>
-                <form:checkbox id="notify" path="notifyOnAnswers" name="notify" checked="checked"
+                <form:checkbox id="notify" path="notifyOnAnswers" name="notify" checked="checked" value="${notifyOnAnswers}"
                                style="margin-right: 10px;"/><spring:message
                     code="label.answer.notify_message"/>
             </div>

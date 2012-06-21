@@ -42,6 +42,7 @@ import java.util.Map;
 public class SubscriptionController {
 
     private static final String CAPTION = "caption";
+    private static final String TOOLTIP = "tooltip";
     private static final String SUFFIX = "urlSuffix";
 
     private TopicService topicService;
@@ -80,8 +81,9 @@ public class SubscriptionController {
     public Map<String, String> subscribeToTopic(@PathVariable Long id, Locale locale) throws NotFoundException {
         Topic topic = topicService.get(id);
         subscriptionService.toggleTopicSubscription(topic);
-        Map model = new HashMap();
+        Map<String, String> model = new HashMap<String, String>();
         model.put(CAPTION, messageSource.getMessage("label.unsubscribe", null, locale));
+        model.put(TOOLTIP, messageSource.getMessage("label.unsubscribe", null, locale));
         model.put(SUFFIX, "/topics/" + id + "/unsubscribe");
         return model;
     }
@@ -99,8 +101,9 @@ public class SubscriptionController {
     public Map<String, String> unsubscribeFromTopic(@PathVariable Long id, Locale locale) throws NotFoundException {
         Topic topic = topicService.get(id);
         subscriptionService.toggleTopicSubscription(topic);
-        Map model = new HashMap();
+        Map<String, String> model = new HashMap<String, String>();
         model.put(CAPTION, messageSource.getMessage("label.subscribe", null, locale));
+        model.put(TOOLTIP, messageSource.getMessage("label.subscribe", null, locale));
         model.put(SUFFIX, "/topics/" + id + "/subscribe");
         return model;
     }
@@ -119,8 +122,9 @@ public class SubscriptionController {
     public Map<String, String> subscribeToBranch(@PathVariable Long id, Locale locale) throws NotFoundException {
         Branch branch = branchService.get(id);
         subscriptionService.toggleBranchSubscription(branch);
-        Map model = new HashMap();
+        Map<String, String> model = new HashMap<String, String>();
         model.put(CAPTION, messageSource.getMessage("label.unsubscribe", null, locale));
+        model.put(TOOLTIP, messageSource.getMessage("label.unsubscribe", null, locale));
         model.put(SUFFIX, "/branches/" + id + "/unsubscribe");
         return model;
     }
@@ -138,8 +142,9 @@ public class SubscriptionController {
     public Map<String, String> unsubscribeFromBranch(@PathVariable Long id, Locale locale) throws NotFoundException {
         Branch branch = branchService.get(id);
         subscriptionService.toggleBranchSubscription(branch);
-        Map model = new HashMap();
+        Map<String, String> model = new HashMap<String, String>();
         model.put(CAPTION, messageSource.getMessage("label.subscribe", null, locale));
+        model.put(TOOLTIP, messageSource.getMessage("label.subscribe", null, locale));
         model.put(SUFFIX, "/branches/" + id + "/subscribe");
         return model;
     }

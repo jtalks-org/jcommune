@@ -24,7 +24,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <div id="pollWrap">
-    <!-- Determination of whether the user can vote in the topic. -->
+    <%-- Determination of whether the user can vote in the topic. --%>
     <c:set var="votingAvailable" value="true" scope="request"/>
     <sec:authorize access="hasAnyRole('ROLE_ADMIN,ROLE_USER')">
         <sec:accesscontrollist domainObject="${poll}" hasPermission="2">
@@ -34,9 +34,9 @@
     <sec:authorize access="isAnonymous()">
         <c:set var="votingAvailable" value="false" scope="request"/>
     </sec:authorize>
-    <!-- General form. -->
+    <%-- General form. --%>
     <form name="pollForm" action="#">
-        <!-- Poll title -->
+        <%-- Poll title --%>
         <h3>
             <c:out value="${poll.title}"/>
             <c:if test="${poll.endingDate!=null}">
@@ -45,8 +45,9 @@
                 </fmt:message>
             </c:if>
         </h3>
-        <!-- List of poll options -->
-        <c:if test="${poll.active && votingAvailable}">
+        <%-- List of poll options --%>
+        <c:choose>
+        <c:when test="${poll.active && votingAvailable}">
             
             <c:forEach items="${pollOptions}" var="option">
                 <div class="control-group">
@@ -77,17 +78,32 @@
                         class="btn btn-primary"
                         value="<fmt:message key="label.poll.vote"/>">
             </c:if>
-        </c:if>
+        </c:when>
         
-        <!-- Available to anonymous users and voted users. -->
-        <c:if test="${!poll.active || !votingAvailable}">
+        <%-- Available to anonymous users and voted users. --%>
+        <c:otherwise>
             <c:forEach items="${pollOptions}" var="option">                   
                     <c:out value="${option.name}"/>
                             <span id="pollAnswer${option.id}">
                                 <div class="progress" style="margin-bottom: 3px;">
                                         <c:choose>
                                             <c:when test="${poll.totalVotesCount > 0 && option.votesCount > 0}">
-                                                <div class="bar" style="width: ${option.votesCount / poll.totalVotesCount * 100}%;">${option.votesCount}</div>
+                                                <div class="bar" style="width: ${option.votesCount / poll.totalVotesCount * 100}%;">
+                                                    <fmt:message key="label.poll.option.vote.info">
+                                                        <fmt:param>${option.votesCount}</fmt:param>
+                                                            <fmt:param>
+                                                                <c:choose>
+                                                                    <c:when test="${poll.totalVotesCount > 0}">
+                                                                        <fmt:formatNumber minFractionDigits="2" maxFractionDigits="2"
+                                                                            value="${option.votesCount / poll.totalVotesCount*100}"/>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <fmt:param value="0"/>
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </fmt:param>
+                                                   </fmt:message>
+                                               </div>
                                             </c:when>
                                             <c:otherwise>
                                                 <div class="bar" style="width: 0;"></div>
@@ -96,10 +112,11 @@
                                 </div>
                             </span>
             </c:forEach>
-        </c:if>
+        </c:otherwise>
+        </c:choose>
         
         
-        <!-- Additional components -->
+        <%-- Additional components --%>
         <span id="pollMessage" style="display: none; " class="label label-important"><fmt:message key="label.poll.message.error"/></span>
         <img src="${pageContext.request.contextPath}/resources/images/ajaxLoader.gif"
              alt="Ajax Loader" id="pollAjaxLoader" style="display: none; ">

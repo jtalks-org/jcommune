@@ -19,7 +19,6 @@
 <%@ attribute name="postText" required="false" rtexprvalue="true" type="java.lang.String" %>
 <%@ attribute name="bodyParameterName" required="true" rtexprvalue="true" type="java.lang.String" %>
 <%@ attribute name="labelForAction" required="true" rtexprvalue="true" type="java.lang.String" %>
-<%@ attribute name="notifyOnAnswers" required="false" rtexprvalue="true" type="java.lang.String" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>

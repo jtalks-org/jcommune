@@ -20,8 +20,16 @@
  */
 
 $(function () {
-//    $.datepicker.setDefaults($.datepicker.regional['']);
-    $.datepicker.setDefaults({ dateFormat:'dd-mm-yy' });
-    $("#datepicker").datepicker();
+    $('#datepicker').datepicker({
+        dateFormat:'dd-mm-yy',
+        showOn:'button',
+        buttonImage:'../resources/images/calendar.gif',
+        buttonImageOnly:true,
+        numberOfMonths:2,
+        minDate:'1d',
+        firstDay:1,
+        showButtonPanel:true
+    });
+
 
 });
