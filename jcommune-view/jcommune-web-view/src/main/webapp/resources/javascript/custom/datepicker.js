@@ -27,8 +27,7 @@ $(function () {
         buttonImageOnly:true,
         numberOfMonths:2,
         minDate:'1d',
-        firstDay:1,
-        showButtonPanel:true
+        firstDay:1
     });
 
 

@@ -53,7 +53,8 @@
                 <spring:message code="label.poll.date"/>
             </label>
 
-            <form:input path="${endingDateNameValue}" id="datepicker" type="text" readonly="true"/>
+            <i class="icon-trash" id="deleteEndingDate"></i><form:input path="${endingDateNameValue}" id="datepicker"
+                                                                        type="text" readonly="true"/>
             <br>
             <form:errors path="${endingDateNameValue}" cssClass="help-inline"/>
         </div>

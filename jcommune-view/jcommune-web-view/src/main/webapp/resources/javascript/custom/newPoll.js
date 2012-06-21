@@ -23,8 +23,8 @@ $(document).ready(function () {
         SwitchPoll();
     })
 
-    document.getElementById('datepicker').onclick = function () {
-        this.value = "";
+    document.getElementById('deleteEndingDate').onclick = function () {
+        document.getElementById('datepicker').value = "";
     }
 });
 
