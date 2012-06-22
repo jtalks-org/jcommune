@@ -65,8 +65,8 @@ $(function () {
  */
 function sendLoginPost() {
     remember_me = $('input[name=_spring_security_remember_me]').is(':checked');
-    username = encodeURIComponent($('#j_username').val());
-    var query = "j_username=" + username + "&" + "j_password=" + encodeURIComponent($('#j_password').val());
+    username = $('#j_username').val();
+    var query = "j_username=" + encodeURIComponent(username) + "&" + "j_password=" + encodeURIComponent($('#j_password').val());
     if (remember_me) {
         query =  query + "&_spring_security_remember_me=on";
     }
@@ -77,16 +77,18 @@ function sendLoginPost() {
         dataType:"html",
         //handling query answer, create registration form
         success:function (data) {
-             var form_elements = formatFormElements(data);
-             var content = formatHTMLContent(data, form_elements);
+             
             //Check the query answer and displays prompt
             if ($(data).find("legend").html() != null) {
+				var form_elements = formatFormElements(data);
+				var content = formatHTMLContent(data, form_elements);
                 $.prompt(content,
-                {buttons:{OK:true}, focus:0,
+					{buttons:{OK:true}, 
+					focus:0,
                     submit:sendLoginPost});
-                 $('#j_username').val(username);
-                 $('input[name=_spring_security_remember_me]').attr('checked', remember_me);
-
+				
+				$('#j_username').val(username);
+				$('input[name=_spring_security_remember_me]').attr('checked', remember_me);				
             } else {
                 history.go(0);
             }
