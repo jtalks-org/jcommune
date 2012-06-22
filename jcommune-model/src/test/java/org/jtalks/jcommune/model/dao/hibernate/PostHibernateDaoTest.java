@@ -15,8 +15,10 @@
 package org.jtalks.jcommune.model.dao.hibernate;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +28,13 @@ import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.ObjectsFactory;
 import org.jtalks.jcommune.model.dao.PostDao;
+import org.jtalks.jcommune.model.dto.JcommunePageRequest;
+import org.jtalks.jcommune.model.dto.JcommunePageable;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -105,6 +110,8 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
     @Test
     public void testPostOfUser() {
+        boolean pagingEnabled = true;
+        JcommunePageable pageRequest = new JcommunePageRequest(1, 50);
         JCUser user = ObjectsFactory.getDefaultUser();
         Post post = new Post(user, "first");
         List<Post> posts = new ArrayList<Post>();
@@ -112,19 +119,22 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         session.save(user);
         session.save(post);
 
-        List<Post> postsTwo = dao.getUserPosts(user);
+        Page<Post> postsPage = dao.getUserPosts(user, pageRequest, pagingEnabled);
 
-        assertEquals(postsTwo, posts);
+        assertTrue(postsPage.hasContent());
+        assertEquals(postsPage.getContent(), posts);
     }
 
     @Test
     public void testNullPostOfUser() {
+        boolean pagingEnabled = true;
+        JcommunePageable pageRequest = new JcommunePageRequest(1, 50);
         JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
 
-        List<Post> posts = dao.getUserPosts(user);
+        Page<Post> postsPage = dao.getUserPosts(user, pageRequest, pagingEnabled);
 
-        assertEquals(posts, new ArrayList<Post>());
+        assertFalse(postsPage.hasContent());
     }
     
     @Test

@@ -14,35 +14,33 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.dto.JcommunePageable;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
+import org.jtalks.jcommune.service.nontransactional.PaginationService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
 
 
 /**
@@ -70,7 +68,9 @@ public class TransactionalPostServiceTest {
     private TopicDao topicDao;
     @Mock
     private LastReadPostService lastReadPostService;
-
+    @Mock 
+    private PaginationService paginationService;
+    
     private PostService postService;
 
     private JCUser user;
@@ -79,7 +79,12 @@ public class TransactionalPostServiceTest {
     public void setUp() throws Exception {
         initMocks(this);
         postService = new TransactionalPostService(
-                postDao, topicDao, securityService, notificationService, lastReadPostService);
+                postDao,
+                topicDao,
+                securityService,
+                notificationService,
+                lastReadPostService,
+                paginationService);
         user = new JCUser(USERNAME, EMAIL, PASSWORD);
         when(securityService.getCurrentUser()).thenReturn(user);
     }
@@ -155,23 +160,24 @@ public class TransactionalPostServiceTest {
     }
 
     @Test
-    public void testNullPostsOfUser() {
-        List<Post> posts = new ArrayList<Post>();
-        when(postDao.getUserPosts(user)).thenReturn(posts);
-
-        assertEquals(postService.getPostsOfUser(user), new ArrayList<Post>());
-
-        verify(postDao).getUserPosts(user);
-    }
-
-    @Test
     public void testPostsOfUser() {
+        int page = 1;
+        int pageSize = 50;
+        boolean pagingEnabled = true;
         List<Post> posts = Arrays.asList(new Post(user, ""));
-        when(postDao.getUserPosts(user)).thenReturn(posts);
+        Page<Post> expectedPostsPage = new PageImpl<Post>(posts);
+        when(postDao.getUserPosts(Matchers.<JCUser> any(), Matchers.<JcommunePageable>any(), Matchers.anyBoolean()))
+            .thenReturn(expectedPostsPage);
+        when(paginationService.getPageSizeForCurrentUser()).thenReturn(pageSize);
 
-        assertEquals(postService.getPostsOfUser(user), posts);
-
-        verify(postDao).getUserPosts(user);
+        Page<Post> actualPostsPage = postService.getPostsOfUser(user, page, pagingEnabled);
+        
+        assertEquals(actualPostsPage, expectedPostsPage);
+        verify(postDao).getUserPosts(
+                Matchers.<JCUser> any(),
+                Matchers.<JcommunePageable> any(),
+                Matchers.anyBoolean()
+                );
     }
 
     @Test

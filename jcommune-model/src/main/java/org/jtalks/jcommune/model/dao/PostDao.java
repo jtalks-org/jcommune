@@ -21,7 +21,6 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
 
 /**
  * Interface allows to make basic CRUD operations with the
@@ -38,9 +37,10 @@ public interface PostDao extends ChildRepository<Post> {
 
     /**
      * @param author user to select posts for
+     * @param pagingEnabled TODO
      * @return post list of user
      */
-    List<Post> getUserPosts(JCUser author);
+    Page<Post> getUserPosts(JCUser author, JcommunePageable pageRequest, boolean pagingEnabled);
 
     /**
      * Find the latest post in the forum topic.

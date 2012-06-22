@@ -14,6 +14,22 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
+import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
+import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
+import static org.testng.Assert.assertEquals;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.Post;
@@ -24,39 +40,24 @@ import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.ImageUtils;
+import org.jtalks.jcommune.service.nontransactional.PaginationService;
 import org.jtalks.jcommune.service.nontransactional.SecurityService;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.dto.EditUserProfileDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.mockito.Matchers;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.ModelAndViewAssert.assertAndReturnModelAttributeOfType;
-import static org.springframework.test.web.ModelAndViewAssert.assertModelAttributeAvailable;
-import static org.springframework.test.web.ModelAndViewAssert.assertViewName;
-import static org.testng.Assert.assertEquals;
 
 /**
  * @author Kirill Afonin
@@ -80,6 +81,7 @@ public class UserProfileControllerTest {
     private BreadcrumbBuilder breadcrumbBuilder;
     private ImageUtils imageUtils;
     private PostService postService;
+    private PaginationService paginationService;
 
     @BeforeClass
     public void mockAvatar() throws IOException {
@@ -93,7 +95,14 @@ public class UserProfileControllerTest {
         breadcrumbBuilder = mock(BreadcrumbBuilder.class);
         imageUtils = mock(ImageUtils.class);
         postService = mock(PostService.class);
-        profileController = new UserProfileController(userService, securityService, breadcrumbBuilder, imageUtils, postService);
+        paginationService = mock(PaginationService.class);
+        profileController = new UserProfileController(
+                userService,
+                securityService,
+                breadcrumbBuilder,
+                imageUtils,
+                postService,
+                paginationService);
     }
 
     @Test
@@ -195,13 +204,14 @@ public class UserProfileControllerTest {
         Topic topic = mock(Topic.class);
         List<Post> posts = new ArrayList<Post>();
         posts.add(post);
+        Page<Post> postsPage = new PageImpl<Post>(posts);
 
         //set expectations
         when(userService.getByUsername("username")).thenReturn(user);
         when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());
-        when(postService.getPostsOfUser(user)).thenReturn(new ArrayList<Post>());
         when(securityService.getCurrentUser()).thenReturn(user);
-        when(postService.getPostsOfUser(user)).thenReturn(posts);
+        when(postService.getPostsOfUser(Matchers.<JCUser> any(), Matchers.anyInt(), Matchers.anyBoolean()))
+            .thenReturn(postsPage);
         when(post.getTopic()).thenReturn(topic);
 
 
@@ -216,14 +226,7 @@ public class UserProfileControllerTest {
         assertModelAttributeAvailable(mav, "user");
         assertModelAttributeAvailable(mav, "breadcrumbList");
         assertModelAttributeAvailable(mav, "user");
-    }
-
-    private void assertContainsError(BindingResult bindingResult, String errorName) {
-        for (ObjectError error : bindingResult.getAllErrors()) {
-            if (error != null && error instanceof FieldError) {
-                assertEquals(((FieldError) error).getField(), errorName);
-            }
-        }
+        assertModelAttributeAvailable(mav, "postsPage");
     }
 
     /**

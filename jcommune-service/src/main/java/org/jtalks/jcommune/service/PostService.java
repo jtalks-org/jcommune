@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.service;
 
-import java.util.List;
 
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
@@ -55,9 +54,10 @@ public interface PostService extends EntityService<Post> {
      * List posts of user
      *
      * @param userCreated user created post
+     * @param pagingEnabled TODO
      * @return post list
      */
-    List<Post> getPostsOfUser(JCUser userCreated);
+    Page<Post> getPostsOfUser(JCUser userCreated, int page, boolean pagingEnabled);
 
     /**
      * Calculates page number for post based on the current user

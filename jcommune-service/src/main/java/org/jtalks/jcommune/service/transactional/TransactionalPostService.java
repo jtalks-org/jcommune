@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import java.util.List;
 
 /**
  * Post service class. This class contains method needed to manipulate with Post persistent entity.
@@ -116,8 +115,10 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public List<Post> getPostsOfUser(JCUser userCreated) {
-        return this.getDao().getUserPosts(userCreated);
+    public Page<Post> getPostsOfUser(JCUser userCreated, int page, boolean pagingEnabled) {
+        JcommunePageable pageRequest = new JcommunePageRequest(
+                page, paginationService.getPageSizeForCurrentUser());
+        return this.getDao().getUserPosts(userCreated, pageRequest, pagingEnabled);
     }
 
     /**

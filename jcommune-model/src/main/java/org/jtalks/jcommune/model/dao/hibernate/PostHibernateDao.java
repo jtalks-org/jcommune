@@ -44,10 +44,21 @@ public class PostHibernateDao extends AbstractHibernateChildRepository<Post> imp
     /**
      * {@inheritDoc}
      */
-    public List<Post> getUserPosts(JCUser author) {
-        return (List<Post>) getSession().createQuery("FROM Post p WHERE p.userCreated = ? ORDER BY creationDate DESC")
-                .setParameter(0, author)
-                .list();
+    public Page<Post> getUserPosts(JCUser author, JcommunePageable pageRequest, boolean pagingEnabled) {
+        Number totalCount = (Number) getSession()
+                .getNamedQuery("getCountPostsOfUser")
+                .setParameter("userCreated", author)
+                .uniqueResult();
+        Query query = getSession()
+                .getNamedQuery("getPostsOfUser")
+                .setParameter("userCreated", author);
+        if (pagingEnabled) {
+            query.setFirstResult(pageRequest.getNumberOfFirstItem());
+            query.setMaxResults(pageRequest.getPageSize());
+        }
+        @SuppressWarnings("unchecked")
+        List<Post> posts = (List<Post>) query.list();
+        return new PageImpl<Post>(posts, pageRequest, totalCount.intValue());
     }
     
     /**
