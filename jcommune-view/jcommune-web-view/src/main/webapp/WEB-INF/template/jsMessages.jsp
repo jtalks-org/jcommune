@@ -20,6 +20,7 @@
  This page contains localized messages to be used in JS files on a client side
 --%>
 $labelDeleteContactConfirmation = '<spring:message code="label.deleteContactConfirmation"/>';
+$labelDeleteContactFailture = '<spring:message code="label.deleteContactFailture"/>';
 
 $labelDeletePmGroupConfirmation = '<spring:message code="label.deletePMGroupConfirmation"/>';
 
