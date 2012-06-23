@@ -66,6 +66,10 @@
     <bean id="userContactsDao"
           class="org.jtalks.jcommune.model.dao.hibernate.UserContactsHibernateDao"
           parent="abstractHibernateDao"/>
+    
+    <bean id="simplePageDao"
+          class="org.jtalks.jcommune.model.dao.hibernate.SimplePageHibernateDao"
+          parent="abstractHibernateDao"/>
 
     <bean id="pollDao"
           class="org.jtalks.jcommune.model.dao.hibernate.PollHibernateDao"
@@ -131,6 +135,7 @@
                 <value>/org/jtalks/jcommune/model/entity/Poll.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/PollOption.hbm.xml</value>
                 <value>/org/jtalks/jcommune/model/entity/Property.hbm.xml</value>
+                <value>/org/jtalks/jcommune/model/entity/SimplePage.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">

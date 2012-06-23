@@ -16,16 +16,7 @@ package org.jtalks.jcommune.model;
 
 import org.hibernate.Session;
 import org.jtalks.common.model.entity.Section;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.LastReadPost;
-import org.jtalks.jcommune.model.entity.Poll;
-import org.jtalks.jcommune.model.entity.PollItem;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.PrivateMessage;
-import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.UserContact;
-import org.jtalks.jcommune.model.entity.UserContactType;
+import org.jtalks.jcommune.model.entity.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -158,5 +149,9 @@ public final class ObjectsFactory {
         PollItem option = new PollItem("First voting option");
         voting.addPollOptions(option);
         return option;
+    }
+
+    public static SimplePage getDefaultSimplePage() {
+        return new SimplePage("name", "content", "pathName");
     }
 }

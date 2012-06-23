@@ -79,7 +79,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="${pageContext.request.contextPath}/pages/faq">
                             <fmt:message key="label.newbies"/>
                         </a>
                     <li class="divider-vertical"></li>

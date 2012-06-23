@@ -164,6 +164,11 @@
         <constructor-arg ref="lastReadPostHibernateDao"/>
     </bean>
 
+    <bean id="simplePageService"
+          class="org.jtalks.jcommune.service.transactional.TransactionalSimplePageService">
+        <constructor-arg ref="simplePageDao"/>
+    </bean>
+
     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
         <property name="configLocation" value="classpath:/org/jtalks/jcommune/service/ehcache.xml"/>
     </bean>
