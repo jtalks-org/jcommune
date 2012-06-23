@@ -50,7 +50,7 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
     /**
      * {@inheritDoc}
      */
-    @PreAuthorize("hasPermission(#simplePageInfoContainer.id, 'org.jtalks.jcommune.model.entity.SimplePage', 'GeneralPermission.ADMIN')")
+    @PreAuthorize("hasPermission(#simplePageInfoContainer.id, 'org.jtalks.jcommune.model.entity.SimplePage', 'GeneralPermission.WRITE')")
     @Override
     public void updatePage(SimplePageInfoContainer simplePageInfoContainer) throws NotFoundException {
 
@@ -87,7 +87,7 @@ public class TransactionalSimplePageService extends AbstractTransactionalEntityS
     /**
      * {@inheritDoc}
      */
-    @PreAuthorize("hasPermission(#simplePage.id, 'org.jtalks.jcommune.model.entity.SimplePage', 'GeneralPermission.ADMIN')")
+    @PreAuthorize("hasPermission(#simplePage.id, 'org.jtalks.jcommune.model.entity.SimplePage', 'GeneralPermission.WRITE')")
     @Override
     public SimplePage createPage(SimplePage simplePage) throws EntityExistsException {
 
