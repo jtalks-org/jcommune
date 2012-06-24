@@ -48,9 +48,15 @@ function deleteContactHandler() {
                         url:baseUrl + '/contacts/remove/' + id,
                         // this is the way Spring MVC represents HTTP DELETE for better browser compatibility
                         type:"POST",
-                        data:{'_method':'DELETE'}
+                        data:{'_method':'DELETE'},
+                    	success: function() {
+                    		element.fadeOut();
+                    	},
+                    	error: function() {
+                    		$.prompt($labelDeleteContactFailture);
+                    	}
                     });
-                    element.fadeOut();
+                    
                 }
             }
         }
@@ -130,7 +136,7 @@ $(document).ready(function () {
 	
 	$('body').on('keyup', '#contact', function() {
 		var value = $(this).val();
-		if (!value.match(new RegExp(AddContact.selectedContactType.validationPattern))) {
+		if (value.length > 0 && !value.match(new RegExp(AddContact.selectedContactType.validationPattern))) {
 			$('#contact-error-status').text($labelValidationUsercontactNotMatch);
 			ErrorUtils.addErrorStyles('#contact');
 			AddContact.isValueValid = false;
@@ -194,7 +200,7 @@ $(document).ready(function () {
 					if (!value) {
 						// cancel is pressed
 						result = true
-					} else if (AddContact.isValueValid && value != undefined && value) {
+					} else if (AddContact.isValueValid && value != undefined && value && form.contact.length > 0) {
 
                         var contact = {
                             value:form.contact,
