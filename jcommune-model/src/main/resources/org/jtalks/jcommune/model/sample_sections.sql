@@ -8,7 +8,7 @@ INSERT INTO BRANCHES (BRANCH_ID, UUID, NAME, DESCRIPTION, POSITION, SECTION_ID, 
 INSERT INTO BRANCHES (BRANCH_ID, UUID, NAME, DESCRIPTION, POSITION, SECTION_ID, MODERATORS_GROUP_ID) VALUES(3, '5', 'One more branch', 'More information', 0, 2 ,1);
 INSERT INTO BRANCHES (BRANCH_ID, UUID, NAME, DESCRIPTION, POSITION, SECTION_ID, MODERATORS_GROUP_ID) VALUES(4, '6', 'The last, but not least', 'More information', 1, 2 ,1);
 
-INSERT INTO `acl_class` VALUES (1,'org.jtalks.jcommune.model.entity.Branch');
+INSERT INTO `acl_class` VALUES (1,'BRANCH');
 
 INSERT INTO `acl_sid` VALUES (1,0,'usergroup:11');
 INSERT INTO `acl_sid` VALUES (3,0,'usergroup:12');
