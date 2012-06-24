@@ -57,6 +57,7 @@
     </bean>
     <bean id="aclGroupManager" class="org.jtalks.common.security.acl.AclManager">
         <constructor-arg name="mutableAclService" ref="aclService"/>
+        <property name="aclUtil" ref="aclUtils"/>
     </bean>
     <bean id="typeConvertingObjectIdentityGenerator" class="org.jtalks.common.security.acl.TypeConvertingObjectIdentityGenerator">
            <property name="additionalConversionRules">
