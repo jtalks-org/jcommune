@@ -14,6 +14,6 @@
  */
 
 $(function() {
-    //this function on registration.js
+    //this function is on registration.js
     refreshCaptchaOnClick();
 });

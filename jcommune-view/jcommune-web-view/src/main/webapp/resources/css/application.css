@@ -313,6 +313,23 @@ ul.lang-menu li img {
     font: 11px verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
 }
 
+.cursor-pointer{
+    cursor: pointer !important;
+}
+
+.right-aligned{
+    float: right;
+}
+
+.left-aligned{
+    float: left;
+}
+
+.cleared{
+    clear:both;
+}
+
+
 @media (max-width: 480px) {
     .upper-pagination {
         display: none;

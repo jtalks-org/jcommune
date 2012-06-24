@@ -15,10 +15,10 @@
 
 /**
  * Setups for bbeditor
+ *
+ * todo: move it to other bb-editor scripts
  */
 jQuery(document).ready(function(){
 	// Tooltips on status images
     jQuery('.btn-toolbar a').tooltip();
-
-    // jQuery('#color-picker').colourPicker();
 });
