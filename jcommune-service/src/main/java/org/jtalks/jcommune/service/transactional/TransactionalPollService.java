@@ -117,9 +117,7 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
      * @param poll a poll, in which the user will no longer be able to participate
      */
     private void prohibitRevote(final Poll poll) {
-        securityService.createAclBuilder().
-                restrict(GeneralPermission.WRITE).to(securityService.getCurrentUser()).on(poll).flush();
-/*        //TODO It should be changed after the transition to the new security.
+          //TODO It should be changed after the transition to the new security.
         temporaryAuthorityManager.runWithTemporaryAuthority(
                 new TemporaryAuthorityManager.SecurityOperation() {
                     @Override
@@ -128,6 +126,6 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
                                 restrict(GeneralPermission.WRITE).to(securityService.getCurrentUser()).on(poll).flush();
                     }
                 },
-                SecurityConstants.ROLE_ADMIN);*/
+                SecurityConstants.ROLE_ADMIN);
     }
 }
