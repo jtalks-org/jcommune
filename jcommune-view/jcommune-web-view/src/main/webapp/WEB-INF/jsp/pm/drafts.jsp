@@ -38,8 +38,6 @@
             <jsp:include page="../../template/pmFolders.jsp"/>
 
         </div>
-        <!-- /span2 -->
-
         <div class="span9">
             <div class="pm_buttons">
                 <span class="del">
@@ -100,11 +98,7 @@
                 </tbody>
             </table>
         </div>
-        <!-- /span9 -->
     </div>
-    <!-- /row -->
 </div>
-<!-- /container -->
-
 <div class="footer_buffer"></div>
 </body>

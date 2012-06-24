@@ -56,7 +56,7 @@ public class TransactionalSubscriptionService implements SubscriptionService {
     @Override
     public void toggleTopicSubscription(Topic topic) {
         JCUser current = (JCUser) securityService.getCurrentUser();
-        if (topic.getSubscribers().contains(current)) {
+        if (topic.userSubscribed(current)) {
             topic.getSubscribers().remove(current);
         } else {
             topic.getSubscribers().add(current);

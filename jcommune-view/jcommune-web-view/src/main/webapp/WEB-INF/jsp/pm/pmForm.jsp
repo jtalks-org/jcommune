@@ -41,7 +41,6 @@
                 <spring:message code="label.new_pm"/></a>
             <jsp:include page="../../template/pmFolders.jsp"/>
         </div>
-        <!-- span2 -->
 
         <div class="span9">
             <form:form action="${pageContext.request.contextPath}/pm"
@@ -76,16 +75,10 @@
                 <input id="save_pm" type="submit" class="btn" name="save_pm" value="<spring:message code="label.save"/>"
                        onclick="document.editForm.action='${pageContext.request.contextPath}/pm/save';return true;"/>
 
-            </form:form><!-- form -->
+            </form:form>
 
         </div>
-        <!-- span9 -->
     </div>
-    <!-- row -->
-
-
 </div>
-<!-- container -->
-
 <div class="footer_buffer"></div>
 </body>

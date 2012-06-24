@@ -31,10 +31,9 @@ public interface PollService extends EntityService<Poll> {
      *
      * @param pollId        id of a poll
      * @param pollOptionIds id of a option of a poll
-     * @param branchId      id of a branch
      * @return changed poll
      */
-    Poll vote(Long pollId, List<Long> pollOptionIds, long branchId);
+    Poll vote(Long pollId, List<Long> pollOptionIds);
 
     void createPoll(Poll poll);
 }
