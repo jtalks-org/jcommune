@@ -55,7 +55,8 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
      *                                  allows to execute an operation with the
      *                                  needed authority
      */
-    public TransactionalPollService(ChildRepository<Poll> pollDao, GroupDao groupDao,
+    public TransactionalPollService(ChildRepository<Poll> pollDao,
+                                    GroupDao groupDao,
                                     ChildRepository<PollItem> pollOptionDao,
                                     SecurityService securityService,
                                     TemporaryAuthorityManager temporaryAuthorityManager) {
