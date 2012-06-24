@@ -81,7 +81,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#branchId, 'org.jtalks.jcommune.model.entity.Branch', 'BranchPermission.CREATE_POSTS')")
+    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.CREATE_POSTS')")
     public Post replyToTopic(long topicId, String answerBody, long branchId) throws NotFoundException {
         JCUser currentUser = (JCUser) securityService.getCurrentUser();
 
@@ -104,8 +104,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#branchId, 'org.jtalks.jcommune.model.entity.Branch', " +
-            "'BranchPermission.CREATE_TOPICS')")
+    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.CREATE_TOPICS')")
     public Topic createTopic(String topicName, String bodyText, long branchId
             , boolean notifyOnAnswers) throws NotFoundException {
         JCUser currentUser = (JCUser) securityService.getCurrentUser();
@@ -159,7 +158,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', 'GeneralPermission.WRITE')")
+    @PreAuthorize("hasPermission(#topicId, 'TOPIC', 'GeneralPermission.WRITE')")
     public void updateTopic(long topicId, String topicName, String bodyText)
             throws NotFoundException {
         updateTopic(topicId, topicName, bodyText, 0, false, false, false);
@@ -169,7 +168,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicId, 'org.jtalks.jcommune.model.entity.Topic', 'GeneralPermission.WRITE')")
+    @PreAuthorize("hasPermission(#topicId, 'TOPIC', 'GeneralPermission.WRITE')")
     public void updateTopic(long topicId, String topicName, String bodyText, int topicWeight,
                             boolean sticked, boolean announcement, boolean notifyOnAnswers) throws NotFoundException {
         Topic topic = get(topicId);
@@ -208,7 +207,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#branchId, 'org.jtalks.jcommune.model.entity.Branch', 'BranchPermission.DELETE_TOPICS')")
+    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.DELETE_TOPICS')")
     public Branch deleteTopic(long topicId, long branchId) throws NotFoundException {
         Topic topic = get(topicId);
 
@@ -232,7 +231,7 @@ public class TransactionalTopicService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#branchId, 'org.jtalks.jcommune.model.entity.Branch', 'BranchPermission.MOVE_TOPICS')")
+    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.MOVE_TOPICS')")
     public void moveTopic(Long topicId, Long branchId) throws NotFoundException {
         Topic topic = get(topicId);
         Branch targetBranch = branchService.get(branchId);

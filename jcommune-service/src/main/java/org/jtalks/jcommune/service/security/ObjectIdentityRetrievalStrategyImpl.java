@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) 2011  JTalks.org Team
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -12,16 +12,25 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+package org.jtalks.jcommune.service.security;
 
-/**
- * This script provides jQuery datepicker functionality.
- */
+import org.jtalks.common.model.entity.Entity;
+import org.jtalks.common.security.acl.AclUtil;
+import org.springframework.security.acls.model.ObjectIdentity;
+import org.springframework.security.acls.model.ObjectIdentityRetrievalStrategy;
 
-$(function () {
-    $('#datepicker').datepicker({
-        dateFormat:'dd-mm-yy',
-        numberOfMonths:2,
-        minDate:'1d',
-        firstDay:1
-    });
-});
+import javax.annotation.Nonnull;
+
+
+public class ObjectIdentityRetrievalStrategyImpl implements ObjectIdentityRetrievalStrategy {
+    private final AclUtil aclUtil;
+
+    @Override
+    public ObjectIdentity getObjectIdentity(Object domainObject) {
+        return aclUtil.createIdentityFor((Entity) domainObject);
+    }
+
+    public ObjectIdentityRetrievalStrategyImpl(@Nonnull AclUtil aclUtil) {
+        this.aclUtil = aclUtil;
+    }
+}

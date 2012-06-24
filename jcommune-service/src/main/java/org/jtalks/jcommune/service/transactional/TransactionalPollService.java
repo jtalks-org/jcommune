@@ -16,10 +16,10 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.model.dao.ChildRepository;
 import org.jtalks.common.model.permissions.GeneralPermission;
+import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.service.PollService;
-import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.service.security.SecurityConstants;
 import org.jtalks.jcommune.service.security.TemporaryAuthorityManager;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -64,7 +64,7 @@ public class TransactionalPollService extends AbstractTransactionalEntityService
     /**
      * {@inheritDoc}
      */
-    @PreAuthorize("hasPermission(#branchId, 'org.jtalks.jcommune.model.entity.Branch', 'BranchPermission.CREATE_POSTS')")
+    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.CREATE_POSTS')")
     @Override
     public Poll vote(Long pollId, List<Long> selectedOptionIds, long branchId) {
         Poll poll = getDao().get(pollId);
